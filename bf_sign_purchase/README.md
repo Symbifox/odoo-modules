@@ -1,4 +1,4 @@
-# Blue Fox — Signature for Purchasing (`bf_sign_purchase`)
+# Symbifox — Signature for Purchasing (`bf_sign_purchase`)
 
 A bridge module wiring purchase orders into `bf_sign` electronic signature.
 

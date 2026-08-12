@@ -1,4 +1,4 @@
-# Blue Fox — Signature for Accounting (`bf_sign_account`)
+# Symbifox — Signature for Accounting (`bf_sign_account`)
 
 A bridge module adding **"Send for signature"** on accounting documents
 (`account.move`: customer invoices and vendor bills) through the

@@ -63,5 +63,5 @@ escalation via the capture path.
 
 ## Reporting
 
-Found a vulnerability? Please contact [Blue Fox Inc.](https://bluefoxconsultant.com)
+Found a vulnerability? Please contact [Les services de consultation Blue Fox, Inc.](https://symbifox.com)
 rather than opening a public issue.

@@ -1,10 +1,10 @@
 {
-    "name": "Blue Fox — LLM Provider",
-    "summary": "Provider-agnostic LLM access (chat + document/vision extraction) for Blue Fox modules",
+    "name": "Symbifox — LLM Provider",
+    "summary": "Provider-agnostic LLM access (chat + document/vision extraction) for Symbifox modules",
     "version": "18.0.1.0.1",
     "category": "Technical",
-    "author": "Les services de consultation Blue Fox, Inc.",
-    "website": "https://bluefoxconsultant.com",
+    "author": "Les services de consultation Les services de consultation Blue Fox, Inc.",
+    "website": "https://symbifox.com",
     "license": "LGPL-3",
     "depends": ["base"],
     # cryptography is hard-required (API key encryption). pdf2image/poppler and

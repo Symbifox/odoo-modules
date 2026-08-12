@@ -4,7 +4,7 @@ Embedded and standalone WebDAV file browser for Nextcloud, integrated into Odoo
 project and task forms. Browse, preview, upload, organise and share files stored
 on a Nextcloud instance — without leaving Odoo.
 
-- **Author:** Blue Fox Inc.
+- **Author:** Les services de consultation Blue Fox, Inc.
 - **License:** LGPL-3
 - **Odoo:** 18.0
 - **Depends:** `bf_document_nextcloud_sync`, `project`, `project_knowledge_matrix`
@@ -58,7 +58,7 @@ service-account configuration provided by `bf_document_nextcloud_sync`.
 ## Configuration
 
 1. Open **Nextcloud → Configuration** (admin only).
-2. On the *Blue Fox Nextcloud* configuration record set the Nextcloud base URL,
+2. On the *Symbifox Nextcloud* configuration record set the Nextcloud base URL,
    WebDAV path, service-account user and app password.
 3. Set **Préfixe racine (navigateur)** to scope the browser (e.g. `/Company/`).
    *Required for the standalone app.*

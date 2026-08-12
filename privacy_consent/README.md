@@ -640,7 +640,7 @@ Distributed under the **Business Source License 1.1** (BUSL-1.1). See the
 ## Disclaimer
 
 This module is provided as-is, without warranty of any kind. Use at your own
-risk. Blue Fox Inc. assumes no liability for any damages arising from the use of
+risk. Les services de consultation Blue Fox, Inc. assumes no liability for any damages arising from the use of
 this software.
 
 ---

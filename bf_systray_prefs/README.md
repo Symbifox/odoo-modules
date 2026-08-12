@@ -1,4 +1,4 @@
-# Blue Fox — Préférences de la barre système
+# Symbifox — Préférences de la barre système
 
 Lets each user **show or hide individual systray icons** (the notification-tray icons in the top-right of the Odoo backend) from a single gear menu. Choices are saved **per user** on `res.users`, so they follow the user across browsers and devices.
 
@@ -91,12 +91,12 @@ bf_systray_prefs/
 
 ## Credits
 
-Authored and maintained by Blue Fox Inc. AI coding assistants were used as productivity tools during development.
+Authored and maintained by Les services de consultation Blue Fox, Inc. AI coding assistants were used as productivity tools during development.
 
 ## Support
 
-For issues and feature requests, please contact Blue Fox Inc. or open an issue on the project repository.
+For issues and feature requests, please contact Les services de consultation Blue Fox, Inc. or open an issue on the project repository.
 
 ---
 
-<sub>Authored and maintained by Blue Fox Inc. AI coding assistants were used as productivity tools during development.</sub>
+<sub>Authored and maintained by Les services de consultation Blue Fox, Inc. AI coding assistants were used as productivity tools during development.</sub>

@@ -6,7 +6,7 @@
                "liens tokenisés avec expiration et mot de passe, journal d'accès "
                "inaltérable (Loi 25), purge automatique, multi-marques",
     'description': """
-Blue Fox — Transfert sécurisé (Secrets)
+Symbifox — Transfert sécurisé (Secrets)
 =======================================
 
 Transfert de fichiers « WeTransfer maison » propulsé par Odoo :
@@ -36,8 +36,8 @@ Transfert de fichiers « WeTransfer maison » propulsé par Odoo :
 Les clés d'accès S3 vivent dans ``odoo.conf`` (ou l'environnement), jamais
 en base de données.
     """,
-    'author': 'Les services de consultation Blue Fox, Inc.',
-    'website': 'https://bluefoxconsultant.com',
+    'author': 'Les services de consultation Les services de consultation Blue Fox, Inc.',
+    'website': 'https://symbifox.com',
     'license': 'Other proprietary',
     'depends': [
         'web',

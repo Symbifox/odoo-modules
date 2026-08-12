@@ -1,4 +1,4 @@
-# Blue Fox — Operations Pack
+# Symbifox — Operations Pack
 
 Bundle meta-module for consulting/MSP operations on Odoo 18 CE. Brings together the unified inbox, meeting workflow, contact intelligence, helpdesk fork, hour-bank billing, and chatter polish layer.
 
@@ -24,7 +24,7 @@ Bundle meta-module for consulting/MSP operations on Odoo 18 CE. Brings together 
 
 Installing `bf_ops_pack` installs all of the above. Uninstalling it does **not** cascade.
 
-> All bundled modules are self-contained and depend only on Odoo CE and other public Blue Fox modules in this repo. `bf_helpdesk`'s optional AI triage reads an Anthropic key via `ir.config_parameter` and degrades gracefully when unconfigured, so the bundle installs without any private/proprietary dependency.
+> All bundled modules are self-contained and depend only on Odoo CE and other public Symbifox modules in this repo. `bf_helpdesk`'s optional AI triage reads an Anthropic key via `ir.config_parameter` and degrades gracefully when unconfigured, so the bundle installs without any private/proprietary dependency.
 
 ## License
 

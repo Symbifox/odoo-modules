@@ -1,6 +1,6 @@
-# Blue Fox — Loi 25 Suite
+# Symbifox — Loi 25 Suite
 
-Bundle meta-module that pulls in the Blue Fox Quebec **Loi 25** (Act respecting the protection of personal information) compliance stack on a single install.
+Bundle meta-module that pulls in the Symbifox Quebec **Loi 25** (Act respecting the protection of personal information) compliance stack on a single install.
 
 ## Included modules
 

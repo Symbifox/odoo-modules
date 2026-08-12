@@ -131,11 +131,11 @@ bf_task_unblock_notify/
 
 ## Disclaimer
 
-This module is provided as-is, without warranty of any kind. Use at your own risk. Blue Fox Inc. assumes no liability for any damages arising from the use of this software.
+This module is provided as-is, without warranty of any kind. Use at your own risk. Les services de consultation Blue Fox, Inc. assumes no liability for any damages arising from the use of this software.
 
 ## Credits
 
-Authored and maintained by Blue Fox Inc.
+Authored and maintained by Les services de consultation Blue Fox, Inc.
 
 ## Support
 

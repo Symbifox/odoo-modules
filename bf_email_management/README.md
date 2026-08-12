@@ -179,8 +179,8 @@ See [CHANGELOG.md](CHANGELOG.md).
 
 ## Support
 
-For support, please contact Blue Fox Inc. or open an issue in the repository.
+For support, please contact Les services de consultation Blue Fox, Inc. or open an issue in the repository.
 
 ---
 
-Authored and maintained by Blue Fox Inc. AI coding assistants were used as productivity tools during development.
+Authored and maintained by Les services de consultation Blue Fox, Inc. AI coding assistants were used as productivity tools during development.

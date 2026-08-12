@@ -1,7 +1,7 @@
 # Subscriptions — dashboard card (`bf_subscription_dashboard`)
 
 A bridge module that adds a subscription summary card (monthly-equivalent
-spend, upcoming renewals, dormant subscriptions) to the Blue Fox dashboard
+spend, upcoming renewals, dormant subscriptions) to the Symbifox dashboard
 (`bf_dashboard`).
 
 Auto-installs when `bf_subscription` **and** `bf_dashboard` are both present.

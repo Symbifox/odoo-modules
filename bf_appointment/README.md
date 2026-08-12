@@ -1,4 +1,4 @@
-# Blue Fox Appointment (`bf_appointment`)
+# Symbifox Appointment (`bf_appointment`)
 
 Public self-service booking pages, extending *Resource Booking* (OCA).
 
@@ -9,7 +9,7 @@ Public self-service booking pages, extending *Resource Booking* (OCA).
 - **Client portal**: self-service confirmation, rescheduling and cancellation.
 - **Privacy consent** built into the booking flow (`privacy_consent`).
 - **Automatic task/project creation** at booking time.
-- **Blue Fox branded emails** through `bluefox_branding` (header, brand
+- **Symbifox branded emails** through `bluefox_branding` (header, brand
   colours, per-company footer).
 - **Onboarding wizard** (`bf_onboarding_base`) to configure booking types.
 

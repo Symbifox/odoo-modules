@@ -3,8 +3,8 @@
     "version": "18.0.2.8.0",
     "category": "Productivity",
     "summary": "Notes rapides riches, multi-liens, conversion en activité, raccourcis et systray",
-    'author': 'Les services de consultation Blue Fox, Inc.',
-    "website": "https://bluefoxconsultant.com",
+    'author': 'Les services de consultation Les services de consultation Blue Fox, Inc.',
+    "website": "https://symbifox.com",
     'license': 'LGPL-3',
     "depends": ["web", "mail", "project", "crm", "contacts", "bf_onboarding_base"],
     "data": [

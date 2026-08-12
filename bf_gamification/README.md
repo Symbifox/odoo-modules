@@ -5,7 +5,7 @@ motivates teams through XP, levels, badges, streaks, and redeemable rewards. It 
 timesheets, project tasks, knowledge documentation, hosting management, chatter messages, helpdesk
 tickets, and scheduled activities to reward daily work with a progression system inspired by RPGs.
 
-Built for [Blue Fox Inc.](https://bluefoxconsultant.com)
+Built for [Les services de consultation Blue Fox, Inc.](https://symbifox.com)
 
 ---
 

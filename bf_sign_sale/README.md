@@ -1,4 +1,4 @@
-# Blue Fox — Signature for Sales (`bf_sign_sale`)
+# Symbifox — Signature for Sales (`bf_sign_sale`)
 
 A bridge module wiring sales orders into `bf_sign` electronic signature.
 

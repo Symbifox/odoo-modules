@@ -1,4 +1,4 @@
-# Blue Fox — Merging tasks (`bf_project_merge`)
+# Symbifox — Merging tasks (`bf_project_merge`)
 
 An Odoo **"Merge tasks"** wizard that genuinely consolidates several tasks into
 one: instead of archiving duplicates with all their content still inside, it
@@ -55,9 +55,9 @@ used **when present**, never required.
 
 This module serves the same need as the OCA community module
 [`project_merge`](https://github.com/OCA/project) (Onestein), but it is written
-independently by Blue Fox and adds full content reassignment (conversation,
+independently by Symbifox and adds full content reassignment (conversation,
 hours, dependencies, and so on).
 
 ## Licence
 
-LGPL-3 — © Blue Fox Inc.
+LGPL-3 — © Les services de consultation Blue Fox, Inc.

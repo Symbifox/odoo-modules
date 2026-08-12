@@ -96,7 +96,7 @@ Pre-publication checklist (per BF policy):
 | HTML in body | Read-only; never written back |
 | Unbounded loops | `_message_fetch` honors `limit`; backfill iterates only the current record's messages (typical < 50) |
 | XML ID leakage | All `<record>` ids prefixed `action_chatter_chrono_*`; refers only to public Odoo models |
-| Tenant data | None — only `Blue Fox Inc.` metadata |
+| Tenant data | None — only `Les services de consultation Blue Fox, Inc.` metadata |
 | `mail.mail` side-effects | Snapshotted before/after the backfill batch; a discrepancy is logged as a warning |
 
 ### Edge cases
@@ -145,4 +145,4 @@ LGPL-3
 
 ---
 
-<sub>Authored and maintained by Blue Fox Inc. AI coding assistants were used as productivity tools during development.</sub>
+<sub>Authored and maintained by Les services de consultation Blue Fox, Inc. AI coding assistants were used as productivity tools during development.</sub>

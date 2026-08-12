@@ -2,7 +2,7 @@
 
 A comprehensive Odoo 18 module for knowledge management, document control, and project implementation tracking. Designed for organizations needing systematic document versioning, client documentation distribution, internal policy compliance, and structured project information gathering.
 
-*Developed and maintained by [Blue Fox Inc.](https://bluefoxconsultant.com) This module stores encrypted credentials — see [SECURITY.md](SECURITY.md) for the trust model.*
+*Developed and maintained by [Les services de consultation Blue Fox, Inc.](https://symbifox.com) This module stores encrypted credentials — see [SECURITY.md](SECURITY.md) for the trust model.*
 
 ## Overview
 
@@ -18,7 +18,7 @@ Project Knowledge Matrix helps project managers, documentation teams, and compli
 - **Visualize KPIs** through a comprehensive dashboard filterable by project
 - **Corporate governance** with resolutions, directors, officers, and compliance calendar
 - **Generate branded PDFs** for corporate resolutions ready for signing
-- **Print knowledge matrix reports** as branded Blue Fox PDFs with KPIs, progress bar, and items grouped by section
+- **Print knowledge matrix reports** as branded Symbifox PDFs with KPIs, progress bar, and items grouped by section
 - **Email matrix reports** manually or on a configurable schedule (weekly, biweekly, monthly, custom interval)
 - **Capture knowledge from chatter** with one-click message-to-matrix-item creation
 - **RACI stakeholder summary** with pivot view across all projects
@@ -141,14 +141,14 @@ Full corporate governance module for Quebec LSAQ-compliant companies:
 - **Officer Register**: Track corporate officers (President, VP, Secretary, Treasurer, DG) with appointment history
 - **Compliance Calendar**: Annual compliance events (REQ annual declaration, AGM, director elections, auditor appointment, financial approval) with automatic deadline reminders
 - **Minute Book**: Filtered document view for minute book sections, integrated with the document management system
-- **PDF Generation**: Branded resolution PDFs with dark banner header, Blue Fox corporate styling, signature blocks, and "Livre des minutes" footer — ready for printing and signing
+- **PDF Generation**: Branded resolution PDFs with dark banner header, Symbifox corporate styling, signature blocks, and "Livre des minutes" footer — ready for printing and signing
 
 ### Knowledge Matrix PDF Report
 
 Generate professional branded PDF reports directly from any knowledge matrix:
 
 - **One-click printing**: Blue "Imprimer PDF" button in the matrix form header (not buried in the gear menu)
-- **Blue Fox branding**: Dark banner with company logo, accent blue bar, and Lexend typography via `bluefox_branding`
+- **Symbifox branding**: Dark banner with company logo, accent blue bar, and Lexend typography via `bluefox_branding`
 - **KPI summary**: Four metric cards (Total, Completed, In Progress, Overdue) with a visual progress bar
 - **Section grouping**: Items organized by section (sorted by sequence), each with a compact 6-column table (ID, Element, Status, Priority, Deadline, Assigned)
 - **Color-coded badges**: Green for done/accepted, blue for in_progress, grey for pending, red for overdue; priority badges for urgent (red) and high (orange)
@@ -161,7 +161,7 @@ Generate professional branded PDF reports directly from any knowledge matrix:
 Send branded PDF reports by email — manually or on a configurable schedule:
 
 - **Send Wizard**: "Envoyer rapport" button on matrix form opens a dialog with pre-filled recipients, subject, body (with progress stats), PDF preview, and send action
-- **Branded Email**: Blue Fox email wrapper with logo, "Matrice de connaissances" header, a footer carrying the company name, contact info, and privacy links
+- **Branded Email**: Symbifox email wrapper with logo, "Matrice de connaissances" header, a footer carrying the company name, contact info, and privacy links
 - **Configurable Recipients**: Set default recipients per matrix via the "Envoi de rapport" tab
 - **Flexible Scheduling**: Four frequency options — Weekly (pick day of week), Biweekly (same day, even ISO weeks), Monthly (pick day 1-28), Custom interval (N days)
 - **Daily Cron**: Runs at 08:00 EST, checks all active non-template matrices with `auto_send=True` and sends reports to matrices that are due
@@ -627,13 +627,13 @@ Catch-up release covering everything since 18.0.9.12.3. The intermediate states 
 - **Send Wizard**: "Envoyer rapport" button on matrix form with pre-filled recipients, subject, body (progress stats), PDF preview, and send action
 - **Flexible Scheduling**: Four frequency options — weekly (pick day), biweekly (even ISO weeks), monthly (pick day 1-28), custom interval (N days)
 - **Daily Cron**: Checks all auto_send matrices and sends reports to those that are due
-- **Branded Email**: Blue Fox email wrapper with a "Matrice de connaissances" header and a footer carrying the company name
+- **Branded Email**: Symbifox email wrapper with a "Matrice de connaissances" header and a footer carrying the company name
 - **New Fields on Matrix**: `recipient_ids`, `auto_send`, `send_frequency`, `send_day_of_week`, `send_day_of_month`, `send_interval_days`, `last_report_date`
 - **New Tab**: "Envoi de rapport" notebook page on matrix form with recipient configuration and scheduling controls
 
 ### 18.0.9.6.0
 
-- **Knowledge Matrix PDF Report**: Branded Blue Fox PDF report with dark banner, company logo, KPI cards (Total, Completed, In Progress, Overdue), visual progress bar, and items grouped by section in compact 6-column tables with color-coded status/priority badges
+- **Knowledge Matrix PDF Report**: Branded Symbifox PDF report with dark banner, company logo, KPI cards (Total, Completed, In Progress, Overdue), visual progress bar, and items grouped by section in compact 6-column tables with color-coded status/priority badges
 - **Dedicated Print Button**: Blue "Imprimer PDF" button in matrix form header (outside gear menu) for one-click report generation
 - **Custom Paper Format**: US Letter portrait with 15/10/7/7mm margins and 90 DPI for optimal wkhtmltopdf rendering
 - **Smart File Naming**: PDF downloaded as `Matrice_[name]_[date].pdf`
@@ -657,7 +657,7 @@ Catch-up release covering everything since 18.0.9.12.3. The intermediate states 
 ### 18.0.9.1.0
 
 - **Corporate Governance**: Full corporate governance module with resolutions, directors, officers, and compliance calendar
-- **Resolution PDF Generation**: Branded QWeb-PDF reports with Blue Fox dark banner, signature blocks, and "Livre des minutes" footer
+- **Resolution PDF Generation**: Branded QWeb-PDF reports with Symbifox dark banner, signature blocks, and "Livre des minutes" footer
 - **Director Register**: Track active/former directors with LSAQ domicile, appointment/end dates, linked resolutions
 - **Officer Register**: Track corporate officers (President, VP, Secretary, Treasurer, DG) with appointment history
 - **Compliance Calendar**: Annual compliance events with daily cron deadline monitoring and activity scheduling
@@ -677,7 +677,7 @@ Catch-up release covering everything since 18.0.9.12.3. The intermediate states 
 
 - **Bi-weekly Dashboard Report**: Automated email report every 2 weeks with full KPI metrics
 - **Manual Report Trigger**: Button in Settings to send dashboard report on-demand
-- **Blue Fox Styled Emails**: Professional HTML email templates with company branding
+- **Symbifox Styled Emails**: Professional HTML email templates with company branding
 - **Recipient Configuration**: Configure report recipients through system parameters
 
 ### 18.0.7.0.0
@@ -752,9 +752,9 @@ This module is licensed under the GNU Lesser General Public License v3.0 (LGPL-3
 
 ## Credits
 
-**Author**: Blue Fox Inc.
-**Website**: [bluefoxconsultant.com](https://bluefoxconsultant.com)
+**Author**: Les services de consultation Blue Fox, Inc.
+**Website**: [symbifox.com](https://symbifox.com)
 
 ## Support
 
-For bug reports and feature requests, please contact Blue Fox Inc or open an issue on the project repository.
+For bug reports and feature requests, please contact Symbifox Inc or open an issue on the project repository.

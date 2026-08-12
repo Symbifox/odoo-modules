@@ -1,6 +1,6 @@
-# Blue Fox — Odoo 18 CE Modules
+# Symbifox — Odoo 18 CE Modules
 
-Custom Odoo 18 Community Edition modules developed by [Blue Fox Inc.](https://bluefoxconsultant.com)
+Custom Odoo 18 Community Edition modules developed by [Les services de consultation Blue Fox, Inc.](https://symbifox.com)
 
 ## Licensing
 
@@ -21,7 +21,7 @@ for the exact parameters.
 Odoo manifests show these as `Other proprietary` because Odoo's manifest schema
 has no BUSL value; the `LICENSE` file governs.
 
-If you want to use a BUSL module beyond the grant above, [talk to us](https://bluefoxconsultant.com) —
+If you want to use a BUSL module beyond the grant above, [talk to us](https://symbifox.com) —
 we license individually and we are not difficult about it.
 
 ## Bundles (recommended starting point)
@@ -40,19 +40,19 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | Directory | Name | Version | License | Description |
 |---|---|---|---|---|
 | `audit_ti` | Audit TI - Loi 25 | 18.0.1.17.1 | LGPL-3 | IT security audit management for Quebec's Loi 25 compliance |
-| `bf_appointment` | Blue Fox Appointment | 18.0.2.34.0 | LGPL-3 | Self-service public booking pages (extends `resource_booking`) |
+| `bf_appointment` | Symbifox Appointment | 18.0.2.34.0 | LGPL-3 | Self-service public booking pages (extends `resource_booking`) |
 | `bf_bloc_notes` | BF Bloc-notes | 18.0.2.8.0 | LGPL-3 | Rich quick notes with multi-record links, one-click activity conversion, keyboard shortcuts, and systray icon (Alt+N) |
 | `bf_bureau` | BF Bureau — vues multi-panneaux | 18.0.3.1.0 | LGPL-3 | User-configurable dashboards ("desks") with multi-pane Odoo actions, six layouts, keyboard shortcuts, time slots, and a sidebar |
 | `bf_calendar_nc_talk` | BF Calendar — Nextcloud Talk button | 18.0.1.0.0 | LGPL-3 | Adds a '+ Nextcloud Talk' button next to '+ Odoo meeting' on calendar events. Creates a public Talk conversation via the Spreed OCS API and writes the room URL into videocall_location. |
 | `bf_chatter_chronological` | BF Chatter Chronological View | 18.0.4.0.0 | LGPL-3 | Sort the chatter feed by the email's original Date header instead of insertion id (Python `_order` + `_message_fetch` + JS `Thread.fetch*` patch); cogwheel action to re-parse lost Date headers from quoted body content |
 | `bf_chatter_send_now_force` | BF Chatter — Force Send on Scheduled Send Now | 18.0.1.0.0 | LGPL-3 | The "Send Now" button on a scheduled chatter message sends immediately instead of waiting up to 5 min for the mail queue cron (restores parity with the daily auto-send cron) |
-| `bf_chatter_timesheet` | Blue Fox — Feuille de temps depuis le chatter | 18.0.1.2.0 | LGPL-3 | Checkbox in the chatter composer to log a timesheet entry alongside an internal note. |
-| `bf_claude_chat` | TentaClaude | 18.0.1.5.2 | LGPL-3 | Chat with Claude AI directly inside Odoo |
-| `bf_contact_enrichment` | Enrichissement de contacts | 18.0.1.2.0 | LGPL-3 | Business cards (OCR), email signatures, vCard import, duplicate detection and completeness scoring, powered by Claude |
+| `bf_chatter_timesheet` | Symbifox — Feuille de temps depuis le chatter | 18.0.1.2.0 | LGPL-3 | Checkbox in the chatter composer to log a timesheet entry alongside an internal note. |
+| `bf_claude_chat` | GenFox | 18.0.1.5.2 | LGPL-3 | Chat with GenFox, the AI assistant, directly inside Odoo |
+| `bf_contact_enrichment` | Enrichissement de contacts | 18.0.1.2.0 | LGPL-3 | Business cards (OCR), email signatures, vCard import, duplicate detection and completeness scoring, powered by GenFox |
 | `bf_cx` | Expérience client | 18.0.1.4.0 | LGPL-3 | Customer experience measurement: NPS programs, continuous feedback, complaints and consent-tracked testimonials |
 | `bf_cx_appointment` | Expérience client : feedback post-rendez-vous | 18.0.1.1.0 | LGPL-3 | Three-smiley feedback request when an appointment is completed (opt-in) |
 | `bf_cx_crm` | Expérience client - sondage post-perte CRM | 18.0.1.1.0 | LGPL-3 | Automatic win/loss survey when a CRM opportunity is marked lost |
-| `bf_cx_dashboard` | Expérience client - tuile tableau de bord | 18.0.1.1.0 | LGPL-3 | NPS tile with pending detractors and open complaints on the Blue Fox dashboard |
+| `bf_cx_dashboard` | Expérience client - tuile tableau de bord | 18.0.1.1.0 | LGPL-3 | NPS tile with pending detractors and open complaints on the Symbifox dashboard |
 | `bf_cx_digest` | Expérience client - digest quotidien | 18.0.1.1.0 | LGPL-3 | Customer-experience section (follow-ups, complaints, NPS) in the daily digest |
 | `bf_cx_fundraising` | Expérience client : sondage donateur | 18.0.1.0.1 | AGPL-3 | Donor experience survey after a donation is confirmed (fundraising suite) |
 | `bf_cx_gamification` | Expérience client : XP Fox Quest | 18.0.1.0.0 | LGPL-3 | Fox Quest XP for closed-loop follow-ups and resolved complaints |
@@ -67,8 +67,8 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_cx_sms` | Expérience client : invitation de sondage par SMS | 18.0.1.0.0 | LGPL-3 | Survey link sent by SMS to contacts without an email address |
 | `bf_cx_subscription` | Expérience client : revenu récurrent à risque | 18.0.1.0.0 | LGPL-3 | Recurring revenue at risk on the Customer Experience dashboard tile |
 | `bf_cx_website` | Expérience client : témoignages sur le site web | 18.0.1.1.0 | LGPL-3 | Public /temoignages page rendered dynamically from published testimonials |
-| `bf_dark_mode` | Blue Fox Dark Mode | 18.0.1.1.0 | LGPL-3 | Dark mode for Odoo using the Blue Fox palette |
-| `bf_dashboard` | Tableau de bord Blue Fox | 18.0.1.0.0 | LGPL-3 | Unified dashboard aggregating billing, hosting, knowledge and privacy |
+| `bf_dark_mode` | Symbifox Dark Mode | 18.0.1.1.0 | LGPL-3 | Dark mode for Odoo using the Symbifox palette |
+| `bf_dashboard` | Tableau de bord Symbifox | 18.0.1.0.0 | LGPL-3 | Unified dashboard aggregating billing, hosting, knowledge and privacy |
 | `bf_default_all_companies` | BF Default All Companies | 18.0.1.0.0 | LGPL-3 | Pre-selects every allowed company in the multi-company switcher on first login |
 | `bf_document_nextcloud_sync` | Document Nextcloud Sync | 18.0.1.3.0 | LGPL-3 | Document sync between Odoo and Nextcloud via WebDAV |
 | `bf_email_management` | Gestion des courriels | 18.0.6.7.2 | LGPL-3 | Unified IMAP inbox + Odoo chatter projection, two-pane OWL folder browser (Apple Mail / Thunderbird), bulk per-row target inference |
@@ -77,53 +77,53 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_fundraising_core` | Levée de fonds — Cœur | 18.0.1.0.0 | AGPL-3 | Donor management and fundraising structure (Funds / Campaigns / Appeals / Packages) on top of the Donation module — comparable to Raiser's Edge |
 | `bf_fundraising_web` | Levée de fonds — Web & Portail donateur | 18.0.1.0.2 | AGPL-3 | Public website donation form + donor portal (giving history and official receipt download) |
 | `bf_gamification` | Fox Quest | 18.0.2.3.0 | LGPL-3 | Gamification system with XP, levels, badges, and rewards |
-| `bf_helpdesk` | Blue Fox — Helpdesk | 18.0.4.3.1 | AGPL-3 | Branded helpdesk extension: per-team public form, hour-bank ribbon, waiting states, ntfy critical hook, persona panel, knowledge-matrix link, ticket→meeting, IA triage via Claude, CSAT on close, branded portal, dashboard tile, IMAP gateway hardening, SLA + macros + auto-tag + auto-ack, ticket timesheets (hour-bank deduction), branded client updates |
+| `bf_helpdesk` | Symbifox — Helpdesk | 18.0.4.3.1 | AGPL-3 | Branded helpdesk extension: per-team public form, hour-bank ribbon, waiting states, ntfy critical hook, persona panel, knowledge-matrix link, ticket→meeting, IA triage via GenFox, CSAT on close, branded portal, dashboard tile, IMAP gateway hardening, SLA + macros + auto-tag + auto-ack, ticket timesheets (hour-bank deduction), branded client updates |
 | `bf_hour_bank` | Banque d'heures | 18.0.1.15.0 | LGPL-3 | Automated tracking of client hour banks with threshold-based proactive notifications (unbilled hours, % of allocated budget, balance floor) |
-| `bf_invoice_ocr` | Blue Fox — Invoice OCR Scanner | 18.0.1.0.0 | LGPL-3 | Extract vendor bill data from PDF attachments via the bf_llm gateway |
+| `bf_invoice_ocr` | Symbifox — Invoice OCR Scanner | 18.0.1.0.0 | LGPL-3 | Extract vendor bill data from PDF attachments via the bf_llm gateway |
 | `bf_letter_writer` | Letter Writer | 18.0.2.0.0 | LGPL-3 | Branded official-letter editor: 5 letterhead modes, field merge (`{{ }}`), reusable templates and quick-text blocks, email + PDF send |
 | `bf_lexend` | Lexend Typeface | 18.0.3.0.0 | LGPL-3 | Adds Lexend across UI/PDF reports and per-company brand color settings (`report_brand_primary`, `report_brand_dark`) |
-| `bf_llm` | Blue Fox — LLM Provider | 18.0.1.0.1 | LGPL-3 | Provider-agnostic LLM access (chat + document/vision extraction) for Blue Fox modules |
+| `bf_llm` | Symbifox — LLM Provider | 18.0.1.0.1 | LGPL-3 | Provider-agnostic LLM access (chat + document/vision extraction) for Symbifox modules |
 | `bf_mail_import` | BF Import courriel (.eml) | 18.0.1.3.1 | LGPL-3 | Import .eml files into the Odoo chatter |
 | `bf_mail_subject_clean` | BF Nettoyage des sujets de courriel | 18.0.1.1.0 | LGPL-3 | Prevents "Re: Re: Re:" stacking on subjects sent through the chatter |
 | `bf_mail_vigie` | BF Vigie courriels (re-router) | 18.0.2.2.0 | LGPL-3 | "Re-route" button on `bf.email` to move a misrouted email to the correct chatter |
-| `bf_mass_notes` | Blue Fox — Notes en lot | 18.0.1.0.0 | LGPL-3 | List-view Action to post a chatter note (or message) to many selected records at once; binds to all `mail.thread` models |
+| `bf_mass_notes` | Symbifox — Notes en lot | 18.0.1.0.0 | LGPL-3 | List-view Action to post a chatter note (or message) to many selected records at once; binds to all `mail.thread` models |
 | `bf_meeting` | Rencontres | 18.0.3.44.0 | LGPL-3 | Agendas, meeting records, and discussion items unified around `calendar.event` with automatic reminders |
 | `bf_meeting_call_archive` | Rencontres ↔ Archive d'appels | 18.0.1.0.0 | LGPL-3 | Optional link between a meeting record and an archived call |
 | `bf_meeting_portal` | Rencontres - Portail client | 18.0.2.0.1 | LGPL-3 | Portal read access to meeting reports that were already emailed to the client |
 | `bf_nextcloud_browser` | Nextcloud File Browser | 18.0.3.3.0 | LGPL-3 | Embedded + standalone Nextcloud WebDAV file browser on projects/tasks: folder tree, modal preview, drag-and-drop upload/move, configurable share presets, open-in-Nextcloud for office files, Knowledge Matrix linking, systray launcher |
-| `bf_no_gateway_bounce` | BF No Gateway Bounce | 18.0.1.0.0 | LGPL-3 | Never auto-reply MAILER-DAEMON bounces to people who write to Blue Fox |
-| `bf_onboarding_base` | Blue Fox Onboarding Foundation | 18.0.2.0.0 | LGPL-3 | Shared helpers for Blue Fox per-module onboarding panels. |
+| `bf_no_gateway_bounce` | BF No Gateway Bounce | 18.0.1.0.0 | LGPL-3 | Never auto-reply MAILER-DAEMON bounces to people who write to Symbifox |
+| `bf_onboarding_base` | Symbifox Onboarding Foundation | 18.0.2.0.0 | LGPL-3 | Shared helpers for Symbifox per-module onboarding panels. |
 | `bf_outreach` | Campagnes de démarchage | 18.0.1.2.0 | LGPL-3 | Track call, email and letter outreach campaigns, with a follow-up cadence per channel |
 | `bf_outreach_appointment` | Démarchage — rendez-vous | 18.0.1.0.0 | LGPL-3 | A confirmed booking logs a meeting and advances the outreach target on its own |
 | `bf_outreach_call` | Démarchage — appels journalisés | 18.0.1.0.0 | LGPL-3 | Reconciles the calls actually placed with the outreach targets, duration included |
 | `bf_outreach_email` | Démarchage — réponses courriel | 18.0.1.0.0 | LGPL-3 | Recognises replies from outreach targets in the received-email archive |
 | `bf_persona` | Persona des contacts | 18.0.2.1.0 | LGPL-3 | Active relationship intelligence: composer hint with auto-cc, monthly auto-seed from email signals, weekly degradation detector with optional ntfy alert, kanban dashboard |
-| `bf_project_merge` | Blue Fox — Regroupement de tâches | 18.0.1.0.0 | LGPL-3 | Merge tasks by reassigning their content (messages, activities, hours, dependencies) to the kept task, then archive the rest. |
+| `bf_project_merge` | Symbifox — Regroupement de tâches | 18.0.1.0.0 | LGPL-3 | Merge tasks by reassigning their content (messages, activities, hours, dependencies) to the kept task, then archive the rest. |
 | `bf_receipt_ca` | Reçus de dons — Canada (ARC + Revenu Québec) | 18.0.1.0.4 | AGPL-3 | CRA + Revenu Québec compliant official donation receipts, in French — eligible amount, advantage, in-kind gifts, void/reissue |
 | `bf_securetransfer` | Transfert sécurisé (Secure Transfer) | 18.0.1.17.4 | BUSL-1.1 | Secure file transfer and secure messaging: browser-direct S3 uploads (presigned, multipart, ETag-pinned integrity), tokenized links with expiry, download budget, password, recipient and sender OTP (email or SMS), burn-after-download, download notification; message-only mode; personal drop pages `/to/<slug>` with per-employee auto-provisioning; backend secure-send wizard; sender/recipient allowlists, abuse reporting with automatic suspension, IP and sender quotas, rate limiting, hardened headers and CSP; hash-chained tamper-evident access log with CSV export and integrity verification (Law 25); auto-purge and GC crons; multi-brand skinning by host with free/paid tiers and white-label toggle; dashboard; guided S3 bucket setup with data-residency probe |
 | `bf_security_awareness` | Security Awareness | 18.0.1.9.0 | LGPL-3 | KnowBe4/Terranova-style platform: phishing simulations (open/click/submit, QR, attachments), per-person risk profiles, eLearning remediation, OWL dashboards, a Phish Alert Button with sim-aware triage, and email clawback (PhishRIP-style) to pull a confirmed malicious email from every mailbox (M365 app-only XOAUTH2 or per-mailbox IMAP) into reversible quarantine — see `SECURITY.md` |
-| `bf_sign` | Blue Fox — Signature électronique | 18.0.3.19.0 | BUSL-1.1 | Native electronic signature (SES): parallel or sequential multi-signer requests, drag-and-drop pad placement on the PDF with reusable layout templates, draw/type/upload signature and initials with embedded handwriting fonts, signer-fillable text and date fields, optional email OTP identity verification of signers, refusal flow with reason, branded public signing pages and transactional emails, completion certificate, optional PAdES cryptographic seal (pyHanko) with in-app certificate generation, optional RFC 3161 trusted timestamping, hash-chained tamper-evident audit trail with one-click integrity verification, a public verification page (optional QR stamped on the document) where any holder can drop their own copy and have it hashed in-browser to confirm it matches, link expiry cron, manager-gated link reveal, and a mixin to send any Odoo record for signature with post-back of the signed document |
-| `bf_sign_account` | Blue Fox — Signature pour la comptabilité | 18.0.1.0.1 | BUSL-1.1 | Send a customer invoice / vendor bill for electronic signature (bf_sign). |
-| `bf_sign_corporate` | Blue Fox — Signature des résolutions corporatives | 18.0.1.1.1 | BUSL-1.1 | Send a corporate resolution for electronic signature (bf_sign). |
-| `bf_sign_privacy` | Blue Fox — Signature des consentements (Loi 25) | 18.0.1.0.1 | BUSL-1.1 | Sign Loi 25 consents with the native bf_sign engine (instead of external DocuSeal / LibreSign). |
-| `bf_sign_purchase` | Blue Fox — Signature pour les achats | 18.0.1.0.1 | BUSL-1.1 | Send a purchase order for electronic signature (bf_sign). |
-| `bf_sign_sale` | Blue Fox — Signature pour les ventes | 18.0.1.0.1 | BUSL-1.1 | Send a quotation / sales order for electronic signature (bf_sign). |
+| `bf_sign` | Symbifox — Signature électronique | 18.0.3.19.0 | BUSL-1.1 | Native electronic signature (SES): parallel or sequential multi-signer requests, drag-and-drop pad placement on the PDF with reusable layout templates, draw/type/upload signature and initials with embedded handwriting fonts, signer-fillable text and date fields, optional email OTP identity verification of signers, refusal flow with reason, branded public signing pages and transactional emails, completion certificate, optional PAdES cryptographic seal (pyHanko) with in-app certificate generation, optional RFC 3161 trusted timestamping, hash-chained tamper-evident audit trail with one-click integrity verification, a public verification page (optional QR stamped on the document) where any holder can drop their own copy and have it hashed in-browser to confirm it matches, link expiry cron, manager-gated link reveal, and a mixin to send any Odoo record for signature with post-back of the signed document |
+| `bf_sign_account` | Symbifox — Signature pour la comptabilité | 18.0.1.0.1 | BUSL-1.1 | Send a customer invoice / vendor bill for electronic signature (bf_sign). |
+| `bf_sign_corporate` | Symbifox — Signature des résolutions corporatives | 18.0.1.1.1 | BUSL-1.1 | Send a corporate resolution for electronic signature (bf_sign). |
+| `bf_sign_privacy` | Symbifox — Signature des consentements (Loi 25) | 18.0.1.0.1 | BUSL-1.1 | Sign Loi 25 consents with the native bf_sign engine (instead of external DocuSeal / LibreSign). |
+| `bf_sign_purchase` | Symbifox — Signature pour les achats | 18.0.1.0.1 | BUSL-1.1 | Send a purchase order for electronic signature (bf_sign). |
+| `bf_sign_sale` | Symbifox — Signature pour les ventes | 18.0.1.0.1 | BUSL-1.1 | Send a quotation / sales order for electronic signature (bf_sign). |
 | `bf_sms_archive` | SMS & Calls | 18.0.5.6.0 | LGPL-3 | Two-way live SMS/MMS messaging via VOIP.ms (chat workspace + systray) plus Android SMS/call-log archiving, search, PDF/CSV export and task linking |
 | `bf_stepbystep_clients` | Step-by-Step — Suivi d'accompagnement client | 18.0.2.0.1 | LGPL-3 | Internal dashboard tracking each client mandate's linear step-by-step progression: current step, hours budget, timeline. |
-| `bf_studio_light` | Blue Fox — Studio Light | 18.0.6.1.0 | LGPL-3 | Field builder for Odoo Community: add custom fields (incl. polymorphic reference with model whitelist), smart buttons (count via JSON controller, no compute Python), and inject them in views without writing a module — survives `-u all` upgrades |
+| `bf_studio_light` | Symbifox — Studio Light | 18.0.6.1.0 | LGPL-3 | Field builder for Odoo Community: add custom fields (incl. polymorphic reference with model whitelist), smart buttons (count via JSON controller, no compute Python), and inject them in views without writing a module — survives `-u all` upgrades |
 | `bf_subscription` | Abonnements | 18.0.1.3.1 | LGPL-3 | Paid subscription management with correlation to vendor bills |
 | `bf_subscription_daily_digest` | Abonnements — section du digest quotidien | 18.0.1.0.0 | LGPL-3 | Adds an 'Upcoming renewals' section to the daily digest |
-| `bf_subscription_dashboard` | Abonnements — carte du tableau de bord | 18.0.1.0.0 | LGPL-3 | Ajoute une carte Abonnements au tableau de bord Blue Fox |
+| `bf_subscription_dashboard` | Abonnements — carte du tableau de bord | 18.0.1.0.0 | LGPL-3 | Ajoute une carte Abonnements au tableau de bord Symbifox |
 | `bf_subscription_hosting` | Hébergement — pont vers les abonnements | 18.0.1.0.0 | LGPL-3 | Create a subscription from a hosting domain (avoids double-entering recurring costs). |
 | `bf_survey_upload` | BF Survey Upload | 18.0.1.2.0 | LGPL-3 | File-upload question type for Odoo surveys |
-| `bf_systray_prefs` | Blue Fox — Préférences de la barre système | 18.0.1.0.0 | LGPL-3 | Per-user show/hide of systray (notification-tray) icons, via a gear menu |
+| `bf_systray_prefs` | Symbifox — Préférences de la barre système | 18.0.1.0.0 | LGPL-3 | Per-user show/hide of systray (notification-tray) icons, via a gear menu |
 | `bf_task_unblock_notify` | BF Notification de déblocage de tâche | 18.0.1.7.0 | LGPL-3 | Notifies assignees when their task becomes unblocked |
 | `bf_task_waiting_states` | Task Waiting States | 18.0.1.0.0 | LGPL-3 | Add Attente - Client / Attente - Externe task states |
 | `bf_time_of_day` | BF Time of Day | 18.0.1.3.1 | LGPL-3 | Time-of-day slots (Morning / Noon / End of day / Off hours) for tasks and activities, with per-user overrides |
 | `bf_timesheet_timer` | BF Timer - Feuilles de temps | 18.0.1.9.0 | LGPL-3 | Global timesheet timer with multi-timer support and an OWL UI |
-| `bf_timezone` | Blue Fox Timezone Utilities | 18.0.1.0.0 | LGPL-3 | Shared timezone helpers and a configurable default timezone for Blue Fox modules |
+| `bf_timezone` | Symbifox Timezone Utilities | 18.0.1.0.0 | LGPL-3 | Shared timezone helpers and a configurable default timezone for Symbifox modules |
 | `bf_universal_search` | BF Recherche universelle | 18.0.2.0.1 | LGPL-3 | Cross-module search through the command palette |
-| `bluefox_branding` | Blue Fox Branding | 18.0.3.4.0 | LGPL-3 | Per-company brand color + email layout overrides driven by `bf_lexend` company fields (CSS variables injected via QWeb layout — no SCSS recompile) |
+| `bluefox_branding` | Symbifox Branding | 18.0.3.4.0 | LGPL-3 | Per-company brand color + email layout overrides driven by `bf_lexend` company fields (CSS variables injected via QWeb layout — no SCSS recompile) |
 | `calendar_nextcloud_sync` | Calendar Nextcloud Sync | 18.0.2.8.1 | LGPL-3 | Bidirectional calendar synchronization between Odoo and Nextcloud (CalDAV/n8n) and Google Calendar (API v3/OAuth2) |
 | `contacts_nextcloud_sync` | Contacts Nextcloud Sync | 18.0.1.2.0 | LGPL-3 | Sync Odoo contacts with a Nextcloud address book via CardDAV |
 | `daily_todo_digest` | Daily To-Do Digest | 18.0.2.0.0 | LGPL-3 | Daily email digest with activities, overdue tasks, and a week-ahead view |
@@ -165,8 +165,8 @@ Two regimes — see [Licensing](#licensing) above for the details, and the
 
 ## Credits
 
-Authored and maintained by [Blue Fox Inc.](https://bluefoxconsultant.com)
+Authored and maintained by [Les services de consultation Blue Fox, Inc.](https://symbifox.com)
 
 ---
 
-<sub>AI coding assistants were used as productivity tools during development; architectural decisions, code review, and release responsibility rest with Blue Fox Inc.</sub>
+<sub>AI coding assistants were used as productivity tools during development; architectural decisions, code review, and release responsibility rest with Les services de consultation Blue Fox, Inc.</sub>

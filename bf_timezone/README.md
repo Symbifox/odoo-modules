@@ -1,14 +1,14 @@
-# Blue Fox Timezone Utilities (`bf_timezone`)
+# Symbifox Timezone Utilities (`bf_timezone`)
 
-> **Not a standalone module.** `bf_timezone` is a library that other Blue Fox
+> **Not a standalone module.** `bf_timezone` is a library that other Symbifox
 > modules depend on. Installing it directly does nothing visible beyond adding
 > a single *Default timezone* field under Settings — there is no app, no menu.
 
-Shared, de-duplicated timezone helpers for Blue Fox custom modules, plus a
+Shared, de-duplicated timezone helpers for Symbifox custom modules, plus a
 single **configurable default timezone**.
 
 Custom Odoo 18 CE module developed by
-[Blue Fox Inc.](https://bluefoxconsultant.com).
+[Les services de consultation Blue Fox, Inc.](https://symbifox.com).
 
 ## Why
 
@@ -45,7 +45,7 @@ self.env['bf.timezone'].format_dual(rec.date, client_tz, organizer_tz)
 
 ## Configurable default
 
-**Settings → General Settings → Blue Fox Timezone → Default timezone.**
+**Settings → General Settings → Symbifox Timezone → Default timezone.**
 This is the fallback used when no contact / user / calendar timezone is
 available. It seeds to `America/Toronto`; flip it to `Pacific/Auckland` after
 relocating and every consumer follows. The seed is `noupdate=1`, so a UI

@@ -98,7 +98,7 @@ Pre-publication checklist (per BF policy):
 | HTML in description | Stripped via `html2plaintext` before persistence; output is a plain string |
 | Unbounded input | `unit_amount` validated `> 0`; `name` truncated to 500 chars |
 | XML ID leakage | No `data/*.xml`, no XML IDs |
-| Tenant data | None — only `Blue Fox Inc.` author/website metadata |
+| Tenant data | None — only `Les services de consultation Blue Fox, Inc.` author/website metadata |
 
 ### Edge cases
 
@@ -140,4 +140,4 @@ LGPL-3
 
 ---
 
-<sub>Authored and maintained by Blue Fox Inc. AI coding assistants were used as productivity tools during development.</sub>
+<sub>Authored and maintained by Les services de consultation Blue Fox, Inc. AI coding assistants were used as productivity tools during development.</sub>

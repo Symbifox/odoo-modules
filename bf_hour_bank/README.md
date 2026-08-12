@@ -7,9 +7,9 @@ An Odoo 18 module for automated tracking of client hour banks.
 - **Per-client configuration**: included projects, company/partner/product filters, report recipients
 - **Automatic balance calculation**: debits (timesheets) + credits (invoices) + manual adjustments
 - **Manual adjustments**: credits or debits outside invoices and timesheets (rebilling, corrections, journal entries)
-- **PDF report**: Blue Fox branded, with banner, entry table (credits in green), per-project summary and monthly summary
+- **PDF report**: Symbifox branded, with banner, entry table (credits in green), per-project summary and monthly summary
 - **Excel report**: 4 sheets (Timesheets, Per-project summary, Monthly summary, To be invoiced)
-- **Email delivery**: a wizard with the PDF and Excel attached, in a Blue Fox branded email
+- **Email delivery**: a wizard with the PDF and Excel attached, in a Symbifox branded email
 - **Preview**: PDF preview directly from the sending wizard
 - **Automatic sending**: configurable cron (weekly, fortnightly, monthly) sending a branded report to the recipients
 - **Notification thresholds**: proactive email alerts when consumption crosses a threshold (unbilled hours, % of an allocated budget, or balance below a floor) with the XLSX attached

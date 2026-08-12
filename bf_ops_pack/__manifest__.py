@@ -1,11 +1,11 @@
 {
-    "name": "Blue Fox — Operations Pack",
+    "name": "Symbifox — Operations Pack",
     "summary": "Unified inbox, meetings, contact intelligence, and chatter polish for consulting/MSP teams",
     "version": "18.0.1.0.0",
     "category": "Productivity",
     "license": "LGPL-3",
-    "author": "Les services de consultation Blue Fox, Inc.",
-    "website": "https://bluefoxconsultant.com",
+    "author": "Les services de consultation Les services de consultation Blue Fox, Inc.",
+    "website": "https://symbifox.com",
     "depends": [
         "bf_email_management",
         "bf_meeting",

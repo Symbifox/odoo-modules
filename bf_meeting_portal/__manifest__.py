@@ -58,8 +58,8 @@ Le PDF réutilise le rapport attaché au courriel du compte rendu. Il est
 regénéré à la lecture, donc reflète les corrections faites depuis l'envoi :
 c'est le même rapport, pas le même octet.
     """,
-    'author': 'Les services de consultation Blue Fox, Inc.',
-    'website': 'https://bluefoxconsultant.com',
+    'author': 'Les services de consultation Les services de consultation Blue Fox, Inc.',
+    'website': 'https://symbifox.com',
     'license': 'LGPL-3',
     'depends': ['bf_meeting', 'portal'],
     'data': [

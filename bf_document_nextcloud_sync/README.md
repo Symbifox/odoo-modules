@@ -2,7 +2,7 @@
 
 Connect Odoo 18 document management (`project_knowledge_matrix`) to Nextcloud file storage via WebDAV. Nextcloud stores the files, Odoo manages the metadata, versioning, and workflow.
 
-**Published by [Blue Fox Inc.](https://bluefoxconsultant.com)** | LGPL-3
+**Published by [Les services de consultation Blue Fox, Inc.](https://symbifox.com)** | LGPL-3
 
 ## Features
 
@@ -117,7 +117,7 @@ Go to **Knowledge Matrix > Configuration > Nextcloud Documents**:
 
 | Field | Description | Example |
 |-------|-------------|---------|
-| Name | Display name | `Nextcloud Blue Fox` |
+| Name | Display name | `Nextcloud Symbifox` |
 | Nextcloud URL | Base URL (HTTPS required) | `https://nextcloud.example.com` |
 | WebDAV Path | WebDAV endpoint path | `/remote.php/dav/files/` |
 | Nextcloud User | Username for auth | `svc-odoo` |
@@ -155,8 +155,8 @@ On the project form, under **Settings > Nextcloud Documents** (admin-only):
 
 | Field | Description | Example |
 |-------|-------------|---------|
-| Config Nextcloud Documents | Default NC config for this project | `Nextcloud Blue Fox` |
-| Nextcloud Folder | Document folder on NC | `/Blue Fox/Documents/` |
+| Config Nextcloud Documents | Default NC config for this project | `Nextcloud Symbifox` |
+| Nextcloud Folder | Document folder on NC | `/Symbifox/Documents/` |
 
 When creating a new document in this project, the NC config and folder prefix are auto-filled.
 
@@ -174,7 +174,7 @@ Under **Settings > Knowledge Matrix > Nextcloud Documents**:
 ### Linking a Document to Nextcloud
 
 1. Open or create a `project.document` record
-2. Set the **Config Nextcloud** and **Nextcloud Path** (e.g., `/Blue Fox/Documents/POL-SECURITE-FR.pdf`)
+2. Set the **Config Nextcloud** and **Nextcloud Path** (e.g., `/Symbifox/Documents/POL-SECURITE-FR.pdf`)
 3. Click **Refresh NC** to fetch metadata (size, date, ETag, file ID)
 4. The document now shows a "Nextcloud" tab with all file metadata
 
@@ -304,7 +304,7 @@ Each file entry contains:
 | Field | Type | Description |
 |-------|------|-------------|
 | `nc_documents_config_id` | Many2one | Default NC config for project documents |
-| `nc_documents_folder` | Char | NC folder path (e.g., `/Blue Fox/Documents/`) |
+| `nc_documents_folder` | Char | NC folder path (e.g., `/Symbifox/Documents/`) |
 
 ### document.nc.upload.wizard (TransientModel)
 
@@ -427,14 +427,14 @@ The same audit revealed weaknesses in `calendar_nextcloud_sync` and `contacts_ne
 
 ## License
 
-LGPL-3 - Copyright (c) 2026 [Blue Fox Inc.](https://bluefoxconsultant.com)
+LGPL-3 - Copyright (c) 2026 [Les services de consultation Blue Fox, Inc.](https://symbifox.com)
 
 See [LICENSE](LICENSE) for full text.
 
 ## Disclaimer
 
-This module is provided as-is, without warranty of any kind. Use at your own risk. Blue Fox Inc. assumes no liability for any damages arising from the use of this software.
+This module is provided as-is, without warranty of any kind. Use at your own risk. Les services de consultation Blue Fox, Inc. assumes no liability for any damages arising from the use of this software.
 
 ---
 
-<sub>Authored and maintained by Blue Fox Inc. AI coding assistants were used as productivity tools during development.</sub>
+<sub>Authored and maintained by Les services de consultation Blue Fox, Inc. AI coding assistants were used as productivity tools during development.</sub>

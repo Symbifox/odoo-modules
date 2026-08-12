@@ -46,7 +46,7 @@ hook, ticket closing CSAT) — goes through
   (reminders stamp it too);
 - the **email blacklist** (`mail.blacklist`) — `mail.template` sends would
   otherwise bypass it;
-- **active dunning** (the Blue Fox invoice follow-up module, detected at
+- **active dunning** (the Symbifox invoice follow-up module, detected at
   runtime through the `bf_followup_state` field): no "rate us" for a client on
   a second reminder or a formal demand;
 - the **"Do not contact" list** from `privacy_consent` (through the bridge).

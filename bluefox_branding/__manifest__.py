@@ -1,5 +1,5 @@
 {
-    "name": "Blue Fox Branding",
+    "name": "Symbifox Branding",
     "version": "18.0.3.4.0",
     "category": "Tools",
     "summary": "White-label branding panel + branded email templates",
@@ -19,8 +19,8 @@
         - Branded payment followup, contract, helpdesk, survey, calendar templates (French)
         - Late invoice notice template branding (post_init_hook)
     """,
-    "author": "Les services de consultation Blue Fox, Inc.",
-    "website": "https://bluefoxconsultant.com",
+    "author": "Les services de consultation Les services de consultation Blue Fox, Inc.",
+    "website": "https://symbifox.com",
     'license': 'LGPL-3',
     "depends": [
         "web",

@@ -1,5 +1,5 @@
 {
-    'name': "Blue Fox — Signature des consentements (Loi 25)",
+    'name': "Symbifox — Signature des consentements (Loi 25)",
     'version': '18.0.1.0.1',
     'category': 'Privacy/Compliance',
     'summary': "Signer les consentements Loi 25 avec le moteur natif bf_sign (au lieu de DocuSeal / LibreSign externes).",
@@ -18,8 +18,8 @@ Permet de faire signer les artefacts de consentement avec le moteur de signature
 S'installe automatiquement lorsque bf_sign ET privacy_consent sont tous deux
 présents.
 """,
-    'author': "Les services de consultation Blue Fox, Inc.",
-    'website': "https://bluefoxconsultant.com",
+    'author': "Les services de consultation Les services de consultation Blue Fox, Inc.",
+    'website': "https://symbifox.com",
     'license': 'Other proprietary',
     'depends': ['bf_sign', 'privacy_consent'],
     'data': [

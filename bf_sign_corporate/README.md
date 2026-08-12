@@ -1,4 +1,4 @@
-# Blue Fox — Signing corporate resolutions (`bf_sign_corporate`)
+# Symbifox — Signing corporate resolutions (`bf_sign_corporate`)
 
 A bridge module wiring the native [`bf_sign`](../bf_sign) electronic signature
 engine into the corporate resolutions of

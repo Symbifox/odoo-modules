@@ -23,12 +23,12 @@ Sends a daily email at 4 AM with:
 Features:
 - Email preheader for quick preview in email clients
 - Timezone-aware date handling (America/Montreal)
-- Blue Fox branding
+- Symbifox branding
 
-Uses Blue Fox branding.
+Uses Symbifox branding.
     """,
-    'author': 'Les services de consultation Blue Fox, Inc.',
-    'website': 'https://bluefoxconsultant.com',
+    'author': 'Les services de consultation Les services de consultation Blue Fox, Inc.',
+    'website': 'https://symbifox.com',
     'license': 'LGPL-3',
     "depends": [
         "base",

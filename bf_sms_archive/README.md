@@ -448,7 +448,7 @@ curl -X POST https://odoo.example.com/bf_sms_archive/api/ingest \
 - **FIX:** Outbound SMS no longer fail with the VOIP.ms `sms_toolong` error on messages that contain non-GSM-7 characters. Segmentation is now encoding-aware: 160 septets per SMS for GSM-7 text (the extension characters `^{}\[~]|€` counted as two), and 70 characters per SMS as soon as the body contains any character that forces UCS-2 encoding (lowercase `ç`, `œ`, curly quotes, `…`, accented capitals, emoji…). Every segment now fits inside a single SMS envelope, so long or accented messages are delivered instead of rejected.
 - **NEW:** Smart MMS escalation — a message that would need more than one SMS is sent as a single MMS (on MMS-enabled lines) instead of several fragmented texts, with automatic fallback to segmented SMS if the MMS is refused. The threshold is configurable via the system parameter `bf_sms_archive.mms_escalation_min_segments` (default `2`; set below `2` to always split into SMS instead).
 - **NEW:** The composer character counter is encoding-aware — it flags Unicode bodies (70 chars/SMS) and shows whether the message will go out as one MMS or as N SMS.
-- **FIX:** The "Messagerie" chat workspace now honours the optional Blue Fox dark mode (`bf_dark_mode`) — the conversation canvas, sidebar, message bubbles, composer and attachment chips adopt the dark palette instead of remaining light.
+- **FIX:** The "Messagerie" chat workspace now honours the optional Symbifox dark mode (`bf_dark_mode`) — the conversation canvas, sidebar, message bubbles, composer and attachment chips adopt the dark palette instead of remaining light.
 
 ### Version 18.0.3.6.3
 
@@ -540,4 +540,4 @@ This module is licensed under LGPL-3.
 
 ---
 
-<sub>Authored and maintained by Blue Fox Inc. AI coding assistants were used as productivity tools during development.</sub>
+<sub>Authored and maintained by Les services de consultation Blue Fox, Inc. AI coding assistants were used as productivity tools during development.</sub>

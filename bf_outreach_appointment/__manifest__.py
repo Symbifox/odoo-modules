@@ -20,8 +20,8 @@ La campagne peut aussi porter un type de rendez-vous : son lien public devient
 disponible sur chaque cible (`booking_url`), prêt à être glissé dans le modèle
 de courriel de la campagne.
     """,
-    "author": "Les services de consultation Blue Fox, Inc.",
-    "website": "https://bluefoxconsultant.com",
+    "author": "Les services de consultation Les services de consultation Blue Fox, Inc.",
+    "website": "https://symbifox.com",
     "license": "LGPL-3",
     "depends": ["bf_outreach", "bf_appointment"],
     "data": [

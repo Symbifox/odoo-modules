@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 {
-    'name': 'Blue Fox Dark Mode',
+    'name': 'Symbifox Dark Mode',
     'version': '18.0.1.1.0',
-    'summary': 'Dark mode for the Blue Fox Odoo backend, using the BF brand gray palette.',
+    'summary': 'Dark mode for the Symbifox Odoo backend, using the BF brand gray palette.',
     'category': 'Tools',
-    'author': 'Les services de consultation Blue Fox, Inc.',
-    'website': 'https://bluefoxconsultant.com',
+    'author': 'Les services de consultation Les services de consultation Blue Fox, Inc.',
+    'website': 'https://symbifox.com',
     'license': 'LGPL-3',
     'depends': ['web'],
     'data': [

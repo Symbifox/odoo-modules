@@ -131,8 +131,8 @@ odoo -d <db> -u bf_bloc_notes --test-enable --test-tags /bf_bloc_notes --stop-af
 
 ## Credits
 
-Blue Fox Inc — https://bluefoxconsultant.com
+Symbifox Inc — https://symbifox.com
 
 ---
 
-<sub>Authored and maintained by Blue Fox Inc. AI coding assistants were used as productivity tools during development.</sub>
+<sub>Authored and maintained by Les services de consultation Blue Fox, Inc. AI coding assistants were used as productivity tools during development.</sub>

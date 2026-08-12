@@ -36,8 +36,8 @@ configurables pour suivre la modernisation ARC 2024.
 Ajoute aussi l'**annulation** et la **réémission** de reçus avec chaîne de
 remplacement (les reçus annulés sont conservés, comme l'exige l'ARC).
 """,
-    "author": "Les services de consultation Blue Fox, Inc.",
-    "website": "https://bluefoxconsultant.com",
+    "author": "Les services de consultation Les services de consultation Blue Fox, Inc.",
+    "website": "https://symbifox.com",
     "license": "AGPL-3",
     "depends": [
         "bf_fundraising_core",

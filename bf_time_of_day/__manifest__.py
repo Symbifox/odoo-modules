@@ -3,8 +3,8 @@
     "version": "18.0.1.3.1",
     "category": "Project",
     "summary": "Plages horaires (Matinée / Midi / Fin de jour / Hors heures) pour tâches et activités",
-    'author': 'Les services de consultation Blue Fox, Inc.',
-    "website": "https://bluefoxconsultant.com",
+    'author': 'Les services de consultation Les services de consultation Blue Fox, Inc.',
+    "website": "https://symbifox.com",
     'license': 'LGPL-3',
     "depends": ["project", "mail", "bf_onboarding_base"],
     "data": [
