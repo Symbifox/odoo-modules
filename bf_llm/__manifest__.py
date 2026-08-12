@@ -3,7 +3,7 @@
     "summary": "Provider-agnostic LLM access (chat + document/vision extraction) for Blue Fox modules",
     "version": "18.0.1.0.1",
     "category": "Technical",
-    "author": "Blue Fox Inc.",
+    "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://bluefoxconsultant.com",
     "license": "LGPL-3",
     "depends": ["base"],

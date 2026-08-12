@@ -20,7 +20,7 @@ Fonctionnalités
 * Intégration optionnelle : pré-remplissage depuis ``bf_persona`` et bouton
   « Réviser avec Claude » via ``bf_claude_chat`` (détectés à l'exécution).
     """,
-    'author': 'Blue Fox Inc.',
+    'author': 'Les services de consultation Blue Fox, Inc.',
     'website': 'https://bluefoxconsultant.com',
     'license': 'LGPL-3',
     'depends': ['base', 'mail', 'bf_lexend', 'bf_onboarding_base'],

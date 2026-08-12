@@ -17,7 +17,7 @@ Fonctionnalités:
 * Envoi par courriel avec pièces jointes
 * Sommaire par projet et synthèse mensuelle
     """,
-    'author': 'Blue Fox Inc.',
+    'author': 'Les services de consultation Blue Fox, Inc.',
     'website': 'https://bluefoxconsultant.com',
     'license': 'LGPL-3',
     'depends': ['project', 'account', 'hr_timesheet', 'mail', 'portal', 'bf_onboarding_base'],

@@ -6,7 +6,7 @@
     "version": "18.0.1.0.0",
     "category": "Productivity",
     "website": "https://bluefoxconsultant.com",
-    "author": "Blue Fox Inc.",
+    "author": "Les services de consultation Blue Fox, Inc.",
     "license": "LGPL-3",
     "depends": [
         "calendar",

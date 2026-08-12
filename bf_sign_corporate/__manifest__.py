@@ -14,7 +14,7 @@ Signataires par défaut :
 * résolution des actionnaires → le proposeur (et le secondeur, s'il y a lieu).
 Ils restent modifiables sur la demande en brouillon avant l'envoi.
 """,
-    'author': "Blue Fox Inc.",
+    'author': "Les services de consultation Blue Fox, Inc.",
     'website': "https://bluefoxconsultant.com",
     'license': 'Other proprietary',
     'depends': ['bf_sign', 'project_knowledge_matrix'],

@@ -3,7 +3,7 @@
     "summary": "XP Fox Quest pour la boucle fermée et les plaintes résolues",
     "version": "18.0.1.0.0",
     "category": "Marketing/Customer Experience",
-    "author": "Blue Fox Inc.",
+    "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://bluefoxconsultant.com",
     "license": "LGPL-3",
     "application": False,

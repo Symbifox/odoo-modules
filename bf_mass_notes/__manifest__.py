@@ -4,7 +4,7 @@
                "depuis le menu Action des vues liste",
     "version": "18.0.1.0.0",
     "category": "Productivity",
-    "author": "Blue Fox Inc.",
+    "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://bluefoxconsultant.com",
     "license": "LGPL-3",
     "depends": ["mail"],

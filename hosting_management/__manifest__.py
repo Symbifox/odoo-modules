@@ -5,7 +5,7 @@
     "version": "18.0.2.50.0",
     "category": "Services",
     'website': 'https://bluefoxconsultant.com',
-    "author": "Blue Fox Inc.",
+    "author": "Les services de consultation Blue Fox, Inc.",
     'license': 'LGPL-3',  # Odoo requires LGPL-3 or proprietary for Community modules
     "application": True,
     "installable": True,

@@ -4,7 +4,7 @@
                "cybersecurity eLearning — a KnowBe4 / Terranova-style offering.",
     "version": "18.0.1.9.0",
     "category": "Marketing/Security Awareness",
-    "author": "Blue Fox Inc.",
+    "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://bluefoxconsultant.com",
     "license": "LGPL-3",
     "application": True,

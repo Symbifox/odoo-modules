@@ -8,7 +8,7 @@ Ajoute « Envoyer pour signature » sur les bons de commande d'achat : le bon es
 rendu en PDF, une demande de signature bf_sign liée est créée, et le document
 signé est reversé dans le fil du bon de commande une fois signé.
 """,
-    'author': "Blue Fox Inc.",
+    'author': "Les services de consultation Blue Fox, Inc.",
     'website': "https://bluefoxconsultant.com",
     'license': 'Other proprietary',
     'depends': ['bf_sign', 'purchase'],

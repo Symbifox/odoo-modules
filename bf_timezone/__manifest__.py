@@ -5,7 +5,7 @@
     "version": "18.0.1.0.0",
     "summary": "Shared timezone helpers and a configurable default timezone "
                "for Blue Fox modules",
-    "author": "Blue Fox Inc.",
+    "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://bluefoxconsultant.com",
     "license": "LGPL-3",
     "category": "Technical",

@@ -53,7 +53,7 @@ Fonctionnement
 Le module livre **uniquement** la SES. Il n'y a pas de palier « signature
 avancée » (AES) : le champ ``signature_method`` n'offre que ``native_ses``.
     """,
-    'author': 'Blue Fox Inc.',
+    'author': 'Les services de consultation Blue Fox, Inc.',
     'website': 'https://bluefoxconsultant.com',
     'license': 'Other proprietary',
     'depends': [

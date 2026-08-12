@@ -4,7 +4,7 @@
     'version': '18.0.1.0.0',
     'summary': 'Per-user show/hide of systray (notification-tray) icons, via a gear menu',
     'category': 'Tools',
-    'author': 'Blue Fox Inc.',
+    'author': 'Les services de consultation Blue Fox, Inc.',
     'website': 'https://bluefoxconsultant.com',
     'license': 'LGPL-3',
     'depends': ['web'],

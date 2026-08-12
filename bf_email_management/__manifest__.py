@@ -4,7 +4,7 @@
     "version": "18.0.6.7.2",
     "category": "Productivity",
     'website': 'https://bluefoxconsultant.com',
-    "author": "Blue Fox Inc.",
+    "author": "Les services de consultation Blue Fox, Inc.",
     'license': 'LGPL-3',
     "application": True,
     "installable": True,

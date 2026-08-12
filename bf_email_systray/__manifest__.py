@@ -4,7 +4,7 @@
     "version": "18.0.1.1.0",
     "category": "Tools",
     "website": "https://bluefoxconsultant.com",
-    "author": "Blue Fox Inc.",
+    "author": "Les services de consultation Blue Fox, Inc.",
     "license": "LGPL-3",
     "application": False,
     "installable": True,

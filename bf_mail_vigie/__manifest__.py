@@ -10,7 +10,7 @@ la bonne chatter cible. L'utilisateur confirme, on d\u00e9place le
 mail.message (mise \u00e0 jour des colonnes model/res_id), sans renvoi ni
 notification.
 """,
-    "author": "Blue Fox Inc.",
+    "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://bluefoxconsultant.com",
     'license': 'LGPL-3',
     "depends": ["mail", "bf_email_management", "bf_onboarding_base"],

@@ -3,7 +3,7 @@
     "summary": "Synchronize Odoo contacts with Nextcloud address book via CardDAV",
     "version": "18.0.1.2.0",
     "category": "Contacts",
-    "author": "Blue Fox Inc.",
+    "author": "Les services de consultation Blue Fox, Inc.",
     'website': 'https://bluefoxconsultant.com',
     'license': 'LGPL-3',
     "application": False,

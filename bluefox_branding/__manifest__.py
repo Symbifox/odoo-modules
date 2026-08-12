@@ -19,7 +19,7 @@
         - Branded payment followup, contract, helpdesk, survey, calendar templates (French)
         - Late invoice notice template branding (post_init_hook)
     """,
-    "author": "Blue Fox Inc.",
+    "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://bluefoxconsultant.com",
     'license': 'LGPL-3',
     "depends": [

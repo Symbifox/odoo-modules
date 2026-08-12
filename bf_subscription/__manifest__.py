@@ -19,7 +19,7 @@ Fonctionnalités:
 * Vue dashboard : coût mensualisé, prochains renouvellements, MRR consolidé
 * Smart buttons sur la fiche partenaire (abonnements gérés / facturés par)
     """,
-    'author': 'Blue Fox Inc.',
+    'author': 'Les services de consultation Blue Fox, Inc.',
     'website': 'https://bluefoxconsultant.com',
     'license': 'LGPL-3',
     'depends': [

@@ -3,7 +3,7 @@
     "summary": "Notifie les assign\u00e9s quand leur t\u00e2che est d\u00e9bloqu\u00e9e",
     "version": "18.0.1.7.0",
     "category": "Project",
-    'author': 'Blue Fox Inc.',
+    'author': 'Les services de consultation Blue Fox, Inc.',
     'website': 'https://bluefoxconsultant.com',
     'license': 'LGPL-3',
     "depends": ["project", "bf_onboarding_base"],

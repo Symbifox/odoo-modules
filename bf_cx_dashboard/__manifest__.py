@@ -3,7 +3,7 @@
     "summary": "Tuile NPS et détracteurs à traiter sur le tableau de bord Blue Fox",
     "version": "18.0.1.1.0",
     "category": "Marketing/Customer Experience",
-    "author": "Blue Fox Inc.",
+    "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://bluefoxconsultant.com",
     "license": "LGPL-3",
     "application": False,

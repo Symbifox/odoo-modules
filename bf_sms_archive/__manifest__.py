@@ -3,7 +3,7 @@
     "summary": "Messagerie SMS/MMS live via VOIP.ms + archivage de SMS et journaux d'appels Android",
     "version": "18.0.5.6.0",
     "category": "Tools",
-    'author': 'Blue Fox Inc.',
+    'author': 'Les services de consultation Blue Fox, Inc.',
     'website': 'https://bluefoxconsultant.com',
     'license': 'LGPL-3',
     "application": True,

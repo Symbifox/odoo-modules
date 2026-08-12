@@ -21,7 +21,7 @@ Deux fonctionnalités de service en ligne pour la suite de levée de fonds :
 
 S'appuie sur ``bf_receipt_ca`` pour les reçus conformes.
 """,
-    "author": "Blue Fox Inc.",
+    "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://bluefoxconsultant.com",
     "license": "AGPL-3",
     "depends": [

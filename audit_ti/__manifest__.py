@@ -4,7 +4,7 @@
     "version": "18.0.1.17.1",
     "category": "Services",
     'website': 'https://bluefoxconsultant.com',
-    "author": "Blue Fox Inc.",
+    "author": "Les services de consultation Blue Fox, Inc.",
     'license': 'LGPL-3',
     "application": True,
     "installable": True,
