@@ -421,7 +421,7 @@ bf_timesheet_timer/
 
 ## Credits
 
-Authored and maintained by Blue Fox Inc. AI coding assistants were used as productivity tools during development.
+Authored and maintained by Les services de consultation Blue Fox, Inc. AI coding assistants were used as productivity tools during development.
 
 ## License Text
 
@@ -431,12 +431,12 @@ This module is licensed under the GNU Lesser General Public License v3.0 (LGPL-3
 
 ## Disclaimer
 
-This module is provided as-is, without warranty of any kind. Use at your own risk. Blue Fox Inc. assumes no liability for any damages arising from the use of this software.
+This module is provided as-is, without warranty of any kind. Use at your own risk. Les services de consultation Blue Fox, Inc. assumes no liability for any damages arising from the use of this software.
 
 ## Support
 
-For issues and feature requests, please contact Blue Fox Inc. or open an issue on the project repository.
+For issues and feature requests, please contact Les services de consultation Blue Fox, Inc. or open an issue on the project repository.
 
 ---
 
-<sub>Authored and maintained by Blue Fox Inc. AI coding assistants were used as productivity tools during development.</sub>
+<sub>Authored and maintained by Les services de consultation Blue Fox, Inc. AI coding assistants were used as productivity tools during development.</sub>

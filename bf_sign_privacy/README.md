@@ -1,4 +1,4 @@
-# Blue Fox — Signing Law 25 consents (`bf_sign_privacy`)
+# Symbifox — Signing Law 25 consents (`bf_sign_privacy`)
 
 A bridge module wiring the native [`bf_sign`](../bf_sign) electronic signature
 engine into the [`privacy_consent`](../privacy_consent) consent module.

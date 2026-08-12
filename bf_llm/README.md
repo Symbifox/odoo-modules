@@ -1,6 +1,6 @@
-# Blue Fox — LLM Provider (`bf_llm`)
+# Symbifox — LLM Provider (`bf_llm`)
 
-A single, provider-agnostic LLM gateway for Blue Fox Odoo modules. Instead of
+A single, provider-agnostic LLM gateway for Symbifox Odoo modules. Instead of
 each module hand-rolling its own Anthropic HTTPS calls and plaintext API keys,
 they call one service — `bf.llm` — which dispatches to a configured provider
 (Anthropic, OpenAI, or any OpenAI-compatible / local server) and returns a
@@ -8,7 +8,7 @@ single normalized response envelope.
 
 - **Odoo:** 18.0 CE
 - **License:** LGPL-3
-- **Author:** Blue Fox Inc.
+- **Author:** Les services de consultation Blue Fox, Inc.
 
 ## What it provides
 

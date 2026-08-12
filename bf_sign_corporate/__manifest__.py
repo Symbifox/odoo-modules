@@ -1,5 +1,5 @@
 {
-    'name': "Blue Fox — Signature des résolutions corporatives",
+    'name': "Symbifox — Signature des résolutions corporatives",
     'version': '18.0.1.1.1',
     'category': 'Productivity/Sign',
     'summary': "Envoyer une résolution corporative pour signature électronique (bf_sign).",
@@ -14,8 +14,8 @@ Signataires par défaut :
 * résolution des actionnaires → le proposeur (et le secondeur, s'il y a lieu).
 Ils restent modifiables sur la demande en brouillon avant l'envoi.
 """,
-    'author': "Les services de consultation Blue Fox, Inc.",
-    'website': "https://bluefoxconsultant.com",
+    'author': "Les services de consultation Les services de consultation Blue Fox, Inc.",
+    'website': "https://symbifox.com",
     'license': 'Other proprietary',
     'depends': ['bf_sign', 'project_knowledge_matrix'],
     'data': [

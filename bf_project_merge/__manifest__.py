@@ -1,11 +1,11 @@
 {
-    "name": "Blue Fox — Regroupement de tâches",
+    "name": "Symbifox — Regroupement de tâches",
     "version": "18.0.1.0.0",
     "category": "Services/Project",
     "summary": "Regrouper des tâches en réattribuant leur contenu (conversation, "
     "activités, heures, dépendances) vers la tâche conservée, puis archiver le reste.",
     "description": """
-Blue Fox — Regroupement de tâches
+Symbifox — Regroupement de tâches
 =================================
 
 Un assistant « Regrouper les tâches » qui **déplace** le contenu réel des tâches
@@ -25,8 +25,8 @@ Antériorité : ce module remplit le même besoin que le module communautaire OC
 Fox Inc. et ajoute la réattribution complète du contenu (chatter, heures,
 dépendances, etc.).
 """,
-    "author": "Les services de consultation Blue Fox, Inc.",
-    "website": "https://bluefoxconsultant.com",
+    "author": "Les services de consultation Les services de consultation Blue Fox, Inc.",
+    "website": "https://symbifox.com",
     "license": "LGPL-3",
     "depends": ["project"],
     "data": [

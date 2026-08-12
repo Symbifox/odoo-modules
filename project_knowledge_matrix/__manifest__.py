@@ -28,7 +28,7 @@ Fonctionnalités:
 * Suivi des versions de logiciels et leur statut de support
 * Dates d'expiration et de révision avec rappels automatiques
 * Alertes pour documentation obsolète chez les clients
-* Courriels de notification stylisés Blue Fox
+* Courriels de notification stylisés Symbifox
 * Rapport bimensuel du tableau de bord par courriel
 * Déclenchement manuel des rapports depuis les paramètres
 * Traductions complètes en français canadien (fr_CA)
@@ -36,13 +36,13 @@ Fonctionnalités:
 * Gouvernance corporative: résolutions, administrateurs, dirigeants
 * Calendrier de conformité corporative avec rappels automatiques
 * Livre des minutes intégré à la gestion documentaire
-* Rapport PDF brandé Blue Fox pour les matrices de connaissances
+* Rapport PDF brandé Symbifox pour les matrices de connaissances
 * Envoi de rapports par courriel (manuel et automatisé)
 * Planification flexible : hebdomadaire, bimensuel, mensuel ou intervalle personnalisé
 * Activités de suivi automatiques pour les échéances et éléments en retard
     """,
-    'author': 'Les services de consultation Blue Fox, Inc.',
-    'website': 'https://bluefoxconsultant.com',
+    'author': 'Les services de consultation Les services de consultation Blue Fox, Inc.',
+    'website': 'https://symbifox.com',
     'license': 'LGPL-3',
     # bf_onboarding_base porte les champs de marque (report_brand_*) sur
     # res.company. bluefox_branding n'est PAS requis: c'est le panneau de

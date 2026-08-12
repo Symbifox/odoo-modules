@@ -28,8 +28,8 @@ Ajoute par-dessus ``donation`` :
 Le reçu officiel canadien conforme (ARC + Revenu Québec) est fourni par le module
 séparé ``bf_receipt_ca``.
 """,
-    "author": "Les services de consultation Blue Fox, Inc.",
-    "website": "https://bluefoxconsultant.com",
+    "author": "Les services de consultation Les services de consultation Blue Fox, Inc.",
+    "website": "https://symbifox.com",
     "license": "AGPL-3",
     "depends": [
         "donation",

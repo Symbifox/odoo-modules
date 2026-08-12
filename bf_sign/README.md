@@ -1,4 +1,4 @@
-# Blue Fox — Electronic signature (`bf_sign`)
+# Symbifox — Electronic signature (`bf_sign`)
 
 **Native Odoo 18 Community** electronic signature (with no dependency on Odoo
 Enterprise's `sign` module), instrumented to **hold up under Quebec law**. A

@@ -21,4 +21,4 @@ After installing, set this framework as the company default (**Privacy → Confi
 
 ## License
 
-BUSL-1.1 — Blue Fox Inc. Bascule en LGPL-3.0-or-later le 2029-07-20. Voir [`LICENSE`](LICENSE).
+BUSL-1.1 — Les services de consultation Blue Fox, Inc. Bascule en LGPL-3.0-or-later le 2029-07-20. Voir [`LICENSE`](LICENSE).

@@ -1,10 +1,10 @@
 {
     "name": "Expérience client - tuile tableau de bord",
-    "summary": "Tuile NPS et détracteurs à traiter sur le tableau de bord Blue Fox",
+    "summary": "Tuile NPS et détracteurs à traiter sur le tableau de bord Symbifox",
     "version": "18.0.1.1.0",
     "category": "Marketing/Customer Experience",
-    "author": "Les services de consultation Blue Fox, Inc.",
-    "website": "https://bluefoxconsultant.com",
+    "author": "Les services de consultation Les services de consultation Blue Fox, Inc.",
+    "website": "https://symbifox.com",
     "license": "LGPL-3",
     "application": False,
     "installable": True,

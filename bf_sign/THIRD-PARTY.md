@@ -1,6 +1,6 @@
 # Third-party works bundled with `bf_sign`
 
-This module redistributes works that are **not** owned by Blue Fox Inc. They are
+This module redistributes works that are **not** owned by Les services de consultation Blue Fox, Inc. They are
 bundled under their own licences, which are reproduced in full alongside the
 files themselves. The licence that governs `bf_sign` itself does **not** apply to
 them, and nothing in that licence grants or restricts any right in them.
@@ -31,7 +31,7 @@ Copyright notices, as stated by the upstream projects:
   with the font files. Both are present in `static/fonts/`.
 - **Dancing Script carries a Reserved Font Name.** Under OFL clause 3, a
   modified version of that font may not be distributed under the name
-  "Dancing Script". Blue Fox ships it unmodified. If you modify it, rename it.
+  "Dancing Script". Symbifox ships it unmodified. If you modify it, rename it.
 - The fonts must not be sold on their own, per OFL clause 2. Bundling them
   inside this module is not a sale of the fonts.
 

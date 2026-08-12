@@ -5,8 +5,8 @@
                "Spreed OCS API and writes the room URL into videocall_location.",
     "version": "18.0.1.0.0",
     "category": "Productivity",
-    "website": "https://bluefoxconsultant.com",
-    "author": "Les services de consultation Blue Fox, Inc.",
+    "website": "https://symbifox.com",
+    "author": "Les services de consultation Les services de consultation Blue Fox, Inc.",
     "license": "LGPL-3",
     "depends": [
         "calendar",

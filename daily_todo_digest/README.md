@@ -22,7 +22,7 @@ user's activities and tasks, the local weather and an inspirational quote.
 
 - **Time zone**: automatic UTC → America/Montreal conversion for date comparisons
 - **Visibility filter**: excludes tasks with `display_in_project=False` from the detailed listing
-- **Blue Fox branding**: HTML template using the brand's colours and typefaces
+- **Symbifox branding**: HTML template using the brand's colours and typefaces
 - **Clickable links**: every task/activity carries a direct link to the Odoo record
 - **Configurable cron**: checks hourly, sends at the configured hour
 - **Email preheader**: a quick preview in mail clients (e.g. "3 overdue | 5 today | ☀️ -8°C")
@@ -170,13 +170,13 @@ The module uses the **Open-Meteo** API (free, no API key required).
 ```
 
 ### HTML structure
-- Header with the Blue Fox logo and a title
+- Header with the Symbifox logo and a title
 - Cyan accent bar (#29ABE2)
 - Content sections with styled tables
 - Footer with contact details
 - Two-tone accent bars at the bottom
 
-### Blue Fox colours
+### Symbifox colours
 
 | Element | Colour |
 |---------|--------|
@@ -217,7 +217,7 @@ env.cr.commit()
 
 ## Author
 
-**Blue Fox** - [bluefoxconsultant.com](https://bluefoxconsultant.com)
+**Symbifox** - [symbifox.com](https://symbifox.com)
 
 ## Licence
 

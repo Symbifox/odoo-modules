@@ -37,7 +37,7 @@ The PDF receipt reuses the company's branded document layout
 
 ## Branded receipt email
 
-The email carrying the receipt is **branded the same way as the other Blue Fox
+The email carrying the receipt is **branded the same way as the other Symbifox
 modules**: when installed, `bluefox_branding` provides the `bf_mail_layout`
 transactional layout (header with logo, company colours and footer), resolved at
 runtime through `donation.tax.receipt.bf_receipt_email_layout()`. Without

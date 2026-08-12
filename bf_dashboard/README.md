@@ -1,4 +1,4 @@
-# Blue Fox dashboard (`bf_dashboard`)
+# Symbifox dashboard (`bf_dashboard`)
 
 A unified dashboard aggregating billing, hosting, knowledge matrices and
 privacy into a single view.

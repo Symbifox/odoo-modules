@@ -43,4 +43,4 @@ docker exec <client>-odoo /usr/bin/odoo --stop-after-init -d <db> -u bf_survey_u
 
 ---
 
-<sub>Authored and maintained by Blue Fox Inc. AI coding assistants were used as productivity tools during development.</sub>
+<sub>Authored and maintained by Les services de consultation Blue Fox, Inc. AI coding assistants were used as productivity tools during development.</sub>

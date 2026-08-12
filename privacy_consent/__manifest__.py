@@ -31,8 +31,8 @@ Destruction et anonymisation documentaire :
 * Certificats de destruction PDF bilingues
 * Effacement sécurisé des identifiants (credentials)
     """,
-    'author': 'Les services de consultation Blue Fox, Inc.',
-    "website": "https://bluefoxconsultant.com",
+    'author': 'Les services de consultation Les services de consultation Blue Fox, Inc.',
+    "website": "https://symbifox.com",
     'license': 'Other proprietary',
     "depends": ["base", "mail", "project", "portal", "bluefox_branding"],
     "external_dependencies": {

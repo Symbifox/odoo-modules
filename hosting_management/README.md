@@ -747,11 +747,11 @@ Hosting
 - **Design System (Client-Facing)**
   - Light background `#F8FAFC` (vs internal dark `#2E3132`)
   - Card: 600px, `border-radius: 16px`, `box-shadow: 0 4px 24px rgba(0,0,0,0.08)`
-  - Header: `#22303B` with Blue Fox logo + contextual title
+  - Header: `#22303B` with Symbifox logo + contextual title
   - Variable accent bars: blue (generic/monthly), amber (maintenance), green (intervention), gradient (welcome)
   - Typography: Lexend, `font-weight: 300` body, `font-weight: 500-700` headings
   - Enriched footer: company tagline, full contact (email, phone, website), privacy/terms links
-  - Double accent bottom bar maintained (Blue Fox signature)
+  - Double accent bottom bar maintained (Symbifox signature)
   - All accented characters encoded as HTML entities for email client safety
 
 ### Version 18.0.2.17.0 (2026-02-10)
@@ -787,7 +787,7 @@ Hosting
   - New `hosting.backup.file` model for individual backup files with checksums
   - REST API endpoint `/api/hosting/backup/report/public` for receiving reports
   - Token-based authentication via `X-Backup-Token` header
-  - Automatic email notifications with Blue Fox corporate template
+  - Automatic email notifications with Symbifox corporate template
   - "Backup Runs" menu under Reporting section
   - Visual status indicators (success/partial/failed)
   - File verification tracking with SHA256 checksums
@@ -839,7 +839,7 @@ Hosting
 - Digest email integration
 
 ### Version 18.0.2.3.0
-- Updated email templates with Blue Fox branding
+- Updated email templates with Symbifox branding
 
 ### Version 18.0.2.2.0
 - Added maintenance window feature to suppress alerts during scheduled maintenance
@@ -873,5 +873,5 @@ Contributions are welcome! Please:
 This module is licensed under the GNU Lesser General Public License v3.0 (LGPL-3). See [LICENSE](LICENSE) for the full text.
 ## Support
 
-For support, please contact Blue Fox Inc. or open an issue in the repository.
+For support, please contact Les services de consultation Blue Fox, Inc. or open an issue in the repository.
 

@@ -1,7 +1,7 @@
 # Security Awareness
 
 A KnowBe4 / Terranova-style security-awareness platform for Odoo 18, developed
-by [Blue Fox Inc.](https://bluefoxconsultant.com)
+by [Les services de consultation Blue Fox, Inc.](https://symbifox.com)
 
 It lets an organization run **simulated phishing campaigns**, keep a **per-person
 risk profile**, deliver **cybersecurity eLearning**, let employees **report real

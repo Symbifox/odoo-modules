@@ -1,12 +1,12 @@
-# Copyright 2026 Les Services de consultation Blue Fox Inc.
+# Copyright 2026 Les Services de consultation Les services de consultation Blue Fox, Inc.
 # License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl-3.0).
 {
-    "name": "Blue Fox Timezone Utilities",
+    "name": "Symbifox Timezone Utilities",
     "version": "18.0.1.0.0",
     "summary": "Shared timezone helpers and a configurable default timezone "
-               "for Blue Fox modules",
-    "author": "Les services de consultation Blue Fox, Inc.",
-    "website": "https://bluefoxconsultant.com",
+               "for Symbifox modules",
+    "author": "Les services de consultation Les services de consultation Blue Fox, Inc.",
+    "website": "https://symbifox.com",
     "license": "LGPL-3",
     "category": "Technical",
     "depends": ["base_setup"],

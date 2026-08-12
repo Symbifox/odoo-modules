@@ -1,6 +1,6 @@
 # BF Dark Mode
 
-A dark mode toggle for the Odoo 18 backend, built on the Blue Fox brand gray palette. Adds a sun/moon systray button that switches the entire webclient between light and dark themes via a single CSS class on `<body>`.
+A dark mode toggle for the Odoo 18 backend, built on the Symbifox brand gray palette. Adds a sun/moon systray button that switches the entire webclient between light and dark themes via a single CSS class on `<body>`.
 
 ## License
 
@@ -23,7 +23,7 @@ LGPL-3 — see the repository [LICENSE](../LICENSE) and `__manifest__.py` for de
 - On load, the session preference is the source of truth and seeds the local
   cookie/toggle; toggling persists back to `res.users`
 
-### Blue Fox Brand Palette
+### Symbifox Brand Palette
 - Surfaces use the BF dark gray (#2E3132) instead of generic navy/black
 - Accent color is BF blue (#29ABE2)
 - Neutral, warm-gray tones for borders, hover states, and muted text
@@ -51,7 +51,7 @@ LGPL-3 — see the repository [LICENSE](../LICENSE) and `__manifest__.py` for de
 | `$dk-text` | `#d1d5d8` | Main text |
 | `$dk-text-bright` | `#e8eaec` | Headings, emphasis |
 | `$dk-text-muted` | `#8e9496` | Secondary text |
-| `$dk-accent` | `#29ABE2` | Blue Fox blue (links, active states) |
+| `$dk-accent` | `#29ABE2` | Symbifox blue (links, active states) |
 | `$dk-hover` | `#414849` | Hover highlights |
 
 ## Requirements
@@ -134,16 +134,16 @@ bf_dark_mode/
   preference; toggling persists back to `res.users`.
 
 ### 18.0.1.0.0
-- Initial release: per-browser cookie systray toggle and Blue Fox dark palette.
+- Initial release: per-browser cookie systray toggle and Symbifox dark palette.
 
 ## Credits
 
-Authored and maintained by Blue Fox Inc. AI coding assistants were used as productivity tools during development.
+Authored and maintained by Les services de consultation Blue Fox, Inc. AI coding assistants were used as productivity tools during development.
 
 ## Support
 
-For issues and feature requests, please contact Blue Fox Inc. or open an issue on the project repository.
+For issues and feature requests, please contact Les services de consultation Blue Fox, Inc. or open an issue on the project repository.
 
 ---
 
-<sub>Authored and maintained by Blue Fox Inc. AI coding assistants were used as productivity tools during development.</sub>
+<sub>Authored and maintained by Les services de consultation Blue Fox, Inc. AI coding assistants were used as productivity tools during development.</sub>

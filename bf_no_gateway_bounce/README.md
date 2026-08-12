@@ -1,6 +1,6 @@
 # BF No Gateway Bounce
 
-Stops Odoo's mail gateway from auto-replying to people who write to Blue Fox.
+Stops Odoo's mail gateway from auto-replying to people who write to Symbifox.
 
 ## The message this kills
 

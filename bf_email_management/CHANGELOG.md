@@ -245,7 +245,7 @@ The 18.0.4.0.0 migration:
   - **A folder tree** in the sidebar: `Archives` expands into `2024 / 2025 / 2026` (parsed on `/`). A `▸ / ▾` toggle, with parents auto-expanded on first load.
   - **Unread plus total counters** per folder: `imap_browser_get_folders` calls `STATUS folder (MESSAGES UNSEEN)` after the `LIST`. A blue badge when unread > 0, muted grey otherwise.
   - **Bold rows when unread**: `fetch_headers_bulk` now retrieves the IMAP `FLAGS` alongside the headers; the absence of `\Seen` gives `fw-bold`.
-  - **A parsed sender name**: `email.utils.parseaddr` server-side; the *Sender* column shows "Blue Fox" instead of "Blue Fox &lt;notifications@github.com&gt;". The full address is in the tooltip.
+  - **A parsed sender name**: `email.utils.parseaddr` server-side; the *Sender* column shows "Symbifox" instead of "Symbifox &lt;notifications@github.com&gt;". The full address is in the tooltip.
   - **Apple Mail style relative dates**: `today 14:35` / `yesterday 09:12` / `Mon 14:35` / `5 May` / `2024-12-05` depending on age.
   - **Keyboard shortcuts** through `useHotkey` (Odoo core): `J/K` or `↓/↑` to navigate · `R` reply · `Shift+R` reply all · `F` forward · `E` Handled · `Del`/`Backspace` Trash · `Y` route · `/` focus search · `Esc` clear search.
   - **Search within the loaded page**: an `<input type="search">` above the list, filtering `subject` + `sender_name` + `from` client-side in real time.

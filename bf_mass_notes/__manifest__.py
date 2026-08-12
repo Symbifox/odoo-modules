@@ -1,11 +1,11 @@
 {
-    "name": "Blue Fox — Notes en lot",
+    "name": "Symbifox — Notes en lot",
     "summary": "Ajouter une note (ou un message) à plusieurs fils de discussion en lot "
                "depuis le menu Action des vues liste",
     "version": "18.0.1.0.0",
     "category": "Productivity",
-    "author": "Les services de consultation Blue Fox, Inc.",
-    "website": "https://bluefoxconsultant.com",
+    "author": "Les services de consultation Les services de consultation Blue Fox, Inc.",
+    "website": "https://symbifox.com",
     "license": "LGPL-3",
     "depends": ["mail"],
     "data": [

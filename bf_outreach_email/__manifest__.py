@@ -21,8 +21,8 @@ cadence, et se retrouve dans le filtre « Ont répondu ».
 Le rapprochement se fait sur l'adresse normalisée, ne remonte jamais plus loin
 qu'un filigrane de date, et ne crée jamais deux fois la même interaction.
     """,
-    "author": "Les services de consultation Blue Fox, Inc.",
-    "website": "https://bluefoxconsultant.com",
+    "author": "Les services de consultation Les services de consultation Blue Fox, Inc.",
+    "website": "https://symbifox.com",
     "license": "LGPL-3",
     "depends": ["bf_outreach", "bf_email_management"],
     "data": [

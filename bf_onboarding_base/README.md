@@ -1,12 +1,12 @@
-# Blue Fox Onboarding Foundation
+# Symbifox Onboarding Foundation
 
-> **Not a standalone module.** `bf_onboarding_base` is a library that other Blue Fox modules depend on. Installing it directly does nothing visible — there is no menu, no settings page, no UI. Install one of the consumer modules (e.g. `bf_email_management`, `bf_persona`, `bf_meeting`) and this gets pulled in as a dependency automatically.
+> **Not a standalone module.** `bf_onboarding_base` is a library that other Symbifox modules depend on. Installing it directly does nothing visible — there is no menu, no settings page, no UI. Install one of the consumer modules (e.g. `bf_email_management`, `bf_persona`, `bf_meeting`) and this gets pulled in as a dependency automatically.
 
-Shared helpers for Blue Fox per-module onboarding wizards.
+Shared helpers for Symbifox per-module onboarding wizards.
 
 ## Purpose
 
-Every Blue Fox Odoo module that needs an admin onboarding panel ships
+Every Symbifox Odoo module that needs an admin onboarding panel ships
 its own `onboarding.onboarding` + `onboarding.onboarding.step` records,
 but reuses generic step actions defined here to avoid boilerplate.
 

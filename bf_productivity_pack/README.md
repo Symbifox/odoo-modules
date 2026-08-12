@@ -1,4 +1,4 @@
-# Blue Fox — Productivity Pack
+# Symbifox — Productivity Pack
 
 Bundle meta-module for everyday Odoo CE productivity: command palette, multi-pane dashboards, quick notes, timesheet timer, time-of-day slots, daily digest, brand pack, and the Lexend + Dark Mode UI layer.
 
@@ -19,7 +19,7 @@ Bundle meta-module for everyday Odoo CE productivity: command palette, multi-pan
 | Module | Role |
 |---|---|
 | [`bf_lexend`](../bf_lexend) | Lexend typeface across UI + PDF reports |
-| [`bf_dark_mode`](../bf_dark_mode) | Dark mode using the Blue Fox palette |
+| [`bf_dark_mode`](../bf_dark_mode) | Dark mode using the Symbifox palette |
 | [`bluefox_branding`](../bluefox_branding) | Per-company brand color + email layout overrides |
 
 Installing `bf_productivity_pack` installs all of the above. Uninstalling it does **not** cascade.

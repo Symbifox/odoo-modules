@@ -17,8 +17,8 @@ Fonctionnalités:
 * Envoi par courriel avec pièces jointes
 * Sommaire par projet et synthèse mensuelle
     """,
-    'author': 'Les services de consultation Blue Fox, Inc.',
-    'website': 'https://bluefoxconsultant.com',
+    'author': 'Les services de consultation Les services de consultation Blue Fox, Inc.',
+    'website': 'https://symbifox.com',
     'license': 'LGPL-3',
     'depends': ['project', 'account', 'hr_timesheet', 'mail', 'portal', 'bf_onboarding_base'],
     'external_dependencies': {

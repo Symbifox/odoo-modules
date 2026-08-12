@@ -132,7 +132,7 @@ Brand colours come from `bf_lexend`.
   `inline_template` pass for `{{ }}` tokens, then a `qweb` pass if any
   `<t t-out>` remain. The result is wrapped in `Markup`.
 - The PDF is a standalone QWeb template (not `web.external_layout`), like the
-  other Blue Fox branded reports; colours are injected from `doc.company_id`.
+  other Symbifox branded reports; colours are injected from `doc.company_id`.
 - `pdf_overlay` mode: `_get_pdf_binary()` renders the body without chrome, then
   `_stamp_on_letterhead()` overlays it on each page of the letterhead PDF
   through PyPDF2.

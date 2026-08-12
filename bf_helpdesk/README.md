@@ -1,6 +1,6 @@
-# Blue Fox — Helpdesk
+# Symbifox — Helpdesk
 
-Fork-style extension of OCA `helpdesk_mgmt` with native Blue Fox integrations.
+Fork-style extension of OCA `helpdesk_mgmt` with native Symbifox integrations.
 
 ## Phase 1 features
 

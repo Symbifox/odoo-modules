@@ -126,5 +126,5 @@ LGPL-3
 
 ## Acknowledgements
 
-Created and maintained by Blue Fox Inc. AI coding assistants were used as
+Created and maintained by Les services de consultation Blue Fox, Inc. AI coding assistants were used as
 productivity tools during development.

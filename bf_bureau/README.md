@@ -105,4 +105,4 @@ Add the module to Odoo's `addons_path` and install it from the Apps menu. On fir
 
 ---
 
-<sub>Authored and maintained by Blue Fox Inc. AI coding assistants were used as productivity tools during development.</sub>
+<sub>Authored and maintained by Les services de consultation Blue Fox, Inc. AI coding assistants were used as productivity tools during development.</sub>

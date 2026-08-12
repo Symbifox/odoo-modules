@@ -1,10 +1,10 @@
 {
-    "name": "Blue Fox — Feuille de temps depuis le chatter",
+    "name": "Symbifox — Feuille de temps depuis le chatter",
     "summary": "Case à cocher dans le composer du chatter pour journaliser une feuille de temps en même temps qu'une note interne (tâches + tickets helpdesk).",
     "version": "18.0.1.2.0",
     "category": "Services/Timesheets",
-    "author": "Les services de consultation Blue Fox, Inc.",
-    "website": "https://bluefoxconsultant.com",
+    "author": "Les services de consultation Les services de consultation Blue Fox, Inc.",
+    "website": "https://symbifox.com",
     'license': 'LGPL-3',
     "depends": [
         "bf_timesheet_timer",

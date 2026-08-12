@@ -14,8 +14,8 @@
     "version": "18.0.3.0.0",
     "category": "Theme/Backend",
     "license": "LGPL-3",
-    "author": "Les services de consultation Blue Fox, Inc.",
-    "website": "https://bluefoxconsultant.com",
+    "author": "Les services de consultation Les services de consultation Blue Fox, Inc.",
+    "website": "https://symbifox.com",
     "depends": ["web"],
     "data": [],
     "assets": {

@@ -21,7 +21,7 @@ infrastructure, certificates, domain names, recurring professional services.
   summary, upcoming renewals, dormant subscriptions, cost per managed client)
   and can send it periodically. A `subscription.digest` configuration ships by
   default, in "on demand" mode (`auto_send = False`).
-- **Dashboard card (MRR)**: the Subscriptions summary card on the Blue Fox
+- **Dashboard card (MRR)**: the Subscriptions summary card on the Symbifox
   dashboard is **not** provided by this module. It is added by the separate
   `bf_subscription_dashboard` bridge, which auto-installs when
   `bf_subscription` and `bf_dashboard` are both present.

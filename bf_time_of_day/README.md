@@ -143,4 +143,4 @@ bf_time_of_day/
 
 ## Credits
 
-Blue Fox Inc — https://bluefoxconsultant.com
+Symbifox Inc — https://symbifox.com

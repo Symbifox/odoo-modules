@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 {
-    'name': 'Blue Fox Onboarding Foundation',
+    'name': 'Symbifox Onboarding Foundation',
     'version': '18.0.2.0.0',
-    'summary': 'Shared helpers for Blue Fox per-module onboarding panels.',
+    'summary': 'Shared helpers for Symbifox per-module onboarding panels.',
     'description': """
-Foundation module for Blue Fox onboarding wizards.
+Foundation module for Symbifox onboarding wizards.
 
-Each Blue Fox custom module that ships an onboarding panel
+Each Symbifox custom module that ships an onboarding panel
 (`onboarding.onboarding` + `onboarding.onboarding.step` records) declares
 this module as a dependency and reuses the helpers provided here.
 
@@ -22,8 +22,8 @@ What this module exposes:
 This module does not declare any onboarding records of its own.
 """,
     'category': 'Tools',
-    'author': 'Les services de consultation Blue Fox, Inc.',
-    'website': 'https://bluefoxconsultant.com',
+    'author': 'Les services de consultation Les services de consultation Blue Fox, Inc.',
+    'website': 'https://symbifox.com',
     'license': 'LGPL-3',
     'depends': [
         'onboarding',

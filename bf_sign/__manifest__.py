@@ -1,11 +1,11 @@
 {
-    'name': 'Blue Fox — Signature électronique',
+    'name': 'Symbifox — Signature électronique',
     'version': '18.0.3.19.0',
     'category': 'Productivity/Sign',
     'summary': "Signature électronique native (SES) : demande, signature par lien public, "
                "certificat de complétion et piste de vérification inaltérable",
     'description': """
-Blue Fox — Signature électronique
+Symbifox — Signature électronique
 =================================
 
 Module de signature électronique **natif Odoo Community** (sans dépendance au
@@ -53,8 +53,8 @@ Fonctionnement
 Le module livre **uniquement** la SES. Il n'y a pas de palier « signature
 avancée » (AES) : le champ ``signature_method`` n'offre que ``native_ses``.
     """,
-    'author': 'Les services de consultation Blue Fox, Inc.',
-    'website': 'https://bluefoxconsultant.com',
+    'author': 'Les services de consultation Les services de consultation Blue Fox, Inc.',
+    'website': 'https://symbifox.com',
     'license': 'Other proprietary',
     'depends': [
         'mail',

@@ -310,7 +310,7 @@ email was never chased again.
 - The licence moves from **LGPL-3** to **BUSL-1.1**. Production use for your
   **own internal business operations** remains allowed without an agreement;
   providing the module as a product or service to third parties (hosted, managed
-  or resold) requires a written agreement with Blue Fox Inc. On **2029-07-20**,
+  or resold) requires a written agreement with Les services de consultation Blue Fox, Inc. On **2029-07-20**,
   this version converts automatically to **LGPL-3.0-or-later**. See `LICENSE`.
 - `THIRD-PARTY.md`: attribution for the embedded SIL OFL typefaces (*Caveat*,
   *Dancing Script*, *Great Vibes*), which stay under their own licence and are
@@ -392,7 +392,7 @@ email was never chased again.
 
 ### Emails
 - **The header title sits to the right of the logo** (rather than below it),
-  aligned with the other Blue Fox emails — invitation, completion, refusal and
+  aligned with the other Symbifox emails — invitation, completion, refusal and
   OTP code.
 
 ### Security — revealing the link
