@@ -23,7 +23,7 @@ tous deux présents.
 """,
     'author': "Les services de consultation Blue Fox, Inc.",
     'website': "https://symbifox.com",
-    'license': 'LGPL-3',
+    'license': 'Other proprietary',
     'depends': ['hosting_management', 'bf_subscription'],
     'data': [
         'views/hosting_domain_views.xml',

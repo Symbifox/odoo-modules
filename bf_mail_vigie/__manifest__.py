@@ -12,7 +12,7 @@ notification.
 """,
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",
-    'license': 'LGPL-3',
+    'license': 'Other proprietary',
     "depends": ["mail", "bf_email_management", "bf_onboarding_base"],
     "data": [
         "security/ir.model.access.csv",

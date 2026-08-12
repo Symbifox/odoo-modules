@@ -11,7 +11,7 @@ S'installe automatiquement lorsque bf_subscription ET bf_dashboard sont présent
     """,
     'author': 'Les services de consultation Blue Fox, Inc.',
     'website': 'https://symbifox.com',
-    'license': 'LGPL-3',
+    'license': 'Other proprietary',
     'depends': ['bf_subscription', 'bf_dashboard'],
     'assets': {
         'web.assets_backend': [

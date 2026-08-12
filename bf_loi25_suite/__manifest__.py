@@ -3,7 +3,7 @@
     "summary": "One-click install of the Symbifox Quebec Loi 25 compliance stack",
     "version": "18.0.1.1.0",
     "category": "Privacy/Compliance",
-    "license": "LGPL-3",
+    "license": "Other proprietary",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",
     "depends": [

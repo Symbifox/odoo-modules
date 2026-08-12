@@ -6,7 +6,7 @@
     "category": "Services",
     'website': 'https://symbifox.com',
     "author": "Les services de consultation Blue Fox, Inc.",
-    'license': 'LGPL-3',  # Odoo requires LGPL-3 or proprietary for Community modules
+    'license': 'Other proprietary',  # Odoo requires LGPL-3 or proprietary for Community modules
     "application": True,
     "installable": True,
     "depends": [

@@ -22,7 +22,7 @@ Fonctionnalités
     """,
     'author': 'Les services de consultation Blue Fox, Inc.',
     'website': 'https://symbifox.com',
-    'license': 'LGPL-3',
+    'license': 'Other proprietary',
     'depends': ['base', 'mail', 'bf_lexend', 'bf_onboarding_base'],
     'external_dependencies': {
         # PyPDF2 powers the "PDF overlay" letterhead mode (stamping the body

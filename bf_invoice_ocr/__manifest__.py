@@ -5,7 +5,7 @@
     "category": "Accounting",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",
-    "license": "LGPL-3",
+    "license": "Other proprietary",
     "depends": ["account", "bf_llm"],
     "data": [
         "views/account_move_views.xml",

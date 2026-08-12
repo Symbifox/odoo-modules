@@ -60,7 +60,7 @@ c'est le même rapport, pas le même octet.
     """,
     'author': 'Les services de consultation Blue Fox, Inc.',
     'website': 'https://symbifox.com',
-    'license': 'LGPL-3',
+    'license': 'Other proprietary',
     'depends': ['bf_meeting', 'portal'],
     'data': [
         'views/meeting_portal_templates.xml',

@@ -52,7 +52,7 @@ compte rendu.
     """,
     'author': 'Les services de consultation Blue Fox, Inc.',
     'website': 'https://symbifox.com',
-    'license': 'LGPL-3',
+    'license': 'Other proprietary',
     'depends': ['project', 'mail', 'calendar', 'project_knowledge_matrix', 'bf_onboarding_base', 'bf_timezone'],
     'data': [
         'security/meeting_security.xml',

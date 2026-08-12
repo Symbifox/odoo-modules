@@ -12,7 +12,7 @@ tous deux présents.
     """,
     'author': 'Les services de consultation Blue Fox, Inc.',
     'website': 'https://symbifox.com',
-    'license': 'LGPL-3',
+    'license': 'Other proprietary',
     'depends': ['bf_subscription', 'daily_todo_digest'],
     'data': [
         'views/daily_digest_views.xml',

@@ -5,7 +5,7 @@
     "category": "Human Resources",
     'website': 'https://symbifox.com',
     "author": "Les services de consultation Blue Fox, Inc.",
-    'license': 'LGPL-3',
+    'license': 'Other proprietary',
     "application": True,
     "installable": True,
     "post_init_hook": "_post_init_backfill",
