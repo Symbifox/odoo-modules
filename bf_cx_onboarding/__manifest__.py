@@ -3,7 +3,7 @@
     "summary": "Panneau de mise en route du module Expérience client",
     "version": "18.0.1.0.0",
     "category": "Marketing/Customer Experience",
-    "author": "Les services de consultation Les services de consultation Blue Fox, Inc.",
+    "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",
     "license": "LGPL-3",
     "application": False,

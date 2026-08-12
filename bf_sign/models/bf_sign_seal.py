@@ -2,7 +2,7 @@
 
 Once all signers have signed and the document is sealed visually + certified,
 this layer embeds an **invisible cryptographic signature** with an organisation
-certificate ("Blue Fox Inc."), so any PDF reader (Adobe) shows the document as
+certificate (the installed company), so any PDF reader (Adobe) shows the document as
 *signed and not tampered* — the DocuSeal-style automatic seal. Implemented with
 **pyHanko** (modern, cryptography-based PDF signing — no oscrypto).
 
@@ -18,7 +18,7 @@ import logging
 import os
 
 from odoo import _, api, models
-from odoo.exceptions import UserError
+from odoo.exceptions import AccessError, UserError
 
 _logger = logging.getLogger(__name__)
 
@@ -109,6 +109,25 @@ class BfSignSeal(models.AbstractModel):
         return self.env["ir.config_parameter"].sudo()
 
     @api.model
+    def _require_admin(self):
+        """Gate the key-management entry points.
+
+        This is an AbstractModel, so it has no table and no ``ir.model.access``
+        row can apply to it — yet its public methods are still dispatched over
+        RPC like any other model's. Anything that reads or writes the sealing
+        key material therefore has to check rights itself; there is no ACL layer
+        underneath to fall back on.
+
+        The sealing methods (``seal_pdf``, ``verify_pdf``, ``has_cert``) are
+        deliberately NOT gated: they run inside the signing flow, where the
+        environment belongs to a portal or public signer.
+        """
+        if not self.env.user.has_group("base.group_system"):
+            raise AccessError(_(
+                "Seul un administrateur peut consulter ou modifier la clé de "
+                "scellement."))
+
+    @api.model
     def has_cert(self):
         return bool(self._icp().get_param(CERT_PARAM) and self._icp().get_param(KEY_PARAM))
 
@@ -116,6 +135,7 @@ class BfSignSeal(models.AbstractModel):
     @api.model
     def fernet_key_source(self):
         """'conf' (env/odoo.conf), 'db', or None — for the Settings status line."""
+        self._require_admin()
         return _fernet_key_source(self.env)
 
     @api.model
@@ -137,6 +157,7 @@ class BfSignSeal(models.AbstractModel):
         Refuses to swap an in-use key while a seal certificate exists — that
         would make the encrypted certificate undecryptable.
         """
+        self._require_admin()
         value = (value or "").strip()
         if not value:
             return
@@ -154,6 +175,7 @@ class BfSignSeal(models.AbstractModel):
     @api.model
     def action_generate_fernet_key(self):
         """Generate a fresh Fernet key and store it in the DB (one-time setup)."""
+        self._require_admin()
         if not Fernet:
             raise UserError(_("Le paquet « cryptography » est requis."))
         if _fernet_key(self.env):
@@ -175,6 +197,7 @@ class BfSignSeal(models.AbstractModel):
     @api.model
     def action_generate_cert(self):
         """Generate a self-signed organisation sealing certificate (once)."""
+        self._require_admin()
         if self.has_cert():
             raise UserError(_("Un certificat de scellement existe déjà."))
         from datetime import datetime, timedelta, timezone
@@ -184,7 +207,7 @@ class BfSignSeal(models.AbstractModel):
         from cryptography.hazmat.primitives.asymmetric import rsa
         from cryptography.x509.oid import NameOID
 
-        org = self.env.company.name or "Blue Fox Inc."
+        org = self.env.company.name or "Les services de consultation Blue Fox, Inc."
         key = rsa.generate_private_key(public_exponent=65537, key_size=3072)
         subject = issuer = x509.Name([
             x509.NameAttribute(NameOID.ORGANIZATION_NAME, org),

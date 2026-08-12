@@ -12,7 +12,7 @@ Pack de données pour le module ``privacy_consent`` (Vie privée). Ajoute le cad
 Officer, principes de confidentialité (IPP), droits d'accès et de correction,
 schéma de notification d'incident (NotifyUs, « serious harm ») et citations.
     """,
-    "author": "Les services de consultation Les services de consultation Blue Fox, Inc.",
+    "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",
     "license": 'Other proprietary',
     "depends": ["privacy_consent"],

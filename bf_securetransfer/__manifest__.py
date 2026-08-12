@@ -36,7 +36,7 @@ Transfert de fichiers « WeTransfer maison » propulsé par Odoo :
 Les clés d'accès S3 vivent dans ``odoo.conf`` (ou l'environnement), jamais
 en base de données.
     """,
-    'author': 'Les services de consultation Les services de consultation Blue Fox, Inc.',
+    'author': 'Les services de consultation Blue Fox, Inc.',
     'website': 'https://symbifox.com',
     'license': 'Other proprietary',
     'depends': [

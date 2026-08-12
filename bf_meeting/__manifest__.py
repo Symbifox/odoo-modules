@@ -50,7 +50,7 @@ Les tâches sont résolues dynamiquement à l'ouverture de l'ordre du jour, et
 disparaissent automatiquement lorsqu'elles sont fermées ou transférées au
 compte rendu.
     """,
-    'author': 'Les services de consultation Les services de consultation Blue Fox, Inc.',
+    'author': 'Les services de consultation Blue Fox, Inc.',
     'website': 'https://symbifox.com',
     'license': 'LGPL-3',
     'depends': ['project', 'mail', 'calendar', 'project_knowledge_matrix', 'bf_onboarding_base', 'bf_timezone'],

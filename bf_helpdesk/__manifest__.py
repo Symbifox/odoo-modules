@@ -3,7 +3,7 @@
     "summary": "Fork OCA helpdesk_mgmt with BF integrations: hour bank, ticket timesheets, waiting states, branded public form, ntfy critical hook",
     "version": "18.0.4.3.1",
     "category": "After-Sales",
-    "author": "Les services de consultation Les services de consultation Blue Fox, Inc.",
+    "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",
     'license': 'AGPL-3',
     "depends": [

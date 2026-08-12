@@ -18,7 +18,7 @@ Bonus: cogwheel action « Réordonner ce chatter par date » that scans the
 current record's messages and re-parses the original Date header from quoted
 body content when the import lost it.
     """,
-    "author": "Les services de consultation Les services de consultation Blue Fox, Inc.",
+    "author": "Les services de consultation Blue Fox, Inc.",
     'website': 'https://symbifox.com',
     "category": "Productivity",
     'license': 'LGPL-3',

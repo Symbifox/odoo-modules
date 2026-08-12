@@ -23,7 +23,7 @@ journalisé sur la cible sans un clic de plus.
 La saisie manuelle reste possible : elle ne fait plus double emploi, le
 rapprochement ne crée jamais deux fois le même appel.
     """,
-    "author": "Les services de consultation Les services de consultation Blue Fox, Inc.",
+    "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",
     "license": "LGPL-3",
     "depends": ["bf_outreach", "bf_sms_archive"],

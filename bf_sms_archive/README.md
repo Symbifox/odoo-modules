@@ -541,3 +541,7 @@ This module is licensed under LGPL-3.
 ---
 
 <sub>Authored and maintained by Les services de consultation Blue Fox, Inc. AI coding assistants were used as productivity tools during development.</sub>
+
+## Third-party assets
+
+`static/fonts/NotoEmoji-Regular.ttf` is Noto Emoji, Copyright 2013 Google LLC, licensed under the SIL Open Font License 1.1. The full licence text ships alongside it as `static/fonts/OFL.txt`.

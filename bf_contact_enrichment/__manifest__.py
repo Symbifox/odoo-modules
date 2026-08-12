@@ -4,7 +4,7 @@
                "détection de doublons et score de complétude — via la passerelle bf_llm",
     "version": "18.0.1.2.0",
     "category": "Contacts",
-    "author": "Les services de consultation Les services de consultation Blue Fox, Inc.",
+    "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",
     "license": "LGPL-3",
     "depends": [

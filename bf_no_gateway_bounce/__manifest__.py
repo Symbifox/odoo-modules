@@ -32,7 +32,7 @@
         which records real delivery failures against partners) is a different
         code path and is untouched.
     """,
-    "author": "Les services de consultation Les services de consultation Blue Fox, Inc.",
+    "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",
     "license": "LGPL-3",
     "depends": ["mail"],

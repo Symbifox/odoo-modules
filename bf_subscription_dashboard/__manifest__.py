@@ -9,7 +9,7 @@ renouvellements à venir, dormants) au tableau de bord Symbifox (bf_dashboard).
 
 S'installe automatiquement lorsque bf_subscription ET bf_dashboard sont présents.
     """,
-    'author': 'Les services de consultation Les services de consultation Blue Fox, Inc.',
+    'author': 'Les services de consultation Blue Fox, Inc.',
     'website': 'https://symbifox.com',
     'license': 'LGPL-3',
     'depends': ['bf_subscription', 'bf_dashboard'],

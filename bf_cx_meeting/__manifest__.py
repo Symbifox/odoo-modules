@@ -4,7 +4,7 @@
     "version": "18.0.1.2.0",
     "post_init_hook": "post_init_hook",
     "category": "Marketing/Customer Experience",
-    "author": "Les services de consultation Les services de consultation Blue Fox, Inc.",
+    "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",
     "license": "LGPL-3",
     "application": False,

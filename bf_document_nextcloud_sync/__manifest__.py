@@ -4,7 +4,7 @@
     "version": "18.0.1.3.0",
     "category": "Services/Project",
     "website": "https://symbifox.com",
-    "author": "Les services de consultation Les services de consultation Blue Fox, Inc.",
+    "author": "Les services de consultation Blue Fox, Inc.",
     "license": "LGPL-3",
     "application": False,
     "installable": True,

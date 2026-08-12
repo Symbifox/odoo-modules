@@ -21,7 +21,7 @@ et ponctuelle, et l'abonnement reste en brouillon pour révision.
 S'installe automatiquement lorsque hosting_management ET bf_subscription sont
 tous deux présents.
 """,
-    'author': "Les services de consultation Les services de consultation Blue Fox, Inc.",
+    'author': "Les services de consultation Blue Fox, Inc.",
     'website': "https://symbifox.com",
     'license': 'LGPL-3',
     'depends': ['hosting_management', 'bf_subscription'],

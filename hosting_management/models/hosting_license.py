@@ -62,7 +62,7 @@ class HostingLicense(models.Model):
         tracking=True,
         index=True,
         default=lambda self: self.env.company.partner_id,
-        help="Entité qui a acheté la licence (Blue Fox Inc. pour les pools "
+        help="Entité qui a acheté la licence (Les services de consultation Blue Fox, Inc. pour les pools "
         "mutualisés, ou le partenaire client).",
     )
     purchase_date = fields.Date(string="Date d'achat", tracking=True)

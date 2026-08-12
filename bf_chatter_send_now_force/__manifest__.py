@@ -11,7 +11,7 @@ flag — this module restores parity for the UI button.
 
 BF tâche #22327 fallout.
     """,
-    "author": "Les services de consultation Les services de consultation Blue Fox, Inc.",
+    "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",
     "category": "Productivity",
     "license": "LGPL-3",

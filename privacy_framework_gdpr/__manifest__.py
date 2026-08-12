@@ -17,7 +17,7 @@ Une fois installé, sélectionnez ce cadre par défaut sur la société, ou par
 enregistrement (consentement, avis, calendrier de conservation), pour faire le
 rendu des courriels et certificats selon le GDPR.
     """,
-    "author": "Les services de consultation Les services de consultation Blue Fox, Inc.",
+    "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",
     "license": 'Other proprietary',
     "depends": ["privacy_consent"],

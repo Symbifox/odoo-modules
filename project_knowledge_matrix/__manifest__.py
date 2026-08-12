@@ -41,7 +41,7 @@ Fonctionnalités:
 * Planification flexible : hebdomadaire, bimensuel, mensuel ou intervalle personnalisé
 * Activités de suivi automatiques pour les échéances et éléments en retard
     """,
-    'author': 'Les services de consultation Les services de consultation Blue Fox, Inc.',
+    'author': 'Les services de consultation Blue Fox, Inc.',
     'website': 'https://symbifox.com',
     'license': 'LGPL-3',
     # bf_onboarding_base porte les champs de marque (report_brand_*) sur
