@@ -76,7 +76,7 @@ The *image*, *PDF* and *pre-printed* modes use the company's configurable
 ### Optional integrations (detected at runtime)
 - **`bf_persona`**: prefills the salutation and closing from the recipient's
   persona.
-- **`bf_claude_chat`**: a "Review with Claude" button that opens the assistant
+- **`bf_claude_chat`**: a "Review with GenFox" button that opens the assistant
   with the letter in context.
 - No hard dependency: the module works on its own, and the buttons disappear
   when those modules are not installed.

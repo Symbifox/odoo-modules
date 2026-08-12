@@ -472,7 +472,7 @@ class MeetingAgenda(models.Model):
         ('queued', "En cours"),
         ('done', 'Terminé'),
         ('error', 'Erreur'),
-    ], string="Pré-remplissage TentaClaude", default='none', readonly=True, copy=False)
+    ], string="Pré-remplissage GenFox", default='none', readonly=True, copy=False)
     is_today = fields.Boolean(
         string="Aujourd'hui",
         compute='_compute_is_today',
@@ -751,7 +751,7 @@ class MeetingAgenda(models.Model):
         self.ensure_one()
         if not self.env.user.has_group("bf_meeting.group_meeting_manager"):
             raise UserError(
-                "Le pré-remplissage TentaClaude est réservé aux gestionnaires "
+                "Le pré-remplissage GenFox est réservé aux gestionnaires "
                 "(groupe « Rencontres / Gestionnaire »)."
             )
         if not self.project_id:
@@ -770,7 +770,7 @@ class MeetingAgenda(models.Model):
                 "type": "info",
                 "title": "Pré-remplissage lancé",
                 "message": (
-                    "TentaClaude pré-remplit l'ordre du jour. "
+                    "GenFox pré-remplit l'ordre du jour. "
                     "Le résultat apparaîtra dans le formulaire dans quelques minutes."
                 ),
                 "sticky": False,

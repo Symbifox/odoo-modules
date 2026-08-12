@@ -1,6 +1,6 @@
-# TentaClaude - Odoo 18 module
+# GenFox - Odoo 18 module
 
-An Odoo module for chatting with Claude AI directly inside the Odoo interface,
+An Odoo module for chatting with GenFox, the AI assistant, directly inside the Odoo interface,
 through an integrated side panel and a full-screen page.
 
 ## Architecture
@@ -12,7 +12,7 @@ bf_claude_chat/
 ├── models/
 │   ├── claude_chat_session.py   # claude.chat.session model
 │   ├── claude_chat_message.py   # claude.chat.message model
-│   └── res_config_settings.py   # Settings (Settings > TentaClaude)
+│   └── res_config_settings.py   # Settings (Settings > GenFox)
 ├── security/
 │   ├── security.xml             # Access rules (own sessions, admin all)
 │   └── ir.model.access.csv      # Model ACLs
@@ -38,7 +38,7 @@ bf_claude_chat/
 
 ### Side panel (systray)
 
-- A "Claude" button in the Odoo navigation bar
+- A "GenFox" button in the Odoo navigation bar
 - Opens as a right-hand side panel (50% of screen width, min 420px, max 800px)
 - Semi-transparent overlay, closed with Escape / clicking the overlay / the X button
 - **Portal pattern**: the overlay is moved to `<body>` in JS to escape the navbar's stacking context and display above every Odoo element (chatter, statusbar, modals)
@@ -49,7 +49,7 @@ bf_claude_chat/
 
 ### Full-screen page
 
-- Reached through the main "TentaClaude" menu or the panel's expand button
+- Reached through the main "GenFox" menu or the panel's expand button
 - Session sidebar (280px) plus a centred chat area (max 900px)
 - Session renaming by double-click or the pencil icon
 - Session archiving (soft delete through the `active` field)
@@ -100,7 +100,7 @@ Every endpoint is `type="json"`, `auth="user"`, `methods=["POST"]`.
 
 | Route | Description |
 |-------|-------------|
-| `/claude-chat/send` | Sends a message, returns Claude's reply |
+| `/claude-chat/send` | Sends a message, returns the assistant's reply |
 | `/claude-chat/sessions` | Lists sessions (filterable by res_model/res_id) |
 | `/claude-chat/messages` | A session's messages |
 | `/claude-chat/rename-session` | Renames a session |
@@ -110,19 +110,19 @@ Every endpoint is `type="json"`, `auth="user"`, `methods=["POST"]`.
 
 ## Talking to the bridge
 
-The module talks to the TentaClaude bridge service over a **Unix socket**
+The module talks to the GenFox bridge service over a **Unix socket**
 (`/run/claude-bridge/bridge.sock` by default). The controller builds a raw HTTP
 request on the socket, sends the message together with the user and page
-context, and receives Claude's reply.
+context, and receives the assistant's reply.
 
 The smart title is generated in the background by a daemon thread calling
 `/generate-title` on the bridge after the first exchange.
 
-## Configuration (Settings > TentaClaude)
+## Configuration (Settings > GenFox)
 
 | Setting | Default | Description |
 |---------|---------|-------------|
-| Enable Claude AI | True | Turns the chatbot on/off |
+| Enable GenFox | True | Turns the chatbot on/off |
 | Model | sonnet | Claude model (sonnet/opus/haiku) |
 | Max Turns | 25 | Maximum tool cycles per message |
 | Response Timeout | 660s | Maximum delay for a reply (bridge 600s + 60s buffer) |
@@ -181,7 +181,7 @@ DOM after OWL render:            DOM after the portal:
 
 <nav .o_main_navbar>              <nav .o_main_navbar>
   <div .o_menu_systray>             <div .o_menu_systray>
-    <button>Claude</button>           <button>Claude</button>
+    <button>GenFox</button>           <button>GenFox</button>
     <div .bf-panel-overlay>  ---->    <!-- bf-overlay-anchor -->
       <div .bf-side-panel/>         </div>
     </div>                        </nav>
