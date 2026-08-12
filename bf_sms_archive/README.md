@@ -544,4 +544,4 @@ This module is licensed under LGPL-3.
 
 ## Third-party assets
 
-`static/fonts/NotoEmoji-Regular.ttf` is Noto Emoji, Copyright 2013 Google LLC, licensed under the SIL Open Font License 1.1. The full licence text ships alongside it as `static/fonts/OFL.txt`.
+`static/fonts/NotoEmoji-Regular.ttf` is Noto Emoji, Copyright 2013 Google LLC, under the SIL Open Font License 1.1. See [`THIRD-PARTY.md`](THIRD-PARTY.md) for the full notice, including the fact that this is a static instance of the upstream variable font.
