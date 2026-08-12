@@ -29,7 +29,7 @@ Fonctionnalités
   contacts dus, afin que personne ne tombe entre deux chaises.
 * Passerelle CRM : création d'une opportunité à partir d'une cible qualifiée.
     """,
-    "author": "Les services de consultation Les services de consultation Blue Fox, Inc.",
+    "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",
     "license": "LGPL-3",
     "depends": ["mail", "contacts", "crm", "phone_validation", "bf_onboarding_base"],

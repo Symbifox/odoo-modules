@@ -3,7 +3,7 @@
     "version": "18.0.1.9.0",
     "category": "Services/Timesheets",
     "summary": "Timer global de feuilles de temps avec multi-timer et interface OWL",
-    'author': 'Les services de consultation Les services de consultation Blue Fox, Inc.',
+    'author': 'Les services de consultation Blue Fox, Inc.',
     'website': 'https://symbifox.com',
     'license': 'LGPL-3',  # MIT — see README.md
     "depends": ["hr_timesheet", "project", "sh_task_time_adv", "base_setup", "bf_onboarding_base"],

@@ -24,6 +24,29 @@ has no BUSL value; the `LICENSE` file governs.
 If you want to use a BUSL module beyond the grant above, [talk to us](https://symbifox.com) —
 we license individually and we are not difficult about it.
 
+## External dependencies
+
+Some modules extend third-party addons that are **not** in this repository. Odoo
+will refuse to install a module whose dependencies are missing, with an error
+that does not say where to find them — so source these first:
+
+| Addon | Licence | Where |
+|---|---|---|
+| `helpdesk_mgmt`, `helpdesk_mgmt_project` | AGPL-3 | [OCA/helpdesk](https://github.com/OCA/helpdesk) |
+| `contract` | AGPL-3 | [OCA/contract](https://github.com/OCA/contract) |
+| `donation` | AGPL-3 | [OCA/donation](https://github.com/OCA/donation) |
+| `resource_booking` | AGPL-3 | [OCA/calendar](https://github.com/OCA/calendar) |
+| `mail_composer_cc_bcc` | AGPL-3 | [OCA/social](https://github.com/OCA/social) |
+| `om_account_followup` | LGPL-3 | Odoo Mates |
+| `sh_task_time_adv` | OPL-1 — **paid** | Softhealer Technologies |
+
+`sh_task_time_adv` is commercial software you must buy separately. It is a
+dependency of `bf_chatter_timesheet` and `bf_timesheet_timer`, and therefore of
+the `bf_ops_pack` and `bf_productivity_pack` bundles.
+
+Modules that depend on an AGPL-3 addon are themselves AGPL-3 — see the `License`
+column in the table below.
+
 ## Bundles (recommended starting point)
 
 Install one of these meta-modules to pull in a coherent set in a single click:

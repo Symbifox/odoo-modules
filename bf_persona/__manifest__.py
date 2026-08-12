@@ -4,7 +4,7 @@
     "version": "18.0.2.1.0",
     "category": "Sales/CRM",
     'website': 'https://symbifox.com',
-    "author": "Les services de consultation Les services de consultation Blue Fox, Inc.",
+    "author": "Les services de consultation Blue Fox, Inc.",
     'license': 'LGPL-3',
     "application": False,
     "installable": True,

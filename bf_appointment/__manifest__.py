@@ -5,7 +5,7 @@
     "version": "18.0.2.34.0",
     "category": "Appointments",
     "summary": "Public self-service booking pages extending Resource Booking",
-    'author': 'Les services de consultation Les services de consultation Blue Fox, Inc.',
+    'author': 'Les services de consultation Blue Fox, Inc.',
     'website': 'https://symbifox.com',
     'license': 'LGPL-3',
     "depends": ["resource_booking", "portal", "mail", "project", "privacy_consent", "bf_onboarding_base", "bf_timezone"],

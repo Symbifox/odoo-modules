@@ -9,7 +9,7 @@ factures fournisseurs) : la facture est rendue en PDF, une demande de signature
 bf_sign liée est créée, et le document signé est reversé dans le fil de la pièce
 une fois signé par tous.
 """,
-    'author': "Les services de consultation Les services de consultation Blue Fox, Inc.",
+    'author': "Les services de consultation Blue Fox, Inc.",
     'website': "https://symbifox.com",
     'license': 'Other proprietary',
     'depends': ['bf_sign', 'account'],

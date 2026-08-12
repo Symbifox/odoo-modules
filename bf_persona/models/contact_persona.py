@@ -449,7 +449,7 @@ class ContactPersona(models.Model):
         }
 
     @api.model
-    def cron_recompute_payment_delay(self):
+    def _cron_recompute_payment_delay(self):
         # Recompute the stored field for all personas, in batches to keep the
         # cron memory-bounded.
         personas = self.search([])
@@ -458,7 +458,7 @@ class ContactPersona(models.Model):
             self.env.cr.commit()
 
     @api.model
-    def cron_flag_stale_tones(self, threshold_days=180):
+    def _cron_flag_stale_tones(self, threshold_days=180):
         cutoff = date.today() - timedelta(days=threshold_days)
         stale = self.search([
             "|",
@@ -538,7 +538,7 @@ class ContactPersona(models.Model):
         }
 
     @api.model
-    def cron_seed_personas(self, min_emails=3, window_days=90, batch=50):
+    def _cron_seed_personas(self, min_emails=3, window_days=90, batch=50):
         """Auto-create persona stubs for active contacts that don't have one yet.
 
         Selection: individual contacts (is_company=False), active, with either
@@ -607,7 +607,7 @@ class ContactPersona(models.Model):
     # ------------------------------------------------------------------
 
     @api.model
-    def cron_create_persona_refresh_activities(self, active_window_days=30):
+    def _cron_create_persona_refresh_activities(self, active_window_days=30):
         """Create a 'Réévaluer le persona' activity on stale + recently active personas.
 
         Off by default — opt-in via the cron record `bf_persona.cron_create_persona_refresh_activities`.
@@ -673,7 +673,7 @@ class ContactPersona(models.Model):
     # ------------------------------------------------------------------
 
     @api.model
-    def cron_detect_relationship_degradation(self):
+    def _cron_detect_relationship_degradation(self):
         """Score each active persona for tone drift on 30j vs 31-90j.
 
         A drift signal counts when:

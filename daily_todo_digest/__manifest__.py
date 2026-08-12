@@ -27,7 +27,7 @@ Features:
 
 Uses Symbifox branding.
     """,
-    'author': 'Les services de consultation Les services de consultation Blue Fox, Inc.',
+    'author': 'Les services de consultation Blue Fox, Inc.',
     'website': 'https://symbifox.com',
     'license': 'LGPL-3',
     "depends": [

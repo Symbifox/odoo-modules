@@ -10,7 +10,7 @@ dans le courriel du digest quotidien (daily_todo_digest).
 S'installe automatiquement lorsque bf_subscription ET daily_todo_digest sont
 tous deux présents.
     """,
-    'author': 'Les services de consultation Les services de consultation Blue Fox, Inc.',
+    'author': 'Les services de consultation Blue Fox, Inc.',
     'website': 'https://symbifox.com',
     'license': 'LGPL-3',
     'depends': ['bf_subscription', 'daily_todo_digest'],

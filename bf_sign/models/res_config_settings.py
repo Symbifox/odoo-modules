@@ -137,7 +137,7 @@ class ResConfigSettings(models.TransientModel):
         string="Sceau numérique du document (PAdES)",
         config_parameter="bf_sign.pdf_seal_enabled",
         default=True,
-        help="Apposer une signature numérique « Blue Fox Inc. » sur le document scellé "
+        help="Apposer une signature numérique au nom de votre société sur le document scellé "
              "(inaltérabilité vérifiable dans un lecteur PDF). Actif automatiquement dès "
              "qu'un certificat de scellement existe ; décochez pour le désactiver.",
     )

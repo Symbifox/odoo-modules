@@ -12,10 +12,10 @@ Three data fixes on res.company for the Blue Fox tenant (company id=1):
    into web.report_assets_common (this same version), the pill *would* render —
    but the existing footer also hardcodes the wrong TPS/TVQ numbers from the
    pre-incorporation enr., plus the wrong contact email. We rewrite the whole
-   footer with the correct Blue Fox Inc. fiscal identifiers and a clean link
+   footer with the correct Les services de consultation Blue Fox, Inc. fiscal identifiers and a clean link
    to the T&C page (no editor file-box HTML).
 
-3. vat / l10n_ca_pst: align with the correct Blue Fox Inc. identifiers.
+3. vat / l10n_ca_pst: align with the correct Les services de consultation Blue Fox, Inc. identifiers.
    The previous values were from Blue Fox enr. (sole proprietorship, radié
    septembre 2025) and are now invalid. See
    reference_bf_corporate_identifiers.md.
@@ -30,7 +30,7 @@ from odoo import SUPERUSER_ID, api
 _logger = logging.getLogger(__name__)
 
 
-# Correct Blue Fox Inc. identifiers (post-incorporation 2025-06-27).
+# Correct Les services de consultation Blue Fox, Inc. identifiers (post-incorporation 2025-06-27).
 BF_VAT = "000000000 RT0001"           # NE / BN — TPS
 BF_QST = "0000000000 TQ0001"          # TVQ — RQ
 BF_EMAIL = "service@example.com"

@@ -18,7 +18,7 @@ Permet de faire signer les artefacts de consentement avec le moteur de signature
 S'installe automatiquement lorsque bf_sign ET privacy_consent sont tous deux
 présents.
 """,
-    'author': "Les services de consultation Les services de consultation Blue Fox, Inc.",
+    'author': "Les services de consultation Blue Fox, Inc.",
     'website': "https://symbifox.com",
     'license': 'Other proprietary',
     'depends': ['bf_sign', 'privacy_consent'],

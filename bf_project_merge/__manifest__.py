@@ -25,7 +25,7 @@ Antériorité : ce module remplit le même besoin que le module communautaire OC
 Fox Inc. et ajoute la réattribution complète du contenu (chatter, heures,
 dépendances, etc.).
 """,
-    "author": "Les services de consultation Les services de consultation Blue Fox, Inc.",
+    "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",
     "license": "LGPL-3",
     "depends": ["project"],

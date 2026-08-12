@@ -13,7 +13,7 @@ Pack de données pour le module ``privacy_consent`` (Vie privée). Ajoute le cad
 droits d'accès et de correction, seuil de notification d'incident (« risque réel
 de préjudice grave ») et citations. Pour les clients canadiens hors Québec.
     """,
-    "author": "Les services de consultation Les services de consultation Blue Fox, Inc.",
+    "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",
     "license": 'Other proprietary',
     "depends": ["privacy_consent"],
