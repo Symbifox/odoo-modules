@@ -1,0 +1,1238 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============================================================= -->
+    <!-- Public signing page                                            -->
+    <!-- ============================================================= -->
+    <template id="sign_page" name="BF Sign — Page de signature">
+        <t t-set="primary" t-value="req.company_id.report_brand_primary or '#29ABE1'"/>
+        <t t-set="dark" t-value="req.company_id.report_brand_dark or '#2D3031'"/>
+        &lt;!DOCTYPE html&gt;
+        <html lang="fr">
+            <head>
+                <meta charset="utf-8"/>
+                <meta name="viewport" content="width=device-width, initial-scale=1"/>
+                <title>Signature — <t t-esc="req.name"/></title>
+                <script type="text/javascript" src="/web/static/lib/signature_pad/signature_pad.umd.js"></script>
+                <style>
+                    :root { --bf-primary: <t t-esc="primary"/>; --bf-dark: <t t-esc="dark"/>; }
+                    * { box-sizing: border-box; }
+                    body { margin:0; font-family: system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+                           background:#f4f6f8; color:#2D3031; }
+                    .bf-header { background:var(--bf-dark); color:#fff; padding:16px 24px;
+                                 display:flex; align-items:center; gap:14px; }
+                    .bf-header img { max-height:34px; }
+                    .bf-header .t { font-weight:600; font-size:16px; }
+                    .bf-accent { height:4px; background:var(--bf-primary); }
+                    .bf-wrap { max-width:880px; margin:0 auto; padding:24px 16px 64px; }
+                    .bf-card { background:#fff; border:1px solid #e3e7eb; border-radius:10px;
+                               padding:22px; margin-bottom:18px; }
+                    .bf-card h2 { margin:0 0 12px; font-size:15px; text-transform:uppercase;
+                                  letter-spacing:.5px; color:var(--bf-primary); }
+                    .bf-meta { font-size:14px; color:#555; margin-bottom:6px; }
+                    iframe.bf-doc { width:100%; height:520px; border:1px solid #d7dce1; border-radius:6px; }
+                    /* Rendered document with placement markers */
+                    .bf-doc-view { display:flex; flex-direction:column; align-items:center;
+                                   gap:16px; margin-top:12px; }
+                    .bf-doc-loading, .bf-doc-fallback { padding:26px; color:#8a939b; font-size:14px;
+                                                        text-align:center; }
+                    .bf-doc-fallback a { color:var(--bf-primary); }
+                    .bf-page { position:relative; flex-shrink:0; width:100%; max-width:760px;
+                               border:1px solid #e3e7eb; background:#fff;
+                               box-shadow:0 1px 7px rgba(0,0,0,.12); }
+                    .bf-page-img { display:block; width:100%; height:auto; }
+                    .bf-marker { position:absolute; box-sizing:border-box; cursor:pointer;
+                                 border:2px dashed var(--bf-primary); border-radius:4px;
+                                 background:rgba(41,171,225,.10); background-size:contain;
+                                 background-repeat:no-repeat; background-position:center;
+                                 overflow:visible; }
+                    .bf-marker-badge { position:absolute; top:-11px; left:-11px; width:22px; height:22px;
+                                       background:var(--bf-primary); color:#fff; border-radius:50%;
+                                       font-size:12px; font-weight:700; line-height:22px; text-align:center;
+                                       box-shadow:0 1px 3px rgba(0,0,0,.35); z-index:2; }
+                    .bf-marker-label { position:absolute; left:0; top:-1px;
+                                       transform:translateY(-100%); white-space:nowrap;
+                                       font-size:11px; font-weight:600; color:var(--bf-primary);
+                                       background:rgba(255,255,255,.92); padding:1px 5px; border-radius:3px;
+                                       max-width:220px; overflow:hidden; text-overflow:ellipsis; }
+                    .bf-marker-value { position:absolute; left:3px; right:3px; bottom:2px;
+                                       font-size:11px; color:#11181f; line-height:1.2;
+                                       overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+                    .bf-marker-fill { border-color:#E67E22; background:rgba(230,126,34,.10); }
+                    .bf-marker-fill .bf-marker-label { color:#E67E22; }
+                    .bf-marker-filled { border-style:solid; border-color:#27AE60;
+                                        background-color:rgba(39,174,96,.07); }
+                    .bf-marker-filled .bf-marker-badge { background:#27AE60; }
+                    .bf-doc-legend { display:flex; flex-wrap:wrap; gap:8px 16px; margin:10px 0 0;
+                                     font-size:13px; color:#555; }
+                    .bf-doc-legend .it { display:flex; align-items:center; gap:6px; }
+                    .bf-num { display:inline-block; min-width:20px; height:20px; line-height:20px;
+                              text-align:center; background:var(--bf-primary); color:#fff;
+                              border-radius:50%; font-size:12px; font-weight:700; padding:0 3px; }
+                    .bf-href { display:inline-block; line-height:20px; padding:0 9px; margin-left:6px;
+                               background:var(--bf-primary); color:#fff; border-radius:11px;
+                               font-size:12px; font-weight:700; vertical-align:middle; }
+                    .bf-pad-wrap { position:relative; }
+                    canvas.bf-pad { width:100%; height:180px; border:1px dashed #9aa4ad;
+                                    border-radius:8px; background:#fff; touch-action:none; }
+                    .bf-pad-hint { position:absolute; left:14px; bottom:10px; color:#b6bdc4;
+                                   font-size:13px; pointer-events:none; }
+                    .bf-sigmode { display:flex; gap:8px; margin-bottom:10px; }
+                    .bf-mode-btn { border:1px solid #cfd6dc; background:#fff; border-radius:6px;
+                                   padding:6px 16px; font-size:13px; cursor:pointer; color:#555; }
+                    .bf-mode-btn.bf-mode-active { background:var(--bf-primary); color:#fff;
+                                                  border-color:var(--bf-primary); }
+                    .bf-type-row { display:flex; gap:8px; margin-top:10px; }
+                    .bf-type-input { flex:1; padding:11px; font-size:16px; border:1px solid #cfd6dc;
+                                     border-radius:8px; }
+                    .bf-type-style { padding:11px; border:1px solid #cfd6dc; border-radius:8px;
+                                     background:#fff; font-size:14px; }
+                    /* Bundled signature fonts (SIL OFL) — self-hosted so the typed
+                       styles render identically on every device. */
+                    @font-face { font-family:'Caveat'; font-style:normal; font-display:swap;
+                                 src:url('/bf_sign/static/fonts/Caveat.woff2') format('woff2'); }
+                    @font-face { font-family:'Dancing Script'; font-style:normal; font-display:swap;
+                                 src:url('/bf_sign/static/fonts/DancingScript.woff2') format('woff2'); }
+                    @font-face { font-family:'Great Vibes'; font-style:normal; font-display:swap;
+                                 src:url('/bf_sign/static/fonts/GreatVibes.woff2') format('woff2'); }
+                    .bf-upload-row { margin-top:10px; }
+                    .bf-file-input { width:100%; padding:10px; border:1px solid #cfd6dc;
+                                     border-radius:8px; background:#fff; font:inherit; cursor:pointer; }
+                    .bf-upload-hint { font-size:12px; color:#8a939b; margin-top:6px; }
+                    .bf-consent { display:flex; gap:10px; align-items:flex-start; font-size:14px; line-height:1.5; }
+                    .bf-consent input { margin-top:3px; transform:scale(1.25); }
+                    .bf-actions { display:flex; justify-content:space-between; align-items:center;
+                                  margin-top:14px; gap:12px; flex-wrap:wrap; }
+                    .bf-btn { border:0; border-radius:8px; padding:12px 22px; font-size:15px;
+                              font-weight:600; cursor:pointer; }
+                    .bf-btn-primary { background:var(--bf-primary); color:#fff; }
+                    .bf-btn-ghost { background:transparent; color:#555; border:1px solid #cfd6dc; }
+                    .bf-err { background:#fdecea; color:#b3261e; border:1px solid #f5c2bd;
+                              border-radius:8px; padding:12px 14px; font-size:14px; margin-bottom:16px; }
+                    .bf-foot { text-align:center; color:#9aa4ad; font-size:12px; margin-top:8px; }
+                </style>
+            </head>
+            <body>
+                <div class="bf-header">
+                    <img t-attf-src="/web/image/res.company/#{req.company_id.id}/#{req.company_id.report_brand_logo and 'report_brand_logo' or 'logo'}" alt=""/>
+                    <span class="t"><t t-esc="req.company_id.name"/></span>
+                </div>
+                <div class="bf-accent"/>
+                <div class="bf-wrap">
+
+                    <t t-if="error">
+                        <div class="bf-err">
+                            <t t-if="error_message"><t t-esc="error_message"/></t>
+                            <t t-else="">Veuillez signer (et parapher le cas échéant) puis cocher la case de consentement.</t>
+                        </div>
+                    </t>
+
+                    <div class="bf-card">
+                        <h2>Document à signer</h2>
+                        <t t-if="req.title">
+                            <div class="bf-meta"><strong>Document :</strong> <t t-esc="req.title"/></div>
+                        </t>
+                        <div class="bf-meta"><strong>Référence :</strong> <t t-esc="req.name"/></div>
+                        <div class="bf-meta"><strong>Signataire :</strong> <t t-esc="signer.name"/></div>
+                        <t t-if="overlay_fields">
+                            <p class="bf-meta" style="margin-top:8px;">
+                                Les zones numérotées sur le document indiquent où votre signature
+                                et vos informations seront apposées. Touchez une zone pour aller
+                                au champ correspondant.
+                            </p>
+                        </t>
+
+                        <!-- Rendered pages are injected here; markers are moved onto them -->
+                        <div id="bf_doc" class="bf-doc-view"
+                             t-attf-data-pdf="/sign/#{req.id}/#{access_token}/document">
+                            <div class="bf-doc-loading">Chargement du document…</div>
+                        </div>
+
+                        <!-- Marker prototypes (hidden): JS repositions them onto each page -->
+                        <div id="bf_markers" style="display:none;">
+                            <t t-foreach="overlay_fields" t-as="of">
+                                <t t-set="n" t-value="field_numbers[of.id]"/>
+                                <t t-set="is_fill" t-value="of.field_type in value_types"/>
+                                <t t-set="is_input"
+                                   t-value="is_fill and of.fill_mode == 'signer'"/>
+                                <div t-attf-class="bf-marker#{is_fill and ' bf-marker-fill' or ''}"
+                                     t-att-data-page="of.page"
+                                     t-att-data-x="of.pos_x" t-att-data-y="of.pos_y"
+                                     t-att-data-w="of.width" t-att-data-h="of.height"
+                                     t-att-data-type="of.field_type"
+                                     t-att-data-input="is_input and ('field_%s' % of.id) or ''">
+                                    <span class="bf-marker-badge"><t t-esc="n"/></span>
+                                    <span class="bf-marker-label">
+                                        <t t-esc="of._marker_label()"/>
+                                    </span>
+                                    <span class="bf-marker-value">
+                                        <t t-if="of.fill_mode == 'fixed'"><t t-esc="of.value_text or ''"/></t>
+                                        <t t-elif="of.fill_mode == 'auto'"><t t-esc="of._auto_placeholder()"/></t>
+                                    </span>
+                                </div>
+                            </t>
+                        </div>
+
+                        <noscript>
+                            <iframe class="bf-doc" t-attf-src="/sign/#{req.id}/#{access_token}/document"/>
+                        </noscript>
+                    </div>
+
+                    <form method="post" t-attf-action="/sign/#{req.id}/#{access_token}/submit" id="bf_form">
+                        <input type="hidden" name="signature" id="bf_sign_data"/>
+                        <input type="hidden" name="initials" id="bf_ini_data"/>
+
+                        <div class="bf-card" id="bf_card_signature">
+                            <h2>Votre signature<t t-if="sig_nums"><span class="bf-href" t-esc="sig_nums"/></t></h2>
+                            <t t-if="sig_nums">
+                                <p class="bf-meta">Apparaîtra à l'emplacement <t t-esc="sig_nums"/> du document.</p>
+                            </t>
+                            <div class="bf-sigmode">
+                                <button type="button" class="bf-mode-btn bf-mode-active" data-sigmode="draw">Dessiner</button>
+                                <button type="button" class="bf-mode-btn" data-sigmode="type">Saisir</button>
+                                <button type="button" class="bf-mode-btn" data-sigmode="upload">Téléverser</button>
+                            </div>
+                            <div class="bf-pad-wrap">
+                                <canvas class="bf-pad" id="bf_pad"></canvas>
+                                <span class="bf-pad-hint" id="bf_pad_hint">Signez ici</span>
+                            </div>
+                            <div class="bf-type-row" id="bf_type_row" style="display:none;">
+                                <input type="text" class="bf-type-input" id="bf_type_name"
+                                       t-att-value="signer.name or ''" placeholder="Tapez votre nom"/>
+                                <select class="bf-type-style" id="bf_type_style">
+                                    <option value="'Caveat', cursive">Manuscrit</option>
+                                    <option value="'Dancing Script', cursive">Cursif</option>
+                                    <option value="'Great Vibes', cursive">Élégant</option>
+                                </select>
+                            </div>
+                            <div class="bf-upload-row" id="bf_up_row" style="display:none;">
+                                <input type="file" class="bf-file-input" id="bf_up_file" accept="image/png,image/jpeg"/>
+                                <div class="bf-upload-hint">PNG ou JPG — l'image sera ajustée à la zone de signature.</div>
+                            </div>
+                            <div class="bf-actions">
+                                <button type="button" class="bf-btn bf-btn-ghost" data-clear="bf_pad">Effacer</button>
+                            </div>
+                        </div>
+
+                        <t t-if="need_initials">
+                            <div class="bf-card" id="bf_card_initials">
+                                <h2>Votre paraphe<t t-if="ini_nums"><span class="bf-href" t-esc="ini_nums"/></t></h2>
+                                <div class="bf-sigmode">
+                                    <button type="button" class="bf-mode-btn bf-mode-active" data-inimode="draw">Dessiner</button>
+                                    <button type="button" class="bf-mode-btn" data-inimode="type">Saisir</button>
+                                    <button type="button" class="bf-mode-btn" data-inimode="upload">Téléverser</button>
+                                </div>
+                                <div class="bf-pad-wrap">
+                                    <canvas class="bf-pad" id="bf_pad_initials"></canvas>
+                                    <span class="bf-pad-hint" id="bf_pad_ini_hint">Paraphez ici</span>
+                                </div>
+                                <div class="bf-type-row" id="bf_ini_type_row" style="display:none;">
+                                    <input type="text" class="bf-type-input" id="bf_ini_type_name"
+                                           t-att-value="default_initials" placeholder="Vos initiales" maxlength="6"/>
+                                    <select class="bf-type-style" id="bf_ini_type_style">
+                                        <option value="'Caveat', cursive">Manuscrit</option>
+                                        <option value="'Dancing Script', cursive">Cursif</option>
+                                        <option value="'Great Vibes', cursive">Élégant</option>
+                                    </select>
+                                </div>
+                                <div class="bf-upload-row" id="bf_ini_up_row" style="display:none;">
+                                    <input type="file" class="bf-file-input" id="bf_ini_up_file" accept="image/png,image/jpeg"/>
+                                    <div class="bf-upload-hint">PNG ou JPG — l'image sera ajustée à la zone du paraphe.</div>
+                                </div>
+                                <div class="bf-actions">
+                                    <button type="button" class="bf-btn bf-btn-ghost" data-clear="bf_pad_initials">Effacer</button>
+                                </div>
+                            </div>
+                        </t>
+
+                        <!-- Reading order, so the numbers next to the inputs ascend the
+                             same way as the badges drawn on the document. -->
+                        <t t-set="fill_fields" t-value="overlay_fields.filtered(lambda f: f.field_type in value_types and f.fill_mode == 'signer')"/>
+                        <t t-if="fill_fields">
+                            <div class="bf-card" id="bf_card_fill">
+                                <h2>Informations à remplir</h2>
+                                <t t-foreach="fill_fields" t-as="ff">
+                                    <div style="margin-bottom:14px;">
+                                        <t t-if="ff.field_type == 'checkbox'">
+                                            <label t-attf-for="field_#{ff.id}" style="display:flex; align-items:center; gap:8px; font-size:14px; color:#444;">
+                                                <span class="bf-num"><t t-esc="field_numbers[ff.id]"/></span>
+                                                <input type="checkbox" value="on"
+                                                       t-attf-id="field_#{ff.id}" t-attf-name="field_#{ff.id}"
+                                                       t-att-required="ff.required and 'required' or None"
+                                                       style="width:18px; height:18px; flex:none;"/>
+                                                <span>
+                                                    <t t-esc="ff._marker_label()"/>
+                                                    <span t-if="ff.required" style="color:#b3261e;"> *</span>
+                                                </span>
+                                            </label>
+                                        </t>
+                                        <t t-else="">
+                                            <label t-attf-for="field_#{ff.id}" style="display:flex; align-items:center; gap:8px; font-size:14px; margin-bottom:4px; color:#444;">
+                                                <span class="bf-num"><t t-esc="field_numbers[ff.id]"/></span>
+                                                <span>
+                                                    <t t-esc="ff._marker_label()"/>
+                                                    <span t-if="ff.required" style="color:#b3261e;"> *</span>
+                                                </span>
+                                            </label>
+                                            <input t-attf-id="field_#{ff.id}" t-attf-name="field_#{ff.id}"
+                                                   t-att-type="ff.field_type == 'date' and 'date' or (ff.field_type == 'email' and 'email' or (ff.field_type == 'number' and 'number' or 'text'))"
+                                                   t-att-step="ff.field_type == 'number' and 'any' or None"
+                                                   t-att-maxlength="ff.field_type != 'number' and max_field_chars or None"
+                                                   t-att-required="ff.required and 'required' or None"
+                                                   style="width:100%; padding:10px; border:1px solid #cfd6dc; border-radius:8px; font:inherit;"/>
+                                        </t>
+                                    </div>
+                                </t>
+                            </div>
+                        </t>
+
+                        <div class="bf-card">
+                            <h2>Consentement</h2>
+                            <label class="bf-consent">
+                                <input type="checkbox" name="consent" id="bf_consent" value="on"/>
+                                <span t-esc="req.consent_text"/>
+                            </label>
+                            <div class="bf-actions">
+                                <span class="bf-meta">En signant, vous acceptez ce qui précède.</span>
+                                <button type="submit" class="bf-btn bf-btn-primary" id="bf_submit">
+                                    Signer le document
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+
+                    <form method="post" t-attf-action="/sign/#{req.id}/#{access_token}/refuse"
+                          id="bf_refuse_form" class="bf-card">
+                        <h2>Refuser de signer</h2>
+                        <p class="bf-meta">Si vous ne souhaitez pas signer ce document, indiquez la raison
+                            (facultatif) puis confirmez. L'expéditeur en sera informé.</p>
+                        <textarea name="reason" rows="2" placeholder="Motif (facultatif)"
+                                  style="width:100%; border:1px solid #cfd6dc; border-radius:8px; padding:10px; font:inherit; resize:vertical;"/>
+                        <div class="bf-actions">
+                            <span class="bf-meta">Cette action met fin à la demande de signature.</span>
+                            <button type="submit" class="bf-btn bf-btn-ghost" id="bf_refuse_btn">
+                                Refuser de signer
+                            </button>
+                        </div>
+                    </form>
+
+                    <div class="bf-foot">
+                        Signature électronique — la piste de vérification (horodatage, IP) est enregistrée.
+                    </div>
+                </div>
+
+                <script type="text/javascript">
+                    <![CDATA[
+                    (function () {
+                        var pads = {};
+                        var mirror = { pads: function () {} };  // set once markers are wired
+                        function setupPad(id) {
+                            var canvas = document.getElementById(id);
+                            if (!canvas) { return null; }
+                            var pad = new SignaturePad(canvas, { penColor: '#11181f' });
+                            function resize() {
+                                var ratio = Math.max(window.devicePixelRatio || 1, 1);
+                                var data = pad.toData();
+                                canvas.width = canvas.offsetWidth * ratio;
+                                canvas.height = canvas.offsetHeight * ratio;
+                                canvas.getContext('2d').scale(ratio, ratio);
+                                pad.clear();
+                                if (data && data.length) { pad.fromData(data); }
+                            }
+                            window.addEventListener('resize', resize);
+                            resize();
+                            pads[id] = pad;
+                            return pad;
+                        }
+                        setupPad('bf_pad');
+                        setupPad('bf_pad_initials');
+                        // Warm up the bundled signature fonts so the first typed render
+                        // doesn't flash a system fallback.
+                        if (document.fonts && document.fonts.load) {
+                            ['Caveat', 'Dancing Script', 'Great Vibes'].forEach(function (f) {
+                                document.fonts.load("48px '" + f + "'");
+                            });
+                        }
+                        // ── Typed entry (alternative to drawing) — drives both the ─────────
+                        //    signature and the initials pad through one config table.
+                        var TYPERS = {
+                            signature: { mode: 'draw', pad: 'bf_pad', canvas: 'bf_pad',
+                                         row: 'bf_type_row', hint: 'bf_pad_hint',
+                                         name: 'bf_type_name', style: 'bf_type_style',
+                                         uploadRow: 'bf_up_row', file: 'bf_up_file',
+                                         uploaded: false, attr: 'data-sigmode' },
+                            initials:  { mode: 'draw', pad: 'bf_pad_initials', canvas: 'bf_pad_initials',
+                                         row: 'bf_ini_type_row', hint: 'bf_pad_ini_hint',
+                                         name: 'bf_ini_type_name', style: 'bf_ini_type_style',
+                                         uploadRow: 'bf_ini_up_row', file: 'bf_ini_up_file',
+                                         uploaded: false, attr: 'data-inimode' },
+                        };
+                        function typedValue(key) {
+                            var el = document.getElementById(TYPERS[key].name);
+                            return el ? (el.value || '').trim() : '';
+                        }
+                        // Content present on a pad, by mode: drawn strokes, typed text, or
+                        // an uploaded image (the latter two are painted onto the canvas).
+                        function hasContent(key) {
+                            var t = TYPERS[key];
+                            if (t.mode === 'type') { return typedValue(key) !== ''; }
+                            if (t.mode === 'upload') { return !!t.uploaded; }
+                            var pad = pads[t.pad];
+                            return !!(pad && !pad.isEmpty());
+                        }
+                        // Draw an uploaded JPG/PNG onto the pad canvas (fit, centered) so it
+                        // flows through the same canvas → PNG path as drawing and typing.
+                        function loadImage(key, file) {
+                            var t = TYPERS[key];
+                            var canvas = document.getElementById(t.canvas);
+                            if (!canvas || !file) { return; }
+                            var reader = new FileReader();
+                            reader.onload = function () {
+                                var img = new Image();
+                                img.onload = function () {
+                                    var pad = pads[t.pad];
+                                    if (pad) { pad.clear(); }
+                                    var ctx = canvas.getContext('2d');
+                                    var w = canvas.offsetWidth, h = canvas.offsetHeight;
+                                    var scale = Math.min(w / img.width, h / img.height);
+                                    var dw = img.width * scale, dh = img.height * scale;
+                                    ctx.drawImage(img, (w - dw) / 2, (h - dh) / 2, dw, dh);
+                                    t.uploaded = true;
+                                    mirror.pads();
+                                };
+                                img.onerror = function () {
+                                    t.uploaded = false;
+                                    alert('Image illisible. Choisissez un fichier PNG ou JPG.');
+                                };
+                                img.src = reader.result;
+                            };
+                            reader.readAsDataURL(file);
+                        }
+                        function renderTyped(key) {
+                            var t = TYPERS[key];
+                            var canvas = document.getElementById(t.canvas);
+                            var pad = pads[t.pad];
+                            if (!canvas) { return; }
+                            var style = document.getElementById(t.style).value;
+                            var name = typedValue(key);
+                            function draw() {
+                                if (pad) { pad.clear(); }
+                                if (name) {
+                                    var ctx = canvas.getContext('2d');
+                                    var w = canvas.offsetWidth, h = canvas.offsetHeight;
+                                    var size = Math.min(64, Math.floor(h * 0.5));
+                                    ctx.fillStyle = '#11181f';
+                                    ctx.textAlign = 'center';
+                                    ctx.textBaseline = 'middle';
+                                    ctx.font = size + 'px ' + style;
+                                    while (size > 16 && ctx.measureText(name).width > w * 0.9) {
+                                        size -= 2; ctx.font = size + 'px ' + style;
+                                    }
+                                    ctx.fillText(name, w / 2, h / 2);
+                                }
+                                mirror.pads();
+                            }
+                            // Draw now (so submit always reads a populated canvas), then
+                            // redraw once the bundled webfont is ready in case the first
+                            // paint fell back to a system font.
+                            draw();
+                            var fam = (style.match(/'([^']+)'/) || [])[1];
+                            if (name && fam && document.fonts && document.fonts.load) {
+                                document.fonts.load("48px '" + fam + "'").then(draw, function () {});
+                            }
+                        }
+                        function setMode(key, mode) {
+                            var t = TYPERS[key];
+                            t.mode = mode;
+                            t.uploaded = false;
+                            var pad = pads[t.pad];
+                            var row = document.getElementById(t.row);
+                            var upRow = document.getElementById(t.uploadRow);
+                            var fileEl = document.getElementById(t.file);
+                            var hint = document.getElementById(t.hint);
+                            if (row) { row.style.display = (mode === 'type') ? 'flex' : 'none'; }
+                            if (upRow) { upRow.style.display = (mode === 'upload') ? 'block' : 'none'; }
+                            if (fileEl) { fileEl.value = ''; }
+                            if (hint) { hint.style.display = (mode === 'draw') ? '' : 'none'; }
+                            Array.prototype.forEach.call(
+                                document.querySelectorAll('[' + t.attr + ']'), function (b) {
+                                b.classList.toggle('bf-mode-active', b.getAttribute(t.attr) === mode);
+                            });
+                            if (pad) {
+                                pad.clear();
+                                if (mode === 'draw') { pad.on(); } else { pad.off(); }
+                            }
+                            if (mode === 'type') { renderTyped(key); } else { mirror.pads(); }
+                        }
+                        Object.keys(TYPERS).forEach(function (key) {
+                            var t = TYPERS[key];
+                            Array.prototype.forEach.call(
+                                document.querySelectorAll('[' + t.attr + ']'), function (b) {
+                                b.addEventListener('click', function () {
+                                    setMode(key, b.getAttribute(t.attr));
+                                });
+                            });
+                            var ti = document.getElementById(t.name);
+                            var ts = document.getElementById(t.style);
+                            var fi = document.getElementById(t.file);
+                            if (ti) { ti.addEventListener('input', function () {
+                                if (t.mode === 'type') { renderTyped(key); } }); }
+                            if (ts) { ts.addEventListener('change', function () {
+                                if (t.mode === 'type') { renderTyped(key); } }); }
+                            if (fi) { fi.addEventListener('change', function () {
+                                loadImage(key, fi.files && fi.files[0]); }); }
+                        });
+
+                        Array.prototype.forEach.call(document.querySelectorAll('[data-clear]'), function (btn) {
+                            btn.addEventListener('click', function () {
+                                var id = btn.getAttribute('data-clear');
+                                var p = pads[id];
+                                if (p) { p.clear(); }
+                                Object.keys(TYPERS).forEach(function (key) {
+                                    var t = TYPERS[key];
+                                    if (t.canvas !== id) { return; }
+                                    t.uploaded = false;
+                                    if (t.mode === 'type') {
+                                        var ti = document.getElementById(t.name);
+                                        if (ti) { ti.value = ''; }
+                                    }
+                                    var fe = document.getElementById(t.file);
+                                    if (fe) { fe.value = ''; }
+                                });
+                                mirror.pads();
+                            });
+                        });
+
+                        // ── Render the document (PDF.js) + numbered placement markers ──────
+                        (function renderDoc() {
+                            var docEl = document.getElementById('bf_doc');
+                            if (!docEl) { return; }
+                            var pdfUrl = docEl.getAttribute('data-pdf');
+                            var box = document.getElementById('bf_markers');
+                            var markers = box
+                                ? Array.prototype.slice.call(box.querySelectorAll('.bf-marker')) : [];
+
+                            function wireClick(m) {
+                                m.addEventListener('click', function () {
+                                    var inputId = m.getAttribute('data-input');
+                                    var target = inputId ? document.getElementById(inputId) : null;
+                                    if (!target) {
+                                        var type = m.getAttribute('data-type');
+                                        target = document.getElementById(
+                                            type === 'initials' ? 'bf_card_initials' : 'bf_card_signature');
+                                    }
+                                    if (target && target.scrollIntoView) {
+                                        target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                    }
+                                    if (target && target.tagName === 'INPUT') {
+                                        setTimeout(function () { target.focus(); }, 250);
+                                    }
+                                });
+                            }
+                            function placeOn(pageEl, num) {
+                                markers.forEach(function (m) {
+                                    if (parseInt(m.getAttribute('data-page'), 10) !== num) { return; }
+                                    m.style.left = (parseFloat(m.getAttribute('data-x')) * 100) + '%';
+                                    m.style.top = (parseFloat(m.getAttribute('data-y')) * 100) + '%';
+                                    m.style.width = (parseFloat(m.getAttribute('data-w')) * 100) + '%';
+                                    m.style.height = (parseFloat(m.getAttribute('data-h')) * 100) + '%';
+                                    pageEl.appendChild(m);
+                                    wireClick(m);
+                                });
+                            }
+                            function fallback() {
+                                docEl.innerHTML = '<div class="bf-doc-fallback">' +
+                                    'Aperçu du document indisponible. ' +
+                                    '<a href="' + pdfUrl + '" target="_blank" rel="noopener">' +
+                                    'Ouvrir le document</a></div>';
+                            }
+                            function wireMirror() {
+                                var sigM = markers.filter(function (m) {
+                                    return m.getAttribute('data-type') === 'signature'; });
+                                var iniM = markers.filter(function (m) {
+                                    return m.getAttribute('data-type') === 'initials'; });
+                                function apply(ms, u) {
+                                    ms.forEach(function (m) {
+                                        m.style.backgroundImage = u ? ('url(' + u + ')') : '';
+                                        m.classList.toggle('bf-marker-filled', !!u);
+                                    });
+                                }
+                                function paintPad(key, ms) {
+                                    var c = document.getElementById(TYPERS[key].canvas);
+                                    apply(ms, (c && hasContent(key)) ? c.toDataURL('image/png') : '');
+                                }
+                                mirror.pads = function () {
+                                    paintPad('signature', sigM);
+                                    paintPad('initials', iniM);
+                                };
+                                ['bf_pad', 'bf_pad_initials'].forEach(function (id) {
+                                    var c = document.getElementById(id);
+                                    if (!c) { return; }
+                                    ['pointerup', 'pointerleave', 'mouseup', 'touchend'].forEach(function (ev) {
+                                        c.addEventListener(ev, function () { setTimeout(mirror.pads, 0); });
+                                    });
+                                });
+                                markers.forEach(function (m) {
+                                    var inputId = m.getAttribute('data-input');
+                                    if (!inputId) { return; }
+                                    var input = document.getElementById(inputId);
+                                    var valEl = m.querySelector('.bf-marker-value');
+                                    if (!input || !valEl) { return; }
+                                    var sync = function () {
+                                        valEl.textContent = input.value || '';
+                                        m.classList.toggle('bf-marker-filled', !!input.value);
+                                    };
+                                    input.addEventListener('input', sync);
+                                    input.addEventListener('change', sync);
+                                    sync();
+                                });
+                            }
+
+                            // Odoo bundles pdf.js as an ES module; loaded as a classic <script src>
+                            // its top-level `export` throws and window.pdfjsLib is never set on this
+                            // standalone page. Load the module on demand via dynamic import().
+                            import('/web/static/lib/pdfjs/build/pdf.js').then(function (pdfjsLib) {
+                            try {
+                                pdfjsLib.GlobalWorkerOptions.workerSrc =
+                                    '/web/static/lib/pdfjs/build/pdf.worker.js';
+                            } catch (e) { /* worker optional */ }
+                            return pdfjsLib.getDocument(pdfUrl).promise.then(function (pdf) {
+                                docEl.innerHTML = '';
+                                var chain = Promise.resolve();
+                                var width = Math.min(docEl.clientWidth || 720, 760);
+                                var ratio = Math.max(window.devicePixelRatio || 1, 1);
+                                for (var p = 1; p <= pdf.numPages; p++) {
+                                    (function (num) {
+                                        chain = chain.then(function () {
+                                            return pdf.getPage(num).then(function (page) {
+                                                var base = page.getViewport({ scale: 1 });
+                                                var vp = page.getViewport({ scale: (width / base.width) * ratio });
+                                                var canvas = document.createElement('canvas');
+                                                canvas.width = vp.width; canvas.height = vp.height;
+                                                return page.render({
+                                                    canvasContext: canvas.getContext('2d'), viewport: vp
+                                                }).promise.then(function () {
+                                                    var pageEl = document.createElement('div');
+                                                    pageEl.className = 'bf-page';
+                                                    var img = document.createElement('img');
+                                                    img.className = 'bf-page-img';
+                                                    img.alt = 'Page ' + num;
+                                                    img.src = canvas.toDataURL('image/png');
+                                                    pageEl.appendChild(img);
+                                                    docEl.appendChild(pageEl);
+                                                    placeOn(pageEl, num);
+                                                });
+                                            });
+                                        });
+                                    })(p);
+                                }
+                                return chain;
+                            }).then(function () {
+                                wireMirror();
+                            });
+                            }).catch(function (e) {
+                                if (window.console) { console.error('bf_sign: rendu document échoué', e); }
+                                fallback();
+                            });
+                        })();
+
+                        document.getElementById('bf_form').addEventListener('submit', function (e) {
+                            // Ensure typed text is rendered onto the canvas before reading it.
+                            function ready(key) {
+                                if (TYPERS[key].mode === 'type') { renderTyped(key); }
+                                return hasContent(key);
+                            }
+                            function missingMsg(key, label) {
+                                var m = TYPERS[key].mode;
+                                if (m === 'type') {
+                                    return key === 'initials'
+                                        ? 'Veuillez saisir votre paraphe.' : 'Veuillez saisir votre nom.';
+                                }
+                                return (m === 'upload' ? 'Veuillez téléverser ' : 'Veuillez apposer ') + label + '.';
+                            }
+                            if (!ready('signature')) {
+                                e.preventDefault(); alert(missingMsg('signature', 'votre signature')); return false;
+                            }
+                            if (pads['bf_pad_initials']) {
+                                if (!ready('initials')) {
+                                    e.preventDefault(); alert(missingMsg('initials', 'votre paraphe')); return false;
+                                }
+                                // The canvas holds the paraphe in all modes (drawn, typed or uploaded).
+                                document.getElementById('bf_ini_data').value =
+                                    document.getElementById('bf_pad_initials').toDataURL('image/png');
+                            }
+                            if (!document.getElementById('bf_consent').checked) {
+                                e.preventDefault(); alert('Veuillez cocher la case de consentement.'); return false;
+                            }
+                            // The canvas holds the signature in all modes (drawn, typed or uploaded).
+                            document.getElementById('bf_sign_data').value =
+                                document.getElementById('bf_pad').toDataURL('image/png');
+                            document.getElementById('bf_submit').disabled = true;
+                            document.getElementById('bf_submit').textContent = 'Traitement…';
+                        });
+                        var rf = document.getElementById('bf_refuse_form');
+                        if (rf) {
+                            rf.addEventListener('submit', function (e) {
+                                if (!window.confirm('Confirmer le refus de signer ce document ?')) {
+                                    e.preventDefault();
+                                }
+                            });
+                        }
+                    })();
+                    ]]>
+                </script>
+            </body>
+        </html>
+    </template>
+
+    <!-- ============================================================= -->
+    <!-- Confirmation page                                              -->
+    <!-- ============================================================= -->
+    <template id="sign_done" name="BF Sign — Confirmation">
+        <t t-set="primary" t-value="req.company_id.report_brand_primary or '#29ABE1'"/>
+        <t t-set="dark" t-value="req.company_id.report_brand_dark or '#2D3031'"/>
+        &lt;!DOCTYPE html&gt;
+        <html lang="fr">
+            <head>
+                <meta charset="utf-8"/>
+                <meta name="viewport" content="width=device-width, initial-scale=1"/>
+                <title>Signé — <t t-esc="req.name"/></title>
+                <style>
+                    body { margin:0; font-family: system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+                           background:#f4f6f8; color:#2D3031; }
+                    .bf-header { background:<t t-esc="dark"/>; color:#fff; padding:16px 24px; font-weight:600; }
+                    .bf-accent { height:4px; background:<t t-esc="primary"/>; }
+                    .bf-wrap { max-width:640px; margin:48px auto; padding:0 16px; text-align:center; }
+                    .bf-check { width:64px; height:64px; border-radius:50%; background:#e7f7ed;
+                                color:#1e8e4e; font-size:36px; line-height:64px; margin:0 auto 18px; }
+                    .bf-card { background:#fff; border:1px solid #e3e7eb; border-radius:10px; padding:32px 24px; }
+                    .bf-btn { display:inline-block; margin-top:18px; background:<t t-esc="primary"/>;
+                              color:#fff; text-decoration:none; padding:12px 24px; border-radius:8px; font-weight:600; }
+                    .bf-hash { font-size:12px; color:#8a939b; word-break:break-all; margin-top:18px; }
+                </style>
+            </head>
+            <body>
+                <div class="bf-header"><t t-esc="req.company_id.name"/></div>
+                <div class="bf-accent"/>
+                <div class="bf-wrap">
+                    <div class="bf-card">
+                        <div class="bf-check">✓</div>
+                        <h1 style="font-size:20px; margin:0 0 8px;">Signature enregistrée</h1>
+                        <p style="color:#555;">
+                            Merci, <t t-esc="signer.name"/>. Votre signature a été enregistrée
+                            le <t t-esc="signer.signed_on"/> (UTC).
+                        </p>
+                        <t t-if="req.state == 'signed'">
+                            <p style="color:#555;">Le document est entièrement signé. Un courriel de confirmation
+                               avec le document signé et le certificat a été envoyé.</p>
+                            <a class="bf-btn" t-attf-href="/sign/#{req.id}/#{access_token}/download">
+                                Télécharger le document signé
+                            </a>
+                            <div class="bf-hash" t-if="req.hash_signed">
+                                Empreinte SHA-256 : <t t-esc="req.hash_signed"/>
+                            </div>
+                        </t>
+                        <t t-else="">
+                            <p style="color:#555;">En attente des autres signataires
+                               (<t t-esc="req.signed_count"/>/<t t-esc="req.signer_count"/> signés).
+                               Le document sera finalisé lorsque tout le monde aura signé.</p>
+                        </t>
+                    </div>
+                </div>
+            </body>
+        </html>
+    </template>
+
+    <!-- ============================================================= -->
+    <!-- Refusal confirmation                                           -->
+    <!-- ============================================================= -->
+    <template id="sign_refused" name="BF Sign — Refus enregistré">
+        <t t-set="primary" t-value="req.company_id.report_brand_primary or '#29ABE1'"/>
+        <t t-set="dark" t-value="req.company_id.report_brand_dark or '#2D3031'"/>
+        &lt;!DOCTYPE html&gt;
+        <html lang="fr">
+            <head>
+                <meta charset="utf-8"/>
+                <meta name="viewport" content="width=device-width, initial-scale=1"/>
+                <title>Refusé — <t t-esc="req.name"/></title>
+                <style>
+                    body { margin:0; font-family: system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+                           background:#f4f6f8; color:#2D3031; }
+                    .bf-header { background:<t t-esc="dark"/>; color:#fff; padding:16px 24px; font-weight:600; }
+                    .bf-accent { height:4px; background:<t t-esc="primary"/>; }
+                    .bf-wrap { max-width:640px; margin:48px auto; padding:0 16px; text-align:center; }
+                    .bf-x { width:64px; height:64px; border-radius:50%; background:#fdecea;
+                            color:#b3261e; font-size:36px; line-height:64px; margin:0 auto 18px; }
+                    .bf-card { background:#fff; border:1px solid #e3e7eb; border-radius:10px; padding:32px 24px; }
+                </style>
+            </head>
+            <body>
+                <div class="bf-header"><t t-esc="req.company_id.name"/></div>
+                <div class="bf-accent"/>
+                <div class="bf-wrap">
+                    <div class="bf-card">
+                        <div class="bf-x">✕</div>
+                        <h1 style="font-size:20px; margin:0 0 8px;">Refus enregistré</h1>
+                        <p style="color:#555;">
+                            Vous avez refusé de signer le document <strong t-esc="req.name"/>.
+                            L'expéditeur en a été informé. Vous pouvez fermer cette page.
+                        </p>
+                    </div>
+                </div>
+            </body>
+        </html>
+    </template>
+
+    <!-- ============================================================= -->
+    <!-- Waiting (sequential — not this signer's turn yet)             -->
+    <!-- ============================================================= -->
+    <template id="sign_waiting" name="BF Sign — En attente du tour">
+        &lt;!DOCTYPE html&gt;
+        <html lang="fr">
+            <head>
+                <meta charset="utf-8"/>
+                <meta name="viewport" content="width=device-width, initial-scale=1"/>
+                <title>En attente</title>
+                <style>
+                    body { margin:0; font-family: system-ui,sans-serif; background:#f4f6f8; color:#2D3031;
+                           display:flex; align-items:center; justify-content:center; min-height:100vh; }
+                    .bf-card { background:#fff; border:1px solid #e3e7eb; border-radius:10px;
+                               padding:32px; max-width:480px; text-align:center; }
+                </style>
+            </head>
+            <body>
+                <div class="bf-card">
+                    <h1 style="font-size:18px;">Ce n'est pas encore votre tour</h1>
+                    <p style="color:#555;">
+                        Ce document se signe dans un ordre précis. Vous recevrez un courriel
+                        lorsque ce sera à votre tour de signer.
+                    </p>
+                </div>
+            </body>
+        </html>
+    </template>
+
+    <!-- ============================================================= -->
+    <!-- Unavailable (cancelled / expired / refused)                   -->
+    <!-- ============================================================= -->
+    <template id="sign_unavailable" name="BF Sign — Indisponible">
+        &lt;!DOCTYPE html&gt;
+        <html lang="fr">
+            <head>
+                <meta charset="utf-8"/>
+                <meta name="viewport" content="width=device-width, initial-scale=1"/>
+                <title>Lien indisponible</title>
+                <style>
+                    body { margin:0; font-family: system-ui,sans-serif; background:#f4f6f8; color:#2D3031;
+                           display:flex; align-items:center; justify-content:center; min-height:100vh; }
+                    .bf-card { background:#fff; border:1px solid #e3e7eb; border-radius:10px;
+                               padding:32px; max-width:480px; text-align:center; }
+                </style>
+            </head>
+            <body>
+                <div class="bf-card">
+                    <h1 style="font-size:18px;">Ce lien de signature n'est plus disponible</h1>
+                    <p style="color:#555;">
+                        La demande est
+                        <t t-if="req.state == 'expired'">expirée</t>
+                        <t t-elif="req.state == 'cancelled'">annulée</t>
+                        <t t-else="">close</t>.
+                        Veuillez contacter l'expéditeur si vous pensez qu'il s'agit d'une erreur.
+                    </p>
+                </div>
+            </body>
+        </html>
+    </template>
+
+    <!-- ============================================================= -->
+    <!-- Email OTP identity step                                        -->
+    <!-- ============================================================= -->
+    <template id="sign_otp" name="BF Sign — Vérification par code">
+        <t t-set="primary" t-value="req.company_id.report_brand_primary or '#29ABE1'"/>
+        <t t-set="dark" t-value="req.company_id.report_brand_dark or '#2D3031'"/>
+        &lt;!DOCTYPE html&gt;
+        <html lang="fr">
+            <head>
+                <meta charset="utf-8"/>
+                <meta name="viewport" content="width=device-width, initial-scale=1"/>
+                <title>Vérification — <t t-esc="req.name"/></title>
+                <style>
+                    :root { --bf-primary: <t t-esc="primary"/>; --bf-dark: <t t-esc="dark"/>; }
+                    body { margin:0; font-family: system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+                           background:#f4f6f8; color:#2D3031; }
+                    .bf-header { background:var(--bf-dark); color:#fff; padding:16px 24px;
+                                 display:flex; align-items:center; gap:14px; }
+                    .bf-header img { max-height:34px; }
+                    .bf-header .t { font-weight:600; font-size:16px; }
+                    .bf-accent { height:4px; background:var(--bf-primary); }
+                    .bf-wrap { max-width:520px; margin:0 auto; padding:32px 16px; }
+                    .bf-card { background:#fff; border:1px solid #e3e7eb; border-radius:10px; padding:24px; }
+                    .bf-card h2 { margin:0 0 12px; font-size:18px; }
+                    .bf-meta { font-size:14px; color:#555; margin-bottom:16px; }
+                    .bf-code-input { width:100%; font-size:26px; letter-spacing:8px; text-align:center;
+                                     padding:12px; border:1px solid #cfd6dc; border-radius:8px; box-sizing:border-box; }
+                    .bf-btn { border:0; border-radius:8px; padding:12px 22px; font-size:15px;
+                              font-weight:600; cursor:pointer; }
+                    .bf-btn-primary { background:var(--bf-primary); color:#fff; width:100%; margin-top:16px; }
+                    .bf-link-btn { background:none; border:0; color:var(--bf-primary); cursor:pointer;
+                                   font-size:14px; padding:0; margin-top:14px; }
+                    .bf-err { background:#fdecea; color:#b3261e; border:1px solid #f5c2bd;
+                              border-radius:8px; padding:12px 14px; font-size:14px; margin-bottom:16px; }
+                </style>
+            </head>
+            <body>
+                <div class="bf-header">
+                    <img t-attf-src="/web/image/res.company/#{req.company_id.id}/#{req.company_id.report_brand_logo and 'report_brand_logo' or 'logo'}" alt=""/>
+                    <span class="t"><t t-esc="req.company_id.name"/></span>
+                </div>
+                <div class="bf-accent"/>
+                <div class="bf-wrap">
+                    <div class="bf-card">
+                        <h2>Vérification de votre identité</h2>
+                        <t t-if="error">
+                            <div class="bf-err">Code invalide ou expiré. Réessayez ou demandez un nouveau code.</div>
+                        </t>
+                        <p class="bf-meta">Pour consulter et signer <strong t-esc="req.name"/>, saisissez le
+                            code à 6 chiffres envoyé à <strong t-esc="masked_email"/>.</p>
+                        <form method="post" t-attf-action="/sign/#{req.id}/#{access_token}/otp/verify">
+                            <input type="text" name="code" class="bf-code-input" inputmode="numeric"
+                                   autocomplete="one-time-code" maxlength="6" pattern="[0-9]*"
+                                   placeholder="••••••" autofocus="autofocus"/>
+                            <button type="submit" class="bf-btn bf-btn-primary">Vérifier</button>
+                        </form>
+                        <form method="post" t-attf-action="/sign/#{req.id}/#{access_token}/otp/resend">
+                            <button type="submit" class="bf-link-btn">Renvoyer le code</button>
+                        </form>
+                    </div>
+                </div>
+            </body>
+        </html>
+    </template>
+
+
+    <!-- ============================================================= -->
+    <!-- Public verification page (target of the QR on the document)    -->
+    <!-- ============================================================= -->
+    <template id="verify_page" name="BF Sign — Vérification publique">
+        <t t-set="primary" t-value="req.company_id.report_brand_primary or '#29ABE1'"/>
+        <t t-set="dark" t-value="req.company_id.report_brand_dark or '#2D3031'"/>
+        &lt;!DOCTYPE html&gt;
+        <html lang="fr">
+            <head>
+                <meta charset="utf-8"/>
+                <meta name="viewport" content="width=device-width, initial-scale=1"/>
+                <meta name="robots" content="noindex, nofollow"/>
+                <title>Vérification — <t t-esc="req.name"/></title>
+                <style>
+                    body { margin:0; font-family: Lexend,system-ui,sans-serif; background:#f4f6f8;
+                           color:#2D3031; font-size:15px; line-height:1.55; }
+                    .bf-wrap { max-width:640px; margin:0 auto; padding:24px 16px 64px; }
+                    .bf-card { background:#fff; border:1px solid #e3e7eb; border-radius:10px;
+                               padding:24px; margin-bottom:16px; }
+                    .bf-verdict { border-radius:10px; padding:20px 24px; margin-bottom:16px; color:#fff; }
+                    .bf-ok { background:#1e7a4d; }
+                    .bf-ko { background:#a3341f; }
+                    .bf-pending { background:#7a6a1e; }
+                    .bf-verdict h1 { font-size:19px; margin:0 0 6px; }
+                    .bf-verdict p { margin:0; opacity:.92; font-size:14px; }
+                    dl { display:grid; grid-template-columns:auto 1fr; gap:8px 16px; margin:0; }
+                    dt { color:#6b7379; font-size:13px; }
+                    dd { margin:0; }
+                    code { font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:12px;
+                           word-break:break-all; background:#f4f6f8; padding:2px 5px; border-radius:4px; }
+                    h2 { font-size:15px; margin:0 0 12px; }
+                    ul.bf-checks { list-style:none; padding:0; margin:0; }
+                    ul.bf-checks li { padding:5px 0; font-size:14px; }
+                    .bf-note { color:#6b7379; font-size:13px; }
+                    .bf-drop { border:2px dashed #cfd6dc; border-radius:8px; padding:22px 16px;
+                               text-align:center; background:#fafbfc;
+                               transition:border-color .15s ease, background .15s ease; }
+                    .bf-drop.bf-over { border-color:#29ABE1; background:#f0f9fe; }
+                    .bf-drop p { margin:0 0 12px; font-size:14px; color:#6b7379; }
+                    .bf-btn { font:inherit; font-size:14px; border:1px solid #cfd6dc;
+                              background:#fff; color:#2D3031; border-radius:6px;
+                              padding:8px 16px; cursor:pointer; }
+                    .bf-btn:hover { border-color:#9aa4ad; }
+                    .bf-result { margin-top:14px; border-radius:8px; padding:14px 16px;
+                                 font-size:14px; }
+                    .bf-result strong { display:block; margin-bottom:4px; }
+                    .bf-result.bf-r-ok { background:#e8f5ee; border:1px solid #b6dcc6; color:#14603b; }
+                    .bf-result.bf-r-ko { background:#fdeeea; border:1px solid #f0c4b8; color:#8a2b18; }
+                    .bf-result.bf-r-busy { background:#f4f6f8; border:1px solid #e3e7eb; color:#6b7379; }
+                    .bf-cli { margin-top:14px; }
+                    .bf-cli summary { cursor:pointer; color:#6b7379; font-size:13px; }
+                </style>
+            </head>
+            <body>
+                <div class="bf-wrap">
+                    <div style="text-align:center; padding:18px 0 12px;">
+                        <img t-attf-src="/web/image/res.company/#{req.company_id.id}/#{req.company_id.report_brand_logo and 'report_brand_logo' or 'logo'}"
+                             t-att-alt="req.company_id.name" style="height:34px;"/>
+                    </div>
+
+                    <t t-if="req.state != 'signed'">
+                        <div class="bf-verdict bf-pending">
+                            <h1>Ce document n'est pas encore signé</h1>
+                            <p>La demande <t t-esc="req.name"/> existe bien, mais son parcours de
+                                signature n'est pas terminé. Un document portant ce code alors qu'il
+                                se présente comme signé mérite une question à l'expéditeur.</p>
+                        </div>
+                    </t>
+                    <t t-elif="genuine">
+                        <div class="bf-verdict bf-ok">
+                            <h1>Document authentique</h1>
+                            <p>Ce document a bien été signé via <t t-esc="req.company_id.name"/>, et
+                                l'exemplaire conservé ici n'a pas été modifié depuis.</p>
+                        </div>
+                    </t>
+                    <t t-else="">
+                        <div class="bf-verdict bf-ko">
+                            <h1>Vérification en échec</h1>
+                            <p>Au moins un contrôle d'intégrité ne passe pas sur l'exemplaire
+                                conservé. Contactez l'expéditeur avant de vous fier à ce document.</p>
+                        </div>
+                    </t>
+
+                    <div class="bf-card">
+                        <h2>Ce que nous pouvons attester</h2>
+                        <dl>
+                            <dt>Référence</dt><dd><t t-esc="req.name"/></dd>
+                            <dt t-if="req.title">Titre</dt>
+                            <dd t-if="req.title"><t t-esc="req.title"/></dd>
+                            <dt t-if="req.signed_on">Signé le</dt>
+                            <dd t-if="req.signed_on">
+                                <t t-esc="signed_on_label"/>
+                            </dd>
+                            <dt>Signataires</dt>
+                            <dd>
+                                <t t-foreach="req.signer_ids" t-as="s">
+                                    <div><t t-esc="s.name"/>
+                                        <span class="bf-note" t-if="s.state == 'signed'"> — signé</span>
+                                        <span class="bf-note" t-else=""> — en attente</span>
+                                    </div>
+                                </t>
+                            </dd>
+                            <dt t-if="req.hash_signed">Empreinte SHA-256</dt>
+                            <dd t-if="req.hash_signed"><code t-esc="req.hash_signed"/></dd>
+                        </dl>
+                        <p class="bf-note" style="margin-top:16px;">
+                            Cette empreinte est celle de l'exemplaire conservé ici. Aucun fichier
+                            n'est téléversé sur cette page, et le document n'y est jamais servi.
+                        </p>
+                    </div>
+
+                    <!-- Byte-for-byte comparison of the holder's own copy. Hashed in the
+                         browser via WebCrypto: nothing is uploaded, so the page keeps the
+                         promise it makes just above, and a public route gains no file
+                         intake to abuse. -->
+                    <div class="bf-card" t-if="req.hash_signed" id="bf_match"
+                         t-att-data-expected="req.hash_signed">
+                        <h2>Comparer votre exemplaire</h2>
+                        <p class="bf-note" style="margin:0 0 14px;">
+                            Déposez le PDF que vous avez reçu. Son empreinte est calculée
+                            <strong>dans votre navigateur</strong> puis comparée à celle
+                            ci-dessus. Le fichier ne quitte pas votre appareil : il n'est ni
+                            envoyé, ni conservé, ici ou ailleurs.
+                        </p>
+                        <div class="bf-drop" id="bf_drop">
+                            <input type="file" id="bf_file" accept="application/pdf,.pdf"
+                                   style="display:none;"/>
+                            <p>Glissez le document ici</p>
+                            <button type="button" class="bf-btn" id="bf_pick">Choisir un fichier</button>
+                        </div>
+                        <div class="bf-result" id="bf_result" style="display:none;"></div>
+                        <p class="bf-note" id="bf_nocrypto" style="display:none; margin:0;">
+                            Votre navigateur ne permet pas de calculer l'empreinte sur place.
+                            Utilisez la commande ci-dessous, puis comparez le résultat à
+                            l'empreinte affichée plus haut.
+                        </p>
+                        <details class="bf-cli">
+                            <summary>Le faire vous-même, en ligne de commande</summary>
+                            <p class="bf-note" style="margin:10px 0 0;">
+                                macOS, Linux : <code>shasum -a 256 document.pdf</code><br/>
+                                Windows (PowerShell) :
+                                <code>Get-FileHash document.pdf -Algorithm SHA256</code>
+                            </p>
+                        </details>
+                    </div>
+
+                    <div class="bf-card" t-if="checks">
+                        <h2>Contrôles rejoués à l'instant</h2>
+                        <ul class="bf-checks">
+                            <li>
+                                <t t-if="checks.get('content_ok')">✅</t><t t-else="">❌</t>
+                                Le document conservé correspond à son empreinte
+                            </li>
+                            <li>
+                                <t t-if="checks.get('chain_ok')">✅</t><t t-else="">❌</t>
+                                La piste de vérification est intacte (chaînage SHA-256)
+                            </li>
+                            <li t-if="checks.get('seal_ok') is not None">
+                                <t t-if="checks.get('seal_ok')">✅</t><t t-else="">❌</t>
+                                Le sceau numérique (PAdES) est valide
+                            </li>
+                            <li t-if="checks.get('tsa_ok') is not None">
+                                <t t-if="checks.get('tsa_ok')">✅</t><t t-else="">❌</t>
+                                L'horodatage d'autorité tierce (RFC 3161) concorde
+                            </li>
+                        </ul>
+                        <p class="bf-note" style="margin-top:14px;">
+                            Ces contrôles portent sur l'exemplaire conservé par
+                            <t t-esc="req.company_id.name"/>. Ils ne disent rien d'un fichier que
+                            vous auriez reçu par ailleurs : c'est l'empreinte, ci-dessus, qui permet
+                            de les rapprocher.
+                        </p>
+                    </div>
+
+                    <div style="text-align:center; color:#9aa4ad; font-size:12px; padding:8px;">
+                        <t t-esc="req.company_id.name"/>
+                    </div>
+                </div>
+
+                <script type="text/javascript">
+                    <![CDATA[
+                    (function () {
+                        var card = document.getElementById('bf_match');
+                        if (!card) { return; }
+                        var expected = (card.getAttribute('data-expected') || '').toLowerCase();
+                        var drop = document.getElementById('bf_drop');
+                        var input = document.getElementById('bf_file');
+                        var pick = document.getElementById('bf_pick');
+                        var out = document.getElementById('bf_result');
+                        var subtle = window.crypto && window.crypto.subtle;
+                        // WebCrypto only exists in a secure context. On plain HTTP, or in an
+                        // old browser, the drop zone would swallow the file and answer
+                        // nothing — worse than not offering it. Fall back to the command.
+                        if (!expected || !subtle || !window.FileReader) {
+                            drop.style.display = 'none';
+                            document.getElementById('bf_nocrypto').style.display = 'block';
+                            return;
+                        }
+                        // A 100 MB read blocks the tab for seconds; signed bundles are a
+                        // fraction of that, so anything bigger is almost surely the wrong
+                        // file and is better sent to the command line.
+                        var MAX_BYTES = 100 * 1024 * 1024;
+
+                        function show(kind, title, detail) {
+                            out.className = 'bf-result bf-r-' + kind;
+                            out.textContent = '';
+                            var head = document.createElement('strong');
+                            head.textContent = title;
+                            out.appendChild(head);
+                            if (detail) {
+                                // textContent, not innerHTML: `detail` carries a filename
+                                // chosen by whoever prepared the file.
+                                out.appendChild(document.createTextNode(detail));
+                            }
+                            out.style.display = 'block';
+                        }
+
+                        function toHex(buffer) {
+                            var bytes = new Uint8Array(buffer);
+                            var hex = '';
+                            for (var i = 0; i < bytes.length; i++) {
+                                hex += (bytes[i] < 16 ? '0' : '') + bytes[i].toString(16);
+                            }
+                            return hex;
+                        }
+
+                        function check(file) {
+                            if (!file) { return; }
+                            if (file.size > MAX_BYTES) {
+                                show('ko', 'Fichier trop volumineux pour être vérifié ici.',
+                                     'Le document signé fait normalement quelques mégaoctets. ' +
+                                     'Utilisez la commande ci-dessous pour ce fichier.');
+                                return;
+                            }
+                            show('busy', "Calcul de l'empreinte…", file.name);
+                            var reader = new FileReader();
+                            reader.onerror = function () {
+                                show('ko', "Le fichier n'a pas pu être lu.",
+                                     'Réessayez, ou utilisez la commande ci-dessous.');
+                            };
+                            reader.onload = function () {
+                                subtle.digest('SHA-256', reader.result).then(function (digest) {
+                                    var got = toHex(digest);
+                                    if (got === expected) {
+                                        show('ok', "C'est bien ce document.",
+                                             "L'empreinte de « " + file.name + " » correspond " +
+                                             'exactement à celle enregistrée ici.');
+                                    } else {
+                                        show('ko', 'Ce fichier ne correspond pas.',
+                                             'Empreinte calculée : ' + got + '. La comparaison porte ' +
+                                             'sur les octets exacts : un PDF ré-enregistré par un ' +
+                                             'lecteur, une version imprimée puis renumérisée, ou le ' +
+                                             'certificat livré à part donneront eux aussi un écart. ' +
+                                             "Si vous pensez avoir le PDF signé d'origine, " +
+                                             "demandez à l'expéditeur de vous le renvoyer.");
+                                    }
+                                }).catch(function () {
+                                    show('ko', "Le calcul de l'empreinte a échoué.",
+                                         'Utilisez la commande ci-dessous.');
+                                });
+                            };
+                            reader.readAsArrayBuffer(file);
+                        }
+
+                        pick.addEventListener('click', function () { input.click(); });
+                        input.addEventListener('change', function () {
+                            check(input.files && input.files[0]);
+                        });
+                        ['dragenter', 'dragover'].forEach(function (name) {
+                            drop.addEventListener(name, function (e) {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                drop.classList.add('bf-over');
+                            });
+                        });
+                        drop.addEventListener('dragleave', function (e) {
+                            // Moving onto a child fires dragleave on the zone itself; without
+                            // this the highlight strobes as the pointer crosses the button.
+                            if (!drop.contains(e.relatedTarget)) {
+                                drop.classList.remove('bf-over');
+                            }
+                        });
+                        drop.addEventListener('drop', function (e) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            drop.classList.remove('bf-over');
+                            check(e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]);
+                        });
+                        // A file dropped just beside the zone would otherwise make the browser
+                        // navigate to it, which reads as "the page swallowed my document".
+                        ['dragover', 'drop'].forEach(function (name) {
+                            window.addEventListener(name, function (e) { e.preventDefault(); });
+                        });
+                    })();
+                    ]]>
+                </script>
+            </body>
+        </html>
+    </template>
+
+    <template id="verify_unknown" name="BF Sign — Vérification inconnue">
+        &lt;!DOCTYPE html&gt;
+        <html lang="fr">
+            <head>
+                <meta charset="utf-8"/>
+                <meta name="viewport" content="width=device-width, initial-scale=1"/>
+                <meta name="robots" content="noindex, nofollow"/>
+                <title>Vérification impossible</title>
+                <style>
+                    body { margin:0; font-family: system-ui,sans-serif; background:#f4f6f8; color:#2D3031;
+                           display:flex; align-items:center; justify-content:center; min-height:100vh; }
+                    .bf-card { background:#fff; border:1px solid #e3e7eb; border-radius:10px;
+                               padding:32px; max-width:480px; text-align:center; }
+                </style>
+            </head>
+            <body>
+                <div class="bf-card">
+                    <h1 style="font-size:18px;">Aucun document ne correspond à ce code</h1>
+                    <p style="color:#555;">Le code est peut-être mal lu, ou le document ne provient
+                        pas d'ici. Si vous l'avez reçu comme un document signé, méfiez-vous.</p>
+                </div>
+            </body>
+        </html>
+    </template>
+
+</odoo>

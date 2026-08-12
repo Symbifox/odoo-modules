@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Standalone client action: opens the file browser scoped to the config
+         browser_root_prefix (no record context). -->
+    <record id="action_nc_browser_app" model="ir.actions.client">
+        <field name="name">Nextcloud</field>
+        <field name="tag">bf_nc_browser_app</field>
+    </record>
+
+    <!-- Top-level app menu (icon = module icon). Gated by the browser group. -->
+    <menuitem id="menu_nc_browser_root"
+              name="Nextcloud"
+              web_icon="bf_nextcloud_browser,static/description/icon.png"
+              groups="bf_nextcloud_browser.group_nc_browser_user"
+              sequence="95"/>
+
+    <menuitem id="menu_nc_browser_app"
+              name="Fichiers Nextcloud"
+              parent="menu_nc_browser_root"
+              action="action_nc_browser_app"
+              groups="bf_nextcloud_browser.group_nc_browser_user"
+              sequence="10"/>
+
+    <!-- Configuration submenu: storage backend config form (admin only),
+         surfaced inside the app instead of buried under Knowledge. -->
+    <menuitem id="menu_nc_browser_config"
+              name="Configuration"
+              parent="menu_nc_browser_root"
+              action="bf_document_nextcloud_sync.action_nextcloud_document_config"
+              groups="base.group_system"
+              sequence="90"/>
+
+</odoo>

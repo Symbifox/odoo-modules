@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form_nc_talk" model="ir.ui.view">
+        <field name="name">res.config.settings.form.bf_calendar_nc_talk</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="calendar.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//block[@name='calendar']" position="inside">
+                <setting id="bf_nc_talk_setting"
+                         string="Nextcloud Talk"
+                         help="Adds a '+ Nextcloud Talk' button next to '+ Odoo meeting' on calendar events. Creates a public Talk conversation and stores its URL.">
+                    <div class="content-group">
+                        <div class="row mt16">
+                            <label for="bf_nc_talk_url" class="col-lg-3 o_light_label"/>
+                            <field name="bf_nc_talk_url" placeholder="https://nextcloud.example.com"/>
+                        </div>
+                        <div class="row">
+                            <label for="bf_nc_talk_user" class="col-lg-3 o_light_label"/>
+                            <field name="bf_nc_talk_user" placeholder="talk-bot"/>
+                        </div>
+                        <div class="row">
+                            <label for="bf_nc_talk_password" class="col-lg-3 o_light_label"/>
+                            <field name="bf_nc_talk_password" password="True"/>
+                        </div>
+                        <div class="row mt8">
+                            <button name="action_test_nc_talk_connection"
+                                    type="object"
+                                    string="Test connection (creates throwaway room)"
+                                    class="btn-link"
+                                    icon="fa-plug"/>
+                        </div>
+                    </div>
+                </setting>
+            </xpath>
+        </field>
+    </record>
+</odoo>

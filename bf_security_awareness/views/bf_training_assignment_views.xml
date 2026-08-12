@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="bf_training_assignment_view_list" model="ir.ui.view">
+        <field name="name">bf.training.assignment.list</field>
+        <field name="model">bf.training.assignment</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="state == 'overdue'"
+                  decoration-success="state == 'completed'">
+                <field name="partner_id"/>
+                <field name="channel_id"/>
+                <field name="assigned_date"/>
+                <field name="due_date"/>
+                <field name="completion" widget="progressbar"/>
+                <field name="state" widget="badge"
+                       decoration-danger="state == 'overdue'"
+                       decoration-success="state == 'completed'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_training_assignment_view_kanban" model="ir.ui.view">
+        <field name="name">bf.training.assignment.kanban</field>
+        <field name="model">bf.training.assignment</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="state">
+                <field name="partner_id"/>
+                <field name="channel_id"/>
+                <field name="completion"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_global_click">
+                            <strong><field name="partner_id"/></strong>
+                            <div><field name="channel_id"/></div>
+                            <div><field name="completion"/>%</div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="bf_training_assignment_view_form" model="ir.ui.view">
+        <field name="name">bf.training.assignment.form</field>
+        <field name="model">bf.training.assignment</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_enroll" type="object" string="Inscrire"
+                            class="btn-primary" invisible="state != 'to_invite'"/>
+                    <button name="action_send_invite" type="object"
+                            string="Relancer" invisible="state == 'completed'"/>
+                    <button name="action_open_course" type="object"
+                            string="Ouvrir le cours"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="to_invite,invited,in_progress,completed"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="partner_id"/>
+                            <field name="channel_id"/>
+                            <field name="source_result_id"/>
+                        </group>
+                        <group>
+                            <field name="assigned_date"/>
+                            <field name="due_date"/>
+                            <field name="member_status"/>
+                            <field name="completion" widget="progressbar"/>
+                            <field name="completed_date"/>
+                        </group>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="bf_training_assignment_view_search" model="ir.ui.view">
+        <field name="name">bf.training.assignment.search</field>
+        <field name="model">bf.training.assignment</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="partner_id"/>
+                <field name="channel_id"/>
+                <filter name="overdue" string="En retard"
+                        domain="[('state','=','overdue')]"/>
+                <filter name="open" string="À compléter"
+                        domain="[('state','not in',('completed',))]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="group_state" string="État"
+                            context="{'group_by': 'state'}"/>
+                    <filter name="group_channel" string="Cours"
+                            context="{'group_by': 'channel_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="bf_training_assignment_action" model="ir.actions.act_window">
+        <field name="name">Formations assignées</field>
+        <field name="res_model">bf.training.assignment</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="search_view_id" ref="bf_training_assignment_view_search"/>
+    </record>
+
+    <record id="slide_channel_action_secaware" model="ir.actions.act_window">
+        <field name="name">Cours de sensibilisation</field>
+        <field name="res_model">slide.channel</field>
+        <field name="view_mode">kanban,list,form</field>
+    </record>
+
+</odoo>

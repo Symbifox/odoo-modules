@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="bf_phishing_template_view_list" model="ir.ui.view">
+        <field name="name">bf.phishing.template.list</field>
+        <field name="model">bf.phishing.template</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="category"/>
+                <field name="difficulty"/>
+                <field name="landing_mode"/>
+                <field name="training_channel_id"/>
+                <field name="campaign_count"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_phishing_template_view_form" model="ir.ui.view">
+        <field name="name">bf.phishing.template.form</field>
+        <field name="model">bf.phishing.template</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_campaigns" type="object"
+                                class="oe_stat_button" icon="fa-paper-plane">
+                            <field name="campaign_count" widget="statinfo"
+                                   string="Campagnes"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="Nom du modèle"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="category"/>
+                            <field name="difficulty"/>
+                            <field name="landing_mode"/>
+                            <field name="training_channel_id"/>
+                        </group>
+                        <group>
+                            <field name="sender_name"/>
+                            <field name="email_from"/>
+                            <field name="capture_field_lengths"/>
+                            <field name="qr_code"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Courriel-leurre" name="lure">
+                            <field name="subject" placeholder="Sujet du courriel"/>
+                            <field name="email_body"
+                                   options="{'style-inline': true}"/>
+                            <separator string="Pièces jointes"/>
+                            <field name="attachment_ids" widget="many2many_binary"/>
+                        </page>
+                        <page string="Page d'atterrissage" name="landing">
+                            <group>
+                                <field name="landing_title"
+                                       invisible="landing_mode != 'credential'"/>
+                                <field name="landing_button_label"
+                                       invisible="landing_mode != 'credential'"/>
+                            </group>
+                            <separator string="Habillage de la fausse page (mode faux formulaire)"
+                                       invisible="landing_mode != 'credential'"/>
+                            <field name="landing_html"
+                                   invisible="landing_mode != 'credential'"/>
+                            <separator string="Page éducative (moment d'apprentissage)"/>
+                            <field name="teachable_html"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="bf_phishing_template_action" model="ir.actions.act_window">
+        <field name="name">Modèles de leurre</field>
+        <field name="res_model">bf.phishing.template</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Créez votre premier modèle de leurre</p>
+            <p>Un modèle définit le courriel d'hameçonnage, la page d'atterrissage
+               et la formation assignée en cas d'échec.</p>
+        </field>
+    </record>
+
+</odoo>

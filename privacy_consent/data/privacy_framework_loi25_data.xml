@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!--
+        Cadre Loi 25 (Québec) — pack de référence du noyau.
+        Les chaînes reproduisent À L'IDENTIQUE les textes auparavant codés en dur,
+        afin que les installations Loi 25 existantes ne subissent AUCUN changement
+        de comportement (et que les empreintes du registre de destruction restent
+        identiques). XML id stable : privacy_consent.framework_loi25
+    -->
+    <record id="framework_loi25" model="privacy.framework">
+        <field name="code">loi25</field>
+        <field name="name">Loi 25 (Québec)</field>
+        <field name="sequence" eval="1"/>
+        <field name="company_id" eval="False"/>
+        <field name="country_id" ref="base.ca"/>
+        <field name="jurisdiction_label">Québec, Canada</field>
+        <field name="languages">fr_CA,en_CA</field>
+        <field name="law_short_label">Loi 25</field>
+        <field name="law_citation_fr">Loi sur la protection des renseignements personnels dans le secteur privé (RLRQ, c.&#160;P-39.1), modifiée par la Loi&#160;25 (2021, c.&#160;25)</field>
+        <field name="law_citation_en">Quebec's Act respecting the protection of personal information in the private sector, as amended by Law 25</field>
+        <field name="consent_intro_fr">Conformément à la Loi 25 sur la protection des renseignements personnels au Québec, nous avons besoin de votre consentement explicite.</field>
+        <field name="consent_intro_en">In accordance with Quebec's Law 25 on the protection of personal information, we need your explicit consent for this purpose.</field>
+        <field name="authority_name">Commission d'accès à l'information du Québec (CAI)</field>
+        <field name="authority_url">https://www.cai.gouv.qc.ca</field>
+        <field name="breach_portal_url">https://www.cai.gouv.qc.ca/divulgation-dincidents-de-confidentialite/</field>
+        <field name="officer_title_fr">Responsable de la protection des renseignements personnels (RPRP)</field>
+        <field name="officer_title_en">Personal Information Protection Officer</field>
+        <field name="officer_required" eval="True"/>
+        <field name="age_of_majority" eval="14"/>
+        <field name="breach_notify_authority" eval="True"/>
+        <field name="breach_notify_authority_hours" eval="0"/>
+        <field name="breach_notify_authority_label">dès que possible</field>
+        <field name="breach_notify_individuals" eval="True"/>
+        <field name="breach_notify_individuals_label">lorsqu'il existe un risque de préjudice sérieux</field>
+        <field name="breach_threshold_label">risque de préjudice sérieux</field>
+        <field name="assessment_name_fr">Évaluation des facteurs relatifs à la vie privée (ÉFVP)</field>
+        <field name="assessment_name_en">Privacy Impact Assessment (PIA)</field>
+        <field name="assessment_citation">Art. 3.3 LPRPSP</field>
+        <field name="anonymization_citation">Règlement sur l'anonymisation des renseignements personnels (RLRQ, c. P-39.1, r. 0.1)</field>
+        <field name="default_retention_years" eval="7"/>
+        <field name="destruction_basis_template">Art. 23 LPRPSP (obligation de destruction)</field>
+        <field name="erasure_basis_citation">Art. 28.1 LPRPSP (droit à l'effacement)</field>
+        <field name="register_immutability_citation">l'article 3.2 de la Loi sur la protection des renseignements personnels dans le secteur privé (LPRPSP)</field>
+        <field name="notes">Cadre de référence du noyau. Conserve les textes Loi 25 d'origine.</field>
+    </record>
+
+    <!-- Bases légales — Loi 25 -->
+    <record id="lawful_basis_loi25_consent" model="privacy.lawful.basis">
+        <field name="framework_id" ref="framework_loi25"/>
+        <field name="code">consent</field>
+        <field name="name">Consentement</field>
+        <field name="description">Consentement manifeste, libre, éclairé et donné à des fins spécifiques.</field>
+        <field name="citation">Art. 12-14 LPRPSP</field>
+        <field name="requires_consent" eval="True"/>
+        <field name="sequence" eval="10"/>
+    </record>
+    <record id="lawful_basis_loi25_contract" model="privacy.lawful.basis">
+        <field name="framework_id" ref="framework_loi25"/>
+        <field name="code">contract_necessity</field>
+        <field name="name">Nécessité contractuelle</field>
+        <field name="description">Utilisation nécessaire à la conclusion ou à l'exécution d'un contrat.</field>
+        <field name="citation">Art. 12 LPRPSP</field>
+        <field name="sequence" eval="20"/>
+    </record>
+    <record id="lawful_basis_loi25_legal" model="privacy.lawful.basis">
+        <field name="framework_id" ref="framework_loi25"/>
+        <field name="code">legal_authorization</field>
+        <field name="name">Obligation ou autorisation légale</field>
+        <field name="description">Utilisation prévue ou autorisée par la loi.</field>
+        <field name="citation">Art. 18 LPRPSP</field>
+        <field name="sequence" eval="30"/>
+    </record>
+    <record id="lawful_basis_loi25_legitimate" model="privacy.lawful.basis">
+        <field name="framework_id" ref="framework_loi25"/>
+        <field name="code">legitimate_interest</field>
+        <field name="name">Fins compatibles / intérêt sérieux et légitime</field>
+        <field name="description">Utilisation à des fins compatibles avec celles de la collecte.</field>
+        <field name="citation">Art. 12 LPRPSP</field>
+        <field name="sequence" eval="40"/>
+    </record>
+
+    <!--
+        Droits — Loi 25.
+        Volontairement limité au droit d'accès/rectification afin de reproduire
+        à l'identique le bloc « Vos droits » du courriel existant (retrait, refus
+        et validité restent des puces opérationnelles statiques du gabarit).
+    -->
+    <record id="right_loi25_access_rectify" model="privacy.right">
+        <field name="framework_id" ref="framework_loi25"/>
+        <field name="code">access_rectify</field>
+        <field name="label_fr">Vous avez le droit d'accéder à vos renseignements personnels et de les rectifier.</field>
+        <field name="label_en">You have the right to access and rectify your personal information.</field>
+        <field name="citation">Art. 27-30, 32-33 LPRPSP</field>
+        <field name="sequence" eval="10"/>
+    </record>
+</odoo>

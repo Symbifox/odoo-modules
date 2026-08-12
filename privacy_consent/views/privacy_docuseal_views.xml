@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- DocuSeal Config Form View -->
+    <record id="privacy_docuseal_config_view_form" model="ir.ui.view">
+        <field name="name">privacy.docuseal.config.form</field>
+        <field name="model">privacy.docuseal.config</field>
+        <field name="arch" type="xml">
+            <form string="Configuration DocuSeal">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_test_connection" type="object"
+                                class="oe_stat_button" icon="fa-plug">
+                            <span>Tester la connexion</span>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Archivé" bg_color="text-bg-danger" invisible="active"/>
+                    <group>
+                        <group string="Général">
+                            <field name="name"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="active" invisible="1"/>
+                        </group>
+                        <group string="Configuration API">
+                            <field name="api_url"/>
+                            <field name="api_key" password="True"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Configuration Webhook">
+                            <field name="webhook_url" readonly="1"/>
+                            <field name="webhook_secret" password="True"/>
+                        </group>
+                        <group string="Paramètres par défaut">
+                            <field name="default_sender_email"/>
+                            <field name="auto_send"/>
+                        </group>
+                    </group>
+                    <div class="alert alert-info" role="alert">
+                        <h5><i class="fa fa-info-circle"/> Instructions de configuration</h5>
+                        <ol>
+                            <li>Créez un compte sur <a href="https://docuseal.co" target="_blank">DocuSeal</a></li>
+                            <li>Générez une clé API dans les paramètres de votre compte DocuSeal</li>
+                            <li>Saisissez la clé API ci-dessus</li>
+                            <li>Copiez l'URL du Webhook et configurez-la dans les paramètres webhook de DocuSeal</li>
+                            <li>Optionnellement, définissez un secret webhook pour la vérification de signature</li>
+                        </ol>
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- DocuSeal Config List View -->
+    <record id="privacy_docuseal_config_view_list" model="ir.ui.view">
+        <field name="name">privacy.docuseal.config.list</field>
+        <field name="model">privacy.docuseal.config</field>
+        <field name="arch" type="xml">
+            <list string="Configurations DocuSeal">
+                <field name="name"/>
+                <field name="api_url"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- DocuSeal Config Action -->
+    <record id="action_privacy_docuseal_config" model="ir.actions.act_window">
+        <field name="name">Configuration DocuSeal</field>
+        <field name="res_model">privacy.docuseal.config</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Configurez l'intégration DocuSeal
+            </p>
+            <p>
+                Configurez vos identifiants API DocuSeal pour activer la collecte de signatures
+                numériques pour les demandes de consentement.
+            </p>
+        </field>
+    </record>
+
+    <!-- DocuSeal Template Form View -->
+    <record id="privacy_docuseal_template_view_form" model="ir.ui.view">
+        <field name="name">privacy.docuseal.template.form</field>
+        <field name="model">privacy.docuseal.template</field>
+        <field name="arch" type="xml">
+            <form string="Correspondance de modèle DocuSeal">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_sync_template" type="object"
+                                class="oe_stat_button" icon="fa-refresh">
+                            <span>Synchroniser le modèle</span>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Archivé" bg_color="text-bg-danger" invisible="active"/>
+                    <group>
+                        <group string="Correspondance">
+                            <field name="name"/>
+                            <field name="purpose_id"/>
+                            <field name="active" invisible="1"/>
+                        </group>
+                        <group string="DocuSeal">
+                            <field name="docuseal_template_id"/>
+                            <field name="docuseal_template_name" readonly="1"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                    <group string="Correspondance des champs">
+                        <field name="field_mapping" widget="ace" options="{'mode': 'json'}" nolabel="1"/>
+                    </group>
+                    <group string="Paramètres de courriel">
+                        <field name="custom_message" placeholder="Message personnalisé optionnel à inclure dans les courriels de demande de signature..."/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- DocuSeal Template List View -->
+    <record id="privacy_docuseal_template_view_list" model="ir.ui.view">
+        <field name="name">privacy.docuseal.template.list</field>
+        <field name="model">privacy.docuseal.template</field>
+        <field name="arch" type="xml">
+            <list string="Modèles DocuSeal">
+                <field name="name"/>
+                <field name="purpose_id"/>
+                <field name="docuseal_template_id"/>
+                <field name="docuseal_template_name"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- DocuSeal Template Search View -->
+    <record id="privacy_docuseal_template_view_search" model="ir.ui.view">
+        <field name="name">privacy.docuseal.template.search</field>
+        <field name="model">privacy.docuseal.template</field>
+        <field name="arch" type="xml">
+            <search string="Rechercher les modèles DocuSeal">
+                <field name="name"/>
+                <field name="purpose_id"/>
+                <field name="docuseal_template_id"/>
+                <filter string="Archivé" name="inactive" domain="[('active', '=', False)]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter string="Finalité" name="group_by_purpose" context="{'group_by': 'purpose_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- DocuSeal Template Action -->
+    <record id="action_privacy_docuseal_template" model="ir.actions.act_window">
+        <field name="name">Modèles DocuSeal</field>
+        <field name="res_model">privacy.docuseal.template</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Associez les modèles DocuSeal aux finalités
+            </p>
+            <p>
+                Créez des correspondances entre les modèles de signature DocuSeal et les finalités
+                de consentement de vie privée.
+            </p>
+        </field>
+    </record>
+
+    <!-- DocuSeal Send Wizard View -->
+    <record id="privacy_docuseal_send_wizard_view_form" model="ir.ui.view">
+        <field name="name">privacy.docuseal.send.wizard.form</field>
+        <field name="model">privacy.docuseal.send.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Envoyer pour signature">
+                <group>
+                    <group string="Détails du consentement">
+                        <field name="consent_id" invisible="1"/>
+                        <field name="partner_id"/>
+                        <field name="partner_email"/>
+                        <field name="purpose_id"/>
+                    </group>
+                    <group string="Paramètres DocuSeal">
+                        <field name="template_id"/>
+                        <field name="send_email"/>
+                    </group>
+                </group>
+                <group string="Message personnalisé (optionnel)">
+                    <field name="custom_message" nolabel="1" placeholder="Saisissez un message personnalisé à inclure dans le courriel de demande de signature..."/>
+                </group>
+                <footer>
+                    <button name="action_send" type="object" string="Envoyer pour signature" class="btn-primary"/>
+                    <button string="Annuler" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- DocuSeal Send Wizard Action -->
+    <record id="action_privacy_docuseal_send_wizard" model="ir.actions.act_window">
+        <field name="name">Envoyer pour signature</field>
+        <field name="res_model">privacy.docuseal.send.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

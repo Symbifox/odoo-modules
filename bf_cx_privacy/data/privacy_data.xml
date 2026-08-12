@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="purpose_testimonial" model="privacy.purpose">
+            <field name="code">testimonial</field>
+            <field name="name">Publication d'un témoignage client</field>
+            <field name="plain_language_summary"><![CDATA[
+                <p>Nous publions vos commentaires comme témoignage, avec votre nom
+                et/ou celui de votre entreprise, sur notre site web, dans nos
+                soumissions ou dans nos communications commerciales.</p>
+                <p><em>We publish your comments as a testimonial, with your name
+                and/or your company's name, on our website, in our proposals or in
+                our business communications.</em></p>
+            ]]></field>
+            <field name="requires_consent" eval="True"/>
+            <field name="requires_express_opt_in" eval="True"/>
+            <field name="default_validity_days">1095</field>
+            <field name="context_scope">marketing</field>
+            <field name="channel_scope">all</field>
+        </record>
+
+        <record id="notice_testimonial" model="privacy.notice">
+            <field name="name">Utilisation de votre témoignage</field>
+            <field name="purpose_id" ref="purpose_testimonial"/>
+            <field name="body_fr"><![CDATA[
+                <p>Vous avez partagé des commentaires sur nos services et accepté
+                que nous puissions les citer. Avec votre consentement, nous
+                publierons ce témoignage - accompagné de votre nom et, le cas
+                échéant, de celui de votre entreprise - sur notre site web, dans
+                nos soumissions ou dans nos communications commerciales.</p>
+                <p>Vous pouvez retirer votre consentement en tout temps ; le
+                témoignage sera alors retiré de nos supports dans un délai
+                raisonnable.</p>
+            ]]></field>
+            <field name="body_en"><![CDATA[
+                <p>You shared comments about our services and agreed that we may
+                quote them. With your consent, we will publish this testimonial -
+                along with your name and, where applicable, your company's name -
+                on our website, in our proposals or in our business
+                communications.</p>
+                <p>You may withdraw your consent at any time; the testimonial will
+                then be removed from our materials within a reasonable delay.</p>
+            ]]></field>
+        </record>
+
+        <!-- Initial immutable version: without it, consents created by the
+             bridge would carry no notice_version_id (no hashed proof chain). -->
+        <record id="notice_testimonial_version_1" model="privacy.notice.version">
+            <field name="notice_id" ref="notice_testimonial"/>
+            <field name="version">1.0</field>
+            <field name="body"><![CDATA[
+                <p>Vous avez partagé des commentaires sur nos services et accepté
+                que nous puissions les citer. Avec votre consentement, nous
+                publierons ce témoignage - accompagné de votre nom et, le cas
+                échéant, de celui de votre entreprise - sur notre site web, dans
+                nos soumissions ou dans nos communications commerciales.</p>
+                <p>Vous pouvez retirer votre consentement en tout temps ; le
+                témoignage sera alors retiré de nos supports dans un délai
+                raisonnable.</p>
+                <p><em>You shared comments about our services and agreed that we
+                may quote them. With your consent, we will publish this
+                testimonial - along with your name and, where applicable, your
+                company's name - on our website, in our proposals or in our
+                business communications. You may withdraw your consent at any
+                time; the testimonial will then be removed from our materials
+                within a reasonable delay.</em></p>
+            ]]></field>
+        </record>
+    </data>
+</odoo>

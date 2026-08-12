@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ════════════ Business-card scanner ════════════ -->
+    <record id="view_bf_contact_card_wizard_form" model="ir.ui.view">
+        <field name="name">bf.contact.card.wizard.form</field>
+        <field name="model">bf.contact.card.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Numériser une carte d'affaires">
+                <field name="state" invisible="1"/>
+                <field name="image_filename" invisible="1"/>
+
+                <group invisible="state != 'upload'">
+                    <field name="image" widget="image" filename="image_filename"
+                           class="oe_avatar"/>
+                    <field name="target_partner_id"/>
+                    <div class="text-muted" colspan="2">
+                        Formats acceptés : JPG, PNG ou PDF (carte recto).
+                    </div>
+                </group>
+
+                <group invisible="state != 'review'">
+                    <group string="Coordonnées lues">
+                        <field name="full_name"/>
+                        <field name="first_name"/>
+                        <field name="last_name"/>
+                        <field name="function"/>
+                        <field name="company"/>
+                        <field name="email"/>
+                        <field name="phone"/>
+                        <field name="mobile"/>
+                        <field name="website"/>
+                    </group>
+                    <group string="Adresse et statut">
+                        <field name="street"/>
+                        <field name="city"/>
+                        <field name="zip"/>
+                        <field name="country"/>
+                        <field name="confidence"/>
+                        <field name="matched_partner_id"/>
+                        <field name="match_mode" widget="radio"/>
+                    </group>
+                    <field name="raw_text" colspan="2"/>
+                </group>
+
+                <footer>
+                    <button name="action_scan" type="object" string="Lire la carte"
+                            class="btn-primary" invisible="state != 'upload'"/>
+                    <button name="action_apply" type="object"
+                            string="Enregistrer le contact" class="btn-primary"
+                            invisible="state != 'review'"/>
+                    <button string="Annuler" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_bf_contact_card_wizard" model="ir.actions.act_window">
+        <field name="name">Numériser une carte d'affaires</field>
+        <field name="res_model">bf.contact.card.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <!-- ════════════ Enrich (signature / web) ════════════ -->
+    <record id="view_bf_contact_enrich_wizard_form" model="ir.ui.view">
+        <field name="name">bf.contact.enrich.wizard.form</field>
+        <field name="model">bf.contact.enrich.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Enrichir le contact">
+                <field name="state" invisible="1"/>
+                <field name="source" invisible="1"/>
+                <group>
+                    <field name="partner_id" readonly="1"/>
+                    <field name="confidence" invisible="state != 'review'"/>
+                </group>
+                <div class="text-muted" invisible="state != 'draft'">
+                    Cliquez sur « Analyser » pour récupérer les coordonnées.
+                </div>
+                <group invisible="state != 'review'">
+                    <group string="Valeurs actuelles">
+                        <field name="cur_function"/>
+                        <field name="cur_email"/>
+                        <field name="cur_phone"/>
+                        <field name="cur_mobile"/>
+                        <field name="cur_website"/>
+                    </group>
+                    <group string="Valeurs proposées">
+                        <field name="proposed_name"/>
+                        <field name="proposed_function"/>
+                        <field name="proposed_company"/>
+                        <field name="proposed_email"/>
+                        <field name="proposed_phone"/>
+                        <field name="proposed_mobile"/>
+                        <field name="proposed_website"/>
+                        <field name="proposed_street"/>
+                        <field name="proposed_city"/>
+                        <field name="proposed_zip"/>
+                        <field name="proposed_country"/>
+                    </group>
+                    <field name="overwrite"/>
+                </group>
+                <footer>
+                    <button name="action_analyze" type="object" string="Analyser"
+                            class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_apply" type="object" string="Appliquer"
+                            class="btn-primary" invisible="state != 'review'"/>
+                    <button string="Annuler" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- ════════════ vCard import ════════════ -->
+    <record id="view_bf_contact_vcard_wizard_form" model="ir.ui.view">
+        <field name="name">bf.contact.vcard.wizard.form</field>
+        <field name="model">bf.contact.vcard.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Importer une vCard">
+                <group>
+                    <field name="vcf_file" filename="vcf_filename"/>
+                    <field name="vcf_filename" invisible="1"/>
+                    <div class="text-muted" colspan="2">
+                        Téléversez un fichier .vcf (une ou plusieurs fiches).
+                    </div>
+                </group>
+                <field name="result_summary" readonly="1"
+                       invisible="not result_summary"/>
+                <footer>
+                    <button name="action_import" type="object" string="Importer"
+                            class="btn-primary"/>
+                    <button string="Annuler" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_bf_contact_vcard_wizard" model="ir.actions.act_window">
+        <field name="name">Importer une vCard</field>
+        <field name="res_model">bf.contact.vcard.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <!-- ════════════ Duplicate detector ════════════ -->
+    <record id="view_bf_contact_dedup_wizard_form" model="ir.ui.view">
+        <field name="name">bf.contact.dedup.wizard.form</field>
+        <field name="model">bf.contact.dedup.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Détecter les doublons">
+                <field name="scanned" invisible="1"/>
+                <div class="text-muted" invisible="scanned">
+                    Recherche les contacts en double par courriel et par nom.
+                </div>
+                <field name="line_ids" invisible="not scanned" readonly="1">
+                    <list>
+                        <field name="reason"/>
+                        <field name="key"/>
+                        <field name="count"/>
+                        <field name="partner_ids" widget="many2many_tags"/>
+                        <button name="action_open_partners" type="object"
+                                string="Voir / fusionner" icon="fa-external-link"/>
+                    </list>
+                </field>
+                <footer>
+                    <button name="action_scan" type="object"
+                            string="Lancer la détection" class="btn-primary"/>
+                    <button string="Fermer" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_bf_contact_dedup_wizard" model="ir.actions.act_window">
+        <field name="name">Détecter les doublons</field>
+        <field name="res_model">bf.contact.dedup.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+</odoo>

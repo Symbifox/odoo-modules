@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Extend calendar.event form view to show sync fields -->
+    <record id="view_calendar_event_form_nc_sync" model="ir.ui.view">
+        <field name="name">calendar.event.form.nc.sync</field>
+        <field name="model">calendar.event</field>
+        <field name="inherit_id" ref="calendar.view_calendar_event_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <group name="calendar_sync" string="Calendar Sync">
+                    <field name="x_nc_calendar_id"
+                        options="{'no_create': True, 'no_open': True}"/>
+                </group>
+                <group name="calendar_sync_technical" string="Sync (technical)"
+                    invisible="not x_nc_calendar_id"
+                    groups="base.group_no_one">
+                    <group>
+                        <field name="x_sync_source"/>
+                        <field name="x_last_sync"/>
+                    </group>
+                    <group>
+                        <field name="x_nc_uid"/>
+                        <field name="x_caldav_etag"/>
+                        <field name="x_caldav_href"/>
+                    </group>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Extend calendar.event list view -->
+    <record id="view_calendar_event_tree_nc_sync" model="ir.ui.view">
+        <field name="name">calendar.event.list.nc.sync</field>
+        <field name="model">calendar.event</field>
+        <field name="inherit_id" ref="calendar.view_calendar_event_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list" position="inside">
+                <field name="x_nc_calendar_id" optional="hide"/>
+                <field name="x_sync_source" optional="hide"/>
+            </xpath>
+        </field>
+    </record>
+    <!-- Override main calendar view to use event color field for coloring.
+         The partner_ids sidebar filter is UNAFFECTED - it's driven by
+         <field name="partner_ids" filters="1" write_model="calendar.filters">
+         not by the color attribute on the <calendar> tag. -->
+    <record id="view_calendar_event_calendar_color_override" model="ir.ui.view">
+        <field name="name">calendar.event.calendar.color.override</field>
+        <field name="model">calendar.event</field>
+        <field name="inherit_id" ref="calendar.view_calendar_event_calendar"/>
+        <field name="arch" type="xml">
+            <xpath expr="//calendar" position="attributes">
+                <attribute name="color">color</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Calendar view colored by event color field (used by "View Events" action) -->
+    <record id="view_calendar_event_calendar_nc_sync" model="ir.ui.view">
+        <field name="name">calendar.event.calendar.nc.sync</field>
+        <field name="model">calendar.event</field>
+        <field name="arch" type="xml">
+            <calendar string="Nextcloud Events" date_start="start" date_stop="stop"
+                all_day="allday" color="color" event_open_popup="true" quick_create="false">
+                <field name="location" invisible="not location" options="{'icon': 'fa fa-map-marker'}"/>
+                <field name="partner_ids" options="{'block': True, 'icon': 'fa fa-users'}"
+                    widget="many2manyattendeeexpandable"/>
+            </calendar>
+        </field>
+    </record>
+
+    <!-- Search filter for synced events -->
+    <record id="view_calendar_event_search_nc_sync" model="ir.ui.view">
+        <field name="name">calendar.event.search.nc.sync</field>
+        <field name="model">calendar.event</field>
+        <field name="inherit_id" ref="calendar.view_calendar_event_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">
+                <separator/>
+                <filter name="synced_from_nextcloud" string="From Nextcloud"
+                    domain="[('x_sync_source', '=', 'nextcloud')]"/>
+                <filter name="synced_to_nextcloud" string="Synced to NC"
+                    domain="[('x_nc_calendar_id', '!=', False), ('x_sync_source', '=', 'odoo')]"/>
+                <filter name="nc_sync_enabled" string="NC Sync Enabled"
+                    domain="[('x_nc_calendar_id', '!=', False)]"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

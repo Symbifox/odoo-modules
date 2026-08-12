@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates>
+
+    <t t-name="bf_email_systray.Systray">
+        <button class="btn d-flex align-items-center position-relative bf-email-systray"
+                t-on-click="onOpen"
+                title="Boîte de réception (Courriels Blue Fox)">
+            <i class="fa fa-inbox"/>
+            <span t-if="hasCount"
+                  class="badge rounded-pill bg-dark text-white ms-1">
+                <t t-esc="countLabel"/>
+            </span>
+        </button>
+    </t>
+
+</templates>

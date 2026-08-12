@@ -1,0 +1,353 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="view_bf_outreach_target_list" model="ir.ui.view">
+        <field name="name">bf.outreach.target.list</field>
+        <field name="model">bf.outreach.target</field>
+        <field name="arch" type="xml">
+            <list string="Cibles" multi_edit="1"
+                  decoration-muted="stage_type in ('won', 'lost') or is_excluded"
+                  decoration-danger="is_excluded">
+                <field name="stage_type" column_invisible="1"/>
+                <field name="priority" widget="priority" nolabel="1" optional="show"/>
+                <field name="name"/>
+                <field name="campaign_id" optional="show"/>
+                <field name="contact_name" optional="show"/>
+                <field name="phone" widget="phone" optional="show"/>
+                <field name="mobile" widget="phone" optional="hide"/>
+                <field name="email" widget="email" optional="show"/>
+                <field name="user_id" widget="many2one_avatar_user" optional="show"/>
+                <field name="stage_id"/>
+                <field name="call_count" string="Appels" sum="Appels"/>
+                <field name="email_count" string="Courriels" sum="Courriels"/>
+                <field name="letter_count" string="Lettres" sum="Lettres" optional="hide"/>
+                <field name="last_touch_date" string="Dernier contact" optional="show"/>
+                <field name="next_action_kind" string="Prochain" optional="show"/>
+                <field name="next_action_date" string="Prochaine action"
+                       decoration-danger="next_action_date &lt; current_date"
+                       decoration-warning="next_action_date == current_date"/>
+                <field name="has_reply" optional="hide"/>
+                <field name="is_excluded" optional="hide"/>
+                <field name="source" optional="hide"/>
+                <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color'}" optional="hide"/>
+                <field name="activity_ids" widget="list_activity" optional="hide"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+                <button name="action_log_call" type="object" icon="fa-phone" title="Journaliser un appel"/>
+                <button name="action_log_email" type="object" icon="fa-envelope" title="Journaliser un courriel"/>
+                <button name="action_log_letter" type="object" icon="fa-envelope-o" title="Journaliser une lettre"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_bf_outreach_target_kanban" model="ir.ui.view">
+        <field name="name">bf.outreach.target.kanban</field>
+        <field name="model">bf.outreach.target</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="stage_id" highlight_color="color"
+                    class="o_kanban_small_column" sample="1">
+                <field name="next_action_date"/>
+                <field name="stage_type"/>
+                <progressbar field="activity_state"
+                             colors='{"planned": "success", "today": "warning", "overdue": "danger"}'/>
+                <templates>
+                    <t t-name="menu">
+                        <t t-if="widget.editable"><a role="menuitem" type="open" class="dropdown-item">Modifier</a></t>
+                        <t t-if="widget.deletable"><a role="menuitem" type="delete" class="dropdown-item">Supprimer</a></t>
+                        <field name="color" widget="kanban_color_picker"/>
+                    </t>
+                    <t t-name="card">
+                        <div class="d-flex">
+                            <field name="name" class="fw-bold fs-6"/>
+                            <field name="priority" widget="priority" class="ms-auto"/>
+                        </div>
+                        <field name="contact_name" invisible="not contact_name" class="text-muted"/>
+                        <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
+                        <div class="mt-1">
+                            <span class="me-3"><i class="fa fa-phone me-1" title="Appels"/><field name="call_count"/></span>
+                            <span class="me-3"><i class="fa fa-envelope me-1" title="Courriels"/><field name="email_count"/></span>
+                        </div>
+                        <div t-if="record.next_action_date.raw_value" class="mt-1">
+                            <i class="fa fa-clock-o me-1" title="Prochaine action"/>
+                            <field name="next_action_kind"/>
+                            <field name="next_action_date" widget="remaining_days" class="ms-1"/>
+                        </div>
+                        <footer>
+                            <field name="activity_ids" widget="kanban_activity"/>
+                            <field name="user_id" widget="many2one_avatar_user" class="ms-auto"/>
+                        </footer>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_bf_outreach_target_form" model="ir.ui.view">
+        <field name="name">bf.outreach.target.form</field>
+        <field name="model">bf.outreach.target</field>
+        <field name="arch" type="xml">
+            <form string="Cible">
+                <header>
+                    <button name="action_log_call" type="object" string="Journaliser un appel"
+                            class="btn-primary" icon="fa-phone"/>
+                    <button name="action_log_email" type="object" string="Journaliser un courriel"
+                            icon="fa-envelope"/>
+                    <button name="action_log_letter" type="object" string="Journaliser une lettre"
+                            icon="fa-envelope-o"/>
+                    <button name="action_send_campaign_email" type="object"
+                            string="Envoyer le courriel" icon="fa-paper-plane-o"
+                            invisible="not email or is_excluded"/>
+                    <button name="action_create_partner" type="object" string="Créer le contact"
+                            invisible="partner_id" icon="fa-address-card-o"/>
+                    <button name="action_create_lead" type="object" string="Créer une opportunité"
+                            invisible="lead_id or is_excluded" icon="fa-star-o"/>
+                    <button name="action_do_not_contact" type="object" string="Ne plus contacter"
+                            invisible="is_excluded" icon="fa-ban" class="btn-secondary"/>
+                    <button name="action_allow_contact_again" type="object" string="Lever l'exclusion"
+                            invisible="not do_not_contact" icon="fa-undo"
+                            groups="bf_outreach.group_bf_outreach_manager"
+                            confirm="Lever l'exclusion relance le démarchage de cette cible. Confirmer ?"/>
+                    <field name="stage_id" widget="statusbar" options="{'clickable': '1', 'fold_field': 'fold'}"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button" icon="fa-history" type="object"
+                                name="action_open_touches">
+                            <field name="touch_count" widget="statinfo" string="Interactions"/>
+                        </button>
+                        <button class="oe_stat_button" icon="fa-star" type="object"
+                                name="action_open_lead" invisible="not lead_id">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Opportunité</span>
+                            </div>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Ne plus contacter" bg_color="text-bg-danger"
+                            invisible="not is_excluded"/>
+                    <widget name="web_ribbon" title="Convertie" bg_color="text-bg-success"
+                            invisible="stage_type != 'won' or is_excluded"/>
+                    <widget name="web_ribbon" title="Abandonnée" bg_color="text-bg-danger"
+                            invisible="stage_type != 'lost' or is_excluded"/>
+                    <div class="oe_title">
+                        <label for="name" string="Cible"/>
+                        <h1><field name="name" placeholder="Nom de l'organisation"/></h1>
+                        <field name="tag_ids" widget="many2many_tags"
+                               options="{'color_field': 'color'}" placeholder="Étiquettes"/>
+                    </div>
+                    <group>
+                        <group string="Coordonnées">
+                            <field name="partner_id"/>
+                            <field name="contact_name"/>
+                            <field name="function"/>
+                            <field name="email" widget="email"/>
+                            <field name="phone" widget="phone"/>
+                            <field name="mobile" widget="phone"/>
+                            <field name="website" widget="url"/>
+                        </group>
+                        <group string="Suivi">
+                            <field name="campaign_id" options="{'no_create': True}"/>
+                            <field name="user_id" widget="many2one_avatar_user"/>
+                            <field name="priority" widget="priority"/>
+                            <field name="source"/>
+                            <field name="paused_until"/>
+                            <field name="closed_reason" invisible="stage_type not in ('won', 'lost')"/>
+                            <field name="lead_id" invisible="not lead_id" readonly="1"/>
+                            <field name="do_not_contact" readonly="1"/>
+                            <field name="do_not_contact_reason" readonly="1"
+                                   invisible="not do_not_contact"/>
+                            <field name="do_not_contact_date" readonly="1"
+                                   invisible="not do_not_contact"/>
+                            <field name="do_not_contact_user_id" readonly="1"
+                                   invisible="not do_not_contact"/>
+                            <field name="is_excluded" invisible="1"/>
+                            <field name="email_normalized" invisible="1"/>
+                            <field name="phone_normalized" invisible="1"/>
+                            <field name="stage_type" invisible="1"/>
+                            <field name="company_id" invisible="1"/>
+                            <field name="active" invisible="1"/>
+                            <field name="color" invisible="1"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Historique">
+                            <field name="call_count"/>
+                            <field name="email_count"/>
+                            <field name="letter_count"/>
+                            <field name="last_touch_date"/>
+                            <field name="has_reply"/>
+                        </group>
+                        <group string="Prochaine relance">
+                            <field name="next_action_kind"/>
+                            <field name="next_action_date"
+                                   decoration-danger="next_action_date &lt; current_date"/>
+                            <field name="next_call_date"/>
+                            <field name="next_email_date"/>
+                            <field name="next_letter_date"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Interactions" name="touches">
+                            <field name="touch_ids" context="{'default_target_id': id}">
+                                <list editable="bottom">
+                                    <field name="date"/>
+                                    <field name="kind"/>
+                                    <field name="direction"/>
+                                    <field name="outcome"/>
+                                    <field name="duration" optional="hide"/>
+                                    <field name="summary"/>
+                                    <field name="user_id" widget="many2one_avatar_user"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Argumentaire" name="pitch"
+                              invisible="not campaign_pitch">
+                            <field name="campaign_pitch" readonly="1" nolabel="1"/>
+                        </page>
+                        <page string="Notes" name="notes">
+                            <field name="note" placeholder="Contexte, objections, engagements pris…"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_bf_outreach_target_calendar" model="ir.ui.view">
+        <field name="name">bf.outreach.target.calendar</field>
+        <field name="model">bf.outreach.target</field>
+        <field name="arch" type="xml">
+            <calendar string="Relances" date_start="next_action_date" color="user_id"
+                      mode="month" hide_time="true" quick_create="0">
+                <field name="user_id" filters="1"/>
+                <field name="campaign_id"/>
+                <field name="next_action_kind"/>
+            </calendar>
+        </field>
+    </record>
+
+    <record id="view_bf_outreach_target_pivot" model="ir.ui.view">
+        <field name="name">bf.outreach.target.pivot</field>
+        <field name="model">bf.outreach.target</field>
+        <field name="arch" type="xml">
+            <pivot string="Cibles">
+                <field name="campaign_id" type="row"/>
+                <field name="stage_id" type="col"/>
+                <field name="call_count" type="measure"/>
+                <field name="email_count" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_bf_outreach_target_graph" model="ir.ui.view">
+        <field name="name">bf.outreach.target.graph</field>
+        <field name="model">bf.outreach.target</field>
+        <field name="arch" type="xml">
+            <graph string="Cibles" type="bar">
+                <field name="campaign_id"/>
+                <field name="stage_id"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="view_bf_outreach_target_activity" model="ir.ui.view">
+        <field name="name">bf.outreach.target.activity</field>
+        <field name="model">bf.outreach.target</field>
+        <field name="arch" type="xml">
+            <activity string="Cibles">
+                <templates>
+                    <div t-name="activity-box">
+                        <div>
+                            <field name="name" class="fw-bold"/>
+                            <span class="text-muted"><field name="campaign_id"/></span>
+                        </div>
+                    </div>
+                </templates>
+            </activity>
+        </field>
+    </record>
+
+    <record id="view_bf_outreach_target_search" model="ir.ui.view">
+        <field name="name">bf.outreach.target.search</field>
+        <field name="model">bf.outreach.target</field>
+        <field name="arch" type="xml">
+            <search string="Cibles">
+                <field name="name" string="Cible"
+                       filter_domain="['|', '|', '|', ('name', 'ilike', self), ('contact_name', 'ilike', self), ('email', 'ilike', self), ('phone', 'ilike', self)]"/>
+                <field name="campaign_id"/>
+                <field name="user_id"/>
+                <field name="stage_id"/>
+                <field name="tag_ids"/>
+                <field name="source"/>
+                <filter name="my_targets" string="Mes cibles" domain="[('user_id', '=', uid)]"/>
+                <separator/>
+                <filter name="due" string="À faire"
+                        domain="[('next_action_date', '&lt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter name="overdue" string="En retard"
+                        domain="[('next_action_date', '&lt;', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter name="due_today" string="Aujourd'hui"
+                        domain="[('next_action_date', '=', context_today().strftime('%Y-%m-%d'))]"/>
+                <separator/>
+                <filter name="untouched" string="Jamais contactées" domain="[('touch_count', '=', 0)]"/>
+                <filter name="excluded" string="Ne plus contacter" domain="[('is_excluded', '=', True)]"/>
+                <filter name="replied" string="Ont répondu" domain="[('has_reply', '=', True)]"/>
+                <filter name="no_reply" string="Sans réponse" domain="[('has_reply', '=', False), ('touch_count', '&gt;', 0)]"/>
+                <separator/>
+                <filter name="open" string="Dossiers ouverts" domain="[('stage_type', 'in', ('todo', 'active'))]"/>
+                <filter name="won" string="Converties" domain="[('stage_type', '=', 'won')]"/>
+                <filter name="lost" string="Abandonnées" domain="[('stage_type', '=', 'lost')]"/>
+                <separator/>
+                <filter name="running_campaign" string="Campagnes en cours"
+                        domain="[('campaign_state', '=', 'running')]"/>
+                <filter name="inactive" string="Archivées" domain="[('active', '=', False)]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="group_by_campaign" string="Campagne" context="{'group_by': 'campaign_id'}"/>
+                    <filter name="group_by_stage" string="Étape" context="{'group_by': 'stage_id'}"/>
+                    <filter name="group_by_user" string="Responsable" context="{'group_by': 'user_id'}"/>
+                    <filter name="group_by_next" string="Prochaine action" context="{'group_by': 'next_action_date'}"/>
+                    <filter name="group_by_kind" string="Type de prochaine action" context="{'group_by': 'next_action_kind'}"/>
+                    <filter name="group_by_source" string="Source" context="{'group_by': 'source'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_bf_outreach_target" model="ir.actions.act_window">
+        <field name="name">Cibles</field>
+        <field name="res_model">bf.outreach.target</field>
+        <field name="view_mode">kanban,list,form,calendar,activity,pivot,graph</field>
+        <field name="search_view_id" ref="view_bf_outreach_target_search"/>
+        <field name="context">{'search_default_running_campaign': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Aucune cible pour l'instant</p>
+            <p>
+                Ajoutez des cibles depuis la campagne, ou sélectionnez des contacts
+                puis utilisez l'action « Ajouter à une campagne de démarchage ».
+            </p>
+        </field>
+    </record>
+
+    <record id="action_bf_outreach_target_due" model="ir.actions.act_window">
+        <field name="name">À faire aujourd'hui</field>
+        <field name="res_model">bf.outreach.target</field>
+        <field name="view_mode">list,kanban,form,calendar</field>
+        <field name="search_view_id" ref="view_bf_outreach_target_search"/>
+        <field name="context">{'search_default_due': 1, 'search_default_my_targets': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Rien à relancer aujourd'hui</p>
+            <p>Les cibles réapparaissent ici selon la cadence définie sur leur campagne.</p>
+        </field>
+    </record>
+
+    <record id="action_bf_outreach_target_overdue" model="ir.actions.act_window">
+        <field name="name">Relances en retard</field>
+        <field name="res_model">bf.outreach.target</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="search_view_id" ref="view_bf_outreach_target_search"/>
+        <field name="context">{'search_default_overdue': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Aucun retard</p>
+            <p>Toutes les cibles sont suivies dans les délais prévus par leur campagne.</p>
+        </field>
+    </record>
+
+</odoo>

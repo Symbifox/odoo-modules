@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_daily_digest_config_user,daily.digest.config.user,model_daily_digest_config,base.group_user,1,0,0,0
+access_daily_digest_config_manager,daily.digest.config.manager,model_daily_digest_config,base.group_system,1,1,1,1
+access_daily_digest_quote_user,daily.digest.quote.user,model_daily_digest_quote,base.group_user,1,0,0,0
+access_daily_digest_quote_manager,daily.digest.quote.manager,model_daily_digest_quote,base.group_system,1,1,1,1
+access_daily_digest_send_log_user,daily.digest.send.log.user,model_daily_digest_send_log,base.group_user,1,0,0,0
+access_daily_digest_send_log_manager,daily.digest.send.log.manager,model_daily_digest_send_log,base.group_system,1,1,1,1

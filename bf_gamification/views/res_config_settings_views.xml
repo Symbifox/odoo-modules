@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.bf.gamification</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app data-string="Fox Quest" string="Fox Quest"
+                     name="bf_gamification"
+                     groups="bf_gamification.group_gamification_manager">
+                    <block title="G&#233;n&#233;ral">
+                        <setting id="gamification_enabled"
+                                 string="Activer Fox Quest"
+                                 help="Active ou d&#233;sactive tout le syst&#232;me de gamification">
+                            <field name="gamification_enabled"/>
+                        </setting>
+                        <setting id="gamification_leaderboard"
+                                 string="Classement"
+                                 help="Afficher le classement des joueurs">
+                            <field name="gamification_show_leaderboard"/>
+                        </setting>
+                    </block>
+                    <block title="Notifications">
+                        <setting id="gamification_popup"
+                                 string="Popups d'achievement"
+                                 help="Afficher les popups lors de l'obtention de badges et mont&#233;es de niveau">
+                            <field name="gamification_popup_enabled"/>
+                        </setting>
+                        <setting id="gamification_sound"
+                                 string="Sons"
+                                 help="Activer les effets sonores">
+                            <field name="gamification_sound_enabled"/>
+                        </setting>
+                        <setting id="gamification_confetti"
+                                 string="Confettis"
+                                 help="Activer les effets de confettis">
+                            <field name="gamification_confetti_enabled"/>
+                        </setting>
+                    </block>
+                    <block title="Streaks">
+                        <setting id="gamification_streak"
+                                 string="R&#233;initialisation du streak"
+                                 help="Nombre de jours d'inactivit&#233; avant r&#233;initialisation">
+                            <field name="gamification_streak_reset_days"/>
+                        </setting>
+                    </block>
+                    <block title="Maintenance">
+                        <setting id="gamification_reset"
+                                 string="R&#233;initialiser la progression"
+                                 help="Supprimer toutes les donn&#233;es XP, badges, streaks et r&#233;clamations pour tous les utilisateurs. Cette action est irr&#233;versible.">
+                            <button name="action_reset_all_progress"
+                                    type="object"
+                                    string="R&#233;initialiser toute la progression"
+                                    class="btn-secondary"
+                                    confirm="&#202;tes-vous s&#251;r ? Cette action supprimera TOUTE la progression de TOUS les utilisateurs. Cette action est irr&#233;versible."/>
+                        </setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+</odoo>

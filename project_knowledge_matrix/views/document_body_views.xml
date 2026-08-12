@@ -1,0 +1,363 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ==================================================== -->
+    <!-- TYPES DE SECTIONS (catalogue de l'administrateur)     -->
+    <!-- ==================================================== -->
+
+    <record id="view_document_section_type_tree" model="ir.ui.view">
+        <field name="name">project.document.section.type.list</field>
+        <field name="model">project.document.section.type</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="code"/>
+                <field name="name"/>
+                <field name="content_kind"/>
+                <field name="render_key" optional="hide"/>
+                <field name="description" optional="show"/>
+                <field name="is_system" readonly="1" optional="show"/>
+                <field name="active" widget="boolean_toggle" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_document_section_type_form" model="ir.ui.view">
+        <field name="name">project.document.section.type.form</field>
+        <field name="model">project.document.section.type</field>
+        <field name="arch" type="xml">
+            <form string="Type de section">
+                <sheet>
+                    <widget name="web_ribbon" title="Section système" bg_color="text-bg-info"
+                            invisible="not is_system"/>
+                    <div class="oe_title">
+                        <label for="name" string="Nom de la section"/>
+                        <h1><field name="name" placeholder="ex: Objectif"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="code" placeholder="OBJECTIF"/>
+                            <field name="sequence"/>
+                            <field name="active"/>
+                        </group>
+                        <group>
+                            <field name="content_kind"/>
+                            <field name="render_key" invisible="content_kind != 'computed'"
+                                   required="content_kind == 'computed'"
+                                   placeholder="governance"/>
+                            <field name="is_system" readonly="1"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="description" placeholder="Ce que la section doit couvrir..."/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="document_section_type_action" model="ir.actions.act_window">
+        <field name="name">Types de sections</field>
+        <field name="res_model">project.document.section.type</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Définir les sections disponibles
+            </p>
+            <p>
+                Les sections composent le corps des politiques et procédures rédigées
+                dans Odoo. Le gabarit de chaque type de document choisit lesquelles
+                s'appliquent.
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="menu_document_section_types"
+              name="Sections de documents"
+              parent="menu_knowledge_config"
+              action="document_section_type_action"
+              groups="group_document_manager"
+              sequence="45"/>
+
+    <!-- ==================================================== -->
+    <!-- GABARIT PAR TYPE DE DOCUMENT                          -->
+    <!-- ==================================================== -->
+
+    <record id="view_document_type_form_body" model="ir.ui.view">
+        <field name="name">project.document.type.form.body</field>
+        <field name="model">project.document.type</field>
+        <field name="inherit_id" ref="view_document_type_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <notebook>
+                    <page string="Gabarit de sections" name="section_template">
+                        <div class="alert alert-info" role="alert">
+                            <i class="fa fa-info-circle"/>
+                            Un type sans aucune section reste un simple pointeur vers un
+                            fichier externe. Dès qu'une section est ajoutée ici, les
+                            documents de ce type peuvent héberger leur corps dans Odoo.
+                        </div>
+                        <field name="section_line_ids">
+                            <list editable="bottom">
+                                <field name="sequence" widget="handle"/>
+                                <field name="section_type_id"
+                                       options="{'no_quick_create': True}"/>
+                                <field name="name" placeholder="Titre personnalisé (optionnel)"/>
+                                <field name="content_kind" readonly="1" optional="show"/>
+                                <field name="required"/>
+                                <field name="locked"/>
+                                <field name="page_break_before" optional="hide"/>
+                            </list>
+                            <form string="Section du gabarit">
+                                <group>
+                                    <group>
+                                        <field name="section_type_id"/>
+                                        <field name="name"/>
+                                        <field name="sequence"/>
+                                    </group>
+                                    <group>
+                                        <field name="required"/>
+                                        <field name="locked"/>
+                                        <field name="page_break_before"/>
+                                    </group>
+                                </group>
+                                <group string="Contenu par défaut">
+                                    <field name="default_content" nolabel="1"
+                                           placeholder="Texte pré-rempli à la création d'un document..."/>
+                                </group>
+                            </form>
+                        </field>
+                    </page>
+                </notebook>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_document_type_tree_body" model="ir.ui.view">
+        <field name="name">project.document.type.list.body</field>
+        <field name="model">project.document.type</field>
+        <field name="inherit_id" ref="view_document_type_tree"/>
+        <field name="arch" type="xml">
+            <field name="is_internal" position="after">
+                <field name="section_line_count" string="Sections"/>
+            </field>
+        </field>
+    </record>
+
+    <!-- ==================================================== -->
+    <!-- CORPS DU DOCUMENT                                     -->
+    <!-- ==================================================== -->
+
+    <record id="view_project_document_form_body" model="ir.ui.view">
+        <field name="name">project.document.form.body</field>
+        <field name="model">project.document</field>
+        <field name="inherit_id" ref="view_project_document_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//header" position="inside">
+                <button name="action_generate_body_pdf" type="object"
+                        string="Générer le PDF" class="btn-primary"
+                        invisible="body_source != 'internal'"
+                        help="Produit le document final brandé à partir des sections rédigées."/>
+                <button name="action_adopt_internal_body" type="object"
+                        string="Rédiger dans Odoo" class="btn-secondary"
+                        invisible="body_source == 'internal' or not supports_body"
+                        help="Bascule ce document en corps interne et sème les sections du gabarit."/>
+                <button name="action_apply_section_template" type="object"
+                        string="Appliquer le gabarit" class="btn-secondary"
+                        invisible="body_source != 'internal'"
+                        help="Ajoute les sections du gabarit qui manquent. N'écrase jamais une section existante."/>
+            </xpath>
+
+            <xpath expr="//widget[@name='web_ribbon'][1]" position="before">
+                <widget name="web_ribbon" title="Modifications non publiées"
+                        bg_color="text-bg-warning"
+                        invisible="not has_unpublished_changes"/>
+            </xpath>
+
+            <field name="matrix_id" position="before">
+                <field name="supports_body" invisible="1"/>
+                <field name="body_source" widget="radio" options="{'horizontal': True}"
+                       readonly="not supports_body and body_source == 'external'"/>
+            </field>
+
+            <field name="external_url" position="attributes">
+                <attribute name="invisible">body_source == 'internal'</attribute>
+            </field>
+
+            <xpath expr="//page[@name='description']" position="attributes">
+                <attribute name="string">Note de gestion</attribute>
+            </xpath>
+
+            <xpath expr="//page[@name='description']" position="before">
+                <page string="Corps du document" name="body"
+                      invisible="body_source != 'internal'">
+                    <div class="alert alert-warning" role="alert"
+                         invisible="not has_unpublished_changes">
+                        <i class="fa fa-pencil"/>
+                        Ce brouillon est en avance sur la dernière version publiée.
+                        Sections modifiées :
+                        <field name="unpublished_section_codes" class="oe_inline" readonly="1"/>
+                    </div>
+                    <div class="alert alert-info" role="alert"
+                         invisible="section_count != 0">
+                        <i class="fa fa-info-circle"/>
+                        Aucune section. Utilisez « Appliquer le gabarit » pour semer
+                        les sections du type de document.
+                    </div>
+                    <field name="section_count" invisible="1"/>
+                    <field name="body_hash" invisible="1"/>
+                    <!-- Liste NON éditable: un clic sur une ligne ouvre la fiche
+                         de section avec l'éditeur de texte riche. En liste
+                         éditable, le clic ne permettait que de renommer le titre,
+                         le corps (champ Html) n'étant pas une colonne. -->
+                    <field name="section_ids" nolabel="1">
+                        <list>
+                            <field name="sequence" widget="handle"/>
+                            <field name="code" readonly="1" optional="show"/>
+                            <field name="name"/>
+                            <field name="content_kind" readonly="1" optional="show"/>
+                            <field name="char_count" string="Caractères" optional="show"/>
+                            <field name="is_empty" string="Vide" optional="show"/>
+                            <field name="required" optional="hide"/>
+                            <field name="locked" optional="hide"/>
+                        </list>
+                        <form string="Section">
+                            <sheet>
+                                <div class="oe_title">
+                                    <label for="name" string="Section"/>
+                                    <h1><field name="name"/></h1>
+                                    <field name="code" class="oe_inline text-muted" readonly="1"/>
+                                </div>
+                                <group>
+                                    <group>
+                                        <field name="sequence"/>
+                                        <field name="required"/>
+                                    </group>
+                                    <group>
+                                        <field name="content_kind" readonly="1"/>
+                                        <field name="locked"/>
+                                        <field name="page_break_before"/>
+                                    </group>
+                                </group>
+                                <div class="alert alert-info" role="alert"
+                                     invisible="content_kind != 'computed'">
+                                    <i class="fa fa-cogs"/>
+                                    Section générée par le module au moment de publier une
+                                    version. Son contenu est alors figé dans la version.
+                                </div>
+                                <field name="content" nolabel="1"
+                                       invisible="content_kind == 'computed'"
+                                       placeholder="Rédigez le contenu de cette section..."/>
+                            </sheet>
+                        </form>
+                    </field>
+                </page>
+            </xpath>
+
+        </field>
+    </record>
+
+    <record id="view_project_document_tree_body" model="ir.ui.view">
+        <field name="name">project.document.list.body</field>
+        <field name="model">project.document</field>
+        <field name="inherit_id" ref="view_project_document_tree"/>
+        <field name="arch" type="xml">
+            <field name="current_version" position="after">
+                <field name="body_source" optional="show"/>
+                <field name="has_unpublished_changes" optional="hide"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_project_document_search_body" model="ir.ui.view">
+        <field name="name">project.document.search.body</field>
+        <field name="model">project.document</field>
+        <field name="inherit_id" ref="view_project_document_search"/>
+        <field name="arch" type="xml">
+            <filter name="filter_external" position="after">
+                <separator/>
+                <filter name="filter_body_internal" string="Rédigés dans Odoo"
+                        domain="[('body_source', '=', 'internal')]"/>
+                <filter name="filter_body_unpublished" string="Modifications non publiées"
+                        domain="[('has_unpublished_changes', '=', True)]"/>
+            </filter>
+        </field>
+    </record>
+
+    <!-- ==================================================== -->
+    <!-- CONTENU GELÉ D'UNE VERSION                            -->
+    <!-- ==================================================== -->
+
+    <record id="view_document_version_section_tree" model="ir.ui.view">
+        <field name="name">project.document.version.section.list</field>
+        <field name="model">project.document.version.section</field>
+        <field name="arch" type="xml">
+            <list create="false" delete="false" edit="false">
+                <field name="sequence" optional="hide"/>
+                <field name="code"/>
+                <field name="name"/>
+                <field name="content_kind" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_document_version_section_form" model="ir.ui.view">
+        <field name="name">project.document.version.section.form</field>
+        <field name="model">project.document.version.section</field>
+        <field name="arch" type="xml">
+            <form string="Section publiée" create="false" edit="false">
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                        <field name="code" class="oe_inline text-muted" readonly="1"/>
+                    </div>
+                    <field name="content" readonly="1" nolabel="1"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_document_version_form_body" model="ir.ui.view">
+        <field name="name">project.document.version.form.body</field>
+        <field name="model">project.document.version</field>
+        <field name="inherit_id" ref="view_document_version_form"/>
+        <field name="arch" type="xml">
+
+            <field name="previous_version_id" position="after">
+                <field name="sequence_index" readonly="1"/>
+                <field name="is_erratum" readonly="1"/>
+            </field>
+
+            <field name="release_date" position="after">
+                <field name="frozen_date" readonly="1" invisible="not frozen_date"/>
+                <field name="frozen_uid" readonly="1" invisible="not frozen_uid"
+                       widget="many2one_avatar_user"/>
+            </field>
+
+            <xpath expr="//page[@name='content']" position="before">
+                <page string="Contenu publié" name="frozen_body"
+                      invisible="section_count == 0">
+                    <div class="alert alert-info" role="alert">
+                        <i class="fa fa-lock"/>
+                        Contenu figé au moment de la publication. Il ne change plus,
+                        même si le document continue d'évoluer.
+                        <field name="changed_section_codes" class="oe_inline" readonly="1"
+                               invisible="not changed_section_codes"/>
+                    </div>
+                    <field name="section_count" invisible="1"/>
+                    <field name="body_hash" invisible="1"/>
+                    <field name="section_ids" nolabel="1" readonly="1">
+                        <list create="false" delete="false">
+                            <field name="sequence" optional="hide"/>
+                            <field name="code"/>
+                            <field name="name"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Internal 360 invitation. Distinct from the client invitation on
+             two counts that matter: it names the person being reviewed
+             (otherwise the reviewer opens a link with no idea who it is
+             about), and it carries NO unsubscribe link - an internal
+             feedback round is not a marketing solicitation, and pointing an
+             employee at mail.blacklist would blacklist them for client
+             mail too. -->
+        <record id="mail_template_cx_360_invite" model="mail.template">
+            <field name="name">Expérience : invitation à une rétroaction 360</field>
+            <field name="model_id" ref="survey.model_survey_user_input"/>
+            <field name="subject">Votre regard sur {{ object.bf_cx_wave_id.subject_user_id.name or 'un collègue' }}</field>
+            <field name="partner_to">{{ object.partner_id.id }}</field>
+            <field name="lang">{{ object.partner_id.lang }}</field>
+            <field name="auto_delete" eval="True"/>
+            <field name="body_html" type="html">
+<t t-set="company" t-value="(object.company_id if hasattr(object, 'company_id') and object.company_id else user.company_id)"/>
+<t t-set="brand_primary" t-value="(company and company.report_brand_primary) or '#29ABE1'"/>
+<t t-set="brand_dark" t-value="(company and company.report_brand_dark) or '#2D3031'"/>
+<t t-set="subject_name" t-value="object.bf_cx_wave_id.subject_user_id.name or ''"/>
+<t t-set="hidden" t-value="object.bf_cx_wave_id.program_id.hide_respondent"/>
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#F8FAFC;">
+    <tbody><tr><td align="center" style="padding:24px;">
+        <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px; max-width:600px; margin:0 auto; background-color:#ffffff; border-radius:12px; border:1px solid #e5e7eb; border-collapse:collapse;">
+            <tbody>
+                <tr>
+                    <td t-attf-style="background-color:{{ brand_dark }}; padding:16px 24px; border-radius:12px 12px 0 0;">
+                        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tbody><tr>
+                            <td align="left">
+                                <img t-att-src="'/web/image/res.company/%d/logo' % company.id" alt="Logo" style="height:40px; width:auto; display:block; border:0;"/>
+                            </td>
+                            <td align="right" style="color:#E6EDF3; font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:22px; font-weight:800; letter-spacing:0.2px;">
+                                Rétroaction
+                            </td>
+                        </tr></tbody></table>
+                    </td>
+                </tr>
+                <tr><td t-attf-style="height:4px; line-height:4px; background-color:{{ brand_primary }};">&amp;nbsp;</td></tr>
+                <tr>
+                    <td style="padding:24px; font-family:'Lexend','Segoe UI',Arial,sans-serif; color:#2D3031;">
+                        <p style="font-size:15px; margin:0 0 12px 0;">
+                            Bonjour <t t-out="object.partner_id.name or ''"/>,
+                        </p>
+                        <p style="font-size:15px; margin:0 0 12px 0;">
+                            <t t-if="subject_name">
+                                Nous recueillons de la rétroaction sur le
+                                travail de <strong><t t-out="subject_name"/></strong>.
+                                Vous travaillez avec cette personne&#160;: votre
+                                regard vaut plus que le nôtre.
+                            </t>
+                            <t t-else="">
+                                Nous recueillons de la rétroaction interne sur
+                                notre façon de travailler.
+                            </t>
+                        </p>
+                        <p style="font-size:15px; margin:0 0 12px 0;">
+                            Comptez trois minutes. Ce qui est utile, ce sont
+                            les exemples concrets, pas les notes rondes.
+                        </p>
+                        <div style="text-align:center; margin:28px 0;">
+                            <a t-att-href="object.get_start_url()"
+                               t-attf-style="background-color:{{ brand_primary }}; color:#FFFFFF; text-decoration:none; padding:12px 28px; border-radius:6px; font-size:15px; display:inline-block;">
+                                Donner ma rétroaction
+                            </a>
+                        </div>
+                        <t t-if="object.deadline">
+                            <p style="font-size:13px; color:#6B7280; margin:0 0 12px 0;">
+                                La collecte est ouverte jusqu'au
+                                <t t-out="format_date(object.deadline)"/>.
+                            </p>
+                        </t>
+                        <p style="font-size:13px; color:#6B7280; margin:0;">
+                            <t t-if="hidden">
+                                Votre nom n'est pas inscrit au registre des
+                                rétroactions&#160;: ni la synthèse, ni les
+                                listes, ni les exports ne l'affichent. Dans une
+                                équipe de cette taille, un commentaire reste
+                                toutefois reconnaissable à son contenu.
+                            </t>
+                            <t t-else="">
+                                Votre nom accompagne votre réponse.
+                            </t>
+                        </p>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding:16px 24px 20px 24px; background-color:#FFFFFF; border-radius:0 0 12px 12px;">
+                        <p style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:12px; color:#6B7280; margin:0;">
+                            <t t-if="company.name"><t t-out="company.name"/></t>
+                        </p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px; max-width:600px; margin:12px auto 0;">
+            <tbody><tr>
+                <td t-attf-style="height:3px; line-height:3px; background-color:{{ brand_primary }}; width:50%;">&amp;nbsp;</td>
+                <td t-attf-style="height:3px; line-height:3px; background-color:{{ brand_dark }}; width:50%;">&amp;nbsp;</td>
+            </tr></tbody>
+        </table>
+    </td></tr></tbody>
+</table>
+            </field>
+        </record>
+
+        <!-- Ready-to-use 360 survey. One scale question so the registry has
+             a score to aggregate, then the two open questions that actually
+             change behaviour. No testimonial opt-in: internal feedback is
+             never a client quote. -->
+        <record id="survey_360_default" model="survey.survey">
+            <field name="title">Rétroaction 360 : le travail d'un collègue</field>
+            <field name="access_mode">token</field>
+            <field name="users_login_required" eval="False"/>
+            <field name="questions_layout">one_page</field>
+        </record>
+
+        <record id="question_360_score" model="survey.question">
+            <field name="survey_id" ref="survey_360_default"/>
+            <field name="sequence">10</field>
+            <field name="title">Globalement, travailler avec cette personne rend votre propre travail plus facile ?</field>
+            <field name="question_type">scale</field>
+            <field name="scale_min">0</field>
+            <field name="scale_max">10</field>
+            <field name="scale_min_label">Pas du tout</field>
+            <field name="scale_max_label">Énormément</field>
+            <field name="constr_mandatory" eval="True"/>
+            <field name="constr_error_msg">Cette question est obligatoire.</field>
+        </record>
+
+        <record id="question_360_keep" model="survey.question">
+            <field name="survey_id" ref="survey_360_default"/>
+            <field name="sequence">20</field>
+            <field name="title">Qu'est-ce que cette personne fait bien et devrait continuer de faire ? Un exemple précis vaut mieux qu'un compliment général.</field>
+            <field name="question_type">text_box</field>
+        </record>
+
+        <record id="question_360_change" model="survey.question">
+            <field name="survey_id" ref="survey_360_default"/>
+            <field name="sequence">30</field>
+            <field name="title">Qu'est-ce qui vous aiderait si cette personne le faisait autrement ?</field>
+            <field name="question_type">text_box</field>
+        </record>
+
+        <record id="program_360_default" model="bf.cx.program">
+            <field name="name">Rétroaction 360</field>
+            <field name="program_type">internal</field>
+            <field name="survey_id" ref="survey_360_default"/>
+            <field name="score_question_id" ref="question_360_score"/>
+            <field name="comment_question_id" ref="question_360_change"/>
+            <field name="invite_template_id" ref="mail_template_cx_360_invite"/>
+            <field name="hide_respondent" eval="True"/>
+            <field name="reminder_days">4</field>
+        </record>
+    </data>
+</odoo>

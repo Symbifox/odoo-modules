@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates xml:space="preserve">
+    <t t-name="bf_gamification.AchievementPopup">
+        <div t-if="state.visible" class="bf-achievement-overlay" t-att-class="state.animating ? 'show' : 'hide'">
+            <div t-attf-class="bf-achievement-popup #{rarityClass} #{effectClass}">
+                <button class="bf-achievement-close btn-close" t-on-click="close"/>
+                <div class="bf-achievement-content">
+                    <div class="bf-achievement-icon">
+                        <i class="fa fa-trophy fa-3x"/>
+                    </div>
+                    <h2 class="bf-achievement-title">Badge obtenu !</h2>
+                    <h3 class="bf-achievement-name" t-if="state.badge">
+                        <t t-esc="state.badge.badge_name"/>
+                    </h3>
+                    <p class="bf-achievement-desc" t-if="state.badge and state.badge.badge_description">
+                        <t t-esc="state.badge.badge_description"/>
+                    </p>
+                    <div class="bf-achievement-xp" t-if="state.badge and state.badge.xp_reward">
+                        <span class="bf-xp-badge">+<t t-esc="state.badge.xp_reward"/> XP</span>
+                    </div>
+                    <p class="bf-achievement-message" t-if="state.badge and state.badge.popup_message">
+                        <t t-esc="state.badge.popup_message"/>
+                    </p>
+                    <button class="btn btn-primary mt-3" t-on-click="close">
+                        G&#233;nial !
+                    </button>
+                </div>
+            </div>
+        </div>
+    </t>
+</templates>

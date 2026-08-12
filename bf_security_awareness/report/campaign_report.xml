@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="action_report_phishing_campaign" model="ir.actions.report">
+        <field name="name">Rapport de campagne</field>
+        <field name="model">bf.phishing.campaign</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">bf_security_awareness.report_phishing_campaign</field>
+        <field name="report_file">bf_security_awareness.report_phishing_campaign</field>
+        <field name="binding_model_id" ref="model_bf_phishing_campaign"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="report_phishing_campaign">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>Rapport de campagne d'hameçonnage</h2>
+                        <h3 class="text-muted"><span t-field="o.name"/></h3>
+
+                        <table class="table table-sm mt-3" style="width:100%;">
+                            <tr>
+                                <td><strong>Modèle de leurre</strong></td>
+                                <td><span t-field="o.template_id"/></td>
+                                <td><strong>État</strong></td>
+                                <td><span t-field="o.state"/></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Date d'envoi</strong></td>
+                                <td><span t-field="o.scheduled_date"/></td>
+                                <td><strong>Destinataires</strong></td>
+                                <td><span t-field="o.recipient_count"/></td>
+                            </tr>
+                        </table>
+
+                        <h4 class="mt-4">Résultats</h4>
+                        <table class="table table-sm table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Envoyés</th>
+                                    <th>Ouverts</th>
+                                    <th>Clics</th>
+                                    <th>Identifiants soumis</th>
+                                    <th>Signalements</th>
+                                    <th>Taux d'échec</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td t-esc="o.sent_count"/>
+                                    <td t-esc="o.opened_count"/>
+                                    <td t-esc="o.clicked_count"/>
+                                    <td t-esc="o.submitted_count"/>
+                                    <td t-esc="o.reported_count"/>
+                                    <td><span t-esc="round(o.fail_rate, 1)"/> %</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <h4 class="mt-4">Détail par personne</h4>
+                        <table class="table table-sm table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Personne</th>
+                                    <th>État</th>
+                                    <th>A signalé</th>
+                                    <th>Cliqué le</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="o.result_ids" t-as="r">
+                                    <td><span t-field="r.partner_id"/></td>
+                                    <td><span t-field="r.state"/></td>
+                                    <td>
+                                        <span t-if="r.reported">Oui</span>
+                                        <span t-else="">—</span>
+                                    </td>
+                                    <td><span t-field="r.clicked_datetime"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <p class="text-muted mt-4" style="font-size:10px;">
+                            Simulation de sécurité interne et autorisée. Aucun mot de
+                            passe n'est conservé : seules la longueur des champs et les
+                            actions (ouverture, clic, soumission, signalement) sont
+                            enregistrées.
+                        </p>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+</odoo>

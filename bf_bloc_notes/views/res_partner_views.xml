@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_partner_form_bf_notes" model="ir.ui.view">
+        <field name="name">res.partner.form.bf.notes</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_open_bf_notes"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="fa-sticky-note">
+                    <field name="bf_note_count" widget="statinfo" string="Notes"/>
+                </button>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_bf_nc_browser_user,bf.nc.browser.user,model_bf_nc_browser,bf_nextcloud_browser.group_nc_browser_user,1,1,1,0
+access_nc_share_preset_user,nextcloud.share.preset.user,model_nextcloud_share_preset,bf_nextcloud_browser.group_nc_browser_user,1,0,0,0
+access_nc_share_preset_admin,nextcloud.share.preset.admin,model_nextcloud_share_preset,base.group_system,1,1,1,1

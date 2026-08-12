@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ================================================================== -->
+    <!-- White-label branded transactional email layout                      -->
+    <!-- NOT an override of mail.mail_notification_layout — only used when   -->
+    <!-- explicitly referenced via email_layout_xmlid (invoices, quotes,     -->
+    <!-- contracts). Chatter/internal notifications stay on default Odoo.    -->
+    <!-- All identity bits (colors, font, logo, tagline, footer, signature)  -->
+    <!-- read from res.company; fallbacks match Odoo's stock theme so the    -->
+    <!-- layout works on any tenant.                                         -->
+    <!-- ================================================================== -->
+    <template id="bf_mail_layout" name="Branded transactional mail layout">
+        <t t-set="brand_primary" t-value="(company and company.report_brand_primary) or '#714B67'"/>
+        <t t-set="brand_dark" t-value="(company and company.report_brand_dark) or '#212529'"/>
+        <t t-set="brand_font_stack" t-value="((company and company.font) or 'Lexend') + &quot;,'Segoe UI',Arial,sans-serif&quot;"/>
+        <t t-set="brand_tagline" t-value="(company and (company.brand_email_tagline or company.report_header)) or ''"/>
+        <t t-set="brand_footer_html" t-value="company and company.brand_email_footer_html"/>
+        <t t-set="brand_signature_default" t-value="company and company.brand_email_signature_default"/>
+
+        <t t-set="subtype_internal" t-value="subtype and subtype.internal"/>
+        <t t-set="show_header" t-value="email_notification_force_header or (email_notification_allow_header and has_button_access)"/>
+        <t t-set="show_footer" t-value="email_notification_force_footer or (email_notification_allow_footer and show_header and author_user and author_user._is_internal())"/>
+
+        <body t-attf-style="margin:0;padding:0;background-color:#F8FAFC;font-family:{{ brand_font_stack }};color:#454748;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;">
+
+            <!-- Schema.org preview -->
+            <t t-call="mail.notification_preview"/>
+
+            <!-- Outer wrapper -->
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#F8FAFC;">
+                <tbody>
+                    <tr>
+                        <td align="center" style="padding:32px 16px;">
+
+                            <!-- Card -->
+                            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px;max-width:600px;margin:0 auto;background-color:#ffffff;border-radius:16px;box-shadow:0 4px 24px rgba(0,0,0,0.08);">
+                                <tbody>
+
+                                    <!-- Header -->
+                                    <tr>
+                                        <td t-attf-style="background-color:{{ brand_dark }};padding:20px 32px;border-radius:16px 16px 0 0;">
+                                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                                                <tbody>
+                                                    <tr>
+                                                        <td align="left">
+                                                            <t t-if="company">
+                                                                <a t-att-href="company.website or '#'" style="text-decoration:none;">
+                                                                    <img t-attf-src="/web/image/res.company/{{ company.id }}/logo" t-att-alt="company.name" style="height:44px;width:auto;display:block;border:0;" height="44"/>
+                                                                </a>
+                                                            </t>
+                                                        </td>
+                                                        <td align="right" t-attf-style="color:#E6EDF3;font-family:{{ brand_font_stack }};font-size:14px;font-weight:400;letter-spacing:0.3px;">
+                                                            <t t-if="company" t-out="company.name"/>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+
+                                    <!-- Accent bar -->
+                                    <tr>
+                                        <td t-attf-style="height:4px;line-height:4px;background-color:{{ brand_primary }};">&#160;</td>
+                                    </tr>
+
+                                    <!-- Button access (View in Portal) -->
+                                    <t t-if="show_header and has_button_access">
+                                        <tr>
+                                            <td style="padding:20px 32px 0 32px;">
+                                                <div itemscope="itemscope" itemtype="http://schema.org/EmailMessage">
+                                                    <div itemprop="potentialAction" itemscope="itemscope" itemtype="http://schema.org/ViewAction">
+                                                        <link itemprop="target" t-att-href="button_access['url']"/>
+                                                        <link itemprop="url" t-att-href="button_access['url']"/>
+                                                        <meta itemprop="name" t-att-content="button_access['title']"/>
+                                                    </div>
+                                                </div>
+                                                <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+                                                    <tbody>
+                                                        <tr>
+                                                            <td t-attf-style="border-radius:10px;background-color:{{ brand_primary }};text-align:center;">
+                                                                <a t-att-href="button_access['url']" t-attf-style="display:inline-block;padding:10px 20px;font-family:{{ brand_font_stack }};font-size:14px;font-weight:600;color:#FFFFFF;text-decoration:none !important;">
+                                                                    <t t-out="button_access['title']"/>
+                                                                </a>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                                <t t-if="subtitles">
+                                                    <p t-attf-style="margin:8px 0 0 0;font-family:{{ brand_font_stack }};font-size:13px;color:#6B7280;">
+                                                        <t t-foreach="subtitles" t-as="subtitle">
+                                                            <span t-attf-style="{{ 'font-weight:600;' if subtitle_first else '' }}" t-out="subtitle"/>
+                                                            <br t-if="not subtitle_last"/>
+                                                        </t>
+                                                    </p>
+                                                </t>
+                                            </td>
+                                        </tr>
+                                    </t>
+
+                                    <!-- Content -->
+                                    <tr>
+                                        <td t-attf-style="padding:24px 32px;font-family:{{ brand_font_stack }};font-size:15px;line-height:24px;color:#374151;font-weight:300;">
+                                            <div t-out="message.body"/>
+
+                                            <!-- Tracking values -->
+                                            <ul t-if="tracking_values" style="margin:16px 0 0 0;padding-left:20px;">
+                                                <t t-foreach="tracking_values" t-as="tracking">
+                                                    <li style="margin-bottom:4px;">
+                                                        <t t-out="tracking[0]"/>:
+                                                        <t t-if="tracking[1]" t-out="tracking[1]"/><em t-else="" style="color:#9CA3AF;">Aucun</em>
+                                                        &#8594;
+                                                        <t t-if="tracking[2]"><strong t-out="tracking[2]"/></t><em t-else="" style="color:#9CA3AF;">Aucun</em>
+                                                    </li>
+                                                </t>
+                                            </ul>
+
+                                            <!-- Signature (MUST preserve o_signature class for _with_responsible_signature xpath) -->
+                                            <t class="o_signature">
+                                                <div t-if="email_add_signature and not is_html_empty(signature)" t-out="signature" style="margin-top:16px;font-size:14px;"/>
+                                                <div t-elif="not is_html_empty(brand_signature_default)" t-out="brand_signature_default" style="margin-top:16px;font-size:14px;"/>
+                                            </t>
+                                        </td>
+                                    </tr>
+
+                                    <!-- Divider -->
+                                    <tr>
+                                        <td style="padding:0 32px;">
+                                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                                                <tbody><tr><td style="height:1px;line-height:1px;background-color:#E5E7EB;">&#160;</td></tr></tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+
+                                    <!-- Footer -->
+                                    <tr>
+                                        <td style="padding:24px 32px 28px 32px;">
+                                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                                                <tbody>
+                                                    <tr>
+                                                        <td t-attf-style="font-family:{{ brand_font_stack }};font-size:13px;color:#6B7280;line-height:20px;">
+                                                            <strong t-attf-style="color:{{ brand_dark }};font-size:14px;"><t t-if="company" t-out="company.name"/></strong>
+                                                            <t t-if="brand_tagline">
+                                                                <br/><span t-out="brand_tagline"/>
+                                                            </t>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td t-attf-style="padding-top:12px;font-family:{{ brand_font_stack }};font-size:12px;color:#9CA3AF;line-height:18px;">
+                                                            <t t-if="not is_html_empty(brand_footer_html)" t-out="brand_footer_html"/>
+                                                            <t t-elif="company">
+                                                                <a t-if="company.email" t-attf-href="mailto:{{ company.email }}" t-attf-style="color:{{ brand_primary }};text-decoration:none;" t-out="company.email"/>
+                                                                <t t-if="company.email and company.phone"><span style="color:#D1D5DB;"> &#183; </span></t>
+                                                                <a t-if="company.phone" t-attf-href="tel:{{ company.phone }}" t-attf-style="color:{{ brand_primary }};text-decoration:none;" t-out="company.phone"/>
+                                                                <t t-if="(company.email or company.phone) and company.website"><span style="color:#D1D5DB;"> &#183; </span></t>
+                                                                <a t-if="company.website" t-att-href="company.website" t-attf-style="color:{{ brand_primary }};text-decoration:none;" t-out="company.website"/>
+                                                            </t>
+                                                        </td>
+                                                    </tr>
+                                                    <tr t-if="company and (company.brand_privacy_url or company.brand_terms_url)">
+                                                        <td t-attf-style="padding-top:12px;font-family:{{ brand_font_stack }};font-size:11px;">
+                                                            <a t-if="company.brand_privacy_url" t-att-href="company.brand_privacy_url" style="color:#9CA3AF;text-decoration:underline;">Confidentialit&#233;</a>
+                                                            <t t-if="company.brand_privacy_url and company.brand_terms_url"><span style="color:#D1D5DB;"> | </span></t>
+                                                            <a t-if="company.brand_terms_url" t-att-href="company.brand_terms_url" style="color:#9CA3AF;text-decoration:underline;">Conditions</a>
+                                                        </td>
+                                                    </tr>
+                                                    <tr t-if="show_footer">
+                                                        <td t-attf-style="padding-top:12px;font-family:{{ brand_font_stack }};font-size:11px;">
+                                                            <a href="/mail/unfollow" style="color:#9CA3AF;text-decoration:underline;">Se d&#233;sabonner</a>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+
+                            <!-- Bottom double accent -->
+                            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px;max-width:600px;margin:12px auto 0;">
+                                <tbody>
+                                    <tr>
+                                        <td t-attf-style="height:3px;line-height:3px;background-color:{{ brand_primary }};width:50%;border-radius:2px 0 0 2px;">&#160;</td>
+                                        <td t-attf-style="height:3px;line-height:3px;background-color:{{ brand_dark }};width:50%;border-radius:0 2px 2px 0;">&#160;</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </body>
+    </template>
+
+    <!-- ================================================================== -->
+    <!-- Branded layout with responsible signature                           -->
+    <!-- Mirrors mail.mail_notification_layout_with_responsible_signature    -->
+    <!-- ================================================================== -->
+    <template id="bf_mail_layout_with_signature"
+              inherit_id="bluefox_branding.bf_mail_layout"
+              primary="True"
+              name="Branded mail layout with responsible signature">
+        <xpath expr="//t[hasclass('o_signature')]" position="replace">
+            <t class="o_signature">
+                <t t-set="responsible" t-value="responsible or author_user"/>
+                <div t-if="responsible" t-attf-style="margin-top:16px;font-family:{{ brand_font_stack }};font-size:14px;color:#6B7280;">
+                    <t t-set="responsible_user" t-value="responsible.user_ids[:1] if 'user_ids' in responsible._fields else responsible"/>
+                    <t t-if="responsible_user and 'sign_signature' in responsible_user._fields and responsible_user.sign_signature">
+                        <img t-att-src="'data:image/png;base64,' + responsible_user.sign_signature.decode()"
+                             style="width:auto;max-width:200px;max-height:80px;display:block;margin-bottom:4px;" alt=""/>
+                    </t>
+                    <span t-attf-style="color:{{ brand_dark }};">-- <br/><strong><t t-out="responsible.name"/></strong></span>
+                    <t t-if="responsible.function"><br/><span t-out="responsible.function"/></t>
+                    <t t-if="responsible.phone or responsible.mobile">
+                        <br/>
+                        <a t-if="responsible.phone" t-attf-href="tel:{{ responsible.phone }}"
+                           t-attf-style="text-decoration:none;color:{{ brand_primary }};" t-out="responsible.phone"/>
+                        <t t-if="responsible.phone and responsible.mobile"><span style="color:#D1D5DB;"> | </span></t>
+                        <a t-if="responsible.mobile" t-attf-href="tel:{{ responsible.mobile }}"
+                           t-attf-style="text-decoration:none;color:{{ brand_primary }};" t-out="responsible.mobile"/>
+                    </t>
+                </div>
+            </t>
+        </xpath>
+    </template>
+
+</odoo>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates xml:space="preserve">
+    <t t-name="bf_gamification.Systray">
+        <div class="bf-gamification-systray" t-if="state.loaded" t-on-click="openDashboard"
+             role="button" title="Fox Quest">
+            <div class="d-flex align-items-center gap-1 px-2 py-1">
+                <!-- Streak -->
+                <span class="bf-streak-badge" t-if="state.current_streak > 0">
+                    <i class="fa fa-fire text-warning"/>
+                    <span class="fw-bold small" t-esc="state.current_streak"/>
+                </span>
+                <!-- XP + Level -->
+                <span class="bf-xp-systray small">
+                    <i class="fa fa-star text-warning"/>
+                    <span t-esc="state.total_xp"/> XP
+                </span>
+                <!-- Mini progress bar -->
+                <div class="bf-mini-progress" t-att-title="state.level_name + ' - ' + Math.round(state.progress_percent) + '%'">
+                    <div class="bf-mini-progress-bar"
+                         t-attf-style="width: #{state.progress_percent}%"/>
+                </div>
+            </div>
+        </div>
+    </t>
+</templates>

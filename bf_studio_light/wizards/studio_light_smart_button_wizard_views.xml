@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_studio_light_smart_button_wizard_form" model="ir.ui.view">
+        <field name="name">studio.light.smart.button.wizard.form</field>
+        <field name="model">studio.light.smart.button.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Add smart button">
+                <sheet>
+                    <group>
+                        <group string="Where the button appears">
+                            <field name="source_model_id"
+                                   options="{'no_create': True, 'no_open': True}"/>
+                        </group>
+                        <group string="What it counts">
+                            <field name="target_model_id"
+                                   options="{'no_create': True, 'no_open': True}"/>
+                            <field name="relation_field_id"
+                                   options="{'no_create': True, 'no_open': True}"/>
+                        </group>
+                    </group>
+                    <group string="Appearance">
+                        <field name="label"/>
+                        <field name="icon"/>
+                        <field name="color"/>
+                        <field name="open_on_click"/>
+                    </group>
+                    <group string="Filtering (optional)">
+                        <field name="domain"
+                               placeholder="[('state', '=', 'active')]"/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button name="action_create"
+                            string="Create"
+                            type="object"
+                            class="btn-primary"/>
+                    <button string="Cancel"
+                            class="btn-secondary"
+                            special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_studio_light_smart_button_wizard"
+            model="ir.actions.act_window">
+        <field name="name">Add smart button</field>
+        <field name="res_model">studio.light.smart.button.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+</odoo>

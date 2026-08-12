@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="res_config_settings_view_form" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.bf.cx.sms</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="bf_cx.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//block[@name='bf_cx_loop_block']" position="inside">
+                <setting string="Invitations de sondage par SMS"
+                         help="Bouton « Inviter par SMS » sur les vagues : envoie le lien de sondage aux destinataires sans adresse courriel mais avec un numéro (maximum 5 SMS par clic, action manuelle seulement, garde-fou anti-sursollicitation appliqué).">
+                    <field name="bf_cx_sms_invite"/>
+                    <div class="content-group" invisible="not bf_cx_sms_invite">
+                        <field name="bf_cx_sms_line_id" class="o_light_label"/>
+                    </div>
+                </setting>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

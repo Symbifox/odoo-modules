@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_cx_testimonial_form_privacy" model="ir.ui.view">
+        <field name="name">bf.cx.testimonial.form.inherit.privacy</field>
+        <field name="model">bf.cx.testimonial</field>
+        <field name="inherit_id" ref="bf_cx.view_cx_testimonial_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="action_request_privacy_consent" type="object"
+                        string="Demander le consentement (Loi 25)"
+                        groups="privacy_consent.group_privacy_user"
+                        invisible="state not in ('draft', 'consent_pending') or (privacy_consent_id and privacy_consent_status in ('pending', 'granted'))"/>
+                <button name="action_check_privacy_consent" type="object"
+                        string="Vérifier le consentement"
+                        groups="privacy_consent.group_privacy_user"
+                        invisible="not privacy_consent_id"/>
+            </xpath>
+            <xpath expr="//group[@name='consent']" position="inside">
+                <field name="privacy_consent_id" readonly="1"
+                       invisible="not privacy_consent_id"/>
+                <field name="privacy_consent_status"
+                       invisible="not privacy_consent_id"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

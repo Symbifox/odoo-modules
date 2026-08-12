@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_cx_wave_list" model="ir.ui.view">
+        <field name="name">bf.cx.wave.list</field>
+        <field name="model">bf.cx.wave</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="program_id"/>
+                <field name="sent_date"/>
+                <field name="invited_count"/>
+                <field name="completed_count"/>
+                <field name="completion_rate" widget="progressbar"/>
+                <field name="program_type" column_invisible="True"/>
+                <field name="subject_user_id" widget="many2one_avatar_user" optional="show"/>
+                <field name="nps_score" string="NPS" optional="show"/>
+                <field name="state" widget="badge"
+                       decoration-info="state == 'draft'"
+                       decoration-warning="state == 'sent'"
+                       decoration-success="state == 'closed'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_cx_wave_form" model="ir.ui.view">
+        <field name="name">bf.cx.wave.form</field>
+        <field name="model">bf.cx.wave</field>
+        <field name="arch" type="xml">
+            <form string="Vague d'envoi">
+                <header>
+                    <button name="action_send" type="object" string="Envoyer les invitations"
+                            class="btn-primary" invisible="state != 'draft'"
+                            confirm="Envoyer une invitation à chaque destinataire avec adresse courriel ?"/>
+                    <button name="action_send" type="object" string="Inviter les nouveaux destinataires"
+                            invisible="state != 'sent'"
+                            confirm="Envoyer une invitation aux destinataires ajoutés depuis le dernier envoi ?"/>
+                    <button name="action_remind" type="object" string="Envoyer un rappel"
+                            invisible="state != 'sent'"
+                            confirm="Renvoyer l'invitation à tous les non-répondants ?"/>
+                    <button name="action_close" type="object" string="Fermer"
+                            invisible="state != 'sent'"/>
+                    <button name="action_reopen" type="object" string="Rouvrir"
+                            invisible="state != 'closed'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,sent,closed"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_feedback" type="object"
+                                class="oe_stat_button" icon="fa-comments-o">
+                            <field name="completed_count" widget="statinfo" string="Réponses"/>
+                        </button>
+                        <button class="oe_stat_button" icon="fa-line-chart" disabled="1"
+                                invisible="program_type not in ('nps', 'pulse')">
+                            <field name="nps_score" widget="statinfo" string="Score NPS"/>
+                        </button>
+                        <button class="oe_stat_button" icon="fa-users" disabled="1"
+                                invisible="program_type != 'internal' or not subject_user_id">
+                            <div class="o_stat_info">
+                                <field name="subject_summary" class="o_stat_text"/>
+                                <span class="o_stat_text">Résultat 360</span>
+                            </div>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1><field name="name"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="program_id" readonly="state != 'draft'"/>
+                            <field name="program_type" invisible="1"/>
+                            <field name="subject_user_id"
+                                   widget="many2one_avatar_user"
+                                   invisible="program_type != 'internal'"
+                                   readonly="state != 'draft'"/>
+                            <field name="campaign_id"/>
+                            <field name="deadline"/>
+                        </group>
+                        <group>
+                            <field name="sent_date"/>
+                            <field name="reminder_date"/>
+                            <field name="invited_count"/>
+                            <field name="completion_rate" widget="progressbar"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Destinataires" name="recipients">
+                            <field name="partner_ids"
+                                   readonly="state == 'closed'">
+                                <list>
+                                    <field name="display_name"/>
+                                    <field name="email"/>
+                                    <field name="user_id" widget="many2one_avatar_user"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Invitations" name="answers">
+                            <field name="user_input_ids" readonly="1">
+                                <list>
+                                    <field name="partner_id"/>
+                                    <field name="email"/>
+                                    <field name="state"/>
+                                    <field name="create_date" string="Invité le"/>
+                                    <field name="end_datetime" string="Répondu le"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_cx_wave_search" model="ir.ui.view">
+        <field name="name">bf.cx.wave.search</field>
+        <field name="model">bf.cx.wave</field>
+        <field name="arch" type="xml">
+            <search string="Vagues">
+                <field name="name"/>
+                <field name="program_id"/>
+                <filter string="Brouillons" name="filter_draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="Envoyées" name="filter_sent" domain="[('state', '=', 'sent')]"/>
+                <field name="subject_user_id"/>
+                <group expand="0" string="Regrouper par">
+                    <filter string="Programme" name="group_program" context="{'group_by': 'program_id'}"/>
+                    <filter string="Personne évaluée" name="group_subject" context="{'group_by': 'subject_user_id'}"/>
+                    <filter string="État" name="group_state" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_cx_wave" model="ir.actions.act_window">
+        <field name="name">Vagues d'envoi</field>
+        <field name="res_model">bf.cx.wave</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_cx_wave_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Lancer une première vague
+            </p>
+            <p>
+                Choisir un programme et une liste de contacts : chaque
+                destinataire reçoit une invitation personnelle avec son
+                propre jeton de réponse. Les non-répondants sont relancés
+                automatiquement.
+            </p>
+        </field>
+    </record>
+
+</odoo>

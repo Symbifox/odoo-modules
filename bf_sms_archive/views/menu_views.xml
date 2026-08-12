@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Root Menu (app tile) -->
+    <menuitem
+        id="sms_archive_menu_root"
+        name="SMS &amp; Calls"
+        web_icon="bf_sms_archive,static/description/icon.png"
+        sequence="55"/>
+
+    <!-- Dashboard -->
+    <menuitem
+        id="sms_archive_menu_dashboard"
+        name="Tableau de bord"
+        parent="sms_archive_menu_root"
+        action="sms_dashboard_client_action"
+        sequence="2"/>
+
+    <!-- Conversations -->
+    <menuitem
+        id="sms_archive_menu_threads"
+        name="Conversations"
+        parent="sms_archive_menu_root"
+        action="sms_thread_action"
+        sequence="10"/>
+
+    <!-- Journal d'appels -->
+    <menuitem
+        id="sms_archive_menu_calls"
+        name="Journal d'appels"
+        parent="sms_archive_menu_root"
+        action="call_action"
+        sequence="15"/>
+
+    <!-- Messages (search ready) -->
+    <menuitem
+        id="sms_archive_menu_messages"
+        name="Rechercher"
+        parent="sms_archive_menu_root"
+        action="sms_message_action"
+        sequence="20"/>
+
+    <!-- Import -->
+    <menuitem
+        id="sms_archive_menu_import"
+        name="Importer"
+        parent="sms_archive_menu_root"
+        action="sms_import_wizard_action"
+        sequence="30"/>
+
+</odoo>

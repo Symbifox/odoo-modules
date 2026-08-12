@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- Tâche planifiée : Vérifier les expirations de services -->
+        <record id="ir_cron_hosting_check_expirations" model="ir.cron">
+            <field name="name">Hébergement : Vérifier les expirations</field>
+            <field name="model_id" ref="model_hosting_service"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_check_expirations()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Tâche planifiée : Expiration automatique des services -->
+        <record id="ir_cron_hosting_auto_expire" model="ir.cron">
+            <field name="name">Hébergement : Expiration automatique des services</field>
+            <field name="model_id" ref="model_hosting_service"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_auto_expire()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Tâche planifiée : Vérifier les versions logicielles -->
+        <record id="ir_cron_hosting_check_versions" model="ir.cron">
+            <field name="name">Hébergement : Vérifier les versions logicielles</field>
+            <field name="model_id" ref="model_hosting_software"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_check_versions()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Tâche planifiée : Vérification de santé -->
+        <record id="ir_cron_hosting_health_check" model="ir.cron">
+            <field name="name">Hébergement : Vérification de santé</field>
+            <field name="model_id" ref="model_hosting_service"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_health_check()</field>
+            <field name="interval_number">30</field>
+            <field name="interval_type">minutes</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Tâche planifiée : Envoi des courriels récapitulatifs -->
+        <record id="ir_cron_hosting_digest" model="ir.cron">
+            <field name="name">Hébergement : Envoi des courriels récapitulatifs</field>
+            <field name="model_id" ref="model_hosting_digest"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_send_digests()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Tâche planifiée : Vérifier les versions des conteneurs Docker -->
+        <record id="ir_cron_hosting_check_docker_versions" model="ir.cron">
+            <field name="name">Hébergement : Vérifier les versions Docker</field>
+            <field name="model_id" ref="model_hosting_service"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_check_docker_versions()</field>
+            <field name="interval_number">6</field>
+            <field name="interval_type">hours</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Tâche planifiée : Envoi quotidien du rapport de sauvegarde
+             Tourne à l'heure ; la méthode interne ne fait quelque chose qu'à
+             l'heure locale configurée dans Configuration > Paramètres. -->
+        <record id="ir_cron_hosting_backup_report" model="ir.cron">
+            <field name="name">Hébergement : Envoi du rapport de sauvegarde</field>
+            <field name="model_id" ref="model_hosting_backup_run"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_send_daily_report()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">hours</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Tâche planifiée : Consolider les vérifications de santé en snapshots quotidiens et purger les données brutes au-delà de la rétention -->
+        <record id="ir_cron_hosting_health_check_consolidate_purge" model="ir.cron">
+            <field name="name">Hébergement : Consolider les vérifications de santé (snapshots + purge)</field>
+            <field name="model_id" ref="model_hosting_health_check"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_consolidate_and_purge()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Tâche planifiée : Auto-lier les dépôts Restic aux services correspondants -->
+        <record id="ir_cron_hosting_backup_auto_link" model="ir.cron">
+            <field name="name">Hébergement : Auto-lier dépôts Restic ↔ services</field>
+            <field name="model_id" ref="model_hosting_backup_repository"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_auto_link_services()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Tâche planifiée : Vérification DMARC quotidienne (drift + révisions) -->
+        <record id="ir_cron_hosting_dmarc_check" model="ir.cron">
+            <field name="name">Hébergement : Vérification DMARC quotidienne</field>
+            <field name="model_id" ref="model_hosting_domain"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_dmarc_check()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Tâche planifiée : Ingestion des rapports agrégés DMARC (RUA) -->
+        <record id="ir_cron_hosting_dmarc_ingest" model="ir.cron">
+            <field name="name">Hébergement : Ingestion rapports DMARC (RUA)</field>
+            <field name="model_id" ref="model_hosting_dmarc_report"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_dmarc_ingest_reports()</field>
+            <field name="interval_number">6</field>
+            <field name="interval_type">hours</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Tâche planifiée : Synchronisation Action1 (RMM) -->
+        <record id="ir_cron_hosting_endpoint_action1_sync" model="ir.cron">
+            <field name="name">Hébergement : Synchronisation Action1</field>
+            <field name="model_id" ref="model_hosting_endpoint"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_action1_sync()</field>
+            <field name="interval_number">6</field>
+            <field name="interval_type">hours</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Tâche planifiée : Alertes hebdomadaires expiration de licences -->
+        <record id="ir_cron_hosting_license_expiry_alerts" model="ir.cron">
+            <field name="name">Hébergement : Alertes expiration licences</field>
+            <field name="model_id" ref="model_hosting_license"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_expiry_alerts()</field>
+            <field name="interval_number">7</field>
+            <field name="interval_type">days</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Tâche planifiée : Alerte hebdomadaire garantie postes du parc -->
+        <record id="ir_cron_hosting_endpoint_warranty_alerts" model="ir.cron">
+            <field name="name">Hébergement : Alertes garantie postes du parc</field>
+            <field name="model_id" ref="model_hosting_endpoint"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_warranty_alerts()</field>
+            <field name="interval_number">7</field>
+            <field name="interval_type">days</field>
+            <field name="active">True</field>
+        </record>
+
+    </data>
+</odoo>

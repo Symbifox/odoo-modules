@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+<odoo>
+    <!-- Standalone official donation receipt (NOT the invoice/external layout):
+         framed, self-contained, no sales-tax header/footer chrome. Branded from
+         the company brand colours (report_brand_primary/dark via bf_lexend) +
+         logo. -->
+    <template id="donation_base.report_donationtaxreceipt_document">
+        <t t-foreach="docs" t-as="o">
+            <t t-set="company" t-value="o.company_id" />
+            <t t-set="primary" t-value="company.report_brand_primary or '#29ABE1'" />
+            <t t-set="dark" t-value="company.report_brand_dark or '#2D3031'" />
+            <t t-call="web.html_container">
+                <div class="page">
+                    <div t-attf-style="font-family: Lexend, Arial, sans-serif; color: #2D3031; font-size: 12px; border: 1.5px solid {{ dark }}; border-radius: 4px;">
+
+                        <!-- Header: logo + title, then brand accent bar -->
+                        <table width="100%" style="border-collapse: collapse;">
+                            <tr>
+                                <td style="padding: 18px 24px 10px 24px; vertical-align: middle;">
+                                    <img
+                                        t-if="company.logo"
+                                        t-att-src="image_data_uri(company.logo)"
+                                        style="max-height: 46px; max-width: 240px;"
+                                        t-att-alt="company.name"
+                                    />
+                                    <span t-else="" style="font-size: 16px; font-weight: 700;" t-out="company.name" />
+                                </td>
+                                <td style="padding: 18px 24px 10px 24px; text-align: right; vertical-align: middle;">
+                                    <div t-attf-style="font-size: 17px; font-weight: 700; color: {{ primary }}; letter-spacing: .3px;">
+                                        Reçu officiel
+                                    </div>
+                                    <div style="font-size: 10px; color: #6b7280; text-transform: uppercase; letter-spacing: .5px;">
+                                        aux fins de l'impôt sur le revenu
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                        <div t-attf-style="height: 3px; background-color: {{ primary }};" />
+
+                        <!-- Cancelled watermark banner -->
+                        <div
+                            t-if="o.state == 'cancelled'"
+                            style="background-color: #fde8e8; color: #b91c1c; text-align: center; padding: 6px; font-weight: 700; letter-spacing: 1px;"
+                        >
+                            *** REÇU ANNULÉ ***
+                        </div>
+
+                        <div style="padding: 20px 24px 8px 24px;">
+                            <!-- Charity (left) + receipt meta (right) -->
+                            <table width="100%" style="border-collapse: collapse;">
+                                <tr>
+                                    <td width="55%" style="vertical-align: top; padding-right: 16px;">
+                                        <div style="font-weight: 700; font-size: 13px;" t-out="company.name" />
+                                        <div style="color: #454748; line-height: 1.4;" t-field="company.partner_id" t-options="{'widget': 'contact', 'fields': ['address'], 'no_marker': True}" />
+                                        <div style="margin-top: 6px;">
+                                            <span style="color: #6b7280;">N° d'enregistrement (ARC) : </span>
+                                            <span style="font-weight: 600;" t-out="company.charity_registration_number or '—'" />
+                                        </div>
+                                    </td>
+                                    <td width="45%" style="vertical-align: top;">
+                                        <table width="100%" style="border-collapse: collapse; font-size: 11.5px;">
+                                            <tr>
+                                                <td style="color: #6b7280; padding: 1px 0;">Reçu n°</td>
+                                                <td style="text-align: right; font-weight: 700;" t-out="o.number" />
+                                            </tr>
+                                            <tr>
+                                                <td style="color: #6b7280; padding: 1px 0;">Date de délivrance</td>
+                                                <td style="text-align: right;"><span t-field="o.date" /></td>
+                                            </tr>
+                                            <tr t-if="company.receipt_show_place_of_issue and company.receipt_place_of_issue">
+                                                <td style="color: #6b7280; padding: 1px 0;">Lieu de délivrance</td>
+                                                <td style="text-align: right;" t-out="company.receipt_place_of_issue" />
+                                            </tr>
+                                            <tr>
+                                                <td style="color: #6b7280; padding: 1px 0;">
+                                                    <span t-if="o.type == 'annual'">Année du don</span>
+                                                    <span t-else="">Date du don</span>
+                                                </td>
+                                                <td style="text-align: right;">
+                                                    <span t-if="o.type == 'annual'" t-out="o.donation_date.year if o.donation_date else ''" />
+                                                    <span t-else="" t-field="o.donation_date" />
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <!-- Donor -->
+                            <div style="margin-top: 16px; padding-top: 12px; border-top: 1px solid #e5e7eb;">
+                                <div style="font-size: 10px; text-transform: uppercase; letter-spacing: .5px; color: #6b7280;">Reçu de</div>
+                                <div style="font-weight: 700; font-size: 13px; margin-top: 2px;" t-out="o.partner_id.name" />
+                                <div style="color: #454748; line-height: 1.4;" t-field="o.partner_id" t-options="{'widget': 'contact', 'fields': ['address'], 'no_marker': True}" />
+                            </div>
+
+                            <!-- Amounts -->
+                            <table width="100%" style="border-collapse: collapse; margin-top: 16px; border: 1px solid #e5e7eb;">
+                                <tr t-if="not o.in_kind">
+                                    <td style="padding: 8px 12px; border-bottom: 1px solid #f0f0f0;">Montant total du don reçu</td>
+                                    <td style="padding: 8px 12px; text-align: right; border-bottom: 1px solid #f0f0f0; white-space: nowrap;"><span t-field="o.amount" /></td>
+                                </tr>
+                                <tr t-if="o.in_kind">
+                                    <td style="padding: 8px 12px; border-bottom: 1px solid #f0f0f0;">Juste valeur marchande du bien</td>
+                                    <td style="padding: 8px 12px; text-align: right; border-bottom: 1px solid #f0f0f0; white-space: nowrap;"><span t-field="o.fmv" /></td>
+                                </tr>
+                                <tr t-if="o.advantage_amount">
+                                    <td style="padding: 8px 12px; border-bottom: 1px solid #f0f0f0;">
+                                        Valeur de l'avantage
+                                        <span t-if="o.advantage_description" style="color: #6b7280;"> — <span t-out="o.advantage_description" /></span>
+                                    </td>
+                                    <td style="padding: 8px 12px; text-align: right; border-bottom: 1px solid #f0f0f0; white-space: nowrap;"><span t-field="o.advantage_amount" /></td>
+                                </tr>
+                                <tr t-attf-style="background-color: {{ primary }}1A;">
+                                    <td t-attf-style="padding: 10px 12px; font-weight: 700; color: {{ dark }};">Montant admissible du don aux fins de l'impôt</td>
+                                    <td t-attf-style="padding: 10px 12px; text-align: right; font-weight: 700; font-size: 14px; color: {{ dark }}; white-space: nowrap;"><span t-field="o.eligible_amount" /></td>
+                                </tr>
+                            </table>
+
+                            <!-- In-kind details -->
+                            <div t-if="o.in_kind" style="margin-top: 10px; font-size: 11px;">
+                                <div><span style="color: #6b7280;">Description du bien : </span><span t-out="o.property_description or ''" /></div>
+                                <div t-if="company.receipt_show_appraiser and o.appraiser_name">
+                                    <span style="color: #6b7280;">Évaluateur : </span>
+                                    <span t-out="o.appraiser_name" /><span t-if="o.appraiser_address">, <span t-out="o.appraiser_address" /></span>
+                                </div>
+                            </div>
+
+                            <!-- Signature -->
+                            <table width="100%" style="border-collapse: collapse; margin-top: 36px;">
+                                <tr>
+                                    <td width="55%" style="vertical-align: bottom;">
+                                        <div style="height: 42px;">
+                                            <img t-if="company.charity_signature" t-att-src="image_data_uri(company.charity_signature)" style="max-height: 42px; max-width: 240px;" />
+                                        </div>
+                                        <div style="border-top: 1px solid #2D3031; width: 240px; padding-top: 3px; font-size: 11px;">
+                                            Signature autorisée
+                                        </div>
+                                        <div t-if="company.charity_signatory_name" style="font-size: 11px;">
+                                            <span t-out="company.charity_signatory_name" /><span t-if="company.charity_signatory_title">, <span t-out="company.charity_signatory_title" /></span>
+                                        </div>
+                                    </td>
+                                    <td width="45%" />
+                                </tr>
+                            </table>
+                        </div>
+
+                        <!-- Footer: CRA statement (no sales-tax / invoice chrome) -->
+                        <div style="border-top: 1px solid #e5e7eb; padding: 10px 24px; font-size: 8.5px; color: #6b7280; line-height: 1.5;">
+                            <div>
+                                Agence du revenu du Canada — <span t-out="company.charity_cra_url or 'canada.ca/organismesdebienfaisance'" />
+                            </div>
+                            <div>
+                                Reçu officiel délivré par un organisme de bienfaisance enregistré. Un organisme enregistré auprès de l'ARC est reconnu au Québec. Aucun bien ni service n'a été fourni en contrepartie de ce don, sauf indication contraire ci-dessus.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

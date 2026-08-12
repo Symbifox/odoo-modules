@@ -1,0 +1,151 @@
+.o_nc_browser {
+    // Blue Fox brand tokens.
+    --bf-accent: #29ABE1;
+    --bf-accent-dark: #1f8ab5;
+    --bf-anthracite: #2D3031;
+    font-family: "Lexend", var(--bs-body-font-family, sans-serif);
+    padding: 12px 16px;
+
+    .o_nc_toolbar {
+        .o_nc_filter {
+            max-width: 220px;
+        }
+        .btn-primary {
+            background-color: var(--bf-accent);
+            border-color: var(--bf-accent);
+            &:hover,
+            &:focus {
+                background-color: var(--bf-accent-dark);
+                border-color: var(--bf-accent-dark);
+            }
+        }
+        .breadcrumb-item a {
+            color: var(--bf-anthracite);
+        }
+        .breadcrumb-item.active {
+            color: var(--bf-accent);
+            font-weight: 500;
+        }
+    }
+
+    // Dolphin-style two-pane layout: folder tree | content.
+    .o_nc_main {
+        gap: 12px;
+    }
+
+    .o_nc_tree {
+        width: 240px;
+        min-width: 170px;
+        max-width: 320px;
+        flex: 0 0 auto;
+        border-right: 1px solid var(--border-color, #dee2e6);
+        padding-right: 8px;
+        overflow: auto;
+        max-height: 70vh;
+
+        ul {
+            list-style: none;
+            padding-left: 0;
+            margin: 0;
+        }
+        .o_nc_tree_children {
+            padding-left: 14px;
+        }
+        .o_nc_tree_row {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 2px 4px;
+            border-radius: 4px;
+            cursor: pointer;
+            white-space: nowrap;
+            color: var(--bf-anthracite);
+
+            &:hover {
+                background: rgba(41, 171, 225, 0.08);
+            }
+            &.o_active {
+                background: rgba(41, 171, 225, 0.15);
+                font-weight: 500;
+            }
+        }
+        .o_nc_caret {
+            width: 12px;
+            text-align: center;
+            cursor: pointer;
+            color: var(--bf-anthracite);
+        }
+        .o_nc_tree_label {
+            flex: 1 1 auto;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    }
+
+    .o_nc_content {
+        min-width: 0;
+        overflow: auto;
+        max-height: 70vh;
+    }
+
+    .o_nc_list {
+        th.o_nc_sort {
+            cursor: pointer;
+            white-space: nowrap;
+            user-select: none;
+            &:hover {
+                color: var(--bf-accent);
+            }
+        }
+        td {
+            vertical-align: middle;
+        }
+        .o_nc_name {
+            cursor: pointer;
+            color: var(--bf-anthracite);
+            &:hover {
+                text-decoration: underline;
+                color: var(--bf-accent);
+            }
+        }
+        .o_nc_actions {
+            white-space: nowrap;
+        }
+        .o_nc_check {
+            width: 1%;
+            white-space: nowrap;
+            text-align: center;
+        }
+        .o_nc_folder_row.o_nc_drop_target {
+            background: rgba(41, 171, 225, 0.12);
+        }
+    }
+
+    // Drag-and-drop upload affordance (toggled by state.dragOver).
+    &.o_nc_drag_over {
+        outline: 2px dashed var(--bf-accent);
+        outline-offset: -6px;
+        background-color: rgba(41, 171, 225, 0.06);
+    }
+}
+
+// Preview modal iframe (served same-origin by the Odoo controller).
+.o_nc_iframe_modal {
+    width: 100%;
+    height: 70vh;
+    border: 0;
+    background: #fff;
+}
+
+// Standalone client-action: let the panel scroll within the action manager.
+.o_action_manager > .o_nc_browser {
+    overflow: auto;
+}
+
+.o_nc_radio {
+    cursor: pointer;
+    user-select: none;
+    input {
+        margin-right: 0.25rem;
+    }
+}

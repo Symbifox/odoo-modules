@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Sequence -->
+    <record id="seq_corporate_resolution" model="ir.sequence">
+        <field name="name">Résolution corporative</field>
+        <field name="code">corporate.resolution</field>
+        <field name="prefix">RES-%(year)s-</field>
+        <field name="padding">3</field>
+    </record>
+
+    <!-- Form View -->
+    <record id="corporate_resolution_view_form" model="ir.ui.view">
+        <field name="name">corporate.resolution.form</field>
+        <field name="model">corporate.resolution</field>
+        <field name="arch" type="xml">
+            <form string="Résolution">
+                <header>
+                    <button name="action_propose" string="Proposer" type="object"
+                            class="btn-primary" invisible="status != 'draft'"/>
+                    <button name="action_adopt" string="Adopter" type="object"
+                            class="btn-success" invisible="status != 'proposed'"/>
+                    <button name="action_reject" string="Rejeter" type="object"
+                            class="btn-danger" invisible="status != 'proposed'"/>
+                    <button name="action_reset_draft" string="Brouillon" type="object"
+                            invisible="status not in ('proposed', 'rejected')"/>
+                    <button name="%(action_report_corporate_resolution)d"
+                            string="Imprimer PDF" type="action"
+                            icon="fa-print"/>
+                    <field name="status" widget="statusbar" clickable="1"
+                           statusbar_visible="draft,proposed,adopted"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="sequence"/>
+                        <h1>
+                            <field name="sequence" readonly="1"/>
+                        </h1>
+                        <label for="name"/>
+                        <h2>
+                            <field name="name" placeholder="Titre de la résolution..."/>
+                        </h2>
+                    </div>
+                    <group>
+                        <group string="Classification">
+                            <field name="resolution_type"/>
+                            <field name="meeting_type"/>
+                            <field name="subject_category"/>
+                            <field name="meeting_date"/>
+                            <field name="effective_date"/>
+                        </group>
+                        <group string="Vote">
+                            <field name="mover_id"/>
+                            <field name="seconder_id"/>
+                            <field name="unanimously_adopted"/>
+                            <field name="vote_for" invisible="unanimously_adopted"/>
+                            <field name="vote_against" invisible="unanimously_adopted"/>
+                            <field name="vote_abstain" invisible="unanimously_adopted"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Résolution" name="resolution">
+                            <group string="ATTENDU QUE...">
+                                <field name="whereas_text" nolabel="1"/>
+                            </group>
+                            <group string="IL EST RÉSOLU QUE...">
+                                <field name="resolved_text" nolabel="1"/>
+                            </group>
+                        </page>
+                        <page string="Documents" name="documents">
+                            <group>
+                                <field name="document_ids" nolabel="1"/>
+                            </group>
+                            <group>
+                                <field name="attachment_ids" widget="many2many_binary"/>
+                            </group>
+                        </page>
+                        <page string="Notes" name="notes">
+                            <field name="notes"/>
+                            <field name="superseded_by_id"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- List View -->
+    <record id="corporate_resolution_view_list" model="ir.ui.view">
+        <field name="name">corporate.resolution.list</field>
+        <field name="model">corporate.resolution</field>
+        <field name="arch" type="xml">
+            <list string="Résolutions"
+                  decoration-success="status == 'adopted'"
+                  decoration-muted="status in ('rejected', 'superseded')"
+                  decoration-info="status == 'proposed'">
+                <field name="sequence"/>
+                <field name="meeting_date"/>
+                <field name="name"/>
+                <field name="resolution_type"/>
+                <field name="subject_category" optional="show"/>
+                <field name="meeting_type" optional="hide"/>
+                <field name="status" widget="badge"
+                       decoration-success="status == 'adopted'"
+                       decoration-info="status == 'proposed'"
+                       decoration-warning="status == 'draft'"
+                       decoration-danger="status == 'rejected'"
+                       decoration-muted="status == 'superseded'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="corporate_resolution_view_search" model="ir.ui.view">
+        <field name="name">corporate.resolution.search</field>
+        <field name="model">corporate.resolution</field>
+        <field name="arch" type="xml">
+            <search string="Rechercher des résolutions">
+                <field name="name"/>
+                <field name="sequence"/>
+                <separator/>
+                <filter string="Brouillon" name="draft"
+                        domain="[('status', '=', 'draft')]"/>
+                <filter string="Proposé" name="proposed"
+                        domain="[('status', '=', 'proposed')]"/>
+                <filter string="Adopté" name="adopted"
+                        domain="[('status', '=', 'adopted')]"/>
+                <separator/>
+                <filter string="Conseil" name="board"
+                        domain="[('resolution_type', 'in', ['board', 'written_board'])]"/>
+                <filter string="Actionnaires" name="shareholder"
+                        domain="[('resolution_type', 'in', ['shareholder', 'written_shareholder'])]"/>
+                <separator/>
+                <group expand="0" string="Regrouper par">
+                    <filter string="Type" name="group_type"
+                            context="{'group_by': 'resolution_type'}"/>
+                    <filter string="Statut" name="group_status"
+                            context="{'group_by': 'status'}"/>
+                    <filter string="Catégorie" name="group_category"
+                            context="{'group_by': 'subject_category'}"/>
+                    <filter string="Date de séance" name="group_date"
+                            context="{'group_by': 'meeting_date:year'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="corporate_resolution_action" model="ir.actions.act_window">
+        <field name="name">Résolutions</field>
+        <field name="res_model">corporate.resolution</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="corporate_resolution_view_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Créer votre première résolution corporative
+            </p>
+        </field>
+    </record>
+
+</odoo>

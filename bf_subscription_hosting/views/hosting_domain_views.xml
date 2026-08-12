@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="hosting_domain_view_form_subscription" model="ir.ui.view">
+        <field name="name">hosting.domain.form.subscription</field>
+        <field name="model">hosting.domain</field>
+        <field name="inherit_id" ref="hosting_management.hosting_domain_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_subscription" type="object"
+                        class="oe_stat_button" icon="fa-refresh"
+                        invisible="not subscription_id">
+                    <div class="o_stat_info">
+                        <span class="o_stat_text">Abonnement</span>
+                    </div>
+                </button>
+            </xpath>
+            <xpath expr="//header" position="inside">
+                <button name="action_create_subscription" type="object"
+                        string="Créer un abonnement"
+                        invisible="subscription_id"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

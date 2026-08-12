@@ -1,0 +1,423 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates xml:space="preserve">
+    <t t-name="bf_gamification.Dashboard">
+        <div class="o_action bf-gamification-dashboard">
+            <!-- Loading -->
+            <div t-if="state.loading" class="text-center p-5">
+                <i class="fa fa-spinner fa-spin fa-3x"/>
+                <p class="mt-3">Chargement...</p>
+            </div>
+
+            <div t-if="!state.loading and state.data" class="p-3">
+                <!-- Header -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h1 class="mb-0 d-flex align-items-center">
+                        <img src="/bf_gamification/static/img/foxquest_logo.png"
+                             alt="Fox Quest" height="48" class="me-2"/>
+                        Fox Quest
+                    </h1>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-outline-secondary" t-on-click="refresh">
+                            <i class="fa fa-refresh"/> Actualiser
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Tabs -->
+                <ul class="nav nav-tabs mb-4">
+                    <li class="nav-item">
+                        <a t-att-class="state.activeTab === 'overview' ? 'nav-link active' : 'nav-link'"
+                           href="#" t-on-click.prevent="showOverview">
+                            <i class="fa fa-dashboard me-1"/>Vue d'ensemble
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a t-att-class="state.activeTab === 'achievements' ? 'nav-link active' : 'nav-link'"
+                           href="#" t-on-click.prevent="showAchievements">
+                            <i class="fa fa-trophy me-1"/>Achievements
+                            <span class="badge text-bg-secondary ms-1"
+                                  t-if="state.data.achievements">
+                                <t t-esc="state.data.achievements.earned_badges"/>/<t t-esc="state.data.achievements.total_badges"/>
+                            </span>
+                        </a>
+                    </li>
+                </ul>
+
+                <!-- ==================== OVERVIEW TAB ==================== -->
+                <div t-if="state.activeTab === 'overview'">
+                    <!-- Profile Card -->
+                    <div class="row mb-4" t-if="state.data.profile">
+                        <div class="col-12">
+                            <div class="card shadow-sm">
+                                <div class="card-body">
+                                    <div class="row align-items-center">
+                                        <div class="col-auto">
+                                            <div class="bf-profile-avatar">
+                                                <img t-if="state.data.profile.avatar"
+                                                     t-att-src="'data:image/png;base64,' + state.data.profile.avatar"
+                                                     class="rounded-circle" width="80" height="80"
+                                                     alt="Avatar"/>
+                                                <i t-else="" class="fa fa-user-circle fa-5x text-muted"/>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <h3 class="mb-1" t-esc="state.data.profile.user_name"/>
+                                            <span class="badge text-bg-primary me-2"
+                                                  t-att-class="state.data.profile.level_css_class"
+                                                  t-esc="state.data.profile.level_name"/>
+                                            <span class="text-muted" t-esc="state.data.profile.level_title"/>
+                                        </div>
+                                        <div class="col-auto text-end">
+                                            <div class="fs-2 fw-bold text-warning">
+                                                <t t-esc="state.data.profile.total_xp"/> XP
+                                            </div>
+                                            <div class="text-muted">
+                                                Rang #<t t-esc="state.data.profile.rank"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Progress bar -->
+                                    <div class="mt-3">
+                                        <div class="d-flex justify-content-between small text-muted mb-1">
+                                            <span t-esc="state.data.profile.level_name"/>
+                                            <span>
+                                                <t t-esc="state.data.profile.xp_to_next_level"/> XP restant
+                                            </span>
+                                        </div>
+                                        <div class="progress" style="height: 12px;">
+                                            <div class="progress-bar bg-warning progress-bar-striped progress-bar-animated"
+                                                 role="progressbar"
+                                                 t-attf-style="width: #{state.data.profile.progress_percent}%"/>
+                                        </div>
+                                    </div>
+                                    <!-- Showcase badges -->
+                                    <div t-if="state.data.profile.showcase_badges and state.data.profile.showcase_badges.length"
+                                         class="mt-3 pt-3 border-top">
+                                        <small class="text-muted d-block mb-2">
+                                            <i class="fa fa-star me-1"/>Vitrine
+                                        </small>
+                                        <div class="d-flex gap-2 flex-wrap">
+                                            <t t-foreach="state.data.profile.showcase_badges" t-as="sb" t-key="sb.user_badge_id">
+                                                <div class="bf-showcase-badge" t-att-class="getRarityClass(sb.rarity)">
+                                                    <img t-if="sb.image"
+                                                         t-att-src="'data:image/png;base64,' + sb.image"
+                                                         width="36" height="36" class="rounded"
+                                                         t-att-alt="sb.name" t-att-title="sb.name"/>
+                                                    <i t-else="" class="fa fa-certificate fa-2x"
+                                                       t-att-title="sb.name"/>
+                                                </div>
+                                            </t>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Stats Row -->
+                    <div class="row mb-4 g-3" t-if="state.data.profile">
+                        <div class="col-md-3">
+                            <div class="card text-center shadow-sm h-100">
+                                <div class="card-body">
+                                    <i class="fa fa-fire fa-2x text-danger mb-2"/>
+                                    <h4 t-esc="state.data.profile.current_streak"/>
+                                    <small class="text-muted">Streak actuel</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card text-center shadow-sm h-100">
+                                <div class="card-body">
+                                    <i class="fa fa-certificate fa-2x text-primary mb-2"/>
+                                    <h4 t-esc="state.data.profile.badge_count"/>
+                                    <small class="text-muted">Badges</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card text-center shadow-sm h-100" t-on-click="openXpJournal" role="button">
+                                <div class="card-body">
+                                    <i class="fa fa-calendar-check-o fa-2x text-success mb-2"/>
+                                    <h4 t-esc="state.data.profile.xp_this_week"/>
+                                    <small class="text-muted">XP cette semaine</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card text-center shadow-sm h-100">
+                                <div class="card-body">
+                                    <i class="fa fa-calendar fa-2x text-info mb-2"/>
+                                    <h4 t-esc="state.data.profile.xp_this_month"/>
+                                    <small class="text-muted">XP ce mois</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row g-3">
+                        <!-- Leaderboard -->
+                        <div class="col-md-6">
+                            <div class="card shadow-sm h-100">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h5 class="mb-0"><i class="fa fa-bar-chart me-2"/>Classement</h5>
+                                    <button class="btn btn-sm btn-outline-primary" t-on-click="openLeaderboard">
+                                        Voir tout
+                                    </button>
+                                </div>
+                                <div class="card-body p-0">
+                                    <table class="table table-hover mb-0">
+                                        <tbody>
+                                            <t t-foreach="state.data.leaderboard" t-as="player" t-key="player.rank">
+                                                <tr>
+                                                    <td class="text-center fw-bold" style="width: 40px;">
+                                                        <span t-if="player.rank === 1" class="text-warning">
+                                                            <i class="fa fa-trophy"/>
+                                                        </span>
+                                                        <span t-elif="player.rank === 2" class="text-muted">
+                                                            <i class="fa fa-trophy"/>
+                                                        </span>
+                                                        <span t-elif="player.rank === 3" style="color: #cd7f32;">
+                                                            <i class="fa fa-trophy"/>
+                                                        </span>
+                                                        <span t-else="" t-esc="player.rank"/>
+                                                    </td>
+                                                    <td>
+                                                        <div class="d-flex align-items-center">
+                                                            <img t-if="player.avatar"
+                                                                 t-att-src="'data:image/png;base64,' + player.avatar"
+                                                                 class="rounded-circle me-2" width="28" height="28"/>
+                                                            <div>
+                                                                <div t-esc="player.user_name"/>
+                                                                <small class="text-muted" t-esc="player.level_title"/>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td class="text-end">
+                                                        <strong t-esc="player.total_xp"/>
+                                                        <small class="text-muted"> XP</small>
+                                                    </td>
+                                                </tr>
+                                            </t>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Recent Activity + Badges -->
+                        <div class="col-md-6">
+                            <!-- Recent Badges -->
+                            <div class="card shadow-sm mb-3" t-if="state.data.recent_badges and state.data.recent_badges.length">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h5 class="mb-0"><i class="fa fa-certificate me-2"/>Mes badges r&#233;cents</h5>
+                                    <button class="btn btn-sm btn-outline-primary" t-on-click="openMyBadges">
+                                        Voir tout
+                                    </button>
+                                </div>
+                                <div class="card-body">
+                                    <div class="d-flex flex-wrap gap-2">
+                                        <t t-foreach="state.data.recent_badges" t-as="badge" t-key="badge_index">
+                                            <div class="bf-badge-chip" t-att-title="badge.description">
+                                                <i class="fa fa-certificate me-1"
+                                                   t-att-class="badge.rarity === 'legendary' ? 'text-warning' : badge.rarity === 'epic' ? 'text-danger' : badge.rarity === 'rare' ? 'text-primary' : 'text-secondary'"/>
+                                                <span t-esc="badge.name"/>
+                                            </div>
+                                        </t>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Recent XP History -->
+                            <div class="card shadow-sm">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h5 class="mb-0"><i class="fa fa-history me-2"/>Activit&#233; r&#233;cente</h5>
+                                    <button class="btn btn-sm btn-outline-primary" t-on-click="openXpJournal">
+                                        Journal
+                                    </button>
+                                </div>
+                                <div class="card-body p-0">
+                                    <div class="list-group list-group-flush">
+                                        <t t-foreach="state.data.xp_history.slice(0, 8)" t-as="txn" t-key="txn_index">
+                                            <div class="list-group-item d-flex justify-content-between align-items-center py-2">
+                                                <div>
+                                                    <i class="fa me-2" t-att-class="getSourceIcon(txn.source)"/>
+                                                    <span t-esc="txn.description"/>
+                                                </div>
+                                                <div class="d-flex align-items-center gap-2">
+                                                    <span class="badge"
+                                                          t-att-class="txn.xp_amount > 0 ? 'text-bg-success' : 'text-bg-danger'">
+                                                        <t t-if="txn.xp_amount > 0">+</t><t t-esc="txn.xp_amount"/> XP
+                                                    </span>
+                                                    <small class="text-muted" t-esc="formatDate(txn.date)"/>
+                                                </div>
+                                            </div>
+                                        </t>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Global Stats -->
+                    <div class="row mt-4 g-3" t-if="state.data.stats">
+                        <div class="col-12">
+                            <div class="card bg-light shadow-sm">
+                                <div class="card-body">
+                                    <div class="row text-center">
+                                        <div class="col-md-4">
+                                            <h5 t-esc="state.data.stats.total_players"/>
+                                            <small class="text-muted">Joueurs actifs</small>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <h5 t-esc="state.data.stats.total_xp_awarded"/>
+                                            <small class="text-muted">XP total accord&#233;</small>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <h5 t-esc="state.data.stats.total_badges_earned"/>
+                                            <small class="text-muted">Badges d&#233;bloqu&#233;s</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ==================== ACHIEVEMENTS TAB ==================== -->
+                <div t-if="state.activeTab === 'achievements'">
+                    <!-- Achievements header -->
+                    <div class="card shadow-sm mb-4" t-if="state.data.achievements">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <h4 class="mb-0 d-flex align-items-center">
+                                    <img src="/bf_gamification/static/img/foxquest_logo.png"
+                                         alt="" height="32" class="me-2"/>Achievements
+                                </h4>
+                                <span class="fs-5">
+                                    <strong t-esc="state.data.achievements.earned_badges"/>
+                                    <span class="text-muted">
+                                        / <t t-esc="state.data.achievements.total_badges"/>
+                                    </span>
+                                    <span class="text-muted ms-2">
+                                        (<t t-esc="state.data.achievements.completion_percent"/>%)
+                                    </span>
+                                </span>
+                            </div>
+                            <div class="progress" style="height: 8px;">
+                                <div class="progress-bar bg-success"
+                                     role="progressbar"
+                                     t-attf-style="width: #{state.data.achievements.completion_percent}%"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Filter buttons -->
+                    <div class="btn-group mb-4">
+                        <button t-att-class="state.achievementFilter === 'all' ? 'btn btn-sm btn-primary' : 'btn btn-sm btn-outline-primary'"
+                                t-on-click="filterAll">
+                            Tous
+                        </button>
+                        <button t-att-class="state.achievementFilter === 'earned' ? 'btn btn-sm btn-success' : 'btn btn-sm btn-outline-success'"
+                                t-on-click="filterEarned">
+                            <i class="fa fa-check me-1"/>Obtenus
+                        </button>
+                        <button t-att-class="state.achievementFilter === 'locked' ? 'btn btn-sm btn-secondary' : 'btn btn-sm btn-outline-secondary'"
+                                t-on-click="filterLocked">
+                            <i class="fa fa-lock me-1"/>Verrouill&#233;s
+                        </button>
+                    </div>
+
+                    <!-- Categories + Badge Grid -->
+                    <t t-foreach="getFilteredCategories()" t-as="cat" t-key="cat.name">
+                        <div class="mb-4">
+                            <h5 class="mb-3 d-flex align-items-center">
+                                <span t-esc="cat.name"/>
+                                <span class="badge text-bg-secondary ms-2">
+                                    <t t-esc="cat.earned_count"/>/<t t-esc="cat.total_count"/>
+                                </span>
+                            </h5>
+                            <div class="row g-3">
+                                <t t-foreach="cat.badges" t-as="badge" t-key="badge.id">
+                                    <div class="col-xl-3 col-lg-4 col-md-6">
+                                        <div class="bf-achievement-card"
+                                             t-att-class="(badge.earned ? 'bf-earned' : 'bf-locked') + ' ' + (badge.hidden ? 'bf-hidden' : '')">
+                                            <!-- Pin button -->
+                                            <button t-if="badge.earned and badge.user_badge_id"
+                                                    t-att-class="'bf-pin-btn' + (badge.showcased ? ' bf-pinned' : '')"
+                                                    t-att-title="badge.showcased ? 'Retirer de la vitrine' : '\u00c9pingler'"
+                                                    t-on-click="() => this.toggleShowcase(badge.user_badge_id)">
+                                                <i t-att-class="badge.showcased ? 'fa fa-star' : 'fa fa-star-o'"/>
+                                            </button>
+
+                                            <!-- Badge image -->
+                                            <div class="bf-achievement-img">
+                                                <t t-if="badge.hidden and !badge.earned">
+                                                    <div class="bf-hidden-badge">
+                                                        <i class="fa fa-question fa-3x"/>
+                                                    </div>
+                                                </t>
+                                                <t t-elif="badge.image">
+                                                    <img t-att-src="'data:image/png;base64,' + badge.image"
+                                                         width="64" height="64"/>
+                                                </t>
+                                                <t t-else="">
+                                                    <i class="fa fa-certificate fa-3x"
+                                                       t-att-class="badge.earned ? '' : 'text-muted'"/>
+                                                </t>
+                                            </div>
+
+                                            <!-- Badge name -->
+                                            <div class="bf-achievement-name" t-esc="badge.name"/>
+
+                                            <!-- Rarity pill -->
+                                            <div class="mt-1">
+                                                <span class="badge rounded-pill bf-rarity-pill"
+                                                      t-att-class="getRarityClass(badge.rarity)">
+                                                    <t t-esc="getRarityLabel(badge.rarity)"/>
+                                                </span>
+                                            </div>
+
+                                            <!-- Progress bar -->
+                                            <div class="bf-achievement-progress mt-2"
+                                                 t-if="badge.progress and badge.progress.target > 1">
+                                                <div class="d-flex justify-content-between small mb-1">
+                                                    <span>
+                                                        <t t-esc="badge.progress.current"/>/<t t-esc="badge.progress.target"/>
+                                                    </span>
+                                                    <span><t t-esc="badge.progress.percent"/>%</span>
+                                                </div>
+                                                <div class="progress" style="height: 6px;">
+                                                    <div class="progress-bar"
+                                                         t-att-class="badge.earned ? 'bg-success' : 'bg-info'"
+                                                         role="progressbar"
+                                                         t-attf-style="width: #{badge.progress.percent}%"/>
+                                                </div>
+                                            </div>
+
+                                            <!-- Rarity percentage + XP -->
+                                            <div class="bf-achievement-meta mt-2">
+                                                <small class="text-muted">
+                                                    <t t-esc="badge.earned_percentage"/>% des joueurs
+                                                </small>
+                                                <small class="text-muted" t-if="badge.xp_reward">
+                                                    <i class="fa fa-bolt ms-2"/>
+                                                    <t t-esc="badge.xp_reward"/> XP
+                                                </small>
+                                            </div>
+
+                                            <!-- Description tooltip -->
+                                            <div class="bf-achievement-desc" t-if="badge.description">
+                                                <small t-esc="badge.description"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+                    </t>
+                </div>
+
+            </div>
+        </div>
+    </t>
+</templates>

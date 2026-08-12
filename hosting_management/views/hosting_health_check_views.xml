@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Health Check Tree View -->
+    <record id="hosting_health_check_view_tree" model="ir.ui.view">
+        <field name="name">hosting.health.check.tree</field>
+        <field name="model">hosting.health.check</field>
+        <field name="arch" type="xml">
+            <list decoration-success="status == 'up'"
+                  decoration-warning="status == 'degraded'"
+                  decoration-danger="status in ('down', 'timeout')"
+                  decoration-muted="excluded_from_stats">
+                <header>
+                    <button name="action_toggle_exclusion" type="object"
+                            string="Basculer l'exclusion des stats"
+                            confirm="Basculer l'exclusion des statistiques pour les vérifications sélectionnées ?"/>
+                </header>
+                <field name="check_date" string="Date"/>
+                <field name="service_id" string="Service"/>
+                <field name="partner_id" string="Client"/>
+                <field name="status" string="État" widget="badge"
+                       decoration-success="status == 'up'"
+                       decoration-warning="status == 'degraded'"
+                       decoration-danger="status in ('down', 'timeout')"/>
+                <field name="response_time_ms" string="Temps de réponse (ms)"/>
+                <field name="http_status_code" string="Code HTTP"/>
+                <field name="error_message" string="Erreur" optional="hide"/>
+                <field name="excluded_from_stats" string="Exclu" optional="show"/>
+                <field name="exclusion_reason" string="Raison d'exclusion" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Health Check Form View -->
+    <record id="hosting_health_check_view_form" model="ir.ui.view">
+        <field name="name">hosting.health.check.form</field>
+        <field name="model">hosting.health.check</field>
+        <field name="arch" type="xml">
+            <form string="Vérification de santé" create="false">
+                <header>
+                    <button name="action_toggle_exclusion" type="object"
+                            string="Exclure des statistiques"
+                            class="btn-secondary"
+                            invisible="excluded_from_stats"/>
+                    <button name="action_toggle_exclusion" type="object"
+                            string="Réintégrer dans les statistiques"
+                            class="btn-primary"
+                            invisible="not excluded_from_stats"/>
+                </header>
+                <sheet>
+                    <widget name="web_ribbon" title="Exclu des statistiques"
+                            bg_color="text-bg-warning"
+                            invisible="not excluded_from_stats"/>
+                    <group>
+                        <group string="Informations de la vérification">
+                            <field name="check_date" string="Date"/>
+                            <field name="service_id" string="Service"/>
+                            <field name="partner_id" string="Client"/>
+                            <field name="software_id" string="Logiciel"/>
+                        </group>
+                        <group string="Résultat">
+                            <field name="status" string="État" widget="badge"
+                                   decoration-success="status == 'up'"
+                                   decoration-warning="status == 'degraded'"
+                                   decoration-danger="status in ('down', 'timeout')"/>
+                            <field name="response_time_ms" string="Temps de réponse (ms)"/>
+                            <field name="http_status_code" string="Code HTTP"/>
+                        </group>
+                    </group>
+                    <group string="Détails de l'erreur" invisible="not error_message">
+                        <field name="error_message" nolabel="1"/>
+                    </group>
+                    <group string="Exclusion des statistiques">
+                        <field name="excluded_from_stats"/>
+                        <field name="exclusion_reason" nolabel="1" colspan="2"
+                               placeholder="Cause externe (fournisseur réseau, DNS client, maintenance tierce)…"
+                               invisible="not excluded_from_stats"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Health Check Search View -->
+    <record id="hosting_health_check_view_search" model="ir.ui.view">
+        <field name="name">hosting.health.check.search</field>
+        <field name="model">hosting.health.check</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="service_id"/>
+                <field name="partner_id"/>
+                <field name="software_id"/>
+                <separator/>
+                <filter name="filter_up" string="En ligne" domain="[('status', '=', 'up')]"/>
+                <filter name="filter_degraded" string="Dégradé" domain="[('status', '=', 'degraded')]"/>
+                <filter name="filter_down" string="Hors ligne" domain="[('status', '=', 'down')]"/>
+                <filter name="filter_timeout" string="Délai dépassé" domain="[('status', '=', 'timeout')]"/>
+                <separator/>
+                <filter name="filter_issues" string="Problèmes" domain="[('status', 'in', ['down', 'timeout', 'degraded'])]"/>
+                <separator/>
+                <filter name="filter_excluded" string="Exclus des stats" domain="[('excluded_from_stats', '=', True)]"/>
+                <filter name="filter_included" string="Inclus dans les stats" domain="[('excluded_from_stats', '=', False)]"/>
+                <separator/>
+                <filter name="filter_today" string="Aujourd'hui" domain="[('check_date', '>=', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter name="filter_last_7_days" string="7 derniers jours" domain="[('check_date', '>=', (context_today() - relativedelta(days=7)).strftime('%Y-%m-%d'))]"/>
+                <filter name="filter_last_30_days" string="30 derniers jours" domain="[('check_date', '>=', (context_today() - relativedelta(days=30)).strftime('%Y-%m-%d'))]"/>
+                <group expand="0" string="Grouper par">
+                    <filter name="group_service" string="Service" context="{'group_by': 'service_id'}"/>
+                    <filter name="group_partner" string="Client" context="{'group_by': 'partner_id'}"/>
+                    <filter name="group_status" string="État" context="{'group_by': 'status'}"/>
+                    <filter name="group_date" string="Date" context="{'group_by': 'check_date:day'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Health Check Action -->
+    <record id="hosting_health_check_action" model="ir.actions.act_window">
+        <field name="name">Vérifications de santé</field>
+        <field name="res_model">hosting.health.check</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="hosting_health_check_view_search"/>
+        <field name="context">{'search_default_filter_last_7_days': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Aucune vérification de santé
+            </p>
+            <p>
+                Les vérifications de santé sont effectuées automatiquement toutes les 30 minutes pour les services actifs avec des URLs configurées.
+            </p>
+        </field>
+    </record>
+
+    <!-- Health Issues Action (filtered to problems only) -->
+    <record id="hosting_health_check_action_issues" model="ir.actions.act_window">
+        <field name="name">Problèmes de santé</field>
+        <field name="res_model">hosting.health.check</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="hosting_health_check_view_search"/>
+        <field name="domain">[('status', 'in', ['down', 'timeout', 'degraded'])]</field>
+        <field name="context">{'search_default_filter_last_7_days': 1}</field>
+    </record>
+
+</odoo>

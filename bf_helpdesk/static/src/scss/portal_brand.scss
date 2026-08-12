@@ -1,0 +1,49 @@
+// Blue Fox brand polish on the OCA helpdesk_mgmt portal.
+// Loaded via web.assets_frontend; targets the portal pages that show
+// helpdesk tickets without overriding the OCA templates.
+
+.o_portal {
+  // Helpdesk-specific tweaks scoped to ticket pages.
+  &.o_helpdesk_my_ticket,
+  & .o_helpdesk_ticket_card {
+    font-family: "Lexend", -apple-system, BlinkMacSystemFont, "Segoe UI",
+                 Roboto, Helvetica, Arial, sans-serif;
+  }
+}
+
+// Page heading on /my/tickets and /my/ticket/<id>
+body.o_portal_my_home,
+body[data-website-id] {
+  .o_portal_wrap h1,
+  .o_portal_wrap .o_portal_my_doc h1,
+  .o_portal_wrap .o_portal_chatter h2 {
+    font-family: "Lexend", sans-serif;
+    color: #2D3031;
+    border-left: 4px solid #29ABE1;
+    padding-left: 12px;
+  }
+
+  // Highlight the ticket number badge
+  .o_portal_my_doc .badge-info,
+  .o_portal_my_doc .o_helpdesk_ticket_number {
+    background-color: #29ABE1 !important;
+    color: #FFFFFF !important;
+  }
+
+  // Stage statusbar in BF blue
+  .o_portal_my_doc .o_statusbar_status .btn-primary {
+    background-color: #29ABE1 !important;
+    border-color: #29ABE1 !important;
+  }
+
+  // Primary action buttons match brand
+  .o_portal_my_doc .btn-primary {
+    background-color: #29ABE1;
+    border-color: #29ABE1;
+
+    &:hover, &:focus {
+      background-color: #1F8FBF;
+      border-color: #1F8FBF;
+    }
+  }
+}

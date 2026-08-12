@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <menuitem id="menu_letter_root"
+              name="Lettres"
+              web_icon="bf_letter_writer,static/description/icon.png"
+              sequence="55"/>
+
+    <menuitem id="menu_letter_documents"
+              name="Lettres"
+              parent="menu_letter_root"
+              action="action_letter_document"
+              sequence="10"/>
+
+    <menuitem id="menu_letter_merge"
+              name="Fusion en lot"
+              parent="menu_letter_root"
+              action="action_letter_merge_wizard"
+              sequence="20"/>
+
+    <menuitem id="menu_letter_config"
+              name="Configuration"
+              parent="menu_letter_root"
+              groups="bf_letter_writer.group_letter_manager"
+              sequence="90"/>
+
+    <menuitem id="menu_letter_templates"
+              name="Modèles de lettres"
+              parent="menu_letter_config"
+              action="action_letter_template"
+              sequence="10"/>
+
+    <menuitem id="menu_letter_quicktexts"
+              name="Blocs de texte"
+              parent="menu_letter_config"
+              action="action_letter_quicktext"
+              sequence="20"/>
+
+</odoo>

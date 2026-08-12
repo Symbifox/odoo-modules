@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- List -->
+    <record id="secure_transfer_view_tree" model="ir.ui.view">
+        <field name="name">secure.transfer.list</field>
+        <field name="model">secure.transfer</field>
+        <field name="arch" type="xml">
+            <list decoration-success="state == 'active'"
+                  decoration-muted="state in ('deleted', 'cancelled')"
+                  decoration-danger="state == 'suspended'"
+                  create="false">
+                <field name="name"/>
+                <field name="subject" optional="show"/>
+                <field name="brand_id" optional="show"/>
+                <field name="sender_email"/>
+                <field name="recipient_emails" optional="hide"/>
+                <!-- Sizes are bytes (Float — int4 overflows at 2.1 GB). No
+                     core list widget renders human sizes; the sum is still
+                     useful for sorting/aggregating. -->
+                <field name="total_size" string="Taille (octets)" sum="Total"/>
+                <field name="has_password" string="Protégé" optional="show"/>
+                <field name="download_count" string="Téléchargements" optional="show"/>
+                <field name="expiry_date"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'active'"
+                       decoration-info="state == 'draft'"
+                       decoration-warning="state == 'expired'"
+                       decoration-danger="state == 'suspended'"/>
+                <field name="create_date" optional="show"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form -->
+    <record id="secure_transfer_view_form" model="ir.ui.view">
+        <field name="name">secure.transfer.form</field>
+        <field name="model">secure.transfer</field>
+        <field name="arch" type="xml">
+            <form create="false">
+                <header>
+                    <button name="action_reveal_link" type="object" string="Révéler le lien"
+                            groups="bf_securetransfer.group_securetransfer_manager"
+                            invisible="state != 'active'"/>
+                    <button name="action_require_recipient_otp" type="object"
+                            string="Exiger un code du destinataire"
+                            groups="bf_securetransfer.group_securetransfer_manager"
+                            invisible="force_recipient_otp or state not in ('active', 'expired', 'suspended')"
+                            confirm="Le lien ne s'ouvrira plus sans un code envoyé à l'une des adresses destinataires. Les courriels déjà partis ne sont pas rappelés. Continuer ?"/>
+                    <button name="action_resend_emails" type="object"
+                            string="Renvoyer le lien aux destinataires"
+                            groups="bf_securetransfer.group_securetransfer_manager"
+                            invisible="state != 'active'"
+                            confirm="Le courriel de lien repart à chaque destinataire, dans sa langue. L'accusé n'est pas renvoyé à l'expéditeur. Continuer ?"/>
+                    <button name="action_extend_expiry" type="object" string="Prolonger l'échéance"
+                            groups="bf_securetransfer.group_securetransfer_manager"
+                            invisible="state not in ('active', 'expired')"/>
+                    <button name="action_expire_now" type="object" string="Expirer maintenant"
+                            groups="bf_securetransfer.group_securetransfer_manager"
+                            invisible="state != 'active'"
+                            confirm="Le lien cessera de fonctionner immédiatement. Continuer ?"/>
+                    <button name="action_suspend" type="object" string="Suspendre (abus)"
+                            groups="bf_securetransfer.group_securetransfer_manager"
+                            invisible="state not in ('active', 'expired')"
+                            confirm="Le lien cessera de répondre, mais rien n'est purgé (préservation de la preuve). Continuer ?"/>
+                    <button name="action_reactivate" type="object" string="Réactiver"
+                            groups="bf_securetransfer.group_securetransfer_manager"
+                            invisible="state != 'suspended'"
+                            confirm="Réactiver ce transfert suspendu (signalement écarté après revue) ?"/>
+                    <button name="action_purge_now" type="object" string="Purger les fichiers"
+                            groups="bf_securetransfer.group_securetransfer_manager"
+                            invisible="state not in ('expired', 'suspended')"
+                            confirm="Les objets seront supprimés définitivement du stockage S3. Les métadonnées et le journal d'accès sont conservés. Continuer ?"/>
+                    <button name="action_print_certificate" type="object" string="Certificat d'accès (PDF)"
+                            groups="bf_securetransfer.group_securetransfer_user"/>
+                    <button name="action_export_log" type="object" string="Exporter le journal (CSV)"
+                            groups="bf_securetransfer.group_securetransfer_manager"/>
+                    <button name="action_verify_log_chain" type="object" string="Vérifier l'intégrité"
+                            groups="bf_securetransfer.group_securetransfer_manager"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,active,expired,deleted"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group string="Expéditeur">
+                            <field name="sender_name" readonly="1"/>
+                            <field name="sender_email" readonly="1"/>
+                            <field name="recipient_emails" readonly="1"/>
+                        </group>
+                        <group string="Transfert">
+                            <field name="brand_id" readonly="1"/>
+                            <field name="locale" readonly="1"/>
+                            <field name="has_password" readonly="1"/>
+                            <!-- The EFFECTIVE gate, not the per-transfer flag:
+                                 an instance that requires the code for every
+                                 transfer leaves force_recipient_otp unticked,
+                                 which made a gated transfer read as open. The
+                                 flag stays in the view (invisible) because the
+                                 header button keys off it. -->
+                            <field name="recipient_otp_status" readonly="1"/>
+                            <field name="force_recipient_otp" invisible="1"/>
+                            <field name="recipient_otp_channel" readonly="1"
+                                   invisible="recipient_otp_status == 'off'"/>
+                            <field name="notify_on_download" readonly="1"/>
+                            <field name="burn_after_download" readonly="1"/>
+                            <!-- Read-only on purpose: « Prolonger l'échéance »
+                                 is the sanctioned path. It stays on the
+                                 durations the brand offers (the grid the S3
+                                 lifecycle net is posted from) and it lands in
+                                 the access trail — a hand-typed date did
+                                 neither. -->
+                            <field name="expiry_date" readonly="1"/>
+                            <!-- Editable while expired too: raising the budget
+                                 is the prerequisite to reopening a transfert
+                                 that ran out of downloads rather than time. -->
+                            <field name="max_downloads"
+                                   readonly="state not in ('draft', 'active', 'expired')"/>
+                            <field name="download_count" readonly="1"/>
+                            <field name="total_size" string="Taille totale (octets)" readonly="1"/>
+                            <field name="company_id" groups="base.group_multi_company" readonly="1"/>
+                        </group>
+                    </group>
+                    <group string="Objet et message"
+                           invisible="not subject and not message">
+                        <field name="subject" readonly="1" invisible="not subject"/>
+                        <field name="message" nolabel="1" readonly="1"
+                               invisible="not message"/>
+                    </group>
+                    <notebook>
+                        <page string="Fichiers" name="page_files">
+                            <field name="file_ids" readonly="1">
+                                <list>
+                                    <field name="filename"/>
+                                    <field name="extension" optional="hide"/>
+                                    <field name="size" string="Taille (octets)"/>
+                                    <field name="mimetype" optional="hide"/>
+                                    <field name="upload_mode" optional="show"/>
+                                    <field name="state" widget="badge"
+                                           decoration-success="state == 'verified'"
+                                           decoration-info="state in ('pending', 'uploading', 'uploaded')"
+                                           decoration-danger="state == 'error'"/>
+                                    <field name="scanned" optional="hide"/>
+                                    <field name="download_count" string="Téléchargements"/>
+                                    <field name="etag" optional="hide"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Journal" name="page_log">
+                            <field name="access_log_ids" readonly="1">
+                                <list create="false" edit="false" delete="false">
+                                    <field name="timestamp_utc"/>
+                                    <field name="action"/>
+                                    <field name="ip"/>
+                                    <field name="actor" optional="show"/>
+                                    <field name="note" optional="show"/>
+                                    <field name="entry_hash" optional="hide"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Technique" name="page_technical"
+                              groups="bf_securetransfer.group_securetransfer_manager">
+                            <group>
+                                <group string="Cycle de vie">
+                                    <field name="finalized_at" readonly="1"/>
+                                    <field name="purged_at" readonly="1"/>
+                                    <field name="purge_error_count" readonly="1"/>
+                                    <field name="retention_days" readonly="1"/>
+                                </group>
+                                <group string="Origine">
+                                    <field name="ip_created" readonly="1"/>
+                                    <field name="ua_created" readonly="1"/>
+                                </group>
+                            </group>
+                            <div class="alert alert-info" role="alert">
+                                Les jetons de partage ne sont pas affichés ici :
+                                utilisez « Révéler le lien » (révélation journalisée).
+                            </div>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search -->
+    <record id="secure_transfer_view_search" model="ir.ui.view">
+        <field name="name">secure.transfer.search</field>
+        <field name="model">secure.transfer</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" string="Transfert"
+                       filter_domain="['|', '|', '|', ('name', 'ilike', self), ('subject', 'ilike', self), ('sender_email', 'ilike', self), ('recipient_emails', 'ilike', self)]"/>
+                <field name="sender_email"/>
+                <field name="brand_id"/>
+                <filter name="f_draft" string="Brouillons" domain="[('state', '=', 'draft')]"/>
+                <filter name="f_active" string="Actifs" domain="[('state', '=', 'active')]"/>
+                <filter name="f_expired" string="Expirés" domain="[('state', '=', 'expired')]"/>
+                <filter name="f_deleted" string="Purgés" domain="[('state', '=', 'deleted')]"/>
+                <filter name="f_suspended" string="Suspendus" domain="[('state', '=', 'suspended')]"/>
+                <separator/>
+                <filter name="f_expiring" string="Expire bientôt"
+                        domain="[('state', '=', 'active'), ('expiry_date', '&lt;=', (context_today() + relativedelta(days=2)).strftime('%Y-%m-%d 23:59:59'))]"/>
+                <filter name="f_protected" string="Protégé par mot de passe"
+                        domain="[('has_password', '=', True)]"/>
+                <separator/>
+                <filter name="g_state" string="État" context="{'group_by': 'state'}"/>
+                <filter name="g_brand" string="Marque" context="{'group_by': 'brand_id'}"/>
+                <filter name="g_created" string="Date de création" context="{'group_by': 'create_date:day'}"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- Analytics: graph + pivot -->
+    <record id="secure_transfer_view_graph" model="ir.ui.view">
+        <field name="name">secure.transfer.graph</field>
+        <field name="model">secure.transfer</field>
+        <field name="arch" type="xml">
+            <graph string="Transferts" type="bar" sample="1">
+                <field name="brand_id"/>
+                <field name="state"/>
+                <field name="total_size" type="measure" string="Volume (octets)"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="secure_transfer_view_pivot" model="ir.ui.view">
+        <field name="name">secure.transfer.pivot</field>
+        <field name="model">secure.transfer</field>
+        <field name="arch" type="xml">
+            <pivot string="Transferts" sample="1">
+                <field name="brand_id" type="row"/>
+                <field name="state" type="col"/>
+                <field name="total_size" type="measure" string="Volume (octets)"/>
+                <field name="download_count" type="measure" string="Téléchargements"/>
+                <field name="file_count" type="measure" string="Fichiers"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- Dashboard action (graph + pivot over ALL states) -->
+    <record id="action_secure_transfer_dashboard" model="ir.actions.act_window">
+        <field name="name">Tableau de bord</field>
+        <field name="res_model">secure.transfer</field>
+        <field name="view_mode">graph,pivot,list</field>
+        <field name="search_view_id" ref="secure_transfer_view_search"/>
+        <field name="context">{'search_default_g_brand': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Pas encore de données</p>
+            <p>Volume stocké et téléchargements par marque et par état, à mesure
+                que les transferts arrivent.</p>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_secure_transfer" model="ir.actions.act_window">
+        <field name="name">Transferts</field>
+        <field name="res_model">secure.transfer</field>
+        <field name="view_mode">list,form,graph,pivot</field>
+        <field name="search_view_id" ref="secure_transfer_view_search"/>
+        <field name="context">{'search_default_f_active': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Aucun transfert pour l'instant</p>
+            <p>Les transferts sont créés par les visiteurs sur la page publique d'envoi.
+                Ils apparaîtront ici avec leur journal d'accès.</p>
+        </field>
+    </record>
+
+</odoo>

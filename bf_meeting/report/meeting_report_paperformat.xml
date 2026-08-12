@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="paperformat_meeting_record" model="report.paperformat">
+        <field name="name">Compte rendu de réunion (US Letter)</field>
+        <field name="format">Letter</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">15</field>
+        <field name="margin_bottom">10</field>
+        <field name="margin_left">7</field>
+        <field name="margin_right">7</field>
+        <field name="header_spacing">0</field>
+        <field name="dpi">90</field>
+    </record>
+
+    <record id="action_report_meeting_agenda" model="ir.actions.report">
+        <field name="name">Ordre du jour</field>
+        <field name="model">meeting.agenda</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">bf_meeting.report_meeting_agenda</field>
+        <field name="report_file">bf_meeting.report_meeting_agenda</field>
+        <field name="print_report_name">'OdJ_%s_%s' % (object.name and object.name.replace(' ', '_') or 'agenda', object.date.strftime('%Y-%m-%d') if object.date else 'draft')</field>
+        <field name="paperformat_id" ref="paperformat_meeting_record"/>
+    </record>
+
+    <record id="action_report_meeting_record" model="ir.actions.report">
+        <field name="name">Compte rendu de réunion</field>
+        <field name="model">meeting.record</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">bf_meeting.report_meeting_record</field>
+        <field name="report_file">bf_meeting.report_meeting_record</field>
+        <field name="print_report_name">'CR_%s_%s' % (object.room_name and object.room_name.replace(' ', '_') or 'reunion', object.date.strftime('%Y-%m-%d') if object.date else 'draft')</field>
+        <field name="paperformat_id" ref="paperformat_meeting_record"/>
+    </record>
+
+</odoo>

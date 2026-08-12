@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Extend Document Form: Add NC buttons and fields -->
+    <record id="view_project_document_form_inherit_nc" model="ir.ui.view">
+        <field name="name">project.document.form.inherit.nc</field>
+        <field name="model">project.document</field>
+        <field name="inherit_id" ref="project_knowledge_matrix.view_project_document_form"/>
+        <field name="arch" type="xml">
+
+            <!-- Add NC action buttons in header -->
+            <xpath expr="//header/button[@name='action_set_active']" position="before">
+                <button name="action_copy_nc_internal_link" type="object"
+                    string="Lien interne NC" class="btn-secondary"
+                    icon="fa-link"
+                    invisible="not nc_synced and not external_url"/>
+                <button name="action_refresh_from_nextcloud" type="object"
+                    string="Rafraichir NC" class="btn-secondary"
+                    icon="fa-refresh"
+                    invisible="not nc_synced"/>
+                <button name="action_create_share_link" type="object"
+                    string="Lien de partage" class="btn-secondary"
+                    icon="fa-share-alt"
+                    invisible="not nc_synced"/>
+                <button name="action_upload_new_version" type="object"
+                    string="Televerser version" class="btn-secondary"
+                    icon="fa-upload"
+                    invisible="not nc_config_id"/>
+            </xpath>
+
+            <!-- Add NC stat button in button_box -->
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button class="oe_stat_button" type="object"
+                    name="action_browse_nc_folder"
+                    icon="fa-cloud"
+                    invisible="not nc_synced">
+                    <div class="o_stat_info">
+                        <span class="o_stat_text">Nextcloud</span>
+                    </div>
+                </button>
+            </xpath>
+
+            <!-- Add NC fields after external_url in the form -->
+            <xpath expr="//field[@name='external_url']" position="after">
+                <field name="nc_synced" invisible="1"/>
+                <field name="nc_config_id" options="{'no_create': True}"
+                    groups="base.group_system"/>
+                <field name="nc_file_path" placeholder="/Projet/Documents/fichier.pdf"
+                    invisible="not nc_config_id"/>
+            </xpath>
+
+            <!-- Add Nextcloud notebook page -->
+            <xpath expr="//notebook" position="inside">
+                <page string="Nextcloud" name="nextcloud_tab"
+                    invisible="not nc_synced">
+                    <group>
+                        <group string="Fichier Nextcloud">
+                            <field name="nc_file_path" readonly="1"/>
+                            <field name="nc_file_id"/>
+                            <field name="nc_content_type"/>
+                            <field name="nc_file_size_display"/>
+                            <field name="nc_last_modified"/>
+                            <field name="nc_etag"/>
+                        </group>
+                        <group string="Partage">
+                            <field name="nc_share_url" widget="url"/>
+                            <field name="nc_share_expiry"/>
+                            <field name="nc_share_password"
+                                groups="base.group_system"
+                                password="True"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+
+        </field>
+    </record>
+
+    <!-- Extend Document Tree: Add NC indicator -->
+    <record id="view_project_document_tree_inherit_nc" model="ir.ui.view">
+        <field name="name">project.document.tree.inherit.nc</field>
+        <field name="model">project.document</field>
+        <field name="inherit_id" ref="project_knowledge_matrix.view_project_document_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='owner_id']" position="before">
+                <field name="nc_synced" widget="boolean" string="NC" optional="show"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Extend Document Search: Add NC filter -->
+    <record id="view_project_document_search_inherit_nc" model="ir.ui.view">
+        <field name="name">project.document.search.inherit.nc</field>
+        <field name="model">project.document</field>
+        <field name="inherit_id" ref="project_knowledge_matrix.view_project_document_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">
+                <filter name="nc_synced" string="Synchronise NC"
+                    domain="[('nc_synced', '=', True)]"/>
+                <filter name="nc_not_synced" string="Non synchronise NC"
+                    domain="[('nc_synced', '=', False)]"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

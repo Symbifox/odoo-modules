@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="sms_messenger_client_action" model="ir.actions.client">
+        <field name="name">Messagerie</field>
+        <field name="tag">sms_archive_messenger</field>
+    </record>
+
+    <menuitem
+        id="sms_archive_menu_messenger"
+        name="Messagerie"
+        parent="sms_archive_menu_root"
+        action="sms_messenger_client_action"
+        sequence="1"
+        groups="bf_sms_archive.group_sms_user"/>
+
+</odoo>

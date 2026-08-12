@@ -1,0 +1,46 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_outreach_email
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-08-04 05:00+0000\n"
+"PO-Revision-Date: 2026-08-04 05:00+0000\n"
+"Last-Translator: Blue Fox Inc. <info@bluefoxconsultant.com>\n"
+"Language-Team: \n"
+"Language: en_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#. module: bf_outreach_email
+#: model:ir.model,name:bf_outreach_email.model_bf_outreach_target
+msgid "Cible de démarchage"
+msgstr "Outreach target"
+
+#. module: bf_outreach_email
+#: model:ir.model.fields,help:bf_outreach_email.field_bf_outreach_touch__bf_email_id
+msgid ""
+"Courriel archivé dont cette interaction a été déduite. Sert aussi de garde-"
+"fou : un même courriel n'est jamais rapproché deux fois."
+msgstr ""
+"Archived email this interaction was inferred from. Also acts as a safeguard:"
+" the same email is never matched twice."
+
+#. module: bf_outreach_email
+#: model:ir.model.fields,field_description:bf_outreach_email.field_bf_outreach_touch__bf_email_id
+msgid "Courriel d'origine"
+msgstr "Source email"
+
+#. module: bf_outreach_email
+#: model:ir.actions.server,name:bf_outreach_email.ir_cron_outreach_match_emails_ir_actions_server
+msgid "Démarchage : rapprocher les réponses courriel"
+msgstr "Outreach: match incoming email replies"
+
+#. module: bf_outreach_email
+#: model:ir.model,name:bf_outreach_email.model_bf_outreach_touch
+msgid "Interaction de démarchage"
+msgstr "Outreach interaction"

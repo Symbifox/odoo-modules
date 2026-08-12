@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_cx_testimonial_list" model="ir.ui.view">
+        <field name="name">bf.cx.testimonial.list</field>
+        <field name="model">bf.cx.testimonial</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="date"/>
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="consent_mode" optional="show"/>
+                <field name="where_used" optional="show"/>
+                <field name="state" widget="badge"
+                       decoration-info="state in ('draft', 'consent_pending')"
+                       decoration-success="state in ('consented', 'published')"
+                       decoration-danger="state in ('declined', 'retired')"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_cx_testimonial_form" model="ir.ui.view">
+        <field name="name">bf.cx.testimonial.form</field>
+        <field name="model">bf.cx.testimonial</field>
+        <field name="arch" type="xml">
+            <form string="Témoignage">
+                <header>
+                    <button name="action_set_consented" type="object"
+                            string="Consentement obtenu" class="btn-primary"
+                            invisible="state not in ('draft', 'consent_pending')"/>
+                    <button name="action_publish" type="object"
+                            string="Publier" class="btn-primary"
+                            invisible="state != 'consented'"/>
+                    <button name="action_decline" type="object"
+                            string="Refusé par le client"
+                            invisible="state not in ('draft', 'consent_pending')"/>
+                    <button name="action_retire" type="object"
+                            string="Retirer (consentement révoqué)"
+                            invisible="state not in ('consented', 'published')"/>
+                    <button name="action_reset_draft" type="object"
+                            string="Remettre en brouillon"
+                            invisible="state == 'draft'"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,consent_pending,consented,published"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="Titre du témoignage"/></h1>
+                    </div>
+                    <group>
+                        <group name="who">
+                            <field name="partner_id"/>
+                            <field name="project_id"/>
+                            <field name="context_note"/>
+                            <field name="date"/>
+                            <field name="feedback_id" invisible="not feedback_id"/>
+                        </group>
+                        <group name="consent" string="Consentement">
+                            <field name="consent_mode"/>
+                            <field name="consent_note"/>
+                            <field name="consent_date"/>
+                            <field name="published_at" invisible="not published_at"/>
+                            <field name="where_used"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                    <group string="Témoignage">
+                        <field name="body" nolabel="1" colspan="2"
+                               placeholder="Citation exacte du client…"/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_cx_testimonial_search" model="ir.ui.view">
+        <field name="name">bf.cx.testimonial.search</field>
+        <field name="model">bf.cx.testimonial</field>
+        <field name="arch" type="xml">
+            <search string="Témoignages">
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="body"/>
+                <filter string="Publiables" name="filter_consented" domain="[('state', '=', 'consented')]"/>
+                <filter string="Publiés" name="filter_published" domain="[('state', '=', 'published')]"/>
+                <filter string="En attente de consentement" name="filter_pending"
+                        domain="[('state', 'in', ('draft', 'consent_pending'))]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter string="État" name="group_state" context="{'group_by': 'state'}"/>
+                    <filter string="Client" name="group_partner" context="{'group_by': 'partner_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_cx_testimonial" model="ir.actions.act_window">
+        <field name="name">Témoignages</field>
+        <field name="res_model">bf.cx.testimonial</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_cx_testimonial_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Aucun témoignage pour l'instant
+            </p>
+            <p>
+                Les répondants qui acceptent d'être cités apparaissent comme
+                « candidats témoignage » dans les feedbacks. Un témoignage ne
+                se publie qu'avec un consentement consigné.
+            </p>
+        </field>
+    </record>
+
+</odoo>

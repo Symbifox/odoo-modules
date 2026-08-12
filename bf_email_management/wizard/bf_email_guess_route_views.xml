@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="bf_email_guess_route_view_form" model="ir.ui.view">
+        <field name="name">bf.email.guess.route.form</field>
+        <field name="model">bf.email.guess.route</field>
+        <field name="arch" type="xml">
+            <form string="Deviner et importer">
+                <group invisible="state != 'draft'">
+                    <group string="Résumé">
+                        <field name="total_count" readonly="1"/>
+                        <field name="high_count" readonly="1"/>
+                        <field name="none_count" readonly="1"/>
+                    </group>
+                    <group string="Options">
+                        <field name="mark_replied"/>
+                        <field name="archive_after"/>
+                    </group>
+                </group>
+                <div class="alert alert-info" role="alert" invisible="state != 'draft'">
+                    <p class="mb-1">
+                        <strong>Routage en bloc :</strong>
+                        chaque ligne sera importée vers <em>sa propre</em> cible.
+                    </p>
+                    <ul class="mb-0">
+                        <li>Lignes <strong>confiance élevée</strong> : une seule tâche / ticket ouvert pour le contact — pré-rempli.</li>
+                        <li>Lignes <strong>à vérifier</strong> : aucun match unique — corrigez la cible à la main avant de confirmer (ou laissez vide pour ignorer).</li>
+                        <li>Les pièces jointes et le Message-ID sont préservés ligne par ligne.</li>
+                    </ul>
+                </div>
+                <field name="line_ids" invisible="state != 'draft'">
+                    <list editable="bottom" create="0" delete="0">
+                        <field name="bf_email_id" optional="hide"/>
+                        <field name="email_from" readonly="1"/>
+                        <field name="partner_id" readonly="1"/>
+                        <field name="email_subject" readonly="1"/>
+                        <field name="confidence"
+                               widget="badge"
+                               decoration-success="confidence == 'high'"
+                               decoration-warning="confidence == 'low'"
+                               decoration-muted="confidence == 'none'"/>
+                        <field name="guessed_target"/>
+                    </list>
+                </field>
+                <group invisible="state != 'done'">
+                    <field name="result_text" nolabel="1" colspan="2"/>
+                </group>
+                <field name="state" invisible="1"/>
+                <footer>
+                    <button name="action_confirm"
+                            string="Confirmer le routage"
+                            type="object"
+                            class="btn-primary"
+                            invisible="state != 'draft'"/>
+                    <button string="Fermer" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_bf_email_guess_route" model="ir.actions.act_window">
+        <field name="name">Deviner et importer</field>
+        <field name="res_model">bf.email.guess.route</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <!-- Server action: bulk « Deviner et importer » from list view -->
+    <record id="action_bf_email_guess_route_bulk" model="ir.actions.server">
+        <field name="name">Deviner et importer</field>
+        <field name="model_id" ref="model_bf_email"/>
+        <field name="binding_model_id" ref="model_bf_email"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">
+action = {
+    "type": "ir.actions.act_window",
+    "name": "Deviner et importer",
+    "res_model": "bf.email.guess.route",
+    "view_mode": "form",
+    "target": "new",
+    "context": {"active_ids": records.ids, "active_model": "bf.email"},
+}
+        </field>
+    </record>
+
+</odoo>

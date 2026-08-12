@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+<odoo>
+    <!-- Rebrand the Donation app as « Levée de fonds » with the BF icon -->
+    <menuitem
+        id="donation.donation_top_menu"
+        name="Levée de fonds"
+        web_icon="bf_fundraising_core,static/description/icon.png"
+        sequence="38"
+        groups="donation.group_donation_viewer"
+    />
+
+    <!-- Constituents (donors / members / prospects) -->
+    <menuitem
+        id="menu_bf_constituents"
+        name="Constituants"
+        parent="donation.donation_top_menu"
+        action="action_bf_constituents"
+        sequence="4"
+        groups="donation.group_donation_viewer"
+    />
+
+    <!-- Funds (top-level: central to attribution) -->
+    <menuitem
+        id="menu_bf_fund"
+        name="Fonds"
+        parent="donation.donation_top_menu"
+        action="action_bf_fund"
+        sequence="20"
+        groups="donation.group_donation_user"
+    />
+
+    <!-- Collection structure under Configuration -->
+    <menuitem
+        id="menu_bf_appeal"
+        name="Sollicitations"
+        parent="donation.donation_config_donation_menu"
+        action="action_bf_appeal"
+        sequence="32"
+        groups="donation.group_donation_user"
+    />
+    <menuitem
+        id="menu_bf_package"
+        name="Trousses"
+        parent="donation.donation_config_donation_menu"
+        action="action_bf_package"
+        sequence="34"
+        groups="donation.group_donation_user"
+    />
+    <menuitem
+        id="menu_bf_solicit_code"
+        name="Codes de sollicitation"
+        parent="donation.donation_config_donation_menu"
+        action="action_bf_solicit_code"
+        sequence="36"
+        groups="donation.group_donation_manager"
+    />
+</odoo>

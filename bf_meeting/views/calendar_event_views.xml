@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Extend calendar.event form to add meeting record + agenda links -->
+    <record id="calendar_event_view_form_inherit_meeting" model="ir.ui.view">
+        <field name="name">calendar.event.form.inherit.meeting</field>
+        <field name="model">calendar.event</field>
+        <field name="inherit_id" ref="calendar.view_calendar_event_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_meeting_agenda" type="object"
+                        class="oe_stat_button" icon="fa-list-alt"
+                        invisible="meeting_agenda_count == 0">
+                    <field name="meeting_agenda_count" widget="statinfo" string="Ordre du jour"/>
+                </button>
+                <button name="action_create_meeting_agenda" type="object"
+                        class="oe_stat_button" icon="fa-plus-circle"
+                        invisible="meeting_agenda_count > 0 or bf_skip_agenda">
+                    <span class="o_stat_text">Créer OdJ</span>
+                </button>
+                <button name="action_view_meeting_record" type="object"
+                        class="oe_stat_button" icon="fa-file-text-o"
+                        invisible="meeting_record_count == 0">
+                    <field name="meeting_record_count" widget="statinfo" string="Compte rendu"/>
+                </button>
+                <button name="action_create_meeting_record" type="object"
+                        class="oe_stat_button" icon="fa-plus-circle"
+                        invisible="meeting_record_count > 0">
+                    <span class="o_stat_text">Créer compte rendu</span>
+                </button>
+            </xpath>
+            <xpath expr="//sheet" position="before">
+                <div class="alert alert-warning" role="alert"
+                     invisible="not bf_needs_agenda">
+                    <i class="fa fa-exclamation-triangle"/>
+                    Cette rencontre n'a pas d'ordre du jour. Créer un OdJ ou cocher
+                    « Sans ordre du jour formel » si non requis.
+                </div>
+            </xpath>
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="meeting_agenda_id"
+                       options="{'no_create': True}"
+                       placeholder="Lier un ordre du jour existant..."/>
+                <field name="meeting_record_id"
+                       options="{'no_create': True}"
+                       placeholder="Lier un compte rendu existant..."/>
+                <field name="bf_skip_agenda"/>
+                <field name="bf_skip_dashboard"/>
+                <field name="bf_agenda_responsible_id"
+                       widget="many2one_avatar_user"/>
+                <field name="bf_minutes_responsible_id"
+                       widget="many2one_avatar_user"/>
+                <field name="bf_needs_agenda" invisible="1"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Search filter: events without agenda -->
+    <record id="calendar_event_view_search_inherit_meeting" model="ir.ui.view">
+        <field name="name">calendar.event.search.inherit.meeting</field>
+        <field name="model">calendar.event</field>
+        <field name="inherit_id" ref="calendar.view_calendar_event_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">
+                <separator/>
+                <filter name="filter_needs_agenda" string="Besoin d'un OdJ"
+                        domain="[('bf_needs_agenda', '=', True)]"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

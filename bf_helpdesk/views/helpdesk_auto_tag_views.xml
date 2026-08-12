@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+  <record id="view_helpdesk_auto_tag_rule_list" model="ir.ui.view">
+    <field name="name">helpdesk.auto.tag.rule.list</field>
+    <field name="model">helpdesk.auto.tag.rule</field>
+    <field name="arch" type="xml">
+      <list editable="bottom">
+        <field name="sequence" widget="handle"/>
+        <field name="name"/>
+        <field name="keyword_regex"/>
+        <field name="tag_id"/>
+        <field name="active" optional="show"/>
+      </list>
+    </field>
+  </record>
+
+</odoo>

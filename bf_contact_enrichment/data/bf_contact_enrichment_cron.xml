@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Drains the signature-enrichment queue in chunks. Triggered immediately
+         by the batch list action; the interval is just a backstop. -->
+    <record id="ir_cron_bf_enrich_signatures" model="ir.cron">
+        <field name="name">Enrichissement de contacts : signatures en file</field>
+        <field name="model_id" ref="base.model_res_partner"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_bf_enrich_signatures()</field>
+        <field name="interval_number">30</field>
+        <field name="interval_type">minutes</field>
+        <field name="active" eval="True"/>
+    </record>
+
+</odoo>

@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+
+        <!-- Catégories de module pour les dropdowns utilisateur -->
+        <record id="module_category_knowledge_matrix" model="ir.module.category">
+            <field name="name">Matrices de connaissances</field>
+            <field name="sequence">30</field>
+        </record>
+
+        <record id="module_category_credentials" model="ir.module.category">
+            <field name="name">Identifiants</field>
+            <field name="sequence">31</field>
+        </record>
+
+        <record id="module_category_documents" model="ir.module.category">
+            <field name="name">Documents</field>
+            <field name="sequence">32</field>
+        </record>
+
+        <record id="module_category_corporate" model="ir.module.category">
+            <field name="name">Gouvernance corporative</field>
+            <field name="sequence">33</field>
+        </record>
+
+        <!-- Groupes de sécurité — Matrices de connaissances -->
+        <record id="group_knowledge_user" model="res.groups">
+            <field name="name">Utilisateur</field>
+            <field name="comment">Peut consulter et modifier les matrices de connaissances des projets auxquels il a accès.</field>
+            <field name="category_id" ref="module_category_knowledge_matrix"/>
+            <field name="implied_ids" eval="[(4, ref('project.group_project_user'))]"/>
+        </record>
+
+        <record id="group_knowledge_manager" model="res.groups">
+            <field name="name">Gestionnaire</field>
+            <field name="comment">Accès complet à toutes les matrices de connaissances et sections.</field>
+            <field name="category_id" ref="module_category_knowledge_matrix"/>
+            <field name="implied_ids" eval="[(4, ref('project_knowledge_matrix.group_knowledge_user'))]"/>
+            <field name="users" eval="[(4, ref('base.user_admin'))]"/>
+        </record>
+
+        <!-- Groupes de sécurité — Identifiants -->
+        <record id="group_credential_user" model="res.groups">
+            <field name="name">Utilisateur</field>
+            <field name="comment">Peut consulter et modifier les identifiants des projets auxquels il a accès.</field>
+            <field name="category_id" ref="module_category_credentials"/>
+            <field name="implied_ids" eval="[(4, ref('project.group_project_user'))]"/>
+        </record>
+
+        <record id="group_credential_manager" model="res.groups">
+            <field name="name">Gestionnaire</field>
+            <field name="comment">Accès complet à tous les identifiants, y compris restreints, gestion des types et suppression.</field>
+            <field name="category_id" ref="module_category_credentials"/>
+            <field name="implied_ids" eval="[(4, ref('project_knowledge_matrix.group_credential_user'))]"/>
+            <field name="users" eval="[(4, ref('base.user_admin'))]"/>
+        </record>
+
+        <!-- Groupes de sécurité — Documents -->
+        <record id="group_document_user" model="res.groups">
+            <field name="name">Utilisateur</field>
+            <field name="comment">Peut consulter et gérer les documents des projets et partenaires auxquels il a accès.</field>
+            <field name="category_id" ref="module_category_documents"/>
+            <field name="implied_ids" eval="[(4, ref('project.group_project_user'))]"/>
+        </record>
+
+        <record id="group_document_manager" model="res.groups">
+            <field name="name">Gestionnaire</field>
+            <field name="comment">Accès complet à tous les documents, gestion des types et suppression.</field>
+            <field name="category_id" ref="module_category_documents"/>
+            <field name="implied_ids" eval="[(4, ref('project_knowledge_matrix.group_document_user'))]"/>
+            <field name="users" eval="[(4, ref('base.user_admin'))]"/>
+        </record>
+
+        <!-- Groupes de sécurité — Gouvernance corporative -->
+        <record id="group_corporate_manager" model="res.groups">
+            <field name="name">Gestionnaire</field>
+            <field name="comment">Accès complet aux fonctionnalités de gouvernance corporative (résolutions, administrateurs, dirigeants, conformité).</field>
+            <field name="category_id" ref="module_category_corporate"/>
+            <field name="implied_ids" eval="[(4, ref('project_knowledge_matrix.group_document_manager'))]"/>
+            <field name="users" eval="[(4, ref('base.user_admin'))]"/>
+        </record>
+
+    </data>
+
+    <data noupdate="1">
+
+        <!-- Règles d'accès -->
+
+        <!-- Matrice : Les utilisateurs ne voient que les matrices de leurs projets ou les modèles -->
+        <record id="rule_knowledge_matrix_user" model="ir.rule">
+            <field name="name">Matrice de connaissances : Membres du projet</field>
+            <field name="model_id" ref="model_project_knowledge_matrix"/>
+            <field name="domain_force">[
+                '|',
+                ('is_template', '=', True),
+                '|',
+                ('project_id', '=', False),
+                ('project_id.message_partner_ids', 'in', [user.partner_id.id])
+            ]</field>
+            <field name="groups" eval="[(4, ref('group_knowledge_user'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- Matrice : Les gestionnaires ont un accès complet -->
+        <record id="rule_knowledge_matrix_manager" model="ir.rule">
+            <field name="name">Matrice de connaissances : Accès complet gestionnaire</field>
+            <field name="model_id" ref="model_project_knowledge_matrix"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_knowledge_manager'))]"/>
+        </record>
+
+        <!-- Éléments : Les utilisateurs ne voient que les éléments des matrices accessibles -->
+        <record id="rule_knowledge_item_user" model="ir.rule">
+            <field name="name">Éléments de connaissances : Membres du projet</field>
+            <field name="model_id" ref="model_project_knowledge_item"/>
+            <field name="domain_force">[
+                '|',
+                ('matrix_id.is_template', '=', True),
+                '|',
+                ('project_id', '=', False),
+                ('project_id.message_partner_ids', 'in', [user.partner_id.id])
+            ]</field>
+            <field name="groups" eval="[(4, ref('group_knowledge_user'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- Éléments : Les gestionnaires ont un accès complet -->
+        <record id="rule_knowledge_item_manager" model="ir.rule">
+            <field name="name">Éléments de connaissances : Accès complet gestionnaire</field>
+            <field name="model_id" ref="model_project_knowledge_item"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_knowledge_manager'))]"/>
+        </record>
+
+        <!-- Règles d'accès — Identifiants -->
+
+        <!-- Identifiants : Les utilisateurs voient ceux de leurs projets -->
+        <record id="rule_credential_user" model="ir.rule">
+            <field name="name">Identifiants : Membres du projet</field>
+            <field name="model_id" ref="model_project_credential"/>
+            <field name="domain_force">[
+                ('project_id.message_partner_ids', 'in', [user.partner_id.id])
+            ]</field>
+            <field name="groups" eval="[(4, ref('group_credential_user'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- Identifiants : Les gestionnaires ont un accès complet -->
+        <record id="rule_credential_manager" model="ir.rule">
+            <field name="name">Identifiants : Accès complet gestionnaire</field>
+            <field name="model_id" ref="model_project_credential"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_credential_manager'))]"/>
+        </record>
+
+        <!-- Types d'identifiants : Tous les utilisateurs peuvent lire -->
+        <record id="rule_credential_type_read" model="ir.rule">
+            <field name="name">Types d'identifiants : Accès en lecture</field>
+            <field name="model_id" ref="model_project_credential_type"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_credential_user'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- Types d'identifiants : Les gestionnaires ont un accès complet -->
+        <record id="rule_credential_type_manager" model="ir.rule">
+            <field name="name">Types d'identifiants : Accès complet gestionnaire</field>
+            <field name="model_id" ref="model_project_credential_type"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_credential_manager'))]"/>
+        </record>
+
+        <!-- Règles d'accès — Documents -->
+
+        <!-- Types de documents : Tous les utilisateurs peuvent lire -->
+        <record id="rule_document_type_read" model="ir.rule">
+            <field name="name">Types de documents : Accès en lecture</field>
+            <field name="model_id" ref="model_project_document_type"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_document_user'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- Types de documents : Les gestionnaires ont un accès complet -->
+        <record id="rule_document_type_manager" model="ir.rule">
+            <field name="name">Types de documents : Accès complet gestionnaire</field>
+            <field name="model_id" ref="model_project_document_type"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_document_manager'))]"/>
+        </record>
+
+        <!-- Documents : Les utilisateurs voient ceux de leurs projets ou de la société -->
+        <record id="rule_document_user" model="ir.rule">
+            <field name="name">Documents : Membres du projet</field>
+            <field name="model_id" ref="model_project_document"/>
+            <field name="domain_force">[
+                '|',
+                ('project_id', '=', False),
+                ('project_id.message_partner_ids', 'in', [user.partner_id.id])
+            ]</field>
+            <field name="groups" eval="[(4, ref('group_document_user'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- Documents : Les gestionnaires ont un accès complet -->
+        <record id="rule_document_manager" model="ir.rule">
+            <field name="name">Documents : Accès complet gestionnaire</field>
+            <field name="model_id" ref="model_project_document"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_document_manager'))]"/>
+        </record>
+
+        <!-- Versions de documents : Les utilisateurs voient les versions des documents accessibles -->
+        <record id="rule_document_version_user" model="ir.rule">
+            <field name="name">Versions de documents : Membres du projet</field>
+            <field name="model_id" ref="model_project_document_version"/>
+            <field name="domain_force">[
+                '|',
+                ('document_id.project_id', '=', False),
+                ('document_id.project_id.message_partner_ids', 'in', [user.partner_id.id])
+            ]</field>
+            <field name="groups" eval="[(4, ref('group_document_user'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- Versions de documents : Les gestionnaires ont un accès complet -->
+        <record id="rule_document_version_manager" model="ir.rule">
+            <field name="name">Versions de documents : Accès complet gestionnaire</field>
+            <field name="model_id" ref="model_project_document_version"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_document_manager'))]"/>
+        </record>
+
+        <!-- Distributions de documents : Les utilisateurs voient celles de leurs projets -->
+        <record id="rule_document_distribution_user" model="ir.rule">
+            <field name="name">Distributions de documents : Accès utilisateur</field>
+            <field name="model_id" ref="model_project_document_distribution"/>
+            <field name="domain_force">[
+                '|',
+                ('version_id.document_id.project_id', '=', False),
+                ('version_id.document_id.project_id.message_partner_ids', 'in', [user.partner_id.id])
+            ]</field>
+            <field name="groups" eval="[(4, ref('group_document_user'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- Distributions de documents : Les gestionnaires ont un accès complet -->
+        <record id="rule_document_distribution_manager" model="ir.rule">
+            <field name="name">Distributions de documents : Accès complet gestionnaire</field>
+            <field name="model_id" ref="model_project_document_distribution"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_document_manager'))]"/>
+        </record>
+
+        <!-- Logiciels documentés : Tous les utilisateurs peuvent lire -->
+        <record id="rule_document_software_read" model="ir.rule">
+            <field name="name">Logiciels documentés : Accès en lecture</field>
+            <field name="model_id" ref="model_document_software"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_document_user'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- Logiciels documentés : Les gestionnaires ont un accès complet -->
+        <record id="rule_document_software_manager" model="ir.rule">
+            <field name="name">Logiciels documentés : Accès complet gestionnaire</field>
+            <field name="model_id" ref="model_document_software"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_document_manager'))]"/>
+        </record>
+
+        <!-- Versions de logiciels : Tous les utilisateurs peuvent lire -->
+        <record id="rule_document_software_version_read" model="ir.rule">
+            <field name="name">Versions de logiciels : Accès en lecture</field>
+            <field name="model_id" ref="model_document_software_version"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_document_user'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- Versions de logiciels : Les gestionnaires ont un accès complet -->
+        <record id="rule_document_software_version_manager" model="ir.rule">
+            <field name="name">Versions de logiciels : Accès complet gestionnaire</field>
+            <field name="model_id" ref="model_document_software_version"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_document_manager'))]"/>
+        </record>
+
+    </data>
+</odoo>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="category_billing" model="contact.persona.category">
+        <field name="name">Facturation</field>
+        <field name="code">billing</field>
+        <field name="sequence">10</field>
+        <field name="color">2</field>
+    </record>
+
+    <record id="category_support" model="contact.persona.category">
+        <field name="name">Support</field>
+        <field name="code">support</field>
+        <field name="sequence">20</field>
+        <field name="color">3</field>
+    </record>
+
+    <record id="category_technical" model="contact.persona.category">
+        <field name="name">Technique</field>
+        <field name="code">technical</field>
+        <field name="sequence">30</field>
+        <field name="color">4</field>
+    </record>
+
+    <record id="category_legal" model="contact.persona.category">
+        <field name="name">Juridique</field>
+        <field name="code">legal</field>
+        <field name="sequence">40</field>
+        <field name="color">1</field>
+    </record>
+
+    <record id="category_social" model="contact.persona.category">
+        <field name="name">Social</field>
+        <field name="code">social</field>
+        <field name="sequence">50</field>
+        <field name="color">5</field>
+    </record>
+
+</odoo>

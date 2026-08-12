@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="bf_universal_search.Systray">
+        <div class="o_universal_search_systray d-flex align-items-center"
+             title="Recherche universelle (Ctrl+K puis *)">
+            <button class="btn btn-link text-reset p-1 opacity-75 opacity-100-hover"
+                    t-on-click="onClick">
+                <i class="oi oi-search fs-5"/>
+            </button>
+        </div>
+    </t>
+
+    <t t-name="bf_universal_search.CommandItem">
+        <div class="o_command_default o_universal_search_command d-flex align-items-center justify-content-between px-4 py-2 cursor-pointer"
+             t-att-class="{ o_universal_search_closed: props.closed }">
+            <span class="d-flex align-items-center gap-2 text-truncate">
+                <i t-if="props.icon" t-att-class="props.icon"
+                   class="o_universal_search_icon text-muted" role="img"/>
+                <t t-slot="name"/>
+            </span>
+            <span class="d-flex align-items-center gap-2 flex-shrink-0">
+                <small t-if="props.detail"
+                       class="o_universal_search_detail text-muted text-truncate"
+                       t-att-title="props.detail"
+                       t-out="props.detail"/>
+                <t t-slot="focusMessage"/>
+            </span>
+        </div>
+    </t>
+
+</templates>

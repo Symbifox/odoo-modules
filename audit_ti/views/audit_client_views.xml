@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_audit_client_list" model="ir.ui.view">
+        <field name="name">audit.client.list</field>
+        <field name="model">audit.client</field>
+        <field name="arch" type="xml">
+            <list decoration-muted="state == 'delivered'"
+                  decoration-success="state != 'delivered' and progress_pct &gt;= 75"
+                  decoration-danger="state != 'delivered' and progress_pct &lt; 25">
+                <field name="name"/>
+                <field name="progress_pct" string="Progression %" widget="progressbar"/>
+                <field name="rag_green" string="V" decoration-success="rag_green &gt; 0"/>
+                <field name="rag_yellow" string="J" decoration-warning="rag_yellow &gt; 0"/>
+                <field name="rag_red" string="R" decoration-danger="rag_red &gt; 0"/>
+                <field name="assessment_count" string="Total"/>
+                <field name="assessed_count" string="Évalués"/>
+                <field name="adequate_count" string="Adéquats"/>
+                <field name="state" widget="badge"
+                    decoration-success="state == 'delivered'"
+                    decoration-info="state == 'in_progress'"/>
+                <field name="target_date" optional="hide"/>
+                <field name="delivered_date" optional="hide"/>
+                <field name="partner_id" optional="hide"/>
+                <field name="project_id" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_audit_client_form" model="ir.ui.view">
+        <field name="name">audit.client.form</field>
+        <field name="model">audit.client</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_deliver" type="object"
+                        string="Marquer comme livré" icon="fa-check-circle"
+                        class="btn-success"
+                        invisible="state == 'delivered'"
+                        confirm="Marquer cet audit comme livré ?"/>
+                    <button name="action_reopen" type="object"
+                        string="Réouvrir" icon="fa-undo"
+                        class="btn-warning"
+                        invisible="state == 'in_progress'"/>
+                    <button name="action_print_progress_report" type="object"
+                        string="Rapport d'avancement" icon="fa-file-pdf-o"
+                        class="btn-primary"/>
+                    <field name="state" widget="statusbar" statusbar_visible="in_progress,delivered"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="Nom du client"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="partner_id"/>
+                            <field name="project_id"/>
+                            <field name="target_date"/>
+                            <field name="active" invisible="1"/>
+                        </group>
+                        <group>
+                            <field name="progress_pct" widget="progressbar"/>
+                            <field name="rag_green" string="Éléments verts"/>
+                            <field name="rag_yellow" string="Éléments jaunes"/>
+                            <field name="rag_red" string="Éléments rouges"/>
+                            <field name="assessed_count" string="Évalués"/>
+                            <field name="adequate_count" string="Adéquats"/>
+                            <field name="assessment_count"/>
+                            <field name="delivered_date" invisible="state != 'delivered'"/>
+                            <field name="delivered_by" invisible="state != 'delivered'"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Synthèse">
+                            <field name="synthesis_html" nolabel="1"
+                                placeholder="Rédigez ici la synthèse narrative de l'évaluation. Ce texte apparaîtra en première section du rapport PDF."/>
+                        </page>
+                        <page string="Matrice d'évaluation">
+                            <field name="assessment_ids" widget="one2many" limit="80">
+                                <list editable="bottom" default_order="element_num, supplier_id" decoration-success="status == 'adequate'" decoration-danger="status == 'inadequate'" decoration-warning="status in ('partial', 'declared')" decoration-muted="status == 'na'">
+                                    <field name="element_num" string="N°" readonly="1" width="40px"/>
+                                    <field name="element_id" readonly="1"/>
+                                    <field name="supplier_id" readonly="1"/>
+                                    <field name="response" optional="hide"/>
+                                    <field name="status"/>
+                                    <field name="notes"/>
+                                    <field name="assessed_by" optional="hide"/>
+                                    <field name="assessed_date" optional="hide"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Couverture">
+                            <field name="element_summary_html" nolabel="1"/>
+                        </page>
+                        <page string="Fournisseurs">
+                            <field name="client_supplier_ids">
+                                <list editable="bottom">
+                                    <field name="supplier_id"/>
+                                    <field name="roles"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Points de vigilance">
+                            <field name="watchpoint_ids">
+                                <list editable="bottom">
+                                    <field name="element_id"/>
+                                    <field name="description"/>
+                                    <field name="priority" widget="badge"
+                                        decoration-danger="priority == 'high'"
+                                        decoration-warning="priority == 'medium'"
+                                        decoration-info="priority == 'low'"/>
+                                    <field name="source"/>
+                                    <field name="state" widget="badge"
+                                        decoration-danger="state == 'open'"
+                                        decoration-warning="state == 'in_progress'"
+                                        decoration-success="state == 'resolved'"/>
+                                    <field name="assigned_to"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_audit_client_search" model="ir.ui.view">
+        <field name="name">audit.client.search</field>
+        <field name="model">audit.client</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="project_id"/>
+                <separator/>
+                <filter name="in_progress" string="En cours"
+                    domain="[('state', '=', 'in_progress')]"/>
+                <filter name="delivered" string="Livrés"
+                    domain="[('state', '=', 'delivered')]"/>
+                <separator/>
+                <filter name="overdue" string="En retard"
+                    domain="[('target_date', '&lt;', context_today().strftime('%Y-%m-%d')), ('state', '=', 'in_progress')]"/>
+                <filter name="high_progress" string="&gt; 75%"
+                    domain="[('progress_pct', '&gt;=', 75)]"/>
+                <filter name="low_progress" string="&lt; 25%"
+                    domain="[('progress_pct', '&lt;', 25)]"/>
+                <filter name="has_watchpoints" string="Avec points de vigilance ouverts"
+                    domain="[('watchpoint_ids.state', 'in', ('open', 'in_progress'))]"/>
+                <separator/>
+                <group expand="0" string="Grouper par">
+                    <filter name="group_state" string="État" context="{'group_by': 'state'}"/>
+                    <filter name="group_project" string="Projet" context="{'group_by': 'project_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Server action: batch PDF from list -->
+    <record id="action_batch_print_progress_report" model="ir.actions.server">
+        <field name="name">Générer rapports d'avancement</field>
+        <field name="model_id" ref="model_audit_client"/>
+        <field name="binding_model_id" ref="model_audit_client"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">
+if records:
+    action = records.action_print_progress_report_batch()
+        </field>
+    </record>
+
+    <record id="action_audit_client" model="ir.actions.act_window">
+        <field name="name">Clients</field>
+        <field name="res_model">audit.client</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_in_progress': 1}</field>
+    </record>
+
+</odoo>

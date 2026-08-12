@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Root menu -->
+    <menuitem id="menu_audit_ti_root"
+        name="Audit TI"
+        web_icon="audit_ti,static/description/icon.png"
+        sequence="90"/>
+
+    <!-- Dashboard -->
+    <menuitem id="menu_audit_dashboard"
+        name="Tableau de bord"
+        parent="menu_audit_ti_root"
+        action="action_audit_dashboard"
+        sequence="1"/>
+
+    <!-- Main operations -->
+    <menuitem id="menu_audit_operations"
+        name="Opérations"
+        parent="menu_audit_ti_root"
+        sequence="10"/>
+
+    <menuitem id="menu_audit_client"
+        name="Clients"
+        parent="menu_audit_operations"
+        action="action_audit_client"
+        sequence="10"/>
+
+    <menuitem id="menu_audit_assessment"
+        name="Évaluations"
+        parent="menu_audit_operations"
+        action="action_audit_assessment"
+        sequence="20"/>
+
+    <menuitem id="menu_audit_watchpoint"
+        name="Points de vigilance"
+        parent="menu_audit_operations"
+        action="action_audit_watchpoint"
+        sequence="30"/>
+
+    <!-- Configuration -->
+    <menuitem id="menu_audit_config"
+        name="Configuration"
+        parent="menu_audit_ti_root"
+        groups="group_audit_manager"
+        sequence="90"/>
+
+    <menuitem id="menu_audit_element"
+        name="Éléments d'audit"
+        parent="menu_audit_config"
+        action="action_audit_element"
+        sequence="10"/>
+
+    <menuitem id="menu_audit_supplier"
+        name="Fournisseurs TI"
+        parent="menu_audit_config"
+        action="action_audit_supplier"
+        sequence="20"/>
+
+</odoo>

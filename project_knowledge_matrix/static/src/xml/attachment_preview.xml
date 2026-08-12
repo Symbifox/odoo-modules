@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates id="template" xml:space="preserve">
+    <t
+        t-name="project_knowledge_matrix.AttachmentPreviewField"
+        t-inherit="web.Many2OneField"
+        t-inherit-mode="primary"
+    >
+        <xpath expr="//div[hasclass('o_field_many2one_selection')]" position="inside">
+            <button
+                t-if="props.record.data[props.name]"
+                type="button"
+                class="btn btn-link text-action fa fa-search px-1"
+                data-tooltip="Visualiser"
+                aria-label="Visualiser"
+                t-on-click="onFilePreview"
+            />
+        </xpath>
+    </t>
+</templates>

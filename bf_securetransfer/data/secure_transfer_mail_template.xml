@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- ── Share link (sent to the recipients → model secure.transfer) ──
+             The sender identity is displayed prominently (anti-phishing: the
+             recipient must recognize who is sharing before clicking) and the
+             full literal URL is shown as a fallback. The password, if any, is
+             NEVER included — it travels through a separate channel. -->
+        <record id="mail_template_transfer_link" model="mail.template">
+            <field name="name">Transfert sécurisé — lien de téléchargement</field>
+            <field name="model_id" ref="model_secure_transfer"/>
+            <field name="subject">{{ object.sender_name or object.sender_email }} vous a transmis des fichiers — {{ object.name }}</field>
+            <field name="email_from">{{ (object.brand_id.email_from or object.company_id.email_formatted or user.email_formatted) }}</field>
+            <field name="email_to">{{ object.recipient_emails }}</field>
+            <field name="body_html" type="html">
+                <t t-set="visuals" t-value="object.brand_id._visuals()"/>
+                <t t-set="base" t-value="object.brand_id._share_base_url()"/>
+                <t t-set="primary" t-value="visuals['primary']"/>
+                <t t-set="dark" t-value="visuals['dark']"/>
+                <t t-set="logo_src" t-value="visuals['logo_url'] and (visuals['logo_url'].startswith('http') and visuals['logo_url'] or base + visuals['logo_url']) or False"/>
+                <t t-set="share" t-value="object._share_url()"/>
+                <div style="font-family:Lexend,system-ui,Arial,sans-serif; color:#2D3031; font-size:14px; line-height:1.55; max-width:600px; margin:0 auto;">
+                    <div t-attf-style="background:#{dark}; padding:18px 24px; border-radius:10px 10px 0 0;">
+                        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;"><tbody><tr>
+                            <td align="left" style="vertical-align:middle;">
+                                <img t-if="logo_src" t-att-src="logo_src" t-att-alt="visuals['name']" style="height:36px; display:block; border:0;"/>
+                                <span t-else="" style="color:#ffffff; font-size:18px; font-weight:700;" t-out="visuals['name']"/>
+                            </td>
+                            <td align="right" style="vertical-align:middle; color:#ffffff; font-family:Lexend,system-ui,Arial,sans-serif; font-size:20px; font-weight:700;">Fichiers partagés</td>
+                        </tr></tbody></table>
+                    </div>
+                    <div t-attf-style="height:4px; background:#{primary};"/>
+                    <div style="background:#ffffff; border:1px solid #e3e7eb; border-top:0; padding:24px; border-radius:0 0 10px 10px;">
+                        <p>Bonjour,</p>
+                        <div t-if="object.subject" style="font-size:18px; font-weight:700; color:#2D3031; margin:0 0 14px;" t-out="object.subject"/>
+                        <div style="background:#f4f6f8; border:1px solid #e3e7eb; border-radius:8px; padding:12px 16px; margin:0 0 16px;">
+                            De la part de :
+                            <strong t-out="object.sender_name or object.sender_email"/>
+                            <t t-if="object.sender_name"> &lt;<t t-out="object.sender_email"/>&gt;</t>
+                        </div>
+                        <p t-if="object.message" style="white-space:pre-line; border-left:3px solid #e3e7eb; padding-left:12px; color:#555;" t-out="object.message"/>
+                        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse; margin:12px 0;">
+                            <tbody>
+                                <tr t-foreach="object.file_ids.filtered(lambda f: f.state == 'verified')" t-as="f">
+                                    <td style="padding:6px 0; border-bottom:1px solid #eef1f4;" t-out="f.filename"/>
+                                    <td align="right" style="padding:6px 0; border-bottom:1px solid #eef1f4; color:#777; white-space:nowrap;"
+                                        t-out="f.size &gt;= 1073741824 and '%.2f Go' % (f.size / 1073741824.0) or f.size &gt;= 1048576 and '%.1f Mo' % (f.size / 1048576.0) or f.size &gt;= 1024 and '%.0f Ko' % (f.size / 1024.0) or '%d o' % f.size"/>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p style="margin:24px 0;">
+                            <a t-att-href="share"
+                               t-attf-style="background:#{primary}; color:#ffffff; text-decoration:none; padding:12px 26px; border-radius:8px; font-weight:600; display:inline-block;">
+                                Télécharger les fichiers</a>
+                        </p>
+                        <p t-if="object.has_password" style="background:#fff8e6; border:1px solid #f2e3b3; border-radius:8px; padding:10px 14px;">
+                            Ce transfert est <strong>protégé par un mot de passe</strong>.
+                            L'expéditeur vous le communiquera séparément (il ne figure jamais dans ce courriel).
+                        </p>
+                        <p>Ce lien expirera le <strong t-out="format_date(object.expiry_date, lang_code=object.locale)"/>,
+                            après quoi les fichiers seront supprimés définitivement.</p>
+                        <p style="color:#777; font-size:12px;">Si le bouton ne fonctionne pas, copiez ce lien dans votre navigateur :<br/>
+                            <a t-att-href="share" t-out="share"/></p>
+                        <p style="color:#777; font-size:12px;">Vous ne connaissez pas cet expéditeur ? N'ouvrez pas les fichiers et supprimez ce courriel.</p>
+                    </div>
+                    <div style="text-align:center; color:#9aa4ad; font-size:12px; padding:14px;">
+                        <div t-if="visuals['tagline']" style="margin-bottom:6px;" t-out="visuals['tagline']"/>
+                        <t t-if="visuals['powered_by']">Propulsé par <t t-out="visuals['powered_by_name']"/></t>
+                        <div t-if="visuals['footer_html']" style="margin-top:8px; color:#9aa4ad;" t-out="visuals['footer_html']"/>
+                    </div>
+                </div>
+            </field>
+            <field name="auto_delete" eval="False"/>
+        </record>
+
+        <!-- ── Secure message (link-only notification → secure.transfer) ──
+             Used whenever the message must stay OUT of the inbox: a forced-OTP
+             send (force_recipient_otp) OR a message-only transfer (no files —
+             the message itself is the payload). It carries the LINK ONLY, never
+             the message body, so nothing sensitive lands in the inbox: the body
+             is revealed on the branded page via the link — after a one-time
+             code when the transfer is code-gated, otherwise on the page itself.
+             The « how to read it » wording adapts to _recipient_otp_required()
+             and has_password so it is correct with or without those gates. -->
+        <record id="mail_template_secure_message" model="mail.template">
+            <field name="name">Transfert sécurisé — message sécurisé (code requis)</field>
+            <field name="model_id" ref="model_secure_transfer"/>
+            <field name="subject">{{ object.sender_name or object.sender_email }} vous a envoyé un message sécurisé — {{ object.name }}</field>
+            <field name="email_from">{{ (object.brand_id.email_from or object.company_id.email_formatted or user.email_formatted) }}</field>
+            <field name="email_to">{{ object.recipient_emails }}</field>
+            <field name="body_html" type="html">
+                <t t-set="visuals" t-value="object.brand_id._visuals()"/>
+                <t t-set="base" t-value="object.brand_id._share_base_url()"/>
+                <t t-set="primary" t-value="visuals['primary']"/>
+                <t t-set="dark" t-value="visuals['dark']"/>
+                <t t-set="logo_src" t-value="visuals['logo_url'] and (visuals['logo_url'].startswith('http') and visuals['logo_url'] or base + visuals['logo_url']) or False"/>
+                <t t-set="share" t-value="object._share_url()"/>
+                <div style="font-family:Lexend,system-ui,Arial,sans-serif; color:#2D3031; font-size:14px; line-height:1.55; max-width:600px; margin:0 auto;">
+                    <div t-attf-style="background:#{dark}; padding:18px 24px; border-radius:10px 10px 0 0;">
+                        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;"><tbody><tr>
+                            <td align="left" style="vertical-align:middle;">
+                                <img t-if="logo_src" t-att-src="logo_src" t-att-alt="visuals['name']" style="height:36px; display:block; border:0;"/>
+                                <span t-else="" style="color:#ffffff; font-size:18px; font-weight:700;" t-out="visuals['name']"/>
+                            </td>
+                            <td align="right" style="vertical-align:middle; color:#ffffff; font-family:Lexend,system-ui,Arial,sans-serif; font-size:20px; font-weight:700;">Message sécurisé</td>
+                        </tr></tbody></table>
+                    </div>
+                    <div t-attf-style="height:4px; background:#{primary};"/>
+                    <div style="background:#ffffff; border:1px solid #e3e7eb; border-top:0; padding:24px; border-radius:0 0 10px 10px;">
+                        <p>Bonjour,</p>
+                        <div t-if="object.subject" style="font-size:18px; font-weight:700; color:#2D3031; margin:0 0 14px;" t-out="object.subject"/>
+                        <div style="background:#f4f6f8; border:1px solid #e3e7eb; border-radius:8px; padding:12px 16px; margin:0 0 16px;">
+                            De la part de :
+                            <strong t-out="object.sender_name or object.sender_email"/>
+                            <t t-if="object.sender_name"> &lt;<t t-out="object.sender_email"/>&gt;</t>
+                        </div>
+                        <t t-set="gated" t-value="object._recipient_otp_required()"/>
+                        <p>Un <strong>message sécurisé</strong> vous a été transmis. Son contenu n'est <strong>pas inclus dans ce courriel</strong> : il ne s'affiche que sur une page sécurisée, à durée limitée, accessible par le lien ci-dessous.</p>
+                        <p t-if="gated" style="background:#f4f6f8; border:1px solid #e3e7eb; border-radius:8px; padding:10px 14px;">Pour le lire, cliquez ci-dessous, confirmez votre adresse courriel, puis saisissez le <strong>code de vérification à usage unique</strong> qui vous sera transmis (par courriel ou par SMS).</p>
+                        <p t-else="" style="background:#f4f6f8; border:1px solid #e3e7eb; border-radius:8px; padding:10px 14px;">Pour le lire, cliquez sur le bouton ci-dessous : le message s'affichera directement sur la page sécurisée.</p>
+                        <p t-if="object.has_password" style="background:#fff8e6; border:1px solid #f2e3b3; border-radius:8px; padding:10px 14px;">L'accès est aussi <strong>protégé par un mot de passe</strong>. L'expéditeur vous le communiquera séparément (il ne figure jamais dans ce courriel).</p>
+                        <p style="margin:24px 0;">
+                            <a t-att-href="share"
+                               t-attf-style="background:#{primary}; color:#ffffff; text-decoration:none; padding:12px 26px; border-radius:8px; font-weight:600; display:inline-block;">
+                                Lire le message sécurisé</a>
+                        </p>
+                        <p>Ce lien expirera le <strong t-out="format_date(object.expiry_date, lang_code=object.locale)"/>.</p>
+                        <p style="color:#777; font-size:12px;">Si le bouton ne fonctionne pas, copiez ce lien dans votre navigateur :<br/>
+                            <a t-att-href="share" t-out="share"/></p>
+                        <p style="color:#777; font-size:12px;">Vous n'attendiez pas ce message ? N'y accédez pas et supprimez ce courriel.</p>
+                    </div>
+                    <div style="text-align:center; color:#9aa4ad; font-size:12px; padding:14px;">
+                        <div t-if="visuals['tagline']" style="margin-bottom:6px;" t-out="visuals['tagline']"/>
+                        <t t-if="visuals['powered_by']">Propulsé par <t t-out="visuals['powered_by_name']"/></t>
+                        <div t-if="visuals['footer_html']" style="margin-top:8px; color:#9aa4ad;" t-out="visuals['footer_html']"/>
+                    </div>
+                </div>
+            </field>
+            <field name="auto_delete" eval="False"/>
+        </record>
+
+        <!-- ── Receipt (sent to the sender → model secure.transfer) ── -->
+        <record id="mail_template_transfer_receipt" model="mail.template">
+            <field name="name">Transfert sécurisé — accusé d'envoi</field>
+            <field name="model_id" ref="model_secure_transfer"/>
+            <field name="subject">Votre transfert est en ligne — {{ object.name }}</field>
+            <field name="email_from">{{ (object.brand_id.email_from or object.company_id.email_formatted or user.email_formatted) }}</field>
+            <field name="email_to">{{ object.sender_email }}</field>
+            <field name="body_html" type="html">
+                <t t-set="visuals" t-value="object.brand_id._visuals()"/>
+                <t t-set="base" t-value="object.brand_id._share_base_url()"/>
+                <t t-set="primary" t-value="visuals['primary']"/>
+                <t t-set="dark" t-value="visuals['dark']"/>
+                <t t-set="logo_src" t-value="visuals['logo_url'] and (visuals['logo_url'].startswith('http') and visuals['logo_url'] or base + visuals['logo_url']) or False"/>
+                <t t-set="share" t-value="object._share_url()"/>
+                <div style="font-family:Lexend,system-ui,Arial,sans-serif; color:#2D3031; font-size:14px; line-height:1.55; max-width:600px; margin:0 auto;">
+                    <div t-attf-style="background:#{dark}; padding:18px 24px; border-radius:10px 10px 0 0;">
+                        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;"><tbody><tr>
+                            <td align="left" style="vertical-align:middle;">
+                                <img t-if="logo_src" t-att-src="logo_src" t-att-alt="visuals['name']" style="height:36px; display:block; border:0;"/>
+                                <span t-else="" style="color:#ffffff; font-size:18px; font-weight:700;" t-out="visuals['name']"/>
+                            </td>
+                            <td align="right" style="vertical-align:middle; color:#ffffff; font-family:Lexend,system-ui,Arial,sans-serif; font-size:20px; font-weight:700;">Transfert envoyé</td>
+                        </tr></tbody></table>
+                    </div>
+                    <div t-attf-style="height:4px; background:#{primary};"/>
+                    <div style="background:#ffffff; border:1px solid #e3e7eb; border-top:0; padding:24px; border-radius:0 0 10px 10px;">
+                        <p>Bonjour <t t-out="object.sender_name or ''"/>,</p>
+                        <div t-if="object.subject" style="font-size:18px; font-weight:700; color:#2D3031; margin:0 0 14px;" t-out="object.subject"/>
+                        <p>Votre transfert <strong t-out="object.name"/> est en ligne.
+                            <t t-if="object.recipient_emails">Le lien de téléchargement a été envoyé à :
+                                <strong t-out="object.recipient_emails"/>.</t></p>
+                        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse; margin:12px 0;">
+                            <tbody>
+                                <tr t-foreach="object.file_ids.filtered(lambda f: f.state == 'verified')" t-as="f">
+                                    <td style="padding:6px 0; border-bottom:1px solid #eef1f4;" t-out="f.filename"/>
+                                    <td align="right" style="padding:6px 0; border-bottom:1px solid #eef1f4; color:#777; white-space:nowrap;"
+                                        t-out="f.size &gt;= 1073741824 and '%.2f Go' % (f.size / 1073741824.0) or f.size &gt;= 1048576 and '%.1f Mo' % (f.size / 1048576.0) or f.size &gt;= 1024 and '%.0f Ko' % (f.size / 1024.0) or '%d o' % f.size"/>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p style="margin:24px 0;">
+                            <a t-att-href="share"
+                               t-attf-style="background:#{primary}; color:#ffffff; text-decoration:none; padding:12px 26px; border-radius:8px; font-weight:600; display:inline-block;">
+                                Consulter le transfert</a>
+                        </p>
+                        <p style="color:#777; font-size:12px;">Lien de partage :<br/>
+                            <a t-att-href="share" t-out="share"/></p>
+                        <p t-if="object.has_password" style="color:#777; font-size:12px;">
+                            Rappel : ce transfert est protégé par un mot de passe.
+                            Communiquez-le aux destinataires par un autre canal (téléphone, texto…), jamais par courriel.</p>
+                        <p>Expiration le <strong t-out="format_date(object.expiry_date, lang_code=object.locale)"/> —
+                            les fichiers seront ensuite supprimés automatiquement et définitivement.</p>
+                    </div>
+                    <div style="text-align:center; color:#9aa4ad; font-size:12px; padding:14px;">
+                        <div t-if="visuals['tagline']" style="margin-bottom:6px;" t-out="visuals['tagline']"/>
+                        <t t-if="visuals['powered_by']">Propulsé par <t t-out="visuals['powered_by_name']"/></t>
+                        <div t-if="visuals['footer_html']" style="margin-top:8px; color:#9aa4ad;" t-out="visuals['footer_html']"/>
+                    </div>
+                </div>
+            </field>
+            <field name="auto_delete" eval="False"/>
+        </record>
+
+        <!-- ── Download notice (sent to the sender on first download) ── -->
+        <record id="mail_template_download_notice" model="mail.template">
+            <field name="name">Transfert sécurisé — avis de téléchargement</field>
+            <field name="model_id" ref="model_secure_transfer"/>
+            <field name="subject">Vos fichiers ont été téléchargés — {{ object.name }}</field>
+            <field name="email_from">{{ (object.brand_id.email_from or object.company_id.email_formatted or user.email_formatted) }}</field>
+            <field name="email_to">{{ object.sender_email }}</field>
+            <field name="body_html" type="html">
+                <t t-set="visuals" t-value="object.brand_id._visuals()"/>
+                <t t-set="base" t-value="object.brand_id._share_base_url()"/>
+                <t t-set="primary" t-value="visuals['primary']"/>
+                <t t-set="dark" t-value="visuals['dark']"/>
+                <t t-set="logo_src" t-value="visuals['logo_url'] and (visuals['logo_url'].startswith('http') and visuals['logo_url'] or base + visuals['logo_url']) or False"/>
+                <div style="font-family:Lexend,system-ui,Arial,sans-serif; color:#2D3031; font-size:14px; line-height:1.55; max-width:600px; margin:0 auto;">
+                    <div t-attf-style="background:#{dark}; padding:18px 24px; border-radius:10px 10px 0 0;">
+                        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;"><tbody><tr>
+                            <td align="left" style="vertical-align:middle;">
+                                <img t-if="logo_src" t-att-src="logo_src" t-att-alt="visuals['name']" style="height:36px; display:block; border:0;"/>
+                                <span t-else="" style="color:#ffffff; font-size:18px; font-weight:700;" t-out="visuals['name']"/>
+                            </td>
+                            <td align="right" style="vertical-align:middle; color:#ffffff; font-family:Lexend,system-ui,Arial,sans-serif; font-size:20px; font-weight:700;">Téléchargement</td>
+                        </tr></tbody></table>
+                    </div>
+                    <div t-attf-style="height:4px; background:#{primary};"/>
+                    <div style="background:#ffffff; border:1px solid #e3e7eb; border-top:0; padding:24px; border-radius:0 0 10px 10px;">
+                        <p>Bonjour <t t-out="object.sender_name or ''"/>,</p>
+                        <p>Vos fichiers partagés (<strong t-out="object.name"/>) viennent d'être téléchargés.</p>
+                        <p style="color:#777; font-size:12px;">Ce transfert reste accessible jusqu'à son expiration le
+                            <strong t-out="format_date(object.expiry_date, lang_code=object.locale)"/>.</p>
+                    </div>
+                    <div style="text-align:center; color:#9aa4ad; font-size:12px; padding:14px;">
+                        <div t-if="visuals['tagline']" style="margin-bottom:6px;" t-out="visuals['tagline']"/>
+                        <t t-if="visuals['powered_by']">Propulsé par <t t-out="visuals['powered_by_name']"/></t>
+                        <div t-if="visuals['footer_html']" style="margin-top:8px; color:#9aa4ad;" t-out="visuals['footer_html']"/>
+                    </div>
+                </div>
+            </field>
+            <field name="auto_delete" eval="False"/>
+        </record>
+
+    </data>
+</odoo>

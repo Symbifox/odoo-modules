@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates xml:space="preserve">
+
+    <t t-name="bf_sms_archive.Systray">
+        <div t-if="state.visible" class="o_sms_systray o_mail_systray_item">
+            <button class="btn o_sms_systray_btn" t-on-click="openMessenger"
+                    title="Messagerie SMS">
+                <i class="fa fa-mobile"/>
+                <span t-if="state.total > 0" class="o_sms_systray_badge badge rounded-pill bg-danger"
+                      t-esc="state.total > 99 ? '99+' : state.total"/>
+            </button>
+        </div>
+    </t>
+
+</templates>

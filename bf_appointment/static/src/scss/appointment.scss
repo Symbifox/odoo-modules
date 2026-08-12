@@ -1,0 +1,436 @@
+// bf_appointment - Sleek public appointment page styles
+// Brand colors are configurable per company via res.company.appointment_brand_*.
+// The public template injects CSS custom properties (--bf-appt-primary,
+// --bf-appt-dark) at page root; we use var() with the BF defaults as
+// compile-time fallbacks so the stylesheet still works on tenants that
+// haven't customized branding.
+
+$bf-anthracite: #2E3132;
+$bf-blue: #29ABE2;
+$bf-dark: #22303B;
+$bf-radius: 12px;
+$bf-radius-sm: 8px;
+
+// Runtime-themable copies. Keep the SCSS variables for any place where we
+// need a literal color (e.g. rgba() / lighten() / color math), but switch
+// the front-end to var() everywhere a tenant might want to override.
+$bf-primary: var(--bf-appt-primary, #{$bf-blue});
+$bf-anthracite-themed: var(--bf-appt-dark, #{$bf-anthracite});
+
+// ---- Section Headers ----
+
+.bf-section-header {
+    background-color: $bf-anthracite-themed;
+    color: #fff;
+    padding: 1.25rem 1.5rem;
+    border-radius: $bf-radius;
+    margin-bottom: 1.5rem;
+
+    // The band is ALWAYS dark, so its text must ALWAYS be light. Some website
+    // themes color headings with the brand primary at a higher specificity
+    // than our class selector — on some tenants that primary is a dark blue,
+    // which left the booking-type title nearly invisible on the anthracite
+    // band. Force light text on every heading
+    // and link inside the band; !important to win over the theme cascade.
+    h1, h2, h3, h4, h5, h6, a {
+        color: #fff !important;
+    }
+}
+
+// Detail-page header with thumbnail accent (96x96, rounded). Stacks
+// vertically on phones so the title stays readable.
+.bf-section-header-with-image {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+
+    .bf-section-thumb {
+        width: 96px;
+        height: 96px;
+        flex-shrink: 0;
+        object-fit: cover;
+        border-radius: $bf-radius-sm;
+        background-color: rgba(255, 255, 255, 0.06);
+    }
+
+    .bf-section-header-text {
+        flex: 1;
+        min-width: 0;
+    }
+
+    @media (max-width: 575.98px) {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+
+        .bf-section-thumb {
+            width: 72px;
+            height: 72px;
+        }
+    }
+
+    h2, h3 {
+        margin: 0;
+        font-weight: 600;
+        color: #fff;
+    }
+
+    p {
+        margin: 0.5rem 0 0;
+        opacity: 0.8;
+        font-size: 0.95rem;
+    }
+}
+
+// ---- Badges ----
+
+.bf-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.3rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    background-color: #f1f3f5;
+    color: #495057;
+}
+
+.bf-badge-video {
+    background-color: $bf-primary;
+    color: #fff;
+}
+
+.bf-badge-inperson {
+    background-color: #40c057;
+    color: #fff;
+}
+
+.bf-badge-light {
+    background-color: rgba(#fff, 0.2);
+    color: #fff;
+}
+
+// ---- Landing Page ----
+
+.bf-appointment-landing {
+    padding: 1.5rem 0 3rem;
+}
+
+.bf-appointment-card {
+    border: none;
+    border-radius: $bf-radius;
+    overflow: hidden;
+    background-color: darken($bf-anthracite, 4%);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+    &:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1) !important;
+    }
+
+    .card-body {
+        padding: 1.25rem;
+        color: rgba(#fff, 0.85);
+    }
+
+    .card-title {
+        color: #fff;
+        margin-bottom: 0.5rem;
+    }
+
+    .text-muted {
+        color: rgba(#fff, 0.65) !important;
+    }
+
+    .bf-badge {
+        background-color: rgba(#fff, 0.15);
+        color: rgba(#fff, 0.9);
+    }
+}
+
+.bf-appointment-card-img {
+    height: 180px;
+    object-fit: cover;
+}
+
+.bf-appointment-card-placeholder {
+    height: 160px;
+}
+
+// ---- Buttons ----
+
+.bf-btn-accent {
+    color: #fff;
+    border: none;
+    border-radius: $bf-radius-sm;
+    font-weight: 500;
+    padding: 0.5rem 1.25rem;
+    transition: opacity 0.15s ease, transform 0.15s ease;
+
+    &:hover {
+        opacity: 0.9;
+        color: #fff;
+        transform: translateY(-1px);
+    }
+}
+
+.bf-btn-reserve {
+    color: #fff;
+    border: none;
+    border-radius: $bf-radius-sm;
+    font-weight: 600;
+    font-size: 1.1rem;
+    padding: 0.7rem 2rem;
+    transition: opacity 0.15s ease, transform 0.15s ease;
+
+    &:hover {
+        opacity: 0.9;
+        color: #fff;
+        transform: translateY(-1px);
+    }
+}
+
+.bf-btn-nav {
+    background-color: $bf-anthracite-themed;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 0.35rem 0.65rem;
+
+    &:hover {
+        // hover lightening uses the SCSS literal - falls back to BF anthracite
+        // when the tenant theme is set, but the difference is subtle.
+        background-color: lighten($bf-anthracite, 10%);
+        color: #fff;
+    }
+}
+
+// ---- Detail Page ----
+
+.bf-appointment-detail {
+    padding: 1.5rem 0 3rem;
+
+    .bf-section-header h2 {
+        font-size: 1.4rem;
+    }
+}
+
+// Inside-type description (`/appointment/<slug>`). The BF site body is
+// dark (`--body-bg: #212529`), so the legacy `#495057` gray was barely
+// visible. White + slightly larger.
+.bf-description {
+    color: rgba(255, 255, 255, 0.92);
+    font-size: 1.05rem;
+    line-height: 1.65;
+
+    p {
+        margin-bottom: 0.75rem;
+
+        &:last-child {
+            margin-bottom: 0;
+        }
+    }
+
+    strong {
+        color: #ffffff;
+    }
+
+    a {
+        color: $bf-primary;
+    }
+
+    ul, ol {
+        padding-left: 1.25rem;
+    }
+
+    li {
+        margin-bottom: 0.4rem;
+    }
+}
+
+// ---- Form Card ----
+
+.bf-form-card {
+    border: none;
+    border-radius: $bf-radius;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+}
+
+.bf-form-card-header {
+    padding: 1rem 1.25rem;
+    border-bottom: none;
+}
+
+.bf-form-card .form-control,
+.bf-form-card .form-select {
+    border-radius: $bf-radius-sm;
+    border-color: #dee2e6;
+    padding: 0.6rem 0.85rem;
+
+    &:focus {
+        border-color: $bf-primary;
+        box-shadow: 0 0 0 3px rgba($bf-blue, 0.15);
+    }
+}
+
+// ---- Schedule Page ----
+
+.bf-appointment-schedule {
+    padding: 1.5rem 0 3rem;
+}
+
+// ---- Schedule: Slot List ----
+
+.bf-schedule-nav {
+    h4 {
+        color: $bf-anthracite-themed;
+    }
+}
+
+.bf-slot-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.bf-slot-day {
+    background: transparent;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid #e9ecef;
+
+    &:last-child {
+        border-bottom: none;
+    }
+}
+
+.bf-slot-day-header {
+    padding: 0.75rem 0 0.35rem;
+    border-left: 3px solid $bf-primary;
+    padding-left: 0.75rem;
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+}
+
+.bf-slot-day-name {
+    font-weight: 600;
+    color: #868e96;
+    font-size: 1.05rem;
+}
+
+.bf-slot-day-date {
+    color: #adb5bd;
+    font-size: 0.95rem;
+}
+
+.bf-slot-bubbles {
+    padding: 0.35rem 0 0 0.75rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.bf-slot-bubble {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 1.15rem;
+    border: 2px solid $bf-primary;
+    border-radius: $bf-radius-sm;
+    background-color: rgba($bf-blue, 0.08);
+    color: $bf-primary;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease;
+
+    &:hover {
+        background-color: $bf-primary;
+        color: #fff;
+    }
+}
+
+// ---- Confirmation Modal ----
+
+.bf-modal {
+    border: none;
+    border-radius: $bf-radius;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+}
+
+.bf-modal-header {
+    background-color: $bf-anthracite-themed;
+    color: #fff;
+    border-bottom: none;
+    padding: 1rem 1.25rem;
+
+    h5 {
+        color: #fff;
+    }
+}
+
+// ---- Confirmation Page ----
+
+.bf-appointment-confirmation {
+    padding: 2rem 0 3rem;
+}
+
+.bf-status-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.75rem;
+}
+
+.bf-status-success {
+    background-color: #d3f9d8;
+    color: #2b8a3e;
+}
+
+.bf-status-pending {
+    background-color: #fff3bf;
+    color: #e67700;
+}
+
+.bf-status-cancelled {
+    background-color: #ffe3e3;
+    color: #c92a2a;
+}
+
+.bf-status-info {
+    background-color: rgba($bf-blue, 0.15);
+    color: $bf-primary;
+}
+
+.bf-confirmation-card {
+    max-width: 560px;
+    border: none;
+    border-radius: $bf-radius;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+.bf-info-icon {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    border-radius: 10px;
+    background-color: #f1f3f5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 1rem;
+    color: #868e96;
+    font-size: 0.9rem;
+}
+
+// ---- Cancelled Page ----
+
+.bf-appointment-cancelled {
+    padding: 3rem 0;
+}

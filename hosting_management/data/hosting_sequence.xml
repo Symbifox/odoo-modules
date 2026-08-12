@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- Séquence des services d'hébergement -->
+        <record id="seq_hosting_service" model="ir.sequence">
+            <field name="name">Service d'hébergement</field>
+            <field name="code">hosting.service</field>
+            <field name="prefix">HST-</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- Paramètre système pour les jours d'avertissement d'expiration -->
+        <record id="ir_config_parameter_expiration_warning" model="ir.config_parameter">
+            <field name="key">hosting.expiration_warning_days</field>
+            <field name="value">90</field>
+        </record>
+
+        <!-- Séquence des exécutions de sauvegarde -->
+        <record id="seq_hosting_backup_run" model="ir.sequence">
+            <field name="name">Exécution de sauvegarde</field>
+            <field name="code">hosting.backup.run</field>
+            <field name="prefix">BKP-</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- Séquence des postes du parc -->
+        <record id="seq_hosting_endpoint" model="ir.sequence">
+            <field name="name">Poste du parc</field>
+            <field name="code">hosting.endpoint</field>
+            <field name="prefix">EP-%(year)s-</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- Séquence des pools de licences -->
+        <record id="seq_hosting_license" model="ir.sequence">
+            <field name="name">Pool de licences</field>
+            <field name="code">hosting.license</field>
+            <field name="prefix">LIC-%(year)s-</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!--
+            Backup API token: must be configured manually in Settings > Hosting.
+            No default value is seeded to prevent accidental exposure.
+        -->
+
+    </data>
+</odoo>

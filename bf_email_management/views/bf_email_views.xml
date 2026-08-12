@@ -1,0 +1,638 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============================================================ -->
+    <!-- SERVER ACTION                                                -->
+    <!-- Defined first: the tree view header button below references   -->
+    <!-- it via %(action_bf_email_sync_now)d, so it must load earlier. -->
+    <!-- ============================================================ -->
+    <record id="action_bf_email_sync_now" model="ir.actions.server">
+        <field name="name">Synchroniser maintenant</field>
+        <field name="model_id" ref="model_bf_email"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_sync_now()</field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- TREE VIEW                                                    -->
+    <!-- ============================================================ -->
+    <record id="bf_email_view_tree" model="ir.ui.view">
+        <field name="name">bf.email.tree</field>
+        <field name="model">bf.email</field>
+        <field name="arch" type="xml">
+            <list js_class="bf_email_preview_list"
+                  decoration-bf="status == 'new' and not is_handled"
+                  decoration-muted="is_handled"
+                  decoration-warning="not res_model and not is_handled"
+                  decoration-success="is_to_me and not is_handled"
+                  decoration-danger="is_foreign_owner"
+                  default_order="date desc">
+                <field name="is_handled" column_invisible="True"/>
+                <field name="is_to_me" column_invisible="True"/>
+                <field name="is_foreign_owner" column_invisible="True"/>
+                <header>
+                    <button name="%(action_bf_email_sync_now)d"
+                            string="Synchroniser maintenant"
+                            type="action"
+                            class="btn-primary"
+                            icon="fa-refresh"
+                            display="always"/>
+                </header>
+                <field name="direction" widget="badge"
+                       decoration-info="direction == 'in'"
+                       decoration-success="direction == 'out'"/>
+                <field name="date" widget="datetime"/>
+                <field name="partner_id" string="Contact"
+                       optional="show"/>
+                <field name="email_from" optional="show"/>
+                <field name="email_to" optional="hide"/>
+                <field name="subject"/>
+                <field name="record_name" optional="show"/>
+                <field name="res_model" optional="hide"/>
+                <field name="category" widget="badge"
+                       decoration-info="category == 'client'"
+                       decoration-warning="category == 'vendor'"
+                       decoration-success="category == 'internal'"
+                       optional="show"/>
+                <field name="source" widget="badge"
+                       decoration-info="source == 'chatter'"
+                       decoration-muted="source == 'gateway'"
+                       decoration-warning="source == 'imap'"
+                       optional="show"/>
+                <field name="status" widget="badge"
+                       decoration-info="status == 'new'"
+                       decoration-success="status == 'replied'"
+                       decoration-muted="status == 'archived'"/>
+                <field name="priority" widget="priority" optional="hide"/>
+                <field name="has_attachments" widget="boolean" optional="hide"/>
+                <field name="is_question" widget="boolean" optional="hide"
+                       string="?"/>
+                <field name="is_bulk" widget="boolean" optional="hide"/>
+                <field name="external_age_hours" optional="hide"/>
+                <field name="snoozed_until" widget="remaining_days"
+                       optional="hide" string="R&#233;veil"/>
+                <button name="action_reroute"
+                        string="Importer"
+                        type="object"
+                        icon="fa-sign-in"
+                        invisible="res_model"
+                        help="Router ce courriel IMAP orphelin vers un chatter."/>
+                <button name="action_archive"
+                        string="Traiter"
+                        type="object"
+                        icon="fa-check"
+                        invisible="is_handled"
+                        help="Sortir de la boîte de réception (préserve le statut)."/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- FORM VIEW                                                    -->
+    <!-- ============================================================ -->
+    <record id="bf_email_view_form" model="ir.ui.view">
+        <field name="name">bf.email.form</field>
+        <field name="model">bf.email</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_reply"
+                            string="R&#233;pondre"
+                            type="object"
+                            class="btn-primary"
+                            icon="fa-reply"/>
+                    <button name="action_reply_all"
+                            string="R&#233;pondre &#224; tous"
+                            type="object"
+                            class="btn-secondary"
+                            icon="fa-reply-all"
+                            invisible="direction != 'in'"/>
+                    <button name="action_forward"
+                            string="Transf&#233;rer"
+                            type="object"
+                            class="btn-primary"
+                            icon="fa-share"/>
+                    <widget name="bf_email_new_record_dropdown"
+                            invisible="is_foreign_owner"/>
+                    <button name="action_reroute"
+                            string="Lier &#224; un dossier"
+                            type="object"
+                            class="btn-secondary"
+                            icon="fa-sign-in"
+                            invisible="res_model"/>
+                    <button name="action_mark_read"
+                            string="Marquer lu"
+                            type="object"
+                            class="btn-secondary"
+                            invisible="status != 'new'"/>
+                    <button name="action_mark_replied"
+                            string="Marquer r&#233;pondu"
+                            type="object"
+                            class="btn-secondary"
+                            invisible="status in ('replied', 'archived')"/>
+                    <button name="action_archive"
+                            string="Traiter"
+                            type="object"
+                            class="btn-success"
+                            icon="fa-check"
+                            context="{'with_undo_redirect': True}"
+                            invisible="is_handled"/>
+                    <button name="action_unhandle"
+                            string="Remettre en bo&#238;te"
+                            type="object"
+                            class="btn-secondary"
+                            icon="fa-undo"
+                            invisible="not is_handled or not context.get('bf_email_just_handled')"
+                            help="Annuler le traitement (visible jusqu'au rechargement de la page)."/>
+                    <button name="action_snooze"
+                            string="Reporter"
+                            type="object"
+                            class="btn-secondary"
+                            icon="fa-clock-o"
+                            invisible="is_handled"/>
+                    <button name="action_create_reminder"
+                            string="Cr&#233;er un rappel"
+                            type="object"
+                            class="btn-secondary"
+                            icon="fa-bell"/>
+                    <button name="action_download_eml"
+                            string="T&#233;l&#233;charger .eml"
+                            type="object"
+                            class="btn-secondary"
+                            icon="fa-download"/>
+                    <field name="status" widget="statusbar"
+                           statusbar_visible="new,read,replied"/>
+                </header>
+                <sheet>
+                    <field name="is_foreign_owner" invisible="1"/>
+                    <field name="has_helpdesk" invisible="1"/>
+                    <field name="has_expense" invisible="1"/>
+                    <field name="has_crm" invisible="1"/>
+                    <div class="alert alert-danger" role="alert"
+                         invisible="not context.get('bf_admin_zone') and not is_foreign_owner">
+                        <i class="fa fa-exclamation-triangle"/>
+                        Zone admin &#8212; vous consultez les courriels d'autres
+                        utilisateurs (lecture seule).
+                    </div>
+                    <widget name="web_ribbon"
+                            title="Trait&#233;"
+                            bg_color="text-bg-success"
+                            invisible="not is_handled or snoozed_until"/>
+                    <widget name="web_ribbon"
+                            title="Report&#233;"
+                            bg_color="text-bg-info"
+                            invisible="not snoozed_until"/>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_reply"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-reply">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">R&#233;pondre</span>
+                            </div>
+                        </button>
+                        <button name="action_forward"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-share">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Transf&#233;rer</span>
+                            </div>
+                        </button>
+                        <button name="action_open_in_chatter"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-comments"
+                                invisible="not res_model">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Chatter</span>
+                            </div>
+                        </button>
+                        <button name="action_open_source_record"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-external-link"
+                                invisible="not res_model">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Enregistrement</span>
+                            </div>
+                        </button>
+                        <button name="action_open_conversation"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-comments-o"
+                                invisible="thread_count &lt; 2">
+                            <field name="thread_count" widget="statinfo" string="Fil"/>
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <h1>
+                            <field name="subject" placeholder="(sans objet)"/>
+                        </h1>
+                    </div>
+
+                    <group>
+                        <group string="Exp&#233;diteur / Destinataire">
+                            <field name="direction"/>
+                            <field name="email_from"/>
+                            <field name="email_to"/>
+                            <field name="email_cc"/>
+                            <field name="date"/>
+                        </group>
+                        <group string="Enrichissement">
+                            <field name="category"/>
+                            <field name="source"/>
+                            <field name="priority" widget="priority"/>
+                            <field name="partner_id"/>
+                            <field name="author_id"/>
+                            <field name="response_time_hours"
+                                   invisible="response_time_hours == 0"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Corps" name="body">
+                            <field name="body_html_display" readonly="1" nolabel="1"/>
+                        </page>
+                        <page string="Signaux" name="insights">
+                            <p class="text-muted small">
+                                Signaux heuristiques (Dabbish &amp; Kraut 2006,
+                                Whittaker &amp; Sidner 1996, Kooti et al. 2015,
+                                Grbovic et al. 2014). Voir README.
+                            </p>
+                            <group>
+                                <group string="Triage">
+                                    <field name="is_to_me"/>
+                                    <field name="is_question"/>
+                                    <field name="is_action_request"/>
+                                    <field name="is_short"/>
+                                </group>
+                                <group string="Contexte">
+                                    <field name="is_late_night"/>
+                                    <field name="is_likely_thread"/>
+                                    <field name="is_bulk"/>
+                                </group>
+                                <group string="Temporalit&#233;">
+                                    <field name="external_age_hours"
+                                           invisible="direction != 'in'"/>
+                                    <field name="expected_reply_minutes"
+                                           invisible="not partner_id"/>
+                                </group>
+                                <group string="Workflow">
+                                    <field name="is_handled" readonly="1"/>
+                                    <field name="handled_at" readonly="1"
+                                           invisible="not is_handled"/>
+                                    <field name="snoozed_until"/>
+                                    <field name="imap_in_inbox" readonly="1"
+                                           invisible="source != 'imap'"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Pi&#232;ces jointes" name="attachments"
+                              invisible="not has_attachments">
+                            <field name="attachment_ids" nolabel="1" readonly="1">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="mimetype"/>
+                                    <field name="file_size"/>
+                                    <field name="create_date"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Technique" name="technical">
+                            <group>
+                                <group string="RFC 2822">
+                                    <field name="message_id_header"/>
+                                    <field name="in_reply_to"/>
+                                    <field name="thread_root_id"/>
+                                </group>
+                                <group string="IMAP source"
+                                       invisible="source != 'imap'">
+                                    <field name="imap_uid"/>
+                                    <field name="imap_folder"/>
+                                </group>
+                                <group string="Chatter">
+                                    <field name="mail_message_id"/>
+                                    <field name="res_model"/>
+                                    <field name="res_id"/>
+                                    <field name="record_name"/>
+                                </group>
+                                <group string="Pi&#232;ces jointes">
+                                    <field name="has_attachments"/>
+                                    <field name="attachment_count"/>
+                                </group>
+                                <group>
+                                    <field name="company_id"
+                                           groups="base.group_multi_company"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- SEARCH VIEW                                                  -->
+    <!-- ============================================================ -->
+    <record id="bf_email_view_search" model="ir.ui.view">
+        <field name="name">bf.email.search</field>
+        <field name="model">bf.email</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="subject"/>
+                <field name="body_preview" string="Contenu"/>
+                <field name="email_from"/>
+                <field name="email_to"/>
+                <field name="partner_id"/>
+                <field name="record_name"/>
+                <separator/>
+                <filter name="filter_received"
+                        string="Re&#231;us"
+                        domain="[('direction', '=', 'in')]"/>
+                <filter name="filter_sent"
+                        string="Envoy&#233;s"
+                        domain="[('direction', '=', 'out')]"/>
+                <separator/>
+                <filter name="filter_source_gateway"
+                        string="Via passerelle"
+                        domain="[('source', '=', 'gateway')]"/>
+                <filter name="filter_source_chatter"
+                        string="Via Chatter"
+                        domain="[('source', '=', 'chatter')]"/>
+                <filter name="filter_source_imap"
+                        string="IMAP direct"
+                        domain="[('source', '=', 'imap')]"/>
+                <separator/>
+                <filter name="filter_new"
+                        string="Non lus"
+                        domain="[('status', '=', 'new')]"/>
+                <filter name="filter_read"
+                        string="Lus"
+                        domain="[('status', '=', 'read')]"/>
+                <filter name="filter_replied"
+                        string="R&#233;pondus"
+                        domain="[('status', '=', 'replied')]"/>
+                <separator/>
+                <filter name="filter_inbox"
+                        string="Bo&#238;te de r&#233;ception"
+                        domain="[('user_id', '=', uid), ('is_handled', '=', False), '|', ('imap_in_inbox', '=', True), ('source', 'in', ('chatter', 'gateway'))]"
+                        help="Mime l'INBOX IMAP : courriels actifs en IMAP plus tous les chatters non trait&#233;s. Exclut les trait&#233;s."/>
+                <filter name="filter_to_reply"
+                        string="&#192; r&#233;pondre"
+                        domain="[('direction', '=', 'in'), ('status', 'in', ('new', 'read')), ('is_handled', '=', False), ('category', 'in', ('client', 'vendor'))]"/>
+                <filter name="filter_stale"
+                        string="Sans r&#233;ponse > 7 jours"
+                        domain="[('direction', '=', 'in'), ('status', 'in', ('new', 'read')), ('is_handled', '=', False), ('date', '&lt;', (context_today() - datetime.timedelta(days=7)).strftime('%%Y-%%m-%%d'))]"/>
+                <filter name="filter_vip"
+                        string="VIP / priorit&#233; &#233;lev&#233;e"
+                        domain="[('is_handled', '=', False), ('priority', 'in', ('2', '3'))]"/>
+                <filter name="filter_question"
+                        string="Questions pos&#233;es"
+                        domain="[('is_question', '=', True), ('is_handled', '=', False), ('direction', '=', 'in')]"/>
+                <filter name="filter_to_me"
+                        string="&#192; moi (To, pas CC)"
+                        domain="[('is_to_me', '=', True), ('is_handled', '=', False)]"/>
+                <filter name="filter_bulk"
+                        string="En masse / marketing"
+                        domain="[('is_bulk', '=', True)]"/>
+                <filter name="filter_snoozed"
+                        string="Report&#233;s"
+                        domain="[('snoozed_until', '!=', False)]"/>
+                <separator/>
+                <filter name="filter_last_24h"
+                        string="Derni&#232;res 24 h"
+                        domain="[('date', '>=', (context_today() - datetime.timedelta(days=1)).strftime('%%Y-%%m-%%d'))]"/>
+                <filter name="filter_last_48h"
+                        string="Derni&#232;res 48 h"
+                        domain="[('date', '>=', (context_today() - datetime.timedelta(days=2)).strftime('%%Y-%%m-%%d'))]"/>
+                <filter name="filter_today"
+                        string="Aujourd'hui"
+                        domain="[('date', '>=', (context_today()).strftime('%%Y-%%m-%%d'))]"/>
+                <filter name="filter_week"
+                        string="Cette semaine"
+                        domain="[('date', '>=', (context_today() - datetime.timedelta(days=7)).strftime('%%Y-%%m-%%d'))]"/>
+                <filter name="filter_month"
+                        string="Ce mois-ci"
+                        domain="[('date', '>=', (context_today()).strftime('%%Y-%%m-01'))]"/>
+                <separator/>
+                <filter name="filter_my_emails"
+                        string="Mes courriels"
+                        domain="['|', '|', '|', ('is_to_me', '=', True), ('is_cc_to_me', '=', True), ('is_from_me', '=', True), ('author_id.user_ids', 'in', uid)]"/>
+                <filter name="filter_no_record"
+                        string="Sans dossier (&#224; router)"
+                        domain="[('res_model', '=', False)]"/>
+                <filter name="filter_with_record"
+                        string="Avec dossier"
+                        domain="[('res_model', '!=', False)]"/>
+                <filter name="filter_imap_only"
+                        string="IMAP orphelin"
+                        domain="[('source', '=', 'imap'), ('mail_message_id', '=', False)]"/>
+                <filter name="filter_attachments"
+                        string="Avec pi&#232;ces jointes"
+                        domain="[('has_attachments', '=', True)]"/>
+                <filter name="filter_handled"
+                        string="Trait&#233;s"
+                        domain="[('is_handled', '=', True)]"/>
+                <filter name="filter_archived_legacy"
+                        string="Archives IMAP (lecture seule)"
+                        domain="[('active', '=', False)]"/>
+                <separator/>
+                <group expand="0" string="Grouper par">
+                    <filter name="group_direction"
+                            string="Direction"
+                            context="{'group_by': 'direction'}"/>
+                    <filter name="group_category"
+                            string="Cat&#233;gorie"
+                            context="{'group_by': 'category'}"/>
+                    <filter name="group_source"
+                            string="Source"
+                            context="{'group_by': 'source'}"/>
+                    <filter name="group_status"
+                            string="Statut"
+                            context="{'group_by': 'status'}"/>
+                    <filter name="group_partner"
+                            string="Contact"
+                            context="{'group_by': 'partner_id'}"/>
+                    <filter name="group_model"
+                            string="Mod&#232;le"
+                            context="{'group_by': 'res_model'}"/>
+                    <filter name="group_thread"
+                            string="Fil"
+                            context="{'group_by': 'thread_root_id'}"/>
+                    <filter name="group_date"
+                            string="Date"
+                            context="{'group_by': 'date:day'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- KANBAN VIEW                                                  -->
+    <!-- ============================================================ -->
+    <record id="bf_email_view_kanban" model="ir.ui.view">
+        <field name="name">bf.email.kanban</field>
+        <field name="model">bf.email</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="category" class="o_kanban_small_column"
+                    records_draggable="1">
+                <field name="direction"/>
+                <field name="status"/>
+                <field name="category"/>
+                <field name="is_handled"/>
+                <field name="is_to_me"/>
+                <field name="is_question"/>
+                <field name="priority"/>
+                <field name="has_attachments"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_content">
+                            <div class="o_kanban_record_top mb-1">
+                                <strong>
+                                    <t t-if="record.direction.raw_value == 'in'">&#8592; </t>
+                                    <t t-else="">&#8594; </t>
+                                    <field name="email_from" class="text-truncate"/>
+                                </strong>
+                            </div>
+                            <div class="text-truncate mb-1">
+                                <field name="subject"/>
+                            </div>
+                            <div class="o_kanban_record_bottom">
+                                <div class="oe_kanban_bottom_left text-muted">
+                                    <field name="date" widget="date"/>
+                                </div>
+                                <div class="oe_kanban_bottom_right">
+                                    <field name="category" widget="badge"
+                                           invisible="not category"/>
+                                    <t t-if="record.has_attachments.raw_value">
+                                        <i class="fa fa-paperclip" title="Pi&#232;ces jointes"/>
+                                    </t>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- GRAPH VIEW                                                   -->
+    <!-- ============================================================ -->
+    <record id="bf_email_view_graph" model="ir.ui.view">
+        <field name="name">bf.email.graph</field>
+        <field name="model">bf.email</field>
+        <field name="arch" type="xml">
+            <graph string="Volume de courriels" type="bar">
+                <field name="date" interval="day"/>
+                <field name="direction" type="col"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- PIVOT VIEW                                                   -->
+    <!-- ============================================================ -->
+    <record id="bf_email_view_pivot" model="ir.ui.view">
+        <field name="name">bf.email.pivot</field>
+        <field name="model">bf.email</field>
+        <field name="arch" type="xml">
+            <pivot string="Analyse courriels">
+                <field name="date" interval="month" type="row"/>
+                <field name="direction" type="col"/>
+                <field name="category" type="row"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- ACTION                                                       -->
+    <!-- ============================================================ -->
+    <!-- ============================================================ -->
+    <!-- SERVER ACTIONS (mass actions from list)                     -->
+    <!-- ============================================================ -->
+    <record id="action_bf_email_mark_read" model="ir.actions.server">
+        <field name="name">Marquer lu</field>
+        <field name="model_id" ref="model_bf_email"/>
+        <field name="binding_model_id" ref="model_bf_email"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">records.action_mark_read()</field>
+    </record>
+
+    <record id="action_bf_email_mark_replied" model="ir.actions.server">
+        <field name="name">Marquer r&#233;pondu</field>
+        <field name="model_id" ref="model_bf_email"/>
+        <field name="binding_model_id" ref="model_bf_email"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">records.action_mark_replied()</field>
+    </record>
+
+    <record id="action_bf_email_archive" model="ir.actions.server">
+        <field name="name">Traiter (sortir de la bo&#238;te)</field>
+        <field name="model_id" ref="model_bf_email"/>
+        <field name="binding_model_id" ref="model_bf_email"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">records.action_archive()</field>
+    </record>
+
+    <record id="action_bf_email_unhandle" model="ir.actions.server">
+        <field name="name">Remettre en bo&#238;te</field>
+        <field name="model_id" ref="model_bf_email"/>
+        <field name="binding_model_id" ref="model_bf_email"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">records.action_unhandle()</field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- ACTIONS                                                      -->
+    <!-- ============================================================ -->
+    <record id="bf_email_action" model="ir.actions.act_window">
+        <field name="name">Bo&#238;te de r&#233;ception</field>
+        <field name="res_model">bf.email</field>
+        <field name="view_mode">list,kanban,form,graph,pivot</field>
+        <field name="search_view_id" ref="bf_email_view_search"/>
+        <field name="domain">[('user_id', '=', uid), ('is_handled', '=', False), '|', ('imap_in_inbox', '=', True), ('source', 'in', ('chatter', 'gateway'))]</field>
+        <field name="context">{'search_default_filter_inbox': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Inbox Zero atteint
+            </p>
+            <p>
+                Cette vue mime l'INBOX IMAP&#160;: courriels encore actifs c&#244;t&#233; serveur
+                plus les chatters Odoo non trait&#233;s. Archiver via &#171;&#160;Traiter&#160;&#187;
+                conserve le statut (lu/r&#233;pondu).
+            </p>
+        </field>
+    </record>
+
+    <record id="bf_email_action_all" model="ir.actions.act_window">
+        <field name="name">Tous les courriels</field>
+        <field name="res_model">bf.email</field>
+        <field name="view_mode">list,kanban,form,graph,pivot</field>
+        <field name="search_view_id" ref="bf_email_view_search"/>
+        <field name="context">{'search_default_filter_my_emails': 1}</field>
+    </record>
+
+    <record id="bf_email_action_graph" model="ir.actions.act_window">
+        <field name="name">Volume de courriels</field>
+        <field name="res_model">bf.email</field>
+        <field name="view_mode">graph,pivot,list,form</field>
+        <field name="search_view_id" ref="bf_email_view_search"/>
+    </record>
+
+    <record id="bf_email_action_pivot" model="ir.actions.act_window">
+        <field name="name">Analyse courriels</field>
+        <field name="res_model">bf.email</field>
+        <field name="view_mode">pivot,graph,list,form</field>
+        <field name="search_view_id" ref="bf_email_view_search"/>
+    </record>
+
+</odoo>

@@ -1,0 +1,450 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- ============================================== -->
+        <!-- MODÈLE PAR DÉFAUT (s'applique à tous les services) -->
+        <!-- ============================================== -->
+        <record id="maintenance_template_default" model="hosting.maintenance.template">
+            <field name="name">Maintenance par défaut</field>
+            <field name="sequence">100</field>
+            <field name="software_id" eval="False"/>
+            <field name="notes">Tâches de maintenance par défaut qui s'appliquent à tous les services d'hébergement.</field>
+        </record>
+
+        <record id="maintenance_template_default_line_backup_setup" model="hosting.maintenance.template.line">
+            <field name="template_id" ref="maintenance_template_default"/>
+            <field name="sequence">1</field>
+            <field name="name">Vérifier la configuration de la sauvegarde</field>
+            <field name="maintenance_type">backup_setup</field>
+            <field name="frequency">once</field>
+            <field name="days_after_activation">1</field>
+            <field name="create_activity" eval="True"/>
+            <field name="instructions">Vérifier que ce service est inclus dans le système de sauvegarde :
+1. Vérifier que le répertoire de données du service est dans la portée de la sauvegarde
+2. Vérifier que les sauvegardes de la base de données sont configurées (si applicable)
+3. Tester une restauration pour confirmer que les sauvegardes fonctionnent
+4. Documenter l'emplacement de la sauvegarde et la politique de rétention</field>
+        </record>
+
+        <record id="maintenance_template_default_line_ssl" model="hosting.maintenance.template.line">
+            <field name="template_id" ref="maintenance_template_default"/>
+            <field name="sequence">10</field>
+            <field name="name">Vérification du certificat SSL</field>
+            <field name="maintenance_type">ssl_renewal</field>
+            <field name="frequency">monthly</field>
+            <field name="instructions">Vérifier l'état du certificat SSL :
+1. Vérifier la date d'expiration du certificat
+2. Vérifier que le renouvellement automatique fonctionne (Let's Encrypt/Certbot)
+3. Tester la connectivité HTTPS
+4. Vérifier les problèmes de chaîne de certificats</field>
+        </record>
+
+        <record id="maintenance_template_default_line_backup_verify" model="hosting.maintenance.template.line">
+            <field name="template_id" ref="maintenance_template_default"/>
+            <field name="sequence">20</field>
+            <field name="name">Vérification des sauvegardes</field>
+            <field name="maintenance_type">backup_verify</field>
+            <field name="frequency">monthly</field>
+            <field name="instructions">Vérifier l'intégrité des sauvegardes :
+1. Vérifier que des sauvegardes récentes existent
+2. Vérifier que la taille des fichiers de sauvegarde est raisonnable
+3. Tester la procédure de restauration (si possible en pré-production)
+4. Vérifier la conformité de la politique de rétention des sauvegardes</field>
+        </record>
+
+        <!-- ============================================== -->
+        <!-- MODÈLE NEXTCLOUD                               -->
+        <!-- ============================================== -->
+        <record id="maintenance_template_nextcloud" model="hosting.maintenance.template">
+            <field name="name">Maintenance Nextcloud</field>
+            <field name="sequence">10</field>
+            <field name="software_id" search="[('code', '=', 'NC')]"/>
+            <field name="notes">Tâches de maintenance spécifiques aux instances Nextcloud.</field>
+        </record>
+
+        <record id="maintenance_template_nextcloud_line_backup" model="hosting.maintenance.template.line">
+            <field name="template_id" ref="maintenance_template_nextcloud"/>
+            <field name="sequence">1</field>
+            <field name="name">Configurer la sauvegarde Nextcloud</field>
+            <field name="maintenance_type">backup_setup</field>
+            <field name="frequency">once</field>
+            <field name="days_after_activation">1</field>
+            <field name="create_activity" eval="True"/>
+            <field name="instructions">Configurer la sauvegarde Nextcloud :
+1. Ajouter le répertoire de données à la portée de BorgBackup
+2. Configurer le dump de la base de données (PostgreSQL/MySQL)
+3. Inclure config.php dans la sauvegarde
+4. Tester la procédure de restauration
+5. Documenter les étapes de récupération</field>
+        </record>
+
+        <record id="maintenance_template_nextcloud_line_admin_check" model="hosting.maintenance.template.line">
+            <field name="template_id" ref="maintenance_template_nextcloud"/>
+            <field name="sequence">10</field>
+            <field name="name">Vérifier les avertissements administrateur</field>
+            <field name="maintenance_type">admin_check</field>
+            <field name="frequency">biweekly</field>
+            <field name="instructions">Réviser le panneau d'administration Nextcloud :
+1. Se connecter en tant qu'administrateur
+2. Aller dans Paramètres > Administration > Vue d'ensemble
+3. Vérifier les avertissements de sécurité
+4. Réviser les indicateurs de santé du système
+5. Vérifier les mises à jour en attente
+6. Examiner et traiter tout avertissement</field>
+        </record>
+
+        <record id="maintenance_template_nextcloud_line_app_update" model="hosting.maintenance.template.line">
+            <field name="template_id" ref="maintenance_template_nextcloud"/>
+            <field name="sequence">20</field>
+            <field name="name">Mettre à jour les applications Nextcloud</field>
+            <field name="maintenance_type">app_update</field>
+            <field name="frequency">biweekly</field>
+            <field name="instructions">Mettre à jour les applications Nextcloud :
+1. Créer une sauvegarde avant la mise à jour
+2. Aller dans la section Applications de l'administration
+3. Vérifier les mises à jour disponibles
+4. Mettre à jour les applications une par une
+5. Tester les fonctionnalités après chaque mise à jour
+6. Documenter tout problème rencontré</field>
+        </record>
+
+        <record id="maintenance_template_nextcloud_line_db_optimize" model="hosting.maintenance.template.line">
+            <field name="template_id" ref="maintenance_template_nextcloud"/>
+            <field name="sequence">30</field>
+            <field name="name">Optimisation de la base de données</field>
+            <field name="maintenance_type">db_optimize</field>
+            <field name="frequency">monthly</field>
+            <field name="instructions">Optimiser la base de données Nextcloud :
+1. Exécuter : docker exec -u www-data nextcloud php occ db:add-missing-indices
+2. Exécuter : docker exec -u www-data nextcloud php occ db:convert-filecache-bigint
+3. Vérifier les avertissements de base de données dans le panneau d'administration
+4. Exécuter vacuum/analyze si utilisation de PostgreSQL</field>
+        </record>
+
+        <record id="maintenance_template_nextcloud_line_storage" model="hosting.maintenance.template.line">
+            <field name="template_id" ref="maintenance_template_nextcloud"/>
+            <field name="sequence">40</field>
+            <field name="name">Nettoyage du stockage</field>
+            <field name="maintenance_type">storage_cleanup</field>
+            <field name="frequency">quarterly</field>
+            <field name="instructions">Nettoyer le stockage Nextcloud :
+1. Exécuter : docker exec -u www-data nextcloud php occ trashbin:cleanup --all-users
+2. Exécuter : docker exec -u www-data nextcloud php occ versions:cleanup
+3. Examiner l'utilisation du stockage par utilisateur
+4. Contacter les utilisateurs avec un stockage excessif si nécessaire
+5. Vérifier les fichiers orphelins</field>
+        </record>
+
+        <!-- ============================================== -->
+        <!-- MODÈLE VAULTWARDEN                             -->
+        <!-- ============================================== -->
+        <record id="maintenance_template_vaultwarden" model="hosting.maintenance.template">
+            <field name="name">Maintenance Vaultwarden</field>
+            <field name="sequence">20</field>
+            <field name="software_id" search="[('code', '=', 'VW')]"/>
+            <field name="notes">Tâches de maintenance spécifiques au gestionnaire de mots de passe Vaultwarden.</field>
+        </record>
+
+        <record id="maintenance_template_vaultwarden_line_backup" model="hosting.maintenance.template.line">
+            <field name="template_id" ref="maintenance_template_vaultwarden"/>
+            <field name="sequence">1</field>
+            <field name="name">Configurer la sauvegarde Vaultwarden</field>
+            <field name="maintenance_type">backup_setup</field>
+            <field name="frequency">once</field>
+            <field name="days_after_activation">1</field>
+            <field name="create_activity" eval="True"/>
+            <field name="instructions">Configurer la sauvegarde Vaultwarden :
+1. Ajouter le répertoire /data à la portée de la sauvegarde
+2. S'assurer que db.sqlite3 est inclus
+3. Inclure le dossier des pièces jointes
+4. Inclure les clés RSA
+5. Tester la procédure de restauration
+CRITIQUE : Contient des mots de passe chiffrés — vérifier le chiffrement de la sauvegarde!</field>
+        </record>
+
+        <record id="maintenance_template_vaultwarden_line_update" model="hosting.maintenance.template.line">
+            <field name="template_id" ref="maintenance_template_vaultwarden"/>
+            <field name="sequence">10</field>
+            <field name="name">Vérifier les mises à jour Vaultwarden</field>
+            <field name="maintenance_type">container_update</field>
+            <field name="frequency">monthly</field>
+            <field name="instructions">Vérifier les mises à jour Vaultwarden :
+1. Vérifier les versions GitHub pour les nouvelles versions
+2. Examiner le journal des modifications pour les correctifs de sécurité
+3. Planifier la mise à jour pendant une période de faible utilisation
+4. Créer une sauvegarde avant la mise à jour
+5. docker compose pull &amp;&amp; docker compose up -d
+6. Vérifier le fonctionnement après la mise à jour</field>
+        </record>
+
+        <record id="maintenance_template_vaultwarden_line_log" model="hosting.maintenance.template.line">
+            <field name="template_id" ref="maintenance_template_vaultwarden"/>
+            <field name="sequence">20</field>
+            <field name="name">Examiner les journaux de sécurité</field>
+            <field name="maintenance_type">security_audit</field>
+            <field name="frequency">monthly</field>
+            <field name="instructions">Examiner la sécurité Vaultwarden :
+1. Vérifier les journaux pour les tentatives de connexion échouées
+2. Examiner le panneau d'administration pour toute activité inhabituelle
+3. Vérifier que la 2FA est activée pour tous les utilisateurs
+4. Vérifier les avis de sécurité
+5. Examiner les politiques d'organisation</field>
+        </record>
+
+        <!-- ============================================== -->
+        <!-- MODÈLE ODOO                                    -->
+        <!-- ============================================== -->
+        <record id="maintenance_template_odoo" model="hosting.maintenance.template">
+            <field name="name">Maintenance Odoo</field>
+            <field name="sequence">30</field>
+            <field name="software_id" search="[('code', '=', 'OD')]"/>
+            <field name="notes">Tâches de maintenance spécifiques aux instances Odoo ERP.</field>
+        </record>
+
+        <record id="maintenance_template_odoo_line_backup" model="hosting.maintenance.template.line">
+            <field name="template_id" ref="maintenance_template_odoo"/>
+            <field name="sequence">1</field>
+            <field name="name">Configurer la sauvegarde Odoo</field>
+            <field name="maintenance_type">backup_setup</field>
+            <field name="frequency">once</field>
+            <field name="days_after_activation">1</field>
+            <field name="create_activity" eval="True"/>
+            <field name="instructions">Configurer la sauvegarde Odoo :
+1. Configurer le module auto_backup ou une sauvegarde externe
+2. Inclure le dump de la base de données PostgreSQL
+3. Inclure le répertoire filestore
+4. Inclure les addons personnalisés
+5. Tester la restauration en pré-production
+6. Vérifier le calendrier de sauvegarde (quotidien recommandé)</field>
+        </record>
+
+        <record id="maintenance_template_odoo_line_db" model="hosting.maintenance.template.line">
+            <field name="template_id" ref="maintenance_template_odoo"/>
+            <field name="sequence">10</field>
+            <field name="name">Maintenance de la base de données</field>
+            <field name="maintenance_type">db_optimize</field>
+            <field name="frequency">weekly</field>
+            <field name="instructions">Optimiser la base de données Odoo :
+1. Exécuter VACUUM ANALYZE sur PostgreSQL
+2. Vérifier les requêtes de longue durée
+3. Examiner la croissance de la taille de la base de données
+4. Nettoyer les anciens journaux (mail.mail, ir.logging)
+5. Archiver les anciennes données si nécessaire</field>
+        </record>
+
+        <record id="maintenance_template_odoo_line_module" model="hosting.maintenance.template.line">
+            <field name="template_id" ref="maintenance_template_odoo"/>
+            <field name="sequence">20</field>
+            <field name="name">Vérification des mises à jour de modules</field>
+            <field name="maintenance_type">app_update</field>
+            <field name="frequency">monthly</field>
+            <field name="instructions">Vérifier les mises à jour des modules Odoo :
+1. Examiner les dépôts OCA pour les mises à jour
+2. Vérifier la compatibilité des modules personnalisés
+3. Planifier les mises à jour pendant la fenêtre de maintenance
+4. Tester en pré-production d'abord
+5. Documenter tous les changements de modules</field>
+        </record>
+
+        <record id="maintenance_template_odoo_line_security" model="hosting.maintenance.template.line">
+            <field name="template_id" ref="maintenance_template_odoo"/>
+            <field name="sequence">30</field>
+            <field name="name">Audit de sécurité</field>
+            <field name="maintenance_type">security_audit</field>
+            <field name="frequency">quarterly</field>
+            <field name="instructions">Examen de sécurité Odoo :
+1. Examiner les droits d'accès des utilisateurs
+2. Vérifier les utilisateurs inactifs
+3. Examiner les clés et jetons API
+4. Vérifier les intégrations externes
+5. Examiner les journaux d'audit (si disponibles)
+6. Vérifier l'application de la 2FA</field>
+        </record>
+
+        <record id="maintenance_template_odoo_line_performance" model="hosting.maintenance.template.line">
+            <field name="template_id" ref="maintenance_template_odoo"/>
+            <field name="sequence">40</field>
+            <field name="name">Examen des performances</field>
+            <field name="maintenance_type">performance_review</field>
+            <field name="frequency">quarterly</field>
+            <field name="instructions">Examen des performances Odoo :
+1. Vérifier les temps de réponse
+2. Examiner les journaux de requêtes lentes
+3. Surveiller l'utilisation de la mémoire
+4. Vérifier les processus de travail
+5. Examiner les temps d'exécution des tâches planifiées
+6. Optimiser les zones problématiques</field>
+        </record>
+
+        <!-- ============================================== -->
+        <!-- MODÈLE CRYPTPAD                                -->
+        <!-- ============================================== -->
+        <record id="maintenance_template_cryptpad" model="hosting.maintenance.template">
+            <field name="name">Maintenance CryptPad</field>
+            <field name="sequence">40</field>
+            <field name="software_id" search="[('code', '=', 'CP')]"/>
+            <field name="notes">Tâches de maintenance pour l'édition collaborative CryptPad.</field>
+        </record>
+
+        <record id="maintenance_template_cryptpad_line_backup" model="hosting.maintenance.template.line">
+            <field name="template_id" ref="maintenance_template_cryptpad"/>
+            <field name="sequence">1</field>
+            <field name="name">Configurer la sauvegarde CryptPad</field>
+            <field name="maintenance_type">backup_setup</field>
+            <field name="frequency">once</field>
+            <field name="days_after_activation">1</field>
+            <field name="create_activity" eval="True"/>
+            <field name="instructions">Configurer la sauvegarde CryptPad :
+1. Ajouter le répertoire de données à la portée de la sauvegarde
+2. Inclure les magasins blob et block
+3. Inclure le datastore
+4. Note : les données sont chiffrées — sauvegarder la clé de chiffrement séparément!
+5. Tester la procédure de restauration</field>
+        </record>
+
+        <record id="maintenance_template_cryptpad_line_update" model="hosting.maintenance.template.line">
+            <field name="template_id" ref="maintenance_template_cryptpad"/>
+            <field name="sequence">10</field>
+            <field name="name">Vérifier les mises à jour CryptPad</field>
+            <field name="maintenance_type">container_update</field>
+            <field name="frequency">biweekly</field>
+            <field name="instructions">Vérifier les mises à jour CryptPad :
+1. Vérifier les versions GitHub
+2. Examiner le journal des modifications pour les correctifs de sécurité
+3. Sauvegarder avant la mise à jour
+4. Mettre à jour l'image du conteneur
+5. Exécuter les migrations nécessaires
+6. Tester l'édition de documents après la mise à jour</field>
+        </record>
+
+        <record id="maintenance_template_cryptpad_line_storage" model="hosting.maintenance.template.line">
+            <field name="template_id" ref="maintenance_template_cryptpad"/>
+            <field name="sequence">20</field>
+            <field name="name">Nettoyage du stockage</field>
+            <field name="maintenance_type">storage_cleanup</field>
+            <field name="frequency">monthly</field>
+            <field name="instructions">Maintenance du stockage CryptPad :
+1. Exécuter le script evict-inactive pour les anciens documents
+2. Vérifier l'utilisation du stockage
+3. Examiner les politiques d'épinglage/archivage
+4. Nettoyer les blobs orphelins
+5. Surveiller les tendances de croissance</field>
+        </record>
+
+        <!-- ============================================== -->
+        <!-- MODÈLE ONLYOFFICE                              -->
+        <!-- ============================================== -->
+        <record id="maintenance_template_onlyoffice" model="hosting.maintenance.template">
+            <field name="name">Maintenance OnlyOffice</field>
+            <field name="sequence">50</field>
+            <field name="software_id" search="[('code', '=', 'OO')]"/>
+            <field name="notes">Tâches de maintenance pour le serveur de documents OnlyOffice.</field>
+        </record>
+
+        <record id="maintenance_template_onlyoffice_line_update" model="hosting.maintenance.template.line">
+            <field name="template_id" ref="maintenance_template_onlyoffice"/>
+            <field name="sequence">10</field>
+            <field name="name">Vérifier les mises à jour OnlyOffice</field>
+            <field name="maintenance_type">container_update</field>
+            <field name="frequency">monthly</field>
+            <field name="instructions">Vérifier les mises à jour OnlyOffice :
+1. Vérifier Docker Hub pour les nouvelles versions
+2. Examiner le journal des modifications pour les correctifs de sécurité
+3. Sauvegarder la configuration
+4. Télécharger et redémarrer le conteneur
+5. Tester l'édition de documents dans Nextcloud
+6. Vérifier que les polices et la correction orthographique fonctionnent</field>
+        </record>
+
+        <record id="maintenance_template_onlyoffice_line_log" model="hosting.maintenance.template.line">
+            <field name="template_id" ref="maintenance_template_onlyoffice"/>
+            <field name="sequence">20</field>
+            <field name="name">Nettoyage des journaux</field>
+            <field name="maintenance_type">log_cleanup</field>
+            <field name="frequency">monthly</field>
+            <field name="instructions">Nettoyer les journaux OnlyOffice :
+1. Vérifier la taille des journaux
+2. Effectuer la rotation des anciens journaux
+3. Examiner les journaux d'erreurs pour les problèmes
+4. Vider le cache de conversion si nécessaire</field>
+        </record>
+
+        <!-- ============================================== -->
+        <!-- MODÈLE PRIVATEBIN                              -->
+        <!-- ============================================== -->
+        <record id="maintenance_template_privatebin" model="hosting.maintenance.template">
+            <field name="name">Maintenance PrivateBin</field>
+            <field name="sequence">60</field>
+            <field name="software_id" search="[('code', '=', 'PB')]"/>
+            <field name="notes">Tâches de maintenance pour le service de collage PrivateBin.</field>
+        </record>
+
+        <record id="maintenance_template_privatebin_line_update" model="hosting.maintenance.template.line">
+            <field name="template_id" ref="maintenance_template_privatebin"/>
+            <field name="sequence">10</field>
+            <field name="name">Vérifier les mises à jour PrivateBin</field>
+            <field name="maintenance_type">container_update</field>
+            <field name="frequency">monthly</field>
+            <field name="instructions">Vérifier les mises à jour PrivateBin :
+1. Vérifier les versions GitHub
+2. Examiner les avis de sécurité
+3. Mettre à jour l'image du conteneur
+4. Tester la création et la lecture de collages</field>
+        </record>
+
+        <record id="maintenance_template_privatebin_line_cleanup" model="hosting.maintenance.template.line">
+            <field name="template_id" ref="maintenance_template_privatebin"/>
+            <field name="sequence">20</field>
+            <field name="name">Nettoyage du stockage</field>
+            <field name="maintenance_type">storage_cleanup</field>
+            <field name="frequency">quarterly</field>
+            <field name="instructions">Nettoyer le stockage PrivateBin :
+1. Les collages expirés devraient se supprimer automatiquement
+2. Vérifier que le nettoyage fonctionne
+3. Vérifier l'utilisation du stockage
+4. Examiner les tendances de trafic/utilisation</field>
+        </record>
+
+        <!-- ============================================== -->
+        <!-- MODÈLE GRIST                                   -->
+        <!-- ============================================== -->
+        <record id="maintenance_template_grist" model="hosting.maintenance.template">
+            <field name="name">Maintenance Grist</field>
+            <field name="sequence">70</field>
+            <field name="software_id" search="[('code', '=', 'GR')]"/>
+            <field name="notes">Tâches de maintenance pour la plateforme de tableurs Grist.</field>
+        </record>
+
+        <record id="maintenance_template_grist_line_backup" model="hosting.maintenance.template.line">
+            <field name="template_id" ref="maintenance_template_grist"/>
+            <field name="sequence">1</field>
+            <field name="name">Configurer la sauvegarde Grist</field>
+            <field name="maintenance_type">backup_setup</field>
+            <field name="frequency">once</field>
+            <field name="days_after_activation">1</field>
+            <field name="create_activity" eval="True"/>
+            <field name="instructions">Configurer la sauvegarde Grist :
+1. Ajouter le répertoire persist à la portée de la sauvegarde
+2. Inclure le magasin de documents
+3. Inclure la base de données home
+4. Tester la procédure de restauration
+5. Documenter les étapes de récupération</field>
+        </record>
+
+        <record id="maintenance_template_grist_line_update" model="hosting.maintenance.template.line">
+            <field name="template_id" ref="maintenance_template_grist"/>
+            <field name="sequence">10</field>
+            <field name="name">Vérifier les mises à jour Grist</field>
+            <field name="maintenance_type">container_update</field>
+            <field name="frequency">monthly</field>
+            <field name="instructions">Vérifier les mises à jour Grist :
+1. Vérifier les versions GitHub pour les nouvelles versions
+2. Examiner le journal des modifications pour les fonctionnalités et correctifs
+3. Sauvegarder avant la mise à jour
+4. Mettre à jour l'image du conteneur
+5. Tester l'édition de documents après la mise à jour</field>
+        </record>
+
+    </data>
+</odoo>

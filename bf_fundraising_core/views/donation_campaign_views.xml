@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+<odoo>
+    <record id="donation_campaign_form_bf" model="ir.ui.view">
+        <field name="name">donation.campaign.form.bf</field>
+        <field name="model">donation.campaign</field>
+        <field name="inherit_id" ref="donation.donation_campaign_form" />
+        <field name="arch" type="xml">
+            <field name="start_date" position="after">
+                <field name="date_end" />
+                <field name="goal_amount" />
+                <field name="currency_id" invisible="1" />
+                <field name="amount_raised" />
+                <field name="progress" widget="progressbar" />
+            </field>
+            <xpath expr="//group[@name='main']" position="after">
+                <notebook>
+                    <page string="Sollicitations" name="appeals">
+                        <field name="appeal_ids" context="{'default_campaign_id': id}">
+                            <list editable="bottom">
+                                <field name="sequence" widget="handle" />
+                                <field name="code" />
+                                <field name="name" />
+                                <field name="date_start" />
+                                <field name="date_end" />
+                                <field name="goal_amount" />
+                                <field name="amount_raised" />
+                                <field name="progress" widget="progressbar" />
+                            </list>
+                        </field>
+                    </page>
+                </notebook>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="donation_campaign_tree_bf" model="ir.ui.view">
+        <field name="name">donation.campaign.list.bf</field>
+        <field name="model">donation.campaign</field>
+        <field name="inherit_id" ref="donation.donation_campaign_tree" />
+        <field name="arch" type="xml">
+            <field name="name" position="after">
+                <field name="goal_amount" optional="show" />
+                <field name="amount_raised" optional="show" />
+                <field name="progress" widget="progressbar" optional="show" />
+            </field>
+        </field>
+    </record>
+</odoo>

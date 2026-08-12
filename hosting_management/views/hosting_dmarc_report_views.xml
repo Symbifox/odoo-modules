@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- List -->
+    <record id="hosting_dmarc_report_view_list" model="ir.ui.view">
+        <field name="name">hosting.dmarc.report.list</field>
+        <field name="model">hosting.dmarc.report</field>
+        <field name="arch" type="xml">
+            <list string="Rapports DMARC"
+                  decoration-danger="fail_rate &gt;= 5"
+                  decoration-success="total_count &gt; 0 and fail_rate == 0">
+                <field name="date_end"/>
+                <field name="domain_name"/>
+                <field name="org_name"/>
+                <field name="policy_p"/>
+                <field name="total_count"/>
+                <field name="pass_count"/>
+                <field name="fail_count"/>
+                <field name="fail_rate" string="Échec %"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form -->
+    <record id="hosting_dmarc_report_view_form" model="ir.ui.view">
+        <field name="name">hosting.dmarc.report.form</field>
+        <field name="model">hosting.dmarc.report</field>
+        <field name="arch" type="xml">
+            <form string="Rapport DMARC">
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group string="Déclarant">
+                            <field name="org_name"/>
+                            <field name="org_email"/>
+                            <field name="report_id"/>
+                            <field name="date_begin"/>
+                            <field name="date_end"/>
+                        </group>
+                        <group string="Politique publiée">
+                            <field name="domain_id"/>
+                            <field name="domain_name"/>
+                            <field name="policy_p"/>
+                            <field name="policy_sp"/>
+                            <field name="policy_pct"/>
+                            <field name="policy_adkim"/>
+                            <field name="policy_aspf"/>
+                        </group>
+                    </group>
+                    <group string="Synthèse">
+                        <field name="total_count"/>
+                        <field name="pass_count"/>
+                        <field name="fail_count"/>
+                        <field name="fail_rate"/>
+                    </group>
+                    <notebook>
+                        <page string="Sources" name="lines">
+                            <field name="line_ids" readonly="1">
+                                <list decoration-danger="aligned == False"
+                                      decoration-success="aligned == True">
+                                    <field name="source_ip"/>
+                                    <field name="count"/>
+                                    <field name="disposition"/>
+                                    <field name="dkim_eval"/>
+                                    <field name="spf_eval"/>
+                                    <field name="aligned"/>
+                                    <field name="header_from"/>
+                                    <field name="spf_auth_result"/>
+                                    <field name="dkim_auth_result"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search -->
+    <record id="hosting_dmarc_report_view_search" model="ir.ui.view">
+        <field name="name">hosting.dmarc.report.search</field>
+        <field name="model">hosting.dmarc.report</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="domain_name"/>
+                <field name="org_name"/>
+                <filter name="has_failures" string="Avec échecs"
+                        domain="[('fail_count', '&gt;', 0)]"/>
+                <filter name="recent" string="30 derniers jours"
+                        domain="[('date_end', '&gt;=', (context_today() - relativedelta(days=30)).strftime('%Y-%m-%d'))]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="group_domain" string="Domaine"
+                            context="{'group_by': 'domain_name'}"/>
+                    <filter name="group_org" string="Déclarant"
+                            context="{'group_by': 'org_name'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="hosting_dmarc_report_action" model="ir.actions.act_window">
+        <field name="name">Rapports DMARC</field>
+        <field name="res_model">hosting.dmarc.report</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_recent': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Aucun rapport DMARC ingéré pour l'instant.</p>
+            <p>Les rapports agrégés (RUA) arrivent dans la boîte dédiée
+               <code>rua@</code> et sont ingérés automatiquement toutes les 6 heures.</p>
+        </field>
+    </record>
+
+    <!-- Manual trigger (appears in the list's Action menu) -->
+    <record id="hosting_dmarc_ingest_server_action" model="ir.actions.server">
+        <field name="name">Ingérer les rapports DMARC maintenant</field>
+        <field name="model_id" ref="model_hosting_dmarc_report"/>
+        <field name="binding_model_id" ref="model_hosting_dmarc_report"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">model._cron_dmarc_ingest_reports()</field>
+    </record>
+
+</odoo>

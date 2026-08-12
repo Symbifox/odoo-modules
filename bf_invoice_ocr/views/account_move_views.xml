@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_move_form_ocr" model="ir.ui.view">
+        <field name="name">account.move.form.ocr</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+            <!-- OCR scan button in the header -->
+            <xpath expr="//header" position="inside">
+                <button name="action_ocr_scan"
+                        string="Scanner OCR"
+                        type="object"
+                        class="btn-secondary"
+                        icon="fa-magic"
+                        invisible="move_type != 'in_invoice' or state != 'draft'"
+                        groups="account.group_account_invoice"/>
+            </xpath>
+
+            <!-- OCR info group after invoice lines -->
+            <xpath expr="//page[@name='other_info']" position="after">
+                <page string="OCR" name="ocr_info"
+                      invisible="ocr_state == 'none'">
+                    <group>
+                        <group string="Scan Results">
+                            <field name="ocr_state" readonly="1"/>
+                            <field name="ocr_scanned_date" readonly="1"/>
+                            <field name="ocr_confidence" readonly="1"
+                                   widget="progressbar"/>
+                            <field name="ocr_error_message" readonly="1"
+                                   invisible="not ocr_error_message"/>
+                        </group>
+                    </group>
+                    <group string="Raw OCR Data"
+                           invisible="not ocr_raw_response">
+                        <field name="ocr_raw_response" readonly="1"
+                               nolabel="1" colspan="2"/>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,352 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_studio_light
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0\n"
+"Report-Msgid-Bugs-To: \n"
+"PO-Revision-Date: 2026-05-10 08:46+0000\n"
+"Last-Translator: Blue Fox Inc.\n"
+"Language-Team: French (Canada)\n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_studio_light
+#: model:ir.model.fields,help:bf_studio_light.field_studio_light_smart_button__domain
+#: model:ir.model.fields,help:bf_studio_light.field_studio_light_smart_button_wizard__domain
+msgid ""
+"Optional Python-literal list of 3-tuples narrowing the count. "
+"Example: [('state', '=', 'active')]"
+msgstr ""
+"Liste Python littérale de 3-tuples restreignant le décompte (optionnel). "
+"Exemple : [('state', '=', 'active')]"
+
+#. module: bf_studio_light
+#: code:addons/bf_studio_light/wizards/studio_light_smart_button_wizard.py:0
+msgid "Label is required."
+msgstr "L'étiquette est requise."
+
+#. module: bf_studio_light
+#: code:addons/bf_studio_light/wizards/studio_light_smart_button_wizard.py:0
+#: code:addons/bf_studio_light/wizards/studio_light_wizard.py:0
+msgid "Smart button created"
+msgstr "Bouton stat créé"
+
+#. module: bf_studio_light
+#: code:addons/bf_studio_light/wizards/studio_light_wizard.py:0
+msgid "Custom field created"
+msgstr "Champ personnalisé créé"
+
+#. module: bf_studio_light
+#: code:addons/bf_studio_light/wizards/studio_light_wizard.py:0
+msgid ""
+"Field %s is live on %s. Reload your browser tab to see it on existing "
+"forms — Odoo caches view metadata per session."
+msgstr ""
+"Le champ %s est actif sur %s. Rechargez votre onglet pour le voir sur "
+"les fiches existantes — Odoo met en cache les métadonnées de vue par "
+"session."
+
+#. module: bf_studio_light
+#: code:addons/bf_studio_light/wizards/studio_light_smart_button_wizard.py:0
+msgid ""
+"Button %s is live on %s. Reload your browser tab to see it on existing "
+"forms — Odoo caches view metadata per session."
+msgstr ""
+"Le bouton %s est actif sur %s. Rechargez votre onglet pour le voir sur "
+"les fiches existantes — Odoo met en cache les métadonnées de vue par "
+"session."
+
+#. module: bf_studio_light
+#: code:addons/bf_studio_light/models/studio_light_field.py:0
+msgid "Selection keys must use letters, digits, _ or -."
+msgstr "Les clés de sélection ne peuvent contenir que lettres, chiffres, _ ou -."
+
+#. module: bf_studio_light
+#: code:addons/bf_studio_light/models/studio_light_field.py:0
+msgid "Field name %s is invalid. Must match x_studio_[a-z0-9_]+."
+msgstr "Le nom %s est invalide. Doit correspondre à x_studio_[a-z0-9_]+."
+
+#. module: bf_studio_light
+#: code:addons/bf_studio_light/models/studio_light_field.py:0
+msgid "Selection fields must define at least one value."
+msgstr "Les champs de sélection doivent définir au moins une valeur."
+
+#. module: bf_studio_light
+#: code:addons/bf_studio_light/models/studio_light_field.py:0
+msgid "Many2one fields must specify a related model."
+msgstr "Les champs Many2one doivent spécifier un modèle lié."
+
+#. module: bf_studio_light
+#: code:addons/bf_studio_light/models/studio_light_field.py:0
+msgid "Tick 'Computed from another field' requires a related path."
+msgstr ""
+"Cocher « Calculé à partir d'un autre champ » exige un chemin de lien."
+
+#. module: bf_studio_light
+#: code:addons/bf_studio_light/models/studio_light_field.py:0
+msgid "Related path %s is invalid or forbidden: %s"
+msgstr "Le chemin lié %s est invalide ou interdit : %s"
+
+#. module: bf_studio_light
+#: code:addons/bf_studio_light/models/studio_light_field.py:0
+msgid "Failed to create field %s on %s: %s"
+msgstr "Échec de la création du champ %s sur %s : %s"
+
+#. module: bf_studio_light
+#: code:addons/bf_studio_light/models/studio_light_field.py:0
+msgid ""
+"Model %s is locked by Studio Light. The dedicated 'Studio Light: Bypass "
+"model lock' group is required to override (and must be granted by a "
+"sysadmin)."
+msgstr ""
+"Le modèle %s est verrouillé par Studio Light. Le groupe dédié « Studio "
+"Light : Bypass du verrou modèle » est requis pour passer outre (et doit "
+"être accordé par un sysadmin)."
+
+#. module: bf_studio_light
+#: code:addons/bf_studio_light/models/studio_light_smart_button.py:0
+msgid ""
+"Source model %s is locked. The 'Studio Light: Bypass model lock' group "
+"is required to override."
+msgstr ""
+"Le modèle source %s est verrouillé. Le groupe « Studio Light : Bypass "
+"du verrou modèle » est requis pour passer outre."
+
+#. module: bf_studio_light
+#: code:addons/bf_studio_light/models/studio_light_smart_button.py:0
+msgid ""
+"Target model %s is locked. The 'Studio Light: Bypass model lock' group "
+"is required to override."
+msgstr ""
+"Le modèle cible %s est verrouillé. Le groupe « Studio Light : Bypass "
+"du verrou modèle » est requis pour passer outre."
+
+#. module: bf_studio_light
+#: code:addons/bf_studio_light/models/studio_light_smart_button.py:0
+msgid "Relation field %s belongs to %s, expected target model %s."
+msgstr ""
+"Le champ de relation %s appartient à %s ; modèle cible attendu : %s."
+
+#. module: bf_studio_light
+#: code:addons/bf_studio_light/models/studio_light_smart_button.py:0
+msgid "Relation field must be a Many2one (got %s)."
+msgstr "Le champ de relation doit être un Many2one (reçu : %s)."
+
+#. module: bf_studio_light
+#: code:addons/bf_studio_light/models/studio_light_smart_button.py:0
+msgid "Relation field %s on %s points to %s, expected %s."
+msgstr "Le champ %s sur %s pointe vers %s ; attendu : %s."
+
+#. module: bf_studio_light
+#: code:addons/bf_studio_light/models/studio_light_smart_button.py:0
+msgid "Relation field %s is on the sensitive denylist."
+msgstr "Le champ de relation %s est sur la liste noire sensible."
+
+#. module: bf_studio_light
+#: code:addons/bf_studio_light/models/studio_light_smart_button.py:0
+msgid ""
+"Domain must be a Python literal (list of 3-tuples). Parse error: %s"
+msgstr ""
+"Le domaine doit être un littéral Python (liste de 3-tuples). Erreur "
+"d'analyse : %s"
+
+#. module: bf_studio_light
+#: code:addons/bf_studio_light/models/studio_light_smart_button.py:0
+msgid "Domain must be a list (got %s)."
+msgstr "Le domaine doit être une liste (reçu : %s)."
+
+#. module: bf_studio_light
+#: code:addons/bf_studio_light/models/studio_light_smart_button.py:0
+msgid "Label may not contain %r (plain text only)."
+msgstr "L'étiquette ne peut pas contenir %r (texte brut seulement)."
+
+#. module: bf_studio_light
+#: code:addons/bf_studio_light/models/studio_light_smart_button.py:0
+msgid "Icon %r must match pattern %s."
+msgstr "L'icône %r doit correspondre au motif %s."
+
+#. module: bf_studio_light
+#: code:addons/bf_studio_light/models/studio_light_smart_button.py:0
+msgid "Each domain clause must be a 3-tuple (field, operator, value); got %r."
+msgstr ""
+"Chaque clause de domaine doit être un 3-tuple (champ, opérateur, "
+"valeur) ; reçu : %r."
+
+#. module: bf_studio_light
+#: code:addons/bf_studio_light/models/studio_light_smart_button.py:0
+msgid "Domain field must be a non-empty string; got %r."
+msgstr "Le champ du domaine doit être une chaîne non vide ; reçu : %r."
+
+#. module: bf_studio_light
+#: code:addons/bf_studio_light/models/studio_light_smart_button.py:0
+msgid "Operator %r is not allowed. Whitelisted: %s"
+msgstr "L'opérateur %r est interdit. Liste blanche : %s"
+
+#. module: bf_studio_light
+#: code:addons/bf_studio_light/models/studio_light_smart_button.py:0
+msgid "Domain field path segment %r is not a valid identifier."
+msgstr ""
+"Le segment de chemin %r n'est pas un identifiant valide pour le domaine."
+
+#. module: bf_studio_light
+#: code:addons/bf_studio_light/models/studio_light_smart_button.py:0
+msgid "Domain field path traverses sensitive field %r."
+msgstr "Le chemin du domaine traverse un champ sensible %r."
+
+#. module: bf_studio_light
+#: code:addons/bf_studio_light/models/studio_light_view_injection.py:0
+msgid "Arch snippet is not valid XML: %s"
+msgstr "Le fragment d'architecture n'est pas du XML valide : %s"
+
+#. module: bf_studio_light
+#: code:addons/bf_studio_light/models/studio_light_view_injection.py:0
+msgid "Comments and CDATA are not allowed."
+msgstr "Les commentaires et CDATA sont interdits."
+
+#. module: bf_studio_light
+#: code:addons/bf_studio_light/models/studio_light_view_injection.py:0
+msgid "Element <%s> is not allowed in arch snippets. Allowed: %s"
+msgstr ""
+"L'élément <%s> est interdit dans les fragments d'architecture. "
+"Autorisés : %s"
+
+#. module: bf_studio_light
+#: code:addons/bf_studio_light/models/studio_light_view_injection.py:0
+msgid "Attribute %s is not allowed on injected arch."
+msgstr "L'attribut %s est interdit sur l'architecture injectée."
+
+#. module: bf_studio_light
+#: code:addons/bf_studio_light/models/studio_light_view_injection.py:0
+msgid "Specify either a target field or a custom xpath."
+msgstr "Spécifiez un champ cible OU un xpath personnalisé."
+
+#. module: bf_studio_light
+#: code:addons/bf_studio_light/models/studio_light_view_injection.py:0
+msgid "target_field %r is not a valid identifier. Use a field name like 'email'."
+msgstr ""
+"target_field %r n'est pas un identifiant valide. Utilisez un nom de "
+"champ comme « email »."
+
+#. module: bf_studio_light
+#: code:addons/bf_studio_light/models/studio_light_view_injection.py:0
+msgid ""
+"custom_xpath contains forbidden token %r. Only simple element-path "
+"predicates allowed."
+msgstr ""
+"custom_xpath contient le jeton interdit %r. Seuls les prédicats "
+"d'éléments simples sont autorisés."
+
+#. module: bf_studio_light
+#: code:addons/bf_studio_light/models/studio_light_view_injection.py:0
+msgid "custom_xpath did not compile: %s"
+msgstr "custom_xpath n'a pas compilé : %s"
+
+#. module: bf_studio_light
+#: code:addons/bf_studio_light/models/studio_light_view_injection.py:0
+msgid "No primary %s view found for model %s."
+msgstr "Aucune vue %s principale trouvée pour le modèle %s."
+
+#. module: bf_studio_light
+#: code:addons/bf_studio_light/models/studio_light_view_injection.py:0
+msgid "Either provide arch_snippet or link a studio_field_id."
+msgstr "Fournissez soit arch_snippet, soit un studio_field_id lié."
+
+#. module: bf_studio_light
+#: code:addons/bf_studio_light/models/studio_light_view_injection.py:0
+msgid "Generated arch is not valid XML: %s"
+msgstr "L'architecture générée n'est pas du XML valide : %s"
+
+#. module: bf_studio_light
+#: code:addons/bf_studio_light/models/studio_light_view_injection.py:0
+msgid "Generated xpath is invalid: %s"
+msgstr "Le xpath généré est invalide : %s"
+
+#. module: bf_studio_light
+#: code:addons/bf_studio_light/wizards/studio_light_wizard.py:0
+msgid "Selection line %r must use the format key=Label."
+msgstr "La ligne de sélection %r doit utiliser le format clé=Étiquette."
+
+#. module: bf_studio_light
+#: code:addons/bf_studio_light/wizards/studio_light_wizard.py:0
+msgid "Add at least one selection value."
+msgstr "Ajoutez au moins une valeur de sélection."
+
+#. module: bf_studio_light
+#: code:addons/bf_studio_light/wizards/studio_light_wizard.py:0
+msgid "Choose a model first."
+msgstr "Choisissez d'abord un modèle."
+
+#. module: bf_studio_light
+#: code:addons/bf_studio_light/wizards/studio_light_wizard.py:0
+msgid ""
+"Model %s is locked. Ask a sysadmin to grant you the 'Studio Light: "
+"Bypass model lock' group if you really need to extend this model."
+msgstr ""
+"Le modèle %s est verrouillé. Demandez à un sysadmin de vous accorder "
+"le groupe « Studio Light : Bypass du verrou modèle » si vous devez "
+"vraiment étendre ce modèle."
+
+#. module: bf_studio_light
+#: code:addons/bf_studio_light/wizards/studio_light_wizard.py:0
+msgid "Pick the linked model for the Many2one field."
+msgstr "Choisissez le modèle lié pour le champ Many2one."
+
+#. module: bf_studio_light
+#: model:ir.module.category,name:bf_studio_light.module_category_studio_light
+msgid "Studio Light"
+msgstr "Studio Light"
+
+#. module: bf_studio_light
+#: model:res.groups,name:bf_studio_light.group_studio_light_admin
+msgid "Studio Light: Administrator"
+msgstr "Studio Light : Administrateur"
+
+#. module: bf_studio_light
+#: model:res.groups,name:bf_studio_light.group_studio_light_unlocked
+msgid "Studio Light: Bypass model lock"
+msgstr "Studio Light : Bypass du verrou modèle"
+
+#. module: bf_studio_light
+#: model:ir.ui.menu,name:bf_studio_light.menu_studio_light_root
+msgid "Customization"
+msgstr "Personnalisation"
+
+#. module: bf_studio_light
+#: model:ir.ui.menu,name:bf_studio_light.menu_studio_light_new
+msgid "Add custom field"
+msgstr "Ajouter un champ personnalisé"
+
+#. module: bf_studio_light
+#: model:ir.ui.menu,name:bf_studio_light.menu_studio_light_new_smart_button
+msgid "Add smart button"
+msgstr "Ajouter un bouton stat"
+
+#. module: bf_studio_light
+#: model:ir.ui.menu,name:bf_studio_light.menu_studio_light_fields
+msgid "Custom fields"
+msgstr "Champs personnalisés"
+
+#. module: bf_studio_light
+#: model:ir.ui.menu,name:bf_studio_light.menu_studio_light_smart_buttons
+msgid "Smart buttons"
+msgstr "Boutons stat"
+
+#. module: bf_studio_light
+#: model:ir.ui.menu,name:bf_studio_light.menu_studio_light_view_injections
+msgid "View injections"
+msgstr "Injections de vue"
+
+#. module: bf_studio_light
+#: model:ir.ui.menu,name:bf_studio_light.menu_studio_light_default_values
+msgid "Default values"
+msgstr "Valeurs par défaut"
+
+#. module: bf_studio_light
+#: model:ir.ui.menu,name:bf_studio_light.menu_studio_light_shared_filters
+msgid "Shared filters"
+msgstr "Filtres partagés"

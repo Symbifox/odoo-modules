@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="res_config_settings_view_form_knowledge_matrix" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.knowledge.matrix</field>
+        <field name="model">res.config.settings</field>
+        <field name="priority">50</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app data-string="Base de connaissances" string="Base de connaissances" name="project_knowledge_matrix" groups="project_knowledge_matrix.group_document_manager">
+                    <block title="Rapport du tableau de bord" name="dashboard_report_settings">
+                        <setting id="dashboard_report_enabled" string="Rapport automatique bimensuel" help="Envoyer automatiquement un rapport du tableau de bord par courriel toutes les 2 semaines">
+                            <field name="dashboard_report_enabled"/>
+                        </setting>
+                        <setting id="dashboard_report_recipients" string="Destinataires du rapport" help="Adresses courriel séparées par des virgules">
+                            <field name="dashboard_report_recipients" placeholder="admin@example.com, manager@example.com"/>
+                        </setting>
+                        <setting string="Envoyer le rapport maintenant" help="Déclencher manuellement l'envoi du rapport">
+                            <button name="action_send_dashboard_report_now" type="object" string="Envoyer maintenant" class="btn-primary" icon="fa-paper-plane"/>
+                        </setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

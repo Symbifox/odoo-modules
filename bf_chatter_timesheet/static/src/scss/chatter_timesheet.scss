@@ -1,0 +1,24 @@
+.bf-chatter-timesheet {
+    border-top: 1px dashed var(--bs-border-color, #dee2e6);
+    flex-direction: row !important;
+
+    .bf-chatter-timesheet-input {
+        width: 3em;
+        min-width: 3em;
+        text-align: right;
+        padding: 0.1rem 0.3rem;
+        font-size: 0.85rem;
+    }
+
+    .btn-group .btn {
+        padding: 0.1rem 0.45rem;
+        font-size: 0.75rem;
+        line-height: 1.15;
+    }
+
+    label,
+    span {
+        user-select: none;
+        font-size: 0.85rem;
+    }
+}

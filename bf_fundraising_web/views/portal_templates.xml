@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+<odoo>
+    <!-- Portal home: add "Mes dons" and "Mes reçus" cards -->
+    <template
+        id="portal_my_home_fundraising"
+        name="Portail : dons et reçus"
+        inherit_id="portal.portal_my_home"
+        priority="40"
+    >
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+            <t t-call="portal.portal_docs_entry">
+                <!-- portal_docs_entry n'impose aucune dimension : l'image sort a
+                     sa taille naturelle. icon.png fait 256 px, soit 4x la taille
+                     des icones natives (toutes en 64x64), d'ou un logo trop gros
+                     sur la carte. portal_icon.svg est le meme visuel declare en
+                     64x64, avec un raster 128 px (2x) pour rester net en retina. -->
+                <t t-set="icon" t-value="'/bf_fundraising_web/static/src/img/portal_icon.svg'" />
+                <t t-set="title">Mes dons</t>
+                <t t-set="url" t-value="'/my/donations'" />
+                <t t-set="text">Consultez l'historique de vos dons</t>
+                <t t-set="placeholder_count" t-value="'donation_count'" />
+            </t>
+            <t t-call="portal.portal_docs_entry">
+                <!-- portal_docs_entry n'impose aucune dimension : l'image sort a
+                     sa taille naturelle. icon.png fait 256 px, soit 4x la taille
+                     des icones natives (toutes en 64x64), d'ou un logo trop gros
+                     sur la carte. portal_icon.svg est le meme visuel declare en
+                     64x64, avec un raster 128 px (2x) pour rester net en retina. -->
+                <t t-set="icon" t-value="'/bf_fundraising_web/static/src/img/portal_icon.svg'" />
+                <t t-set="title">Mes reçus officiels</t>
+                <t t-set="url" t-value="'/my/tax_receipts'" />
+                <t t-set="text">Téléchargez vos reçus aux fins de l'impôt</t>
+                <t t-set="placeholder_count" t-value="'tax_receipt_count'" />
+            </t>
+        </xpath>
+    </template>
+
+    <!-- My donations -->
+    <template id="portal_my_donations" name="Mes dons">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True" />
+            <h3 class="mb-3">Mes dons</h3>
+            <t t-if="not donations">
+                <div class="alert alert-info" role="alert">
+                    Vous n'avez aucun don enregistré pour le moment.
+                </div>
+            </t>
+            <t t-if="donations">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Numéro</th>
+                                <th>Date</th>
+                                <th>Campagne</th>
+                                <th class="text-end">Montant</th>
+                                <th>Reçu officiel</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="donations" t-as="donation">
+                                <td><t t-out="donation.number" /></td>
+                                <td><span t-field="donation.donation_date" /></td>
+                                <td><t t-out="donation.campaign_id.display_name or ''" /></td>
+                                <td class="text-end">
+                                    <span t-field="donation.amount_total" />
+                                </td>
+                                <td>
+                                    <a
+                                        t-if="donation.tax_receipt_id"
+                                        t-attf-href="/my/tax_receipt/#{donation.tax_receipt_id.id}/download"
+                                        class="btn btn-sm btn-secondary"
+                                    >
+                                        <i class="fa fa-download" /> Reçu
+                                    </a>
+                                    <span t-else="" class="text-muted">—</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div t-call="portal.pager" />
+            </t>
+        </t>
+    </template>
+
+    <!-- My tax receipts -->
+    <template id="portal_my_tax_receipts" name="Mes reçus officiels">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True" />
+            <h3 class="mb-3">Mes reçus officiels</h3>
+            <t t-if="not receipts">
+                <div class="alert alert-info" role="alert">
+                    Aucun reçu officiel disponible pour le moment.
+                </div>
+            </t>
+            <t t-if="receipts">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Reçu n°</th>
+                                <th>Date</th>
+                                <th>Type</th>
+                                <th class="text-end">Montant admissible</th>
+                                <th />
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="receipts" t-as="receipt">
+                                <td><t t-out="receipt.number" /></td>
+                                <td><span t-field="receipt.date" /></td>
+                                <td>
+                                    <span t-if="receipt.type == 'each'">Don unique</span>
+                                    <span t-if="receipt.type == 'annual'">Annuel</span>
+                                </td>
+                                <td class="text-end">
+                                    <span t-field="receipt.eligible_amount" />
+                                </td>
+                                <td class="text-end">
+                                    <a
+                                        t-attf-href="/my/tax_receipt/#{receipt.id}/download"
+                                        class="btn btn-sm btn-primary"
+                                    >
+                                        <i class="fa fa-download" /> Télécharger
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div t-call="portal.pager" />
+            </t>
+        </t>
+    </template>
+</odoo>

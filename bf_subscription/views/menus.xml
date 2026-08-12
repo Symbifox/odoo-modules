@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <menuitem id="menu_subscription_root"
+              name="Abonnements"
+              web_icon="bf_subscription,static/description/icon.png"
+              sequence="95"
+              groups="bf_subscription.group_subscription_user"/>
+
+    <menuitem id="menu_subscription_main"
+              name="Abonnements"
+              parent="menu_subscription_root"
+              action="action_subscription_subscription"
+              sequence="10"/>
+
+    <menuitem id="menu_subscription_renewals"
+              name="Renouvellements à venir"
+              parent="menu_subscription_root"
+              action="action_subscription_renewals_30d"
+              sequence="20"/>
+
+    <menuitem id="menu_subscription_dashboard"
+              name="Tableau de bord"
+              parent="menu_subscription_root"
+              action="action_subscription_dashboard"
+              sequence="30"/>
+
+    <menuitem id="menu_subscription_config"
+              name="Configuration"
+              parent="menu_subscription_root"
+              sequence="90"
+              groups="bf_subscription.group_subscription_manager"/>
+
+    <menuitem id="menu_subscription_tags"
+              name="Étiquettes"
+              parent="menu_subscription_config"
+              action="action_subscription_tag"
+              sequence="10"/>
+
+    <menuitem id="menu_subscription_digests"
+              name="Rapports et envois automatiques"
+              parent="menu_subscription_config"
+              action="action_subscription_digest"
+              sequence="20"/>
+
+</odoo>

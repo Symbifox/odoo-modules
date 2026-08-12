@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates xml:space="preserve">
+    <t t-name="bf_gamification.LevelUpPopup">
+        <div t-if="state.visible" class="bf-levelup-overlay" t-att-class="state.animating ? 'show' : 'hide'">
+            <div class="bf-levelup-popup" t-att-class="state.data and state.data.new_level ? state.data.new_level.css_class : ''">
+                <div class="bf-levelup-content">
+                    <div class="bf-levelup-stars">
+                        <i class="fa fa-star"/><i class="fa fa-star"/><i class="fa fa-star"/>
+                    </div>
+                    <h2 class="bf-levelup-title">Niveau sup&#233;rieur !</h2>
+                    <div class="bf-levelup-transition" t-if="state.data">
+                        <div class="bf-levelup-old">
+                            <span class="text-muted" t-if="state.data.old_level">
+                                <t t-esc="state.data.old_level.name"/>
+                            </span>
+                        </div>
+                        <div class="bf-levelup-arrow">
+                            <i class="fa fa-arrow-right fa-2x"/>
+                        </div>
+                        <div class="bf-levelup-new" t-if="state.data.new_level">
+                            <strong class="fs-3">
+                                <t t-esc="state.data.new_level.name"/>
+                            </strong>
+                            <div class="bf-levelup-new-title fs-5">
+                                <t t-esc="state.data.new_level.title"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bf-levelup-xp mt-3" t-if="state.data">
+                        <span class="badge text-bg-warning fs-6">
+                            <t t-esc="state.data.total_xp"/> XP
+                        </span>
+                    </div>
+                    <button class="btn btn-warning btn-lg mt-4" t-on-click="close">
+                        Continuer
+                    </button>
+                </div>
+            </div>
+        </div>
+    </t>
+</templates>

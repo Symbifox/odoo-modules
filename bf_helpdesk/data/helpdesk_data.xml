@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data noupdate="1">
+
+    <!-- ntfy webhook URL — set per-deployment via system parameter.
+         Leaving the default empty: the hook is a no-op until configured.
+         Example: http://your-webhook-relay:8090/hook/helpdesk-critical -->
+    <record id="ir_config_ntfy_webhook_url" model="ir.config_parameter">
+      <field name="key">bf_helpdesk.ntfy_webhook_url</field>
+      <field name="value"></field>
+    </record>
+
+    <record id="ir_config_ntfy_webhook_timeout" model="ir.config_parameter">
+      <field name="key">bf_helpdesk.ntfy_webhook_timeout</field>
+      <field name="value">5</field>
+    </record>
+
+    <!-- Public form attachment limits (MB) -->
+    <record id="ir_config_pubform_max_attachment_mb" model="ir.config_parameter">
+      <field name="key">bf_helpdesk.public_form_max_attachment_mb</field>
+      <field name="value">10</field>
+    </record>
+    <record id="ir_config_pubform_max_total_attachment_mb" model="ir.config_parameter">
+      <field name="key">bf_helpdesk.public_form_max_total_attachment_mb</field>
+      <field name="value">25</field>
+    </record>
+
+    <!-- Auto-acknowledgement template for public form submissions -->
+    <record id="mail_template_public_form_ack" model="mail.template">
+      <field name="name">Helpdesk : Accusé réception (formulaire public)</field>
+      <field name="model_id" ref="helpdesk_mgmt.model_helpdesk_ticket"/>
+      <field name="subject">Demande reçue : {{ object.number }} - {{ object.name }}</field>
+      <field name="email_from">{{ (object.team_id.alias_id.display_name or object.company_id.email or '') }}</field>
+      <field name="email_to">{{ object.partner_email or (object.partner_id.email or '') }}</field>
+      <field name="body_html" type="html">
+        <div style="margin:0;padding:0;">
+          <p style="margin:0 0 16px 0;font-size:15px;">Bonjour <t t-out="object.partner_name or 'à vous'"/>,</p>
+          <p style="margin:0 0 16px 0;font-size:15px;">
+            Nous avons bien reçu votre demande <strong>#<t t-out="object.number"/></strong>.
+            Un membre de l'équipe <strong t-out="object.team_id.name"/> en prend connaissance et
+            communiquera avec vous dans les meilleurs délais.
+          </p>
+          <p style="margin:0 0 16px 0;font-size:15px;">
+            <strong>Récapitulatif :</strong> <span t-out="object.name"/>
+          </p>
+          <p style="margin:0;font-size:15px;">Merci pour votre confiance.</p>
+        </div>
+      </field>
+    </record>
+
+    <!-- Manual "client update" template — opened in the composer via the
+         "Envoyer une mise à jour" button, editable, never auto-sent.
+         Content-only body: the notification layout (branded by
+         bluefox_branding when installed) provides the shell, so this module
+         keeps no hard dependency on the white-label module. -->
+    <record id="mail_template_client_update" model="mail.template">
+      <field name="name">Helpdesk : Mise à jour au client</field>
+      <field name="model_id" ref="helpdesk_mgmt.model_helpdesk_ticket"/>
+      <field name="subject">Mise à jour — {{ object.number }} : {{ object.name }}</field>
+      <field name="email_from">{{ (object.team_id.alias_id.display_name or object.company_id.email or user.email_formatted or '') }}</field>
+      <field name="email_to">{{ object.partner_email or (object.partner_id.email or '') }}</field>
+      <field name="lang">{{ object.partner_id.lang or 'fr_CA' }}</field>
+      <field name="body_html" type="html">
+        <div style="margin:0;padding:0;">
+          <p style="margin:0 0 16px 0;font-size:15px;">Bonjour <t t-out="object.partner_name or (object.partner_id.name or 'à vous')"/>,</p>
+          <p style="margin:0 0 16px 0;font-size:15px;">
+            Voici une mise à jour concernant votre demande
+            <strong>#<t t-out="object.number"/></strong> — <span t-out="object.name"/>.
+          </p>
+          <p style="margin:0 0 16px 0;font-size:15px;">
+            [Décrivez ici l'avancement, la prochaine étape ou la question au client.]
+          </p>
+          <p style="margin:0;font-size:15px;">Au plaisir,</p>
+        </div>
+      </field>
+    </record>
+
+    <!-- Daily SLA breach cron -->
+    <record id="ir_cron_sla_breach" model="ir.cron">
+      <field name="name">BF Helpdesk: SLA breach activity</field>
+      <field name="model_id" ref="helpdesk_mgmt.model_helpdesk_ticket"/>
+      <field name="state">code</field>
+      <field name="code">model._cron_sla_breach_activity()</field>
+      <field name="interval_number">12</field>
+      <field name="interval_type">hours</field>
+      <field name="active">True</field>
+    </record>
+
+  </data>
+</odoo>

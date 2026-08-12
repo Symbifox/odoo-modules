@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="secure_send_wizard_view_form" model="ir.ui.view">
+        <field name="name">secure.transfer.send.wizard.form</field>
+        <field name="model">secure.transfer.send.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Message sécurisé">
+                <div class="alert alert-info" role="alert">
+                    Le contenu est <strong>retenu</strong> : le destinataire reçoit un
+                    lien, et le message ne s'affiche qu'après avoir saisi un
+                    <strong>code de vérification à usage unique</strong> (courriel ou SMS).
+                    Chaque accès est journalisé (Loi 25).
+                </div>
+                <group>
+                    <group>
+                        <field name="partner_ids" widget="many2many_tags"
+                               options="{'no_create_edit': True}"/>
+                        <field name="extra_emails" placeholder="autre@exemple.com, ..."/>
+                        <field name="otp_channel" widget="radio"/>
+                        <field name="sms_configured" invisible="1"/>
+                        <field name="sms_hint" invisible="otp_channel != 'sms'"
+                               readonly="1" nolabel="1"
+                               decoration-warning="not sms_configured"/>
+                    </group>
+                    <group>
+                        <field name="brand_id"/>
+                        <field name="retention_days"/>
+                        <field name="password" password="True"/>
+                    </group>
+                </group>
+                <group>
+                    <field name="subject" placeholder="P. ex. Accès au portail — identifiants"/>
+                </group>
+                <field name="message" placeholder="Votre message sécurisé…"
+                       nolabel="1"/>
+                <group string="Expéditeur" col="2">
+                    <field name="sender_name"/>
+                    <field name="sender_email"/>
+                </group>
+                <footer>
+                    <button string="Envoyer" name="action_send" type="object"
+                            class="btn-primary"/>
+                    <button string="Annuler" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_secure_send_wizard" model="ir.actions.act_window">
+        <field name="name">Nouveau message sécurisé</field>
+        <field name="res_model">secure.transfer.send.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="secure_send_wizard_view_form"/>
+        <field name="target">new</field>
+    </record>
+
+    <!-- Also reachable from a contact's Action menu (« partout où on transmet
+         des courriels »): pre-fills the picked contact as recipient. -->
+    <record id="action_secure_send_from_partner" model="ir.actions.act_window">
+        <field name="name">Envoyer un message sécurisé</field>
+        <field name="res_model">secure.transfer.send.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="secure_send_wizard_view_form"/>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="base.model_res_partner"/>
+        <field name="binding_view_types">list,form</field>
+        <field name="groups_id" eval="[(4, ref('group_securetransfer_user'))]"/>
+    </record>
+
+</odoo>

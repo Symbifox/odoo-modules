@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_bf_timer_stop_wizard_form" model="ir.ui.view">
+        <field name="name">bf.timer.stop.wizard.form</field>
+        <field name="model">bf.timer.stop.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Arrêter le timer">
+                <group>
+                    <group>
+                        <field name="project_name" readonly="1"/>
+                        <field name="task_name" readonly="1"/>
+                        <field name="elapsed_display" readonly="1"/>
+                    </group>
+                    <group>
+                        <field name="hours"/>
+                        <field name="minutes"/>
+                        <field name="preset_id"/>
+                        <field name="description"/>
+                    </group>
+                </group>
+                <footer>
+                    <button name="action_confirm" type="object"
+                            string="Confirmer" class="btn-primary"
+                            icon="fa-check"/>
+                    <button name="action_discard" type="object"
+                            string="Supprimer" class="btn-danger"
+                            icon="fa-trash"
+                            confirm="Supprimer le timer sans enregistrer?"/>
+                    <button name="action_cancel" type="object"
+                            string="Annuler" class="btn-secondary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

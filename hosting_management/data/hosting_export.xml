@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+
+        <!-- Modèle d'export : Services d'hébergement - Complet -->
+        <record id="export_hosting_service_full" model="ir.exports">
+            <field name="name">Services d'hébergement - Export complet</field>
+            <field name="resource">hosting.service</field>
+        </record>
+
+        <!-- Champs d'export pour l'export complet des services -->
+        <record id="export_line_service_code" model="ir.exports.line">
+            <field name="export_id" ref="export_hosting_service_full"/>
+            <field name="name">code</field>
+        </record>
+        <record id="export_line_service_name" model="ir.exports.line">
+            <field name="export_id" ref="export_hosting_service_full"/>
+            <field name="name">name</field>
+        </record>
+        <record id="export_line_service_partner" model="ir.exports.line">
+            <field name="export_id" ref="export_hosting_service_full"/>
+            <field name="name">partner_id/name</field>
+        </record>
+        <record id="export_line_service_software" model="ir.exports.line">
+            <field name="export_id" ref="export_hosting_service_full"/>
+            <field name="name">software_id/name</field>
+        </record>
+        <record id="export_line_service_version" model="ir.exports.line">
+            <field name="export_id" ref="export_hosting_service_full"/>
+            <field name="name">installed_version_id/version</field>
+        </record>
+        <record id="export_line_service_environment" model="ir.exports.line">
+            <field name="export_id" ref="export_hosting_service_full"/>
+            <field name="name">environment</field>
+        </record>
+        <record id="export_line_service_domain" model="ir.exports.line">
+            <field name="export_id" ref="export_hosting_service_full"/>
+            <field name="name">domain_name</field>
+        </record>
+        <record id="export_line_service_url" model="ir.exports.line">
+            <field name="export_id" ref="export_hosting_service_full"/>
+            <field name="name">server_url</field>
+        </record>
+        <record id="export_line_service_quota" model="ir.exports.line">
+            <field name="export_id" ref="export_hosting_service_full"/>
+            <field name="name">storage_quota_gb</field>
+        </record>
+        <record id="export_line_service_used" model="ir.exports.line">
+            <field name="export_id" ref="export_hosting_service_full"/>
+            <field name="name">storage_used_gb</field>
+        </record>
+        <record id="export_line_service_percent" model="ir.exports.line">
+            <field name="export_id" ref="export_hosting_service_full"/>
+            <field name="name">storage_used_percent</field>
+        </record>
+        <record id="export_line_service_start" model="ir.exports.line">
+            <field name="export_id" ref="export_hosting_service_full"/>
+            <field name="name">date_start</field>
+        </record>
+        <record id="export_line_service_expiration" model="ir.exports.line">
+            <field name="export_id" ref="export_hosting_service_full"/>
+            <field name="name">date_expiration</field>
+        </record>
+        <record id="export_line_service_days" model="ir.exports.line">
+            <field name="export_id" ref="export_hosting_service_full"/>
+            <field name="name">days_until_expiration</field>
+        </record>
+        <record id="export_line_service_state" model="ir.exports.line">
+            <field name="export_id" ref="export_hosting_service_full"/>
+            <field name="name">state</field>
+        </record>
+        <record id="export_line_service_responsible" model="ir.exports.line">
+            <field name="export_id" ref="export_hosting_service_full"/>
+            <field name="name">user_id/name</field>
+        </record>
+        <record id="export_line_service_contract" model="ir.exports.line">
+            <field name="export_id" ref="export_hosting_service_full"/>
+            <field name="name">contract_id/name</field>
+        </record>
+
+        <!-- Modèle d'export : Services d'hébergement - Résumé -->
+        <record id="export_hosting_service_summary" model="ir.exports">
+            <field name="name">Services d'hébergement - Résumé</field>
+            <field name="resource">hosting.service</field>
+        </record>
+
+        <record id="export_line_summary_code" model="ir.exports.line">
+            <field name="export_id" ref="export_hosting_service_summary"/>
+            <field name="name">code</field>
+        </record>
+        <record id="export_line_summary_name" model="ir.exports.line">
+            <field name="export_id" ref="export_hosting_service_summary"/>
+            <field name="name">name</field>
+        </record>
+        <record id="export_line_summary_partner" model="ir.exports.line">
+            <field name="export_id" ref="export_hosting_service_summary"/>
+            <field name="name">partner_id/name</field>
+        </record>
+        <record id="export_line_summary_software" model="ir.exports.line">
+            <field name="export_id" ref="export_hosting_service_summary"/>
+            <field name="name">software_id/name</field>
+        </record>
+        <record id="export_line_summary_state" model="ir.exports.line">
+            <field name="export_id" ref="export_hosting_service_summary"/>
+            <field name="name">state</field>
+        </record>
+        <record id="export_line_summary_expiration" model="ir.exports.line">
+            <field name="export_id" ref="export_hosting_service_summary"/>
+            <field name="name">date_expiration</field>
+        </record>
+
+        <!-- Modèle d'export : Catalogue de logiciels -->
+        <record id="export_hosting_software" model="ir.exports">
+            <field name="name">Catalogue de logiciels - Export complet</field>
+            <field name="resource">hosting.software</field>
+        </record>
+
+        <record id="export_line_software_code" model="ir.exports.line">
+            <field name="export_id" ref="export_hosting_software"/>
+            <field name="name">code</field>
+        </record>
+        <record id="export_line_software_name" model="ir.exports.line">
+            <field name="export_id" ref="export_hosting_software"/>
+            <field name="name">name</field>
+        </record>
+        <record id="export_line_software_type" model="ir.exports.line">
+            <field name="export_id" ref="export_hosting_software"/>
+            <field name="name">software_type</field>
+        </record>
+        <record id="export_line_software_version" model="ir.exports.line">
+            <field name="export_id" ref="export_hosting_software"/>
+            <field name="name">latest_version</field>
+        </record>
+        <record id="export_line_software_docker" model="ir.exports.line">
+            <field name="export_id" ref="export_hosting_software"/>
+            <field name="name">docker_image</field>
+        </record>
+        <record id="export_line_software_github" model="ir.exports.line">
+            <field name="export_id" ref="export_hosting_software"/>
+            <field name="name">github_url</field>
+        </record>
+        <record id="export_line_software_count" model="ir.exports.line">
+            <field name="export_id" ref="export_hosting_software"/>
+            <field name="name">service_count</field>
+        </record>
+
+    </data>
+</odoo>

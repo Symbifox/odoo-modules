@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="subscription_digest_form" model="ir.ui.view">
+        <field name="name">subscription.digest.form</field>
+        <field name="model">subscription.digest</field>
+        <field name="arch" type="xml">
+            <form string="Récapitulatif des abonnements">
+                <header>
+                    <button name="action_print_report" type="object"
+                            string="Imprimer le rapport (PDF)" class="btn-primary"
+                            icon="fa-file-pdf-o"/>
+                    <button name="action_send_now" type="object"
+                            string="Envoyer maintenant"
+                            icon="fa-envelope-o"/>
+                    <button name="action_send_test" type="object"
+                            string="Envoyer un test"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="ex. Récapitulatif hebdomadaire"/></h1>
+                    </div>
+                    <group>
+                        <group string="Diffusion">
+                            <field name="auto_send"/>
+                            <field name="frequency" invisible="not auto_send"/>
+                            <field name="user_ids" widget="many2many_tags"
+                                   options="{'no_create': True}"
+                                   required="auto_send"
+                                   invisible="not auto_send"/>
+                            <field name="last_sent" readonly="1"/>
+                            <field name="active" invisible="1"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                        <group string="Contenu">
+                            <field name="include_spend_summary"/>
+                            <field name="include_renewals"/>
+                            <field name="renewal_horizon_days"
+                                   invisible="not include_renewals"/>
+                            <field name="include_dormant"/>
+                            <field name="include_managed_clients"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="subscription_digest_list" model="ir.ui.view">
+        <field name="name">subscription.digest.list</field>
+        <field name="model">subscription.digest</field>
+        <field name="arch" type="xml">
+            <list string="Récapitulatifs">
+                <field name="name"/>
+                <field name="auto_send" widget="boolean_toggle"/>
+                <field name="frequency"/>
+                <field name="user_ids" widget="many2many_tags"/>
+                <field name="last_sent"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_subscription_digest" model="ir.actions.act_window">
+        <field name="name">Récapitulatifs</field>
+        <field name="res_model">subscription.digest</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+</odoo>

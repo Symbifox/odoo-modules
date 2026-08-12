@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_bf_timer_preset_list" model="ir.ui.view">
+        <field name="name">bf.timer.description.preset.list</field>
+        <field name="model">bf.timer.description.preset</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="text"/>
+                <field name="active" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_bf_timer_preset_form" model="ir.ui.view">
+        <field name="name">bf.timer.description.preset.form</field>
+        <field name="model">bf.timer.description.preset</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="text"/>
+                        <field name="sequence"/>
+                        <field name="active"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_bf_timer_preset" model="ir.actions.act_window">
+        <field name="name">Presets de description</field>
+        <field name="res_model">bf.timer.description.preset</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_bf_timer_preset"
+              name="Presets de description"
+              parent="hr_timesheet.menu_hr_time_tracking"
+              action="action_bf_timer_preset"
+              sequence="30"/>
+</odoo>

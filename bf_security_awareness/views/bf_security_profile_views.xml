@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="bf_security_profile_view_list" model="ir.ui.view">
+        <field name="name">bf.security.profile.list</field>
+        <field name="model">bf.security.profile</field>
+        <field name="arch" type="xml">
+            <list create="false"
+                  decoration-danger="risk_level == 'critical'"
+                  decoration-warning="risk_level == 'high'"
+                  decoration-info="risk_level == 'moderate'">
+                <field name="partner_id"/>
+                <field name="risk_score" widget="progressbar"/>
+                <field name="risk_level" widget="badge"
+                       decoration-danger="risk_level == 'critical'"
+                       decoration-warning="risk_level == 'high'"/>
+                <field name="emails_received"/>
+                <field name="clicked_count"/>
+                <field name="submitted_count"/>
+                <field name="reported_count"/>
+                <field name="completed_course_count"/>
+                <field name="last_failed_date"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_security_profile_view_form" model="ir.ui.view">
+        <field name="name">bf.security.profile.form</field>
+        <field name="model">bf.security.profile</field>
+        <field name="arch" type="xml">
+            <form create="false">
+                <header>
+                    <button name="action_recompute" type="object"
+                            string="Recalculer le score"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_results" type="object"
+                                class="oe_stat_button" icon="fa-list">
+                            <field name="emails_received" widget="statinfo"
+                                   string="Tests"/>
+                        </button>
+                        <button name="action_view_training" type="object"
+                                class="oe_stat_button" icon="fa-graduation-cap">
+                            <field name="assigned_course_count" widget="statinfo"
+                                   string="Formations"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1><field name="partner_id" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group string="Risque">
+                            <field name="risk_score" widget="progressbar"/>
+                            <field name="risk_level" widget="badge"/>
+                            <field name="last_tested_date"/>
+                            <field name="last_failed_date"/>
+                        </group>
+                        <group string="Comportement">
+                            <field name="campaign_count"/>
+                            <field name="emails_received"/>
+                            <field name="opened_count"/>
+                            <field name="clicked_count"/>
+                            <field name="submitted_count"/>
+                            <field name="reported_count"/>
+                        </group>
+                        <group string="Formation">
+                            <field name="assigned_course_count"/>
+                            <field name="completed_course_count"/>
+                            <field name="training_completion" widget="progressbar"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="bf_security_profile_view_search" model="ir.ui.view">
+        <field name="name">bf.security.profile.search</field>
+        <field name="model">bf.security.profile</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="partner_id"/>
+                <filter name="critical" string="Critique"
+                        domain="[('risk_level','=','critical')]"/>
+                <filter name="high" string="Élevé"
+                        domain="[('risk_level','=','high')]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="group_risk" string="Niveau de risque"
+                            context="{'group_by': 'risk_level'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="bf_security_profile_view_pivot" model="ir.ui.view">
+        <field name="name">bf.security.profile.pivot</field>
+        <field name="model">bf.security.profile</field>
+        <field name="arch" type="xml">
+            <pivot>
+                <field name="risk_level" type="row"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="bf_security_profile_action" model="ir.actions.act_window">
+        <field name="name">Profils de risque</field>
+        <field name="res_model">bf.security.profile</field>
+        <field name="view_mode">list,form,pivot</field>
+        <field name="search_view_id" ref="bf_security_profile_view_search"/>
+    </record>
+
+</odoo>

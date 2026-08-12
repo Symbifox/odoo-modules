@@ -1,0 +1,387 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* hosting_management
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-01-18 12:00+0000\n"
+"PO-Revision-Date: 2026-01-18 12:00+0000\n"
+"Last-Translator: Blue Fox Inc.\n"
+"Language-Team: French\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: fr\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: hosting_management
+#: model:ir.model,name:hosting_management.model_hosting_dashboard
+msgid "Hosting Dashboard"
+msgstr "Tableau de bord hébergement"
+
+#. module: hosting_management
+#: model:ir.actions.act_window,name:hosting_management.hosting_dashboard_action
+msgid "Dashboard"
+msgstr "Tableau de bord"
+
+#. module: hosting_management
+#: model:ir.model.fields,field_description:hosting_management.field_hosting_dashboard__expiring_30_days
+msgid "Expiring in 30 Days"
+msgstr "Expire dans 30 jours"
+
+#. module: hosting_management
+#: model:ir.model.fields,field_description:hosting_management.field_hosting_dashboard__expiring_60_days
+msgid "Expiring in 60 Days"
+msgstr "Expire dans 60 jours"
+
+#. module: hosting_management
+#: model:ir.model.fields,field_description:hosting_management.field_hosting_dashboard__expiring_90_days
+msgid "Expiring in 90 Days"
+msgstr "Expire dans 90 jours"
+
+#. module: hosting_management
+#: model:ir.model.fields,field_description:hosting_management.field_res_partner__hosting_services_expiring_count
+msgid "Expiring Services"
+msgstr "Services expirants"
+
+#. module: hosting_management
+#: model_terms:ir.ui.view,arch_db:hosting_management.res_partner_view_form_inherit_hosting
+msgid "Expiring"
+msgstr "Expirant"
+
+#. module: hosting_management
+#: model:ir.model.fields,field_description:hosting_management.field_hosting_dashboard__updates_available
+#: model:ir.model.fields,field_description:hosting_management.field_res_partner__hosting_services_updates_count
+msgid "Updates Available"
+msgstr "Mises à jour disponibles"
+
+#. module: hosting_management
+#: model_terms:ir.ui.view,arch_db:hosting_management.res_partner_view_form_inherit_hosting
+msgid "Updates"
+msgstr "Mises à jour"
+
+#. module: hosting_management
+#: model:ir.model.fields,field_description:hosting_management.field_hosting_dashboard__storage_alerts
+#: model:ir.model.fields,field_description:hosting_management.field_res_partner__hosting_services_storage_alert_count
+msgid "Storage Alerts"
+msgstr "Alertes stockage"
+
+#. module: hosting_management
+#: model_terms:ir.ui.view,arch_db:hosting_management.res_partner_view_form_inherit_hosting
+msgid "Storage Alert"
+msgstr "Alerte stockage"
+
+#. module: hosting_management
+#: model:ir.model.fields,field_description:hosting_management.field_hosting_dashboard__health_issues
+msgid "Health Issues"
+msgstr "Problèmes de santé"
+
+#. module: hosting_management
+#: model:ir.model.fields,field_description:hosting_management.field_hosting_dashboard__active_services
+msgid "Active Services"
+msgstr "Services actifs"
+
+#. module: hosting_management
+#: model:ir.model.fields,field_description:hosting_management.field_hosting_dashboard__suspended_services
+msgid "Suspended Services"
+msgstr "Services suspendus"
+
+#. module: hosting_management
+#: model:ir.model.fields,field_description:hosting_management.field_hosting_dashboard__expired_services
+msgid "Expired Services"
+msgstr "Services expirés"
+
+#. module: hosting_management
+#: model:ir.model,name:hosting_management.model_hosting_health_check
+msgid "Service Health Check"
+msgstr "Vérification santé du service"
+
+#. module: hosting_management
+#: model:ir.actions.act_window,name:hosting_management.hosting_health_check_action
+#: model:ir.ui.menu,name:hosting_management.hosting_menu_reporting_health
+msgid "Health Checks"
+msgstr "Vérifications santé"
+
+#. module: hosting_management
+#: model:ir.model.fields,field_description:hosting_management.field_hosting_health_check__check_date
+msgid "Check Date"
+msgstr "Date de vérification"
+
+#. module: hosting_management
+#: model:ir.model.fields,field_description:hosting_management.field_hosting_health_check__status
+#: model:ir.model.fields,field_description:hosting_management.field_hosting_service__last_health_status
+msgid "Health Status"
+msgstr "État de santé"
+
+#. module: hosting_management
+#: model:ir.model.fields.selection,name:hosting_management.selection__hosting_health_check__status__up
+msgid "Up"
+msgstr "En ligne"
+
+#. module: hosting_management
+#: model:ir.model.fields.selection,name:hosting_management.selection__hosting_health_check__status__degraded
+msgid "Degraded"
+msgstr "Dégradé"
+
+#. module: hosting_management
+#: model:ir.model.fields.selection,name:hosting_management.selection__hosting_health_check__status__down
+msgid "Down"
+msgstr "Hors ligne"
+
+#. module: hosting_management
+#: model:ir.model.fields.selection,name:hosting_management.selection__hosting_health_check__status__timeout
+msgid "Timeout"
+msgstr "Délai dépassé"
+
+#. module: hosting_management
+#: model:ir.model.fields,field_description:hosting_management.field_hosting_health_check__response_time_ms
+msgid "Response Time (ms)"
+msgstr "Temps de réponse (ms)"
+
+#. module: hosting_management
+#: model:ir.model.fields,field_description:hosting_management.field_hosting_health_check__http_status_code
+msgid "HTTP Status Code"
+msgstr "Code de statut HTTP"
+
+#. module: hosting_management
+#: model:ir.model.fields,field_description:hosting_management.field_hosting_health_check__error_message
+msgid "Error Message"
+msgstr "Message d'erreur"
+
+#. module: hosting_management
+#: model:ir.model.fields,field_description:hosting_management.field_hosting_service__last_health_check
+msgid "Last Health Check"
+msgstr "Dernière vérification santé"
+
+#. module: hosting_management
+#: model:ir.model.fields,field_description:hosting_management.field_hosting_service__is_service_up
+msgid "Service Up"
+msgstr "Service en ligne"
+
+#. module: hosting_management
+#: model:ir.model.fields,field_description:hosting_management.field_hosting_service__uptime_30d
+msgid "Uptime (30d) %"
+msgstr "Disponibilité (30j) %"
+
+#. module: hosting_management
+#: model:ir.model.fields,field_description:hosting_management.field_hosting_service__health_check_count
+msgid "Health Check Count"
+msgstr "Nombre de vérifications santé"
+
+#. module: hosting_management
+#: model_terms:ir.ui.view,arch_db:hosting_management.hosting_service_view_form
+msgid "Health"
+msgstr "Santé"
+
+#. module: hosting_management
+#: model_terms:ir.ui.view,arch_db:hosting_management.hosting_service_view_form
+msgid "Run Health Check Now"
+msgstr "Exécuter vérification santé maintenant"
+
+#. module: hosting_management
+#: model_terms:ir.ui.view,arch_db:hosting_management.hosting_service_view_form
+msgid "Recent Health Checks"
+msgstr "Vérifications santé récentes"
+
+#. module: hosting_management
+#: model:ir.model.fields.selection,name:hosting_management.selection__hosting_service_view_search__filter_service_down
+msgid "Service Down"
+msgstr "Service hors ligne"
+
+#. module: hosting_management
+#: model:ir.model,name:hosting_management.model_hosting_digest
+msgid "Hosting Digest Configuration"
+msgstr "Configuration du résumé hébergement"
+
+#. module: hosting_management
+#: model:ir.actions.act_window,name:hosting_management.hosting_digest_action
+#: model:ir.ui.menu,name:hosting_management.hosting_menu_config_digests
+msgid "Email Digests"
+msgstr "Résumés par courriel"
+
+#. module: hosting_management
+#: model:ir.model.fields,field_description:hosting_management.field_hosting_digest__user_ids
+msgid "Recipients"
+msgstr "Destinataires"
+
+#. module: hosting_management
+#: model:ir.model.fields,field_description:hosting_management.field_hosting_digest__frequency
+msgid "Frequency"
+msgstr "Fréquence"
+
+#. module: hosting_management
+#: model:ir.model.fields.selection,name:hosting_management.selection__hosting_digest__frequency__daily
+msgid "Daily"
+msgstr "Quotidien"
+
+#. module: hosting_management
+#: model:ir.model.fields.selection,name:hosting_management.selection__hosting_digest__frequency__weekly
+msgid "Weekly"
+msgstr "Hebdomadaire"
+
+#. module: hosting_management
+#: model:ir.model.fields.selection,name:hosting_management.selection__hosting_digest__frequency__monthly
+msgid "Monthly"
+msgstr "Mensuel"
+
+#. module: hosting_management
+#: model:ir.model.fields,field_description:hosting_management.field_hosting_digest__include_expiring
+msgid "Include Expiring Services"
+msgstr "Inclure les services expirants"
+
+#. module: hosting_management
+#: model:ir.model.fields,field_description:hosting_management.field_hosting_digest__expiring_days
+msgid "Expiring Within (days)"
+msgstr "Expire dans (jours)"
+
+#. module: hosting_management
+#: model:ir.model.fields,field_description:hosting_management.field_hosting_digest__include_updates
+msgid "Include Updates Available"
+msgstr "Inclure les mises à jour disponibles"
+
+#. module: hosting_management
+#: model:ir.model.fields,field_description:hosting_management.field_hosting_digest__include_storage_alerts
+msgid "Include Storage Alerts"
+msgstr "Inclure les alertes stockage"
+
+#. module: hosting_management
+#: model:ir.model.fields,field_description:hosting_management.field_hosting_digest__include_health_issues
+msgid "Include Health Issues"
+msgstr "Inclure les problèmes de santé"
+
+#. module: hosting_management
+#: model:ir.model.fields,field_description:hosting_management.field_hosting_digest__last_sent
+msgid "Last Sent"
+msgstr "Dernier envoi"
+
+#. module: hosting_management
+#: model_terms:ir.ui.view,arch_db:hosting_management.hosting_digest_view_form
+msgid "Send Now"
+msgstr "Envoyer maintenant"
+
+#. module: hosting_management
+#: model_terms:ir.ui.view,arch_db:hosting_management.hosting_digest_view_form
+msgid "Preview"
+msgstr "Aperçu"
+
+#. module: hosting_management
+#: model_terms:ir.ui.view,arch_db:hosting_management.hosting_digest_view_form
+msgid "Schedule"
+msgstr "Planification"
+
+#. module: hosting_management
+#: model_terms:ir.ui.view,arch_db:hosting_management.hosting_digest_view_form
+msgid "Content to Include"
+msgstr "Contenu à inclure"
+
+#. module: hosting_management
+#: model:ir.cron,name:hosting_management.ir_cron_hosting_health_check
+msgid "Hosting: Health Check"
+msgstr "Hébergement : Vérification santé"
+
+#. module: hosting_management
+#: model:ir.cron,name:hosting_management.ir_cron_hosting_digest
+msgid "Hosting: Send Digest Emails"
+msgstr "Hébergement : Envoyer résumés par courriel"
+
+#. module: hosting_management
+#: model:mail.template,name:hosting_management.mail_template_hosting_digest
+msgid "Hosting: Digest Summary"
+msgstr "Hébergement : Résumé du digest"
+
+#. module: hosting_management
+#: model_terms:ir.ui.view,arch_db:hosting_management.hosting_dashboard_view_form
+msgid "Services Expiring"
+msgstr "Services expirants"
+
+#. module: hosting_management
+#: model_terms:ir.ui.view,arch_db:hosting_management.hosting_dashboard_view_form
+msgid "Alerts"
+msgstr "Alertes"
+
+#. module: hosting_management
+#: model_terms:ir.ui.view,arch_db:hosting_management.hosting_dashboard_view_form
+msgid "Service Status"
+msgstr "Statut du service"
+
+#. module: hosting_management
+#: model_terms:ir.ui.view,arch_db:hosting_management.hosting_dashboard_view_form
+msgid "30 Days"
+msgstr "30 jours"
+
+#. module: hosting_management
+#: model_terms:ir.ui.view,arch_db:hosting_management.hosting_dashboard_view_form
+msgid "60 Days"
+msgstr "60 jours"
+
+#. module: hosting_management
+#: model_terms:ir.ui.view,arch_db:hosting_management.hosting_dashboard_view_form
+msgid "90 Days"
+msgstr "90 jours"
+
+#. module: hosting_management
+#: model_terms:ir.ui.view,arch_db:hosting_management.hosting_dashboard_view_form
+msgid "Active"
+msgstr "Actif"
+
+#. module: hosting_management
+#: model_terms:ir.ui.view,arch_db:hosting_management.hosting_dashboard_view_form
+msgid "Suspended"
+msgstr "Suspendu"
+
+#. module: hosting_management
+#: model_terms:ir.ui.view,arch_db:hosting_management.hosting_dashboard_view_form
+msgid "Expired"
+msgstr "Expiré"
+
+#. module: hosting_management
+#: model_terms:ir.ui.view,arch_db:hosting_management.hosting_health_check_view_search
+msgid "Issues"
+msgstr "Problèmes"
+
+#. module: hosting_management
+#: model_terms:ir.ui.view,arch_db:hosting_management.hosting_health_check_view_search
+msgid "Today"
+msgstr "Aujourd'hui"
+
+#. module: hosting_management
+#: model_terms:ir.ui.view,arch_db:hosting_management.hosting_health_check_view_search
+msgid "Last 7 Days"
+msgstr "7 derniers jours"
+
+#. module: hosting_management
+#: model_terms:ir.ui.view,arch_db:hosting_management.hosting_health_check_view_search
+msgid "Last 30 Days"
+msgstr "30 derniers jours"
+
+#. module: hosting_management
+#: model_terms:ir.ui.view,arch_db:hosting_management.hosting_dashboard_view_form
+msgid "Refresh All"
+msgstr "Actualiser tout"
+
+#. module: hosting_management
+#: model_terms:ir.ui.view,arch_db:hosting_management.hosting_dashboard_view_form
+msgid "Health Checks"
+msgstr "Vérifications santé"
+
+#. module: hosting_management
+#: model_terms:ir.ui.view,arch_db:hosting_management.hosting_dashboard_view_form
+msgid "Check Versions"
+msgstr "Vérifier versions"
+
+#. module: hosting_management
+#: model:ir.model.fields,field_description:hosting_management.field_hosting_dashboard__last_refresh
+msgid "Last Refresh"
+msgstr "Dernière actualisation"
+
+#. module: hosting_management
+#: model:ir.model.fields,field_description:hosting_management.field_hosting_dashboard__last_health_check_count
+msgid "Services Checked"
+msgstr "Services vérifiés"
+
+#. module: hosting_management
+#: model:ir.model.fields,field_description:hosting_management.field_hosting_dashboard__last_version_check_count
+msgid "Software Checked"
+msgstr "Logiciels vérifiés"

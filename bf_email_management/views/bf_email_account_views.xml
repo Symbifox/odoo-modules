@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="bf_email_account_view_list" model="ir.ui.view">
+        <field name="name">bf.email.account.list</field>
+        <field name="model">bf.email.account</field>
+        <field name="arch" type="xml">
+            <list string="Comptes IMAP">
+                <field name="name"/>
+                <field name="login"/>
+                <field name="host"/>
+                <field name="port"/>
+                <field name="state"/>
+                <field name="last_sync_date"/>
+                <field name="active" widget="boolean_toggle"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_email_account_view_form" model="ir.ui.view">
+        <field name="name">bf.email.account.form</field>
+        <field name="model">bf.email.account</field>
+        <field name="arch" type="xml">
+            <form string="Compte IMAP">
+                <header>
+                    <button name="action_test_connection"
+                            type="object"
+                            string="Tester la connexion"
+                            class="btn-primary"/>
+                    <button name="action_sync_now"
+                            type="object"
+                            string="Synchroniser maintenant"
+                            class="btn-secondary"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,connected,error"/>
+                </header>
+                <sheet>
+                    <widget name="web_ribbon" title="Archivé"
+                            bg_color="bg-danger"
+                            invisible="active"/>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="ex. Coordination"/></h1>
+                    </div>
+                    <group>
+                        <group string="Identité">
+                            <field name="user_id" readonly="1"/>
+                            <field name="active" invisible="1"/>
+                            <field name="email_aliases"
+                                   placeholder="bonjour@…, info@…"/>
+                        </group>
+                        <group string="Serveur IMAP">
+                            <field name="host" placeholder="imap.example.com"/>
+                            <field name="port"/>
+                            <field name="login" placeholder="user@example.com"/>
+                            <field name="password" password="True"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Synchronisation">
+                            <field name="batch_size"/>
+                            <field name="auto_link_threshold_days"/>
+                            <field name="writeback_archive"/>
+                            <field name="archive_folder"
+                                   invisible="not writeback_archive"/>
+                        </group>
+                        <group string="Watermarks">
+                            <field name="last_uid_inbox" readonly="1"/>
+                            <field name="last_uid_sent" readonly="1"/>
+                            <field name="last_sync_date" readonly="1"/>
+                        </group>
+                    </group>
+                    <group string="Dernière erreur" invisible="not last_error">
+                        <field name="last_error" nolabel="1" readonly="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="bf_email_account_view_search" model="ir.ui.view">
+        <field name="name">bf.email.account.search</field>
+        <field name="model">bf.email.account</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="login"/>
+                <field name="host"/>
+                <filter name="connected" string="Connectés"
+                        domain="[('state', '=', 'connected')]"/>
+                <filter name="error" string="En erreur"
+                        domain="[('state', '=', 'error')]"/>
+                <filter name="inactive" string="Inactifs"
+                        domain="[('active', '=', False)]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="bf_email_account_action" model="ir.actions.act_window">
+        <field name="name">Mes comptes IMAP</field>
+        <field name="res_model">bf.email.account</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'default_user_id': uid}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Aucun compte IMAP configuré pour le moment.
+            </p>
+            <p>
+                Ajoutez un compte pour ingérer ses messages dans votre boîte
+                de réception. Chaque compte est privé à son propriétaire.
+            </p>
+        </field>
+    </record>
+
+</odoo>

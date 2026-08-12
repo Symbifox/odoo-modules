@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <menuitem id="menu_personas_root"
+              name="Personas"
+              parent="contacts.menu_contacts"
+              sequence="80"
+              groups="bf_persona.group_persona_user"/>
+
+    <menuitem id="menu_personas_dashboard"
+              name="Tableau de bord"
+              parent="menu_personas_root"
+              action="action_contact_persona_dashboard"
+              sequence="5"/>
+
+    <menuitem id="menu_personas_list"
+              name="Personas"
+              parent="menu_personas_root"
+              action="action_contact_persona"
+              sequence="10"/>
+
+    <menuitem id="menu_personas_categories"
+              name="Catégories"
+              parent="menu_personas_root"
+              action="action_contact_persona_category"
+              sequence="20"
+              groups="bf_persona.group_persona_manager"/>
+
+</odoo>

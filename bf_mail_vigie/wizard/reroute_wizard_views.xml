@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_bf_mail_reroute_wizard_form" model="ir.ui.view">
+        <field name="name">bf.mail.reroute.wizard.form</field>
+        <field name="model">bf.mail.reroute.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Re-router le courriel">
+                <group>
+                    <field name="email_id" invisible="1"/>
+                    <field name="current_display" string="Chatter actuelle"/>
+                </group>
+                <group string="Suggestion automatique"
+                       invisible="not suggested_display">
+                    <field name="suggested_display"/>
+                    <field name="suggested_reason"/>
+                    <field name="suggested_model" invisible="1"/>
+                    <field name="suggested_res_id" invisible="1"/>
+                    <button name="action_apply_suggested" type="object"
+                            string="Appliquer la suggestion"
+                            class="btn-secondary" icon="fa-magic"/>
+                </group>
+                <group string="Choisir la cible">
+                    <field name="target_ref"
+                           options="{'no_create': True, 'no_create_edit': True}"/>
+                </group>
+                <footer>
+                    <button name="action_reroute" type="object"
+                            string="Re-router" class="btn-primary"/>
+                    <button special="cancel" string="Annuler"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_bf_mail_reroute_wizard" model="ir.actions.act_window">
+        <field name="name">Re-router ce courriel</field>
+        <field name="res_model">bf.mail.reroute.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="bf_email_management.model_bf_email"/>
+        <field name="binding_view_types">list,form</field>
+    </record>
+</odoo>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <menuitem id="menu_bf_bureau_root"
+              name="Mon bureau"
+              action="bf_bureau_open_default_desk_action"
+              web_icon="bf_bureau,static/description/icon.png"
+              sequence="5"/>
+
+    <menuitem id="menu_bf_bureau_desks"
+              name="Mes bureaux"
+              parent="menu_bf_bureau_root"
+              action="bf_bureau_desk_action"
+              sequence="20"/>
+
+</odoo>

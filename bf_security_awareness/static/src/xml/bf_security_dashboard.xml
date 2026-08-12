@@ -1,0 +1,337 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <!-- ============================================================== -->
+    <!-- Manager / Operator dashboard                                   -->
+    <!-- ============================================================== -->
+    <t t-name="bf_security_awareness.Dashboard">
+        <div class="o_bf_secaware_dashboard">
+
+            <div t-if="state.loading" class="d-flex justify-content-center align-items-center" style="min-height:400px;">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Chargement…</span>
+                </div>
+            </div>
+
+            <div t-elif="!state.data" class="container-fluid py-4">
+                <div class="alert alert-warning d-flex align-items-center">
+                    <i class="fa fa-exclamation-triangle fa-2x me-3"/>
+                    <div class="flex-grow-1">
+                        <strong>Erreur de chargement</strong>
+                        <p class="mb-0">Impossible de charger le tableau de bord.</p>
+                    </div>
+                    <button class="btn btn-outline-warning" t-on-click="refresh">
+                        <i class="fa fa-refresh me-1"/>Réessayer
+                    </button>
+                </div>
+            </div>
+
+            <div t-else="" class="container-fluid py-4">
+
+                <!-- Header -->
+                <div class="row mb-4">
+                    <div class="col-12 d-flex justify-content-between align-items-center flex-wrap gap-2">
+                        <div>
+                            <h1 class="mb-0"><i class="fa fa-shield me-2"/>Sensibilisation à la sécurité</h1>
+                            <p class="text-muted mb-0">Posture d'hameçonnage et formation de l'organisation</p>
+                        </div>
+                        <button class="btn btn-outline-secondary" t-on-click="refresh">
+                            <i class="fa fa-refresh me-1"/>Actualiser
+                        </button>
+                    </div>
+                </div>
+
+                <!-- KPI cards -->
+                <div class="row mb-4">
+                    <div class="col-lg-3 col-md-6 mb-3">
+                        <div class="card h-100">
+                            <div class="card-body text-center">
+                                <h2 class="mb-0 text-danger"><t t-esc="pct(state.data.kpis.phish_prone_pct)"/>%</h2>
+                                <small class="text-muted d-block">% vulnérable au phishing</small>
+                                <small t-attf-class="{{ deltaClass(state.data.kpis.phish_prone_delta, false) }}">
+                                    <i t-attf-class="fa {{ deltaArrow(state.data.kpis.phish_prone_delta) }} me-1"/>
+                                    <t t-esc="pct(Math.abs(state.data.kpis.phish_prone_delta))"/> pts vs période préc.
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 mb-3">
+                        <div class="card h-100">
+                            <div class="card-body text-center">
+                                <h2 class="mb-0 text-success"><t t-esc="pct(state.data.kpis.report_rate)"/>%</h2>
+                                <small class="text-muted d-block">Taux de signalement</small>
+                                <small t-attf-class="{{ deltaClass(state.data.kpis.report_rate_delta, true) }}">
+                                    <i t-attf-class="fa {{ deltaArrow(state.data.kpis.report_rate_delta) }} me-1"/>
+                                    <t t-esc="pct(Math.abs(state.data.kpis.report_rate_delta))"/> pts vs période préc.
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 mb-3">
+                        <div t-attf-class="card h-100 cursor-pointer {{ state.data.kpis.high_risk > 0 ? 'border-warning' : '' }}"
+                             t-on-click="openHighRisk">
+                            <div class="card-body text-center">
+                                <h2 t-attf-class="mb-0 {{ state.data.kpis.high_risk > 0 ? 'text-warning' : 'text-muted' }}"
+                                    t-esc="state.data.kpis.high_risk"/>
+                                <small class="text-muted d-block">Personnes à risque élevé</small>
+                                <small class="text-danger" t-if="state.data.kpis.critical">
+                                    dont <t t-esc="state.data.kpis.critical"/> critique(s)
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 mb-3">
+                        <div t-attf-class="card h-100 cursor-pointer {{ state.data.kpis.overdue_training > 0 ? 'border-danger' : '' }}"
+                             t-on-click="openOverdueTraining">
+                            <div class="card-body text-center">
+                                <h2 t-attf-class="mb-0 {{ state.data.kpis.overdue_training > 0 ? 'text-danger' : 'text-muted' }}"
+                                    t-esc="state.data.kpis.overdue_training"/>
+                                <small class="text-muted d-block">Formations en retard</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <!-- Trend -->
+                    <div class="col-lg-8 mb-4">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h5 class="card-title"><i class="fa fa-line-chart me-2"/>Tendance par campagne</h5>
+                                <div t-if="trend.length === 0" class="text-muted text-center py-5">
+                                    Pas encore de campagnes terminées.
+                                </div>
+                                <div t-else="">
+                                    <svg viewBox="0 0 100 100" preserveAspectRatio="none"
+                                         style="width:100%;height:200px;border-bottom:1px solid #dee2e6;border-left:1px solid #dee2e6;">
+                                        <polyline t-att-points="phishPronePoints" fill="none"
+                                                  stroke="#dc3545" stroke-width="1.5" vector-effect="non-scaling-stroke"/>
+                                        <polyline t-att-points="reportRatePoints" fill="none"
+                                                  stroke="#198754" stroke-width="1.5" vector-effect="non-scaling-stroke"/>
+                                    </svg>
+                                    <div class="d-flex justify-content-between mt-1">
+                                        <t t-foreach="trend" t-as="p" t-key="p.period">
+                                            <small class="text-muted" t-esc="formatMonth(p.period)"/>
+                                        </t>
+                                    </div>
+                                    <div class="mt-2">
+                                        <span class="badge text-bg-danger me-2">% vulnérable</span>
+                                        <span class="badge text-bg-success">% signalement</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Risk distribution -->
+                    <div class="col-lg-4 mb-4">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h5 class="card-title"><i class="fa fa-users me-2"/>Répartition du risque</h5>
+                                <div t-if="!state.data.risk_distribution.total" class="text-muted text-center py-5">
+                                    Aucun profil pour l'instant.
+                                </div>
+                                <t t-else="">
+                                    <t t-foreach="state.data.risk_distribution.levels" t-as="lvl" t-key="lvl.level">
+                                        <div class="mb-2">
+                                            <div class="d-flex justify-content-between">
+                                                <small t-esc="lvl.label"/>
+                                                <small class="text-muted" t-esc="lvl.count"/>
+                                            </div>
+                                            <div class="progress" style="height:8px;">
+                                                <div t-attf-class="progress-bar text-bg-{{ lvl.color }} bg-{{ lvl.color }}"
+                                                     t-attf-style="width:{{ barWidth(lvl.count, state.data.risk_distribution.total) }};"/>
+                                            </div>
+                                        </div>
+                                    </t>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <!-- Repeat clickers -->
+                    <div class="col-lg-6 mb-4">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h5 class="card-title"><i class="fa fa-repeat me-2"/>Récidivistes (à coacher)</h5>
+                                <div t-if="state.data.repeat_clickers.length === 0" class="text-muted text-center py-4">
+                                    Personne n'a échoué à 2 simulations ou plus. 👏
+                                </div>
+                                <table t-else="" class="table table-sm table-hover mb-0">
+                                    <thead><tr><th>Personne</th><th class="text-center">Échecs</th><th class="text-center">Campagnes</th><th>Risque</th></tr></thead>
+                                    <tbody>
+                                        <tr t-foreach="state.data.repeat_clickers" t-as="row" t-key="row.partner_id"
+                                            class="cursor-pointer" t-on-click="() => this.openProfile(row.partner_id)">
+                                            <td t-esc="row.name"/>
+                                            <td class="text-center"><span class="badge text-bg-danger" t-esc="row.fails"/></td>
+                                            <td class="text-center text-muted" t-esc="row.campaigns"/>
+                                            <td><span t-attf-class="badge text-bg-{{ riskBadge(row.risk_level) }}" t-esc="row.risk_level"/></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Overdue training -->
+                    <div class="col-lg-6 mb-4">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h5 class="card-title"><i class="fa fa-graduation-cap me-2"/>Formations en retard</h5>
+                                <div t-if="state.data.overdue_training.length === 0" class="text-muted text-center py-4">
+                                    Aucune formation en retard. 👍
+                                </div>
+                                <table t-else="" class="table table-sm table-hover mb-0">
+                                    <thead><tr><th>Personne</th><th>Cours</th><th class="text-center">Retard</th><th class="text-center">%</th></tr></thead>
+                                    <tbody>
+                                        <tr t-foreach="state.data.overdue_training" t-as="a" t-key="a.id"
+                                            class="cursor-pointer" t-on-click="() => this.openAssignment(a.id)">
+                                            <td t-esc="a.partner"/>
+                                            <td class="text-truncate" style="max-width:160px;" t-esc="a.course"/>
+                                            <td class="text-center"><span class="badge text-bg-danger"><t t-esc="a.days_over"/> j</span></td>
+                                            <td class="text-center text-muted"><t t-esc="a.completion"/>%</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent campaigns -->
+                <div class="row">
+                    <div class="col-12 mb-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title"><i class="fa fa-paper-plane me-2"/>Campagnes récentes</h5>
+                                <div t-if="state.data.recent_campaigns.length === 0" class="text-muted text-center py-4">
+                                    Aucune campagne lancée.
+                                </div>
+                                <table t-else="" class="table table-sm table-hover mb-0">
+                                    <thead><tr><th>Campagne</th><th class="text-center">Destinataires</th><th class="text-center">Clics</th><th class="text-center">Soumis</th><th class="text-center">Signalés</th><th class="text-center">Taux d'échec</th></tr></thead>
+                                    <tbody>
+                                        <tr t-foreach="state.data.recent_campaigns" t-as="c" t-key="c.id"
+                                            class="cursor-pointer" t-on-click="() => this.openCampaign(c.id)">
+                                            <td t-esc="c.name"/>
+                                            <td class="text-center" t-esc="c.recipients"/>
+                                            <td class="text-center text-warning" t-esc="c.clicked"/>
+                                            <td class="text-center text-danger" t-esc="c.submitted"/>
+                                            <td class="text-center text-success" t-esc="c.reported"/>
+                                            <td class="text-center"><strong><t t-esc="pct(c.fail_rate)"/>%</strong></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </t>
+
+    <!-- ============================================================== -->
+    <!-- Employee self-service view                                     -->
+    <!-- ============================================================== -->
+    <t t-name="bf_security_awareness.MyView">
+        <div class="o_bf_secaware_my">
+
+            <div t-if="state.loading" class="d-flex justify-content-center align-items-center" style="min-height:300px;">
+                <div class="spinner-border text-primary" role="status"><span class="visually-hidden">Chargement…</span></div>
+            </div>
+
+            <div t-elif="!state.data || !state.data.has_data" class="container py-5 text-center text-muted">
+                <i class="fa fa-shield fa-3x mb-3"/>
+                <h4>Ma cybersécurité</h4>
+                <p>Aucune donnée de sensibilisation ne vous est associée pour l'instant.</p>
+            </div>
+
+            <div t-else="" class="container py-4" style="max-width:820px;">
+                <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+                    <div>
+                        <h2 class="mb-0">Bonjour <t t-esc="state.data.name"/></h2>
+                        <p class="text-muted mb-0">Votre tableau de bord cybersécurité</p>
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        <span t-attf-class="badge fs-6 text-bg-{{ state.data.resilience.color }}"
+                              t-att-title="state.data.resilience.hint" t-esc="state.data.resilience.label"/>
+                        <button class="btn btn-danger" t-on-click="openReport">
+                            <i class="fa fa-flag me-1"/>Rapporter comme malveillant
+                        </button>
+                    </div>
+                </div>
+
+                <div class="alert alert-warning d-flex align-items-center justify-content-between flex-wrap gap-2">
+                    <span><i class="fa fa-shield me-2"/>Un courriel vous semble suspect ? Signalez-le en un clic.</span>
+                    <button class="btn btn-sm btn-outline-danger" t-on-click="openReport">
+                        <i class="fa fa-flag me-1"/>Rapporter comme malveillant
+                    </button>
+                </div>
+
+                <div class="row text-center mb-4">
+                    <div class="col-4">
+                        <div class="card"><div class="card-body py-3">
+                            <h3 class="mb-0" t-esc="state.data.tested"/>
+                            <small class="text-muted">Simulations reçues</small>
+                        </div></div>
+                    </div>
+                    <div class="col-4">
+                        <div class="card"><div class="card-body py-3">
+                            <h3 class="mb-0 text-success" t-esc="state.data.reported"/>
+                            <small class="text-muted">Bien signalées</small>
+                        </div></div>
+                    </div>
+                    <div class="col-4">
+                        <div class="card"><div class="card-body py-3">
+                            <h3 class="mb-0 text-primary" t-esc="state.data.completed_courses"/>
+                            <small class="text-muted">Formations complétées</small>
+                        </div></div>
+                    </div>
+                </div>
+
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <i class="fa fa-graduation-cap me-2"/>Mes formations
+                            <span t-if="state.data.todo_count" class="badge text-bg-warning ms-2">
+                                <t t-esc="state.data.todo_count"/> à compléter
+                            </span>
+                        </h5>
+                        <div t-if="state.data.trainings.length === 0" class="text-muted text-center py-3">
+                            Aucune formation assignée. Continuez vos bons réflexes !
+                        </div>
+                        <t t-else="">
+                            <t t-foreach="state.data.trainings" t-as="t" t-key="t.id">
+                                <div class="d-flex align-items-center justify-content-between border-bottom py-2 gap-3">
+                                    <div class="flex-grow-1">
+                                        <div>
+                                            <t t-esc="t.course"/>
+                                            <span t-if="t.completed" class="badge text-bg-success ms-2">Complétée</span>
+                                            <span t-elif="t.overdue" class="badge text-bg-danger ms-2">En retard</span>
+                                            <span t-elif="t.due_date" class="badge text-bg-light text-muted ms-2">Pour le <t t-esc="t.due_date"/></span>
+                                        </div>
+                                        <div class="progress mt-1" style="height:6px;">
+                                            <div t-attf-class="progress-bar {{ t.completed ? 'bg-success' : 'bg-primary' }}"
+                                                 t-attf-style="width:{{ barWidth(t.completion) }};"/>
+                                        </div>
+                                    </div>
+                                    <a t-if="!t.completed" t-att-href="courseUrl(t.channel_id)" target="_blank"
+                                       class="btn btn-sm btn-primary">Suivre</a>
+                                </div>
+                            </t>
+                        </t>
+                    </div>
+                </div>
+
+                <div class="alert alert-light border">
+                    <i class="fa fa-lightbulb-o me-2"/>
+                    En cas de doute sur un courriel : <strong>ne cliquez pas</strong>, vérifiez l'expéditeur,
+                    et signalez-le à votre équipe TI. Signaler n'est jamais une perte de temps.
+                </div>
+            </div>
+        </div>
+    </t>
+
+</templates>

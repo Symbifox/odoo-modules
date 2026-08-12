@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="badge_cat_productivity" model="bf.gamification.badge.category">
+            <field name="name">La Chasse</field>
+            <field name="sequence">1</field>
+            <field name="color">3</field>
+            <field name="description">Badges li&#233;s aux feuilles de temps et &#224; la productivit&#233;</field>
+        </record>
+        <record id="badge_cat_knowledge" model="bf.gamification.badge.category">
+            <field name="name">Le Terrier</field>
+            <field name="sequence">2</field>
+            <field name="color">4</field>
+            <field name="description">Badges li&#233;s &#224; la documentation et au partage de connaissances</field>
+        </record>
+        <record id="badge_cat_teamwork" model="bf.gamification.badge.category">
+            <field name="name">La Meute</field>
+            <field name="sequence">3</field>
+            <field name="color">10</field>
+            <field name="description">Badges li&#233;s &#224; la collaboration et au travail d'&#233;quipe</field>
+        </record>
+        <record id="badge_cat_hosting" model="bf.gamification.badge.category">
+            <field name="name">La Tani&#232;re</field>
+            <field name="sequence">4</field>
+            <field name="color">1</field>
+            <field name="description">Badges li&#233;s &#224; la gestion d'h&#233;bergement</field>
+        </record>
+        <record id="badge_cat_milestone" model="bf.gamification.badge.category">
+            <field name="name">Les &#201;toiles</field>
+            <field name="sequence">5</field>
+            <field name="color">5</field>
+            <field name="description">Badges de progression et jalons importants</field>
+        </record>
+        <record id="badge_cat_communication" model="bf.gamification.badge.category">
+            <field name="name">Le Glapissement</field>
+            <field name="sequence">6</field>
+            <field name="color">2</field>
+            <field name="description">Badges li&#233;s &#224; la communication et aux messages</field>
+        </record>
+    </data>
+</odoo>

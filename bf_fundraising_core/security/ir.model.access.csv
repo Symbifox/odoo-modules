@@ -1,0 +1,13 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_bf_fund_viewer,bf.fund viewer,model_bf_fund,donation.group_donation_viewer,1,0,0,0
+access_bf_fund_user,bf.fund user,model_bf_fund,donation.group_donation_user,1,1,1,0
+access_bf_fund_manager,bf.fund manager,model_bf_fund,donation.group_donation_manager,1,1,1,1
+access_bf_appeal_viewer,bf.appeal viewer,model_bf_appeal,donation.group_donation_viewer,1,0,0,0
+access_bf_appeal_user,bf.appeal user,model_bf_appeal,donation.group_donation_user,1,1,1,0
+access_bf_appeal_manager,bf.appeal manager,model_bf_appeal,donation.group_donation_manager,1,1,1,1
+access_bf_package_viewer,bf.package viewer,model_bf_package,donation.group_donation_viewer,1,0,0,0
+access_bf_package_user,bf.package user,model_bf_package,donation.group_donation_user,1,1,1,0
+access_bf_package_manager,bf.package manager,model_bf_package,donation.group_donation_manager,1,1,1,1
+access_bf_solicit_code_viewer,bf.solicit.code viewer,model_bf_solicit_code,donation.group_donation_viewer,1,0,0,0
+access_bf_solicit_code_user,bf.solicit.code user,model_bf_solicit_code,donation.group_donation_user,1,0,0,0
+access_bf_solicit_code_manager,bf.solicit.code manager,model_bf_solicit_code,donation.group_donation_manager,1,1,1,1

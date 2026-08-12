@@ -1,0 +1,50 @@
+.bf_tod_badge {
+    font-size: 0.78rem;
+    line-height: 1.4;
+    margin-top: 2px;
+    margin-bottom: 2px;
+    max-width: fit-content;
+
+    .o_field_widget {
+        white-space: nowrap;
+    }
+
+    > i.fa {
+        font-size: 0.85rem;
+    }
+}
+
+// Barre de progression "plage horaire" du kanban all-tasks. Scopé via la classe
+// o_bf_tod_progressbar ajoutée au <kanban> — n'affecte aucune autre barre de
+// progression du backend.
+//   - tons doux en arc de journée (aube -> midi -> crépuscule -> nuit) ;
+//   - icône Font Awesome en ::before sur chaque segment, anthracite pour rester
+//     lisible sur les tons clairs ; Odoo ne rend pas les segments à 0
+//     enregistrement, un segment très étroit rogne l'icône proprement
+//     (overflow:hidden de Bootstrap sur .progress) ;
+//   - piste (bg-300) et segment "Autre" (bg-200) ramenés à un gris très doux
+//     plutôt que le gris vif par défaut. Le segment "Autre" disparaît
+//     complètement sous le filtre "Tâches par jour" (tâches planifiées seules).
+.o_bf_tod_progressbar {
+    .o_kanban_counter > .o_column_progress {
+        &.bg-300 { background-color: #EDEEF1 !important; }              // piste
+        .progress-bar.bg-200 { background-color: #DCDDE2 !important; }  // "Autre"
+
+        .progress-bar {
+            &.bg-info    { background-color: #A7C9D9 !important; }  // Matinée — aube
+            &.bg-warning { background-color: #E8CE8C !important; }  // Midi — soleil
+            &.bg-danger  { background-color: #E3AC97 !important; }  // Fin de jour — crépuscule
+            &.bg-muted   { background-color: #B5B9C6 !important; }  // Hors heures — nuit
+
+            &::before {
+                font-family: "FontAwesome";
+                font-size: 0.65rem;
+                color: #2D3031;  // anthracite BF — lisible sur les tons doux
+            }
+        }
+        .bg-info::before    { content: "\f0f4"; }  // fa-coffee  — Matinée
+        .bg-warning::before { content: "\f185"; }  // fa-sun-o   — Midi
+        .bg-danger::before  { content: "\f017"; }  // fa-clock-o — Fin de jour
+        .bg-muted::before   { content: "\f186"; }  // fa-moon-o  — Hors heures
+    }
+}

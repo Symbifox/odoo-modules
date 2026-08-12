@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!-- Wizard Form View -->
+    <record id="view_bf_mail_import_wizard_form" model="ir.ui.view">
+        <field name="name">bf.mail.import.wizard.form</field>
+        <field name="model">bf.mail.import.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Importer des courriels (.eml)">
+                <group>
+                    <field name="state" invisible="1"/>
+                    <field name="res_model" invisible="1"/>
+                    <field name="res_id" invisible="1"/>
+                    <field name="record_display" string="Enregistrement cible"/>
+                </group>
+
+                <!-- DRAFT state: file selection -->
+                <group invisible="state != 'draft'">
+                    <field name="eml_files" widget="many2many_binary"
+                           string="Fichiers .eml"/>
+                    <field name="file_count"/>
+                </group>
+
+                <!-- DONE state -->
+                <group invisible="state != 'done'" string="R&#233;sultat">
+                    <field name="import_result" nolabel="1" colspan="2"/>
+                </group>
+
+                <footer>
+                    <button name="action_import"
+                            string="Importer"
+                            type="object"
+                            class="btn-primary"
+                            invisible="state != 'draft'"/>
+
+                    <button name="action_reset"
+                            string="Nouvel import"
+                            type="object"
+                            class="btn-secondary"
+                            invisible="state != 'done'"/>
+
+                    <button string="Fermer" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action to open wizard from menu (admin only) -->
+    <record id="action_bf_mail_import_wizard" model="ir.actions.act_window">
+        <field name="name">Importer des courriels (.eml)</field>
+        <field name="res_model">bf.mail.import.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <!-- Menu under Settings > Technical > Email -->
+    <menuitem id="menu_bf_mail_import"
+              name="Importer .eml"
+              parent="base.menu_email"
+              action="action_bf_mail_import_wizard"
+              groups="base.group_system"
+              sequence="99"/>
+
+</odoo>

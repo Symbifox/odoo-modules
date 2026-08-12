@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="bf_nextcloud_browser.NcBrowser">
+        <div class="o_nc_browser" t-att-class="{ o_nc_drag_over: state.dragOver }"
+             t-on-dragover="onDragOver" t-on-dragleave="onDragLeave" t-on-drop="onDrop">
+            <t t-if="!state.ready">
+                <div class="text-muted p-3">
+                    <i class="fa fa-spinner fa-spin me-1"/> Chargement…
+                </div>
+            </t>
+            <t t-else="">
+                <div class="o_nc_toolbar d-flex align-items-center flex-wrap gap-2 mb-2">
+                    <button class="btn btn-sm btn-secondary" t-on-click="() => this.load(state.relPath)" title="Rafraichir">
+                        <i class="fa fa-refresh"/>
+                    </button>
+                    <button class="btn btn-sm btn-primary" t-on-click="triggerUpload" t-att-disabled="!canMutate">
+                        <i class="fa fa-upload me-1"/> Televerser
+                    </button>
+                    <button class="btn btn-sm btn-secondary" t-on-click="newFolder" t-att-disabled="!canMutate">
+                        <i class="fa fa-folder-o me-1"/> Nouveau dossier
+                    </button>
+                    <input type="file" class="d-none" t-ref="fileInput" multiple="multiple" t-on-change="onFileChosen"/>
+                    <ol class="breadcrumb mb-0 ms-2 align-items-center">
+                        <t t-foreach="state.breadcrumb" t-as="c" t-key="c.rel">
+                            <li class="breadcrumb-item" t-att-class="{ active: c_last }">
+                                <span t-if="c_last">
+                                    <i t-if="c_index === 0" class="fa fa-home me-1"/>
+                                    <t t-esc="c.name"/>
+                                </span>
+                                <a t-else="" href="#" t-on-click.prevent="() => this.load(c.rel)">
+                                    <i t-if="c_index === 0" class="fa fa-home me-1"/>
+                                    <t t-esc="c.name"/>
+                                </a>
+                            </li>
+                        </t>
+                    </ol>
+                    <t t-if="state.loading">
+                        <i class="fa fa-spinner fa-spin text-muted"/>
+                    </t>
+                    <div class="ms-auto d-flex align-items-center gap-2">
+                        <t t-if="state.selected.length">
+                            <span class="badge bg-secondary" t-esc="state.selected.length + ' sélectionné(s)'"/>
+                            <button class="btn btn-sm btn-outline-danger" t-on-click="bulkDelete" t-att-disabled="!canMutate" title="Supprimer la sélection">
+                                <i class="fa fa-trash me-1"/> Supprimer
+                            </button>
+                            <button class="btn btn-sm btn-link p-0" t-on-click="clearSelection" title="Effacer la sélection">
+                                <i class="fa fa-times"/>
+                            </button>
+                        </t>
+                        <div class="input-group input-group-sm o_nc_filter">
+                            <span class="input-group-text"><i class="fa fa-search"/></span>
+                            <input type="text" class="form-control" placeholder="Filtrer…" t-model="state.filter"/>
+                        </div>
+                    </div>
+                </div>
+
+                <t t-if="state.error">
+                    <div class="alert alert-info mb-0" t-esc="state.error"/>
+                </t>
+                <t t-else="">
+                    <div class="o_nc_main d-flex">
+                        <div class="o_nc_tree">
+                            <ul class="o_nc_tree_root">
+                                <t t-foreach="state.tree" t-as="n" t-key="n.rel">
+                                    <NcTreeNode node="n" browser="this"/>
+                                </t>
+                            </ul>
+                        </div>
+                        <div class="o_nc_content flex-grow-1">
+                            <table class="table table-sm table-hover o_nc_list mb-0">
+                                <thead>
+                                    <tr>
+                                        <th class="o_nc_check">
+                                            <input type="checkbox" t-att-checked="allVisibleSelected"
+                                                   t-on-change="toggleSelectAll" t-att-disabled="!canMutate"/>
+                                        </th>
+                                        <th class="o_nc_sort" t-on-click="() => this.setSort('name')">
+                                            Nom <i t-att-class="sortIcon('name')"/>
+                                        </th>
+                                        <th class="o_nc_sort" t-on-click="() => this.setSort('type')">
+                                            Type <i t-att-class="sortIcon('type')"/>
+                                        </th>
+                                        <th class="o_nc_sort text-end" t-on-click="() => this.setSort('mtime')">
+                                            Modifie <i t-att-class="sortIcon('mtime')"/>
+                                        </th>
+                                        <th class="o_nc_sort text-end" t-on-click="() => this.setSort('size')">
+                                            Taille <i t-att-class="sortIcon('size')"/>
+                                        </th>
+                                        <th class="text-end">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-foreach="sortedEntries" t-as="e" t-key="e.rel">
+                                        <tr draggable="true"
+                                            t-att-class="{ o_nc_folder_row: e.is_dir }"
+                                            t-on-dragstart="(ev) => this.onRowDragStart(e, ev)"
+                                            t-on-dragover="(ev) => this.onListDragOver(e, ev)"
+                                            t-on-drop="(ev) => this.onListDrop(e, ev)">
+                                            <td class="o_nc_check">
+                                                <input type="checkbox" t-att-checked="isSelected(e.rel)"
+                                                       t-on-change="() => this.toggleSelect(e.rel)"
+                                                       t-att-disabled="!canMutate"/>
+                                            </td>
+                                            <td class="o_nc_name" t-on-click="() => this.onEntryClick(e)">
+                                                <i t-att-class="this._iconClass(e)" t-att-style="e.is_dir ? ('color:' + state.folderColor) : ''"/>
+                                                <span class="ms-2" t-esc="e.name"/>
+                                            </td>
+                                            <td class="text-muted small text-nowrap" t-esc="this._typeLabel(e)"/>
+                                            <td class="text-end text-muted small text-nowrap" t-esc="e.mtime"/>
+                                            <td class="text-end text-muted small text-nowrap" t-esc="e.size_display"/>
+                                            <td class="text-end text-nowrap o_nc_actions">
+                                                <t t-if="!e.is_dir">
+                                                    <button t-if="e.internal_url" class="btn btn-sm btn-link p-0 me-2" t-on-click="() => this.openInNextcloud(e)" title="Ouvrir dans Nextcloud">
+                                                        <i class="fa fa-external-link"/>
+                                                    </button>
+                                                    <button class="btn btn-sm btn-link p-0 me-2" t-on-click="() => this.download(e)" title="Telecharger">
+                                                        <i class="fa fa-download"/>
+                                                    </button>
+                                                    <button class="btn btn-sm btn-link p-0 me-2" t-on-click="() => this.shareDialog(e)" title="Lien de partage">
+                                                        <i class="fa fa-share-alt"/>
+                                                    </button>
+                                                    <button t-if="showLink" class="btn btn-sm btn-link p-0 me-2" t-on-click="() => this.link(e)" title="Lier a la matrice / Knowledge">
+                                                        <i class="fa fa-link"/>
+                                                    </button>
+                                                </t>
+                                                <button class="btn btn-sm btn-link p-0 me-2" t-on-click="() => this.rename(e)" title="Renommer">
+                                                    <i class="fa fa-pencil"/>
+                                                </button>
+                                                <button class="btn btn-sm btn-link text-danger p-0" t-on-click="() => this.remove(e)" title="Supprimer">
+                                                    <i class="fa fa-trash"/>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                    <t t-if="!state.entries.length">
+                                        <tr>
+                                            <td colspan="6" class="text-muted text-center p-3">Dossier vide</td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </div>
+    </t>
+
+    <t t-name="bf_nextcloud_browser.NcTreeNode">
+        <li class="o_nc_tree_node">
+            <div class="o_nc_tree_row" t-att-class="{ o_active: props.node.rel === props.browser.state.relPath }"
+                 t-on-dragover="(ev) => props.browser.onFolderDragOver(ev)"
+                 t-on-drop="(ev) => props.browser.onFolderDrop(props.node.rel, ev)">
+                <t t-if="props.browser.nodeHasCaret(props.node)">
+                    <i class="o_nc_caret fa" t-att-class="props.node.expanded ? 'fa-caret-down' : 'fa-caret-right'"
+                       t-on-click="() => props.browser.toggleNode(props.node)"/>
+                </t>
+                <i t-else="" class="o_nc_caret"/>
+                <i t-if="props.node.loading" class="fa fa-spinner fa-spin text-muted me-1"/>
+                <i t-else="" class="fa fa-folder text-warning me-1"/>
+                <span class="o_nc_tree_label" t-on-click="() => props.browser.openTreeFolder(props.node)" t-esc="props.node.name"/>
+            </div>
+            <t t-if="props.node.expanded">
+                <ul t-if="props.node.children.length" class="o_nc_tree_children">
+                    <t t-foreach="props.node.children" t-as="child" t-key="child.rel">
+                        <NcTreeNode node="child" browser="props.browser"/>
+                    </t>
+                </ul>
+            </t>
+        </li>
+    </t>
+
+    <t t-name="bf_nextcloud_browser.NcLinkDialog">
+        <Dialog title="'Lier le fichier'" size="'md'">
+            <div>
+                <p>Lier <strong t-esc="props.filename"/> a :</p>
+                <div class="mb-2 d-flex gap-3">
+                    <label class="o_nc_radio">
+                        <input type="radio" value="item" t-model="state.target"/> Element de matrice
+                    </label>
+                    <label class="o_nc_radio" t-if="props.hasArticles">
+                        <input type="radio" value="article" t-model="state.target"/> Article Knowledge
+                    </label>
+                </div>
+                <t t-if="state.target === 'item'">
+                    <select class="form-select" t-model="state.itemId">
+                        <t t-foreach="props.items" t-as="it" t-key="it.id">
+                            <option t-att-value="it.id" t-esc="it.name"/>
+                        </t>
+                    </select>
+                    <div t-if="!props.items.length" class="text-muted small mt-1">
+                        Aucun element de matrice pour ce projet.
+                    </div>
+                </t>
+                <t t-if="state.target === 'article'">
+                    <select class="form-select" t-model="state.articleId">
+                        <t t-foreach="props.articles" t-as="a" t-key="a.id">
+                            <option t-att-value="a.id" t-esc="a.name"/>
+                        </t>
+                    </select>
+                </t>
+            </div>
+            <t t-set-slot="footer">
+                <button class="btn btn-primary" t-att-disabled="!canConfirm" t-on-click="confirm">Lier</button>
+                <button class="btn btn-secondary" t-on-click="() => props.close()">Annuler</button>
+            </t>
+        </Dialog>
+    </t>
+
+    <t t-name="bf_nextcloud_browser.NcPromptDialog">
+        <Dialog title="props.title" size="'sm'">
+            <div>
+                <label class="form-label" t-esc="props.label"/>
+                <input type="text" class="form-control" t-model="state.value"
+                       t-on-keydown="onKeydown" autofocus="autofocus"/>
+            </div>
+            <t t-set-slot="footer">
+                <button class="btn btn-primary" t-att-disabled="!canConfirm" t-on-click="confirm"
+                        t-esc="props.confirmLabel || 'OK'"/>
+                <button class="btn btn-secondary" t-on-click="() => props.close()">Annuler</button>
+            </t>
+        </Dialog>
+    </t>
+
+    <t t-name="bf_nextcloud_browser.NcShareDialog">
+        <Dialog title="'Partager : ' + props.filename" size="'sm'">
+            <p class="text-muted small mb-2">Choisissez un type de partage :</p>
+            <div class="d-grid gap-2">
+                <t t-foreach="props.presets" t-as="p" t-key="p.id">
+                    <button class="btn btn-outline-primary text-start" t-on-click="() => { props.onChoose(p); props.close(); }">
+                        <i class="fa fa-share-alt me-1"/>
+                        <t t-esc="p.name"/>
+                        <span class="text-muted small ms-1" t-esc="p.access === 'read_write' ? '(lecture / ecriture)' : '(lecture seule)'"/>
+                    </button>
+                </t>
+                <button t-if="!props.presets.length" class="btn btn-outline-primary"
+                        t-on-click="() => { props.onChoose(null); props.close(); }">
+                    Lien par defaut
+                </button>
+            </div>
+            <t t-set-slot="footer">
+                <button class="btn btn-secondary" t-on-click="() => props.close()">Annuler</button>
+            </t>
+        </Dialog>
+    </t>
+
+    <t t-name="bf_nextcloud_browser.NcPreviewDialog">
+        <Dialog title="props.name" size="'xl'">
+            <iframe t-att-src="props.url" class="o_nc_iframe_modal"/>
+            <t t-set-slot="footer">
+                <a t-if="props.internalUrl" class="btn btn-secondary" t-att-href="props.internalUrl" target="_blank" rel="noopener noreferrer">
+                    <i class="fa fa-external-link me-1"/> Ouvrir dans Nextcloud
+                </a>
+                <button class="btn btn-primary" t-on-click="() => props.close()">Fermer</button>
+            </t>
+        </Dialog>
+    </t>
+
+    <t t-name="bf_nextcloud_browser.NcLauncherSystray">
+        <t t-if="state.show">
+            <div class="o_nc_systray">
+                <button class="btn" t-on-click="open" title="Ouvrir Nextcloud">
+                    <i class="fa fa-folder-open-o"/>
+                </button>
+            </div>
+        </t>
+    </t>
+
+</templates>

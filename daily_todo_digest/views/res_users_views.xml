@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Full backend user form (admins) -->
+    <record id="view_users_form_digest_weather" model="ir.ui.view">
+        <field name="name">res.users.form.digest.weather</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_form"/>
+        <field name="arch" type="xml">
+            <field name="tz" position="after">
+                <field name="digest_weather_city"/>
+                <field name="digest_weather_latitude"
+                       invisible="not digest_weather_city"/>
+                <field name="digest_weather_longitude"
+                       invisible="not digest_weather_city"/>
+            </field>
+        </field>
+    </record>
+
+    <!-- Preferences dialog (each user editing their own profile) -->
+    <record id="view_users_form_simple_modif_digest_weather" model="ir.ui.view">
+        <field name="name">res.users.preferences.digest.weather</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_form_simple_modif"/>
+        <field name="arch" type="xml">
+            <field name="tz" position="after">
+                <field name="digest_weather_city"/>
+                <field name="digest_weather_latitude"
+                       invisible="not digest_weather_city"/>
+                <field name="digest_weather_longitude"
+                       invisible="not digest_weather_city"/>
+            </field>
+        </field>
+    </record>
+
+</odoo>

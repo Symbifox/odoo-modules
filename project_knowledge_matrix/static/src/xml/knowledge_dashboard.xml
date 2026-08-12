@@ -1,0 +1,574 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="project_knowledge_matrix.Dashboard">
+        <div class="o_knowledge_dashboard">
+            <!-- Loading State -->
+            <div t-if="state.loading" class="d-flex justify-content-center align-items-center" style="min-height: 400px;">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Chargement...</span>
+                </div>
+            </div>
+
+            <!-- Error State -->
+            <div t-elif="!state.data" class="container-fluid py-4">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="alert alert-warning d-flex align-items-center" role="alert">
+                            <i class="fa fa-exclamation-triangle fa-2x me-3"/>
+                            <div class="flex-grow-1">
+                                <strong>Erreur de chargement</strong>
+                                <p class="mb-0">Impossible de charger les données du tableau de bord. Veuillez réessayer.</p>
+                            </div>
+                            <button class="btn btn-outline-warning" t-on-click="refresh">
+                                <i class="fa fa-refresh me-1"/>Réessayer
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dashboard Content -->
+            <div t-else="" class="container-fluid py-4">
+                <!-- Header -->
+                <div class="row mb-4">
+                    <div class="col-12 d-flex justify-content-between align-items-center">
+                        <div>
+                            <h1 class="mb-0">
+                                <i class="fa fa-dashboard me-2"/>Tableau de bord
+                                <small t-if="state.projectId" class="text-muted ms-2">
+                                    — <t t-esc="state.projectName"/>
+                                </small>
+                            </h1>
+                            <p class="text-muted mb-0">Base de connaissances - Vue d'ensemble des indicateurs clés</p>
+                        </div>
+                        <div class="d-flex align-items-center gap-2">
+                            <select class="form-select form-select-sm" style="width: auto; min-width: 200px;"
+                                    t-on-change="onProjectChange">
+                                <option value="">Tous les projets</option>
+                                <t t-foreach="state.projects" t-as="proj" t-key="proj.id">
+                                    <option t-att-value="proj.id"
+                                            t-att-selected="proj.id === state.projectId">
+                                        <t t-esc="proj.name"/>
+                                    </option>
+                                </t>
+                            </select>
+                            <button class="btn btn-outline-secondary btn-sm" t-on-click="refresh">
+                                <i class="fa fa-refresh me-1"/>Actualiser
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Alert Row - Critical Items -->
+                <div t-if="state.data.review_metrics.total_attention > 0" class="row mb-4">
+                    <div class="col-12">
+                        <div class="alert alert-danger d-flex align-items-center cursor-pointer" role="alert" t-on-click="openDocumentsNeedingAttention">
+                            <i class="fa fa-exclamation-triangle fa-2x me-3"/>
+                            <div class="flex-grow-1">
+                                <strong>Attention requise!</strong>
+                                <span t-esc="state.data.review_metrics.total_attention"/> document(s) nécessitent une action immédiate.
+                            </div>
+                            <i class="fa fa-chevron-right"/>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- KPI Cards Row 1: Document Overview -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <h5 class="text-uppercase text-muted mb-3">
+                            <i class="fa fa-file-text-o me-2"/>Aperçu des documents
+                        </h5>
+                    </div>
+                    <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
+                        <div class="card h-100 border-primary cursor-pointer" t-on-click="openAllDocuments">
+                            <div class="card-body text-center">
+                                <h2 class="text-primary mb-0" t-esc="state.data.document_overview.active"/>
+                                <small class="text-muted">Documents actifs</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
+                        <div class="card h-100 cursor-pointer" t-on-click="openInternalDocuments">
+                            <div class="card-body text-center">
+                                <h2 class="text-info mb-0" t-esc="state.data.document_overview.internal"/>
+                                <small class="text-muted">Internes</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
+                        <div class="card h-100 cursor-pointer" t-on-click="openClientDocuments">
+                            <div class="card-body text-center">
+                                <h2 class="text-success mb-0" t-esc="state.data.document_overview.client"/>
+                                <small class="text-muted">Clients</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
+                        <div class="card h-100 cursor-pointer" t-on-click="openDraftDocuments">
+                            <div class="card-body text-center">
+                                <h2 class="text-secondary mb-0" t-esc="state.data.document_overview.draft"/>
+                                <small class="text-muted">Brouillons</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
+                        <div class="card h-100 cursor-pointer" t-on-click="openArchivedDocuments">
+                            <div class="card-body text-center">
+                                <h2 class="text-muted mb-0" t-esc="state.data.document_overview.archived"/>
+                                <small class="text-muted">Archivés</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
+                        <div class="card h-100 cursor-pointer" t-on-click="openVersionsThisYear">
+                            <div class="card-body text-center">
+                                <h2 class="mb-0" t-esc="state.data.content_quality.versions_this_year"/>
+                                <small class="text-muted">Versions cette année</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- KPI Cards Row 2: Review and Expiration -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <h5 class="text-uppercase text-muted mb-3">
+                            <i class="fa fa-calendar-times-o me-2"/>Révisions et expirations
+                        </h5>
+                    </div>
+                    <div class="col-lg-3 col-md-6 mb-3">
+                        <div t-attf-class="card h-100 cursor-pointer {{state.data.review_metrics.overdue_review > 0 ? 'border-danger' : ''}}" t-on-click="openOverdueReviews">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h3 t-attf-class="mb-0 {{state.data.review_metrics.overdue_review > 0 ? 'text-danger' : 'text-success'}}" t-esc="state.data.review_metrics.overdue_review"/>
+                                        <small class="text-muted">Révisions en retard</small>
+                                    </div>
+                                    <i t-attf-class="fa fa-2x {{state.data.review_metrics.overdue_review > 0 ? 'fa-exclamation-circle text-danger' : 'fa-check-circle text-success'}}"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 mb-3">
+                        <div t-attf-class="card h-100 cursor-pointer {{state.data.review_metrics.expired > 0 ? 'border-danger' : ''}}" t-on-click="openExpiredDocuments">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h3 t-attf-class="mb-0 {{state.data.review_metrics.expired > 0 ? 'text-danger' : 'text-success'}}" t-esc="state.data.review_metrics.expired"/>
+                                        <small class="text-muted">Documents expirés</small>
+                                    </div>
+                                    <i t-attf-class="fa fa-2x {{state.data.review_metrics.expired > 0 ? 'fa-times-circle text-danger' : 'fa-check-circle text-success'}}"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 mb-3">
+                        <div t-attf-class="card h-100 cursor-pointer {{state.data.review_metrics.expiring_0_30 > 0 ? 'border-warning' : ''}}" t-on-click="openExpiringSoon">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h3 t-attf-class="mb-0 {{state.data.review_metrics.expiring_0_30 > 0 ? 'text-warning' : 'text-success'}}" t-esc="state.data.review_metrics.expiring_0_30"/>
+                                        <small class="text-muted">Expirent sous 30j</small>
+                                    </div>
+                                    <i t-attf-class="fa fa-2x {{state.data.review_metrics.expiring_0_30 > 0 ? 'fa-clock-o text-warning' : 'fa-check-circle text-success'}}"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 mb-3">
+                        <div class="card h-100 cursor-pointer" t-on-click="openNoReviewDate">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h3 t-attf-class="mb-0 {{state.data.review_metrics.no_review_date > 0 ? '' : 'text-success'}}" t-esc="state.data.review_metrics.no_review_date"/>
+                                        <small class="text-muted">Sans date de révision</small>
+                                    </div>
+                                    <i t-attf-class="fa fa-2x {{state.data.review_metrics.no_review_date > 0 ? 'fa-question-circle text-secondary' : 'fa-check-circle text-success'}}"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Review Timeline -->
+                <div class="row mb-4">
+                    <div class="col-md-6 mb-3">
+                        <div class="card h-100">
+                            <div class="card-header bg-light">
+                                <h6 class="mb-0"><i class="fa fa-calendar me-2"/>Calendrier des révisions</h6>
+                            </div>
+                            <div class="card-body">
+                                <table class="table table-sm mb-0">
+                                    <tbody>
+                                        <tr class="cursor-pointer" t-on-click="openReviewDocs0_30">
+                                            <td><span t-attf-class="badge {{state.data.review_metrics.review_0_30 > 0 ? 'text-bg-danger' : 'text-bg-secondary'}}">0-30 jours</span></td>
+                                            <td class="text-end"><strong t-esc="state.data.review_metrics.review_0_30"/></td>
+                                        </tr>
+                                        <tr class="cursor-pointer" t-on-click="openReviewDocs30_60">
+                                            <td><span t-attf-class="badge {{state.data.review_metrics.review_30_60 > 0 ? 'text-bg-warning' : 'text-bg-secondary'}}">30-60 jours</span></td>
+                                            <td class="text-end"><strong t-esc="state.data.review_metrics.review_30_60"/></td>
+                                        </tr>
+                                        <tr class="cursor-pointer" t-on-click="openReviewDocs60_90">
+                                            <td><span t-attf-class="badge {{state.data.review_metrics.review_60_90 > 0 ? 'text-bg-info' : 'text-bg-secondary'}}">60-90 jours</span></td>
+                                            <td class="text-end"><strong t-esc="state.data.review_metrics.review_60_90"/></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="card h-100">
+                            <div class="card-header bg-light">
+                                <h6 class="mb-0"><i class="fa fa-hourglass-end me-2"/>Calendrier des expirations</h6>
+                            </div>
+                            <div class="card-body">
+                                <table class="table table-sm mb-0">
+                                    <tbody>
+                                        <tr class="cursor-pointer" t-on-click="openExpiringDocs0_30">
+                                            <td><span t-attf-class="badge {{state.data.review_metrics.expiring_0_30 > 0 ? 'text-bg-danger' : 'text-bg-secondary'}}">0-30 jours</span></td>
+                                            <td class="text-end"><strong t-esc="state.data.review_metrics.expiring_0_30"/></td>
+                                        </tr>
+                                        <tr class="cursor-pointer" t-on-click="openExpiringDocs30_60">
+                                            <td><span t-attf-class="badge {{state.data.review_metrics.expiring_30_60 > 0 ? 'text-bg-warning' : 'text-bg-secondary'}}">30-60 jours</span></td>
+                                            <td class="text-end"><strong t-esc="state.data.review_metrics.expiring_30_60"/></td>
+                                        </tr>
+                                        <tr class="cursor-pointer" t-on-click="openExpiringDocs60_90">
+                                            <td><span t-attf-class="badge {{state.data.review_metrics.expiring_60_90 > 0 ? 'text-bg-info' : 'text-bg-secondary'}}">60-90 jours</span></td>
+                                            <td class="text-end"><strong t-esc="state.data.review_metrics.expiring_60_90"/></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Client and Internal Compliance Row -->
+                <div class="row mb-4">
+                    <!-- Client Documentation -->
+                    <div class="col-md-6 mb-3">
+                        <div class="card h-100">
+                            <div class="card-header text-white" style="background-color: var(--brand-primary, #714B67);">
+                                <h6 class="mb-0"><i class="fa fa-users me-2"/>Documentation clients</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="row text-center mb-3">
+                                    <div class="col-4 cursor-pointer" t-on-click="openAllDistributions">
+                                        <h3 class="mb-0" t-esc="state.data.client_metrics.total_distributions"/>
+                                        <small class="text-muted">Distributions</small>
+                                    </div>
+                                    <div class="col-4 cursor-pointer" t-on-click="openAcknowledgedClientDistributions">
+                                        <h3 class="text-success mb-0"><t t-esc="state.data.client_metrics.acknowledgment_rate"/>%</h3>
+                                        <small class="text-muted">Taux d'accusé</small>
+                                    </div>
+                                    <div class="col-4 cursor-pointer" t-on-click="openOutdatedDistributions">
+                                        <h3 t-attf-class="mb-0 {{state.data.client_metrics.outdated > 0 ? 'text-warning' : 'text-success'}}" t-esc="state.data.client_metrics.outdated"/>
+                                        <small class="text-muted">Obsolètes</small>
+                                    </div>
+                                </div>
+                                <hr/>
+                                <div class="d-flex justify-content-between cursor-pointer" t-on-click="openPendingClientAcknowledgments">
+                                    <span><i class="fa fa-clock-o text-warning me-2"/>En attente d'accusé</span>
+                                    <strong t-attf-class="{{state.data.client_metrics.pending > 0 ? 'text-warning' : ''}}" t-esc="state.data.client_metrics.pending"/>
+                                </div>
+                                <div class="d-flex justify-content-between cursor-pointer" t-on-click="openOutdatedDistributions">
+                                    <span><i class="fa fa-building text-info me-2"/>Clients avec docs obsolètes</span>
+                                    <strong t-esc="state.data.client_metrics.clients_with_outdated"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Internal Compliance -->
+                    <div class="col-md-6 mb-3">
+                        <div class="card h-100">
+                            <div class="card-header" style="background-color: #333333;">
+                                <h6 class="mb-0 text-white"><i class="fa fa-building me-2"/>Conformité interne</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="row text-center mb-3">
+                                    <div class="col-4 cursor-pointer" t-on-click="openInternalDistributions">
+                                        <h3 class="mb-0" t-esc="state.data.internal_metrics.total_distributions"/>
+                                        <small class="text-muted">Distributions</small>
+                                    </div>
+                                    <div class="col-4 cursor-pointer" t-on-click="openAcknowledgedInternalDistributions">
+                                        <h3 class="text-info mb-0"><t t-esc="state.data.internal_metrics.compliance_rate"/>%</h3>
+                                        <small class="text-muted">Taux conformité</small>
+                                    </div>
+                                    <div class="col-4 cursor-pointer" t-on-click="openOverdueReviews">
+                                        <h3 t-attf-class="mb-0 {{state.data.internal_metrics.overdue_procedures > 0 ? 'text-danger' : 'text-success'}}" t-esc="state.data.internal_metrics.overdue_procedures"/>
+                                        <small class="text-muted">Procédures en retard</small>
+                                    </div>
+                                </div>
+                                <hr/>
+                                <div class="d-flex justify-content-between cursor-pointer" t-on-click="openPendingInternalAcknowledgments">
+                                    <span><i class="fa fa-clock-o text-warning me-2"/>En attente d'accusé</span>
+                                    <strong t-attf-class="{{state.data.internal_metrics.pending > 0 ? 'text-warning' : ''}}" t-esc="state.data.internal_metrics.pending"/>
+                                </div>
+                                <div class="d-flex justify-content-between cursor-pointer" t-on-click="openPendingInternalAcknowledgments">
+                                    <span><i class="fa fa-user text-info me-2"/>Employés avec accusés en attente</span>
+                                    <strong t-esc="state.data.internal_metrics.employees_pending"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Content Quality & Matrices Row -->
+                <div class="row mb-4">
+                    <!-- Content Quality -->
+                    <div class="col-lg-4 col-md-6 mb-3">
+                        <div class="card h-100">
+                            <div class="card-header bg-light">
+                                <h6 class="mb-0"><i class="fa fa-check-circle me-2"/>Qualité du contenu</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between mb-2 cursor-pointer" t-on-click="openDocsWithoutVersions">
+                                    <span>Documents sans versions</span>
+                                    <span t-attf-class="badge {{state.data.content_quality.docs_without_versions > 0 ? 'text-bg-warning' : 'text-bg-success'}}" t-esc="state.data.content_quality.docs_without_versions"/>
+                                </div>
+                                <div class="d-flex justify-content-between mb-2 cursor-pointer" t-on-click="openStaleDocuments">
+                                    <span>Contenu périmé (6+ mois)</span>
+                                    <span t-attf-class="badge {{state.data.content_quality.stale_documents > 0 ? 'text-bg-secondary' : 'text-bg-success'}}" t-esc="state.data.content_quality.stale_documents"/>
+                                </div>
+                                <div class="d-flex justify-content-between cursor-pointer" t-on-click="openSoftwareCatalog">
+                                    <span>Couverture logiciels</span>
+                                    <span class="badge text-bg-success"><t t-esc="state.data.content_quality.software_coverage"/>%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Knowledge Matrices -->
+                    <div class="col-lg-4 col-md-6 mb-3">
+                        <div class="card h-100 cursor-pointer" t-on-click="openMatrices">
+                            <div class="card-header bg-light">
+                                <h6 class="mb-0"><i class="fa fa-th me-2"/>Matrices de connaissances</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="text-center mb-3">
+                                    <h2 class="text-primary mb-0"><t t-esc="state.data.matrix_metrics.completion_rate"/>%</h2>
+                                    <small class="text-muted">Taux de complétion</small>
+                                </div>
+                                <div class="d-flex justify-content-between mb-2 cursor-pointer" t-on-click.stop="openMatrices">
+                                    <span>Total matrices</span>
+                                    <strong t-esc="state.data.matrix_metrics.total_matrices"/>
+                                </div>
+                                <div class="d-flex justify-content-between mb-2 cursor-pointer" t-on-click.stop="openInProgressItems">
+                                    <span>Éléments en cours</span>
+                                    <span class="badge text-bg-info" t-esc="state.data.matrix_metrics.in_progress_items"/>
+                                </div>
+                                <div class="d-flex justify-content-between cursor-pointer" t-on-click.stop="openBlockedItems">
+                                    <span>Éléments bloqués</span>
+                                    <span t-attf-class="badge {{state.data.matrix_metrics.blocked_items > 0 ? 'text-bg-danger' : 'text-bg-success'}}" t-esc="state.data.matrix_metrics.blocked_items"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Credentials -->
+                    <div class="col-lg-4 col-md-6 mb-3">
+                        <div class="card h-100 cursor-pointer" t-on-click="openCredentials">
+                            <div class="card-header bg-light">
+                                <h6 class="mb-0"><i class="fa fa-key me-2"/>Identifiants</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>Identifiants actifs</span>
+                                    <strong t-esc="state.data.credential_metrics.total"/>
+                                </div>
+                                <div class="d-flex justify-content-between mb-2 cursor-pointer" t-on-click.stop="openExpiringCredentials">
+                                    <span>Expirent sous 30j</span>
+                                    <span t-attf-class="badge {{state.data.credential_metrics.expiring_soon > 0 ? 'text-bg-warning' : 'text-bg-success'}}" t-esc="state.data.credential_metrics.expiring_soon"/>
+                                </div>
+                                <div class="d-flex justify-content-between mb-2 cursor-pointer" t-on-click.stop="openExpiredCredentials">
+                                    <span>Expirés</span>
+                                    <span t-attf-class="badge {{state.data.credential_metrics.expired > 0 ? 'text-bg-danger' : 'text-bg-success'}}" t-esc="state.data.credential_metrics.expired"/>
+                                </div>
+                                <div class="d-flex justify-content-between cursor-pointer" t-on-click.stop="openRevokedCredentials">
+                                    <span>Révoqués</span>
+                                    <span class="badge text-bg-secondary" t-esc="state.data.credential_metrics.revoked"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Decision Tracking Row -->
+                <div class="row mb-4" t-if="state.data.decision_metrics and state.data.decision_metrics.total > 0">
+                    <div class="col-12">
+                        <h5 class="text-uppercase text-muted mb-3">
+                            <i class="fa fa-gavel me-2"/>Suivi des décisions
+                        </h5>
+                    </div>
+                    <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
+                        <div class="card h-100 cursor-pointer" t-on-click="openDecisions">
+                            <div class="card-body text-center">
+                                <h2 class="text-primary mb-0" t-esc="state.data.decision_metrics.total"/>
+                                <small class="text-muted">Total décisions</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
+                        <div class="card h-100 cursor-pointer" t-on-click="openAcceptedDecisions">
+                            <div class="card-body text-center">
+                                <h2 class="text-success mb-0" t-esc="state.data.decision_metrics.accepted"/>
+                                <small class="text-muted">Acceptées</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
+                        <div class="card h-100 cursor-pointer" t-on-click="openPendingDecisions">
+                            <div class="card-body text-center">
+                                <h2 class="text-info mb-0" t-esc="state.data.decision_metrics.proposed"/>
+                                <small class="text-muted">Proposées</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
+                        <div class="card h-100 cursor-pointer" t-on-click="openRejectedDecisions">
+                            <div class="card-body text-center">
+                                <h2 class="text-danger mb-0" t-esc="state.data.decision_metrics.rejected"/>
+                                <small class="text-muted">Rejetées</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-6 mb-3">
+                        <div t-attf-class="card h-100 cursor-pointer {{state.data.decision_metrics.high_impact_pending > 0 ? 'border-warning' : ''}}" t-on-click="openHighImpactDecisions">
+                            <div class="card-body text-center">
+                                <h2 t-attf-class="mb-0 {{state.data.decision_metrics.high_impact_pending > 0 ? 'text-warning' : 'text-success'}}" t-esc="state.data.decision_metrics.high_impact_pending"/>
+                                <small class="text-muted">Haute importance en attente</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Corporate Governance Row (hidden when filtered by project) -->
+                <div class="row mb-4" t-if="state.data.corporate_metrics and !state.projectId">
+                    <div class="col-12">
+                        <h5 class="text-uppercase text-muted mb-3">
+                            <i class="fa fa-institution me-2"/>Gouvernance corporative
+                        </h5>
+                    </div>
+                    <div class="col-lg-4 col-md-6 mb-3">
+                        <div class="card h-100">
+                            <div class="card-header" style="background-color: #1a1a2e;">
+                                <h6 class="mb-0 text-white"><i class="fa fa-users me-2"/>Registres</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between mb-2 cursor-pointer" t-on-click="openDirectors">
+                                    <span><i class="fa fa-user-tie me-2"/>Administrateurs actifs</span>
+                                    <strong t-esc="state.data.corporate_metrics.active_directors"/>
+                                </div>
+                                <div class="d-flex justify-content-between mb-2 cursor-pointer" t-on-click="openOfficers">
+                                    <span><i class="fa fa-briefcase me-2"/>Dirigeants actifs</span>
+                                    <strong t-esc="state.data.corporate_metrics.active_officers"/>
+                                </div>
+                                <div class="d-flex justify-content-between cursor-pointer" t-on-click="openResolutions">
+                                    <span><i class="fa fa-gavel me-2"/>Résolutions adoptées</span>
+                                    <strong t-esc="state.data.corporate_metrics.adopted_resolutions"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6 mb-3">
+                        <div class="card h-100">
+                            <div class="card-header bg-light">
+                                <h6 class="mb-0"><i class="fa fa-calendar-check-o me-2"/>Conformité corporative</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between mb-2 cursor-pointer" t-on-click="openOverdueCompliance">
+                                    <span>En retard</span>
+                                    <span t-attf-class="badge {{state.data.corporate_metrics.overdue_compliance > 0 ? 'text-bg-danger' : 'text-bg-success'}}" t-esc="state.data.corporate_metrics.overdue_compliance"/>
+                                </div>
+                                <div class="d-flex justify-content-between mb-2 cursor-pointer" t-on-click="openComplianceCalendar">
+                                    <span>Échéance proche</span>
+                                    <span t-attf-class="badge {{state.data.corporate_metrics.due_soon_compliance > 0 ? 'text-bg-warning' : 'text-bg-secondary'}}" t-esc="state.data.corporate_metrics.due_soon_compliance"/>
+                                </div>
+                                <div class="d-flex justify-content-between cursor-pointer" t-on-click="openComplianceCalendar">
+                                    <span>À venir</span>
+                                    <span class="badge text-bg-info" t-esc="state.data.corporate_metrics.upcoming_compliance"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6 mb-3" t-if="state.data.corporate_metrics and !state.projectId and state.data.corporate_metrics.overdue_compliance > 0">
+                        <div class="card h-100 border-danger cursor-pointer" t-on-click="openOverdueCompliance">
+                            <div class="card-body d-flex align-items-center">
+                                <i class="fa fa-exclamation-triangle fa-3x text-danger me-3"/>
+                                <div>
+                                    <h3 class="text-danger mb-0" t-esc="state.data.corporate_metrics.overdue_compliance"/>
+                                    <span class="text-muted">obligation(s) corporative(s) en retard</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Activity Row -->
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <div class="card h-100">
+                            <div class="card-header bg-light">
+                                <h6 class="mb-0"><i class="fa fa-line-chart me-2"/>Activité de distribution</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="row text-center">
+                                    <div class="col-6 cursor-pointer" t-on-click="openDistributionsThisMonth">
+                                        <h2 class="text-primary mb-0" t-esc="state.data.distribution_activity.this_month"/>
+                                        <small class="text-muted">Ce mois</small>
+                                        <div t-if="state.data.distribution_activity.trend > 0" class="text-success">
+                                            <i class="fa fa-arrow-up"/> +<t t-esc="state.data.distribution_activity.trend"/>%
+                                        </div>
+                                        <div t-elif="state.data.distribution_activity.trend &lt; 0" class="text-danger">
+                                            <i class="fa fa-arrow-down"/> <t t-esc="state.data.distribution_activity.trend"/>%
+                                        </div>
+                                    </div>
+                                    <div class="col-6 cursor-pointer" t-on-click="openDistributionsLastMonth">
+                                        <h2 class="text-muted mb-0" t-esc="state.data.distribution_activity.last_month"/>
+                                        <small class="text-muted">Mois dernier</small>
+                                    </div>
+                                </div>
+                                <hr/>
+                                <div class="d-flex justify-content-between cursor-pointer" t-on-click="openOverdueAcknowledgments">
+                                    <span><i class="fa fa-exclamation-triangle text-warning me-2"/>Accusés en retard (7+ jours)</span>
+                                    <strong t-attf-class="{{state.data.distribution_activity.overdue_acknowledgment > 0 ? 'text-warning' : 'text-success'}}" t-esc="state.data.distribution_activity.overdue_acknowledgment"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="col-md-6 mb-3">
+                        <div class="card h-100">
+                            <div class="card-header bg-light">
+                                <h6 class="mb-0"><i class="fa fa-bolt me-2"/>Actions rapides</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="d-grid gap-2">
+                                    <button class="btn btn-outline-danger" t-on-click="openDocumentsNeedingAttention">
+                                        <i class="fa fa-exclamation-circle me-2"/>Documents à traiter
+                                    </button>
+                                    <button class="btn btn-outline-warning" t-on-click="openOutdatedDistributions">
+                                        <i class="fa fa-refresh me-2"/>Documentation obsolète
+                                    </button>
+                                    <button class="btn btn-outline-primary" t-on-click="openAllDocuments">
+                                        <i class="fa fa-file-text-o me-2"/>Tous les documents
+                                    </button>
+                                    <button class="btn btn-outline-info" t-on-click="sendDashboardReport">
+                                        <i class="fa fa-paper-plane me-2"/>Envoyer rapport par courriel
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </t>
+
+</templates>

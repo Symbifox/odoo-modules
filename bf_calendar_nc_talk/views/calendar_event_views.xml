@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Main calendar.event form: add "+ Nextcloud Talk" beside "+ Odoo meeting" -->
+    <record id="view_calendar_event_form_nc_talk" model="ir.ui.view">
+        <field name="name">calendar.event.form.nc_talk</field>
+        <field name="model">calendar.event</field>
+        <field name="inherit_id" ref="calendar.view_calendar_event_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='set_discuss_videocall_location']" position="after">
+                <button name="action_set_nc_talk_videocall_location"
+                        type="object"
+                        class="btn btn-link ps-0"
+                        invisible="videocall_location or not user_can_edit or not id"
+                        context="{'recurrence_update': recurrence_update}">
+                    <span class="fa fa-plus"/><span> Nextcloud Talk</span>
+                </button>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Quick-create / popover form: same button, simpler visibility rule -->
+    <record id="view_calendar_event_form_quick_create_nc_talk" model="ir.ui.view">
+        <field name="name">calendar.event.form.quick_create.nc_talk</field>
+        <field name="model">calendar.event</field>
+        <field name="inherit_id" ref="calendar.view_calendar_event_form_quick_create"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='set_discuss_videocall_location']" position="after">
+                <button name="action_set_nc_talk_videocall_location"
+                        type="object"
+                        class="btn btn-link p-0"
+                        invisible="videocall_location or not id"
+                        context="{'recurrence_update': recurrence_update}">
+                    <span class="fa fa-plus"/><span> Nextcloud Talk</span>
+                </button>
+            </xpath>
+        </field>
+    </record>
+</odoo>

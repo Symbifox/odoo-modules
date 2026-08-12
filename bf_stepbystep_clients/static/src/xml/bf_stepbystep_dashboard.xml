@@ -1,0 +1,566 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="bf_stepbystep_clients.Dashboard">
+        <div class="o_bf_stepbystep_dashboard">
+
+            <!-- Loading State -->
+            <div t-if="state.loading" class="d-flex justify-content-center align-items-center" style="min-height: 400px;">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Chargement...</span>
+                </div>
+            </div>
+
+            <!-- Error State -->
+            <div t-elif="!state.data" class="container-fluid py-4">
+                <div class="alert alert-warning d-flex align-items-center" role="alert">
+                    <i class="fa fa-exclamation-triangle fa-2x me-3"/>
+                    <div class="flex-grow-1">
+                        <strong>Erreur de chargement</strong>
+                        <p class="mb-0">Impossible de charger les données. Veuillez réessayer.</p>
+                    </div>
+                    <button class="btn btn-outline-warning" t-on-click="refresh">
+                        <i class="fa fa-refresh me-1"/>Réessayer
+                    </button>
+                </div>
+            </div>
+
+            <!-- ============================================================ -->
+            <!-- GRID VIEW -->
+            <!-- ============================================================ -->
+            <div t-elif="state.view === 'grid'" class="container-fluid py-4">
+
+                <!-- Header -->
+                <div class="row mb-4">
+                    <div class="col-12 d-flex justify-content-between align-items-center flex-wrap gap-2">
+                        <div>
+                            <h1 class="mb-0">
+                                <i class="fa fa-th-large me-2"/>Progression Accompagnement
+                            </h1>
+                            <p class="text-muted mb-0">Vue d'ensemble des accompagnements clients</p>
+                        </div>
+                        <button class="btn btn-outline-secondary" t-on-click="refresh">
+                            <i class="fa fa-refresh me-1"/>Recharger
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Summary Cards -->
+                <div class="row mb-4">
+                    <div class="col-xl col-md-4 col-6 mb-3">
+                        <div class="card h-100 cursor-pointer" t-on-click="clearFilters">
+                            <div class="card-body text-center py-3">
+                                <h2 class="text-primary mb-0" t-esc="state.data.summary.total_projects"/>
+                                <small class="text-muted">Projets</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl col-md-4 col-6 mb-3">
+                        <div class="card h-100">
+                            <div class="card-body text-center py-3">
+                                <h2 class="text-primary mb-0"><t t-esc="state.data.summary.total_hours"/> h</h2>
+                                <small class="text-muted">Heures totales</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl col-md-4 col-6 mb-3">
+                        <div t-attf-class="card h-100 cursor-pointer {{state.data.summary.over_budget > 0 ? 'border-danger' : ''}}"
+                             t-on-click="filterOverBudget">
+                            <div class="card-body text-center py-3">
+                                <h2 t-attf-class="mb-0 {{state.data.summary.over_budget > 0 ? 'text-danger' : 'text-muted'}}"
+                                    t-esc="state.data.summary.over_budget"/>
+                                <small class="text-muted">Dépassés</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl col-md-4 col-6 mb-3">
+                        <div t-attf-class="card h-100 cursor-pointer {{state.data.summary.critical_budget > 0 ? 'border-danger' : ''}}"
+                             t-on-click="filterCriticalBudget">
+                            <div class="card-body text-center py-3">
+                                <h2 t-attf-class="mb-0 {{state.data.summary.critical_budget > 0 ? 'text-danger' : 'text-muted'}}"
+                                    t-esc="state.data.summary.critical_budget"/>
+                                <small class="text-muted">Critiques</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl col-md-4 col-6 mb-3">
+                        <div t-attf-class="card h-100 cursor-pointer {{state.data.summary.warning_budget > 0 ? 'border-warning' : ''}}"
+                             t-on-click="filterWarningBudget">
+                            <div class="card-body text-center py-3">
+                                <h2 t-attf-class="mb-0 {{state.data.summary.warning_budget > 0 ? 'text-warning' : 'text-muted'}}"
+                                    t-esc="state.data.summary.warning_budget"/>
+                                <small class="text-muted">Attention</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl col-md-4 col-6 mb-3">
+                        <div t-attf-class="card h-100 cursor-pointer {{state.data.summary.stale_count > 0 ? 'border-warning' : ''}}"
+                             t-on-click="filterStale">
+                            <div class="card-body text-center py-3">
+                                <h2 t-attf-class="mb-0 {{state.data.summary.stale_count > 0 ? 'text-warning' : 'text-muted'}}"
+                                    t-esc="state.data.summary.stale_count"/>
+                                <small class="text-muted">Ralentis</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl col-md-4 col-6 mb-3">
+                        <div t-attf-class="card h-100 cursor-pointer {{state.data.summary.inactive_count > 0 ? 'border-secondary' : ''}}"
+                             t-on-click="filterInactive">
+                            <div class="card-body text-center py-3">
+                                <h2 t-attf-class="mb-0 {{state.data.summary.inactive_count > 0 ? 'text-secondary' : 'text-muted'}}"
+                                    t-esc="state.data.summary.inactive_count"/>
+                                <small class="text-muted">Inactifs</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Filter Toolbar -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body py-2">
+                                <div class="row g-2 align-items-center">
+                                    <div class="col-md-4">
+                                        <div class="input-group input-group-sm">
+                                            <span class="input-group-text"><i class="fa fa-search"/></span>
+                                            <input type="text" class="form-control"
+                                                   placeholder="Rechercher un client..."
+                                                   t-att-value="state.searchQuery"
+                                                   t-on-input="onSearchInput"/>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <select class="form-select form-select-sm"
+                                                t-att-value="state.sectorFilter"
+                                                t-on-change="onSectorChange">
+                                            <option value="all">Tous les secteurs (<t t-esc="state.data.summary.total_projects"/>)</option>
+                                            <option value="cpe">CPE / Garderies (<t t-esc="getSectorCount('cpe')"/>)</option>
+                                            <option value="obnl">OBNL (<t t-esc="getSectorCount('obnl')"/>)</option>
+                                            <option value="scolaire">Scolaire (<t t-esc="getSectorCount('scolaire')"/>)</option>
+                                            <option value="entreprise">Entreprise (<t t-esc="getSectorCount('entreprise')"/>)</option>
+                                            <option value="interne">Interne (<t t-esc="getSectorCount('interne')"/>)</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <select class="form-select form-select-sm"
+                                                t-att-value="state.budgetFilter"
+                                                t-on-change="onBudgetChange">
+                                            <option value="all">Tous les budgets</option>
+                                            <option value="ok">OK (&lt; 75%)</option>
+                                            <option value="warning">Attention (75-89%)</option>
+                                            <option value="critical">Critique (90-100%)</option>
+                                            <option value="over">Dépassé (&gt; 100%)</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <select class="form-select form-select-sm"
+                                                t-att-value="state.activityFilter"
+                                                t-on-change="onActivityChange">
+                                            <option value="all">Toute activité</option>
+                                            <option value="green">Actif (7j)</option>
+                                            <option value="amber">Ralenti (8-14j)</option>
+                                            <option value="red">Inactif (15j+)</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-2 d-flex gap-1">
+                                        <select class="form-select form-select-sm"
+                                                t-att-value="state.sortBy"
+                                                t-on-change="onSortChange">
+                                            <option value="activity">Tri : Activité</option>
+                                            <option value="deadline">Tri : Échéance</option>
+                                            <option value="name">Tri : Nom</option>
+                                            <option value="budget">Tri : Budget</option>
+                                            <option value="progress">Tri : Progression</option>
+                                        </select>
+                                        <button t-if="activeFilters" class="btn btn-sm btn-outline-secondary"
+                                                t-on-click="clearFilters" title="Effacer les filtres">
+                                            <i class="fa fa-times"/>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Filter active indicator -->
+                <div t-if="activeFilters" class="row mb-2">
+                    <div class="col-12">
+                        <small class="text-muted">
+                            <i class="fa fa-filter me-1"/>
+                            <t t-esc="filteredProjects.length"/> projet(s) affiché(s)
+                            sur <t t-esc="state.data.summary.total_projects"/>
+                        </small>
+                    </div>
+                </div>
+
+                <!-- Project Cards Grid -->
+                <div class="row">
+                    <t t-foreach="filteredProjects" t-as="proj" t-key="proj.id">
+                        <div class="col-xl-3 col-lg-4 col-md-6 mb-3">
+                            <div t-attf-class="card h-100 cursor-pointer {{proj.budget_status === 'over' ? 'border-danger' : proj.budget_status === 'critical' ? 'border-danger' : proj.budget_status === 'warning' ? 'border-warning' : ''}}"
+                                 t-on-click="() => this.openDetail(proj.id)">
+                                <div class="card-body py-3">
+                                    <!-- Header: Name + sector badge -->
+                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                        <h6 class="card-title mb-0 text-truncate me-2" t-esc="proj.name"
+                                            t-att-title="proj.name"/>
+                                        <span t-att-class="'badge ' + getSectorBadgeClass(proj.sector)"
+                                              t-esc="getSectorLabel(proj.sector)"
+                                              style="font-size: 0.65rem;"/>
+                                    </div>
+
+                                    <!-- Hours bar -->
+                                    <div class="mb-2">
+                                        <div class="d-flex justify-content-between mb-1">
+                                            <small class="text-muted">
+                                                <t t-esc="proj.hours_consumed"/> / <t t-esc="proj.budget_hours"/> h
+                                            </small>
+                                            <small t-att-class="getBudgetClass(proj.budget_status)">
+                                                <t t-esc="proj.budget_pct"/>%
+                                            </small>
+                                        </div>
+                                        <div class="progress" style="height: 6px;">
+                                            <div t-attf-class="progress-bar {{proj.budget_status === 'ok' ? 'bg-success' : proj.budget_status === 'warning' ? 'bg-warning' : 'bg-danger'}}"
+                                                 t-attf-style="width: {{Math.min(100, proj.budget_pct)}}%"/>
+                                        </div>
+                                    </div>
+
+                                    <!-- Current step + progress -->
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <small class="text-muted" t-if="proj.current_module">
+                                            <i class="fa fa-tasks me-1"/><t t-esc="proj.current_module"/>
+                                        </small>
+                                        <small class="text-muted" t-if="!proj.current_module">
+                                            <i class="fa fa-tasks me-1"/>-
+                                        </small>
+                                        <small class="text-muted">
+                                            <t t-esc="proj.progress_pct"/>% global
+                                        </small>
+                                    </div>
+
+                                    <!-- Timeline -->
+                                    <div t-if="proj.date_end" class="mb-2">
+                                        <div class="d-flex justify-content-between mb-1">
+                                            <small class="text-muted">
+                                                <i class="fa fa-hourglass-half me-1"/>Échéancier
+                                            </small>
+                                            <small t-attf-class="{{proj.timeline_pct >= 90 ? 'text-danger' : proj.timeline_pct >= 70 ? 'text-warning' : 'text-muted'}}">
+                                                <t t-esc="proj.timeline_pct"/>%
+                                            </small>
+                                        </div>
+                                        <div class="progress" style="height: 4px;">
+                                            <div t-attf-class="progress-bar {{proj.timeline_pct >= 90 ? 'bg-danger' : proj.timeline_pct >= 70 ? 'bg-warning' : 'bg-info'}}"
+                                                 t-attf-style="width: {{proj.timeline_pct}}%"/>
+                                        </div>
+                                    </div>
+
+                                    <!-- Next deadline -->
+                                    <div t-if="proj.next_deadline_days >= 0"
+                                         class="d-flex align-items-center mb-2">
+                                        <small t-att-class="getDeadlineClass(proj.next_deadline_days)">
+                                            <i class="fa fa-calendar-check-o me-1"/>
+                                            <t t-if="proj.next_deadline_days === 0">Aujourd'hui</t>
+                                            <t t-elif="proj.next_deadline_days === 1">Demain</t>
+                                            <t t-else="">dans <t t-esc="proj.next_deadline_days"/>j</t>
+                                            <span class="ms-1 text-truncate" style="max-width: 140px; display: inline-block; vertical-align: bottom;"
+                                                  t-esc="proj.next_deadline_label"
+                                                  t-att-title="proj.next_deadline_label"/>
+                                        </small>
+                                    </div>
+
+                                    <!-- Activity + tasks -->
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <small>
+                                            <i t-attf-class="fa fa-circle me-1 {{getActivityDot(proj.activity_status)}}"/>
+                                            <t t-if="proj.last_activity_days >= 0">
+                                                <t t-esc="proj.last_activity_days"/>j
+                                                <span class="text-muted ms-1" t-esc="proj.last_activity_user"/>
+                                            </t>
+                                            <t t-else="">
+                                                <span class="text-muted">Aucune activité</span>
+                                            </t>
+                                        </small>
+                                        <small class="text-muted">
+                                            <i class="fa fa-check-square-o me-1"/><t t-esc="proj.task_count"/> tâches
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+
+                    <!-- Empty state -->
+                    <div t-if="filteredProjects.length === 0" class="col-12">
+                        <div class="text-center py-5 text-muted">
+                            <i class="fa fa-search fa-3x mb-3 d-block"/>
+                            <p>Aucun projet ne correspond aux filtres.</p>
+                            <button class="btn btn-sm btn-outline-primary" t-on-click="clearFilters">
+                                Effacer les filtres
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- ============================================================ -->
+            <!-- DETAIL VIEW -->
+            <!-- ============================================================ -->
+            <div t-elif="state.view === 'detail'" class="container-fluid py-4">
+
+                <!-- Detail Loading -->
+                <div t-if="state.detailLoading" class="d-flex justify-content-center align-items-center" style="min-height: 400px;">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Chargement...</span>
+                    </div>
+                </div>
+
+                <div t-elif="state.detailData" class="detail-content">
+
+                    <!-- Header -->
+                    <div class="row mb-4">
+                        <div class="col-12 d-flex justify-content-between align-items-center flex-wrap gap-2">
+                            <div class="d-flex align-items-center gap-3">
+                                <button class="btn btn-outline-secondary" t-on-click="backToGrid">
+                                    <i class="fa fa-arrow-left me-1"/>Retour
+                                </button>
+                                <div>
+                                    <h2 class="mb-0" t-esc="state.detailData.project.name"/>
+                                    <small t-if="state.detailData.project.partner_id"
+                                           class="text-primary cursor-pointer"
+                                           t-on-click="() => this.openPartnerInOdoo(state.detailData.project.partner_id)">
+                                        <i class="fa fa-user me-1"/><t t-esc="state.detailData.project.partner_name"/>
+                                    </small>
+                                </div>
+                            </div>
+                            <button class="btn btn-primary"
+                                    t-on-click="() => this.openProjectInOdoo(state.detailData.project.id)">
+                                <i class="fa fa-external-link me-1"/>Ouvrir dans Odoo
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Hero metrics -->
+                    <div class="row mb-4">
+                        <div class="col-lg-3 col-md-6 mb-3">
+                            <div class="card h-100">
+                                <div class="card-body text-center">
+                                    <small class="text-muted d-block mb-1">Début</small>
+                                    <strong t-esc="formatDate(state.detailData.project.date_start)"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-6 mb-3">
+                            <div class="card h-100">
+                                <div class="card-body text-center">
+                                    <small class="text-muted d-block mb-1">Fin</small>
+                                    <strong t-esc="formatDate(state.detailData.project.date_end)"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-6 mb-3">
+                            <div class="card h-100">
+                                <div class="card-body text-center">
+                                    <small class="text-muted d-block mb-1">Heures consommées</small>
+                                    <strong>
+                                        <t t-esc="state.detailData.project.hours_consumed"/> / <t t-esc="state.detailData.project.budget_hours"/> h
+                                    </strong>
+                                    <div class="progress mt-2" style="height: 6px;">
+                                        <div t-attf-class="progress-bar {{state.detailData.project.budget_pct > 100 ? 'bg-danger' : state.detailData.project.budget_pct >= 75 ? 'bg-warning' : 'bg-success'}}"
+                                             t-attf-style="width: {{Math.min(100, state.detailData.project.budget_pct)}}%"/>
+                                    </div>
+                                    <small class="text-muted">
+                                        <t t-esc="state.detailData.project.remaining_hours"/> h restantes
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-6 mb-3">
+                            <div class="card h-100">
+                                <div class="card-body text-center">
+                                    <small class="text-muted d-block mb-1">Échéancier</small>
+                                    <strong><t t-esc="state.detailData.project.timeline_pct"/>%</strong>
+                                    <div class="progress mt-2" style="height: 6px;">
+                                        <div class="progress-bar bg-info"
+                                             t-attf-style="width: {{state.detailData.project.timeline_pct}}%"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Étapes du mandat — progression linéaire -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header bg-light">
+                                    <h6 class="mb-0"><i class="fa fa-list-ol me-2"/>Étapes du mandat</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div t-if="state.detailData.modules.length === 0"
+                                         class="text-center py-3 text-muted">
+                                        Aucune étape configurée. Définissez un
+                                        <em>numéro d'étape de progression</em> sur
+                                        les stages du projet pour activer la visualisation.
+                                    </div>
+                                    <t t-foreach="state.detailData.modules" t-as="mod" t-key="mod.number">
+                                        <div class="d-flex align-items-center mb-3">
+                                            <!-- Step number -->
+                                            <div class="me-3" style="min-width: 30px;">
+                                                <span t-attf-class="badge rounded-circle {{getModuleStatusClass(mod.status)}}"
+                                                      style="width: 28px; height: 28px; line-height: 20px; font-size: 0.75rem;">
+                                                    <t t-esc="mod.number"/>
+                                                </span>
+                                            </div>
+                                            <!-- Step name -->
+                                            <div class="me-3" style="min-width: 220px;">
+                                                <span t-esc="mod.name"/>
+                                                <br/>
+                                                <small class="text-muted">
+                                                    <t t-esc="mod.completed_tasks"/>/<t t-esc="mod.total_tasks"/> tâches
+                                                </small>
+                                            </div>
+                                            <!-- Progress bar -->
+                                            <div class="flex-grow-1 me-3">
+                                                <div class="progress" style="height: 12px;">
+                                                    <div t-attf-class="progress-bar {{getProgressBarClass(mod.status)}}"
+                                                         t-attf-style="width: {{mod.progress_pct}}%"/>
+                                                </div>
+                                            </div>
+                                            <!-- Percentage -->
+                                            <div class="me-3" style="min-width: 45px; text-align: right;">
+                                                <strong t-esc="mod.progress_pct"/>%
+                                            </div>
+                                            <!-- Status badge -->
+                                            <div style="min-width: 90px;">
+                                                <span t-att-class="'badge ' + getModuleStatusClass(mod.status)"
+                                                      t-esc="getModuleStatusLabel(mod.status)"/>
+                                            </div>
+                                        </div>
+                                    </t>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tasks: Overdue + Upcoming -->
+                    <div class="row mb-4">
+                        <!-- Overdue -->
+                        <div class="col-md-6 mb-3">
+                            <div class="card h-100">
+                                <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                                    <h6 class="mb-0">
+                                        <i class="fa fa-exclamation-triangle text-danger me-2"/>Tâches en retard
+                                    </h6>
+                                    <span class="badge text-bg-danger" t-esc="state.detailData.overdue_tasks.length"/>
+                                </div>
+                                <div class="card-body p-0">
+                                    <div t-if="state.detailData.overdue_tasks.length === 0"
+                                         class="text-center py-3 text-muted">
+                                        Aucune tâche en retard
+                                    </div>
+                                    <div t-else="" class="list-group list-group-flush">
+                                        <t t-foreach="state.detailData.overdue_tasks" t-as="task" t-key="task.id">
+                                            <div class="list-group-item list-group-item-action cursor-pointer py-2"
+                                                 t-on-click="() => this.openTaskInOdoo(task.id)">
+                                                <div class="d-flex justify-content-between">
+                                                    <span class="text-truncate me-2" t-esc="task.name"
+                                                          t-att-title="task.name"/>
+                                                    <small class="text-danger text-nowrap">
+                                                        <i class="fa fa-calendar me-1"/>
+                                                        <t t-esc="formatDate(task.deadline)"/>
+                                                    </small>
+                                                </div>
+                                            </div>
+                                        </t>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Upcoming -->
+                        <div class="col-md-6 mb-3">
+                            <div class="card h-100">
+                                <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                                    <h6 class="mb-0">
+                                        <i class="fa fa-calendar text-primary me-2"/>Tâches à venir (60j)
+                                    </h6>
+                                    <span class="badge text-bg-primary" t-esc="state.detailData.upcoming_tasks.length"/>
+                                </div>
+                                <div class="card-body p-0">
+                                    <div t-if="state.detailData.upcoming_tasks.length === 0"
+                                         class="text-center py-3 text-muted">
+                                        Aucune tâche planifiée
+                                    </div>
+                                    <div t-else="" class="list-group list-group-flush">
+                                        <t t-foreach="state.detailData.upcoming_tasks" t-as="task" t-key="task.id">
+                                            <div class="list-group-item list-group-item-action cursor-pointer py-2"
+                                                 t-on-click="() => this.openTaskInOdoo(task.id)">
+                                                <div class="d-flex justify-content-between">
+                                                    <span class="text-truncate me-2" t-esc="task.name"
+                                                          t-att-title="task.name"/>
+                                                    <small class="text-muted text-nowrap">
+                                                        <i class="fa fa-calendar me-1"/>
+                                                        <t t-esc="formatDate(task.deadline)"/>
+                                                    </small>
+                                                </div>
+                                            </div>
+                                        </t>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Activity (timesheets + chatter) -->
+                    <div t-if="state.detailData.recent_activity.length > 0" class="row mb-4">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header bg-light">
+                                    <h6 class="mb-0"><i class="fa fa-clock-o me-2"/>Activité récente</h6>
+                                </div>
+                                <div class="card-body p-0">
+                                    <table class="table table-sm table-hover mb-0">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th style="width: 30px;"/>
+                                                <th>Date</th>
+                                                <th>Intervenant</th>
+                                                <th>Description</th>
+                                                <th class="text-end">Heures</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <t t-foreach="state.detailData.recent_activity" t-as="act" t-key="act_index">
+                                                <tr>
+                                                    <td class="text-center">
+                                                        <i t-if="act.type === 'timesheet'" class="fa fa-clock-o text-muted" title="Feuille de temps"/>
+                                                        <i t-elif="act.type === 'email'" class="fa fa-envelope-o text-primary" title="Courriel"/>
+                                                        <i t-else="" class="fa fa-comment-o text-info" title="Note"/>
+                                                    </td>
+                                                    <td t-esc="formatDate(act.date)"/>
+                                                    <td t-esc="act.employee"/>
+                                                    <td class="text-truncate" style="max-width: 300px;"
+                                                        t-esc="act.task" t-att-title="act.task"/>
+                                                    <td class="text-end">
+                                                        <t t-if="act.hours > 0" t-esc="act.hours"/>
+                                                        <span t-else="" class="text-muted">-</span>
+                                                    </td>
+                                                </tr>
+                                            </t>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </t>
+
+</templates>

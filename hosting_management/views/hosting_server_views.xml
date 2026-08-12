@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Hosting Server Tree View -->
+    <record id="hosting_server_view_tree" model="ir.ui.view">
+        <field name="name">hosting.server.tree</field>
+        <field name="model">hosting.server</field>
+        <field name="arch" type="xml">
+            <list decoration-muted="state == 'decommissioned'" decoration-warning="state == 'maintenance'">
+                <field name="code"/>
+                <field name="name" string="Nom"/>
+                <field name="hostname" string="Nom d'hôte"/>
+                <field name="server_type" string="Type" widget="badge"
+                       decoration-success="server_type == 'production'"
+                       decoration-warning="server_type == 'staging'"
+                       decoration-info="server_type == 'development'"/>
+                <field name="provider" string="Fournisseur" optional="show"/>
+                <field name="location" string="Emplacement" optional="show"/>
+                <field name="ip_address" string="Adresse IP" optional="hide"/>
+                <field name="service_count" string="Services"/>
+                <field name="state" string="État" widget="badge"
+                       decoration-success="state == 'active'"
+                       decoration-warning="state == 'maintenance'"
+                       decoration-muted="state == 'decommissioned'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Hosting Server Form View -->
+    <record id="hosting_server_view_form" model="ir.ui.view">
+        <field name="name">hosting.server.form</field>
+        <field name="model">hosting.server</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_set_active" string="Activer" type="object"
+                            class="oe_highlight" invisible="state == 'active'"/>
+                    <button name="action_set_maintenance" string="Maintenance" type="object"
+                            invisible="state == 'maintenance'"/>
+                    <button name="action_decommission" string="Désactiver" type="object"
+                            invisible="state == 'decommissioned'" confirm="Êtes-vous sûr de vouloir désactiver ce serveur?"/>
+                    <field name="state" widget="statusbar" statusbar_visible="active,maintenance,decommissioned"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_services" type="object" class="oe_stat_button" icon="fa-server">
+                            <field name="service_count" widget="statinfo" string="Services"/>
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <label for="code"/>
+                        <h3>
+                            <field name="code" placeholder="PT1"/>
+                        </h3>
+                        <label for="name"/>
+                        <h1>
+                            <field name="name" placeholder="Nom du serveur"/>
+                        </h1>
+                    </div>
+
+                    <group>
+                        <group string="Connexion">
+                            <field name="hostname" string="Nom d'hôte" placeholder="server.example.com"/>
+                            <field name="ip_address" string="Adresse IP" placeholder="203.0.113.1"/>
+                            <field name="ssh_user" string="Utilisateur SSH"/>
+                            <field name="ssh_port" string="Port SSH"/>
+                        </group>
+                        <group string="Infrastructure">
+                            <field name="server_type" string="Type de serveur"/>
+                            <field name="provider" string="Fournisseur"/>
+                            <field name="location" string="Emplacement"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Services" name="services">
+                            <field name="service_ids" readonly="1">
+                                <list>
+                                    <field name="code"/>
+                                    <field name="name" string="Nom"/>
+                                    <field name="partner_id" string="Client"/>
+                                    <field name="software_id" string="Logiciel"/>
+                                    <field name="environment" string="Environnement"/>
+                                    <field name="state" string="État" widget="badge"
+                                           decoration-success="state == 'active'"
+                                           decoration-info="state == 'draft'"
+                                           decoration-warning="state == 'suspended'"
+                                           decoration-danger="state == 'expired'"
+                                           decoration-muted="state == 'cancelled'"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Notes" name="notes">
+                            <field name="notes" placeholder="Notes additionnelles sur ce serveur..."/>
+                        </page>
+                    </notebook>
+
+                    <field name="active" invisible="1"/>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Hosting Server Search View -->
+    <record id="hosting_server_view_search" model="ir.ui.view">
+        <field name="name">hosting.server.search</field>
+        <field name="model">hosting.server</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="hostname"/>
+                <field name="ip_address"/>
+                <separator/>
+                <filter name="filter_active" string="Actifs" domain="[('state', '=', 'active')]"/>
+                <filter name="filter_maintenance" string="Maintenance" domain="[('state', '=', 'maintenance')]"/>
+                <filter name="filter_decommissioned" string="Désactivés" domain="[('state', '=', 'decommissioned')]"/>
+                <separator/>
+                <filter name="filter_production" string="Production" domain="[('server_type', '=', 'production')]"/>
+                <filter name="filter_staging" string="Pré-production" domain="[('server_type', '=', 'staging')]"/>
+                <filter name="filter_development" string="Développement" domain="[('server_type', '=', 'development')]"/>
+                <separator/>
+                <filter name="filter_archived" string="Archivés" domain="[('active', '=', False)]"/>
+                <group expand="0" string="Grouper par">
+                    <filter name="group_type" string="Type de serveur" context="{'group_by': 'server_type'}"/>
+                    <filter name="group_provider" string="Fournisseur" context="{'group_by': 'provider'}"/>
+                    <filter name="group_state" string="État" context="{'group_by': 'state'}"/>
+                    <filter name="group_location" string="Emplacement" context="{'group_by': 'location'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Hosting Server Kanban View -->
+    <record id="hosting_server_view_kanban" model="ir.ui.view">
+        <field name="name">hosting.server.kanban</field>
+        <field name="model">hosting.server</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="provider" class="o_kanban_small_column">
+                <field name="id"/>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="hostname"/>
+                <field name="server_type"/>
+                <field name="state"/>
+                <field name="service_count"/>
+                <templates>
+                    <t t-name="card">
+                        <div t-attf-class="#{record.state.raw_value == 'maintenance' ? 'border-warning border-2' : record.state.raw_value == 'decommissioned' ? 'opacity-50' : ''}">
+                            <div class="o_kanban_details">
+                                <strong class="o_kanban_record_title">
+                                    <field name="name"/>
+                                </strong>
+                                <div class="text-muted">
+                                    <field name="code"/> - <field name="hostname"/>
+                                </div>
+                                <div class="mt-2">
+                                    <field name="server_type" widget="badge"
+                                           decoration-success="server_type == 'production'"
+                                           decoration-warning="server_type == 'staging'"
+                                           decoration-info="server_type == 'development'"/>
+                                </div>
+                                <div class="mt-2">
+                                    <span class="text-muted">Services : </span>
+                                    <strong><field name="service_count"/></strong>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Hosting Server Action -->
+    <record id="hosting_server_action" model="ir.actions.act_window">
+        <field name="name">Serveurs</field>
+        <field name="res_model">hosting.server</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="search_view_id" ref="hosting_server_view_search"/>
+        <field name="context">{'search_default_filter_active': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Ajoutez votre premier serveur
+            </p>
+            <p>
+                Suivez les serveurs et VMs qui hébergent vos services.
+            </p>
+        </field>
+    </record>
+
+</odoo>

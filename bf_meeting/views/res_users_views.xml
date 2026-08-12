@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="res_users_view_form_inherit_bf_meeting" model="ir.ui.view">
+        <field name="name">res.users.form.inherit.bf.meeting</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='preferences']" position="inside">
+                <group string="Tableau de bord des rencontres" name="bf_meeting_dashboard_prefs">
+                    <field name="bf_meeting_dashboard_lookahead_days"/>
+                    <field name="bf_meeting_dashboard_lookback_days"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="res_users_view_form_simple_modif_inherit_bf_meeting" model="ir.ui.view">
+        <field name="name">res.users.preferences.form.inherit.bf.meeting</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_form_simple_modif"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='preferences_page']" position="inside">
+                <group string="Tableau de bord des rencontres" name="bf_meeting_dashboard_prefs">
+                    <field name="bf_meeting_dashboard_lookahead_days"/>
+                    <field name="bf_meeting_dashboard_lookback_days"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

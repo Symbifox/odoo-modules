@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Root application menu. -->
+    <menuitem id="menu_cx_root"
+              name="Expérience client"
+              web_icon="bf_cx,static/description/icon.png"
+              groups="bf_cx.group_bf_cx_user"
+              sequence="47"/>
+
+    <record id="action_cx_dashboard" model="ir.actions.client">
+        <field name="name">Tableau de bord CX</field>
+        <field name="tag">bf_cx.dashboard</field>
+    </record>
+
+    <menuitem id="menu_cx_dashboard"
+              name="Tableau de bord"
+              parent="menu_cx_root"
+              action="action_cx_dashboard"
+              sequence="5"/>
+
+    <menuitem id="menu_cx_feedback"
+              name="Feedbacks"
+              parent="menu_cx_root"
+              action="action_cx_feedback"
+              sequence="10"/>
+
+    <menuitem id="menu_cx_program"
+              name="Programmes"
+              parent="menu_cx_root"
+              action="action_cx_program"
+              sequence="20"/>
+
+    <menuitem id="menu_cx_wave"
+              name="Vagues d'envoi"
+              parent="menu_cx_root"
+              action="action_cx_wave"
+              sequence="30"/>
+
+    <menuitem id="menu_cx_complaint"
+              name="Plaintes"
+              parent="menu_cx_root"
+              action="action_cx_complaint"
+              sequence="40"/>
+
+    <menuitem id="menu_cx_testimonial"
+              name="Témoignages"
+              parent="menu_cx_root"
+              action="action_cx_testimonial"
+              sequence="50"/>
+
+    <menuitem id="menu_cx_report"
+              name="Analyse"
+              parent="menu_cx_root"
+              action="action_cx_report"
+              sequence="60"/>
+
+    <!-- Configuration (manager only). -->
+    <menuitem id="menu_cx_config"
+              name="Configuration"
+              parent="menu_cx_root"
+              groups="bf_cx.group_bf_cx_manager"
+              sequence="90"/>
+
+    <menuitem id="menu_cx_settings"
+              name="Paramètres"
+              parent="menu_cx_config"
+              action="action_cx_settings"
+              sequence="10"/>
+
+</odoo>

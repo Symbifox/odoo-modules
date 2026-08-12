@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Matrix: Form View -->
+    <record id="knowledge_matrix_view_form" model="ir.ui.view">
+        <field name="name">project.knowledge.matrix.form</field>
+        <field name="model">project.knowledge.matrix</field>
+        <field name="arch" type="xml">
+            <form string="Knowledge Matrix">
+                <header>
+                    <button name="action_print_report" type="object"
+                            string="Imprimer PDF" class="btn-primary"
+                            icon="fa-print"/>
+                    <button name="action_open_send_wizard" type="object"
+                            string="Envoyer rapport" class="btn-secondary"
+                            icon="fa-paper-plane"
+                            invisible="is_template"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button" type="object"
+                                name="action_view_items" icon="fa-list">
+                            <div class="o_stat_info">
+                                <span class="o_stat_value">
+                                    <field name="completed_count"/>/<field name="item_count"/>
+                                </span>
+                                <span class="o_stat_text">Items</span>
+                            </div>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Template" bg_color="text-bg-info"
+                            invisible="not is_template"/>
+                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-secondary"
+                            invisible="active"/>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name" placeholder="Matrix name..."/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Configuration">
+                            <field name="project_id"
+                                   invisible="is_template"
+                                   required="not is_template"
+                                   options="{'no_create': True}"/>
+                            <field name="is_template"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                        <group string="Progress">
+                            <field name="progress" widget="progressbar"/>
+                            <field name="pending_count" string="Pending"/>
+                            <field name="active" invisible="1"/>
+                        </group>
+                    </group>
+                    <group string="Description">
+                        <field name="description" nolabel="1"
+                               placeholder="Additional notes about this matrix..."/>
+                    </group>
+                    <notebook>
+                        <page string="Items" name="items">
+                            <field name="item_ids"
+                                   context="{'default_matrix_id': id}"
+                                   mode="list">
+                                <list editable="bottom"
+                                      decoration-success="state == 'done'"
+                                      decoration-warning="state == 'pending'"
+                                      decoration-info="state == 'in_progress'"
+                                      decoration-muted="state == 'na'">
+                                    <field name="decision_id"/>
+                                    <field name="section_id"/>
+                                    <field name="name"/>
+                                    <field name="deliverable" optional="show"/>
+                                    <field name="assigned_user_id"/>
+                                    <field name="state" widget="badge"
+                                           decoration-info="state == 'in_progress'"
+                                           decoration-success="state == 'done'"
+                                           decoration-warning="state == 'pending'"
+                                           decoration-muted="state == 'na'"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Envoi de rapport" name="report_sending"
+                              invisible="is_template">
+                            <group>
+                                <group string="Destinataires">
+                                    <field name="recipient_ids" widget="many2many_tags"
+                                           nolabel="1" colspan="2"/>
+                                </group>
+                                <group string="Planification">
+                                    <field name="auto_send"/>
+                                    <field name="send_frequency"
+                                           invisible="not auto_send"/>
+                                    <field name="send_day_of_week"
+                                           invisible="not auto_send or send_frequency not in ('weekly', 'biweekly')"/>
+                                    <field name="send_day_of_month"
+                                           invisible="not auto_send or send_frequency != 'monthly'"/>
+                                    <field name="send_interval_days"
+                                           invisible="not auto_send or send_frequency != 'custom_days'"/>
+                                    <field name="last_report_date"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Matrix: List View -->
+    <record id="knowledge_matrix_view_list" model="ir.ui.view">
+        <field name="name">project.knowledge.matrix.list</field>
+        <field name="model">project.knowledge.matrix</field>
+        <field name="arch" type="xml">
+            <list string="Knowledge Matrices"
+                  decoration-info="is_template"
+                  decoration-muted="not active">
+                <field name="name"/>
+                <field name="project_id"/>
+                <field name="item_count" string="Items"/>
+                <field name="progress" widget="progressbar"/>
+                <field name="is_template"/>
+                <field name="auto_send" optional="hide"/>
+                <field name="last_report_date" optional="hide"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+                <field name="active" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Matrix: Kanban View -->
+    <record id="knowledge_matrix_view_kanban" model="ir.ui.view">
+        <field name="name">project.knowledge.matrix.kanban</field>
+        <field name="model">project.knowledge.matrix</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_mobile" quick_create="false">
+                <field name="is_template"/>
+                <field name="progress"/>
+                <field name="item_count"/>
+                <field name="completed_count"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_card oe_kanban_global_click">
+                            <div class="oe_kanban_content">
+                                <div class="o_kanban_record_top mb-2">
+                                    <strong class="o_kanban_record_title">
+                                        <field name="name"/>
+                                    </strong>
+                                    <span t-if="record.is_template.raw_value"
+                                          class="badge text-bg-info ms-2">Template</span>
+                                </div>
+                                <div class="o_kanban_record_body">
+                                    <div t-if="record.project_id.raw_value" title="Projet">
+                                        <i class="fa fa-folder-o" title="Projet"/> <field name="project_id"/>
+                                    </div>
+                                    <div class="mt-2">
+                                        <field name="progress" widget="progressbar"/>
+                                    </div>
+                                </div>
+                                <div class="o_kanban_record_bottom mt-2">
+                                    <div class="oe_kanban_bottom_left text-muted">
+                                        <span><field name="completed_count"/>/<field name="item_count"/> items</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Matrix: Search View -->
+    <record id="knowledge_matrix_view_search" model="ir.ui.view">
+        <field name="name">project.knowledge.matrix.search</field>
+        <field name="model">project.knowledge.matrix</field>
+        <field name="arch" type="xml">
+            <search string="Search Matrices">
+                <field name="name"/>
+                <field name="project_id"/>
+                <separator/>
+                <filter string="Templates" name="templates"
+                        domain="[('is_template', '=', True)]"/>
+                <filter string="Project Matrices" name="project_matrices"
+                        domain="[('is_template', '=', False), ('project_id', '!=', False)]"/>
+                <separator/>
+                <filter string="In Progress" name="in_progress"
+                        domain="[('progress', '&gt;', 0), ('progress', '&lt;', 100)]"/>
+                <filter string="Completed" name="completed"
+                        domain="[('progress', '=', 100)]"/>
+                <filter string="Not Started" name="not_started"
+                        domain="[('progress', '=', 0)]"/>
+                <separator/>
+                <filter string="Archived" name="archived"
+                        domain="[('active', '=', False)]"/>
+                <separator/>
+                <group expand="0" string="Group By">
+                    <filter string="Project" name="group_project"
+                            context="{'group_by': 'project_id'}"/>
+                    <filter string="Company" name="group_company"
+                            context="{'group_by': 'company_id'}"
+                            groups="base.group_multi_company"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Matrix: Action -->
+    <record id="knowledge_matrix_action" model="ir.actions.act_window">
+        <field name="name">Knowledge Matrices</field>
+        <field name="res_model">project.knowledge.matrix</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="search_view_id" ref="knowledge_matrix_view_search"/>
+        <field name="context">{}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first knowledge matrix
+            </p>
+            <p>
+                Knowledge matrices track implementation decisions linked to projects.
+                You can also create templates to reuse across multiple projects.
+            </p>
+        </field>
+    </record>
+
+    <!-- Templates Action -->
+    <record id="knowledge_template_action" model="ir.actions.act_window">
+        <field name="name">Matrix Templates</field>
+        <field name="res_model">project.knowledge.matrix</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="search_view_id" ref="knowledge_matrix_view_search"/>
+        <field name="domain">[('is_template', '=', True)]</field>
+        <field name="context">{'default_is_template': True}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first template
+            </p>
+            <p>
+                Templates can be copied to new projects to quickly set up
+                standardized knowledge matrices.
+            </p>
+        </field>
+    </record>
+
+</odoo>

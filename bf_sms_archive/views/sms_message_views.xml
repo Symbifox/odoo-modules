@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Message: Tree View -->
+    <record id="sms_message_view_tree" model="ir.ui.view">
+        <field name="name">sms.archive.message.tree</field>
+        <field name="model">sms.archive.message</field>
+        <field name="arch" type="xml">
+            <list default_order="date_sent desc"
+                  decoration-info="direction == 'out'"
+                  decoration-muted="direction == 'draft'">
+                <field name="thread_id" string="Conversation"/>
+                <field name="direction" string="Direction" widget="badge"
+                       decoration-info="direction == 'out'"
+                       decoration-success="direction == 'in'"
+                       decoration-muted="direction == 'draft'"/>
+                <field name="body" string="Contenu"/>
+                <field name="date_sent" string="Date"/>
+                <field name="contact_name" string="Contact" optional="show"/>
+                <field name="is_mms" string="MMS" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Message: Form View -->
+    <record id="sms_message_view_form" model="ir.ui.view">
+        <field name="name">sms.archive.message.form</field>
+        <field name="model">sms.archive.message</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_post_to_task" string="Poster sur une tâche"
+                            type="object" class="btn-primary" icon="fa-tasks"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group string="Message">
+                            <field name="thread_id" string="Conversation" readonly="1"/>
+                            <field name="direction" string="Direction"/>
+                            <field name="date_sent" string="Date" readonly="1"/>
+                            <field name="contact_name" string="Contact"/>
+                        </group>
+                        <group string="Technique">
+                            <field name="message_hash" string="Hash" readonly="1"/>
+                            <field name="date_sent_ms" string="Timestamp (ms)" readonly="1"/>
+                            <field name="import_batch_id" string="Lot d'import" readonly="1"/>
+                            <field name="is_mms" string="MMS" readonly="1"/>
+                        </group>
+                    </group>
+                    <separator string="Contenu"/>
+                    <field name="body" nolabel="1" readonly="1"/>
+                    <separator string="Pièces jointes MMS" invisible="not is_mms"/>
+                    <field name="mms_part_ids" nolabel="1" readonly="1"
+                           invisible="not is_mms">
+                        <list>
+                            <field name="filename" string="Fichier"/>
+                            <field name="content_type" string="Type"/>
+                            <field name="attachment_id" string="Télécharger"
+                                   widget="many2one"/>
+                        </list>
+                    </field>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Message: Search View -->
+    <record id="sms_message_view_search" model="ir.ui.view">
+        <field name="name">sms.archive.message.search</field>
+        <field name="model">sms.archive.message</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="body" string="Contenu"/>
+                <field name="thread_id" string="Conversation"/>
+                <field name="contact_name" string="Contact"/>
+                <filter name="filter_received" string="Reçus"
+                        domain="[('direction', '=', 'in')]"/>
+                <filter name="filter_sent" string="Envoyés"
+                        domain="[('direction', '=', 'out')]"/>
+                <separator/>
+                <filter name="filter_this_week" string="Cette semaine"
+                        domain="[('date_sent', '&gt;=', (context_today() - datetime.timedelta(days=context_today().weekday())).strftime('%Y-%m-%d'))]"/>
+                <filter name="filter_this_month" string="Ce mois"
+                        domain="[('date_sent', '&gt;=', context_today().strftime('%Y-%m-01'))]"/>
+                <separator/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="group_thread" string="Conversation"
+                            context="{'group_by': 'thread_id'}"/>
+                    <filter name="group_direction" string="Direction"
+                            context="{'group_by': 'direction'}"/>
+                    <filter name="group_date" string="Date"
+                            context="{'group_by': 'date_sent:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Message: Graph View (dashboard) -->
+    <record id="sms_message_view_graph" model="ir.ui.view">
+        <field name="name">sms.archive.message.graph</field>
+        <field name="model">sms.archive.message</field>
+        <field name="arch" type="xml">
+            <graph string="Messages SMS" type="bar">
+                <field name="date_sent" interval="month" type="col"/>
+                <field name="direction" type="col"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- Message: Pivot View (dashboard detailed) -->
+    <record id="sms_message_view_pivot" model="ir.ui.view">
+        <field name="name">sms.archive.message.pivot</field>
+        <field name="model">sms.archive.message</field>
+        <field name="arch" type="xml">
+            <pivot string="Messages SMS">
+                <field name="date_sent" interval="month" type="row"/>
+                <field name="direction" type="col"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- Message: Action (list) -->
+    <record id="sms_message_action" model="ir.actions.act_window">
+        <field name="name">Messages</field>
+        <field name="res_model">sms.archive.message</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="sms_message_view_search"/>
+    </record>
+
+    <!-- Dashboard Action (graph + pivot + list) -->
+    <record id="sms_dashboard_action" model="ir.actions.act_window">
+        <field name="name">Tableau de bord SMS</field>
+        <field name="res_model">sms.archive.message</field>
+        <field name="view_mode">graph,pivot,list</field>
+        <field name="search_view_id" ref="sms_message_view_search"/>
+    </record>
+
+    <!-- Bulk export bindings: appear in the multi-select Actions menu on the messages list -->
+    <record id="action_sms_export_csv_bulk" model="ir.actions.server">
+        <field name="name">Exporter en CSV</field>
+        <field name="model_id" ref="model_sms_archive_message"/>
+        <field name="binding_model_id" ref="model_sms_archive_message"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">action = records.action_export_csv()</field>
+    </record>
+
+    <record id="action_sms_export_xml_bulk" model="ir.actions.server">
+        <field name="name">Exporter en XML</field>
+        <field name="model_id" ref="model_sms_archive_message"/>
+        <field name="binding_model_id" ref="model_sms_archive_message"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">action = records.action_export_xml()</field>
+    </record>
+
+</odoo>

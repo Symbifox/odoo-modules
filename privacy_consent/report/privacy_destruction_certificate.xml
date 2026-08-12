@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Modèle de rapport - Certificat de destruction -->
+    <template id="report_destruction_certificate_document">
+        <t t-call="web.external_layout">
+            <t t-set="lang" t-value="(o.partner_id.lang or o.env.company.partner_id.lang or 'fr_CA')"/>
+            <t t-set="o" t-value="o.with_context(lang=lang)"/>
+            <t t-set="framework" t-value="o.get_framework()"/>
+            <div class="page">
+                <!-- En-tête -->
+                <div class="text-center mb-4">
+                    <h2 style="color: #32373c;">
+                        <strong>CERTIFICAT DE DESTRUCTION</strong>
+                    </h2>
+                    <h4 class="text-muted">DESTRUCTION CERTIFICATE</h4>
+                </div>
+
+                <!-- Numéro de certificat -->
+                <div class="text-center mb-4">
+                    <div style="background-color: #f8f9fa; padding: 15px; border-radius: 5px; display: inline-block;">
+                        <strong>N° de certificat / Certificate No.:</strong>
+                        <span style="font-size: 18px; color: #32373c;">
+                            <t t-esc="o.certificate_number"/>
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Information du sujet -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <h5 style="border-bottom: 2px solid #32373c; padding-bottom: 5px;">
+                            Information du sujet / Subject Information
+                        </h5>
+                        <table class="table table-borderless">
+                            <tr>
+                                <td width="30%"><strong>Partenaire / Partner:</strong></td>
+                                <td><t t-esc="o.partner_id.name or 'N/A'"/></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Finalité / Purpose:</strong></td>
+                                <td><t t-esc="o.purpose_id.name or 'N/A'"/></td>
+                            </tr>
+                            <tr t-if="o.consent_id">
+                                <td><strong>Référence du consentement / Consent Reference:</strong></td>
+                                <td><t t-esc="o.consent_id.display_name"/></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Détails de la destruction -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <h5 style="border-bottom: 2px solid #32373c; padding-bottom: 5px;">
+                            Détails de la destruction / Destruction Details
+                        </h5>
+                        <table class="table table-borderless">
+                            <tr>
+                                <td width="30%"><strong>Date déclencheur / Trigger Date:</strong></td>
+                                <td><t t-esc="o.trigger_date" t-options="{'widget': 'datetime'}"/></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Date prévue / Scheduled Date:</strong></td>
+                                <td><t t-esc="o.scheduled_date" t-options="{'widget': 'date'}"/></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Exécuté le / Executed At:</strong></td>
+                                <td><t t-esc="o.executed_at" t-options="{'widget': 'datetime'}"/></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Exécuté par / Executed By:</strong></td>
+                                <td><t t-esc="o.executed_by_id.name or 'N/A'"/></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Méthode / Method:</strong></td>
+                                <td>
+                                    <t t-if="o.destruction_method_used == 'anonymize'">Anonymisation / Anonymization</t>
+                                    <t t-elif="o.destruction_method_used == 'delete'">Suppression / Deletion</t>
+                                    <t t-elif="o.destruction_method_used == 'secure_wipe'">Effacement sécurisé / Secure Wipe</t>
+                                    <t t-elif="o.destruction_method_used == 'archive'">Archivage / Archival</t>
+                                    <t t-else="">Manuel / Manual</t>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Politique de rétention -->
+                <div class="row mb-4" t-if="o.policy_id">
+                    <div class="col-12">
+                        <h5 style="border-bottom: 2px solid #32373c; padding-bottom: 5px;">
+                            Politique de rétention / Retention Policy
+                        </h5>
+                        <table class="table table-borderless">
+                            <tr>
+                                <td width="30%"><strong>Politique / Policy:</strong></td>
+                                <td><t t-esc="o.policy_id.display_name"/></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Période de rétention / Retention Period:</strong></td>
+                                <td><t t-esc="o.policy_id.retention_days"/> jours / days</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Déclencheur / Trigger:</strong></td>
+                                <td>
+                                    <t t-if="o.policy_id.trigger_on == 'expiration'">Après expiration / After Expiration</t>
+                                    <t t-elif="o.policy_id.trigger_on == 'withdrawal'">Après retrait / After Withdrawal</t>
+                                    <t t-else="">Après expiration ou retrait / After Expiration or Withdrawal</t>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Règle du calendrier de conservation -->
+                <div class="row mb-4" t-if="o.retention_calendar_id">
+                    <div class="col-12">
+                        <h5 style="border-bottom: 2px solid #32373c; padding-bottom: 5px;">
+                            Calendrier de conservation / Retention Calendar
+                        </h5>
+                        <table class="table table-borderless">
+                            <tr>
+                                <td width="30%"><strong>Règle / Rule:</strong></td>
+                                <td><t t-esc="o.retention_calendar_id.display_name"/></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Base légale / Legal Basis:</strong></td>
+                                <td><t t-esc="o.retention_calendar_id.legal_basis or 'N/A'"/></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Documents détruits (pour destructions documentaires) -->
+                <div class="row mb-4" t-if="o.request_type in ('document', 'erasure_right', 'campaign') and o.classification_ids">
+                    <div class="col-12">
+                        <h5 style="border-bottom: 2px solid #32373c; padding-bottom: 5px;">
+                            Documents détruits / Destroyed Documents
+                        </h5>
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Document</th>
+                                    <th>Catégorie de RP / PI Category</th>
+                                    <th>Sensibilité / Sensitivity</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="o.classification_ids" t-as="cls">
+                                    <tr>
+                                        <td><t t-esc="cls.res_name or 'N/A'"/></td>
+                                        <td><t t-esc="cls.pi_category"/></td>
+                                        <td><t t-esc="cls.sensitivity_level"/></td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Registre de destruction / Destruction Register -->
+                <div class="row mb-4" t-if="o.register_entry_ids">
+                    <div class="col-12">
+                        <h5 style="border-bottom: 2px solid #32373c; padding-bottom: 5px;">
+                            Registre de destruction / Destruction Register
+                        </h5>
+                        <table class="table table-borderless">
+                            <t t-foreach="o.register_entry_ids" t-as="entry">
+                                <tr>
+                                    <td width="30%"><strong>N° registre / Register No.:</strong></td>
+                                    <td><t t-esc="entry.register_number"/></td>
+                                </tr>
+                            </t>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Vérification -->
+                <div class="row mb-4" t-if="o.verification_hash">
+                    <div class="col-12">
+                        <h5 style="border-bottom: 2px solid #32373c; padding-bottom: 5px;">
+                            Vérification / Verification
+                        </h5>
+                        <div style="background-color: #f8f9fa; padding: 10px; border-radius: 5px; font-family: monospace; font-size: 10px; word-break: break-all;">
+                            <strong>SHA256:</strong> <t t-esc="o.verification_hash"/>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Avis juridique -->
+                <div class="row mt-5">
+                    <div class="col-12">
+                        <div style="background-color: #e8f4f8; padding: 15px; border-radius: 5px; border-left: 4px solid #32373c;">
+                            <p class="mb-2">
+                                <strong>Avis juridique / Legal Notice</strong>
+                            </p>
+                            <p class="small mb-0">
+                                Ce certificat confirme que les données personnelles ont été traitées conformément
+                                à la politique de rétention et à <t t-esc="framework.law_citation_fr"/>.
+                            </p>
+                            <p class="small mb-0 mt-2">
+                                This certificate confirms that personal data has been processed in accordance with
+                                the retention policy and <t t-esc="framework.law_citation_en"/>.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Zone de signature -->
+                <div class="row mt-5">
+                    <div class="col-6">
+                        <div style="border-top: 1px solid #000; margin-top: 50px; padding-top: 5px;">
+                            <small>Date</small>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div style="border-top: 1px solid #000; margin-top: 50px; padding-top: 5px;">
+                            <small>Signature du responsable / Privacy Officer Signature</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- Définition du rapport -->
+    <template id="report_destruction_certificate">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="privacy_consent.report_destruction_certificate_document"/>
+            </t>
+        </t>
+    </template>
+
+    <!-- Action du rapport -->
+    <record id="action_report_destruction_certificate" model="ir.actions.report">
+        <field name="name">Certificat de destruction</field>
+        <field name="model">privacy.destruction.request</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">privacy_consent.report_destruction_certificate</field>
+        <field name="report_file">privacy_consent.report_destruction_certificate</field>
+        <field name="print_report_name">'Certificat_Destruction_%s' % object.certificate_number</field>
+        <field name="binding_model_id" ref="model_privacy_destruction_request"/>
+        <field name="binding_type">report</field>
+    </record>
+</odoo>

@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="bf_cx.Dashboard">
+        <div class="o_bf_cx_dashboard">
+            <div class="container-fluid py-3">
+
+                <!-- Filter row: presets first, then the custom range -->
+                <div class="d-flex flex-wrap align-items-center gap-2 mb-3 o_cx_filters">
+                    <h4 class="mb-0 me-3">Expérience client</h4>
+                    <div class="btn-group" role="group" aria-label="Périodes">
+                        <t t-foreach="presets" t-as="p" t-key="p.key">
+                            <button type="button"
+                                    t-attf-class="btn btn-sm {{ state.preset === p.key ? 'btn-primary' : 'btn-outline-secondary' }}"
+                                    t-on-click="() => this.setPreset(p.key)">
+                                <t t-esc="p.label"/>
+                            </button>
+                        </t>
+                    </div>
+                    <div class="d-flex align-items-center gap-1 ms-2">
+                        <label class="text-muted small" for="cx_date_from">Du</label>
+                        <input id="cx_date_from" type="date" class="form-control form-control-sm o_cx_date"
+                               t-att-value="state.dateFrom"
+                               t-on-change="(ev) => this.onDateChange('dateFrom', ev)"/>
+                        <label class="text-muted small" for="cx_date_to">au</label>
+                        <input id="cx_date_to" type="date" class="form-control form-control-sm o_cx_date"
+                               t-att-value="state.dateTo"
+                               t-on-change="(ev) => this.onDateChange('dateTo', ev)"/>
+                    </div>
+                </div>
+
+                <div t-if="state.loading and !state.data" class="d-flex justify-content-center py-5">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Chargement…</span>
+                    </div>
+                </div>
+
+                <div t-if="state.data" t-attf-class="o_cx_body {{ state.loading ? 'o_cx_reloading' : '' }}">
+
+                    <!-- KPI row -->
+                    <div class="row g-3 mb-3">
+                        <div class="col-6 col-lg">
+                            <div class="card h-100 o_cx_tile" role="button" t-on-click="() => this.openFeedback([['kind','=','nps']])">
+                                <div class="card-body text-center">
+                                    <div class="o_cx_hero" t-esc="state.data.nps.display"/>
+                                    <div class="text-muted small">NPS
+                                        <span class="o_cx_n">(n=<t t-esc="state.data.nps.n"/>)</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-lg">
+                            <div class="card h-100 o_cx_tile" role="button" t-on-click="() => this.openFeedback([['kind','=','csat']])">
+                                <div class="card-body text-center">
+                                    <div class="o_cx_hero" t-esc="state.data.csat.display"/>
+                                    <div class="text-muted small">Satisfaction générale
+                                        <span class="o_cx_n">(n=<t t-esc="state.data.csat.n"/>)</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-lg">
+                            <div class="card h-100 o_cx_tile" role="button" t-on-click="openComplaints">
+                                <div class="card-body text-center">
+                                    <div class="o_cx_hero" t-esc="state.data.complaints.received"/>
+                                    <div class="text-muted small">Plaintes reçues
+                                        <t t-if="state.data.complaints.open > 0">
+                                            · <span class="o_cx_serious fw-bold"><t t-esc="state.data.complaints.open"/> ouverte(s)</span>
+                                        </t>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-lg">
+                            <div class="card h-100 o_cx_tile">
+                                <div class="card-body text-center">
+                                    <div class="o_cx_hero"><t t-esc="state.data.response.rate"/>%</div>
+                                    <div class="text-muted small">Taux de réponse
+                                        <span class="o_cx_n">(<t t-esc="state.data.response.completed"/>/<t t-esc="state.data.response.invited"/>)</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-lg">
+                            <div t-attf-class="card h-100 o_cx_tile {{ state.data.followup_todo > 0 ? 'o_cx_tile_alert' : '' }}"
+                                 role="button" t-on-click="openFollowups">
+                                <div class="card-body text-center">
+                                    <div t-attf-class="o_cx_hero {{ state.data.followup_todo > 0 ? 'o_cx_serious' : '' }}"
+                                         t-esc="state.data.followup_todo"/>
+                                    <div class="text-muted small">À rappeler</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Charts row -->
+                    <div class="row g-3 mb-3">
+                        <div class="col-lg-7">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h6 class="text-muted mb-3">Réponses NPS par mois</h6>
+                                    <div t-if="!monthlyBars.length" class="text-muted small py-4 text-center">
+                                        Aucune réponse NPS dans la période.
+                                    </div>
+                                    <div t-else="" class="o_cx_chart d-flex align-items-end gap-3">
+                                        <t t-foreach="monthlyBars" t-as="m" t-key="m.label">
+                                            <div class="o_cx_col text-center">
+                                                <svg t-att-width="34" t-att-height="m.height" t-attf-aria-label="{{ m.label }} : {{ m.total }} réponses">
+                                                    <title><t t-esc="m.label"/> · promoteurs <t t-esc="m.promoter"/>, passifs <t t-esc="m.passive"/>, détracteurs <t t-esc="m.detractor"/></title>
+                                                    <t t-set="y" t-value="m.height - 14"/>
+                                                    <rect t-if="m.hP" x="0" t-att-y="y - m.hP" width="34" t-att-height="m.hP" rx="2" class="o_cx_fill_promoter"/>
+                                                    <rect t-if="m.hN" x="0" t-att-y="y - m.hP - 2 - m.hN" width="34" t-att-height="m.hN" rx="2" class="o_cx_fill_passive"/>
+                                                    <rect t-if="m.hD" x="0" t-att-y="y - m.hP - 2 - m.hN - 2 - m.hD" width="34" t-att-height="m.hD" rx="4" class="o_cx_fill_detractor"/>
+                                                    <text x="17" t-att-y="m.height - 2" text-anchor="middle" class="o_cx_axis"><t t-esc="m.label.slice(2)"/></text>
+                                                </svg>
+                                                <div class="o_cx_bar_total"><t t-esc="m.total"/></div>
+                                            </div>
+                                        </t>
+                                    </div>
+                                    <div class="d-flex gap-3 mt-2 small">
+                                        <span><span class="o_cx_dot o_cx_fill_promoter"/> Promoteurs</span>
+                                        <span><span class="o_cx_dot o_cx_fill_passive"/> Passifs</span>
+                                        <span><span class="o_cx_dot o_cx_fill_detractor"/> Détracteurs</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-5">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h6 class="text-muted mb-3">Plaintes par mois
+                                        <span class="o_cx_n" t-if="state.data.complaints.ack_avg_hours">
+                                            · AR moyen <t t-esc="state.data.complaints.ack_avg_hours"/> h
+                                        </span>
+                                    </h6>
+                                    <div t-if="!monthlyBars.length" class="text-muted small py-4 text-center">
+                                        Aucune plainte dans la période.
+                                    </div>
+                                    <div t-else="" class="o_cx_chart d-flex align-items-end gap-3">
+                                        <t t-foreach="monthlyBars" t-as="m" t-key="m.label">
+                                            <div class="o_cx_col text-center">
+                                                <svg t-att-width="34" t-att-height="m.height">
+                                                    <title><t t-esc="m.label"/> : <t t-esc="m.complaints"/> plainte(s)</title>
+                                                    <t t-set="h" t-value="Math.round((m.complaints / maxComplaints) * (m.height - 18))"/>
+                                                    <rect t-if="h" x="0" t-att-y="m.height - 14 - h" width="34" t-att-height="h" rx="4" class="o_cx_fill_seq"/>
+                                                    <text x="17" t-att-y="m.height - 2" text-anchor="middle" class="o_cx_axis"><t t-esc="m.label.slice(2)"/></text>
+                                                </svg>
+                                                <div class="o_cx_bar_total"><t t-esc="m.complaints or ''"/></div>
+                                            </div>
+                                        </t>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Themes -->
+                    <div class="row g-3">
+                        <div class="col-lg-7" t-if="state.data.themes.length">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h6 class="text-muted mb-3">Thèmes récurrents (boucle externe)</h6>
+                                    <t t-foreach="state.data.themes" t-as="theme" t-key="theme.name">
+                                        <div class="d-flex align-items-center gap-2 mb-1">
+                                            <div class="o_cx_theme_label text-truncate" t-esc="theme.name"/>
+                                            <div class="flex-grow-1">
+                                                <div class="o_cx_theme_bar o_cx_fill_seq"
+                                                     t-attf-style="width: {{ Math.round(theme.count * 100 / maxTheme) }}%"/>
+                                            </div>
+                                            <div class="small text-muted" t-esc="theme.count"/>
+                                        </div>
+                                    </t>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </t>
+
+</templates>

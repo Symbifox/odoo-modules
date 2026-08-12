@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="res_config_settings_view_form" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.bf.cx.sign</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="bf_cx.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//block[@name='bf_cx_loop_block']" position="inside">
+                <setting string="Feedback après signature"
+                         help="Quand une demande de signature est complétée, demander un feedback à 3 émojis au signataire principal (une fois par dossier, garde-fou anti-sursollicitation appliqué).">
+                    <field name="bf_cx_sign_feedback"/>
+                </setting>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

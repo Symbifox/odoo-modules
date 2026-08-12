@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+
+        <record id="module_category_bf_sign" model="ir.module.category">
+            <field name="name">Signature électronique</field>
+            <field name="sequence">35</field>
+        </record>
+
+        <record id="group_sign_user" model="res.groups">
+            <field name="name">Utilisateur</field>
+            <field name="comment">Peut créer et envoyer des demandes de signature.</field>
+            <field name="category_id" ref="module_category_bf_sign"/>
+        </record>
+
+        <record id="group_sign_manager" model="res.groups">
+            <field name="name">Gestionnaire</field>
+            <field name="comment">Accès complet à toutes les demandes de signature.</field>
+            <field name="category_id" ref="module_category_bf_sign"/>
+            <field name="implied_ids" eval="[(4, ref('group_sign_user'))]"/>
+            <field name="users" eval="[(4, ref('base.user_admin'))]"/>
+        </record>
+
+    </data>
+
+    <data noupdate="1">
+
+        <!-- Users see the requests they created; managers see all. -->
+        <record id="rule_sign_request_user" model="ir.rule">
+            <field name="name">Demandes de signature : créateur</field>
+            <field name="model_id" ref="model_bf_sign_request"/>
+            <field name="domain_force">[
+                '|',
+                ('create_uid', '=', user.id),
+                ('message_partner_ids', 'in', [user.partner_id.id])
+            ]</field>
+            <field name="groups" eval="[(4, ref('group_sign_user'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+        <record id="rule_sign_request_manager" model="ir.rule">
+            <field name="name">Demandes de signature : accès complet</field>
+            <field name="model_id" ref="model_bf_sign_request"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_sign_manager'))]"/>
+        </record>
+
+        <!-- Children inherit the request's visibility: a sign user sees the
+             signers / fields / audit log only for requests they can see. This
+             prevents reading other creators' (or other companies') signer PII
+             and audit trail. Managers: full access. -->
+        <record id="rule_sign_signer_user" model="ir.rule">
+            <field name="name">Signataires : selon la demande</field>
+            <field name="model_id" ref="model_bf_sign_signer"/>
+            <field name="domain_force">[
+                '|',
+                ('request_id.create_uid', '=', user.id),
+                ('request_id.message_partner_ids', 'in', [user.partner_id.id])
+            ]</field>
+            <field name="groups" eval="[(4, ref('group_sign_user'))]"/>
+        </record>
+        <record id="rule_sign_signer_manager" model="ir.rule">
+            <field name="name">Signataires : accès complet</field>
+            <field name="model_id" ref="model_bf_sign_signer"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_sign_manager'))]"/>
+        </record>
+
+        <record id="rule_sign_field_user" model="ir.rule">
+            <field name="name">Pavés : selon la demande</field>
+            <field name="model_id" ref="model_bf_sign_field"/>
+            <field name="domain_force">[
+                '|',
+                ('request_id.create_uid', '=', user.id),
+                ('request_id.message_partner_ids', 'in', [user.partner_id.id])
+            ]</field>
+            <field name="groups" eval="[(4, ref('group_sign_user'))]"/>
+        </record>
+        <record id="rule_sign_field_manager" model="ir.rule">
+            <field name="name">Pavés : accès complet</field>
+            <field name="model_id" ref="model_bf_sign_field"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_sign_manager'))]"/>
+        </record>
+
+        <record id="rule_sign_log_user" model="ir.rule">
+            <field name="name">Journal : selon la demande</field>
+            <field name="model_id" ref="model_bf_sign_log"/>
+            <field name="domain_force">[
+                '|',
+                ('request_id.create_uid', '=', user.id),
+                ('request_id.message_partner_ids', 'in', [user.partner_id.id])
+            ]</field>
+            <field name="groups" eval="[(4, ref('group_sign_user'))]"/>
+        </record>
+        <record id="rule_sign_log_manager" model="ir.rule">
+            <field name="name">Journal : accès complet</field>
+            <field name="model_id" ref="model_bf_sign_log"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_sign_manager'))]"/>
+        </record>
+
+
+        <!-- === Multi-company isolation (2026-07-31) ===
+
+             This module had NO company rule at all. Group rules are OR-ed
+             together, so the manager rule above — [(1, '=', 1)] — granted
+             every signature request of every company, along with the signers,
+             the pads, the audit trail and, through document_file and
+             signed_attachment_id, the PDFs themselves. Measured on a
+             two-company instance on 2026-07-31.
+
+             Global rules are AND-ed with the group rules, so these four
+             restore the company boundary without touching the ownership logic
+             above: a manager still sees everything, but only inside their own
+             companies.
+
+             The children have no company_id of their own and inherit the
+             request's, which avoids a new column and a migration. Public
+             signing is unaffected: the controller resolves the signer through
+             sudo() behind a per-signer token. -->
+
+        <record id="rule_sign_request_company" model="ir.rule">
+            <field name="name">Demandes de signature : multi-société</field>
+            <field name="model_id" ref="model_bf_sign_request"/>
+            <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        </record>
+
+        <record id="rule_sign_signer_company" model="ir.rule">
+            <field name="name">Signataires : multi-société</field>
+            <field name="model_id" ref="model_bf_sign_signer"/>
+            <field name="domain_force">['|', ('request_id.company_id', '=', False), ('request_id.company_id', 'in', company_ids)]</field>
+        </record>
+
+        <record id="rule_sign_field_company" model="ir.rule">
+            <field name="name">Pavés : multi-société</field>
+            <field name="model_id" ref="model_bf_sign_field"/>
+            <field name="domain_force">['|', ('request_id.company_id', '=', False), ('request_id.company_id', 'in', company_ids)]</field>
+        </record>
+
+        <record id="rule_sign_log_company" model="ir.rule">
+            <field name="name">Journal de signature : multi-société</field>
+            <field name="model_id" ref="model_bf_sign_log"/>
+            <field name="domain_force">['|', ('request_id.company_id', '=', False), ('request_id.company_id', 'in', company_ids)]</field>
+        </record>
+
+    </data>
+</odoo>

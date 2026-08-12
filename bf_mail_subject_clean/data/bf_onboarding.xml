@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo noupdate="1">
+    <record id="bf_onb_step_settings" model="onboarding.onboarding.step">
+        <field name="title">Régler le nettoyage des sujets</field>
+        <field name="description">Choisissez les patterns « Re: », « Fwd: » et les références internes à nettoyer automatiquement.</field>
+        <field name="button_text">Ouvrir Paramètres</field>
+        <field name="done_text">Nettoyage actif</field>
+        <field name="panel_step_open_action_name">bf_open_res_config_settings</field>
+        <field name="sequence">1</field>
+    </record>
+    <record id="bf_onboarding_panel" model="onboarding.onboarding">
+        <field name="name">Nettoyage sujets courriels</field>
+        <field name="route_name">bf_mail_subject_clean_onboarding</field>
+        <field name="panel_close_action_name">action_close_panel_bf_mail_subject_clean</field>
+        <field name="step_ids" eval="[Command.link(ref('bf_mail_subject_clean.bf_onb_step_settings'))]"/>
+    </record>
+</odoo>

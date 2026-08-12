@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="module_category_bf_outreach" model="ir.module.category">
+        <field name="name">Démarchage</field>
+        <field name="description">Gestion des campagnes de démarchage par appels et courriels.</field>
+        <field name="sequence">45</field>
+    </record>
+
+    <record id="group_bf_outreach_user" model="res.groups">
+        <field name="name">Utilisateur</field>
+        <field name="category_id" ref="module_category_bf_outreach"/>
+        <field name="comment">Peut mener des campagnes : gérer les cibles et journaliser les interactions.</field>
+    </record>
+
+    <record id="group_bf_outreach_manager" model="res.groups">
+        <field name="name">Gestionnaire</field>
+        <field name="category_id" ref="module_category_bf_outreach"/>
+        <field name="implied_ids" eval="[Command.link(ref('group_bf_outreach_user'))]"/>
+        <field name="comment">Configure les étapes, les étiquettes et supprime les enregistrements.</field>
+    </record>
+
+    <record id="base.user_admin" model="res.users">
+        <field name="groups_id" eval="[Command.link(ref('bf_outreach.group_bf_outreach_manager'))]"/>
+    </record>
+
+    <!-- Cloisonnement multi-sociétés -->
+    <record id="rule_bf_outreach_campaign_company" model="ir.rule">
+        <field name="name">Campagne de démarchage : société</field>
+        <field name="model_id" ref="model_bf_outreach_campaign"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        <field name="global" eval="True"/>
+    </record>
+
+    <record id="rule_bf_outreach_target_company" model="ir.rule">
+        <field name="name">Cible de démarchage : société</field>
+        <field name="model_id" ref="model_bf_outreach_target"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        <field name="global" eval="True"/>
+    </record>
+
+    <record id="rule_bf_outreach_touch_company" model="ir.rule">
+        <field name="name">Interaction de démarchage : société</field>
+        <field name="model_id" ref="model_bf_outreach_touch"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        <field name="global" eval="True"/>
+    </record>
+
+</odoo>

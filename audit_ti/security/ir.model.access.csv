@@ -1,0 +1,17 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_audit_element_user,audit.element.user,model_audit_element,group_audit_user,1,0,0,0
+access_audit_element_manager,audit.element.manager,model_audit_element,group_audit_manager,1,1,1,1
+access_audit_supplier_user,audit.supplier.user,model_audit_supplier,group_audit_user,1,0,0,0
+access_audit_supplier_manager,audit.supplier.manager,model_audit_supplier,group_audit_manager,1,1,1,1
+access_audit_supplier_alias_user,audit.supplier.alias.user,model_audit_supplier_alias,group_audit_user,1,0,0,0
+access_audit_supplier_alias_manager,audit.supplier.alias.manager,model_audit_supplier_alias,group_audit_manager,1,1,1,1
+access_audit_client_user,audit.client.user,model_audit_client,group_audit_user,1,1,0,0
+access_audit_client_manager,audit.client.manager,model_audit_client,group_audit_manager,1,1,1,1
+access_audit_client_supplier_user,audit.client.supplier.user,model_audit_client_supplier,group_audit_user,1,1,0,0
+access_audit_client_supplier_manager,audit.client.supplier.manager,model_audit_client_supplier,group_audit_manager,1,1,1,1
+access_audit_assessment_user,audit.assessment.user,model_audit_assessment,group_audit_user,1,1,1,1
+access_audit_assessment_manager,audit.assessment.manager,model_audit_assessment,group_audit_manager,1,1,1,1
+access_audit_watchpoint_user,audit.watchpoint.user,model_audit_watchpoint,group_audit_user,1,1,1,1
+access_audit_watchpoint_manager,audit.watchpoint.manager,model_audit_watchpoint,group_audit_manager,1,1,1,1
+access_audit_dashboard_user,audit.dashboard.user,model_audit_dashboard,group_audit_user,1,0,0,0
+access_audit_dashboard_manager,audit.dashboard.manager,model_audit_dashboard,group_audit_manager,1,0,0,0

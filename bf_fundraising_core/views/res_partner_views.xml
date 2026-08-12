@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+<odoo>
+    <!-- Constituent page on the partner form -->
+    <record id="res_partner_form_bf_fundraising" model="ir.ui.view">
+        <field name="name">res.partner.form.bf.fundraising</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form" />
+        <field name="arch" type="xml">
+            <notebook position="inside">
+                <page
+                    string="Philanthropie"
+                    name="fundraising"
+                    invisible="not is_constituent"
+                >
+                    <group>
+                        <group string="Sommaire des dons">
+                            <field name="donation_amount_total" />
+                            <field name="donation_largest" />
+                            <field name="donation_first_date" />
+                            <field name="donation_last_date" />
+                            <field name="fundraising_currency_id" invisible="1" />
+                        </group>
+                        <group string="Prospection / don majeur">
+                            <field name="wealth_rating" />
+                            <field name="giving_capacity" />
+                            <field name="is_major_prospect" />
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Classification">
+                            <field name="constituent_type" />
+                            <field name="is_household" />
+                            <field
+                                name="household_id"
+                                invisible="is_household"
+                            />
+                        </group>
+                        <group string="Sollicitation">
+                            <field
+                                name="solicit_code_ids"
+                                widget="many2many_tags"
+                            />
+                            <field name="do_not_solicit" />
+                        </group>
+                    </group>
+                    <field
+                        name="household_member_ids"
+                        invisible="not is_household"
+                        readonly="1"
+                    >
+                        <list>
+                            <field name="name" />
+                            <field name="email" />
+                            <field name="phone" />
+                        </list>
+                    </field>
+                </page>
+            </notebook>
+            <!-- Constituent toggle near the company/individual selector -->
+            <field name="category_id" position="after">
+                <field name="is_constituent" />
+            </field>
+        </field>
+    </record>
+
+    <!-- Search: constituent + LYBUNT / giving filters -->
+    <record id="res_partner_search_bf_fundraising" model="ir.ui.view">
+        <field name="name">res.partner.search.bf.fundraising</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_res_partner_filter" />
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">
+                <separator />
+                <filter
+                    name="constituents"
+                    string="Constituants"
+                    domain="[('is_constituent', '=', True)]"
+                />
+                <filter
+                    name="donors"
+                    string="Donateurs"
+                    domain="[('donation_amount_total', '>', 0)]"
+                />
+                <filter
+                    name="gave_this_year"
+                    string="A donné cette année"
+                    domain="[('donation_last_date', '>=', (context_today() + relativedelta(month=1, day=1)).strftime('%Y-%m-%d'))]"
+                />
+                <filter
+                    name="lapsed_lybunt"
+                    string="Inactifs (LYBUNT)"
+                    domain="[('donation_last_date', '>=', (context_today() + relativedelta(years=-1, month=1, day=1)).strftime('%Y-%m-%d')), ('donation_last_date', '&lt;', (context_today() + relativedelta(month=1, day=1)).strftime('%Y-%m-%d'))]"
+                />
+                <filter
+                    name="major_prospects"
+                    string="Prospects don majeur"
+                    domain="[('is_major_prospect', '=', True)]"
+                />
+                <filter
+                    name="do_not_solicit"
+                    string="Ne pas solliciter"
+                    domain="[('do_not_solicit', '=', True)]"
+                />
+                <group expand="0" string="Grouper par (philanthropie)">
+                    <filter
+                        name="group_wealth_rating"
+                        string="Cote de richesse"
+                        context="{'group_by': 'wealth_rating'}"
+                    />
+                    <filter
+                        name="group_constituent_type"
+                        string="Type de constituant"
+                        context="{'group_by': 'constituent_type'}"
+                    />
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="action_bf_constituents" model="ir.actions.act_window">
+        <field name="name">Constituants</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="domain">[('is_constituent', '=', True)]</field>
+        <field name="context">{'default_is_constituent': True, 'search_default_constituents': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Aucun constituant</p>
+            <p>Les constituants sont vos donateurs, membres et prospects. Cochez
+            « Constituant » sur une fiche contact pour l'ajouter ici.</p>
+        </field>
+    </record>
+</odoo>

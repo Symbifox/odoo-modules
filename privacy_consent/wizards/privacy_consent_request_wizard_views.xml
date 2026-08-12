@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Request Wizard Form -->
+    <record id="privacy_consent_request_wizard_form" model="ir.ui.view">
+        <field name="name">privacy.consent.request.wizard.form</field>
+        <field name="model">privacy.consent.request.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Demander le consentement">
+                <group>
+                    <group string="Sujets du consentement">
+                        <field name="partner_ids" widget="many2many_tags"
+                               options="{'no_create': True}"
+                               placeholder="S&#233;lectionner des contacts..."/>
+                    </group>
+                    <group string="D&#233;tails du consentement">
+                        <field name="group_id"
+                               placeholder="Ou s&#233;lectionner un groupe..."/>
+                        <field name="notice_id"
+                               invisible="group_id"
+                               required="not group_id"/>
+                        <field name="purpose_id" invisible="1"/>
+                        <field name="collection_method"/>
+                    </group>
+                </group>
+                <group invisible="not send_email">
+                    <field name="email_recipients_info" nolabel="1" colspan="2" readonly="1"/>
+                </group>
+                <group>
+                    <group string="Options">
+                        <field name="project_id"/>
+                        <field name="send_email" widget="boolean_toggle"/>
+                    </group>
+                </group>
+                <footer>
+                    <button name="action_create_requests" type="object"
+                            string="Cr&#233;er les demandes" class="btn-primary"/>
+                    <button string="Annuler" special="cancel" class="btn-secondary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action to open wizard -->
+    <record id="action_privacy_consent_request_wizard" model="ir.actions.act_window">
+        <field name="name">Demander le consentement</field>
+        <field name="res_model">privacy.consent.request.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

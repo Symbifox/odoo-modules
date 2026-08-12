@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates>
+    <t t-name="bf_timesheet_timer.Systray">
+        <Dropdown position="'bottom-end'" beforeOpen.bind="loadRecentTasks">
+            <button class="btn d-flex align-items-center gap-1">
+                <!-- No active timers: simple hourglass icon -->
+                <t t-if="!hasActiveTimers">
+                    <i class="fa fa-hourglass-half" title="Timer"/>
+                </t>
+                <!-- Active timer(s): show primary timer inline -->
+                <t t-if="hasActiveTimers and primaryTimer">
+                    <!-- Green pulsing dot if at least one running, orange static if all paused -->
+                    <span t-if="hasRunningTimer" class="bf-timer-active-dot me-1"/>
+                    <span t-if="!hasRunningTimer" class="bf-timer-paused-dot me-1"/>
+                    <span t-att-class="getTimerClass(primaryTimer)"
+                          class="bf-timer-navbar">
+                        <t t-esc="primaryTimer.task_name"/>
+                    </span>
+                    <span t-att-class="getTimerClass(primaryTimer)"
+                          class="bf-timer-navbar fw-bold ms-1">
+                        <t t-esc="formatTime(getElapsed(primaryTimer))"/>
+                    </span>
+                    <span t-if="primaryTimer.is_paused"
+                          class="badge rounded-pill bg-warning text-dark bf-timer-badge ms-1"
+                          title="En pause">
+                        <i class="fa fa-pause" style="font-size: 0.7em;"/>
+                    </span>
+                    <span t-if="timerCount > 1"
+                          class="badge rounded-pill bg-primary bf-timer-badge ms-1">
+                        <t t-esc="timerCount"/>
+                    </span>
+                </t>
+            </button>
+            <t t-set-slot="content">
+                <div class="bf-timer-dropdown p-2" style="min-width: 300px;">
+                    <!-- Active timers section -->
+                    <t t-if="hasActiveTimers">
+                        <div class="d-flex align-items-center justify-content-between mb-1">
+                            <span class="fw-bold text-muted small">Timers actifs</span>
+                            <div t-if="hasMultipleTimers or hasRedTimers" class="d-flex gap-1">
+                                <button t-if="hasRedTimers"
+                                        class="btn btn-sm btn-outline-danger py-0 px-1"
+                                        style="font-size: 0.7em;"
+                                        t-on-click="onStopAllRedTimers"
+                                        title="Arr&#234;ter tous les timers de 2h+">
+                                    <i class="fa fa-stop me-1"/>Arr&#234;ter les rouges
+                                </button>
+                                <button t-if="hasMultipleTimers"
+                                        class="btn btn-sm btn-outline-danger py-0 px-1"
+                                        style="font-size: 0.7em;"
+                                        t-on-click="onStopAllTimers"
+                                        title="Arr&#234;ter tous les timers actifs">
+                                    <i class="fa fa-stop me-1"/>Tout arr&#234;ter
+                                </button>
+                            </div>
+                        </div>
+                        <t t-foreach="timers" t-as="timer" t-key="timer.id">
+                            <div class="d-flex align-items-center justify-content-between py-1 border-bottom">
+                                <div class="flex-grow-1 overflow-hidden me-2 cursor-pointer"
+                                     t-on-click="() => this.onClickTaskName(timer.task_id)">
+                                    <div class="text-truncate fw-semibold">
+                                        <t t-esc="timer.task_name"/>
+                                        <span t-if="timer.is_paused"
+                                              class="badge bg-warning text-dark ms-1"
+                                              style="font-size: 0.65em;">Pause</span>
+                                    </div>
+                                    <div class="text-muted small text-truncate">
+                                        <t t-esc="timer.project_name"/>
+                                    </div>
+                                </div>
+                                <div class="d-flex align-items-center gap-2 flex-shrink-0">
+                                    <span t-att-class="getTimerClass(timer)" class="fw-bold small">
+                                        <t t-esc="formatTime(getElapsed(timer))"/>
+                                    </span>
+                                    <!-- Pause button (visible when running) -->
+                                    <button t-if="!timer.is_paused"
+                                            class="bf-timer-btn btn btn-sm btn-outline-warning"
+                                            t-on-click="() => this.onPauseTimer(timer.id)"
+                                            title="Pause">
+                                        <i class="fa fa-pause"/>
+                                    </button>
+                                    <!-- Resume button (visible when paused) -->
+                                    <button t-if="timer.is_paused"
+                                            class="bf-timer-btn btn btn-sm btn-outline-success"
+                                            t-on-click="() => this.onResumeTimer(timer.id)"
+                                            title="Reprendre">
+                                        <i class="fa fa-play"/>
+                                    </button>
+                                    <button class="bf-timer-btn btn btn-sm btn-outline-danger"
+                                            t-on-click="() => this.onStopTimer(timer.id)"
+                                            title="Arr&#234;ter">
+                                        <i class="fa fa-stop"/>
+                                    </button>
+                                </div>
+                            </div>
+                        </t>
+                    </t>
+
+                    <!-- No active timers -->
+                    <t t-if="!hasActiveTimers">
+                        <div class="text-muted text-center py-2">
+                            <i class="fa fa-hourglass-half me-1"/>Aucun timer actif
+                        </div>
+                    </t>
+
+                    <!-- Separator -->
+                    <hr class="my-2"/>
+
+                    <!-- Recent tasks (Top 10) with search -->
+                    <div class="d-flex align-items-center justify-content-between mb-1">
+                        <span class="fw-bold text-muted small">T&#226;ches r&#233;centes</span>
+                    </div>
+                    <div class="mb-2">
+                        <input type="text" class="form-control form-control-sm"
+                               placeholder="Rechercher..."
+                               t-att-value="state.searchQuery"
+                               t-on-input="onSearchInput"/>
+                    </div>
+                    <t t-if="filteredRecentTasks.length === 0">
+                        <div class="text-muted small py-1">Aucune t&#226;che trouv&#233;e</div>
+                    </t>
+                    <t t-foreach="filteredRecentTasks" t-as="task" t-key="task.task_id">
+                        <div t-att-class="'d-flex align-items-center justify-content-between py-1' + (task.is_closed ? ' bf-task-closed' : '')">
+                            <div class="flex-grow-1 overflow-hidden me-2 cursor-pointer"
+                                 t-on-click="() => this.onClickTaskName(task.task_id)">
+                                <div class="d-flex align-items-center gap-1">
+                                    <span class="text-truncate small">
+                                        <t t-esc="task.task_name"/>
+                                    </span>
+                                    <span t-if="task.stage_name"
+                                          class="badge bf-stage-badge text-truncate"
+                                          t-att-title="task.stage_name">
+                                        <t t-esc="task.stage_name"/>
+                                    </span>
+                                </div>
+                                <div class="d-flex align-items-center gap-1" style="font-size: 0.75em;">
+                                    <span t-att-class="'bf-project-dot bf-project-color-' + task.project_color"/>
+                                    <span class="text-muted text-truncate">
+                                        <t t-esc="task.project_name"/>
+                                    </span>
+                                    <span t-if="task.date_label" class="text-muted ms-1">
+                                        &#183; <t t-esc="task.date_label"/>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-center gap-1 flex-shrink-0">
+                                <!-- Pin/Unpin button -->
+                                <button t-if="task.is_pinned"
+                                        class="bf-pin-btn btn btn-sm"
+                                        t-on-click.stop="() => this.onUnpinTask(task.task_id)"
+                                        title="D&#233;s&#233;pingler">
+                                    <i class="fa fa-star text-warning"/>
+                                </button>
+                                <button t-if="!task.is_pinned"
+                                        class="bf-pin-btn btn btn-sm"
+                                        t-on-click.stop="() => this.onPinTask(task.task_id)"
+                                        title="&#201;pingler">
+                                    <i class="fa fa-star-o text-muted"/>
+                                </button>
+                                <!-- Stop button if timer active for this task -->
+                                <button t-if="isTaskTimerActive(task.task_id)"
+                                        class="bf-timer-btn btn btn-sm btn-outline-danger"
+                                        t-on-click="() => this.onStopTaskTimer(task.task_id)"
+                                        title="Arr&#234;ter">
+                                    <i class="fa fa-stop"/>
+                                </button>
+                                <!-- Play button if no timer active for this task -->
+                                <button t-if="!isTaskTimerActive(task.task_id)"
+                                        class="bf-timer-btn btn btn-sm btn-outline-success"
+                                        t-on-click="() => this.onStartTask(task.task_id)"
+                                        title="Commencer">
+                                    <i class="fa fa-play"/>
+                                </button>
+                            </div>
+                        </div>
+                    </t>
+
+                    <!-- Separator -->
+                    <hr class="my-2"/>
+
+                    <!-- Today + Week totals -->
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="small">
+                            <i class="fa fa-calendar-o me-1"/>Aujourd'hui:
+                            <strong><t t-esc="formattedTodayTotal"/></strong>
+                            <span class="text-muted mx-1">|</span>
+                            Semaine:
+                            <strong><t t-esc="formattedWeekTotal"/></strong>
+                        </span>
+                    </div>
+                    <div class="text-end mt-1">
+                        <a href="#" class="small text-primary"
+                           t-on-click.prevent="onOpenTimesheets">
+                            Mes feuilles de temps
+                        </a>
+                    </div>
+                </div>
+            </t>
+        </Dropdown>
+    </t>
+</templates>

@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Backup Run Tree View -->
+    <record id="hosting_backup_run_view_tree" model="ir.ui.view">
+        <field name="name">hosting.backup.run.view.tree</field>
+        <field name="model">hosting.backup.run</field>
+        <field name="arch" type="xml">
+            <list decoration-success="state == 'success'" decoration-info="state == 'warning'" decoration-warning="state == 'partial'" decoration-danger="state == 'failed'">
+                <field name="name"/>
+                <field name="run_date" string="Date"/>
+                <field name="report_type" widget="badge" decoration-info="report_type == 'restic'" decoration-muted="report_type == 'legacy'"/>
+                <field name="hostname" string="Serveur"/>
+                <field name="success_count" string="Réussis"/>
+                <field name="warning_count" string="Avert."/>
+                <field name="failed_count" string="Échoués"/>
+                <field name="skipped_count" string="Ignorés"/>
+                <field name="total_count" string="Total"/>
+                <field name="state" string="État" widget="badge" decoration-success="state == 'success'" decoration-info="state == 'warning'" decoration-warning="state == 'partial'" decoration-danger="state == 'failed'"/>
+                <field name="report_sent" string="Rapport envoyé" widget="boolean" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Backup Run Form View -->
+    <record id="hosting_backup_run_view_form" model="ir.ui.view">
+        <field name="name">hosting.backup.run.view.form</field>
+        <field name="model">hosting.backup.run</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_send_report" string="Envoyer le rapport" type="object" class="btn-primary" invisible="report_sent"/>
+                    <button name="action_send_report" string="Renvoyer le rapport" type="object" invisible="not report_sent"/>
+                    <field name="state" widget="statusbar" statusbar_visible="success,warning,partial,failed"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box"/>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="run_date" string="Date d'exécution"/>
+                            <field name="report_type" widget="badge"/>
+                            <field name="hostname" string="Serveur"/>
+                            <field name="backup_root" string="Répertoire racine" invisible="report_type == 'restic'"/>
+                        </group>
+                        <group>
+                            <field name="success_count" string="Réussis"/>
+                            <field name="warning_count" string="Avertissements"/>
+                            <field name="failed_count" string="Échoués"/>
+                            <field name="skipped_count" string="Ignorés"/>
+                            <field name="total_count" string="Total"/>
+                            <field name="report_sent" string="Rapport envoyé"/>
+                            <field name="report_sent_date" string="Date d'envoi" invisible="not report_sent"/>
+                        </group>
+                    </group>
+                    <group string="Dépôts Restic touchés" invisible="report_type != 'restic'">
+                        <field name="repository_ids" nolabel="1" widget="many2many_tags"/>
+                    </group>
+                    <notebook>
+                        <page string="Détails des sauvegardes" name="details">
+                            <field name="line_ids">
+                                <list decoration-success="status == 'success'" decoration-danger="status == 'failed'" decoration-muted="status == 'skipped'">
+                                    <field name="service_name" string="Service"/>
+                                    <field name="status" string="Statut" widget="badge" decoration-success="status == 'success'" decoration-danger="status == 'failed'" decoration-warning="status in ('skipped', 'partial')"/>
+                                    <field name="backup_ratio" string="Archives"/>
+                                    <field name="snapshot_count" string="Snapshots"/>
+                                    <field name="duration" string="Durée"/>
+                                    <field name="exit_code" string="Exit" optional="hide"/>
+                                    <field name="file_count" string="Fichiers" optional="hide"/>
+                                    <field name="all_verified" string="Vérifié" widget="boolean" optional="hide"/>
+                                    <field name="container_count" string="Conteneurs" optional="hide"/>
+                                    <field name="verified_file_count" string="Fichiers vérifiés" optional="hide"/>
+                                    <field name="error_message" string="Erreur" optional="hide"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Snapshots Restic" name="restic_snapshots" invisible="report_type != 'restic'">
+                            <field name="repository_ids" invisible="1"/>
+                            <p class="text-muted">Snapshots produits par cette exécution, regroupés par dépôt.</p>
+                            <field name="line_ids" nolabel="1" readonly="1">
+                                <list>
+                                    <field name="service_name"/>
+                                    <field name="snapshot_count"/>
+                                    <field name="snapshot_ids" widget="many2many_tags" optional="show"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Notes" name="notes">
+                            <field name="notes" placeholder="Notes additionnelles..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Backup Line Form View (for popup) -->
+    <record id="hosting_backup_line_view_form" model="ir.ui.view">
+        <field name="name">hosting.backup.line.view.form</field>
+        <field name="model">hosting.backup.line</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="service_name" string="Service"/>
+                            <field name="status" string="Statut"/>
+                            <field name="duration" string="Durée"/>
+                        </group>
+                        <group>
+                            <field name="container_count" string="Conteneurs"/>
+                            <field name="verified_file_count" string="Fichiers vérifiés"/>
+                            <field name="backup_ratio" string="Ratio"/>
+                            <field name="all_verified" string="Tous vérifiés"/>
+                        </group>
+                    </group>
+                    <group string="Erreur" invisible="not error_message">
+                        <field name="error_message" nolabel="1"/>
+                    </group>
+                    <group string="Fichiers de sauvegarde">
+                        <field name="file_ids" nolabel="1">
+                            <list>
+                                <field name="name" string="Nom"/>
+                                <field name="size" string="Taille"/>
+                                <field name="verified" string="Vérifié" widget="boolean"/>
+                                <field name="checksum" string="Somme de contrôle" optional="hide"/>
+                            </list>
+                        </field>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Backup Run Search View -->
+    <record id="hosting_backup_run_view_search" model="ir.ui.view">
+        <field name="name">hosting.backup.run.view.search</field>
+        <field name="model">hosting.backup.run</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="hostname"/>
+                <filter string="Aujourd'hui" name="filter_today" domain="[('run_date', '>=', datetime.datetime.combine(context_today(), datetime.time(0,0,0))), ('run_date', '&lt;', datetime.datetime.combine(context_today() + relativedelta(days=1), datetime.time(0,0,0)))]"/>
+                <filter string="Cette semaine" name="filter_week" domain="[('run_date', '>=', (context_today() - relativedelta(days=context_today().weekday())).strftime('%Y-%m-%d'))]"/>
+                <filter string="Ce mois-ci" name="filter_month" domain="[('run_date', '>=', context_today().strftime('%Y-%m-01'))]"/>
+                <separator/>
+                <filter string="Restic" name="filter_restic" domain="[('report_type', '=', 'restic')]"/>
+                <filter string="Legacy ZIP" name="filter_legacy" domain="[('report_type', '=', 'legacy')]"/>
+                <separator/>
+                <filter string="Réussi" name="filter_success" domain="[('state', '=', 'success')]"/>
+                <filter string="Avertissement" name="filter_warning" domain="[('state', '=', 'warning')]"/>
+                <filter string="Partiel" name="filter_partial" domain="[('state', '=', 'partial')]"/>
+                <filter string="Échoué" name="filter_failed" domain="[('state', '=', 'failed')]"/>
+                <separator/>
+                <filter string="Rapport non envoyé" name="filter_not_sent" domain="[('report_sent', '=', False)]"/>
+                <group expand="0" string="Grouper par">
+                    <filter string="État" name="group_state" context="{'group_by': 'state'}"/>
+                    <filter string="Serveur" name="group_hostname" context="{'group_by': 'hostname'}"/>
+                    <filter string="Date" name="group_date" context="{'group_by': 'run_date:day'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Backup Run Action -->
+    <record id="hosting_backup_run_action" model="ir.actions.act_window">
+        <field name="name">Sauvegardes</field>
+        <field name="res_model">hosting.backup.run</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_filter_month': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Aucune sauvegarde enregistrée
+            </p>
+            <p>
+                Les sauvegardes sont automatiquement créées lorsque le système de sauvegarde signale via l'API.
+            </p>
+        </field>
+    </record>
+
+</odoo>

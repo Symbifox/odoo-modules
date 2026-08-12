@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Groups + auto-grant: applied on every upgrade (noupdate=0) -->
+    <data>
+
+        <!-- Category (renders the manager checkbox in Access Rights) -->
+        <record id="module_category_bf_subscription" model="ir.module.category">
+            <field name="name">Abonnements</field>
+            <field name="description">Gestion des abonnements payants Blue Fox</field>
+            <field name="sequence">90</field>
+        </record>
+
+        <!-- Universal user group: auto-granted to every internal employee.
+             No category_id → stays hidden; access is implicit for all staff. -->
+        <record id="group_subscription_user" model="res.groups">
+            <field name="name">Abonnements / Utilisateur</field>
+        </record>
+
+        <!-- Manager: extra rights (unlink + cross-company). Selectable in Access Rights. -->
+        <record id="group_subscription_manager" model="res.groups">
+            <field name="name">Gestionnaire</field>
+            <field name="category_id" ref="module_category_bf_subscription"/>
+            <field name="implied_ids" eval="[(4, ref('bf_subscription.group_subscription_user')), (4, ref('account.group_account_invoice'))]"/>
+        </record>
+
+        <!-- Grant the user-level group to all internal users so the app is visible to staff. -->
+        <record id="base.group_user" model="res.groups">
+            <field name="implied_ids" eval="[(4, ref('bf_subscription.group_subscription_user'))]"/>
+        </record>
+
+        <!-- Grant the manager level to Settings administrators (config + reports + digests). -->
+        <record id="base.group_system" model="res.groups">
+            <field name="implied_ids" eval="[(4, ref('bf_subscription.group_subscription_manager'))]"/>
+        </record>
+
+    </data>
+
+    <!-- Record rules: noupdate so admin customizations persist -->
+    <data noupdate="1">
+
+        <!-- Manager can do everything -->
+        <record id="rule_subscription_manager" model="ir.rule">
+            <field name="name">Abonnement : accès complet gestionnaire</field>
+            <field name="model_id" ref="model_subscription_subscription"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('bf_subscription.group_subscription_manager'))]"/>
+        </record>
+
+        <!-- Multi-company isolation for users -->
+        <record id="rule_subscription_company" model="ir.rule">
+            <field name="name">Abonnement : isolation multi-société</field>
+            <field name="model_id" ref="model_subscription_subscription"/>
+            <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+            <field name="groups" eval="[(4, ref('bf_subscription.group_subscription_user'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+    </data>
+</odoo>

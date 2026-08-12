@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="seq_letter_document" model="ir.sequence">
+        <field name="name">Lettre</field>
+        <field name="code">letter.document</field>
+        <field name="prefix">LET-%(year)s-</field>
+        <field name="padding">3</field>
+    </record>
+
+</odoo>

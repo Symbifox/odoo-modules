@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+<odoo noupdate="1">
+    <!-- Starter solicit codes (RE-style contact preferences) -->
+    <record id="solicit_do_not_solicit" model="bf.solicit.code">
+        <field name="name">Ne pas solliciter</field>
+        <field name="code">NPS</field>
+        <field name="sequence">1</field>
+        <field name="excludes_all" eval="True" />
+    </record>
+    <record id="solicit_do_not_call" model="bf.solicit.code">
+        <field name="name">Ne pas appeler</field>
+        <field name="code">NPA</field>
+        <field name="sequence">2</field>
+    </record>
+    <record id="solicit_do_not_email" model="bf.solicit.code">
+        <field name="name">Ne pas envoyer de courriel</field>
+        <field name="code">NPC</field>
+        <field name="sequence">3</field>
+    </record>
+    <record id="solicit_do_not_mail" model="bf.solicit.code">
+        <field name="name">Ne pas envoyer de courrier</field>
+        <field name="code">NPM</field>
+        <field name="sequence">4</field>
+    </record>
+    <record id="solicit_deceased" model="bf.solicit.code">
+        <field name="name">Décédé(e)</field>
+        <field name="code">DEC</field>
+        <field name="sequence">5</field>
+        <field name="excludes_all" eval="True" />
+    </record>
+</odoo>

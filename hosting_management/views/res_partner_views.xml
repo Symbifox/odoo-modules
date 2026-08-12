@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Extend Partner Form View with Hosting Services Smart Buttons -->
+    <record id="res_partner_view_form_inherit_hosting" model="ir.ui.view">
+        <field name="name">res.partner.form.inherit.hosting</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_hosting_services" type="object"
+                        class="oe_stat_button" icon="fa-server"
+                        invisible="hosting_service_count == 0">
+                    <field name="hosting_service_count" widget="statinfo" string="Hosting"/>
+                </button>
+                <button name="action_view_hosting_services_expiring" type="object"
+                        class="oe_stat_button" icon="fa-clock-o"
+                        invisible="hosting_services_expiring_count == 0">
+                    <field name="hosting_services_expiring_count" widget="statinfo" string="Expiring"/>
+                </button>
+                <button name="action_view_hosting_services_updates" type="object"
+                        class="oe_stat_button" icon="fa-refresh"
+                        invisible="hosting_services_updates_count == 0">
+                    <field name="hosting_services_updates_count" widget="statinfo" string="Updates"/>
+                </button>
+                <button name="action_view_hosting_services_storage_alert" type="object"
+                        class="oe_stat_button" icon="fa-database"
+                        invisible="hosting_services_storage_alert_count == 0">
+                    <field name="hosting_services_storage_alert_count" widget="statinfo" string="Storage Alert"/>
+                </button>
+                <button name="action_view_hosting_endpoints" type="object"
+                        class="oe_stat_button" icon="fa-laptop"
+                        invisible="not has_sla and hosting_endpoint_count == 0">
+                    <field name="hosting_endpoint_count" widget="statinfo" string="Postes"/>
+                </button>
+                <button name="action_view_hosting_licenses" type="object"
+                        class="oe_stat_button" icon="fa-key"
+                        invisible="hosting_license_count == 0">
+                    <field name="hosting_license_count" widget="statinfo" string="Licences"/>
+                </button>
+                <button name="action_view_voip_dids" type="object"
+                        class="oe_stat_button" icon="fa-phone"
+                        invisible="voip_did_count == 0">
+                    <field name="voip_did_count" widget="statinfo" string="DID"/>
+                </button>
+            </xpath>
+
+            <!-- Case has_sla : placée près du champ company_type pour visibilité -->
+            <xpath expr="//field[@name='vat']" position="after">
+                <field name="has_sla" invisible="not is_company"
+                       widget="boolean_toggle"/>
+            </xpath>
+
+            <!-- Onglet Parc informatique (read-only, sans BitLocker — Odoo
+                 strippe le champ pour les non-managers de toute façon).
+                 Visible uniquement pour les clients SLA. -->
+            <xpath expr="//notebook" position="inside">
+                <page string="Parc informatique" name="hosting_park"
+                      invisible="not has_sla and hosting_endpoint_count == 0">
+                    <field name="hosting_endpoint_ids" readonly="1">
+                        <list>
+                            <field name="code"/>
+                            <field name="name"/>
+                            <field name="endpoint_type" widget="badge"/>
+                            <field name="lifecycle_state" widget="badge"
+                                   decoration-success="lifecycle_state == 'deployed'"
+                                   decoration-warning="lifecycle_state == 'in_repair'"
+                                   decoration-muted="lifecycle_state == 'retired'"/>
+                            <field name="assigned_display" string="Usager"/>
+                            <field name="os"/>
+                            <field name="os_eol_tag"/>
+                            <field name="warranty_end"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

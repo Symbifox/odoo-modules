@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Extend Task Form: meeting fields + smart button -->
+    <record id="project_task_view_form_inherit_meeting" model="ir.ui.view">
+        <field name="name">project.task.form.inherit.meeting</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="project.view_task_form2"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_bf_view_next_agenda" type="object"
+                        class="oe_stat_button" icon="fa-calendar-check-o"
+                        help="Ouvrir la prochaine rencontre où cette tâche apparaîtra"
+                        invisible="not bf_next_agenda_id">
+                    <div class="o_stat_info">
+                        <field name="bf_next_agenda_id" readonly="1"
+                               class="o_stat_value text-truncate"/>
+                        <span class="o_stat_text">Prochaine rencontre</span>
+                    </div>
+                </button>
+                <button name="action_bf_view_meeting" type="object"
+                        class="oe_stat_button" icon="fa-file-text-o"
+                        help="Ouvrir le compte rendu d'origine"
+                        invisible="not meeting_id">
+                    <div class="o_stat_info">
+                        <span class="o_stat_text">Compte rendu</span>
+                        <span class="o_stat_text">d'origine</span>
+                    </div>
+                </button>
+            </xpath>
+            <xpath expr="//field[@name='tag_ids']" position="after">
+                <field name="meeting_id" string="Compte rendu"
+                       invisible="not meeting_id"
+                       options="{'no_create': True, 'no_open': True}"/>
+                <label for="bf_discuss_tag" string="Rencontre à venir"
+                       class="o_form_label fw-bold"/>
+                <div class="d-inline-flex w-100 gap-2">
+                    <field name="bf_discuss_tag" nolabel="1"
+                           placeholder="Aucune"
+                           options="{'no_create': True}"/>
+                    <field name="bf_meeting_agenda_id" nolabel="1"
+                           placeholder="Ou rencontre précise"
+                           options="{'no_create': True, 'no_open': True}"
+                           domain="[('state', 'in', ('draft', 'confirmed')),
+                                    ('date', '&gt;=', context_today())]"/>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Extend Task List: show bf_discuss_tag badge -->
+    <record id="project_task_view_tree_inherit_meeting" model="ir.ui.view">
+        <field name="name">project.task.list.inherit.meeting</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="project.view_task_tree2"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='tag_ids']" position="after">
+                <field name="bf_discuss_tag" widget="badge"
+                       optional="hide"
+                       decoration-info="bf_discuss_tag in ('next_client', 'all_client')"
+                       decoration-warning="bf_discuss_tag in ('next_project', 'all_project')"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Extend Task Search: filter for tagged-upcoming tasks -->
+    <record id="project_task_view_search_inherit_meeting" model="ir.ui.view">
+        <field name="name">project.task.search.inherit.meeting</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="project.view_task_search_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='my_tasks']" position="after">
+                <separator/>
+                <filter name="bf_tagged_upcoming"
+                        string="À discuter en rencontre"
+                        domain="['|',
+                                 ('bf_discuss_tag', '!=', False),
+                                 ('bf_meeting_agenda_id', '!=', False)]"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Server actions: quick-tag buttons (Actions menu) -->
+    <record id="action_bf_tag_next_project" model="ir.actions.server">
+        <field name="name">Discuter à la prochaine rencontre projet</field>
+        <field name="model_id" ref="project.model_project_task"/>
+        <field name="binding_model_id" ref="project.model_project_task"/>
+        <field name="binding_view_types">list,form</field>
+        <field name="state">code</field>
+        <field name="code">records.action_bf_tag_next_project()</field>
+    </record>
+
+    <record id="action_bf_tag_next_client" model="ir.actions.server">
+        <field name="name">Discuter à la prochaine rencontre client</field>
+        <field name="model_id" ref="project.model_project_task"/>
+        <field name="binding_model_id" ref="project.model_project_task"/>
+        <field name="binding_view_types">list,form</field>
+        <field name="state">code</field>
+        <field name="code">records.action_bf_tag_next_client()</field>
+    </record>
+
+</odoo>

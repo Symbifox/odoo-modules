@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo noupdate="1">
+    <record id="bf_onb_step_settings" model="onboarding.onboarding.step">
+        <field name="title">Configurer la gamification</field>
+        <field name="description">Activez les badges, niveaux et règles XP qui correspondent à votre culture d'équipe.</field>
+        <field name="button_text">Ouvrir Paramètres</field>
+        <field name="done_text">Gamification configurée</field>
+        <field name="panel_step_open_action_name">bf_open_res_config_settings</field>
+        <field name="sequence">1</field>
+    </record>
+    <record id="bf_onb_step_badges" model="onboarding.onboarding.step">
+        <field name="title">Parcourir les badges</field>
+        <field name="description">[action:bf_gamification.action_all_badges] Validez les badges proposés et leurs critères d'obtention.</field>
+        <field name="button_text">Voir les badges</field>
+        <field name="done_text">Badges revus</field>
+        <field name="panel_step_open_action_name">bf_open_action</field>
+        <field name="sequence">2</field>
+    </record>
+    <record id="bf_onboarding_panel" model="onboarding.onboarding">
+        <field name="name">Gamification BF</field>
+        <field name="route_name">bf_gamification_onboarding</field>
+        <field name="panel_close_action_name">action_close_panel_bf_gamification</field>
+        <field name="step_ids" eval="[
+            Command.link(ref('bf_gamification.bf_onb_step_settings')),
+            Command.link(ref('bf_gamification.bf_onb_step_badges')),
+        ]"/>
+    </record>
+</odoo>

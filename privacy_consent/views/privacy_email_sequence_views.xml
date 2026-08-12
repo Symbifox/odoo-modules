@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Email Sequence Form View -->
+    <record id="privacy_email_sequence_view_form" model="ir.ui.view">
+        <field name="name">privacy.email.sequence.form</field>
+        <field name="model">privacy.email.sequence</field>
+        <field name="arch" type="xml">
+            <form string="Séquence de courriel">
+                <sheet>
+                    <widget name="web_ribbon" title="Archivé" bg_color="text-bg-danger" invisible="active"/>
+                    <group>
+                        <group string="Configuration de la séquence">
+                            <field name="name"/>
+                            <field name="purpose_id"/>
+                            <field name="sequence"/>
+                            <field name="days_after_previous"/>
+                            <field name="active" invisible="1"/>
+                        </group>
+                        <group string="Paramètres de courriel">
+                            <field name="mail_template_id"/>
+                            <field name="only_if_not_opened"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                    <div class="alert alert-info" role="alert">
+                        <h5><i class="fa fa-info-circle"/> Fonctionnement des séquences de courriel</h5>
+                        <ul class="mb-0">
+                            <li><strong>Séquence 1 :</strong> Envoyée X jours après la demande initiale de consentement</li>
+                            <li><strong>Séquence 2+ :</strong> Envoyée X jours après le rappel précédent</li>
+                            <li>S'applique uniquement aux consentements <strong>en attente</strong></li>
+                            <li>Traité quotidiennement par la tâche automatisée</li>
+                        </ul>
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Email Sequence List View -->
+    <record id="privacy_email_sequence_view_list" model="ir.ui.view">
+        <field name="name">privacy.email.sequence.list</field>
+        <field name="model">privacy.email.sequence</field>
+        <field name="arch" type="xml">
+            <list string="Séquences de courriel" editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="purpose_id"/>
+                <field name="days_after_previous"/>
+                <field name="mail_template_id"/>
+                <field name="only_if_not_opened"/>
+                <field name="active"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Email Sequence Search View -->
+    <record id="privacy_email_sequence_view_search" model="ir.ui.view">
+        <field name="name">privacy.email.sequence.search</field>
+        <field name="model">privacy.email.sequence</field>
+        <field name="arch" type="xml">
+            <search string="Rechercher les séquences de courriel">
+                <field name="name"/>
+                <field name="purpose_id"/>
+                <filter string="Actif" name="active" domain="[('active', '=', True)]"/>
+                <filter string="Archivé" name="inactive" domain="[('active', '=', False)]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter string="Finalité" name="group_by_purpose" context="{'group_by': 'purpose_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Email Sequence Action -->
+    <record id="action_privacy_email_sequence" model="ir.actions.act_window">
+        <field name="name">Séquences de courriel</field>
+        <field name="res_model">privacy.email.sequence</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_active': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Créez votre première séquence de courriel
+            </p>
+            <p>
+                Les séquences de courriel permettent d'envoyer des rappels automatiques aux contacts
+                qui n'ont pas répondu aux demandes de consentement.
+            </p>
+        </field>
+    </record>
+
+    <!-- Extend Purpose Form to show Email Sequences Tab -->
+    <record id="privacy_purpose_view_form_sequences" model="ir.ui.view">
+        <field name="name">privacy.purpose.form.sequences</field>
+        <field name="model">privacy.purpose</field>
+        <field name="inherit_id" ref="privacy_consent.privacy_purpose_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <notebook>
+                    <page string="Séquences de courriel" name="email_sequences">
+                        <field name="email_sequence_ids">
+                            <list editable="bottom">
+                                <field name="sequence" widget="handle"/>
+                                <field name="name"/>
+                                <field name="days_after_previous"/>
+                                <field name="mail_template_id"/>
+                                <field name="only_if_not_opened"/>
+                                <field name="active"/>
+                            </list>
+                        </field>
+                    </page>
+                    <page string="Rétention" name="retention">
+                        <field name="retention_policy_ids">
+                            <list editable="bottom">
+                                <field name="retention_days"/>
+                                <field name="trigger_on"/>
+                                <field name="destruction_method"/>
+                                <field name="active"/>
+                            </list>
+                        </field>
+                    </page>
+                    <page string="Modèles DocuSeal" name="docuseal">
+                        <field name="docuseal_template_ids">
+                            <list>
+                                <field name="name"/>
+                                <field name="docuseal_template_id"/>
+                                <field name="docuseal_template_name"/>
+                                <field name="active"/>
+                            </list>
+                        </field>
+                    </page>
+                </notebook>
+            </xpath>
+            <xpath expr="//group[last()]" position="after">
+                <group string="Automatisation">
+                    <field name="auto_expire_pending_days"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>

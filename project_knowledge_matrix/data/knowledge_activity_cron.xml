@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <record id="cron_knowledge_followup_activities" model="ir.cron">
+            <field name="name">Matrice : Cr&#233;er les activit&#233;s de suivi</field>
+            <field name="model_id" ref="model_project_knowledge_item"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_create_followup_activities()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="nextcall" eval="(DateTime.now().replace(hour=12, minute=0, second=0))"/>
+            <field name="active" eval="True"/>
+        </record>
+
+    </data>
+</odoo>

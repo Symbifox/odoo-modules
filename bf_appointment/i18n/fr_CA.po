@@ -1,0 +1,140 @@
+# Translation of Blue Fox Appointment module - French (Canada).
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_appointment 18.0.2.5.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-03-08 00:00+0000\n"
+"PO-Revision-Date: 2026-03-08 00:00+0000\n"
+"Last-Translator: \n"
+"Language-Team: French (Canada)\n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. module: bf_appointment
+#: model:resource.booking.type,field:is_public
+msgid "Public Booking Page"
+msgstr "Page de rendez-vous publique"
+
+#. module: bf_appointment
+#: model:resource.booking.type,field:slug
+msgid "URL Slug"
+msgstr "Identifiant URL"
+
+#. module: bf_appointment
+#: model:resource.booking.type,field:public_description
+msgid "Public Description"
+msgstr "Description publique"
+
+#. module: bf_appointment
+#: model:resource.booking.type,field:public_image
+msgid "Public Image"
+msgstr "Image publique"
+
+#. module: bf_appointment
+#: model:resource.booking.type,field:video_provider
+msgid "Video Provider"
+msgstr "Fournisseur vid\u00e9o"
+
+#. module: bf_appointment
+#: model:resource.booking.type,field:reminder_hours
+msgid "Reminder Before (hours)"
+msgstr "Rappel avant (heures)"
+
+#. module: bf_appointment
+#: model:resource.booking.type,field:color_hex
+msgid "Accent Color"
+msgstr "Couleur d'accent"
+
+#. module: bf_appointment
+#: model:resource.booking,field:video_room_token
+msgid "Video Room Token"
+msgstr "Jeton de salle vid\u00e9o"
+
+#. module: bf_appointment
+#: model:resource.booking,field:reminder_sent
+msgid "Reminder Sent"
+msgstr "Rappel envoy\u00e9"
+
+#. module: bf_appointment
+#: model:resource.booking,field:sent_schedule_ids
+msgid "Sent Email Schedules"
+msgstr "Envois courriel effectu\u00e9s"
+
+#. module: bf_appointment
+#: model:resource.booking,field:intake_answer_ids
+msgid "Intake Answers"
+msgstr "R\u00e9ponses d'accueil"
+
+#. module: bf_appointment
+msgid "None"
+msgstr "Aucun"
+
+#. module: bf_appointment
+msgid "Jitsi Meet"
+msgstr "Jitsi Meet"
+
+#. module: bf_appointment
+msgid "Nextcloud Talk"
+msgstr "Nextcloud Talk"
+
+#. module: bf_appointment
+#: code:addons/bf_appointment/models/resource_booking.py
+msgid "Rendez-vous"
+msgstr "Rendez-vous"
+
+#. module: bf_appointment
+#: code:addons/bf_appointment/models/resource_booking.py
+msgid "Date : %s"
+msgstr "Date : %s"
+
+#. module: bf_appointment
+#: code:addons/bf_appointment/models/resource_booking.py
+msgid "Heure : %s"
+msgstr "Heure : %s"
+
+#. module: bf_appointment
+#: code:addons/bf_appointment/models/resource_booking.py
+msgid "Dur\u00e9e : %s"
+msgstr "Dur\u00e9e : %s"
+
+#. module: bf_appointment
+#: code:addons/bf_appointment/models/resource_booking.py
+msgid "Participant : %s"
+msgstr "Participant : %s"
+
+#. module: bf_appointment
+#: code:addons/bf_appointment/models/resource_booking.py
+msgid "Vid\u00e9oconf\u00e9rence : %s"
+msgstr "Vid\u00e9oconf\u00e9rence : %s"
+
+#. module: bf_appointment
+#: code:addons/bf_appointment/models/resource_booking.py
+msgid "Lieu : %s"
+msgstr "Lieu : %s"
+
+#. module: bf_appointment
+#: code:addons/bf_appointment/models/resource_booking.py
+msgid "Voir mon rendez-vous : %s"
+msgstr "Voir mon rendez-vous : %s"
+
+#. module: bf_appointment
+#: code:addons/bf_appointment/models/resource_booking.py
+msgid "Modifier l'horaire : %s"
+msgstr "Modifier l'horaire : %s"
+
+#. module: bf_appointment
+#: code:addons/bf_appointment/models/resource_booking.py
+msgid "Annuler : %s"
+msgstr "Annuler : %s"
+
+#. module: bf_appointment
+#: code:addons/bf_appointment/models/resource_booking.py
+msgid "rendez-vous.ics"
+msgstr "rendez-vous.ics"
+
+#. module: bf_appointment
+#: code:addons/bf_appointment/models/resource_booking.py
+msgid "RDV - %s"
+msgstr "RDV - %s"

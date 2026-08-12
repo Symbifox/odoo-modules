@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo noupdate="1">
+
+    <record id="bf_onb_step_permissions" model="onboarding.onboarding.step">
+        <field name="title">Assigner les accès Persona</field>
+        <field name="description">[action:base.action_res_users] Donnez le groupe « Utilisateur persona » aux conseillers et « Gestionnaire persona » aux responsables.</field>
+        <field name="button_text">Gérer les utilisateurs</field>
+        <field name="done_text">Accès distribués</field>
+        <field name="panel_step_open_action_name">bf_open_action</field>
+        <field name="sequence">1</field>
+    </record>
+
+    <record id="bf_onb_step_ntfy" model="onboarding.onboarding.step">
+        <field name="title">Configurer la clé ntfy</field>
+        <field name="description">Renseignez la clé webhook ntfy dans Paramètres pour recevoir les alertes de dégradation persona.</field>
+        <field name="button_text">Ouvrir Paramètres</field>
+        <field name="done_text">Clé configurée</field>
+        <field name="panel_step_open_action_name">bf_open_res_config_settings</field>
+        <field name="sequence">2</field>
+    </record>
+
+    <record id="bf_onb_step_defaults" model="onboarding.onboarding.step">
+        <field name="title">Activer les automatisations</field>
+        <field name="description">Vérifiez que les crons (seed, refresh, dégradation) sont actifs et alignés sur votre cadence d'équipe.</field>
+        <field name="button_text">Ouvrir Paramètres</field>
+        <field name="done_text">Automatisations actives</field>
+        <field name="panel_step_open_action_name">bf_open_res_config_settings</field>
+        <field name="sequence">3</field>
+    </record>
+
+    <record id="bf_onb_step_seed" model="onboarding.onboarding.step">
+        <field name="title">Créer un premier persona</field>
+        <field name="description">[action:bf_persona.action_contact_persona] Créez un persona à partir d'un contact clé pour amorcer le module.</field>
+        <field name="button_text">Créer un persona</field>
+        <field name="done_text">Premier persona créé</field>
+        <field name="panel_step_open_action_name">bf_open_action</field>
+        <field name="sequence">4</field>
+    </record>
+
+    <record id="bf_onb_step_dashboard" model="onboarding.onboarding.step">
+        <field name="title">Consulter le tableau de bord</field>
+        <field name="description">[action:bf_persona.action_contact_persona_dashboard] Validez que les KPIs sont visibles et compréhensibles.</field>
+        <field name="button_text">Ouvrir le tableau de bord</field>
+        <field name="done_text">Tableau de bord validé</field>
+        <field name="panel_step_open_action_name">bf_open_action</field>
+        <field name="sequence">5</field>
+    </record>
+
+    <record id="bf_onboarding_panel" model="onboarding.onboarding">
+        <field name="name">Persona des contacts</field>
+        <field name="route_name">bf_persona_onboarding</field>
+        <field name="panel_close_action_name">action_close_panel_bf_persona</field>
+        <field name="step_ids" eval="[
+            Command.link(ref('bf_persona.bf_onb_step_permissions')),
+            Command.link(ref('bf_persona.bf_onb_step_ntfy')),
+            Command.link(ref('bf_persona.bf_onb_step_defaults')),
+            Command.link(ref('bf_persona.bf_onb_step_seed')),
+            Command.link(ref('bf_persona.bf_onb_step_dashboard')),
+        ]"/>
+    </record>
+
+</odoo>

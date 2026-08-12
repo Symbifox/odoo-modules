@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Menu under Settings > Technical -->
+    <menuitem id="menu_nextcloud_contacts_sync_root"
+        name="Nextcloud Contacts Sync"
+        parent="base.menu_custom"
+        sequence="101"/>
+
+    <menuitem id="menu_nextcloud_contacts_sync_config"
+        name="Address Book Configurations"
+        parent="menu_nextcloud_contacts_sync_root"
+        action="action_nextcloud_contacts_sync_config"
+        sequence="10"/>
+</odoo>

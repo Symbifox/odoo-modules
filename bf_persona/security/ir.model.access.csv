@@ -1,0 +1,9 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_contact_persona_user,contact.persona.user,model_contact_persona,group_persona_user,1,1,1,0
+access_contact_persona_manager,contact.persona.manager,model_contact_persona,group_persona_manager,1,1,1,1
+access_contact_cc_rule_user,contact.cc.rule.user,model_contact_cc_rule,group_persona_user,1,1,1,1
+access_contact_cc_rule_manager,contact.cc.rule.manager,model_contact_cc_rule,group_persona_manager,1,1,1,1
+access_contact_persona_kpi_user,contact.persona.kpi.user,model_contact_persona_kpi,group_persona_user,1,1,1,0
+access_contact_persona_kpi_manager,contact.persona.kpi.manager,model_contact_persona_kpi,group_persona_manager,1,1,1,1
+access_contact_persona_category_user,contact.persona.category.user,model_contact_persona_category,group_persona_user,1,0,0,0
+access_contact_persona_category_manager,contact.persona.category.manager,model_contact_persona_category,group_persona_manager,1,1,1,1

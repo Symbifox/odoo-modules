@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_cx_feedback_form_helpdesk" model="ir.ui.view">
+        <field name="name">bf.cx.feedback.form.inherit.helpdesk</field>
+        <field name="model">bf.cx.feedback</field>
+        <field name="inherit_id" ref="bf_cx.view_cx_feedback_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="action_create_followup_ticket" type="object"
+                        string="Créer un ticket de suivi"
+                        groups="helpdesk_mgmt.group_helpdesk_user_own"
+                        invisible="helpdesk_ticket_id or state == 'done'"/>
+            </xpath>
+            <xpath expr="//group[@name='origin']" position="inside">
+                <field name="helpdesk_ticket_id" readonly="1"
+                       invisible="not helpdesk_ticket_id"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

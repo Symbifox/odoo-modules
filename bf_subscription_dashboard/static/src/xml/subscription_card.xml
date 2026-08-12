@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-inherit="bf_dashboard.Dashboard" t-inherit-mode="extension">
+        <xpath expr="//div[@class='col-lg-4 mb-3'][.//*[@t-on-click='openPrivacyPending']]" position="after">
+            <div class="col-lg-4 mb-3">
+                <t t-if="state.data.subscription">
+                    <div class="card h-100 cursor-pointer" t-on-click="openSubscriptionDashboard">
+                        <div class="card-header bg-light">
+                            <h6 class="mb-0"><i class="fa fa-refresh me-2"/>Abonnements</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between mb-2">
+                                <span><i class="fa fa-list text-primary me-2"/>Actifs</span>
+                                <strong class="text-primary" t-esc="state.data.subscription.active_count"/>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span><i class="fa fa-money text-success me-2"/>Dépense mensualisée</span>
+                                <strong class="text-success">
+                                    <t t-esc="state.data.subscription.monthly_spend"/><t t-esc="state.data.subscription.currency"/>
+                                </strong>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span><i class="fa fa-clock-o text-info me-2"/>Renouvellements (30j)</span>
+                                <strong t-attf-class="{{state.data.subscription.renewals_30 > 0 ? 'text-info' : 'text-muted'}}"
+                                        t-esc="state.data.subscription.renewals_30"/>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <span><i class="fa fa-moon-o text-warning me-2"/>Dormants</span>
+                                <strong t-attf-class="{{state.data.subscription.dormant_count > 0 ? 'text-warning' : 'text-muted'}}"
+                                        t-esc="state.data.subscription.dormant_count"/>
+                            </div>
+                        </div>
+                        <div class="card-footer text-center text-primary">
+                            <i class="fa fa-arrow-right me-1"/>Voir les abonnements
+                        </div>
+                    </div>
+                </t>
+                <t t-else="">
+                    <div class="card h-100">
+                        <div class="card-header bg-light">
+                            <h6 class="mb-0"><i class="fa fa-refresh me-2"/>Abonnements</h6>
+                        </div>
+                        <div class="card-body text-center text-muted py-4">
+                            <i class="fa fa-spinner fa-spin me-1"/>Données non disponibles
+                        </div>
+                    </div>
+                </t>
+            </div>
+        </xpath>
+    </t>
+
+</templates>

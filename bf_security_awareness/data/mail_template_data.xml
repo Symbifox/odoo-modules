@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="mail_template_training_invite" model="mail.template">
+            <field name="name">Sensibilisation : invitation à la formation</field>
+            <field name="model_id" ref="model_bf_training_assignment"/>
+            <field name="subject">Formation en cybersécurité à compléter</field>
+            <field name="email_from">{{ (user.email_formatted or '') }}</field>
+            <field name="email_to">{{ object.partner_id.email or '' }}</field>
+            <field name="body_html" type="html">
+                <div style="font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#222;">
+                    <t t-set="base" t-value="object.get_base_url()"/>
+                    <p>Bonjour <t t-out="object.partner_id.name or ''"/>,</p>
+                    <p>Une courte formation de sensibilisation à la cybersécurité
+                       vous a été assignée :
+                       <strong><t t-out="object.channel_id.name or ''"/></strong>.</p>
+                    <t t-if="object.due_date">
+                        <p>Merci de la compléter avant le
+                           <strong><t t-out="object.due_date"/></strong>.</p>
+                    </t>
+                    <p style="margin:24px 0;">
+                        <a t-attf-href="{{ base }}/slides/{{ object.channel_id.id }}"
+                           style="background:#1a73e8;color:#fff;text-decoration:none;
+                                  padding:11px 20px;border-radius:4px;">
+                            Accéder à la formation
+                        </a>
+                    </p>
+                    <p>Merci,<br/>L'équipe de sécurité</p>
+                </div>
+            </field>
+            <field name="lang">{{ object.partner_id.lang }}</field>
+            <field name="auto_delete" eval="True"/>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,30 @@
+#. extracted from bf_email_management
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0\n"
+"Report-Msgid-Bugs-To: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: mail_composer_cc_bcc
+#. odoo-python
+#: code:addons/mail_composer_cc_bcc/models/res_company.py:0
+#: code:addons/mail_composer_cc_bcc/wizards/mail_compose_message.py:0
+#: model:ir.model.fields,field_description:mail_composer_cc_bcc.field_mail_compose_message__partner_cc_ids
+#: model:ir.model.fields,field_description:mail_composer_cc_bcc.field_res_company__default_partner_cc_ids
+msgid "Cc"
+msgstr "C.c."
+
+#. module: mail_composer_cc_bcc
+#. odoo-python
+#: code:addons/mail_composer_cc_bcc/models/res_company.py:0
+#: code:addons/mail_composer_cc_bcc/wizards/mail_compose_message.py:0
+#: model:ir.model.fields,field_description:mail_composer_cc_bcc.field_mail_compose_message__partner_bcc_ids
+#: model:ir.model.fields,field_description:mail_composer_cc_bcc.field_res_company__default_partner_bcc_ids
+msgid "Bcc"
+msgstr "C.c.i."

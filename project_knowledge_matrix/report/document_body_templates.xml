@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="paperformat_document_body" model="report.paperformat">
+        <field name="name">Document P&amp;P (US Letter)</field>
+        <field name="format">Letter</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">28</field>
+        <field name="margin_bottom">20</field>
+        <field name="margin_left">15</field>
+        <field name="margin_right">15</field>
+        <field name="header_spacing">12</field>
+        <field name="dpi">90</field>
+    </record>
+
+    <record id="action_report_document_body" model="ir.actions.report">
+        <field name="name">Document (corps)</field>
+        <field name="model">project.document</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">project_knowledge_matrix.report_document_body</field>
+        <field name="report_file">project_knowledge_matrix.report_document_body</field>
+        <field name="print_report_name">'%s_%s' % ((object.code or object.name).replace(' ', '_'), object.current_version or 'brouillon')</field>
+        <field name="paperformat_id" ref="paperformat_document_body"/>
+        <field name="binding_model_id" eval="False"/>
+    </record>
+
+    <template id="report_document_body">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-set="brand" t-value="doc._report_brand()"/>
+                <t t-set="sections" t-value="doc._report_sections()"/>
+                <t t-set="primary" t-value="brand['primary']"/>
+                <t t-set="dark" t-value="brand['dark']"/>
+
+                <div class="article pkm-doc">
+                    <link rel="stylesheet" href="/bf_lexend/static/src/scss/lexend_report.css"/>
+                    <style>
+                        .pkm-doc {
+                            font-family: "Lexend", system-ui, -apple-system, sans-serif;
+                            font-size: 10pt;
+                            line-height: 1.5;
+                            color: <t t-esc="dark"/>;
+                        }
+                        .pkm-doc .pkm-banner {
+                            background: <t t-esc="dark"/>;
+                            padding: 26pt 26pt 22pt 26pt;
+                            display: table;
+                            width: 100%;
+                            margin-bottom: 0;
+                        }
+                        .pkm-doc .pkm-banner .b-logo {
+                            display: table-cell;
+                            vertical-align: middle;
+                            width: 92px;
+                            padding-right: 20pt;
+                        }
+                        .pkm-doc .pkm-banner .b-logo img { max-height: 54px; max-width: 84px; }
+                        .pkm-doc .pkm-banner .b-body { display: table-cell; vertical-align: middle; }
+                        .pkm-doc .pkm-banner .b-type {
+                            font-size: 8pt; font-weight: 600; text-transform: uppercase;
+                            letter-spacing: 2pt;
+                            color: <t t-esc="primary"/>;
+                            margin: 0 0 4pt 0;
+                        }
+                        .pkm-doc .pkm-banner h1 {
+                            font-size: 19pt; font-weight: 600; color: #ffffff;
+                            margin: 0 0 3pt 0; line-height: 1.2;
+                        }
+                        .pkm-doc .pkm-banner .b-code {
+                            font-size: 10pt; color: rgba(255,255,255,0.72); margin: 0;
+                        }
+                        .pkm-doc .pkm-accent { height: 4px; background: <t t-esc="primary"/>; }
+
+                        .pkm-doc .pkm-meta {
+                            width: 100%; border-collapse: collapse; margin: 16pt 0 22pt 0;
+                            font-size: 8.5pt;
+                        }
+                        .pkm-doc .pkm-meta td {
+                            padding: 3pt 8pt; border-bottom: 1px solid #e9ecef; vertical-align: top;
+                        }
+                        .pkm-doc .pkm-meta .k {
+                            font-weight: 600; color: <t t-esc="primary"/>;
+                            text-transform: uppercase; letter-spacing: .5pt; font-size: 7.5pt;
+                            width: 22%; white-space: nowrap;
+                        }
+
+                        .pkm-doc .pkm-section { margin: 0 0 16pt 0; }
+                        .pkm-doc .pkm-section h2 {
+                            font-size: 13pt; font-weight: 600;
+                            color: <t t-esc="dark"/>;
+                            border-left: 4px solid <t t-esc="primary"/>;
+                            padding: 0 0 0 10pt; margin: 0 0 8pt 0;
+                        }
+                        .pkm-doc .pkm-section .pkm-content { padding-left: 14pt; }
+                        .pkm-doc .pkm-section .pkm-content p { margin: 0 0 6pt 0; }
+                        .pkm-doc .pkm-section .pkm-content table {
+                            width: 100%; border-collapse: collapse; margin: 6pt 0; font-size: 9pt;
+                        }
+                        .pkm-doc .pkm-section .pkm-content table td,
+                        .pkm-doc .pkm-section .pkm-content table th {
+                            border: 1px solid #dee2e6; padding: 4pt 6pt; vertical-align: top;
+                        }
+                        .pkm-doc .pkm-section .pkm-content table th {
+                            background: #f1f3f5; text-align: left; font-weight: 600;
+                        }
+                        .pkm-doc .pkm-section .pkm-content ul,
+                        .pkm-doc .pkm-section .pkm-content ol { margin: 0 0 6pt 18pt; padding: 0; }
+                        .pkm-doc .o_pkm_governance td,
+                        .pkm-doc .o_pkm_history td, .pkm-doc .o_pkm_history th,
+                        .pkm-doc .o_pkm_approvals td { border: 1px solid #dee2e6; padding: 4pt 6pt; }
+
+                        .pkm-doc .pkm-break { page-break-before: always; }
+                        .pkm-doc .pkm-draft-note {
+                            font-size: 8pt; color: #adb5bd; font-style: italic;
+                            margin: 4pt 0 0 0;
+                        }
+                    </style>
+
+                    <div class="pkm-banner">
+                        <div class="b-logo" t-if="brand['logo_uri']">
+                            <img t-att-src="brand['logo_uri']"/>
+                        </div>
+                        <div class="b-body">
+                            <p class="b-type" t-esc="doc.type_id.name or 'Document'"/>
+                            <h1 t-esc="doc.name"/>
+                            <p class="b-code" t-if="doc.code" t-esc="doc.code"/>
+                        </div>
+                    </div>
+                    <div class="pkm-accent"/>
+
+                    <table class="pkm-meta">
+                        <tr>
+                            <td class="k">Version</td>
+                            <td><t t-esc="doc.current_version or 'Brouillon (non publié)'"/></td>
+                            <td class="k">Classification</td>
+                            <td>Interne — <t t-esc="brand['company_name']"/></td>
+                        </tr>
+                        <tr>
+                            <td class="k">Responsable</td>
+                            <td><t t-esc="(doc.owner_id and doc.owner_id.name) or (doc.author_id and doc.author_id.name) or ''"/></td>
+                            <td class="k">Dernière révision</td>
+                            <td><t t-esc="doc.last_review_date or '—'"/></td>
+                        </tr>
+                    </table>
+
+                    <t t-foreach="sections" t-as="sec">
+                        <div t-attf-class="pkm-section#{sec['page_break'] and ' pkm-break' or ''}">
+                            <h2 t-esc="sec['title']"/>
+                            <div class="pkm-content" t-out="sec['html']"/>
+                        </div>
+                    </t>
+
+                    <p class="pkm-draft-note" t-if="not doc.current_version">
+                        Document généré à partir d'un brouillon non publié. Le contenu
+                        peut encore évoluer avant le gel d'une version.
+                    </p>
+                </div>
+            </t>
+        </t>
+    </template>
+
+</odoo>

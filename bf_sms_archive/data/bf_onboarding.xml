@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo noupdate="1">
+
+    <record id="bf_onb_step_settings" model="onboarding.onboarding.step">
+        <field name="title">Configurer SMS Archive</field>
+        <field name="description">Renseignez les chemins NC à surveiller pour les sauvegardes SMS/appels et les options de purge.</field>
+        <field name="button_text">Ouvrir Paramètres</field>
+        <field name="done_text">Paramètres prêts</field>
+        <field name="panel_step_open_action_name">bf_open_res_config_settings</field>
+        <field name="sequence">1</field>
+    </record>
+
+    <record id="bf_onb_step_devices" model="onboarding.onboarding.step">
+        <field name="title">Enregistrer les appareils suivis</field>
+        <field name="description">[action:bf_sms_archive.sms_device_action] Déclarez les téléphones et numéros dont vous voulez archiver les SMS et appels.</field>
+        <field name="button_text">Voir les appareils</field>
+        <field name="done_text">Appareils enregistrés</field>
+        <field name="panel_step_open_action_name">bf_open_action</field>
+        <field name="sequence">2</field>
+    </record>
+
+    <record id="bf_onb_step_threads" model="onboarding.onboarding.step">
+        <field name="title">Inspecter les fils SMS</field>
+        <field name="description">[action:bf_sms_archive.sms_thread_action] Validez que les conversations apparaissent et sont reliées aux contacts Odoo.</field>
+        <field name="button_text">Voir les fils</field>
+        <field name="done_text">Archivage validé</field>
+        <field name="panel_step_open_action_name">bf_open_action</field>
+        <field name="sequence">3</field>
+    </record>
+
+    <record id="bf_onboarding_panel" model="onboarding.onboarding">
+        <field name="name">SMS Archive</field>
+        <field name="route_name">bf_sms_archive_onboarding</field>
+        <field name="panel_close_action_name">action_close_panel_bf_sms_archive</field>
+        <field name="step_ids" eval="[
+            Command.link(ref('bf_sms_archive.bf_onb_step_settings')),
+            Command.link(ref('bf_sms_archive.bf_onb_step_devices')),
+            Command.link(ref('bf_sms_archive.bf_onb_step_threads')),
+        ]"/>
+    </record>
+
+</odoo>

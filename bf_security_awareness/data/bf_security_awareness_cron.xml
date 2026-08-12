@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <record id="cron_campaign_scheduler" model="ir.cron">
+            <field name="name">Sensibilisation : lancer les campagnes planifiées</field>
+            <field name="model_id" ref="model_bf_phishing_campaign"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_scheduler()</field>
+            <field name="interval_number">30</field>
+            <field name="interval_type">minutes</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="cron_recompute_profiles" model="ir.cron">
+            <field name="name">Sensibilisation : recalcul des scores de risque</field>
+            <field name="model_id" ref="model_bf_security_profile"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_recompute_profiles()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="cron_training_reminders" model="ir.cron">
+            <field name="name">Sensibilisation : rappels de formation</field>
+            <field name="model_id" ref="model_bf_training_assignment"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_training_reminders()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="cron_process_clawback" model="ir.cron">
+            <field name="name">Sensibilisation : reprise des retraits de courriel</field>
+            <field name="model_id" ref="model_bf_clawback_operation"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_process_clawback()</field>
+            <field name="interval_number">5</field>
+            <field name="interval_type">minutes</field>
+            <field name="active" eval="True"/>
+        </record>
+
+    </data>
+</odoo>

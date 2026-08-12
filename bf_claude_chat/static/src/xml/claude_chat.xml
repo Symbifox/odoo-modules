@@ -1,0 +1,364 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <!-- Main chat action layout (full page) -->
+    <t t-name="bf_claude_chat.ChatAction">
+        <div class="bf-chat-container d-flex h-100">
+            <!-- Sidebar -->
+            <div class="bf-chat-sidebar d-flex flex-column border-end">
+                <div class="p-3 border-bottom">
+                    <button class="btn btn-primary w-100" t-on-click="onNewChat">
+                        <i class="fa fa-plus me-1"/> New Chat
+                    </button>
+                </div>
+                <div class="bf-chat-session-list flex-grow-1 overflow-auto">
+                    <t t-foreach="state.sessions" t-as="session" t-key="session.id">
+                        <div t-att-class="'bf-chat-session-item p-3 border-bottom cursor-pointer '
+                                         + (state.activeSessionId === session.id ? 'active' : '')"
+                             t-on-click="() => this.onSelectSession(session.id)">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <!-- Inline rename input -->
+                                <t t-if="state.editingSessionId === session.id">
+                                    <input type="text"
+                                           class="form-control form-control-sm bf-chat-rename-input flex-grow-1"
+                                           t-att-value="state.editingName"
+                                           t-on-input="(ev) => this.state.editingName = ev.target.value"
+                                           t-on-keydown="onRenameKeydown"
+                                           t-on-blur="onConfirmRename"
+                                           t-on-click.stop="() => {}"
+                                           t-ref="renameInput"/>
+                                </t>
+                                <t t-else="">
+                                    <span class="bf-chat-session-title text-truncate flex-grow-1"
+                                          t-on-dblclick.stop="() => this.onStartRename(session)"
+                                          t-esc="session.name"/>
+                                </t>
+                                <div class="d-flex ms-2 bf-chat-session-actions">
+                                    <button class="btn btn-link btn-sm text-muted p-0 bf-chat-action-btn"
+                                            t-on-click.stop="() => this.onStartRename(session)"
+                                            title="Rename">
+                                        <i class="fa fa-pencil"/>
+                                    </button>
+                                    <button class="btn btn-link btn-sm text-muted p-0 ms-1 bf-chat-action-btn"
+                                            t-on-click.stop="() => this.onDeleteSession(session.id)"
+                                            title="Archive">
+                                        <i class="fa fa-archive"/>
+                                    </button>
+                                </div>
+                            </div>
+                            <small class="text-muted" t-esc="formatDate(session.write_date)"/>
+                        </div>
+                    </t>
+                    <div t-if="state.sessions.length === 0" class="p-3 text-muted text-center">
+                        No conversations yet
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chat panel -->
+            <div class="bf-chat-panel d-flex flex-column flex-grow-1">
+                <t t-if="state.activeSessionId">
+                    <!-- Chat header with share button -->
+                    <div class="bf-chat-panel-header d-flex align-items-center justify-content-end px-3 py-2 border-bottom"
+                         t-if="state.activeSessionId > 0">
+                        <button class="btn btn-sm btn-link text-muted p-1" title="Share to task"
+                                t-on-click="onToggleShare">
+                            <i class="fa fa-share-alt"/>
+                        </button>
+                    </div>
+
+                    <!-- Share panel (full-page) -->
+                    <div t-if="state.shareOpen" class="bf-share-panel border-bottom px-3 py-2">
+                        <div class="d-flex align-items-center gap-2 mb-1">
+                            <i class="fa fa-share-alt text-muted"/>
+                            <span class="fw-semibold small">Share to task</span>
+                            <button class="btn btn-sm btn-link text-muted p-0 ms-auto"
+                                    t-on-click="onToggleShare">
+                                <i class="fa fa-times"/>
+                            </button>
+                        </div>
+                        <input type="text" class="form-control form-control-sm bf-share-search-input"
+                               placeholder="Search tasks..."
+                               t-att-value="state.shareQuery"
+                               t-on-input="onShareSearchInput"/>
+                        <div t-if="state.shareTasks.length > 0" class="bf-share-task-list mt-1">
+                            <t t-foreach="state.shareTasks" t-as="task" t-key="task.id">
+                                <div class="bf-share-task-item px-2 py-1 cursor-pointer rounded"
+                                     t-on-click="() => this.onShareToTask(task.id)">
+                                    <small t-esc="task.name"/>
+                                </div>
+                            </t>
+                        </div>
+                        <div t-if="state.shareLoading" class="text-muted small mt-1">
+                            <i class="fa fa-spinner fa-spin me-1"/>Sharing...
+                        </div>
+                    </div>
+
+                    <!-- Messages area -->
+                    <div class="bf-chat-messages flex-grow-1 overflow-auto p-3"
+                         t-ref="messagesContainer">
+                        <t t-foreach="state.messages" t-as="msg" t-key="msg.id">
+                            <div t-att-class="'bf-chat-message mb-3 d-flex align-items-end gap-2 '
+                                             + (msg.role === 'user' ? 'justify-content-end' : 'justify-content-start')">
+                                <!-- Avatar assistant (left) -->
+                                <div t-if="msg.role === 'assistant'"
+                                     class="bf-chat-avatar bf-chat-avatar-assistant">
+                                    <i class="fa fa-robot"/>
+                                </div>
+                                <!-- Bubble -->
+                                <div t-att-class="'bf-chat-bubble '
+                                                 + (msg.role === 'user' ? 'bf-chat-bubble-user' : 'bf-chat-bubble-assistant')">
+                                    <div t-if="msg.role === 'assistant'"
+                                         class="bf-chat-content"
+                                         t-out="renderMarkdown(msg.content)"/>
+                                    <div t-else=""
+                                         class="bf-chat-content">
+                                        <t t-esc="msg.content"/>
+                                    </div>
+                                </div>
+                                <!-- Avatar user (right) -->
+                                <div t-if="msg.role === 'user'"
+                                     class="bf-chat-avatar bf-chat-avatar-user">
+                                    <i class="fa fa-user"/>
+                                </div>
+                            </div>
+                        </t>
+                        <!-- Thinking indicator -->
+                        <div t-if="state.isThinking" class="bf-chat-message mb-3 d-flex align-items-end gap-2 justify-content-start">
+                            <div class="bf-chat-avatar bf-chat-avatar-assistant">
+                                <i class="fa fa-robot"/>
+                            </div>
+                            <div class="bf-chat-bubble bf-chat-bubble-assistant">
+                                <div class="bf-chat-thinking">
+                                    <span/><span/><span/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Input area -->
+                    <div class="bf-chat-input-area border-top p-3">
+                        <div class="d-flex gap-2">
+                            <textarea class="form-control bf-chat-input"
+                                      t-ref="chatInput"
+                                      t-att-disabled="state.isThinking"
+                                      t-on-keydown="onInputKeydown"
+                                      rows="1"
+                                      placeholder="Type your message..."/>
+                            <button class="btn btn-primary bf-chat-send-btn"
+                                    t-att-disabled="state.isThinking"
+                                    t-on-click="onSend">
+                                <i t-att-class="state.isThinking ? 'fa fa-spinner fa-spin' : 'fa fa-paper-plane'"/>
+                            </button>
+                        </div>
+                    </div>
+                </t>
+
+                <!-- Empty state -->
+                <t t-else="">
+                    <div class="d-flex flex-column align-items-center justify-content-center h-100 text-muted">
+                        <i class="fa fa-comments-o fa-3x mb-3 opacity-50"/>
+                        <h4>Claude AI Assistant</h4>
+                        <p>Start a new chat or select an existing one</p>
+                        <button class="btn btn-primary" t-on-click="onNewChat">
+                            <i class="fa fa-plus me-1"/> New Chat
+                        </button>
+                    </div>
+                </t>
+            </div>
+        </div>
+    </t>
+
+    <!-- Systray: button + side panel -->
+    <t t-name="bf_claude_chat.SystrayItem">
+        <!-- Systray button in navbar -->
+        <button class="btn d-flex align-items-center gap-1" title="Claude AI"
+                t-on-click="onTogglePanel">
+            <i class="fa fa-commenting"/>
+            <span class="d-none d-lg-inline">Claude</span>
+        </button>
+
+        <!-- Side panel (slides in from right) -->
+        <t t-if="state.open">
+            <div class="bf-panel-overlay" t-on-click="onClickOverlay" t-ref="panelOverlay">
+                <div class="bf-side-panel" t-on-click.stop="() => {}">
+                    <!-- Header bar -->
+                    <div class="bf-side-panel-header d-flex align-items-center justify-content-between px-3 py-2 border-bottom">
+                        <div class="d-flex align-items-center gap-2 flex-grow-1 overflow-hidden">
+                            <i class="fa fa-commenting text-primary"/>
+                            <span t-if="showChat" class="fw-semibold text-truncate"
+                                  t-esc="activeSessionName"/>
+                            <span t-else="" class="fw-semibold">Claude AI</span>
+                        </div>
+                        <div class="d-flex align-items-center gap-1">
+                            <button t-if="showChat and state.activeSessionId > 0"
+                                    class="btn btn-sm btn-link p-1" title="Share to task"
+                                    t-on-click.stop="onToggleShare">
+                                <i class="fa fa-share-alt"/>
+                            </button>
+                            <button class="btn btn-sm btn-link p-1" title="New Chat"
+                                    t-on-click.stop="onNewChat">
+                                <i class="fa fa-plus"/>
+                            </button>
+                            <button class="btn btn-sm btn-link p-1" title="Open full page"
+                                    t-on-click.stop="onOpenFullPage">
+                                <i class="fa fa-expand"/>
+                            </button>
+                            <button class="btn btn-sm btn-link p-1" title="Close"
+                                    t-on-click.stop="onClosePanel">
+                                <i class="fa fa-times"/>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Context badge (always visible when context is available, for new sessions) -->
+                    <t t-if="activeContext and state.activeSessionId === -1">
+                        <div class="px-3 pt-2">
+                            <div class="bf-context-badge">
+                                <i class="fa fa-map-marker"/>
+                                <span t-esc="contextLabel"/>
+                                <i class="fa fa-times bf-context-dismiss"
+                                   t-on-click.stop="onDismissContext"/>
+                            </div>
+                        </div>
+                    </t>
+
+                    <!-- Share panel -->
+                    <div t-if="state.shareOpen" class="bf-share-panel border-bottom px-3 py-2">
+                        <div class="d-flex align-items-center gap-2 mb-1">
+                            <i class="fa fa-share-alt text-muted small"/>
+                            <span class="fw-semibold" style="font-size:0.8rem">Share to task</span>
+                            <button class="btn btn-sm btn-link text-muted p-0 ms-auto"
+                                    t-on-click.stop="onToggleShare">
+                                <i class="fa fa-times"/>
+                            </button>
+                        </div>
+                        <input type="text" class="form-control form-control-sm bf-share-search-input"
+                               placeholder="Search tasks..."
+                               t-att-value="state.shareQuery"
+                               t-on-input.stop="onShareSearchInput"
+                               t-on-click.stop="() => {}"/>
+                        <div t-if="state.shareTasks.length > 0" class="bf-share-task-list mt-1">
+                            <t t-foreach="state.shareTasks" t-as="task" t-key="task.id">
+                                <div class="bf-share-task-item px-2 py-1 cursor-pointer rounded"
+                                     t-on-click.stop="() => this.onShareToTask(task.id)">
+                                    <small t-esc="task.name"/>
+                                </div>
+                            </t>
+                        </div>
+                        <div t-if="state.shareLoading" class="text-muted small mt-1">
+                            <i class="fa fa-spinner fa-spin me-1"/>Sharing...
+                        </div>
+                    </div>
+
+                    <div class="d-flex bf-side-panel-body">
+                        <!-- Mini session list -->
+                        <div class="bf-side-panel-sessions border-end">
+                            <t t-foreach="state.sessions" t-as="session" t-key="session.id">
+                                <div t-att-class="'bf-side-panel-session-item px-2 py-1 cursor-pointer text-truncate '
+                                                 + (state.activeSessionId === session.id ? 'active' : '')"
+                                     t-on-click.stop="() => this.onSelectSession(session.id)"
+                                     t-att-title="session.name">
+                                    <t t-if="state.editingSessionId === session.id">
+                                        <input type="text"
+                                               class="form-control form-control-sm bf-side-panel-rename-input"
+                                               t-att-value="state.editingName"
+                                               t-on-input="(ev) => this.state.editingName = ev.target.value"
+                                               t-on-keydown="onRenameKeydown"
+                                               t-on-blur="onConfirmRename"
+                                               t-on-click.stop="() => {}"/>
+                                    </t>
+                                    <t t-else="">
+                                        <small t-on-dblclick.stop="() => this.onStartRename(session)"
+                                               t-esc="session.name"/>
+                                    </t>
+                                </div>
+                            </t>
+                            <div t-if="state.sessions.length === 0"
+                                 class="text-muted text-center small p-2">
+                                <t t-if="hasFilteredContext">No chats for this record</t>
+                                <t t-else="">No chats</t>
+                            </div>
+                        </div>
+
+                        <!-- Chat area -->
+                        <div class="bf-side-panel-chat-main d-flex flex-column flex-grow-1">
+                            <t t-if="showChat">
+                                <!-- Messages -->
+                                <div class="bf-side-panel-messages flex-grow-1 overflow-auto p-2"
+                                     t-ref="systrayMessages">
+                                    <t t-foreach="state.messages" t-as="msg" t-key="msg.id">
+                                        <div t-att-class="'bf-side-panel-msg mb-2 d-flex align-items-end gap-1 '
+                                                         + (msg.role === 'user' ? 'justify-content-end' : 'justify-content-start')">
+                                            <!-- Avatar assistant (left) -->
+                                            <div t-if="msg.role === 'assistant'"
+                                                 class="bf-side-panel-avatar bf-chat-avatar-assistant">
+                                                <i class="fa fa-robot"/>
+                                            </div>
+                                            <div t-att-class="'bf-side-panel-bubble px-2 py-1 '
+                                                             + (msg.role === 'user' ? 'bf-chat-bubble-user' : 'bf-chat-bubble-assistant')">
+                                                <div t-if="msg.role === 'assistant'"
+                                                     class="bf-chat-content"
+                                                     t-out="renderMarkdown(msg.content)"/>
+                                                <div t-else="">
+                                                    <t t-esc="msg.content"/>
+                                                </div>
+                                            </div>
+                                            <!-- Avatar user (right) -->
+                                            <div t-if="msg.role === 'user'"
+                                                 class="bf-side-panel-avatar bf-chat-avatar-user">
+                                                <i class="fa fa-user"/>
+                                            </div>
+                                        </div>
+                                    </t>
+                                    <!-- Thinking -->
+                                    <div t-if="state.isThinking"
+                                         class="bf-side-panel-msg mb-2 d-flex align-items-end gap-1 justify-content-start">
+                                        <div class="bf-side-panel-avatar bf-chat-avatar-assistant">
+                                            <i class="fa fa-robot"/>
+                                        </div>
+                                        <div class="bf-side-panel-bubble bf-chat-bubble-assistant px-2 py-1">
+                                            <div class="bf-chat-thinking">
+                                                <span/><span/><span/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Input -->
+                                <div class="bf-side-panel-input border-top p-2">
+                                    <div class="d-flex gap-1">
+                                        <textarea class="form-control form-control-sm bf-side-panel-textarea"
+                                                  t-ref="systrayInput"
+                                                  t-att-disabled="state.isThinking"
+                                                  t-on-keydown="onInputKeydown"
+                                                  rows="1"
+                                                  placeholder="Message Claude..."/>
+                                        <button class="btn btn-primary btn-sm bf-side-panel-send"
+                                                t-att-disabled="state.isThinking"
+                                                t-on-click.stop="onSend">
+                                            <i t-att-class="state.isThinking ? 'fa fa-spinner fa-spin' : 'fa fa-paper-plane'"/>
+                                        </button>
+                                    </div>
+                                </div>
+                            </t>
+
+                            <!-- Empty state -->
+                            <t t-else="">
+                                <div class="d-flex flex-column align-items-center justify-content-center h-100 text-muted p-3">
+                                    <i class="fa fa-comments-o fa-2x mb-2 opacity-50"/>
+                                    <small>Start a new chat</small>
+                                    <button class="btn btn-primary btn-sm mt-2"
+                                            t-on-click.stop="onNewChat">
+                                        <i class="fa fa-plus me-1"/> New Chat
+                                    </button>
+                                </div>
+                            </t>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </t>
+
+</templates>

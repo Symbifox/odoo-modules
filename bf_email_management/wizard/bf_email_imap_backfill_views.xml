@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="bf_email_imap_backfill_view_form" model="ir.ui.view">
+        <field name="name">bf.email.imap.backfill.form</field>
+        <field name="model">bf.email.imap.backfill</field>
+        <field name="arch" type="xml">
+            <form string="Rattrapage IMAP">
+                <group invisible="state != 'draft'">
+                    <group>
+                        <field name="account_id"/>
+                        <field name="folder" placeholder="Archives/2026"/>
+                        <field name="date_from"/>
+                        <field name="date_to"/>
+                        <field name="batch_size"/>
+                    </group>
+                    <div class="alert alert-warning" role="alert" colspan="2">
+                        <p class="mb-1"><strong>À utiliser pour rattraper les courriels historiques.</strong></p>
+                        <p class="mb-0">
+                            Cron live (toutes les 5 min) couvre déjà <code>INBOX</code> + <code>Sent</code>.
+                            Ce wizard sert à scanner les <em>archives</em> et autres dossiers personnalisés
+                            qui ne sont pas pollés en continu. Réexécutable sans risque (déduplication
+                            par Message-ID).
+                        </p>
+                    </div>
+                </group>
+                <group invisible="state != 'running'">
+                    <div class="text-center py-4">
+                        <i class="fa fa-spinner fa-spin fa-3x text-primary" title="Chargement"/>
+                        <p class="mt-2">
+                            Traitement en cours…
+                            <field name="progress_done" class="d-inline"/> /
+                            <field name="progress_total" class="d-inline"/>
+                        </p>
+                    </div>
+                </group>
+                <group invisible="state != 'done'">
+                    <field name="result_text" nolabel="1" colspan="2"/>
+                </group>
+                <field name="state" invisible="1"/>
+                <footer>
+                    <button name="action_run"
+                            string="Lancer le rattrapage"
+                            type="object"
+                            class="btn-primary"
+                            invisible="state != 'draft'"/>
+                    <button string="Fermer" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_bf_email_imap_backfill" model="ir.actions.act_window">
+        <field name="name">Rattrapage IMAP (Archives)</field>
+        <field name="res_model">bf.email.imap.backfill</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+</odoo>

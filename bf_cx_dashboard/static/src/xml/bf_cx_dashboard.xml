@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="bf_cx_dashboard.Tile" t-inherit="bf_dashboard.Dashboard" t-inherit-mode="extension">
+        <xpath expr="//t[@t-if='state.data.overdue_activities']" position="after">
+            <!-- Expérience client -->
+            <t t-if="state.data.cx">
+                <div class="col-lg col-md-6 mb-3">
+                    <div t-attf-class="card h-100 {{state.data.cx.followup_todo > 0 ? 'border-danger' : ''}}">
+                        <div class="card-body text-center">
+                            <h2 t-attf-class="mb-0 {{state.data.cx.followup_todo > 0 ? 'text-danger' : 'text-muted'}}"
+                                t-esc="state.data.cx.nps_display"/>
+                            <small class="text-muted"><i class="fa fa-heart-o me-1"/>NPS <t t-esc="state.data.cx.nps_days"/> j (n=<t t-esc="state.data.cx.nps_n"/>)</small>
+                            <t t-if="state.data.cx.followup_todo > 0">
+                                <br/>
+                                <small class="text-danger fw-bold">
+                                    <t t-esc="state.data.cx.followup_todo"/> à rappeler
+                                </small>
+                            </t>
+                            <t t-if="state.data.cx.complaints_open > 0">
+                                <br/>
+                                <small class="text-warning fw-bold">
+                                    <t t-esc="state.data.cx.complaints_open"/> plainte(s) ouverte(s)
+                                </small>
+                            </t>
+                            <t t-if="state.data.cx.testimonial_candidates > 0">
+                                <br/>
+                                <small class="text-success">
+                                    <t t-esc="state.data.cx.testimonial_candidates"/> candidat(s) témoignage
+                                </small>
+                            </t>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </xpath>
+    </t>
+
+</templates>

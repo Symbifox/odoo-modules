@@ -1,0 +1,8 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_subscription_user,Subscription User,model_subscription_subscription,bf_subscription.group_subscription_user,1,1,1,0
+access_subscription_manager,Subscription Manager,model_subscription_subscription,bf_subscription.group_subscription_manager,1,1,1,1
+access_subscription_tag_user,Subscription Tag User,model_subscription_tag,bf_subscription.group_subscription_user,1,0,0,0
+access_subscription_tag_manager,Subscription Tag Manager,model_subscription_tag,bf_subscription.group_subscription_manager,1,1,1,1
+access_subscription_rebill_wizard,Subscription Rebill Wizard,model_subscription_rebill_wizard,bf_subscription.group_subscription_user,1,1,1,1
+access_subscription_digest_user,Subscription Digest User,model_subscription_digest,bf_subscription.group_subscription_user,1,0,0,0
+access_subscription_digest_manager,Subscription Digest Manager,model_subscription_digest,bf_subscription.group_subscription_manager,1,1,1,1

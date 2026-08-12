@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+<odoo>
+    <!-- ============================ APPEAL ============================ -->
+    <record id="bf_appeal_view_list" model="ir.ui.view">
+        <field name="name">bf.appeal.list</field>
+        <field name="model">bf.appeal</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="code" />
+                <field name="name" />
+                <field name="campaign_id" />
+                <field name="date_start" />
+                <field name="date_end" />
+                <field name="goal_amount" sum="Objectif" />
+                <field name="amount_raised" sum="Amassé" />
+                <field name="progress" widget="progressbar" />
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_appeal_view_form" model="ir.ui.view">
+        <field name="name">bf.appeal.form</field>
+        <field name="model">bf.appeal</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name" />
+                        <h1><field name="name" placeholder="Nom de la sollicitation" /></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="code" />
+                            <field name="campaign_id" />
+                            <field name="date_start" />
+                            <field name="date_end" />
+                        </group>
+                        <group>
+                            <field name="goal_amount" />
+                            <field name="amount_raised" />
+                            <field name="progress" widget="progressbar" />
+                            <field name="currency_id" invisible="1" />
+                            <field name="active" invisible="1" />
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Trousses" name="packages">
+                            <field name="package_ids">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle" />
+                                    <field name="code" />
+                                    <field name="name" />
+                                    <field name="amount_raised" />
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Notes" name="notes">
+                            <field name="note" nolabel="1" />
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_bf_appeal" model="ir.actions.act_window">
+        <field name="name">Sollicitations</field>
+        <field name="res_model">bf.appeal</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Créez une sollicitation</p>
+            <p>Une sollicitation est un effort de collecte précis au sein d'une
+            campagne (ex. « Envoi postal printemps 2026 »).</p>
+        </field>
+    </record>
+
+    <!-- ============================ PACKAGE ============================ -->
+    <record id="bf_package_view_list" model="ir.ui.view">
+        <field name="name">bf.package.list</field>
+        <field name="model">bf.package</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="code" />
+                <field name="name" />
+                <field name="appeal_id" />
+                <field name="campaign_id" />
+                <field name="amount_raised" sum="Amassé" />
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_package_view_form" model="ir.ui.view">
+        <field name="name">bf.package.form</field>
+        <field name="model">bf.package</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name" />
+                        <h1><field name="name" placeholder="Nom de la trousse" /></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="code" />
+                            <field name="appeal_id" />
+                        </group>
+                        <group>
+                            <field name="amount_raised" />
+                            <field name="currency_id" invisible="1" />
+                            <field name="active" invisible="1" />
+                        </group>
+                    </group>
+                    <group string="Notes">
+                        <field name="note" nolabel="1" />
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_bf_package" model="ir.actions.act_window">
+        <field name="name">Trousses</field>
+        <field name="res_model">bf.package</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

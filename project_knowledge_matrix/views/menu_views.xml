@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Root menu - standalone app (no parent = appears in app switcher) -->
+    <menuitem id="menu_knowledge_root"
+              name="Base de connaissances"
+              web_icon="project_knowledge_matrix,static/description/icon.png"
+              sequence="85"/>
+
+    <!-- ==================== -->
+    <!-- DASHBOARD            -->
+    <!-- ==================== -->
+
+    <!-- Dashboard menu - first item, startup page -->
+    <menuitem id="menu_knowledge_dashboard"
+              name="Tableau de bord"
+              parent="menu_knowledge_root"
+              action="action_knowledge_dashboard"
+              sequence="5"/>
+
+    <!-- ==================== -->
+    <!-- KNOWLEDGE MATRICES   -->
+    <!-- ==================== -->
+
+    <!-- Matrices submenu -->
+    <menuitem id="menu_knowledge_matrix"
+              name="Matrices"
+              parent="menu_knowledge_root"
+              action="knowledge_matrix_action"
+              sequence="10"/>
+
+    <!-- Items submenu -->
+    <menuitem id="menu_knowledge_items"
+              name="Éléments"
+              parent="menu_knowledge_root"
+              action="knowledge_item_action"
+              sequence="20"/>
+
+    <!-- RACI Summary -->
+    <menuitem id="menu_raci_stakeholder"
+              name="Résumé RACI"
+              parent="menu_knowledge_root"
+              action="raci_stakeholder_action"
+              sequence="25"/>
+
+    <!-- Templates submenu -->
+    <menuitem id="menu_knowledge_templates"
+              name="Modèles"
+              parent="menu_knowledge_root"
+              action="knowledge_template_action"
+              sequence="30"/>
+
+    <!-- Credentials submenu -->
+    <menuitem id="menu_credentials"
+              name="Identifiants"
+              parent="menu_knowledge_root"
+              action="credential_action"
+              groups="group_credential_user"
+              sequence="40"/>
+
+    <!-- ==================== -->
+    <!-- DOCUMENTS SECTION    -->
+    <!-- ==================== -->
+
+    <!-- Documents parent menu -->
+    <menuitem id="menu_documents_parent"
+              name="Documentation"
+              parent="menu_knowledge_root"
+              groups="group_document_user"
+              sequence="50"/>
+
+    <!-- All Documents submenu -->
+    <menuitem id="menu_documents"
+              name="Tous les documents"
+              parent="menu_documents_parent"
+              action="project_document_action"
+              groups="group_document_user"
+              sequence="10"/>
+
+    <!-- Internal Documents (Policies & Procedures) -->
+    <menuitem id="menu_documents_internal"
+              name="Politiques et procédures"
+              parent="menu_documents_parent"
+              action="project_document_action_internal"
+              groups="group_document_user"
+              sequence="20"/>
+
+    <!-- Client Documents -->
+    <menuitem id="menu_documents_client"
+              name="Documents clients"
+              parent="menu_documents_parent"
+              action="project_document_action_client"
+              groups="group_document_user"
+              sequence="30"/>
+
+    <!-- Documents needing attention -->
+    <menuitem id="menu_documents_attention"
+              name="À traiter"
+              parent="menu_documents_parent"
+              action="project_document_action_needs_attention"
+              groups="group_document_user"
+              sequence="35"/>
+
+    <!-- Distributions submenu -->
+    <menuitem id="menu_distributions"
+              name="Distributions"
+              parent="menu_documents_parent"
+              action="document_distribution_action"
+              groups="group_document_user"
+              sequence="40"/>
+
+    <!-- Internal Acknowledgments -->
+    <menuitem id="menu_distributions_internal"
+              name="Accusés internes"
+              parent="menu_documents_parent"
+              action="document_distribution_action_internal"
+              groups="group_document_user"
+              sequence="50"/>
+
+    <!-- Outdated Distributions -->
+    <menuitem id="menu_distributions_outdated"
+              name="Documentation obsolète"
+              parent="menu_documents_parent"
+              action="document_distribution_action_outdated"
+              groups="group_document_user"
+              sequence="60"/>
+
+    <!-- ==================== -->
+    <!-- CORPORATE GOVERNANCE -->
+    <!-- ==================== -->
+
+    <!-- Corporate governance parent menu -->
+    <menuitem id="menu_corporate_parent"
+              name="Gouvernance corporative"
+              parent="menu_knowledge_root"
+              groups="group_corporate_manager"
+              sequence="55"/>
+
+    <!-- Resolutions -->
+    <menuitem id="menu_corporate_resolutions"
+              name="Résolutions"
+              parent="menu_corporate_parent"
+              action="corporate_resolution_action"
+              sequence="10"/>
+
+    <!-- Director Register -->
+    <menuitem id="menu_corporate_directors"
+              name="Registre des administrateurs"
+              parent="menu_corporate_parent"
+              action="corporate_director_action"
+              sequence="20"/>
+
+    <!-- Officer Register -->
+    <menuitem id="menu_corporate_officers"
+              name="Registre des dirigeants"
+              parent="menu_corporate_parent"
+              action="corporate_officer_action"
+              sequence="30"/>
+
+    <!-- Compliance Calendar -->
+    <menuitem id="menu_corporate_compliance"
+              name="Calendrier de conformité"
+              parent="menu_corporate_parent"
+              action="corporate_compliance_action"
+              sequence="40"/>
+
+    <!-- Minute Book -->
+    <menuitem id="menu_corporate_minute_book"
+              name="Livre des minutes"
+              parent="menu_corporate_parent"
+              action="corporate_minute_book_action"
+              sequence="50"/>
+
+    <!-- ==================== -->
+    <!-- CONFIGURATION        -->
+    <!-- ==================== -->
+
+    <!-- Configuration menu -->
+    <menuitem id="menu_knowledge_config"
+              name="Configuration"
+              parent="menu_knowledge_root"
+              groups="group_knowledge_manager"
+              sequence="100"/>
+
+    <!-- Sections configuration -->
+    <menuitem id="menu_knowledge_sections"
+              name="Sections"
+              parent="menu_knowledge_config"
+              action="knowledge_section_action"
+              sequence="10"/>
+
+    <!-- Import wizard menu item -->
+    <menuitem id="menu_knowledge_import"
+              name="Importer depuis CSV"
+              parent="menu_knowledge_config"
+              action="import_csv_wizard_action"
+              sequence="20"/>
+
+    <!-- Credential Types configuration -->
+    <menuitem id="menu_credential_types"
+              name="Types d'identifiants"
+              parent="menu_knowledge_config"
+              action="credential_type_action"
+              groups="group_credential_manager"
+              sequence="30"/>
+
+    <!-- Document Types configuration -->
+    <menuitem id="menu_document_types"
+              name="Types de documents"
+              parent="menu_knowledge_config"
+              action="document_type_action"
+              groups="group_document_manager"
+              sequence="40"/>
+
+    <!-- Software catalog configuration -->
+    <menuitem id="menu_document_software"
+              name="Logiciels"
+              parent="menu_knowledge_config"
+              action="document_software_action"
+              groups="group_document_manager"
+              sequence="50"/>
+
+    <!-- Software versions configuration -->
+    <menuitem id="menu_document_software_versions"
+              name="Versions de logiciels"
+              parent="menu_knowledge_config"
+              action="document_software_version_action"
+              groups="group_document_manager"
+              sequence="60"/>
+
+</odoo>

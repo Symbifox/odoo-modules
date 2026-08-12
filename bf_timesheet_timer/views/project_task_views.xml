@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Add BF Timer Start/Stop buttons to task form header -->
+    <record id="view_task_form_bf_timer" model="ir.ui.view">
+        <field name="name">project.task.form.bf.timer</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="project.view_task_form2"/>
+        <field name="priority">100</field>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <field name="bf_has_active_timer" invisible="1"/>
+                <button name="action_bf_start_timer" type="object"
+                        string="Commencer" class="btn-primary"
+                        icon="fa-play"
+                        invisible="bf_has_active_timer or not allow_timesheets"/>
+                <button name="action_bf_stop_timer" type="object"
+                        string="Arrêter" class="btn-danger"
+                        icon="fa-stop"
+                        invisible="not bf_has_active_timer"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Hide sh_task_time_adv Start/End buttons from form header -->
+    <record id="view_task_form_hide_sh_timer" model="ir.ui.view">
+        <field name="name">project.task.form.hide.sh.timer</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="sh_task_time_adv.sh_project_task_time_inherit_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='action_task_start']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//button[@name='action_task_end']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Add BF Timer Start/Stop buttons to kanban card footer -->
+    <record id="view_task_kanban_bf_timer" model="ir.ui.view">
+        <field name="name">project.task.kanban.bf.timer</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="project.view_task_kanban"/>
+        <field name="priority">100</field>
+        <field name="arch" type="xml">
+            <!-- Add bf_has_active_timer + allow_timesheets fields -->
+            <field name="stage_id" position="after">
+                <field name="bf_has_active_timer"/>
+                <field name="allow_timesheets"/>
+            </field>
+            <!-- Add Start/Stop buttons in the footer, before user avatars -->
+            <xpath expr="//div[hasclass('d-flex','ms-auto')]" position="before">
+                <button t-if="record.allow_timesheets.raw_value and !record.bf_has_active_timer.raw_value"
+                        name="action_bf_start_timer" type="object"
+                        class="btn btn-sm btn-outline-success bf-timer-btn me-1"
+                        title="Commencer">
+                    <i class="fa fa-play"/>
+                </button>
+                <button t-if="record.bf_has_active_timer.raw_value"
+                        name="action_bf_stop_timer" type="object"
+                        class="btn btn-sm btn-outline-danger bf-timer-btn me-1"
+                        title="Arrêter">
+                    <i class="fa fa-stop"/>
+                </button>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Hide sh_task_time_adv Start/End buttons from kanban -->
+    <record id="view_task_kanban_hide_sh_timer" model="ir.ui.view">
+        <field name="name">project.task.kanban.hide.sh.timer</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="sh_task_time_adv.sh_project_task_time_inherit_kanban_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='action_task_start']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//button[@name='action_task_end']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+        </field>
+    </record>
+</odoo>

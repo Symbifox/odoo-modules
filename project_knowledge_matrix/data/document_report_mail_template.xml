@@ -1,0 +1,533 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <record id="mail_template_document_dashboard_report" model="mail.template">
+            <field name="name">Rapport de documentation - Tableau de bord</field>
+            <field name="model_id" ref="base.model_res_company"/>
+            <field name="subject">Rapport de documentation - {{ object.name }}</field>
+            <field name="email_from">{{ (object.email or user.email_formatted) }}</field>
+            <field name="email_to">{{ ctx.get('recipient_email', '') }}</field>
+            <field name="lang">{{ object.partner_id.lang }}</field>
+            <field name="body_html" type="html">
+
+<t t-set="company" t-value="(object.company_id if hasattr(object, 'company_id') and object.company_id else user.company_id)"/>
+<t t-set="brand_primary" t-value="(company and company.report_brand_primary) or '#714B67'"/>
+<t t-set="brand_dark" t-value="(company and company.report_brand_dark) or '#212529'"/>
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="box-sizing:border-box;border-collapse:collapse;background-color:#F8FAFC">
+    <tbody>
+        <tr>
+            <td align="center" style="padding:24px 16px">
+                <table cellspacing="0" cellpadding="0" border="0" width="600" align="center" role="presentation" style="border-collapse:collapse;width:600px;max-width:100%">
+                    <tbody>
+                        <tr>
+                            <td>
+                                <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;background-color:#ffffff;border-radius:12px;overflow:hidden">
+                                    <tbody>
+                                        <!-- Header -->
+                                        <tr>
+                                            <td t-attf-style="background-color:{{ brand_dark }};padding:20px 24px">
+                                                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse">
+                                                    <tbody>
+                                                        <tr>
+                                                            <td align="left">
+                                                                <a href="https://bluefoxconsultant.com" style="text-decoration:none">
+                                                                    <img src="https://bluefoxconsultant.com/web/image/website/1/logo/Blue%20Fox?unique=803cc14" alt="Blue Fox" style="display:block;border:0;height:44px;width:auto" height="44"/>
+                                                                </a>
+                                                            </td>
+                                                            <td align="right" style="color:#E6EDF3;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:20px;font-weight:700">
+                                                                Rapport documentaire
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </td>
+                                        </tr>
+
+                                        <!-- Accent bar -->
+                                        <tr>
+                                            <td t-attf-style="height:4px;line-height:4px;background-color:{{ brand_primary }}">&amp;nbsp;</td>
+                                        </tr>
+
+                                        <!-- Content -->
+                                        <tr>
+                                            <td style="padding:24px">
+                                                <!-- Title & Date -->
+                                                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;margin-bottom:20px">
+                                                    <tbody>
+                                                        <tr>
+                                                            <td>
+                                                                <h1 t-attf-style="margin:0 0 4px 0;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:22px;font-weight:600;color:{{ brand_dark }}">
+                                                                    Tableau de bord
+                                                                </h1>
+                                                                <p style="margin:0;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:14px;color:#6B7280">
+                                                                    État au <t t-out="ctx.get('report_date', '')"/>
+                                                                </p>
+                                                                <p style="margin:6px 0 0 0;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:12px;color:#9CA3AF">
+                                                                    Chaque chiffre ouvre la liste correspondante dans Odoo.
+                                                                </p>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+
+                                                <!-- ATTENTION SECTION (if needed) -->
+                                                <t t-if="ctx.get('overdue_review', 0) > 0 or ctx.get('expired_documents', 0) > 0 or ctx.get('expiring_30d', 0) > 0 or ctx.get('overdue_acknowledgments', 0) > 0 or ctx.get('corp_overdue_compliance', 0) > 0 or ctx.get('decisions_high_impact', 0) > 0">
+                                                    <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;background-color:#fef2f2;border:1px solid #fecaca;border-radius:8px;margin-bottom:20px">
+                                                        <tbody>
+                                                            <tr>
+                                                                <td style="padding:16px">
+                                                                    <p style="margin:0 0 12px 0;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:15px;font-weight:600;color:#dc2626">
+                                                                        ⚠️ Attention requise
+                                                                    </p>
+                                                                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse">
+                                                                        <tbody>
+                                                                            <t t-if="ctx.get('expired_documents', 0) > 0">
+                                                                                <tr>
+                                                                                    <td style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:14px;color:#6B7280;padding:4px 0"><a t-att-href="ctx.get('links', {}).get('expired_documents', ctx.get('dashboard_url', '#'))" style="color:#6B7280;text-decoration:none">Documents expirés</a></td>
+                                                                                    <td align="right" style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:14px;color:#dc2626;font-weight:600;padding:4px 0"><a t-att-href="ctx.get('links', {}).get('expired_documents', ctx.get('dashboard_url', '#'))" style="color:#dc2626;text-decoration:none"><t t-out="ctx.get('expired_documents', 0)"/></a></td>
+                                                                                </tr>
+                                                                            </t>
+                                                                            <t t-if="ctx.get('overdue_review', 0) > 0">
+                                                                                <tr>
+                                                                                    <td style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:14px;color:#6B7280;padding:4px 0"><a t-att-href="ctx.get('links', {}).get('overdue_review', ctx.get('dashboard_url', '#'))" style="color:#6B7280;text-decoration:none">Révisions en retard</a></td>
+                                                                                    <td align="right" style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:14px;color:#dc2626;font-weight:600;padding:4px 0"><a t-att-href="ctx.get('links', {}).get('overdue_review', ctx.get('dashboard_url', '#'))" style="color:#dc2626;text-decoration:none"><t t-out="ctx.get('overdue_review', 0)"/></a></td>
+                                                                                </tr>
+                                                                            </t>
+                                                                            <t t-if="ctx.get('expiring_30d', 0) > 0">
+                                                                                <tr>
+                                                                                    <td style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:14px;color:#6B7280;padding:4px 0"><a t-att-href="ctx.get('links', {}).get('expiring_30d', ctx.get('dashboard_url', '#'))" style="color:#6B7280;text-decoration:none">Expirent sous 30 jours</a></td>
+                                                                                    <td align="right" style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:14px;color:#f59e0b;font-weight:600;padding:4px 0"><a t-att-href="ctx.get('links', {}).get('expiring_30d', ctx.get('dashboard_url', '#'))" style="color:#f59e0b;text-decoration:none"><t t-out="ctx.get('expiring_30d', 0)"/></a></td>
+                                                                                </tr>
+                                                                            </t>
+                                                                            <t t-if="ctx.get('overdue_acknowledgments', 0) > 0">
+                                                                                <tr>
+                                                                                    <td style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:14px;color:#6B7280;padding:4px 0"><a t-att-href="ctx.get('links', {}).get('overdue_acknowledgments', ctx.get('dashboard_url', '#'))" style="color:#6B7280;text-decoration:none">Accusés en retard (+7 jours)</a></td>
+                                                                                    <td align="right" style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:14px;color:#f59e0b;font-weight:600;padding:4px 0"><a t-att-href="ctx.get('links', {}).get('overdue_acknowledgments', ctx.get('dashboard_url', '#'))" style="color:#f59e0b;text-decoration:none"><t t-out="ctx.get('overdue_acknowledgments', 0)"/></a></td>
+                                                                                </tr>
+                                                                            </t>
+                                                                            <t t-if="ctx.get('corp_overdue_compliance', 0) > 0">
+                                                                                <tr>
+                                                                                    <td style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:14px;color:#6B7280;padding:4px 0"><a t-att-href="ctx.get('links', {}).get('corp_overdue_compliance', ctx.get('dashboard_url', '#'))" style="color:#6B7280;text-decoration:none">Conformité corporative en retard</a></td>
+                                                                                    <td align="right" style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:14px;color:#dc2626;font-weight:600;padding:4px 0"><a t-att-href="ctx.get('links', {}).get('corp_overdue_compliance', ctx.get('dashboard_url', '#'))" style="color:#dc2626;text-decoration:none"><t t-out="ctx.get('corp_overdue_compliance', 0)"/></a></td>
+                                                                                </tr>
+                                                                            </t>
+                                                                            <t t-if="ctx.get('decisions_high_impact', 0) > 0">
+                                                                                <tr>
+                                                                                    <td style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:14px;color:#6B7280;padding:4px 0"><a t-att-href="ctx.get('links', {}).get('decisions_high_impact', ctx.get('dashboard_url', '#'))" style="color:#6B7280;text-decoration:none">Décisions haute importance en attente</a></td>
+                                                                                    <td align="right" style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:14px;color:#f59e0b;font-weight:600;padding:4px 0"><a t-att-href="ctx.get('links', {}).get('decisions_high_impact', ctx.get('dashboard_url', '#'))" style="color:#f59e0b;text-decoration:none"><t t-out="ctx.get('decisions_high_impact', 0)"/></a></td>
+                                                                                </tr>
+                                                                            </t>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </t>
+
+                                                <!-- DOCUMENTS OVERVIEW -->
+                                                <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;background-color:#f9fafb;border-radius:8px;margin-bottom:16px">
+                                                    <tbody>
+                                                        <tr>
+                                                            <td style="padding:16px 20px">
+                                                                <p style="margin:0 0 12px 0;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:12px;font-weight:600;color:#6B7280;text-transform:uppercase;letter-spacing:0.5px">
+                                                                    📄 Aperçu des documents
+                                                                </p>
+                                                                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse">
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            <td align="center" style="width:25%;padding:8px">
+                                                                                <div t-attf-style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:28px;font-weight:700;color:{{ brand_dark }}"><a t-att-href="ctx.get('links', {}).get('active_documents', ctx.get('dashboard_url', '#'))" t-attf-style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:28px;font-weight:700;color:{{ brand_dark }};text-decoration:none"><t t-out="ctx.get('active_documents', 0)"/></a></div>
+                                                                                <div style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:12px;color:#6B7280"><a t-att-href="ctx.get('links', {}).get('active_documents', ctx.get('dashboard_url', '#'))" style="color:#6B7280;text-decoration:none">Actifs</a></div>
+                                                                            </td>
+                                                                            <td align="center" style="width:25%;padding:8px">
+                                                                                <div t-attf-style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:28px;font-weight:700;color:{{ brand_primary }}"><a t-att-href="ctx.get('links', {}).get('internal_documents', ctx.get('dashboard_url', '#'))" t-attf-style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:28px;font-weight:700;color:{{ brand_primary }};text-decoration:none"><t t-out="ctx.get('internal_documents', 0)"/></a></div>
+                                                                                <div style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:12px;color:#6B7280"><a t-att-href="ctx.get('links', {}).get('internal_documents', ctx.get('dashboard_url', '#'))" style="color:#6B7280;text-decoration:none">Internes</a></div>
+                                                                            </td>
+                                                                            <td align="center" style="width:25%;padding:8px">
+                                                                                <div style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:28px;font-weight:700;color:#16a34a"><a t-att-href="ctx.get('links', {}).get('client_documents', ctx.get('dashboard_url', '#'))" style="color:#16a34a;text-decoration:none"><t t-out="ctx.get('client_documents', 0)"/></a></div>
+                                                                                <div style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:12px;color:#6B7280"><a t-att-href="ctx.get('links', {}).get('client_documents', ctx.get('dashboard_url', '#'))" style="color:#6B7280;text-decoration:none">Clients</a></div>
+                                                                            </td>
+                                                                            <td align="center" style="width:25%;padding:8px">
+                                                                                <div style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:28px;font-weight:700;color:#6B7280"><a t-att-href="ctx.get('links', {}).get('archived_documents', ctx.get('dashboard_url', '#'))" style="color:#6B7280;text-decoration:none"><t t-out="ctx.get('archived_documents', 0)"/></a></div>
+                                                                                <div style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:12px;color:#6B7280"><a t-att-href="ctx.get('links', {}).get('archived_documents', ctx.get('dashboard_url', '#'))" style="color:#6B7280;text-decoration:none">Archivés</a></div>
+                                                                            </td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+
+                                                <!-- CLIENT & INTERNAL - Side by side -->
+                                                <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;margin-bottom:16px">
+                                                    <tbody>
+                                                        <tr>
+                                                            <!-- Clients -->
+                                                            <td style="width:50%;padding-right:8px;vertical-align:top">
+                                                                <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;background-color:#ecfdf5;border-radius:8px;height:100%">
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            <td style="padding:16px">
+                                                                                <p style="margin:0 0 10px 0;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:12px;font-weight:600;color:#16a34a;text-transform:uppercase">
+                                                                                    👥 Documentation clients
+                                                                                </p>
+                                                                                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse">
+                                                                                    <tbody>
+                                                                                        <tr>
+                                                                                            <td style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:13px;color:#374151;padding:3px 0"><a t-att-href="ctx.get('links', {}).get('client_distributions', ctx.get('dashboard_url', '#'))" style="color:#374151;text-decoration:none">Distributions</a></td>
+                                                                                            <td align="right" style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:13px;font-weight:600;color:#374151;padding:3px 0"><a t-att-href="ctx.get('links', {}).get('client_distributions', ctx.get('dashboard_url', '#'))" style="color:#374151;text-decoration:none"><t t-out="ctx.get('client_distributions', 0)"/></a></td>
+                                                                                        </tr>
+                                                                                        <tr>
+                                                                                            <td style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:13px;color:#374151;padding:3px 0"><a t-att-href="ctx.get('links', {}).get('client_ack_rate', ctx.get('dashboard_url', '#'))" style="color:#374151;text-decoration:none">Taux d'accusé</a></td>
+                                                                                            <td align="right" style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:13px;font-weight:600;color:#16a34a;padding:3px 0"><a t-att-href="ctx.get('links', {}).get('client_ack_rate', ctx.get('dashboard_url', '#'))" style="color:#16a34a;text-decoration:none"><t t-out="ctx.get('client_ack_rate', 0)"/>%</a></td>
+                                                                                        </tr>
+                                                                                        <tr>
+                                                                                            <td style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:13px;color:#374151;padding:3px 0"><a t-att-href="ctx.get('links', {}).get('client_pending', ctx.get('dashboard_url', '#'))" style="color:#374151;text-decoration:none">En attente</a></td>
+                                                                                            <td align="right" t-att-style="'font-family:Lexend,Segoe UI,Arial,sans-serif;font-size:13px;font-weight:600;padding:3px 0;color:' + ('#f59e0b' if ctx.get('client_pending', 0) > 0 else '#374151')"><a t-att-href="ctx.get('links', {}).get('client_pending', ctx.get('dashboard_url', '#'))" t-att-style="('font-family:Lexend,Segoe UI,Arial,sans-serif;font-size:13px;font-weight:600;padding:3px 0;color:' + ('#f59e0b' if ctx.get('client_pending', 0) > 0 else '#374151')) + ';text-decoration:none'"><t t-out="ctx.get('client_pending', 0)"/></a></td>
+                                                                                        </tr>
+                                                                                        <tr>
+                                                                                            <td style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:13px;color:#374151;padding:3px 0"><a t-att-href="ctx.get('links', {}).get('client_outdated', ctx.get('dashboard_url', '#'))" style="color:#374151;text-decoration:none">Obsolètes</a></td>
+                                                                                            <td align="right" t-att-style="'font-family:Lexend,Segoe UI,Arial,sans-serif;font-size:13px;font-weight:600;padding:3px 0;color:' + ('#dc2626' if ctx.get('client_outdated', 0) > 0 else '#374151')"><a t-att-href="ctx.get('links', {}).get('client_outdated', ctx.get('dashboard_url', '#'))" t-att-style="('font-family:Lexend,Segoe UI,Arial,sans-serif;font-size:13px;font-weight:600;padding:3px 0;color:' + ('#dc2626' if ctx.get('client_outdated', 0) > 0 else '#374151')) + ';text-decoration:none'"><t t-out="ctx.get('client_outdated', 0)"/></a></td>
+                                                                                        </tr>
+                                                                                    </tbody>
+                                                                                </table>
+                                                                            </td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </td>
+                                                            <!-- Internal -->
+                                                            <td style="width:50%;padding-left:8px;vertical-align:top">
+                                                                <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;background-color:#f3f4f6;border-radius:8px;height:100%">
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            <td style="padding:16px">
+                                                                                <p style="margin:0 0 10px 0;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:12px;font-weight:600;color:#374151;text-transform:uppercase">
+                                                                                    🏢 Conformité interne
+                                                                                </p>
+                                                                                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse">
+                                                                                    <tbody>
+                                                                                        <tr>
+                                                                                            <td style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:13px;color:#374151;padding:3px 0"><a t-att-href="ctx.get('links', {}).get('internal_distributions', ctx.get('dashboard_url', '#'))" style="color:#374151;text-decoration:none">Distributions</a></td>
+                                                                                            <td align="right" style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:13px;font-weight:600;color:#374151;padding:3px 0"><a t-att-href="ctx.get('links', {}).get('internal_distributions', ctx.get('dashboard_url', '#'))" style="color:#374151;text-decoration:none"><t t-out="ctx.get('internal_distributions', 0)"/></a></td>
+                                                                                        </tr>
+                                                                                        <tr>
+                                                                                            <td style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:13px;color:#374151;padding:3px 0"><a t-att-href="ctx.get('links', {}).get('internal_compliance_rate', ctx.get('dashboard_url', '#'))" style="color:#374151;text-decoration:none">Taux de conformité</a></td>
+                                                                                            <td align="right" t-attf-style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:13px;font-weight:600;color:{{ brand_primary }};padding:3px 0"><a t-att-href="ctx.get('links', {}).get('internal_compliance_rate', ctx.get('dashboard_url', '#'))" t-attf-style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:13px;font-weight:600;color:{{ brand_primary }};padding:3px 0;text-decoration:none"><t t-out="ctx.get('internal_compliance_rate', 0)"/>%</a></td>
+                                                                                        </tr>
+                                                                                        <tr>
+                                                                                            <td style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:13px;color:#374151;padding:3px 0"><a t-att-href="ctx.get('links', {}).get('internal_pending', ctx.get('dashboard_url', '#'))" style="color:#374151;text-decoration:none">En attente</a></td>
+                                                                                            <td align="right" t-att-style="'font-family:Lexend,Segoe UI,Arial,sans-serif;font-size:13px;font-weight:600;padding:3px 0;color:' + ('#f59e0b' if ctx.get('internal_pending', 0) > 0 else '#374151')"><a t-att-href="ctx.get('links', {}).get('internal_pending', ctx.get('dashboard_url', '#'))" t-att-style="('font-family:Lexend,Segoe UI,Arial,sans-serif;font-size:13px;font-weight:600;padding:3px 0;color:' + ('#f59e0b' if ctx.get('internal_pending', 0) > 0 else '#374151')) + ';text-decoration:none'"><t t-out="ctx.get('internal_pending', 0)"/></a></td>
+                                                                                        </tr>
+                                                                                        <tr>
+                                                                                            <td colspan="2" style="padding:3px 0">&amp;nbsp;</td>
+                                                                                        </tr>
+                                                                                    </tbody>
+                                                                                </table>
+                                                                            </td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+
+                                                <!-- CREDENTIALS & ACTIVITY - Side by side -->
+                                                <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;margin-bottom:16px">
+                                                    <tbody>
+                                                        <tr>
+                                                            <!-- Credentials -->
+                                                            <td style="width:50%;padding-right:8px;vertical-align:top">
+                                                                <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;background-color:#fef3c7;border-radius:8px">
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            <td style="padding:16px">
+                                                                                <p style="margin:0 0 10px 0;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:12px;font-weight:600;color:#92400e;text-transform:uppercase">
+                                                                                    🔑 Identifiants
+                                                                                </p>
+                                                                                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse">
+                                                                                    <tbody>
+                                                                                        <tr>
+                                                                                            <td style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:13px;color:#374151;padding:3px 0"><a t-att-href="ctx.get('links', {}).get('credentials_total', ctx.get('dashboard_url', '#'))" style="color:#374151;text-decoration:none">Actifs</a></td>
+                                                                                            <td align="right" style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:13px;font-weight:600;color:#374151;padding:3px 0"><a t-att-href="ctx.get('links', {}).get('credentials_total', ctx.get('dashboard_url', '#'))" style="color:#374151;text-decoration:none"><t t-out="ctx.get('credentials_total', 0)"/></a></td>
+                                                                                        </tr>
+                                                                                        <tr>
+                                                                                            <td style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:13px;color:#374151;padding:3px 0"><a t-att-href="ctx.get('links', {}).get('credentials_expiring', ctx.get('dashboard_url', '#'))" style="color:#374151;text-decoration:none">Expirent sous 30j</a></td>
+                                                                                            <td align="right" t-att-style="'font-family:Lexend,Segoe UI,Arial,sans-serif;font-size:13px;font-weight:600;padding:3px 0;color:' + ('#f59e0b' if ctx.get('credentials_expiring', 0) > 0 else '#374151')"><a t-att-href="ctx.get('links', {}).get('credentials_expiring', ctx.get('dashboard_url', '#'))" t-att-style="('font-family:Lexend,Segoe UI,Arial,sans-serif;font-size:13px;font-weight:600;padding:3px 0;color:' + ('#f59e0b' if ctx.get('credentials_expiring', 0) > 0 else '#374151')) + ';text-decoration:none'"><t t-out="ctx.get('credentials_expiring', 0)"/></a></td>
+                                                                                        </tr>
+                                                                                        <tr>
+                                                                                            <td style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:13px;color:#374151;padding:3px 0"><a t-att-href="ctx.get('links', {}).get('credentials_expired', ctx.get('dashboard_url', '#'))" style="color:#374151;text-decoration:none">Expirés</a></td>
+                                                                                            <td align="right" t-att-style="'font-family:Lexend,Segoe UI,Arial,sans-serif;font-size:13px;font-weight:600;padding:3px 0;color:' + ('#dc2626' if ctx.get('credentials_expired', 0) > 0 else '#374151')"><a t-att-href="ctx.get('links', {}).get('credentials_expired', ctx.get('dashboard_url', '#'))" t-att-style="('font-family:Lexend,Segoe UI,Arial,sans-serif;font-size:13px;font-weight:600;padding:3px 0;color:' + ('#dc2626' if ctx.get('credentials_expired', 0) > 0 else '#374151')) + ';text-decoration:none'"><t t-out="ctx.get('credentials_expired', 0)"/></a></td>
+                                                                                        </tr>
+                                                                                    </tbody>
+                                                                                </table>
+                                                                            </td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </td>
+                                                            <!-- Activity -->
+                                                            <td style="width:50%;padding-left:8px;vertical-align:top">
+                                                                <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;background-color:#eff6ff;border-radius:8px">
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            <td style="padding:16px">
+                                                                                <p style="margin:0 0 10px 0;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:12px;font-weight:600;color:#1d4ed8;text-transform:uppercase">
+                                                                                    📊 Activité
+                                                                                </p>
+                                                                                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse">
+                                                                                    <tbody>
+                                                                                        <tr>
+                                                                                            <td style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:13px;color:#374151;padding:3px 0"><a t-att-href="ctx.get('links', {}).get('distributions_this_month', ctx.get('dashboard_url', '#'))" style="color:#374151;text-decoration:none">Distributions ce mois</a></td>
+                                                                                            <td align="right" style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:13px;font-weight:600;color:#1d4ed8;padding:3px 0"><a t-att-href="ctx.get('links', {}).get('distributions_this_month', ctx.get('dashboard_url', '#'))" style="color:#1d4ed8;text-decoration:none"><t t-out="ctx.get('distributions_this_month', 0)"/></a></td>
+                                                                                        </tr>
+                                                                                        <tr>
+                                                                                            <td style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:13px;color:#374151;padding:3px 0"><a t-att-href="ctx.get('links', {}).get('distributions_last_month', ctx.get('dashboard_url', '#'))" style="color:#374151;text-decoration:none">Mois dernier</a></td>
+                                                                                            <td align="right" style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:13px;font-weight:600;color:#6B7280;padding:3px 0"><a t-att-href="ctx.get('links', {}).get('distributions_last_month', ctx.get('dashboard_url', '#'))" style="color:#6B7280;text-decoration:none"><t t-out="ctx.get('distributions_last_month', 0)"/></a></td>
+                                                                                        </tr>
+                                                                                        <tr>
+                                                                                            <td style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:13px;color:#374151;padding:3px 0"><a t-att-href="ctx.get('links', {}).get('docs_without_versions', ctx.get('dashboard_url', '#'))" style="color:#374151;text-decoration:none">Docs sans version</a></td>
+                                                                                            <td align="right" style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:13px;font-weight:600;color:#6B7280;padding:3px 0"><a t-att-href="ctx.get('links', {}).get('docs_without_versions', ctx.get('dashboard_url', '#'))" style="color:#6B7280;text-decoration:none"><t t-out="ctx.get('docs_without_versions', 0)"/></a></td>
+                                                                                        </tr>
+                                                                                    </tbody>
+                                                                                </table>
+                                                                            </td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+
+                                                <!-- REVIEW CALENDAR -->
+                                                <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;background-color:#f9fafb;border-radius:8px;margin-bottom:16px">
+                                                    <tbody>
+                                                        <tr>
+                                                            <td style="padding:16px 20px">
+                                                                <p style="margin:0 0 12px 0;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:12px;font-weight:600;color:#6B7280;text-transform:uppercase">
+                                                                    📅 Calendrier des révisions
+                                                                </p>
+                                                                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse">
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            <td align="center" style="width:33%;padding:8px">
+                                                                                <div t-att-style="'font-family:Lexend,Segoe UI,Arial,sans-serif;font-size:24px;font-weight:700;color:' + ('#dc2626' if ctx.get('review_0_30', 0) > 0 else '#6B7280')"><a t-att-href="ctx.get('links', {}).get('review_0_30', ctx.get('dashboard_url', '#'))" t-att-style="('font-family:Lexend,Segoe UI,Arial,sans-serif;font-size:24px;font-weight:700;color:' + ('#dc2626' if ctx.get('review_0_30', 0) > 0 else '#6B7280')) + ';text-decoration:none'"><t t-out="ctx.get('review_0_30', 0)"/></a></div>
+                                                                                <div style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:12px;color:#6B7280"><a t-att-href="ctx.get('links', {}).get('review_0_30', ctx.get('dashboard_url', '#'))" style="color:#6B7280;text-decoration:none">0-30 jours</a></div>
+                                                                            </td>
+                                                                            <td align="center" style="width:33%;padding:8px">
+                                                                                <div t-att-style="'font-family:Lexend,Segoe UI,Arial,sans-serif;font-size:24px;font-weight:700;color:' + ('#f59e0b' if ctx.get('review_30_60', 0) > 0 else '#6B7280')"><a t-att-href="ctx.get('links', {}).get('review_30_60', ctx.get('dashboard_url', '#'))" t-att-style="('font-family:Lexend,Segoe UI,Arial,sans-serif;font-size:24px;font-weight:700;color:' + ('#f59e0b' if ctx.get('review_30_60', 0) > 0 else '#6B7280')) + ';text-decoration:none'"><t t-out="ctx.get('review_30_60', 0)"/></a></div>
+                                                                                <div style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:12px;color:#6B7280"><a t-att-href="ctx.get('links', {}).get('review_30_60', ctx.get('dashboard_url', '#'))" style="color:#6B7280;text-decoration:none">30-60 jours</a></div>
+                                                                            </td>
+                                                                            <td align="center" style="width:33%;padding:8px">
+                                                                                <div t-att-style="'font-family:Lexend,Segoe UI,Arial,sans-serif;font-size:24px;font-weight:700;color:' + (brand_primary if ctx.get('review_60_90', 0) > 0 else '#6B7280')"><a t-att-href="ctx.get('links', {}).get('review_60_90', ctx.get('dashboard_url', '#'))" t-att-style="('font-family:Lexend,Segoe UI,Arial,sans-serif;font-size:24px;font-weight:700;color:' + (brand_primary if ctx.get('review_60_90', 0) > 0 else '#6B7280')) + ';text-decoration:none'"><t t-out="ctx.get('review_60_90', 0)"/></a></div>
+                                                                                <div style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:12px;color:#6B7280"><a t-att-href="ctx.get('links', {}).get('review_60_90', ctx.get('dashboard_url', '#'))" style="color:#6B7280;text-decoration:none">60-90 jours</a></div>
+                                                                            </td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+
+                                                <!-- DOCUMENTS BY TYPE -->
+                                                <t t-if="ctx.get('documents_by_type', [])">
+                                                    <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;background-color:#f9fafb;border-radius:8px;margin-bottom:20px">
+                                                        <tbody>
+                                                            <tr>
+                                                                <td style="padding:16px 20px">
+                                                                    <p style="margin:0 0 12px 0;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:12px;font-weight:600;color:#6B7280;text-transform:uppercase">
+                                                                        📁 Documents par type
+                                                                    </p>
+                                                                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse">
+                                                                        <tbody>
+                                                                            <t t-foreach="ctx.get('documents_by_type', [])[:8]" t-as="type_data">
+                                                                                <tr>
+                                                                                    <td style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:13px;color:#374151;padding:4px 0"><a t-att-href="ctx.get('links', {}).get('documents_by_type', ctx.get('dashboard_url', '#'))" style="color:#374151;text-decoration:none"><t t-out="type_data[0]"/></a></td>
+                                                                                    <td align="right" style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:13px;font-weight:600;color:#374151;padding:4px 0"><a t-att-href="ctx.get('links', {}).get('documents_by_type', ctx.get('dashboard_url', '#'))" style="color:#374151;text-decoration:none"><t t-out="type_data[1]"/></a></td>
+                                                                                </tr>
+                                                                            </t>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </t>
+
+                                                <!-- DECISION TRACKING (if decisions exist) -->
+                                                <t t-if="ctx.get('decisions_total', 0) > 0">
+                                                    <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;background-color:#f5f3ff;border-radius:8px;margin-bottom:16px">
+                                                        <tbody>
+                                                            <tr>
+                                                                <td style="padding:16px 20px">
+                                                                    <p style="margin:0 0 12px 0;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:12px;font-weight:600;color:#6d28d9;text-transform:uppercase;letter-spacing:0.5px">
+                                                                        &#x2696; Suivi des décisions
+                                                                    </p>
+                                                                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse">
+                                                                        <tbody>
+                                                                            <tr>
+                                                                                <td align="center" style="width:20%;padding:8px">
+                                                                                    <div t-attf-style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:24px;font-weight:700;color:{{ brand_dark }}"><a t-att-href="ctx.get('links', {}).get('decisions_total', ctx.get('dashboard_url', '#'))" t-attf-style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:24px;font-weight:700;color:{{ brand_dark }};text-decoration:none"><t t-out="ctx.get('decisions_total', 0)"/></a></div>
+                                                                                    <div style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:11px;color:#6B7280"><a t-att-href="ctx.get('links', {}).get('decisions_total', ctx.get('dashboard_url', '#'))" style="color:#6B7280;text-decoration:none">Total</a></div>
+                                                                                </td>
+                                                                                <td align="center" style="width:20%;padding:8px">
+                                                                                    <div style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:24px;font-weight:700;color:#16a34a"><a t-att-href="ctx.get('links', {}).get('decisions_accepted', ctx.get('dashboard_url', '#'))" style="color:#16a34a;text-decoration:none"><t t-out="ctx.get('decisions_accepted', 0)"/></a></div>
+                                                                                    <div style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:11px;color:#6B7280"><a t-att-href="ctx.get('links', {}).get('decisions_accepted', ctx.get('dashboard_url', '#'))" style="color:#6B7280;text-decoration:none">Acceptées</a></div>
+                                                                                </td>
+                                                                                <td align="center" style="width:20%;padding:8px">
+                                                                                    <div style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:24px;font-weight:700;color:#f59e0b"><a t-att-href="ctx.get('links', {}).get('decisions_proposed', ctx.get('dashboard_url', '#'))" style="color:#f59e0b;text-decoration:none"><t t-out="ctx.get('decisions_proposed', 0)"/></a></div>
+                                                                                    <div style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:11px;color:#6B7280"><a t-att-href="ctx.get('links', {}).get('decisions_proposed', ctx.get('dashboard_url', '#'))" style="color:#6B7280;text-decoration:none">Proposées</a></div>
+                                                                                </td>
+                                                                                <td align="center" style="width:20%;padding:8px">
+                                                                                    <div style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:24px;font-weight:700;color:#6B7280"><a t-att-href="ctx.get('links', {}).get('decisions_rejected', ctx.get('dashboard_url', '#'))" style="color:#6B7280;text-decoration:none"><t t-out="ctx.get('decisions_rejected', 0)"/></a></div>
+                                                                                    <div style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:11px;color:#6B7280"><a t-att-href="ctx.get('links', {}).get('decisions_rejected', ctx.get('dashboard_url', '#'))" style="color:#6B7280;text-decoration:none">Rejetées</a></div>
+                                                                                </td>
+                                                                                <td align="center" style="width:20%;padding:8px">
+                                                                                    <div t-att-style="'font-family:Lexend,Segoe UI,Arial,sans-serif;font-size:24px;font-weight:700;color:' + ('#dc2626' if ctx.get('decisions_high_impact', 0) > 0 else '#6B7280')"><a t-att-href="ctx.get('links', {}).get('decisions_high_impact', ctx.get('dashboard_url', '#'))" t-att-style="('font-family:Lexend,Segoe UI,Arial,sans-serif;font-size:24px;font-weight:700;color:' + ('#dc2626' if ctx.get('decisions_high_impact', 0) > 0 else '#6B7280')) + ';text-decoration:none'"><t t-out="ctx.get('decisions_high_impact', 0)"/></a></div>
+                                                                                    <div style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:11px;color:#6B7280"><a t-att-href="ctx.get('links', {}).get('decisions_high_impact', ctx.get('dashboard_url', '#'))" style="color:#6B7280;text-decoration:none">Haute importance</a></div>
+                                                                                </td>
+                                                                            </tr>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </t>
+
+                                                <!-- CORPORATE GOVERNANCE (if any data) -->
+                                                <t t-if="ctx.get('corp_active_directors', 0) > 0 or ctx.get('corp_active_officers', 0) > 0 or ctx.get('corp_adopted_resolutions', 0) > 0 or ctx.get('corp_overdue_compliance', 0) > 0 or ctx.get('corp_due_soon_compliance', 0) > 0">
+                                                    <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;margin-bottom:16px">
+                                                        <tbody>
+                                                            <tr>
+                                                                <!-- Registres -->
+                                                                <td style="width:50%;padding-right:8px;vertical-align:top">
+                                                                    <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;background-color:#e0e7ff;border-radius:8px">
+                                                                        <tbody>
+                                                                            <tr>
+                                                                                <td style="padding:16px">
+                                                                                    <p style="margin:0 0 10px 0;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:12px;font-weight:600;color:#3730a3;text-transform:uppercase">
+                                                                                        &#x1F3DB; Gouvernance corporative
+                                                                                    </p>
+                                                                                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse">
+                                                                                        <tbody>
+                                                                                            <tr>
+                                                                                                <td style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:13px;color:#374151;padding:3px 0"><a t-att-href="ctx.get('links', {}).get('corp_active_directors', ctx.get('dashboard_url', '#'))" style="color:#374151;text-decoration:none">Administrateurs actifs</a></td>
+                                                                                                <td align="right" style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:13px;font-weight:600;color:#374151;padding:3px 0"><a t-att-href="ctx.get('links', {}).get('corp_active_directors', ctx.get('dashboard_url', '#'))" style="color:#374151;text-decoration:none"><t t-out="ctx.get('corp_active_directors', 0)"/></a></td>
+                                                                                            </tr>
+                                                                                            <tr>
+                                                                                                <td style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:13px;color:#374151;padding:3px 0"><a t-att-href="ctx.get('links', {}).get('corp_active_officers', ctx.get('dashboard_url', '#'))" style="color:#374151;text-decoration:none">Dirigeants actifs</a></td>
+                                                                                                <td align="right" style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:13px;font-weight:600;color:#374151;padding:3px 0"><a t-att-href="ctx.get('links', {}).get('corp_active_officers', ctx.get('dashboard_url', '#'))" style="color:#374151;text-decoration:none"><t t-out="ctx.get('corp_active_officers', 0)"/></a></td>
+                                                                                            </tr>
+                                                                                            <tr>
+                                                                                                <td style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:13px;color:#374151;padding:3px 0"><a t-att-href="ctx.get('links', {}).get('corp_adopted_resolutions', ctx.get('dashboard_url', '#'))" style="color:#374151;text-decoration:none">Résolutions adoptées</a></td>
+                                                                                                <td align="right" style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:13px;font-weight:600;color:#3730a3;padding:3px 0"><a t-att-href="ctx.get('links', {}).get('corp_adopted_resolutions', ctx.get('dashboard_url', '#'))" style="color:#3730a3;text-decoration:none"><t t-out="ctx.get('corp_adopted_resolutions', 0)"/></a></td>
+                                                                                            </tr>
+                                                                                        </tbody>
+                                                                                    </table>
+                                                                                </td>
+                                                                            </tr>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </td>
+                                                                <!-- Compliance -->
+                                                                <td style="width:50%;padding-left:8px;vertical-align:top">
+                                                                    <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;background-color:#fef2f2;border-radius:8px">
+                                                                        <tbody>
+                                                                            <tr>
+                                                                                <td style="padding:16px">
+                                                                                    <p style="margin:0 0 10px 0;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:12px;font-weight:600;color:#991b1b;text-transform:uppercase">
+                                                                                        &#x1F4C5; Conformité corporative
+                                                                                    </p>
+                                                                                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse">
+                                                                                        <tbody>
+                                                                                            <tr>
+                                                                                                <td style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:13px;color:#374151;padding:3px 0"><a t-att-href="ctx.get('links', {}).get('corp_overdue_compliance', ctx.get('dashboard_url', '#'))" style="color:#374151;text-decoration:none">En retard</a></td>
+                                                                                                <td align="right" t-att-style="'font-family:Lexend,Segoe UI,Arial,sans-serif;font-size:13px;font-weight:600;padding:3px 0;color:' + ('#dc2626' if ctx.get('corp_overdue_compliance', 0) > 0 else '#374151')"><a t-att-href="ctx.get('links', {}).get('corp_overdue_compliance', ctx.get('dashboard_url', '#'))" t-att-style="('font-family:Lexend,Segoe UI,Arial,sans-serif;font-size:13px;font-weight:600;padding:3px 0;color:' + ('#dc2626' if ctx.get('corp_overdue_compliance', 0) > 0 else '#374151')) + ';text-decoration:none'"><t t-out="ctx.get('corp_overdue_compliance', 0)"/></a></td>
+                                                                                            </tr>
+                                                                                            <tr>
+                                                                                                <td style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:13px;color:#374151;padding:3px 0"><a t-att-href="ctx.get('links', {}).get('corp_due_soon_compliance', ctx.get('dashboard_url', '#'))" style="color:#374151;text-decoration:none">Échéance proche</a></td>
+                                                                                                <td align="right" t-att-style="'font-family:Lexend,Segoe UI,Arial,sans-serif;font-size:13px;font-weight:600;padding:3px 0;color:' + ('#f59e0b' if ctx.get('corp_due_soon_compliance', 0) > 0 else '#374151')"><a t-att-href="ctx.get('links', {}).get('corp_due_soon_compliance', ctx.get('dashboard_url', '#'))" t-att-style="('font-family:Lexend,Segoe UI,Arial,sans-serif;font-size:13px;font-weight:600;padding:3px 0;color:' + ('#f59e0b' if ctx.get('corp_due_soon_compliance', 0) > 0 else '#374151')) + ';text-decoration:none'"><t t-out="ctx.get('corp_due_soon_compliance', 0)"/></a></td>
+                                                                                            </tr>
+                                                                                            <tr>
+                                                                                                <td colspan="2" style="padding:3px 0">&amp;nbsp;</td>
+                                                                                            </tr>
+                                                                                        </tbody>
+                                                                                    </table>
+                                                                                </td>
+                                                                            </tr>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </t>
+
+                                                <!-- CTA Button -->
+                                                <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse">
+                                                    <tbody>
+                                                        <tr>
+                                                            <td align="center" style="padding:8px 0">
+                                                                <a t-att-href="ctx.get('dashboard_url', '#')" t-attf-style="box-sizing:border-box;display:inline-block;background-color:{{ brand_primary }};text-decoration:none;font-family:Lexend,'Segoe UI',Arial,sans-serif;font-size:15px;font-weight:600;padding:14px 28px;border-radius:8px;color:#ffffff">
+                                                                    Accéder au tableau de bord
+                                                                </a>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </td>
+                                        </tr>
+
+                                        <!-- Footer -->
+                                        <tr>
+                                            <td style="padding:16px 24px;background-color:#f9fafb;border-top:1px solid #e5e7eb">
+                                                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse">
+                                                    <tbody>
+                                                        <tr>
+                                                            <td style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:12px;color:#6B7280">
+                                                                <strong t-attf-style="color:{{ brand_dark }}">Blue Fox Inc</strong><br/>
+                                                                <span style="color:#9CA3AF">Rapport généré automatiquement</span>
+                                                            </td>
+                                                            <td align="right" style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:12px;color:#9CA3AF">
+                                                                <a href="mailto:service@example.com" t-attf-style="color:{{ brand_primary }};text-decoration:none">Contact</a>
+                                                                <span style="color:#d1d5db"> · </span>
+                                                                <a href="https://bluefoxconsultant.com" style="color:#9CA3AF;text-decoration:none">bluefoxconsultant.com</a>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </td>
+                                        </tr>
+
+                                    </tbody>
+                                </table>
+
+                                <!-- Bottom accent bars -->
+                                <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-top:12px;border-collapse:collapse">
+                                    <tbody>
+                                        <tr>
+                                            <td t-attf-style="height:3px;line-height:3px;background-color:{{ brand_primary }};width:50%">&amp;nbsp;</td>
+                                            <td t-attf-style="height:3px;line-height:3px;background-color:{{ brand_dark }};width:50%">&amp;nbsp;</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+    </tbody>
+</table>
+            </field>
+        </record>
+
+    </data>
+</odoo>

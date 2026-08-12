@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="bf_studio_light.SmartButton">
+        <button type="button"
+                class="oe_stat_button studio_light_smart_button"
+                t-on-click="onClick"
+                t-att-disabled="props.openOnClick !== '1' or state.error">
+            <i t-att-class="iconClass"/>
+            <div class="o_stat_info">
+                <span class="o_stat_value" t-esc="displayCount"/>
+                <span class="o_stat_text" t-esc="props.label"/>
+            </div>
+        </button>
+    </t>
+
+</templates>

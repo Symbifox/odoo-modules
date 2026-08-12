@@ -1,0 +1,12 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_hour_bank_client_user,Hour Bank Client User,model_hour_bank_client,project.group_project_user,1,0,0,0
+access_hour_bank_client_manager,Hour Bank Client Manager,model_hour_bank_client,project.group_project_manager,1,1,1,1
+access_hour_bank_client_portal,Hour Bank Client Portal,model_hour_bank_client,base.group_portal,1,0,0,0
+access_hour_bank_adjustment_user,Hour Bank Adjustment User,model_hour_bank_adjustment,project.group_project_user,1,0,0,0
+access_hour_bank_adjustment_manager,Hour Bank Adjustment Manager,model_hour_bank_adjustment,project.group_project_manager,1,1,1,1
+access_hour_bank_adjustment_portal,Hour Bank Adjustment Portal,model_hour_bank_adjustment,base.group_portal,1,0,0,0
+access_hour_bank_send_wizard_manager,Hour Bank Send Wizard Manager,model_hour_bank_send_wizard,project.group_project_manager,1,1,1,1
+access_hour_bank_threshold_line_user,Hour Bank Threshold Line User,model_hour_bank_threshold_line,project.group_project_user,1,0,0,0
+access_hour_bank_threshold_line_manager,Hour Bank Threshold Line Manager,model_hour_bank_threshold_line,project.group_project_manager,1,1,1,1
+access_hour_bank_threshold_event_user,Hour Bank Threshold Event User,model_hour_bank_threshold_event,project.group_project_user,1,0,0,0
+access_hour_bank_threshold_event_manager,Hour Bank Threshold Event Manager,model_hour_bank_threshold_event,project.group_project_manager,1,1,1,1

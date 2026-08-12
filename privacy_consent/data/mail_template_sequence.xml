@@ -1,0 +1,561 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!-- Email template: Consent Reminder 1 (7 days) -->
+    <record id="mail_template_consent_reminder_1" model="mail.template">
+        <field name="name">Vie privée : Rappel de consentement 1 (7 jours)</field>
+        <field name="model_id" ref="model_privacy_consent"/>
+        <field name="email_from">{{ (object.company_id.partner_id.email or object.company_id.email or 'noreply@example.com') }}</field>
+        <field name="partner_to">{{ object.subject_partner_id.id }}</field>
+        <field name="subject">Rappel: Demande de consentement / Reminder: Consent Request - {{ object.purpose_id.name }}</field>
+        <field name="body_html" type="html">
+
+<t t-set="company" t-value="(getattr(object, 'company_id', False)) or user.company_id"/>
+<t t-set="brand_primary" t-value="(company and company.report_brand_primary) or '#714B67'"/>
+<t t-set="brand_dark" t-value="(company and company.report_brand_dark) or '#212529'"/>
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#F8FAFC; padding:0; margin:0;">
+    <tr>
+        <td align="center" style="padding:24px;">
+            <table cellspacing="0" cellpadding="0" border="0" width="600" style="max-width:600px; background-color:#ffffff; border-radius:12px; border:1px solid #e5e7eb;">
+                <tbody>
+                    <!-- Header -->
+                    <tr>
+                        <td style="background-color:#000000; padding:16px 24px; border-radius:12px 12px 0 0;">
+                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                                <tr>
+                                    <td align="left">
+                                        <a href="https://crm.example.com" style="text-decoration:none;">
+                                            <img src="/web/image/website/1/logo" alt="Your Company" style="height:48px; width:auto; display:block;" height="48"/>
+                                        </a>
+                                    </td>
+                                    <td align="right" style="color:#ffffff; font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:18px; font-weight:700;">
+                                        Rappel de consentement
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <!-- Accent Line -->
+                    <tr>
+                        <td style="height:4px; line-height:4px; background-color:#32373c;">&#160;</td>
+                    </tr>
+                    <!-- Main Content -->
+                    <tr>
+                        <td style="padding:24px;">
+                            <h1 style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:24px; font-weight:500; color:#000000; margin:0 0 8px 0;">
+                                📬 Rappel - Demande de consentement
+                            </h1>
+                            <p style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:17px; font-weight:300; color:#374151; margin:0 0 16px 0; line-height:26px;">
+                                Bonjour <t t-out="object.subject_partner_id.name"/>,
+                            </p>
+                            <p style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:14px; color:#374151; line-height:22px; margin:0 0 16px 0;">
+                                Nous n'avons pas encore reçu votre réponse concernant notre demande de consentement.
+                                Nous vous invitons à prendre quelques instants pour y répondre.
+                            </p>
+
+                            <!-- Purpose Box -->
+                            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-left:4px solid #32373c; background-color:#f5f5f5; border-radius:0 10px 10px 0; margin:16px 0;">
+                                <tr>
+                                    <td style="padding:16px 20px;">
+                                        <strong style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:16px; color:#32373c;"><t t-out="object.purpose_id.name"/></strong>
+                                        <p style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:14px; color:#374151; margin:10px 0 0 0; line-height:20px;">
+                                            <t t-out="object.purpose_id.plain_language_summary or ''"/>
+                                        </p>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <p style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:14px; color:#374151; line-height:22px; margin:0 0 16px 0;">
+                                Votre réponse nous permettra de mieux vous servir et de respecter vos préférences.
+                            </p>
+
+                            <!-- CTA Button -->
+                            <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:24px 0;">
+                                <tr>
+                                    <td align="left">
+                                        <a t-attf-href="/my/privacy/consent/{{ object.id }}" style="display:inline-block; background-color:#32373c; color:#ffffff; font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:14px; font-weight:600; padding:12px 18px; border-radius:8px; text-decoration:none;">
+                                            Répondre maintenant
+                                        </a>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <!-- Divider -->
+                            <hr style="border:none; border-top:1px solid #E5E7EB; margin:24px 0;"/>
+
+                            <!-- English Section -->
+                            <p style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:14px; color:#6B7280; line-height:22px; margin:0 0 8px 0; font-style:italic;">
+                                <strong>📬 Reminder - Consent Request</strong>
+                            </p>
+                            <p style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:13px; color:#6B7280; line-height:20px; margin:0 0 8px 0; font-style:italic;">
+                                Hello <t t-out="object.subject_partner_id.name"/>,
+                            </p>
+                            <p style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:13px; color:#6B7280; line-height:20px; margin:0 0 8px 0; font-style:italic;">
+                                We haven't received your response yet regarding our consent request for
+                                <strong><t t-out="object.purpose_id.name"/></strong>.
+                            </p>
+                            <p style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:13px; color:#6B7280; line-height:20px; margin:0; font-style:italic;">
+                                Please respond to this request so we can better serve you.
+                            </p>
+                        </td>
+                    </tr>
+                    <!-- Separator -->
+                    <tr>
+                        <td style="height:1px; line-height:1px; background-color:#E5E7EB;">&#160;</td>
+                    </tr>
+                    <!-- Footer -->
+                    <tr>
+                        <td style="padding:16px 24px 24px 24px; background-color:#FFFFFF; border-radius:0 0 12px 12px;">
+                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                                <tr>
+                                    <td style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:12px; color:#6B7280;">
+                                        <strong style="color:#000000;"><t t-out="object.company_id.name"/></strong><br/>
+                                        Solutions éthiques et souveraines pour vos données.
+                                    </td>
+                                    <td align="right" style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:12px; color:#9CA3AF;">
+                                        <a href="/my/privacy/preferences" style="color:#32373c; text-decoration:underline;">Préférences</a>
+                                        <span style="color:#9CA3AF;"> | </span>
+                                        <a href="https://crm.example.com/r/politique-de-confidentialite" style="color:#9CA3AF; text-decoration:underline;">Confidentialité</a>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <!-- Bottom Accent -->
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="max-width:600px; margin-top:12px;">
+                <tr>
+                    <td style="height:3px; line-height:3px; background-color:#32373c; width:50%;">&#160;</td>
+                    <td style="height:3px; line-height:3px; background-color:#000000; width:50%;">&#160;</td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+        </field>
+        <field name="auto_delete" eval="False"/>
+    </record>
+
+    <!-- Email template: Consent Reminder 2 (14 days) - Final -->
+    <record id="mail_template_consent_reminder_2" model="mail.template">
+        <field name="name">Vie privée : Rappel de consentement 2 (14 jours)</field>
+        <field name="model_id" ref="model_privacy_consent"/>
+        <field name="email_from">{{ (object.company_id.partner_id.email or object.company_id.email or 'noreply@example.com') }}</field>
+        <field name="partner_to">{{ object.subject_partner_id.id }}</field>
+        <field name="subject">Dernier rappel: Demande de consentement / Final Reminder: Consent Request - {{ object.purpose_id.name }}</field>
+        <field name="body_html" type="html">
+
+<t t-set="company" t-value="(getattr(object, 'company_id', False)) or user.company_id"/>
+<t t-set="brand_primary" t-value="(company and company.report_brand_primary) or '#714B67'"/>
+<t t-set="brand_dark" t-value="(company and company.report_brand_dark) or '#212529'"/>
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#F8FAFC; padding:0; margin:0;">
+    <tr>
+        <td align="center" style="padding:24px;">
+            <table cellspacing="0" cellpadding="0" border="0" width="600" style="max-width:600px; background-color:#ffffff; border-radius:12px; border:1px solid #e5e7eb;">
+                <tbody>
+                    <!-- Header -->
+                    <tr>
+                        <td style="background-color:#000000; padding:16px 24px; border-radius:12px 12px 0 0;">
+                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                                <tr>
+                                    <td align="left">
+                                        <a href="https://crm.example.com" style="text-decoration:none;">
+                                            <img src="/web/image/website/1/logo" alt="Your Company" style="height:48px; width:auto; display:block;" height="48"/>
+                                        </a>
+                                    </td>
+                                    <td align="right" style="color:#ffffff; font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:18px; font-weight:700;">
+                                        Dernier rappel
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <!-- Accent Line - Red for urgency -->
+                    <tr>
+                        <td style="height:4px; line-height:4px; background-color:#dc3545;">&#160;</td>
+                    </tr>
+                    <!-- Main Content -->
+                    <tr>
+                        <td style="padding:24px;">
+                            <h1 style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:24px; font-weight:500; color:#dc3545; margin:0 0 8px 0;">
+                                ⚠️ Dernier rappel - Action requise
+                            </h1>
+                            <p style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:17px; font-weight:300; color:#374151; margin:0 0 16px 0; line-height:26px;">
+                                Bonjour <t t-out="object.subject_partner_id.name"/>,
+                            </p>
+                            <p style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:14px; color:#374151; line-height:22px; margin:0 0 16px 0;">
+                                Ceci est notre <strong>dernier rappel</strong> concernant votre consentement.
+                                Sans votre réponse, nous ne pourrons pas continuer à vous offrir certains services.
+                            </p>
+
+                            <!-- Purpose Box - Warning style -->
+                            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-left:4px solid #ffc107; background-color:#fff3cd; border-radius:0 10px 10px 0; margin:16px 0;">
+                                <tr>
+                                    <td style="padding:16px 20px;">
+                                        <strong style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:16px; color:#856404;"><t t-out="object.purpose_id.name"/></strong>
+                                        <p style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:14px; color:#856404; margin:10px 0 0 0; line-height:20px;">
+                                            <t t-out="object.purpose_id.plain_language_summary or ''"/>
+                                        </p>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <p style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:14px; color:#374151; line-height:22px; margin:0 0 16px 0;">
+                                Veuillez prendre un moment pour répondre à cette demande.
+                            </p>
+
+                            <!-- CTA Button - Red for urgency -->
+                            <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:24px 0;">
+                                <tr>
+                                    <td align="left">
+                                        <a t-attf-href="/my/privacy/consent/{{ object.id }}" style="display:inline-block; background-color:#dc3545; color:#ffffff; font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:14px; font-weight:600; padding:12px 18px; border-radius:8px; text-decoration:none;">
+                                            Répondre maintenant
+                                        </a>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <!-- Divider -->
+                            <hr style="border:none; border-top:1px solid #E5E7EB; margin:24px 0;"/>
+
+                            <!-- English Section -->
+                            <p style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:14px; color:#6B7280; line-height:22px; margin:0 0 8px 0; font-style:italic;">
+                                <strong>⚠️ Final Reminder - Action Required</strong>
+                            </p>
+                            <p style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:13px; color:#6B7280; line-height:20px; margin:0 0 8px 0; font-style:italic;">
+                                Hello <t t-out="object.subject_partner_id.name"/>,
+                            </p>
+                            <p style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:13px; color:#6B7280; line-height:20px; margin:0 0 8px 0; font-style:italic;">
+                                This is our <strong>final reminder</strong> regarding your consent for
+                                <strong><t t-out="object.purpose_id.name"/></strong>.
+                            </p>
+                            <p style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:13px; color:#6B7280; line-height:20px; margin:0; font-style:italic;">
+                                Without your response, we may not be able to continue providing certain services.
+                                Please take a moment to respond.
+                            </p>
+                        </td>
+                    </tr>
+                    <!-- Separator -->
+                    <tr>
+                        <td style="height:1px; line-height:1px; background-color:#E5E7EB;">&#160;</td>
+                    </tr>
+                    <!-- Footer -->
+                    <tr>
+                        <td style="padding:16px 24px 24px 24px; background-color:#FFFFFF; border-radius:0 0 12px 12px;">
+                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                                <tr>
+                                    <td style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:12px; color:#6B7280;">
+                                        <strong style="color:#000000;"><t t-out="object.company_id.name"/></strong><br/>
+                                        Solutions éthiques et souveraines pour vos données.
+                                    </td>
+                                    <td align="right" style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:12px; color:#9CA3AF;">
+                                        <a href="/my/privacy/preferences" style="color:#32373c; text-decoration:underline;">Préférences</a>
+                                        <span style="color:#9CA3AF;"> | </span>
+                                        <a href="https://crm.example.com/r/politique-de-confidentialite" style="color:#9CA3AF; text-decoration:underline;">Confidentialité</a>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <!-- Bottom Accent -->
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="max-width:600px; margin-top:12px;">
+                <tr>
+                    <td style="height:3px; line-height:3px; background-color:#32373c; width:50%;">&#160;</td>
+                    <td style="height:3px; line-height:3px; background-color:#000000; width:50%;">&#160;</td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+        </field>
+        <field name="auto_delete" eval="False"/>
+    </record>
+
+    <!-- Email template: Consent Renewal Confirmation -->
+    <record id="mail_template_consent_renewal_confirmation" model="mail.template">
+        <field name="name">Vie privée : Confirmation de renouvellement</field>
+        <field name="model_id" ref="model_privacy_consent"/>
+        <field name="email_from">{{ (object.company_id.partner_id.email or object.company_id.email or 'noreply@example.com') }}</field>
+        <field name="partner_to">{{ object.subject_partner_id.id }}</field>
+        <field name="subject">Consentement renouvelé / Consent Renewed - {{ object.purpose_id.name }}</field>
+        <field name="body_html" type="html">
+
+<t t-set="company" t-value="(getattr(object, 'company_id', False)) or user.company_id"/>
+<t t-set="brand_primary" t-value="(company and company.report_brand_primary) or '#714B67'"/>
+<t t-set="brand_dark" t-value="(company and company.report_brand_dark) or '#212529'"/>
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#F8FAFC; padding:0; margin:0;">
+    <tr>
+        <td align="center" style="padding:24px;">
+            <table cellspacing="0" cellpadding="0" border="0" width="600" style="max-width:600px; background-color:#ffffff; border-radius:12px; border:1px solid #e5e7eb;">
+                <tbody>
+                    <!-- Header -->
+                    <tr>
+                        <td style="background-color:#000000; padding:16px 24px; border-radius:12px 12px 0 0;">
+                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                                <tr>
+                                    <td align="left">
+                                        <a href="https://crm.example.com" style="text-decoration:none;">
+                                            <img src="/web/image/website/1/logo" alt="Your Company" style="height:48px; width:auto; display:block;" height="48"/>
+                                        </a>
+                                    </td>
+                                    <td align="right" style="color:#ffffff; font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:18px; font-weight:700;">
+                                        Confirmation
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <!-- Accent Line - Green for success -->
+                    <tr>
+                        <td style="height:4px; line-height:4px; background-color:#198754;">&#160;</td>
+                    </tr>
+                    <!-- Main Content -->
+                    <tr>
+                        <td style="padding:24px;">
+                            <h1 style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:24px; font-weight:500; color:#198754; margin:0 0 8px 0;">
+                                ✓ Consentement renouvelé avec succès
+                            </h1>
+                            <p style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:17px; font-weight:300; color:#374151; margin:0 0 16px 0; line-height:26px;">
+                                Bonjour <t t-out="object.subject_partner_id.name"/>,
+                            </p>
+                            <p style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:14px; color:#374151; line-height:22px; margin:0 0 16px 0;">
+                                Nous vous confirmons que votre consentement a été renouvelé avec succès.
+                            </p>
+
+                            <!-- Success Box -->
+                            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-left:4px solid #198754; background-color:#d1e7dd; border-radius:0 10px 10px 0; margin:16px 0;">
+                                <tr>
+                                    <td style="padding:16px 20px;">
+                                        <strong style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:16px; color:#198754;"><t t-out="object.purpose_id.name"/></strong>
+                                        <p style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:14px; color:#0f5132; margin:10px 0 0 0; line-height:20px;">
+                                            <strong>Valide jusqu'au:</strong> <t t-out="object.expires_at.strftime('%d/%m/%Y') if object.expires_at else 'Aucune expiration'"/>
+                                        </p>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <p style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:14px; color:#374151; line-height:22px; margin:0 0 16px 0;">
+                                Merci de votre confiance. Vous pouvez gérer vos préférences à tout moment.
+                            </p>
+
+                            <!-- CTA Button -->
+                            <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:24px 0;">
+                                <tr>
+                                    <td align="left">
+                                        <a href="/my/privacy/preferences" style="display:inline-block; background-color:#32373c; color:#ffffff; font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:14px; font-weight:600; padding:12px 18px; border-radius:8px; text-decoration:none;">
+                                            Voir mes préférences
+                                        </a>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <!-- Divider -->
+                            <hr style="border:none; border-top:1px solid #E5E7EB; margin:24px 0;"/>
+
+                            <!-- English Section -->
+                            <p style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:14px; color:#6B7280; line-height:22px; margin:0 0 8px 0; font-style:italic;">
+                                <strong>✓ Consent Successfully Renewed</strong>
+                            </p>
+                            <p style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:13px; color:#6B7280; line-height:20px; margin:0 0 8px 0; font-style:italic;">
+                                Hello <t t-out="object.subject_partner_id.name"/>,
+                            </p>
+                            <p style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:13px; color:#6B7280; line-height:20px; margin:0 0 8px 0; font-style:italic;">
+                                We confirm that your consent has been successfully renewed for
+                                <strong><t t-out="object.purpose_id.name"/></strong>.
+                            </p>
+                            <p style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:13px; color:#6B7280; line-height:20px; margin:0; font-style:italic;">
+                                <strong>Valid until:</strong> <t t-out="object.expires_at.strftime('%Y-%m-%d') if object.expires_at else 'No expiration'"/>
+                            </p>
+                        </td>
+                    </tr>
+                    <!-- Separator -->
+                    <tr>
+                        <td style="height:1px; line-height:1px; background-color:#E5E7EB;">&#160;</td>
+                    </tr>
+                    <!-- Footer -->
+                    <tr>
+                        <td style="padding:16px 24px 24px 24px; background-color:#FFFFFF; border-radius:0 0 12px 12px;">
+                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                                <tr>
+                                    <td style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:12px; color:#6B7280;">
+                                        <strong style="color:#000000;"><t t-out="object.company_id.name"/></strong><br/>
+                                        Solutions éthiques et souveraines pour vos données.
+                                    </td>
+                                    <td align="right" style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:12px; color:#9CA3AF;">
+                                        <a href="/my/privacy/preferences" style="color:#32373c; text-decoration:underline;">Préférences</a>
+                                        <span style="color:#9CA3AF;"> | </span>
+                                        <a href="https://crm.example.com/r/politique-de-confidentialite" style="color:#9CA3AF; text-decoration:underline;">Confidentialité</a>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <!-- Bottom Accent -->
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="max-width:600px; margin-top:12px;">
+                <tr>
+                    <td style="height:3px; line-height:3px; background-color:#32373c; width:50%;">&#160;</td>
+                    <td style="height:3px; line-height:3px; background-color:#000000; width:50%;">&#160;</td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+        </field>
+        <field name="auto_delete" eval="False"/>
+    </record>
+
+    <!-- Email template: Consent Granted Confirmation -->
+    <record id="mail_template_consent_granted_confirmation" model="mail.template">
+        <field name="name">Vie privée : Confirmation de consentement accordé</field>
+        <field name="model_id" ref="model_privacy_consent"/>
+        <field name="email_from">{{ (object.company_id.partner_id.email or object.company_id.email or 'noreply@example.com') }}</field>
+        <field name="partner_to">{{ object.subject_partner_id.id }}</field>
+        <field name="subject">Confirmation de consentement / Consent Confirmation - {{ object.purpose_id.name }}</field>
+        <field name="body_html" type="html">
+
+<t t-set="company" t-value="(getattr(object, 'company_id', False)) or user.company_id"/>
+<t t-set="brand_primary" t-value="(company and company.report_brand_primary) or '#714B67'"/>
+<t t-set="brand_dark" t-value="(company and company.report_brand_dark) or '#212529'"/>
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#F8FAFC; padding:0; margin:0;">
+    <tr>
+        <td align="center" style="padding:24px;">
+            <table cellspacing="0" cellpadding="0" border="0" width="600" style="max-width:600px; background-color:#ffffff; border-radius:12px; border:1px solid #e5e7eb;">
+                <tbody>
+                    <!-- Header -->
+                    <tr>
+                        <td style="background-color:#000000; padding:16px 24px; border-radius:12px 12px 0 0;">
+                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                                <tr>
+                                    <td align="left">
+                                        <a href="https://crm.example.com" style="text-decoration:none;">
+                                            <img src="/web/image/website/1/logo" alt="Your Company" style="height:48px; width:auto; display:block;" height="48"/>
+                                        </a>
+                                    </td>
+                                    <td align="right" style="color:#ffffff; font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:18px; font-weight:700;">
+                                        Confirmation
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <!-- Accent Line - Green for success -->
+                    <tr>
+                        <td style="height:4px; line-height:4px; background-color:#198754;">&#160;</td>
+                    </tr>
+                    <!-- Main Content -->
+                    <tr>
+                        <td style="padding:24px;">
+                            <h1 style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:24px; font-weight:500; color:#198754; margin:0 0 8px 0;">
+                                ✓ Merci pour votre consentement
+                            </h1>
+                            <p style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:17px; font-weight:300; color:#374151; margin:0 0 16px 0; line-height:26px;">
+                                Bonjour <t t-out="object.subject_partner_id.name"/>,
+                            </p>
+                            <p style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:14px; color:#374151; line-height:22px; margin:0 0 16px 0;">
+                                Nous avons bien enregistré votre consentement. Merci de votre confiance.
+                            </p>
+
+                            <!-- Success Box -->
+                            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-left:4px solid #198754; background-color:#d1e7dd; border-radius:0 10px 10px 0; margin:16px 0;">
+                                <tr>
+                                    <td style="padding:16px 20px;">
+                                        <strong style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:16px; color:#198754;"><t t-out="object.purpose_id.name"/></strong>
+                                        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-top:10px;">
+                                            <tr>
+                                                <td style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:14px; color:#0f5132; width:120px;">Date d'octroi:</td>
+                                                <td style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:14px; color:#0f5132;">
+                                                    <strong><t t-out="object.granted_at.strftime('%d/%m/%Y') if object.granted_at else 'N/A'"/></strong>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:14px; color:#0f5132; padding-top:4px;">Valide jusqu'au:</td>
+                                                <td style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:14px; color:#0f5132; padding-top:4px;">
+                                                    <strong><t t-out="object.expires_at.strftime('%d/%m/%Y') if object.expires_at else 'Aucune expiration'"/></strong>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <p style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:14px; color:#374151; line-height:22px; margin:0 0 16px 0;">
+                                Conformément à la <t t-out="object.get_framework().law_short_label"/>, vous pouvez retirer votre consentement à tout moment
+                                via notre centre de préférences.
+                            </p>
+
+                            <!-- CTA Button -->
+                            <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:24px 0;">
+                                <tr>
+                                    <td align="left">
+                                        <a href="/my/privacy/preferences" style="display:inline-block; background-color:#32373c; color:#ffffff; font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:14px; font-weight:600; padding:12px 18px; border-radius:8px; text-decoration:none;">
+                                            Gérer mes préférences
+                                        </a>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <!-- Divider -->
+                            <hr style="border:none; border-top:1px solid #E5E7EB; margin:24px 0;"/>
+
+                            <!-- English Section -->
+                            <p style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:14px; color:#6B7280; line-height:22px; margin:0 0 8px 0; font-style:italic;">
+                                <strong>✓ Thank You for Your Consent</strong>
+                            </p>
+                            <p style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:13px; color:#6B7280; line-height:20px; margin:0 0 8px 0; font-style:italic;">
+                                Hello <t t-out="object.subject_partner_id.name"/>,
+                            </p>
+                            <p style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:13px; color:#6B7280; line-height:20px; margin:0 0 8px 0; font-style:italic;">
+                                We have recorded your consent for <strong><t t-out="object.purpose_id.name"/></strong>.
+                            </p>
+                            <p style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:13px; color:#6B7280; line-height:20px; margin:0 0 8px 0; font-style:italic;">
+                                <strong>Granted on:</strong> <t t-out="object.granted_at.strftime('%Y-%m-%d') if object.granted_at else 'N/A'"/><br/>
+                                <strong>Valid until:</strong> <t t-out="object.expires_at.strftime('%Y-%m-%d') if object.expires_at else 'No expiration'"/>
+                            </p>
+                            <p style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:13px; color:#6B7280; line-height:20px; margin:0; font-style:italic;">
+                                In accordance with <t t-out="object.get_framework().law_short_label"/>, you may withdraw your consent at any time
+                                through our preference center.
+                            </p>
+                        </td>
+                    </tr>
+                    <!-- Separator -->
+                    <tr>
+                        <td style="height:1px; line-height:1px; background-color:#E5E7EB;">&#160;</td>
+                    </tr>
+                    <!-- Footer -->
+                    <tr>
+                        <td style="padding:16px 24px 24px 24px; background-color:#FFFFFF; border-radius:0 0 12px 12px;">
+                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                                <tr>
+                                    <td style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:12px; color:#6B7280;">
+                                        <strong style="color:#000000;"><t t-out="object.company_id.name"/></strong><br/>
+                                        Solutions éthiques et souveraines pour vos données.
+                                    </td>
+                                    <td align="right" style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:12px; color:#9CA3AF;">
+                                        <a href="/my/privacy/preferences" style="color:#32373c; text-decoration:underline;">Préférences</a>
+                                        <span style="color:#9CA3AF;"> | </span>
+                                        <a href="https://crm.example.com/r/politique-de-confidentialite" style="color:#9CA3AF; text-decoration:underline;">Confidentialité</a>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <!-- Bottom Accent -->
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="max-width:600px; margin-top:12px;">
+                <tr>
+                    <td style="height:3px; line-height:3px; background-color:#32373c; width:50%;">&#160;</td>
+                    <td style="height:3px; line-height:3px; background-color:#000000; width:50%;">&#160;</td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+        </field>
+        <field name="auto_delete" eval="False"/>
+    </record>
+</odoo>

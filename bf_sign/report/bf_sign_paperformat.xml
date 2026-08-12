@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="paperformat_sign_certificate" model="report.paperformat">
+        <field name="name">Certificat de signature (US Letter)</field>
+        <field name="format">Letter</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">2</field>
+        <field name="margin_bottom">8</field>
+        <field name="margin_left">7</field>
+        <field name="margin_right">7</field>
+        <field name="header_spacing">0</field>
+        <field name="dpi">90</field>
+    </record>
+
+    <record id="action_report_sign_certificate" model="ir.actions.report">
+        <field name="name">Certificat de signature</field>
+        <field name="model">bf.sign.request</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">bf_sign.report_sign_certificate</field>
+        <field name="report_file">bf_sign.report_sign_certificate</field>
+        <field name="print_report_name">'Certificat_%s' % (object.name)</field>
+        <field name="binding_model_id" ref="model_bf_sign_request"/>
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="paperformat_sign_certificate"/>
+    </record>
+
+</odoo>

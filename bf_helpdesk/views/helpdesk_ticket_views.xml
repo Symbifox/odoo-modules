@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+  <record id="view_helpdesk_ticket_form_bf" model="ir.ui.view">
+    <field name="name">helpdesk.ticket.form.bf</field>
+    <field name="model">helpdesk.ticket</field>
+    <field name="inherit_id" ref="helpdesk_mgmt.ticket_view_form"/>
+    <field name="arch" type="xml">
+
+      <!-- Convert-to-meeting button + smart-button counter -->
+      <xpath expr="//div[@name='button_box']" position="inside">
+        <button name="action_view_meeting_records" type="object"
+                class="oe_stat_button" icon="fa-comments-o"
+                invisible="meeting_record_count == 0">
+          <field name="meeting_record_count" widget="statinfo"
+                 string="Rencontres"/>
+        </button>
+      </xpath>
+      <xpath expr="//header" position="inside">
+        <button name="action_apply_macro" type="object"
+                string="Appliquer macro"
+                class="btn-secondary"
+                groups="helpdesk_mgmt.group_helpdesk_user_team"/>
+        <button name="action_create_meeting_record" type="object"
+                string="Convertir en rencontre"
+                class="btn-secondary"
+                groups="helpdesk_mgmt.group_helpdesk_user_team"/>
+        <button name="action_triage_with_claude" type="object"
+                string="Triage IA"
+                class="btn-secondary"
+                groups="helpdesk_mgmt.group_helpdesk_user_team"
+                invisible="triage_state == 'pending'"
+                confirm="Lancer un appel Anthropic pour suggérer stage, assignation et brouillon de réponse ?"/>
+        <button name="action_send_client_update" type="object"
+                string="Envoyer une mise à jour"
+                class="btn-secondary"
+                groups="helpdesk_mgmt.group_helpdesk_user_team"
+                invisible="not partner_id"/>
+        <button name="action_subscribe_partner_follower" type="object"
+                string="Abonner le client"
+                class="btn-secondary"
+                groups="helpdesk_mgmt.group_helpdesk_user_team"
+                invisible="not partner_id"/>
+      </xpath>
+
+      <!-- Triage suggestion panel -->
+      <xpath expr="//notebook" position="inside">
+        <page string="Triage IA" name="bf_triage_panel"
+              invisible="triage_state == 'none'">
+          <group>
+            <field name="triage_state" widget="badge"
+                   decoration-info="triage_state == 'pending'"
+                   decoration-success="triage_state == 'done'"
+                   decoration-danger="triage_state == 'error'"/>
+            <field name="triage_last_run" readonly="1"/>
+          </group>
+          <field name="triage_suggestion_html" readonly="1" nolabel="1"/>
+        </page>
+      </xpath>
+
+      <!-- Add waiting_state next to priority in the header -->
+      <xpath expr="//field[@name='priority']" position="after">
+        <field name="waiting_state" widget="badge"
+               decoration-warning="waiting_state == 'client'"
+               decoration-info="waiting_state == 'external'"/>
+      </xpath>
+
+      <!-- Hour bank balance row + low-balance ribbon -->
+      <xpath expr="//field[@name='partner_email']" position="after">
+        <field name="hour_bank_id" readonly="1"
+               invisible="not hour_bank_id"/>
+        <field name="hour_bank_balance" readonly="1"
+               string="Solde banque (h)"
+               invisible="not hour_bank_id"
+               decoration-danger="hour_bank_low"/>
+        <field name="hour_bank_low" invisible="1"/>
+        <field name="total_hours" readonly="1" string="Temps saisi (h)"
+               invisible="total_hours == 0.0"/>
+        <field name="partner_has_portal_access" widget="boolean_toggle"
+               readonly="1" string="Accès portail"
+               invisible="not partner_id"/>
+        <field name="portal_ticket_url" widget="url" readonly="1"
+               invisible="not partner_id"/>
+      </xpath>
+
+      <xpath expr="//sheet" position="before">
+        <div class="alert alert-warning text-center mb-0"
+             role="alert"
+             invisible="not hour_bank_low">
+          <strong>⚠ Solde banque d'heures bas pour ce client.</strong>
+          Vérifier avant de poursuivre des heures non couvertes.
+        </div>
+      </xpath>
+
+      <!-- Knowledge matrix scope validation -->
+      <xpath expr="//field[@name='category_id']" position="after">
+        <field name="knowledge_item_id"
+               options="{'no_create': True, 'no_create_edit': True}"/>
+        <field name="knowledge_matrix_id" readonly="1"
+               invisible="not knowledge_matrix_id"/>
+        <field name="scope_aligned" widget="badge"
+               decoration-success="scope_aligned == 'aligned'"
+               decoration-info="scope_aligned == 'pending'"
+               decoration-danger="scope_aligned == 'out_of_scope'"
+               decoration-muted="scope_aligned == 'unset'"
+               readonly="1"/>
+      </xpath>
+
+      <!-- SLA breach ribbons -->
+      <xpath expr="//sheet" position="before">
+        <div class="alert alert-danger text-center mb-0"
+             role="alert"
+             invisible="not sla_response_breach">
+          <strong>⚠ SLA première réponse dépassé.</strong>
+          Aucune réponse de l'équipe avant l'échéance.
+        </div>
+        <div class="alert alert-danger text-center mb-0"
+             role="alert"
+             invisible="not sla_resolve_breach">
+          <strong>⚠ SLA résolution dépassé.</strong>
+          Le ticket aurait dû être fermé.
+        </div>
+      </xpath>
+      <xpath expr="//field[@name='closed_date']" position="after">
+        <field name="sla_response_deadline" readonly="1"
+               invisible="not sla_response_deadline"/>
+        <field name="sla_resolve_deadline" readonly="1"
+               invisible="not sla_resolve_deadline"/>
+        <field name="sla_response_breach" invisible="1"/>
+        <field name="sla_resolve_breach" invisible="1"/>
+      </xpath>
+
+      <!-- CSAT response link -->
+      <xpath expr="//field[@name='closed_date']" position="after">
+        <field name="csat_user_input_id" readonly="1"
+               invisible="not csat_user_input_id"/>
+        <field name="csat_state" readonly="1"
+               widget="badge"
+               decoration-success="csat_state == 'done'"
+               decoration-info="csat_state == 'in_progress'"
+               decoration-muted="csat_state == 'new'"
+               invisible="not csat_user_input_id"/>
+      </xpath>
+
+      <!-- Persona panel — quick composer hints when answering the ticket -->
+      <xpath expr="//notebook" position="inside">
+        <page string="Persona" name="bf_persona_panel"
+              invisible="not partner_id">
+          <group>
+            <group string="Communication">
+              <field name="persona_id" readonly="1"
+                     invisible="not persona_id"/>
+              <field name="persona_addressing_style" readonly="1"
+                     invisible="not persona_id"/>
+              <field name="persona_preferred_salutation" readonly="1"
+                     invisible="not persona_id"/>
+              <field name="persona_closing_formula" readonly="1"
+                     invisible="not persona_id"/>
+            </group>
+            <group string="Posture &amp; paiement">
+              <field name="persona_tone_summary" readonly="1"
+                     widget="badge"
+                     decoration-success="persona_tone_summary == 'warm'"
+                     decoration-info="persona_tone_summary == 'neutral'"
+                     decoration-warning="persona_tone_summary == 'tense'"
+                     invisible="not persona_id"/>
+              <field name="persona_our_tone_summary" readonly="1"
+                     widget="badge"
+                     decoration-success="persona_our_tone_summary == 'warm'"
+                     decoration-info="persona_our_tone_summary == 'neutral'"
+                     decoration-warning="persona_our_tone_summary == 'tense'"
+                     invisible="not persona_id"/>
+              <field name="persona_payer_quality" readonly="1"
+                     widget="badge"
+                     decoration-success="persona_payer_quality == 'excellent'"
+                     decoration-info="persona_payer_quality == 'good'"
+                     decoration-warning="persona_payer_quality in ('average', 'slow')"
+                     decoration-danger="persona_payer_quality == 'poor'"
+                     invisible="not persona_id"/>
+            </group>
+          </group>
+          <div class="text-center mt-3">
+            <button name="action_open_persona" type="object"
+                    string="Ouvrir la fiche persona"
+                    class="btn btn-primary"
+                    invisible="not persona_id"/>
+            <div class="alert alert-info" role="alert"
+                 invisible="persona_id">
+              Aucun persona pour ce contact.
+              <button name="action_open_persona" type="object"
+                      string="Créer maintenant" class="btn btn-link p-0"/>
+            </div>
+          </div>
+        </page>
+      </xpath>
+
+      <!-- Timesheets — direct time entry on the ticket -->
+      <xpath expr="//notebook" position="inside">
+        <page string="Feuilles de temps" name="bf_timesheets">
+          <group>
+            <field name="project_id"
+                   options="{'no_create': True, 'no_create_edit': True}"/>
+            <field name="task_id"
+                   invisible="not project_id"
+                   domain="[('project_id', '=', project_id)]"
+                   options="{'no_create': True, 'no_create_edit': True}"/>
+            <field name="total_hours" readonly="1"/>
+          </group>
+          <field name="timesheet_ids" context="{'default_ticket_id': id, 'default_project_id': project_id}">
+            <list editable="bottom">
+              <field name="date"/>
+              <field name="employee_id"/>
+              <field name="name"/>
+              <field name="project_id" optional="hide"/>
+              <field name="unit_amount" widget="timesheet_uom" sum="Total"/>
+            </list>
+          </field>
+          <div class="text-muted mt-2" invisible="project_id">
+            <i class="fa fa-info-circle"/>
+            Associez un projet à ce ticket (ou à son équipe / sa banque d'heures)
+            pour saisir du temps qui déduit de la banque d'heures.
+          </div>
+        </page>
+      </xpath>
+
+    </field>
+  </record>
+
+  <record id="view_helpdesk_ticket_tree_bf" model="ir.ui.view">
+    <field name="name">helpdesk.ticket.tree.bf</field>
+    <field name="model">helpdesk.ticket</field>
+    <field name="inherit_id" ref="helpdesk_mgmt.ticket_view_tree"/>
+    <field name="arch" type="xml">
+      <xpath expr="//field[@name='priority']" position="after">
+        <field name="waiting_state" optional="show"
+               decoration-warning="waiting_state == 'client'"
+               decoration-info="waiting_state == 'external'"/>
+      </xpath>
+    </field>
+  </record>
+
+  <record id="view_helpdesk_ticket_search_bf" model="ir.ui.view">
+    <field name="name">helpdesk.ticket.search.bf</field>
+    <field name="model">helpdesk.ticket</field>
+    <field name="inherit_id" ref="helpdesk_mgmt.helpdesk_ticket_view_search"/>
+    <field name="arch" type="xml">
+      <xpath expr="//search" position="inside">
+        <separator/>
+        <filter string="Attente — Client.e" name="filter_waiting_client"
+                domain="[('waiting_state', '=', 'client')]"/>
+        <filter string="Attente — Externe" name="filter_waiting_external"
+                domain="[('waiting_state', '=', 'external')]"/>
+        <group expand="0" string="Group By">
+          <filter string="État d'attente" name="group_waiting_state"
+                  context="{'group_by': 'waiting_state'}"/>
+        </group>
+      </xpath>
+    </field>
+  </record>
+
+</odoo>

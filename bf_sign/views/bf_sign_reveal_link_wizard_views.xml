@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_bf_sign_reveal_link_wizard_form" model="ir.ui.view">
+        <field name="name">bf.sign.reveal.link.wizard.form</field>
+        <field name="model">bf.sign.reveal.link.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Lien de signature">
+                <field name="revealed" invisible="1"/>
+
+                <!-- Step 1 — warning + confirmation (nothing logged yet) -->
+                <div invisible="revealed">
+                    <div class="alert alert-warning" role="alert">
+                        Vous êtes sur le point de révéler le <strong>lien de signature personnel</strong>
+                        de ce signataire. Cette révélation sera <strong>inscrite dans la piste de
+                        vérification</strong> (preuve). Ne transmettez le lien qu'au signataire concerné —
+                        ne signez jamais à sa place : la valeur probante du document en dépend.
+                    </div>
+                    <group>
+                        <field name="signer_id"/>
+                    </group>
+                </div>
+
+                <!-- Step 2 — revealed (after confirmation) -->
+                <div invisible="not revealed">
+                    <div class="alert alert-info" role="alert">
+                        Lien révélé et journalisé. Copiez-le puis transmettez-le au signataire.
+                    </div>
+                    <group>
+                        <field name="signer_id"/>
+                        <field name="url" widget="CopyClipboardChar"/>
+                    </group>
+                </div>
+
+                <footer>
+                    <button string="Révéler le lien" name="action_confirm_reveal" type="object"
+                            class="btn-primary" invisible="revealed"/>
+                    <button string="Annuler" class="btn-secondary" special="cancel" invisible="revealed"/>
+                    <button string="Fermer" class="btn-primary" special="cancel" invisible="not revealed"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>

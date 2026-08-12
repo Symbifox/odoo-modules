@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- Catalogue de logiciels étendu - Services d'infrastructure -->
+        <!-- Note : n8n (N8N) et FreePBX (FPX) existent déjà en base de données -->
+
+        <!-- Whisper - Reconnaissance vocale -->
+        <record id="software_whisper" model="hosting.software">
+            <field name="name">Whisper ASR</field>
+            <field name="code">WH</field>
+            <field name="software_type">self_hosted</field>
+            <field name="github_url">https://github.com/openai/whisper</field>
+            <field name="docker_image">onerahmet/openai-whisper-asr-webservice:latest</field>
+            <field name="notes">&lt;p&gt;Système de reconnaissance automatique de la parole (ASR) d'OpenAI.&lt;/p&gt;</field>
+        </record>
+
+        <!-- Ollama - LLM -->
+        <record id="software_ollama" model="hosting.software">
+            <field name="name">Ollama</field>
+            <field name="code">OL</field>
+            <field name="software_type">self_hosted</field>
+            <field name="github_url">https://github.com/ollama/ollama</field>
+            <field name="docker_image">ollama/ollama:latest</field>
+            <field name="version_check_method">github</field>
+            <field name="github_repo">ollama/ollama</field>
+            <field name="notes">&lt;p&gt;Exécuter des grands modèles de langage localement.&lt;/p&gt;</field>
+        </record>
+
+        <!-- Wazuh - Sécurité -->
+        <record id="software_wazuh" model="hosting.software">
+            <field name="name">Wazuh</field>
+            <field name="code">WZ</field>
+            <field name="software_type">self_hosted</field>
+            <field name="latest_version">4.9.2</field>
+            <field name="github_url">https://github.com/wazuh/wazuh</field>
+            <field name="docker_image">wazuh/wazuh-manager:latest</field>
+            <field name="version_check_method">github</field>
+            <field name="github_repo">wazuh/wazuh</field>
+            <field name="notes">&lt;p&gt;Plateforme de sécurité libre pour la détection des menaces, la surveillance d'intégrité et la conformité.&lt;/p&gt;</field>
+        </record>
+
+        <!-- Cal.com - Planification -->
+        <record id="software_calcom" model="hosting.software">
+            <field name="name">Cal.com</field>
+            <field name="code">CAL</field>
+            <field name="software_type">self_hosted</field>
+            <field name="github_url">https://github.com/calcom/cal.com</field>
+            <field name="docker_image">calcom/cal.com:latest</field>
+            <field name="version_check_method">github</field>
+            <field name="github_repo">calcom/cal.com</field>
+            <field name="notes">&lt;p&gt;Infrastructure de planification libre pour tous.&lt;/p&gt;</field>
+        </record>
+
+        <!-- Nginx Proxy Manager - Proxy inverse -->
+        <record id="software_npm" model="hosting.software">
+            <field name="name">Nginx Proxy Manager</field>
+            <field name="code">NPM</field>
+            <field name="software_type">self_hosted</field>
+            <field name="latest_version">2.12.1</field>
+            <field name="github_url">https://github.com/NginxProxyManager/nginx-proxy-manager</field>
+            <field name="docker_image">jc21/nginx-proxy-manager:latest</field>
+            <field name="version_check_method">github</field>
+            <field name="github_repo">NginxProxyManager/nginx-proxy-manager</field>
+            <field name="notes">&lt;p&gt;Proxy inverse facile à utiliser avec terminaison SSL et interface web.&lt;/p&gt;</field>
+        </record>
+
+        <!-- Traefik - Proxy inverse -->
+        <record id="software_traefik" model="hosting.software">
+            <field name="name">Traefik</field>
+            <field name="code">TK</field>
+            <field name="software_type">self_hosted</field>
+            <field name="latest_version">3.2.3</field>
+            <field name="github_url">https://github.com/traefik/traefik</field>
+            <field name="docker_image">traefik:latest</field>
+            <field name="version_check_method">github</field>
+            <field name="github_repo">traefik/traefik</field>
+            <field name="notes">&lt;p&gt;Proxy inverse et répartiteur de charge natif pour le nuage.&lt;/p&gt;</field>
+        </record>
+
+        <!-- Services de base de données -->
+
+        <!-- PostgreSQL -->
+        <record id="software_postgresql" model="hosting.software">
+            <field name="name">PostgreSQL</field>
+            <field name="code">PG</field>
+            <field name="software_type">self_hosted</field>
+            <field name="latest_version">17.2</field>
+            <field name="docker_image">postgres:17</field>
+            <field name="version_check_method">docker_hub</field>
+            <field name="docker_hub_repo">postgres</field>
+            <field name="version_regex">^(\d+\.?\d*)$</field>
+            <field name="notes">&lt;p&gt;Système de base de données objet-relationnel puissant et libre.&lt;/p&gt;</field>
+        </record>
+
+        <!-- Redis -->
+        <record id="software_redis" model="hosting.software">
+            <field name="name">Redis</field>
+            <field name="code">RD</field>
+            <field name="software_type">self_hosted</field>
+            <field name="latest_version">7.4.1</field>
+            <field name="docker_image">redis:latest</field>
+            <field name="version_check_method">docker_hub</field>
+            <field name="docker_hub_repo">redis</field>
+            <field name="version_regex">^(\d+\.\d+\.?\d*)$</field>
+            <field name="notes">&lt;p&gt;Magasin de données en mémoire utilisé comme base de données, cache et courtier de messages.&lt;/p&gt;</field>
+        </record>
+
+        <!-- MariaDB -->
+        <record id="software_mariadb" model="hosting.software">
+            <field name="name">MariaDB</field>
+            <field name="code">MDB</field>
+            <field name="software_type">self_hosted</field>
+            <field name="latest_version">11.6.2</field>
+            <field name="docker_image">mariadb:latest</field>
+            <field name="version_check_method">docker_hub</field>
+            <field name="docker_hub_repo">mariadb</field>
+            <field name="version_regex">^(\d+\.\d+\.?\d*)$</field>
+            <field name="notes">&lt;p&gt;Embranchement communautaire du système de base de données relationnelle MySQL.&lt;/p&gt;</field>
+        </record>
+
+        <!-- Mastodon - Réseau social fédéré -->
+        <record id="software_mastodon" model="hosting.software">
+            <field name="name">Mastodon</field>
+            <field name="code">MST</field>
+            <field name="software_type">self_hosted</field>
+            <field name="github_url">https://github.com/mastodon/mastodon</field>
+            <field name="docker_image">tootsuite/mastodon:latest</field>
+            <field name="version_check_method">github</field>
+            <field name="github_repo">mastodon/mastodon</field>
+            <field name="notes">&lt;p&gt;R&#233;seau social f&#233;d&#233;r&#233; libre et d&#233;centralis&#233;.&lt;/p&gt;</field>
+        </record>
+
+        <!-- Matrix/Synapse - Messagerie fédérée -->
+        <record id="software_matrix" model="hosting.software">
+            <field name="name">Matrix / Synapse</field>
+            <field name="code">MTX</field>
+            <field name="software_type">self_hosted</field>
+            <field name="github_url">https://github.com/element-hq/synapse</field>
+            <field name="docker_image">matrixdotorg/synapse:latest</field>
+            <field name="version_check_method">github</field>
+            <field name="github_repo">element-hq/synapse</field>
+            <field name="notes">&lt;p&gt;Serveur de messagerie f&#233;d&#233;r&#233;e Matrix (impl&#233;mentation Synapse).&lt;/p&gt;</field>
+        </record>
+
+    </data>
+</odoo>

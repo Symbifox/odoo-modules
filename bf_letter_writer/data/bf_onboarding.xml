@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo noupdate="1">
+
+    <record id="bf_onb_step_letterhead" model="onboarding.onboarding.step">
+        <field name="title">Configurer l'en-tête de lettre</field>
+        <field name="description">[action:base.action_res_company_form] Ouvrez la fiche de votre société, onglet « Lettres » : signataire, image de signature, mention d'en-tête et pied de page.</field>
+        <field name="button_text">Ouvrir la société</field>
+        <field name="done_text">En-tête configuré</field>
+        <field name="panel_step_open_action_name">bf_open_action</field>
+        <field name="sequence">1</field>
+    </record>
+
+    <record id="bf_onb_step_templates" model="onboarding.onboarding.step">
+        <field name="title">Créer des modèles de lettres</field>
+        <field name="description">[action:bf_letter_writer.action_letter_template] Préparez vos modèles réutilisables avec champs de fusion.</field>
+        <field name="button_text">Voir les modèles</field>
+        <field name="done_text">Modèles prêts</field>
+        <field name="panel_step_open_action_name">bf_open_action</field>
+        <field name="sequence">2</field>
+    </record>
+
+    <record id="bf_onb_step_first_letter" model="onboarding.onboarding.step">
+        <field name="title">Rédiger une première lettre</field>
+        <field name="description">[action:bf_letter_writer.action_letter_document] Créez une lettre, appliquez un modèle et générez le PDF brandé.</field>
+        <field name="button_text">Rédiger une lettre</field>
+        <field name="done_text">Première lettre rédigée</field>
+        <field name="panel_step_open_action_name">bf_open_action</field>
+        <field name="sequence">3</field>
+    </record>
+
+    <record id="bf_onboarding_panel" model="onboarding.onboarding">
+        <field name="name">Rédacteur de lettres</field>
+        <field name="route_name">bf_letter_writer_onboarding</field>
+        <field name="panel_close_action_name">action_close_panel_bf_letter_writer</field>
+        <field name="step_ids" eval="[
+            Command.link(ref('bf_letter_writer.bf_onb_step_letterhead')),
+            Command.link(ref('bf_letter_writer.bf_onb_step_templates')),
+            Command.link(ref('bf_letter_writer.bf_onb_step_first_letter')),
+        ]"/>
+    </record>
+
+</odoo>

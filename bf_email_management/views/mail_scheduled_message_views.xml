@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============================================================ -->
+    <!-- LIST VIEW                                                    -->
+    <!-- ============================================================ -->
+    <record id="mail_scheduled_message_view_list" model="ir.ui.view">
+        <field name="name">mail.scheduled.message.list</field>
+        <field name="model">mail.scheduled.message</field>
+        <field name="arch" type="xml">
+            <list string="Brouillons planifi&#233;s"
+                  default_order="scheduled_date asc">
+                <field name="scheduled_date" widget="datetime"
+                       string="Envoi pr&#233;vu le"/>
+                <field name="author_id"/>
+                <field name="subject"/>
+                <field name="record_name" string="Enregistrement"/>
+                <field name="model" optional="hide" string="Mod&#232;le"/>
+                <field name="res_id" optional="hide"/>
+                <field name="partner_ids" widget="many2many_tags"
+                       string="Destinataires" optional="show"/>
+                <field name="is_note" widget="boolean"
+                       string="Note interne" optional="hide"/>
+                <button name="action_open_record"
+                        type="object"
+                        icon="fa-external-link"
+                        title="Ouvrir l'enregistrement"
+                        invisible="not model or not res_id"/>
+                <button name="action_send_now"
+                        type="object"
+                        icon="fa-paper-plane"
+                        title="Envoyer maintenant"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- FORM VIEW                                                    -->
+    <!-- ============================================================ -->
+    <record id="mail_scheduled_message_view_form" model="ir.ui.view">
+        <field name="name">mail.scheduled.message.form</field>
+        <field name="model">mail.scheduled.message</field>
+        <field name="arch" type="xml">
+            <form string="Brouillon planifi&#233;">
+                <header>
+                    <button name="action_send_now"
+                            string="Envoyer maintenant"
+                            type="object"
+                            class="btn-primary"
+                            icon="fa-paper-plane"/>
+                    <button name="action_open_record"
+                            string="Ouvrir l'enregistrement"
+                            type="object"
+                            class="btn-secondary"
+                            icon="fa-external-link"
+                            invisible="not model or not res_id"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="subject" placeholder="(sans objet)"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="scheduled_date"
+                                   string="Envoi pr&#233;vu le"/>
+                            <field name="author_id"/>
+                            <field name="is_note"/>
+                        </group>
+                        <group>
+                            <field name="record_name" readonly="1"/>
+                            <field name="model" readonly="1"/>
+                            <field name="res_id" readonly="1"/>
+                        </group>
+                    </group>
+                    <group string="Destinataires">
+                        <field name="partner_ids" widget="many2many_tags"
+                               nolabel="1"/>
+                    </group>
+                    <notebook>
+                        <page string="Corps" name="body">
+                            <field name="body" nolabel="1"/>
+                        </page>
+                        <page string="Pi&#232;ces jointes" name="attachments">
+                            <field name="attachment_ids" nolabel="1"
+                                   widget="many2many_binary"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- SEARCH VIEW                                                  -->
+    <!-- ============================================================ -->
+    <record id="mail_scheduled_message_view_search" model="ir.ui.view">
+        <field name="name">mail.scheduled.message.search</field>
+        <field name="model">mail.scheduled.message</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="subject"/>
+                <field name="author_id"/>
+                <field name="partner_ids"/>
+                <field name="record_name" string="Enregistrement"/>
+                <field name="model" string="Mod&#232;le"/>
+                <separator/>
+                <filter name="filter_my_drafts"
+                        string="Mes brouillons"
+                        domain="[('author_id.user_ids', 'in', uid)]"/>
+                <filter name="filter_email"
+                        string="Courriels"
+                        domain="[('is_note', '=', False)]"/>
+                <filter name="filter_note"
+                        string="Notes internes"
+                        domain="[('is_note', '=', True)]"/>
+                <separator/>
+                <filter name="filter_today"
+                        string="Aujourd'hui"
+                        domain="[('scheduled_date', '>=', context_today().strftime('%%Y-%%m-%%d')),
+                                 ('scheduled_date', '&lt;', (context_today() + datetime.timedelta(days=1)).strftime('%%Y-%%m-%%d'))]"/>
+                <filter name="filter_week"
+                        string="7 prochains jours"
+                        domain="[('scheduled_date', '>=', context_today().strftime('%%Y-%%m-%%d')),
+                                 ('scheduled_date', '&lt;', (context_today() + datetime.timedelta(days=7)).strftime('%%Y-%%m-%%d'))]"/>
+                <separator/>
+                <group expand="0" string="Grouper par">
+                    <filter name="group_author"
+                            string="Auteur"
+                            context="{'group_by': 'author_id'}"/>
+                    <filter name="group_model"
+                            string="Mod&#232;le"
+                            context="{'group_by': 'model'}"/>
+                    <filter name="group_scheduled_day"
+                            string="Date d'envoi"
+                            context="{'group_by': 'scheduled_date:day'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- ACTION                                                       -->
+    <!-- ============================================================ -->
+    <record id="action_mail_scheduled_message" model="ir.actions.act_window">
+        <field name="name">Brouillons planifi&#233;s</field>
+        <field name="res_model">mail.scheduled.message</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="mail_scheduled_message_view_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Aucun brouillon planifi&#233;
+            </p>
+            <p>
+                Les courriels et notes plac&#233;s en envoi diff&#233;r&#233;
+                depuis n'importe quel chatter apparaissent ici.
+            </p>
+        </field>
+    </record>
+
+</odoo>

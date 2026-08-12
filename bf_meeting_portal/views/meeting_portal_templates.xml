@@ -1,0 +1,475 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============================================================ -->
+    <!-- Accueil du portail : entrée « Rencontres »                    -->
+    <!--                                                              -->
+    <!-- placeholder_count est OBLIGATOIRE : portal.portal_docs_entry  -->
+    <!-- rend ses cartes en d-none par défaut. Sans compteur (ou sans  -->
+    <!-- config_card), le lien est bien dans le HTML mais masqué en    -->
+    <!-- CSS — panne silencieuse classique. Le compteur est alimenté   -->
+    <!-- par _prepare_home_portal_values dans controllers/portal.py.   -->
+    <!--                                                              -->
+    <!-- Priorités déjà prises sur portal.portal_my_home : 35          -->
+    <!-- (bf_hour_bank), 40 (bf_fundraising_web) -> on prend 45.       -->
+    <!-- ============================================================ -->
+
+    <template id="portal_my_home_meeting"
+              name="Portail : Rencontres"
+              inherit_id="portal.portal_my_home"
+              customize_show="True" priority="45">
+        <div id="portal_common_category" position="inside">
+            <t t-call="portal.portal_docs_entry">
+                <!-- portal.portal_docs_entry rend l'icone dans une balise img,
+                     via son attribut src : il faut un CHEMIN d'image. Une classe
+                     Font Awesome y produit une image brisee (404), visible des
+                     que l'option portail « Use Pictograms » est active.
+                     C'est le logo backend de bf_meeting. Taille intrinseque
+                     64x64 comme les icones natives : le gabarit n'impose aucune
+                     dimension, donc l'image sort a sa taille naturelle et un
+                     PNG de 128 px paraissait deux fois trop gros. Le SVG
+                     embarque le raster en 128 px (2x) pour rester net en retina.
+                     L'original backend fait 1080 px et 1 Mo. -->
+                <t t-set="icon" t-value="'/bf_meeting_portal/static/src/img/portal_icon.svg'"/>
+                <t t-set="title">Rencontres</t>
+                <t t-set="url" t-value="'/my/meetings'"/>
+                <t t-set="placeholder_count" t-value="'meeting_count'"/>
+            </t>
+        </div>
+    </template>
+
+    <!-- ============================================================ -->
+    <!-- Fil d'Ariane                                                 -->
+    <!-- ============================================================ -->
+
+    <template id="portal_breadcrumb_meeting"
+              name="Portail : fil d'Ariane Rencontres"
+              inherit_id="portal.portal_breadcrumbs" priority="45">
+        <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+            <li t-if="page_name in ('meetings', 'meeting_record')"
+                t-attf-class="breadcrumb-item #{'active' if page_name == 'meetings' else ''}">
+                <a t-if="page_name != 'meetings'" href="/my/meetings">Rencontres</a>
+                <t t-else="">Rencontres</t>
+            </li>
+            <li t-if="page_name == 'meeting_record' and doc"
+                class="breadcrumb-item active">
+                <t t-out="doc['name']"/>
+            </li>
+        </xpath>
+    </template>
+
+    <!-- ============================================================ -->
+    <!-- Feuille de style commune                                     -->
+    <!--                                                              -->
+    <!-- Les couleurs viennent de res.company (report_brand_*), comme  -->
+    <!-- le fait bf_hour_bank : le portail suit donc la marque sans    -->
+    <!-- rien coder en dur, et reste juste si elle change.             -->
+    <!-- ============================================================ -->
+
+    <template id="portal_meeting_styles" name="Rencontres : styles portail">
+        <style>
+            /* Le portail est rendu DANS le site web : la palette du theme pilote
+               le fond de page, et rien ne garantit qu'il soit blanc. Le bloc
+               possede donc sa propre surface et sa propre couleur de texte,
+               au lieu d'heriter d'un fond inconnu et de finir gris sur gris. */
+            .bfm {
+                --bfm-primary: <t t-esc="(env.company and env.company.report_brand_primary) or '#29ABE2'"/>;
+                --bfm-dark: <t t-esc="(env.company and env.company.report_brand_dark) or '#2E3132'"/>;
+                --bfm-line: #e6e9ec;
+                --bfm-muted: #5b6469;
+                --bfm-ink: #23292c;
+                font-family: 'Lexend', -apple-system, 'Segoe UI', Roboto, sans-serif;
+                background: #ffffff;
+                color: var(--bfm-ink);
+                border: 1px solid var(--bfm-line);
+                border-radius: 12px;
+                padding: 1.5rem 1.6rem 1.75rem;
+                margin-bottom: 2rem;
+            }
+            /* Ne cible que les vrais liens en ligne. Sans le :not(), cette regle
+               (0,1,1) bat .bfm-pdf (0,1,0) et repeint le texte du bouton en bleu
+               sur son fond bleu. Meme piege pour la carte, elle aussi une ancre. */
+            .bfm a:not(.bfm-card):not(.bfm-pdf) { color: var(--bfm-primary); }
+            @media (max-width: 575px) { .bfm { padding: 1.1rem 1rem 1.35rem; } }
+
+            /* --- en-tête de page --- */
+            .bfm-head { margin-bottom: 1.75rem; }
+            .bfm-head h3 {
+                font-weight: 600; letter-spacing: -.015em;
+                color: var(--bfm-dark); margin: 0 0 .35rem;
+            }
+            .bfm-sub { color: var(--bfm-muted); font-size: .925rem; margin: 0; }
+
+            /* --- titre de section --- */
+            .bfm-section {
+                display: flex; align-items: center; gap: .6rem;
+                font-size: .78rem; font-weight: 600; text-transform: uppercase;
+                letter-spacing: .09em; color: var(--bfm-muted);
+                margin: 2.25rem 0 .9rem;
+            }
+            .bfm-section:first-of-type { margin-top: .5rem; }
+            .bfm-section::after {
+                content: ''; flex: 1; height: 1px; background: var(--bfm-line);
+            }
+            /* Le compteur etait gris moyen sur gris clair (~3.4:1, sous le seuil
+               AA). Texte fonce sur fond tres pale a la place. */
+            .bfm-section .bfm-n {
+                background: #eef1f3; color: #454d51;
+                border-radius: 999px; padding: .1rem .5rem;
+                font-size: .72rem; letter-spacing: 0; font-weight: 600;
+            }
+
+            /* --- carte de rencontre --- */
+            .bfm-grid { display: grid; gap: .7rem; }
+            @media (min-width: 992px) {
+                .bfm-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            }
+            .bfm-card {
+                display: flex; align-items: center; gap: 1rem;
+                padding: .85rem 1rem;
+                border: 1px solid var(--bfm-line); border-radius: 10px;
+                background: #fff; text-decoration: none;
+                transition: border-color .15s ease, box-shadow .15s ease, transform .15s ease;
+            }
+            .bfm-card:hover {
+                border-color: var(--bfm-primary);
+                box-shadow: 0 4px 14px rgba(0,0,0,.07);
+                transform: translateY(-1px);
+                text-decoration: none;
+            }
+            .bfm-chip {
+                flex: 0 0 auto; width: 52px; text-align: center;
+                border-radius: 8px; padding: .4rem .2rem;
+                /* repli solide d'abord : color-mix demande un navigateur récent */
+                background: #f4f8fb;
+                border: 1px solid var(--bfm-line);
+                background: color-mix(in srgb, var(--bfm-primary) 12%, #fff);
+                border: 1px solid color-mix(in srgb, var(--bfm-primary) 25%, #fff);
+            }
+            .bfm-chip .d { display: block; font-size: 1.15rem; font-weight: 600;
+                           line-height: 1.1; color: var(--bfm-dark); }
+            .bfm-chip .m { display: block; font-size: .68rem; text-transform: uppercase;
+                           letter-spacing: .06em; color: var(--bfm-primary); font-weight: 600; }
+            /* min-width:0 est indispensable : sans lui un enfant flex refuse de
+               retrecir sous la taille de son contenu et le texte deborde. */
+            .bfm-body { min-width: 0; flex: 1 1 auto; overflow: hidden; }
+            .bfm-title {
+                display: block; font-weight: 600; color: var(--bfm-dark);
+                line-height: 1.35; margin-bottom: .15rem;
+                overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+            }
+            /* display:block obligatoire : text-overflow est inerte sur un inline */
+            .bfm-meta {
+                display: block;
+                font-size: .8rem; color: var(--bfm-muted);
+                overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+            }
+            .bfm-meta .sep { opacity: .45; margin: 0 .4rem; }
+            .bfm-card .fa-angle-right { color: var(--bfm-line); font-size: 1.3rem; }
+            .bfm-card:hover .fa-angle-right { color: var(--bfm-primary); }
+
+            /* --- page détail ---
+               En-tête volontairement CLAIR. Un bandeau foncé dependrait de
+               report_brand_dark, or rien ne garantit qu'une couleur de societe
+               soit foncee : une societe au brand pale donnerait du texte blanc
+               illisible. Ici la couleur de marque ne sert que d'accent. */
+            .bfm-hero {
+                border-top: 3px solid var(--bfm-primary);
+                border-bottom: 1px solid var(--bfm-line);
+                padding: 1.15rem 0 1.25rem; margin-bottom: 1.75rem;
+            }
+            .bfm-hero .kind {
+                display: inline-block; font-size: .7rem; font-weight: 600;
+                text-transform: uppercase; letter-spacing: .1em;
+                color: var(--bfm-primary); margin-bottom: .45rem;
+            }
+            .bfm-hero h3 {
+                color: var(--bfm-dark); font-weight: 600; letter-spacing: -.015em;
+                margin: 0 0 .45rem; line-height: 1.3;
+                overflow-wrap: anywhere;   /* un titre sans espace ne deborde pas */
+            }
+            .bfm-hero .meta {
+                color: var(--bfm-muted); font-size: .9rem; margin: 0;
+                overflow-wrap: anywhere;
+            }
+            .bfm-hero .meta .sep { opacity: .45; margin: 0 .45rem; }
+            .bfm-pdf {
+                background: var(--bfm-primary); color: #fff; border: 0;
+                font-weight: 600; font-size: .85rem;
+                border-radius: 8px; padding: .5rem .95rem; white-space: nowrap;
+                transition: filter .15s ease;
+            }
+            .bfm-pdf:hover { filter: brightness(.92); color: #fff; }
+
+            .bfm-block { margin-bottom: 1.9rem; }
+            .bfm-h5 {
+                font-size: .78rem; font-weight: 600; text-transform: uppercase;
+                letter-spacing: .09em; color: var(--bfm-muted);
+                padding-left: .7rem; border-left: 3px solid var(--bfm-primary);
+                margin-bottom: .8rem;
+            }
+            .bfm-prose {
+                color: var(--bfm-ink); line-height: 1.65; margin: 0;
+                white-space: pre-wrap;      /* conserve les retours de ligne saisis */
+                overflow-wrap: anywhere;    /* mais ne laisse pas deborder une longue chaine */
+            }
+            /* Contenu HTML libre (contexte, preparation) : on borne ce qui pourrait
+               casser la mise en page, notamment images larges et tableaux. */
+            .bfm-rich { color: var(--bfm-ink); line-height: 1.65; overflow-wrap: anywhere; }
+            .bfm-rich :last-child { margin-bottom: 0; }
+            .bfm-rich img { max-width: 100%; height: auto; }
+            .bfm-rich table { max-width: 100%; }
+            .bfm-rich pre { white-space: pre-wrap; overflow-x: auto; }
+
+            .bfm-list { list-style: none; padding: 0; margin: 0; }
+            .bfm-list li {
+                position: relative; padding: .55rem 0 .55rem 1.5rem;
+                border-bottom: 1px solid var(--bfm-line);
+                color: var(--bfm-ink); line-height: 1.55; overflow-wrap: anywhere;
+            }
+            .bfm-list li:last-child { border-bottom: 0; }
+            .bfm-list li::before {
+                content: ''; position: absolute; left: .25rem; top: 1.05rem;
+                width: 6px; height: 6px; border-radius: 2px;
+                background: var(--bfm-primary);
+            }
+            /* Complement d'une puce (decideur, assigne, echeance).
+               Gris volontairement FONCE : ce texte reste sur fond blanc et doit
+               passer le seuil de contraste, pas juste paraitre discret. */
+            .bfm-note {
+                display: block; margin-top: .15rem;
+                font-size: .8rem; color: #5b6469;
+            }
+            .bfm-list.num { counter-reset: bfm; }
+            .bfm-list.num li::before {
+                counter-increment: bfm; content: counter(bfm);
+                background: none; color: var(--bfm-primary);
+                font-size: .8rem; font-weight: 600; top: .55rem;
+                width: auto; height: auto;
+            }
+
+            /* --- présences --- */
+            .bfm-people { display: flex; flex-wrap: wrap; gap: .45rem; }
+            .bfm-person {
+                display: inline-flex; align-items: baseline; gap: .45rem;
+                border: 1px solid var(--bfm-line); border-radius: 999px;
+                padding: .32rem .8rem; font-size: .855rem; color: var(--bfm-ink);
+                background: #fff; max-width: 100%; overflow-wrap: anywhere;
+            }
+            .bfm-person .role { color: var(--bfm-muted); font-size: .76rem; }
+            .bfm-person .dot {
+                width: 7px; height: 7px; border-radius: 50%; background: #adb5bd;
+                align-self: center;
+            }
+            .bfm-person.present .dot { background: #2fa84f; }
+            .bfm-person.absent  .dot { background: #d64545; }
+            .bfm-person.excused .dot { background: #e0a10c; }
+
+            .bfm-foot {
+                margin-top: 2.5rem; padding-top: 1rem;
+                border-top: 1px solid var(--bfm-line);
+                color: var(--bfm-muted); font-size: .82rem;
+            }
+            .bfm-empty {
+                border: 1px dashed var(--bfm-line); border-radius: 10px;
+                padding: 2.25rem 1.5rem; text-align: center; color: var(--bfm-muted);
+            }
+            .bfm-empty .fa { font-size: 1.6rem; opacity: .35; display: block;
+                             margin-bottom: .6rem; }
+        </style>
+    </template>
+
+    <!-- ============================================================ -->
+    <!-- Fragment : une carte de rencontre                            -->
+    <!-- ============================================================ -->
+
+    <template id="portal_meeting_card" name="Rencontres : carte">
+        <a t-att-href="item['url']" class="bfm-card">
+            <span class="bfm-chip">
+                <span class="d"><t t-out="item['chip']['day']"/></span>
+                <span class="m"><t t-out="item['chip']['month']"/></span>
+            </span>
+            <span class="bfm-body">
+                <span class="bfm-title"><t t-out="item['name']"/></span>
+                <span class="bfm-meta">
+                    <t t-if="item['project']">
+                        <t t-out="item['project']"/><span class="sep">•</span>
+                    </t>
+                    <t t-out="item['n_decisions']"/> décision<t t-if="item['n_decisions'] != 1">s</t>
+                    <span class="sep">•</span>
+                    <t t-out="item['n_attendance']"/> participant<t t-if="item['n_attendance'] != 1">s</t>
+                </span>
+            </span>
+            <i class="fa fa-angle-right"/>
+        </a>
+    </template>
+
+    <!-- ============================================================ -->
+    <!-- Liste : /my/meetings                                         -->
+    <!-- ============================================================ -->
+
+    <template id="portal_my_meetings" name="Mes rencontres">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="False"/>
+            <t t-call="bf_meeting_portal.portal_meeting_styles"/>
+
+            <div class="bfm">
+                <div class="bfm-head">
+                    <h3>Rencontres</h3>
+                    <p class="bfm-sub">
+                        Les comptes rendus qui vous ont été transmis.
+                    </p>
+                </div>
+
+                <t t-if="not records">
+                    <div class="bfm-empty">
+                        <i class="fa fa-calendar-o"/>
+                        Aucun compte rendu ne vous a encore été transmis.
+                    </div>
+                </t>
+
+
+                <t t-if="records">
+                    <div class="bfm-section">
+                        Comptes rendus
+                        <span class="bfm-n"><t t-out="len(records)"/></span>
+                    </div>
+                    <div class="bfm-grid">
+                        <t t-foreach="records" t-as="item">
+                            <t t-call="bf_meeting_portal.portal_meeting_card"/>
+                        </t>
+                    </div>
+                </t>
+            </div>
+        </t>
+    </template>
+
+    <!-- ============================================================ -->
+    <!-- Détail : compte rendu                                        -->
+    <!-- ============================================================ -->
+
+    <template id="portal_meeting_record" name="Compte rendu">
+        <t t-call="portal.portal_layout">
+            <t t-call="bf_meeting_portal.portal_meeting_styles"/>
+
+            <div class="bfm">
+                <div class="bfm-hero">
+                    <div class="row align-items-center">
+                        <div class="col-md-9">
+                            <span class="kind">Compte rendu</span>
+                            <h3><t t-out="doc['name']"/></h3>
+                            <p class="meta">
+                                <t t-out="doc['date']"/>
+                                <t t-if="doc['project']">
+                                    <span class="sep">•</span><t t-out="doc['project']"/>
+                                </t>
+                            </p>
+                        </div>
+                        <div class="col-md-3 text-md-end mt-3 mt-md-0">
+                            <a t-attf-href="/my/meetings/record/#{doc['id']}/pdf" class="btn bfm-pdf">
+                                <i class="fa fa-file-pdf-o me-1"/> PDF
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <t t-if="doc['summary']">
+                    <div class="bfm-block">
+                        <div class="bfm-h5">Résumé</div>
+                        <p class="bfm-prose"><t t-out="doc['summary']"/></p>
+                    </div>
+                </t>
+
+                <t t-if="doc['topics']">
+                    <t t-foreach="doc['topics']" t-as="topic">
+                        <div class="bfm-block">
+                            <div class="bfm-h5"><t t-out="topic['title']"/></div>
+                            <ul class="bfm-list" t-if="topic['points']">
+                                <li t-foreach="topic['points']" t-as="pt"><t t-out="pt"/></li>
+                            </ul>
+                        </div>
+                    </t>
+                </t>
+
+                <t t-if="doc['decisions']">
+                    <div class="bfm-block">
+                        <div class="bfm-h5">Décisions</div>
+                        <ul class="bfm-list">
+                            <li t-foreach="doc['decisions']" t-as="d">
+                                <t t-out="d['name']"/>
+                                <t t-if="d['maker'] or d['item']">
+                                    <span class="bfm-note">
+                                        <t t-if="d['maker']">Décideur : <t t-out="d['maker']"/></t>
+                                        <t t-if="d['maker'] and d['item']"> • </t>
+                                        <t t-if="d['item']"><t t-out="d['item']"/></t>
+                                    </span>
+                                </t>
+                            </li>
+                        </ul>
+                    </div>
+                </t>
+
+                <t t-if="doc['actions']">
+                    <div class="bfm-block">
+                        <div class="bfm-h5">Éléments d'action</div>
+                        <ul class="bfm-list">
+                            <li t-foreach="doc['actions']" t-as="a">
+                                <t t-out="a['name']"/>
+                                <t t-if="a['who'] or a['deadline']">
+                                    <span class="bfm-note">
+                                        <t t-if="a['who']"><t t-out="a['who']"/></t>
+                                        <t t-if="a['who'] and a['deadline']"> • </t>
+                                        <t t-if="a['deadline']">échéance <t t-out="a['deadline']"/></t>
+                                    </span>
+                                </t>
+                            </li>
+                        </ul>
+                    </div>
+                </t>
+
+                <t t-if="doc['open_questions']">
+                    <div class="bfm-block">
+                        <div class="bfm-h5">Questions ouvertes</div>
+                        <ul class="bfm-list">
+                            <li t-foreach="doc['open_questions']" t-as="q"><t t-out="q"/></li>
+                        </ul>
+                    </div>
+                </t>
+
+                <t t-if="doc['deliverables']">
+                    <div class="bfm-block">
+                        <div class="bfm-h5">Livrables</div>
+                        <ul class="bfm-list">
+                            <li t-foreach="doc['deliverables']" t-as="dv"><t t-out="dv"/></li>
+                        </ul>
+                    </div>
+                </t>
+
+                <t t-if="doc['attendance']">
+                    <div class="bfm-block">
+                        <div class="bfm-h5">Présences</div>
+                        <div class="bfm-people">
+                            <t t-foreach="doc['attendance']" t-as="a">
+                                <span t-attf-class="bfm-person #{a['key']}">
+                                    <span class="dot"/>
+                                    <span><t t-out="a['name']"/></span>
+                                    <t t-if="a['role']">
+                                        <span class="role"><t t-out="a['role']"/></span>
+                                    </t>
+                                </span>
+                            </t>
+                        </div>
+                    </div>
+                </t>
+
+                <p class="bfm-foot">
+                    Compte rendu transmis le <t t-out="doc['sent_date']"/>.
+                    Le PDF reprend l'intégralité du compte rendu, dans sa version
+                    à jour : il peut différer de la copie reçue par courriel si
+                    des correctifs y ont été apportés depuis.
+                </p>
+            </div>
+        </t>
+    </template>
+
+</odoo>

@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="bf_phishing_campaign_view_list" model="ir.ui.view">
+        <field name="name">bf.phishing.campaign.list</field>
+        <field name="model">bf.phishing.campaign</field>
+        <field name="arch" type="xml">
+            <list decoration-muted="state == 'cancelled'"
+                  decoration-success="state == 'done'">
+                <field name="name"/>
+                <field name="template_id"/>
+                <field name="recipient_count"/>
+                <field name="sent_count"/>
+                <field name="clicked_count"/>
+                <field name="submitted_count"/>
+                <field name="fail_rate" widget="percentage"/>
+                <field name="scheduled_date"/>
+                <field name="state" widget="badge"
+                       decoration-info="state in ('scheduled','sending')"
+                       decoration-success="state == 'done'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_phishing_campaign_view_kanban" model="ir.ui.view">
+        <field name="name">bf.phishing.campaign.kanban</field>
+        <field name="model">bf.phishing.campaign</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="state">
+                <field name="name"/>
+                <field name="state"/>
+                <field name="fail_rate"/>
+                <field name="recipient_count"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_global_click">
+                            <div class="o_kanban_record_title">
+                                <strong><field name="name"/></strong>
+                            </div>
+                            <div class="o_kanban_record_subtitle">
+                                <field name="template_id"/>
+                            </div>
+                            <div>
+                                <span><field name="recipient_count"/> destinataires</span>
+                                · <span><t t-esc="Math.round(record.fail_rate.raw_value)"/>% d'échec</span>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="bf_phishing_campaign_view_form" model="ir.ui.view">
+        <field name="name">bf.phishing.campaign.form</field>
+        <field name="model">bf.phishing.campaign</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_prepare" type="object" string="Préparer"
+                            class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_launch" type="object" string="Lancer"
+                            class="btn-primary"
+                            invisible="state not in ('scheduled','sending')"
+                            confirm="Lancer la campagne et envoyer les courriels-leurres ?"/>
+                    <button name="action_done" type="object" string="Clôturer"
+                            invisible="state != 'running'"/>
+                    <button name="action_cancel" type="object" string="Annuler"
+                            invisible="state in ('done','cancelled')"/>
+                    <button name="action_reset_to_draft" type="object"
+                            string="Remettre en brouillon"
+                            invisible="state not in ('cancelled',)"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,scheduled,running,done"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_results" type="object"
+                                class="oe_stat_button" icon="fa-list">
+                            <field name="recipient_count" widget="statinfo"
+                                   string="Résultats"/>
+                        </button>
+                        <button name="action_view_mailing" type="object"
+                                class="oe_stat_button" icon="fa-envelope"
+                                invisible="not mailing_id">
+                            <span class="o_stat_text">Envoi de masse</span>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="Nom de la campagne"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="template_id"
+                                   readonly="state != 'draft'"/>
+                            <field name="scheduled_date"
+                                   readonly="state not in ('draft','scheduled')"/>
+                            <field name="send_window_days"
+                                   readonly="state not in ('draft','scheduled')"/>
+                            <field name="mail_server_id"
+                                   readonly="state not in ('draft','scheduled')"/>
+                            <field name="auto_assign_training"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                        <group string="Résultats">
+                            <field name="sent_count"/>
+                            <field name="opened_count"/>
+                            <field name="clicked_count"/>
+                            <field name="submitted_count"/>
+                            <field name="reported_count"/>
+                            <field name="fail_rate" widget="percentage"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Destinataires" name="audience">
+                            <field name="recipient_partner_ids"
+                                   widget="many2many_tags"
+                                   readonly="state != 'draft'"/>
+                            <separator string="Listes de diffusion"/>
+                            <field name="mailing_list_ids"
+                                   widget="many2many_tags"
+                                   readonly="state != 'draft'"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="bf_phishing_campaign_view_search" model="ir.ui.view">
+        <field name="name">bf.phishing.campaign.search</field>
+        <field name="model">bf.phishing.campaign</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="template_id"/>
+                <filter name="running" string="En cours" domain="[('state','=','running')]"/>
+                <filter name="done" string="Terminées" domain="[('state','=','done')]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="group_state" string="État"
+                            context="{'group_by': 'state'}"/>
+                    <filter name="group_template" string="Modèle"
+                            context="{'group_by': 'template_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="bf_phishing_campaign_action" model="ir.actions.act_window">
+        <field name="name">Campagnes</field>
+        <field name="res_model">bf.phishing.campaign</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="search_view_id" ref="bf_phishing_campaign_view_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Lancez votre première campagne</p>
+            <p>Une campagne envoie un courriel-leurre à un groupe de personnes et
+               suit qui ouvre, clique ou soumet ses identifiants.</p>
+        </field>
+    </record>
+
+</odoo>

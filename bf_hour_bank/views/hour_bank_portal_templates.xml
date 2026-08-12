@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============================================================ -->
+    <!-- Portal home: add "Banque d'heures" entry                     -->
+    <!-- ============================================================ -->
+
+    <template id="portal_my_home_hour_bank"
+              name="Portal : Banque d'heures"
+              inherit_id="portal.portal_my_home"
+              customize_show="True" priority="35">
+        <div id="portal_common_category" position="inside">
+            <t t-call="portal.portal_docs_entry">
+                <!-- portal.portal_docs_entry rend l'icone dans une balise img,
+                     via son attribut src : il faut donc un CHEMIN d'image.
+                     Une classe Font Awesome y produit une image brisee (404).
+                     portal_icon.svg est le logo backend en taille intrinseque
+                     64x64, comme les icones natives : le gabarit n'impose aucune
+                     dimension, donc l'image sort a sa taille naturelle et
+                     l'original de 1091 px paraitrait enorme. Le raster embarque
+                     fait 128 px (2x) pour rester net en retina, ~11 Ko contre
+                     ~1062 Ko. L'icone d'application d'origine reste intacte. -->
+                <t t-set="icon" t-value="'/bf_hour_bank/static/src/img/portal_icon.svg'"/>
+                <t t-set="title">Banque d'heures</t>
+                <t t-set="url" t-value="'/my/hour-banks'"/>
+                <t t-set="placeholder_count" t-value="'hour_bank_count'"/>
+            </t>
+        </div>
+    </template>
+
+    <!-- ============================================================ -->
+    <!-- Breadcrumbs                                                  -->
+    <!-- ============================================================ -->
+
+    <template id="portal_breadcrumb_hour_bank"
+              name="Portal breadcrumb: Banque d'heures"
+              inherit_id="portal.portal_breadcrumbs" priority="35">
+        <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+            <li t-if="page_name == 'hour_banks' or page_name == 'hour_bank_detail'"
+                t-attf-class="breadcrumb-item #{'active' if page_name == 'hour_banks' else ''}">
+                <a t-if="page_name == 'hour_bank_detail'" href="/my/hour-banks">Banque d'heures</a>
+                <t t-else="">Banque d'heures</t>
+            </li>
+            <li t-if="page_name == 'hour_bank_detail' and hour_bank"
+                class="breadcrumb-item active">
+                <t t-out="hour_bank.partner_id.name"/>
+            </li>
+        </xpath>
+    </template>
+
+    <!-- ============================================================ -->
+    <!-- List page: /my/hour-banks                                    -->
+    <!-- ============================================================ -->
+
+    <template id="portal_my_hour_banks" name="Mes banques d'heures">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="False"/>
+
+            <t t-if="not hour_banks">
+                <div class="alert alert-info" role="alert">
+                    Aucune banque d'heures n'est configur&#233;e pour votre compte.
+                </div>
+            </t>
+
+            <t t-if="hour_banks" t-call="portal.portal_table">
+                <thead>
+                    <tr class="active">
+                        <th>Client</th>
+                        <th class="text-end">Solde actuel (h)</th>
+                        <th class="text-end d-none d-md-table-cell">Dernier rapport</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <t t-foreach="hour_banks" t-as="hb">
+                        <tr>
+                            <td>
+                                <a t-attf-href="/my/hour-banks/#{hb.id}">
+                                    <t t-out="hb.partner_id.name"/>
+                                </a>
+                            </td>
+                            <td class="text-end">
+                                <span t-attf-class="#{'text-success fw-bold' if hb.current_balance &gt;= 0 else 'text-danger fw-bold'}">
+                                    <t t-out="'%.2f' % hb.current_balance"/>
+                                </span>
+                            </td>
+                            <td class="text-end d-none d-md-table-cell">
+                                <t t-if="hb.last_report_date">
+                                    <span t-field="hb.last_report_date" t-options="{'widget': 'date'}"/>
+                                </t>
+                                <t t-else="">&#8212;</t>
+                            </td>
+                        </tr>
+                    </t>
+                </tbody>
+            </t>
+        </t>
+    </template>
+
+    <!-- ============================================================ -->
+    <!-- Detail page: /my/hour-banks/<id>                             -->
+    <!-- ============================================================ -->
+
+    <template id="portal_hour_bank_page" name="Banque d'heures - D&#233;tail">
+        <t t-call="portal.portal_layout">
+            <style>
+                .hb-portal-table {
+                    font-size: 0.875rem;
+                }
+                .hb-portal-table th {
+                    background: <t t-esc="(env.company and env.company.report_brand_dark) or '#212529'"/>;
+                    color: #fff;
+                    font-weight: 600;
+                    font-size: 0.8rem;
+                    white-space: nowrap;
+                }
+                .hb-portal-table .credit td {
+                    background: #C6EFCE;
+                }
+                .hb-portal-table td.num {
+                    text-align: right;
+                    font-variant-numeric: tabular-nums;
+                }
+                .hb-portal-table th.num {
+                    text-align: right;
+                }
+                .hb-balance-card {
+                    border-left: 4px solid <t t-esc="(env.company and env.company.report_brand_primary) or '#714B67'"/>;
+                    background: #f8f9fb;
+                }
+            </style>
+
+            <!-- Header -->
+            <div class="row mb-4">
+                <div class="col-md-8">
+                    <h3 class="mb-1">
+                        Banque d'heures &#8212;
+                        <t t-out="hour_bank.partner_id.name"/>
+                    </h3>
+                    <p class="text-muted mb-0">
+                        Derni&#232;re mise &#224; jour :
+                        <t t-out="data['last_update'].strftime('%Y-%m-%d %H:%M')"/>
+                    </p>
+                </div>
+                <div class="col-md-4">
+                    <div class="hb-balance-card p-3 rounded">
+                        <div class="text-muted small text-uppercase">Solde restant</div>
+                        <div t-attf-class="fs-2 fw-bold #{'text-success' if data['balance'] &gt;= 0 else 'text-danger'}">
+                            <t t-out="'%.2f h' % data['balance']"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Download buttons -->
+            <div class="mb-4">
+                <a t-attf-href="/my/hour-banks/#{hour_bank.id}/pdf"
+                   class="btn btn-primary btn-sm me-2">
+                    <i class="fa fa-file-pdf-o"/> T&#233;l&#233;charger PDF
+                </a>
+                <a t-attf-href="/my/hour-banks/#{hour_bank.id}/xlsx"
+                   class="btn btn-success btn-sm">
+                    <i class="fa fa-file-excel-o"/> T&#233;l&#233;charger Excel
+                </a>
+            </div>
+
+            <!-- Entries table -->
+            <t t-set="entries" t-value="data['entries']"/>
+            <t t-if="entries">
+                <h5 class="mt-4 mb-3">D&#233;tail des op&#233;rations</h5>
+                <div class="table-responsive">
+                    <table class="table table-sm table-hover hb-portal-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th class="num">Heures</th>
+                                <th class="num">Solde cumulatif</th>
+                                <th>Description</th>
+                                <th class="d-none d-lg-table-cell">Projet</th>
+                                <th class="d-none d-lg-table-cell">T&#226;che</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="entries" t-as="e">
+                                <tr t-attf-class="#{'credit' if e['entry_type'] == 'credit' else ''}">
+                                    <td><t t-out="str(e['date'])"/></td>
+                                    <td class="num"><t t-out="'%.2f' % e['hours']"/></td>
+                                    <td class="num"><t t-out="'%.2f' % e['cumulative']"/></td>
+                                    <td><t t-out="e['description']"/></td>
+                                    <td class="d-none d-lg-table-cell"><t t-out="e['project']"/></td>
+                                    <td class="d-none d-lg-table-cell"><t t-out="e['task']"/></td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                </div>
+            </t>
+            <t t-else="">
+                <div class="alert alert-info mt-4">
+                    Aucune op&#233;ration enregistr&#233;e.
+                </div>
+            </t>
+
+            <!-- Summary by project -->
+            <t t-set="summary" t-value="data['summary_by_project']"/>
+            <t t-if="summary">
+                <h5 class="mt-5 mb-3">Sommaire par projet</h5>
+                <div class="table-responsive">
+                    <table class="table table-sm table-bordered" style="max-width:500px;">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Projet</th>
+                                <th class="text-end">Heures</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-set="grand_total" t-value="0"/>
+                            <t t-foreach="summary.items()" t-as="item">
+                                <tr>
+                                    <td><t t-out="item[0]"/></td>
+                                    <td class="text-end"><t t-out="'%.2f' % item[1]"/></td>
+                                </tr>
+                                <t t-set="grand_total" t-value="grand_total + item[1]"/>
+                            </t>
+                            <tr class="fw-bold table-light">
+                                <td>Total</td>
+                                <td class="text-end"><t t-out="'%.2f' % grand_total"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </t>
+
+        </t>
+    </template>
+
+</odoo>

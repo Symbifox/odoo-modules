@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!-- Cadre GDPR / RGPD (Union européenne) -->
+    <record id="framework_gdpr" model="privacy.framework">
+        <field name="code">gdpr</field>
+        <field name="name">RGPD / GDPR (Union européenne)</field>
+        <field name="sequence" eval="20"/>
+        <field name="company_id" eval="False"/>
+        <field name="jurisdiction_label">Union européenne / European Union</field>
+        <field name="languages">en_GB,fr_FR</field>
+        <field name="law_short_label">GDPR</field>
+        <field name="law_citation_fr">Règlement général sur la protection des données (UE) 2016/679 (RGPD)</field>
+        <field name="law_citation_en">General Data Protection Regulation (EU) 2016/679 (GDPR)</field>
+        <field name="consent_intro_fr">Conformément au Règlement général sur la protection des données (RGPD), nous avons besoin de votre consentement explicite pour cette finalité.</field>
+        <field name="consent_intro_en">In accordance with the General Data Protection Regulation (GDPR), we require your explicit consent for this purpose.</field>
+        <field name="authority_name">Autorité de contrôle nationale compétente (EDPB)</field>
+        <field name="authority_url">https://edpb.europa.eu</field>
+        <field name="breach_portal_url">https://edpb.europa.eu/about-edpb/about-edpb/members_en</field>
+        <field name="officer_title_fr">Délégué à la protection des données (DPD / DPO)</field>
+        <field name="officer_title_en">Data Protection Officer (DPO)</field>
+        <field name="officer_required" eval="True"/>
+        <field name="age_of_majority" eval="16"/>
+        <field name="breach_notify_authority" eval="True"/>
+        <field name="breach_notify_authority_hours" eval="72"/>
+        <field name="breach_notify_authority_label">72 heures (art. 33)</field>
+        <field name="breach_notify_individuals" eval="True"/>
+        <field name="breach_notify_individuals_label">sans délai en cas de risque élevé (art. 34)</field>
+        <field name="breach_threshold_label">risque pour les droits et libertés des personnes</field>
+        <field name="assessment_name_fr">Analyse d'impact relative à la protection des données (AIPD)</field>
+        <field name="assessment_name_en">Data Protection Impact Assessment (DPIA)</field>
+        <field name="assessment_citation">Art. 35 GDPR</field>
+        <field name="anonymization_citation">Considérant 26 GDPR ; Avis 05/2014 du G29 sur les techniques d'anonymisation</field>
+        <field name="default_retention_years" eval="0"/>
+        <field name="destruction_basis_template">Art. 5(1)(e) GDPR (limitation de la conservation)</field>
+        <field name="erasure_basis_citation">Art. 17 GDPR (droit à l'effacement / « droit à l'oubli »)</field>
+        <field name="register_immutability_citation">l'obligation de responsabilité (art. 5(2) et 24 GDPR)</field>
+        <field name="notes">Pack GDPR (UE). Sélectionner par société ou par enregistrement.</field>
+    </record>
+
+    <!-- Bases légales — art. 6(1) GDPR -->
+    <record id="lawful_basis_gdpr_consent" model="privacy.lawful.basis">
+        <field name="framework_id" ref="framework_gdpr"/>
+        <field name="code">consent</field>
+        <field name="name">Consentement</field>
+        <field name="description">La personne a consenti au traitement pour une ou plusieurs finalités spécifiques.</field>
+        <field name="citation">Art. 6(1)(a) GDPR</field>
+        <field name="requires_consent" eval="True"/>
+        <field name="sequence" eval="10"/>
+    </record>
+    <record id="lawful_basis_gdpr_contract" model="privacy.lawful.basis">
+        <field name="framework_id" ref="framework_gdpr"/>
+        <field name="code">contract</field>
+        <field name="name">Exécution d'un contrat</field>
+        <field name="description">Traitement nécessaire à l'exécution d'un contrat ou de mesures précontractuelles.</field>
+        <field name="citation">Art. 6(1)(b) GDPR</field>
+        <field name="sequence" eval="20"/>
+    </record>
+    <record id="lawful_basis_gdpr_legal_obligation" model="privacy.lawful.basis">
+        <field name="framework_id" ref="framework_gdpr"/>
+        <field name="code">legal_obligation</field>
+        <field name="name">Obligation légale</field>
+        <field name="description">Traitement nécessaire au respect d'une obligation légale.</field>
+        <field name="citation">Art. 6(1)(c) GDPR</field>
+        <field name="sequence" eval="30"/>
+    </record>
+    <record id="lawful_basis_gdpr_vital_interests" model="privacy.lawful.basis">
+        <field name="framework_id" ref="framework_gdpr"/>
+        <field name="code">vital_interests</field>
+        <field name="name">Intérêts vitaux</field>
+        <field name="description">Traitement nécessaire à la sauvegarde des intérêts vitaux d'une personne.</field>
+        <field name="citation">Art. 6(1)(d) GDPR</field>
+        <field name="sequence" eval="40"/>
+    </record>
+    <record id="lawful_basis_gdpr_public_task" model="privacy.lawful.basis">
+        <field name="framework_id" ref="framework_gdpr"/>
+        <field name="code">public_task</field>
+        <field name="name">Mission d'intérêt public</field>
+        <field name="description">Traitement nécessaire à l'exécution d'une mission d'intérêt public ou relevant de l'autorité publique.</field>
+        <field name="citation">Art. 6(1)(e) GDPR</field>
+        <field name="sequence" eval="50"/>
+    </record>
+    <record id="lawful_basis_gdpr_legitimate_interests" model="privacy.lawful.basis">
+        <field name="framework_id" ref="framework_gdpr"/>
+        <field name="code">legitimate_interests</field>
+        <field name="name">Intérêt légitime</field>
+        <field name="description">Traitement nécessaire aux fins des intérêts légitimes poursuivis par le responsable.</field>
+        <field name="citation">Art. 6(1)(f) GDPR</field>
+        <field name="sequence" eval="60"/>
+    </record>
+
+    <!-- Droits des personnes concernées — chapitre III GDPR (le retrait reste une puce statique) -->
+    <record id="right_gdpr_access" model="privacy.right">
+        <field name="framework_id" ref="framework_gdpr"/>
+        <field name="code">access</field>
+        <field name="label_fr">Droit d'accès à vos données personnelles.</field>
+        <field name="label_en">Right of access to your personal data.</field>
+        <field name="citation">Art. 15 GDPR</field>
+        <field name="sequence" eval="10"/>
+    </record>
+    <record id="right_gdpr_rectification" model="privacy.right">
+        <field name="framework_id" ref="framework_gdpr"/>
+        <field name="code">rectification</field>
+        <field name="label_fr">Droit de rectification des données inexactes.</field>
+        <field name="label_en">Right to rectification of inaccurate data.</field>
+        <field name="citation">Art. 16 GDPR</field>
+        <field name="sequence" eval="20"/>
+    </record>
+    <record id="right_gdpr_erasure" model="privacy.right">
+        <field name="framework_id" ref="framework_gdpr"/>
+        <field name="code">erasure</field>
+        <field name="label_fr">Droit à l'effacement (« droit à l'oubli »).</field>
+        <field name="label_en">Right to erasure ('right to be forgotten').</field>
+        <field name="citation">Art. 17 GDPR</field>
+        <field name="sequence" eval="30"/>
+    </record>
+    <record id="right_gdpr_restrict" model="privacy.right">
+        <field name="framework_id" ref="framework_gdpr"/>
+        <field name="code">restrict</field>
+        <field name="label_fr">Droit à la limitation du traitement.</field>
+        <field name="label_en">Right to restriction of processing.</field>
+        <field name="citation">Art. 18 GDPR</field>
+        <field name="sequence" eval="40"/>
+    </record>
+    <record id="right_gdpr_portability" model="privacy.right">
+        <field name="framework_id" ref="framework_gdpr"/>
+        <field name="code">portability</field>
+        <field name="label_fr">Droit à la portabilité de vos données.</field>
+        <field name="label_en">Right to data portability.</field>
+        <field name="citation">Art. 20 GDPR</field>
+        <field name="sequence" eval="50"/>
+    </record>
+    <record id="right_gdpr_object" model="privacy.right">
+        <field name="framework_id" ref="framework_gdpr"/>
+        <field name="code">object</field>
+        <field name="label_fr">Droit d'opposition au traitement.</field>
+        <field name="label_en">Right to object to processing.</field>
+        <field name="citation">Art. 21 GDPR</field>
+        <field name="sequence" eval="60"/>
+    </record>
+    <record id="right_gdpr_complaint" model="privacy.right">
+        <field name="framework_id" ref="framework_gdpr"/>
+        <field name="code">complaint</field>
+        <field name="label_fr">Droit d'introduire une réclamation auprès d'une autorité de contrôle.</field>
+        <field name="label_en">Right to lodge a complaint with a supervisory authority.</field>
+        <field name="citation">Art. 77 GDPR</field>
+        <field name="sequence" eval="70"/>
+    </record>
+</odoo>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Filet de sécurité : re-fetch des SMS récents via getSMS (dédup par voipms_id).
+         Inactif par défaut ; à activer après avoir configuré les identifiants VOIP.ms. -->
+    <record id="cron_voipms_poll" model="ir.cron">
+        <field name="name">VOIP.ms : filet SMS entrants</field>
+        <field name="model_id" ref="model_sms_archive_line"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_poll_voipms()</field>
+        <field name="interval_number">2</field>
+        <field name="interval_type">minutes</field>
+        <field name="active" eval="False"/>
+    </record>
+
+</odoo>

@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="res_config_settings_view_form" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.bf.securetransfer</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app data-string="Transfert sécurisé" string="Transfert sécurisé" name="bf_securetransfer">
+                    <block title="Stockage S3" name="bf_securetransfer_s3_block">
+                        <setting string="Point d'accès S3"
+                                 help="Point d'accès et bucket IDrive E2 (ou tout stockage compatible S3). Bucket partagé possible entre tenants (isolés par le préfixe de clé) ou dédié ; verrou d'objets (object lock) désactivé.">
+                            <div class="content-group">
+                                <div>
+                                    <label for="st_s3_endpoint_url" string="Endpoint"/>
+                                    <field name="st_s3_endpoint_url"
+                                           placeholder="https://….idrivee2-XX.com"/>
+                                </div>
+                                <div class="mt-2">
+                                    <label for="st_s3_region" string="Région"/>
+                                    <field name="st_s3_region" placeholder="ca-east-1"/>
+                                </div>
+                                <div class="mt-2">
+                                    <label for="st_s3_bucket" string="Bucket"/>
+                                    <field name="st_s3_bucket" placeholder="securetransfer-…"/>
+                                </div>
+                                <div class="mt-2">
+                                    <label for="st_s3_key_prefix" string="Préfixe de clé (tenant)"/>
+                                    <field name="st_s3_key_prefix" placeholder="transfers-prod"/>
+                                </div>
+                                <div class="mt-2">
+                                    <field name="st_s3_path_style"/>
+                                    <label for="st_s3_path_style" string="Adressage path-style"/>
+                                </div>
+                            </div>
+                        </setting>
+                        <setting string="Clés d'accès S3"
+                                 help="Les clés ne sont jamais stockées en base de données.">
+                            <div class="content-group mb-2">
+                                <label for="st_s3_creds_status" string="Statut"/>
+                                <field name="st_s3_creds_status" readonly="1" nolabel="1"/>
+                            </div>
+                            <div class="alert alert-info" role="alert">
+                                Les clés d'accès se définissent dans <code>odoo.conf</code>
+                                (<code>bf_securetransfer_s3_access_key</code> /
+                                <code>bf_securetransfer_s3_secret_key</code>) ou dans les variables
+                                d'environnement (<code>BF_SECURETRANSFER_S3_ACCESS_KEY</code> /
+                                <code>BF_SECURETRANSFER_S3_SECRET_KEY</code>, prioritaires) —
+                                <strong>jamais en base de données</strong> : un dump ou un refresh
+                                staging emporterait les clés de production.
+                            </div>
+                        </setting>
+                        <setting string="Origines CORS"
+                                 help="Origines autorisées à téléverser directement vers le bucket (une par ligne ou séparées par des virgules ; jamais « * »). Appliquées par « Configurer le bucket S3 ».">
+                            <field name="st_cors_origins" widget="text"
+                                   placeholder="https://secret.example.com"/>
+                            <div class="mt-2">
+                                <button name="action_st_setup_bucket" type="object"
+                                        string="Configurer le bucket S3"
+                                        class="btn btn-secondary"
+                                        help="Applique la politique CORS, tente les règles de cycle de vie et exécute les sondes de compatibilité (résidence, presign, multipart…). Idempotent."/>
+                            </div>
+                        </setting>
+                    </block>
+                    <block title="Page publique" name="bf_securetransfer_public_block">
+                        <setting string="Téléversement public"
+                                 help="Interrupteur général de la page publique d'envoi. Décoché, la page /secrets répond indisponible ; les liens de téléchargement existants continuent de fonctionner.">
+                            <field name="st_public_upload_enabled"/>
+                        </setting>
+                        <setting string="Page de dépôt par employé"
+                                 help="À la création d'un utilisateur interne (hors comptes de service, robots, API), crée et maintient automatiquement sa page de dépôt personnelle /to/&lt;slug&gt;. Renommage, changement de courriel et archivage suivis. Décoché = pages créées à la main seulement.">
+                            <field name="st_autoprovision_user_pages"/>
+                        </setting>
+                        <setting string="URL publique de base"
+                                 help="URL servie aux visiteurs quand la marque n'a pas de domaine propre. Ne jamais compter sur web.base.url (gelé sur certains tenants).">
+                            <field name="st_public_base_url"
+                                   placeholder="https://secret.example.com"/>
+                        </setting>
+                        <setting string="Bureau d'abus"
+                                 help="Adresse alertée lors d'un signalement d'abus. Le transfert est alors suspendu automatiquement et les destinataires reçoivent un avis neutre. Laissée vide, c'est le courriel de la société qui reçoit l'avis — jamais une adresse extérieure.">
+                            <field name="st_abuse_email"
+                                   placeholder="abuse@example.com"/>
+                        </setting>
+                        <setting string="OTP expéditeur"
+                                 help="Exige que l'expéditeur confirme un code envoyé à son courriel avant l'envoi (anti-usurpation / anti-piggyback).">
+                            <field name="st_require_sender_otp"/>
+                        </setting>
+                        <setting string="OTP destinataire"
+                                 help="Exige que le destinataire saisisse un code envoyé à son courriel avant de télécharger (renforce la conformité Loi 25).">
+                            <field name="st_require_recipient_otp"/>
+                        </setting>
+                    </block>
+                    <block title="Code destinataire par SMS (VoIP.ms)"
+                           name="bf_securetransfer_sms_block">
+                        <setting string="Activer le SMS"
+                                 help="Permet d'envoyer le code du destinataire par SMS au lieu du courriel (choisi à l'envoi d'un message sécurisé).">
+                            <field name="st_sms_enabled"/>
+                        </setting>
+                        <setting string="Numéro expéditeur (DID)"
+                                 help="DID VoIP.ms activé pour le SMS, d'où partent les codes (numéro nord-américain à 10 chiffres)."
+                                 invisible="not st_sms_enabled">
+                            <field name="st_sms_did" placeholder="5145551234"/>
+                        </setting>
+                        <setting string="Identifiants VoIP.ms"
+                                 help="L'utilisateur et le mot de passe de l'API VoIP.ms se déclarent dans odoo.conf (bf_securetransfer_voipms_user / _password), jamais en base."
+                                 invisible="not st_sms_enabled">
+                            <field name="st_sms_creds_status"/>
+                        </setting>
+                    </block>
+                    <block title="Listes d'autorisation (défaut tenant, anti-piggyback)"
+                           name="bf_securetransfer_allowlist_block">
+                        <setting string="Expéditeurs autorisés"
+                                 help="Politique globale : qui peut envoyer depuis cette instance. Adresse complète ou domaine (@client.com). Vide = ouvert. Une marque peut définir sa propre liste.">
+                            <field name="st_default_sender_allowlist"
+                                   placeholder="@monentreprise.com, jean@partenaire.com"/>
+                        </setting>
+                        <setting string="Destinataires autorisés"
+                                 help="Politique globale : à qui l'on peut envoyer. Renseigné (ex. @monentreprise.com) = l'instance ne peut envoyer qu'à ces adresses/domaines.">
+                            <field name="st_default_recipient_allowlist"
+                                   placeholder="@monentreprise.com"/>
+                        </setting>
+                    </block>
+                    <block title="Limites par défaut" name="bf_securetransfer_limits_block">
+                        <setting string="Taille maximale par transfert"
+                                 help="Plafond du volume déclaré d'un transfert, selon le palier de la marque. Une marque peut définir son propre plafond.">
+                            <div class="content-group">
+                                <div>
+                                    <field name="st_default_free_max_transfer_mb" class="o_light_label"/>
+                                    <span class="ms-1">Mo (palier gratuit)</span>
+                                </div>
+                                <div class="mt-2">
+                                    <field name="st_default_paid_max_transfer_mb" class="o_light_label"/>
+                                    <span class="ms-1">Mo (palier payant)</span>
+                                </div>
+                            </div>
+                        </setting>
+                        <setting string="Nombre maximal de fichiers"
+                                 help="Nombre de fichiers admis dans un même transfert.">
+                            <div class="content-group">
+                                <field name="st_default_max_files" class="o_light_label"/>
+                                <span class="ms-1">fichiers</span>
+                            </div>
+                        </setting>
+                        <setting string="Rétention maximale"
+                                 help="Durée de vie maximale d'un transfert avant purge automatique, selon le palier.">
+                            <div class="content-group">
+                                <div>
+                                    <field name="st_default_free_max_retention_days" class="o_light_label"/>
+                                    <span class="ms-1">jours (palier gratuit)</span>
+                                </div>
+                                <div class="mt-2">
+                                    <field name="st_default_paid_max_retention_days" class="o_light_label"/>
+                                    <span class="ms-1">jours (palier payant)</span>
+                                </div>
+                            </div>
+                        </setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="action_securetransfer_settings" model="ir.actions.act_window">
+        <field name="name">Paramètres</field>
+        <field name="res_model">res.config.settings</field>
+        <field name="view_mode">form</field>
+        <field name="target">inline</field>
+        <field name="context">{'module': 'bf_securetransfer'}</field>
+    </record>
+
+</odoo>

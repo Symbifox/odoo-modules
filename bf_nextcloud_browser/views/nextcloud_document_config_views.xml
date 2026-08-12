@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_nextcloud_document_config_form_browser" model="ir.ui.view">
+        <field name="name">nextcloud.document.config.form.browser</field>
+        <field name="model">nextcloud.document.config</field>
+        <field name="inherit_id" ref="bf_document_nextcloud_sync.view_nextcloud_document_config_form"/>
+        <field name="arch" type="xml">
+            <field name="webdav_path" position="after">
+                <field name="browser_root_prefix"/>
+                <field name="nc_open_extensions"/>
+                <field name="nc_folder_color" widget="color"/>
+            </field>
+            <group name="sharing" position="after">
+                <group string="Prereglages de partage" colspan="2">
+                    <field name="share_preset_ids" nolabel="1">
+                        <list editable="bottom">
+                            <field name="sequence" widget="handle"/>
+                            <field name="name"/>
+                            <field name="access"/>
+                            <field name="expiry_days"/>
+                            <field name="password_protected"/>
+                        </list>
+                    </field>
+                </group>
+            </group>
+        </field>
+    </record>
+
+</odoo>

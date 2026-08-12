@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+<odoo>
+    <record id="bf_solicit_code_view_list" model="ir.ui.view">
+        <field name="name">bf.solicit.code.list</field>
+        <field name="model">bf.solicit.code</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="sequence" widget="handle" />
+                <field name="code" />
+                <field name="name" />
+                <field name="excludes_all" />
+                <field name="note" />
+            </list>
+        </field>
+    </record>
+
+    <record id="action_bf_solicit_code" model="ir.actions.act_window">
+        <field name="name">Codes de sollicitation</field>
+        <field name="res_model">bf.solicit.code</field>
+        <field name="view_mode">list</field>
+    </record>
+</odoo>

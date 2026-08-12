@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="survey_question_form_inherit_bf_survey_upload" model="ir.ui.view">
+        <field name="name">survey.question.form.inherit.bf_survey_upload</field>
+        <field name="model">survey.question</field>
+        <field name="inherit_id" ref="survey.survey_question_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Téléversement"
+                      invisible="question_type != 'file_upload'">
+                    <group>
+                        <field name="file_upload_max_size_mb"/>
+                        <field name="file_upload_multiple"/>
+                        <field name="max_file_count"
+                               invisible="not file_upload_multiple"/>
+                        <field name="file_upload_allowed_extensions"
+                               placeholder="pdf,docx,doc,xlsx,jpg,jpeg,png"/>
+                    </group>
+                    <p class="text-muted">
+                        Le répondant pourra joindre un ou plusieurs fichiers à
+                        sa réponse. Les fichiers sont stockés comme pièces
+                        jointes liées à la réponse au sondage.
+                    </p>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

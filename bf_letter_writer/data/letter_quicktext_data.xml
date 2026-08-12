@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <record id="quicktext_intro_suite" model="letter.quicktext">
+        <field name="name">Introduction — faisant suite</field>
+        <field name="shortcut">::suite</field>
+        <field name="category">Ouverture</field>
+        <field name="body_html" type="html">
+            <p>Faisant suite à nos récents échanges, nous vous transmettons par
+            la présente les renseignements demandés.</p>
+        </field>
+    </record>
+
+    <record id="quicktext_disponibilite" model="letter.quicktext">
+        <field name="name">Disponibilité pour échanger</field>
+        <field name="shortcut">::dispo</field>
+        <field name="category">Clôture</field>
+        <field name="body_html" type="html">
+            <p>Nous demeurons à votre disposition pour tout renseignement
+            complémentaire et vous remercions de votre confiance.</p>
+        </field>
+    </record>
+
+    <record id="quicktext_confidentialite" model="letter.quicktext">
+        <field name="name">Mention de confidentialité</field>
+        <field name="shortcut">::confid</field>
+        <field name="category">Mentions</field>
+        <field name="body_html" type="html">
+            <p><em>Le contenu de la présente lettre est confidentiel et destiné
+            à l'usage exclusif de son destinataire.</em></p>
+        </field>
+    </record>
+
+</odoo>

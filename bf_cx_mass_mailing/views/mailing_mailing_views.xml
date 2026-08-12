@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_mail_mass_mailing_form" model="ir.ui.view">
+        <field name="name">mailing.mailing.view.form.inherit.bf.cx.mass.mailing</field>
+        <field name="model">mailing.mailing</field>
+        <field name="inherit_id" ref="mass_mailing.view_mail_mass_mailing_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='settings']//group[@name='email_content']" position="after">
+                <group string="Expérience client" name="bf_cx_open_loops" invisible="mailing_type != 'mail'">
+                    <field name="bf_cx_exclude_open_loops"
+                           readonly="state in ('sending', 'done')"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Scoring + behaviour parameters. Editable by an admin without touching
+         code; kept on noupdate so manual tuning survives upgrades. -->
+    <data noupdate="1">
+        <record id="param_weight_submitted" model="ir.config_parameter">
+            <field name="key">bf_security_awareness.weight_submitted</field>
+            <field name="value">100</field>
+        </record>
+        <record id="param_weight_clicked" model="ir.config_parameter">
+            <field name="key">bf_security_awareness.weight_clicked</field>
+            <field name="value">60</field>
+        </record>
+        <record id="param_weight_opened" model="ir.config_parameter">
+            <field name="key">bf_security_awareness.weight_opened</field>
+            <field name="value">20</field>
+        </record>
+        <record id="param_weight_reported" model="ir.config_parameter">
+            <field name="key">bf_security_awareness.weight_reported</field>
+            <field name="value">-40</field>
+        </record>
+        <record id="param_risk_window_days" model="ir.config_parameter">
+            <field name="key">bf_security_awareness.risk_window_days</field>
+            <field name="value">365</field>
+        </record>
+        <record id="param_training_mitigation" model="ir.config_parameter">
+            <field name="key">bf_security_awareness.training_mitigation</field>
+            <field name="value">15</field>
+        </record>
+        <record id="param_diff_easy" model="ir.config_parameter">
+            <field name="key">bf_security_awareness.difficulty_weight_easy</field>
+            <field name="value">1.0</field>
+        </record>
+        <record id="param_diff_medium" model="ir.config_parameter">
+            <field name="key">bf_security_awareness.difficulty_weight_medium</field>
+            <field name="value">0.8</field>
+        </record>
+        <record id="param_diff_hard" model="ir.config_parameter">
+            <field name="key">bf_security_awareness.difficulty_weight_hard</field>
+            <field name="value">0.6</field>
+        </record>
+        <record id="param_training_due_days" model="ir.config_parameter">
+            <field name="key">bf_security_awareness.training_due_days</field>
+            <field name="value">14</field>
+        </record>
+        <record id="param_auto_grant_portal" model="ir.config_parameter">
+            <field name="key">bf_security_awareness.auto_grant_portal</field>
+            <field name="value">1</field>
+        </record>
+
+        <!-- Reporting / triage. ntfy URL + token are intentionally NOT seeded
+             here (secrets stay out of code); set them per tenant. Empty = the
+             ntfy alert is skipped, triage still works. -->
+        <record id="param_report_ntfy_priority" model="ir.config_parameter">
+            <field name="key">bf_security_awareness.report_ntfy_priority</field>
+            <field name="value">high</field>
+        </record>
+        <record id="param_sim_match_window_days" model="ir.config_parameter">
+            <field name="key">bf_security_awareness.sim_match_window_days</field>
+            <field name="value">30</field>
+        </record>
+
+        <!-- Clawback (PhishRIP) remediation defaults. Quarantine = reversible. -->
+        <record id="param_clawback_mode" model="ir.config_parameter">
+            <field name="key">bf_security_awareness.clawback_mode</field>
+            <field name="value">quarantine</field>
+        </record>
+        <record id="param_clawback_quarantine_folder" model="ir.config_parameter">
+            <field name="key">bf_security_awareness.clawback_quarantine_folder</field>
+            <field name="value">Quarantaine BF</field>
+        </record>
+        <record id="param_clawback_heuristic_window_days" model="ir.config_parameter">
+            <field name="key">bf_security_awareness.clawback_heuristic_window_days</field>
+            <field name="value">7</field>
+        </record>
+        <record id="param_clawback_require_preview" model="ir.config_parameter">
+            <field name="key">bf_security_awareness.clawback_require_preview</field>
+            <field name="value">1</field>
+        </record>
+        <!-- Blast-radius cap: if an Aperçu finds more than this many messages,
+             execution is blocked until a manager explicitly confirms. 0 = no cap. -->
+        <record id="param_clawback_max_blast_messages" model="ir.config_parameter">
+            <field name="key">bf_security_awareness.clawback_max_blast_messages</field>
+            <field name="value">25</field>
+        </record>
+
+        <!-- Native "Phish Alert Button by email": employees forward a suspicious
+             message (as attachment) to this alias and a report is created with
+             the .eml attached. alias_contact='employees' rejects outside senders.
+             Rename / set the alias domain to taste; noupdate keeps your edits. -->
+        <record id="alias_reported_phish" model="mail.alias">
+            <field name="alias_name">signaler-hameconnage</field>
+            <field name="alias_model_id" ref="model_bf_reported_phish"/>
+            <field name="alias_contact">employees</field>
+        </record>
+    </data>
+
+</odoo>

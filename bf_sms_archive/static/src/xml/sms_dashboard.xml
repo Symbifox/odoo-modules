@@ -1,0 +1,387 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="bf_sms_archive.Dashboard">
+        <div class="o_action" style="overflow-y: auto;">
+
+            <!-- Loading -->
+            <t t-if="state.loading">
+                <div class="text-center p-5">
+                    <div class="spinner-border" style="color: #714B67;" role="status"/>
+                    <p class="mt-3 text-muted">Chargement...</p>
+                </div>
+            </t>
+
+            <!-- Main content -->
+            <t t-if="!state.loading and state.data">
+                <div class="container-fluid px-4 py-3">
+
+                    <!-- Header + Date Filter -->
+                    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+                        <h2 class="mb-0 fw-bold" style="color: #714B67;">
+                            <i class="fa fa-comments me-2"/>SMS &amp; Calls
+                        </h2>
+                        <div class="d-flex align-items-center gap-2">
+                            <select class="form-select form-select-sm" style="width: auto;"
+                                    t-on-change="onPeriodChange">
+                                <t t-foreach="periodOptions" t-as="opt" t-key="opt.value">
+                                    <option t-att-value="opt.value"
+                                            t-att-selected="state.period === opt.value">
+                                        <t t-esc="opt.label"/>
+                                    </option>
+                                </t>
+                            </select>
+                            <t t-if="state.period === 'custom'">
+                                <input type="date" class="form-control form-control-sm" style="width: auto;"
+                                       t-att-value="state.dateFrom"
+                                       t-on-change="onDateFromChange"
+                                       placeholder="Du"/>
+                                <span class="text-muted">—</span>
+                                <input type="date" class="form-control form-control-sm" style="width: auto;"
+                                       t-att-value="state.dateTo"
+                                       t-on-change="onDateToChange"
+                                       placeholder="Au"/>
+                            </t>
+                            <button class="btn btn-sm btn-outline-secondary"
+                                    t-on-click="onRefresh">
+                                <i class="fa fa-refresh"/>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- KPI Row -->
+                    <div class="row g-3 mb-4">
+
+                        <!-- Messages -->
+                        <div class="col-lg-3 col-md-6">
+                            <div class="card border-0 shadow-sm h-100" role="button"
+                                 t-on-click="openMessages">
+                                <div class="card-body text-center py-3">
+                                    <div class="text-uppercase fw-semibold mb-1"
+                                         style="font-size: 0.7rem; color: #8899aa;">
+                                        Messages SMS
+                                    </div>
+                                    <h3 class="mb-0 fw-bold" style="color: #714B67;">
+                                        <t t-esc="(state.data.kpis.messages.total || 0).toLocaleString()"/>
+                                    </h3>
+                                    <small class="text-muted">
+                                        <i class="fa fa-arrow-down text-success me-1"/><t t-esc="state.data.kpis.messages.received || 0"/>
+                                        <span class="mx-1">|</span>
+                                        <i class="fa fa-arrow-up text-primary me-1"/><t t-esc="state.data.kpis.messages.sent || 0"/>
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Calls -->
+                        <div class="col-lg-3 col-md-6">
+                            <div class="card border-0 shadow-sm h-100" role="button"
+                                 t-on-click="openCalls">
+                                <div class="card-body text-center py-3">
+                                    <div class="text-uppercase fw-semibold mb-1"
+                                         style="font-size: 0.7rem; color: #8899aa;">
+                                        Appels
+                                    </div>
+                                    <h3 class="mb-0 fw-bold" style="color: #2980b9;">
+                                        <t t-esc="(state.data.kpis.calls.total || 0).toLocaleString()"/>
+                                    </h3>
+                                    <small class="text-muted">
+                                        <i class="fa fa-arrow-down text-success me-1"/><t t-esc="state.data.kpis.calls.incoming || 0"/>
+                                        <span class="mx-1">|</span>
+                                        <i class="fa fa-arrow-up text-primary me-1"/><t t-esc="state.data.kpis.calls.outgoing || 0"/>
+                                        <span class="mx-1">|</span>
+                                        <i class="fa fa-times me-1" style="color: #f4a683;"/><t t-esc="state.data.kpis.calls.missed || 0"/>
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Contacts -->
+                        <div class="col-lg-3 col-md-6">
+                            <div class="card border-0 shadow-sm h-100" role="button"
+                                 t-on-click="openThreads">
+                                <div class="card-body text-center py-3">
+                                    <div class="text-uppercase fw-semibold mb-1"
+                                         style="font-size: 0.7rem; color: #8899aa;">
+                                        Contacts
+                                    </div>
+                                    <h3 class="mb-0 fw-bold" style="color: #27ae60;">
+                                        <t t-esc="state.data.kpis.threads.total || 0"/>
+                                    </h3>
+                                    <small class="text-muted">
+                                        <i class="fa fa-check text-success me-1"/><t t-esc="state.data.kpis.threads.matched || 0"/> lies
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Unmatched -->
+                        <div class="col-lg-3 col-md-6">
+                            <div class="card border-0 shadow-sm h-100" role="button"
+                                 t-on-click="openUnmatchedThreads">
+                                <div class="card-body text-center py-3">
+                                    <div class="text-uppercase fw-semibold mb-1"
+                                         style="font-size: 0.7rem; color: #8899aa;">
+                                        Non lies
+                                    </div>
+                                    <h3 class="mb-0 fw-bold"
+                                        t-att-class="(state.data.kpis.threads.unmatched || 0) > 0 ? 'text-warning' : 'text-success'">
+                                        <t t-esc="state.data.kpis.threads.unmatched || 0"/>
+                                    </h3>
+                                    <small class="text-muted">
+                                        sans contact Odoo
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Monthly Activity -->
+                    <div class="row g-3 mb-4">
+
+                        <!-- SMS by month -->
+                        <div class="col-lg-6">
+                            <div class="card border-0 shadow-sm h-100">
+                                <div class="card-header border-0 py-3"
+                                     style="background: linear-gradient(90deg, #714B67 0%, #9b6b8e 100%);">
+                                    <h6 class="mb-0 text-white fw-semibold">
+                                        <i class="fa fa-comment me-2"/>Messages
+                                    </h6>
+                                </div>
+                                <div class="card-body py-2 px-3">
+                                    <t t-if="state.data.monthly_sms.length">
+                                        <t t-foreach="state.data.monthly_sms" t-as="m" t-key="m.month">
+                                            <div class="d-flex align-items-center mb-2">
+                                                <div style="width: 60px; font-size: 0.75rem;" class="text-muted fw-semibold">
+                                                    <t t-esc="formatMonth(m.month)"/>
+                                                </div>
+                                                <div class="flex-grow-1">
+                                                    <div class="progress" style="height: 14px;">
+                                                        <div class="progress-bar" role="progressbar"
+                                                             style="background: #27ae60;"
+                                                             t-att-style="'width: ' + barWidth(m.received, getMaxSms()) + '; background: #27ae60;'"
+                                                             t-att-title="(m.received || 0) + ' recus'"/>
+                                                        <div class="progress-bar" role="progressbar"
+                                                             style="background: #2980b9;"
+                                                             t-att-style="'width: ' + barWidth(m.sent, getMaxSms()) + '; background: #2980b9;'"
+                                                             t-att-title="(m.sent || 0) + ' envoyes'"/>
+                                                    </div>
+                                                </div>
+                                                <div style="width: 50px; font-size: 0.75rem;" class="text-end text-muted">
+                                                    <t t-esc="(m.received || 0) + (m.sent || 0)"/>
+                                                </div>
+                                            </div>
+                                        </t>
+                                        <div class="d-flex gap-3 mt-2" style="font-size: 0.7rem;">
+                                            <span><span class="badge" style="background: #27ae60;">&#160;&#160;</span> Recus</span>
+                                            <span><span class="badge" style="background: #2980b9;">&#160;&#160;</span> Envoyes</span>
+                                        </div>
+                                    </t>
+                                    <t t-else="">
+                                        <div class="text-center text-muted py-3">Aucune donnee</div>
+                                    </t>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Calls by month -->
+                        <div class="col-lg-6">
+                            <div class="card border-0 shadow-sm h-100">
+                                <div class="card-header border-0 py-3"
+                                     style="background: linear-gradient(90deg, #2980b9 0%, #5dade2 100%);">
+                                    <h6 class="mb-0 text-white fw-semibold">
+                                        <i class="fa fa-phone me-2"/>Appels
+                                    </h6>
+                                </div>
+                                <div class="card-body py-2 px-3">
+                                    <t t-if="state.data.monthly_calls.length">
+                                        <t t-foreach="state.data.monthly_calls" t-as="m" t-key="m.month">
+                                            <div class="d-flex align-items-center mb-2">
+                                                <div style="width: 60px; font-size: 0.75rem;" class="text-muted fw-semibold">
+                                                    <t t-esc="formatMonth(m.month)"/>
+                                                </div>
+                                                <div class="flex-grow-1">
+                                                    <div class="progress" style="height: 14px;">
+                                                        <div class="progress-bar" role="progressbar"
+                                                             t-att-style="'width: ' + barWidth(m.incoming, getMaxCalls()) + '; background: #27ae60;'"
+                                                             t-att-title="(m.incoming || 0) + ' entrants'"/>
+                                                        <div class="progress-bar" role="progressbar"
+                                                             t-att-style="'width: ' + barWidth(m.outgoing, getMaxCalls()) + '; background: #2980b9;'"
+                                                             t-att-title="(m.outgoing || 0) + ' sortants'"/>
+                                                        <div class="progress-bar" role="progressbar"
+                                                             t-att-style="'width: ' + barWidth(m.missed, getMaxCalls()) + '; background: #f4a683;'"
+                                                             t-att-title="(m.missed || 0) + ' manques'"/>
+                                                    </div>
+                                                </div>
+                                                <div style="width: 50px; font-size: 0.75rem;" class="text-end text-muted">
+                                                    <t t-esc="(m.incoming || 0) + (m.outgoing || 0) + (m.missed || 0)"/>
+                                                </div>
+                                            </div>
+                                        </t>
+                                        <div class="d-flex gap-3 mt-2" style="font-size: 0.7rem;">
+                                            <span><span class="badge" style="background: #27ae60;">&#160;&#160;</span> Entrants</span>
+                                            <span><span class="badge" style="background: #2980b9;">&#160;&#160;</span> Sortants</span>
+                                            <span><span class="badge" style="background: #f4a683;">&#160;&#160;</span> Manques</span>
+                                        </div>
+                                    </t>
+                                    <t t-else="">
+                                        <div class="text-center text-muted py-3">Aucune donnee</div>
+                                    </t>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bottom row: top contacts + call stats -->
+                    <div class="row g-3 mb-4">
+
+                        <!-- Top contacts -->
+                        <div class="col-lg-7">
+                            <div class="card border-0 shadow-sm h-100">
+                                <div class="card-header border-0 py-3"
+                                     style="background: linear-gradient(90deg, #2c3e50 0%, #34495e 100%);">
+                                    <h6 class="mb-0 text-white fw-semibold">
+                                        <i class="fa fa-users me-2"/>Top 10 contacts
+                                    </h6>
+                                </div>
+                                <div class="card-body p-0">
+                                    <t t-if="state.data.top_contacts.length">
+                                        <table class="table table-sm table-hover mb-0 align-middle">
+                                            <thead class="table-light">
+                                                <tr>
+                                                    <th class="ps-3">Contact</th>
+                                                    <th class="text-center">SMS</th>
+                                                    <th class="text-center">Appels</th>
+                                                    <th class="text-end pe-3">Total</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <t t-foreach="state.data.top_contacts" t-as="c" t-key="c.id">
+                                                    <tr role="button" t-on-click="() => this.openThread(c.id)">
+                                                        <td class="ps-3">
+                                                            <span class="fw-medium"><t t-esc="c.name"/></span>
+                                                            <t t-if="c.partner_name">
+                                                                <br/><small class="text-muted"><i class="fa fa-link me-1"/><t t-esc="c.partner_name"/></small>
+                                                            </t>
+                                                        </td>
+                                                        <td class="text-center">
+                                                            <span class="badge text-bg-light"><t t-esc="c.message_count || 0"/></span>
+                                                        </td>
+                                                        <td class="text-center">
+                                                            <span class="badge text-bg-light"><t t-esc="c.call_count || 0"/></span>
+                                                        </td>
+                                                        <td class="text-end pe-3 fw-bold">
+                                                            <t t-esc="c.total_interactions || 0"/>
+                                                        </td>
+                                                    </tr>
+                                                </t>
+                                            </tbody>
+                                        </table>
+                                    </t>
+                                    <t t-else="">
+                                        <div class="text-center text-muted py-4">Aucun contact</div>
+                                    </t>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Call statistics -->
+                        <div class="col-lg-5">
+                            <div class="card border-0 shadow-sm h-100">
+                                <div class="card-header border-0 py-3"
+                                     style="background: linear-gradient(90deg, #8e44ad 0%, #9b59b6 100%);">
+                                    <h6 class="mb-0 text-white fw-semibold">
+                                        <i class="fa fa-bar-chart me-2"/>Statistiques d'appels
+                                    </h6>
+                                </div>
+                                <div class="card-body p-0">
+                                    <t t-if="state.data.call_stats.total_count > 0">
+                                        <table class="table table-sm mb-0 align-middle">
+                                            <tbody>
+                                                <tr>
+                                                    <td class="ps-3"><i class="fa fa-clock-o me-2 text-muted"/>Duree moyenne</td>
+                                                    <td class="text-end fw-bold pe-3">
+                                                        <t t-esc="formatDuration(state.data.call_stats.avg_duration)"/>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="ps-3"><i class="fa fa-hourglass me-2 text-muted"/>Temps total</td>
+                                                    <td class="text-end fw-bold pe-3">
+                                                        <t t-esc="formatTotalHours(state.data.call_stats.total_duration)"/>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="ps-3"><i class="fa fa-trophy me-2 text-muted"/>Appel le plus long</td>
+                                                    <td class="text-end fw-bold pe-3">
+                                                        <t t-esc="formatDuration(state.data.call_stats.longest_call)"/>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="ps-3"><i class="fa fa-times-circle me-2 text-muted"/>Taux de manques</td>
+                                                    <td class="text-end fw-bold pe-3" t-att-class="missedRateClass" t-att-style="missedRateStyle">
+                                                        <t t-esc="state.data.call_stats.missed_rate"/>%
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="ps-3"><i class="fa fa-phone me-2 text-muted"/>Total appels</td>
+                                                    <td class="text-end fw-bold pe-3">
+                                                        <t t-esc="state.data.call_stats.total_count"/>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </t>
+                                    <t t-else="">
+                                        <div class="text-center text-muted py-4">
+                                            <i class="fa fa-phone fa-2x mb-2 text-muted"/>
+                                            <p class="mb-0">Aucun appel importe</p>
+                                        </div>
+                                    </t>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick nav -->
+                    <div class="row g-2">
+                        <div class="col-auto">
+                            <button class="btn btn-sm btn-outline-secondary"
+                                    t-on-click="openThreads">
+                                <i class="fa fa-comments me-1"/>Conversations
+                            </button>
+                        </div>
+                        <div class="col-auto">
+                            <button class="btn btn-sm btn-outline-secondary"
+                                    t-on-click="openCalls">
+                                <i class="fa fa-phone me-1"/>Journal d'appels
+                            </button>
+                        </div>
+                        <div class="col-auto">
+                            <button class="btn btn-sm btn-outline-secondary"
+                                    t-on-click="openMessages">
+                                <i class="fa fa-search me-1"/>Rechercher
+                            </button>
+                        </div>
+                        <div class="col-auto">
+                            <button class="btn btn-sm btn-outline-secondary"
+                                    t-on-click="openMissedCalls">
+                                <i class="fa fa-phone-slash me-1"/>Appels manques
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </t>
+
+            <!-- No data -->
+            <t t-if="!state.loading and !state.data">
+                <div class="text-center p-5">
+                    <h4 class="text-muted">Aucune donnee disponible</h4>
+                    <button class="btn mt-3 text-white" style="background: #714B67;" t-on-click="onRefresh">
+                        Reessayer
+                    </button>
+                </div>
+            </t>
+
+        </div>
+    </t>
+</templates>

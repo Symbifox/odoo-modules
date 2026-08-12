@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_bf_email_form_reroute" model="ir.ui.view">
+        <field name="name">bf.email.form.reroute</field>
+        <field name="model">bf.email</field>
+        <field name="inherit_id" ref="bf_email_management.bf_email_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="action_open_reroute_wizard"
+                        type="object"
+                        string="Re-router"
+                        icon="fa-exchange"
+                        class="btn-secondary"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

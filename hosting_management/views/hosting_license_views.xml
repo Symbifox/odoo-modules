@@ -1,0 +1,338 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============================================================== -->
+    <!-- hosting.license.seat                                            -->
+    <!-- ============================================================== -->
+
+    <record id="hosting_license_seat_view_list" model="ir.ui.view">
+        <field name="name">hosting.license.seat.list</field>
+        <field name="model">hosting.license.seat</field>
+        <field name="arch" type="xml">
+            <list editable="bottom"
+                  decoration-success="state == 'activated'"
+                  decoration-danger="state == 'failed'"
+                  decoration-muted="state == 'revoked'">
+                <field name="sequence" widget="handle"/>
+                <field name="license_id"/>
+                <field name="product_key" widget="bf_secret_key" optional="show"
+                       groups="hosting_management.group_hosting_manager"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'activated'"
+                       decoration-danger="state == 'failed'"
+                       decoration-muted="state == 'revoked'"
+                       decoration-info="state == 'free'"/>
+                <field name="activated_on" optional="show"/>
+                <field name="assignee_type" optional="show"/>
+                <field name="partner_id" optional="show"/>
+                <field name="endpoint_id" optional="show"
+                       domain="[('partner_id', '=', partner_id)]"/>
+                <field name="project_id" optional="hide"/>
+                <field name="assignee_label" optional="show"/>
+                <field name="display_assignee" optional="hide"/>
+                <field name="notes" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="hosting_license_seat_view_form" model="ir.ui.view">
+        <field name="name">hosting.license.seat.form</field>
+        <field name="model">hosting.license.seat</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group string="Pool &amp; clé">
+                            <field name="license_id"/>
+                            <field name="product_key" widget="bf_secret_key"
+                                   groups="hosting_management.group_hosting_manager"/>
+                            <field name="state"/>
+                            <field name="activated_on"/>
+                        </group>
+                        <group string="Affectation">
+                            <field name="assignee_type" widget="radio"/>
+                            <field name="partner_id"
+                                   invisible="assignee_type not in ('partner', 'endpoint')"/>
+                            <field name="endpoint_id"
+                                   invisible="assignee_type != 'endpoint'"
+                                   domain="[('partner_id', '=', partner_id)]"/>
+                            <field name="project_id"
+                                   invisible="assignee_type != 'project'"/>
+                            <field name="assignee_label"
+                                   invisible="assignee_type != 'free_text'"/>
+                            <field name="display_assignee" readonly="1"/>
+                        </group>
+                    </group>
+                    <field name="notes" placeholder="Notes (ex. 'DOESN'T WORK', 'phone activation', ...)"/>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="hosting_license_seat_view_search" model="ir.ui.view">
+        <field name="name">hosting.license.seat.search</field>
+        <field name="model">hosting.license.seat</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="license_id"/>
+                <field name="product_key" groups="hosting_management.group_hosting_manager"/>
+                <field name="partner_id"/>
+                <field name="endpoint_id"/>
+                <field name="project_id"/>
+                <field name="assignee_label"/>
+                <separator/>
+                <filter name="filter_free" string="Libres"
+                        domain="[('state', '=', 'free')]"/>
+                <filter name="filter_activated" string="Activées"
+                        domain="[('state', '=', 'activated')]"/>
+                <filter name="filter_failed" string="Échouées"
+                        domain="[('state', '=', 'failed')]"/>
+                <filter name="filter_revoked" string="Révoquées"
+                        domain="[('state', '=', 'revoked')]"/>
+                <group expand="0" string="Grouper par">
+                    <filter name="group_license" string="Pool"
+                            context="{'group_by': 'license_id'}"/>
+                    <filter name="group_state" string="État"
+                            context="{'group_by': 'state'}"/>
+                    <filter name="group_partner" string="Client"
+                            context="{'group_by': 'partner_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="hosting_license_seat_action_free" model="ir.actions.act_window">
+        <field name="name">Sièges libres</field>
+        <field name="res_model">hosting.license.seat</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_filter_free': 1}</field>
+        <field name="search_view_id" ref="hosting_license_seat_view_search"/>
+    </record>
+
+    <!-- ============================================================== -->
+    <!-- hosting.license                                                 -->
+    <!-- ============================================================== -->
+
+    <record id="hosting_license_view_list" model="ir.ui.view">
+        <field name="name">hosting.license.list</field>
+        <field name="model">hosting.license</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="over_allocated"
+                  decoration-warning="expiry_date and expiry_date &lt;= (context_today() + relativedelta(days=90))"
+                  decoration-muted="not active">
+                <field name="code"/>
+                <field name="name"/>
+                <field name="software_id" optional="show"/>
+                <field name="product_name" optional="hide"/>
+                <field name="vendor" optional="show"/>
+                <field name="license_type" widget="badge" optional="show"/>
+                <field name="owner_partner_id"/>
+                <field name="seats_total"/>
+                <field name="seats_used"/>
+                <field name="seats_free"/>
+                <field name="over_allocated" widget="boolean_toggle" optional="show"/>
+                <field name="expiry_date" optional="show"/>
+                <field name="active" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="hosting_license_view_form" model="ir.ui.view">
+        <field name="name">hosting.license.form</field>
+        <field name="model">hosting.license</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <widget name="web_ribbon" title="Sur-allocation"
+                            bg_color="text-bg-danger"
+                            invisible="not over_allocated"/>
+                    <widget name="web_ribbon" title="Expirée"
+                            bg_color="text-bg-warning"
+                            invisible="not expiry_date or expiry_date &gt;= context_today()"/>
+                    <div class="oe_title">
+                        <label for="code"/>
+                        <h3><field name="code" placeholder="LIC-2026-0001"/></h3>
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="Ex. Windows 11 Pro – batch 2025-09"/></h1>
+                    </div>
+
+                    <group>
+                        <group string="Identité">
+                            <field name="software_id"/>
+                            <field name="product_name" placeholder="Si hors catalogue"/>
+                            <field name="vendor" placeholder="Microsoft, Adobe..."/>
+                            <field name="license_type"/>
+                        </group>
+                        <group string="Sièges">
+                            <field name="seats_total"/>
+                            <field name="seats_used" readonly="1"/>
+                            <field name="seats_free" readonly="1"/>
+                            <field name="over_allocated" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <group>
+                        <group string="Achat">
+                            <field name="owner_partner_id" options="{'no_create': True}"/>
+                            <field name="purchase_date"/>
+                            <field name="purchase_invoice_id"/>
+                            <field name="expiry_date"/>
+                        </group>
+                        <group string="JWT (si applicable)"
+                               groups="hosting_management.group_hosting_manager"
+                               invisible="license_type != 'jwt_token'">
+                            <field name="jwt_token" widget="bf_secret_key"/>
+                            <field name="jwt_installation_id" readonly="1"/>
+                            <button name="action_decode_jwt" type="object"
+                                    string="Décoder maintenant"
+                                    class="btn-secondary"
+                                    icon="fa-key"
+                                    invisible="not jwt_token"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Sièges" name="seats">
+                            <field name="seat_ids">
+                                <list editable="bottom"
+                                      decoration-success="state == 'activated'"
+                                      decoration-danger="state == 'failed'"
+                                      decoration-muted="state == 'revoked'">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="product_key" widget="bf_secret_key"
+                                           groups="hosting_management.group_hosting_manager"/>
+                                    <field name="state"/>
+                                    <field name="activated_on"/>
+                                    <field name="assignee_type"/>
+                                    <field name="partner_id"
+                                           domain="[('is_company', '=', True)]"/>
+                                    <field name="endpoint_id"
+                                           domain="[('partner_id', '=', partner_id)]"/>
+                                    <field name="project_id" optional="hide"/>
+                                    <field name="assignee_label"/>
+                                    <field name="notes" optional="show"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Notes" name="notes">
+                            <field name="notes"/>
+                        </page>
+                    </notebook>
+
+                    <field name="active" invisible="1"/>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="hosting_license_view_search" model="ir.ui.view">
+        <field name="name">hosting.license.search</field>
+        <field name="model">hosting.license</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="software_id"/>
+                <field name="product_name"/>
+                <field name="vendor"/>
+                <field name="owner_partner_id"/>
+                <separator/>
+                <filter name="filter_expiring" string="Expirent ≤ 90 j"
+                        domain="[('expiry_date', '!=', False),
+                                 ('expiry_date', '&lt;=', (context_today() + relativedelta(days=90)).strftime('%Y-%m-%d'))]"/>
+                <filter name="filter_expired" string="Expirées"
+                        domain="[('expiry_date', '!=', False),
+                                 ('expiry_date', '&lt;', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter name="filter_over_allocated" string="Sur-allocation"
+                        domain="[('over_allocated', '=', True)]"/>
+                <filter name="filter_mutualized_bf" string="Mutualisées (propriétaire = company)"
+                        domain="[('owner_partner_id.is_company', '=', True),
+                                 ('owner_partner_id', '=', uid)]"/>
+                <separator/>
+                <filter name="filter_archived" string="Archivées"
+                        domain="[('active', '=', False)]"/>
+                <group expand="0" string="Grouper par">
+                    <filter name="group_owner" string="Propriétaire"
+                            context="{'group_by': 'owner_partner_id'}"/>
+                    <filter name="group_type" string="Type"
+                            context="{'group_by': 'license_type'}"/>
+                    <filter name="group_software" string="Logiciel"
+                            context="{'group_by': 'software_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="hosting_license_view_kanban" model="ir.ui.view">
+        <field name="name">hosting.license.kanban</field>
+        <field name="model">hosting.license</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="owner_partner_id" class="o_kanban_small_column">
+                <field name="id"/>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="seats_total"/>
+                <field name="seats_used"/>
+                <field name="seats_free"/>
+                <field name="over_allocated"/>
+                <field name="expiry_date"/>
+                <templates>
+                    <t t-name="card">
+                        <div>
+                            <strong class="o_kanban_record_title">
+                                <field name="name"/>
+                            </strong>
+                            <div class="text-muted">
+                                <field name="code"/> · <field name="vendor"/>
+                            </div>
+                            <div class="mt-2">
+                                Sièges : <strong t-att-class="record.over_allocated.raw_value ? 'text-danger' : ''">
+                                    <field name="seats_used"/> / <field name="seats_total"/>
+                                </strong>
+                            </div>
+                            <div class="mt-1" t-if="record.expiry_date.raw_value">
+                                Expire : <field name="expiry_date"/>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Actions -->
+    <record id="hosting_license_action_all" model="ir.actions.act_window">
+        <field name="name">Pools de licences</field>
+        <field name="res_model">hosting.license</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="search_view_id" ref="hosting_license_view_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Ajoutez un pool de licences
+            </p>
+            <p>
+                Centralise les clés et tokens logiciels (Windows, Office, Grist,
+                etc.) avec affectations par poste, client ou projet.
+            </p>
+        </field>
+    </record>
+
+    <record id="hosting_license_action_expiring" model="ir.actions.act_window">
+        <field name="name">Licences expirant (≤ 90 j)</field>
+        <field name="res_model">hosting.license</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="hosting_license_view_search"/>
+        <field name="context">{'search_default_filter_expiring': 1}</field>
+    </record>
+
+    <record id="hosting_license_action_over_allocated" model="ir.actions.act_window">
+        <field name="name">Sur-allocations</field>
+        <field name="res_model">hosting.license</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="hosting_license_view_search"/>
+        <field name="context">{'search_default_filter_over_allocated': 1}</field>
+    </record>
+
+</odoo>

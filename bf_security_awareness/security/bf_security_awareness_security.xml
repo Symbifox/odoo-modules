@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data noupdate="0">
+        <record id="module_category_secaware" model="ir.module.category">
+            <field name="name">Sensibilisation à la sécurité</field>
+            <field name="description">Campagnes d'hameçonnage simulées, profils de risque et formation</field>
+            <field name="sequence">55</field>
+        </record>
+
+        <!-- Operator: runs campaigns and views results. -->
+        <record id="group_bf_secaware_user" model="res.groups">
+            <field name="name">Opérateur</field>
+            <field name="category_id" ref="module_category_secaware"/>
+            <field name="comment">Peut créer et lancer des campagnes d'hameçonnage et consulter les résultats.</field>
+        </record>
+
+        <!-- Manager: full control + history deletion. -->
+        <record id="group_bf_secaware_manager" model="res.groups">
+            <field name="name">Gestionnaire</field>
+            <field name="category_id" ref="module_category_secaware"/>
+            <field name="implied_ids" eval="[(4, ref('group_bf_secaware_user'))]"/>
+            <field name="comment">Accès complet, incluant la suppression de l'historique.</field>
+            <field name="users" eval="[(4, ref('base.user_admin'))]"/>
+        </record>
+
+        <!-- Purge: the privileged hat allowed to EXECUTE a clawback (pull a mail
+             out of every mailbox). Separate from Gestionnaire so previewing and
+             actually purging are distinct grants. Implies Gestionnaire. -->
+        <record id="group_bf_secaware_purge" model="res.groups">
+            <field name="name">Purge courriel (clawback)</field>
+            <field name="category_id" ref="module_category_secaware"/>
+            <field name="implied_ids" eval="[(4, ref('group_bf_secaware_manager'))]"/>
+            <field name="comment">Peut exécuter et restaurer un retrait de courriel dans toutes les boîtes. Privilège distinct du rôle Gestionnaire.</field>
+            <field name="users" eval="[(4, ref('base.user_admin'))]"/>
+        </record>
+    </data>
+
+    <!-- Record rules: behavioural data is HR-private. Only secaware groups
+         reach these models at all (see ir.model.access.csv). The rules below
+         keep everything scoped to the user's company. -->
+    <data noupdate="1">
+        <record id="rule_phishing_campaign_company" model="ir.rule">
+            <field name="name">Campagnes : multi-société</field>
+            <field name="model_id" ref="model_bf_phishing_campaign"/>
+            <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+            <field name="groups" eval="[(4, ref('group_bf_secaware_user'))]"/>
+        </record>
+
+        <record id="rule_phishing_result_company" model="ir.rule">
+            <field name="name">Résultats : multi-société</field>
+            <field name="model_id" ref="model_bf_phishing_result"/>
+            <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+            <field name="groups" eval="[(4, ref('group_bf_secaware_user'))]"/>
+        </record>
+
+        <record id="rule_security_profile_company" model="ir.rule">
+            <field name="name">Profils : multi-société</field>
+            <field name="model_id" ref="model_bf_security_profile"/>
+            <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+            <field name="groups" eval="[(4, ref('group_bf_secaware_user'))]"/>
+        </record>
+
+        <record id="rule_training_assignment_company" model="ir.rule">
+            <field name="name">Formations : multi-société</field>
+            <field name="model_id" ref="model_bf_training_assignment"/>
+            <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+            <field name="groups" eval="[(4, ref('group_bf_secaware_user'))]"/>
+        </record>
+
+        <record id="rule_phishing_template_company" model="ir.rule">
+            <field name="name">Modèles : multi-société</field>
+            <field name="model_id" ref="model_bf_phishing_template"/>
+            <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+            <field name="groups" eval="[(4, ref('group_bf_secaware_user'))]"/>
+        </record>
+
+        <record id="rule_reported_phish_company" model="ir.rule">
+            <field name="name">Signalements : multi-société</field>
+            <field name="model_id" ref="model_bf_reported_phish"/>
+            <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+            <field name="groups" eval="[(4, ref('group_bf_secaware_user'))]"/>
+        </record>
+
+        <record id="rule_clawback_connector_company" model="ir.rule">
+            <field name="name">Connecteurs courriel : multi-société</field>
+            <field name="model_id" ref="model_bf_mail_clawback_connector"/>
+            <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+            <field name="groups" eval="[(4, ref('group_bf_secaware_manager'))]"/>
+        </record>
+
+        <record id="rule_clawback_operation_company" model="ir.rule">
+            <field name="name">Retraits : multi-société</field>
+            <field name="model_id" ref="model_bf_clawback_operation"/>
+            <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+            <field name="groups" eval="[(4, ref('group_bf_secaware_user'))]"/>
+        </record>
+    </data>
+
+</odoo>

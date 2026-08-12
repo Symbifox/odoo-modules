@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo noupdate="1">
+    <record id="bf_onb_step_settings" model="onboarding.onboarding.step">
+        <field name="title">Configurer l'identité de marque</field>
+        <field name="description">Logo, favicon, couleurs, police et textes de courriels brandés — tout est regroupé dans Paramètres → Général → Identité de marque.</field>
+        <field name="button_text">Ouvrir Identité de marque</field>
+        <field name="done_text">Marque configurée</field>
+        <field name="panel_step_open_action_name">bf_open_res_config_settings</field>
+        <field name="sequence">1</field>
+    </record>
+    <record id="bf_onb_step_company" model="onboarding.onboarding.step">
+        <field name="title">Mettre à jour le logo et la signature</field>
+        <field name="description">[action:base.action_res_company_form] Ouvrez la fiche société pour téléverser le logo, ajuster les coordonnées et préparer la signature des courriels.</field>
+        <field name="button_text">Modifier la société</field>
+        <field name="done_text">Identité visuelle prête</field>
+        <field name="panel_step_open_action_name">bf_open_action</field>
+        <field name="sequence">2</field>
+    </record>
+    <record id="bf_onboarding_panel" model="onboarding.onboarding">
+        <field name="name">Identité visuelle Blue Fox</field>
+        <field name="route_name">bluefox_branding_onboarding</field>
+        <field name="panel_close_action_name">action_close_panel_bluefox_branding</field>
+        <field name="step_ids" eval="[
+            Command.link(ref('bluefox_branding.bf_onb_step_settings')),
+            Command.link(ref('bluefox_branding.bf_onb_step_company')),
+        ]"/>
+    </record>
+</odoo>

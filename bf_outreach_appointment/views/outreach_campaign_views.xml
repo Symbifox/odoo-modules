@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="view_bf_outreach_campaign_form_appointment" model="ir.ui.view">
+        <field name="name">bf.outreach.campaign.form.appointment</field>
+        <field name="model">bf.outreach.campaign</field>
+        <field name="inherit_id" ref="bf_outreach.view_bf_outreach_campaign_form"/>
+        <field name="arch" type="xml">
+            <field name="mail_template_id" position="after">
+                <field name="booking_type_id" options="{'no_quick_create': True}"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_bf_outreach_target_form_appointment" model="ir.ui.view">
+        <field name="name">bf.outreach.target.form.appointment</field>
+        <field name="model">bf.outreach.target</field>
+        <field name="inherit_id" ref="bf_outreach.view_bf_outreach_target_form"/>
+        <field name="arch" type="xml">
+            <field name="website" position="after">
+                <field name="booking_url" widget="url" readonly="1"
+                       invisible="not booking_url"/>
+            </field>
+        </field>
+    </record>
+
+</odoo>

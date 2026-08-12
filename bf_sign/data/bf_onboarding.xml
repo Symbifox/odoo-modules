@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo noupdate="1">
+
+    <record id="bf_onb_step_settings" model="onboarding.onboarding.step">
+        <field name="title">Configurer la signature électronique</field>
+        <field name="description">Choisissez l'échéance par défaut, le texte de consentement et, au besoin, activez l'horodatage RFC 3161.</field>
+        <field name="button_text">Ouvrir Paramètres</field>
+        <field name="done_text">Paramètres configurés</field>
+        <field name="panel_step_open_action_name">bf_open_res_config_settings</field>
+        <field name="sequence">1</field>
+    </record>
+
+    <record id="bf_onb_step_request" model="onboarding.onboarding.step">
+        <field name="title">Créer une demande de signature</field>
+        <field name="description">[action:bf_sign.action_sign_request] Téléversez un PDF, renseignez le signataire et envoyez le lien.</field>
+        <field name="button_text">Nouvelle demande</field>
+        <field name="done_text">Première demande créée</field>
+        <field name="panel_step_open_action_name">bf_open_action</field>
+        <field name="sequence">2</field>
+    </record>
+
+    <record id="bf_onboarding_panel" model="onboarding.onboarding">
+        <field name="name">Signature électronique</field>
+        <field name="route_name">bf_sign_onboarding</field>
+        <field name="panel_close_action_name">action_close_panel_bf_sign</field>
+        <field name="step_ids" eval="[
+            Command.link(ref('bf_sign.bf_onb_step_settings')),
+            Command.link(ref('bf_sign.bf_onb_step_request')),
+        ]"/>
+    </record>
+
+</odoo>

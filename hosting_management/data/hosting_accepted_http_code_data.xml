@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="http_code_400" model="hosting.accepted.http.code">
+        <field name="code">400</field>
+        <field name="name">Bad Request</field>
+    </record>
+    <record id="http_code_401" model="hosting.accepted.http.code">
+        <field name="code">401</field>
+        <field name="name">Unauthorized</field>
+    </record>
+    <record id="http_code_403" model="hosting.accepted.http.code">
+        <field name="code">403</field>
+        <field name="name">Forbidden</field>
+    </record>
+    <record id="http_code_404" model="hosting.accepted.http.code">
+        <field name="code">404</field>
+        <field name="name">Not Found</field>
+    </record>
+    <record id="http_code_405" model="hosting.accepted.http.code">
+        <field name="code">405</field>
+        <field name="name">Method Not Allowed</field>
+    </record>
+    <record id="http_code_500" model="hosting.accepted.http.code">
+        <field name="code">500</field>
+        <field name="name">Internal Server Error</field>
+    </record>
+    <record id="http_code_502" model="hosting.accepted.http.code">
+        <field name="code">502</field>
+        <field name="name">Bad Gateway</field>
+    </record>
+    <record id="http_code_503" model="hosting.accepted.http.code">
+        <field name="code">503</field>
+        <field name="name">Service Unavailable</field>
+    </record>
+    <record id="http_code_504" model="hosting.accepted.http.code">
+        <field name="code">504</field>
+        <field name="name">Gateway Timeout</field>
+    </record>
+</odoo>

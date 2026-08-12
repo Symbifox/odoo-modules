@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============================================================== -->
+    <!-- Fake credential login form (mode = credential)                 -->
+    <!-- Self-contained page; the CSRF token is added manually since we  -->
+    <!-- do not use the website frontend layout.                        -->
+    <!-- ============================================================== -->
+    <template id="phishing_credential_form" name="Phishing Credential Form">
+        <html lang="fr">
+            <head>
+                <meta charset="utf-8"/>
+                <meta name="viewport" content="width=device-width, initial-scale=1"/>
+                <meta name="robots" content="noindex, nofollow"/>
+                <title t-esc="template.landing_title or 'Connexion'"/>
+                <style>
+                    body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f1f3f4;
+                         display:flex;min-height:100vh;align-items:center;justify-content:center;}
+                    .card{background:#fff;border:1px solid #dadce0;border-radius:8px;
+                          padding:40px;width:340px;box-shadow:0 1px 3px rgba(0,0,0,.1);}
+                    h1{font-size:22px;font-weight:400;margin:0 0 6px;text-align:center;}
+                    .intro{color:#5f6368;font-size:13px;text-align:center;margin-bottom:24px;}
+                    label{display:block;font-size:12px;color:#5f6368;margin:14px 0 4px;}
+                    input[type=text],input[type=email],input[type=password]{
+                        width:100%;box-sizing:border-box;padding:11px;border:1px solid #dadce0;
+                        border-radius:4px;font-size:14px;}
+                    button{margin-top:24px;width:100%;background:#1a73e8;color:#fff;border:0;
+                           padding:11px;border-radius:4px;font-size:14px;cursor:pointer;}
+                </style>
+            </head>
+            <body>
+                <div class="card">
+                    <!-- Brand header (logo + per-page <style> overrides) rendered
+                         raw so a template can faithfully mimic the real brand. -->
+                    <t t-if="template.landing_html">
+                        <div class="brandhead"><t t-out="template.landing_html"/></div>
+                    </t>
+                    <h1 t-esc="template.landing_title or 'Connexion à votre compte'"/>
+                    <form t-attf-action="/phish/#{token}/submit" method="post">
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        <label for="login">Identifiant ou courriel</label>
+                        <input type="text" id="login" name="login" autocomplete="off" required="required"/>
+                        <label for="password">Mot de passe</label>
+                        <input type="password" id="password" name="password" autocomplete="off" required="required"/>
+                        <button type="submit" t-esc="template.landing_button_label or 'Se connecter'"/>
+                    </form>
+                </div>
+            </body>
+        </html>
+    </template>
+
+    <!-- ============================================================== -->
+    <!-- Teachable moment (post-click / post-submit / invalid token)    -->
+    <!-- ============================================================== -->
+    <template id="phishing_lesson" name="Phishing Teachable Moment">
+        <html lang="fr">
+            <head>
+                <meta charset="utf-8"/>
+                <meta name="viewport" content="width=device-width, initial-scale=1"/>
+                <meta name="robots" content="noindex, nofollow"/>
+                <title>Simulation de sécurité</title>
+                <style>
+                    body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f1f3f4;
+                         color:#202124;}
+                    .wrap{max-width:640px;margin:0 auto;padding:48px 20px;}
+                    .banner{background:#0b8043;color:#fff;border-radius:8px 8px 0 0;
+                            padding:24px 28px;}
+                    .banner h1{margin:0;font-size:22px;}
+                    .body{background:#fff;border:1px solid #dadce0;border-top:0;
+                          border-radius:0 0 8px 8px;padding:28px;}
+                    .body ul{padding-left:20px;}
+                    .cta{display:inline-block;margin-top:18px;background:#1a73e8;color:#fff;
+                         text-decoration:none;padding:11px 20px;border-radius:4px;}
+                    .note{margin-top:24px;font-size:12px;color:#5f6368;}
+                </style>
+            </head>
+            <body>
+                <div class="wrap">
+                    <div class="banner">
+                        <h1>✓ Il s'agissait d'une simulation autorisée</h1>
+                    </div>
+                    <div class="body">
+                        <t t-if="teachable_html">
+                            <t t-out="teachable_html"/>
+                        </t>
+                        <t t-else="">
+                            <p>Bonne nouvelle : <strong>aucune donnée n'a été
+                               compromise</strong>. Ce message faisait partie d'une
+                               simulation d'hameçonnage interne et autorisée, destinée
+                               à renforcer nos réflexes en cybersécurité.</p>
+                            <ul>
+                                <li>Méfiez-vous des messages alarmistes qui pressent d'agir.</li>
+                                <li>Vérifiez l'adresse réelle d'un lien avant de cliquer.</li>
+                                <li>Ne saisissez jamais vos identifiants hors du site officiel.</li>
+                            </ul>
+                        </t>
+                        <t t-if="training_url">
+                            <a class="cta" t-att-href="training_url">Suivre la formation assignée</a>
+                        </t>
+                        <p class="note">Cette simulation a été menée à des fins de
+                            sensibilisation. Aucun mot de passe n'a été enregistré.
+                            Pour toute question, contactez votre équipe TI.</p>
+                    </div>
+                </div>
+            </body>
+        </html>
+    </template>
+
+    <!-- ============================================================== -->
+    <!-- "Good catch" — reported the phishing                           -->
+    <!-- ============================================================== -->
+    <template id="phishing_reported" name="Phishing Reported">
+        <html lang="fr">
+            <head>
+                <meta charset="utf-8"/>
+                <meta name="viewport" content="width=device-width, initial-scale=1"/>
+                <meta name="robots" content="noindex, nofollow"/>
+                <title>Merci</title>
+                <style>
+                    body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f1f3f4;
+                         color:#202124;display:flex;min-height:100vh;align-items:center;
+                         justify-content:center;}
+                    .card{background:#fff;border:1px solid #dadce0;border-radius:8px;
+                          padding:40px;max-width:480px;text-align:center;}
+                    h1{color:#0b8043;}
+                </style>
+            </head>
+            <body>
+                <div class="card">
+                    <h1>✓ Bien joué !</h1>
+                    <p>Vous avez correctement identifié ce courriel comme une tentative
+                       d'hameçonnage. C'est exactement le bon réflexe.</p>
+                    <p>Continuez à signaler les messages suspects à votre équipe TI.</p>
+                </div>
+            </body>
+        </html>
+    </template>
+
+</odoo>

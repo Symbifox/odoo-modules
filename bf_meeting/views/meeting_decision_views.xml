@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="meeting_decision_view_list" model="ir.ui.view">
+        <field name="name">meeting.decision.list</field>
+        <field name="model">meeting.decision</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="sequence" widget="handle"/>
+                <field name="meeting_id"/>
+                <field name="name"/>
+                <field name="decision_maker_id"/>
+                <field name="knowledge_item_id"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="meeting_decision_view_form" model="ir.ui.view">
+        <field name="name">meeting.decision.form</field>
+        <field name="model">meeting.decision</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <group>
+                        <field name="meeting_id"/>
+                        <field name="sequence"/>
+                        <field name="name"/>
+                    </group>
+                    <group>
+                        <field name="decision_maker_id"/>
+                        <field name="knowledge_item_id"/>
+                    </group>
+                </group>
+                <separator string="Contexte"/>
+                <field name="description" nolabel="1"/>
+            </form>
+        </field>
+    </record>
+
+</odoo>

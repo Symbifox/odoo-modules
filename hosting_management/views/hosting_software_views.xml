@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Hosting Software Tree View -->
+    <record id="hosting_software_view_tree" model="ir.ui.view">
+        <field name="name">hosting.software.tree</field>
+        <field name="model">hosting.software</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="code"/>
+                <field name="name"/>
+                <field name="software_type"/>
+                <field name="latest_version"/>
+                <field name="latest_version_date"/>
+                <field name="service_count"/>
+                <field name="update_available" widget="boolean"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Hosting Software Form View -->
+    <record id="hosting_software_view_form" model="ir.ui.view">
+        <field name="name">hosting.software.form</field>
+        <field name="model">hosting.software</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_check_version" string="Vérifier les mises à jour" type="object" class="btn-secondary" icon="fa-refresh" invisible="version_check_method == 'none'"/>
+                </header>
+                <sheet>
+                    <field name="image" widget="image" class="oe_avatar" options="{'preview_image': 'image'}"/>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name" placeholder="Nom du logiciel"/>
+                        </h1>
+                        <label for="code"/>
+                        <h3>
+                            <field name="code" placeholder="Code court"/>
+                        </h3>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="software_type"/>
+                            <field name="latest_version"/>
+                            <field name="latest_version_date"/>
+                            <field name="update_available" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="github_url" widget="url"/>
+                            <field name="docker_image"/>
+                            <field name="active" invisible="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Services" name="services">
+                            <field name="service_ids" readonly="1">
+                                <list>
+                                    <field name="code"/>
+                                    <field name="name"/>
+                                    <field name="partner_id"/>
+                                    <field name="installed_version_id"/>
+                                    <field name="environment"/>
+                                    <field name="state"/>
+                                    <field name="update_available"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Versions" name="versions">
+                            <field name="version_ids">
+                                <list>
+                                    <field name="version"/>
+                                    <field name="release_date"/>
+                                    <field name="is_lts"/>
+                                    <field name="support_status"/>
+                                    <field name="update_impact"/>
+                                    <field name="service_count"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Vérification de version" name="version_checking">
+                            <group>
+                                <group string="Méthode de vérification">
+                                    <field name="version_check_method"/>
+                                    <field name="last_version_check" readonly="1"/>
+                                    <field name="version_check_error" readonly="1" invisible="not version_check_error"/>
+                                </group>
+                                <group string="Analyse de version">
+                                    <field name="version_regex"/>
+                                    <field name="version_prefix"/>
+                                </group>
+                            </group>
+                            <group>
+                                <group string="GitHub" invisible="version_check_method != 'github'">
+                                    <field name="github_repo" placeholder="owner/repo"/>
+                                </group>
+                                <group string="Docker Hub" invisible="version_check_method != 'docker_hub'">
+                                    <field name="docker_hub_repo" placeholder="owner/image or image"/>
+                                </group>
+                                <group string="GitLab" invisible="version_check_method != 'gitlab'">
+                                    <field name="gitlab_repo" widget="url" placeholder="https://gitlab.com/owner/repo"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Notes" name="notes">
+                            <field name="notes"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Hosting Software Kanban View -->
+    <record id="hosting_software_view_kanban" model="ir.ui.view">
+        <field name="name">hosting.software.kanban</field>
+        <field name="model">hosting.software</field>
+        <field name="arch" type="xml">
+            <kanban>
+                <field name="id"/>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="image"/>
+                <field name="software_type"/>
+                <field name="latest_version"/>
+                <field name="service_count"/>
+                <field name="update_available"/>
+                <templates>
+                    <t t-name="card">
+                        <aside>
+                            <field name="image" widget="image" options="{'preview_image': 'image'}" class="o_kanban_image"/>
+                        </aside>
+                        <main>
+                            <field name="name" class="fw-bold fs-5"/>
+                            <field name="code" class="text-muted"/>
+                            <div class="mt-2">
+                                <span class="badge rounded-pill text-bg-primary me-1">
+                                    <field name="software_type"/>
+                                </span>
+                                <span t-if="record.update_available.raw_value" class="badge rounded-pill text-bg-warning">
+                                    Mises à jour disponibles
+                                </span>
+                            </div>
+                            <div class="mt-2">
+                                <span class="text-muted">Version : </span>
+                                <field name="latest_version"/>
+                            </div>
+                            <div>
+                                <span class="text-muted">Services : </span>
+                                <field name="service_count"/>
+                            </div>
+                        </main>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Hosting Software Search View -->
+    <record id="hosting_software_view_search" model="ir.ui.view">
+        <field name="name">hosting.software.search</field>
+        <field name="model">hosting.software</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="code"/>
+                <filter name="filter_self_hosted" string="Auto-hébergé" domain="[('software_type', '=', 'self_hosted')]"/>
+                <filter name="filter_saas" string="SaaS" domain="[('software_type', '=', 'saas')]"/>
+                <filter name="filter_managed" string="Géré" domain="[('software_type', '=', 'managed')]"/>
+                <separator/>
+                <filter name="filter_updates" string="Mises à jour disponibles" domain="[('update_available', '=', True)]"/>
+                <separator/>
+                <filter name="filter_inactive" string="Archivé" domain="[('active', '=', False)]"/>
+                <group expand="0" string="Grouper par">
+                    <filter name="group_type" string="Type" context="{'group_by': 'software_type'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Hosting Software Action -->
+    <record id="hosting_software_action" model="ir.actions.act_window">
+        <field name="name">Catalogue de logiciels</field>
+        <field name="res_model">hosting.software</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="search_view_id" ref="hosting_software_view_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Ajoutez votre premier logiciel au catalogue
+            </p>
+            <p>
+                Suivez tous les logiciels que vous hébergez pour vos clients : Nextcloud, Odoo, CryptPad, et plus encore.
+            </p>
+        </field>
+    </record>
+
+</odoo>

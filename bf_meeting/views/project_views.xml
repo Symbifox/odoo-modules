@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Extend Project Form: Smart button for meetings -->
+    <record id="project_view_form_inherit_meeting" model="ir.ui.view">
+        <field name="name">project.project.form.inherit.meeting</field>
+        <field name="model">project.project</field>
+        <field name="inherit_id" ref="project.edit_project"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_meetings" type="object"
+                        class="oe_stat_button" icon="fa-comments-o"
+                        invisible="meeting_count == 0">
+                    <field name="meeting_count" widget="statinfo" string="Comptes rendus"/>
+                </button>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

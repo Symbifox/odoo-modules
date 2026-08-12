@@ -1,0 +1,84 @@
+// Blue Fox brand canon.
+// Lexend everywhere. #29ABE1 accent. #2D3031 anthracite.
+
+.bf-support-page {
+  font-family: "Lexend", -apple-system, BlinkMacSystemFont, "Segoe UI",
+               Roboto, Helvetica, Arial, sans-serif;
+  background: #F8FAFC;
+  min-height: 80vh;
+  color: #2D3031;
+
+  .bf-support-title {
+    font-family: "Lexend", sans-serif;
+    font-weight: 700;
+    color: #2D3031;
+    border-left: 4px solid #29ABE1;
+    padding-left: 16px;
+    margin-bottom: 8px;
+  }
+
+  .bf-support-tagline {
+    color: #6B7280;
+    margin-bottom: 0;
+    font-size: 1.05rem;
+  }
+
+  .bf-support-intro {
+    background: #FFFFFF;
+    border-left: 4px solid #29ABE1;
+    padding: 16px 20px;
+    border-radius: 4px;
+  }
+
+  .bf-support-form {
+    background: #FFFFFF;
+    padding: 28px;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+
+    .form-label {
+      font-weight: 500;
+      color: #2D3031;
+    }
+
+    .form-control {
+      border: 1px solid #E5E7EB;
+      border-radius: 4px;
+      padding: 10px 12px;
+      font-family: inherit;
+
+      &:focus {
+        border-color: #29ABE1;
+        box-shadow: 0 0 0 3px rgba(41, 171, 225, 0.15);
+        outline: none;
+      }
+    }
+
+    .bf-required {
+      color: #29ABE1;
+    }
+  }
+
+  .bf-support-submit {
+    background: #29ABE1;
+    color: #FFFFFF;
+    border: none;
+    padding: 12px 28px;
+    font-weight: 600;
+    border-radius: 4px;
+    transition: background 0.2s;
+    font-family: inherit;
+
+    &:hover {
+      background: #1F8FBF;
+      color: #FFFFFF;
+    }
+  }
+
+  .bf-support-success-card {
+    background: #FFFFFF;
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  }
+}

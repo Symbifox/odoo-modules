@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="letter_merge_wizard_form" model="ir.ui.view">
+        <field name="name">letter.merge.wizard.form</field>
+        <field name="model">letter.merge.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Fusion de lettres en lot">
+                <p class="text-muted">
+                    Crée une lettre par destinataire à partir du modèle choisi.
+                    Les champs de fusion sont remplis pour chaque destinataire.
+                </p>
+                <group>
+                    <field name="template_id"/>
+                    <field name="company_id" groups="base.group_multi_company"/>
+                    <field name="letter_date"/>
+                    <field name="auto_finalize"/>
+                </group>
+                <group>
+                    <field name="recipient_ids" widget="many2many_tags"
+                           options="{'no_create': True}"/>
+                </group>
+                <footer>
+                    <button name="action_create_letters" type="object"
+                            string="Créer les lettres" class="btn-primary"
+                            icon="fa-magic"/>
+                    <button string="Annuler" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_letter_merge_wizard" model="ir.actions.act_window">
+        <field name="name">Fusion en lot</field>
+        <field name="res_model">letter.merge.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <record id="action_letter_merge_from_partners" model="ir.actions.act_window">
+        <field name="name">Créer des lettres</field>
+        <field name="res_model">letter.merge.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="base.model_res_partner"/>
+        <field name="binding_view_types">list,form</field>
+    </record>
+
+</odoo>

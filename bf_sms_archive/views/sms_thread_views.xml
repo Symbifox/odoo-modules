@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Thread: Tree View -->
+    <record id="sms_thread_view_tree" model="ir.ui.view">
+        <field name="name">sms.archive.thread.tree</field>
+        <field name="model">sms.archive.thread</field>
+        <field name="arch" type="xml">
+            <list decoration-muted="is_hidden or not active" decoration-bf="unread_count &gt; 0">
+                <field name="active" column_invisible="1"/>
+                <field name="contact_name" string="Contact"/>
+                <field name="phone_normalized" string="Téléphone"/>
+                <field name="partner_id" string="Contact Odoo"/>
+                <field name="unread_count" string="Non lus" optional="show"/>
+                <field name="message_count" string="Messages"/>
+                <field name="call_count" string="Appels" optional="hide"/>
+                <field name="last_message_date" string="Dernier message"/>
+                <field name="last_call_date" string="Dernier appel" optional="hide"/>
+                <field name="last_message_preview" string="Aperçu" optional="show"/>
+                <field name="is_hidden" string="Confidentiel" widget="boolean_toggle"/>
+                <field name="task_ids" string="Tâches" widget="many2many_tags" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Thread: Form View -->
+    <record id="sms_thread_view_form" model="ir.ui.view">
+        <field name="name">sms.archive.thread.form</field>
+        <field name="model">sms.archive.thread</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_match_partner" string="Lier au contact Odoo"
+                            type="object" class="btn-secondary"
+                            invisible="partner_id"/>
+                    <button name="action_archive_thread" string="Archiver"
+                            type="object" class="btn-secondary" icon="fa-archive"
+                            invisible="not active"/>
+                    <button name="action_unarchive_thread" string="Désarchiver"
+                            type="object" class="btn-secondary" icon="fa-inbox"
+                            invisible="active"/>
+                    <button name="action_export_csv" string="Export CSV"
+                            type="object" class="btn-secondary" icon="fa-file-text-o"/>
+                    <button name="action_export_xml" string="Export XML"
+                            type="object" class="btn-secondary" icon="fa-code"/>
+                    <button name="action_print_pdf" string="Export PDF"
+                            type="object" class="btn-secondary" icon="fa-file-pdf-o"/>
+                </header>
+                <sheet>
+                    <field name="active" invisible="1"/>
+                    <widget name="web_ribbon" title="Archivé"
+                            bg_color="text-bg-secondary" invisible="active"/>
+                    <widget name="web_ribbon" title="Confidentiel"
+                            bg_color="text-bg-danger" invisible="not is_hidden"/>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_messages" type="object"
+                                class="oe_stat_button" icon="fa-comments">
+                            <field name="message_count" widget="statinfo" string="Messages"/>
+                        </button>
+                        <button name="action_view_calls" type="object"
+                                class="oe_stat_button" icon="fa-phone">
+                            <field name="call_count" widget="statinfo" string="Appels"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <label for="contact_name"/>
+                        <h1>
+                            <field name="contact_name" placeholder="Nom du contact"/>
+                        </h1>
+                        <h3>
+                            <field name="phone_normalized" readonly="1"/>
+                        </h3>
+                    </div>
+                    <group>
+                        <group string="Contact">
+                            <field name="phone_raw" string="Numéro original" readonly="1"/>
+                            <field name="partner_id" string="Contact Odoo"/>
+                            <field name="owner_id" string="Propriétaire" readonly="1"/>
+                        </group>
+                        <group string="Paramètres">
+                            <field name="is_hidden" string="Confidentiel"/>
+                            <field name="last_message_date" string="Dernier message" readonly="1"/>
+                            <field name="last_call_date" string="Dernier appel" readonly="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Messages" name="messages">
+                            <field name="message_ids" nolabel="1" readonly="1">
+                                <list decoration-info="direction == 'out'"
+                                      decoration-muted="direction == 'draft'"
+                                      default_order="date_sent asc">
+                                    <field name="direction" string="Direction" widget="badge"
+                                           decoration-info="direction == 'out'"
+                                           decoration-success="direction == 'in'"
+                                           decoration-muted="direction == 'draft'"/>
+                                    <field name="body" string="Contenu"/>
+                                    <field name="date_sent" string="Date"/>
+                                    <field name="contact_name" string="Contact" optional="hide"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Appels" name="calls">
+                            <field name="call_ids" nolabel="1" readonly="1">
+                                <list default_order="date desc"
+                                      decoration-danger="call_type == 'missed'"
+                                      decoration-muted="call_type in ('rejected', 'blocked')">
+                                    <field name="call_type" string="Type" widget="badge"
+                                           decoration-success="call_type == 'incoming'"
+                                           decoration-info="call_type == 'outgoing'"
+                                           decoration-danger="call_type == 'missed'"
+                                           decoration-warning="call_type == 'voicemail'"
+                                           decoration-muted="call_type in ('rejected', 'blocked')"/>
+                                    <field name="date" string="Date"/>
+                                    <field name="duration_display" string="Durée"/>
+                                    <field name="contact_name" string="Contact" optional="hide"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Tâches liées" name="tasks">
+                            <field name="task_ids" nolabel="1"
+                                   widget="many2many" options="{'no_create': True}">
+                                <list>
+                                    <field name="project_id" string="Projet"/>
+                                    <field name="name" string="Tâche"/>
+                                    <field name="stage_id" string="Étape"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Thread: Search View -->
+    <record id="sms_thread_view_search" model="ir.ui.view">
+        <field name="name">sms.archive.thread.search</field>
+        <field name="model">sms.archive.thread</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="contact_name" string="Contact"/>
+                <field name="phone_normalized" string="Téléphone"/>
+                <field name="partner_id" string="Contact Odoo"/>
+                <filter name="filter_visible" string="Visibles"
+                        domain="[('is_hidden', '=', False)]"/>
+                <filter name="filter_hidden" string="Confidentiels"
+                        domain="[('is_hidden', '=', True)]"/>
+                <filter name="filter_unmatched" string="Sans contact Odoo"
+                        domain="[('partner_id', '=', False)]"/>
+                <separator/>
+                <filter name="filter_unread" string="Non lus"
+                        domain="[('unread_count', '&gt;', 0)]"/>
+                <filter name="filter_active" string="Actives (boîte)"
+                        domain="[('active', '=', True)]"/>
+                <filter name="filter_archived" string="Archivés"
+                        domain="[('active', '=', False)]"/>
+                <separator/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="group_partner" string="Contact Odoo"
+                            context="{'group_by': 'partner_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Thread: Actions -->
+    <record id="sms_thread_action" model="ir.actions.act_window">
+        <field name="name">Conversations</field>
+        <field name="res_model">sms.archive.thread</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="sms_thread_view_search"/>
+        <!-- active_test=False : la liste « Conversations » montre par défaut TOUS les
+             fils (actifs + archivés). Les filtres « Actives (boîte) » et « Archivés »
+             permettent de restreindre. search_default_filter_visible masque encore les
+             fils confidentiels (is_hidden) par défaut. -->
+        <field name="context">{'search_default_filter_visible': 1, 'active_test': False}</field>
+    </record>
+
+</odoo>

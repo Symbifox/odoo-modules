@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_partner_form_cx" model="ir.ui.view">
+        <field name="name">res.partner.form.inherit.bf.cx</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_bf_cx_feedback" type="object"
+                        class="oe_stat_button" icon="fa-comments-o"
+                        groups="bf_cx.group_bf_cx_user"
+                        invisible="bf_cx_feedback_count == 0">
+                    <field name="bf_cx_feedback_count" widget="statinfo" string="Feedbacks"/>
+                </button>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

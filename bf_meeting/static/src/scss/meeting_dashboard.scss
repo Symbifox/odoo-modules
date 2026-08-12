@@ -1,0 +1,89 @@
+.o_bf_meeting_dashboard {
+    .cursor-pointer { cursor: pointer; }
+
+    .bf_stepper {
+        margin-top: 0.5rem;
+        gap: 0;
+    }
+
+    .bf_stepper_step {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-width: 36px;
+    }
+
+    .bf_stepper_node {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.75rem;
+        border: 2px solid transparent;
+        transition: all 0.15s ease;
+    }
+
+    .bf_stepper_done {
+        background-color: #198754;
+        color: #fff;
+        border-color: #198754;
+    }
+
+    .bf_stepper_current {
+        background-color: #fff;
+        color: #29ABE1;
+        border-color: #29ABE1;
+        box-shadow: 0 0 0 3px rgba(41, 171, 225, 0.18);
+    }
+
+    .bf_stepper_pending {
+        background-color: #f1f3f5;
+        color: #adb5bd;
+        border-color: #dee2e6;
+    }
+
+    .bf_stepper_skipped {
+        background-color: #fff;
+        color: #adb5bd;
+        border-color: #adb5bd;
+        border-style: dashed;
+    }
+
+    .bf_stepper_clickable {
+        cursor: pointer;
+    }
+
+    .bf_stepper_clickable:hover .bf_stepper_node:not(.bf_stepper_done) {
+        box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.15);
+    }
+
+    .bf_card_selected {
+        background-color: rgba(41, 171, 225, 0.05);
+        border-color: #29ABE1 !important;
+    }
+
+    .bf_stepper_label {
+        font-size: 0.65rem;
+        margin-top: 0.15rem;
+        white-space: nowrap;
+    }
+
+    .bf_stepper_bar {
+        height: 3px;
+        margin: 0 4px;
+        margin-bottom: 1.0rem;  // align with the circles, above the labels
+        min-width: 12px;
+        border-radius: 1.5px;
+        transition: background-color 0.15s ease;
+    }
+
+    .bf_stepper_bar_done {
+        background-color: #198754;
+    }
+
+    .bf_stepper_bar_pending {
+        background-color: #dee2e6;
+    }
+}

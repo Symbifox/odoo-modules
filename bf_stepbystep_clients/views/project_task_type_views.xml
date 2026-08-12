@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Add Step-by-Step fields to the project.task.type form view -->
+    <record id="bf_stepbystep_project_task_type_form_inherit" model="ir.ui.view">
+        <field name="name">project.task.type.form.bf_stepbystep_inherit</field>
+        <field name="model">project.task.type</field>
+        <field name="inherit_id" ref="project.task_type_edit"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <group string="Step-by-Step — Progression linéaire" name="bf_stepbystep">
+                    <field name="progression_step_number"/>
+                    <field name="progression_step_name"/>
+                    <field name="progression_client_visible"/>
+                    <field name="progression_client_action_hint"
+                           placeholder="Instruction affichée au client lorsque le projet est rendu à cette étape…"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Add columns on the project.task.type tree view -->
+    <record id="bf_stepbystep_project_task_type_tree_inherit" model="ir.ui.view">
+        <field name="name">project.task.type.tree.bf_stepbystep_inherit</field>
+        <field name="model">project.task.type</field>
+        <field name="inherit_id" ref="project.task_type_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="progression_step_number" optional="show"/>
+                <field name="progression_step_name" optional="show"/>
+                <field name="progression_client_visible" optional="hide"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

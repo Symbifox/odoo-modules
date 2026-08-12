@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Inject the file_upload rendering into the question container.
+         We anchor on the last native t-call rather than position by index so the
+         injection survives reordering of native question types. If Odoo renames
+         question_matrix in a future minor version, the inheritance fails loudly
+         on module update rather than silently dropping the upload widget. -->
+    <template id="question_container_inherit_bf_survey_upload"
+              inherit_id="survey.question_container">
+        <xpath expr="//t[@t-call='survey.question_matrix']" position="after">
+            <t t-if="question.question_type == 'file_upload'"
+               t-call="bf_survey_upload.question_file_upload"/>
+        </xpath>
+    </template>
+
+    <!-- File upload question rendering -->
+    <template id="question_file_upload" name="Question: file upload">
+        <div class="o_survey_form_file_upload"
+             t-att-data-question-id="question.id"
+             t-att-data-survey-token="answer.survey_id.access_token"
+             t-att-data-answer-token="answer.access_token"
+             t-att-data-multiple="'1' if question.file_upload_multiple else '0'"
+             t-att-data-max-size-mb="question.file_upload_max_size_mb"
+             t-att-data-allowed-extensions="question.file_upload_allowed_extensions or ''">
+
+            <!-- Hidden inputs to send attachment ids on submit -->
+            <t t-set="existing_attachments"
+               t-value="answer_lines.mapped('bf_attachment_ids') if answer_lines else []"/>
+            <t t-foreach="existing_attachments" t-as="att">
+                <input type="hidden"
+                       t-att-name="question.id"
+                       t-att-value="att.id"
+                       class="o_survey_form_file_upload_input"/>
+            </t>
+
+            <div class="o_survey_form_file_upload_dropzone p-3 border rounded text-center">
+                <label class="btn btn-secondary mb-2"
+                       aria-label="Téléverser un fichier">
+                    <i class="fa fa-paperclip me-2"/>
+                    <span t-if="question.file_upload_multiple">Choisir des fichiers</span>
+                    <span t-else="">Choisir un fichier</span>
+                    <input type="file"
+                           class="o_survey_form_file_upload_picker d-none"
+                           t-att-multiple="'multiple' if question.file_upload_multiple else None"
+                           t-att-accept="('.' + (question.file_upload_allowed_extensions or '').replace(',', ',.')) if question.file_upload_allowed_extensions else None"/>
+                </label>
+                <div class="text-muted small">
+                    <span t-if="question.file_upload_allowed_extensions">
+                        Formats acceptés : <t t-out="question.file_upload_allowed_extensions"/>.
+                    </span>
+                    <span>Taille max : <t t-out="question.file_upload_max_size_mb"/> Mo par fichier.</span>
+                </div>
+                <div class="o_survey_form_file_upload_error text-danger small mt-2 d-none"
+                     role="alert"
+                     aria-live="polite"/>
+            </div>
+
+            <ul class="o_survey_form_file_upload_list list-unstyled mt-2 mb-0">
+                <t t-foreach="existing_attachments" t-as="att">
+                    <li class="d-flex align-items-center justify-content-between border rounded px-2 py-1 mt-1"
+                        t-att-data-attachment-id="att.id">
+                        <span class="text-truncate">
+                            <i class="fa fa-file-o me-2"/>
+                            <t t-out="att.name"/>
+                        </span>
+                        <button type="button"
+                                class="btn btn-sm btn-link text-danger o_survey_form_file_upload_remove"
+                                t-att-data-attachment-id="att.id">
+                            <i class="fa fa-trash"/>
+                        </button>
+                    </li>
+                </t>
+            </ul>
+        </div>
+    </template>
+
+</odoo>

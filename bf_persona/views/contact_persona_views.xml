@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_contact_persona_form" model="ir.ui.view">
+        <field name="name">contact.persona.form</field>
+        <field name="model">contact.persona</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_launch_persona_skill"
+                            type="object" string="Lancer Claude /persona refresh"
+                            class="btn-primary"
+                            context="{'default_mode': 'refresh'}"
+                            help="Ouvre le panneau Claude avec /persona refresh pré-rempli pour recalculer les KPIs."/>
+                    <button name="action_link_knowledge_items"
+                            type="object" string="Lier les éléments de matrice"
+                            help="Cherche les éléments de matrice où ce contact apparaît (décideur, consulté, informé) et les ajoute aux connaissances partagées."/>
+                </header>
+                <sheet>
+                    <widget name="web_ribbon" title="Relation dégradée" bg_color="text-bg-danger" invisible="relationship_health != 'degraded'"/>
+                    <widget name="web_ribbon" title="À surveiller" bg_color="text-bg-warning" invisible="relationship_health != 'watch'"/>
+                    <widget name="web_ribbon" title="Ton à rafraîchir" bg_color="text-bg-warning" invisible="not tone_is_stale or relationship_health in ('degraded', 'watch')"/>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="partner_id" options="{'no_create': True}"/>
+                            <field name="preferred_language"/>
+                            <field name="last_interaction_date" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="relationship_health"/>
+                            <field name="tone_drift_score" readonly="1" widget="float" digits="[8,2]"/>
+                            <field name="active" invisible="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Communication" name="communication">
+                            <group>
+                                <group>
+                                    <field name="addressing_style"/>
+                                    <field name="preferred_salutation"/>
+                                    <field name="closing_formula"/>
+                                </group>
+                                <group>
+                                    <field name="custom_appellations"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Ton" name="tone">
+                            <group>
+                                <group string="Leur ton envers nous">
+                                    <field name="tone_summary"/>
+                                    <field name="tone_notes" nolabel="1" colspan="2"/>
+                                </group>
+                                <group string="Notre ton envers eux">
+                                    <field name="our_tone_summary"/>
+                                    <field name="our_tone_notes" nolabel="1" colspan="2"/>
+                                </group>
+                            </group>
+                            <group>
+                                <field name="tone_last_assessed"/>
+                                <field name="tone_is_stale" readonly="1"/>
+                            </group>
+                        </page>
+                        <page string="Payeur" name="payer">
+                            <group>
+                                <group>
+                                    <field name="payer_quality"/>
+                                    <field name="avg_payment_delay_days" widget="float" digits="[16,1]"/>
+                                </group>
+                            </group>
+                            <separator string="Notes"/>
+                            <field name="payer_notes"/>
+                        </page>
+                        <page string="Règles c.c." name="cc">
+                            <field name="cc_rule_ids">
+                                <list editable="bottom">
+                                    <field name="category_id"/>
+                                    <field name="cc_partner_ids" widget="many2many_tags" options="{'no_create': True}"/>
+                                    <field name="mandatory" widget="boolean_toggle"/>
+                                    <field name="notes"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Détails personnels" name="personal" groups="bf_persona.group_persona_manager">
+                            <field name="personal_details"/>
+                        </page>
+                        <page string="Connaissances partagées" name="knowledge">
+                            <field name="shared_knowledge_item_ids" widget="many2many_tags"
+                                   options="{'no_create': True}"/>
+                        </page>
+                        <page string="KPIs" name="kpis">
+                            <field name="kpi_ids">
+                                <list editable="bottom">
+                                    <field name="date_measured"/>
+                                    <field name="name"/>
+                                    <field name="value_text"/>
+                                    <field name="value_float"/>
+                                    <field name="unit"/>
+                                    <field name="source"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Résumé Claude" name="claude">
+                            <field name="claude_context_summary" readonly="1"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_contact_persona_list" model="ir.ui.view">
+        <field name="name">contact.persona.list</field>
+        <field name="model">contact.persona</field>
+        <field name="arch" type="xml">
+            <list decoration-warning="tone_is_stale or relationship_health == 'watch'"
+                  decoration-danger="relationship_health == 'degraded'">
+                <field name="partner_id"/>
+                <field name="addressing_style"/>
+                <field name="relationship_health"/>
+                <field name="last_interaction_date" optional="show"/>
+                <field name="tone_summary"/>
+                <field name="our_tone_summary" optional="show"/>
+                <field name="payer_quality"/>
+                <field name="avg_payment_delay_days"/>
+                <field name="tone_last_assessed" optional="hide"/>
+                <field name="tone_is_stale" optional="hide"/>
+                <field name="tone_drift_score" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_contact_persona_search" model="ir.ui.view">
+        <field name="name">contact.persona.search</field>
+        <field name="model">contact.persona</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="partner_id"/>
+                <field name="preferred_salutation"/>
+                <separator/>
+                <filter string="Tutoiement" name="filter_tu"
+                        domain="[('addressing_style','=','tu')]"/>
+                <filter string="Vouvoiement" name="filter_vous"
+                        domain="[('addressing_style','=','vous')]"/>
+                <separator/>
+                <filter string="Relation dégradée" name="filter_health_degraded"
+                        domain="[('relationship_health','=','degraded')]"/>
+                <filter string="À surveiller" name="filter_health_watch"
+                        domain="[('relationship_health','=','watch')]"/>
+                <filter string="Saine" name="filter_health_healthy"
+                        domain="[('relationship_health','=','healthy')]"/>
+                <separator/>
+                <filter string="Ton tendu" name="filter_tense"
+                        domain="[('tone_summary','=','tense')]"/>
+                <filter string="Notre ton tendu" name="filter_our_tense"
+                        domain="[('our_tone_summary','=','tense')]"/>
+                <filter string="Ton à rafraîchir" name="filter_tone_stale"
+                        domain="[('tone_is_stale','=',True)]"/>
+                <filter string="Payeur lent ou mauvais" name="filter_slow_payer"
+                        domain="[('payer_quality','in',('slow','poor'))]"/>
+                <filter string="Style à compléter (auto)" name="filter_addressing_auto"
+                        domain="[('addressing_style','=','auto')]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter string="Santé relationnelle"
+                            name="group_health" context="{'group_by': 'relationship_health'}"/>
+                    <filter string="Style"
+                            name="group_style" context="{'group_by': 'addressing_style'}"/>
+                    <filter string="Leur ton"
+                            name="group_tone" context="{'group_by': 'tone_summary'}"/>
+                    <filter string="Notre ton"
+                            name="group_our_tone" context="{'group_by': 'our_tone_summary'}"/>
+                    <filter string="Payeur"
+                            name="group_payer" context="{'group_by': 'payer_quality'}"/>
+                    <filter string="À rafraîchir"
+                            name="group_stale" context="{'group_by': 'tone_is_stale'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_contact_persona" model="ir.actions.act_window">
+        <field name="name">Personas</field>
+        <field name="res_model">contact.persona</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_contact_persona_search"/>
+    </record>
+
+</odoo>

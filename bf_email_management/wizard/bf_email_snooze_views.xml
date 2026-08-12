@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="bf_email_snooze_view_form" model="ir.ui.view">
+        <field name="name">bf.email.snooze.form</field>
+        <field name="model">bf.email.snooze</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title">
+                        <h2>Reporter <field name="bf_email_count"/> courriel(s)</h2>
+                    </div>
+                    <group>
+                        <field name="preset" widget="radio"/>
+                        <field name="snoozed_until"
+                               invisible="preset != 'custom'"
+                               required="preset == 'custom'"/>
+                    </group>
+                    <p class="text-muted">
+                        Le courriel sortira de la boîte de réception et y reviendra
+                        automatiquement à l'échéance.
+                    </p>
+                </sheet>
+                <footer>
+                    <button name="action_apply"
+                            string="Reporter"
+                            type="object"
+                            class="btn-primary"/>
+                    <button string="Annuler" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_bf_email_snooze" model="ir.actions.server">
+        <field name="name">Reporter</field>
+        <field name="model_id" ref="model_bf_email"/>
+        <field name="binding_model_id" ref="model_bf_email"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">action = records.action_snooze()</field>
+    </record>
+
+</odoo>

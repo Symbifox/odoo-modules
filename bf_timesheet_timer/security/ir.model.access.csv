@@ -1,0 +1,6 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_bf_timer_user,bf.timer.user,model_bf_timer,hr_timesheet.group_hr_timesheet_user,1,1,1,1
+access_bf_timer_stop_wizard,bf.timer.stop.wizard,model_bf_timer_stop_wizard,hr_timesheet.group_hr_timesheet_user,1,1,1,1
+access_bf_timer_description_preset,bf.timer.description.preset,model_bf_timer_description_preset,hr_timesheet.group_hr_timesheet_user,1,0,0,0
+access_bf_timer_description_preset_manager,bf.timer.description.preset.manager,model_bf_timer_description_preset,hr_timesheet.group_hr_timesheet_approver,1,1,1,1
+access_bf_timer_pinned_task,bf.timer.pinned.task,model_bf_timer_pinned_task,hr_timesheet.group_hr_timesheet_user,1,1,1,1

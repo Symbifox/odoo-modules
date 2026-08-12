@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="cron_detect_relationship_degradation" model="ir.cron">
+        <field name="name">Persona : détection de dérive relationnelle</field>
+        <field name="model_id" ref="model_contact_persona"/>
+        <field name="state">code</field>
+        <field name="code">model.cron_detect_relationship_degradation()</field>
+        <field name="interval_number">7</field>
+        <field name="interval_type">days</field>
+        <field name="active">True</field>
+    </record>
+
+</odoo>

@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="report_sign_certificate">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-set="evt_labels" t-value="dict(doc.log_ids._fields['event'].selection)"/>
+                <div class="article" style="padding:0 !important; margin:0 !important;">
+                    <link rel="stylesheet" href="/bf_lexend/static/src/scss/lexend_report.css"/>
+                    <style>
+                        .container, .o_body_html, body, #wrapwrap, main, .article {
+                            max-width:100% !important; width:100% !important;
+                            padding-left:0 !important; padding-right:0 !important;
+                            margin-left:0 !important; margin-right:0 !important;
+                        }
+                        .cert-page {
+                            font-family:"Lexend", system-ui, -apple-system, sans-serif;
+                            font-size:11pt; line-height:1.55;
+                            color:<t t-esc="(env.company and env.company.report_brand_dark) or '#2D3031'"/>;
+                            position:relative;
+                        }
+                        .cert-banner {
+                            background:<t t-esc="(env.company and env.company.report_brand_dark) or '#2D3031'"/>;
+                            padding:24pt 32pt; display:table; width:100%;
+                        }
+                        .cert-banner .logo { display:table-cell; vertical-align:middle; width:96px; padding-right:20pt; }
+                        .cert-banner .logo img { max-height:54px; max-width:84px; }
+                        .cert-banner .content { display:table-cell; vertical-align:middle; }
+                        .cert-banner .kicker {
+                            font-size:9.5pt; font-weight:600; text-transform:uppercase; letter-spacing:2pt;
+                            color:<t t-esc="(env.company and env.company.report_brand_primary) or '#29ABE1'"/>;
+                            margin:0 0 4pt 0;
+                        }
+                        .cert-banner h1 { font-size:18pt; font-weight:600; color:#fff; margin:0; }
+                        .cert-banner .ref { display:table-cell; vertical-align:middle; text-align:right; width:150px; }
+                        .cert-banner .ref span {
+                            display:inline-block; border:1.5px solid <t t-esc="(env.company and env.company.report_brand_primary) or '#29ABE1'"/>;
+                            color:<t t-esc="(env.company and env.company.report_brand_primary) or '#29ABE1'"/>;
+                            font-size:10pt; font-weight:600; padding:4pt 12pt; border-radius:20pt;
+                        }
+                        .cert-accent { height:4px; background:<t t-esc="(env.company and env.company.report_brand_primary) or '#29ABE1'"/>; }
+                        .cert-content { padding:18pt 26pt 24pt; }
+                        .cert-h2 {
+                            font-size:10.5pt; font-weight:600; text-transform:uppercase; letter-spacing:1pt;
+                            color:<t t-esc="(env.company and env.company.report_brand_primary) or '#29ABE1'"/>;
+                            margin:18pt 0 8pt; padding-bottom:4pt;
+                            border-bottom:2px solid <t t-esc="(env.company and env.company.report_brand_primary) or '#29ABE1'"/>;
+                            display:inline-block;
+                        }
+                        table.cert-grid { width:100%; border-collapse:collapse; }
+                        table.cert-grid td { padding:6pt 12pt; font-size:10.5pt; border-bottom:1px solid #eaedf0; vertical-align:top; }
+                        table.cert-grid td.l { font-weight:600; width:200px; background:#f8f9fb; }
+                        .hash-box {
+                            font-family:"Courier New", monospace; font-size:9.5pt; background:#f4f6f8;
+                            border:1px solid #e0e5ea; border-radius:6px; padding:8pt 10pt; word-break:break-all; margin:4pt 0 2pt;
+                        }
+                        table.cert-signers { width:100%; border-collapse:collapse; margin-top:4pt; }
+                        table.cert-signers th {
+                            text-align:left; font-size:8.5pt; text-transform:uppercase; letter-spacing:.5pt;
+                            color:#fff; background:<t t-esc="(env.company and env.company.report_brand_dark) or '#2D3031'"/>; padding:5pt 8pt;
+                        }
+                        table.cert-signers td { font-size:9pt; padding:6pt 8pt; border-bottom:1px solid #eef1f4; vertical-align:middle; }
+                        table.cert-signers img { max-height:42px; max-width:150px; }
+                        table.cert-trail { width:100%; border-collapse:collapse; margin-top:4pt; }
+                        table.cert-trail th {
+                            text-align:left; font-size:8.5pt; text-transform:uppercase; letter-spacing:.5pt;
+                            color:#fff; background:<t t-esc="(env.company and env.company.report_brand_dark) or '#2D3031'"/>; padding:5pt 8pt;
+                        }
+                        table.cert-trail td { font-size:8.5pt; padding:5pt 8pt; border-bottom:1px solid #eef1f4; vertical-align:top; }
+                        .note { font-size:9pt; color:#777; margin-top:4pt; }
+                        .cert-footer {
+                            padding:14pt 26pt 0; border-top:1px solid #dde0e4; display:table; width:100%;
+                            font-size:8.5pt; color:#aaa;
+                        }
+                        .cert-footer .lft { display:table-cell; text-align:left; }
+                        .cert-footer .rgt { display:table-cell; text-align:right; }
+                    </style>
+
+                    <div class="cert-page">
+                        <div class="cert-banner">
+                            <div class="logo">
+                                <img t-att-src="image_data_uri(doc.company_id.logo)" alt="Logo"/>
+                            </div>
+                            <div class="content">
+                                <div class="kicker">Certificat de signature électronique</div>
+                                <h1>Preuve de signature</h1>
+                            </div>
+                            <div class="ref"><span t-out="doc.name"/></div>
+                        </div>
+                        <div class="cert-accent"/>
+
+                        <div class="cert-content">
+
+                            <div class="cert-h2">Document signé</div>
+                            <table class="cert-grid">
+                                <tr><td class="l">Document</td><td t-out="doc.document_filename or doc.name"/></tr>
+                                <tr><td class="l">Finalisé le (UTC)</td>
+                                    <td><span t-field="doc.signed_on" t-options='{"format": "yyyy-MM-dd HH:mm:ss"}'/></td></tr>
+                                <tr><td class="l">Méthode de signature</td>
+                                    <td>Signature électronique simple (SES) — signature manuscrite numérisée + lien sécurisé personnel</td></tr>
+                                <tr><td class="l">Ordre de signature</td>
+                                    <td><t t-if="doc.signing_order == 'sequential'">Séquentiel</t><t t-else="">En parallèle</t></td></tr>
+                            </table>
+
+                            <div class="cert-h2">Signataires (<t t-out="doc.signed_count"/>/<t t-out="doc.signer_count"/>)</div>
+                            <table class="cert-signers">
+                                <thead>
+                                    <tr><th>Nom</th><th>Courriel</th><th>Signé le (UTC)</th><th>IP</th><th>Signature</th></tr>
+                                </thead>
+                                <tbody>
+                                    <t t-foreach="doc.signer_ids" t-as="s">
+                                        <tr>
+                                            <td t-out="s.name"/>
+                                            <td t-out="s.email"/>
+                                            <td><span t-field="s.signed_on" t-options='{"format": "yyyy-MM-dd HH:mm:ss"}'/></td>
+                                            <td t-out="s.signer_ip or '—'"/>
+                                            <td><img t-if="s.signature_image" t-att-src="image_data_uri(s.signature_image)" alt="Signature"/></td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+
+                            <div class="cert-h2">Intégrité du document</div>
+                            <div style="font-size:10pt;">Empreinte SHA-256 du document source signé :</div>
+                            <div class="hash-box" t-out="doc.hash_original"/>
+                            <div class="note">
+                                L'empreinte du document scellé (document + pavés de signature + ce certificat)
+                                est consignée dans la piste de vérification. Toute modification ultérieure
+                                change l'empreinte et est donc détectable (C.c.Q. art. 2840 — présomption d'intégrité).
+                            </div>
+                            <!-- The pointer travels with the evidence. A QR stamped on
+                                 the document pages is optional and off by default, so
+                                 without this block a holder has the proof in hand and no
+                                 way to find the page that checks it. -->
+                            <t t-if="doc.verify_token">
+                                <div class="cert-h2">Vérifier ce document</div>
+                                <table style="width:100%; border:0;">
+                                    <tr>
+                                        <td style="border:0; padding:0; vertical-align:top;">
+                                            <div style="font-size:10pt;">Toute personne détenant ce
+                                                document peut en confirmer l'origine et l'intégrité,
+                                                sans compte ni logiciel, à l'adresse suivante :</div>
+                                            <div class="hash-box" style="margin-top:4pt;">
+                                                <a t-att-href="doc._verify_url()"
+                                                   t-out="doc._verify_url()"
+                                                   style="color:inherit; text-decoration:none;"/>
+                                            </div>
+                                            <div class="note">
+                                                La page rejoue les contrôles d'intégrité à chaque
+                                                visite et permet d'y déposer son propre exemplaire
+                                                pour le comparer. Le fichier déposé est vérifié dans
+                                                le navigateur : il n'est ni transmis, ni conservé.
+                                            </div>
+                                        </td>
+                                        <td t-if="doc.verify_qr_data_uri()"
+                                            style="border:0; padding:0 0 0 12pt; width:150px;
+                                                   vertical-align:top; text-align:center;">
+                                            <img t-att-src="doc.verify_qr_data_uri()"
+                                                 style="width:132px; height:132px;"/>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </t>
+
+                            <t t-if="doc.tsa_url">
+                                <div class="cert-h2">Horodatage de confiance (RFC 3161)</div>
+                                <div style="font-size:10pt;">Le contenu signé (document + signatures) a été horodaté
+                                    par une autorité d'horodatage indépendante, fournissant une preuve de date
+                                    opposable et indépendante de la plateforme.</div>
+                                <table class="cert-grid">
+                                    <tr><td class="l">Autorité (TSA)</td><td t-out="doc.tsa_url"/></tr>
+                                    <tr><td class="l">Heure attestée (UTC)</td>
+                                        <td>
+                                            <span t-if="doc.tsa_gentime" t-field="doc.tsa_gentime"
+                                                  t-options='{"format": "yyyy-MM-dd HH:mm:ss"}'/>
+                                            <t t-else="">—</t>
+                                        </td></tr>
+                                </table>
+                                <div style="font-size:10pt; margin-top:6pt;">Empreinte SHA-256 du contenu horodaté :</div>
+                                <div class="hash-box" t-out="doc.hash_stamped"/>
+                            </t>
+
+                            <div class="cert-h2">Consentement</div>
+                            <div style="font-size:10pt;" t-out="doc.consent_text"/>
+                            <div class="note">Chaque signataire a coché la case de consentement avant de signer
+                                (voir horodatages dans la piste de vérification).</div>
+
+                            <div class="cert-h2">Piste de vérification</div>
+                            <table class="cert-trail">
+                                <thead>
+                                    <tr><th>Horodatage (UTC)</th><th>Événement</th><th>Acteur</th><th>IP</th><th>Empreinte (entrée)</th></tr>
+                                </thead>
+                                <tbody>
+                                    <t t-foreach="doc.log_ids" t-as="log">
+                                        <tr>
+                                            <td t-out="log.timestamp_utc"/>
+                                            <td t-out="evt_labels.get(log.event, log.event)"/>
+                                            <td t-out="log.actor or '—'"/>
+                                            <td t-out="log.ip_address or '—'"/>
+                                            <td style="font-family:'Courier New',monospace;" t-out="(log.entry_hash or '')[:16]"/>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+                            <div class="note">Chaque entrée est chaînée par empreinte SHA-256 à la précédente
+                                (journal append-only), rendant toute insertion, suppression ou modification détectable.</div>
+
+                        </div>
+
+                        <div class="cert-footer">
+                            <div class="lft"><t t-out="doc.company_id.name"/></div>
+                            <div class="rgt">Certificat de signature — <t t-out="doc.name"/></div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+
+</odoo>

@@ -1,0 +1,13 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_bf_email,bf.email,model_bf_email,base.group_user,1,1,1,1
+access_bf_email_account,bf.email.account,model_bf_email_account,base.group_user,1,1,1,1
+access_bf_email_dashboard,bf.email.dashboard,model_bf_email_dashboard,base.group_user,1,0,0,0
+access_bf_email_initial_sync,bf.email.initial.sync,model_bf_email_initial_sync,base.group_user,1,1,1,1
+access_bf_email_reroute,bf.email.reroute,model_bf_email_reroute,base.group_user,1,1,1,1
+access_bf_email_imap_backfill,bf.email.imap.backfill,model_bf_email_imap_backfill,base.group_user,1,1,1,1
+access_bf_email_rule,bf.email.rule,model_bf_email_rule,base.group_user,1,1,1,1
+access_bf_email_snooze,bf.email.snooze,model_bf_email_snooze,base.group_user,1,1,1,1
+access_bf_email_browser,bf.email.browser,model_bf_email_browser,base.group_user,1,1,1,1
+access_bf_email_browser_line,bf.email.browser.line,model_bf_email_browser_line,base.group_user,1,1,1,1
+access_bf_email_guess_route,bf.email.guess.route,model_bf_email_guess_route,base.group_user,1,1,1,1
+access_bf_email_guess_route_line,bf.email.guess.route.line,model_bf_email_guess_route_line,base.group_user,1,1,1,1

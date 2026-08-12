@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!-- Cadre Privacy Act 2020 (Nouvelle-Zélande) -->
+    <record id="framework_nz" model="privacy.framework">
+        <field name="code">nz</field>
+        <field name="name">Privacy Act 2020 (Nouvelle-Zélande)</field>
+        <field name="sequence" eval="40"/>
+        <field name="company_id" eval="False"/>
+        <field name="country_id" ref="base.nz"/>
+        <field name="jurisdiction_label">Nouvelle-Zélande / New Zealand</field>
+        <field name="languages">en_NZ</field>
+        <field name="law_short_label">Privacy Act 2020</field>
+        <field name="law_citation_fr">Privacy Act 2020 (Nouvelle-Zélande)</field>
+        <field name="law_citation_en">Privacy Act 2020 (New Zealand)</field>
+        <field name="consent_intro_fr">Conformément au Privacy Act 2020 de la Nouvelle-Zélande, nous sollicitons votre consentement pour cette finalité.</field>
+        <field name="consent_intro_en">In accordance with New Zealand's Privacy Act 2020, we are requesting your consent for this purpose.</field>
+        <field name="authority_name">Office of the Privacy Commissioner (OPC)</field>
+        <field name="authority_url">https://www.privacy.org.nz</field>
+        <field name="breach_portal_url">https://www.privacy.org.nz/tools/notifyus/</field>
+        <field name="officer_title_fr">Privacy Officer (responsable de la vie privée)</field>
+        <field name="officer_title_en">Privacy Officer</field>
+        <field name="officer_required" eval="True"/>
+        <field name="age_of_majority" eval="16"/>
+        <field name="breach_notify_authority" eval="True"/>
+        <field name="breach_notify_authority_hours" eval="0"/>
+        <field name="breach_notify_authority_label">dès que possible (« as soon as practicable »)</field>
+        <field name="breach_notify_individuals" eval="True"/>
+        <field name="breach_notify_individuals_label">en cas de préjudice grave probable</field>
+        <field name="breach_threshold_label">préjudice grave (serious harm)</field>
+        <field name="assessment_name_fr">Évaluation des incidences sur la vie privée (PIA)</field>
+        <field name="assessment_name_en">Privacy Impact Assessment (PIA)</field>
+        <field name="assessment_citation">OPC Privacy Impact Assessment Toolkit</field>
+        <field name="anonymization_citation">OPC guidance on de-identification</field>
+        <field name="default_retention_years" eval="0"/>
+        <field name="destruction_basis_template">IPP 9 — Privacy Act 2020 (ne pas conserver plus longtemps que nécessaire)</field>
+        <field name="erasure_basis_citation">Privacy Act 2020 (suppression/correction sur demande, le cas échéant)</field>
+        <field name="register_immutability_citation">les obligations de tenue de registres du Privacy Act 2020</field>
+        <field name="notes">Pack NZ Privacy Act 2020 (OPC). Modèle fondé sur les IPP.</field>
+    </record>
+
+    <!-- Bases de traitement — fondées sur les IPP (Information Privacy Principles) -->
+    <record id="lawful_basis_nz_consent" model="privacy.lawful.basis">
+        <field name="framework_id" ref="framework_nz"/>
+        <field name="code">consent</field>
+        <field name="name">Consentement / autorisation</field>
+        <field name="description">La personne a autorisé la collecte et l'utilisation à la finalité indiquée.</field>
+        <field name="citation">IPP 1-4, 10-11</field>
+        <field name="requires_consent" eval="True"/>
+        <field name="sequence" eval="10"/>
+    </record>
+    <record id="lawful_basis_nz_purpose" model="privacy.lawful.basis">
+        <field name="framework_id" ref="framework_nz"/>
+        <field name="code">purpose_necessity</field>
+        <field name="name">Finalité de collecte directement liée</field>
+        <field name="description">Collecte nécessaire à une fin licite liée à une fonction de l'organisation.</field>
+        <field name="citation">IPP 1</field>
+        <field name="sequence" eval="20"/>
+    </record>
+    <record id="lawful_basis_nz_legal" model="privacy.lawful.basis">
+        <field name="framework_id" ref="framework_nz"/>
+        <field name="code">authorised_by_law</field>
+        <field name="name">Autorisé ou requis par la loi</field>
+        <field name="description">Utilisation ou divulgation autorisée ou exigée par la loi.</field>
+        <field name="citation">IPP 10-11, exceptions</field>
+        <field name="sequence" eval="30"/>
+    </record>
+
+    <!-- Droits — Privacy Act 2020 (le retrait reste une puce statique) -->
+    <record id="right_nz_access" model="privacy.right">
+        <field name="framework_id" ref="framework_nz"/>
+        <field name="code">access</field>
+        <field name="label_fr">Droit d'accès à vos renseignements personnels.</field>
+        <field name="label_en">Right to access your personal information.</field>
+        <field name="citation">IPP 6</field>
+        <field name="sequence" eval="10"/>
+    </record>
+    <record id="right_nz_correction" model="privacy.right">
+        <field name="framework_id" ref="framework_nz"/>
+        <field name="code">correction</field>
+        <field name="label_fr">Droit de demander la correction de vos renseignements.</field>
+        <field name="label_en">Right to request correction of your information.</field>
+        <field name="citation">IPP 7</field>
+        <field name="sequence" eval="20"/>
+    </record>
+    <record id="right_nz_complaint" model="privacy.right">
+        <field name="framework_id" ref="framework_nz"/>
+        <field name="code">complaint</field>
+        <field name="label_fr">Droit de porter plainte auprès du Privacy Commissioner.</field>
+        <field name="label_en">Right to complain to the Privacy Commissioner.</field>
+        <field name="citation">Privacy Act 2020, Part 5</field>
+        <field name="sequence" eval="30"/>
+    </record>
+</odoo>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- List — Loi 25 evidence: strictly read-only. Entries are created by
+         _append() (sudo) only; the model blocks write/unlink at ORM level. -->
+    <record id="access_log_view_tree" model="ir.ui.view">
+        <field name="name">secure.transfer.access.log.list</field>
+        <field name="model">secure.transfer.access.log</field>
+        <field name="arch" type="xml">
+            <list create="false" edit="false" delete="false"
+                  default_order="id desc">
+                <field name="timestamp_utc"/>
+                <field name="transfer_id"/>
+                <field name="action"/>
+                <field name="file_id" optional="show"/>
+                <field name="ip"/>
+                <field name="actor" optional="show"/>
+                <field name="note" optional="show"/>
+                <field name="user_agent" optional="hide"/>
+                <field name="entry_hash" optional="hide"/>
+                <field name="prev_entry_hash" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Search -->
+    <record id="access_log_view_search" model="ir.ui.view">
+        <field name="name">secure.transfer.access.log.search</field>
+        <field name="model">secure.transfer.access.log</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="transfer_id"/>
+                <field name="ip"/>
+                <field name="actor"/>
+                <field name="note"/>
+                <filter name="f_download" string="Téléchargements" domain="[('action', '=', 'download')]"/>
+                <filter name="f_view" string="Consultations" domain="[('action', '=', 'view')]"/>
+                <filter name="f_password_fail" string="Mots de passe erronés" domain="[('action', '=', 'password_fail')]"/>
+                <filter name="f_integrity" string="Intégrité compromise" domain="[('action', '=', 'integrity_mismatch')]"/>
+                <filter name="f_abuse" string="Signalements d'abus" domain="[('action', '=', 'abuse_report')]"/>
+                <filter name="f_revealed" string="Liens révélés" domain="[('action', '=', 'link_revealed')]"/>
+                <filter name="f_purged" string="Purges" domain="[('action', '=', 'purged')]"/>
+                <separator/>
+                <filter name="g_transfer" string="Transfert" context="{'group_by': 'transfer_id'}"/>
+                <filter name="g_action" string="Action" context="{'group_by': 'action'}"/>
+                <filter name="g_day" string="Jour" context="{'group_by': 'create_date:day'}"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_access_log" model="ir.actions.act_window">
+        <field name="name">Journal d'accès</field>
+        <field name="res_model">secure.transfer.access.log</field>
+        <field name="view_mode">list</field>
+        <field name="search_view_id" ref="access_log_view_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Aucun événement</p>
+            <p>Journal d'accès inaltérable (chaîne de hachage) : chaque consultation,
+                téléchargement, tentative de mot de passe et purge y est consigné.
+                Pièce de conformité Loi 25.</p>
+        </field>
+    </record>
+
+</odoo>

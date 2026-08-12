@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+  <record id="view_helpdesk_ticket_team_form_bf" model="ir.ui.view">
+    <field name="name">helpdesk.ticket.team.form.bf</field>
+    <field name="model">helpdesk.ticket.team</field>
+    <field name="inherit_id" ref="helpdesk_mgmt.view_helpdesk_team_form"/>
+    <field name="arch" type="xml">
+      <xpath expr="//sheet" position="inside">
+        <notebook>
+          <page string="Public form" name="bf_public_form">
+            <group>
+              <group>
+                <field name="public_form_enabled"/>
+                <field name="slug"
+                       placeholder="my-support-team"
+                       help="URL slug. Public form will be at /support/&lt;slug&gt;."/>
+              </group>
+              <group>
+                <field name="public_form_url" widget="url"
+                       readonly="1"
+                       invisible="not public_form_enabled or not slug"/>
+              </group>
+            </group>
+            <group string="Form content">
+              <field name="public_form_intro_html" nolabel="1"
+                     placeholder="Optional intro text shown above the form…"/>
+            </group>
+            <group string="Tag selector (e.g. Département)">
+              <group>
+                <field name="public_form_tag_label"/>
+                <field name="public_form_tag_required"/>
+              </group>
+              <group>
+                <field name="public_form_tag_ids" widget="many2many_tags"
+                       options="{'no_create': True}"/>
+              </group>
+            </group>
+            <group string="Success message">
+              <field name="public_form_success_html" nolabel="1"
+                     placeholder="Optional message shown after a ticket is filed…"/>
+            </group>
+          </page>
+          <page string="SLA &amp; auto-tag" name="bf_sla_autotag">
+            <group>
+              <group string="SLA">
+                <field name="sla_response_hours"/>
+                <field name="sla_resolve_hours"/>
+              </group>
+              <group string="Formulaire public">
+                <field name="public_form_auto_ack"/>
+              </group>
+            </group>
+            <group string="Règles auto-tag">
+              <field name="auto_tag_rule_ids" nolabel="1">
+                <list editable="bottom">
+                  <field name="sequence" widget="handle"/>
+                  <field name="name"/>
+                  <field name="keyword_regex"/>
+                  <field name="tag_id"/>
+                  <field name="active" optional="show"/>
+                </list>
+              </field>
+            </group>
+          </page>
+          <page string="Hour bank &amp; alerts" name="bf_hour_bank">
+            <group>
+              <group string="Banque d'heures">
+                <field name="hour_bank_id"/>
+                <field name="hour_bank_alert_threshold_hours"/>
+              </group>
+              <group string="ntfy critical">
+                <field name="ntfy_critical_enabled"/>
+                <field name="ntfy_priority_threshold"
+                       invisible="not ntfy_critical_enabled"/>
+              </group>
+              <group string="CSAT">
+                <field name="csat_survey_id"/>
+              </group>
+            </group>
+          </page>
+        </notebook>
+      </xpath>
+    </field>
+  </record>
+
+</odoo>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Extend Project Form: Add NC Documents folder fields -->
+    <record id="project_view_form_inherit_nc_docs" model="ir.ui.view">
+        <field name="name">project.project.form.inherit.nc.docs</field>
+        <field name="model">project.project</field>
+        <field name="inherit_id" ref="project.edit_project"/>
+        <field name="priority">30</field>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='settings']" position="inside">
+                <group string="Nextcloud Documents" name="nc_documents_settings"
+                    groups="base.group_system">
+                    <group>
+                        <field name="nc_documents_config_id"
+                            options="{'no_create': True}"/>
+                        <field name="nc_documents_folder"
+                            placeholder="/Projet/Documents/"/>
+                    </group>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

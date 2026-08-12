@@ -1,0 +1,78 @@
+// Make Odoo HTML-editor embedded files render in PDF reports.
+//
+// The editor stores attached files (drag-and-drop into Html fields, e.g.
+// res.company.report_footer, sale.order.note, account.move.narration) as:
+//   <span class="o_file_box">
+//     <span class="d-flex flex-grow-1 align-items-center alert alert-info">
+//       <span class="o_file_image" data-mimetype="…"/>
+//       <span class="o_file_name_container mx-2"><a>filename</a></span>
+//     </span>
+//   </span>
+//
+// The matching styles live in:
+//   html_editor/static/src/main/media/file.scss     (.o_file_box, .o_image sizing)
+//   web/static/src/scss/mimetypes.scss              (.o_image[data-mimetype=…] icons)
+// Both are bundled into web.assets_backend and web.assets_frontend only — NOT
+// into web.report_assets_common / web.report_assets_pdf. In PDFs the wrapper
+// span collapses to inline-with-zero-width and the icon background is missing,
+// so wkhtmltopdf draws nothing visible. Result: a dangling "Sujet aux termes
+// et conditions:" with empty space underneath.
+//
+// We inline the minimum needed rules here (rather than referencing the upstream
+// SCSS paths) so a future Odoo refactor of html_editor doesn't silently break
+// the report pipeline.
+
+.o_file_box,
+[data-embedded="file"] {
+    display: inline-block;
+    width: fit-content;
+    min-width: 250px;
+    margin: 3px;
+    vertical-align: middle;
+
+    .alert.alert-info {
+        border-radius: 5px;
+        outline: 1px solid #dee2e6;
+        outline-offset: -1px;
+        padding: 5px;
+        margin: 0;
+    }
+
+    .o_image {
+        width: 32px;
+    }
+}
+
+.o_image {
+    display: inline-block;
+    width: 38px;
+    height: 38px;
+    background-image: url('/web/static/img/mimetypes/unknown.svg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+
+    &[data-mimetype^='application/pdf'] {
+        background-image: url('/web/static/img/mimetypes/pdf.svg');
+    }
+    &[data-mimetype*='document'],
+    &[data-mimetype*='msword'],
+    &[data-mimetype*='wordprocessing'] {
+        background-image: url('/web/static/img/mimetypes/document.svg');
+    }
+    &[data-mimetype*='excel'],
+    &[data-mimetype*='spreadsheet'],
+    &[data-mimetype$='csv'] {
+        background-image: url('/web/static/img/mimetypes/spreadsheet.svg');
+    }
+    &[data-mimetype*='presentation'],
+    &[data-mimetype*='powerpoint'] {
+        background-image: url('/web/static/img/mimetypes/presentation.svg');
+    }
+    &[data-mimetype^='image'] {
+        background-image: url('/web/static/img/mimetypes/image.svg');
+    }
+    &[data-mimetype^='text'] {
+        background-image: url('/web/static/img/mimetypes/text.svg');
+    }
+}

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_grant_badge_wizard_form" model="ir.ui.view">
+        <field name="name">bf.gamification.grant.badge.wizard.form</field>
+        <field name="model">bf.gamification.grant.badge.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Attribuer un badge">
+                <group>
+                    <field name="badge_id"/>
+                    <field name="user_ids" widget="many2many_tags"/>
+                    <field name="note" placeholder="Message optionnel..."/>
+                    <field name="trigger_popup"/>
+                </group>
+                <footer>
+                    <button name="action_grant" string="Attribuer"
+                            type="object" class="btn-primary"/>
+                    <button string="Annuler" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_grant_badge_wizard" model="ir.actions.act_window">
+        <field name="name">Attribuer un badge</field>
+        <field name="res_model">bf.gamification.grant.badge.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

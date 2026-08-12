@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="paperformat_hour_bank" model="report.paperformat">
+        <field name="name">Banque d'heures (US Letter)</field>
+        <field name="format">Letter</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">15</field>
+        <field name="margin_bottom">10</field>
+        <field name="margin_left">7</field>
+        <field name="margin_right">7</field>
+        <field name="header_spacing">0</field>
+        <field name="dpi">90</field>
+    </record>
+
+    <record id="action_report_hour_bank" model="ir.actions.report">
+        <field name="name">&#201;tat des banques d'heures</field>
+        <field name="model">hour.bank.client</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">bf_hour_bank.report_hour_bank</field>
+        <field name="report_file">bf_hour_bank.report_hour_bank</field>
+        <field name="print_report_name">'Banque_heures_%s_%s' % (object.partner_id.name.replace(' ', '_'), time.strftime('%Y-%m-%d'))</field>
+        <field name="binding_model_id" ref="model_hour_bank_client"/>
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="paperformat_hour_bank"/>
+    </record>
+
+</odoo>

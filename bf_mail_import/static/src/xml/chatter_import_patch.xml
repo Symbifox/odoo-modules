@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="bf_mail_import.Chatter" t-inherit="mail.Chatter" t-inherit-mode="extension">
+        <xpath expr="//button[hasclass('o-mail-Chatter-activity')]" position="after">
+            <button class="btn btn-link o_ChatterTopbar_button text-nowrap"
+                    type="button"
+                    t-on-click="onClickImportEml"
+                    title="Importer un courriel .eml">
+                <i class="fa fa-envelope-open-o me-1"/>.eml
+            </button>
+        </xpath>
+    </t>
+
+</templates>

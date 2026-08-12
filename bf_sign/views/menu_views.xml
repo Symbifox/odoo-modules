@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <menuitem id="menu_bf_sign_root" name="Signatures"
+              sequence="46" web_icon="bf_sign,static/description/icon.png"
+              groups="group_sign_user"/>
+
+    <menuitem id="menu_bf_sign_requests" name="Demandes de signature"
+              parent="menu_bf_sign_root" action="action_sign_request" sequence="10"/>
+
+    <menuitem id="menu_bf_sign_config" name="Configuration"
+              parent="menu_bf_sign_root" sequence="90"
+              groups="group_sign_manager"/>
+
+    <menuitem id="menu_bf_sign_settings" name="Paramètres"
+              parent="menu_bf_sign_config" action="action_bf_sign_settings" sequence="10"/>
+
+</odoo>

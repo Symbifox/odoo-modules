@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_xp_transaction_list" model="ir.ui.view">
+        <field name="name">bf.gamification.xp.transaction.list</field>
+        <field name="model">bf.gamification.xp.transaction</field>
+        <field name="arch" type="xml">
+            <list string="Journal XP" create="0" edit="0" delete="0">
+                <field name="date"/>
+                <field name="user_id" widget="many2one_avatar"/>
+                <field name="xp_amount" decoration-success="xp_amount &gt; 0" decoration-danger="xp_amount &lt; 0"/>
+                <field name="source"/>
+                <field name="description"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_xp_transaction_search" model="ir.ui.view">
+        <field name="name">bf.gamification.xp.transaction.search</field>
+        <field name="model">bf.gamification.xp.transaction</field>
+        <field name="arch" type="xml">
+            <search string="Rechercher">
+                <field name="user_id"/>
+                <field name="source"/>
+                <field name="description"/>
+                <filter name="my_xp" string="Mes XP" domain="[('user_id', '=', uid)]"/>
+                <separator/>
+                <filter name="positive" string="Gains" domain="[('xp_amount', '&gt;', 0)]"/>
+                <filter name="negative" string="D&#233;penses" domain="[('xp_amount', '&lt;', 0)]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="group_user" string="Utilisateur" context="{'group_by': 'user_id'}"/>
+                    <filter name="group_source" string="Source" context="{'group_by': 'source'}"/>
+                    <filter name="group_date" string="Date" context="{'group_by': 'date:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_xp_journal" model="ir.actions.act_window">
+        <field name="name">Journal XP</field>
+        <field name="res_model">bf.gamification.xp.transaction</field>
+        <field name="view_mode">list</field>
+        <field name="context">{'search_default_my_xp': 1}</field>
+    </record>
+</odoo>

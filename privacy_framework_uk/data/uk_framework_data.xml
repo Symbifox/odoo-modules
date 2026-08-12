@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!-- Cadre UK GDPR / DPA 2018 (Royaume-Uni) -->
+    <record id="framework_uk" model="privacy.framework">
+        <field name="code">uk_gdpr</field>
+        <field name="name">UK GDPR / DPA 2018 (Royaume-Uni)</field>
+        <field name="sequence" eval="30"/>
+        <field name="company_id" eval="False"/>
+        <field name="country_id" ref="base.uk"/>
+        <field name="jurisdiction_label">Royaume-Uni / United Kingdom</field>
+        <field name="languages">en_GB</field>
+        <field name="law_short_label">UK GDPR</field>
+        <field name="law_citation_fr">UK GDPR et Data Protection Act 2018</field>
+        <field name="law_citation_en">UK GDPR and the Data Protection Act 2018</field>
+        <field name="consent_intro_fr">Conformément au UK GDPR et au Data Protection Act 2018, nous avons besoin de votre consentement explicite pour cette finalité.</field>
+        <field name="consent_intro_en">In accordance with the UK GDPR and the Data Protection Act 2018, we require your explicit consent for this purpose.</field>
+        <field name="authority_name">Information Commissioner's Office (ICO)</field>
+        <field name="authority_url">https://ico.org.uk</field>
+        <field name="breach_portal_url">https://ico.org.uk/for-organisations/report-a-breach/</field>
+        <field name="officer_title_fr">Délégué à la protection des données (DPO)</field>
+        <field name="officer_title_en">Data Protection Officer (DPO)</field>
+        <field name="officer_required" eval="True"/>
+        <field name="age_of_majority" eval="13"/>
+        <field name="breach_notify_authority" eval="True"/>
+        <field name="breach_notify_authority_hours" eval="72"/>
+        <field name="breach_notify_authority_label">72 heures (art. 33)</field>
+        <field name="breach_notify_individuals" eval="True"/>
+        <field name="breach_notify_individuals_label">sans délai en cas de risque élevé (art. 34)</field>
+        <field name="breach_threshold_label">risque pour les droits et libertés des personnes</field>
+        <field name="assessment_name_fr">Analyse d'impact relative à la protection des données (AIPD)</field>
+        <field name="assessment_name_en">Data Protection Impact Assessment (DPIA)</field>
+        <field name="assessment_citation">Art. 35 UK GDPR</field>
+        <field name="anonymization_citation">ICO Anonymisation, pseudonymisation and privacy enhancing technologies guidance</field>
+        <field name="default_retention_years" eval="0"/>
+        <field name="destruction_basis_template">Art. 5(1)(e) UK GDPR (limitation de la conservation)</field>
+        <field name="erasure_basis_citation">Art. 17 UK GDPR (droit à l'effacement)</field>
+        <field name="register_immutability_citation">l'obligation de responsabilité (art. 5(2) UK GDPR)</field>
+        <field name="notes">Pack UK GDPR. Variante britannique du GDPR (ICO).</field>
+    </record>
+
+    <!-- Bases légales — art. 6(1) UK GDPR -->
+    <record id="lawful_basis_uk_consent" model="privacy.lawful.basis">
+        <field name="framework_id" ref="framework_uk"/>
+        <field name="code">consent</field>
+        <field name="name">Consentement</field>
+        <field name="citation">Art. 6(1)(a) UK GDPR</field>
+        <field name="requires_consent" eval="True"/>
+        <field name="sequence" eval="10"/>
+    </record>
+    <record id="lawful_basis_uk_contract" model="privacy.lawful.basis">
+        <field name="framework_id" ref="framework_uk"/>
+        <field name="code">contract</field>
+        <field name="name">Exécution d'un contrat</field>
+        <field name="citation">Art. 6(1)(b) UK GDPR</field>
+        <field name="sequence" eval="20"/>
+    </record>
+    <record id="lawful_basis_uk_legal_obligation" model="privacy.lawful.basis">
+        <field name="framework_id" ref="framework_uk"/>
+        <field name="code">legal_obligation</field>
+        <field name="name">Obligation légale</field>
+        <field name="citation">Art. 6(1)(c) UK GDPR</field>
+        <field name="sequence" eval="30"/>
+    </record>
+    <record id="lawful_basis_uk_vital_interests" model="privacy.lawful.basis">
+        <field name="framework_id" ref="framework_uk"/>
+        <field name="code">vital_interests</field>
+        <field name="name">Intérêts vitaux</field>
+        <field name="citation">Art. 6(1)(d) UK GDPR</field>
+        <field name="sequence" eval="40"/>
+    </record>
+    <record id="lawful_basis_uk_public_task" model="privacy.lawful.basis">
+        <field name="framework_id" ref="framework_uk"/>
+        <field name="code">public_task</field>
+        <field name="name">Mission d'intérêt public</field>
+        <field name="citation">Art. 6(1)(e) UK GDPR</field>
+        <field name="sequence" eval="50"/>
+    </record>
+    <record id="lawful_basis_uk_legitimate_interests" model="privacy.lawful.basis">
+        <field name="framework_id" ref="framework_uk"/>
+        <field name="code">legitimate_interests</field>
+        <field name="name">Intérêt légitime</field>
+        <field name="citation">Art. 6(1)(f) UK GDPR</field>
+        <field name="sequence" eval="60"/>
+    </record>
+
+    <!-- Droits des personnes concernées — UK GDPR -->
+    <record id="right_uk_access" model="privacy.right">
+        <field name="framework_id" ref="framework_uk"/>
+        <field name="code">access</field>
+        <field name="label_fr">Droit d'accès à vos données personnelles.</field>
+        <field name="label_en">Right of access to your personal data.</field>
+        <field name="citation">Art. 15 UK GDPR</field>
+        <field name="sequence" eval="10"/>
+    </record>
+    <record id="right_uk_rectification" model="privacy.right">
+        <field name="framework_id" ref="framework_uk"/>
+        <field name="code">rectification</field>
+        <field name="label_fr">Droit de rectification des données inexactes.</field>
+        <field name="label_en">Right to rectification of inaccurate data.</field>
+        <field name="citation">Art. 16 UK GDPR</field>
+        <field name="sequence" eval="20"/>
+    </record>
+    <record id="right_uk_erasure" model="privacy.right">
+        <field name="framework_id" ref="framework_uk"/>
+        <field name="code">erasure</field>
+        <field name="label_fr">Droit à l'effacement (« droit à l'oubli »).</field>
+        <field name="label_en">Right to erasure ('right to be forgotten').</field>
+        <field name="citation">Art. 17 UK GDPR</field>
+        <field name="sequence" eval="30"/>
+    </record>
+    <record id="right_uk_restrict" model="privacy.right">
+        <field name="framework_id" ref="framework_uk"/>
+        <field name="code">restrict</field>
+        <field name="label_fr">Droit à la limitation du traitement.</field>
+        <field name="label_en">Right to restriction of processing.</field>
+        <field name="citation">Art. 18 UK GDPR</field>
+        <field name="sequence" eval="40"/>
+    </record>
+    <record id="right_uk_portability" model="privacy.right">
+        <field name="framework_id" ref="framework_uk"/>
+        <field name="code">portability</field>
+        <field name="label_fr">Droit à la portabilité de vos données.</field>
+        <field name="label_en">Right to data portability.</field>
+        <field name="citation">Art. 20 UK GDPR</field>
+        <field name="sequence" eval="50"/>
+    </record>
+    <record id="right_uk_object" model="privacy.right">
+        <field name="framework_id" ref="framework_uk"/>
+        <field name="code">object</field>
+        <field name="label_fr">Droit d'opposition au traitement.</field>
+        <field name="label_en">Right to object to processing.</field>
+        <field name="citation">Art. 21 UK GDPR</field>
+        <field name="sequence" eval="60"/>
+    </record>
+    <record id="right_uk_complaint" model="privacy.right">
+        <field name="framework_id" ref="framework_uk"/>
+        <field name="code">complaint</field>
+        <field name="label_fr">Droit d'introduire une réclamation auprès de l'ICO.</field>
+        <field name="label_en">Right to lodge a complaint with the ICO.</field>
+        <field name="citation">Art. 77 UK GDPR</field>
+        <field name="sequence" eval="70"/>
+    </record>
+</odoo>

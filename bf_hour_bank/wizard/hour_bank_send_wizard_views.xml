@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="hour_bank_send_wizard_form" model="ir.ui.view">
+        <field name="name">hour.bank.send.wizard.form</field>
+        <field name="model">hour.bank.send.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Envoyer le rapport">
+                <group>
+                    <field name="hour_bank_id" invisible="1"/>
+                    <field name="recipient_ids" widget="many2many_tags"/>
+                    <field name="subject"/>
+                </group>
+                <field name="body"/>
+                <group invisible="not preview_url">
+                    <div class="alert alert-success">
+                        <i class="fa fa-check-circle"/>
+                        Aper&#231;u g&#233;n&#233;r&#233; &#8212; cliquez le lien pour ouvrir :
+                        <field name="preview_url" widget="url" nolabel="1"/>
+                    </div>
+                </group>
+                <footer>
+                    <button name="action_preview_pdf" type="object"
+                            string="Pr&#233;visualiser PDF" class="btn-secondary"
+                            icon="fa-file-pdf-o"/>
+                    <button name="action_send" type="object"
+                            string="Envoyer" class="btn-primary"
+                            icon="fa-paper-plane"/>
+                    <button string="Annuler" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>

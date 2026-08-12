@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <menuitem id="menu_bf_outreach_root"
+              name="Démarchage"
+              web_icon="bf_outreach,static/description/icon.png"
+              sequence="46"
+              groups="bf_outreach.group_bf_outreach_user"/>
+
+    <menuitem id="menu_bf_outreach_today"
+              name="Aujourd'hui"
+              parent="menu_bf_outreach_root"
+              action="action_bf_outreach_target_due"
+              sequence="5"/>
+
+    <menuitem id="menu_bf_outreach_campaign"
+              name="Campagnes"
+              parent="menu_bf_outreach_root"
+              action="action_bf_outreach_campaign"
+              sequence="10"/>
+
+    <menuitem id="menu_bf_outreach_targets"
+              name="Cibles"
+              parent="menu_bf_outreach_root"
+              sequence="20"/>
+
+    <menuitem id="menu_bf_outreach_target_all"
+              name="Toutes les cibles"
+              parent="menu_bf_outreach_targets"
+              action="action_bf_outreach_target"
+              sequence="10"/>
+
+    <menuitem id="menu_bf_outreach_target_overdue"
+              name="Relances en retard"
+              parent="menu_bf_outreach_targets"
+              action="action_bf_outreach_target_overdue"
+              sequence="20"/>
+
+    <menuitem id="menu_bf_outreach_touch"
+              name="Interactions"
+              parent="menu_bf_outreach_root"
+              action="action_bf_outreach_touch"
+              sequence="30"/>
+
+    <menuitem id="menu_bf_outreach_config"
+              name="Configuration"
+              parent="menu_bf_outreach_root"
+              sequence="90"
+              groups="bf_outreach.group_bf_outreach_manager"/>
+
+    <menuitem id="menu_bf_outreach_config_stage"
+              name="Étapes"
+              parent="menu_bf_outreach_config"
+              action="action_bf_outreach_stage"
+              sequence="10"/>
+
+    <menuitem id="menu_bf_outreach_config_tag"
+              name="Étiquettes"
+              parent="menu_bf_outreach_config"
+              action="action_bf_outreach_tag"
+              sequence="20"/>
+
+</odoo>

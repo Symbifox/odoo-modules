@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Root menu -->
+    <menuitem id="menu_fox_quest_root"
+              name="Fox Quest"
+              web_icon="bf_gamification,static/description/icon.png"
+              sequence="65"/>
+
+    <!-- Dashboard -->
+    <menuitem id="menu_dashboard"
+              name="Tableau de bord"
+              parent="menu_fox_quest_root"
+              action="action_gamification_dashboard"
+              sequence="1"/>
+
+    <!-- My Profile -->
+    <menuitem id="menu_my_profile"
+              name="Mon profil"
+              parent="menu_fox_quest_root"
+              action="action_my_profile"
+              sequence="2"/>
+
+    <!-- Leaderboard -->
+    <menuitem id="menu_leaderboard"
+              name="Classement"
+              parent="menu_fox_quest_root"
+              action="action_leaderboard"
+              sequence="3"/>
+
+    <!-- Badges parent -->
+    <menuitem id="menu_badges"
+              name="Badges"
+              parent="menu_fox_quest_root"
+              sequence="10"/>
+
+    <menuitem id="menu_all_badges"
+              name="Tous les badges"
+              parent="menu_badges"
+              action="action_all_badges"
+              sequence="1"/>
+
+    <menuitem id="menu_my_badges"
+              name="Mes badges"
+              parent="menu_badges"
+              action="action_my_badges"
+              sequence="2"/>
+
+    <menuitem id="menu_badge_history"
+              name="Historique"
+              parent="menu_badges"
+              action="action_badge_history"
+              sequence="3"/>
+
+    <!-- Rewards parent -->
+    <menuitem id="menu_rewards"
+              name="R&#233;compenses"
+              parent="menu_fox_quest_root"
+              sequence="20"/>
+
+    <menuitem id="menu_reward_catalog"
+              name="Catalogue"
+              parent="menu_rewards"
+              action="action_reward_catalog"
+              sequence="1"/>
+
+    <menuitem id="menu_my_claims"
+              name="Mes r&#233;clamations"
+              parent="menu_rewards"
+              action="action_my_claims"
+              sequence="2"/>
+
+    <menuitem id="menu_all_claims"
+              name="Toutes les r&#233;clamations"
+              parent="menu_rewards"
+              action="action_all_claims"
+              groups="bf_gamification.group_gamification_manager"
+              sequence="3"/>
+
+    <!-- Activity -->
+    <menuitem id="menu_activity"
+              name="Activit&#233;"
+              parent="menu_fox_quest_root"
+              sequence="30"/>
+
+    <menuitem id="menu_xp_journal"
+              name="Journal XP"
+              parent="menu_activity"
+              action="action_xp_journal"
+              sequence="1"/>
+
+    <!-- Configuration (managers only) -->
+    <menuitem id="menu_configuration"
+              name="Configuration"
+              parent="menu_fox_quest_root"
+              groups="bf_gamification.group_gamification_manager"
+              sequence="90"/>
+
+    <menuitem id="menu_config_levels"
+              name="Niveaux"
+              parent="menu_configuration"
+              action="action_gamification_levels"
+              sequence="1"/>
+
+    <menuitem id="menu_config_badge_categories"
+              name="Cat&#233;gories de badges"
+              parent="menu_configuration"
+              action="action_badge_categories"
+              sequence="2"/>
+
+    <menuitem id="menu_config_xp_rules"
+              name="R&#232;gles XP"
+              parent="menu_configuration"
+              action="action_xp_rules"
+              sequence="3"/>
+
+    <menuitem id="menu_config_rewards"
+              name="G&#233;rer les r&#233;compenses"
+              parent="menu_configuration"
+              action="action_reward_manage"
+              sequence="4"/>
+
+    <menuitem id="menu_config_grant_badge"
+              name="Attribuer un badge"
+              parent="menu_configuration"
+              action="action_grant_badge_wizard"
+              sequence="10"/>
+</odoo>

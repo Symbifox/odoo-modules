@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Form: drop the field next to the deadline -->
+    <record id="view_task_form2_inherit_bf_time_of_day" model="ir.ui.view">
+        <field name="name">project.task.form.bf.time.of.day</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="project.view_task_form2"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='date_deadline']" position="after">
+                <field name="time_of_day_id"
+                       options="{'no_create': True, 'no_open': True}"
+                       widget="many2one"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Kanban: badge after tag_ids -->
+    <record id="view_task_kanban_inherit_bf_time_of_day" model="ir.ui.view">
+        <field name="name">project.task.kanban.bf.time.of.day</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="project.view_task_kanban"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='state']" position="after">
+                <field name="time_of_day_color"/>
+                <field name="time_of_day_icon"/>
+            </xpath>
+            <xpath expr="//field[@name='tag_ids']" position="after">
+                <div t-if="record.time_of_day_id.raw_value"
+                     class="d-inline-flex align-items-center px-2 py-0 rounded-pill bf_tod_badge"
+                     t-attf-class="o_tag_color_#{record.time_of_day_color.raw_value or 0}">
+                    <i t-if="record.time_of_day_icon.raw_value"
+                       t-attf-class="fa #{record.time_of_day_icon.raw_value} me-1"/>
+                    <field name="time_of_day_id"/>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- All-tasks kanban: swap the stock state progressbar for a time-of-day one.
+         Scoped to project.view_task_kanban_inherit_all_task (the primary view
+         bound to the /odoo/all-tasks action) so every other project.task kanban
+         keeps its standard `state` progressbar. -->
+    <record id="view_task_kanban_all_task_inherit_bf_time_of_day" model="ir.ui.view">
+        <field name="name">project.task.kanban.all.task.bf.time.of.day</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="project.view_task_kanban_inherit_all_task"/>
+        <field name="arch" type="xml">
+            <!-- Marqueur de portée pour le SCSS des icônes de la barre de progression. -->
+            <xpath expr="//kanban" position="attributes">
+                <attribute name="class" add="o_bf_tod_progressbar" separator=" "/>
+            </xpath>
+            <!-- Couleurs en arc de journée : aube (info) -> midi (warning)
+                 -> crépuscule (danger) -> nuit (muted). -->
+            <xpath expr="//progressbar" position="replace">
+                <field name="time_of_day_code"/>
+                <progressbar field="time_of_day_code"
+                             colors='{"morning": "info", "midday": "warning", "eod": "danger", "after_hours": "muted"}'/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- List: optional column -->
+    <record id="view_task_tree2_inherit_bf_time_of_day" model="ir.ui.view">
+        <field name="name">project.task.tree.bf.time.of.day</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="project.view_task_tree2"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='date_deadline']" position="after">
+                <field name="time_of_day_id" optional="show"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Search: filters per slot + group_by -->
+    <record id="view_task_search_form_inherit_bf_time_of_day" model="ir.ui.view">
+        <field name="name">project.task.search.bf.time.of.day</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="project.view_task_search_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='unassigned']" position="after">
+                <separator/>
+                <filter string="Matinée" name="tod_morning"
+                        domain="[('time_of_day_id.code', '=', 'morning')]"/>
+                <filter string="Midi" name="tod_midday"
+                        domain="[('time_of_day_id.code', '=', 'midday')]"/>
+                <filter string="Fin de jour" name="tod_eod"
+                        domain="[('time_of_day_id.code', '=', 'eod')]"/>
+                <filter string="Hors heures" name="tod_after_hours"
+                        domain="[('time_of_day_id.code', '=', 'after_hours')]"/>
+                <filter string="Sans plage" name="tod_none"
+                        domain="[('time_of_day_id', '=', False)]"/>
+            </xpath>
+            <xpath expr="//filter[@name='stage']" position="after">
+                <filter string="Plage horaire" name="group_by_time_of_day"
+                        domain="[]" context="{'group_by': 'time_of_day_id'}"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

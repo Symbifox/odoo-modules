@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_users_form_securetransfer" model="ir.ui.view">
+        <field name="name">res.users.form.inherit.bf.securetransfer</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Transfert sécurisé" name="bf_securetransfer">
+                    <group>
+                        <group string="Page de dépôt personnelle (/to/&lt;slug&gt;)">
+                            <field name="st_no_drop_page"/>
+                            <field name="st_drop_page_url"
+                                   widget="CopyClipboardChar"
+                                   invisible="not st_drop_page_url"/>
+                            <field name="st_drop_page_brand_id"
+                                   invisible="not st_drop_page_brand_id"/>
+                        </group>
+                        <div class="text-muted" colspan="2">
+                            La page de dépôt personnelle n'est créée
+                            automatiquement que si l'option « Page de dépôt par
+                            employé » est activée dans les paramètres du
+                            Transfert sécurisé.
+                        </div>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

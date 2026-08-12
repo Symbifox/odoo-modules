@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Add NC Document Config under Knowledge Matrix > Configuration -->
+    <menuitem id="menu_nc_document_config"
+        name="Nextcloud Documents"
+        parent="project_knowledge_matrix.menu_knowledge_config"
+        action="action_nextcloud_document_config"
+        sequence="40"
+        groups="base.group_system"/>
+
+</odoo>

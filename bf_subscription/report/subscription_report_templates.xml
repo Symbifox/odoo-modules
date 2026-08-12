@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="report_subscription">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-set="p" t-value="doc._get_report_payload()"/>
+                <t t-set="brand_dark" t-value="(env.company and env.company.report_brand_dark) or '#2D3031'"/>
+                <t t-set="brand_accent" t-value="(env.company and env.company.report_brand_primary) or '#29ABE1'"/>
+                <div class="article" style="padding:0 !important; margin:0 !important;">
+                    <link rel="stylesheet" href="/bf_lexend/static/src/scss/lexend_report.css"/>
+                    <style>
+                        .container, .o_body_html, body, #wrapwrap, main, .article {
+                            max-width:100% !important; width:100% !important;
+                            padding-left:0 !important; padding-right:0 !important;
+                            margin-left:0 !important; margin-right:0 !important;
+                        }
+                        .sub-page { font-family:"Lexend", system-ui, -apple-system, sans-serif; font-size:9pt; line-height:1.4; color:<t t-esc="brand_dark"/>; }
+                        .sub-banner { background:<t t-esc="brand_dark"/>; padding:18pt 24pt 16pt 24pt; display:table; width:100%; }
+                        .sub-banner .banner-logo { display:table-cell; vertical-align:middle; width:90px; padding-right:18pt; }
+                        .sub-banner .banner-logo img { max-height:50px; max-width:80px; }
+                        .sub-banner .banner-content { display:table-cell; vertical-align:middle; }
+                        .sub-banner .doc-type { font-size:8pt; font-weight:600; text-transform:uppercase; letter-spacing:2pt; color:<t t-esc="brand_accent"/>; margin:0 0 3pt 0; }
+                        .sub-banner h1 { font-size:16pt; font-weight:600; color:#fff; margin:0 0 2pt 0; line-height:1.25; }
+                        .sub-banner .doc-subtitle { font-size:10pt; color:rgba(255,255,255,0.7); margin:0; }
+                        .sub-accent-bar { height:3px; background:<t t-esc="brand_accent"/>; width:100%; }
+                        .sub-body { padding:16pt 24pt; }
+                        .kpi-row { display:table; width:100%; margin-bottom:14pt; border-collapse:separate; border-spacing:8pt 0; }
+                        .kpi { display:table-cell; width:33%; background:#f8f9fb; border:1px solid #eaedf0; border-radius:8px; padding:12pt; text-align:center; }
+                        .kpi .v { font-size:15pt; font-weight:700; color:<t t-esc="brand_accent"/>; }
+                        .kpi .l { font-size:8pt; color:#6B7280; text-transform:uppercase; letter-spacing:0.5pt; }
+                        h2.sec { font-size:12pt; font-weight:600; color:<t t-esc="brand_dark"/>; margin:18pt 0 8pt 0; border-left:3px solid <t t-esc="brand_accent"/>; padding-left:8pt; }
+                        table.grid { width:100%; border-collapse:collapse; margin-bottom:8pt; }
+                        table.grid th { background:<t t-esc="brand_dark"/>; color:#fff; font-size:8pt; font-weight:600; text-align:left; padding:6pt 8pt; }
+                        table.grid td { border-bottom:1px solid #e5e7eb; font-size:9pt; color:#374151; padding:5pt 8pt; }
+                        table.grid td.r, table.grid th.r { text-align:right; }
+                        .muted { color:#9CA3AF; font-style:italic; }
+                    </style>
+
+                    <div class="sub-page">
+                        <div class="sub-banner">
+                            <div class="banner-logo">
+                                <img t-if="env.company.logo" t-att-src="image_data_uri(env.company.logo)"/>
+                            </div>
+                            <div class="banner-content">
+                                <p class="doc-type">Rapport</p>
+                                <h1>Portefeuille d'abonnements</h1>
+                                <p class="doc-subtitle"><t t-esc="env.company.name"/> — généré le <t t-esc="p['generated_on']"/></p>
+                            </div>
+                        </div>
+                        <div class="sub-accent-bar"/>
+
+                        <div class="sub-body">
+                            <!-- KPIs -->
+                            <div class="kpi-row">
+                                <div class="kpi"><div class="v"><t t-esc="p['active_count']"/></div><div class="l">Abonnements actifs</div></div>
+                                <div class="kpi"><div class="v"><t t-esc="p['monthly']"/></div><div class="l">Dépense mensualisée</div></div>
+                                <div class="kpi"><div class="v"><t t-esc="p['annual']"/></div><div class="l">Dépense annualisée</div></div>
+                            </div>
+
+                            <!-- Renewals -->
+                            <h2 class="sec">Renouvellements à venir (<t t-esc="p['horizon_days']"/> j)</h2>
+                            <table class="grid" t-if="p['renewals']">
+                                <thead><tr>
+                                    <th>Abonnement</th><th>Fournisseur</th><th>Renouvellement</th>
+                                    <th>À annuler avant</th><th class="r">Montant</th>
+                                </tr></thead>
+                                <tbody>
+                                    <tr t-foreach="p['renewals']" t-as="r">
+                                        <td><t t-esc="r['name']"/></td>
+                                        <td><t t-esc="r['vendor']"/></td>
+                                        <td><t t-esc="r['next_date']"/></td>
+                                        <td><t t-esc="r['cancel_by']"/></td>
+                                        <td class="r"><t t-esc="r['amount']"/></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <p t-else="" class="muted">Aucun renouvellement dans l'horizon.</p>
+
+                            <!-- Dormant -->
+                            <h2 class="sec">Abonnements dormants</h2>
+                            <table class="grid" t-if="p['dormant']">
+                                <thead><tr><th>Abonnement</th><th>Fournisseur</th><th>Dernière facture</th></tr></thead>
+                                <tbody>
+                                    <tr t-foreach="p['dormant']" t-as="d">
+                                        <td><t t-esc="d['name']"/></td>
+                                        <td><t t-esc="d['vendor']"/></td>
+                                        <td><t t-esc="d['last_bill'] or 'aucune'"/></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <p t-else="" class="muted">Aucun abonnement dormant.</p>
+
+                            <!-- Managed clients -->
+                            <t t-if="p['managed']">
+                                <h2 class="sec">Coût par client géré</h2>
+                                <table class="grid">
+                                    <thead><tr>
+                                        <th>Client</th><th class="r"># Abonnements</th>
+                                        <th class="r">Coût mensualisé</th><th class="r">Marge (vie)</th>
+                                    </tr></thead>
+                                    <tbody>
+                                        <tr t-foreach="p['managed']" t-as="m">
+                                            <td><t t-esc="m['client']"/></td>
+                                            <td class="r"><t t-esc="m['count']"/></td>
+                                            <td class="r"><t t-esc="m['monthly']"/></td>
+                                            <td class="r"><t t-esc="m['margin']"/></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </t>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+
+</odoo>

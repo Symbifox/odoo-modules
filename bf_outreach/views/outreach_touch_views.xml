@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="view_bf_outreach_touch_list" model="ir.ui.view">
+        <field name="name">bf.outreach.touch.list</field>
+        <field name="model">bf.outreach.touch</field>
+        <field name="arch" type="xml">
+            <list string="Interactions">
+                <field name="date"/>
+                <field name="campaign_id" optional="show"/>
+                <field name="target_id"/>
+                <field name="kind"/>
+                <field name="direction" optional="hide"/>
+                <field name="outcome"/>
+                <field name="summary"/>
+                <field name="duration" sum="Durée (min)" optional="hide"/>
+                <field name="is_reply" optional="hide"/>
+                <field name="user_id" widget="many2one_avatar_user"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_bf_outreach_touch_form" model="ir.ui.view">
+        <field name="name">bf.outreach.touch.form</field>
+        <field name="model">bf.outreach.touch</field>
+        <field name="arch" type="xml">
+            <form string="Interaction">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="target_id"/>
+                            <field name="campaign_id" readonly="1"/>
+                            <field name="date"/>
+                            <field name="user_id" widget="many2one_avatar_user"/>
+                        </group>
+                        <group>
+                            <field name="kind"/>
+                            <field name="direction"/>
+                            <field name="outcome"/>
+                            <field name="duration" invisible="kind not in ('call', 'meeting')"/>
+                            <field name="is_reply" readonly="1"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="summary" placeholder="Ce qui s'est dit, en une ligne"/>
+                    </group>
+                    <field name="note" placeholder="Détails de l'échange…"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_bf_outreach_touch_pivot" model="ir.ui.view">
+        <field name="name">bf.outreach.touch.pivot</field>
+        <field name="model">bf.outreach.touch</field>
+        <field name="arch" type="xml">
+            <pivot string="Interactions">
+                <field name="campaign_id" type="row"/>
+                <field name="kind" type="col"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_bf_outreach_touch_graph" model="ir.ui.view">
+        <field name="name">bf.outreach.touch.graph</field>
+        <field name="model">bf.outreach.touch</field>
+        <field name="arch" type="xml">
+            <graph string="Interactions" type="bar" stacked="1">
+                <field name="date" interval="week"/>
+                <field name="kind"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="view_bf_outreach_touch_search" model="ir.ui.view">
+        <field name="name">bf.outreach.touch.search</field>
+        <field name="model">bf.outreach.touch</field>
+        <field name="arch" type="xml">
+            <search string="Interactions">
+                <field name="target_id"/>
+                <field name="campaign_id"/>
+                <field name="user_id"/>
+                <field name="summary"/>
+                <filter name="mine" string="Les miennes" domain="[('user_id', '=', uid)]"/>
+                <separator/>
+                <filter name="calls" string="Appels" domain="[('kind', '=', 'call')]"/>
+                <filter name="emails" string="Courriels" domain="[('kind', '=', 'email')]"/>
+                <filter name="replies" string="Réponses reçues" domain="[('is_reply', '=', True)]"/>
+                <separator/>
+                <filter name="today" string="Aujourd'hui"
+                        domain="[('date', '&gt;=', datetime.datetime.combine(context_today(), datetime.time(0,0,0)).to_utc().strftime('%Y-%m-%d %H:%M:%S'))]"/>
+                <filter name="this_week" string="Cette semaine"
+                        domain="[('date', '&gt;=', datetime.datetime.combine(context_today() + relativedelta(days=-6, weekday=0), datetime.time(0,0,0)).to_utc().strftime('%Y-%m-%d %H:%M:%S'))]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="group_by_campaign" string="Campagne" context="{'group_by': 'campaign_id'}"/>
+                    <filter name="group_by_target" string="Cible" context="{'group_by': 'target_id'}"/>
+                    <filter name="group_by_kind" string="Type" context="{'group_by': 'kind'}"/>
+                    <filter name="group_by_outcome" string="Résultat" context="{'group_by': 'outcome'}"/>
+                    <filter name="group_by_user" string="Par" context="{'group_by': 'user_id'}"/>
+                    <filter name="group_by_date" string="Date" context="{'group_by': 'date:week'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_bf_outreach_touch" model="ir.actions.act_window">
+        <field name="name">Interactions</field>
+        <field name="res_model">bf.outreach.touch</field>
+        <field name="view_mode">list,form,pivot,graph</field>
+        <field name="search_view_id" ref="view_bf_outreach_touch_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Aucune interaction journalisée</p>
+            <p>Chaque appel et chaque courriel journalisé depuis une cible apparaît ici.</p>
+        </field>
+    </record>
+
+</odoo>

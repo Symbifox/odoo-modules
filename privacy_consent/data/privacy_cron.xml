@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!-- Cron : Vérifier les consentements expirants (avertissement 30 jours) -->
+    <record id="cron_check_expiring_consents" model="ir.cron">
+        <field name="name">Vie privée : Vérifier les consentements expirants (avertissement 30 jours)</field>
+        <field name="model_id" ref="model_privacy_consent"/>
+        <field name="state">code</field>
+        <field name="code">model.cron_check_expiring_consents()</field>
+        <field name="user_id" ref="base.user_root"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active" eval="True"/>
+    </record>
+
+    <!-- Cron : Marquer les consentements expirés -->
+    <record id="cron_mark_expired_consents" model="ir.cron">
+        <field name="name">Vie privée : Marquer les consentements expirés</field>
+        <field name="model_id" ref="model_privacy_consent"/>
+        <field name="state">code</field>
+        <field name="code">model.cron_mark_expired_consents()</field>
+        <field name="user_id" ref="base.user_root"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active" eval="True"/>
+    </record>
+
+    <!-- Cron : Traiter les séquences de courriels (relances) -->
+    <record id="cron_process_email_sequences" model="ir.cron">
+        <field name="name">Vie privée : Traiter les séquences de courriels</field>
+        <field name="model_id" ref="model_privacy_consent"/>
+        <field name="state">code</field>
+        <field name="code">model.cron_process_email_sequences()</field>
+        <field name="user_id" ref="base.user_root"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active" eval="True"/>
+    </record>
+
+    <!-- Cron : Expirer automatiquement les consentements en attente -->
+    <record id="cron_auto_expire_pending" model="ir.cron">
+        <field name="name">Vie privée : Expirer automatiquement les consentements en attente</field>
+        <field name="model_id" ref="model_privacy_consent"/>
+        <field name="state">code</field>
+        <field name="code">model.cron_auto_expire_pending()</field>
+        <field name="user_id" ref="base.user_root"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active" eval="True"/>
+    </record>
+</odoo>

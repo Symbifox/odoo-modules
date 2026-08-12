@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <record id="element_1" model="audit.element">
+        <field name="num">1</field>
+        <field name="name">Politiques &amp; Procédures TI</field>
+        <field name="description">Politiques mots de passe, chiffrement, sauvegardes</field>
+        <field name="sequence">1</field>
+        <field name="best_practices"><![CDATA[
+            <ul>
+                <li>Politique de mots de passe documentée (longueur min 12 car., complexité, rotation)</li>
+                <li>Politique de chiffrement des données au repos et en transit</li>
+                <li>Procédure de sauvegarde et restauration testée</li>
+                <li>Plan de réponse aux incidents documenté</li>
+                <li>Revue annuelle des politiques</li>
+            </ul>
+        ]]></field>
+    </record>
+
+    <record id="element_2" model="audit.element">
+        <field name="num">2</field>
+        <field name="name">Registre des actifs</field>
+        <field name="description">Systèmes, BDD, SaaS, flux de données</field>
+        <field name="sequence">2</field>
+        <field name="best_practices"><![CDATA[
+            <ul>
+                <li>Inventaire complet des systèmes et applications</li>
+                <li>Cartographie des bases de données contenant des RP</li>
+                <li>Liste des services SaaS et cloud utilisés</li>
+                <li>Documentation des flux de données entre systèmes</li>
+            </ul>
+        ]]></field>
+    </record>
+
+    <record id="element_3" model="audit.element">
+        <field name="num">3</field>
+        <field name="name">Inventaire des RP</field>
+        <field name="description">Clients, employés, caméras, journaux</field>
+        <field name="sequence">3</field>
+        <field name="best_practices"><![CDATA[
+            <ul>
+                <li>Inventaire des renseignements personnels par catégorie (clients, employés, enfants)</li>
+                <li>Identification des données sensibles (santé, financier)</li>
+                <li>Registre des caméras de surveillance et journaux d'accès</li>
+                <li>Durée de conservation définie pour chaque catégorie</li>
+            </ul>
+        ]]></field>
+    </record>
+
+    <record id="element_4" model="audit.element">
+        <field name="num">4</field>
+        <field name="name">Moindre privilège</field>
+        <field name="description">Droits d'accès minimaux, données minimales</field>
+        <field name="sequence">4</field>
+        <field name="best_practices"><![CDATA[
+            <ul>
+                <li>Principe du moindre privilège appliqué à tous les comptes</li>
+                <li>Revue périodique des droits d'accès</li>
+                <li>Séparation des rôles administrateurs et utilisateurs</li>
+                <li>Collecte minimale de données personnelles</li>
+            </ul>
+        ]]></field>
+    </record>
+
+    <record id="element_5" model="audit.element">
+        <field name="num">5</field>
+        <field name="name">Chiffrement &amp; gestion des clefs</field>
+        <field name="description">TLS/HTTPS, rotation clefs, séparation rôles</field>
+        <field name="sequence">5</field>
+        <field name="best_practices"><![CDATA[
+            <ul>
+                <li>TLS 1.2+ pour toutes les communications</li>
+                <li>HTTPS obligatoire sur tous les portails web</li>
+                <li>Certificats valides et renouvelés automatiquement</li>
+                <li>Rotation périodique des clés de chiffrement</li>
+                <li>Séparation des rôles pour la gestion des clés</li>
+                <li>Chiffrement des courriels sensibles</li>
+            </ul>
+        ]]></field>
+    </record>
+
+    <record id="element_6" model="audit.element">
+        <field name="num">6</field>
+        <field name="name">Contrôles d'accès (MFA)</field>
+        <field name="description">MFA, IAM/SSO, révocation</field>
+        <field name="sequence">6</field>
+        <field name="best_practices"><![CDATA[
+            <ul>
+                <li>Authentification multifacteur (MFA) obligatoire pour les accès administrateurs</li>
+                <li>MFA recommandée pour tous les utilisateurs</li>
+                <li>Gestion centralisée des identités (IAM/SSO)</li>
+                <li>Processus de révocation des accès lors de départs</li>
+            </ul>
+        ]]></field>
+    </record>
+
+    <record id="element_7" model="audit.element">
+        <field name="num">7</field>
+        <field name="name">Hygiène &amp; surveillance</field>
+        <field name="description">Correctifs, EDR/AV, durcissement, journalisation, alertes</field>
+        <field name="sequence">7</field>
+        <field name="best_practices"><![CDATA[
+            <ul>
+                <li>Correctifs de sécurité appliqués dans les 30 jours</li>
+                <li>Solution EDR/antivirus sur tous les postes et serveurs</li>
+                <li>Durcissement des configurations (CIS Benchmarks)</li>
+                <li>Journalisation centralisée des événements de sécurité</li>
+                <li>Alertes automatiques pour les anomalies</li>
+                <li>Revue régulière des journaux d'accès</li>
+            </ul>
+        ]]></field>
+    </record>
+
+    <record id="element_8" model="audit.element">
+        <field name="num">8</field>
+        <field name="name">Réseau</field>
+        <field name="description">Segmentation, pare-feu, VPN</field>
+        <field name="sequence">8</field>
+        <field name="best_practices"><![CDATA[
+            <ul>
+                <li>Pare-feu configuré avec règles restrictives</li>
+                <li>Segmentation réseau (VLAN) pour isoler les données sensibles</li>
+                <li>VPN pour les accès distants</li>
+                <li>Wi-Fi sécurisé (WPA3 ou WPA2-Enterprise)</li>
+            </ul>
+        ]]></field>
+    </record>
+
+    <record id="element_9" model="audit.element">
+        <field name="num">9</field>
+        <field name="name">Sécurité physique</field>
+        <field name="description">Contrôle accès, destruction supports</field>
+        <field name="sequence">9</field>
+        <field name="best_practices"><![CDATA[
+            <ul>
+                <li>Contrôle d'accès physique aux salles serveurs</li>
+                <li>Procédure de destruction sécurisée des supports de données</li>
+                <li>Registre des accès physiques</li>
+                <li>Protection contre les sinistres (incendie, inondation)</li>
+            </ul>
+        ]]></field>
+    </record>
+
+    <record id="element_10" model="audit.element">
+        <field name="num">10</field>
+        <field name="name">Sauvegardes &amp; reprise</field>
+        <field name="description">Redondance, mock-restore, accès</field>
+        <field name="sequence">10</field>
+        <field name="best_practices"><![CDATA[
+            <ul>
+                <li>Sauvegardes régulières (quotidiennes minimum)</li>
+                <li>Règle 3-2-1 (3 copies, 2 médias, 1 hors-site)</li>
+                <li>Tests de restauration périodiques (mock-restore)</li>
+                <li>Plan de reprise après sinistre documenté et testé</li>
+                <li>Chiffrement des sauvegardes</li>
+            </ul>
+        ]]></field>
+    </record>
+
+    <record id="element_11" model="audit.element">
+        <field name="num">11</field>
+        <field name="name">Clients (PC/mobiles)</field>
+        <field name="description">Chiffrement disque, MDM, BYOD</field>
+        <field name="sequence">11</field>
+        <field name="best_practices"><![CDATA[
+            <ul>
+                <li>Chiffrement de disque complet (BitLocker, FileVault)</li>
+                <li>Politique BYOD documentée si applicable</li>
+                <li>Gestion des appareils mobiles (MDM) si applicable</li>
+                <li>Verrouillage automatique des sessions</li>
+            </ul>
+        ]]></field>
+    </record>
+
+    <record id="element_12" model="audit.element">
+        <field name="num">12</field>
+        <field name="name">Contrats &amp; SLA</field>
+        <field name="description">Confidentialité, incidents, restitution</field>
+        <field name="sequence">12</field>
+        <field name="best_practices"><![CDATA[
+            <ul>
+                <li>Clause de confidentialité dans tous les contrats fournisseurs</li>
+                <li>SLA documenté avec temps de réponse pour les incidents</li>
+                <li>Clause de notification en cas d'incident de confidentialité</li>
+                <li>Clause de restitution/destruction des données en fin de contrat</li>
+            </ul>
+        ]]></field>
+    </record>
+
+    <record id="element_13" model="audit.element">
+        <field name="num">13</field>
+        <field name="name">Conformité fournisseurs &amp; sous-traitants</field>
+        <field name="description">Protection RP fournisseur et ses sous-traitants</field>
+        <field name="sequence">13</field>
+        <field name="best_practices"><![CDATA[
+            <ul>
+                <li>Engagement écrit du fournisseur à protéger les RP</li>
+                <li>Mesures de sécurité proportionnelles à la sensibilité des données</li>
+                <li>Droit d'audit sur les pratiques du fournisseur</li>
+                <li>Notification obligatoire en cas d'incident impliquant des RP</li>
+                <li>Liste des sous-traitants ayant accès aux données</li>
+                <li>Mêmes exigences de sécurité imposées aux sous-traitants</li>
+                <li>Notification en cas de changement de sous-traitant</li>
+            </ul>
+        ]]></field>
+    </record>
+
+    <record id="element_14" model="audit.element">
+        <field name="num">14</field>
+        <field name="name">Souveraineté des données</field>
+        <field name="description">Stockage souverain, Cloud Act, localisation données</field>
+        <field name="sequence">14</field>
+        <field name="best_practices"><![CDATA[
+            <ul>
+                <li>Données hébergées par un fournisseur souverain (non soumis au Cloud Act/FISA)</li>
+                <li>OU hébergement on-prem contrôlé par l'organisation</li>
+                <li>Si fournisseur US (Microsoft, Google, AWS) : risque Cloud Act documenté, EFVP réalisée</li>
+                <li>Pas de transfert hors Québec sans évaluation des facteurs relatifs à la vie privée</li>
+                <li>Préférence pour les fournisseurs québécois/canadiens pour les RP sensibles</li>
+                <li>Garantie contractuelle de localisation et de contrôle des données</li>
+                <li>Plan de rapatriement des données si nécessaire</li>
+            </ul>
+        ]]></field>
+    </record>
+
+</odoo>

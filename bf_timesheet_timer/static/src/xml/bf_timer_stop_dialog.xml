@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates>
+    <t t-name="bf_timesheet_timer.StopDialog">
+        <Dialog title="'Arrêter le timer'" size="'md'">
+            <div class="p-3">
+                <!-- Info -->
+                <div class="mb-3">
+                    <div class="row mb-1">
+                        <div class="col-4 text-muted">Projet</div>
+                        <div class="col-8 fw-semibold">
+                            <t t-esc="props.timerData.project_name"/>
+                        </div>
+                    </div>
+                    <div class="row mb-1">
+                        <div class="col-4 text-muted">Tâche</div>
+                        <div class="col-8 fw-semibold">
+                            <t t-esc="props.timerData.task_name"/>
+                        </div>
+                    </div>
+                    <div class="row mb-1">
+                        <div class="col-4 text-muted">Durée brute</div>
+                        <div class="col-8">
+                            <t t-esc="rawElapsed"/>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Duration inputs -->
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Durée à enregistrer</label>
+                    <div class="d-flex align-items-center gap-2">
+                        <div class="input-group" style="max-width: 120px;">
+                            <input type="number" class="form-control text-center"
+                                   t-att-value="state.hours" min="0"
+                                   t-on-input="onChangeHours"/>
+                            <span class="input-group-text">h</span>
+                        </div>
+                        <span class="fw-bold">:</span>
+                        <div class="input-group" style="max-width: 120px;">
+                            <input type="number" class="form-control text-center"
+                                   t-att-value="state.minutes" min="0" max="59"
+                                   t-on-input="onChangeMinutes"/>
+                            <span class="input-group-text">min</span>
+                        </div>
+                    </div>
+                    <div t-if="state.belowMinimum" class="text-info small mt-1">
+                        <i class="fa fa-info-circle me-1"/>Arrondi &#224; <t t-esc="roundingIncrement"/> minutes minimum
+                    </div>
+                </div>
+
+                <!-- Description presets -->
+                <div t-if="props.presets and props.presets.length" class="mb-2">
+                    <div class="d-flex flex-wrap gap-1">
+                        <t t-foreach="props.presets" t-as="preset" t-key="preset.id">
+                            <button class="bf-preset-chip btn btn-sm btn-outline-secondary"
+                                    t-on-click="() => this.onClickPreset(preset)">
+                                <t t-esc="preset.name"/>
+                            </button>
+                        </t>
+                    </div>
+                </div>
+
+                <!-- Description -->
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Description</label>
+                    <input type="text" class="form-control"
+                           t-att-value="state.description"
+                           t-on-input="onChangeDescription"
+                           placeholder="Description de la feuille de temps"/>
+                </div>
+            </div>
+
+            <!-- Footer buttons -->
+            <t t-set-slot="footer">
+                <button class="btn btn-primary" t-on-click="onConfirm">
+                    <i class="fa fa-check me-1"/>Confirmer
+                </button>
+                <button class="btn btn-danger" t-on-click="onDiscard">
+                    <i class="fa fa-trash me-1"/>Supprimer
+                </button>
+                <button class="btn btn-secondary" t-on-click="onCancel">
+                    Annuler
+                </button>
+            </t>
+        </Dialog>
+    </t>
+</templates>

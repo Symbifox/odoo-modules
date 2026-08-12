@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="ir_cron_imap_mirror" model="ir.cron">
+            <field name="name">Courriels : miroir IMAP INBOX (et réveil snooze)</field>
+            <field name="model_id" ref="model_bf_email"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_imap_mirror()</field>
+            <field name="user_id" ref="base.user_root"/>
+            <field name="interval_number">5</field>
+            <field name="interval_type">minutes</field>
+            <field name="active" eval="True"/>
+        </record>
+    </data>
+</odoo>

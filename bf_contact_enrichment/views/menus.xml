@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <menuitem id="menu_bf_contact_enrichment"
+              name="Enrichissement"
+              parent="contacts.menu_contacts"
+              sequence="20"/>
+
+    <menuitem id="menu_bf_contact_card"
+              name="Numériser une carte"
+              parent="menu_bf_contact_enrichment"
+              action="action_bf_contact_card_wizard"
+              groups="bf_contact_enrichment.group_bf_contact_enrich"
+              sequence="10"/>
+
+    <menuitem id="menu_bf_contact_vcard"
+              name="Importer une vCard"
+              parent="menu_bf_contact_enrichment"
+              action="action_bf_contact_vcard_wizard"
+              sequence="20"/>
+
+    <menuitem id="menu_bf_contact_dedup"
+              name="Détecter les doublons"
+              parent="menu_bf_contact_enrichment"
+              action="action_bf_contact_dedup_wizard"
+              sequence="30"/>
+
+</odoo>

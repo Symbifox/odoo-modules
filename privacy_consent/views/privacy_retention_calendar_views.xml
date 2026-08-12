@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Retention Calendar Form View -->
+    <record id="privacy_retention_calendar_view_form" model="ir.ui.view">
+        <field name="name">privacy.retention.calendar.form</field>
+        <field name="model">privacy.retention.calendar</field>
+        <field name="arch" type="xml">
+            <form string="Calendrier de conservation">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_classifications" type="object"
+                                class="oe_stat_button" icon="fa-tags">
+                            <field name="classification_count" widget="statinfo"
+                                   string="Documents"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name" placeholder="Nom de la règle"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Identification">
+                            <field name="code"/>
+                            <field name="document_type"/>
+                            <field name="active" invisible="1"/>
+                        </group>
+                        <group string="Conservation">
+                            <field name="active_retention_years"/>
+                            <field name="semi_active_retention_years"/>
+                            <field name="total_retention_days"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Disposition finale">
+                            <field name="final_disposition"/>
+                            <field name="destruction_method"
+                                   invisible="final_disposition not in ('destroy', 'anonymize')"/>
+                            <field name="requires_approval"/>
+                        </group>
+                        <group string="Portée">
+                            <field name="applies_to_model"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                    <group string="Base légale">
+                        <field name="legal_basis" nolabel="1"
+                               placeholder="Ex: Art. 2925 C.c.Q. — prescription de 3 ans"/>
+                    </group>
+                    <group string="Description">
+                        <field name="description" nolabel="1"
+                               placeholder="Documents couverts par cette règle..."/>
+                    </group>
+                    <group>
+                        <group string="Révision">
+                            <field name="last_review_date"/>
+                            <field name="next_review_date"/>
+                            <field name="reviewed_by_id"/>
+                        </group>
+                    </group>
+                    <group string="Notes">
+                        <field name="notes" nolabel="1"/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Retention Calendar List View -->
+    <record id="privacy_retention_calendar_view_list" model="ir.ui.view">
+        <field name="name">privacy.retention.calendar.list</field>
+        <field name="model">privacy.retention.calendar</field>
+        <field name="arch" type="xml">
+            <list string="Calendrier de conservation"
+                  decoration-warning="next_review_date and next_review_date &lt;= current_date">
+                <field name="code"/>
+                <field name="name"/>
+                <field name="document_type"/>
+                <field name="active_retention_years" string="Actif (ans)"/>
+                <field name="semi_active_retention_years" string="Semi-actif (ans)"/>
+                <field name="final_disposition"/>
+                <field name="destruction_method" optional="show"/>
+                <field name="requires_approval"/>
+                <field name="classification_count" string="Docs"/>
+                <field name="next_review_date" optional="show"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Retention Calendar Search View -->
+    <record id="privacy_retention_calendar_view_search" model="ir.ui.view">
+        <field name="name">privacy.retention.calendar.search</field>
+        <field name="model">privacy.retention.calendar</field>
+        <field name="arch" type="xml">
+            <search string="Rechercher">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="legal_basis"/>
+                <separator/>
+                <filter string="Destruction" name="destroy"
+                        domain="[('final_disposition', '=', 'destroy')]"/>
+                <filter string="Anonymisation" name="anonymize"
+                        domain="[('final_disposition', '=', 'anonymize')]"/>
+                <filter string="Conservation permanente" name="permanent"
+                        domain="[('final_disposition', '=', 'permanent_archive')]"/>
+                <separator/>
+                <filter string="Révision due" name="review_due"
+                        domain="[('next_review_date', '&lt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                <separator/>
+                <group expand="0" string="Regrouper par">
+                    <filter string="Type de document" name="group_by_type"
+                            context="{'group_by': 'document_type'}"/>
+                    <filter string="Sort final" name="group_by_disposition"
+                            context="{'group_by': 'final_disposition'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Retention Calendar Action -->
+    <record id="action_privacy_retention_calendar" model="ir.actions.act_window">
+        <field name="name">Calendrier de conservation</field>
+        <field name="res_model">privacy.retention.calendar</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Aucune règle de conservation
+            </p>
+            <p>
+                Le calendrier de conservation définit les durées de conservation par type de document,
+                conformément à l'article 3.2 de la LPRPSP.
+            </p>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Who may trigger bridge/LLM enrichment (card OCR, signature, web, batch).
+         Members are internal users; the LLM cost/abuse surface is gated here.
+         Set-once (noupdate): the admin is seeded on install; admins manage
+         members afterwards without an upgrade overwriting their choices. -->
+    <data noupdate="1">
+        <record id="group_bf_contact_enrich" model="res.groups">
+            <field name="name">Enrichissement de contacts</field>
+            <field name="comment">Permet de lancer l'enrichissement de contacts par IA
+                (carte d'affaires, signatures courriel, domaine web) et le
+                traitement en lot.</field>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+            <field name="users" eval="[(4, ref('base.user_admin'))]"/>
+        </record>
+    </data>
+
+</odoo>

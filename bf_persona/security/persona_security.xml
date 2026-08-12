@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="module_category_persona" model="ir.module.category">
+        <field name="name">Persona des contacts</field>
+        <field name="description">Gestion des préférences relationnelles, ton et payeur par contact</field>
+        <field name="sequence">56</field>
+    </record>
+
+    <record id="group_persona_user" model="res.groups">
+        <field name="name">Utilisateur persona</field>
+        <field name="category_id" ref="module_category_persona"/>
+        <field name="comment">Peut consulter et modifier les personas (sans détails personnels).</field>
+    </record>
+
+    <record id="group_persona_manager" model="res.groups">
+        <field name="name">Gestionnaire persona</field>
+        <field name="category_id" ref="module_category_persona"/>
+        <field name="implied_ids" eval="[(4, ref('group_persona_user'))]"/>
+        <field name="comment">Accès complet, incluant les détails personnels sensibles.</field>
+    </record>
+
+</odoo>

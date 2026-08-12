@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Hosting Service Tag Tree View -->
+    <record id="hosting_service_tag_view_tree" model="ir.ui.view">
+        <field name="name">hosting.service.tag.tree</field>
+        <field name="model">hosting.service.tag</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="name"/>
+                <field name="color" widget="color_picker"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Hosting Service Tag Form View -->
+    <record id="hosting_service_tag_view_form" model="ir.ui.view">
+        <field name="name">hosting.service.tag.form</field>
+        <field name="model">hosting.service.tag</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="color" widget="color_picker"/>
+                        <field name="active"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Hosting Service Tag Action -->
+    <record id="hosting_service_tag_action" model="ir.actions.act_window">
+        <field name="name">Étiquettes de service</field>
+        <field name="res_model">hosting.service.tag</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Créez des étiquettes pour catégoriser les services
+            </p>
+        </field>
+    </record>
+
+</odoo>

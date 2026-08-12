@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <record id="hosting_audit_log_archive_cron" model="ir.cron">
+            <field name="name">Hébergement : archiver les anciens journaux d'audit</field>
+            <field name="model_id" ref="model_hosting_audit_log"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_archive_old_logs()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">months</field>
+            <field name="active">True</field>
+        </record>
+
+    </data>
+</odoo>

@@ -1,0 +1,27 @@
+<section class="oe_container">
+    <div class="oe_row oe_spaced">
+        <h2 class="oe_slogan">Document Nextcloud Sync</h2>
+        <h3 class="oe_slogan">Synchronise Odoo project documents to Nextcloud over WebDAV</h3>
+    </div>
+</section>
+
+<section class="oe_container oe_dark">
+    <div class="oe_row">
+        <div class="oe_span12">
+            <p class="oe_mt32">
+                Hardened WebDAV/OCS helpers for connecting Odoo to a Nextcloud instance:
+                PROPFIND / GET / PUT / MKCOL and public share-link creation, with path
+                sanitisation, SSRF protection and encrypted credential storage. Provides
+                the configuration and file primitives reused by higher-level modules such
+                as the Nextcloud File Browser.
+            </p>
+            <ul>
+                <li>Encrypted (Fernet) service-account credentials, key kept out of the database</li>
+                <li>HTTPS-only, private/link-local IP rejection (SSRF defence)</li>
+                <li>Path traversal sanitisation and prefix scoping</li>
+                <li>Public share links with expiry and optional password</li>
+                <li>Document upload wizard and project document integration</li>
+            </ul>
+        </div>
+    </div>
+</section>

@@ -1,0 +1,14 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_bf_sign_request_user,bf.sign.request user,model_bf_sign_request,group_sign_user,1,1,1,1
+access_bf_sign_request_manager,bf.sign.request manager,model_bf_sign_request,group_sign_manager,1,1,1,1
+access_bf_sign_signer_user,bf.sign.signer user,model_bf_sign_signer,group_sign_user,1,1,1,1
+access_bf_sign_signer_manager,bf.sign.signer manager,model_bf_sign_signer,group_sign_manager,1,1,1,1
+access_bf_sign_field_user,bf.sign.field user,model_bf_sign_field,group_sign_user,1,1,1,1
+access_bf_sign_field_manager,bf.sign.field manager,model_bf_sign_field,group_sign_manager,1,1,1,1
+access_bf_sign_log_user,bf.sign.log user,model_bf_sign_log,group_sign_user,1,0,0,0
+access_bf_sign_log_manager,bf.sign.log manager,model_bf_sign_log,group_sign_manager,1,0,0,0
+access_bf_sign_field_template_user,bf.sign.field.template user,model_bf_sign_field_template,group_sign_user,1,1,1,1
+access_bf_sign_field_template_manager,bf.sign.field.template manager,model_bf_sign_field_template,group_sign_manager,1,1,1,1
+access_bf_sign_field_template_line_user,bf.sign.field.template.line user,model_bf_sign_field_template_line,group_sign_user,1,1,1,1
+access_bf_sign_field_template_line_manager,bf.sign.field.template.line manager,model_bf_sign_field_template_line,group_sign_manager,1,1,1,1
+access_bf_sign_reveal_link_wizard_manager,bf.sign.reveal.link.wizard manager,model_bf_sign_reveal_link_wizard,group_sign_manager,1,1,1,0

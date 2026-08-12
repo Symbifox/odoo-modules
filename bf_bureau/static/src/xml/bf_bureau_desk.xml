@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates>
+
+    <t t-name="bf_bureau.PaneView">
+        <View t-props="props.viewProps"/>
+    </t>
+
+    <t t-name="bf_bureau.Desk">
+        <div class="bf-bureau-desk o_action_manager"
+             t-att-class="state.sidebarVisible ? 'bf-bureau-with-sidebar' : ''">
+            <t t-if="state.loading">
+                <div class="bf-bureau-loading">
+                    <i class="fa fa-spinner fa-spin"/> Chargement…
+                </div>
+            </t>
+            <t t-elif="!state.desk">
+                <div class="bf-bureau-empty">
+                    <h2>Aucun bureau</h2>
+                    <p>Vous n'avez pas encore créé de bureau. Lancez-vous !</p>
+                    <button class="btn btn-primary"
+                            t-on-click="() => this.createNewDesk()">
+                        Créer mon premier bureau
+                    </button>
+                </div>
+            </t>
+            <t t-else="">
+                <aside class="bf-bureau-sidebar"
+                       t-if="state.sidebarVisible">
+                    <div class="bf-bureau-sidebar-header">
+                        <span>Mes bureaux</span>
+                        <button class="btn btn-sm btn-light"
+                                t-on-click="() => this.createNewDesk()"
+                                title="Nouveau bureau">
+                            <i class="fa fa-plus"/>
+                        </button>
+                    </div>
+                    <ul class="bf-bureau-sidebar-list">
+                        <t t-foreach="state.allDesks" t-as="d" t-key="d.id">
+                            <li t-att-class="isCurrentDesk(d.id) ? 'bf-bureau-sidebar-item active' : 'bf-bureau-sidebar-item'"
+                                t-on-click="() => this._switchDesk(d.id)">
+                                <span class="bf-bureau-sidebar-name"
+                                      t-esc="d.name"/>
+                                <span class="bf-bureau-sidebar-meta">
+                                    <i t-if="d.is_default" class="fa fa-star"
+                                       title="Par défaut"/>
+                                    <t t-if="d.shortcut_key">
+                                        <kbd t-esc="d.shortcut_key"/>
+                                    </t>
+                                </span>
+                            </li>
+                        </t>
+                    </ul>
+                </aside>
+                <div class="bf-bureau-main">
+                    <div class="bf-bureau-toolbar">
+                        <button class="btn btn-sm btn-light"
+                                t-on-click="() => this.toggleSidebar()"
+                                t-att-title="state.sidebarVisible ? 'Masquer la barre' : 'Afficher la barre des bureaux'">
+                            <i class="fa fa-bars"/>
+                        </button>
+                        <span class="bf-bureau-desk-name">
+                            <i class="fa fa-columns me-1"/>
+                            <t t-esc="state.desk.name"/>
+                        </span>
+                        <div class="bf-bureau-toolbar-actions">
+                            <button class="btn btn-sm btn-secondary"
+                                    t-on-click="() => this.saveLayout()"
+                                    title="Enregistrer les types de vue actuels comme défauts">
+                                <i class="fa fa-floppy-o"/> Enregistrer la disposition
+                            </button>
+                            <button class="btn btn-sm btn-light"
+                                    t-on-click="() => this.openDeskEditor()"
+                                    title="Modifier ce bureau">
+                                <i class="fa fa-pencil"/>
+                            </button>
+                            <button class="btn btn-sm btn-light"
+                                    t-on-click="() => this.openDeskList()"
+                                    title="Voir tous mes bureaux">
+                                <i class="fa fa-th-list"/>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="bf-bureau-grid"
+                         t-att-data-layout="state.desk.layout"
+                         t-att-style="gridStyle()">
+                        <t t-foreach="state.panes" t-as="pane" t-key="pane.id">
+                            <div class="bf-bureau-pane"
+                                 t-attf-data-slot="{{pane.slot}}">
+                                <div class="bf-bureau-switcher btn-group btn-group-sm" role="group">
+                                    <span class="bf-bureau-pane-title"
+                                          t-esc="paneTitle(pane)"/>
+                                    <t t-foreach="paneAvailableTypes(pane)"
+                                       t-as="vt"
+                                       t-key="vt">
+                                        <button type="button"
+                                                class="btn"
+                                                t-att-class="vt === state.paneTypes[pane.id] ? 'bf-bureau-switch-active' : 'bf-bureau-switch-idle'"
+                                                t-att-title="viewMeta(vt).label"
+                                                t-on-click="() => this.setPaneType(pane.id, vt)">
+                                            <i t-attf-class="fa {{viewMeta(vt).icon}}"/>
+                                        </button>
+                                    </t>
+                                    <button type="button"
+                                            class="btn bf-bureau-switch-idle"
+                                            title="Rafraîchir le panneau"
+                                            t-on-click="() => this.refreshPane(pane.id)">
+                                        <i class="fa fa-refresh"/>
+                                    </button>
+                                </div>
+                                <BfBureauPaneView t-key="paneKey(pane)"
+                                                  actionId="pane.actionDef.id"
+                                                  actionName="paneTitle(pane)"
+                                                  viewType="state.paneTypes[pane.id] || pane.view_type"
+                                                  viewProps="paneViewProps(pane)"/>
+                            </div>
+                        </t>
+                    </div>
+                </div>
+            </t>
+        </div>
+    </t>
+
+</templates>

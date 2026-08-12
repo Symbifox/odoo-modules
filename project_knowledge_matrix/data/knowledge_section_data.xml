@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- Sections universelles d'implantation
+             Conçues pour la collecte d'information client dans tout projet d'implantation
+             (Odoo, M365, ERP, CRM, logiciel sur mesure, etc.) -->
+
+        <record id="section_dis" model="project.knowledge.section">
+            <field name="code">DIS</field>
+            <field name="name">Découverte et objectifs</field>
+            <field name="description">Objectifs du projet, irritants, critères de succès, définition de la portée, contraintes d'affaires</field>
+            <field name="sequence">10</field>
+            <field name="color">1</field>
+        </record>
+
+        <record id="section_ppl" model="project.knowledge.section">
+            <field name="code">PPL</field>
+            <field name="name">Personnes et organisation</field>
+            <field name="description">Commanditaire exécutif, décideurs, experts métier, utilisateurs finaux, structure organisationnelle</field>
+            <field name="sequence">20</field>
+            <field name="color">2</field>
+        </record>
+
+        <record id="section_cur" model="project.knowledge.section">
+            <field name="code">CUR</field>
+            <field name="name">État actuel</field>
+            <field name="description">Systèmes existants, processus actuels, irritants, ce qui fonctionne bien, inventaire technique</field>
+            <field name="sequence">30</field>
+            <field name="color">3</field>
+        </record>
+
+        <record id="section_req" model="project.knowledge.section">
+            <field name="code">REQ</field>
+            <field name="name">Exigences</field>
+            <field name="description">Exigences fonctionnelles, exigences non fonctionnelles, incontournables vs souhaitables, priorités</field>
+            <field name="sequence">40</field>
+            <field name="color">4</field>
+        </record>
+
+        <record id="section_tec" model="project.knowledge.section">
+            <field name="code">TEC</field>
+            <field name="name">Environnement technique</field>
+            <field name="description">Infrastructure, réseau, intégrations existantes, sécurité de base, contraintes techniques</field>
+            <field name="sequence">50</field>
+            <field name="color">5</field>
+        </record>
+
+        <record id="section_dat" model="project.knowledge.section">
+            <field name="code">DAT</field>
+            <field name="name">Données et migration</field>
+            <field name="description">Sources de données, qualité des données, exigences de mappage, portée de la migration, approche de bascule</field>
+            <field name="sequence">60</field>
+            <field name="color">6</field>
+        </record>
+
+        <record id="section_sec" model="project.knowledge.section">
+            <field name="code">SEC</field>
+            <field name="name">Sécurité et conformité</field>
+            <field name="description">Contrôle d'accès, exigences d'audit, conformité réglementaire, classification des données, accès externe</field>
+            <field name="sequence">70</field>
+            <field name="color">7</field>
+        </record>
+
+        <record id="section_cfg" model="project.knowledge.section">
+            <field name="code">CFG</field>
+            <field name="name">Configuration et paramétrage</field>
+            <field name="description">Paramètres système, personnalisations, flux de travail, automatisations, politiques de gouvernance</field>
+            <field name="sequence">80</field>
+            <field name="color">8</field>
+        </record>
+
+        <record id="section_trn" model="project.knowledge.section">
+            <field name="code">TRN</field>
+            <field name="name">Formation et adoption</field>
+            <field name="description">Groupes d'utilisateurs, format de formation, gestion du changement, documentation, mesure de l'adoption</field>
+            <field name="sequence">90</field>
+            <field name="color">9</field>
+        </record>
+
+        <record id="section_glv" model="project.knowledge.section">
+            <field name="code">GLV</field>
+            <field name="name">Mise en production et soutien</field>
+            <field name="description">Plan de bascule, liste de vérification, période d'hyperassistance, modèle de soutien continu, transfert</field>
+            <field name="sequence">100</field>
+            <field name="color">10</field>
+        </record>
+
+    </data>
+</odoo>

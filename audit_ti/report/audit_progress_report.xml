@@ -1,0 +1,407 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Custom paper format for audit progress report -->
+    <record id="paperformat_audit_progress" model="report.paperformat">
+        <field name="name">Audit TI &#8212; Rapport d&#8217;avancement</field>
+        <field name="format">A4</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">10</field>
+        <field name="margin_bottom">20</field>
+        <field name="margin_left">15</field>
+        <field name="margin_right">15</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">0</field>
+        <field name="dpi">96</field>
+        <field name="disable_shrinking" eval="True"/>
+    </record>
+
+    <!-- Report action -->
+    <record id="action_report_audit_progress" model="ir.actions.report">
+        <field name="name">Rapport d&#8217;avancement</field>
+        <field name="model">audit.client</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">audit_ti.report_audit_progress</field>
+        <field name="print_report_name">'Rapport_Avancement_Audit_TI_%s' % object.name</field>
+        <field name="binding_model_id" ref="model_audit_client"/>
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="paperformat_audit_progress"/>
+    </record>
+
+    <!-- QWeb template -->
+    <template id="report_audit_progress">
+        <t t-call="web.html_container">
+            <style>
+                /* Neutraliser toutes les bordures Odoo sur notre rapport */
+                .header, .footer, .article, .page,
+                .header *, .footer *, .article > .page > table,
+                .article > .page > table *,
+                .article > .page > div {
+                    border-color: transparent !important;
+                }
+                /* Exceptions explicites : on remet NOS bordures */
+                .audit-table th { border-bottom: 2px solid #0693e3 !important; }
+                .audit-table td { border-bottom: 1px solid #eaecf0 !important; }
+                .audit-table td.audit-rag-border { border-left-color: inherit !important; }
+                /* Supprimer les pseudo-éléments boxed */
+                table::before, table::after { display: none !important; }
+            </style>
+            <t t-foreach="docs" t-as="doc">
+                <t t-set="data" t-value="doc._get_report_data()"/>
+
+                <!-- ====== FOOTER ====== -->
+                <div class="footer" style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; padding: 6px 0 0 0; font-size: 8px; color: #98a2b3;">
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <tr>
+                            <td style="text-align: left; width: 33%;">
+                                Confidentiel &#8212; <t t-esc="doc.name"/>
+                            </td>
+                            <td style="text-align: center; width: 34%;">
+                                <span t-if="data.get('brand_name')" t-att-style="'color: %s; font-weight: 600;' % data.get('brand_primary', '#0693e3')" t-esc="data['brand_name']"/>
+                            </td>
+                            <td style="text-align: right; width: 33%;">
+                                <span class="page"/> / <span class="topage"/>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                <!-- ====== BODY ====== -->
+                <div class="article" data-oe-model="audit.client" t-att-data-oe-id="doc.id">
+                    <div class="page" style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; color: #344054; font-size: 12px; line-height: 1.5;">
+
+                        <!-- ============ HEADER ============ -->
+                        <table style="width: 100%; border-collapse: collapse; margin-bottom: 24px;">
+                            <tr>
+                                <td t-if="data.get('brand_logo')" style="width: 56px; vertical-align: top; padding-right: 16px;">
+                                    <img t-att-src="data['brand_logo']" style="height: 44px; width: auto;"/>
+                                </td>
+                                <td style="vertical-align: top;">
+                                    <div style="font-size: 20px; font-weight: 700; color: #344054; letter-spacing: -0.4px; line-height: 1.2;">
+                                        Rapport d&#8217;avancement &#8212; Audit TI
+                                    </div>
+                                    <div style="font-size: 11px; color: #667085; margin-top: 2px;">
+                                        <strong style="color: #344054;"><t t-esc="doc.name"/></strong>
+                                        <span style="margin: 0 6px;">&#183;</span>
+                                        Conformit&#233; Loi 25
+                                        <span style="margin: 0 6px;">&#183;</span>
+                                        <t t-esc="data['today']"/>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <!-- ============ DELIVERED BANNER ============ -->
+                        <t t-if="data.get('state') == 'delivered' and data.get('delivered_date')">
+                            <div style="background: #ecfdf3; border-left: 3px solid #12b76a; padding: 10px 16px; margin-bottom: 20px; color: #027a48; font-size: 12px; border-radius: 0 4px 4px 0;">
+                                Audit livr&#233; le <strong><t t-esc="data['delivered_date']"/></strong>
+                            </div>
+                        </t>
+
+                        <!-- ============ SECTION 1: SYNTH&#200;SE ============ -->
+                        <t t-if="data.get('synthesis_html')">
+                            <div class="synthesis-content" style="margin-bottom: 24px; font-size: 12px; color: #344054; line-height: 1.6;">
+                                <style>
+                                    .synthesis-content h2 {
+                                        font-size: 15px; font-weight: 700; color: #344054;
+                                        margin: 0 0 6px 0; padding: 0; line-height: 1.3;
+                                    }
+                                    .synthesis-content h3 {
+                                        font-size: 14px; font-weight: 700; color: #0693e3;
+                                        margin: 18px 0 6px 0; padding: 0 0 4px 0;
+                                        border-bottom: 1px solid #eaecf0; line-height: 1.3;
+                                    }
+                                    .synthesis-content h4 {
+                                        font-size: 12px; font-weight: 600; color: #475467;
+                                        margin: 14px 0 4px 0; padding: 0; line-height: 1.3;
+                                    }
+                                    .synthesis-content p {
+                                        margin: 0 0 8px 0; font-size: 12px; color: #344054;
+                                    }
+                                    .synthesis-content ol, .synthesis-content ul {
+                                        margin: 4px 0 10px 0; padding-left: 20px;
+                                    }
+                                    .synthesis-content li {
+                                        margin-bottom: 8px; font-size: 12px; color: #344054;
+                                        line-height: 1.5;
+                                    }
+                                    .synthesis-content li strong {
+                                        color: #344054;
+                                    }
+                                    .synthesis-content table {
+                                        width: 100% !important; border-collapse: collapse;
+                                        margin: 8px 0 12px 0; font-size: 11px;
+                                    }
+                                    .synthesis-content table td,
+                                    .synthesis-content table th {
+                                        padding: 6px 10px; border: 1px solid #eaecf0;
+                                        color: #344054; width: auto !important;
+                                    }
+                                    .synthesis-content table tr:first-child td,
+                                    .synthesis-content table thead td,
+                                    .synthesis-content table thead th {
+                                        background: #f9fafb; font-weight: 600;
+                                        color: #344054; font-size: 11px;
+                                    }
+                                </style>
+                                <t t-out="data['synthesis_html']"/>
+                            </div>
+                        </t>
+
+                        <!-- ============ SECTION: SOMMAIRE EX&#201;CUTIF ============ -->
+                        <t t-set="s" t-value="2 if data.get('synthesis_html') else 1"/>
+                        <div style="font-size: 13px; font-weight: 700; color: #0693e3; text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 12px;">
+                            <t t-esc="s"/>. Sommaire ex&#233;cutif
+                        </div>
+
+                        <!-- Metrics -->
+                        <table style="width: 100%; border-collapse: collapse; margin-bottom: 16px;">
+                            <tr>
+                                <td style="width: 33%; padding: 0 4px 0 0;">
+                                    <div style="background: #eff8ff; border-radius: 8px; padding: 14px 8px; text-align: center;">
+                                        <div style="font-size: 20px; font-weight: 700; line-height: 1;">
+                                            <span style="color: #28a745;"><t t-esc="data['rag_green']"/></span>
+                                            <span style="color: #667085; font-size: 13px; font-weight: 400;">&#8202;/&#8202;</span>
+                                            <span style="color: #ffc107;"><t t-esc="data['rag_yellow']"/></span>
+                                            <span style="color: #667085; font-size: 13px; font-weight: 400;">&#8202;/&#8202;</span>
+                                            <span style="color: #dc3545;"><t t-esc="data['rag_red']"/></span>
+                                        </div>
+                                        <div style="font-size: 10px; color: #667085; margin-top: 6px; letter-spacing: 0.3px;">
+                                            <span style="color: #28a745;">&#9632;</span> Couvert
+                                            <span style="margin-left: 4px; color: #ffc107;">&#9632;</span> Mitig&#233;
+                                            <span style="margin-left: 4px; color: #dc3545;">&#9632;</span> Non couvert
+                                        </div>
+                                    </div>
+                                </td>
+                                <td style="width: 34%; padding: 0 4px;">
+                                    <div style="background: #f4f3ff; border-radius: 8px; padding: 14px 8px; text-align: center;">
+                                        <div style="font-size: 26px; font-weight: 700; color: #7a5af8; line-height: 1;">
+                                            <t t-esc="data['assessed']"/><span style="font-size: 14px; font-weight: 400; color: #667085;">&#8202;/&#8202;<t t-esc="data['total_assessments']"/></span>
+                                        </div>
+                                        <div style="font-size: 10px; color: #667085; margin-top: 6px; text-transform: uppercase; letter-spacing: 0.3px;">&#201;valuations</div>
+                                    </div>
+                                </td>
+                                <td style="width: 33%; padding: 0 0 0 4px;">
+                                    <div style="background: #fef3f2; border-radius: 8px; padding: 14px 8px; text-align: center;">
+                                        <div style="font-size: 26px; font-weight: 700; color: #f04438; line-height: 1;">
+                                            <t t-esc="data['open_watchpoints']"/>
+                                        </div>
+                                        <div style="font-size: 10px; color: #667085; margin-top: 6px; text-transform: uppercase; letter-spacing: 0.3px;">Points de vigilance</div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <!-- Progress bar -->
+                        <div style="margin-bottom: 24px;">
+                            <div style="font-size: 11px; margin-bottom: 4px; color: #667085;">
+                                Progression : <strong style="color: #344054;"><t t-esc="data['progress_pct']"/> %</strong>
+                            </div>
+                            <div style="background: #eaecf0; border-radius: 6px; height: 10px; overflow: hidden;">
+                                <div t-attf-style="background: linear-gradient(90deg, #0693e3, #12b76a); height: 10px; border-radius: 6px; width: {{ data['progress_pct'] }}%; min-width: 0;"/>
+                            </div>
+                        </div>
+
+                        <!-- ============ SECTION 3: COUVERTURE ============ -->
+                        <t t-set="s" t-value="s + 1"/>
+                        <div style="font-size: 13px; font-weight: 700; color: #0693e3; text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 10px;">
+                            <t t-esc="s"/>. Couverture des 14 &#233;l&#233;ments
+                        </div>
+
+                        <table class="audit-table" style="width: 100%; border-collapse: collapse; margin-bottom: 24px; font-size: 11px;">
+                            <thead>
+                                <tr>
+                                    <th style="padding: 8px 8px; text-align: left; width: 28px; color: #667085; font-weight: 600; font-size: 10px; text-transform: uppercase;">N&#176;</th>
+                                    <th style="padding: 8px 8px; text-align: left; width: 140px; color: #667085; font-weight: 600; font-size: 10px; text-transform: uppercase;">&#201;l&#233;ment</th>
+                                    <th style="padding: 8px 8px; text-align: center; width: 90px; color: #667085; font-weight: 600; font-size: 10px; text-transform: uppercase;">Statut</th>
+                                    <th style="padding: 8px 8px; text-align: left; color: #667085; font-weight: 600; font-size: 10px; text-transform: uppercase;">Recommandation</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="data['elements']" t-as="elem">
+                                    <tr>
+                                        <td class="audit-rag-border" t-attf-style="padding: 7px 8px; vertical-align: middle; border-left: 3px solid {{ elem['status_color'] }}; font-weight: 600; color: #344054;">
+                                            <t t-esc="elem['num']"/>
+                                        </td>
+                                        <td style="padding: 7px 8px; vertical-align: middle; color: #344054;">
+                                            <t t-esc="elem['name']"/>
+                                        </td>
+                                        <td style="padding: 7px 8px; vertical-align: middle; text-align: center;">
+                                            <span t-attf-style="display: inline-block; padding: 2px 10px; border-radius: 10px; font-size: 10px; font-weight: 600; color: white; background: {{ elem['status_color'] }};">
+                                                <t t-esc="elem['status_label']"/>
+                                            </span>
+                                        </td>
+                                        <td style="padding: 7px 8px; vertical-align: middle; font-size: 10px; color: #475467; line-height: 1.4; white-space: pre-line;">
+                                            <t t-esc="elem['recommendation']"/>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+
+                        <!-- ============ SECTION 4: MATRICE FOURNISSEURS ============ -->
+                        <t t-if="data['suppliers']">
+                            <t t-set="s" t-value="s + 1"/>
+                            <div style="font-size: 13px; font-weight: 700; color: #0693e3; text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 10px;">
+                                <t t-esc="s"/>. Matrice fournisseurs
+                            </div>
+
+                            <table class="audit-table" style="width: 100%; border-collapse: collapse; margin-bottom: 8px; font-size: 10px;">
+                                <thead>
+                                    <tr>
+                                        <th style="padding: 6px 6px; text-align: left; width: 28px; color: #667085; font-weight: 600; font-size: 9px; text-transform: uppercase;">N&#176;</th>
+                                        <th style="padding: 6px 6px; text-align: left; color: #667085; font-weight: 600; font-size: 9px; text-transform: uppercase;">&#201;l&#233;ment</th>
+                                        <t t-foreach="data['suppliers']" t-as="sup">
+                                            <th style="padding: 6px 6px; text-align: center; min-width: 60px; color: #667085; font-weight: 600; font-size: 9px;">
+                                                <div><t t-esc="sup.name"/></div>
+                                                <div style="font-weight: 400; font-size: 8px; color: #98a2b3; margin-top: 1px;">
+                                                    <t t-esc="data['supplier_roles'].get(sup.id, '')"/>
+                                                </div>
+                                            </th>
+                                        </t>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-foreach="data['elements']" t-as="elem">
+                                        <tr>
+                                            <td class="audit-rag-border" t-attf-style="padding: 4px 6px; border-left: 3px solid {{ elem['status_color'] }}; font-weight: 600; color: #344054;">
+                                                <t t-esc="elem['num']"/>
+                                            </td>
+                                            <td style="padding: 4px 6px; font-size: 9px; color: #475467;">
+                                                <t t-esc="elem['name']"/>
+                                            </td>
+                                            <t t-foreach="elem['supplier_statuses']" t-as="ss">
+                                                <td style="padding: 4px 6px; text-align: center;">
+                                                    <span t-attf-style="color: {{ ss['color'] }}; font-weight: 700; font-size: 14px;">
+                                                        <t t-esc="ss['abbrev']"/>
+                                                    </span>
+                                                </td>
+                                            </t>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+
+                            <!-- Symbol legend -->
+                            <div style="font-size: 9px; color: #98a2b3; margin-bottom: 6px; padding: 6px 0 0 0;">
+                                <span style="color: #28a745; font-weight: 700;">&#10003;</span>&#160;Ad&#233;quat
+                                <span style="margin-left: 10px; color: #fd7e14; font-weight: 700;">&#9680;</span>&#160;Partiel / D&#233;clar&#233;
+                                <span style="margin-left: 10px; color: #fd7e14; font-weight: 700;">?</span>&#160;&#192; valider
+                                <span style="margin-left: 10px; color: #dc3545; font-weight: 700;">&#10007;</span>&#160;Inad&#233;quat
+                                <span style="margin-left: 10px; color: #6c757d; font-weight: 700;">&#8230;</span>&#160;En attente
+                                <span style="margin-left: 10px; color: #d0d5dd; font-weight: 700;">&#8212;</span>&#160;N/A
+                            </div>
+                            <!-- Role legend -->
+                            <div style="font-size: 9px; color: #98a2b3; margin-bottom: 24px; padding: 0 0 6px 0;">
+                                R&#244;les &#8212;
+                                <span style="font-weight: 600; color: #667085;">X</span>&#160;Prestataire TI
+                                <span style="margin-left: 10px; font-weight: 600; color: #667085;">A</span>&#160;Application
+                                <span style="margin-left: 10px; font-weight: 600; color: #667085;">C</span>&#160;Cloud
+                                <span style="margin-left: 10px; font-weight: 600; color: #667085;">S</span>&#160;Sauvegarde
+                            </div>
+                        </t>
+
+                        <!-- ============ SECTION 5: POINTS DE VIGILANCE ============ -->
+                        <t t-set="s" t-value="s + 1"/>
+                        <div style="font-size: 13px; font-weight: 700; color: #0693e3; text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 10px;">
+                            <t t-esc="s"/>. Points de vigilance
+                        </div>
+
+                        <t t-if="not data['wp_high'] and not data['wp_medium'] and not data['wp_low']">
+                            <p style="color: #98a2b3; font-style: italic; font-size: 11px;">Aucun point de vigilance ouvert.</p>
+                        </t>
+
+                        <!-- High priority -->
+                        <t t-if="data['wp_high']">
+                            <div style="margin-bottom: 14px;">
+                                <div style="font-size: 11px; font-weight: 600; margin-bottom: 6px;">
+                                    <span style="display: inline-block; background: #fef3f2; color: #b42318; padding: 2px 8px; border-radius: 10px; font-size: 10px; font-weight: 600;">Haute</span>
+                                </div>
+                                <table class="audit-table" style="width: 100%; border-collapse: collapse; font-size: 11px;">
+                                    <t t-foreach="data['wp_high']" t-as="wp">
+                                        <tr>
+                                            <td class="audit-rag-border" style="padding: 6px 8px; border-left: 3px solid #f04438; width: 130px; color: #667085; font-size: 10px;">
+                                                <t t-if="wp.element_id">
+                                                    <t t-esc="wp.element_id.num"/>. <t t-esc="wp.element_id.name"/>
+                                                </t>
+                                                <t t-else="">&#8212;</t>
+                                            </td>
+                                            <td style="padding: 6px 8px; color: #344054;">
+                                                <t t-esc="wp.description"/>
+                                            </td>
+                                            <td style="padding: 6px 8px; width: 70px; text-align: center; font-size: 10px; color: #667085;">
+                                                <t t-if="wp.state == 'open'">Ouvert</t>
+                                                <t t-elif="wp.state == 'in_progress'">En cours</t>
+                                                <t t-else=""><t t-esc="wp.state"/></t>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </table>
+                            </div>
+                        </t>
+
+                        <!-- Medium priority -->
+                        <t t-if="data['wp_medium']">
+                            <div style="margin-bottom: 14px;">
+                                <div style="font-size: 11px; font-weight: 600; margin-bottom: 6px;">
+                                    <span style="display: inline-block; background: #fffaeb; color: #b54708; padding: 2px 8px; border-radius: 10px; font-size: 10px; font-weight: 600;">Moyenne</span>
+                                </div>
+                                <table class="audit-table" style="width: 100%; border-collapse: collapse; font-size: 11px;">
+                                    <t t-foreach="data['wp_medium']" t-as="wp">
+                                        <tr>
+                                            <td class="audit-rag-border" style="padding: 6px 8px; border-left: 3px solid #f79009; width: 130px; color: #667085; font-size: 10px;">
+                                                <t t-if="wp.element_id">
+                                                    <t t-esc="wp.element_id.num"/>. <t t-esc="wp.element_id.name"/>
+                                                </t>
+                                                <t t-else="">&#8212;</t>
+                                            </td>
+                                            <td style="padding: 6px 8px; color: #344054;">
+                                                <t t-esc="wp.description"/>
+                                            </td>
+                                            <td style="padding: 6px 8px; width: 70px; text-align: center; font-size: 10px; color: #667085;">
+                                                <t t-if="wp.state == 'open'">Ouvert</t>
+                                                <t t-elif="wp.state == 'in_progress'">En cours</t>
+                                                <t t-else=""><t t-esc="wp.state"/></t>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </table>
+                            </div>
+                        </t>
+
+                        <!-- Low priority -->
+                        <t t-if="data['wp_low']">
+                            <div style="margin-bottom: 14px;">
+                                <div style="font-size: 11px; font-weight: 600; margin-bottom: 6px;">
+                                    <span style="display: inline-block; background: #f2f4f7; color: #475467; padding: 2px 8px; border-radius: 10px; font-size: 10px; font-weight: 600;">Basse</span>
+                                </div>
+                                <table class="audit-table" style="width: 100%; border-collapse: collapse; font-size: 11px;">
+                                    <t t-foreach="data['wp_low']" t-as="wp">
+                                        <tr>
+                                            <td class="audit-rag-border" style="padding: 6px 8px; border-left: 3px solid #98a2b3; width: 130px; color: #667085; font-size: 10px;">
+                                                <t t-if="wp.element_id">
+                                                    <t t-esc="wp.element_id.num"/>. <t t-esc="wp.element_id.name"/>
+                                                </t>
+                                                <t t-else="">&#8212;</t>
+                                            </td>
+                                            <td style="padding: 6px 8px; color: #344054;">
+                                                <t t-esc="wp.description"/>
+                                            </td>
+                                            <td style="padding: 6px 8px; width: 70px; text-align: center; font-size: 10px; color: #667085;">
+                                                <t t-if="wp.state == 'open'">Ouvert</t>
+                                                <t t-elif="wp.state == 'in_progress'">En cours</t>
+                                                <t t-else=""><t t-esc="wp.state"/></t>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </table>
+                            </div>
+                        </t>
+
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+
+</odoo>

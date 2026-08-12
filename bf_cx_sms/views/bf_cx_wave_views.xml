@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_cx_wave_form" model="ir.ui.view">
+        <field name="name">bf.cx.wave.form.inherit.bf.cx.sms</field>
+        <field name="model">bf.cx.wave</field>
+        <field name="inherit_id" ref="bf_cx.view_cx_wave_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header/button[@name='action_close']" position="before">
+                <button name="action_send_sms_invites" type="object"
+                        string="Inviter par SMS"
+                        invisible="state not in ('draft', 'sent')"
+                        confirm="Envoyer par SMS le lien du sondage aux destinataires sans adresse courriel (maximum 5 SMS par clic) ?"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

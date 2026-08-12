@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="corporate_resolution_view_form_bf_sign" model="ir.ui.view">
+        <field name="name">corporate.resolution.form.bf.sign</field>
+        <field name="model">corporate.resolution</field>
+        <field name="inherit_id" ref="project_knowledge_matrix.corporate_resolution_view_form"/>
+        <field name="arch" type="xml">
+            <!-- The form has no button box yet — create one for the smart button. -->
+            <xpath expr="//div[hasclass('oe_title')]" position="before">
+                <div class="oe_button_box" name="button_box">
+                    <button name="action_view_sign_requests" type="object"
+                            class="oe_stat_button" icon="fa-pencil-square-o"
+                            groups="bf_sign.group_sign_user"
+                            invisible="sign_request_count == 0">
+                        <field name="sign_request_count" widget="statinfo" string="Signatures"/>
+                    </button>
+                </div>
+            </xpath>
+            <xpath expr="//header" position="inside">
+                <button name="action_send_for_signature" type="object"
+                        string="Envoyer pour signature"
+                        icon="fa-pencil-square-o"
+                        groups="bf_sign.group_sign_user"
+                        invisible="status in ('rejected', 'superseded')"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

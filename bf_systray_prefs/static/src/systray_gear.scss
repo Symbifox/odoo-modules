@@ -1,0 +1,21 @@
+.o_bf_systray_gear {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    padding: 0 10px;
+}
+
+.o_bf_systray_prefs_menu {
+    min-width: 220px;
+
+    .o_bf_systray_pref_row {
+        cursor: pointer;
+        white-space: nowrap;
+        user-select: none;
+
+        &:hover {
+            background: var(--gray-200, #f0f0f0);
+        }
+    }
+}

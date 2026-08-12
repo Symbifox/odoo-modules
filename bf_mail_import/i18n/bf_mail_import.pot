@@ -1,0 +1,190 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_mail_import
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260119\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-16 00:00+0000\n"
+"PO-Revision-Date: 2026-02-16 00:00+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: bf_mail_import
+#. odoo-python
+#: code:addons/bf_mail_import/wizard/mail_import_wizard.py:0
+msgid "%d courriel(s) importé(s)."
+msgstr ""
+
+#. module: bf_mail_import
+#. odoo-python
+#: code:addons/bf_mail_import/wizard/mail_import_wizard.py:0
+msgid "%d doublon(s) ignoré(s)."
+msgstr ""
+
+#. module: bf_mail_import
+#. odoo-javascript
+#: code:addons/bf_mail_import/static/src/xml/chatter_import_patch.xml:0
+msgid ".eml"
+msgstr ""
+
+#. module: bf_mail_import
+#: model:ir.model,name:bf_mail_import.model_bf_mail_import_wizard
+msgid "Assistant d'import de courriels .eml"
+msgstr ""
+
+#. module: bf_mail_import
+#. odoo-python
+#: code:addons/bf_mail_import/wizard/mail_import_wizard.py:0
+msgid "Aucun enregistrement cible défini."
+msgstr ""
+
+#. module: bf_mail_import
+#: model:ir.model.fields.selection,name:bf_mail_import.selection__bf_mail_import_wizard__state__draft
+msgid "Brouillon"
+msgstr ""
+
+#. module: bf_mail_import
+#: model:ir.model.fields,field_description:bf_mail_import.field_bf_mail_import_wizard__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: bf_mail_import
+#: model:ir.model.fields,field_description:bf_mail_import.field_bf_mail_import_wizard__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: bf_mail_import
+#: model:ir.model.fields,field_description:bf_mail_import.field_bf_mail_import_wizard__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: bf_mail_import
+#: model:ir.model.fields,field_description:bf_mail_import.field_bf_mail_import_wizard__record_display
+#: model_terms:ir.ui.view,arch_db:bf_mail_import.view_bf_mail_import_wizard_form
+msgid "Enregistrement cible"
+msgstr ""
+
+#. module: bf_mail_import
+#. odoo-python
+#: code:addons/bf_mail_import/wizard/mail_import_wizard.py:0
+msgid "Erreurs :"
+msgstr ""
+
+#. module: bf_mail_import
+#: model_terms:ir.ui.view,arch_db:bf_mail_import.view_bf_mail_import_wizard_form
+msgid "Fermer"
+msgstr ""
+
+#. module: bf_mail_import
+#: model:ir.model.fields,field_description:bf_mail_import.field_bf_mail_import_wizard__eml_files
+#: model_terms:ir.ui.view,arch_db:bf_mail_import.view_bf_mail_import_wizard_form
+msgid "Fichiers .eml"
+msgstr ""
+
+#. module: bf_mail_import
+#: model:ir.model.fields,field_description:bf_mail_import.field_bf_mail_import_wizard__id
+msgid "ID"
+msgstr ""
+
+#. module: bf_mail_import
+#: model:ir.model.fields,field_description:bf_mail_import.field_bf_mail_import_wizard__res_id
+msgid "ID enregistrement"
+msgstr ""
+
+#. module: bf_mail_import
+#: model_terms:ir.ui.view,arch_db:bf_mail_import.view_bf_mail_import_wizard_form
+msgid "Importer"
+msgstr ""
+
+#. module: bf_mail_import
+#: model:ir.ui.menu,name:bf_mail_import.menu_bf_mail_import
+msgid "Importer .eml"
+msgstr ""
+
+#. module: bf_mail_import
+#: model:ir.actions.act_window,name:bf_mail_import.action_bf_mail_import_wizard
+#: model_terms:ir.ui.view,arch_db:bf_mail_import.view_bf_mail_import_wizard_form
+msgid "Importer des courriels (.eml)"
+msgstr ""
+
+#. module: bf_mail_import
+#. odoo-javascript
+#: code:addons/bf_mail_import/static/src/xml/chatter_import_patch.xml:0
+msgid "Importer un courriel .eml"
+msgstr ""
+
+#. module: bf_mail_import
+#. odoo-python
+#: code:addons/bf_mail_import/wizard/mail_import_wizard.py:0
+msgid "L'enregistrement cible a été supprimé."
+msgstr ""
+
+#. module: bf_mail_import
+#: model:ir.model.fields,field_description:bf_mail_import.field_bf_mail_import_wizard__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: bf_mail_import
+#: model:ir.model.fields,field_description:bf_mail_import.field_bf_mail_import_wizard__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: bf_mail_import
+#. odoo-python
+#: code:addons/bf_mail_import/wizard/mail_import_wizard.py:0
+msgid "Le modèle '%s' n'existe pas."
+msgstr ""
+
+#. module: bf_mail_import
+#. odoo-python
+#: code:addons/bf_mail_import/wizard/mail_import_wizard.py:0
+msgid "Le modèle '%s' ne supporte pas le chatter (mail.thread)."
+msgstr ""
+
+#. module: bf_mail_import
+#: model:ir.model.fields,field_description:bf_mail_import.field_bf_mail_import_wizard__res_model
+msgid "Modèle"
+msgstr ""
+
+#. module: bf_mail_import
+#: model:ir.model.fields,field_description:bf_mail_import.field_bf_mail_import_wizard__file_count
+msgid "Nombre de fichiers"
+msgstr ""
+
+#. module: bf_mail_import
+#: model_terms:ir.ui.view,arch_db:bf_mail_import.view_bf_mail_import_wizard_form
+msgid "Nouvel import"
+msgstr ""
+
+#. module: bf_mail_import
+#: model:ir.model.fields,field_description:bf_mail_import.field_bf_mail_import_wizard__import_result
+#: model_terms:ir.ui.view,arch_db:bf_mail_import.view_bf_mail_import_wizard_form
+msgid "Résultat"
+msgstr ""
+
+#. module: bf_mail_import
+#: model:ir.model.fields,field_description:bf_mail_import.field_bf_mail_import_wizard__state
+msgid "State"
+msgstr ""
+
+#. module: bf_mail_import
+#: model:ir.model.fields,help:bf_mail_import.field_bf_mail_import_wizard__eml_files
+msgid "Sélectionnez un ou plusieurs fichiers .eml à importer."
+msgstr ""
+
+#. module: bf_mail_import
+#: model:ir.model.fields.selection,name:bf_mail_import.selection__bf_mail_import_wizard__state__done
+msgid "Terminé"
+msgstr ""
+
+#. module: bf_mail_import
+#. odoo-python
+#: code:addons/bf_mail_import/wizard/mail_import_wizard.py:0
+msgid "Veuillez sélectionner au moins un fichier .eml."
+msgstr ""

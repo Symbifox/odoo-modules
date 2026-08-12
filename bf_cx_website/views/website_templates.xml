@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="temoignages_page" name="Témoignages clients">
+        <t t-call="website.layout">
+            <!-- Bilingual labels: condition on the rendering context variable
+                 `lang` (the one driving <html t-att-lang>), never on arch_db
+                 field translation (jsonb bleed between languages) and never
+                 on request.lang.code (follows Accept-Language, can be wrong). -->
+            <t t-set="bf_cx_en" t-value="(lang or '').startswith('en')"/>
+            <div id="wrap" class="oe_structure">
+                <section class="container my-5">
+                    <div class="row justify-content-center">
+                        <div class="col-lg-8 text-center">
+                            <h1 class="mb-3">
+                                <t t-if="bf_cx_en">Testimonials</t>
+                                <t t-else="">Témoignages</t>
+                            </h1>
+                            <p class="text-muted mb-5">
+                                <t t-if="bf_cx_en">What our clients say about their experience.</t>
+                                <t t-else="">Ce que nos clients disent de leur expérience.</t>
+                            </p>
+                        </div>
+                    </div>
+                    <t t-if="cards">
+                        <div class="row">
+                            <t t-foreach="cards" t-as="card">
+                                <div class="col-md-6 col-lg-4 mb-4 d-flex">
+                                    <div class="card shadow-sm w-100 border-0" style="background-color: #F8FAFC;">
+                                        <div class="card-body d-flex flex-column p-4">
+                                            <blockquote class="mb-4" style="font-size: 1.1rem; font-style: italic; line-height: 1.6;">
+                                                «&#160;<t t-esc="card['quote']"/>&#160;»
+                                            </blockquote>
+                                            <div class="mt-auto">
+                                                <div class="fw-bold" t-esc="card['author']"/>
+                                                <div t-if="card['company']" class="text-muted small" t-esc="card['company']"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </t>
+                        </div>
+                    </t>
+                    <t t-else="">
+                        <div class="row justify-content-center">
+                            <div class="col-lg-6 text-center text-muted">
+                                <p>
+                                    <t t-if="bf_cx_en">No testimonials published yet.</t>
+                                    <t t-else="">Aucun témoignage publié pour le moment.</t>
+                                </p>
+                            </div>
+                        </div>
+                    </t>
+                </section>
+            </div>
+        </t>
+    </template>
+
+</odoo>

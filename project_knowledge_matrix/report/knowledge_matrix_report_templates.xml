@@ -1,0 +1,392 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="report_knowledge_matrix">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-set="data" t-value="doc._get_report_data()"/>
+                <div class="article" style="padding: 0 !important; margin: 0 !important;">
+                    <link rel="stylesheet" href="/bf_lexend/static/src/scss/lexend_report.css"/>
+                    <style>
+                        .container, .o_body_html, body, #wrapwrap, main, .article {
+                            max-width: 100% !important;
+                            width: 100% !important;
+                            padding-left: 0 !important;
+                            padding-right: 0 !important;
+                            margin-left: 0 !important;
+                            margin-right: 0 !important;
+                        }
+
+                        .km-page {
+                            font-family: "Lexend", system-ui, -apple-system, sans-serif;
+                            font-size: 9pt;
+                            line-height: 1.4;
+                            color: <t t-esc="(env.company and env.company.report_brand_dark) or '#212529'"/>;
+                        }
+
+                        /* &#9472;&#9472; Top Banner &#9472;&#9472; */
+                        .km-banner {
+                            background: <t t-esc="(env.company and env.company.report_brand_dark) or '#212529'"/>;
+                            padding: 18pt 24pt 16pt 24pt;
+                            display: table;
+                            width: 100%;
+                        }
+                        .km-banner .banner-logo {
+                            display: table-cell;
+                            vertical-align: middle;
+                            width: 90px;
+                            padding-right: 18pt;
+                        }
+                        .km-banner .banner-logo img {
+                            max-height: 50px;
+                            max-width: 80px;
+                        }
+                        .km-banner .banner-content {
+                            display: table-cell;
+                            vertical-align: middle;
+                        }
+                        .km-banner .doc-type {
+                            font-size: 8pt;
+                            font-weight: 600;
+                            text-transform: uppercase;
+                            letter-spacing: 2pt;
+                            color: <t t-esc="(env.company and env.company.report_brand_primary) or '#714B67'"/>;
+                            margin: 0 0 3pt 0;
+                        }
+                        .km-banner h1 {
+                            font-size: 16pt;
+                            font-weight: 600;
+                            color: #ffffff;
+                            margin: 0 0 2pt 0;
+                            line-height: 1.25;
+                        }
+                        .km-banner .doc-subtitle {
+                            font-size: 10pt;
+                            color: rgba(255,255,255,0.7);
+                            margin: 0;
+                        }
+                        .km-accent-bar {
+                            height: 3px;
+                            background: <t t-esc="(env.company and env.company.report_brand_primary) or '#714B67'"/>;
+                            margin: 0;
+                            width: 100%;
+                        }
+
+                        /* &#9472;&#9472; Metadata bar &#9472;&#9472; */
+                        .km-meta {
+                            display: table;
+                            width: 100%;
+                            background: #f8f9fb;
+                            padding: 10pt 24pt;
+                            border-bottom: 1px solid #eaedf0;
+                        }
+                        .km-meta-item {
+                            display: table-cell;
+                            vertical-align: middle;
+                        }
+                        .km-meta-item.right {
+                            text-align: right;
+                        }
+                        .km-meta-label {
+                            font-size: 8pt;
+                            color: #888;
+                            text-transform: uppercase;
+                            letter-spacing: 0.5pt;
+                        }
+                        .km-meta-value {
+                            font-size: 11pt;
+                            font-weight: 600;
+                            color: <t t-esc="(env.company and env.company.report_brand_dark) or '#212529'"/>;
+                        }
+
+                        /* &#9472;&#9472; KPI Cards &#9472;&#9472; */
+                        .km-kpi-grid {
+                            display: table;
+                            width: 100%;
+                            padding: 12pt 24pt 8pt 24pt;
+                            table-layout: fixed;
+                        }
+                        .km-kpi-card {
+                            display: table-cell;
+                            text-align: center;
+                            padding: 10pt 8pt;
+                            border: 1px solid #eaedf0;
+                            border-radius: 4px;
+                            background: #fff;
+                        }
+                        .km-kpi-card + .km-kpi-card {
+                            border-left: none;
+                        }
+                        .km-kpi-number {
+                            font-size: 18pt;
+                            font-weight: 700;
+                            line-height: 1.2;
+                        }
+                        .km-kpi-label {
+                            font-size: 7.5pt;
+                            color: #888;
+                            text-transform: uppercase;
+                            letter-spacing: 0.5pt;
+                            margin-top: 2pt;
+                        }
+                        .km-kpi-total { color: <t t-esc="(env.company and env.company.report_brand_dark) or '#212529'"/>; }
+                        .km-kpi-done { color: #27ae60; }
+                        .km-kpi-progress { color: <t t-esc="(env.company and env.company.report_brand_primary) or '#714B67'"/>; }
+                        .km-kpi-overdue { color: #e74c3c; }
+
+                        /* &#9472;&#9472; Progress bar &#9472;&#9472; */
+                        .km-progress-wrap {
+                            padding: 0 24pt 12pt 24pt;
+                        }
+                        .km-progress-bar-bg {
+                            width: 100%;
+                            height: 6px;
+                            background: #eaedf0;
+                            border-radius: 3px;
+                            overflow: hidden;
+                        }
+                        .km-progress-bar-fill {
+                            height: 100%;
+                            background: <t t-esc="(env.company and env.company.report_brand_primary) or '#714B67'"/>;
+                            border-radius: 3px;
+                        }
+
+                        /* &#9472;&#9472; Section titles &#9472;&#9472; */
+                        .km-content {
+                            padding: 0 24pt 12pt 24pt;
+                        }
+                        .km-section-title {
+                            font-size: 11pt;
+                            font-weight: 600;
+                            color: <t t-esc="(env.company and env.company.report_brand_dark) or '#212529'"/>;
+                            margin: 16pt 0 8pt 0;
+                            padding-bottom: 4pt;
+                            border-bottom: 2px solid <t t-esc="(env.company and env.company.report_brand_primary) or '#714B67'"/>;
+                            display: inline-block;
+                        }
+
+                        /* &#9472;&#9472; Data table &#9472;&#9472; */
+                        .km-table {
+                            width: 100%;
+                            border-collapse: collapse;
+                            font-size: 8pt;
+                            margin-bottom: 6pt;
+                        }
+                        .km-table th {
+                            background: <t t-esc="(env.company and env.company.report_brand_dark) or '#212529'"/>;
+                            color: #fff;
+                            padding: 5pt 6pt;
+                            text-align: left;
+                            font-weight: 600;
+                            font-size: 7.5pt;
+                        }
+                        .km-table td {
+                            padding: 4pt 6pt;
+                            border-bottom: 1px solid #eaedf0;
+                            vertical-align: middle;
+                        }
+                        .km-table tr:nth-child(even) td {
+                            background: #f8f9fb;
+                        }
+
+                        /* &#9472;&#9472; Status badges &#9472;&#9472; */
+                        .km-badge {
+                            display: inline-block;
+                            padding: 1pt 6pt;
+                            border-radius: 3px;
+                            font-size: 7pt;
+                            font-weight: 600;
+                            color: #fff;
+                            white-space: nowrap;
+                        }
+                        .km-badge-done { background: #27ae60; }
+                        .km-badge-accepted { background: #27ae60; }
+                        .km-badge-in_progress { background: <t t-esc="(env.company and env.company.report_brand_primary) or '#714B67'"/>; }
+                        .km-badge-pending { background: #888; }
+                        .km-badge-proposed { background: #f39c12; }
+                        .km-badge-rejected { background: #95a5a6; }
+                        .km-badge-superseded { background: #95a5a6; }
+                        .km-badge-overdue { background: #e74c3c; }
+
+                        /* &#9472;&#9472; Priority badges &#9472;&#9472; */
+                        .km-prio {
+                            display: inline-block;
+                            padding: 1pt 5pt;
+                            border-radius: 3px;
+                            font-size: 7pt;
+                            font-weight: 600;
+                            color: #fff;
+                            white-space: nowrap;
+                        }
+                        .km-prio-3 { background: #e74c3c; }
+                        .km-prio-2 { background: #e67e22; }
+
+                        /* &#9472;&#9472; Footer &#9472;&#9472; */
+                        .km-footer {
+                            padding: 8pt 24pt 0 24pt;
+                            border-top: 1px solid #dde0e4;
+                            display: table;
+                            width: 100%;
+                            font-size: 8pt;
+                            color: #aaa;
+                            margin-top: 16pt;
+                        }
+                        .km-footer-left {
+                            display: table-cell;
+                            text-align: left;
+                        }
+                        .km-footer-right {
+                            display: table-cell;
+                            text-align: right;
+                        }
+                    </style>
+
+                    <div class="km-page">
+
+                        <!-- Dark banner header -->
+                        <div class="km-banner">
+                            <div class="banner-logo">
+                                <img t-att-src="image_data_uri(doc.company_id.logo)" alt="Logo"/>
+                            </div>
+                            <div class="banner-content">
+                                <div class="doc-type">Rapport</div>
+                                <h1>Matrice de connaissances</h1>
+                                <div class="doc-subtitle">
+                                    <t t-if="doc.project_id">
+                                        Projet : <t t-out="doc.project_id.name"/>
+                                    </t>
+                                    <t t-else="">
+                                        <t t-out="doc.name"/>
+                                    </t>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="km-accent-bar"/>
+
+                        <!-- Metadata bar -->
+                        <div class="km-meta">
+                            <div class="km-meta-item">
+                                <div class="km-meta-label">Date du rapport</div>
+                                <div class="km-meta-value">
+                                    <t t-out="data['today']"/>
+                                </div>
+                            </div>
+                            <div class="km-meta-item right">
+                                <div class="km-meta-label">Progression</div>
+                                <div class="km-meta-value">
+                                    <t t-out="'%.0f' % data['progress']"/>%
+                                    (<t t-out="data['done']"/>/<t t-out="data['total']"/>)
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- KPI cards -->
+                        <div class="km-kpi-grid">
+                            <div class="km-kpi-card">
+                                <div class="km-kpi-number km-kpi-total"><t t-out="data['total']"/></div>
+                                <div class="km-kpi-label">Total</div>
+                            </div>
+                            <div class="km-kpi-card">
+                                <div class="km-kpi-number km-kpi-done"><t t-out="data['done']"/></div>
+                                <div class="km-kpi-label">Compl&#233;t&#233;s</div>
+                            </div>
+                            <div class="km-kpi-card">
+                                <div class="km-kpi-number km-kpi-progress"><t t-out="data['in_progress']"/></div>
+                                <div class="km-kpi-label">En cours</div>
+                            </div>
+                            <div class="km-kpi-card">
+                                <div class="km-kpi-number km-kpi-overdue"><t t-out="data['overdue']"/></div>
+                                <div class="km-kpi-label">En retard</div>
+                            </div>
+                        </div>
+
+                        <!-- Progress bar -->
+                        <div class="km-progress-wrap">
+                            <div class="km-progress-bar-bg">
+                                <div class="km-progress-bar-fill" t-attf-style="width: {{ '%.0f' % data['progress'] }}%;"/>
+                            </div>
+                        </div>
+
+                        <!-- Sections with items -->
+                        <div class="km-content">
+                            <t t-foreach="data['sections']" t-as="sec">
+                                <div class="km-section-title">
+                                    [<t t-out="sec['section'].code"/>] <t t-out="sec['section'].name"/>
+                                    <span style="font-weight: 400; font-size: 9pt; color: #888; margin-left: 6pt;">
+                                        (<t t-out="len(sec['items'])"/> &#233;l&#233;ments)
+                                    </span>
+                                </div>
+                                <table class="km-table">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 7%;">ID</th>
+                                            <th style="width: 35%;">&#201;l&#233;ment</th>
+                                            <th style="width: 13%;">Statut</th>
+                                            <th style="width: 11%;">Priorit&#233;</th>
+                                            <th style="width: 14%;">&#201;ch&#233;ance</th>
+                                            <th style="width: 20%;">Assign&#233;</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-foreach="sec['items']" t-as="item">
+                                            <tr>
+                                                <td><t t-out="item.decision_id"/></td>
+                                                <td><t t-out="item.name"/></td>
+                                                <td>
+                                                    <t t-if="item.is_overdue">
+                                                        <span class="km-badge km-badge-overdue">En retard</span>
+                                                    </t>
+                                                    <t t-else="">
+                                                        <span t-attf-class="km-badge km-badge-{{ item.state }}">
+                                                            <t t-if="item.state == 'done'">Compl&#233;t&#233;</t>
+                                                            <t t-elif="item.state == 'accepted'">Accept&#233;</t>
+                                                            <t t-elif="item.state == 'in_progress'">En cours</t>
+                                                            <t t-elif="item.state == 'pending'">En attente</t>
+                                                            <t t-elif="item.state == 'proposed'">Propos&#233;</t>
+                                                            <t t-elif="item.state == 'rejected'">Rejet&#233;</t>
+                                                            <t t-elif="item.state == 'superseded'">Remplac&#233;</t>
+                                                        </span>
+                                                    </t>
+                                                </td>
+                                                <td>
+                                                    <t t-if="item.priority == '3'">
+                                                        <span class="km-prio km-prio-3">Urgent</span>
+                                                    </t>
+                                                    <t t-elif="item.priority == '2'">
+                                                        <span class="km-prio km-prio-2">&#201;lev&#233;</span>
+                                                    </t>
+                                                </td>
+                                                <td>
+                                                    <t t-if="item.deadline">
+                                                        <t t-out="str(item.deadline)"/>
+                                                    </t>
+                                                </td>
+                                                <td>
+                                                    <t t-if="item.assigned_user_id">
+                                                        <t t-out="item.assigned_user_id.name"/>
+                                                    </t>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </t>
+                        </div>
+
+                        <!-- Footer -->
+                        <div class="km-footer">
+                            <div class="km-footer-left">
+                                <t t-out="doc.company_id.name"/>
+                            </div>
+                            <div class="km-footer-right">
+                                Matrice de connaissances &#8212; Document confidentiel
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+
+</odoo>

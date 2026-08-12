@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!--
+        Inject :root CSS variables for the current company's brand colors
+        into every backend page. SCSS in this module reads them via the
+        var() syntax so re-coloring the UI is a settings change, not an
+        asset recompile.
+
+        Companion entries live in website_brand_css_variables.xml for the
+        portal/website layouts.
+    -->
+    <template id="brand_css_variables_backend"
+              inherit_id="web.layout"
+              name="Brand CSS variables (backend)">
+        <xpath expr="//head" position="inside">
+            <t t-set="_brand_co" t-value="request and request.env and request.env.company"/>
+            <t t-if="_brand_co">
+                <style>
+                    :root {
+                        <t t-if="_brand_co.report_brand_primary">--brand-primary: <t t-out="_brand_co.report_brand_primary"/>;</t>
+                        <t t-if="_brand_co.report_brand_dark">--brand-dark: <t t-out="_brand_co.report_brand_dark"/>;</t>
+                    }
+                </style>
+            </t>
+        </xpath>
+    </template>
+
+</odoo>

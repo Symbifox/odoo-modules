@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="view_bf_outreach_log_wizard_form" model="ir.ui.view">
+        <field name="name">bf.outreach.log.wizard.form</field>
+        <field name="model">bf.outreach.log.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Journaliser un contact">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="kind" widget="radio" options="{'horizontal': True}"/>
+                            <field name="direction" widget="radio" options="{'horizontal': True}"/>
+                            <field name="outcome"/>
+                            <field name="duration" invisible="kind not in ('call', 'meeting')"/>
+                        </group>
+                        <group>
+                            <field name="date"/>
+                            <field name="stage_id" options="{'no_create': True}"/>
+                            <field name="closed_reason"/>
+                            <field name="snooze_days"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="summary" placeholder="Ce qui s'est dit, en une ligne"/>
+                    </group>
+                    <field name="note" placeholder="Détails de l'échange…"/>
+                    <group>
+                        <field name="target_ids" widget="many2many_tags"
+                               options="{'no_create': True}"
+                               string="Cibles concernées"/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button name="action_log" type="object" string="Journaliser" class="btn-primary"/>
+                    <button special="cancel" string="Annuler" class="btn-secondary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>

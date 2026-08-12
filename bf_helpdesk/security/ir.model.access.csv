@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_helpdesk_macro_user,helpdesk.macro user,model_helpdesk_macro,helpdesk_mgmt.group_helpdesk_user_team,1,0,0,0
+access_helpdesk_macro_manager,helpdesk.macro manager,model_helpdesk_macro,helpdesk_mgmt.group_helpdesk_manager,1,1,1,1
+access_auto_tag_rule_user,helpdesk.auto.tag.rule user,model_helpdesk_auto_tag_rule,helpdesk_mgmt.group_helpdesk_user_team,1,0,0,0
+access_auto_tag_rule_manager,helpdesk.auto.tag.rule manager,model_helpdesk_auto_tag_rule,helpdesk_mgmt.group_helpdesk_manager,1,1,1,1

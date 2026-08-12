@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo noupdate="1">
+
+    <record id="bf_onb_step_settings" model="onboarding.onboarding.step">
+        <field name="title">Configurer le module courriels</field>
+        <field name="description">Réglez les options de calendrier, d'analyse de réponses et de purge automatique.</field>
+        <field name="button_text">Ouvrir Paramètres</field>
+        <field name="done_text">Paramètres revus</field>
+        <field name="panel_step_open_action_name">bf_open_res_config_settings</field>
+        <field name="sequence">1</field>
+    </record>
+
+    <record id="bf_onb_step_accounts" model="onboarding.onboarding.step">
+        <field name="title">Ajouter vos comptes IMAP</field>
+        <field name="description">[action:bf_email_management.bf_email_account_action] Connectez les boîtes courriel à surveiller (un compte par identité).</field>
+        <field name="button_text">Voir les comptes</field>
+        <field name="done_text">Comptes connectés</field>
+        <field name="panel_step_open_action_name">bf_open_action</field>
+        <field name="sequence">2</field>
+    </record>
+
+    <record id="bf_onb_step_rules" model="onboarding.onboarding.step">
+        <field name="title">Définir les règles de tri</field>
+        <field name="description">[action:bf_email_management.action_bf_email_rule] Routez les courriels entrants vers les bons projets et activités.</field>
+        <field name="button_text">Voir les règles</field>
+        <field name="done_text">Tri automatisé</field>
+        <field name="panel_step_open_action_name">bf_open_action</field>
+        <field name="sequence">3</field>
+    </record>
+
+    <record id="bf_onb_step_inbox" model="onboarding.onboarding.step">
+        <field name="title">Inspecter la boîte BF</field>
+        <field name="description">[action:bf_email_management.bf_email_action] Validez que les courriels arrivent et sont classifiés correctement.</field>
+        <field name="button_text">Ouvrir la boîte</field>
+        <field name="done_text">Flux validé</field>
+        <field name="panel_step_open_action_name">bf_open_action</field>
+        <field name="sequence">4</field>
+    </record>
+
+    <record id="bf_onboarding_panel" model="onboarding.onboarding">
+        <field name="name">Blue Fox — Gestion des courriels</field>
+        <field name="route_name">bf_email_management_onboarding</field>
+        <field name="panel_close_action_name">action_close_panel_bf_email_management</field>
+        <field name="step_ids" eval="[
+            Command.link(ref('bf_email_management.bf_onb_step_settings')),
+            Command.link(ref('bf_email_management.bf_onb_step_accounts')),
+            Command.link(ref('bf_email_management.bf_onb_step_rules')),
+            Command.link(ref('bf_email_management.bf_onb_step_inbox')),
+        ]"/>
+    </record>
+
+</odoo>

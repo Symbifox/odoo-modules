@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Seed a disabled default Anthropic provider. The admin enables it and
+             sets the API key in Settings › Technical › LLM Providers.
+             noupdate=1 so admin edits are preserved across upgrades. -->
+        <record id="provider_default_anthropic" model="bf.llm.provider">
+            <field name="name">Default (Anthropic)</field>
+            <field name="provider">anthropic</field>
+            <field name="model">claude-opus-4-8</field>
+            <field name="is_default" eval="True"/>
+            <field name="enabled" eval="False"/>
+        </record>
+    </data>
+</odoo>

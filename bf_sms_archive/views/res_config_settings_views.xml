@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="res_config_settings_view_form" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.bf_sms_archive</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app data-string="SMS &amp; Calls"
+                     string="SMS &amp; Calls"
+                     name="bf_sms_archive"
+                     data-key="bf_sms_archive"
+                     groups="bf_sms_archive.group_sms_manager">
+                    <block title="VOIP.ms — Messagerie live" id="bf_sms_voipms_block">
+                        <setting id="bf_sms_voipms_enabled_setting"
+                                 string="Activer la messagerie VOIP.ms"
+                                 help="Autorise l'envoi/réception SMS et MMS via l'API VOIP.ms.">
+                            <field name="bf_sms_voipms_enabled"/>
+                        </setting>
+                        <setting id="bf_sms_voipms_creds_setting"
+                                 string="Identifiants API VOIP.ms"
+                                 help="Compte API VOIP.ms (voip.ms ▸ Main Menu ▸ SOAP/REST API).">
+                            <div class="content-group">
+                                <div class="row mt8">
+                                    <label string="Utilisateur API" for="bf_sms_voipms_api_username"
+                                           class="col-lg-4 o_light_label"/>
+                                    <field name="bf_sms_voipms_api_username"/>
+                                </div>
+                                <div class="row mt8">
+                                    <label string="Mot de passe API" for="bf_sms_voipms_api_password"
+                                           class="col-lg-4 o_light_label"/>
+                                    <field name="bf_sms_voipms_api_password" password="True"/>
+                                </div>
+                                <div class="row mt8">
+                                    <label string="URL publique (webhook)" for="bf_sms_public_base_url"
+                                           class="col-lg-4 o_light_label"/>
+                                    <field name="bf_sms_public_base_url"
+                                           placeholder="https://odoo.exemple.com"/>
+                                </div>
+                                <div class="row mt8">
+                                    <label string="Fuseau du compte VOIP.ms" for="bf_sms_voipms_tz"
+                                           class="col-lg-4 o_light_label"/>
+                                    <field name="bf_sms_voipms_tz"
+                                           placeholder="America/New_York"/>
+                                </div>
+                            </div>
+                        </setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="bf_sms_config_settings_action" model="ir.actions.act_window">
+        <field name="name">Paramètres SMS</field>
+        <field name="res_model">res.config.settings</field>
+        <field name="view_mode">form</field>
+        <field name="target">inline</field>
+        <field name="context">{'module': 'bf_sms_archive'}</field>
+    </record>
+
+    <menuitem
+        id="sms_archive_menu_settings"
+        name="Paramètres SMS"
+        parent="sms_archive_menu_configuration"
+        action="bf_sms_config_settings_action"
+        sequence="1"
+        groups="bf_sms_archive.group_sms_manager"/>
+
+</odoo>
