@@ -15,7 +15,7 @@
         Single-company users are unaffected (the seed is a no-op when
         allowed_companies has one entry).
     """,
-    "author": "Blue Fox Inc.",
+    "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://bluefoxconsultant.com",
     'license': 'LGPL-3',
     "depends": ["web"],

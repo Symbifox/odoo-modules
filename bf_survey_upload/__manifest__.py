@@ -10,7 +10,7 @@ Les fichiers sont stockés comme pièces jointes (ir.attachment) liées à la
 réponse au sondage. Option pour copier automatiquement les pièces jointes
 sur le projet du répondant à la complétion du sondage.
 """,
-    'author': 'Blue Fox Inc.',
+    'author': 'Les services de consultation Blue Fox, Inc.',
     "website": "https://bluefoxconsultant.com",
     'license': 'LGPL-3',
     "depends": ["survey", "project", "bf_onboarding_base"],

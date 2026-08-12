@@ -2,7 +2,7 @@
 <odoo>
     <!-- Users can only see their own sessions -->
     <record id="rule_claude_session_user" model="ir.rule">
-        <field name="name">Claude Chat: own sessions only</field>
+        <field name="name">GenFox: own sessions only</field>
         <field name="model_id" ref="model_claude_chat_session"/>
         <field name="domain_force">[('user_id', '=', user.id)]</field>
         <field name="groups" eval="[(4, ref('base.group_user'))]"/>
@@ -14,7 +14,7 @@
 
     <!-- Users can only see messages in their own sessions -->
     <record id="rule_claude_message_user" model="ir.rule">
-        <field name="name">Claude Chat: own messages only</field>
+        <field name="name">GenFox: own messages only</field>
         <field name="model_id" ref="model_claude_chat_message"/>
         <field name="domain_force">[('session_id.user_id', '=', user.id)]</field>
         <field name="groups" eval="[(4, ref('base.group_user'))]"/>
@@ -26,14 +26,14 @@
 
     <!-- Admins can see all sessions -->
     <record id="rule_claude_session_admin" model="ir.rule">
-        <field name="name">Claude Chat: admin sees all sessions</field>
+        <field name="name">GenFox: admin sees all sessions</field>
         <field name="model_id" ref="model_claude_chat_session"/>
         <field name="domain_force">[(1, '=', 1)]</field>
         <field name="groups" eval="[(4, ref('base.group_system'))]"/>
     </record>
 
     <record id="rule_claude_message_admin" model="ir.rule">
-        <field name="name">Claude Chat: admin sees all messages</field>
+        <field name="name">GenFox: admin sees all messages</field>
         <field name="model_id" ref="model_claude_chat_message"/>
         <field name="domain_force">[(1, '=', 1)]</field>
         <field name="groups" eval="[(4, ref('base.group_system'))]"/>

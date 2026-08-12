@@ -19,7 +19,7 @@ modifié — la promotion est purement déclarative.
 S'auto-installe quand ``bf_meeting`` et ``bf_sms_archive`` sont tous deux
 installés.
     """,
-    'author': 'Blue Fox Inc.',
+    'author': 'Les services de consultation Blue Fox, Inc.',
     'website': 'https://bluefoxconsultant.com',
     'license': 'LGPL-3',
     'depends': ['bf_meeting', 'bf_sms_archive'],

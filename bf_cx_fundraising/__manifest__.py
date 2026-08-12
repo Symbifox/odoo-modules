@@ -3,7 +3,7 @@
     "summary": "Sondage d'expérience donateur après la confirmation d'un don",
     "version": "18.0.1.0.1",
     "category": "Marketing/Customer Experience",
-    "author": "Blue Fox Inc.",
+    "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://bluefoxconsultant.com",
     "license": "AGPL-3",
     "application": False,

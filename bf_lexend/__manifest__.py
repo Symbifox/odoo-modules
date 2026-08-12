@@ -14,7 +14,7 @@
     "version": "18.0.3.0.0",
     "category": "Theme/Backend",
     "license": "LGPL-3",
-    "author": "Blue Fox Inc.",
+    "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://bluefoxconsultant.com",
     "depends": ["web"],
     "data": [],

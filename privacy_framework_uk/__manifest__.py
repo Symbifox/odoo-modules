@@ -13,7 +13,7 @@ Pack de données pour le module ``privacy_consent`` (Vie privée). Ajoute le cad
 d'incident (72 h) et citations statutaires. Variante britannique du GDPR
 post-Brexit.
     """,
-    "author": "Blue Fox Inc.",
+    "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://bluefoxconsultant.com",
     "license": 'Other proprietary',
     "depends": ["privacy_consent"],

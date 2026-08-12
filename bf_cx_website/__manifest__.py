@@ -3,7 +3,7 @@
     "summary": "Page publique /temoignages rendue dynamiquement depuis les témoignages publiés",
     "version": "18.0.1.1.0",
     "category": "Marketing/Customer Experience",
-    "author": "Blue Fox Inc.",
+    "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://bluefoxconsultant.com",
     "license": "LGPL-3",
     "application": False,

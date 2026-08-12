@@ -4,7 +4,7 @@
     "version": "18.0.1.0.0",
     "category": "Productivity",
     "license": "LGPL-3",
-    "author": "Blue Fox Inc.",
+    "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://bluefoxconsultant.com",
     "depends": [
         "bf_email_management",

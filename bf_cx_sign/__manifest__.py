@@ -4,7 +4,7 @@
     "version": "18.0.1.1.0",
     "post_init_hook": "post_init_hook",
     "category": "Marketing/Customer Experience",
-    "author": "Blue Fox Inc.",
+    "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://bluefoxconsultant.com",
     "license": "LGPL-3",
     "application": False,

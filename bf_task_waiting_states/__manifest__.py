@@ -3,7 +3,7 @@
     "version": "18.0.1.0.0",
     "category": "Project",
     "summary": "Add Attente - Client / Attente - Externe task states",
-    "author": "Blue Fox Inc.",
+    "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://bluefoxconsultant.com",
     "depends": ["project"],
     "data": [],

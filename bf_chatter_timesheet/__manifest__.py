@@ -3,7 +3,7 @@
     "summary": "Case à cocher dans le composer du chatter pour journaliser une feuille de temps en même temps qu'une note interne (tâches + tickets helpdesk).",
     "version": "18.0.1.2.0",
     "category": "Services/Timesheets",
-    "author": "Blue Fox Inc.",
+    "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://bluefoxconsultant.com",
     'license': 'LGPL-3',
     "depends": [

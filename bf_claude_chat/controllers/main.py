@@ -159,7 +159,7 @@ _DEFAULT_TIMEOUT = 660
 
 
 def _get_settings():
-    """Read Claude settings from ir.config_parameter."""
+    """Read GenFox settings from ir.config_parameter."""
     ICP = request.env["ir.config_parameter"].sudo()
     # Decrypt API key via the settings model helper
     encrypted_key = ICP.get_param("bf_claude_chat.api_key_encrypted", "")
@@ -337,11 +337,11 @@ class ClaudeChatController(http.Controller):
 
     @http.route("/claude-chat/send", type="json", auth="user", methods=["POST"])
     def send_message(self, session_id=None, message="", context=None):
-        """Send a message to Claude via the bridge service."""
+        """Send a message to GenFox via the bridge service."""
         settings = _get_settings()
 
         if not settings["enabled"]:
-            return {"error": "Claude AI is disabled. An administrator can enable it in Settings."}
+            return {"error": "GenFox is disabled. An administrator can enable it in Settings."}
 
         if not message.strip():
             return {"error": "Empty message"}
@@ -417,10 +417,10 @@ class ClaudeChatController(http.Controller):
             )
         except socket.timeout:
             _logger.error("Bridge service timed out")
-            return {"error": "Claude is taking too long to respond. Please try again."}
+            return {"error": "GenFox is taking too long to respond. Please try again."}
         except (ConnectionRefusedError, FileNotFoundError):
             _logger.error("Bridge service unreachable at %s", settings["socket"])
-            return {"error": "Claude service is unavailable. Please contact your administrator."}
+            return {"error": "GenFox is unavailable. Please contact your administrator."}
         except Exception:
             _logger.exception("Bridge service error")
             return {"error": "An unexpected error occurred."}
@@ -547,7 +547,7 @@ class ClaudeChatController(http.Controller):
         title = _html.escape(_re.sub(r"<[^>]+>", "", session.name or "Chat"))
         body = (
             f'<div style="font-family:sans-serif;max-width:700px">'
-            f'<h3 style="margin:0 0 12px">Claude Chat: {title}</h3>'
+            f'<h3 style="margin:0 0 12px">GenFox: {title}</h3>'
         )
         for msg in messages:
             if msg.role == "user":

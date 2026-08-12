@@ -22,7 +22,7 @@ What this module exposes:
 This module does not declare any onboarding records of its own.
 """,
     'category': 'Tools',
-    'author': 'Blue Fox Inc.',
+    'author': 'Les services de consultation Blue Fox, Inc.',
     'website': 'https://bluefoxconsultant.com',
     'license': 'LGPL-3',
     'depends': [

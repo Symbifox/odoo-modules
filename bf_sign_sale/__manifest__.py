@@ -8,7 +8,7 @@ Ajoute « Envoyer pour signature » sur les commandes de vente : le devis est
 rendu en PDF, une demande de signature bf_sign liée est créée, et le document
 signé est reversé dans le fil de la commande une fois signé par tous.
 """,
-    'author': "Blue Fox Inc.",
+    'author': "Les services de consultation Blue Fox, Inc.",
     'website': "https://bluefoxconsultant.com",
     'license': 'Other proprietary',
     'depends': ['bf_sign', 'sale'],

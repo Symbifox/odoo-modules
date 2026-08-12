@@ -3,7 +3,7 @@
     "summary": "Évite l'empilement « Re: Re: Re: » dans les sujets envoyés via le chatter",
     "version": "18.0.1.1.0",
     "category": "Productivity/Email",
-    'author': 'Blue Fox Inc.',
+    'author': 'Les services de consultation Blue Fox, Inc.',
     'website': 'https://bluefoxconsultant.com',
     'license': 'LGPL-3',
     "depends": ["mail", "bf_onboarding_base"],

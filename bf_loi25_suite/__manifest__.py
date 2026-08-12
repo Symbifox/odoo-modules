@@ -4,7 +4,7 @@
     "version": "18.0.1.1.0",
     "category": "Privacy/Compliance",
     "license": "LGPL-3",
-    "author": "Blue Fox Inc.",
+    "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://bluefoxconsultant.com",
     "depends": [
         "audit_ti",
