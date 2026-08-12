@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <record id="rule_noreply_notification" model="bf.email.rule">
+        <field name="name">Expéditeurs noreply → Notification + Traité</field>
+        <field name="sequence">10</field>
+        <field name="condition_type">regex_from</field>
+        <field name="condition_value">^(noreply|no-reply|notification|mailer-daemon|postmaster|bounce|do-not-reply)@</field>
+        <field name="set_category">notification</field>
+        <field name="set_handled" eval="True"/>
+        <field name="description">Sortie immédiate de la boîte. Les notifications automatiques ne demandent pas d'action.</field>
+    </record>
+
+    <record id="rule_list_unsubscribe_marketing" model="bf.email.rule">
+        <field name="name">List-Unsubscribe présent → Marketing + Traité</field>
+        <field name="sequence">20</field>
+        <field name="condition_type">header_present</field>
+        <field name="condition_value">List-Unsubscribe</field>
+        <field name="set_category">marketing</field>
+        <field name="set_handled" eval="True"/>
+        <field name="description">Grbovic et al. 2014 — l'en-tête List-Unsubscribe est le signal le plus fort pour le bulk marketing.</field>
+    </record>
+
+    <record id="rule_client_partner" model="bf.email.rule">
+        <field name="name">Partenaire client_rank > 0 → Client (priorité Élevée)</field>
+        <field name="sequence">40</field>
+        <field name="condition_type">partner_tag</field>
+        <field name="condition_value">(p.customer_rank or 0) > 0</field>
+        <field name="set_category">client</field>
+        <field name="set_priority">2</field>
+        <field name="description">Tout courriel d'un client connu (customer_rank) passe en priorité Élevée.</field>
+    </record>
+
+    <record id="rule_vendor_partner" model="bf.email.rule">
+        <field name="name">Partenaire supplier_rank > 0 → Fournisseur</field>
+        <field name="sequence">50</field>
+        <field name="condition_type">partner_tag</field>
+        <field name="condition_value">(p.supplier_rank or 0) > 0</field>
+        <field name="set_category">vendor</field>
+        <field name="description">Fournisseurs connus.</field>
+    </record>
+
+</odoo>

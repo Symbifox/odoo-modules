@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============================================================ -->
+    <!-- Accueil du portail : entrée « Mon feedback »                 -->
+    <!--                                                              -->
+    <!-- placeholder_count est OBLIGATOIRE : portal.portal_docs_entry -->
+    <!-- rend ses cartes en d-none par défaut. Sans compteur (ou sans -->
+    <!-- config_card), le lien est dans le HTML mais masqué en CSS.   -->
+    <!-- Le compteur est alimenté par _prepare_home_portal_values     -->
+    <!-- dans controllers/portal.py, même patron que                  -->
+    <!-- bf_meeting_portal.                                           -->
+    <!--                                                              -->
+    <!-- Priorités déjà prises sur portal.portal_my_home : 35         -->
+    <!-- (bf_hour_bank), 40 (bf_fundraising_web), 45                  -->
+    <!-- (bf_meeting_portal). On prend 50.                            -->
+    <!-- ============================================================ -->
+
+    <template id="portal_my_home_cx_feedback"
+              name="Portail : Mon feedback"
+              inherit_id="portal.portal_my_home"
+              customize_show="True" priority="50">
+        <div id="portal_common_category" position="inside">
+            <t t-call="portal.portal_docs_entry">
+                <!-- portal.portal_docs_entry rend l'icône dans une balise
+                     img via son attribut src : il faut un CHEMIN d'image
+                     (une classe Font Awesome produit une image brisée).
+                     SVG vectoriel 64x64, même taille intrinsèque que les
+                     icônes natives. -->
+                <t t-set="icon" t-value="'/bf_cx_portal/static/src/img/portal_icon.svg'"/>
+                <t t-set="title">Mon feedback</t>
+                <t t-set="url" t-value="'/my/feedback'"/>
+                <t t-set="placeholder_count" t-value="'cx_feedback_count'"/>
+            </t>
+        </div>
+    </template>
+
+    <!-- ============================================================ -->
+    <!-- Fil d'Ariane                                                 -->
+    <!-- ============================================================ -->
+
+    <template id="portal_breadcrumb_cx_feedback"
+              name="Portail : fil d'Ariane Mon feedback"
+              inherit_id="portal.portal_breadcrumbs" priority="50">
+        <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+            <li t-if="page_name == 'cx_feedback'" class="breadcrumb-item active">
+                Mon feedback
+            </li>
+        </xpath>
+    </template>
+
+    <!-- ============================================================ -->
+    <!-- Feuille de style                                             -->
+    <!--                                                              -->
+    <!-- Les couleurs viennent de res.company (report_brand_*), comme -->
+    <!-- bf_meeting_portal : le portail suit la marque sans rien      -->
+    <!-- coder en dur.                                                -->
+    <!-- ============================================================ -->
+
+    <template id="portal_cx_feedback_styles" name="Mon feedback : styles portail">
+        <style>
+            /* Le portail est rendu dans le site web : le bloc possède sa
+               propre surface et sa propre couleur de texte plutôt que
+               d'hériter d'un fond de thème inconnu. */
+            .bfcx {
+                --bfcx-primary: <t t-esc="(env.company and env.company.report_brand_primary) or '#29ABE2'"/>;
+                --bfcx-dark: <t t-esc="(env.company and env.company.report_brand_dark) or '#2E3132'"/>;
+                --bfcx-line: #e6e9ec;
+                --bfcx-muted: #5b6469;
+                --bfcx-ink: #23292c;
+                font-family: 'Lexend', -apple-system, 'Segoe UI', Roboto, sans-serif;
+                background: #ffffff;
+                color: var(--bfcx-ink);
+                border: 1px solid var(--bfcx-line);
+                border-radius: 12px;
+                padding: 1.5rem 1.6rem 1.75rem;
+                margin-bottom: 2rem;
+            }
+            /* :not() pour ne pas repeindre le texte du bouton bleu. */
+            .bfcx a:not(.bfcx-btn) { color: var(--bfcx-primary); }
+            @media (max-width: 575px) { .bfcx { padding: 1.1rem 1rem 1.35rem; } }
+
+            .bfcx-head { margin-bottom: 1.5rem; }
+            .bfcx-head h3 {
+                font-weight: 600; letter-spacing: -.015em;
+                color: var(--bfcx-dark); margin: 0 0 .35rem;
+            }
+            .bfcx-sub { color: var(--bfcx-muted); font-size: .925rem; margin: 0; }
+
+            .bfcx-section {
+                display: flex; align-items: center; gap: .6rem;
+                font-size: .78rem; font-weight: 600; text-transform: uppercase;
+                letter-spacing: .09em; color: var(--bfcx-muted);
+                margin: 2rem 0 .9rem;
+            }
+            .bfcx-section::after {
+                content: ''; flex: 1; height: 1px; background: var(--bfcx-line);
+            }
+            .bfcx-section .bfcx-n {
+                background: #eef1f3; color: #454d51;
+                border-radius: 999px; padding: .1rem .5rem;
+                font-size: .72rem; letter-spacing: 0; font-weight: 600;
+            }
+
+            /* --- formulaire de commentaire --- */
+            .bfcx-form textarea {
+                border: 1px solid var(--bfcx-line); border-radius: 10px;
+                width: 100%; padding: .7rem .85rem; line-height: 1.55;
+                color: var(--bfcx-ink);
+            }
+            .bfcx-form textarea:focus {
+                outline: none; border-color: var(--bfcx-primary);
+                box-shadow: 0 0 0 3px color-mix(in srgb, var(--bfcx-primary) 18%, #fff);
+            }
+            .bfcx-btn {
+                background: var(--bfcx-primary); color: #fff; border: 0;
+                font-weight: 600; font-size: .85rem;
+                border-radius: 8px; padding: .5rem 1.1rem; white-space: nowrap;
+                transition: filter .15s ease;
+            }
+            .bfcx-btn:hover { filter: brightness(.92); color: #fff; }
+
+            /* --- alertes --- */
+            .bfcx-alert {
+                border-radius: 10px; padding: .7rem 1rem; margin-bottom: 1.25rem;
+                font-size: .9rem;
+            }
+            .bfcx-alert.ok {
+                background: #eef8f0; border: 1px solid #bfe3c8; color: #1d6a34;
+            }
+            .bfcx-alert.ko {
+                background: #fdf1f1; border: 1px solid #efc4c4; color: #93312f;
+            }
+
+            /* --- entrées de feedback --- */
+            .bfcx-item {
+                padding: .85rem 0;
+                border-bottom: 1px solid var(--bfcx-line);
+            }
+            .bfcx-item:last-child { border-bottom: 0; }
+            .bfcx-item-head {
+                display: flex; align-items: center; flex-wrap: wrap; gap: .55rem;
+                margin-bottom: .3rem;
+            }
+            .bfcx-date { color: var(--bfcx-muted); font-size: .82rem; }
+            .bfcx-kind {
+                display: inline-block; font-size: .7rem; font-weight: 600;
+                text-transform: uppercase; letter-spacing: .07em;
+                border-radius: 999px; padding: .14rem .6rem;
+                /* repli solide d'abord : color-mix demande un navigateur récent */
+                background: #f4f8fb; color: #37525f;
+                background: color-mix(in srgb, var(--bfcx-primary) 12%, #fff);
+                border: 1px solid color-mix(in srgb, var(--bfcx-primary) 25%, #fff);
+            }
+            .bfcx-score {
+                font-weight: 600; font-size: .85rem; color: var(--bfcx-dark);
+            }
+            .bfcx-comment {
+                color: var(--bfcx-ink); line-height: 1.6; margin: 0;
+                white-space: pre-wrap;      /* conserve les retours de ligne saisis */
+                overflow-wrap: anywhere;    /* sans laisser déborder une longue chaîne */
+            }
+
+            .bfcx-empty {
+                border: 1px dashed var(--bfcx-line); border-radius: 10px;
+                padding: 2rem 1.5rem; text-align: center; color: var(--bfcx-muted);
+            }
+            .bfcx-empty .fa { font-size: 1.6rem; opacity: .35; display: block;
+                              margin-bottom: .6rem; }
+            .bfcx-foot {
+                margin-top: 1.5rem; padding-top: .9rem;
+                border-top: 1px solid var(--bfcx-line);
+                color: var(--bfcx-muted); font-size: .82rem;
+            }
+        </style>
+    </template>
+
+    <!-- ============================================================ -->
+    <!-- Page : /my/feedback                                          -->
+    <!-- ============================================================ -->
+
+    <template id="portal_my_cx_feedback" name="Mon feedback">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="False"/>
+            <t t-call="bf_cx_portal.portal_cx_feedback_styles"/>
+
+            <div class="bfcx">
+                <div class="bfcx-head">
+                    <h3>Mon feedback</h3>
+                    <p class="bfcx-sub">
+                        Vos réponses à nos demandes de feedback et vos commentaires,
+                        au même endroit.
+                    </p>
+                </div>
+
+                <div t-if="thanks" class="bfcx-alert ok">
+                    Merci! Votre commentaire a bien été transmis à notre équipe.
+                </div>
+                <div t-if="error == 'empty'" class="bfcx-alert ko">
+                    Votre commentaire est vide : écrivez-nous quelques mots avant d'envoyer.
+                </div>
+                <div t-if="error == 'save'" class="bfcx-alert ko">
+                    Une erreur est survenue lors de l'enregistrement. Veuillez réessayer.
+                </div>
+
+                <div class="bfcx-section">Nous écrire</div>
+                <form method="post" action="/my/feedback/submit" class="bfcx-form">
+                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                    <label for="bfcx_comment" class="form-label">
+                        Un commentaire, une idée, une insatisfaction?
+                    </label>
+                    <textarea id="bfcx_comment" name="comment" rows="4"
+                              maxlength="5000" required="required"
+                              placeholder="Écrivez-nous ici."></textarea>
+                    <button type="submit" class="btn bfcx-btn mt-2">Envoyer</button>
+                </form>
+
+                <div class="bfcx-section">
+                    Historique
+                    <span class="bfcx-n"><t t-out="total"/></span>
+                </div>
+
+                <t t-if="not feedbacks">
+                    <div class="bfcx-empty">
+                        <i class="fa fa-comments-o"/>
+                        Aucun feedback pour l'instant. Votre premier commentaire
+                        apparaîtra ici.
+                    </div>
+                </t>
+
+                <t t-if="feedbacks">
+                    <div t-foreach="feedbacks" t-as="item" class="bfcx-item">
+                        <div class="bfcx-item-head">
+                            <span class="bfcx-date"><t t-out="item['date']"/></span>
+                            <span class="bfcx-kind"><t t-out="item['kind']"/></span>
+                            <span t-if="item['score']" class="bfcx-score">
+                                <t t-out="item['score']"/>
+                            </span>
+                        </div>
+                        <p t-if="item['comment']" class="bfcx-comment"><t t-out="item['comment']"/></p>
+                    </div>
+                    <p t-if="truncated" class="bfcx-foot">
+                        Affichage des <t t-out="page_limit"/> feedbacks les plus
+                        récents sur <t t-out="total"/>.
+                    </p>
+                </t>
+            </div>
+        </t>
+    </template>
+
+</odoo>

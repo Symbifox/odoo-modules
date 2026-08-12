@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        Catalogue des sections. noupdate="1" volontairement: l'administrateur
+        de l'instance doit pouvoir renommer, réordonner ou désactiver ces
+        sections sans qu'une mise à jour du module écrase son paramétrage.
+        Un nouveau code ajouté plus tard sera bien créé; les existants ne
+        seront pas réécrits.
+    -->
+    <data noupdate="1">
+
+        <record id="section_type_objectif" model="project.document.section.type">
+            <field name="code">OBJECTIF</field>
+            <field name="name">Objectif</field>
+            <field name="sequence">10</field>
+            <field name="description">Pourquoi ce document existe et quel résultat il vise.</field>
+            <field name="is_system">True</field>
+        </record>
+
+        <record id="section_type_portee" model="project.document.section.type">
+            <field name="code">PORTEE</field>
+            <field name="name">Portée</field>
+            <field name="sequence">20</field>
+            <field name="description">Qui est visé, quelles activités et quels systèmes sont couverts, et ce qui est explicitement exclu.</field>
+            <field name="is_system">True</field>
+        </record>
+
+        <record id="section_type_definitions" model="project.document.section.type">
+            <field name="code">DEFINITIONS</field>
+            <field name="name">Définitions</field>
+            <field name="sequence">30</field>
+            <field name="description">Termes dont le sens doit être fixé pour que le document se lise sans ambiguïté.</field>
+            <field name="is_system">True</field>
+        </record>
+
+        <record id="section_type_politique" model="project.document.section.type">
+            <field name="code">POLITIQUE</field>
+            <field name="name">Énoncé de politique</field>
+            <field name="sequence">40</field>
+            <field name="description">Les règles elles-mêmes. Le cœur du document.</field>
+            <field name="is_system">True</field>
+        </record>
+
+        <record id="section_type_procedure" model="project.document.section.type">
+            <field name="code">PROCEDURE</field>
+            <field name="name">Procédure</field>
+            <field name="sequence">45</field>
+            <field name="description">Les étapes à suivre, dans l'ordre, avec qui fait quoi.</field>
+            <field name="is_system">True</field>
+        </record>
+
+        <record id="section_type_roles" model="project.document.section.type">
+            <field name="code">ROLES</field>
+            <field name="name">Rôles et responsabilités</field>
+            <field name="sequence">50</field>
+            <field name="description">Qui applique, qui approuve, qui surveille.</field>
+            <field name="is_system">True</field>
+        </record>
+
+        <record id="section_type_exceptions" model="project.document.section.type">
+            <field name="code">EXCEPTIONS</field>
+            <field name="name">Exceptions</field>
+            <field name="sequence">60</field>
+            <field name="description">Cas où la règle ne s'applique pas, et qui peut accorder la dérogation.</field>
+            <field name="is_system">True</field>
+        </record>
+
+        <record id="section_type_conformite" model="project.document.section.type">
+            <field name="code">CONFORMITE</field>
+            <field name="name">Conformité et manquements</field>
+            <field name="sequence">70</field>
+            <field name="description">Comment le respect est vérifié et ce qui arrive en cas de manquement.</field>
+            <field name="is_system">True</field>
+        </record>
+
+        <record id="section_type_references" model="project.document.section.type">
+            <field name="code">REFERENCES</field>
+            <field name="name">Références légales et normatives</field>
+            <field name="sequence">80</field>
+            <field name="description">Lois, règlements et normes dont le document découle.</field>
+            <field name="is_system">True</field>
+        </record>
+
+        <record id="section_type_docs_connexes" model="project.document.section.type">
+            <field name="code">DOCS_CONNEXES</field>
+            <field name="name">Documents connexes</field>
+            <field name="sequence">90</field>
+            <field name="description">Autres politiques, procédures, formulaires et registres liés.</field>
+            <field name="is_system">True</field>
+        </record>
+
+        <record id="section_type_etapes" model="project.document.section.type">
+            <field name="code">ETAPES</field>
+            <field name="name">Marche à suivre</field>
+            <field name="sequence">95</field>
+            <field name="description">Suite d'étapes numérotées pour un guide d'utilisation.</field>
+            <field name="is_system">True</field>
+        </record>
+
+        <!-- Sections générées par le système. Leur contenu est figé au gel de
+             la version: une réimpression ultérieure montre l'état de l'époque. -->
+
+        <record id="section_type_gouvernance" model="project.document.section.type">
+            <field name="code">GOUVERNANCE</field>
+            <field name="name">Gouvernance de cette documentation</field>
+            <field name="sequence">100</field>
+            <field name="description">Référence, responsable, approbation, version en vigueur et cycle de révision. Généré à partir de la fiche du document.</field>
+            <field name="content_kind">computed</field>
+            <field name="render_key">governance</field>
+            <field name="is_system">True</field>
+        </record>
+
+        <record id="section_type_historique" model="project.document.section.type">
+            <field name="code">HISTORIQUE</field>
+            <field name="name">Historique des versions</field>
+            <field name="sequence">110</field>
+            <field name="description">Tableau des versions publiées, avec la nature et le résumé de chaque modification.</field>
+            <field name="content_kind">computed</field>
+            <field name="render_key">revision_history</field>
+            <field name="is_system">True</field>
+        </record>
+
+        <record id="section_type_approbations" model="project.document.section.type">
+            <field name="code">APPROBATIONS</field>
+            <field name="name">Approbations</field>
+            <field name="sequence">120</field>
+            <field name="description">Qui a rédigé et qui a approuvé la version publiée.</field>
+            <field name="content_kind">computed</field>
+            <field name="render_key">approvals</field>
+            <field name="is_system">True</field>
+        </record>
+
+    </data>
+</odoo>

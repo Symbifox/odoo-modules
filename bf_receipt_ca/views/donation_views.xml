@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+<odoo>
+    <!-- Advantage + in-kind description on the gift form (feed the receipt) -->
+    <record id="donation_form_bf_receipt" model="ir.ui.view">
+        <field name="name">donation.form.bf.receipt</field>
+        <field name="model">donation.donation</field>
+        <field name="inherit_id" ref="donation.donation_form" />
+        <field name="arch" type="xml">
+            <field name="tax_receipt_total" position="after">
+                <field name="advantage_amount" readonly="state == 'done'" />
+                <field name="advantage_description" readonly="state == 'done'" />
+                <field name="receipt_property_description" readonly="state == 'done'" />
+            </field>
+        </field>
+    </record>
+</odoo>

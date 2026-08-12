@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="meeting_refine_wizard_view_form" model="ir.ui.view">
+        <field name="name">meeting.refine.wizard.form</field>
+        <field name="model">meeting.refine.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Raffiner avec TentaClaude">
+                <field name="meeting_id" invisible="1"/>
+                <div class="alert alert-info" role="alert">
+                    Une <strong>passe complète</strong> est faite de toute façon : verbatim, notes de
+                    l'ordre du jour, acronymes, noms propres, présences, matrice de connaissances,
+                    tâches et dépendances. Ce que vous écrivez ici <strong>s'ajoute</strong> à cette
+                    passe et reçoit une réponse écrite au chatter — ça ne réduit jamais la revue.
+                    <br/>
+                    Le compte rendu n'est <strong>jamais envoyé</strong> : l'envoi reste un clic sur
+                    « Envoyer le résumé ».
+                </div>
+                <group>
+                    <field name="instructions" nolabel="1" colspan="2"
+                           placeholder="Ex. : le sigle de l'évaluation vie privée est mal transcrit — c'est ÉFVP.&#10;Vérifier le prénom de la personne aux ressources humaines.&#10;La deuxième moitié de la rencontre s'est faite en anglais."/>
+                </group>
+                <footer>
+                    <button name="action_launch" type="object" class="btn-primary"
+                            string="Lancer le raffinage"/>
+                    <button string="Annuler" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>

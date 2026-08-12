@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        Gabarits de sections par type de document. Seuls les types qui ont un
+        gabarit peuvent héberger leur corps dans Odoo: c'est ce qui garde les
+        présentations, formulaires et annexes en dehors du dispositif.
+
+        noupdate="1": l'administrateur ajuste ces gabarits dans
+        Configuration > Types de documents, et une mise à jour du module ne
+        doit pas défaire son travail.
+    -->
+    <data noupdate="1">
+
+        <!-- ============ Politique ============ -->
+        <record id="type_section_policy_objectif" model="project.document.type.section">
+            <field name="document_type_id" ref="document_type_policy"/>
+            <field name="section_type_id" ref="section_type_objectif"/>
+            <field name="sequence">10</field>
+            <field name="required">True</field>
+        </record>
+        <record id="type_section_policy_portee" model="project.document.type.section">
+            <field name="document_type_id" ref="document_type_policy"/>
+            <field name="section_type_id" ref="section_type_portee"/>
+            <field name="sequence">20</field>
+            <field name="required">True</field>
+        </record>
+        <record id="type_section_policy_definitions" model="project.document.type.section">
+            <field name="document_type_id" ref="document_type_policy"/>
+            <field name="section_type_id" ref="section_type_definitions"/>
+            <field name="sequence">30</field>
+        </record>
+        <record id="type_section_policy_enonce" model="project.document.type.section">
+            <field name="document_type_id" ref="document_type_policy"/>
+            <field name="section_type_id" ref="section_type_politique"/>
+            <field name="sequence">40</field>
+            <field name="required">True</field>
+        </record>
+        <record id="type_section_policy_roles" model="project.document.type.section">
+            <field name="document_type_id" ref="document_type_policy"/>
+            <field name="section_type_id" ref="section_type_roles"/>
+            <field name="sequence">50</field>
+            <field name="required">True</field>
+        </record>
+        <record id="type_section_policy_conformite" model="project.document.type.section">
+            <field name="document_type_id" ref="document_type_policy"/>
+            <field name="section_type_id" ref="section_type_conformite"/>
+            <field name="sequence">60</field>
+        </record>
+        <record id="type_section_policy_docs" model="project.document.type.section">
+            <field name="document_type_id" ref="document_type_policy"/>
+            <field name="section_type_id" ref="section_type_docs_connexes"/>
+            <field name="sequence">70</field>
+        </record>
+        <record id="type_section_policy_gouvernance" model="project.document.type.section">
+            <field name="document_type_id" ref="document_type_policy"/>
+            <field name="section_type_id" ref="section_type_gouvernance"/>
+            <field name="sequence">80</field>
+            <field name="locked">True</field>
+        </record>
+
+        <!-- ============ Procédure ============ -->
+        <record id="type_section_procedure_objectif" model="project.document.type.section">
+            <field name="document_type_id" ref="document_type_procedure"/>
+            <field name="section_type_id" ref="section_type_objectif"/>
+            <field name="sequence">10</field>
+            <field name="required">True</field>
+        </record>
+        <record id="type_section_procedure_portee" model="project.document.type.section">
+            <field name="document_type_id" ref="document_type_procedure"/>
+            <field name="section_type_id" ref="section_type_portee"/>
+            <field name="sequence">20</field>
+            <field name="required">True</field>
+        </record>
+        <record id="type_section_procedure_roles" model="project.document.type.section">
+            <field name="document_type_id" ref="document_type_procedure"/>
+            <field name="section_type_id" ref="section_type_roles"/>
+            <field name="sequence">30</field>
+            <field name="required">True</field>
+        </record>
+        <record id="type_section_procedure_etapes" model="project.document.type.section">
+            <field name="document_type_id" ref="document_type_procedure"/>
+            <field name="section_type_id" ref="section_type_procedure"/>
+            <field name="sequence">40</field>
+            <field name="required">True</field>
+        </record>
+        <record id="type_section_procedure_exceptions" model="project.document.type.section">
+            <field name="document_type_id" ref="document_type_procedure"/>
+            <field name="section_type_id" ref="section_type_exceptions"/>
+            <field name="sequence">50</field>
+        </record>
+        <record id="type_section_procedure_references" model="project.document.type.section">
+            <field name="document_type_id" ref="document_type_procedure"/>
+            <field name="section_type_id" ref="section_type_references"/>
+            <field name="sequence">55</field>
+        </record>
+        <record id="type_section_procedure_docs" model="project.document.type.section">
+            <field name="document_type_id" ref="document_type_procedure"/>
+            <field name="section_type_id" ref="section_type_docs_connexes"/>
+            <field name="sequence">60</field>
+        </record>
+        <record id="type_section_procedure_gouvernance" model="project.document.type.section">
+            <field name="document_type_id" ref="document_type_procedure"/>
+            <field name="section_type_id" ref="section_type_gouvernance"/>
+            <field name="sequence">70</field>
+            <field name="locked">True</field>
+        </record>
+
+        <!-- ============ Procédure TI ============ -->
+        <record id="type_section_it_objectif" model="project.document.type.section">
+            <field name="document_type_id" ref="document_type_it_procedure"/>
+            <field name="section_type_id" ref="section_type_objectif"/>
+            <field name="sequence">10</field>
+            <field name="required">True</field>
+        </record>
+        <record id="type_section_it_portee" model="project.document.type.section">
+            <field name="document_type_id" ref="document_type_it_procedure"/>
+            <field name="section_type_id" ref="section_type_portee"/>
+            <field name="sequence">20</field>
+            <field name="required">True</field>
+        </record>
+        <record id="type_section_it_roles" model="project.document.type.section">
+            <field name="document_type_id" ref="document_type_it_procedure"/>
+            <field name="section_type_id" ref="section_type_roles"/>
+            <field name="sequence">30</field>
+            <field name="required">True</field>
+        </record>
+        <record id="type_section_it_procedure" model="project.document.type.section">
+            <field name="document_type_id" ref="document_type_it_procedure"/>
+            <field name="section_type_id" ref="section_type_procedure"/>
+            <field name="sequence">40</field>
+            <field name="required">True</field>
+        </record>
+        <record id="type_section_it_exceptions" model="project.document.type.section">
+            <field name="document_type_id" ref="document_type_it_procedure"/>
+            <field name="section_type_id" ref="section_type_exceptions"/>
+            <field name="sequence">50</field>
+        </record>
+        <record id="type_section_it_references" model="project.document.type.section">
+            <field name="document_type_id" ref="document_type_it_procedure"/>
+            <field name="section_type_id" ref="section_type_references"/>
+            <field name="sequence">55</field>
+        </record>
+        <record id="type_section_it_docs" model="project.document.type.section">
+            <field name="document_type_id" ref="document_type_it_procedure"/>
+            <field name="section_type_id" ref="section_type_docs_connexes"/>
+            <field name="sequence">60</field>
+        </record>
+        <record id="type_section_it_gouvernance" model="project.document.type.section">
+            <field name="document_type_id" ref="document_type_it_procedure"/>
+            <field name="section_type_id" ref="section_type_gouvernance"/>
+            <field name="sequence">70</field>
+            <field name="locked">True</field>
+        </record>
+
+        <!-- ============ Politique RH ============ -->
+        <record id="type_section_hr_objectif" model="project.document.type.section">
+            <field name="document_type_id" ref="document_type_hr_policy"/>
+            <field name="section_type_id" ref="section_type_objectif"/>
+            <field name="sequence">10</field>
+            <field name="required">True</field>
+        </record>
+        <record id="type_section_hr_portee" model="project.document.type.section">
+            <field name="document_type_id" ref="document_type_hr_policy"/>
+            <field name="section_type_id" ref="section_type_portee"/>
+            <field name="sequence">20</field>
+            <field name="required">True</field>
+        </record>
+        <record id="type_section_hr_definitions" model="project.document.type.section">
+            <field name="document_type_id" ref="document_type_hr_policy"/>
+            <field name="section_type_id" ref="section_type_definitions"/>
+            <field name="sequence">30</field>
+        </record>
+        <record id="type_section_hr_enonce" model="project.document.type.section">
+            <field name="document_type_id" ref="document_type_hr_policy"/>
+            <field name="section_type_id" ref="section_type_politique"/>
+            <field name="sequence">40</field>
+            <field name="required">True</field>
+        </record>
+        <record id="type_section_hr_roles" model="project.document.type.section">
+            <field name="document_type_id" ref="document_type_hr_policy"/>
+            <field name="section_type_id" ref="section_type_roles"/>
+            <field name="sequence">50</field>
+            <field name="required">True</field>
+        </record>
+        <record id="type_section_hr_conformite" model="project.document.type.section">
+            <field name="document_type_id" ref="document_type_hr_policy"/>
+            <field name="section_type_id" ref="section_type_conformite"/>
+            <field name="sequence">60</field>
+        </record>
+        <record id="type_section_hr_gouvernance" model="project.document.type.section">
+            <field name="document_type_id" ref="document_type_hr_policy"/>
+            <field name="section_type_id" ref="section_type_gouvernance"/>
+            <field name="sequence">70</field>
+            <field name="locked">True</field>
+        </record>
+
+        <!-- ============ Politique de confidentialité ============ -->
+        <record id="type_section_privacy_objectif" model="project.document.type.section">
+            <field name="document_type_id" ref="document_type_privacy_policy"/>
+            <field name="section_type_id" ref="section_type_objectif"/>
+            <field name="sequence">10</field>
+            <field name="required">True</field>
+        </record>
+        <record id="type_section_privacy_portee" model="project.document.type.section">
+            <field name="document_type_id" ref="document_type_privacy_policy"/>
+            <field name="section_type_id" ref="section_type_portee"/>
+            <field name="sequence">20</field>
+            <field name="required">True</field>
+        </record>
+        <record id="type_section_privacy_enonce" model="project.document.type.section">
+            <field name="document_type_id" ref="document_type_privacy_policy"/>
+            <field name="section_type_id" ref="section_type_politique"/>
+            <field name="sequence">30</field>
+            <field name="required">True</field>
+        </record>
+        <record id="type_section_privacy_roles" model="project.document.type.section">
+            <field name="document_type_id" ref="document_type_privacy_policy"/>
+            <field name="section_type_id" ref="section_type_roles"/>
+            <field name="sequence">40</field>
+        </record>
+        <record id="type_section_privacy_references" model="project.document.type.section">
+            <field name="document_type_id" ref="document_type_privacy_policy"/>
+            <field name="section_type_id" ref="section_type_references"/>
+            <field name="sequence">50</field>
+        </record>
+        <record id="type_section_privacy_gouvernance" model="project.document.type.section">
+            <field name="document_type_id" ref="document_type_privacy_policy"/>
+            <field name="section_type_id" ref="section_type_gouvernance"/>
+            <field name="sequence">60</field>
+            <field name="locked">True</field>
+        </record>
+
+        <!-- ============ Guide rapide ============ -->
+        <record id="type_section_guide_objectif" model="project.document.type.section">
+            <field name="document_type_id" ref="document_type_guide"/>
+            <field name="section_type_id" ref="section_type_objectif"/>
+            <field name="sequence">10</field>
+            <field name="required">True</field>
+        </record>
+        <record id="type_section_guide_portee" model="project.document.type.section">
+            <field name="document_type_id" ref="document_type_guide"/>
+            <field name="section_type_id" ref="section_type_portee"/>
+            <field name="sequence">20</field>
+        </record>
+        <record id="type_section_guide_etapes" model="project.document.type.section">
+            <field name="document_type_id" ref="document_type_guide"/>
+            <field name="section_type_id" ref="section_type_etapes"/>
+            <field name="sequence">30</field>
+            <field name="required">True</field>
+        </record>
+        <record id="type_section_guide_docs" model="project.document.type.section">
+            <field name="document_type_id" ref="document_type_guide"/>
+            <field name="section_type_id" ref="section_type_docs_connexes"/>
+            <field name="sequence">40</field>
+        </record>
+        <record id="type_section_guide_gouvernance" model="project.document.type.section">
+            <field name="document_type_id" ref="document_type_guide"/>
+            <field name="section_type_id" ref="section_type_gouvernance"/>
+            <field name="sequence">50</field>
+            <field name="locked">True</field>
+        </record>
+
+    </data>
+</odoo>

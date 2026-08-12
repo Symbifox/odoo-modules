@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates xml:space="preserve">
+
+<t t-name="audit_ti.Dashboard">
+    <div class="o_action">
+        <div class="container-fluid py-3">
+
+            <!-- Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="mb-0">Tableau de bord - Audit TI</h2>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-outline-secondary" t-on-click="toggleDelivered">
+                        <t t-if="state.includeDelivered">
+                            <i class="fa fa-eye-slash"/> Masquer livr&#233;s
+                        </t>
+                        <t t-else="">
+                            <i class="fa fa-eye"/> Inclure livr&#233;s
+                        </t>
+                    </button>
+                    <button class="btn btn-primary" t-on-click="onRefresh">
+                        <i class="fa fa-refresh"/> Actualiser
+                    </button>
+                </div>
+            </div>
+
+            <!-- Loading -->
+            <t t-if="state.loading">
+                <div class="text-center py-5">
+                    <i class="fa fa-spinner fa-spin fa-3x"/>
+                    <p class="mt-2">Chargement...</p>
+                </div>
+            </t>
+
+            <t t-if="!state.loading and state.data">
+
+                <!-- KPIs -->
+                <div class="row mb-4">
+                    <div class="col col-sm-6 col-lg mb-3">
+                        <div class="card bg-primary text-white h-100" style="cursor:pointer" t-on-click="() => this.openAllClients()">
+                            <div class="card-body text-center">
+                                <h3 class="mb-0" t-esc="state.data.summary.total_clients"/>
+                                <small>Clients</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col col-sm-6 col-lg mb-3">
+                        <div class="card bg-info text-white h-100" style="cursor:pointer" t-on-click="() => this.openAssessments([['status', '!=', 'pending']])">
+                            <div class="card-body text-center">
+                                <h3 class="mb-0"><t t-esc="state.data.summary.pct_assessed"/>%</h3>
+                                <small>&#201;valu&#233;s (<t t-esc="state.data.summary.assessed_count"/>/<t t-esc="state.data.summary.total_assessments"/>)</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col col-sm-6 col-lg mb-3">
+                        <div class="card bg-success text-white h-100" style="cursor:pointer" t-on-click="() => this.openAssessments([['status', '=', 'adequate']])">
+                            <div class="card-body text-center">
+                                <h3 class="mb-0"><t t-esc="state.data.summary.pct_adequate"/>%</h3>
+                                <small>Ad&#233;quats (<t t-esc="state.data.summary.adequate_count"/>)</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col col-sm-6 col-lg mb-3">
+                        <div class="card text-white h-100" style="cursor:pointer;background-color:#6f42c1" t-on-click="() => this.openAssessments([['status', '=', 'adequate']])">
+                            <div class="card-body text-center">
+                                <h3 class="mb-0"><t t-esc="state.data.summary.pct_covered"/>%</h3>
+                                <small>Couverture (<t t-esc="state.data.summary.covered_elements"/>/<t t-esc="state.data.summary.total_possible_elements"/>)</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col col-sm-6 col-lg mb-3">
+                        <div class="card bg-warning text-dark h-100" style="cursor:pointer" t-on-click="() => this.openWatchpoints()">
+                            <div class="card-body text-center">
+                                <h3 class="mb-0" t-esc="state.data.summary.open_watchpoints"/>
+                                <small>Points de vigilance</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Actions rapides -->
+                <div class="mb-4">
+                    <button class="btn btn-sm btn-outline-primary me-2" t-on-click="autoLinkProjects">
+                        <i class="fa fa-link"/> Lier les projets Odoo
+                    </button>
+                </div>
+
+                <div class="row">
+                    <!-- Progress by client -->
+                    <div class="col-lg-8 mb-4">
+                        <div class="card h-100">
+                            <div class="card-header">
+                                <h5 class="mb-0">Progression par client</h5>
+                            </div>
+                            <div class="card-body" style="max-height:500px;overflow-y:auto">
+                                <t t-if="state.data.progress_by_client and state.data.progress_by_client.length">
+                                    <t t-foreach="state.data.progress_by_client" t-as="client" t-key="client.id">
+                                        <div class="mb-3" style="cursor:pointer" t-on-click="() => this.openClient(client.id)"
+                                             t-att-class="client.state === 'delivered' ? 'opacity-50' : ''">
+                                            <div class="d-flex justify-content-between mb-1">
+                                                <small class="fw-bold">
+                                                    <t t-esc="client.name"/>
+                                                    <t t-if="client.state === 'delivered'">
+                                                        <span class="badge bg-success ms-1" style="font-size:10px">Livr&#233;</span>
+                                                    </t>
+                                                    <t t-elif="client.adequate == client.total and client.total > 0">
+                                                        <span class="badge bg-success ms-1" style="font-size:10px">100%</span>
+                                                    </t>
+                                                </small>
+                                                <small>
+                                                    <span class="text-success" t-esc="client.adequate"/>
+                                                    /
+                                                    <span t-esc="client.assessed"/>
+                                                    /
+                                                    <span class="text-muted" t-esc="client.total"/>
+                                                </small>
+                                            </div>
+                                            <div class="progress" style="height:20px">
+                                                <div class="progress-bar bg-success"
+                                                    t-attf-style="width: {{ client.pct_adequate }}%"
+                                                    t-att-title="'' + client.adequate + ' adéquats'"/>
+                                                <t t-if="client.partial > 0">
+                                                    <div class="progress-bar bg-warning"
+                                                        t-attf-style="width: {{ (client.partial / client.total * 100).toFixed(0) }}%"
+                                                        t-att-title="'' + client.partial + ' partiels'"/>
+                                                </t>
+                                                <t t-if="client.inadequate > 0">
+                                                    <div class="progress-bar bg-danger"
+                                                        t-attf-style="width: {{ (client.inadequate / client.total * 100).toFixed(0) }}%"
+                                                        t-att-title="'' + client.inadequate + ' inadéquats'"/>
+                                                </t>
+                                                <t t-if="client.other > 0">
+                                                    <div class="progress-bar bg-info"
+                                                        t-attf-style="width: {{ (client.other / client.total * 100).toFixed(0) }}%"
+                                                        t-att-title="'' + client.other + ' à valider/déclarés/N.A.'"/>
+                                                </t>
+                                            </div>
+                                        </div>
+                                    </t>
+                                </t>
+                                <t t-else="">
+                                    <p class="text-muted text-center">Aucune donn&#233;e</p>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Status distribution -->
+                    <div class="col-lg-4 mb-4">
+                        <div class="card h-100">
+                            <div class="card-header">
+                                <h5 class="mb-0">Distribution des statuts</h5>
+                            </div>
+                            <div class="card-body">
+                                <t t-if="state.data.status_distribution and state.data.status_distribution.length">
+                                    <t t-foreach="state.data.status_distribution" t-as="item" t-key="item.status">
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <span class="badge" t-att-class="getStatusClass(item.status)">
+                                                <t t-esc="getStatusLabel(item.status)"/>
+                                            </span>
+                                            <span class="fw-bold" t-esc="item.count"/>
+                                        </div>
+                                    </t>
+                                </t>
+                                <t t-else="">
+                                    <p class="text-muted text-center">Aucune donn&#233;e</p>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <!-- Progress by supplier -->
+                    <div class="col-lg-6 mb-4">
+                        <div class="card h-100">
+                            <div class="card-header">
+                                <h5 class="mb-0">Fournisseurs</h5>
+                            </div>
+                            <div class="card-body" style="max-height:400px;overflow-y:auto">
+                                <t t-if="state.data.progress_by_supplier and state.data.progress_by_supplier.length">
+                                    <table class="table table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th>Fournisseur</th>
+                                                <th>Statut NC</th>
+                                                <th class="text-end">&#201;valu&#233;s</th>
+                                                <th class="text-end">Total</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <t t-foreach="state.data.progress_by_supplier" t-as="sup" t-key="sup.id">
+                                                <tr>
+                                                    <td t-esc="sup.name"/>
+                                                    <td><span class="badge bg-secondary" t-esc="getNcStatusLabel(sup.nc_status)"/></td>
+                                                    <td class="text-end" t-esc="sup.assessed"/>
+                                                    <td class="text-end" t-esc="sup.total"/>
+                                                </tr>
+                                            </t>
+                                        </tbody>
+                                    </table>
+                                </t>
+                                <t t-else="">
+                                    <p class="text-muted text-center">Aucune donn&#233;e</p>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent assessments -->
+                    <div class="col-lg-6 mb-4">
+                        <div class="card h-100">
+                            <div class="card-header">
+                                <h5 class="mb-0">&#201;valuations r&#233;centes</h5>
+                            </div>
+                            <div class="card-body" style="max-height:400px;overflow-y:auto">
+                                <t t-if="state.data.recent_assessments and state.data.recent_assessments.length">
+                                    <table class="table table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th>Date</th>
+                                                <th>Client</th>
+                                                <th>N&#176;</th>
+                                                <th>Statut</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <t t-foreach="state.data.recent_assessments" t-as="a" t-key="a.id">
+                                                <tr>
+                                                    <td t-esc="a.assessed_date"/>
+                                                    <td t-esc="a.client_name"/>
+                                                    <td t-esc="a.element_num"/>
+                                                    <td>
+                                                        <span class="badge" t-att-class="getStatusClass(a.status)">
+                                                            <t t-esc="getStatusLabel(a.status)"/>
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                            </t>
+                                        </tbody>
+                                    </table>
+                                </t>
+                                <t t-else="">
+                                    <p class="text-muted text-center">Aucune &#233;valuation r&#233;cente</p>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Open watchpoints -->
+                <t t-if="state.data.open_watchpoints and state.data.open_watchpoints.length">
+                    <div class="row">
+                        <div class="col-12 mb-4">
+                            <div class="card">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h5 class="mb-0">Points de vigilance ouverts</h5>
+                                    <button class="btn btn-sm btn-outline-secondary" t-on-click="() => this.openWatchpoints()">
+                                        Voir tout
+                                    </button>
+                                </div>
+                                <div class="card-body">
+                                    <table class="table table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th>Client</th>
+                                                <th>&#201;l&#233;ment</th>
+                                                <th>Description</th>
+                                                <th>Priorit&#233;</th>
+                                                <th>&#201;tat</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <t t-foreach="state.data.open_watchpoints" t-as="wp" t-key="wp.id">
+                                                <tr>
+                                                    <td t-esc="wp.client_name"/>
+                                                    <td t-esc="wp.element_name"/>
+                                                    <td t-esc="wp.description"/>
+                                                    <td>
+                                                        <span class="badge" t-att-class="getPriorityClass(wp.priority)">
+                                                            <t t-esc="getPriorityLabel(wp.priority)"/>
+                                                        </span>
+                                                    </td>
+                                                    <td t-esc="getStateLabel(wp.state)"/>
+                                                </tr>
+                                            </t>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+
+            </t>
+        </div>
+    </div>
+</t>
+
+</templates>

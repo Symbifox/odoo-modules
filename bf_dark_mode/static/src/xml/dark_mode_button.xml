@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<t t-name="bf_dark_mode.SystrayItem">
+    <div>
+        <a class="d-none d-md-inline-block"
+           t-on-click.prevent="_onClick"
+           role="button"
+           title="Toggle Dark/Light Mode">
+            <button aria-label="Toggle Dark/Light Mode" class="o_nav_entry">
+                <i t-attf-class="fa fa-sun-o #{this.state.color_scheme == 'dark' ? 'd-none' : ''}" />
+                <i t-attf-class="fa fa-moon-o #{this.state.color_scheme == 'light' ? 'd-none' : ''}" />
+            </button>
+        </a>
+    </div>
+</t>

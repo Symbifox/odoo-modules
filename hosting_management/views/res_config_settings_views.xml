@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="res_config_settings_view_form_hosting" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.hosting</field>
+        <field name="model">res.config.settings</field>
+        <field name="priority">50</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app data-string="Hébergement" string="Hébergement" name="hosting_management">
+                    <block title="Journal d'audit" name="audit_log">
+                        <setting string="Rétention" help="Durée de conservation des entrées du journal d'audit. Les entrées plus anciennes sont supprimées mensuellement.">
+                            <div class="content-group">
+                                <div class="row mt16">
+                                    <label for="hosting_audit_log_retention_months" class="col-lg-3 o_light_label"/>
+                                    <field name="hosting_audit_log_retention_months" class="oe_inline"/> mois
+                                </div>
+                            </div>
+                        </setting>
+                    </block>
+                    <block title="Alertes de vérification de santé" name="health_check_alerts">
+                        <setting string="Courriel d'alerte" help="Adresse courriel pour recevoir les alertes de vérification de santé">
+                            <div class="content-group">
+                                <div class="row mt16">
+                                    <label for="hosting_health_alert_email" class="col-lg-3 o_light_label"/>
+                                    <field name="hosting_health_alert_email" class="oe_inline" placeholder="alertes@entreprise.com"/>
+                                </div>
+                            </div>
+                        </setting>
+                        <setting string="Seuil de temps de réponse" help="Les services répondant plus lentement que ce seuil déclencheront un avertissement">
+                            <div class="content-group">
+                                <div class="row mt16">
+                                    <label for="hosting_response_time_threshold_ms" class="col-lg-3 o_light_label"/>
+                                    <field name="hosting_response_time_threshold_ms" class="oe_inline"/> ms
+                                </div>
+                            </div>
+                        </setting>
+                        <setting string="Avertissement d'expiration" help="Créer des activités d'avertissement ce nombre de jours avant l'expiration du service">
+                            <div class="content-group">
+                                <div class="row mt16">
+                                    <label for="hosting_expiration_warning_days" class="col-lg-3 o_light_label"/>
+                                    <field name="hosting_expiration_warning_days" class="oe_inline"/> jours avant l'expiration
+                                </div>
+                            </div>
+                        </setting>
+                    </block>
+                    <block title="Domaines et SSL" name="domains_ssl">
+                        <setting string="Avertissement de domaine" help="Créer des activités d'avertissement ce nombre de jours avant l'expiration du domaine">
+                            <div class="content-group">
+                                <div class="row mt16">
+                                    <label for="hosting_domain_expiration_warning_days" class="col-lg-3 o_light_label"/>
+                                    <field name="hosting_domain_expiration_warning_days" class="oe_inline"/> jours avant l'expiration
+                                </div>
+                            </div>
+                        </setting>
+                        <setting string="Avertissement SSL" help="Créer des activités d'avertissement ce nombre de jours avant l'expiration du certificat SSL">
+                            <div class="content-group">
+                                <div class="row mt16">
+                                    <label for="hosting_ssl_expiration_warning_days" class="col-lg-3 o_light_label"/>
+                                    <field name="hosting_ssl_expiration_warning_days" class="oe_inline"/> jours avant l'expiration
+                                </div>
+                            </div>
+                        </setting>
+                    </block>
+                    <block title="Intégration Cloudflare Registrar" name="cloudflare_integration">
+                        <setting string="Identifiants Cloudflare" help="L'API Registrar exige la clé API globale (les tokens API ne fonctionnent pas pour ces endpoints).">
+                            <div class="content-group">
+                                <div class="row mt16">
+                                    <label for="hosting_cloudflare_email" class="col-lg-3 o_light_label"/>
+                                    <field name="hosting_cloudflare_email" class="oe_inline" placeholder="courriel@entreprise.com"/>
+                                </div>
+                                <div class="row mt8">
+                                    <label for="hosting_cloudflare_api_key" class="col-lg-3 o_light_label"/>
+                                    <field name="hosting_cloudflare_api_key" class="oe_inline" password="True"/>
+                                </div>
+                                <div class="row mt8">
+                                    <label for="hosting_cloudflare_account_id" class="col-lg-3 o_light_label"/>
+                                    <field name="hosting_cloudflare_account_id" class="oe_inline"/>
+                                </div>
+                            </div>
+                        </setting>
+                        <setting string="Synchronisation" help="Synchroniser manuellement les domaines enregistrés chez Cloudflare">
+                            <div class="content-group">
+                                <div class="row mt16">
+                                    <label for="hosting_last_cloudflare_sync" class="col-lg-3 o_light_label"/>
+                                    <field name="hosting_last_cloudflare_sync" class="oe_inline"/>
+                                </div>
+                                <div class="mt16">
+                                    <button name="action_sync_cloudflare_domains"
+                                            type="object"
+                                            string="Synchroniser Cloudflare"
+                                            class="btn-primary"
+                                            icon="fa-cloud-download"
+                                            confirm="Synchroniser les domaines depuis Cloudflare ?"/>
+                                </div>
+                            </div>
+                        </setting>
+                    </block>
+                    <block title="Intégration Action1 (RMM parc client)" name="action1_integration">
+                        <setting string="Activation" help="Active le cron de synchronisation Action1 (toutes les 6 heures).">
+                            <field name="hosting_action1_enabled" widget="boolean_toggle"/>
+                        </setting>
+                        <setting string="Identifiants Action1" help="Bearer token API de la console Action1. Voir https://app.action1.com/integrations/api">
+                            <div class="content-group">
+                                <div class="row mt16">
+                                    <label for="hosting_action1_api_token" class="col-lg-3 o_light_label"/>
+                                    <field name="hosting_action1_api_token" class="oe_inline" password="True"/>
+                                </div>
+                                <div class="row mt8">
+                                    <label for="hosting_action1_api_base_url" class="col-lg-3 o_light_label"/>
+                                    <field name="hosting_action1_api_base_url" class="oe_inline"/>
+                                </div>
+                                <div class="row mt8">
+                                    <label for="hosting_action1_console_base" class="col-lg-3 o_light_label"/>
+                                    <field name="hosting_action1_console_base" class="oe_inline"/>
+                                </div>
+                            </div>
+                        </setting>
+                        <setting string="Résolution de conflits" help="Quand Action1 et la saisie Odoo divergent sur un poste existant. Surcharge par poste via la case « Saisie manuelle prioritaire ».">
+                            <field name="hosting_action1_conflict_strategy" class="oe_inline"/>
+                        </setting>
+                        <setting string="Synchronisation manuelle" help="Lancer la synchro Action1 immédiatement.">
+                            <div class="content-group">
+                                <div class="row mt16">
+                                    <label for="hosting_action1_last_sync" class="col-lg-3 o_light_label"/>
+                                    <field name="hosting_action1_last_sync" class="oe_inline"/>
+                                </div>
+                                <div class="mt16">
+                                    <button name="action_sync_action1_now"
+                                            type="object"
+                                            string="Synchroniser Action1 maintenant"
+                                            class="btn-primary"
+                                            icon="fa-refresh"
+                                            confirm="Lancer la synchronisation des endpoints et groupes depuis Action1 ?"/>
+                                </div>
+                            </div>
+                        </setting>
+                    </block>
+                    <block title="Téléphonie VOIP.ms (DID, stats, solde)" name="voipms_integration">
+                        <setting string="Activation" help="Active les crons de synchronisation VOIP.ms (DID, CDR, transactions, solde) — lecture seule, toutes les 6 heures.">
+                            <field name="hosting_voipms_enabled" widget="boolean_toggle"/>
+                        </setting>
+                        <setting string="Identifiants API VOIP.ms" help="L'API et l'allowlist IP se configurent sur voip.ms/m/api.php. L'IP de sortie du serveur Odoo doit y figurer. Le mot de passe API est distinct du mot de passe de connexion.">
+                            <div class="content-group">
+                                <div class="row mt16">
+                                    <label for="hosting_voipms_api_username" class="col-lg-3 o_light_label"/>
+                                    <field name="hosting_voipms_api_username" class="oe_inline"/>
+                                </div>
+                                <div class="row mt8">
+                                    <label for="hosting_voipms_api_password" class="col-lg-3 o_light_label"/>
+                                    <field name="hosting_voipms_api_password" class="oe_inline" password="True"/>
+                                </div>
+                            </div>
+                        </setting>
+                        <setting string="Paramètres" help="Seuil d'alerte de solde bas (alerte ntfy quotidienne) et profondeur de l'historique CDR/transactions récupéré.">
+                            <div class="content-group">
+                                <div class="row mt16">
+                                    <label for="hosting_voipms_low_balance_threshold" class="col-lg-3 o_light_label"/>
+                                    <field name="hosting_voipms_low_balance_threshold" class="oe_inline"/>
+                                </div>
+                                <div class="row mt8">
+                                    <label for="hosting_voipms_cdr_backfill_days" class="col-lg-3 o_light_label"/>
+                                    <field name="hosting_voipms_cdr_backfill_days" class="oe_inline"/>
+                                </div>
+                            </div>
+                        </setting>
+                        <setting string="Solde et synchronisation" help="Dernier solde relevé et dernière synchro. Boutons : tester la connexion et synchroniser immédiatement.">
+                            <div class="content-group">
+                                <div class="row mt16">
+                                    <label for="hosting_voipms_last_balance" class="col-lg-3 o_light_label"/>
+                                    <field name="hosting_voipms_last_balance" class="oe_inline"/>
+                                </div>
+                                <div class="row mt8">
+                                    <label for="hosting_voipms_last_balance_date" class="col-lg-3 o_light_label"/>
+                                    <field name="hosting_voipms_last_balance_date" class="oe_inline"/>
+                                </div>
+                                <div class="row mt8">
+                                    <label for="hosting_voipms_last_sync" class="col-lg-3 o_light_label"/>
+                                    <field name="hosting_voipms_last_sync" class="oe_inline"/>
+                                </div>
+                                <div class="mt16">
+                                    <button name="action_test_voipms_connection"
+                                            type="object"
+                                            string="Tester la connexion"
+                                            class="btn-secondary"
+                                            icon="fa-plug"/>
+                                    <button name="action_sync_voipms_now"
+                                            type="object"
+                                            string="Synchroniser VOIP.ms maintenant"
+                                            class="btn-primary"
+                                            icon="fa-refresh"
+                                            confirm="Lancer la synchronisation des DID, CDR, transactions et solde depuis VOIP.ms ?"/>
+                                </div>
+                            </div>
+                        </setting>
+                    </block>
+                    <block title="Provisioning de tenants (API)" name="provision_api">
+                        <setting string="Jeton API" help="Jeton partagé envoyé par les scripts create_nextcloud_tenant.sh et create_odoo_client.sh dans l'entête X-Provision-Token vers /api/hosting/provision/report.">
+                            <div class="content-group">
+                                <div class="row mt16">
+                                    <label for="hosting_provision_api_token" class="col-lg-3 o_light_label"/>
+                                    <field name="hosting_provision_api_token" class="oe_inline" password="True"/>
+                                </div>
+                            </div>
+                        </setting>
+                    </block>
+                    <block title="Notifications push (ntfy)" name="ntfy_push">
+                        <setting string="Serveur ntfy" help="Configurer le serveur ntfy pour recevoir des notifications push lors de pannes de service">
+                            <div class="content-group">
+                                <div class="row mt16">
+                                    <label for="hosting_ntfy_url" class="col-lg-3 o_light_label"/>
+                                    <field name="hosting_ntfy_url" class="oe_inline" placeholder="https://ntfy.example.com"/>
+                                </div>
+                                <div class="row mt8">
+                                    <label for="hosting_ntfy_token" class="col-lg-3 o_light_label"/>
+                                    <field name="hosting_ntfy_token" class="oe_inline" password="True"/>
+                                </div>
+                                <div class="row mt8">
+                                    <label for="hosting_ntfy_topic" class="col-lg-3 o_light_label"/>
+                                    <field name="hosting_ntfy_topic" class="oe_inline" placeholder="hosting-alerts"/>
+                                </div>
+                            </div>
+                        </setting>
+                    </block>
+                    <block title="Rapports de sauvegarde par courriel" name="backup_reports">
+                        <setting string="Activer les rapports">
+                            <field name="hosting_backup_report_enabled"/>
+                        </setting>
+                        <setting string="Mode d'envoi" invisible="not hosting_backup_report_enabled">
+                            <field name="hosting_backup_report_mode" widget="radio"/>
+                        </setting>
+                        <setting string="Destinataires" invisible="not hosting_backup_report_enabled">
+                            <div class="content-group">
+                                <div class="row mt16">
+                                    <field name="hosting_backup_report_recipients"
+                                           class="oe_inline"
+                                           placeholder="alice@exemple.com, bob@exemple.com"/>
+                                </div>
+                                <div class="text-muted mt8">
+                                    Adresses séparées par des virgules. Si vide, le courriel
+                                    de la société du rapport est utilisé.
+                                </div>
+                            </div>
+                        </setting>
+                        <setting string="Heure d'envoi quotidien"
+                                 invisible="not hosting_backup_report_enabled or hosting_backup_report_mode != 'scheduled'">
+                            <div class="content-group">
+                                <div class="row mt16">
+                                    <label for="hosting_backup_report_send_hour" class="col-lg-3 o_light_label"/>
+                                    <field name="hosting_backup_report_send_hour" class="oe_inline"/> h
+                                </div>
+                                <div class="row mt8">
+                                    <label for="hosting_backup_report_timezone" class="col-lg-3 o_light_label"/>
+                                    <field name="hosting_backup_report_timezone" class="oe_inline"/>
+                                </div>
+                                <div class="text-muted mt8">
+                                    En mode planifié, un seul courriel est envoyé par jour
+                                    à cette heure locale, regroupant la dernière exécution
+                                    par hôte.
+                                </div>
+                            </div>
+                        </setting>
+                        <setting string="Limiter aux exécutions problématiques"
+                                 help="Si activé, aucun courriel n'est envoyé pour une sauvegarde entièrement réussie. Les notifications ntfy restent actives en cas d'échec."
+                                 invisible="not hosting_backup_report_enabled">
+                            <field name="hosting_backup_report_only_on_issues"/>
+                        </setting>
+                        <setting string="Tester l'envoi"
+                                 help="Renvoie immédiatement le rapport de la dernière exécution de sauvegarde aux destinataires configurés."
+                                 invisible="not hosting_backup_report_enabled">
+                            <div class="mt16">
+                                <button name="action_send_backup_report_test"
+                                        type="object"
+                                        string="Envoyer un rapport de test"
+                                        class="btn-primary"
+                                        icon="fa-paper-plane"/>
+                            </div>
+                        </setting>
+                    </block>
+                    <block title="Fenêtre de maintenance" name="maintenance_window">
+                        <setting string="Activer la fenêtre de maintenance" help="Lorsqu'activée, les alertes de santé sont supprimées pendant la fenêtre de maintenance. Les vérifications continuent mais les notifications ne sont pas envoyées.">
+                            <field name="hosting_maintenance_window_enabled"/>
+                        </setting>
+                        <setting string="Calendrier de maintenance" help="Définir la fenêtre de maintenance quotidienne pendant laquelle les alertes sont supprimées" invisible="not hosting_maintenance_window_enabled">
+                            <div class="content-group">
+                                <div class="row mt16">
+                                    <label for="hosting_maintenance_start_hour" string="Heure de début" class="col-lg-3 o_light_label"/>
+                                    <field name="hosting_maintenance_start_hour" widget="float_time" class="oe_inline"/>
+                                </div>
+                                <div class="row mt8">
+                                    <label for="hosting_maintenance_end_hour" string="Heure de fin" class="col-lg-3 o_light_label"/>
+                                    <field name="hosting_maintenance_end_hour" widget="float_time" class="oe_inline"/>
+                                </div>
+                                <div class="row mt8">
+                                    <label for="hosting_maintenance_timezone" string="Fuseau horaire" class="col-lg-3 o_light_label"/>
+                                    <field name="hosting_maintenance_timezone" class="oe_inline"/>
+                                </div>
+                                <div class="text-muted mt8">
+                                    Par défaut : 1h30 à 2h30. Pendant cette fenêtre, les vérifications de santé continuent mais les courriels d'alerte sont supprimés.
+                                </div>
+                            </div>
+                        </setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Action to open hosting settings directly -->
+    <record id="action_hosting_config_settings" model="ir.actions.act_window">
+        <field name="name">Paramètres d'hébergement</field>
+        <field name="res_model">res.config.settings</field>
+        <field name="view_mode">form</field>
+        <field name="target">inline</field>
+        <field name="context">{'module': 'hosting_management', 'bin_size': False}</field>
+    </record>
+
+</odoo>

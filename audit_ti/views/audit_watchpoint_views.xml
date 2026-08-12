@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_audit_watchpoint_list" model="ir.ui.view">
+        <field name="name">audit.watchpoint.list</field>
+        <field name="model">audit.watchpoint</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="client_id"/>
+                <field name="element_id" optional="show"/>
+                <field name="description"/>
+                <field name="activity_ids" widget="list_activity" optional="show"/>
+                <field name="priority" widget="badge"
+                    decoration-danger="priority == 'high'"
+                    decoration-warning="priority == 'medium'"
+                    decoration-info="priority == 'low'"/>
+                <field name="source"/>
+                <field name="state" widget="badge"
+                    decoration-danger="state == 'open'"
+                    decoration-warning="state == 'in_progress'"
+                    decoration-success="state == 'resolved'"/>
+                <field name="assigned_to"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_audit_watchpoint_form" model="ir.ui.view">
+        <field name="name">audit.watchpoint.form</field>
+        <field name="model">audit.watchpoint</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <field name="state" widget="statusbar" statusbar_visible="open,in_progress,resolved"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="client_id"/>
+                            <field name="element_id"/>
+                            <field name="assigned_to"/>
+                        </group>
+                        <group>
+                            <field name="priority"/>
+                            <field name="source"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="description"/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_audit_watchpoint_search" model="ir.ui.view">
+        <field name="name">audit.watchpoint.search</field>
+        <field name="model">audit.watchpoint</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="client_id"/>
+                <field name="element_id"/>
+                <field name="description"/>
+                <filter name="open" string="Ouverts" domain="[('state', '=', 'open')]"/>
+                <filter name="in_progress" string="En cours" domain="[('state', '=', 'in_progress')]"/>
+                <filter name="high" string="Haute priorité" domain="[('priority', '=', 'high')]"/>
+                <separator/>
+                <filter name="my_activities" string="Mes activités"
+                    domain="[('activity_ids.user_id', '=', uid)]"/>
+                <filter name="late_activities" string="En retard"
+                    domain="[('activity_date_deadline', '&lt;', context_today().strftime('%Y-%m-%d'))]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="group_client" string="Client" context="{'group_by': 'client_id'}"/>
+                    <filter name="group_priority" string="Priorité" context="{'group_by': 'priority'}"/>
+                    <filter name="group_state" string="État" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_audit_watchpoint" model="ir.actions.act_window">
+        <field name="name">Points de vigilance</field>
+        <field name="res_model">audit.watchpoint</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+</odoo>

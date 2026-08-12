@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Form View -->
+    <record id="privacy_consent_group_form_view" model="ir.ui.view">
+        <field name="name">privacy.consent.group.form</field>
+        <field name="model">privacy.consent.group</field>
+        <field name="arch" type="xml">
+            <form string="Groupe de consentement">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Nom du groupe"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="sequence"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="active" invisible="1"/>
+                        </group>
+                        <group>
+                            <field name="notice_count"/>
+                        </group>
+                    </group>
+                    <separator string="Mod&#232;les de consentement inclus"/>
+                    <field name="notice_ids" widget="many2many_tags"
+                           options="{'no_create': True}"
+                           placeholder="Ajouter des mod&#232;les..."/>
+                    <field name="notice_ids" nolabel="1" mode="list">
+                        <list>
+                            <field name="name"/>
+                            <field name="purpose_code" string="Code"/>
+                            <field name="default_validity_days" string="Validit&#233; (jours)"/>
+                            <field name="requires_express_opt_in" string="Express"/>
+                        </list>
+                    </field>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- List View -->
+    <record id="privacy_consent_group_list_view" model="ir.ui.view">
+        <field name="name">privacy.consent.group.list</field>
+        <field name="model">privacy.consent.group</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="notice_count"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_privacy_consent_group" model="ir.actions.act_window">
+        <field name="name">Groupes de consentement</field>
+        <field name="res_model">privacy.consent.group</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Cr&#233;ez votre premier groupe de consentement
+            </p>
+            <p>
+                Les groupes permettent de demander plusieurs consentements simultan&#233;ment.
+            </p>
+        </field>
+    </record>
+</odoo>

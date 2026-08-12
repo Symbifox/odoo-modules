@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!--
+        Suppress the l10n_ca "TVP:" line that's injected after the styled
+        banner of external_layout_folder.
+
+        l10n_ca.l10n_ca_external_layout_folder adds:
+            <div t-if="company.account_fiscal_country_id.code == 'CA'
+                       and company.l10n_ca_pst">
+                TVP: <span t-field="company.l10n_ca_pst"/>
+            </div>
+        That `<div>` sits outside o_folder_company_info with no styling, so it
+        prints as bare text breaking the visual flow of the colored header
+        banner. The same tax number belongs in res.company.report_footer where
+        it's labelled correctly ("TVQ:") and styled with the rest of the
+        contact info. We drop the upstream injection here.
+
+        If the line is wanted back (different tenant, different label needs),
+        delete this template — l10n_ca's own template will take over again.
+    -->
+    <template id="suppress_l10n_ca_tvp_line"
+              inherit_id="l10n_ca.l10n_ca_external_layout_folder"
+              name="Suppress unstyled TVP line on folder layout">
+        <xpath expr="//div[contains(@t-if, 'l10n_ca_pst')]" position="replace">
+            <!-- intentionally empty: TVQ is shown via report_footer instead -->
+        </xpath>
+    </template>
+
+</odoo>

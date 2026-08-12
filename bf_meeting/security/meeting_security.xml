@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+
+        <record id="module_category_meeting" model="ir.module.category">
+            <field name="name">Rencontres</field>
+            <field name="sequence">34</field>
+        </record>
+
+        <record id="group_meeting_user" model="res.groups">
+            <field name="name">Utilisateur</field>
+            <field name="comment">Peut consulter et modifier les comptes rendus des projets auxquels il a accès.</field>
+            <field name="category_id" ref="module_category_meeting"/>
+            <field name="implied_ids" eval="[(4, ref('project.group_project_user'))]"/>
+        </record>
+
+        <record id="group_meeting_manager" model="res.groups">
+            <field name="name">Gestionnaire</field>
+            <field name="comment">Accès complet à tous les comptes rendus.</field>
+            <field name="category_id" ref="module_category_meeting"/>
+            <field name="implied_ids" eval="[(4, ref('bf_meeting.group_meeting_user'))]"/>
+            <field name="users" eval="[(4, ref('base.user_admin'))]"/>
+        </record>
+
+    </data>
+
+    <data noupdate="1">
+
+        <!-- Meeting records: users see only meetings of their projects -->
+        <record id="rule_meeting_record_user" model="ir.rule">
+            <field name="name">Comptes rendus : Membres du projet</field>
+            <field name="model_id" ref="model_meeting_record"/>
+            <field name="domain_force">[
+                '|',
+                ('project_id', '=', False),
+                ('project_id.message_partner_ids', 'in', [user.partner_id.id])
+            ]</field>
+            <field name="groups" eval="[(4, ref('group_meeting_user'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="rule_meeting_record_manager" model="ir.rule">
+            <field name="name">Comptes rendus : Accès complet gestionnaire</field>
+            <field name="model_id" ref="model_meeting_record"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_meeting_manager'))]"/>
+        </record>
+
+        <!-- Decisions: follow meeting access -->
+        <record id="rule_meeting_decision_user" model="ir.rule">
+            <field name="name">Décisions : Membres du projet</field>
+            <field name="model_id" ref="model_meeting_decision"/>
+            <field name="domain_force">[
+                '|',
+                ('meeting_id.project_id', '=', False),
+                ('meeting_id.project_id.message_partner_ids', 'in', [user.partner_id.id])
+            ]</field>
+            <field name="groups" eval="[(4, ref('group_meeting_user'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="rule_meeting_decision_manager" model="ir.rule">
+            <field name="name">Décisions : Accès complet gestionnaire</field>
+            <field name="model_id" ref="model_meeting_decision"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_meeting_manager'))]"/>
+        </record>
+
+        <!-- Topics: follow meeting access -->
+        <record id="rule_meeting_topic_user" model="ir.rule">
+            <field name="name">Sujets : Membres du projet</field>
+            <field name="model_id" ref="model_meeting_topic"/>
+            <field name="domain_force">[
+                '|',
+                ('meeting_id.project_id', '=', False),
+                ('meeting_id.project_id.message_partner_ids', 'in', [user.partner_id.id])
+            ]</field>
+            <field name="groups" eval="[(4, ref('group_meeting_user'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="rule_meeting_topic_manager" model="ir.rule">
+            <field name="name">Sujets : Accès complet gestionnaire</field>
+            <field name="model_id" ref="model_meeting_topic"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_meeting_manager'))]"/>
+        </record>
+
+        <!-- Agendas: follow project access -->
+        <record id="rule_meeting_agenda_user" model="ir.rule">
+            <field name="name">Ordres du jour : Membres du projet</field>
+            <field name="model_id" ref="model_meeting_agenda"/>
+            <field name="domain_force">[
+                '|',
+                ('project_id', '=', False),
+                ('project_id.message_partner_ids', 'in', [user.partner_id.id])
+            ]</field>
+            <field name="groups" eval="[(4, ref('group_meeting_user'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="rule_meeting_agenda_manager" model="ir.rule">
+            <field name="name">Ordres du jour : Accès complet gestionnaire</field>
+            <field name="model_id" ref="model_meeting_agenda"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_meeting_manager'))]"/>
+        </record>
+
+        <!-- Agenda topics: follow agenda access -->
+        <record id="rule_meeting_agenda_topic_user" model="ir.rule">
+            <field name="name">Sujets OdJ : Membres du projet</field>
+            <field name="model_id" ref="model_meeting_agenda_topic"/>
+            <field name="domain_force">[
+                '|',
+                ('agenda_id.project_id', '=', False),
+                ('agenda_id.project_id.message_partner_ids', 'in', [user.partner_id.id])
+            ]</field>
+            <field name="groups" eval="[(4, ref('group_meeting_user'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="rule_meeting_agenda_topic_manager" model="ir.rule">
+            <field name="name">Sujets OdJ : Accès complet gestionnaire</field>
+            <field name="model_id" ref="model_meeting_agenda_topic"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_meeting_manager'))]"/>
+        </record>
+
+        <!-- Attendance: follow meeting access -->
+        <record id="rule_meeting_attendance_user" model="ir.rule">
+            <field name="name">Présences : Membres du projet</field>
+            <field name="model_id" ref="model_meeting_attendance"/>
+            <field name="domain_force">[
+                '|',
+                ('meeting_id.project_id', '=', False),
+                ('meeting_id.project_id.message_partner_ids', 'in', [user.partner_id.id])
+            ]</field>
+            <field name="groups" eval="[(4, ref('group_meeting_user'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="rule_meeting_attendance_manager" model="ir.rule">
+            <field name="name">Présences : Accès complet gestionnaire</field>
+            <field name="model_id" ref="model_meeting_attendance"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_meeting_manager'))]"/>
+        </record>
+
+        <!-- Time-windowed attachments: scoped to meeting.record / meeting.agenda
+             only. Other attachments are unaffected. Managers (group_meeting_manager)
+             always see everything regardless of window. -->
+        <record id="rule_meeting_attachment_visibility_user" model="ir.rule">
+            <field name="name">Pièces jointes rencontres : fenêtre de visibilité</field>
+            <field name="model_id" ref="base.model_ir_attachment"/>
+            <field name="domain_force">[
+                '|',
+                ('res_model', 'not in', ['meeting.record', 'meeting.agenda']),
+                '&amp;',
+                '|', ('bf_visible_from', '=', False),
+                     ('bf_visible_from', '&lt;=', time.strftime('%Y-%m-%d %H:%M:%S')),
+                '|', ('bf_visible_until', '=', False),
+                     ('bf_visible_until', '&gt;=', time.strftime('%Y-%m-%d %H:%M:%S'))
+            ]</field>
+            <field name="groups" eval="[(4, ref('group_meeting_user'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+        <record id="rule_meeting_attachment_visibility_manager" model="ir.rule">
+            <field name="name">Pièces jointes rencontres : gestionnaire voit tout</field>
+            <field name="model_id" ref="base.model_ir_attachment"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_meeting_manager'))]"/>
+        </record>
+
+        <!-- Dashboard lines: the SQL view aggregates every meeting in the base,
+             so it needs the same guards as the models it reads from. These rules
+             cover the ORM paths (the list view opened by `open_filtered_list`);
+             the raw SQL in `get_dashboard_data()` re-implements them by hand —
+             keep the two in sync. -->
+        <record id="rule_meeting_dashboard_line_company" model="ir.rule">
+            <field name="name">Lignes tableau de bord : multi-société</field>
+            <field name="model_id" ref="model_meeting_dashboard_line"/>
+            <field name="domain_force">[
+                '|',
+                ('company_id', '=', False),
+                ('company_id', 'in', company_ids)
+            ]</field>
+            <field name="global" eval="True"/>
+        </record>
+
+        <record id="rule_meeting_dashboard_line_user" model="ir.rule">
+            <field name="name">Lignes tableau de bord : Membres du projet</field>
+            <field name="model_id" ref="model_meeting_dashboard_line"/>
+            <field name="domain_force">[
+                '|',
+                ('project_id', '=', False),
+                ('project_id.message_partner_ids', 'in', [user.partner_id.id])
+            ]</field>
+            <field name="groups" eval="[(4, ref('group_meeting_user'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="rule_meeting_dashboard_line_manager" model="ir.rule">
+            <field name="name">Lignes tableau de bord : Accès complet gestionnaire</field>
+            <field name="model_id" ref="model_meeting_dashboard_line"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_meeting_manager'))]"/>
+        </record>
+
+    </data>
+</odoo>

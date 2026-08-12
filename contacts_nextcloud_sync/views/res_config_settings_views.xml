@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form_nc_contacts_sync" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.nc.contacts.sync</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base_setup.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//app[@name='general_settings']" position="inside">
+                <block title="Nextcloud Contacts Sync" name="nc_contacts_sync">
+                    <setting string="Nextcloud Contacts Sync"
+                        help="Synchronize contacts with Nextcloud via CardDAV"
+                        id="nc_contacts_sync_setting">
+                        <div class="content-group">
+                            <div class="row mt8">
+                                <label for="nc_contacts_sync_default_config_id"
+                                    class="col-lg-4 o_light_label"/>
+                                <field name="nc_contacts_sync_default_config_id" class="col-lg-6"/>
+                            </div>
+                        </div>
+                        <div class="content-group mt16">
+                            <field name="nc_contacts_sync_cron_enabled"/>
+                            <div class="row mt8"
+                                invisible="not nc_contacts_sync_cron_enabled">
+                                <label for="nc_contacts_sync_cron_interval"
+                                    class="col-lg-4 o_light_label"/>
+                                <field name="nc_contacts_sync_cron_interval" class="col-lg-2"/>
+                            </div>
+                        </div>
+                        <div class="mt8">
+                            <button name="%(contacts_nextcloud_sync.action_nextcloud_contacts_sync_config)d"
+                                type="action" string="Configure Nextcloud Address Books"
+                                class="btn-link" icon="fa-arrow-right"/>
+                        </div>
+                    </setting>
+                </block>
+            </xpath>
+        </field>
+    </record>
+</odoo>

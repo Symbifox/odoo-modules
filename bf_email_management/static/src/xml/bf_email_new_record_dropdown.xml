@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="bf_email_management.NewRecordDropdown">
+        <Dropdown menuClass="'o_bf_email_new_menu'">
+            <button class="btn btn-secondary o-dropdown-caret" title="Créer un nouvel enregistrement à partir de ce courriel">
+                <i class="fa fa-plus me-1"/>Nouveau
+            </button>
+            <t t-set-slot="content">
+                <DropdownItem onSelected="() => this.createRecord('action_create_task')">Tâche</DropdownItem>
+                <DropdownItem t-if="props.record.data.has_crm"
+                              onSelected="() => this.createRecord('action_create_crm_lead')">Piste</DropdownItem>
+                <DropdownItem t-if="props.record.data.has_helpdesk"
+                              onSelected="() => this.createRecord('action_create_helpdesk_ticket')">Ticket</DropdownItem>
+                <DropdownItem t-if="props.record.data.has_expense"
+                              onSelected="() => this.createRecord('action_create_expense')">Dépense</DropdownItem>
+                <DropdownItem onSelected="() => this.createRecord('action_create_vendor_bill')">Facture fournisseur</DropdownItem>
+                <DropdownItem onSelected="() => this.createRecord('action_create_customer_invoice')">Facture client</DropdownItem>
+            </t>
+        </Dropdown>
+    </t>
+
+</templates>

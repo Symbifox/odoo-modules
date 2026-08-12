@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="subscription_rebill_wizard_form" model="ir.ui.view">
+        <field name="name">subscription.rebill.wizard.form</field>
+        <field name="model">subscription.rebill.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Refacturer au client">
+                <sheet>
+                    <group>
+                        <group string="Source">
+                            <field name="subscription_id" readonly="1"/>
+                            <field name="managed_for_id" readonly="1"/>
+                            <field name="vendor_bill_id"/>
+                            <field name="company_id" invisible="1"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                        <group string="Refacturation">
+                            <field name="mode" widget="radio"/>
+                            <field name="cost_amount"
+                                   invisible="mode == 'fixed_amount'"/>
+                            <field name="markup_percent"
+                                   invisible="mode != 'markup_percent'"/>
+                            <field name="fixed_amount"
+                                   invisible="mode != 'fixed_amount'"/>
+                            <field name="final_amount" readonly="1"/>
+                        </group>
+                    </group>
+                    <group string="Ligne de facture">
+                        <field name="line_description"/>
+                        <field name="product_id"/>
+                        <field name="invoice_date"/>
+                        <field name="journal_id"/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button name="action_create_invoice" type="object"
+                            string="Créer la facture client" class="btn-primary"/>
+                    <button string="Annuler" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_subscription_rebill_wizard" model="ir.actions.act_window">
+        <field name="name">Refacturer au client</field>
+        <field name="res_model">subscription.rebill.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

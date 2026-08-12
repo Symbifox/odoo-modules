@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="bf_phishing_result_view_list" model="ir.ui.view">
+        <field name="name">bf.phishing.result.list</field>
+        <field name="model">bf.phishing.result</field>
+        <field name="arch" type="xml">
+            <list create="false"
+                  decoration-danger="state == 'submitted'"
+                  decoration-warning="state == 'clicked'"
+                  decoration-success="reported">
+                <field name="partner_id"/>
+                <field name="campaign_id"/>
+                <field name="state" widget="badge"
+                       decoration-danger="state == 'submitted'"
+                       decoration-warning="state == 'clicked'"/>
+                <field name="reported"/>
+                <field name="opened_datetime"/>
+                <field name="clicked_datetime"/>
+                <field name="click_ip" optional="hide"/>
+                <field name="bounced" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_phishing_result_view_form" model="ir.ui.view">
+        <field name="name">bf.phishing.result.form</field>
+        <field name="model">bf.phishing.result</field>
+        <field name="arch" type="xml">
+            <form create="false">
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="partner_id" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="campaign_id" readonly="1"/>
+                            <field name="email" readonly="1"/>
+                            <field name="state" readonly="1"/>
+                            <field name="reported" readonly="1"/>
+                            <field name="bounced" readonly="1"/>
+                            <field name="training_assignment_id" readonly="1"/>
+                        </group>
+                        <group string="Horodatage">
+                            <field name="sent_datetime" readonly="1"/>
+                            <field name="opened_datetime" readonly="1"/>
+                            <field name="clicked_datetime" readonly="1"/>
+                            <field name="submitted_datetime" readonly="1"/>
+                            <field name="reported_datetime" readonly="1"/>
+                        </group>
+                    </group>
+                    <group string="Soumission du faux formulaire">
+                        <field name="credentials_submitted" readonly="1"/>
+                        <field name="submitted_username_len" readonly="1"/>
+                        <field name="submitted_password_len" readonly="1"/>
+                        <field name="click_ip" readonly="1"/>
+                        <field name="click_country_id" readonly="1"/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="bf_phishing_result_view_search" model="ir.ui.view">
+        <field name="name">bf.phishing.result.search</field>
+        <field name="model">bf.phishing.result</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="partner_id"/>
+                <field name="campaign_id"/>
+                <filter name="submitted" string="Identifiants soumis"
+                        domain="[('state','=','submitted')]"/>
+                <filter name="clicked" string="A cliqué"
+                        domain="[('state','in',('clicked','submitted'))]"/>
+                <filter name="reported" string="A signalé"
+                        domain="[('reported','=',True)]"/>
+                <filter name="bounced" string="Rejeté"
+                        domain="[('bounced','=',True)]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="group_campaign" string="Campagne"
+                            context="{'group_by': 'campaign_id'}"/>
+                    <filter name="group_state" string="État"
+                            context="{'group_by': 'state'}"/>
+                    <filter name="group_partner" string="Personne"
+                            context="{'group_by': 'partner_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="bf_phishing_result_view_pivot" model="ir.ui.view">
+        <field name="name">bf.phishing.result.pivot</field>
+        <field name="model">bf.phishing.result</field>
+        <field name="arch" type="xml">
+            <pivot>
+                <field name="campaign_id" type="row"/>
+                <field name="state" type="col"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="bf_phishing_result_view_graph" model="ir.ui.view">
+        <field name="name">bf.phishing.result.graph</field>
+        <field name="model">bf.phishing.result</field>
+        <field name="arch" type="xml">
+            <graph type="bar">
+                <field name="campaign_id"/>
+                <field name="state"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="bf_phishing_result_action" model="ir.actions.act_window">
+        <field name="name">Résultats</field>
+        <field name="res_model">bf.phishing.result</field>
+        <field name="view_mode">list,form,pivot,graph</field>
+        <field name="search_view_id" ref="bf_phishing_result_view_search"/>
+    </record>
+
+</odoo>

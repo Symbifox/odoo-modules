@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- ── Invitation to sign (sent per signer → model bf.sign.signer) ── -->
+        <record id="mail_template_sign_request" model="mail.template">
+            <field name="name">Signature — invitation à signer</field>
+            <field name="model_id" ref="model_bf_sign_signer"/>
+            <field name="subject">Signature requise : {{ object.request_id.name }}</field>
+            <field name="email_from">{{ (object.request_id.company_id.email_formatted or user.email_formatted) }}</field>
+            <field name="email_to">{{ object.email }}</field>
+            <field name="body_html" type="html">
+                <t t-set="company" t-value="object.request_id.company_id"/>
+                <t t-set="primary" t-value="company.report_brand_primary or '#29ABE1'"/>
+                <t t-set="dark" t-value="company.report_brand_dark or '#2D3031'"/>
+                <div style="font-family:Lexend,system-ui,Arial,sans-serif; color:#2D3031; font-size:14px; line-height:1.55; max-width:600px; margin:0 auto;">
+                    <div t-attf-style="background:#{dark}; padding:18px 24px; border-radius:10px 10px 0 0;">
+                        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;"><tbody><tr>
+                            <td align="left" style="vertical-align:middle;">
+                                <img t-attf-src="/web/image/res.company/#{company.id}/#{company.report_brand_logo and 'report_brand_logo' or 'logo'}" t-att-alt="company.name" style="height:36px; display:block; border:0;"/>
+                            </td>
+                            <td align="right" style="vertical-align:middle; color:#ffffff; font-family:Lexend,system-ui,Arial,sans-serif; font-size:20px; font-weight:700;">Signature requise</td>
+                        </tr></tbody></table>
+                    </div>
+                    <div t-attf-style="height:4px; background:#{primary};"/>
+                    <div style="background:#ffffff; border:1px solid #e3e7eb; border-top:0; padding:24px; border-radius:0 0 10px 10px;">
+                        <p>Bonjour <t t-out="object.name or ''"/>,</p>
+                        <p><t t-out="company.name"/> vous invite à signer électroniquement le document
+                            <strong t-out="object.request_id.name"/>.</p>
+                        <p style="margin:24px 0;">
+                            <a t-att-href="object._signing_url()"
+                               t-attf-style="background:#{primary}; color:#ffffff; text-decoration:none; padding:12px 26px; border-radius:8px; font-weight:600; display:inline-block;">
+                                Consulter et signer</a>
+                        </p>
+                        <p style="color:#777; font-size:12px;">Si le bouton ne fonctionne pas, copiez ce lien dans votre navigateur :<br/>
+                            <a t-att-href="object._signing_url()" t-out="object._signing_url()"/></p>
+                        <p style="color:#777; font-size:12px;">Ce lien vous est personnel. La signature est horodatée et journalisée à des fins de preuve.</p>
+                    </div>
+                    <div style="text-align:center; color:#9aa4ad; font-size:12px; padding:14px;"><t t-out="company.name"/></div>
+                </div>
+            </field>
+            <field name="lang">{{ object.request_id.create_uid.lang or 'fr_CA' }}</field>
+            <field name="auto_delete" eval="False"/>
+        </record>
+
+        <!-- ── Reminder (sent per signer → model bf.sign.signer) ── -->
+        <record id="mail_template_sign_reminder" model="mail.template">
+            <field name="name">Signature — relance</field>
+            <field name="model_id" ref="model_bf_sign_signer"/>
+            <field name="subject">Rappel — signature en attente : {{ object.request_id.name }}</field>
+            <field name="email_from">{{ (object.request_id.company_id.email_formatted or user.email_formatted) }}</field>
+            <field name="email_to">{{ object.email }}</field>
+            <field name="body_html" type="html">
+                <t t-set="company" t-value="object.request_id.company_id"/>
+                <t t-set="primary" t-value="company.report_brand_primary or '#29ABE1'"/>
+                <t t-set="dark" t-value="company.report_brand_dark or '#2D3031'"/>
+                <div style="font-family:Lexend,system-ui,Arial,sans-serif; color:#2D3031; font-size:14px; line-height:1.55; max-width:600px; margin:0 auto;">
+                    <div t-attf-style="background:#{dark}; padding:18px 24px; border-radius:10px 10px 0 0;">
+                        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;"><tbody><tr>
+                            <td align="left" style="vertical-align:middle;">
+                                <img t-attf-src="/web/image/res.company/#{company.id}/#{company.report_brand_logo and 'report_brand_logo' or 'logo'}" t-att-alt="company.name" style="height:36px; display:block; border:0;"/>
+                            </td>
+                            <td align="right" style="vertical-align:middle; color:#ffffff; font-family:Lexend,system-ui,Arial,sans-serif; font-size:20px; font-weight:700;">Signature en attente</td>
+                        </tr></tbody></table>
+                    </div>
+                    <div t-attf-style="height:4px; background:#{primary};"/>
+                    <div style="background:#ffffff; border:1px solid #e3e7eb; border-top:0; padding:24px; border-radius:0 0 10px 10px;">
+                        <p>Bonjour <t t-out="object.name or ''"/>,</p>
+                        <p>Le document <strong t-out="object.request_id.name"/> attend toujours votre
+                            signature.</p>
+                        <p t-if="object.request_id.expiry_date">Ce lien cesse de fonctionner le
+                            <strong t-out="format_datetime(object.request_id.expiry_date, tz=user.tz, dt_format='d MMMM y')"/>.</p>
+                        <p style="margin:24px 0;">
+                            <a t-att-href="object._signing_url()"
+                               t-attf-style="background:#{primary}; color:#ffffff; text-decoration:none; padding:12px 26px; border-radius:8px; font-weight:600; display:inline-block;">
+                                Consulter et signer</a>
+                        </p>
+                        <p style="color:#777; font-size:12px;">Si le bouton ne fonctionne pas, copiez ce lien dans votre navigateur :<br/>
+                            <a t-att-href="object._signing_url()" t-out="object._signing_url()"/></p>
+                        <p style="color:#777; font-size:12px;">Si vous avez déjà signé, ce message peut être ignoré.
+                            Si vous n'êtes pas la bonne personne, répondez à ce courriel pour nous le dire.</p>
+                    </div>
+                    <div style="text-align:center; color:#9aa4ad; font-size:12px; padding:14px;"><t t-out="company.name"/></div>
+                </div>
+            </field>
+            <field name="lang">{{ object.request_id.create_uid.lang or 'fr_CA' }}</field>
+            <field name="auto_delete" eval="False"/>
+        </record>
+
+        <!-- ── Completion (sent once to all signers → model bf.sign.request) ── -->
+        <record id="mail_template_sign_completed" model="mail.template">
+            <field name="name">Signature — document signé</field>
+            <field name="model_id" ref="model_bf_sign_request"/>
+            <field name="subject">Document signé : {{ object.name }}</field>
+            <field name="email_from">{{ (object.company_id.email_formatted or user.email_formatted) }}</field>
+            <field name="email_to">{{ ','.join(object.signer_ids.mapped('email')) }}</field>
+            <field name="email_cc">{{ object.create_uid.email or '' }}</field>
+            <field name="body_html" type="html">
+                <t t-set="company" t-value="object.company_id"/>
+                <t t-set="primary" t-value="company.report_brand_primary or '#29ABE1'"/>
+                <t t-set="dark" t-value="company.report_brand_dark or '#2D3031'"/>
+                <div style="font-family:Lexend,system-ui,Arial,sans-serif; color:#2D3031; font-size:14px; line-height:1.55; max-width:600px; margin:0 auto;">
+                    <div t-attf-style="background:#{dark}; padding:18px 24px; border-radius:10px 10px 0 0;">
+                        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;"><tbody><tr>
+                            <td align="left" style="vertical-align:middle;">
+                                <img t-attf-src="/web/image/res.company/#{company.id}/#{company.report_brand_logo and 'report_brand_logo' or 'logo'}" t-att-alt="company.name" style="height:36px; display:block; border:0;"/>
+                            </td>
+                            <td align="right" style="vertical-align:middle; color:#ffffff; font-family:Lexend,system-ui,Arial,sans-serif; font-size:20px; font-weight:700;">Document signé</td>
+                        </tr></tbody></table>
+                    </div>
+                    <div t-attf-style="height:4px; background:#{primary};"/>
+                    <div style="background:#ffffff; border:1px solid #e3e7eb; border-top:0; padding:24px; border-radius:0 0 10px 10px;">
+                        <p>Bonjour,</p>
+                        <p>Le document <strong t-out="object.name"/> a été signé par tous les signataires
+                            (<t t-out="object.signer_count"/>). Vous trouverez ci-joint le document signé ainsi
+                            que le certificat de signature (preuve d'intégrité et piste de vérification).</p>
+                        <p style="color:#777; font-size:12px;">Empreinte SHA-256 du document scellé :<br/>
+                            <span style="font-family:monospace; word-break:break-all;" t-out="object.hash_signed or ''"/></p>
+                        <p>Merci,<br/><t t-out="company.name"/></p>
+                    </div>
+                    <div style="text-align:center; color:#9aa4ad; font-size:12px; padding:14px;"><t t-out="company.name"/></div>
+                </div>
+            </field>
+            <field name="lang">{{ object.create_uid.lang or 'fr_CA' }}</field>
+            <field name="auto_delete" eval="False"/>
+        </record>
+
+        <!-- ── Refusal (sent to the requester → model bf.sign.request) ── -->
+        <record id="mail_template_sign_refused" model="mail.template">
+            <field name="name">Signature — refusée</field>
+            <field name="model_id" ref="model_bf_sign_request"/>
+            <field name="subject">Signature refusée : {{ object.name }}</field>
+            <field name="email_from">{{ (object.company_id.email_formatted or user.email_formatted) }}</field>
+            <field name="email_to">{{ object.create_uid.email or '' }}</field>
+            <field name="body_html" type="html">
+                <t t-set="company" t-value="object.company_id"/>
+                <t t-set="primary" t-value="company.report_brand_primary or '#29ABE1'"/>
+                <t t-set="dark" t-value="company.report_brand_dark or '#2D3031'"/>
+                <t t-set="refused" t-value="object.signer_ids.filtered(lambda s: s.state == 'refused')[:1]"/>
+                <div style="font-family:Lexend,system-ui,Arial,sans-serif; color:#2D3031; font-size:14px; line-height:1.55; max-width:600px; margin:0 auto;">
+                    <div t-attf-style="background:#{dark}; padding:18px 24px; border-radius:10px 10px 0 0;">
+                        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;"><tbody><tr>
+                            <td align="left" style="vertical-align:middle;">
+                                <img t-attf-src="/web/image/res.company/#{company.id}/#{company.report_brand_logo and 'report_brand_logo' or 'logo'}" t-att-alt="company.name" style="height:36px; display:block; border:0;"/>
+                            </td>
+                            <td align="right" style="vertical-align:middle; color:#ffffff; font-family:Lexend,system-ui,Arial,sans-serif; font-size:20px; font-weight:700;">Signature refusée</td>
+                        </tr></tbody></table>
+                    </div>
+                    <div t-attf-style="height:4px; background:#{primary};"/>
+                    <div style="background:#ffffff; border:1px solid #e3e7eb; border-top:0; padding:24px; border-radius:0 0 10px 10px;">
+                        <p>Bonjour,</p>
+                        <p>La demande de signature <strong t-out="object.name"/> a été
+                            <strong>refusée</strong><t t-if="refused"> par <t t-out="refused.name"/>
+                            (<t t-out="refused.email"/>)</t>.</p>
+                        <p style="color:#777; font-size:12px;">Le détail et le motif éventuel figurent dans la piste de vérification de la demande.</p>
+                        <p>— <t t-out="company.name"/></p>
+                    </div>
+                    <div style="text-align:center; color:#9aa4ad; font-size:12px; padding:14px;"><t t-out="company.name"/></div>
+                </div>
+            </field>
+            <field name="lang">{{ object.create_uid.lang or 'fr_CA' }}</field>
+            <field name="auto_delete" eval="False"/>
+        </record>
+
+    </data>
+</odoo>

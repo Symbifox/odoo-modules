@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="bf_sign.Placement">
+        <div class="bf-placement" t-ref="root">
+            <t t-if="state.message">
+                <div class="alert alert-info mb-2" t-esc="state.message"/>
+                <button type="button" class="btn btn-sm btn-secondary"
+                        t-on-click="() => this.forceReload()">Recharger</button>
+            </t>
+            <t t-else="">
+                <div class="bf-template-bar">
+                    <span class="me-1">Modèle :</span>
+                    <select class="form-select form-select-sm bf-template-select"
+                            t-on-change="onTemplateChange">
+                        <option value="">—</option>
+                        <t t-foreach="state.templates" t-as="tpl" t-key="tpl.id">
+                            <option t-att-value="tpl.id"
+                                    t-att-selected="tpl.id + '' === state.selectedTemplate ? 'selected' : undefined">
+                                <t t-esc="tpl.name"/>
+                            </option>
+                        </t>
+                    </select>
+                    <button type="button" class="btn btn-sm btn-outline-primary ms-1"
+                            t-on-click="() => this.applyTemplate()">Appliquer</button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary ms-1"
+                            t-on-click="() => this.saveTemplate()">Enregistrer comme modèle</button>
+                </div>
+                <div class="bf-toolbar">
+                    <span class="me-1">Signataire :</span>
+                    <select class="form-select form-select-sm bf-signer-select"
+                            t-on-change="onSignerChange">
+                        <t t-foreach="state.signers" t-as="s" t-key="s.id">
+                            <option t-att-value="s.id"
+                                    t-att-selected="s.id === state.activeSignerId ? 'selected' : undefined">
+                                <t t-esc="s.name"/>
+                            </option>
+                        </t>
+                    </select>
+                    <span class="bf-color-dot" t-attf-style="background:{{activeColor()}};"/>
+                    <span class="ms-3 me-1">Ajouter :</span>
+                    <button type="button" class="btn btn-sm btn-secondary me-1"
+                            t-att-class="{'active': state.armedType === 'signature'}"
+                            t-on-click="() => this.arm('signature')">Signature</button>
+                    <button type="button" class="btn btn-sm btn-secondary me-1"
+                            t-att-class="{'active': state.armedType === 'initials'}"
+                            t-on-click="() => this.arm('initials')">Paraphe</button>
+                    <button type="button" class="btn btn-sm btn-secondary me-1"
+                            t-att-class="{'active': state.armedType === 'date'}"
+                            t-on-click="() => this.arm('date')">Date</button>
+                    <button type="button" class="btn btn-sm btn-secondary me-1"
+                            t-att-class="{'active': state.armedType === 'text'}"
+                            t-on-click="() => this.arm('text')">Texte</button>
+                    <button type="button" class="btn btn-sm btn-secondary me-1"
+                            t-att-class="{'active': state.armedType === 'name'}"
+                            t-on-click="() => this.arm('name')">Nom</button>
+                    <button type="button" class="btn btn-sm btn-secondary me-1"
+                            t-att-class="{'active': state.armedType === 'email'}"
+                            t-on-click="() => this.arm('email')">Courriel</button>
+                    <button type="button" class="btn btn-sm btn-secondary me-1"
+                            t-att-class="{'active': state.armedType === 'number'}"
+                            t-on-click="() => this.arm('number')">Nombre</button>
+                    <button type="button" class="btn btn-sm btn-secondary me-1"
+                            t-att-class="{'active': state.armedType === 'checkbox'}"
+                            t-on-click="() => this.arm('checkbox')">Case</button>
+                    <button type="button" class="btn btn-sm btn-light ms-auto"
+                            t-on-click="() => this.forceReload()">Recharger</button>
+                </div>
+
+                <div class="bf-toolbar bf-toolbar-aids">
+                    <label class="bf-aid">
+                        <input type="checkbox" t-att-checked="state.snapOn"
+                               t-on-change="() => this.toggleSnap()"/>
+                        <span>Magnétisme</span>
+                    </label>
+                    <label class="bf-aid">
+                        <input type="checkbox" t-att-checked="state.gridVisible"
+                               t-att-disabled="!state.snapOn"
+                               t-on-change="() => this.toggleGridVisible()"/>
+                        <span>Afficher la grille</span>
+                    </label>
+                    <select class="form-select form-select-sm bf-grid-step"
+                            t-att-disabled="!state.snapOn"
+                            t-on-change="onGridStepChange">
+                        <t t-foreach="gridSteps" t-as="gs" t-key="gs">
+                            <option t-att-value="gs"
+                                    t-att-selected="gs === state.gridStep ? 'selected' : undefined">
+                                <t t-esc="gs"/> px
+                            </option>
+                        </t>
+                    </select>
+                    <label class="bf-aid ms-3">
+                        <input type="checkbox" t-att-checked="state.keepArmed"
+                               t-on-change="() => this.toggleKeepArmed()"/>
+                        <span>Pose en continu</span>
+                    </label>
+                    <span class="text-muted small ms-3">
+                        Flèches pour déplacer, Maj pour le pas fin, Alt pour ignorer le
+                        magnétisme, Ctrl+D pour dupliquer, Suppr pour retirer.
+                    </span>
+                </div>
+
+                <t t-set="sel" t-value="selectedField"/>
+                <div class="bf-props" t-if="sel">
+                    <span class="bf-props-title">Pavé sélectionné</span>
+                    <select class="form-select form-select-sm"
+                            t-on-change="(ev) => this.setFieldSigner(sel, ev.target.value)">
+                        <t t-foreach="state.signers" t-as="s" t-key="s.id">
+                            <option t-att-value="s.id"
+                                    t-att-selected="s.id === sel.signerId ? 'selected' : undefined">
+                                <t t-esc="s.name"/>
+                            </option>
+                        </t>
+                    </select>
+                    <t t-if="isValueType(sel)">
+                        <select class="form-select form-select-sm"
+                                t-on-change="(ev) => this.setFillMode(sel, ev.target.value)">
+                            <option value="signer"
+                                    t-att-selected="sel.fill_mode === 'signer' ? 'selected' : undefined">
+                                Rempli par le signataire
+                            </option>
+                            <option value="fixed"
+                                    t-att-selected="sel.fill_mode === 'fixed' ? 'selected' : undefined">
+                                Valeur fixe
+                            </option>
+                            <option t-if="allowsAuto(sel)" value="auto"
+                                    t-att-selected="sel.fill_mode === 'auto' ? 'selected' : undefined">
+                                Automatique
+                            </option>
+                        </select>
+                        <t t-if="sel.fill_mode !== 'auto'">
+                            <span class="bf-props-lbl" t-esc="valueLabelFor(sel)"/>
+                            <input type="text" class="form-control form-control-sm bf-props-value"
+                                   t-att-value="sel.value_text || ''"
+                                   t-att-placeholder="valuePlaceholderFor(sel)"
+                                   t-on-change="(ev) => this.setValueText(sel, ev.target.value)"/>
+                        </t>
+                        <label class="bf-aid" t-if="sel.fill_mode === 'signer'">
+                            <input type="checkbox" t-att-checked="sel.required"
+                                   t-on-change="(ev) => this.setRequired(sel, ev.target.checked)"/>
+                            <span>Obligatoire</span>
+                        </label>
+                    </t>
+                    <span class="bf-props-order" t-if="orderIndexFor(sel)">
+                        Rang <b t-esc="orderIndexFor(sel)"/> pour ce signataire
+                    </span>
+                    <button type="button" class="btn btn-sm btn-outline-secondary"
+                            title="Monter dans l'ordre présenté au signataire"
+                            t-on-click="() => this.moveField(sel, -1)">▲</button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary"
+                            title="Descendre dans l'ordre présenté au signataire"
+                            t-on-click="() => this.moveField(sel, 1)">▼</button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary"
+                            title="Dupliquer le pavé (Ctrl+D)"
+                            t-on-click="() => this.duplicateField(sel)">Dupliquer</button>
+                    <button type="button" class="btn btn-sm btn-outline-danger ms-auto"
+                            t-on-click="() => this.removeField(sel)">Retirer</button>
+                </div>
+
+                <div class="text-muted small mb-2">
+                    Les pavés sont enregistrés immédiatement (indépendamment du bouton Enregistrer).
+                </div>
+
+                <div class="bf-pages">
+                    <t t-foreach="state.pages" t-as="pg" t-key="pg.num">
+                        <div t-attf-class="bf-page{{state.armedType ? ' bf-page-armed' : ''}}"
+                             t-att-data-page="pg.num"
+                             t-attf-style="width:{{pg.w}}px;height:{{pg.h}}px;"
+                             t-on-click="(ev) => this.onPageClick(ev, pg)">
+                            <img class="bf-page-img" t-att-src="pg.img" alt=""/>
+                            <div class="bf-grid" t-if="state.snapOn &amp;&amp; state.gridVisible"
+                                 t-attf-style="{{gridStyle()}}"/>
+                            <t t-foreach="guidesForPage(pg.num)" t-as="g" t-key="g.axis + '-' + g.at">
+                                <div class="bf-guide" t-attf-style="{{guideStyle(g, pg)}}"/>
+                            </t>
+                            <t t-foreach="fieldsForPage(pg.num)" t-as="f" t-key="f.id">
+                                <div t-att-class="boxClass(f)" t-attf-style="{{boxStyle(f, pg)}}"
+                                     t-on-click.stop="() => this.selectField(f)"
+                                     t-on-pointerdown="(ev) => this.startDrag(ev, f, pg)">
+                                    <span class="bf-box-order" t-if="orderIndexFor(f)"
+                                          t-esc="orderIndexFor(f)"/>
+                                    <span class="bf-box-label" t-esc="labelFor(f)"/>
+                                    <span class="bf-box-del"
+                                          t-on-pointerdown.stop=""
+                                          t-on-click.stop="() => this.removeField(f)">×</span>
+                                    <span class="bf-box-resize"
+                                          t-on-pointerdown.stop="(ev) => this.startResize(ev, f, pg)"/>
+                                </div>
+                            </t>
+                        </div>
+                    </t>
+                </div>
+            </t>
+        </div>
+    </t>
+
+</templates>

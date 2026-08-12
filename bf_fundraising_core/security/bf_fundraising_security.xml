@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+<odoo>
+    <data noupdate="1">
+        <!-- Multi-company isolation on the fundraising structure objects. -->
+        <record id="bf_fund_company_rule" model="ir.rule">
+            <field name="name">Fonds : multi-société</field>
+            <field name="model_id" ref="model_bf_fund" />
+            <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        </record>
+        <record id="bf_appeal_company_rule" model="ir.rule">
+            <field name="name">Sollicitations : multi-société</field>
+            <field name="model_id" ref="model_bf_appeal" />
+            <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        </record>
+        <record id="bf_package_company_rule" model="ir.rule">
+            <field name="name">Trousses : multi-société</field>
+            <field name="model_id" ref="model_bf_package" />
+            <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        </record>
+    </data>
+</odoo>

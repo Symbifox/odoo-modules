@@ -1,0 +1,623 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Citations d'artistes, révolutionnaires, poètes et rêveurs -->
+        <!-- Thèmes: mutualisme, entraide, solidarité, liberté, créativité -->
+
+        <!-- ANARCHISTES ET PENSEURS DU MUTUALISME -->
+        <record id="quote_01" model="daily.digest.quote">
+            <field name="quote">La propriété, c'est le vol.</field>
+            <field name="author">Pierre-Joseph Proudhon</field>
+        </record>
+
+        <record id="quote_02" model="daily.digest.quote">
+            <field name="quote">L'anarchie, c'est l'ordre sans le pouvoir.</field>
+            <field name="author">Pierre-Joseph Proudhon</field>
+        </record>
+
+        <record id="quote_03" model="daily.digest.quote">
+            <field name="quote">L'entraide est le facteur le plus important de l'évolution.</field>
+            <field name="author">Pierre Kropotkine</field>
+        </record>
+
+        <record id="quote_04" model="daily.digest.quote">
+            <field name="quote">Le bonheur des autres est indispensable à notre propre bonheur.</field>
+            <field name="author">Pierre Kropotkine</field>
+        </record>
+
+        <record id="quote_05" model="daily.digest.quote">
+            <field name="quote">Si je ne peux pas danser, ce n'est pas ma révolution.</field>
+            <field name="author">Emma Goldman</field>
+        </record>
+
+        <record id="quote_06" model="daily.digest.quote">
+            <field name="quote">La vraie émancipation commence dans l'âme de la femme.</field>
+            <field name="author">Emma Goldman</field>
+        </record>
+
+        <record id="quote_07" model="daily.digest.quote">
+            <field name="quote">Personne n'est libre tant que tout le monde ne l'est pas.</field>
+            <field name="author">Michael Bakunin</field>
+        </record>
+
+        <!-- POÈTES ET ÉCRIVAINS -->
+        <record id="quote_08" model="daily.digest.quote">
+            <field name="quote">On n'est pas sérieux quand on a dix-sept ans.</field>
+            <field name="author">Arthur Rimbaud</field>
+        </record>
+
+        <record id="quote_09" model="daily.digest.quote">
+            <field name="quote">Il faut être absolument moderne.</field>
+            <field name="author">Arthur Rimbaud</field>
+        </record>
+
+        <record id="quote_10" model="daily.digest.quote">
+            <field name="quote">Ceux qui vivent, ce sont ceux qui luttent.</field>
+            <field name="author">Victor Hugo</field>
+        </record>
+
+        <record id="quote_11" model="daily.digest.quote">
+            <field name="quote">La mélancolie, c'est le bonheur d'être triste.</field>
+            <field name="author">Victor Hugo</field>
+        </record>
+
+        <record id="quote_12" model="daily.digest.quote">
+            <field name="quote">Je voudrais faire avec toi ce que le printemps fait avec les cerisiers.</field>
+            <field name="author">Pablo Neruda</field>
+        </record>
+
+        <record id="quote_13" model="daily.digest.quote">
+            <field name="quote">Vous pouvez couper toutes les fleurs, mais vous ne pouvez pas empêcher le printemps de revenir.</field>
+            <field name="author">Pablo Neruda</field>
+        </record>
+
+        <record id="quote_14" model="daily.digest.quote">
+            <field name="quote">La poésie est un acte de paix.</field>
+            <field name="author">Pablo Neruda</field>
+        </record>
+
+        <record id="quote_15" model="daily.digest.quote">
+            <field name="quote">Je vais rêver, mais non dormir.</field>
+            <field name="author">Federico García Lorca</field>
+        </record>
+
+        <record id="quote_16" model="daily.digest.quote">
+            <field name="quote">Comme je ne me suis pas soucié de naître, je ne me soucie pas de mourir.</field>
+            <field name="author">Federico García Lorca</field>
+        </record>
+
+        <record id="quote_17" model="daily.digest.quote">
+            <field name="quote">En plein milieu de l'hiver, j'apprenais enfin qu'il y avait en moi un été invincible.</field>
+            <field name="author">Albert Camus</field>
+        </record>
+
+        <record id="quote_18" model="daily.digest.quote">
+            <field name="quote">Il faut imaginer Sisyphe heureux.</field>
+            <field name="author">Albert Camus</field>
+        </record>
+
+        <record id="quote_19" model="daily.digest.quote">
+            <field name="quote">La vraie générosité envers l'avenir consiste à tout donner au présent.</field>
+            <field name="author">Albert Camus</field>
+        </record>
+
+        <record id="quote_20" model="daily.digest.quote">
+            <field name="quote">Je me révolte, donc nous sommes.</field>
+            <field name="author">Albert Camus</field>
+        </record>
+
+        <record id="quote_21" model="daily.digest.quote">
+            <field name="quote">On ne naît pas femme, on le devient.</field>
+            <field name="author">Simone de Beauvoir</field>
+        </record>
+
+        <record id="quote_22" model="daily.digest.quote">
+            <field name="quote">Le présent n'est pas un passé en puissance, il est le moment du choix et de l'action.</field>
+            <field name="author">Simone de Beauvoir</field>
+        </record>
+
+        <record id="quote_23" model="daily.digest.quote">
+            <field name="quote">La révolution ne consiste pas à montrer la vie aux gens, mais à les faire vivre.</field>
+            <field name="author">Guy Debord</field>
+        </record>
+
+        <record id="quote_24" model="daily.digest.quote">
+            <field name="quote">L'utopie est à l'horizon. Je fais deux pas, elle s'éloigne de deux pas. Je fais dix pas et l'horizon recule de dix pas. Alors à quoi sert l'utopie? Elle sert à ça : à marcher.</field>
+            <field name="author">Eduardo Galeano</field>
+        </record>
+
+        <record id="quote_25" model="daily.digest.quote">
+            <field name="quote">L'histoire est un prophète qui regarde en arrière.</field>
+            <field name="author">Eduardo Galeano</field>
+        </record>
+
+        <record id="quote_26" model="daily.digest.quote">
+            <field name="quote">Ne demande jamais ton chemin à quelqu'un qui le connaît, car tu ne pourras pas t'égarer.</field>
+            <field name="author">Rabbi Nachman de Bratslav</field>
+        </record>
+
+        <!-- ARTISTES -->
+        <record id="quote_27" model="daily.digest.quote">
+            <field name="quote">Je peins des fleurs pour qu'elles ne meurent pas.</field>
+            <field name="author">Frida Kahlo</field>
+        </record>
+
+        <record id="quote_28" model="daily.digest.quote">
+            <field name="quote">Pieds, pourquoi en ai-je besoin si j'ai des ailes pour voler?</field>
+            <field name="author">Frida Kahlo</field>
+        </record>
+
+        <record id="quote_29" model="daily.digest.quote">
+            <field name="quote">Je ne peins pas des rêves ou des cauchemars, je peins ma propre réalité.</field>
+            <field name="author">Frida Kahlo</field>
+        </record>
+
+        <record id="quote_30" model="daily.digest.quote">
+            <field name="quote">L'art lave notre âme de la poussière du quotidien.</field>
+            <field name="author">Pablo Picasso</field>
+        </record>
+
+        <record id="quote_31" model="daily.digest.quote">
+            <field name="quote">Certains peintres transforment le soleil en un point jaune, d'autres transforment un point jaune en soleil.</field>
+            <field name="author">Pablo Picasso</field>
+        </record>
+
+        <record id="quote_32" model="daily.digest.quote">
+            <field name="quote">Je ne cherche pas, je trouve.</field>
+            <field name="author">Pablo Picasso</field>
+        </record>
+
+        <record id="quote_33" model="daily.digest.quote">
+            <field name="quote">Le monde est un livre et ceux qui ne voyagent pas n'en lisent qu'une page.</field>
+            <field name="author">Augustin d'Hippone</field>
+        </record>
+
+        <!-- OSCAR WILDE -->
+        <record id="quote_34" model="daily.digest.quote">
+            <field name="quote">Soyez vous-même, tous les autres sont déjà pris.</field>
+            <field name="author">Oscar Wilde</field>
+        </record>
+
+        <record id="quote_35" model="daily.digest.quote">
+            <field name="quote">Nous sommes tous dans le caniveau, mais certains d'entre nous regardent les étoiles.</field>
+            <field name="author">Oscar Wilde</field>
+        </record>
+
+        <record id="quote_36" model="daily.digest.quote">
+            <field name="quote">La désobéissance est la vertu originelle de l'homme.</field>
+            <field name="author">Oscar Wilde</field>
+        </record>
+
+        <record id="quote_37" model="daily.digest.quote">
+            <field name="quote">La carte du monde qui n'inclut pas l'Utopie ne vaut pas qu'on y jette un coup d'œil.</field>
+            <field name="author">Oscar Wilde</field>
+        </record>
+
+        <!-- KHALIL GIBRAN -->
+        <record id="quote_38" model="daily.digest.quote">
+            <field name="quote">Le travail est l'amour rendu visible.</field>
+            <field name="author">Khalil Gibran</field>
+        </record>
+
+        <record id="quote_39" model="daily.digest.quote">
+            <field name="quote">Vos enfants ne sont pas vos enfants. Ils sont les fils et les filles de l'appel de la Vie à elle-même.</field>
+            <field name="author">Khalil Gibran</field>
+        </record>
+
+        <!-- RÉVOLUTIONNAIRES ET MILITANTS -->
+        <record id="quote_40" model="daily.digest.quote">
+            <field name="quote">Soyez réalistes, demandez l'impossible.</field>
+            <field name="author">Mai 68</field>
+        </record>
+
+        <record id="quote_41" model="daily.digest.quote">
+            <field name="quote">Sous les pavés, la plage.</field>
+            <field name="author">Mai 68</field>
+        </record>
+
+        <record id="quote_42" model="daily.digest.quote">
+            <field name="quote">Un autre monde est possible.</field>
+            <field name="author">Slogan altermondialiste</field>
+        </record>
+
+        <record id="quote_43" model="daily.digest.quote">
+            <field name="quote">Jusqu'à ce que les lions aient leurs propres historiens, l'histoire de la chasse glorifiera toujours le chasseur.</field>
+            <field name="author">Proverbe africain</field>
+        </record>
+
+        <record id="quote_44" model="daily.digest.quote">
+            <field name="quote">Si tu es venu ici pour m'aider, tu perds ton temps. Mais si tu es venu parce que ta libération est liée à la mienne, alors travaillons ensemble.</field>
+            <field name="author">Lilla Watson</field>
+        </record>
+
+        <record id="quote_45" model="daily.digest.quote">
+            <field name="quote">Quand ils sont venus chercher les communistes, je n'ai rien dit, je n'étais pas communiste...</field>
+            <field name="author">Martin Niemöller</field>
+        </record>
+
+        <record id="quote_46" model="daily.digest.quote">
+            <field name="quote">Le vrai voyage de découverte ne consiste pas à chercher de nouveaux paysages, mais à avoir de nouveaux yeux.</field>
+            <field name="author">Marcel Proust</field>
+        </record>
+
+        <record id="quote_47" model="daily.digest.quote">
+            <field name="quote">Une société se juge à la façon dont elle traite ses membres les plus vulnérables.</field>
+            <field name="author">Pearl S. Buck</field>
+        </record>
+
+        <record id="quote_48" model="daily.digest.quote">
+            <field name="quote">On reconnaît le degré de civilisation d'un peuple à la manière dont il traite ses animaux.</field>
+            <field name="author">Gandhi</field>
+        </record>
+
+        <!-- AUDRE LORDE -->
+        <record id="quote_49" model="daily.digest.quote">
+            <field name="quote">Je ne suis pas libre tant qu'une seule femme ne l'est pas, même si ses chaînes sont très différentes des miennes.</field>
+            <field name="author">Audre Lorde</field>
+        </record>
+
+        <record id="quote_50" model="daily.digest.quote">
+            <field name="quote">Les outils du maître ne détruiront jamais la maison du maître.</field>
+            <field name="author">Audre Lorde</field>
+        </record>
+
+        <record id="quote_51" model="daily.digest.quote">
+            <field name="quote">Prendre soin de moi n'est pas de l'auto-complaisance, c'est de l'auto-préservation, et c'est un acte de guerre politique.</field>
+            <field name="author">Audre Lorde</field>
+        </record>
+
+        <!-- RÊVEURS ET VISIONNAIRES -->
+        <record id="quote_52" model="daily.digest.quote">
+            <field name="quote">Un rêveur est quelqu'un qui ne trouve son chemin qu'au clair de lune, et sa punition est de voir l'aube avant le reste du monde.</field>
+            <field name="author">Oscar Wilde</field>
+        </record>
+
+        <record id="quote_53" model="daily.digest.quote">
+            <field name="quote">Les frontières sont les cicatrices de l'histoire.</field>
+            <field name="author">Ernst Jünger</field>
+        </record>
+
+        <record id="quote_54" model="daily.digest.quote">
+            <field name="quote">La liberté commence où l'ignorance finit.</field>
+            <field name="author">Victor Hugo</field>
+        </record>
+
+        <record id="quote_55" model="daily.digest.quote">
+            <field name="quote">Rien n'est plus dangereux qu'une idée quand on n'en a qu'une.</field>
+            <field name="author">Émile Chartier (Alain)</field>
+        </record>
+
+        <record id="quote_56" model="daily.digest.quote">
+            <field name="quote">L'homme est né libre, et partout il est dans les fers.</field>
+            <field name="author">Jean-Jacques Rousseau</field>
+        </record>
+
+        <record id="quote_57" model="daily.digest.quote">
+            <field name="quote">La culture ne s'hérite pas, elle se conquiert.</field>
+            <field name="author">André Malraux</field>
+        </record>
+
+        <record id="quote_58" model="daily.digest.quote">
+            <field name="quote">La seule façon d'atteindre l'impossible, c'est de croire que c'est possible.</field>
+            <field name="author">Lewis Carroll</field>
+        </record>
+
+        <record id="quote_59" model="daily.digest.quote">
+            <field name="quote">Ce qui ne me tue pas me rend plus fort... mais d'abord, ça fait vraiment mal.</field>
+            <field name="author">Friedrich Nietzsche (adapté)</field>
+        </record>
+
+        <record id="quote_60" model="daily.digest.quote">
+            <field name="quote">Nous ne voyons pas les choses comme elles sont, nous les voyons comme nous sommes.</field>
+            <field name="author">Anaïs Nin</field>
+        </record>
+
+        <!-- PROVERBES DU MONDE -->
+        <record id="quote_61" model="daily.digest.quote">
+            <field name="quote">Seul on va plus vite, ensemble on va plus loin.</field>
+            <field name="author">Proverbe africain</field>
+        </record>
+
+        <record id="quote_62" model="daily.digest.quote">
+            <field name="quote">Le meilleur moment pour planter un arbre était il y a vingt ans. Le deuxième meilleur moment, c'est maintenant.</field>
+            <field name="author">Proverbe chinois</field>
+        </record>
+
+        <record id="quote_63" model="daily.digest.quote">
+            <field name="quote">On ne peut pas empêcher les oiseaux de la tristesse de voler au-dessus de nos têtes, mais on peut les empêcher d'y faire leur nid.</field>
+            <field name="author">Proverbe chinois</field>
+        </record>
+
+        <record id="quote_64" model="daily.digest.quote">
+            <field name="quote">Quand le dernier arbre sera abattu, la dernière rivière empoisonnée, le dernier poisson capturé, alors seulement vous réaliserez que l'argent ne se mange pas.</field>
+            <field name="author">Proverbe amérindien (Cree)</field>
+        </record>
+
+        <record id="quote_65" model="daily.digest.quote">
+            <field name="quote">Nous n'héritons pas de la terre de nos ancêtres, nous l'empruntons à nos enfants.</field>
+            <field name="author">Proverbe amérindien</field>
+        </record>
+
+        <record id="quote_66" model="daily.digest.quote">
+            <field name="quote">La terre n'appartient pas à l'homme, c'est l'homme qui appartient à la terre.</field>
+            <field name="author">Chef Seattle</field>
+        </record>
+
+        <record id="quote_67" model="daily.digest.quote">
+            <field name="quote">Ce n'est pas la montagne que nous conquérons, mais nous-mêmes.</field>
+            <field name="author">Edmund Hillary</field>
+        </record>
+
+        <record id="quote_68" model="daily.digest.quote">
+            <field name="quote">Tombe sept fois, relève-toi huit.</field>
+            <field name="author">Proverbe japonais</field>
+        </record>
+
+        <record id="quote_69" model="daily.digest.quote">
+            <field name="quote">Le bambou qui plie est plus fort que le chêne qui résiste.</field>
+            <field name="author">Proverbe japonais</field>
+        </record>
+
+        <record id="quote_70" model="daily.digest.quote">
+            <field name="quote">Dans une avalanche, aucun flocon ne se sent responsable.</field>
+            <field name="author">Stanislaw Jerzy Lec</field>
+        </record>
+
+        <!-- PENSEURS MODERNES ET CONTEMPORAINS -->
+        <record id="quote_71" model="daily.digest.quote">
+            <field name="quote">L'injustice quelque part est une menace pour la justice partout.</field>
+            <field name="author">Martin Luther King Jr.</field>
+        </record>
+
+        <record id="quote_72" model="daily.digest.quote">
+            <field name="quote">La question n'est pas de savoir si nous allons être des extrémistes, mais de savoir quel type d'extrémistes nous serons.</field>
+            <field name="author">Martin Luther King Jr.</field>
+        </record>
+
+        <record id="quote_73" model="daily.digest.quote">
+            <field name="quote">Nos vies commencent à prendre fin le jour où nous gardons le silence sur les choses qui comptent.</field>
+            <field name="author">Martin Luther King Jr.</field>
+        </record>
+
+        <record id="quote_74" model="daily.digest.quote">
+            <field name="quote">L'éducation est l'arme la plus puissante pour changer le monde.</field>
+            <field name="author">Nelson Mandela</field>
+        </record>
+
+        <record id="quote_75" model="daily.digest.quote">
+            <field name="quote">Cela semble toujours impossible jusqu'à ce que ce soit fait.</field>
+            <field name="author">Nelson Mandela</field>
+        </record>
+
+        <record id="quote_76" model="daily.digest.quote">
+            <field name="quote">Je ne perds jamais. Soit je gagne, soit j'apprends.</field>
+            <field name="author">Nelson Mandela</field>
+        </record>
+
+        <record id="quote_77" model="daily.digest.quote">
+            <field name="quote">Sois le changement que tu veux voir dans le monde.</field>
+            <field name="author">Gandhi</field>
+        </record>
+
+        <record id="quote_78" model="daily.digest.quote">
+            <field name="quote">La force ne vient pas des capacités physiques, elle vient d'une volonté indomptable.</field>
+            <field name="author">Gandhi</field>
+        </record>
+
+        <record id="quote_79" model="daily.digest.quote">
+            <field name="quote">Vis comme si tu devais mourir demain. Apprends comme si tu devais vivre toujours.</field>
+            <field name="author">Gandhi</field>
+        </record>
+
+        <record id="quote_80" model="daily.digest.quote">
+            <field name="quote">Le silence devient lâcheté quand l'occasion exige de dire toute la vérité et d'agir en conséquence.</field>
+            <field name="author">Gandhi</field>
+        </record>
+
+        <!-- ÉCRIVAINES ET FÉMINISTES -->
+        <record id="quote_81" model="daily.digest.quote">
+            <field name="quote">On ne peut pas démanteler la maison du maître avec les outils du maître.</field>
+            <field name="author">Audre Lorde</field>
+        </record>
+
+        <record id="quote_82" model="daily.digest.quote">
+            <field name="quote">Je suis une femme phénoménale. Phénoménalement. C'est moi, ça.</field>
+            <field name="author">Maya Angelou</field>
+        </record>
+
+        <record id="quote_83" model="daily.digest.quote">
+            <field name="quote">Les gens oublieront ce que tu as dit, ils oublieront ce que tu as fait, mais ils n'oublieront jamais ce que tu leur as fait ressentir.</field>
+            <field name="author">Maya Angelou</field>
+        </record>
+
+        <record id="quote_84" model="daily.digest.quote">
+            <field name="quote">Il n'y a pas de plus grande agonie que de porter en soi une histoire jamais racontée.</field>
+            <field name="author">Maya Angelou</field>
+        </record>
+
+        <record id="quote_85" model="daily.digest.quote">
+            <field name="quote">Le féminisme n'a jamais signifié haïr les hommes. Il signifie lutter pour l'égalité des sexes.</field>
+            <field name="author">bell hooks</field>
+        </record>
+
+        <record id="quote_86" model="daily.digest.quote">
+            <field name="quote">Une chambre à soi et cinq cents livres de rente.</field>
+            <field name="author">Virginia Woolf</field>
+        </record>
+
+        <record id="quote_87" model="daily.digest.quote">
+            <field name="quote">On ne peut trouver la paix en évitant la vie.</field>
+            <field name="author">Virginia Woolf</field>
+        </record>
+
+        <record id="quote_88" model="daily.digest.quote">
+            <field name="quote">Le plus courageux des actes est encore de penser par soi-même. À voix haute.</field>
+            <field name="author">Coco Chanel</field>
+        </record>
+
+        <!-- ARTISTES ET MUSICIENS -->
+        <record id="quote_89" model="daily.digest.quote">
+            <field name="quote">La logique vous mènera de A à B. L'imagination vous mènera partout.</field>
+            <field name="author">Albert Einstein</field>
+        </record>
+
+        <record id="quote_90" model="daily.digest.quote">
+            <field name="quote">Tout le monde est un génie. Mais si vous jugez un poisson sur sa capacité à grimper à un arbre, il passera sa vie à croire qu'il est stupide.</field>
+            <field name="author">Albert Einstein</field>
+        </record>
+
+        <record id="quote_91" model="daily.digest.quote">
+            <field name="quote">La créativité, c'est l'intelligence qui s'amuse.</field>
+            <field name="author">Albert Einstein</field>
+        </record>
+
+        <record id="quote_92" model="daily.digest.quote">
+            <field name="quote">La musique peut changer le monde parce qu'elle peut changer les gens.</field>
+            <field name="author">Bono</field>
+        </record>
+
+        <record id="quote_93" model="daily.digest.quote">
+            <field name="quote">Émancipez-vous de l'esclavage mental. Personne d'autre que nous-mêmes ne peut libérer nos esprits.</field>
+            <field name="author">Bob Marley</field>
+        </record>
+
+        <record id="quote_94" model="daily.digest.quote">
+            <field name="quote">Un bon arbre peut abriter dix mille oiseaux.</field>
+            <field name="author">Proverbe birman</field>
+        </record>
+
+        <record id="quote_95" model="daily.digest.quote">
+            <field name="quote">La vie, ce n'est pas d'attendre que l'orage passe, c'est d'apprendre à danser sous la pluie.</field>
+            <field name="author">Sénèque</field>
+        </record>
+
+        <!-- PHILOSOPHES ET PENSEURS -->
+        <record id="quote_96" model="daily.digest.quote">
+            <field name="quote">Connais-toi toi-même.</field>
+            <field name="author">Socrate</field>
+        </record>
+
+        <record id="quote_97" model="daily.digest.quote">
+            <field name="quote">Le bonheur dépend de nous seuls.</field>
+            <field name="author">Aristote</field>
+        </record>
+
+        <record id="quote_98" model="daily.digest.quote">
+            <field name="quote">Ce n'est pas parce que les choses sont difficiles que nous n'osons pas, c'est parce que nous n'osons pas qu'elles sont difficiles.</field>
+            <field name="author">Sénèque</field>
+        </record>
+
+        <record id="quote_99" model="daily.digest.quote">
+            <field name="quote">Le hasard ne favorise que les esprits préparés.</field>
+            <field name="author">Louis Pasteur</field>
+        </record>
+
+        <record id="quote_100" model="daily.digest.quote">
+            <field name="quote">Il n'est pas de vent favorable pour celui qui ne sait où il va.</field>
+            <field name="author">Sénèque</field>
+        </record>
+
+        <!-- PROVERBES MODERNES ET INSPIRANTS -->
+        <record id="quote_101" model="daily.digest.quote">
+            <field name="quote">Si tu veux aller vite, marche seul. Si tu veux aller loin, marchons ensemble.</field>
+            <field name="author">Proverbe africain</field>
+        </record>
+
+        <record id="quote_102" model="daily.digest.quote">
+            <field name="quote">L'océan est fait de gouttes d'eau.</field>
+            <field name="author">Proverbe persan</field>
+        </record>
+
+        <record id="quote_103" model="daily.digest.quote">
+            <field name="quote">Celui qui pose une question est bête cinq minutes, celui qui n'en pose pas le reste toute sa vie.</field>
+            <field name="author">Proverbe chinois</field>
+        </record>
+
+        <record id="quote_104" model="daily.digest.quote">
+            <field name="quote">La parole est d'argent, mais le silence est d'or... sauf face à l'injustice.</field>
+            <field name="author">Proverbe adapté</field>
+        </record>
+
+        <record id="quote_105" model="daily.digest.quote">
+            <field name="quote">Les murs ont été construits par ceux qui avaient peur de ceux qui sont différents.</field>
+            <field name="author">Proverbe moderne</field>
+        </record>
+
+        <record id="quote_106" model="daily.digest.quote">
+            <field name="quote">Aucun de nous n'est aussi intelligent que nous tous ensemble.</field>
+            <field name="author">Proverbe japonais</field>
+        </record>
+
+        <!-- ACTIVISTES ET VISIONNAIRES CONTEMPORAINS -->
+        <record id="quote_107" model="daily.digest.quote">
+            <field name="quote">Notre maison est en feu. Je veux que vous paniquiez.</field>
+            <field name="author">Greta Thunberg</field>
+        </record>
+
+        <record id="quote_108" model="daily.digest.quote">
+            <field name="quote">Vous n'êtes jamais trop petit pour faire la différence.</field>
+            <field name="author">Greta Thunberg</field>
+        </record>
+
+        <record id="quote_109" model="daily.digest.quote">
+            <field name="quote">Quand l'éducation n'est pas libératrice, le rêve de l'opprimé est de devenir l'oppresseur.</field>
+            <field name="author">Paulo Freire</field>
+        </record>
+
+        <record id="quote_110" model="daily.digest.quote">
+            <field name="quote">Personne n'éduque autrui, personne ne s'éduque seul, les hommes s'éduquent ensemble par l'intermédiaire du monde.</field>
+            <field name="author">Paulo Freire</field>
+        </record>
+
+        <record id="quote_111" model="daily.digest.quote">
+            <field name="quote">La technologie est un serviteur utile mais un maître dangereux.</field>
+            <field name="author">Christian Lous Lange</field>
+        </record>
+
+        <record id="quote_112" model="daily.digest.quote">
+            <field name="quote">Internet doit rester un espace de liberté et de partage du savoir.</field>
+            <field name="author">Aaron Swartz</field>
+        </record>
+
+        <record id="quote_113" model="daily.digest.quote">
+            <field name="quote">L'information veut être libre.</field>
+            <field name="author">Stewart Brand</field>
+        </record>
+
+        <record id="quote_114" model="daily.digest.quote">
+            <field name="quote">La vraie mesure d'un homme n'est pas comment il se comporte dans les moments de confort, mais comment il se tient dans les moments de défi et de controverse.</field>
+            <field name="author">Martin Luther King Jr.</field>
+        </record>
+
+        <record id="quote_115" model="daily.digest.quote">
+            <field name="quote">Chaque génération doit, dans une relative opacité, découvrir sa mission, la remplir ou la trahir.</field>
+            <field name="author">Frantz Fanon</field>
+        </record>
+
+        <record id="quote_116" model="daily.digest.quote">
+            <field name="quote">Je parle de millions d'hommes à qui on a inculqué savamment la peur, le complexe d'infériorité, le tremblement, l'agenouillement, le désespoir, le larbinisme.</field>
+            <field name="author">Aimé Césaire</field>
+        </record>
+
+        <record id="quote_117" model="daily.digest.quote">
+            <field name="quote">Ma bouche sera la bouche des malheurs qui n'ont point de bouche.</field>
+            <field name="author">Aimé Césaire</field>
+        </record>
+
+        <record id="quote_118" model="daily.digest.quote">
+            <field name="quote">Le monde ne sera pas détruit par ceux qui font le mal, mais par ceux qui les regardent sans rien faire.</field>
+            <field name="author">Albert Einstein</field>
+        </record>
+
+        <record id="quote_119" model="daily.digest.quote">
+            <field name="quote">La normalité est une route pavée : on y marche aisément mais les fleurs n'y poussent pas.</field>
+            <field name="author">Vincent van Gogh</field>
+        </record>
+
+        <record id="quote_120" model="daily.digest.quote">
+            <field name="quote">Dans un monde où tu peux être n'importe quoi, sois gentil.</field>
+            <field name="author">Proverbe moderne</field>
+        </record>
+
+    </data>
+</odoo>

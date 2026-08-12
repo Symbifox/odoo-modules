@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="bf_bloc_notes.Systray">
+        <div class="o_bf_note_systray d-flex align-items-center">
+            <button class="btn btn-link text-reset p-1 opacity-75 opacity-100-hover"
+                    title="Nouvelle note (Alt+N) — clic droit ou Alt+Shift+N pour la liste"
+                    t-on-click="onClickNew"
+                    t-on-contextmenu="onClickList">
+                <i class="fa fa-sticky-note-o fs-5"/>
+            </button>
+        </div>
+    </t>
+
+    <t t-name="bf_bloc_notes.QuickCreateDialog">
+        <Dialog title="title" size="'lg'" contentClass="'o_bf_note_quick_create'">
+            <div class="o_bf_note_quick_create_body">
+                <div t-if="state.linkedLabel" class="alert alert-info py-2 mb-2 small">
+                    <i class="fa fa-link"/> Liée à : <strong t-esc="state.linkedLabel"/>
+                </div>
+                <input type="text"
+                       class="form-control mb-2"
+                       placeholder="Titre (optionnel — auto-rempli depuis le contenu)"
+                       t-ref="title"
+                       t-on-keydown="onKeydownTitle"
+                       t-model="state.name"/>
+                <div class="o_bf_note_editor form-control"
+                     contenteditable="true"
+                     t-ref="body"
+                     t-on-keydown="onKeydownBody"
+                     t-on-paste="onPasteBody"
+                     t-on-drop="onDropBody"
+                     t-on-dragover="onDragOverBody"
+                     style="min-height: 220px; max-height: 60vh; overflow-y: auto;"/>
+                <div class="text-muted small mt-1">
+                    <i class="fa fa-image"/> Tu peux coller ou glisser une image directement dans la zone de texte.
+                </div>
+                <div class="form-check mt-2">
+                    <input type="checkbox"
+                           id="bf_note_pinned"
+                           class="form-check-input"
+                           t-model="state.pinned"/>
+                    <label for="bf_note_pinned" class="form-check-label">
+                        <i class="fa fa-thumb-tack"/> Épingler
+                    </label>
+                </div>
+                <div class="o_bf_note_reminder mt-3">
+                    <div class="text-muted small mb-1">
+                        <i class="fa fa-bell-o"/> Rappel
+                    </div>
+                    <div class="btn-group btn-group-sm flex-wrap" role="group">
+                        <button type="button"
+                                class="btn"
+                                t-att-class="state.reminderKey === 'none' ? 'btn-secondary' : 'btn-outline-secondary'"
+                                t-on-click="() => this.setReminder('none')">
+                            Aucun
+                        </button>
+                        <button type="button"
+                                class="btn"
+                                t-att-class="state.reminderKey === 'today' ? 'btn-primary' : 'btn-outline-primary'"
+                                t-on-click="() => this.setReminder('today')">
+                            🗓️ Aujourd'hui
+                        </button>
+                        <button type="button"
+                                class="btn"
+                                t-att-class="state.reminderKey === 'tomorrow' ? 'btn-primary' : 'btn-outline-primary'"
+                                t-on-click="() => this.setReminder('tomorrow')">
+                            Demain
+                        </button>
+                        <button type="button"
+                                class="btn"
+                                t-att-class="state.reminderKey === '2days' ? 'btn-primary' : 'btn-outline-primary'"
+                                t-on-click="() => this.setReminder('2days')">
+                            +2 jours
+                        </button>
+                        <button type="button"
+                                class="btn"
+                                t-att-class="state.reminderKey === '1week' ? 'btn-primary' : 'btn-outline-primary'"
+                                t-on-click="() => this.setReminder('1week')">
+                            +1 semaine
+                        </button>
+                        <button type="button"
+                                class="btn"
+                                t-att-class="state.reminderKey === 'custom' ? 'btn-primary' : 'btn-outline-primary'"
+                                t-on-click="() => this.setReminder('custom')">
+                            Personnaliser…
+                        </button>
+                    </div>
+                    <input t-if="state.reminderKey === 'custom'"
+                           type="date"
+                           class="form-control form-control-sm mt-2"
+                           style="max-width: 220px;"
+                           t-model="state.reminderDate"/>
+                </div>
+                <div class="text-muted small mt-2">
+                    <kbd>Ctrl+Entrée</kbd> pour enregistrer
+                </div>
+            </div>
+            <t t-set-slot="footer">
+                <button class="btn btn-primary"
+                        t-on-click="onSave"
+                        t-att-disabled="state.saving">
+                    <i class="fa fa-floppy-o"/> Enregistrer
+                </button>
+                <button class="btn btn-secondary"
+                        t-on-click="onCreateTask"
+                        t-att-disabled="state.saving"
+                        title="Créer plutôt une tâche avec ce titre et ce contenu">
+                    <i class="fa fa-tasks"/> Créer une tâche
+                </button>
+                <button class="btn btn-secondary"
+                        t-on-click="onSaveAndOpen"
+                        t-att-disabled="state.saving">
+                    Enregistrer + ouvrir la liste
+                </button>
+                <button class="btn btn-link" t-on-click="onCancel">
+                    Annuler
+                </button>
+            </t>
+        </Dialog>
+    </t>
+
+</templates>

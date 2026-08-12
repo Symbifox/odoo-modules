@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_cx_program_list" model="ir.ui.view">
+        <field name="name">bf.cx.program.list</field>
+        <field name="model">bf.cx.program</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="program_type"/>
+                <field name="survey_id"/>
+                <field name="user_id" widget="many2one_avatar_user"/>
+                <field name="wave_count" string="Vagues"/>
+                <field name="feedback_count" string="Feedbacks"/>
+                <field name="nps_score" string="NPS"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_cx_program_form" model="ir.ui.view">
+        <field name="name">bf.cx.program.form</field>
+        <field name="model">bf.cx.program</field>
+        <field name="arch" type="xml">
+            <form string="Programme">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_waves" type="object"
+                                class="oe_stat_button" icon="fa-paper-plane">
+                            <field name="wave_count" widget="statinfo" string="Vagues"/>
+                        </button>
+                        <button name="action_view_feedback" type="object"
+                                class="oe_stat_button" icon="fa-comments-o">
+                            <field name="feedback_count" widget="statinfo" string="Feedbacks"/>
+                        </button>
+                        <button class="oe_stat_button" icon="fa-line-chart" disabled="1"
+                                invisible="program_type not in ('nps', 'pulse')">
+                            <field name="nps_score" widget="statinfo" string="NPS historique"/>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Archivé" bg_color="text-bg-danger" invisible="active"/>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="p. ex. NPS relationnel"/></h1>
+                    </div>
+                    <group>
+                        <group name="main">
+                            <field name="active" invisible="1"/>
+                            <field name="program_type"/>
+                            <field name="user_id" widget="many2one_avatar_user"/>
+                            <field name="campaign_id"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                        <group name="stats">
+                            <field name="nps_window_display"
+                                   invisible="program_type not in ('nps', 'pulse')"/>
+                            <field name="promoter_count"
+                                   invisible="program_type not in ('nps', 'pulse')"/>
+                            <field name="passive_count"
+                                   invisible="program_type not in ('nps', 'pulse')"/>
+                            <field name="detractor_count"
+                                   invisible="program_type not in ('nps', 'pulse')"/>
+                            <field name="reminder_days"/>
+                            <field name="cooldown_days"/>
+                            <field name="hide_respondent"
+                                   invisible="program_type != 'internal'"/>
+                        </group>
+                    </group>
+                    <group string="Sondage" name="survey_group">
+                        <group>
+                            <field name="survey_id"/>
+                            <field name="score_question_id"/>
+                            <field name="comment_question_id"/>
+                        </group>
+                        <group>
+                            <field name="invite_template_id"/>
+                            <field name="reminder_template_id"/>
+                            <field name="testimonial_question_id"/>
+                            <field name="testimonial_answer_id"
+                                   invisible="not testimonial_question_id"/>
+                        </group>
+                    </group>
+                    <group string="Pulse (lien public permanent)" name="pulse_group"
+                           invisible="not pulse_url">
+                        <group>
+                            <field name="pulse_url" widget="CopyClipboardChar"/>
+                            <div colspan="2">
+                                <button name="action_download_qr" type="object"
+                                        string="Télécharger le QR code"
+                                        icon="fa-qrcode" class="btn btn-secondary"/>
+                            </div>
+                        </group>
+                        <group>
+                            <field name="pulse_snippet" widget="CopyClipboardText"
+                                   placeholder="Extrait HTML à coller dans une signature"/>
+                        </group>
+                    </group>
+                    <div class="text-muted" invisible="pulse_url">
+                        <i class="fa fa-info-circle me-1"/>Pour un lien pulse
+                        permanent (signatures, QR), mettre le sondage en accès
+                        « Toute personne ayant le lien ».
+                    </div>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_cx_program_search" model="ir.ui.view">
+        <field name="name">bf.cx.program.search</field>
+        <field name="model">bf.cx.program</field>
+        <field name="arch" type="xml">
+            <search string="Programmes">
+                <field name="name"/>
+                <filter string="Archivés" name="inactive" domain="[('active', '=', False)]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter string="Type" name="group_type" context="{'group_by': 'program_type'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_cx_program" model="ir.actions.act_window">
+        <field name="name">Programmes</field>
+        <field name="res_model">bf.cx.program</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_cx_program_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Créer un programme de mesure
+            </p>
+            <p>
+                Un programme relie un sondage Odoo (question échelle 0-10
+                pour le NPS) à un suivi : vagues d'envoi, rappels, calcul du
+                score et boucle fermée sur les détracteurs.
+            </p>
+        </field>
+    </record>
+
+</odoo>

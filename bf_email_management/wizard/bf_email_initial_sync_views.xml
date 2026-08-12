@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Wizard form -->
+    <record id="bf_email_initial_sync_view_form" model="ir.ui.view">
+        <field name="name">bf.email.initial.sync.form</field>
+        <field name="model">bf.email.initial.sync</field>
+        <field name="arch" type="xml">
+            <form string="Import initial des courriels">
+                <group invisible="state != 'draft'">
+                    <group>
+                        <field name="date_from"/>
+                        <field name="date_to"/>
+                        <field name="batch_size"/>
+                    </group>
+                </group>
+                <group invisible="state != 'running'">
+                    <div class="text-center py-4">
+                        <i class="fa fa-spinner fa-spin fa-3x text-primary"/>
+                        <p class="mt-2">
+                            Synchronisation en cours...
+                            <field name="progress_done" class="d-inline"/> /
+                            <field name="progress_total" class="d-inline"/>
+                        </p>
+                    </div>
+                </group>
+                <group invisible="state != 'done'">
+                    <field name="result_text" nolabel="1" colspan="2"/>
+                </group>
+                <field name="state" invisible="1"/>
+                <footer>
+                    <button name="action_run"
+                            string="Lancer l'import"
+                            type="object"
+                            class="btn-primary"
+                            invisible="state != 'draft'"/>
+                    <button string="Fermer" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action to open wizard -->
+    <record id="action_bf_email_initial_sync" model="ir.actions.act_window">
+        <field name="name">Import initial</field>
+        <field name="res_model">bf.email.initial.sync</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+</odoo>

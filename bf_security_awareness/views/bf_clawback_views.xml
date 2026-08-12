@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============================================================== -->
+    <!-- Mailbox connector (Configuration)                              -->
+    <!-- ============================================================== -->
+    <record id="bf_mail_clawback_connector_view_form" model="ir.ui.view">
+        <field name="name">bf.mail.clawback.connector.form</field>
+        <field name="model">bf.mail.clawback.connector</field>
+        <field name="arch" type="xml">
+            <form string="Connecteur courriel">
+                <header>
+                    <button name="action_test_connection" type="object"
+                            string="Tester la connexion" class="btn-primary"/>
+                </header>
+                <sheet>
+                    <div class="alert alert-info" role="status">
+                        Ce connecteur permet le <strong>retrait</strong> d'un courriel
+                        malveillant confirmé dans toutes les boîtes internes. Les secrets
+                        sont chiffrés (Fernet, clé hors base de données).
+                    </div>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="backend"/>
+                            <field name="active"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                        <group>
+                            <field name="imap_host"/>
+                            <field name="imap_port"/>
+                            <field name="search_folder"/>
+                            <field name="quarantine_folder"/>
+                        </group>
+                    </group>
+                    <group string="Microsoft 365 (OAuth2 app-only)"
+                           invisible="backend != 'm365_oauth'">
+                        <field name="tenant_id"/>
+                        <field name="client_id"/>
+                        <field name="client_secret" password="True"
+                               placeholder="•••• (écriture seule)"/>
+                    </group>
+                    <group string="Boîtes ciblées">
+                        <field name="mailbox_source"/>
+                        <field name="manual_emails"
+                               invisible="mailbox_source != 'manual'"
+                               placeholder="une adresse par ligne"/>
+                    </group>
+                    <field name="mailbox_ids"
+                           invisible="mailbox_source != 'credentials' and backend != 'imap_password'">
+                        <list editable="bottom">
+                            <field name="email"/>
+                            <field name="password" password="True"
+                                   placeholder="•••• (écriture seule)"/>
+                        </list>
+                    </field>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="bf_mail_clawback_connector_view_list" model="ir.ui.view">
+        <field name="name">bf.mail.clawback.connector.list</field>
+        <field name="model">bf.mail.clawback.connector</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="backend"/>
+                <field name="imap_host"/>
+                <field name="mailbox_source"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_mail_clawback_connector_action" model="ir.actions.act_window">
+        <field name="name">Connecteurs courriel</field>
+        <field name="res_model">bf.mail.clawback.connector</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- ============================================================== -->
+    <!-- Clawback operation                                             -->
+    <!-- ============================================================== -->
+    <record id="bf_clawback_operation_view_form" model="ir.ui.view">
+        <field name="name">bf.clawback.operation.form</field>
+        <field name="model">bf.clawback.operation</field>
+        <field name="arch" type="xml">
+            <form string="Retrait de courriel">
+                <header>
+                    <button name="action_preview" type="object"
+                            string="Aperçu (sans retrait)" class="btn-primary"
+                            invisible="state in ('done','restored')"/>
+                    <button name="action_confirm_blast" type="object"
+                            string="Confirmer le rayon élevé" class="btn-secondary"
+                            groups="bf_security_awareness.group_bf_secaware_purge"
+                            invisible="state != 'preview' or blast_confirmed"/>
+                    <button name="action_execute" type="object"
+                            string="Exécuter le retrait" class="btn-danger"
+                            groups="bf_security_awareness.group_bf_secaware_purge"
+                            confirm="Confirmer le retrait du courriel dans toutes les boîtes ciblées ?"
+                            invisible="state in ('done','restored')"/>
+                    <button name="action_restore" type="object"
+                            string="Restaurer (annuler)"
+                            groups="bf_security_awareness.group_bf_secaware_purge"
+                            invisible="state != 'done'"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,preview,done"/>
+                </header>
+                <sheet>
+                    <div class="alert alert-warning" role="alert"
+                         invisible="match_strategy != 'heuristic'">
+                        Stratégie <strong>heuristique</strong> (expéditeur + sujet) :
+                        lancez d'abord <strong>Aperçu</strong> et vérifiez les
+                        correspondances avant d'exécuter, pour éviter de retirer des
+                        courriels légitimes.
+                    </div>
+                    <group>
+                        <group>
+                            <field name="reported_phish_id"/>
+                            <field name="connector_id"/>
+                            <field name="mode"/>
+                            <field name="match_strategy"/>
+                            <field name="launched_by" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="message_id"/>
+                            <field name="email_from"/>
+                            <field name="subject"/>
+                            <field name="since_date"
+                                   invisible="match_strategy != 'heuristic'"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="mailboxes_swept"/>
+                        <field name="messages_found"/>
+                        <field name="messages_removed"/>
+                        <field name="blast_confirmed" readonly="1"/>
+                    </group>
+                    <separator string="Boîtes balayées"/>
+                    <field name="hit_ids">
+                        <list decoration-danger="state == 'error'"
+                              decoration-success="state == 'removed'"
+                              decoration-muted="state == 'restored'">
+                            <field name="mailbox_email"/>
+                            <field name="state" widget="badge"/>
+                            <field name="found_count"/>
+                            <field name="removed_count"/>
+                            <field name="error_message" optional="show"/>
+                        </list>
+                    </field>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="bf_clawback_operation_view_list" model="ir.ui.view">
+        <field name="name">bf.clawback.operation.list</field>
+        <field name="model">bf.clawback.operation</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="state == 'failed'"
+                  decoration-success="state == 'done'"
+                  decoration-muted="state == 'restored'">
+                <field name="create_date"/>
+                <field name="name"/>
+                <field name="match_strategy"/>
+                <field name="mailboxes_swept"/>
+                <field name="messages_removed"/>
+                <field name="state" widget="badge"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_clawback_operation_action" model="ir.actions.act_window">
+        <field name="name">Retraits de courriel</field>
+        <field name="res_model">bf.clawback.operation</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Aucun retrait</p>
+            <p>Les retraits (clawback) lancés depuis un signalement confirmé comme
+               menace apparaissent ici, avec le détail par boîte.</p>
+        </field>
+    </record>
+
+    <!-- Menus -->
+    <menuitem id="menu_secaware_clawback"
+              name="Retraits de courriel"
+              parent="menu_secaware_root"
+              action="bf_clawback_operation_action"
+              groups="group_bf_secaware_manager"
+              sequence="27"/>
+
+    <menuitem id="menu_secaware_connectors"
+              name="Connecteurs courriel"
+              parent="menu_secaware_config"
+              action="bf_mail_clawback_connector_action"
+              groups="group_bf_secaware_manager"
+              sequence="20"/>
+
+</odoo>

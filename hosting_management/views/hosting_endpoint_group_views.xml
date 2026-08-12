@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="hosting_endpoint_group_view_list" model="ir.ui.view">
+        <field name="name">hosting.endpoint.group.list</field>
+        <field name="model">hosting.endpoint.group</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="endpoint_count"/>
+                <field name="action1_group_id" optional="show"/>
+                <field name="action1_last_sync" optional="show"/>
+                <field name="active" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="hosting_endpoint_group_view_form" model="ir.ui.view">
+        <field name="name">hosting.endpoint.group.form</field>
+        <field name="model">hosting.endpoint.group</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_endpoints" type="object"
+                                class="oe_stat_button" icon="fa-laptop"
+                                invisible="endpoint_count == 0">
+                            <field name="endpoint_count" widget="statinfo" string="Postes"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="Nom du groupe"/></h1>
+                    </div>
+                    <group>
+                        <group string="Affectation">
+                            <field name="partner_id" options="{'no_create': True}"/>
+                            <field name="color" widget="color_picker"/>
+                        </group>
+                        <group string="Lien Action1">
+                            <field name="action1_group_id" placeholder="ID dans la console Action1"/>
+                            <field name="action1_last_sync" readonly="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Description" name="description">
+                            <field name="description" placeholder="À quoi sert ce groupe..."/>
+                        </page>
+                        <page string="Postes membres" name="endpoints">
+                            <field name="endpoint_ids" readonly="1">
+                                <list>
+                                    <field name="code"/>
+                                    <field name="name"/>
+                                    <field name="endpoint_type"/>
+                                    <field name="lifecycle_state" widget="badge"/>
+                                    <field name="os"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                    <field name="active" invisible="1"/>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="hosting_endpoint_group_view_search" model="ir.ui.view">
+        <field name="name">hosting.endpoint.group.search</field>
+        <field name="model">hosting.endpoint.group</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="action1_group_id"/>
+                <separator/>
+                <filter name="filter_action1_linked" string="Liés à Action1"
+                        domain="[('action1_group_id', '!=', False)]"/>
+                <filter name="filter_action1_unlinked" string="Non liés à Action1"
+                        domain="[('action1_group_id', '=', False)]"/>
+                <separator/>
+                <filter name="filter_archived" string="Archivés"
+                        domain="[('active', '=', False)]"/>
+                <group expand="0" string="Grouper par">
+                    <filter name="group_partner" string="Client"
+                            context="{'group_by': 'partner_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="hosting_endpoint_group_action" model="ir.actions.act_window">
+        <field name="name">Groupes de postes</field>
+        <field name="res_model">hosting.endpoint.group</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="hosting_endpoint_group_view_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Ajoutez un groupe de postes
+            </p>
+            <p>
+                Les groupes servent à organiser les postes par usage et à mapper
+                des groupes Action1 vers des clients pour la synchro automatique.
+            </p>
+        </field>
+    </record>
+
+</odoo>

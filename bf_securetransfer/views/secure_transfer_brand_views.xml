@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- List -->
+    <record id="brand_view_tree" model="ir.ui.view">
+        <field name="name">secure.transfer.brand.list</field>
+        <field name="model">secure.transfer.brand</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="domain"/>
+                <field name="slug" optional="show"/>
+                <field name="fixed_recipient" string="Dépôt vers" optional="show"/>
+                <field name="tier"/>
+                <field name="is_default" string="Défaut"/>
+                <field name="powered_by" string="Propulsé par" optional="show"/>
+                <field name="partner_id" optional="show"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+                <field name="active" widget="boolean_toggle" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form -->
+    <record id="brand_view_form" model="ir.ui.view">
+        <field name="name">secure.transfer.brand.form</field>
+        <field name="model">secure.transfer.brand</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_apply_cors" type="object"
+                            string="Configurer le domaine (CORS)"
+                            invisible="not domain"
+                            help="Ajoute ce domaine aux origines CORS autorisées du bucket. À lancer après avoir renseigné un domaine personnalisé."/>
+                </header>
+                <sheet>
+                    <widget name="web_ribbon" title="Archivée" bg_color="text-bg-danger"
+                            invisible="active"/>
+                    <field name="active" invisible="1"/>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="Nom de la marque"/></h1>
+                    </div>
+                    <group>
+                        <group string="Identité">
+                            <field name="domain" placeholder="secret.exemple.com"/>
+                            <field name="is_default"/>
+                            <field name="tier"/>
+                            <field name="email_from" placeholder="transferts@exemple.com"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="sequence" groups="base.group_no_one"/>
+                        </group>
+                        <group string="Visuels">
+                            <field name="logo" widget="image" class="oe_avatar"/>
+                            <field name="favicon" widget="image" class="oe_avatar"/>
+                            <field name="color_primary" widget="color"/>
+                            <field name="color_dark" widget="color"/>
+                            <field name="powered_by"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Limites (0 = valeur par défaut de la configuration)">
+                            <field name="max_transfer_mb" string="Taille max. par transfert (Mo)"/>
+                            <field name="max_files" string="Nombre max. de fichiers"/>
+                            <field name="max_retention_days" string="Rétention max. (jours)"/>
+                        </group>
+                        <group string="Options">
+                            <field name="allow_password"/>
+                            <field name="allow_recipient_otp"/>
+                            <field name="notify_on_download"
+                                   help="Aviser l'expéditeur par courriel au premier téléchargement de ses fichiers."/>
+                            <field name="allow_burn"
+                                   help="Offrir à l'expéditeur l'option « détruire après le premier téléchargement »."/>
+                            <field name="watermark_downloads"/>
+                        </group>
+                    </group>
+                    <group string="Facturation (palier payant)" invisible="tier != 'paid'">
+                        <field name="partner_id"/>
+                        <field name="price_year"/>
+                        <field name="billing_active"/>
+                        <field name="billing_ref"/>
+                    </group>
+                    <group string="Page de dépôt personnelle (/to/&lt;slug&gt;)">
+                        <field name="slug"
+                               placeholder="auto d'après le nom si laissé vide"/>
+                        <field name="fixed_recipient"
+                               placeholder="depot@exemple.com"
+                               help="Renseigné = page de dépôt : tous les envois vont uniquement à cette adresse. Le champ destinataire est masqué et forcé côté serveur."/>
+                        <field name="fixed_recipient_name"
+                               placeholder="Depot"
+                               invisible="not fixed_recipient"/>
+                        <field name="page_url" widget="CopyClipboardChar"
+                               invisible="not page_url"
+                               help="URL publique native de la page de dépôt (aucun raccourcisseur externe)."/>
+                        <field name="owner_user_id" readonly="1"
+                               invisible="not owner_user_id"
+                               help="Page auto-provisionnée pour cet employé (synchro et archivage automatiques)."/>
+                    </group>
+                    <group string="Listes d'autorisation (anti-piggyback)">
+                        <field name="sender_allowlist"
+                               placeholder="Expéditeurs — vide = ouvert à tous.&#10;Une entrée par ligne : jean@client.com  ou  @client.com  ou  client.com"/>
+                        <field name="recipient_allowlist"
+                               placeholder="Destinataires — vide = aucune restriction.&#10;Ex. : @client.com pour n'envoyer qu'au domaine du client"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_brand" model="ir.actions.act_window">
+        <field name="name">Marques</field>
+        <field name="res_model">secure.transfer.brand</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Créez une marque</p>
+            <p>Chaque marque est résolue par le nom d'hôte (Host) de la page publique :
+                logo, couleurs, limites et mention « Propulsé par ».
+                La marque par défaut sert tout hôte sans marque explicite.</p>
+        </field>
+    </record>
+
+</odoo>

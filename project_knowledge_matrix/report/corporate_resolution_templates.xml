@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Paper format — US Letter, tight top margin for banner -->
+    <record id="paperformat_resolution" model="report.paperformat">
+        <field name="name">Résolution (US Letter)</field>
+        <field name="format">Letter</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">2</field>
+        <field name="margin_bottom">0</field>
+        <field name="margin_left">7</field>
+        <field name="margin_right">7</field>
+        <field name="header_spacing">0</field>
+        <field name="dpi">90</field>
+    </record>
+
+    <!-- Report action — auto-binds to Print menu on corporate.resolution form -->
+    <record id="action_report_corporate_resolution" model="ir.actions.report">
+        <field name="name">Résolution</field>
+        <field name="model">corporate.resolution</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">project_knowledge_matrix.report_corporate_resolution</field>
+        <field name="report_file">project_knowledge_matrix.report_corporate_resolution</field>
+        <field name="print_report_name">'%s_%s' % (object.sequence, object.name)</field>
+        <field name="binding_model_id" ref="model_corporate_resolution"/>
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="paperformat_resolution"/>
+    </record>
+
+    <!-- QWeb template — Blue Fox branded legal document -->
+    <template id="report_corporate_resolution">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-set="directors" t-value="doc._get_active_directors()"/>
+                <div class="article" style="padding: 0 !important; margin: 0 !important;">
+                    <link rel="stylesheet" href="/bf_lexend/static/src/scss/lexend_report.css"/>
+                    <style>
+                        .container, .o_body_html, body, #wrapwrap, main, .article {
+                            max-width: 100% !important;
+                            width: 100% !important;
+                            padding-left: 0 !important;
+                            padding-right: 0 !important;
+                            margin-left: 0 !important;
+                            margin-right: 0 !important;
+                        }
+
+                        .resolution-page {
+                            font-family: "Lexend", system-ui, -apple-system, sans-serif;
+                            font-size: 12pt;
+                            line-height: 1.6;
+                            color: <t t-esc="(env.company and env.company.report_brand_dark) or '#212529'"/>;
+                            position: relative;
+                            min-height: 270mm;
+                        }
+
+                        /* ── Top Banner ── */
+                        .res-banner {
+                            background: <t t-esc="(env.company and env.company.report_brand_dark) or '#212529'"/>;
+                            padding: 28pt 32pt 24pt 32pt;
+                            display: table;
+                            width: 100%;
+                        }
+                        .res-banner .banner-logo {
+                            display: table-cell;
+                            vertical-align: middle;
+                            width: 100px;
+                            padding-right: 22pt;
+                        }
+                        .res-banner .banner-logo img {
+                            max-height: 60px;
+                            max-width: 88px;
+                        }
+                        .res-banner .banner-content {
+                            display: table-cell;
+                            vertical-align: middle;
+                        }
+                        .res-banner .doc-type {
+                            font-size: 10pt;
+                            font-weight: 600;
+                            text-transform: uppercase;
+                            letter-spacing: 2pt;
+                            color: <t t-esc="(env.company and env.company.report_brand_primary) or '#714B67'"/>;
+                            margin: 0 0 4pt 0;
+                        }
+                        .res-banner h1 {
+                            font-size: 18pt;
+                            font-weight: 600;
+                            color: #ffffff;
+                            margin: 0 0 3pt 0;
+                            line-height: 1.25;
+                        }
+                        .res-banner .doc-subtitle {
+                            font-size: 12pt;
+                            color: rgba(255,255,255,0.7);
+                            margin: 0;
+                        }
+                        /* Blue accent bar under banner */
+                        .res-accent-bar {
+                            height: 4px;
+                            background: <t t-esc="(env.company and env.company.report_brand_primary) or '#714B67'"/>;
+                            margin: 0 0 20pt 0;
+                            width: 100%;
+                        }
+
+                        /* ── Reference pill ── */
+                        .res-ref {
+                            display: table-cell;
+                            vertical-align: middle;
+                            text-align: right;
+                            width: 140px;
+                        }
+                        .res-ref span {
+                            display: inline-block;
+                            border: 1.5px solid <t t-esc="(env.company and env.company.report_brand_primary) or '#714B67'"/>;
+                            color: <t t-esc="(env.company and env.company.report_brand_primary) or '#714B67'"/>;
+                            font-size: 10.5pt;
+                            font-weight: 600;
+                            padding: 4pt 14pt;
+                            border-radius: 20pt;
+                            letter-spacing: 0.5pt;
+                        }
+
+                        /* ── Content area ── */
+                        .res-content {
+                            padding: 0 24pt;
+                        }
+
+                        /* ── Meta Grid ── */
+                        .res-meta {
+                            margin-bottom: 22pt;
+                        }
+                        .res-meta table {
+                            width: 100%;
+                            border-collapse: collapse;
+                        }
+                        .res-meta td {
+                            padding: 8pt 14pt;
+                            font-size: 11.5pt;
+                            border-bottom: 1px solid #eaedf0;
+                        }
+                        .res-meta tr:first-child td {
+                            border-top: 1px solid #eaedf0;
+                        }
+                        .res-meta td.ml {
+                            font-weight: 600;
+                            color: <t t-esc="(env.company and env.company.report_brand_dark) or '#212529'"/>;
+                            width: 210px;
+                            background: #f8f9fb;
+                        }
+                        .res-meta td.mv {
+                            color: #444;
+                        }
+
+                        /* ── Body ── */
+                        .res-body {
+                            margin-bottom: 18pt;
+                            font-size: 12pt;
+                            line-height: 1.7;
+                        }
+
+                        /* ── Signature ── */
+                        .res-signatures {
+                            margin-top: 26pt;
+                            margin-bottom: 60pt;
+                            page-break-inside: avoid;
+                        }
+                        .res-sig-heading {
+                            font-size: 11pt;
+                            font-weight: 600;
+                            text-transform: uppercase;
+                            letter-spacing: 1pt;
+                            color: <t t-esc="(env.company and env.company.report_brand_primary) or '#714B67'"/>;
+                            margin-bottom: 16pt;
+                            padding-bottom: 6pt;
+                            border-bottom: 2px solid <t t-esc="(env.company and env.company.report_brand_primary) or '#714B67'"/>;
+                            display: inline-block;
+                        }
+                        .res-sig-entry {
+                            margin-bottom: 28pt;
+                            width: 280px;
+                        }
+                        .res-sig-line {
+                            border-bottom: 1.5px solid <t t-esc="(env.company and env.company.report_brand_dark) or '#212529'"/>;
+                            height: 54pt;
+                        }
+                        .res-sig-name {
+                            padding-top: 5pt;
+                            font-size: 11pt;
+                            font-weight: 600;
+                            color: <t t-esc="(env.company and env.company.report_brand_dark) or '#212529'"/>;
+                        }
+                        .res-sig-role {
+                            font-size: 10pt;
+                            color: #888;
+                        }
+
+                        /* ── Footer ── */
+                        .res-footer {
+                            margin-top: 24pt;
+                            padding: 8pt 24pt 0 24pt;
+                            border-top: 1px solid #dde0e4;
+                            display: table;
+                            width: 100%;
+                            font-size: 9.5pt;
+                            color: #aaa;
+                            page-break-inside: avoid;
+                        }
+                        .res-footer-left {
+                            display: table-cell;
+                            text-align: left;
+                        }
+                        .res-footer-right {
+                            display: table-cell;
+                            text-align: right;
+                        }
+                    </style>
+
+                    <div class="resolution-page">
+
+                        <!-- Dark banner header -->
+                        <div class="res-banner">
+                            <div class="banner-logo">
+                                <img t-att-src="image_data_uri(doc.company_id.logo)" alt="Logo"/>
+                            </div>
+                            <div class="banner-content">
+                                <div class="doc-type" t-out="doc._get_resolution_type_label()"/>
+                                <h1 t-out="doc.name"/>
+                                <div class="doc-subtitle" t-out="doc.company_id.name"/>
+                            </div>
+                            <div class="res-ref">
+                                <span t-out="doc.sequence"/>
+                            </div>
+                        </div>
+                        <div class="res-accent-bar"/>
+
+                        <!-- Content area with padding -->
+                        <div class="res-content">
+
+                            <!-- Meta grid -->
+                            <div class="res-meta">
+                                <table>
+                                    <tr>
+                                        <td class="ml">Date de la résolution</td>
+                                        <td class="mv"><span t-field="doc.meeting_date" t-options='{"format": "d MMMM yyyy"}'/></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="ml">Administrateur(s)</td>
+                                        <td class="mv">
+                                            <t t-foreach="directors" t-as="director">
+                                                <t t-if="not director_first">, </t>
+                                                <t t-out="director.partner_id.name"/>
+                                            </t>
+                                        </td>
+                                    </tr>
+                                    <t t-if="doc.status == 'adopted' and doc.unanimously_adopted">
+                                        <tr>
+                                            <td class="ml">Adoption</td>
+                                            <td class="mv">Adoptée à l'unanimité</td>
+                                        </tr>
+                                    </t>
+                                    <t t-if="doc.effective_date and doc.effective_date != doc.meeting_date">
+                                        <tr>
+                                            <td class="ml">Date d'effet</td>
+                                            <td class="mv"><span t-field="doc.effective_date" t-options='{"format": "d MMMM yyyy"}'/></td>
+                                        </tr>
+                                    </t>
+                                </table>
+                            </div>
+
+                            <!-- Resolution body -->
+                            <t t-if="doc.whereas_text">
+                                <div class="res-body">
+                                    <t t-out="doc.whereas_text"/>
+                                </div>
+                            </t>
+                            <t t-if="doc.resolved_text">
+                                <div class="res-body">
+                                    <t t-out="doc.resolved_text"/>
+                                </div>
+                            </t>
+
+                            <!-- Signatures -->
+                            <div class="res-signatures">
+                                <div class="res-sig-heading">
+                                    <t t-if="doc.resolution_type in ('board', 'written_board')">
+                                        Signatures des administrateurs
+                                    </t>
+                                    <t t-else="">
+                                        Signatures des actionnaires
+                                    </t>
+                                </div>
+                                <t t-foreach="directors" t-as="director">
+                                    <div class="res-sig-entry">
+                                        <div class="res-sig-line"/>
+                                        <div class="res-sig-name" t-out="director.partner_id.name"/>
+                                        <div class="res-sig-role">Administrateur</div>
+                                    </div>
+                                </t>
+                            </div>
+
+                        </div>
+
+                        <!-- Footer -->
+                        <div class="res-footer">
+                            <div class="res-footer-left">
+                                <t t-out="doc.company_id.name"/>
+                            </div>
+                            <div class="res-footer-right">
+                                Livre des minutes — Document officiel
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+
+</odoo>

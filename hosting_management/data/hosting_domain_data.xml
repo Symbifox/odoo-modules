@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- Type d'activite : Expiration de domaine -->
+        <record id="mail_activity_type_domain_expiration" model="mail.activity.type">
+            <field name="name">Expiration de domaine</field>
+            <field name="summary">Domaine expirant bientot</field>
+            <field name="res_model">hosting.domain</field>
+            <field name="icon">fa-globe</field>
+            <field name="delay_count">0</field>
+            <field name="delay_unit">days</field>
+            <field name="delay_from">previous_activity</field>
+        </record>
+
+        <!-- Type d'activite : Expiration SSL -->
+        <record id="mail_activity_type_ssl_expiration" model="mail.activity.type">
+            <field name="name">Expiration SSL</field>
+            <field name="summary">Certificat SSL expirant bientot</field>
+            <field name="res_model">hosting.domain</field>
+            <field name="icon">fa-lock</field>
+            <field name="delay_count">0</field>
+            <field name="delay_unit">days</field>
+            <field name="delay_from">previous_activity</field>
+        </record>
+
+        <!-- Tache planifiee : Verifier les expirations de domaines -->
+        <record id="ir_cron_hosting_check_domain_expirations" model="ir.cron">
+            <field name="name">Hebergement : Verifier les expirations de domaines</field>
+            <field name="model_id" ref="model_hosting_domain"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_check_domain_expirations()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Tache planifiee : Synchroniser les domaines Cloudflare -->
+        <record id="ir_cron_hosting_sync_cloudflare_domains" model="ir.cron">
+            <field name="name">Hebergement : Synchroniser les domaines Cloudflare</field>
+            <field name="model_id" ref="model_hosting_domain"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_sync_cloudflare_domains()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Parametres par defaut -->
+        <record id="hosting_domain_expiration_warning_days" model="ir.config_parameter">
+            <field name="key">hosting.domain_expiration_warning_days</field>
+            <field name="value">60</field>
+        </record>
+
+        <record id="hosting_ssl_expiration_warning_days" model="ir.config_parameter">
+            <field name="key">hosting.ssl_expiration_warning_days</field>
+            <field name="value">30</field>
+        </record>
+
+    </data>
+</odoo>

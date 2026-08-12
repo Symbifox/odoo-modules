@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Confirmation/details page after booking -->
+    <template id="appointment_confirmation_page" name="Appointment Confirmation Page">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="False"/>
+            <t t-call="bf_appointment.appointment_brand_style"/>
+            <t t-set="_en" t-value="(env.context.get('lang') or 'fr_CA').lower().startswith('en')"/>
+            <t t-set="additional_title" t-value="('Your appointment — ' if _en else 'Votre rendez-vous — ') + (booking_sudo.type_id.name or '')"/>
+            
+<t t-set="brand_primary" t-value="(env.company and env.company.report_brand_primary) or '#714B67'"/>
+<t t-set="brand_dark" t-value="(env.company and env.company.report_brand_dark) or '#212529'"/>
+<div class="bf-appointment-confirmation">
+                <t t-if="booking_sudo.state == 'confirmed'">
+                    <div class="text-center mb-4">
+                        <div class="bf-status-icon bf-status-success mx-auto mb-3">
+                            <i class="fa fa-check"/>
+                        </div>
+                        <h3 class="fw-semibold"
+                            t-out="'Meeting confirmed' if _en else 'Rendez-vous confirmé'"/>
+                        <p class="text-muted"
+                           t-out="'We\'ve emailed you a confirmation.' if _en else 'Un courriel de confirmation vous a été envoyé.'"/>
+                    </div>
+                </t>
+                <t t-elif="booking_sudo.state == 'pending'">
+                    <div class="text-center mb-4">
+                        <div class="bf-status-icon bf-status-pending mx-auto mb-3">
+                            <i class="fa fa-clock-o"/>
+                        </div>
+                        <h3 class="fw-semibold"
+                            t-out="'Pending confirmation' if _en else 'En attente de confirmation'"/>
+                        <a t-attf-href="/appointment/b/#{booking_sudo.id}/#{access_token}/schedule"
+                           class="btn bf-btn-accent text-white mt-2"
+                           t-attf-style="background-color: #{(booking_sudo.type_id.company_id and booking_sudo.type_id.company_id.appointment_brand_primary) or brand_primary};">
+                            <i class="fa fa-calendar me-2"/>
+                            <t t-out="'Pick a time' if _en else 'Choisir un créneau'"/>
+                        </a>
+                    </div>
+                </t>
+                <t t-elif="booking_sudo.state == 'canceled'">
+                    <div class="text-center mb-4">
+                        <div class="bf-status-icon bf-status-cancelled mx-auto mb-3">
+                            <i class="fa fa-times"/>
+                        </div>
+                        <h3 class="fw-semibold"
+                            t-out="'Meeting cancelled' if _en else 'Rendez-vous annulé'"/>
+                    </div>
+                </t>
+                <t t-else="">
+                    <div class="text-center mb-4">
+                        <div class="bf-status-icon bf-status-info mx-auto mb-3">
+                            <i class="fa fa-calendar-check-o"/>
+                        </div>
+                        <h3 class="fw-semibold"
+                            t-out="'Meeting scheduled' if _en else 'Rendez-vous planifié'"/>
+                    </div>
+                </t>
+
+                <div class="card bf-confirmation-card mx-auto">
+                    <div class="card-body p-4">
+                        <h5 class="fw-semibold mb-4" style="color: #ffffff;">
+                            <t t-esc="booking_sudo.type_id.name"/>
+                        </h5>
+                        <div class="d-flex flex-column gap-3">
+                            <t t-if="booking_sudo.start">
+                                <div class="d-flex align-items-center">
+                                    <div class="bf-info-icon">
+                                        <i class="fa fa-calendar"/>
+                                    </div>
+                                    <div>
+                                        <div class="small text-muted"
+                                             t-out="'Date' if _en else 'Date'"/>
+                                        <strong t-field="booking_sudo.start"
+                                                t-options='{"format": "EEEE d MMMM yyyy"}'/>
+                                    </div>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <div class="bf-info-icon">
+                                        <i class="fa fa-clock-o"/>
+                                    </div>
+                                    <div>
+                                        <div class="small text-muted"
+                                             t-out="'Time' if _en else 'Heure'"/>
+                                        <strong t-field="booking_sudo.start"
+                                                t-options='{"format": "HH:mm"}'/>
+                                    </div>
+                                </div>
+                            </t>
+                            <div class="d-flex align-items-center">
+                                <div class="bf-info-icon">
+                                    <i class="fa fa-hourglass-half"/>
+                                </div>
+                                <div>
+                                    <div class="small text-muted"
+                                         t-out="'Duration' if _en else 'Durée'"/>
+                                    <strong t-esc="booking_sudo.get_duration_display()"/>
+                                </div>
+                            </div>
+                            <t t-if="booking_sudo.location">
+                                <div class="d-flex align-items-center">
+                                    <div class="bf-info-icon">
+                                        <i class="fa fa-map-marker"/>
+                                    </div>
+                                    <div>
+                                        <div class="small text-muted"
+                                             t-out="'Location' if _en else 'Lieu'"/>
+                                        <strong t-esc="booking_sudo.location"/>
+                                    </div>
+                                </div>
+                            </t>
+                            <t t-if="booking_sudo.videocall_location">
+                                <div class="d-flex align-items-center">
+                                    <div class="bf-info-icon">
+                                        <i class="fa fa-video-camera"/>
+                                    </div>
+                                    <div>
+                                        <div class="small text-muted"
+                                             t-out="'Video call' if _en else 'Vidéoconférence'"/>
+                                        <a t-att-href="booking_sudo.videocall_location"
+                                           target="_blank"
+                                           class="btn btn-sm bf-btn-accent text-white mt-1"
+                                           t-attf-style="background-color: #{(booking_sudo.type_id.company_id and booking_sudo.type_id.company_id.appointment_brand_primary) or brand_primary};">
+                                            <i class="fa fa-external-link me-1"/>
+                                            <t t-out="'Join the call' if _en else 'Rejoindre la réunion'"/>
+                                        </a>
+                                    </div>
+                                </div>
+                            </t>
+                            <div class="d-flex align-items-center">
+                                <div class="bf-info-icon">
+                                    <i class="fa fa-globe"/>
+                                </div>
+                                <div>
+                                    <div class="small text-muted"
+                                         t-out="'Timezone' if _en else 'Fuseau horaire'"/>
+                                    <strong t-out="tz_city_name or tz_name"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <t t-if="booking_sudo.state in ('confirmed', 'scheduled')">
+                        <div class="card-footer bg-transparent border-top py-3">
+                            <div class="text-center mb-3">
+                                <a t-attf-href="/appointment/b/#{booking_sudo.id}/#{access_token}/schedule"
+                                   class="btn bf-btn-accent text-white btn-sm me-2"
+                                   t-attf-style="background-color: #{(booking_sudo.type_id.company_id and booking_sudo.type_id.company_id.appointment_brand_primary) or brand_primary};">
+                                    <i class="fa fa-calendar me-1"/>
+                                    <t t-out="'Reschedule' if _en else 'Replanifier'"/>
+                                </a>
+                            </div>
+                            <form t-attf-action="/appointment/b/#{booking_sudo.id}/#{access_token}/cancel"
+                                  method="post"
+                                  t-att-onsubmit="'return confirm(\'Are you sure you want to cancel this meeting?\');' if _en else 'return confirm(\'Êtes-vous certain de vouloir annuler ce rendez-vous ?\');'">
+                                <input type="hidden" name="csrf_token"
+                                       t-att-value="request.csrf_token()"/>
+                                <div class="mb-3 text-start">
+                                    <label for="cancellation_reason" class="form-label small text-muted">
+                                        <t t-out="'Cancellation reason' if _en else 'Raison de l\'annulation'"/>
+                                        <span class="text-muted" t-out="'(optional)' if _en else '(optionnel)'"/>
+                                    </label>
+                                    <textarea class="form-control"
+                                              id="cancellation_reason"
+                                              name="cancellation_reason"
+                                              rows="2"
+                                              maxlength="2000"
+                                              t-att-placeholder="'E.g. last-minute conflict, scheduling clash, sorted another way...' if _en else 'Ex. : empêchement de dernière minute, conflit d\'horaire, sujet traité autrement...'"/>
+                                </div>
+                                <div class="text-center">
+                                    <button type="submit" class="btn btn-outline-danger btn-sm">
+                                        <i class="fa fa-times me-1"/>
+                                        <t t-out="'Cancel the meeting' if _en else 'Annuler le rendez-vous'"/>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </t>
+                </div>
+
+                <div class="text-center mt-4">
+                    <a href="/appointment" class="text-muted text-decoration-none">
+                        <i class="fa fa-arrow-left me-1"/>
+                        <t t-out="'Back to meeting types' if _en else 'Retour aux types de rendez-vous'"/>
+                    </a>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

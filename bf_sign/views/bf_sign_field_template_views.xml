@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_bf_sign_field_template_list" model="ir.ui.view">
+        <field name="name">bf.sign.field.template.list</field>
+        <field name="model">bf.sign.field.template</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="field_count" string="Pavés"/>
+                <field name="signer_count" string="Signataires"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_bf_sign_field_template_form" model="ir.ui.view">
+        <field name="name">bf.sign.field.template.form</field>
+        <field name="model">bf.sign.field.template</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="Nom du modèle"/></h1>
+                    </div>
+                    <group>
+                        <field name="signer_count"/>
+                        <field name="company_id" groups="base.group_multi_company"/>
+                    </group>
+                    <field name="line_ids">
+                        <list editable="bottom">
+                            <field name="signer_index" string="Rang signataire"/>
+                            <field name="field_type"/>
+                            <field name="page"/>
+                            <field name="fill_mode"/>
+                            <field name="required"/>
+                            <field name="value_text"/>
+                            <field name="pos_x" optional="hide"/>
+                            <field name="pos_y" optional="hide"/>
+                            <field name="width" optional="hide"/>
+                            <field name="height" optional="hide"/>
+                        </list>
+                    </field>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_bf_sign_field_template" model="ir.actions.act_window">
+        <field name="name">Modèles de pavés</field>
+        <field name="res_model">bf.sign.field.template</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Aucun modèle de disposition</p>
+            <p>Créez des modèles depuis l'onglet « Disposition des pavés » d'une demande
+               (bouton « Enregistrer comme modèle »), pour replacer rapidement les pavés
+               sur un document récurrent.</p>
+        </field>
+    </record>
+
+    <menuitem id="menu_bf_sign_field_template" name="Modèles de pavés"
+              parent="menu_bf_sign_config" action="action_bf_sign_field_template" sequence="20"/>
+
+</odoo>

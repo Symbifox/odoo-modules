@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="task_unblocked_notification">
+        <div>
+            <p>Bonjour,</p>
+            <p>
+                La t&#226;che
+                <a t-att-href="access_link" style="font-weight: bold;">
+                    <t t-out="task.display_name"/>
+                </a>
+                <t t-if="task.project_id">
+                    du projet <strong><t t-out="task.project_id.display_name"/></strong>
+                    <t t-if="task.project_id.partner_id">
+                        (client <strong><t t-out="task.project_id.partner_id.name"/></strong>)
+                    </t>
+                </t>
+                est maintenant <strong>d&#233;bloqu&#233;e</strong> et pr&#234;te &#224; &#234;tre reprise.
+            </p>
+            <t t-if="blocker_info">
+                <p>
+                    <strong><t t-out="closing_user"/></strong>
+                    a compl&#233;t&#233; les t&#226;ches bloquantes suivantes
+                    le <strong><t t-out="closing_time"/></strong> :
+                </p>
+                <ul>
+                    <t t-foreach="blocker_info" t-as="blocker">
+                        <li>
+                            <t t-out="blocker['name']"/>
+                            (<t t-out="blocker['state_label']"/>)
+                            <t t-if="blocker['project_name']">
+                                &#8212; projet <t t-out="blocker['project_name']"/>
+                                <t t-if="blocker['client_name']">
+                                    (client <t t-out="blocker['client_name']"/>)
+                                </t>
+                            </t>
+                        </li>
+                    </t>
+                </ul>
+            </t>
+            <p>&#192; vous de jouer !</p>
+        </div>
+    </template>
+
+</odoo>

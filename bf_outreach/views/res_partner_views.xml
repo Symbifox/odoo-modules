@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="view_partner_form_outreach" model="ir.ui.view">
+        <field name="name">res.partner.form.outreach</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <div name="button_box" position="inside">
+                <button class="oe_stat_button" icon="fa-bullhorn" type="object"
+                        name="action_view_outreach_targets"
+                        groups="bf_outreach.group_bf_outreach_user"
+                        invisible="outreach_target_count == 0">
+                    <field name="outreach_target_count" widget="statinfo" string="Démarchage"/>
+                </button>
+            </div>
+            <xpath expr="//sheet" position="before">
+                <widget name="web_ribbon" title="Ne plus démarcher" bg_color="text-bg-danger"
+                        invisible="not outreach_opt_out"
+                        groups="bf_outreach.group_bf_outreach_user"/>
+            </xpath>
+            <!-- Le formulaire de base porte plusieurs category_id (sous-contacts) :
+                 on vise explicitement le premier, celui du bloc principal. -->
+            <xpath expr="(//field[@name='category_id'])[1]" position="after">
+                <field name="outreach_opt_out" groups="bf_outreach.group_bf_outreach_user"/>
+                <field name="outreach_opt_out_date" readonly="1"
+                       invisible="not outreach_opt_out"
+                       groups="bf_outreach.group_bf_outreach_user"/>
+                <field name="outreach_opt_out_reason"
+                       invisible="not outreach_opt_out"
+                       groups="bf_outreach.group_bf_outreach_user"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_res_partner_filter_outreach" model="ir.ui.view">
+        <field name="name">res.partner.search.outreach</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_res_partner_filter"/>
+        <field name="arch" type="xml">
+            <filter name="type_company" position="after">
+                <separator/>
+                <filter name="outreach_do_not_contact" string="Ne plus démarcher"
+                        domain="[('outreach_opt_out', '=', True)]"
+                        groups="bf_outreach.group_bf_outreach_user"/>
+            </filter>
+        </field>
+    </record>
+
+</odoo>

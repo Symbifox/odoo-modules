@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.bf_timezone</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base_setup.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//block[@id='user_default_rights']" position="after">
+                <block title="Blue Fox Timezone" id="bf_timezone_settings">
+                    <setting id="bf_default_tz_setting"
+                             string="Default timezone"
+                             help="Fallback timezone for meeting displays, appointment emails and ICS files when no contact/user/calendar timezone is set.">
+                        <field name="bf_default_tz"/>
+                    </setting>
+                </block>
+            </xpath>
+        </field>
+    </record>
+</odoo>

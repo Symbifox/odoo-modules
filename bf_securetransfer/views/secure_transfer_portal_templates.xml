@@ -1,0 +1,517 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Standalone public pages (bf_sign pattern): full HTML documents, NO
+         portal/website layout — the website router must never hijack a brand
+         Host.
+
+         ⚠ The doctype is NOT written here: it comes from the `doctype` value
+         that controllers/main.py._render_page injects. Odoo skips the
+         translation of an ENTIRE view whose arch starts with a doctype
+         (tools/translate.py: `avoid_pattern`), so these three pages used to
+         export zero translatable terms and stayed French for an en_CA visitor
+         whatever the .po said. Put a doctype back in the arch and you silently
+         un-translate the whole public product.
+
+         Rendering context passed by controllers/main.py:
+           all pages      : brand, visuals (brand._visuals()), locale
+           page_upload    : limits (brand._effective_limits()),
+                            st_config_json (Markup JSON for #st-config)
+           page_download  : transfer (sudo record), files, token,
+                            locked (bool), pw_error, reported, expiry_display
+           page_unavailable : message (str or False)
+         DOM ids are the contract of static/src/js/st_upload.js and
+         st_download.js — do not rename them without updating the JS. -->
+
+    <!-- ============================================================= -->
+    <!-- Brand CSS variables (shared by all public pages)               -->
+    <!-- ============================================================= -->
+    <template id="brand_style" name="Transfert sécurisé — variables de marque">
+        <style>
+            :root {
+                --st-primary: <t t-esc="visuals['primary']"/>;
+                --st-dark: <t t-esc="visuals['dark']"/>;
+            }
+        </style>
+    </template>
+
+    <!-- ============================================================= -->
+    <!-- Public upload page                                             -->
+    <!-- ============================================================= -->
+    <template id="page_upload" name="Transfert sécurisé — page d'envoi">
+        <t t-out="doctype"/>
+        <html t-att-lang="(locale or 'fr_CA')[:2]">
+            <head>
+                <meta charset="utf-8"/>
+                <meta name="viewport" content="width=device-width, initial-scale=1"/>
+                <meta name="robots" content="noindex, nofollow"/>
+                <title>Envoyer des fichiers — <t t-esc="visuals['name']"/></title>
+                <link t-if="visuals['favicon_url']" rel="icon" t-att-href="visuals['favicon_url']"/>
+                <link rel="stylesheet" href="/bf_securetransfer/static/src/css/st_public.css"/>
+                <t t-call="bf_securetransfer.brand_style"/>
+            </head>
+            <body>
+                <main class="st-wrap">
+                    <header class="st-header">
+                        <img t-if="visuals['logo_url']" class="st-logo"
+                             t-att-src="visuals['logo_url']" t-att-alt="visuals['name']"/>
+                        <span class="st-brand-name"><t t-esc="visuals['name']"/></span>
+                    </header>
+
+                    <div id="st-upload-panel">
+                        <section class="st-card">
+                            <t t-if="drop_mode">
+                                <h1 class="st-title">Déposer un fichier</h1>
+                                <p class="st-subtitle">Ce lien est réservé exclusivement à votre
+                                    envoi vers <strong t-esc="drop_recipient_label"/>. Vos fichiers
+                                    transitent de façon chiffrée, le lien a une durée de vie limitée
+                                    et son contenu est automatiquement supprimé après l'échéance
+                                    choisie.</p>
+                            </t>
+                            <t t-else="">
+                                <h1 class="st-title">Envoyer des fichiers</h1>
+                                <p class="st-subtitle">Ce lien est réservé à votre envoi. Vos fichiers
+                                    transitent de façon chiffrée, le lien a une durée de vie limitée
+                                    et son contenu est automatiquement supprimé après l'échéance
+                                    choisie.</p>
+                            </t>
+
+                            <noscript>
+                                <div class="st-error">JavaScript est requis pour téléverser
+                                    des fichiers sur cette page.</div>
+                            </noscript>
+
+                            <!-- Errors raised by st_upload.js land here -->
+                            <div id="st-error" class="st-error" hidden="hidden"></div>
+
+                            <!-- WHO — filled first, before dropping files, so a
+                                 file never triggers a « missing e-mail » error. -->
+                            <div class="st-field">
+                                <label for="st-sender-email">Votre courriel *</label>
+                                <input type="email" id="st-sender-email" required="required"
+                                       autocomplete="email" maxlength="254"/>
+                                <div class="st-field-hint">Requis pour envoyer — vous recevrez un accusé.</div>
+                            </div>
+                            <div class="st-field">
+                                <label for="st-sender-name">Votre nom</label>
+                                <input type="text" id="st-sender-name" maxlength="128"
+                                       autocomplete="name"/>
+                            </div>
+                            <div t-if="not drop_mode" class="st-field" id="st-recipients-row">
+                                <label for="st-recipients">Courriels des destinataires</label>
+                                <input type="text" id="st-recipients"
+                                       placeholder="adresse@exemple.com, autre@exemple.com"/>
+                                <div class="st-field-hint">Jusqu'à 10 adresses, séparées par des
+                                    virgules. Laissez vide pour obtenir seulement le lien.</div>
+                            </div>
+                            <!-- Drop page: the recipient is fixed to the page owner and
+                                 forced server-side; show it, never let it be edited. -->
+                            <div t-else="" class="st-drop-to">
+                                <span class="st-drop-to-label">Destinataire</span>
+                                <span class="st-drop-to-value" t-esc="drop_recipient_label"/>
+                            </div>
+
+                            <!-- Tabs: Fichiers (défaut) / Message seul -->
+                            <div class="st-tabs" role="tablist">
+                                <button type="button" id="st-tab-files" class="st-tab st-tab-active"
+                                        data-mode="files" role="tab">Fichiers</button>
+                                <button type="button" id="st-tab-message" class="st-tab"
+                                        data-mode="message" role="tab">Message seul</button>
+                            </div>
+
+                            <div id="st-mode-files">
+                                <div id="st-dropzone" class="st-dropzone" tabindex="0" role="button"
+                                     aria-label="Déposer des fichiers">
+                                    <span class="st-dropzone-icon" aria-hidden="true">&#8682;</span>
+                                    <p>Glissez vos fichiers ici ou cliquez pour parcourir</p>
+                                    <p class="st-dropzone-hint">
+                                        Jusqu'à <t t-esc="limits['max_files']"/> fichiers,
+                                        <t t-esc="limits['max_bytes'] &gt;= 1073741824 and '%g Go' % (limits['max_bytes'] / 1073741824.0) or '%g Mo' % (limits['max_bytes'] / 1048576.0)"/>
+                                        au total.</p>
+                                </div>
+                                <input type="file" id="st-file-input" multiple="multiple" hidden="hidden"/>
+                                <div id="st-file-list" class="st-file-list"></div>
+                                <div id="st-progress" class="st-progress" hidden="hidden"></div>
+                            </div>
+
+                            <div id="st-mode-message" hidden="hidden">
+                                <p class="st-subtitle">Transmettez un message sécurisé sans fichier
+                                    (p. ex. un mot de passe). Il s'ouvre via le même lien à durée limitée.</p>
+                            </div>
+
+                            <div class="st-options">
+                                <!-- The one line that tells the recipient what
+                                     this is before they open anything. It rides
+                                     the mail header, so the hint says plainly
+                                     that it is not covered by the gates. -->
+                                <div class="st-field">
+                                    <label for="st-subject">Objet (optionnel)</label>
+                                    <input type="text" id="st-subject" maxlength="120"
+                                           placeholder="P. ex. Baux 2026"/>
+                                    <div class="st-field-hint">Ce que le destinataire verra
+                                        dans l'objet du courriel et en titre de la page.
+                                        Il voyage en clair : n'y mettez rien de confidentiel.</div>
+                                </div>
+                                <div class="st-field">
+                                    <label for="st-message" id="st-message-label">Message (optionnel)</label>
+                                    <textarea id="st-message" maxlength="2000" rows="3"></textarea>
+                                </div>
+                                <div class="st-options-grid">
+                                    <div class="st-field">
+                                        <label for="st-expiry">Durée de disponibilité</label>
+                                        <select id="st-expiry">
+                                            <t t-foreach="limits['expiry_choices']" t-as="d">
+                                                <option t-att-value="d"
+                                                        t-att-selected="'selected' if d == 7 or (7 not in limits['expiry_choices'] and d == limits['expiry_choices'][0]) else None">
+                                                    <t t-esc="d == 1 and '1 jour' or '%d jours' % d"/>
+                                                </option>
+                                            </t>
+                                        </select>
+                                    </div>
+                                    <div class="st-field" id="st-password-row"
+                                         t-if="limits['allow_password']">
+                                        <label for="st-password">Mot de passe (optionnel)</label>
+                                        <input type="password" id="st-password" maxlength="128"
+                                               autocomplete="new-password"/>
+                                        <div class="st-field-hint">Ne le transmettez jamais par
+                                            courriel ni dans le message d'envoi. Communiquez-le plutôt
+                                            par un autre moyen (téléphone ou message texte) — il ne
+                                            figure jamais dans nos courriels.</div>
+                                    </div>
+                                    <div class="st-field" id="st-max-downloads-row">
+                                        <label for="st-max-downloads">Téléchargements permis</label>
+                                        <input type="number" id="st-max-downloads" min="0"
+                                               t-att-max="limits['max_download_budget']"
+                                               step="1" value="0"/>
+                                        <div class="st-field-hint">0 = sans limite. Le lien s'éteint une
+                                            fois ce nombre de téléchargements atteint.</div>
+                                    </div>
+                                    <div class="st-field st-check" id="st-burn-row"
+                                         t-if="limits['allow_burn']">
+                                        <label>
+                                            <input type="checkbox" id="st-burn"/>
+                                            Détruire après le téléchargement
+                                        </label>
+                                        <div class="st-field-hint">Le lien cesse de fonctionner dès qu'un
+                                            destinataire a téléchargé tous les fichiers de l'envoi.</div>
+                                    </div>
+                                    <!-- Recipient code: the sender may ARM the gate here; when the
+                                         instance already requires it for every transfer the box is
+                                         shown ticked and locked, so nobody reads its absence as an
+                                         opt-out. -->
+                                    <div class="st-field st-check" id="st-recipient-otp-row"
+                                         t-if="limits['allow_recipient_otp'] or limits['recipient_otp_forced']">
+                                        <label>
+                                            <input type="checkbox" id="st-recipient-otp"
+                                                   t-att-checked="'checked' if limits['recipient_otp_forced'] else None"
+                                                   t-att-disabled="'disabled' if limits['recipient_otp_forced'] else None"/>
+                                            Exiger un code du destinataire
+                                        </label>
+                                        <div class="st-field-hint">
+                                            <t t-if="limits['recipient_otp_forced']">Exigé par ce service :
+                                                le destinataire devra confirmer son adresse et saisir un
+                                                code avant de voir quoi que ce soit.</t>
+                                            <t t-else="">Le contenu reste retenu tant que le destinataire
+                                                n'a pas saisi un code à usage unique reçu à son adresse —
+                                                le lien seul ne suffit alors plus.</t>
+                                        </div>
+                                    </div>
+                                    <div class="st-field st-check" id="st-notify-row">
+                                        <label>
+                                            <input type="checkbox" id="st-notify"
+                                                   t-att-checked="'checked' if brand.notify_on_download else None"/>
+                                            M'avertir au premier téléchargement
+                                        </label>
+                                        <div class="st-field-hint">Un courriel vous est envoyé dès qu'un
+                                            destinataire télécharge l'envoi.</div>
+                                    </div>
+                                </div>
+
+                                <!-- Honeypot: humans never see it, bots fill it.
+                                     The API answers a silent fake success. -->
+                                <div class="st-hp" aria-hidden="true">
+                                    <label for="website_url">URL</label>
+                                    <input type="text" name="website_url" id="website_url"
+                                           tabindex="-1" autocomplete="off"/>
+                                </div>
+
+                                <!-- Drop page: the file is delivered straight to
+                                     the page owner, so the button says "send",
+                                     not "get the link". st_upload.js keeps this
+                                     label in sync per mode/locale (send_drop). -->
+                                <button type="button" id="st-finalize"
+                                        class="st-btn st-btn-primary" disabled="disabled">
+                                    <t t-if="drop_mode">Envoyer les fichiers</t>
+                                    <t t-else="">Obtenir le lien</t></button>
+                            </div>
+                        </section>
+                    </div>
+
+                    <!-- Sender OTP challenge (shown by st_upload.js when the
+                         tenant requires sender confirmation) -->
+                    <section id="st-otp" class="st-card st-gate" hidden="hidden">
+                        <span class="st-gate-icon" aria-hidden="true">&#128231;</span>
+                        <h1 class="st-title">Confirmez votre envoi</h1>
+                        <p>Un code à 6 chiffres vient d'être envoyé à votre adresse
+                            courriel. Saisissez-le pour envoyer le transfert.</p>
+                        <input type="text" id="st-otp-code" inputmode="numeric"
+                               pattern="[0-9]*" maxlength="6" autocomplete="one-time-code"
+                               aria-label="Code de confirmation"/>
+                        <button type="button" id="st-otp-confirm" class="st-btn st-btn-primary">
+                            Confirmer et envoyer</button>
+                        <button type="button" id="st-otp-resend" class="st-btn-link">
+                            Renvoyer un code</button>
+                    </section>
+
+                    <!-- Success panel (filled and shown by st_upload.js).
+                         Drop page: the transfer was e-mailed straight to the
+                         page owner — confirm the direct delivery, no link to
+                         copy back. General page: the sender gets the share link
+                         to forward themselves. st_upload.js null-checks the
+                         link/copy/expiry nodes, so their absence in drop mode is
+                         safe. -->
+                    <section id="st-success" class="st-card st-success-panel" hidden="hidden">
+                        <span class="st-success-icon" aria-hidden="true">&#10003;</span>
+                        <t t-if="drop_mode">
+                            <h1 class="st-title">Envoi transmis</h1>
+                            <p>Votre envoi a été <strong>transmis directement à
+                                <t t-esc="drop_recipient_label"/></strong>, qui vient d'en être
+                                avisé par courriel. Vous n'avez rien d'autre à faire.</p>
+                            <p class="st-expiry-note">Un accusé de réception vient aussi de vous
+                                être envoyé à votre adresse courriel.</p>
+                            <p class="st-after-note">Si vous avez protégé cet envoi par un mot de
+                                passe, communiquez-le-lui séparément, par un autre moyen que le
+                                courriel (téléphone ou message texte).</p>
+                        </t>
+                        <t t-else="">
+                            <h1 class="st-title">Transfert prêt</h1>
+                            <p>Voici votre lien de partage :</p>
+                            <div class="st-share-row">
+                                <input type="text" id="st-share-url" readonly="readonly"/>
+                                <button type="button" id="st-copy" class="st-btn st-btn-secondary">
+                                    Copier le lien</button>
+                            </div>
+                            <p id="st-expiry-note" class="st-expiry-note"
+                               data-template="Expire le {date} (UTC)."></p>
+                        </t>
+                    </section>
+
+                    <footer class="st-footer">
+                        <span t-if="visuals['tagline']" class="st-tagline" t-esc="visuals['tagline']"/>
+                        <span t-if="visuals['powered_by']" class="st-powered">
+                            Propulsé par <t t-esc="visuals['powered_by_name']"/></span>
+                    </footer>
+                </main>
+
+                <!-- Server config for st_upload.js: limits, API URLs and
+                     translated strings — no server constant lives in the JS.
+                     Non-executable JSON block (t-out of a server-built Markup
+                     whose '</' sequences are escaped by the controller). -->
+                <script type="application/json" id="st-config"><t t-out="st_config_json"/></script>
+                <script src="/bf_securetransfer/static/src/js/st_upload.js"></script>
+            </body>
+        </html>
+    </template>
+
+    <!-- ============================================================= -->
+    <!-- Public download page                                           -->
+    <!-- ============================================================= -->
+    <template id="page_download" name="Transfert sécurisé — page de téléchargement">
+        <t t-out="doctype"/>
+        <html t-att-lang="(locale or 'fr_CA')[:2]">
+            <head>
+                <meta charset="utf-8"/>
+                <meta name="viewport" content="width=device-width, initial-scale=1"/>
+                <meta name="robots" content="noindex, nofollow"/>
+                <!-- The subject deliberately stays OUT of the tab title: this
+                     same <head> is rendered by the password and code gates,
+                     and a forwarded link should not spill the sender's subject
+                     to whoever holds it before the gate is passed. It is shown
+                     in the card below, which only renders once the gates are
+                     through. -->
+                <title><t t-esc="transfer.file_count and 'Fichiers partagés' or 'Message sécurisé'"/> — <t t-esc="visuals['name']"/></title>
+                <link t-if="visuals['favicon_url']" rel="icon" t-att-href="visuals['favicon_url']"/>
+                <link rel="stylesheet" href="/bf_securetransfer/static/src/css/st_public.css"/>
+                <t t-call="bf_securetransfer.brand_style"/>
+            </head>
+            <body>
+                <main class="st-wrap">
+                    <header class="st-header">
+                        <img t-if="visuals['logo_url']" class="st-logo"
+                             t-att-src="visuals['logo_url']" t-att-alt="visuals['name']"/>
+                        <span class="st-brand-name"><t t-esc="visuals['name']"/></span>
+                    </header>
+
+                    <div t-if="reported" class="st-notice" style="max-width:560px; width:100%;">
+                        Merci — votre signalement a été transmis à l'équipe.</div>
+
+                    <!-- Password gate -->
+                    <t t-if="locked">
+                        <section class="st-card st-gate">
+                            <span class="st-gate-icon" aria-hidden="true">&#128274;</span>
+                            <h1 class="st-title">Transfert protégé</h1>
+                            <p>Ce transfert est protégé par un mot de passe.
+                                L'expéditeur vous l'a communiqué séparément.</p>
+                            <div t-if="pw_error == '2'" class="st-error">
+                                Trop de tentatives. Réessayez dans quelques minutes.</div>
+                            <div t-elif="pw_error" class="st-error">
+                                Mot de passe incorrect.</div>
+                            <form method="post" t-attf-action="/s/#{token}/unlock">
+                                <input type="password" id="st-password-input" name="password"
+                                       required="required" autocomplete="off"
+                                       aria-label="Mot de passe"/>
+                                <button type="submit" class="st-btn st-btn-primary">Déverrouiller</button>
+                            </form>
+                        </section>
+                    </t>
+
+                    <!-- Recipient OTP gate (tenant setting) -->
+                    <t t-elif="otp_stage">
+                        <section class="st-card st-gate">
+                            <span class="st-gate-icon" aria-hidden="true">&#128231;</span>
+                            <h1 class="st-title">Vérification par code</h1>
+                            <div t-if="otp_error == '2'" class="st-error">
+                                Trop de tentatives. Réessayez dans quelques minutes.</div>
+                            <div t-elif="otp_error" class="st-error">
+                                Code ou adresse invalide.</div>
+                            <t t-if="otp_stage == 'verify'">
+                                <p>Un code à 6 chiffres vient de vous être envoyé.
+                                    Saisissez-le pour accéder à ce contenu.</p>
+                                <!-- Le défi vit dans la session (st_otp_chal_*),
+                                     pas sur le transfert : un code demandé ici
+                                     ne s'ouvre qu'ici. Sans cette phrase, le
+                                     destinataire qui ouvre le lien sur son
+                                     téléphone et lit le code sur son ordinateur
+                                     se heurte à un refus incompréhensible. -->
+                                <p class="st-field-hint">Saisissez-le dans
+                                    <strong>ce navigateur</strong> : le code ne vaut que pour
+                                    la demande faite ici. Si vous ouvrez le lien ailleurs,
+                                    demandez-en simplement un nouveau.</p>
+                                <form method="post" t-attf-action="/s/#{token}/otp-verify">
+                                    <input type="text" id="st-otp-input" name="code"
+                                           inputmode="numeric" pattern="[0-9]*" maxlength="6"
+                                           required="required" autocomplete="one-time-code"
+                                           aria-label="Code de vérification"/>
+                                    <button type="submit" class="st-btn st-btn-primary">Vérifier</button>
+                                </form>
+                                <form method="post" t-attf-action="/s/#{token}/otp-request" class="st-report">
+                                    <input type="hidden" name="email"/>
+                                    <button type="submit" class="st-btn-link">Renvoyer un code</button>
+                                </form>
+                            </t>
+                            <t t-else="">
+                                <p>Pour accéder à ce contenu, confirmez votre
+                                    adresse courriel (celle à laquelle le lien a été envoyé).
+                                    Un code de vérification vous sera alors transmis
+                                    (par courriel ou par SMS).</p>
+                                <form method="post" t-attf-action="/s/#{token}/otp-request">
+                                    <input type="email" id="st-otp-email" name="email"
+                                           required="required" autocomplete="email"
+                                           placeholder="vous@exemple.com"
+                                           aria-label="Votre adresse courriel"/>
+                                    <button type="submit" class="st-btn st-btn-primary">Recevoir un code</button>
+                                </form>
+                            </t>
+                        </section>
+                    </t>
+
+                    <!-- Files (or message-only) -->
+                    <t t-else="">
+                        <section class="st-card">
+                            <!-- The sender's subject becomes the page title
+                                 when they wrote one: it is the whole point of
+                                 the field. The generic label stays above it,
+                                 so « files » vs « secure message » is still
+                                 legible at a glance. -->
+                            <t t-if="transfer.subject">
+                                <p class="st-eyebrow"
+                                   t-esc="files and 'Fichiers partagés' or 'Message sécurisé'"/>
+                                <h1 class="st-title" t-esc="transfer.subject"/>
+                            </t>
+                            <h1 t-else="" class="st-title"
+                                t-esc="files and 'Fichiers partagés' or 'Message sécurisé'"/>
+                            <p class="st-download-meta">
+                                De la part de
+                                <strong t-esc="transfer.sender_name or transfer.sender_email"/>
+                                <t t-if="transfer.sender_name">
+                                    (<t t-esc="transfer.sender_email"/>)</t>
+                            </p>
+                            <p t-if="transfer.message" class="st-download-message"
+                               t-esc="transfer.message"/>
+                            <div t-foreach="files" t-as="f" class="st-download-file">
+                                <div class="st-file-info">
+                                    <span class="st-file-name" t-esc="f.filename"/>
+                                    <span class="st-file-size"
+                                          t-esc="f.size &gt;= 1073741824 and '%.2f Go' % (f.size / 1073741824.0) or f.size &gt;= 1048576 and '%.1f Mo' % (f.size / 1048576.0) or f.size &gt;= 1024 and '%.0f Ko' % (f.size / 1024.0) or '%d o' % f.size"/>
+                                </div>
+                                <a class="st-btn st-btn-primary"
+                                   t-attf-href="/s/#{token}/dl/#{f.id}"
+                                   rel="nofollow noopener">Télécharger</a>
+                            </div>
+                            <p class="st-expiry-note" t-if="expiry_display">
+                                Disponible jusqu'au <strong t-esc="expiry_display"/>.
+                                Les fichiers seront ensuite supprimés définitivement.</p>
+                        </section>
+
+                        <form method="post" t-attf-action="/s/#{token}/report"
+                              id="st-report-form" class="st-report"
+                              data-confirm="Signaler ce transfert comme abusif ?">
+                            <button type="submit" class="st-btn-link">Signaler un abus</button>
+                        </form>
+                    </t>
+
+                    <footer class="st-footer">
+                        <span t-if="visuals['tagline']" class="st-tagline" t-esc="visuals['tagline']"/>
+                        <span t-if="visuals['powered_by']" class="st-powered">
+                            Propulsé par <t t-esc="visuals['powered_by_name']"/></span>
+                    </footer>
+                </main>
+                <script src="/bf_securetransfer/static/src/js/st_download.js"></script>
+            </body>
+        </html>
+    </template>
+
+    <!-- ============================================================= -->
+    <!-- Neutral unavailable page — same body for expired, purged,      -->
+    <!-- suspended, unknown or draft tokens: no metadata leaks.         -->
+    <!-- ============================================================= -->
+    <template id="page_unavailable" name="Transfert sécurisé — indisponible">
+        <t t-out="doctype"/>
+        <html t-att-lang="(locale or 'fr_CA')[:2]">
+            <head>
+                <meta charset="utf-8"/>
+                <meta name="viewport" content="width=device-width, initial-scale=1"/>
+                <meta name="robots" content="noindex, nofollow"/>
+                <title><t t-esc="visuals['name']"/></title>
+                <link t-if="visuals['favicon_url']" rel="icon" t-att-href="visuals['favicon_url']"/>
+                <link rel="stylesheet" href="/bf_securetransfer/static/src/css/st_public.css"/>
+                <t t-call="bf_securetransfer.brand_style"/>
+            </head>
+            <body>
+                <main class="st-wrap">
+                    <header class="st-header">
+                        <img t-if="visuals['logo_url']" class="st-logo"
+                             t-att-src="visuals['logo_url']" t-att-alt="visuals['name']"/>
+                        <span class="st-brand-name"><t t-esc="visuals['name']"/></span>
+                    </header>
+
+                    <section class="st-card st-unavailable">
+                        <span class="st-unavailable-icon" aria-hidden="true">&#8709;</span>
+                        <p class="st-unavailable-title">Ce transfert n'est plus disponible</p>
+                        <p t-if="message" t-esc="message"/>
+                        <p t-else="">Le lien est peut-être expiré, ou l'adresse saisie est
+                            inexacte. Au besoin, demandez à l'expéditeur de créer un
+                            nouveau transfert.</p>
+                    </section>
+
+                    <footer class="st-footer">
+                        <span t-if="visuals['tagline']" class="st-tagline" t-esc="visuals['tagline']"/>
+                        <span t-if="visuals['powered_by']" class="st-powered">
+                            Propulsé par <t t-esc="visuals['powered_by_name']"/></span>
+                    </footer>
+                </main>
+            </body>
+        </html>
+    </template>
+
+</odoo>

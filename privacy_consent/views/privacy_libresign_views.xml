@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- LibreSign Config Form View -->
+    <record id="privacy_libresign_config_view_form" model="ir.ui.view">
+        <field name="name">privacy.libresign.config.form</field>
+        <field name="model">privacy.libresign.config</field>
+        <field name="arch" type="xml">
+            <form string="Configuration LibreSign">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_test_connection" type="object"
+                                class="oe_stat_button" icon="fa-plug">
+                            <span>Tester la connexion</span>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Archivé" bg_color="text-bg-danger" invisible="active"/>
+                    <group>
+                        <group string="Général">
+                            <field name="name"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="active" invisible="1"/>
+                        </group>
+                        <group string="Configuration Nextcloud">
+                            <field name="nextcloud_url"/>
+                            <field name="username"/>
+                            <field name="password" password="True"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Configuration Webhook">
+                            <field name="webhook_url" readonly="1"/>
+                            <field name="webhook_secret" password="True"/>
+                        </group>
+                        <group string="Paramètres par défaut">
+                            <field name="auto_send"/>
+                        </group>
+                    </group>
+                    <div class="alert alert-info" role="alert">
+                        <h5><i class="fa fa-info-circle"/> Instructions de configuration</h5>
+                        <ol>
+                            <li>Installez l'application <strong>LibreSign</strong> sur votre instance Nextcloud</li>
+                            <li>Saisissez l'URL Nextcloud, le nom d'utilisateur et le mot de passe ci-dessus</li>
+                            <li>Cliquez sur <em>Tester la connexion</em> pour vérifier la connectivité</li>
+                            <li>Copiez l'URL du Webhook et configurez-la dans les paramètres LibreSign (optionnel)</li>
+                            <li>Optionnellement, définissez un secret webhook pour la vérification de signature</li>
+                        </ol>
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- LibreSign Config List View -->
+    <record id="privacy_libresign_config_view_list" model="ir.ui.view">
+        <field name="name">privacy.libresign.config.list</field>
+        <field name="model">privacy.libresign.config</field>
+        <field name="arch" type="xml">
+            <list string="Configurations LibreSign">
+                <field name="name"/>
+                <field name="nextcloud_url"/>
+                <field name="username"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- LibreSign Config Action -->
+    <record id="action_privacy_libresign_config" model="ir.actions.act_window">
+        <field name="name">Configuration LibreSign</field>
+        <field name="res_model">privacy.libresign.config</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Configurez l'intégration LibreSign
+            </p>
+            <p>
+                Configurez vos identifiants Nextcloud LibreSign pour activer la collecte de signatures
+                numériques pour les demandes de consentement.
+            </p>
+        </field>
+    </record>
+
+    <!-- LibreSign Template Form View -->
+    <record id="privacy_libresign_template_view_form" model="ir.ui.view">
+        <field name="name">privacy.libresign.template.form</field>
+        <field name="model">privacy.libresign.template</field>
+        <field name="arch" type="xml">
+            <form string="Modèle LibreSign">
+                <sheet>
+                    <widget name="web_ribbon" title="Archivé" bg_color="text-bg-danger" invisible="active"/>
+                    <group>
+                        <group string="Détails du modèle">
+                            <field name="name"/>
+                            <field name="purpose_id"/>
+                            <field name="active" invisible="1"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                        <group string="Modèle PDF">
+                            <field name="pdf_template" filename="pdf_template_filename"/>
+                            <field name="pdf_template_filename" invisible="1"/>
+                        </group>
+                    </group>
+                    <group string="Correspondance des champs">
+                        <field name="field_mapping" widget="ace" options="{'mode': 'json'}" nolabel="1"/>
+                    </group>
+                    <group string="Paramètres de message">
+                        <field name="custom_message" nolabel="1" placeholder="Message personnalisé optionnel à inclure dans la demande de signature..."/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- LibreSign Template List View -->
+    <record id="privacy_libresign_template_view_list" model="ir.ui.view">
+        <field name="name">privacy.libresign.template.list</field>
+        <field name="model">privacy.libresign.template</field>
+        <field name="arch" type="xml">
+            <list string="Modèles LibreSign">
+                <field name="name"/>
+                <field name="purpose_id"/>
+                <field name="pdf_template_filename"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- LibreSign Template Search View -->
+    <record id="privacy_libresign_template_view_search" model="ir.ui.view">
+        <field name="name">privacy.libresign.template.search</field>
+        <field name="model">privacy.libresign.template</field>
+        <field name="arch" type="xml">
+            <search string="Rechercher les modèles LibreSign">
+                <field name="name"/>
+                <field name="purpose_id"/>
+                <filter string="Archivé" name="inactive" domain="[('active', '=', False)]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter string="Finalité" name="group_by_purpose" context="{'group_by': 'purpose_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- LibreSign Template Action -->
+    <record id="action_privacy_libresign_template" model="ir.actions.act_window">
+        <field name="name">Modèles LibreSign</field>
+        <field name="res_model">privacy.libresign.template</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Créez des modèles LibreSign
+            </p>
+            <p>
+                Configurez des modèles PDF pour les demandes de signature LibreSign,
+                associés aux finalités de consentement de vie privée.
+            </p>
+        </field>
+    </record>
+
+    <!-- LibreSign Send Wizard Form View -->
+    <record id="privacy_libresign_send_wizard_view_form" model="ir.ui.view">
+        <field name="name">privacy.libresign.send.wizard.form</field>
+        <field name="model">privacy.libresign.send.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Envoyer pour signature (LibreSign)">
+                <group>
+                    <group string="Détails du consentement">
+                        <field name="consent_id" invisible="1"/>
+                        <field name="partner_id"/>
+                        <field name="partner_email"/>
+                        <field name="purpose_id"/>
+                    </group>
+                    <group string="Paramètres LibreSign">
+                        <field name="template_id"/>
+                        <field name="send_email"/>
+                    </group>
+                </group>
+                <group string="Message personnalisé (optionnel)">
+                    <field name="custom_message" nolabel="1" placeholder="Saisissez un message personnalisé à inclure dans la demande de signature..."/>
+                </group>
+                <footer>
+                    <button name="action_send" type="object" string="Envoyer pour signature" class="btn-primary"/>
+                    <button string="Annuler" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- LibreSign Send Wizard Action -->
+    <record id="action_privacy_libresign_send_wizard" model="ir.actions.act_window">
+        <field name="name">Envoyer pour signature (LibreSign)</field>
+        <field name="res_model">privacy.libresign.send.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

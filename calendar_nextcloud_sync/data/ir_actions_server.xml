@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!--
+        Automated Actions for Nextcloud Calendar Sync
+
+        These actions trigger webhooks to n8n when calendar events are
+        created, updated, or deleted in Odoo.
+
+        Anti-loop filter: Only trigger for events where x_sync_source != 'nextcloud'
+        This prevents re-syncing events that came from Nextcloud.
+
+        Note: The actual webhook calls are handled in the model methods.
+        These automated actions serve as documentation and can be used
+        for additional server actions if needed.
+    -->
+
+    <!-- Server Action: Log Sync Event (for debugging) -->
+    <record id="action_server_log_nc_sync" model="ir.actions.server">
+        <field name="name">Log NC Sync Event</field>
+        <field name="model_id" ref="calendar.model_calendar_event"/>
+        <field name="state">code</field>
+        <field name="code">
+# This action is called by automated actions for logging purposes
+# The actual sync is handled by model methods (create/write/unlink overrides)
+for record in records:
+    if record.x_nc_calendar_id:
+        log("NC Sync triggered for event %s (id=%s, source=%s)" % (
+            record.name, record.id, record.x_sync_source or 'odoo'
+        ), level='info')
+        </field>
+    </record>
+
+    <!--
+        Automated Action: On Create
+        Triggers when a new calendar event is created in Odoo.
+        Filter: x_sync_source != 'nextcloud' AND x_nc_calendar_id is set
+    -->
+    <record id="automation_nc_sync_on_create" model="base.automation">
+        <field name="name">[NC Sync] Calendar Event Created</field>
+        <field name="model_id" ref="calendar.model_calendar_event"/>
+        <field name="trigger">on_create</field>
+        <field name="filter_domain">[
+            ('x_nc_calendar_id', '!=', False),
+            ('x_sync_source', '!=', 'nextcloud'),
+            ('recurrency', '=', False)
+        ]</field>
+        <field name="action_server_ids" eval="[(4, ref('action_server_log_nc_sync'))]"/>
+        <field name="active">True</field>
+    </record>
+
+    <!--
+        Automated Action: On Write
+        Triggers when a calendar event is modified in Odoo.
+        Filter: x_sync_source != 'nextcloud' AND x_nc_calendar_id is set
+    -->
+    <record id="automation_nc_sync_on_write" model="base.automation">
+        <field name="name">[NC Sync] Calendar Event Updated</field>
+        <field name="model_id" ref="calendar.model_calendar_event"/>
+        <field name="trigger">on_write</field>
+        <field name="filter_domain">[
+            ('x_nc_calendar_id', '!=', False),
+            ('x_sync_source', '!=', 'nextcloud'),
+            ('recurrency', '=', False)
+        ]</field>
+        <field name="trigger_field_ids" eval="[
+            (4, ref('calendar.field_calendar_event__name')),
+            (4, ref('calendar.field_calendar_event__start')),
+            (4, ref('calendar.field_calendar_event__stop')),
+            (4, ref('calendar.field_calendar_event__allday')),
+            (4, ref('calendar.field_calendar_event__location')),
+            (4, ref('calendar.field_calendar_event__description')),
+            (4, ref('calendar.field_calendar_event__privacy')),
+            (4, ref('calendar.field_calendar_event__show_as')),
+        ]"/>
+        <field name="action_server_ids" eval="[(4, ref('action_server_log_nc_sync'))]"/>
+        <field name="active">True</field>
+    </record>
+
+    <!--
+        Automated Action: On Unlink
+        Triggers when a calendar event is deleted in Odoo.
+        Filter: x_sync_source != 'nextcloud' AND x_nc_calendar_id is set
+
+        Note: on_unlink trigger runs BEFORE the record is deleted,
+        allowing us to capture the data needed for the webhook.
+    -->
+    <record id="automation_nc_sync_on_unlink" model="base.automation">
+        <field name="name">[NC Sync] Calendar Event Deleted</field>
+        <field name="model_id" ref="calendar.model_calendar_event"/>
+        <field name="trigger">on_unlink</field>
+        <field name="filter_domain">[
+            ('x_nc_calendar_id', '!=', False),
+            ('x_sync_source', '!=', 'nextcloud'),
+            ('recurrency', '=', False)
+        ]</field>
+        <field name="action_server_ids" eval="[(4, ref('action_server_log_nc_sync'))]"/>
+        <field name="active">True</field>
+    </record>
+</odoo>

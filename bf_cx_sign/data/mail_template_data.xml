@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- 3-emoji rating request after a completed signature. Same branded
+             shell as the bf_cx emails; the access token creates the
+             rating.rating carrier and the /rate links are absolutized at
+             send time. English is applied per-language by the module hook
+             (shared bf_cx i18n machinery). -->
+        <record id="mail_template_sign_rating" model="mail.template">
+            <field name="name">Expérience client : feedback post-signature</field>
+            <field name="model_id" ref="bf_sign.model_bf_sign_request"/>
+            <field name="subject">Comment s'est passée votre signature ?</field>
+            <field name="partner_to">{{ object._rating_get_partner().id }}</field>
+            <field name="lang">{{ object._rating_get_partner().lang }}</field>
+            <field name="auto_delete" eval="True"/>
+            <field name="body_html" type="html">
+<t t-set="company" t-value="(object.company_id if hasattr(object, 'company_id') and object.company_id else user.company_id)"/>
+<t t-set="brand_primary" t-value="(company and company.report_brand_primary) or '#29ABE1'"/>
+<t t-set="brand_dark" t-value="(company and company.report_brand_dark) or '#2D3031'"/>
+<t t-set="partner" t-value="object._rating_get_partner()"/>
+<t t-set="access_token" t-value="object._rating_get_access_token()"/>
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#F8FAFC;">
+    <tbody><tr><td align="center" style="padding:24px;">
+        <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px; max-width:600px; margin:0 auto; background-color:#ffffff; border-radius:12px; border:1px solid #e5e7eb; border-collapse:collapse;">
+            <tbody>
+                <tr>
+                    <td t-attf-style="background-color:{{ brand_dark }}; padding:16px 24px; border-radius:12px 12px 0 0;">
+                        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tbody><tr>
+                            <td align="left">
+                                <img t-att-src="'/web/image/res.company/%d/logo' % company.id" alt="Logo" style="height:40px; width:auto; display:block; border:0;"/>
+                            </td>
+                            <td align="right" style="color:#E6EDF3; font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:22px; font-weight:800; letter-spacing:0.2px;">
+                                Votre avis
+                            </td>
+                        </tr></tbody></table>
+                    </td>
+                </tr>
+                <tr><td t-attf-style="height:4px; line-height:4px; background-color:{{ brand_primary }};">&amp;nbsp;</td></tr>
+                <tr>
+                    <td style="padding:24px; font-family:'Lexend','Segoe UI',Arial,sans-serif; color:#2D3031;">
+                        <p style="font-size:15px; margin:0 0 12px 0;">
+                            Bonjour <t t-out="partner.name or ''"/>,
+                        </p>
+                        <p style="font-size:15px; margin:0 0 12px 0;">
+                            Vous venez de signer le document
+                            «&#160;<t t-out="object.title or object.name or ''"/>&#160;».
+                            En un clic, comment évaluez-vous cette expérience
+                            de signature&#160;?
+                        </p>
+                        <table role="presentation" style="margin:24px auto; text-align:center;">
+                            <tbody><tr>
+                                <td style="padding:0 16px;">
+                                    <a t-attf-href="/rate/{{ access_token }}/5">
+                                        <img alt="Satisfait" src="/rating/static/src/img/rating_5.png" title="Satisfait"/>
+                                    </a>
+                                </td>
+                                <td style="padding:0 16px;">
+                                    <a t-attf-href="/rate/{{ access_token }}/3">
+                                        <img alt="Correct" src="/rating/static/src/img/rating_3.png" title="Correct"/>
+                                    </a>
+                                </td>
+                                <td style="padding:0 16px;">
+                                    <a t-attf-href="/rate/{{ access_token }}/1">
+                                        <img alt="Insatisfait" src="/rating/static/src/img/rating_1.png" title="Insatisfait"/>
+                                    </a>
+                                </td>
+                            </tr></tbody>
+                        </table>
+                        <p style="font-size:13px; color:#6B7280; margin:0;">
+                            Un commentaire libre peut être ajouté après le
+                            clic. Merci&#160;!
+                        </p>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding:16px 24px 20px 24px; background-color:#FFFFFF; border-radius:0 0 12px 12px;">
+                        <p style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:12px; color:#6B7280; margin:0;">
+                            <t t-if="company.name"><t t-out="company.name"/><br/></t>
+                            Vous préférez ne plus recevoir de demandes d'avis&#160;?
+                            <a t-att-href="partner.bf_cx_unsubscribe_url" style="color:#6B7280;">Me désabonner</a>.
+                        </p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px; max-width:600px; margin:12px auto 0;">
+            <tbody><tr>
+                <td t-attf-style="height:3px; line-height:3px; background-color:{{ brand_primary }}; width:50%;">&amp;nbsp;</td>
+                <td t-attf-style="height:3px; line-height:3px; background-color:{{ brand_dark }}; width:50%;">&amp;nbsp;</td>
+            </tr></tbody>
+        </table>
+    </td></tr></tbody>
+</table>
+            </field>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,151 @@
+// BF Timer - Systray styles
+
+// Pulsing green dot for active timer
+.bf-timer-active-dot {
+    width: 8px;
+    height: 8px;
+    min-width: 8px;
+    min-height: 8px;
+    background: #28a745;
+    border-radius: 50%;
+    display: inline-block;
+    flex-shrink: 0;
+    animation: bf-pulse 1.5s infinite;
+}
+
+@keyframes bf-pulse {
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.6;
+        transform: scale(1.3);
+    }
+}
+
+// Static orange dot for paused timer
+.bf-timer-paused-dot {
+    width: 8px;
+    height: 8px;
+    min-width: 8px;
+    min-height: 8px;
+    background: #fd7e14;
+    border-radius: 50%;
+    display: inline-block;
+    flex-shrink: 0;
+}
+
+// Timer color coding by duration
+.bf-timer-normal {
+    color: inherit;
+}
+
+.bf-timer-warning {
+    color: #fd7e14 !important; // orange > 1h
+}
+
+.bf-timer-danger {
+    color: #dc3545 !important; // red > 2h
+}
+
+// Navbar timer display
+.bf-timer-navbar {
+    font-size: 0.85em;
+    max-width: 140px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+// Multi-timer badge
+.bf-timer-badge {
+    font-size: 0.65em;
+    padding: 2px 6px;
+}
+
+// Play/Stop buttons — fixed square size so icons don't get squished
+.bf-timer-btn {
+    width: 28px;
+    height: 28px;
+    min-width: 28px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+// Dropdown styling
+.bf-timer-dropdown {
+    max-height: 450px;
+    overflow-y: auto;
+}
+
+// Task stage badge
+.bf-stage-badge {
+    font-size: 0.65em;
+    padding: 1px 5px;
+    background-color: #e9ecef;
+    color: #495057;
+    border-radius: 3px;
+    max-width: 80px;
+    flex-shrink: 0;
+}
+
+// Project color dot — mirrors Odoo's 12-color palette
+.bf-project-dot {
+    width: 7px;
+    height: 7px;
+    min-width: 7px;
+    border-radius: 50%;
+    display: inline-block;
+    flex-shrink: 0;
+}
+
+.bf-project-color-0  { background-color: #6c757d; } // gray (no color)
+.bf-project-color-1  { background-color: #f06050; } // red
+.bf-project-color-2  { background-color: #f4a460; } // orange
+.bf-project-color-3  { background-color: #f7cd1f; } // yellow
+.bf-project-color-4  { background-color: #6cc1ed; } // light blue
+.bf-project-color-5  { background-color: #814968; } // dark purple
+.bf-project-color-6  { background-color: #eb7e7f; } // pink
+.bf-project-color-7  { background-color: #2c8397; } // teal
+.bf-project-color-8  { background-color: #475577; } // dark blue
+.bf-project-color-9  { background-color: #d6145f; } // magenta
+.bf-project-color-10 { background-color: #30c381; } // green
+.bf-project-color-11 { background-color: #9365b8; } // purple
+
+// Closed tasks — strikethrough + faded
+.bf-task-closed {
+    text-decoration: line-through;
+    opacity: 0.5;
+}
+
+// Pin/Unpin button
+.bf-pin-btn {
+    width: 24px;
+    height: 24px;
+    min-width: 24px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background: transparent;
+    flex-shrink: 0;
+    opacity: 0.6;
+    transition: opacity 0.15s;
+
+    &:hover {
+        opacity: 1;
+    }
+}
+
+// Preset chips in stop dialog
+.bf-preset-chip {
+    font-size: 0.8em;
+    padding: 2px 10px;
+    border-radius: 12px;
+}

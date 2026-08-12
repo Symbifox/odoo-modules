@@ -1,0 +1,21 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_profile_user,bf.gamification.profile user,model_bf_gamification_profile,group_gamification_user,1,1,0,0
+access_profile_manager,bf.gamification.profile manager,model_bf_gamification_profile,group_gamification_manager,1,1,1,1
+access_level_user,bf.gamification.level user,model_bf_gamification_level,group_gamification_user,1,0,0,0
+access_level_manager,bf.gamification.level manager,model_bf_gamification_level,group_gamification_manager,1,1,1,1
+access_xp_transaction_user,bf.gamification.xp.transaction user,model_bf_gamification_xp_transaction,group_gamification_user,1,0,0,0
+access_xp_transaction_manager,bf.gamification.xp.transaction manager,model_bf_gamification_xp_transaction,group_gamification_manager,1,1,1,1
+access_badge_user,bf.gamification.badge user,model_bf_gamification_badge,group_gamification_user,1,0,0,0
+access_badge_manager,bf.gamification.badge manager,model_bf_gamification_badge,group_gamification_manager,1,1,1,1
+access_badge_category_user,bf.gamification.badge.category user,model_bf_gamification_badge_category,group_gamification_user,1,0,0,0
+access_badge_category_manager,bf.gamification.badge.category manager,model_bf_gamification_badge_category,group_gamification_manager,1,1,1,1
+access_user_badge_user,bf.gamification.user.badge user,model_bf_gamification_user_badge,group_gamification_user,1,0,0,0
+access_user_badge_manager,bf.gamification.user.badge manager,model_bf_gamification_user_badge,group_gamification_manager,1,1,1,1
+access_reward_user,bf.gamification.reward user,model_bf_gamification_reward,group_gamification_user,1,0,0,0
+access_reward_manager,bf.gamification.reward manager,model_bf_gamification_reward,group_gamification_manager,1,1,1,1
+access_reward_claim_user,bf.gamification.reward.claim user,model_bf_gamification_reward_claim,group_gamification_user,1,0,1,0
+access_reward_claim_manager,bf.gamification.reward.claim manager,model_bf_gamification_reward_claim,group_gamification_manager,1,1,1,1
+access_xp_rule_user,bf.gamification.xp.rule user,model_bf_gamification_xp_rule,group_gamification_user,1,0,0,0
+access_xp_rule_manager,bf.gamification.xp.rule manager,model_bf_gamification_xp_rule,group_gamification_manager,1,1,1,1
+access_dashboard_user,bf.gamification.dashboard user,model_bf_gamification_dashboard,group_gamification_user,1,0,0,0
+access_grant_badge_wizard_manager,bf.gamification.grant.badge.wizard manager,model_bf_gamification_grant_badge_wizard,group_gamification_manager,1,1,1,1

@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="bf_email_rule_view_tree" model="ir.ui.view">
+        <field name="name">bf.email.rule.tree</field>
+        <field name="model">bf.email.rule</field>
+        <field name="arch" type="xml">
+            <list default_order="sequence,id">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="condition_type"/>
+                <field name="condition_value"/>
+                <field name="set_category" optional="show"/>
+                <field name="set_priority" optional="hide"/>
+                <field name="set_partner_id" optional="hide"/>
+                <field name="set_handled" optional="show"/>
+                <field name="stop_processing" optional="hide"/>
+                <field name="active" widget="boolean_toggle"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_email_rule_view_form" model="ir.ui.view">
+        <field name="name">bf.email.rule.form</field>
+        <field name="model">bf.email.rule</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_replay_rules"
+                            string="Rejouer toutes les règles"
+                            type="object"
+                            class="btn-primary"
+                            confirm="Re-évaluer toutes les règles sur les courriels non traités ?"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Nom de la règle"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="sequence"/>
+                            <field name="active"/>
+                            <field name="stop_processing"/>
+                        </group>
+                        <group string="Condition">
+                            <field name="condition_type"/>
+                            <field name="condition_value"
+                                   placeholder="@example.com"/>
+                        </group>
+                    </group>
+                    <group string="Actions à appliquer">
+                        <group>
+                            <field name="set_category"/>
+                            <field name="set_priority"/>
+                        </group>
+                        <group>
+                            <field name="set_partner_id"/>
+                            <field name="set_handled"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Notes" name="notes">
+                            <field name="description"
+                                   placeholder="Pourquoi cette règle, quand l'éditer, etc."/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="bf_email_rule_view_search" model="ir.ui.view">
+        <field name="name">bf.email.rule.search</field>
+        <field name="model">bf.email.rule</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="condition_value"/>
+                <filter name="active"
+                        string="Actives"
+                        domain="[('active', '=', True)]"/>
+                <filter name="inactive"
+                        string="Inactives"
+                        domain="[('active', '=', False)]"/>
+                <separator/>
+                <filter name="set_handled"
+                        string="Auto-traité"
+                        domain="[('set_handled', '=', True)]"/>
+                <group expand="0" string="Grouper par">
+                    <filter name="group_category"
+                            string="Catégorie cible"
+                            context="{'group_by': 'set_category'}"/>
+                    <filter name="group_type"
+                            string="Type"
+                            context="{'group_by': 'condition_type'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_bf_email_rule" model="ir.actions.act_window">
+        <field name="name">Règles automatiques</field>
+        <field name="res_model">bf.email.rule</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="bf_email_rule_view_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Aucune règle définie
+            </p>
+            <p>
+                Les règles s'exécutent automatiquement à chaque nouveau courriel.
+                Utiles pour catégoriser, prioriser ou archiver des emails
+                récurrents (notifications, marketing, internes).
+            </p>
+        </field>
+    </record>
+
+    <record id="action_bf_email_rule_replay" model="ir.actions.server">
+        <field name="name">Rejouer les règles</field>
+        <field name="model_id" ref="model_bf_email_rule"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_replay_rules()</field>
+    </record>
+
+</odoo>

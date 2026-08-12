@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_bf_time_of_day_user,bf.time.of.day user read,model_bf_time_of_day,base.group_user,1,0,0,0
+access_bf_time_of_day_admin,bf.time.of.day admin,model_bf_time_of_day,base.group_system,1,1,1,1
+access_bf_time_of_day_user_pref_user,bf.time.of.day.user.pref user,model_bf_time_of_day_user_pref,base.group_user,1,1,1,1

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <record id="template_general" model="letter.template">
+        <field name="name">Lettre générale</field>
+        <field name="subject">Lettre à {{ object.partner_id.name }}</field>
+        <field name="letterhead_style">banner</field>
+        <field name="note">Modèle de départ : corps neutre avec champs de fusion. À dupliquer et adapter.</field>
+        <field name="quicktext_ids" eval="[(6, 0, [
+            ref('quicktext_intro_suite'),
+            ref('quicktext_disponibilite'),
+            ref('quicktext_confidentialite'),
+        ])]"/>
+        <field name="body_html" type="html">
+            <p>Faisant suite à nos échanges, nous vous transmettons par la
+            présente les renseignements demandés.</p>
+            <p>[Corps de la lettre — remplacez ce paragraphe par votre contenu.]</p>
+            <p>Nous demeurons à votre disposition pour tout renseignement
+            complémentaire.</p>
+        </field>
+    </record>
+
+</odoo>

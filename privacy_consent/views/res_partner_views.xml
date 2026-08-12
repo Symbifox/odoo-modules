@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Partner Form Extension -->
+    <record id="view_partner_form_privacy" model="ir.ui.view">
+        <field name="name">res.partner.form.privacy</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <!-- Smart buttons -->
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_consents"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="fa-shield"
+                        groups="privacy_consent.group_privacy_user">
+                    <field name="consent_count" widget="statinfo" string="Consentements"/>
+                </button>
+            </xpath>
+
+            <!-- Privacy tab -->
+            <xpath expr="//notebook" position="inside">
+                <page string="Vie priv&#233;e (Loi 25)" name="privacy"
+                      groups="privacy_consent.group_privacy_user">
+                    <group>
+                        <group string="Personne mineure">
+                            <field name="is_minor_child"/>
+                            <field name="legal_guardian_ids" widget="many2many_tags"
+                                   invisible="not is_minor_child"
+                                   options="{'no_create': False}"/>
+                            <field name="minor_child_ids" widget="many2many_tags"
+                                   invisible="is_minor_child"
+                                   readonly="1"/>
+                        </group>
+                        <group string="Pr&#233;f&#233;rences de contact">
+                            <field name="do_not_contact" widget="boolean_toggle" readonly="1"/>
+                            <button name="action_view_preferences" type="object"
+                                    string="Voir/Modifier les pr&#233;f&#233;rences"
+                                    class="btn-link" icon="fa-cog"/>
+                        </group>
+                    </group>
+                    <group string="Actions">
+                        <button name="action_request_consent" type="object"
+                                string="Demander le consentement" class="btn-primary"
+                                icon="fa-paper-plane"/>
+                    </group>
+                    <separator string="Registre des consentements"/>
+                    <field name="consent_ids" readonly="1" nolabel="1">
+                        <list>
+                            <field name="purpose_id"/>
+                            <field name="status" widget="badge"
+                                   decoration-success="status == 'granted'"
+                                   decoration-danger="status in ('refused', 'withdrawn')"
+                                   decoration-warning="status == 'pending'"
+                                   decoration-muted="status == 'expired'"/>
+                            <field name="collection_method"/>
+                            <field name="granted_at"/>
+                            <field name="expires_at"/>
+                            <field name="project_id" optional="hide"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

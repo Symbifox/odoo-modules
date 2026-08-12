@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="action_report_sms_thread" model="ir.actions.report">
+        <field name="name">Conversation SMS (PDF)</field>
+        <field name="model">sms.archive.thread</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">bf_sms_archive.report_sms_thread</field>
+        <field name="report_file">bf_sms_archive.report_sms_thread</field>
+        <field name="print_report_name">'SMS_%s_%s' % (object.phone_normalized.replace('+',''), time.strftime('%Y-%m-%d'))</field>
+        <field name="paperformat_id" ref="paperformat_sms_archive"/>
+        <field name="binding_model_id" ref="model_sms_archive_thread"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <!-- Bulk PDF: bound to sms.archive.message — multi-select prints all selected messages,
+         grouped by conversation, into one branded PDF. -->
+    <record id="action_report_sms_messages" model="ir.actions.report">
+        <field name="name">SMS sélectionnés (PDF)</field>
+        <field name="model">sms.archive.message</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">bf_sms_archive.report_sms_messages</field>
+        <field name="report_file">bf_sms_archive.report_sms_messages</field>
+        <field name="print_report_name">'SMS_selection_%s' % time.strftime('%Y-%m-%d')</field>
+        <field name="paperformat_id" ref="paperformat_sms_archive"/>
+        <field name="binding_model_id" ref="model_sms_archive_message"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <!-- Shared block: renders one thread group (header + messages). -->
+    <template id="report_sms_thread_block">
+        <div class="sms-banner">
+            <div class="sms-banner-logo">
+                <img t-if="data.get('company_logo')" t-att-src="data['company_logo']" alt="Logo"/>
+            </div>
+            <div class="sms-banner-content">
+                <div class="doc-type">SMS &amp; Calls</div>
+                <h1><t t-esc="group['contact']"/></h1>
+                <div class="doc-subtitle">
+                    <t t-esc="group['phone']"/> —
+                    <t t-esc="group['count']"/> messages
+                </div>
+            </div>
+        </div>
+        <div class="sms-accent-bar"/>
+
+        <div class="sms-meta">
+            <div class="sms-meta-item">
+                <div class="sms-meta-label">Exporté le</div>
+                <div class="sms-meta-value">
+                    <t t-esc="context_timestamp(datetime.datetime.now()).strftime('%Y-%m-%d %H:%M')"/>
+                </div>
+            </div>
+            <div class="sms-meta-item" t-if="group['messages']">
+                <div class="sms-meta-label">Période</div>
+                <div class="sms-meta-value">
+                    <t t-esc="str(group['messages'][0].date_sent)[:10]"/> —
+                    <t t-esc="str(group['messages'][-1].date_sent)[:10]"/>
+                </div>
+            </div>
+            <div class="sms-meta-item" t-if="group['thread'].partner_id">
+                <div class="sms-meta-label">Contact Odoo</div>
+                <div class="sms-meta-value">
+                    <t t-esc="group['thread'].partner_id.name"/>
+                </div>
+            </div>
+        </div>
+
+        <div class="sms-messages">
+            <t t-set="prev_date" t-value="''"/>
+            <t t-foreach="group['messages']" t-as="msg">
+                <t t-set="msg_date" t-value="str(msg.date_sent)[:10]"/>
+                <t t-if="msg_date != prev_date">
+                    <div class="sms-date-sep"><t t-esc="msg_date"/></div>
+                    <t t-set="prev_date" t-value="msg_date"/>
+                </t>
+                <div t-if="msg.direction == 'in'" class="sms-row sms-row-left">
+                    <div class="sms-bubble sms-bubble-in">
+                        <t t-set="body" t-value="group['msg_bodies'].get(msg.id, msg.body)"/>
+                        <t t-if="body"><t t-esc="body"/></t>
+                        <t t-foreach="group['msg_images'].get(msg.id, [])" t-as="img">
+                            <img t-if="img.get('renderable')" class="sms-img" t-att-src="img['data_uri']" t-att-alt="img['filename']"/>
+                            <div t-if="not img.get('renderable')" class="sms-img-placeholder">
+                                [Image <t t-esc="img.get('content_type', '')"/> — télécharger depuis Odoo]
+                            </div>
+                        </t>
+                        <div class="sms-ts"><t t-esc="str(msg.date_sent)[11:16]"/><t t-if="msg.is_mms"> · MMS</t></div>
+                    </div>
+                </div>
+                <div t-if="msg.direction != 'in'" class="sms-row sms-row-right">
+                    <div t-attf-class="sms-bubble sms-bubble-#{msg.direction}">
+                        <t t-set="body" t-value="group['msg_bodies'].get(msg.id, msg.body)"/>
+                        <t t-if="body"><t t-esc="body"/></t>
+                        <t t-foreach="group['msg_images'].get(msg.id, [])" t-as="img">
+                            <img t-if="img.get('renderable')" class="sms-img" t-att-src="img['data_uri']" t-att-alt="img['filename']"/>
+                            <div t-if="not img.get('renderable')" class="sms-img-placeholder">
+                                [Image <t t-esc="img.get('content_type', '')"/> — télécharger depuis Odoo]
+                            </div>
+                        </t>
+                        <div class="sms-ts"><t t-esc="str(msg.date_sent)[11:16]"/><t t-if="msg.is_mms"> · MMS</t></div>
+                    </div>
+                </div>
+            </t>
+        </div>
+
+        <div class="sms-footer">
+            <t t-esc="data.get('company_name', '')"/> | Document confidentiel |
+            Exporté le <t t-esc="context_timestamp(datetime.datetime.now()).strftime('%Y-%m-%d %H:%M')"/>
+        </div>
+    </template>
+
+    <!-- Shared <style> block injecting the company-branded CSS once per PDF article. -->
+    <template id="report_sms_styles">
+        <link t-if="data.get('has_lexend')" rel="stylesheet" href="/bf_lexend/static/src/scss/lexend_report.css"/>
+        <style>
+            @font-face {
+                font-family: "NotoEmoji";
+                src: url("<t t-esc="data.get('emoji_font_uri', '')"/>") format("truetype");
+                font-weight: 400;
+                font-style: normal;
+            }
+            <t t-out="data.get('report_css', '')"/>
+            .sms-group-break { page-break-before: always; }
+        </style>
+    </template>
+
+    <!-- Per-thread report (existing, refactored to reuse the shared block). -->
+    <template id="report_sms_thread">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-set="data" t-value="doc._get_report_data()"/>
+                <div class="article sms-page">
+                    <t t-call="bf_sms_archive.report_sms_styles"/>
+                    <t t-set="group" t-value="data['groups'][0]"/>
+                    <t t-call="bf_sms_archive.report_sms_thread_block"/>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <!-- Bulk per-message report: renders all selected messages, grouped by conversation. -->
+    <template id="report_sms_messages">
+        <t t-call="web.html_container">
+            <t t-set="data" t-value="docs._get_messages_report_data()"/>
+            <div class="article sms-page">
+                <t t-call="bf_sms_archive.report_sms_styles"/>
+                <t t-foreach="data['groups']" t-as="group">
+                    <div t-att-class="'sms-group-break' if not group_first else ''">
+                        <t t-call="bf_sms_archive.report_sms_thread_block"/>
+                    </div>
+                </t>
+            </div>
+        </t>
+    </template>
+
+</odoo>

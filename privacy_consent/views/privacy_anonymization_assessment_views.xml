@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Anonymization Assessment Form View -->
+    <record id="privacy_anonymization_assessment_view_form" model="ir.ui.view">
+        <field name="name">privacy.anonymization.assessment.form</field>
+        <field name="model">privacy.anonymization.assessment</field>
+        <field name="arch" type="xml">
+            <form string="Évaluation d'anonymisation">
+                <header>
+                    <button name="action_start_analysis" type="object"
+                            string="Démarrer l'analyse"
+                            class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_complete" type="object"
+                            string="Compléter l'évaluation"
+                            class="btn-primary" invisible="state not in ('analysis', 'reassessment_due')"/>
+                    <button name="action_approve" type="object"
+                            string="Approuver (RPRP)"
+                            class="btn-success" invisible="state != 'completed'"
+                            groups="privacy_consent.group_privacy_officer"/>
+                    <button name="action_create_reassessment" type="object"
+                            string="Créer une réévaluation"
+                            invisible="state not in ('completed', 'reassessment_due')"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,analysis,completed"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name" placeholder="Nom de l'évaluation"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Résultat" invisible="state == 'draft'">
+                            <field name="overall_risk" widget="badge"
+                                   decoration-danger="overall_risk == 'high'"
+                                   decoration-warning="overall_risk == 'medium'"
+                                   decoration-success="overall_risk == 'low'"/>
+                            <field name="is_effectively_anonymous"/>
+                        </group>
+                        <group string="Métadonnées">
+                            <field name="assessed_by_id"/>
+                            <field name="assessment_date"/>
+                            <field name="approved_by_id"/>
+                            <field name="approval_date"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Jeu de données" name="dataset">
+                            <group string="Description du jeu de données">
+                                <field name="dataset_description" nolabel="1"
+                                       placeholder="Décrivez le jeu de données à anonymiser..."/>
+                            </group>
+                        </page>
+
+                        <page string="1. Identifiants directs" name="step1">
+                            <div class="alert alert-info" role="alert">
+                                <strong>Section 5 du Règlement A-2.1, r. 0.1</strong> —
+                                Retirer les identifiants directs (nom, NAS, courriel, etc.)
+                                avant de procéder à l'évaluation des 3 critères.
+                            </div>
+                            <group>
+                                <field name="direct_identifiers_removed"/>
+                                <field name="removal_technique"
+                                       invisible="not direct_identifiers_removed"/>
+                            </group>
+                            <group string="Identifiants retirés"
+                                   invisible="not direct_identifiers_removed">
+                                <field name="identifiers_list" nolabel="1"
+                                       placeholder="Nom, NAS, courriel, téléphone, adresse..."/>
+                            </group>
+                        </page>
+
+                        <page string="2. Individualisation" name="step2">
+                            <div class="alert alert-info" role="alert">
+                                <strong>Critère 1</strong> — Peut-on isoler ou distinguer
+                                une personne dans le jeu de données?
+                            </div>
+                            <group>
+                                <field name="individualization_risk" widget="radio"/>
+                            </group>
+                            <group string="Analyse">
+                                <field name="individualization_analysis" nolabel="1"
+                                       placeholder="Évaluez si une personne peut être isolée dans le jeu de données..."/>
+                            </group>
+                            <group string="Mesures d'atténuation">
+                                <field name="individualization_mitigations" nolabel="1"
+                                       placeholder="Techniques appliquées (k-anonymity, généralisation, suppression...)"/>
+                            </group>
+                        </page>
+
+                        <page string="3. Corrélation" name="step3">
+                            <div class="alert alert-info" role="alert">
+                                <strong>Critère 2</strong> — Peut-on relier des jeux de données
+                                concernant la même personne?
+                            </div>
+                            <group>
+                                <field name="correlation_risk" widget="radio"/>
+                            </group>
+                            <group string="Analyse">
+                                <field name="correlation_analysis" nolabel="1"
+                                       placeholder="Évaluez si des jeux de données différents peuvent être reliés..."/>
+                            </group>
+                            <group string="Mesures d'atténuation">
+                                <field name="correlation_mitigations" nolabel="1"/>
+                            </group>
+                        </page>
+
+                        <page string="4. Inférence" name="step4">
+                            <div class="alert alert-info" role="alert">
+                                <strong>Critère 3</strong> — Peut-on déduire des renseignements
+                                personnels à partir d'autres données disponibles?
+                            </div>
+                            <group>
+                                <field name="inference_risk" widget="radio"/>
+                            </group>
+                            <group string="Analyse">
+                                <field name="inference_analysis" nolabel="1"
+                                       placeholder="Évaluez si des RP peuvent être déduits..."/>
+                            </group>
+                            <group string="Mesures d'atténuation">
+                                <field name="inference_mitigations" nolabel="1"/>
+                            </group>
+                        </page>
+
+                        <page string="Techniques" name="techniques">
+                            <group string="Techniques utilisées">
+                                <field name="techniques_used" nolabel="1"
+                                       placeholder="k-anonymity, l-diversity, differential privacy, bruit, agrégation..."/>
+                            </group>
+                        </page>
+
+                        <page string="Réévaluation" name="reassessment">
+                            <div class="alert alert-warning" role="alert">
+                                <strong>Section 8 du Règlement A-2.1, r. 0.1</strong> —
+                                L'organisme doit réévaluer périodiquement si les renseignements
+                                demeurent anonymisés.
+                            </div>
+                            <group>
+                                <field name="reassessment_interval_months"/>
+                                <field name="next_reassessment_date"/>
+                                <field name="parent_assessment_id"/>
+                                <field name="child_assessment_ids" readonly="1"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Anonymization Assessment List View -->
+    <record id="privacy_anonymization_assessment_view_list" model="ir.ui.view">
+        <field name="name">privacy.anonymization.assessment.list</field>
+        <field name="model">privacy.anonymization.assessment</field>
+        <field name="arch" type="xml">
+            <list string="Évaluations d'anonymisation"
+                  decoration-danger="state == 'reassessment_due'">
+                <field name="name"/>
+                <field name="state" widget="badge"
+                       decoration-info="state == 'draft'"
+                       decoration-warning="state == 'analysis'"
+                       decoration-success="state == 'completed'"
+                       decoration-danger="state == 'reassessment_due'"/>
+                <field name="overall_risk" widget="badge"
+                       decoration-danger="overall_risk == 'high'"
+                       decoration-warning="overall_risk == 'medium'"
+                       decoration-success="overall_risk == 'low'"
+                       optional="show"/>
+                <field name="is_effectively_anonymous" optional="show"/>
+                <field name="assessed_by_id"/>
+                <field name="assessment_date"/>
+                <field name="approved_by_id" optional="show"/>
+                <field name="next_reassessment_date" optional="show"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Anonymization Assessment Search View -->
+    <record id="privacy_anonymization_assessment_view_search" model="ir.ui.view">
+        <field name="name">privacy.anonymization.assessment.search</field>
+        <field name="model">privacy.anonymization.assessment</field>
+        <field name="arch" type="xml">
+            <search string="Rechercher">
+                <field name="name"/>
+                <field name="dataset_description"/>
+                <separator/>
+                <filter string="Brouillon" name="draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="En analyse" name="analysis" domain="[('state', '=', 'analysis')]"/>
+                <filter string="Complétée" name="completed" domain="[('state', '=', 'completed')]"/>
+                <filter string="Réévaluation due" name="reassessment_due"
+                        domain="[('state', '=', 'reassessment_due')]"/>
+                <separator/>
+                <filter string="Effectivement anonyme" name="anonymous"
+                        domain="[('is_effectively_anonymous', '=', True)]"/>
+                <filter string="Risque élevé" name="high_risk"
+                        domain="[('overall_risk', '=', 'high')]"/>
+                <separator/>
+                <group expand="0" string="Regrouper par">
+                    <filter string="État" name="group_by_state"
+                            context="{'group_by': 'state'}"/>
+                    <filter string="Risque global" name="group_by_risk"
+                            context="{'group_by': 'overall_risk'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Anonymization Assessment Action -->
+    <record id="action_privacy_anonymization_assessment" model="ir.actions.act_window">
+        <field name="name">Évaluations d'anonymisation</field>
+        <field name="res_model">privacy.anonymization.assessment</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_draft': 1, 'search_default_analysis': 1, 'search_default_reassessment_due': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Aucune évaluation d'anonymisation
+            </p>
+            <p>
+                Évaluez les 3 critères du Règlement A-2.1, r. 0.1 (individualisation,
+                corrélation, inférence) avant d'anonymiser des renseignements personnels.
+            </p>
+        </field>
+    </record>
+</odoo>

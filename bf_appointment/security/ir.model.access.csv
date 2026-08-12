@@ -1,0 +1,11 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_booking_type_public,resource.booking.type.public,resource_booking.model_resource_booking_type,base.group_public,1,0,0,0
+access_booking_public,resource.booking.public,resource_booking.model_resource_booking,base.group_public,1,0,0,0
+access_booking_type_portal,resource.booking.type.portal.appointment,resource_booking.model_resource_booking_type,base.group_portal,1,0,0,0
+access_intake_field_public,appointment.intake.field.public,model_appointment_intake_field,base.group_public,1,0,0,0
+access_intake_field_portal,appointment.intake.field.portal,model_appointment_intake_field,base.group_portal,1,0,0,0
+access_intake_field_user,appointment.intake.field.user,model_appointment_intake_field,base.group_user,1,1,1,1
+access_intake_answer_public,appointment.intake.answer.public,model_appointment_intake_answer,base.group_public,1,0,0,0
+access_intake_answer_portal,appointment.intake.answer.portal,model_appointment_intake_answer,base.group_portal,1,0,0,0
+access_intake_answer_user,appointment.intake.answer.user,model_appointment_intake_answer,base.group_user,1,1,1,1
+access_email_schedule_user,appointment.email.schedule.user,model_appointment_email_schedule,base.group_user,1,1,1,1

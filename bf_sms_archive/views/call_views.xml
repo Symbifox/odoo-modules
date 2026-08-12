@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Call: Tree View -->
+    <record id="call_archive_view_tree" model="ir.ui.view">
+        <field name="name">call.archive.call.tree</field>
+        <field name="model">call.archive.call</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="call_type == 'missed'"
+                  decoration-muted="call_type in ('rejected', 'blocked')">
+                <field name="call_type" string="Type" widget="badge"
+                       decoration-success="call_type == 'incoming'"
+                       decoration-info="call_type == 'outgoing'"
+                       decoration-danger="call_type == 'missed'"
+                       decoration-warning="call_type == 'voicemail'"
+                       decoration-muted="call_type in ('rejected', 'blocked')"/>
+                <field name="contact_name" string="Contact"/>
+                <field name="thread_id" string="Conversation" optional="hide"/>
+                <field name="date" string="Date"/>
+                <field name="duration_display" string="Durée"/>
+                <field name="duration" string="Durée (s)" optional="hide"/>
+                <field name="presentation" string="Présentation" optional="hide"/>
+                <field name="recording_url" string="Enregistrement" widget="url" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Call: Form View -->
+    <record id="call_archive_view_form" model="ir.ui.view">
+        <field name="name">call.archive.call.form</field>
+        <field name="model">call.archive.call</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group string="Appel">
+                            <field name="call_type" string="Type" readonly="1"/>
+                            <field name="date" string="Date" readonly="1"/>
+                            <field name="duration_display" string="Durée" readonly="1"/>
+                            <field name="duration" string="Durée (s)" readonly="1"/>
+                        </group>
+                        <group string="Contact">
+                            <field name="contact_name" string="Contact" readonly="1"/>
+                            <field name="thread_id" string="Conversation" readonly="1"/>
+                            <field name="presentation" string="Présentation" readonly="1"/>
+                            <field name="recording_url" string="Enregistrement" widget="url" readonly="1"/>
+                        </group>
+                    </group>
+                    <group string="Technique" groups="base.group_no_one">
+                        <field name="call_hash" string="Hash" readonly="1"/>
+                        <field name="date_ms" string="Timestamp (ms)" readonly="1"/>
+                        <field name="import_batch_id" string="Lot d'import" readonly="1"/>
+                        <field name="owner_id" string="Propriétaire" readonly="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Call: Search View -->
+    <record id="call_archive_view_search" model="ir.ui.view">
+        <field name="name">call.archive.call.search</field>
+        <field name="model">call.archive.call</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="contact_name" string="Contact"/>
+                <field name="thread_id" string="Conversation"/>
+                <separator/>
+                <filter name="filter_incoming" string="Entrants"
+                        domain="[('call_type', '=', 'incoming')]"/>
+                <filter name="filter_outgoing" string="Sortants"
+                        domain="[('call_type', '=', 'outgoing')]"/>
+                <filter name="filter_missed" string="Manqués"
+                        domain="[('call_type', '=', 'missed')]"/>
+                <filter name="filter_voicemail" string="Messagerie vocale"
+                        domain="[('call_type', '=', 'voicemail')]"/>
+                <separator/>
+                <filter name="filter_this_week" string="Cette semaine"
+                        domain="[('date', '>=', (context_today() - relativedelta(weeks=1)).strftime('%%Y-%%m-%%d'))]"/>
+                <filter name="filter_this_month" string="Ce mois"
+                        domain="[('date', '>=', time.strftime('%%Y-%%m-01'))]"/>
+                <separator/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="group_type" string="Type d'appel"
+                            context="{'group_by': 'call_type'}"/>
+                    <filter name="group_thread" string="Contact"
+                            context="{'group_by': 'thread_id'}"/>
+                    <filter name="group_month" string="Mois"
+                            context="{'group_by': 'date:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Call: Graph View -->
+    <record id="call_archive_view_graph" model="ir.ui.view">
+        <field name="name">call.archive.call.graph</field>
+        <field name="model">call.archive.call</field>
+        <field name="arch" type="xml">
+            <graph string="Journal d'appels" type="bar">
+                <field name="date" interval="month"/>
+                <field name="call_type"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- Call: Pivot View -->
+    <record id="call_archive_view_pivot" model="ir.ui.view">
+        <field name="name">call.archive.call.pivot</field>
+        <field name="model">call.archive.call</field>
+        <field name="arch" type="xml">
+            <pivot string="Journal d'appels">
+                <field name="date" interval="month" type="row"/>
+                <field name="call_type" type="col"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- Call: Actions -->
+    <record id="call_action" model="ir.actions.act_window">
+        <field name="name">Journal d'appels</field>
+        <field name="res_model">call.archive.call</field>
+        <field name="view_mode">list,form,graph,pivot</field>
+        <field name="search_view_id" ref="call_archive_view_search"/>
+    </record>
+
+</odoo>

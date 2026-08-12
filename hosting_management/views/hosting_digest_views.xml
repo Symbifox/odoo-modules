@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Hosting Digest Tree View -->
+    <record id="hosting_digest_view_tree" model="ir.ui.view">
+        <field name="name">hosting.digest.tree</field>
+        <field name="model">hosting.digest</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="frequency"/>
+                <field name="user_ids" widget="many2many_tags"/>
+                <field name="last_sent"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Hosting Digest Form View -->
+    <record id="hosting_digest_view_form" model="ir.ui.view">
+        <field name="name">hosting.digest.form</field>
+        <field name="model">hosting.digest</field>
+        <field name="arch" type="xml">
+            <form string="Courriel récapitulatif">
+                <header>
+                    <button name="action_send_now" string="Envoyer maintenant" type="object"
+                            class="oe_highlight" icon="fa-envelope"/>
+                    <button name="action_preview_digest" string="Aperçu" type="object"
+                            icon="fa-eye"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button" icon="fa-clock-o" type="object"
+                                name="action_preview_digest" invisible="not last_sent">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Dernier envoi</span>
+                                <field name="last_sent" widget="date"/>
+                            </div>
+                        </button>
+                    </div>
+
+                    <widget name="web_ribbon" title="Archivé" bg_color="text-bg-secondary" invisible="active"/>
+
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name" placeholder="Nom du récapitulatif"/>
+                        </h1>
+                    </div>
+
+                    <group>
+                        <group string="Calendrier">
+                            <field name="frequency"/>
+                            <field name="active"/>
+                        </group>
+                        <group string="Destinataires">
+                            <field name="user_ids" widget="many2many_tags"
+                                   options="{'no_create': True}"/>
+                        </group>
+                    </group>
+
+                    <group string="Contenu à inclure">
+                        <group>
+                            <field name="include_expiring"/>
+                            <field name="expiring_days" invisible="not include_expiring"/>
+                            <field name="include_maintenance_due"/>
+                            <field name="maintenance_warning_days" invisible="not include_maintenance_due"/>
+                        </group>
+                        <group>
+                            <field name="include_updates"/>
+                            <field name="include_storage_alerts"/>
+                            <field name="include_health_issues"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Hosting Digest Search View -->
+    <record id="hosting_digest_view_search" model="ir.ui.view">
+        <field name="name">hosting.digest.search</field>
+        <field name="model">hosting.digest</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="user_ids"/>
+                <separator/>
+                <filter name="filter_active" string="Actif" domain="[('active', '=', True)]"/>
+                <filter name="filter_archived" string="Archivé" domain="[('active', '=', False)]"/>
+                <separator/>
+                <filter name="filter_daily" string="Quotidien" domain="[('frequency', '=', 'daily')]"/>
+                <filter name="filter_weekly" string="Hebdomadaire" domain="[('frequency', '=', 'weekly')]"/>
+                <filter name="filter_monthly" string="Mensuel" domain="[('frequency', '=', 'monthly')]"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- Hosting Digest Action -->
+    <record id="hosting_digest_action" model="ir.actions.act_window">
+        <field name="name">Courriels récapitulatifs</field>
+        <field name="res_model">hosting.digest</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="hosting_digest_view_search"/>
+        <field name="context">{'search_default_filter_active': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Créez votre premier courriel récapitulatif
+            </p>
+            <p>
+                Configurez des résumés automatiques par courriel des services d'hébergement,
+                incluant les services expirant, les mises à jour disponibles et les alertes.
+            </p>
+        </field>
+    </record>
+
+</odoo>

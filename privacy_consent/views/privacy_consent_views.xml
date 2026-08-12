@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Form View -->
+    <record id="privacy_consent_form_view" model="ir.ui.view">
+        <field name="name">privacy.consent.form</field>
+        <field name="model">privacy.consent</field>
+        <field name="arch" type="xml">
+            <form string="Consentement">
+                <header>
+                    <button name="action_send_request" type="object"
+                            string="Envoyer la demande" class="btn-primary"
+                            invisible="status != 'draft'"/>
+                    <button name="action_send_portal_link" type="object"
+                            string="Envoyer lien portail" class="btn-secondary"
+                            icon="fa-link"
+                            invisible="status not in ('pending', 'granted')"/>
+                    <button name="action_send_docuseal" type="object"
+                            string="Signer (DocuSeal)" class="btn-secondary"
+                            icon="fa-pencil"
+                            invisible="status not in ('draft', 'pending')"/>
+                    <button name="action_send_libresign" type="object"
+                            string="Signer (LibreSign)" class="btn-secondary"
+                            icon="fa-pencil-square-o"
+                            invisible="status not in ('draft', 'pending')"/>
+                    <button name="action_grant" type="object"
+                            string="Accorder" class="btn-success"
+                            invisible="status not in ('draft', 'pending')"/>
+                    <button name="action_refuse" type="object"
+                            string="Refuser" class="btn-warning"
+                            invisible="status not in ('draft', 'pending')"/>
+                    <button name="action_withdraw" type="object"
+                            string="Révoquer" class="btn-danger"
+                            invisible="status != 'granted'"/>
+                    <button name="action_renew" type="object"
+                            string="Renouveler" class="btn-secondary"
+                            icon="fa-refresh"
+                            invisible="status not in ('granted', 'expired') or renewed_to_id"/>
+                    <button name="action_reset_to_draft" type="object"
+                            string="Remettre en brouillon"
+                            invisible="status in ('granted', 'withdrawn')"
+                            groups="privacy_consent.group_privacy_manager"/>
+                    <field name="status" widget="statusbar"
+                           statusbar_visible="draft,pending,granted"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_evidence" type="object"
+                                class="oe_stat_button" icon="fa-file-text"
+                                invisible="evidence_count == 0">
+                            <field name="evidence_count" widget="statinfo" string="Preuves"/>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Expiré" bg_color="bg-danger"
+                            invisible="status != 'expired'"/>
+                    <widget name="web_ribbon" title="Révoqué" bg_color="bg-warning"
+                            invisible="status != 'withdrawn'"/>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="subject_partner_id" placeholder="Sélectionner un contact"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Détails du consentement">
+                            <field name="notice_id"/>
+                            <field name="purpose_id" invisible="1"/>
+                            <field name="notice_version_id" invisible="1"/>
+                            <field name="collection_method"/>
+                        </group>
+                        <group string="Contexte">
+                            <field name="project_id"/>
+                            <field name="context_ref"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Responsables l&#233;gaux (mineurs)">
+                            <field name="is_minor"/>
+                            <field name="given_by_partner_ids"
+                                   widget="many2many_tags"
+                                   invisible="not is_minor"
+                                   options="{'no_create': False}"/>
+                        </group>
+                        <group string="Horodatage">
+                            <field name="requested_at" readonly="1"/>
+                            <field name="granted_at" readonly="1"/>
+                            <field name="expires_at"/>
+                            <field name="withdrawn_at" readonly="1" invisible="status != 'withdrawn'"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Notes" name="notes">
+                            <field name="notes" placeholder="Notes supplémentaires..."/>
+                            <field name="withdrawal_reason" readonly="1"
+                                   invisible="not withdrawal_reason"/>
+                        </page>
+                        <page string="Preuves" name="evidence">
+                            <field name="evidence_ids" nolabel="1">
+                                <list editable="bottom">
+                                    <field name="evidence_type"/>
+                                    <field name="attachment_file" filename="attachment_filename"/>
+                                    <field name="attachment_filename" column_invisible="1"/>
+                                    <field name="note"/>
+                                    <field name="collected_at"/>
+                                    <field name="collected_by_user_id"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="DocuSeal" name="docuseal" invisible="not docuseal_submission_id">
+                            <group>
+                                <group string="Détails de la soumission">
+                                    <field name="docuseal_submission_id" readonly="1"/>
+                                    <field name="docuseal_status" readonly="1"/>
+                                </group>
+                                <group string="Horodatage">
+                                    <field name="docuseal_sent_at" readonly="1"/>
+                                    <field name="docuseal_completed_at" readonly="1"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="LibreSign" name="libresign" invisible="not libresign_file_uuid">
+                            <group>
+                                <group string="Détails du fichier">
+                                    <field name="libresign_file_uuid" readonly="1"/>
+                                    <field name="libresign_status" readonly="1"/>
+                                </group>
+                                <group string="Horodatage">
+                                    <field name="libresign_sent_at" readonly="1"/>
+                                    <field name="libresign_completed_at" readonly="1"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Renouvellement" name="renewal" invisible="not renewed_from_id and not renewed_to_id">
+                            <group>
+                                <group string="Chaîne de renouvellement">
+                                    <field name="renewed_from_id" readonly="1"/>
+                                    <field name="renewed_to_id" readonly="1"/>
+                                </group>
+                                <group string="Actions">
+                                    <button name="action_view_renewal_history" type="object"
+                                            string="Voir l'historique complet" class="btn-link"
+                                            icon="fa-history"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Suivi des courriels" name="email_tracking" groups="privacy_consent.group_privacy_manager">
+                            <group>
+                                <group string="État des rappels">
+                                    <field name="reminder_count" readonly="1"/>
+                                    <field name="last_reminder_sent_at" readonly="1"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                    <field name="active" invisible="1"/>
+                    <field name="renewed_to_id" invisible="1"/>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- List View -->
+    <record id="privacy_consent_list_view" model="ir.ui.view">
+        <field name="name">privacy.consent.list</field>
+        <field name="model">privacy.consent</field>
+        <field name="arch" type="xml">
+            <list decoration-muted="status == 'expired'"
+                  decoration-danger="status == 'withdrawn'"
+                  decoration-warning="status == 'refused'"
+                  decoration-success="status == 'granted'"
+                  decoration-info="status == 'pending'">
+                <field name="subject_partner_id"/>
+                <field name="notice_id" string="Mod&#232;le"/>
+                <field name="status" widget="badge"
+                       decoration-success="status == 'granted'"
+                       decoration-danger="status in ('refused', 'withdrawn')"
+                       decoration-warning="status == 'pending'"
+                       decoration-muted="status == 'expired'"/>
+                <field name="collection_method"/>
+                <field name="project_id" optional="show"/>
+                <field name="granted_at"/>
+                <field name="expires_at"/>
+                <field name="evidence_count"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Kanban View -->
+    <record id="privacy_consent_kanban_view" model="ir.ui.view">
+        <field name="name">privacy.consent.kanban</field>
+        <field name="model">privacy.consent</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="status" class="o_kanban_small_column">
+                <field name="status"/>
+                <field name="subject_partner_id"/>
+                <field name="notice_id"/>
+                <field name="granted_at"/>
+                <field name="expires_at"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div t-attf-class="oe_kanban_global_click">
+                            <div class="oe_kanban_details">
+                                <strong class="o_kanban_record_title">
+                                    <field name="subject_partner_id"/>
+                                </strong>
+                                <div class="o_kanban_record_subtitle">
+                                    <field name="notice_id"/>
+                                </div>
+                                <div class="text-muted">
+                                    <span t-if="record.granted_at.value">
+                                        Accordé le : <field name="granted_at"/>
+                                    </span>
+                                </div>
+                                <div class="text-muted" t-if="record.expires_at.value">
+                                    Expire le : <field name="expires_at"/>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="privacy_consent_search_view" model="ir.ui.view">
+        <field name="name">privacy.consent.search</field>
+        <field name="model">privacy.consent</field>
+        <field name="arch" type="xml">
+            <search string="Rechercher les consentements">
+                <field name="subject_partner_id"/>
+                <field name="notice_id"/>
+                <field name="project_id"/>
+                <separator/>
+                <filter string="Brouillon" name="draft" domain="[('status', '=', 'draft')]"/>
+                <filter string="En attente" name="pending" domain="[('status', '=', 'pending')]"/>
+                <filter string="Accordé" name="granted" domain="[('status', '=', 'granted')]"/>
+                <filter string="Refusé" name="refused" domain="[('status', '=', 'refused')]"/>
+                <filter string="Révoqué" name="withdrawn" domain="[('status', '=', 'withdrawn')]"/>
+                <filter string="Expiré" name="expired" domain="[('status', '=', 'expired')]"/>
+                <separator/>
+                <filter string="Expiration prochaine (30 jours)" name="expiring"
+                        domain="[('status', '=', 'granted'), ('expires_at', '&lt;=', (context_today() + relativedelta(days=30)).strftime('%Y-%m-%d')), ('expires_at', '&gt;', context_today().strftime('%Y-%m-%d'))]"/>
+                <separator/>
+                <filter string="Archivé" name="archived" domain="[('active', '=', False)]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter string="Statut" name="group_status" context="{'group_by': 'status'}"/>
+                    <filter string="Mod&#232;le" name="group_notice" context="{'group_by': 'notice_id'}"/>
+                    <filter string="Contact" name="group_partner" context="{'group_by': 'subject_partner_id'}"/>
+                    <filter string="Projet" name="group_project" context="{'group_by': 'project_id'}"/>
+                    <filter string="Méthode de collecte" name="group_method" context="{'group_by': 'collection_method'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Actions -->
+    <record id="action_privacy_consent" model="ir.actions.act_window">
+        <field name="name">Consentements</field>
+        <field name="res_model">privacy.consent</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="context">{'search_default_granted': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Créez votre premier consentement
+            </p>
+            <p>
+                Suivez les consentements des contacts pour diff&#233;rents objets (marketing, enregistrement, r&#233;f&#233;rence).
+            </p>
+        </field>
+    </record>
+
+    <record id="action_privacy_consent_pending" model="ir.actions.act_window">
+        <field name="name">Demandes en attente</field>
+        <field name="res_model">privacy.consent</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="domain">[('status', '=', 'pending')]</field>
+        <field name="context">{}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Aucune demande de consentement en attente
+            </p>
+        </field>
+    </record>
+</odoo>

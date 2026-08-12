@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!-- Cadre LPRPDE / PIPEDA (Canada — fédéral) -->
+    <record id="framework_pipeda" model="privacy.framework">
+        <field name="code">pipeda</field>
+        <field name="name">LPRPDE / PIPEDA (Canada)</field>
+        <field name="sequence" eval="50"/>
+        <field name="company_id" eval="False"/>
+        <field name="country_id" ref="base.ca"/>
+        <field name="jurisdiction_label">Canada (fédéral) / Canada (federal)</field>
+        <field name="languages">en_CA,fr_CA</field>
+        <field name="law_short_label">PIPEDA</field>
+        <field name="law_citation_fr">Loi sur la protection des renseignements personnels et les documents électroniques (LPRPDE)</field>
+        <field name="law_citation_en">Personal Information Protection and Electronic Documents Act (PIPEDA)</field>
+        <field name="consent_intro_fr">Conformément à la LPRPDE (loi fédérale canadienne), nous sollicitons votre consentement pour cette finalité.</field>
+        <field name="consent_intro_en">In accordance with PIPEDA (Canada's federal privacy law), we are requesting your consent for this purpose.</field>
+        <field name="authority_name">Commissariat à la protection de la vie privée du Canada (CPVP / OPC)</field>
+        <field name="authority_url">https://www.priv.gc.ca</field>
+        <field name="breach_portal_url">https://www.priv.gc.ca/en/report-a-concern/report-a-privacy-breach-at-your-business/</field>
+        <field name="officer_title_fr">Responsable de la protection de la vie privée</field>
+        <field name="officer_title_en">Privacy Officer</field>
+        <field name="officer_required" eval="True"/>
+        <field name="age_of_majority" eval="13"/>
+        <field name="breach_notify_authority" eval="True"/>
+        <field name="breach_notify_authority_hours" eval="0"/>
+        <field name="breach_notify_authority_label">dès que possible</field>
+        <field name="breach_notify_individuals" eval="True"/>
+        <field name="breach_notify_individuals_label">dès que possible en cas de risque réel de préjudice grave</field>
+        <field name="breach_threshold_label">risque réel de préjudice grave (real risk of significant harm)</field>
+        <field name="assessment_name_fr">Évaluation des facteurs relatifs à la vie privée (ÉFVP)</field>
+        <field name="assessment_name_en">Privacy Impact Assessment (PIA)</field>
+        <field name="assessment_citation">Lignes directrices du CPVP sur les ÉFVP</field>
+        <field name="anonymization_citation">Lignes directrices du CPVP sur la dépersonnalisation</field>
+        <field name="default_retention_years" eval="0"/>
+        <field name="destruction_basis_template">Principe 4.5 LPRPDE (limitation de la conservation)</field>
+        <field name="erasure_basis_citation">Principe 4.3.8 / 4.9 LPRPDE (retrait du consentement, accès)</field>
+        <field name="register_immutability_citation">le principe de responsabilité (principe 4.1 LPRPDE)</field>
+        <field name="notes">Pack PIPEDA (CPVP). Modèle fondé sur les 10 principes d'équité.</field>
+    </record>
+
+    <!-- Bases de traitement — fondées sur les principes d'équité -->
+    <record id="lawful_basis_pipeda_consent" model="privacy.lawful.basis">
+        <field name="framework_id" ref="framework_pipeda"/>
+        <field name="code">consent</field>
+        <field name="name">Consentement</field>
+        <field name="description">Consentement valable (exprès ou implicite) de la personne.</field>
+        <field name="citation">Principe 4.3 LPRPDE</field>
+        <field name="requires_consent" eval="True"/>
+        <field name="sequence" eval="10"/>
+    </record>
+    <record id="lawful_basis_pipeda_legal" model="privacy.lawful.basis">
+        <field name="framework_id" ref="framework_pipeda"/>
+        <field name="code">legal_requirement</field>
+        <field name="name">Exception légale au consentement</field>
+        <field name="description">Collecte, utilisation ou communication sans consentement permise par la loi.</field>
+        <field name="citation">Art. 7 LPRPDE</field>
+        <field name="sequence" eval="20"/>
+    </record>
+    <record id="lawful_basis_pipeda_business" model="privacy.lawful.basis">
+        <field name="framework_id" ref="framework_pipeda"/>
+        <field name="code">business_transaction</field>
+        <field name="name">Transaction commerciale</field>
+        <field name="description">Renseignements nécessaires à une transaction commerciale admissible.</field>
+        <field name="citation">Art. 7.2 LPRPDE</field>
+        <field name="sequence" eval="30"/>
+    </record>
+
+    <!-- Droits — LPRPDE (le retrait reste une puce statique) -->
+    <record id="right_pipeda_access" model="privacy.right">
+        <field name="framework_id" ref="framework_pipeda"/>
+        <field name="code">access</field>
+        <field name="label_fr">Droit d'accès à vos renseignements personnels.</field>
+        <field name="label_en">Right to access your personal information.</field>
+        <field name="citation">Principe 4.9 LPRPDE</field>
+        <field name="sequence" eval="10"/>
+    </record>
+    <record id="right_pipeda_correction" model="privacy.right">
+        <field name="framework_id" ref="framework_pipeda"/>
+        <field name="code">correction</field>
+        <field name="label_fr">Droit de contester l'exactitude et de demander une correction.</field>
+        <field name="label_en">Right to challenge accuracy and request correction.</field>
+        <field name="citation">Principe 4.9.5 LPRPDE</field>
+        <field name="sequence" eval="20"/>
+    </record>
+    <record id="right_pipeda_complaint" model="privacy.right">
+        <field name="framework_id" ref="framework_pipeda"/>
+        <field name="code">complaint</field>
+        <field name="label_fr">Droit de déposer une plainte auprès du CPVP.</field>
+        <field name="label_en">Right to file a complaint with the OPC.</field>
+        <field name="citation">Principe 4.10 LPRPDE</field>
+        <field name="sequence" eval="30"/>
+    </record>
+</odoo>

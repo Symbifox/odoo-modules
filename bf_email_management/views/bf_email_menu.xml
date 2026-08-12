@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Root menu — opens directly on the Inbox -->
+    <menuitem id="menu_bf_email_root"
+              name="Courriels"
+              web_icon="bf_email_management,static/description/icon.png"
+              action="bf_email_action"
+              sequence="45"/>
+
+    <!-- Dashboard -->
+    <menuitem id="menu_bf_email_dashboard"
+              name="Tableau de bord"
+              parent="menu_bf_email_root"
+              action="action_bf_email_dashboard"
+              sequence="1"/>
+
+    <!-- Courriels -->
+    <menuitem id="menu_bf_email_emails"
+              name="Courriels"
+              parent="menu_bf_email_root"
+              sequence="10"/>
+
+    <menuitem id="menu_bf_email_inbox"
+              name="Bo&#238;te de r&#233;ception"
+              parent="menu_bf_email_emails"
+              action="bf_email_action"
+              sequence="10"/>
+
+    <menuitem id="menu_bf_email_all"
+              name="Tous les courriels"
+              parent="menu_bf_email_emails"
+              action="bf_email_action_all"
+              sequence="20"/>
+
+    <!-- Admin zone: read-only view of every user's emails (group-gated) -->
+    <record id="bf_email_action_admin_all" model="ir.actions.act_window">
+        <field name="name">Tous les courriels &#8212; admin</field>
+        <field name="res_model">bf.email</field>
+        <field name="view_mode">list,kanban,form,graph,pivot</field>
+        <field name="search_view_id" ref="bf_email_view_search"/>
+        <field name="domain">[]</field>
+        <field name="context">{'bf_admin_zone': 1}</field>
+    </record>
+
+    <menuitem id="menu_bf_email_admin_all"
+              name="Tous les courriels &#8212; admin"
+              parent="menu_bf_email_emails"
+              action="bf_email_action_admin_all"
+              groups="group_email_admin"
+              sequence="22"/>
+
+    <record id="bf_email_action_handled" model="ir.actions.act_window">
+        <field name="name">Trait&#233;s</field>
+        <field name="res_model">bf.email</field>
+        <field name="view_mode">list,form,kanban</field>
+        <field name="search_view_id" ref="bf_email_view_search"/>
+        <field name="domain">[('is_handled', '=', True)]</field>
+    </record>
+
+    <menuitem id="menu_bf_email_handled"
+              name="Trait&#233;s"
+              parent="menu_bf_email_emails"
+              action="bf_email_action_handled"
+              sequence="25"/>
+
+    <menuitem id="menu_bf_email_scheduled_drafts"
+              name="Brouillons planifi&#233;s"
+              parent="menu_bf_email_emails"
+              action="action_mail_scheduled_message"
+              sequence="30"/>
+
+    <menuitem id="menu_bf_email_browser"
+              name="Navigateur IMAP"
+              parent="menu_bf_email_emails"
+              action="action_bf_email_browser_owl"
+              sequence="40"/>
+
+    <!-- Analyse -->
+    <menuitem id="menu_bf_email_analysis"
+              name="Analyse"
+              parent="menu_bf_email_root"
+              sequence="20"/>
+
+    <menuitem id="menu_bf_email_graph"
+              name="Volume"
+              parent="menu_bf_email_analysis"
+              action="bf_email_action_graph"
+              sequence="10"/>
+
+    <menuitem id="menu_bf_email_pivot"
+              name="Tableau crois&#233;"
+              parent="menu_bf_email_analysis"
+              action="bf_email_action_pivot"
+              sequence="20"/>
+
+    <!-- Configuration -->
+    <menuitem id="menu_bf_email_config"
+              name="Configuration"
+              parent="menu_bf_email_root"
+              sequence="90"/>
+
+    <menuitem id="menu_bf_email_accounts"
+              name="Mes comptes IMAP"
+              parent="menu_bf_email_config"
+              action="bf_email_account_action"
+              sequence="1"/>
+
+    <menuitem id="menu_bf_email_sync_now"
+              name="Synchroniser maintenant"
+              parent="menu_bf_email_config"
+              action="action_bf_email_sync_now"
+              sequence="5"/>
+
+    <menuitem id="menu_bf_email_rules"
+              name="R&#232;gles automatiques"
+              parent="menu_bf_email_config"
+              action="action_bf_email_rule"
+              sequence="7"/>
+
+    <!-- Group-gated: the wizard sudo-reads every mail.message in the DB
+         (subjects + record names across record rules) to build the import.
+         Reserved to the email-admin zone; the RPC method re-checks. -->
+    <menuitem id="menu_bf_email_initial_sync"
+              name="Import initial"
+              parent="menu_bf_email_config"
+              action="action_bf_email_initial_sync"
+              groups="group_email_admin,base.group_system"
+              sequence="10"/>
+
+    <menuitem id="menu_bf_email_imap_backfill"
+              name="Rattrapage IMAP (Archives)"
+              parent="menu_bf_email_config"
+              action="action_bf_email_imap_backfill"
+              sequence="15"/>
+
+</odoo>

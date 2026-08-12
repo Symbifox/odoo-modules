@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form_nc_sync" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.nc.sync</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="calendar.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//app[@name='calendar']/block[@name='calendar']" position="inside">
+                <setting string="Nextcloud Calendar Sync"
+                    help="Synchronize calendars with Nextcloud via CalDAV + n8n"
+                    id="nc_sync_setting">
+                    <div class="content-group">
+                        <div class="row mt8">
+                            <label for="nc_sync_default_calendar_id" class="col-lg-4 o_light_label"/>
+                            <field name="nc_sync_default_calendar_id" class="col-lg-6"/>
+                        </div>
+                        <div class="row mt8">
+                            <label for="nc_sync_webhook_url" class="col-lg-4 o_light_label"/>
+                            <field name="nc_sync_webhook_url" class="col-lg-6"
+                                placeholder="https://n8n.example.com/webhook/odoo-to-nc"/>
+                        </div>
+                        <div class="row mt8">
+                            <label for="nc_sync_webhook_secret" class="col-lg-4 o_light_label"/>
+                            <field name="nc_sync_webhook_secret" class="col-lg-6"
+                                password="True"/>
+                        </div>
+                    </div>
+                    <div class="content-group mt16">
+                        <field name="nc_sync_cron_enabled"/>
+                        <div class="row mt8" invisible="not nc_sync_cron_enabled">
+                            <label for="nc_sync_cron_interval" class="col-lg-4 o_light_label"/>
+                            <field name="nc_sync_cron_interval" class="col-lg-2"/>
+                        </div>
+                    </div>
+                    <div class="mt8">
+                        <button name="%(calendar_nextcloud_sync.action_nextcloud_sync_config)d"
+                            type="action" string="Configure Calendar Sync"
+                            class="btn-link" icon="fa-arrow-right"/>
+                    </div>
+                </setting>
+
+                <setting string="Google Calendar Sync"
+                    help="Synchronize calendars with Google via API v3 + OAuth 2.0"
+                    id="google_sync_setting">
+                    <div class="content-group">
+                        <div class="row mt8">
+                            <label for="google_oauth_client_id" class="col-lg-4 o_light_label"/>
+                            <field name="google_oauth_client_id" class="col-lg-6"
+                                placeholder="xxxxxxxxx.apps.googleusercontent.com"/>
+                        </div>
+                        <div class="row mt8">
+                            <label for="google_oauth_client_secret" class="col-lg-4 o_light_label"/>
+                            <field name="google_oauth_client_secret" class="col-lg-6"
+                                password="True"/>
+                        </div>
+                        <div class="row mt8">
+                            <label for="google_oauth_redirect_uri" class="col-lg-4 o_light_label"/>
+                            <field name="google_oauth_redirect_uri" class="col-lg-6"/>
+                        </div>
+                    </div>
+                    <div class="text-muted mt8" style="font-size: 0.875em;">
+                        <p class="mb-1">
+                            <strong>Setup:</strong> dans Google Cloud Console, creez un OAuth 2.0
+                            Client ID (type Web application). Scope requis :
+                            <code>https://www.googleapis.com/auth/calendar</code>.
+                            Ajoutez l'URI de redirection affichee ci-dessus.
+                        </p>
+                        <p class="mb-0">
+                            Chaque utilisateur Odoo connecte ensuite son propre compte Google
+                            depuis ses preferences (onglet Google Calendar).
+                        </p>
+                    </div>
+                </setting>
+            </xpath>
+        </field>
+    </record>
+</odoo>

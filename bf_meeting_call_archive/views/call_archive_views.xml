@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="call_archive_view_form_inherit_meeting" model="ir.ui.view">
+        <field name="name">call.archive.call.form.inherit.meeting</field>
+        <field name="model">call.archive.call</field>
+        <field name="inherit_id" ref="bf_sms_archive.call_archive_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="before">
+                <div class="alert alert-info mb-0" role="status"
+                     invisible="meeting_record_count == 0">
+                    <i class="fa fa-file-text-o me-1"/>
+                    Cet appel a été promu en compte rendu structuré.
+                    <button name="action_view_meeting_records" type="object"
+                            class="btn btn-link p-0 ms-2"
+                            string="Voir le compte rendu"/>
+                </div>
+            </xpath>
+            <xpath expr="//field[@name='recording_url']" position="after">
+                <field name="meeting_record_count" invisible="1"/>
+                <field name="meeting_record_ids" widget="many2many_tags"
+                       readonly="1" string="Comptes rendus"
+                       invisible="meeting_record_count == 0"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="call_archive_view_tree_inherit_meeting" model="ir.ui.view">
+        <field name="name">call.archive.call.tree.inherit.meeting</field>
+        <field name="model">call.archive.call</field>
+        <field name="inherit_id" ref="bf_sms_archive.call_archive_view_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='recording_url']" position="after">
+                <field name="meeting_record_count" string="Compte rendu"
+                       optional="hide"
+                       widget="badge"
+                       decoration-info="meeting_record_count &gt; 0"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

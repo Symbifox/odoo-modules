@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============================================================= -->
+    <!-- Public contribution page (open: after send, before confirm)   -->
+    <!-- ============================================================= -->
+    <template id="agenda_contrib_page" name="Rencontres — Page de contribution">
+        <t t-set="primary" t-value="company.report_brand_primary or '#29ABE1'"/>
+        <t t-set="dark" t-value="company.report_brand_dark or '#2D3031'"/>
+        &lt;!DOCTYPE html&gt;
+        <html lang="fr">
+            <head>
+                <meta charset="utf-8"/>
+                <meta name="viewport" content="width=device-width, initial-scale=1"/>
+                <title>Contribuer — <t t-esc="meeting_name"/></title>
+                <style>
+                    :root { --bf-primary: <t t-esc="primary"/>; --bf-dark: <t t-esc="dark"/>; }
+                    body { margin:0; font-family: system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+                           background:#f4f6f8; color:#2D3031; }
+                    .bf-header { background:var(--bf-dark); color:#fff; padding:16px 24px;
+                                 display:flex; align-items:center; gap:14px; }
+                    .bf-header img { max-height:34px; }
+                    .bf-header .t { font-weight:600; font-size:16px; }
+                    .bf-accent { height:4px; background:var(--bf-primary); }
+                    .bf-wrap { max-width:680px; margin:32px auto 56px; padding:0 16px; }
+                    .bf-card { background:#fff; border:1px solid #e3e7eb; border-radius:10px;
+                               padding:24px; margin-bottom:20px; }
+                    .bf-card h1 { font-size:21px; margin:0 0 4px; }
+                    .bf-meta { color:#6B7280; font-size:14px; margin:0 0 16px; }
+                    .bf-card h2 { font-size:16px; margin:22px 0 10px; padding-left:10px;
+                                  border-left:4px solid var(--bf-primary); }
+                    .bf-obj { white-space:pre-wrap; color:#374151; font-size:15px; line-height:24px; margin:0; }
+                    .bf-topics { margin:6px 0 0; padding-left:20px; color:#374151; }
+                    .bf-topics li { margin:3px 0; }
+                    label { display:block; font-weight:600; font-size:14px; margin:14px 0 5px; color:var(--bf-dark); }
+                    .bf-req { color:var(--bf-primary); }
+                    input[type=text], input[type=email], textarea {
+                        width:100%; box-sizing:border-box; padding:10px 11px; font-size:15px;
+                        border:1px solid #cfd6dc; border-radius:7px; font-family:inherit; }
+                    textarea { resize:vertical; }
+                    .bf-hint { color:#9CA3AF; font-size:12px; margin:4px 0 0; }
+                    button { margin-top:16px; padding:11px 20px; font-size:15px; font-weight:600;
+                             color:#fff; background:var(--bf-primary); border:0; border-radius:7px; cursor:pointer; }
+                    .bf-banner { padding:12px 14px; border-radius:7px; font-size:14px; margin:0 0 18px; }
+                    .bf-ok { background:#e7f6ec; color:#1b6b38; border:1px solid #bfe6cd; }
+                    .bf-err { background:#fdecea; color:#b3261e; border:1px solid #f3c6c1; }
+                    .bf-sep { height:1px; background:#eceff2; margin:24px 0; border:0; }
+                    .bf-foot { color:#9CA3AF; font-size:12px; text-align:center; margin-top:8px; }
+                </style>
+            </head>
+            <body>
+                <div class="bf-header">
+                    <img t-attf-src="/web/image/res.company/#{company.id}/#{company.report_brand_logo and 'report_brand_logo' or 'logo'}" alt=""/>
+                    <span class="t"><t t-esc="company.name"/></span>
+                </div>
+                <div class="bf-accent"/>
+                <div class="bf-wrap">
+
+                    <t t-if="ok == 'topic'">
+                        <div class="bf-banner bf-ok">Merci ! Votre sujet a été transmis à l'organisateur, qui l'examinera avant la rencontre.</div>
+                    </t>
+                    <t t-if="ok == 'comment'">
+                        <div class="bf-banner bf-ok">Merci ! Votre commentaire a été transmis à l'organisateur.</div>
+                    </t>
+                    <t t-if="error == 'rate'">
+                        <div class="bf-banner bf-err">Trop d'envois en peu de temps. Patientez une minute avant de réessayer.</div>
+                    </t>
+                    <t t-if="error == 'topic_name'">
+                        <div class="bf-banner bf-err">Veuillez indiquer un titre de sujet.</div>
+                    </t>
+                    <t t-if="error == 'comment'">
+                        <div class="bf-banner bf-err">Veuillez saisir un commentaire.</div>
+                    </t>
+                    <t t-if="error == 'server'">
+                        <div class="bf-banner bf-err">Une erreur est survenue. Veuillez réessayer.</div>
+                    </t>
+
+                    <div class="bf-card">
+                        <h1><t t-esc="meeting_name"/></h1>
+                        <p class="bf-meta" t-if="meeting_date">
+                            <strong style="color:#374151;">Date :</strong> <t t-esc="meeting_date"/>
+                        </p>
+                        <p style="color:#374151; font-size:15px; line-height:23px; margin:0;">
+                            Vous êtes invité à proposer un sujet ou à laisser une note avant la rencontre.
+                            Vos contributions sont transmises à l'organisateur, qui les examinera.
+                        </p>
+
+                        <t t-if="objectives">
+                            <h2>Objectifs de la rencontre</h2>
+                            <p class="bf-obj"><t t-esc="objectives"/></p>
+                        </t>
+
+                        <t t-if="topic_names">
+                            <h2>Sujets déjà à l'ordre du jour</h2>
+                            <ul class="bf-topics">
+                                <li t-foreach="topic_names" t-as="tn"><t t-esc="tn"/></li>
+                            </ul>
+                        </t>
+                    </div>
+
+                    <!-- Proposer un sujet -->
+                    <div class="bf-card">
+                        <h2 style="margin-top:0;">Proposer un sujet</h2>
+                        <form method="post" t-attf-action="/meeting/agenda/#{token}/topic">
+                            <label>Votre nom <span class="bf-req">*</span></label>
+                            <input type="text" name="contributor_name" required="required" maxlength="120"/>
+                            <label>Votre courriel <span style="font-weight:400; color:#9CA3AF;">(facultatif)</span></label>
+                            <input type="email" name="contributor_email" maxlength="254"/>
+                            <label>Titre du sujet <span class="bf-req">*</span></label>
+                            <input type="text" name="topic_name" required="required" maxlength="200"/>
+                            <label>Précisions <span style="font-weight:400; color:#9CA3AF;">(facultatif)</span></label>
+                            <textarea name="topic_desc" rows="3" maxlength="4000"></textarea>
+                            <button type="submit">Proposer ce sujet</button>
+                        </form>
+                    </div>
+
+                    <!-- Laisser un commentaire -->
+                    <div class="bf-card">
+                        <h2 style="margin-top:0;">Laisser un commentaire ou une note</h2>
+                        <form method="post" t-attf-action="/meeting/agenda/#{token}/comment">
+                            <label>Votre nom <span class="bf-req">*</span></label>
+                            <input type="text" name="contributor_name" required="required" maxlength="120"/>
+                            <label>Votre courriel <span style="font-weight:400; color:#9CA3AF;">(facultatif)</span></label>
+                            <input type="email" name="contributor_email" maxlength="254"/>
+                            <label>Commentaire <span class="bf-req">*</span></label>
+                            <textarea name="comment" rows="4" required="required" maxlength="4000"></textarea>
+                            <button type="submit">Envoyer le commentaire</button>
+                        </form>
+                    </div>
+
+                    <p class="bf-foot">Ce lien restera actif jusqu'à la confirmation de l'ordre du jour.</p>
+                </div>
+            </body>
+        </html>
+    </template>
+
+    <!-- ============================================================= -->
+    <!-- Closed page (before send / after confirmation / done / cancel)-->
+    <!-- ============================================================= -->
+    <template id="agenda_contrib_closed" name="Rencontres — Contributions fermées">
+        <t t-set="primary" t-value="company.report_brand_primary or '#29ABE1'"/>
+        <t t-set="dark" t-value="company.report_brand_dark or '#2D3031'"/>
+        &lt;!DOCTYPE html&gt;
+        <html lang="fr">
+            <head>
+                <meta charset="utf-8"/>
+                <meta name="viewport" content="width=device-width, initial-scale=1"/>
+                <title>Contributions fermées</title>
+                <style>
+                    body { margin:0; font-family: system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+                           background:#f4f6f8; color:#2D3031; }
+                    .bf-header { background:<t t-esc="dark"/>; color:#fff; padding:16px 24px; font-weight:600; }
+                    .bf-accent { height:4px; background:<t t-esc="primary"/>; }
+                    .bf-wrap { max-width:560px; margin:56px auto; padding:0 16px; text-align:center; }
+                    .bf-card { background:#fff; border:1px solid #e3e7eb; border-radius:10px; padding:32px 24px; }
+                    .bf-lock { width:60px; height:60px; border-radius:50%; background:#eef1f4;
+                               color:#6B7280; font-size:30px; line-height:60px; margin:0 auto 16px; }
+                </style>
+            </head>
+            <body>
+                <div class="bf-header"><t t-esc="company.name"/></div>
+                <div class="bf-accent"/>
+                <div class="bf-wrap">
+                    <div class="bf-card">
+                        <div class="bf-lock">🔒</div>
+                        <h1 style="font-size:20px; margin:0 0 8px;">La fenêtre de contribution est fermée</h1>
+                        <p style="color:#555; line-height:23px;">
+                            L'ordre du jour a été confirmé (ou n'accepte plus de contributions).
+                            Merci de communiquer directement avec l'organisateur si vous souhaitez
+                            ajouter un sujet ou un commentaire.
+                        </p>
+                    </div>
+                </div>
+            </body>
+        </html>
+    </template>
+
+</odoo>

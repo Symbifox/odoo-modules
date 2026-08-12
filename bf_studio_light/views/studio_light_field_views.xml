@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="studio_light_field_list" model="ir.ui.view">
+        <field name="name">studio.light.field.list</field>
+        <field name="model">studio.light.field</field>
+        <field name="arch" type="xml">
+            <list string="Studio Light fields">
+                <field name="model_name"/>
+                <field name="name"/>
+                <field name="label"/>
+                <field name="field_type"/>
+                <field name="required"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="studio_light_field_form" model="ir.ui.view">
+        <field name="name">studio.light.field.form</field>
+        <field name="model">studio.light.field</field>
+        <field name="arch" type="xml">
+            <form string="Studio Light field">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_toggle_active"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-archive">
+                            <field name="active" widget="boolean_button"/>
+                        </button>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="model_id" options="{'no_create': True, 'no_open': True}"/>
+                            <field name="model_name" invisible="1"/>
+                            <field name="name"/>
+                            <field name="label"/>
+                            <field name="field_type"/>
+                        </group>
+                        <group>
+                            <field name="required"/>
+                            <field name="help_text"/>
+                            <field name="ir_model_field_id" readonly="1"/>
+                            <field name="failed_count" readonly="1"/>
+                            <field name="last_failure_message"
+                                   invisible="not last_failure_message"
+                                   readonly="1"/>
+                        </group>
+                    </group>
+                    <group string="Read from another field (advanced)">
+                        <field name="is_related"/>
+                        <field name="related_path"
+                               invisible="not is_related"
+                               placeholder="partner_id.email"/>
+                    </group>
+                    <group string="Conditional modifiers (advanced)">
+                        <field name="invisible_expr"
+                               placeholder="state == 'draft'"/>
+                        <field name="required_expr"
+                               placeholder="state != 'draft'"/>
+                        <field name="readonly_expr"
+                               placeholder="state in ('done','cancel')"/>
+                    </group>
+                    <notebook>
+                        <page string="Selection values" invisible="field_type != 'selection' or is_related">
+                            <field name="selection_ids">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="key"/>
+                                    <field name="label"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Linked model" invisible="field_type != 'many2one'">
+                            <group>
+                                <field name="relation_model_id"
+                                       options="{'no_create': True, 'no_open': True}"/>
+                                <field name="relation_ondelete"/>
+                            </group>
+                        </page>
+                        <page string="View injections">
+                            <field name="view_injection_ids">
+                                <list>
+                                    <field name="view_type"/>
+                                    <field name="parent_view_id"/>
+                                    <field name="target_field"/>
+                                    <field name="position"/>
+                                    <field name="active"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="studio_light_field_search" model="ir.ui.view">
+        <field name="name">studio.light.field.search</field>
+        <field name="model">studio.light.field</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="label"/>
+                <field name="model_name"/>
+                <filter name="active" string="Active" domain="[('active', '=', True)]"/>
+                <filter name="inactive" string="Archived" domain="[('active', '=', False)]"/>
+                <group expand="0" string="Group by">
+                    <filter name="group_model" string="Model"
+                            context="{'group_by': 'model_name'}"/>
+                    <filter name="group_type" string="Field type"
+                            context="{'group_by': 'field_type'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_studio_light_field" model="ir.actions.act_window">
+        <field name="name">Custom fields</field>
+        <field name="res_model">studio.light.field</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_active': 1, 'search_default_group_model': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No custom fields yet.</p>
+            <p>Use the <b>Add custom field</b> action to create one without writing a module.</p>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,13 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_bf_outreach_campaign_user,bf.outreach.campaign user,model_bf_outreach_campaign,bf_outreach.group_bf_outreach_user,1,1,1,0
+access_bf_outreach_campaign_manager,bf.outreach.campaign manager,model_bf_outreach_campaign,bf_outreach.group_bf_outreach_manager,1,1,1,1
+access_bf_outreach_target_user,bf.outreach.target user,model_bf_outreach_target,bf_outreach.group_bf_outreach_user,1,1,1,0
+access_bf_outreach_target_manager,bf.outreach.target manager,model_bf_outreach_target,bf_outreach.group_bf_outreach_manager,1,1,1,1
+access_bf_outreach_touch_user,bf.outreach.touch user,model_bf_outreach_touch,bf_outreach.group_bf_outreach_user,1,1,1,1
+access_bf_outreach_stage_user,bf.outreach.stage user,model_bf_outreach_stage,bf_outreach.group_bf_outreach_user,1,0,0,0
+access_bf_outreach_stage_manager,bf.outreach.stage manager,model_bf_outreach_stage,bf_outreach.group_bf_outreach_manager,1,1,1,1
+access_bf_outreach_tag_user,bf.outreach.tag user,model_bf_outreach_tag,bf_outreach.group_bf_outreach_user,1,0,1,0
+access_bf_outreach_tag_manager,bf.outreach.tag manager,model_bf_outreach_tag,bf_outreach.group_bf_outreach_manager,1,1,1,1
+access_bf_outreach_log_wizard,bf.outreach.log.wizard,model_bf_outreach_log_wizard,bf_outreach.group_bf_outreach_user,1,1,1,1
+access_bf_outreach_target_import_wizard,bf.outreach.target.import.wizard,model_bf_outreach_target_import_wizard,bf_outreach.group_bf_outreach_user,1,1,1,1
+access_bf_outreach_exclude_wizard,bf.outreach.exclude.wizard,model_bf_outreach_exclude_wizard,bf_outreach.group_bf_outreach_user,1,1,1,1

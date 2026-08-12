@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- ================================== -->
+        <!-- Types de documents clients/projets -->
+        <!-- ================================== -->
+
+        <record id="document_type_manual" model="project.document.type">
+            <field name="code">MANUAL</field>
+            <field name="name">Manuel d'utilisation</field>
+            <field name="sequence">10</field>
+            <field name="icon">fa-book</field>
+            <field name="color">1</field>
+            <field name="description">Documentation destinée aux utilisateurs finaux</field>
+            <field name="is_internal">False</field>
+        </record>
+
+        <record id="document_type_contract" model="project.document.type">
+            <field name="code">CONTRACT</field>
+            <field name="name">Contrat / Entente</field>
+            <field name="sequence">20</field>
+            <field name="icon">fa-file-signature</field>
+            <field name="color">4</field>
+            <field name="description">Documents légaux, contrats et ententes</field>
+            <field name="is_internal">False</field>
+        </record>
+
+        <record id="document_type_guide" model="project.document.type">
+            <field name="code">GUIDE</field>
+            <field name="name">Guide rapide</field>
+            <field name="sequence">30</field>
+            <field name="icon">fa-lightbulb</field>
+            <field name="color">5</field>
+            <field name="description">Guides de référence rapide et documents de démarrage</field>
+            <field name="is_internal">False</field>
+        </record>
+
+        <record id="document_type_spec" model="project.document.type">
+            <field name="code">SPEC</field>
+            <field name="name">Spécification technique</field>
+            <field name="sequence">40</field>
+            <field name="icon">fa-cogs</field>
+            <field name="color">6</field>
+            <field name="description">Spécifications techniques et exigences</field>
+            <field name="is_internal">False</field>
+        </record>
+
+        <record id="document_type_release" model="project.document.type">
+            <field name="code">RELEASE</field>
+            <field name="name">Notes de version</field>
+            <field name="sequence">50</field>
+            <field name="icon">fa-rocket</field>
+            <field name="color">7</field>
+            <field name="description">Notes de mise à jour et journaux de modifications</field>
+            <field name="is_internal">False</field>
+        </record>
+
+        <record id="document_type_training" model="project.document.type">
+            <field name="code">TRAINING</field>
+            <field name="name">Matériel de formation</field>
+            <field name="sequence">60</field>
+            <field name="icon">fa-graduation-cap</field>
+            <field name="color">8</field>
+            <field name="description">Documentation de formation et d'intégration</field>
+            <field name="is_internal">False</field>
+        </record>
+
+        <!-- ================================== -->
+        <!-- Types de documents internes        -->
+        <!-- ================================== -->
+
+        <record id="document_type_policy" model="project.document.type">
+            <field name="code">POLICY</field>
+            <field name="name">Politique</field>
+            <field name="sequence">100</field>
+            <field name="icon">fa-gavel</field>
+            <field name="color">2</field>
+            <field name="description">Politiques et règlements de l'entreprise</field>
+            <field name="is_internal">True</field>
+        </record>
+
+        <record id="document_type_procedure" model="project.document.type">
+            <field name="code">PROCEDURE</field>
+            <field name="name">Procédure</field>
+            <field name="sequence">110</field>
+            <field name="icon">fa-list-ol</field>
+            <field name="color">3</field>
+            <field name="description">Procédures et processus étape par étape</field>
+            <field name="is_internal">True</field>
+        </record>
+
+        <record id="document_type_hr_policy" model="project.document.type">
+            <field name="code">HR_POLICY</field>
+            <field name="name">Politique RH</field>
+            <field name="sequence">120</field>
+            <field name="icon">fa-users</field>
+            <field name="color">10</field>
+            <field name="description">Politiques des ressources humaines (vacances, avantages, etc.)</field>
+            <field name="is_internal">True</field>
+        </record>
+
+        <record id="document_type_it_procedure" model="project.document.type">
+            <field name="code">IT_PROCEDURE</field>
+            <field name="name">Procédure TI</field>
+            <field name="sequence">130</field>
+            <field name="icon">fa-laptop</field>
+            <field name="color">11</field>
+            <field name="description">Procédures informatiques et guides techniques internes</field>
+            <field name="is_internal">True</field>
+        </record>
+
+        <record id="document_type_safety" model="project.document.type">
+            <field name="code">SAFETY</field>
+            <field name="name">Santé et sécurité</field>
+            <field name="sequence">140</field>
+            <field name="icon">fa-medkit</field>
+            <field name="color">1</field>
+            <field name="description">Politiques et procédures de santé et sécurité au travail</field>
+            <field name="is_internal">True</field>
+        </record>
+
+        <record id="document_type_handbook" model="project.document.type">
+            <field name="code">HANDBOOK</field>
+            <field name="name">Manuel de l'employé</field>
+            <field name="sequence">150</field>
+            <field name="icon">fa-id-card</field>
+            <field name="color">9</field>
+            <field name="description">Manuel d'accueil et guide de l'employé</field>
+            <field name="is_internal">True</field>
+        </record>
+
+        <record id="document_type_onboarding" model="project.document.type">
+            <field name="code">ONBOARDING</field>
+            <field name="name">Intégration</field>
+            <field name="sequence">160</field>
+            <field name="icon">fa-handshake</field>
+            <field name="color">5</field>
+            <field name="description">Documents d'intégration des nouveaux employés</field>
+            <field name="is_internal">True</field>
+        </record>
+
+        <record id="document_type_confidential" model="project.document.type">
+            <field name="code">CONFIDENTIAL</field>
+            <field name="name">Document confidentiel</field>
+            <field name="sequence">170</field>
+            <field name="icon">fa-lock</field>
+            <field name="color">1</field>
+            <field name="description">Documents confidentiels à accès restreint</field>
+            <field name="is_internal">True</field>
+        </record>
+
+        <!-- ================================== -->
+        <!-- Types Loi 25 / Conformité          -->
+        <!-- ================================== -->
+
+        <record id="document_type_privacy_policy" model="project.document.type">
+            <field name="code">PRIVACY</field>
+            <field name="name">Politique de confidentialité</field>
+            <field name="sequence">180</field>
+            <field name="icon">fa-shield</field>
+            <field name="color">4</field>
+            <field name="description">Politiques de protection des renseignements personnels (Loi 25)</field>
+            <field name="is_internal">True</field>
+        </record>
+
+        <record id="document_type_form" model="project.document.type">
+            <field name="code">FORM</field>
+            <field name="name">Formulaire</field>
+            <field name="sequence">185</field>
+            <field name="icon">fa-wpforms</field>
+            <field name="color">5</field>
+            <field name="description">Formulaires (consentement, demandes, etc.)</field>
+            <field name="is_internal">True</field>
+        </record>
+
+        <record id="document_type_template" model="project.document.type">
+            <field name="code">TEMPLATE</field>
+            <field name="name">Gabarit / Modèle</field>
+            <field name="sequence">190</field>
+            <field name="icon">fa-file-text-o</field>
+            <field name="color">6</field>
+            <field name="description">Gabarits et modèles de documents</field>
+            <field name="is_internal">True</field>
+        </record>
+
+        <record id="document_type_registry" model="project.document.type">
+            <field name="code">REGISTRY</field>
+            <field name="name">Registre</field>
+            <field name="sequence">192</field>
+            <field name="icon">fa-database</field>
+            <field name="color">7</field>
+            <field name="description">Registres et inventaires (incidents, fournisseurs, traitements)</field>
+            <field name="is_internal">True</field>
+        </record>
+
+        <record id="document_type_annex" model="project.document.type">
+            <field name="code">ANNEX</field>
+            <field name="name">Annexe</field>
+            <field name="sequence">194</field>
+            <field name="icon">fa-paperclip</field>
+            <field name="color">8</field>
+            <field name="description">Annexes contractuelles et pièces jointes</field>
+            <field name="is_internal">True</field>
+        </record>
+
+        <record id="document_type_assessment" model="project.document.type">
+            <field name="code">ASSESSMENT</field>
+            <field name="name">Évaluation</field>
+            <field name="sequence">196</field>
+            <field name="icon">fa-check-square-o</field>
+            <field name="color">9</field>
+            <field name="description">Évaluations (EFVP, risques, conformité)</field>
+            <field name="is_internal">True</field>
+        </record>
+
+        <record id="document_type_letter" model="project.document.type">
+            <field name="code">LETTER</field>
+            <field name="name">Lettre-type</field>
+            <field name="sequence">198</field>
+            <field name="icon">fa-envelope-o</field>
+            <field name="color">10</field>
+            <field name="description">Lettres-types et modèles de correspondance</field>
+            <field name="is_internal">True</field>
+        </record>
+
+        <!-- ================================== -->
+        <!-- Type générique                     -->
+        <!-- ================================== -->
+
+        <record id="document_type_other" model="project.document.type">
+            <field name="code">OTHER</field>
+            <field name="name">Autre</field>
+            <field name="sequence">200</field>
+            <field name="icon">fa-file</field>
+            <field name="color">0</field>
+            <field name="description">Documents divers</field>
+            <field name="is_internal">False</field>
+        </record>
+
+    </data>
+</odoo>

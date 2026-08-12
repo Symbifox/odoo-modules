@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Root Menu — Top-level application -->
+    <menuitem id="menu_meeting_root"
+              name="Rencontres"
+              web_icon="bf_meeting,static/description/icon.png"
+              sequence="35"/>
+
+    <!-- Comptes rendus -->
+    <menuitem id="menu_meeting_records"
+              name="Comptes rendus"
+              parent="menu_meeting_root"
+              sequence="10"/>
+    <menuitem id="menu_meeting_records_all"
+              name="Tous les comptes rendus"
+              parent="menu_meeting_records"
+              action="meeting_record_action"
+              groups="group_meeting_user"
+              sequence="10"/>
+    <menuitem id="menu_meeting_records_draft"
+              name="Brouillons"
+              parent="menu_meeting_records"
+              action="meeting_record_action_draft"
+              groups="group_meeting_user"
+              sequence="20"/>
+
+    <!-- Ordres du jour -->
+    <menuitem id="menu_meeting_agendas"
+              name="Ordres du jour"
+              parent="menu_meeting_root"
+              sequence="20"/>
+    <menuitem id="menu_meeting_agendas_today"
+              name="Aujourd'hui"
+              parent="menu_meeting_agendas"
+              action="meeting_agenda_action_today"
+              groups="group_meeting_user"
+              sequence="5"/>
+    <menuitem id="menu_meeting_agendas_all"
+              name="Tous les ordres du jour"
+              parent="menu_meeting_agendas"
+              action="meeting_agenda_action"
+              groups="group_meeting_user"
+              sequence="10"/>
+    <menuitem id="menu_meeting_agendas_upcoming"
+              name="À venir"
+              parent="menu_meeting_agendas"
+              action="meeting_agenda_action_upcoming"
+              groups="group_meeting_user"
+              sequence="20"/>
+
+    <!-- Par projet -->
+    <menuitem id="menu_meeting_by_project"
+              name="Par projet"
+              parent="menu_meeting_root"
+              action="meeting_record_action_by_project"
+              groups="group_meeting_user"
+              sequence="30"/>
+
+</odoo>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <menuitem id="bf_time_of_day_menu_root"
+              name="Plages horaires"
+              parent="base.menu_custom"
+              action="bf_time_of_day_action"
+              sequence="50"
+              groups="base.group_system"/>
+
+</odoo>

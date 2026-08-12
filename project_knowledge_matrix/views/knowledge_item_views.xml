@@ -1,0 +1,482 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Item: Form View -->
+    <record id="knowledge_item_view_form" model="ir.ui.view">
+        <field name="name">project.knowledge.item.form</field>
+        <field name="model">project.knowledge.item</field>
+        <field name="arch" type="xml">
+            <form string="Élément de connaissance">
+                <header>
+                    <button name="action_create_task" string="Créer une tâche" type="object"
+                            class="btn-primary" icon="fa-tasks"
+                            invisible="not project_id"/>
+                    <!-- Flux information -->
+                    <button name="action_start" string="Démarrer" type="object"
+                            class="btn-secondary" invisible="state != 'pending' or item_type == 'decision'"/>
+                    <button name="action_done" string="Marquer complété" type="object"
+                            class="btn-success" invisible="state != 'in_progress' or item_type == 'decision'"/>
+                    <button name="action_reset" string="Réinitialiser" type="object"
+                            invisible="state not in ('done', 'na') or item_type == 'decision'"/>
+                    <button name="action_toggle_na" string="Marquer S/O" type="object"
+                            class="btn-secondary" invisible="state == 'na' or item_type == 'decision'"/>
+                    <button name="action_toggle_na" string="Réactiver" type="object"
+                            class="btn-warning" invisible="state != 'na' or item_type == 'decision'"/>
+                    <!-- Flux décision -->
+                    <button name="action_propose" string="Proposer" type="object"
+                            class="btn-primary" invisible="item_type != 'decision' or state != 'pending'"/>
+                    <button name="action_accept" string="Accepter" type="object"
+                            class="btn-success" invisible="item_type != 'decision' or state != 'proposed'"/>
+                    <button name="action_reject" string="Rejeter" type="object"
+                            class="btn-danger" invisible="item_type != 'decision' or state != 'proposed'"/>
+                    <button name="action_supersede" string="Remplacer" type="object"
+                            class="btn-warning" invisible="item_type != 'decision' or state != 'accepted'"/>
+                    <button name="action_reset" string="Réinitialiser" type="object"
+                            invisible="item_type != 'decision' or state not in ('proposed', 'rejected')"/>
+                    <field name="state" widget="statusbar" clickable="1"
+                           statusbar_visible="pending,in_progress,done"
+                           invisible="item_type == 'decision'"/>
+                    <field name="state" widget="statusbar" clickable="1"
+                           statusbar_visible="pending,proposed,accepted"
+                           invisible="item_type != 'decision'"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button" type="object"
+                                name="action_view_tasks" icon="fa-tasks"
+                                invisible="task_count == 0">
+                            <field name="task_count" widget="statinfo" string="Tâches"/>
+                        </button>
+                        <button class="oe_stat_button" type="object"
+                                name="action_open_attachments" icon="fa-paperclip"
+                                invisible="attachment_count == 0">
+                            <field name="attachment_count" widget="statinfo" string="Pièces jointes"/>
+                        </button>
+                    </div>
+                    <!-- Bannières d'alerte -->
+                    <div class="alert alert-warning" role="alert" invisible="not is_blocked">
+                        <strong>Bloqué :</strong> Cet élément dépend d'autres éléments qui ne sont pas encore complétés.
+                    </div>
+                    <div class="alert alert-danger" role="alert" invisible="not is_overdue">
+                        <strong>En retard :</strong> L'échéance de cet élément est passée.
+                    </div>
+                    <div class="oe_title">
+                        <label for="decision_id"/>
+                        <h1>
+                            <field name="decision_id" placeholder="ex. : A1, B6, IN55"/>
+                        </h1>
+                        <label for="name"/>
+                        <h2>
+                            <field name="name" placeholder="Élément de décision..."/>
+                        </h2>
+                    </div>
+                    <group>
+                        <group string="Classification">
+                            <field name="item_type"/>
+                            <field name="matrix_id" invisible="context.get('default_matrix_id')"
+                                   options="{'no_create': True}"/>
+                            <field name="section_id" options="{'no_create': True}"/>
+                            <field name="phase"/>
+                            <field name="project_id" readonly="1"/>
+                            <field name="sequence" invisible="1"/>
+                        </group>
+                        <group string="Planification">
+                            <field name="priority" widget="priority"/>
+                            <field name="deadline"/>
+                            <field name="assigned_user_id"/>
+                            <field name="completion_date" invisible="state != 'done'"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Détails" name="details"
+                              invisible="item_type == 'content'">
+                            <group>
+                                <group string="Source">
+                                    <field name="questionnaire_location"
+                                           placeholder="ex. : Q1, Q2"/>
+                                    <field name="phase_coverage"
+                                           placeholder="ex. : S1, S3-S4"/>
+                                    <field name="info_provider"
+                                           placeholder="ex. : Promoteur + TI"/>
+                                </group>
+                                <group string="Livrable">
+                                    <field name="deliverable"
+                                           placeholder="ex. : Charte de projet"/>
+                                </group>
+                            </group>
+                            <group string="Intrants requis">
+                                <field name="required_inputs" nolabel="1"
+                                       placeholder="Intrants à obtenir pour éviter les reprises client..."/>
+                            </group>
+                            <group string="Notes">
+                                <field name="notes" nolabel="1"
+                                       placeholder="Contexte ou notes supplémentaires..."/>
+                            </group>
+                        </page>
+                        <page string="Pièces jointes" name="attachments">
+                            <field name="attachment_ids" widget="many2many_binary"/>
+                        </page>
+                        <page string="Décision" name="decision"
+                              invisible="item_type != 'decision'">
+                            <group>
+                                <group string="Métadonnées de décision">
+                                    <field name="decision_category"/>
+                                    <field name="impact_level"/>
+                                    <field name="decision_date"/>
+                                    <field name="decision_maker_id"/>
+                                </group>
+                                <group string="Parties prenantes">
+                                    <field name="stakeholder_consulted_ids" widget="many2many_tags"/>
+                                    <field name="stakeholder_informed_ids" widget="many2many_tags"/>
+                                </group>
+                            </group>
+                            <group string="Contexte">
+                                <field name="context_description" nolabel="1"/>
+                            </group>
+                            <group string="Décision">
+                                <field name="decision_text" nolabel="1"
+                                       placeholder="Nous allons..."/>
+                            </group>
+                            <group string="Alternatives considérées">
+                                <field name="alternatives_considered" nolabel="1"/>
+                            </group>
+                            <group string="Justification">
+                                <field name="rationale" nolabel="1"/>
+                            </group>
+                            <group string="Conséquences">
+                                <field name="consequences" nolabel="1"/>
+                            </group>
+                            <group string="Chaîne de décision"
+                                   invisible="not supersedes_id and not superseded_by_id">
+                                <field name="supersedes_id"/>
+                                <field name="superseded_by_id"/>
+                            </group>
+                        </page>
+                        <page string="Contenu" name="content"
+                              invisible="item_type != 'content'">
+                            <field name="content_html" nolabel="1"
+                                   placeholder="Rédigez le contenu de cette section..."/>
+                        </page>
+                        <page string="Tâches et dépendances" name="tasks">
+                            <group>
+                                <group string="Tâches liées">
+                                    <field name="task_ids" nolabel="1" colspan="2"
+                                           context="{'default_project_id': project_id}">
+                                        <list>
+                                            <field name="name"/>
+                                            <field name="user_ids" widget="many2many_avatar_user"/>
+                                            <field name="date_deadline"/>
+                                            <field name="stage_id"/>
+                                        </list>
+                                    </field>
+                                </group>
+                                <group string="Dépendances">
+                                    <field name="blocked_by_ids" nolabel="1" colspan="2"
+                                           domain="[('matrix_id', '=', matrix_id), ('id', '!=', id)]"
+                                           context="{'default_matrix_id': matrix_id}">
+                                        <list>
+                                            <field name="decision_id"/>
+                                            <field name="name"/>
+                                            <field name="state" widget="badge"/>
+                                        </list>
+                                    </field>
+                                </group>
+                            </group>
+                            <group string="Bloque d'autres éléments" invisible="not blocking_ids">
+                                <field name="blocking_ids" nolabel="1" colspan="2" readonly="1">
+                                    <list>
+                                        <field name="decision_id"/>
+                                        <field name="name"/>
+                                        <field name="state" widget="badge"/>
+                                    </list>
+                                </field>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Item: List View (color-coded, inline editable) -->
+    <record id="knowledge_item_view_list" model="ir.ui.view">
+        <field name="name">project.knowledge.item.list</field>
+        <field name="model">project.knowledge.item</field>
+        <field name="arch" type="xml">
+            <list string="Éléments de connaissance" editable="bottom" multi_edit="1"
+                  decoration-danger="is_overdue"
+                  decoration-warning="state == 'pending' and not is_overdue"
+                  decoration-success="state == 'done'"
+                  decoration-muted="state == 'na'"
+                  decoration-info="state == 'in_progress' and not is_overdue">
+                <field name="is_overdue" column_invisible="1"/>
+                <field name="priority" widget="priority" optional="show"/>
+                <field name="decision_id" readonly="1"/>
+                <field name="item_type" optional="hide"/>
+                <field name="section_id" optional="show"/>
+                <field name="name"/>
+                <field name="phase" optional="show"/>
+                <field name="deadline" optional="show"/>
+                <field name="info_provider" optional="hide"/>
+                <field name="deliverable" optional="hide"/>
+                <field name="decision_category" optional="hide"/>
+                <field name="impact_level" optional="hide"/>
+                <field name="decision_maker_id" optional="hide"/>
+                <field name="assigned_user_id" widget="many2one_avatar_user" optional="show"/>
+                <field name="task_count" string="Tâches" optional="show"/>
+                <field name="state" widget="badge"
+                       decoration-info="state in ('in_progress', 'proposed')"
+                       decoration-success="state in ('done', 'accepted')"
+                       decoration-warning="state == 'pending'"
+                       decoration-danger="state == 'rejected'"
+                       decoration-muted="state in ('na', 'superseded')"/>
+                <field name="is_blocked" column_invisible="1"/>
+                <field name="completion_date" optional="hide"/>
+                <field name="create_date" column_invisible="1"/>
+                <field name="matrix_id" column_invisible="1"/>
+                <button name="action_create_task" type="object" icon="fa-plus"
+                        title="Créer une tâche" class="btn-link"
+                        invisible="not project_id"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Item: Kanban View -->
+    <record id="knowledge_item_view_kanban" model="ir.ui.view">
+        <field name="name">project.knowledge.item.kanban</field>
+        <field name="model">project.knowledge.item</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="state" class="o_kanban_small_column"
+                    quick_create="false" group_create="false" group_delete="false">
+                <field name="color"/>
+                <field name="state"/>
+                <field name="priority"/>
+                <field name="deadline"/>
+                <field name="is_overdue"/>
+                <field name="is_blocked"/>
+                <field name="assigned_user_id"/>
+                <field name="attachment_count"/>
+                <field name="task_count"/>
+                <templates>
+                    <t t-name="card">
+                        <div t-attf-class="oe_kanban_color_#{kanban_getcolor(record.color.raw_value)} oe_kanban_card #{record.is_overdue.raw_value ? 'border-danger border-2' : ''} #{record.is_blocked.raw_value ? 'opacity-75' : ''}">
+                            <div class="oe_kanban_content">
+                                <div class="o_kanban_record_top mb-2">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <strong class="o_kanban_record_title">
+                                            <field name="decision_id"/> - <field name="name"/>
+                                        </strong>
+                                        <field name="priority" widget="priority"/>
+                                    </div>
+                                </div>
+                                <div class="o_kanban_record_body">
+                                    <field name="section_id"/>
+                                    <div t-if="record.deadline.raw_value"
+                                         t-attf-class="small #{record.is_overdue.raw_value ? 'text-danger fw-bold' : 'text-muted'}">
+                                        <i class="fa fa-calendar"/> <field name="deadline"/>
+                                    </div>
+                                    <div t-if="record.is_blocked.raw_value" class="small text-warning">
+                                        <i class="fa fa-lock" title="Bloqué"/> Bloqué
+                                    </div>
+                                </div>
+                                <div class="o_kanban_record_bottom mt-2">
+                                    <div class="oe_kanban_bottom_left">
+                                        <t t-if="record.task_count.raw_value > 0">
+                                            <span class="badge rounded-pill bg-primary" title="Tâches">
+                                                <i class="fa fa-tasks" title="Tâches"/>
+                                                <field name="task_count"/>
+                                            </span>
+                                        </t>
+                                        <t t-if="record.attachment_count.raw_value > 0">
+                                            <span class="badge rounded-pill" title="Pièces jointes">
+                                                <i class="fa fa-paperclip" title="Pièces jointes"/>
+                                                <field name="attachment_count"/>
+                                            </span>
+                                        </t>
+                                    </div>
+                                    <div class="oe_kanban_bottom_right">
+                                        <field name="assigned_user_id" widget="many2one_avatar_user"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Item: Search View -->
+    <record id="knowledge_item_view_search" model="ir.ui.view">
+        <field name="name">project.knowledge.item.search</field>
+        <field name="model">project.knowledge.item</field>
+        <field name="arch" type="xml">
+            <search string="Rechercher des éléments">
+                <field name="decision_id"/>
+                <field name="name"/>
+                <field name="section_id"/>
+                <field name="assigned_user_id"/>
+                <field name="deliverable"/>
+                <field name="info_provider"/>
+                <field name="matrix_id"/>
+                <field name="project_id"/>
+                <field name="phase"/>
+                <separator/>
+                <!-- Filtres d'assignation -->
+                <filter string="Mes éléments" name="my_items"
+                        domain="[('assigned_user_id', '=', uid)]"/>
+                <filter string="Non assigné" name="unassigned"
+                        domain="[('assigned_user_id', '=', False), ('state', '!=', 'na')]"/>
+                <separator/>
+                <!-- Filtres de statut -->
+                <filter string="En attente" name="pending"
+                        domain="[('state', '=', 'pending')]"/>
+                <filter string="En cours" name="in_progress"
+                        domain="[('state', '=', 'in_progress')]"/>
+                <filter string="Complété" name="done"
+                        domain="[('state', '=', 'done')]"/>
+                <separator/>
+                <!-- Filtres de priorité/urgence -->
+                <filter string="En retard" name="overdue"
+                        domain="[('is_overdue', '=', True)]"/>
+                <filter string="Échéance cette semaine" name="due_this_week"
+                        domain="[('deadline', '&gt;=', context_today()), ('deadline', '&lt;=', (context_today() + relativedelta(days=7))), ('state', 'not in', ['done', 'na'])]"/>
+                <filter string="Priorité élevée" name="high_priority"
+                        domain="[('priority', 'in', ['2', '3']), ('state', 'not in', ['done', 'na'])]"/>
+                <filter string="Bloqué" name="blocked"
+                        domain="[('is_blocked', '=', True)]"/>
+                <filter string="Avec tâches" name="has_tasks"
+                        domain="[('task_count', '>', 0)]"/>
+                <separator/>
+                <!-- Filtres de phase -->
+                <filter string="Phase Découverte" name="phase_discovery"
+                        domain="[('phase', '=', '1_discovery')]"/>
+                <filter string="Phase Requis" name="phase_requirements"
+                        domain="[('phase', '=', '2_requirements')]"/>
+                <filter string="Phase Construction" name="phase_build"
+                        domain="[('phase', '=', '3_build')]"/>
+                <filter string="Phase Tests" name="phase_testing"
+                        domain="[('phase', '=', '4_testing')]"/>
+                <filter string="Phase Mise en production" name="phase_golive"
+                        domain="[('phase', '=', '5_golive')]"/>
+                <separator/>
+                <filter string="Actifs (pas S/O)" name="active_items"
+                        domain="[('state', '!=', 'na')]"/>
+                <filter string="Éléments S/O" name="na_items"
+                        domain="[('state', '=', 'na')]"/>
+                <separator/>
+                <!-- Filtres de décision -->
+                <filter string="Décisions" name="decisions"
+                        domain="[('item_type', '=', 'decision')]"/>
+                <filter string="Contenu" name="content_items"
+                        domain="[('item_type', '=', 'content')]"/>
+                <filter string="Décisions acceptées" name="accepted_decisions"
+                        domain="[('state', '=', 'accepted')]"/>
+                <filter string="Décisions proposées" name="pending_decisions"
+                        domain="[('state', '=', 'proposed')]"/>
+                <filter string="Impact élevé" name="high_impact"
+                        domain="[('impact_level', '=', 'high'), ('item_type', '=', 'decision')]"/>
+                <separator/>
+                <group expand="0" string="Regrouper par">
+                    <filter string="Phase" name="group_phase"
+                            context="{'group_by': 'phase'}"/>
+                    <filter string="Section" name="group_section"
+                            context="{'group_by': 'section_id'}"/>
+                    <filter string="Priorité" name="group_priority"
+                            context="{'group_by': 'priority'}"/>
+                    <filter string="Statut" name="group_state"
+                            context="{'group_by': 'state'}"/>
+                    <filter string="Échéance" name="group_deadline"
+                            context="{'group_by': 'deadline:month'}"/>
+                    <filter string="Assigné à" name="group_user"
+                            context="{'group_by': 'assigned_user_id'}"/>
+                    <filter string="Matrice" name="group_matrix"
+                            context="{'group_by': 'matrix_id'}"/>
+                    <filter string="Projet" name="group_project"
+                            context="{'group_by': 'project_id'}"/>
+                    <filter string="Type d'élément" name="group_item_type"
+                            context="{'group_by': 'item_type'}"/>
+                    <filter string="Catégorie de décision" name="group_decision_category"
+                            context="{'group_by': 'decision_category'}"/>
+                    <filter string="Niveau d'impact" name="group_impact_level"
+                            context="{'group_by': 'impact_level'}"/>
+                    <filter string="Décideur" name="group_decision_maker"
+                            context="{'group_by': 'decision_maker_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Item: Action -->
+    <record id="knowledge_item_action" model="ir.actions.act_window">
+        <field name="name">Éléments de connaissance</field>
+        <field name="res_model">project.knowledge.item</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="search_view_id" ref="knowledge_item_view_search"/>
+        <field name="context">{
+            'search_default_active_items': 1,
+            'search_default_group_section': 1
+        }</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Aucun élément de connaissance trouvé
+            </p>
+            <p>
+                Les éléments de connaissance suivent les décisions et exigences pour les implantations de projets.
+            </p>
+        </field>
+    </record>
+
+    <!-- Actions serveur pour opérations en lot -->
+    <record id="action_item_assign_to_me" model="ir.actions.server">
+        <field name="name">M'assigner</field>
+        <field name="model_id" ref="model_project_knowledge_item"/>
+        <field name="binding_model_id" ref="model_project_knowledge_item"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">records.write({'assigned_user_id': env.uid})</field>
+    </record>
+
+    <record id="action_item_mark_in_progress" model="ir.actions.server">
+        <field name="name">Démarrer (En cours)</field>
+        <field name="model_id" ref="model_project_knowledge_item"/>
+        <field name="binding_model_id" ref="model_project_knowledge_item"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">records.filtered(lambda r: r.state == 'pending').write({'state': 'in_progress'})</field>
+    </record>
+
+    <record id="action_item_mark_done" model="ir.actions.server">
+        <field name="name">Marquer complété</field>
+        <field name="model_id" ref="model_project_knowledge_item"/>
+        <field name="binding_model_id" ref="model_project_knowledge_item"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">
+records.filtered(lambda r: r.state in ('pending', 'in_progress')).write({
+    'state': 'done',
+    'completion_date': datetime.date.today(),
+})
+        </field>
+    </record>
+
+    <record id="action_item_mark_na" model="ir.actions.server">
+        <field name="name">Marquer S/O</field>
+        <field name="model_id" ref="model_project_knowledge_item"/>
+        <field name="binding_model_id" ref="model_project_knowledge_item"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">records.filtered(lambda r: r.state != 'na').write({'state': 'na'})</field>
+    </record>
+
+    <record id="action_item_reset" model="ir.actions.server">
+        <field name="name">Réinitialiser (En attente)</field>
+        <field name="model_id" ref="model_project_knowledge_item"/>
+        <field name="binding_model_id" ref="model_project_knowledge_item"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">records.write({'state': 'pending', 'completion_date': False})</field>
+    </record>
+
+</odoo>

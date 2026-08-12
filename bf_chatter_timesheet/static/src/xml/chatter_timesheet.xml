@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="bf_chatter_timesheet.Composer" t-inherit="mail.Composer" t-inherit-mode="extension">
+        <xpath expr="//div[hasclass('o-mail-Composer-coreMain')]" position="inside">
+            <div t-if="bfTimesheetVisible"
+                 class="bf-chatter-timesheet d-flex flex-row align-items-center flex-nowrap gap-2 px-2 py-1 small text-muted">
+                <label class="d-flex align-items-center gap-1 mb-0 cursor-pointer text-nowrap flex-shrink-0">
+                    <input type="checkbox"
+                           class="form-check-input m-0"
+                           t-model="bfTimesheet.enabled"/>
+                    <span>Temps</span>
+                </label>
+                <div class="d-flex flex-row align-items-center gap-1 flex-shrink-0"
+                     t-att-class="{ 'opacity-50': !bfTimesheet.enabled }">
+                    <input type="number"
+                           min="0"
+                           max="24"
+                           step="1"
+                           class="form-control form-control-sm bf-chatter-timesheet-input"
+                           t-model.number="bfTimesheet.hours"
+                           title="Heures"/>
+                    <span>h</span>
+                    <input type="number"
+                           min="0"
+                           max="59"
+                           step="5"
+                           class="form-control form-control-sm bf-chatter-timesheet-input"
+                           t-model.number="bfTimesheet.minutes"
+                           title="Minutes"/>
+                    <span>m</span>
+                </div>
+                <div class="btn-group btn-group-sm flex-shrink-0" role="group" aria-label="Presets de durée">
+                    <button type="button"
+                            class="btn btn-light"
+                            t-on-click="() => this.bfTimesheetSetPreset(5)">5m</button>
+                    <button type="button"
+                            class="btn btn-light"
+                            t-on-click="() => this.bfTimesheetSetPreset(15)">15m</button>
+                    <button type="button"
+                            class="btn btn-light"
+                            t-on-click="() => this.bfTimesheetSetPreset(30)">30m</button>
+                    <button type="button"
+                            class="btn btn-light"
+                            t-on-click="() => this.bfTimesheetSetPreset(60)">1h</button>
+                </div>
+            </div>
+        </xpath>
+    </t>
+
+</templates>

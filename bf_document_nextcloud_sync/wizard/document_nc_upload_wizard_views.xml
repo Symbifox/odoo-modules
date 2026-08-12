@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_document_nc_upload_wizard_form" model="ir.ui.view">
+        <field name="name">document.nc.upload.wizard.form</field>
+        <field name="model">document.nc.upload.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Televerser sur Nextcloud">
+                <group>
+                    <field name="document_id" readonly="1"/>
+                    <field name="nc_config_id" options="{'no_create': True}"/>
+                    <field name="nc_file_path" placeholder="/Projet/Documents/fichier.pdf"/>
+                </group>
+                <group>
+                    <field name="file_data" filename="file_name"/>
+                    <field name="file_name" invisible="1"/>
+                </group>
+                <group string="Version" invisible="not create_version_record">
+                    <field name="create_version_record"/>
+                    <field name="version_number" placeholder="1.0"/>
+                    <field name="change_type"/>
+                    <field name="change_summary" placeholder="Description des modifications..."/>
+                </group>
+                <group invisible="create_version_record">
+                    <field name="create_version_record"/>
+                </group>
+                <footer>
+                    <button name="action_upload" type="object"
+                        string="Televerser" class="btn-primary"
+                        icon="fa-upload"/>
+                    <button string="Annuler" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>

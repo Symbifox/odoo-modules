@@ -1,0 +1,520 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Portal Menu Entry -->
+    <template id="portal_my_home_privacy" name="Show Privacy In My Account"
+              inherit_id="portal.portal_my_home" priority="40">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="before">
+            <t t-set="portal_client_category_enable" t-value="True"/>
+        </xpath>
+        <div id="portal_client_category" position="inside">
+            <t t-call="portal.portal_docs_entry">
+                <t t-set="icon" t-value="'/privacy_consent/static/src/img/privacy-portal-icon.png'"/>
+                <t t-set="title">Préférences de confidentialité / Privacy Preferences</t>
+                <t t-set="url" t-value="'/my/privacy/preferences'"/>
+                <t t-set="text">Gérer vos préférences et consentements / Manage your privacy preferences</t>
+                <t t-set="config_card" t-value="True"/>
+            </t>
+        </div>
+    </template>
+
+    <!-- Privacy Preferences Page (Preference Center) -->
+    <template id="portal_privacy_preferences" name="Privacy Preferences">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="False"/>
+
+            <div class="mb-4 p-3 rounded" style="background-color:var(--brand-dark, #212529); border-bottom:4px solid var(--brand-primary, #714B67);">
+                <h4 class="mb-0" style="color:#ffffff; font-weight:600;">
+                    Préférences de confidentialité / Privacy Preferences
+                </h4>
+            </div>
+
+            <div class="container mt-4">
+                <t t-if="request.params.get('saved')">
+                    <div class="alert alert-success">
+                        Vos préférences ont été sauvegardées avec succès.<br/>
+                        <em class="text-muted">Your preferences have been saved successfully.</em>
+                    </div>
+                </t>
+
+                <div class="row">
+                    <div class="col-lg-8">
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Préférences de communication / Communication Preferences</h5>
+                            </div>
+                            <div class="card-body">
+                                <form action="/my/privacy/preferences/save" method="post">
+                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+
+                                    <div class="mb-4">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" id="do_not_contact"
+                                                   name="do_not_contact"
+                                                   t-att-checked="'checked' if preference.do_not_contact else None"/>
+                                            <label class="form-check-label text-danger fw-bold" for="do_not_contact">
+                                                Ne pas contacter (bloquer toutes les communications)<br/>
+                                                <em class="fw-normal text-muted">Do Not Contact (Block All Communications)</em>
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <hr/>
+
+                                    <h6>Préférences de courriel / Email Preferences</h6>
+                                    <div class="mb-3">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" id="allow_service_email"
+                                                   name="allow_service_email"
+                                                   t-att-checked="'checked' if preference.allow_service_email else None"/>
+                                            <label class="form-check-label" for="allow_service_email">
+                                                Autoriser les courriels de service (communications essentielles)<br/>
+                                                <em class="text-muted">Allow Service Emails (essential communications)</em>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" id="allow_marketing_email"
+                                                   name="allow_marketing_email"
+                                                   t-att-checked="'checked' if preference.allow_marketing_email else None"/>
+                                            <label class="form-check-label" for="allow_marketing_email">
+                                                Autoriser les courriels marketing (infolettres, promotions)<br/>
+                                                <em class="text-muted">Allow Marketing Emails (newsletters, promotions)</em>
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <h6 class="mt-4">Autres canaux / Other Channels</h6>
+                                    <div class="mb-3">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" id="allow_phone"
+                                                   name="allow_phone"
+                                                   t-att-checked="'checked' if preference.allow_phone else None"/>
+                                            <label class="form-check-label" for="allow_phone">
+                                                Autoriser les appels téléphoniques / Allow Phone Calls
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" id="allow_sms"
+                                                   name="allow_sms"
+                                                   t-att-checked="'checked' if preference.allow_sms else None"/>
+                                            <label class="form-check-label" for="allow_sms">
+                                                Autoriser les messages texte (SMS) / Allow SMS Text Messages
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <h6 class="mt-4">Langue préférée / Language Preference</h6>
+                                    <div class="mb-3">
+                                        <select class="form-select" name="preferred_language">
+                                            <option value="">-- Sélectionner / Select --</option>
+                                            <option value="fr_CA" t-att-selected="'selected' if preference.preferred_language == 'fr_CA' else None">Français (Canada)</option>
+                                            <option value="en_CA" t-att-selected="'selected' if preference.preferred_language == 'en_CA' else None">English (Canada)</option>
+                                            <option value="en_US" t-att-selected="'selected' if preference.preferred_language == 'en_US' else None">English (US)</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="mt-4">
+                                        <button type="submit" class="btn btn-primary">Sauvegarder / Save Preferences</button>
+                                        <a href="/my/privacy/consents" class="btn btn-outline-secondary ms-2">Historique des consentements / View Consent History</a>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h6 class="mb-0">À propos de la vie privée (Loi 25)</h6>
+                            </div>
+                            <div class="card-body">
+                                <p class="small text-muted">
+                                    En vertu de la Loi 25 du Québec, vous avez le droit de contrôler l'utilisation
+                                    de vos renseignements personnels. Utilisez cette page pour gérer vos préférences
+                                    de communication et consulter votre historique de consentements.
+                                </p>
+                                <p class="small text-muted mb-0">
+                                    <em>Under Quebec's Law 25, you have the right to control how your personal
+                                    information is used. Use this page to manage your communication preferences
+                                    and view your consent history.</em>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- Consent List Page -->
+    <template id="portal_privacy_consents" name="Privacy Consents">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="False"/>
+
+            <div class="mb-4 p-3 rounded" style="background-color:var(--brand-dark, #212529); border-bottom:4px solid var(--brand-primary, #714B67);">
+                <h4 class="mb-0" style="color:#ffffff; font-weight:600;">
+                    Historique des consentements / Consent History
+                </h4>
+            </div>
+
+            <div class="container mt-4">
+                <div class="mb-3">
+                    <a href="/my/privacy/preferences" class="btn btn-outline-secondary">
+                        Retour aux préférences / Back to Preferences
+                    </a>
+                </div>
+
+                <t t-if="consents">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Finalité / Purpose</th>
+                                    <th>Statut / Status</th>
+                                    <th>Accordé / Granted</th>
+                                    <th>Expiration / Expires</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="consents" t-as="consent">
+                                    <tr>
+                                        <td><t t-esc="consent.purpose_id.name"/></td>
+                                        <td>
+                                            <span t-attf-class="badge #{'bg-success' if consent.status == 'granted' else 'bg-warning' if consent.status == 'pending' else 'bg-secondary'}">
+                                                <t t-esc="consent.status"/>
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <t t-if="consent.granted_at">
+                                                <t t-esc="consent.granted_at" t-options="{'widget': 'date'}"/>
+                                            </t>
+                                            <t t-else="">-</t>
+                                        </td>
+                                        <td>
+                                            <t t-if="consent.expires_at">
+                                                <t t-esc="consent.expires_at" t-options="{'widget': 'date'}"/>
+                                            </t>
+                                            <t t-else="">Jamais / Never</t>
+                                        </td>
+                                        <td>
+                                            <a t-attf-href="/my/privacy/consent/#{consent.id}" class="btn btn-sm btn-outline-primary">
+                                                Voir / View
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+                </t>
+                <t t-else="">
+                    <div class="alert alert-info">
+                        Aucun enregistrement de consentement trouvé.<br/>
+                        <em class="text-muted">No consent records found.</em>
+                    </div>
+                </t>
+            </div>
+        </t>
+    </template>
+
+    <!-- Consent Detail Page -->
+    <template id="portal_consent_detail" name="Consent Detail">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="False"/>
+
+            <div class="mb-4 p-3 rounded" style="background-color:var(--brand-dark, #212529); border-bottom:4px solid var(--brand-primary, #714B67);">
+                <h4 class="mb-0" style="color:#ffffff; font-weight:600;">
+                    Détails du consentement / Consent Details
+                </h4>
+            </div>
+
+            <div class="container mt-4">
+                <!-- Only show back button for authenticated users, not public access -->
+                <t t-if="not is_public">
+                    <div class="mb-3">
+                        <a href="/my/privacy/consents" class="btn btn-outline-secondary">
+                            Retour à l'historique / Back to Consent History
+                        </a>
+                    </div>
+                </t>
+
+                <t t-if="request.params.get('responded')">
+                    <div class="alert alert-success">
+                        Votre réponse a été enregistrée. Merci.<br/>
+                        <em class="text-muted">Your response has been recorded. Thank you.</em>
+                    </div>
+                </t>
+
+                <t t-if="request.params.get('already_responded')">
+                    <div class="alert alert-info">
+                        Vous avez déjà répondu à cette demande de consentement.<br/>
+                        <em class="text-muted">You have already responded to this consent request.</em>
+                    </div>
+                </t>
+
+                <t t-if="request.params.get('renewed')">
+                    <div class="alert alert-success">
+                        <strong>Consentement renouvelé!</strong> Votre consentement a été renouvelé avec succès.<br/>
+                        <em class="text-muted">Consent Renewed! Your consent has been renewed successfully.</em>
+                    </div>
+                </t>
+
+                <t t-if="request.params.get('error') == 'cannot_renew'">
+                    <div class="alert alert-warning">
+                        Ce consentement ne peut pas être renouvelé pour le moment.<br/>
+                        <em class="text-muted">This consent cannot be renewed at this time.</em>
+                    </div>
+                </t>
+
+                <t t-if="request.params.get('error') == 'renewal_failed'">
+                    <div class="alert alert-danger">
+                        Une erreur s'est produite lors du renouvellement. Veuillez réessayer ou nous contacter.<br/>
+                        <em class="text-muted">An error occurred while renewing your consent. Please try again or contact support.</em>
+                    </div>
+                </t>
+
+                <t t-if="request.params.get('withdrawn')">
+                    <div class="alert alert-warning">
+                        <strong>Consentement révoqué / Consent Withdrawn</strong><br/>
+                        Votre consentement a été révoqué. Le traitement des données pour cette finalité sera arrêté.<br/>
+                        <em class="text-muted">Your consent has been withdrawn. Data processing for this purpose will stop.</em>
+                    </div>
+                </t>
+
+                <t t-if="request.params.get('error') == 'cannot_withdraw'">
+                    <div class="alert alert-danger">
+                        Ce consentement ne peut pas être révoqué (il peut déjà être expiré, refusé ou révoqué).<br/>
+                        <em class="text-muted">This consent cannot be withdrawn (it may already be expired, refused, or withdrawn).</em>
+                    </div>
+                </t>
+
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center" style="background-color:var(--brand-dark, #212529);">
+                        <h5 class="mb-0" style="color:#ffffff;"><t t-esc="consent.purpose_id.name"/></h5>
+                        <span t-attf-class="badge #{'bg-success' if consent.status == 'granted' else 'bg-warning' if consent.status == 'pending' else 'bg-danger' if consent.status in ('refused', 'withdrawn') else 'bg-secondary'}">
+                            <t t-esc="consent.status"/>
+                        </span>
+                    </div>
+                    <div class="card-body">
+                        <dl class="row">
+                            <dt class="col-sm-4">Finalité / Purpose</dt>
+                            <dd class="col-sm-8"><t t-esc="consent.purpose_id.name"/></dd>
+
+                            <t t-if="consent.purpose_id.plain_language_summary">
+                                <dt class="col-sm-4">Description</dt>
+                                <!-- t-out, pas t-raw (déprécié depuis la 17) : le champ
+                                     est un fields.Html, donc l'ORM le rend en Markup et
+                                     la sortie est identique, mais la règle « échappé sauf
+                                     Markup » redevient vraie sur une page publique. -->
+                                <dd class="col-sm-8"><t t-out="consent.purpose_id.plain_language_summary"/></dd>
+                            </t>
+
+                            <dt class="col-sm-4">Demandé / Requested</dt>
+                            <dd class="col-sm-8">
+                                <t t-if="consent.requested_at">
+                                    <t t-esc="consent.requested_at" t-options="{'widget': 'datetime'}"/>
+                                </t>
+                                <t t-else="">-</t>
+                            </dd>
+
+                            <t t-if="consent.granted_at">
+                                <dt class="col-sm-4">Accordé / Granted</dt>
+                                <dd class="col-sm-8">
+                                    <t t-esc="consent.granted_at" t-options="{'widget': 'datetime'}"/>
+                                </dd>
+                            </t>
+
+                            <t t-if="consent.expires_at">
+                                <dt class="col-sm-4">Expiration / Expires</dt>
+                                <dd class="col-sm-8">
+                                    <t t-esc="consent.expires_at" t-options="{'widget': 'datetime'}"/>
+                                </dd>
+                            </t>
+
+                            <t t-if="consent.project_id">
+                                <dt class="col-sm-4">Projet / Project</dt>
+                                <dd class="col-sm-8"><t t-esc="consent.project_id.name"/></dd>
+                            </t>
+                        </dl>
+
+                        <!-- Notice content: prefer notice version, fallback to purpose summary -->
+                        <t t-set="notice_html" t-value="consent.notice_version_id.body if consent.notice_version_id and consent.notice_version_id.body else consent.purpose_id.plain_language_summary"/>
+                        <t t-if="notice_html">
+                            <hr/>
+                            <h6 style="color:var(--brand-primary, #714B67); font-weight:600;">Modèle de consentement / Consent Notice</h6>
+                            <div class="p-3 rounded" style="background-color:var(--brand-dark, #212529); color:#ffffff; max-height:400px; overflow-y:auto; border-left:4px solid var(--brand-primary, #714B67);">
+                                <t t-out="notice_html"/>
+                            </div>
+                        </t>
+
+                        <!-- Response buttons for pending consents -->
+                        <t t-if="consent.status == 'pending'">
+                            <hr/>
+                            <h6>Votre réponse / Your Response</h6>
+                            <p>Veuillez indiquer si vous accordez ou refusez cette demande de consentement.<br/>
+                            <em class="text-muted">Please indicate whether you grant or refuse this consent request.</em></p>
+                            <!-- Use public URL if accessed via token, otherwise authenticated URL -->
+                            <t t-set="respond_url" t-value="'/privacy/consent/%s/%s/respond' % (consent.id, access_token) if is_public else '/my/privacy/consent/%s/respond' % consent.id"/>
+                            <form t-att-action="respond_url" method="post" class="d-inline">
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                <input type="hidden" name="action" value="grant"/>
+                                <button type="submit" class="btn btn-success">
+                                    Accorder / Grant Consent
+                                </button>
+                            </form>
+                            <form t-att-action="respond_url" method="post" class="d-inline ms-2">
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                <input type="hidden" name="action" value="refuse"/>
+                                <button type="submit" class="btn btn-outline-danger">
+                                    Refuser / Refuse
+                                </button>
+                            </form>
+                        </t>
+
+                        <!-- Withdraw button for granted consents -->
+                        <t t-if="consent.status == 'granted' and not consent.renewed_to_id">
+                            <hr/>
+                            <h6>Révoquer le consentement / Withdraw Consent</h6>
+                            <p class="text-muted small">
+                                Vous pouvez révoquer votre consentement à tout moment. Cela arrêtera tout traitement des données lié à cette finalité.<br/>
+                                <em>You can withdraw your consent at any time. This will stop all data processing related to this purpose.</em>
+                            </p>
+                            <t t-set="withdraw_url" t-value="'/privacy/consent/%s/%s/withdraw' % (consent.id, access_token) if is_public else '/my/privacy/consent/%s/withdraw' % consent.id"/>
+                            <form t-att-action="withdraw_url" method="post">
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                <div class="mb-3">
+                                    <label for="withdrawal_reason" class="form-label small">Raison (optionnel) / Reason (optional)</label>
+                                    <textarea name="withdrawal_reason" id="withdrawal_reason" class="form-control" rows="2" placeholder="Pourquoi révoquez-vous? / Why are you withdrawing?"></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-outline-danger" onclick="return confirm('Êtes-vous sûr de vouloir révoquer ce consentement? / Are you sure you want to withdraw this consent?')">
+                                    <i class="fa fa-times-circle"/> Révoquer / Withdraw
+                                </button>
+                            </form>
+                        </t>
+
+                        <!-- Renewal/Re-consent button for various statuses -->
+                        <t t-if="consent.status in ('granted', 'expired', 'refused', 'withdrawn') and not consent.renewed_to_id">
+                            <t t-set="show_renew" t-value="consent.status in ('expired', 'refused', 'withdrawn') or (consent.status == 'granted' and consent.expires_at and (consent.expires_at - datetime.datetime.now()).days &lt;= 90)"/>
+                            <t t-if="show_renew">
+                                <hr/>
+                                <h6>
+                                    <t t-if="consent.status in ('refused', 'withdrawn')">Changer d'avis / Change Your Mind</t>
+                                    <t t-else="">Renouveler votre consentement / Renew Your Consent</t>
+                                </h6>
+                                <t t-if="consent.status == 'expired'">
+                                    <p class="text-danger">
+                                        <i class="fa fa-exclamation-circle"/> Ce consentement a expiré. Cliquez ci-dessous pour le renouveler.<br/>
+                                        <em class="text-muted">This consent has expired. Click below to renew it.</em>
+                                    </p>
+                                </t>
+                                <t t-elif="consent.status == 'refused'">
+                                    <p class="text-info">
+                                        <i class="fa fa-info-circle"/> Vous avez précédemment refusé ce consentement. Vous pouvez l'accorder maintenant si vous avez changé d'avis.<br/>
+                                        <em class="text-muted">You previously refused this consent. You can grant it now if you changed your mind.</em>
+                                    </p>
+                                </t>
+                                <t t-elif="consent.status == 'withdrawn'">
+                                    <p class="text-info">
+                                        <i class="fa fa-info-circle"/> Vous avez précédemment révoqué ce consentement. Vous pouvez l'accorder à nouveau si vous avez changé d'avis.<br/>
+                                        <em class="text-muted">You previously withdrew this consent. You can grant it again if you changed your mind.</em>
+                                    </p>
+                                </t>
+                                <t t-elif="consent.expires_at">
+                                    <p>
+                                        Votre consentement expirera le <strong><t t-esc="consent.expires_at" t-options="{'widget': 'date'}"/></strong>.
+                                        Vous pouvez le renouveler maintenant pour continuer à recevoir ce service.<br/>
+                                        <em class="text-muted">Your consent will expire on <t t-esc="consent.expires_at" t-options="{'widget': 'date'}"/>. You can renew it now to continue receiving this service.</em>
+                                    </p>
+                                </t>
+                                <t t-set="renew_url" t-value="'/privacy/consent/%s/%s/renew' % (consent.id, access_token) if is_public else '/my/privacy/consent/%s/renew' % consent.id"/>
+                                <form t-att-action="renew_url" method="post" class="d-inline">
+                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                    <button type="submit" class="btn btn-primary">
+                                        <t t-if="consent.status in ('refused', 'withdrawn')">
+                                            <i class="fa fa-check"/> Accorder maintenant / Grant Consent Now
+                                        </t>
+                                        <t t-else="">
+                                            <i class="fa fa-refresh"/> Renouveler / Renew Consent
+                                        </t>
+                                    </button>
+                                </form>
+                            </t>
+                        </t>
+
+                        <!-- Show link to renewed consent if already renewed -->
+                        <t t-if="consent.renewed_to_id">
+                            <hr/>
+                            <div class="alert alert-info">
+                                <i class="fa fa-info-circle"/> Ce consentement a été renouvelé. / This consent has been renewed.
+                                <t t-if="is_public and consent.renewed_to_id.access_token">
+                                    <a t-attf-href="/privacy/consent/#{consent.renewed_to_id.id}/#{consent.renewed_to_id.access_token}" class="alert-link">
+                                        Voir le consentement renouvelé / View the renewed consent
+                                    </a>
+                                </t>
+                                <t t-elif="not is_public">
+                                    <a t-attf-href="/my/privacy/consent/#{consent.renewed_to_id.id}" class="alert-link">
+                                        Voir le consentement renouvelé / View the renewed consent
+                                    </a>
+                                </t>
+                            </div>
+                        </t>
+
+                        <!-- Show link to original consent if this is a renewal -->
+                        <t t-if="consent.renewed_from_id">
+                            <hr/>
+                            <div class="alert alert-secondary">
+                                <i class="fa fa-history"/> Ce consentement a été renouvelé à partir d'un précédent. / This consent was renewed from a previous one.
+                                <t t-if="is_public and consent.renewed_from_id.access_token">
+                                    <a t-attf-href="/privacy/consent/#{consent.renewed_from_id.id}/#{consent.renewed_from_id.access_token}" class="alert-link">
+                                        Voir le consentement original / View original consent
+                                    </a>
+                                </t>
+                                <t t-elif="not is_public">
+                                    <a t-attf-href="/my/privacy/consent/#{consent.renewed_from_id.id}" class="alert-link">
+                                        Voir le consentement original / View original consent
+                                    </a>
+                                </t>
+                            </div>
+                        </t>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- Invalid Token Error Page -->
+    <template id="portal_consent_invalid_token" name="Invalid Consent Link">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="False"/>
+
+            <div class="container mt-4">
+                <div class="row justify-content-center">
+                    <div class="col-lg-6 text-center">
+                        <div class="card">
+                            <div class="card-body py-5">
+                                <i class="fa fa-exclamation-triangle fa-3x text-warning mb-3"/>
+                                <h3>Lien invalide ou expiré</h3>
+                                <h5 class="text-muted">Invalid or Expired Link</h5>
+                                <p class="mt-4">
+                                    Ce lien de consentement n'est pas valide ou a expiré.<br/>
+                                    <em class="text-muted">This consent link is invalid or has expired.</em>
+                                </p>
+                                <p class="mt-3">
+                                    Si vous avez des questions, veuillez nous contacter.<br/>
+                                    <em class="text-muted">If you have questions, please contact us.</em>
+                                </p>
+                                <a href="/" class="btn btn-primary mt-3">
+                                    <i class="fa fa-home"/> Retour à l'accueil / Back to Home
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

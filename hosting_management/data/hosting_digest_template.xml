@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="mail_template_hosting_digest" model="mail.template">
+        <field name="name">Hébergement : Résumé récapitulatif</field>
+        <field name="model_id" ref="model_hosting_digest"/>
+        <field name="subject">Résumé des services d'hébergement - {{ object.name }}</field>
+        <field name="email_from">{{ (object.create_uid.email_formatted or user.email_formatted) }}</field>
+        <field name="email_to">{{ ctx.get('recipient').email }}</field>
+        <field name="body_html" type="html">
+
+<t t-set="company" t-value="(object.company_id if hasattr(object, 'company_id') and object.company_id else user.company_id)"/>
+<t t-set="brand_primary" t-value="(company and company.report_brand_primary) or '#714B67'"/>
+<t t-set="brand_dark" t-value="(company and company.report_brand_dark) or '#212529'"/>
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#F8FAFC;">
+    <tbody>
+        <tr>
+            <td align="center" style="padding:24px;">
+                <table cellspacing="0" cellpadding="0" border="0" width="100%" align="center" role="presentation">
+                    <tbody>
+                        <tr>
+                            <td>
+                                <br/>
+                                <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px; max-width:600px; margin:0 auto; background-color:#ffffff; border-radius:12px; border:1px solid #e5e7eb; border-collapse:collapse;">
+                                    <tbody>
+                                        <!-- En-tête -->
+                                        <tr>
+                                            <td t-attf-style="background-color:{{ brand_dark }}; padding:16px 24px; border-radius:12px 12px 0 0;">
+                                                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                                                    <tbody>
+                                                        <tr>
+                                                            <td align="left" style="color:#FFFFFF; font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:16px; font-weight:600;">
+                                                                <a t-attf-href="{{ company.website or 'https://bluefoxconsultant.com' }}" style="text-decoration:none;">
+                                                                    <img t-attf-src="/web/image/res.company/{{ company.id }}/logo" t-att-alt="company.name or 'Logo'" style="height:48px; width:auto; display:block; border:0;"/>
+                                                                </a>
+                                                            </td>
+                                                            <td align="right" style="color:#E6EDF3; font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:22px; font-weight:800; letter-spacing:0.2px;">
+                                                                Résumé des services
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </td>
+                                        </tr>
+
+                                        <!-- Barre d'accentuation -->
+                                        <tr>
+                                            <td t-attf-style="height:4px; line-height:4px; background-color:{{ brand_primary }};">&amp;nbsp;</td>
+                                        </tr>
+
+                                        <!-- Contenu -->
+                                        <tr>
+                                            <td style="padding:24px; font-family:'Lexend','Segoe UI',Arial,sans-serif;">
+                                                <p style="font-size:16px; line-height:26px; color:#374151; margin:0 0 16px 0;">
+                                                    Bonjour,
+                                                </p>
+                                                <p style="font-size:16px; line-height:26px; color:#374151; margin:0 0 20px 0;">
+                                                    Voici le résumé de vos services d'hébergement. Ce récapitulatif inclut les informations sur les services expirant, les mises à jour disponibles, les alertes de stockage et les problèmes de santé.
+                                                </p>
+                                                <p style="font-size:13px; line-height:20px; color:#6B7280; margin:16px 0 0 0;">
+                                                    Pour toute assistance, contactez-nous à
+                                                    <a t-attf-href="mailto:{{ company.email or '' }}" t-attf-style="color:{{ brand_primary }}; text-decoration:none;"><t t-out="company.email or ''"/></a>
+                                                    ou appelez le
+                                                    <a t-attf-href="tel:{{ company.phone or '' }}" t-attf-style="color:{{ brand_primary }}; text-decoration:none;"><t t-out="company.phone or ''"/></a>.
+                                                </p>
+                                            </td>
+                                        </tr>
+
+                                        <!-- Séparateur -->
+                                        <tr>
+                                            <td style="height:1px; line-height:1px; background-color:#E5E7EB;">&amp;nbsp;</td>
+                                        </tr>
+
+                                        <!-- Pied de page -->
+                                        <tr>
+                                            <td style="padding:16px 24px 24px 24px; background-color:#FFFFFF; border-radius:0 0 12px 12px;">
+                                                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                                                    <tbody>
+                                                        <tr>
+                                                            <td style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:12px; color:#6B7280;">
+                                                                <strong t-attf-style="color:{{ brand_dark }};"><t t-out="company.name or 'Blue Fox'"/></strong><br/>
+                                                                Rapport généré automatiquement par votre module d'hébergement.
+                                                            </td>
+                                                            <td align="right" style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:12px; color:#9CA3AF;">
+                                                                <a t-attf-href="{{ company.website or 'https://bluefoxconsultant.com' }}/r/politique-de-confidentialite" style="color:#9CA3AF; text-decoration:underline;">Politique de confidentialité</a>
+                                                                <span style="color:#9CA3AF;"> | </span>
+                                                                <a t-attf-href="{{ company.website or 'https://bluefoxconsultant.com' }}/r/termes-et-conditions" style="color:#9CA3AF; text-decoration:underline;">Conditions</a>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                                <!-- Barre d'accentuation inférieure -->
+                                <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px; max-width:600px; margin:12px auto 0;">
+                                    <tbody>
+                                        <tr>
+                                            <td t-attf-style="height:3px; line-height:3px; background-color:{{ brand_primary }}; width:50%;">&amp;nbsp;</td>
+                                            <td t-attf-style="height:3px; line-height:3px; background-color:{{ brand_dark }}; width:50%;">&amp;nbsp;</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+    </tbody>
+</table>
+        </field>
+    </record>
+</odoo>

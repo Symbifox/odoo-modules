@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="cron_nextcloud_contacts_sync" model="ir.cron">
+            <field name="name">Nextcloud Contacts Sync</field>
+            <field name="model_id" ref="model_nextcloud_contacts_sync_config"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_sync_all()</field>
+            <field name="interval_number">15</field>
+            <field name="interval_type">minutes</field>
+            <field name="active">True</field>
+        </record>
+    </data>
+
+    <data noupdate="0">
+        <!-- Full resync: manual only — disabled to prevent contact recreation -->
+        <record id="cron_nextcloud_contacts_full_resync" model="ir.cron">
+            <field name="name">Nextcloud Contacts Full Resync</field>
+            <field name="model_id" ref="model_nextcloud_contacts_sync_config"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_full_resync()</field>
+            <field name="interval_number">6</field>
+            <field name="interval_type">hours</field>
+            <field name="active">False</field>
+        </record>
+    </data>
+</odoo>

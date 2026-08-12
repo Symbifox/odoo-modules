@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Form view -->
+    <record id="hour_bank_client_form" model="ir.ui.view">
+        <field name="name">hour.bank.client.form</field>
+        <field name="model">hour.bank.client</field>
+        <field name="arch" type="xml">
+            <form string="Banque d'heures">
+                <header>
+                    <button name="action_generate_pdf" type="object"
+                            string="G&#233;n&#233;rer PDF" class="btn-primary"
+                            icon="fa-file-pdf-o"/>
+                    <button name="action_generate_xlsx" type="object"
+                            string="G&#233;n&#233;rer Excel"
+                            icon="fa-file-excel-o"/>
+                    <button name="action_open_send_wizard" type="object"
+                            string="Envoyer rapport" class="btn-secondary"
+                            icon="fa-envelope-o"/>
+                    <button name="action_check_thresholds_now" type="object"
+                            string="V&#233;rifier les paliers maintenant"
+                            icon="fa-bell-o"
+                            invisible="threshold_mode == 'disabled'"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button" icon="fa-clock-o" name="action_generate_pdf" type="object">
+                            <div class="o_stat_info">
+                                <field name="current_balance" class="o_stat_value" widget="float" options="{'digits': [16, 2]}"/>
+                                <span class="o_stat_text">Solde (h)</span>
+                            </div>
+                        </button>
+                        <button class="oe_stat_button" icon="fa-bell-o"
+                                name="action_view_threshold_events" type="object"
+                                invisible="threshold_event_count == 0">
+                            <field name="threshold_event_count" widget="statinfo" string="Alertes"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="partner_id" placeholder="S&#233;lectionnez un client"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Configuration">
+                            <field name="active" invisible="1"/>
+                            <field name="company_id" invisible="1"/>
+                            <field name="last_report_date" readonly="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Projets" name="projects">
+                            <field name="project_ids" widget="many2many_tags"/>
+                        </page>
+                        <page string="Facturation" name="invoicing">
+                            <group string="Filtre soci&#233;t&#233;s">
+                                <field name="company_filter_mode" widget="radio"/>
+                                <field name="filter_company_ids" widget="many2many_tags"
+                                       invisible="company_filter_mode == 'all'"
+                                       options="{'no_create': True}"/>
+                            </group>
+                            <group string="Filtre partenaires">
+                                <field name="invoice_partner_ids" widget="many2many_tags"
+                                       options="{'no_create': True}"/>
+                            </group>
+                            <group string="Filtre produits">
+                                <field name="product_filter_mode" widget="radio"/>
+                                <field name="filter_product_ids" widget="many2many_tags"
+                                       invisible="product_filter_mode == 'all'"/>
+                            </group>
+                            <separator string="Factures additionnelles"/>
+                            <field name="extra_invoice_ids" widget="many2many_tags"
+                                   options="{'no_create': True}"/>
+                        </page>
+                        <page string="Ajustements" name="adjustments">
+                            <field name="adjustment_ids">
+                                <list editable="bottom">
+                                    <field name="date"/>
+                                    <field name="hours"/>
+                                    <field name="description"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Destinataires" name="recipients">
+                            <group>
+                                <field name="recipient_ids" widget="many2many_tags" nolabel="1"/>
+                            </group>
+                            <separator string="Envoi automatique"/>
+                            <group>
+                                <field name="auto_send"/>
+                                <field name="send_frequency"
+                                       invisible="not auto_send"/>
+                            </group>
+                        </page>
+                        <page string="Paliers" name="thresholds">
+                            <group>
+                                <field name="threshold_mode" widget="radio"/>
+                                <field name="threshold_budget_hours"
+                                       invisible="threshold_mode != 'budget_pct'"
+                                       required="threshold_mode == 'budget_pct'"/>
+                            </group>
+                            <separator string="Paliers &#224; surveiller"
+                                       invisible="threshold_mode == 'disabled'"/>
+                            <field name="threshold_line_ids"
+                                   invisible="threshold_mode == 'disabled'">
+                                <list editable="bottom">
+                                    <field name="value"/>
+                                    <field name="name" readonly="1"/>
+                                    <field name="is_armed" readonly="1" widget="boolean_toggle"/>
+                                    <field name="last_fired_date" readonly="1"/>
+                                    <field name="active" widget="boolean_toggle"/>
+                                </list>
+                            </field>
+                            <separator string="Destinataires des alertes"
+                                       invisible="threshold_mode == 'disabled'"/>
+                            <group invisible="threshold_mode == 'disabled'">
+                                <field name="alert_recipient_ids" widget="many2many_tags"/>
+                                <field name="notify_internal_followers"/>
+                            </group>
+                        </page>
+                        <page string="Historique des alertes" name="threshold_history"
+                              invisible="threshold_event_count == 0">
+                            <field name="threshold_event_ids" readonly="1">
+                                <list>
+                                    <field name="fired_date"/>
+                                    <field name="mode_snapshot"/>
+                                    <field name="value_snapshot"/>
+                                    <field name="measured_value"/>
+                                    <field name="recipient_ids" widget="many2many_tags"/>
+                                    <field name="attachment_id"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- List view -->
+    <record id="hour_bank_client_list" model="ir.ui.view">
+        <field name="name">hour.bank.client.list</field>
+        <field name="model">hour.bank.client</field>
+        <field name="arch" type="xml">
+            <list string="Banques d'heures">
+                <field name="partner_id"/>
+                <field name="current_balance" string="Solde (h)" widget="float"/>
+                <field name="auto_send" string="Auto"/>
+                <field name="send_frequency" optional="hide"/>
+                <field name="last_report_date"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Search view -->
+    <record id="hour_bank_client_search" model="ir.ui.view">
+        <field name="name">hour.bank.client.search</field>
+        <field name="model">hour.bank.client</field>
+        <field name="arch" type="xml">
+            <search string="Banques d'heures">
+                <field name="partner_id"/>
+                <filter name="active" string="Actif" domain="[('active', '=', True)]"/>
+                <filter name="archived" string="Archiv&#233;" domain="[('active', '=', False)]"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_hour_bank_client" model="ir.actions.act_window">
+        <field name="name">Banques d'heures</field>
+        <field name="res_model">hour.bank.client</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="hour_bank_client_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Cr&#233;ez votre premi&#232;re banque d'heures
+            </p>
+            <p>
+                Configurez le suivi des heures pour vos clients en forfait.
+            </p>
+        </field>
+    </record>
+
+</odoo>

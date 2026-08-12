@@ -1,0 +1,43 @@
+# Python dependencies for the Blue Fox Odoo modules (Odoo 18.0).
+#
+# Two groups, because they carry different risk:
+#
+#   * Shipped by Odoo core — a floor only, so pip does not fight the version
+#     already present in the Odoo image.
+#   * NOT shipped by Odoo core — compatible-release pins (~=), so a module does
+#     not silently follow a major upstream release it was never tested against.
+#
+# Every entry is declared by at least one module's `external_dependencies`, or
+# imported directly by its code. Keep this file in step with those manifests:
+# an undeclared dependency fails at install time with no useful message.
+
+# ── Shipped by Odoo core (floors) ────────────────────────────────────────────
+cryptography>=42.0            # credential/secret encryption helpers
+lxml>=4.9                     # HTML/XML handling
+passlib>=1.7                  # bf_securetransfer transfer passwords
+python-dateutil>=2.8
+pytz>=2023.3
+reportlab>=4.0                # bf_sign stamping, branded PDFs
+requests>=2.31
+urllib3>=2.0                  # bf_sms_archive pinned-IP media fetch
+# ⚠ PyPDF2 is ABANDONED upstream (last release 3.0.1; the project points at
+# `pypdf`). It is still what the Odoo image ships and what bf_sign /
+# bf_letter_writer import today. Migrating means adding pypdf to the image AND
+# re-testing the stamping path — tracked separately, do not flip this line alone.
+PyPDF2>=2.12
+
+# ── Not shipped by Odoo core (compatible-release pins) ───────────────────────
+boto3~=1.40                   # bf_securetransfer S3 backend
+certifi~=2024.7               # bf_sms_archive TLS trust store for media fetch
+cssselect~=1.2
+defusedxml~=0.7               # safe XML parsing
+openpyxl~=3.1                 # XLSX deliverables
+
+# ── Optional, per feature ────────────────────────────────────────────────────
+# bf_sign RFC 3161 timestamping + PAdES sealing (module degrades without it)
+pyhanko~=0.35
+pyhanko-certvalidator~=0.26
+# calendar_nextcloud_sync Google Calendar OAuth flow (module raises a clear
+# UserError when absent, so it is optional rather than required)
+google-auth-oauthlib~=1.2
+google-api-python-client~=2.130

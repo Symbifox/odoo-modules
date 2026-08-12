@@ -1,0 +1,277 @@
+$bf-bureau-anthracite: #2D3031;
+$bf-bureau-bleu: #29ABE1;
+$bf-bureau-toolbar-h: 36px;
+$bf-bureau-switcher-h: 30px;
+$bf-bureau-sidebar-w: 220px;
+
+.bf-bureau-desk {
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    background: #f4f5f7;
+}
+
+.bf-bureau-sidebar {
+    flex: 0 0 $bf-bureau-sidebar-w;
+    width: $bf-bureau-sidebar-w;
+    background: white;
+    border-right: 1px solid #dee2e6;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.bf-bureau-sidebar-header {
+    padding: 8px 12px;
+    border-bottom: 1px solid #dee2e6;
+    font-weight: 600;
+    color: $bf-bureau-anthracite;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 13px;
+}
+
+.bf-bureau-sidebar-list {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    list-style: none;
+    margin: 0;
+    padding: 4px 0;
+}
+
+.bf-bureau-sidebar-item {
+    padding: 8px 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    font-size: 13px;
+    color: $bf-bureau-anthracite;
+    border-left: 3px solid transparent;
+
+    &:hover {
+        background: rgba($bf-bureau-bleu, 0.08);
+    }
+
+    &.active {
+        background: rgba($bf-bureau-bleu, 0.12);
+        border-left-color: $bf-bureau-bleu;
+        font-weight: 600;
+    }
+
+    .bf-bureau-sidebar-name {
+        flex: 1 1 auto;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .bf-bureau-sidebar-meta {
+        flex: 0 0 auto;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        color: #888;
+        font-size: 11px;
+
+        kbd {
+            background: #eee;
+            color: #333;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            padding: 0 4px;
+            font-size: 10px;
+        }
+
+        .fa-star { color: #f7b500; }
+    }
+}
+
+.bf-bureau-main {
+    flex: 1 1 auto;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+}
+
+.bf-bureau-loading,
+.bf-bureau-empty {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: #6c757d;
+    width: 100%;
+
+    h2 { margin-bottom: 0.5rem; }
+    .btn { margin-top: 1rem; }
+}
+
+.bf-bureau-toolbar {
+    flex: 0 0 $bf-bureau-toolbar-h;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0 12px;
+    background: white;
+    border-bottom: 1px solid #dee2e6;
+    height: $bf-bureau-toolbar-h;
+
+    .bf-bureau-desk-name {
+        flex: 1 1 auto;
+        font-weight: 600;
+        color: $bf-bureau-anthracite;
+    }
+
+    .bf-bureau-toolbar-actions {
+        flex: 0 0 auto;
+        display: flex;
+        gap: 6px;
+    }
+}
+
+.bf-bureau-grid {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: grid;
+    gap: 4px;
+    padding: 4px;
+
+    // grid-template-rows / -columns are emitted via inline style based on
+    // pane weights. The areas below define the slot map per layout.
+
+    &[data-layout="single"] {
+        grid-template-areas: "f";
+        .bf-bureau-pane[data-slot="full"] { grid-area: f; }
+    }
+
+    &[data-layout="two_columns"] {
+        grid-template-areas: "lf rf";
+        .bf-bureau-pane[data-slot="left_full"]  { grid-area: lf; }
+        .bf-bureau-pane[data-slot="right_full"] { grid-area: rf; }
+    }
+
+    &[data-layout="two_top_one_bottom"] {
+        grid-template-areas:
+            "tl tr"
+            "bf bf";
+        .bf-bureau-pane[data-slot="top_left"]    { grid-area: tl; }
+        .bf-bureau-pane[data-slot="top_right"]   { grid-area: tr; }
+        .bf-bureau-pane[data-slot="bottom_full"] { grid-area: bf; }
+    }
+
+    &[data-layout="two_bottom_one_top"] {
+        grid-template-areas:
+            "tf tf"
+            "bl br";
+        .bf-bureau-pane[data-slot="top_full"]     { grid-area: tf; }
+        .bf-bureau-pane[data-slot="bottom_left"]  { grid-area: bl; }
+        .bf-bureau-pane[data-slot="bottom_right"] { grid-area: br; }
+    }
+
+    &[data-layout="four_quadrant"] {
+        grid-template-areas:
+            "tl tr"
+            "bl br";
+        .bf-bureau-pane[data-slot="top_left"]     { grid-area: tl; }
+        .bf-bureau-pane[data-slot="top_right"]    { grid-area: tr; }
+        .bf-bureau-pane[data-slot="bottom_left"]  { grid-area: bl; }
+        .bf-bureau-pane[data-slot="bottom_right"] { grid-area: br; }
+    }
+
+    &[data-layout="stacked_three"] {
+        grid-template-areas:
+            "r1"
+            "r2"
+            "r3";
+        .bf-bureau-pane[data-slot="row_1"] { grid-area: r1; }
+        .bf-bureau-pane[data-slot="row_2"] { grid-area: r2; }
+        .bf-bureau-pane[data-slot="row_3"] { grid-area: r3; }
+    }
+}
+
+.bf-bureau-pane {
+    position: relative;
+    overflow: hidden;
+    background: white;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    box-sizing: border-box;
+    min-width: 0;
+    min-height: 0;
+
+    > .o_view_controller,
+    > .o_action_manager {
+        position: absolute;
+        inset: $bf-bureau-switcher-h 0 0 0;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .o_content {
+        overflow: auto;
+        min-height: 0;
+        flex: 1 1 auto;
+    }
+}
+
+.bf-bureau-switcher {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 5;
+    height: $bf-bureau-switcher-h;
+    background: #ffffff;
+    border-bottom: 1px solid #e9ecef;
+    padding: 3px 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    .bf-bureau-pane-title {
+        flex: 1 1 auto;
+        font-size: 12px;
+        font-weight: 600;
+        color: $bf-bureau-anthracite;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .btn {
+        flex: 0 0 auto;
+        border: 0;
+        background: transparent;
+        padding: 0 8px;
+        height: 24px;
+        line-height: 24px;
+        color: #6c757d;
+        border-radius: 3px;
+        margin: 0 1px;
+        font-size: 12px;
+
+        &:hover {
+            color: $bf-bureau-bleu;
+            background: rgba($bf-bureau-bleu, 0.1);
+        }
+    }
+
+    .bf-bureau-switch-active {
+        background: $bf-bureau-anthracite;
+        color: #ffffff;
+
+        &:hover {
+            background: $bf-bureau-anthracite;
+            color: #ffffff;
+        }
+    }
+}

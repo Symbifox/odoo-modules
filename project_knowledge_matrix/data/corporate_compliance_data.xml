@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- Événements de conformité annuels par défaut pour Blue Fox Inc -->
+        <record id="compliance_annual_declaration" model="corporate.compliance.event">
+            <field name="name">Déclaration annuelle REQ</field>
+            <field name="event_type">annual_declaration</field>
+            <field name="fiscal_year">2026</field>
+            <field name="due_date">2026-06-30</field>
+            <field name="notes">Déclaration annuelle au Registraire des entreprises du Québec. À déposer dans les 6 mois suivant la date anniversaire de constitution.</field>
+        </record>
+
+        <record id="compliance_agm" model="corporate.compliance.event">
+            <field name="name">Assemblée générale annuelle</field>
+            <field name="event_type">agm</field>
+            <field name="fiscal_year">2026</field>
+            <field name="due_date">2026-06-30</field>
+            <field name="notes">AGA obligatoire dans les 18 mois suivant la constitution et ensuite dans les 15 mois de la précédente. LSAQ art. 167.</field>
+        </record>
+
+        <record id="compliance_director_election" model="corporate.compliance.event">
+            <field name="name">Élection des administrateurs</field>
+            <field name="event_type">director_election</field>
+            <field name="fiscal_year">2026</field>
+            <field name="due_date">2026-06-30</field>
+            <field name="notes">Les administrateurs sont élus lors de l'AGA. Mandat d'un an à moins que les statuts ne prévoient autrement.</field>
+        </record>
+
+        <record id="compliance_auditor" model="corporate.compliance.event">
+            <field name="name">Nomination du vérificateur</field>
+            <field name="event_type">auditor_appointment</field>
+            <field name="fiscal_year">2026</field>
+            <field name="due_date">2026-06-30</field>
+            <field name="notes">Nomination du vérificateur (si applicable) lors de l'AGA.</field>
+        </record>
+
+        <record id="compliance_financial_approval" model="corporate.compliance.event">
+            <field name="name">Approbation des états financiers</field>
+            <field name="event_type">financial_approval</field>
+            <field name="fiscal_year">2026</field>
+            <field name="due_date">2026-06-30</field>
+            <field name="notes">Présentation et approbation des états financiers lors de l'AGA.</field>
+        </record>
+
+    </data>
+</odoo>

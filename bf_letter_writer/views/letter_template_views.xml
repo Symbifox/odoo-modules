@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="letter_template_view_list" model="ir.ui.view">
+        <field name="name">letter.template.list</field>
+        <field name="model">letter.template</field>
+        <field name="arch" type="xml">
+            <list string="Modèles de lettres">
+                <field name="name"/>
+                <field name="subject"/>
+                <field name="letterhead_style"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="letter_template_view_form" model="ir.ui.view">
+        <field name="name">letter.template.form</field>
+        <field name="model">letter.template</field>
+        <field name="arch" type="xml">
+            <form string="Modèle de lettre">
+                <sheet>
+                    <widget name="web_ribbon" title="Archivé" bg_color="text-bg-danger"
+                            invisible="active"/>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="Nom du modèle..."/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="subject"/>
+                            <field name="letterhead_style"/>
+                        </group>
+                        <group>
+                            <field name="active" invisible="1"/>
+                            <field name="quicktext_ids" widget="many2many_tags"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Corps" name="body">
+                            <field name="body_html" widget="html" nolabel="1"/>
+                        </page>
+                        <page string="Champs de fusion" name="merge_fields">
+                            <div class="text-muted">
+                                <p>Insérez ces jetons dans l'objet ou le corps. Ils sont
+                                remplacés à l'application du modèle sur une lettre.</p>
+                                <ul>
+                                    <li><code>{{ object.partner_id.name }}</code> — Nom du destinataire</li>
+                                    <li><code>{{ object.partner_id.parent_id.name }}</code> — Organisation du destinataire</li>
+                                    <li><code>{{ object.recipient_name }}</code> — Nom du destinataire (figé sur la lettre)</li>
+                                    <li><code>{{ object.letter_date }}</code> — Date de la lettre</li>
+                                    <li><code>{{ object.reference }}</code> — Référence (LET-AAAA-NNN)</li>
+                                    <li><code>{{ object.company_id.name }}</code> — Nom de l'expéditeur</li>
+                                    <li><code>{{ object.signatory_id.name }}</code> — Nom du signataire</li>
+                                    <li><code>{{ object.signatory_function }}</code> — Fonction du signataire</li>
+                                </ul>
+                                <p>Pour des cas avancés, la syntaxe QWeb est aussi acceptée,
+                                ex. <code>&lt;t t-out="object.partner_id.name"/&gt;</code>.</p>
+                            </div>
+                        </page>
+                        <page string="Notes" name="notes">
+                            <field name="note" nolabel="1" placeholder="Description interne du modèle..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_letter_template" model="ir.actions.act_window">
+        <field name="name">Modèles de lettres</field>
+        <field name="res_model">letter.template</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Créer votre premier modèle de lettre
+            </p>
+        </field>
+    </record>
+
+</odoo>

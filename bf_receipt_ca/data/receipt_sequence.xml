@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+<odoo>
+    <!-- Re-brand the OCA receipt sequence as REÇU-<year>-NNNNN (yearly reset,
+         gap-free). The record already exists in donation_base. -->
+    <record id="donation_base.donation_tax_receipt_seq" model="ir.sequence">
+        <field name="name">Reçu officiel de don</field>
+        <field name="prefix">REÇU-%(range_year)s-</field>
+        <field name="padding">5</field>
+        <field name="use_date_range" eval="True" />
+        <!-- Gap-free numbering: official receipts must be sequential without
+             holes (a skipped number reads as a destroyed/missing receipt). -->
+        <field name="implementation">no_gap</field>
+    </record>
+</odoo>

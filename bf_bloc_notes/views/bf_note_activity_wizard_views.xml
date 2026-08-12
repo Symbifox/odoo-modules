@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="bf_note_activity_wizard_form" model="ir.ui.view">
+        <field name="name">bf.note.activity.wizard.form</field>
+        <field name="model">bf.note.activity.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Convertir en activité">
+                <group>
+                    <group>
+                        <field name="activity_type_id" options="{'no_create': True}"/>
+                        <field name="date_deadline"/>
+                        <field name="user_id" options="{'no_create': True}"/>
+                    </group>
+                    <group>
+                        <field name="needs_target" invisible="1"/>
+                        <field name="link_target_ref"
+                               invisible="not needs_target"
+                               required="needs_target"
+                               string="Fiche cible"/>
+                    </group>
+                </group>
+                <group>
+                    <field name="summary"/>
+                </group>
+                <field name="note_html" widget="html" placeholder="Détails de l'activité…"/>
+                <footer>
+                    <button name="action_create"
+                            type="object"
+                            string="Créer l'activité"
+                            class="btn-primary"/>
+                    <button string="Annuler" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>

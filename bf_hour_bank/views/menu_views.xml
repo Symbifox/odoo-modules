@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Application root -->
+    <menuitem id="menu_hour_bank_root"
+              name="Banque d'heures"
+              web_icon="bf_hour_bank,static/description/icon.png"
+              sequence="60"/>
+
+    <menuitem id="menu_hour_bank_clients"
+              name="Clients"
+              parent="menu_hour_bank_root"
+              action="action_hour_bank_client"
+              sequence="10"/>
+
+</odoo>

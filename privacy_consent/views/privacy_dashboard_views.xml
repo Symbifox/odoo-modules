@@ -1,0 +1,497 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Dashboard Form View -->
+    <record id="privacy_dashboard_view_form" model="ir.ui.view">
+        <field name="name">privacy.dashboard.form</field>
+        <field name="model">privacy.dashboard</field>
+        <field name="arch" type="xml">
+            <form string="Tableau de bord des consentements" create="false" edit="false" delete="false">
+                <sheet>
+                    <!-- Header with Refresh -->
+                    <div class="row mb-4">
+                        <div class="col-12 d-flex justify-content-between align-items-center">
+                            <h2 class="mb-0">
+                                <i class="fa fa-shield text-primary me-2"/>
+                                Tableau de bord des consentements
+                            </h2>
+                            <div>
+                                <button name="action_refresh" type="object" class="btn btn-primary">
+                                    <i class="fa fa-refresh me-1"/> Actualiser
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section: Pending Requests -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <h5 class="text-muted mb-3">
+                                <i class="fa fa-clock-o me-2"/> Demandes et statut
+                            </h5>
+                        </div>
+                        <div class="col-md-3">
+                            <!-- Pending Requests - Blue -->
+                            <button name="action_view_pending_requests" type="object" invisible="pending_requests == 0"
+                                    class="btn w-100 p-0 border-0" style="background: transparent;">
+                                <div class="card" style="background-color: #cfe2ff; border-color: #0d6efd !important;">
+                                    <div class="card-body text-center py-3">
+                                        <div class="fw-bold mb-1" style="color: #0d6efd;">
+                                            <i class="fa fa-hourglass-half me-1"/> En attente
+                                        </div>
+                                        <div class="display-4" style="color: #0d6efd;">
+                                            <field name="pending_requests"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </button>
+                            <div invisible="pending_requests != 0" class="card" style="background-color: #f8f9fa;">
+                                <div class="card-body text-center py-3">
+                                    <div class="fw-bold mb-1 text-muted">
+                                        <i class="fa fa-hourglass-half me-1"/> En attente
+                                    </div>
+                                    <div class="display-4 text-muted">0</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <!-- Granted Consents - Green -->
+                            <button name="action_view_granted" type="object" invisible="granted_consents == 0"
+                                    class="btn w-100 p-0 border-0" style="background: transparent;">
+                                <div class="card" style="background-color: #d1e7dd; border-color: #198754 !important;">
+                                    <div class="card-body text-center py-3">
+                                        <div class="fw-bold mb-1" style="color: #198754;">
+                                            <i class="fa fa-check-circle me-1"/> Accordé
+                                        </div>
+                                        <div class="display-4" style="color: #198754;">
+                                            <field name="granted_consents"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </button>
+                            <div invisible="granted_consents != 0" class="card" style="background-color: #f8f9fa;">
+                                <div class="card-body text-center py-3">
+                                    <div class="fw-bold mb-1 text-muted">
+                                        <i class="fa fa-check-circle me-1"/> Accordé
+                                    </div>
+                                    <div class="display-4 text-muted">0</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <!-- Refused Consents - Orange -->
+                            <button name="action_view_refused" type="object" invisible="refused_consents == 0"
+                                    class="btn w-100 p-0 border-0" style="background: transparent;">
+                                <div class="card" style="background-color: #fff3cd; border-color: #ffc107 !important;">
+                                    <div class="card-body text-center py-3">
+                                        <div class="fw-bold mb-1" style="color: #856404;">
+                                            <i class="fa fa-times-circle me-1"/> Refusé
+                                        </div>
+                                        <div class="display-4" style="color: #856404;">
+                                            <field name="refused_consents"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </button>
+                            <div invisible="refused_consents != 0" class="card" style="background-color: #f8f9fa;">
+                                <div class="card-body text-center py-3">
+                                    <div class="fw-bold mb-1 text-muted">
+                                        <i class="fa fa-times-circle me-1"/> Refusé
+                                    </div>
+                                    <div class="display-4 text-muted">0</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <!-- Withdrawn Consents - Gray -->
+                            <button name="action_view_withdrawn" type="object" invisible="withdrawn_consents == 0"
+                                    class="btn w-100 p-0 border-0" style="background: transparent;">
+                                <div class="card" style="background-color: #e9ecef; border-color: #6c757d !important;">
+                                    <div class="card-body text-center py-3">
+                                        <div class="fw-bold mb-1" style="color: #6c757d;">
+                                            <i class="fa fa-undo me-1"/> Révoqué
+                                        </div>
+                                        <div class="display-4" style="color: #6c757d;">
+                                            <field name="withdrawn_consents"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </button>
+                            <div invisible="withdrawn_consents != 0" class="card" style="background-color: #f8f9fa;">
+                                <div class="card-body text-center py-3">
+                                    <div class="fw-bold mb-1 text-muted">
+                                        <i class="fa fa-undo me-1"/> Révoqué
+                                    </div>
+                                    <div class="display-4 text-muted">0</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section: Expiring Consents -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <h5 class="text-muted mb-3">
+                                <i class="fa fa-calendar-times-o me-2"/> Consentements expirants
+                            </h5>
+                        </div>
+                        <div class="col-md-3">
+                            <!-- Expiring 0-30 days - Red (urgent) -->
+                            <button name="action_view_expiring_30" type="object" invisible="expiring_30_days == 0"
+                                    class="btn w-100 p-0 border-0" style="background: transparent;">
+                                <div class="card" style="background-color: #f8d7da; border-color: #dc3545 !important;">
+                                    <div class="card-body text-center py-3">
+                                        <div class="fw-bold mb-1" style="color: #dc3545;">
+                                            <i class="fa fa-exclamation-triangle me-1"/> 0-30 jours
+                                        </div>
+                                        <div class="display-4" style="color: #dc3545;">
+                                            <field name="expiring_30_days"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </button>
+                            <div invisible="expiring_30_days != 0" class="card" style="background-color: #f8f9fa;">
+                                <div class="card-body text-center py-3">
+                                    <div class="fw-bold mb-1 text-muted">
+                                        <i class="fa fa-exclamation-triangle me-1"/> 0-30 jours
+                                    </div>
+                                    <div class="display-4 text-muted">0</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <!-- Expiring 30-60 days - Orange -->
+                            <button name="action_view_expiring_60" type="object" invisible="expiring_60_days == 0"
+                                    class="btn w-100 p-0 border-0" style="background: transparent;">
+                                <div class="card" style="background-color: #fff3cd; border-color: #ffc107 !important;">
+                                    <div class="card-body text-center py-3">
+                                        <div class="fw-bold mb-1" style="color: #856404;">
+                                            <i class="fa fa-clock-o me-1"/> 30-60 jours
+                                        </div>
+                                        <div class="display-4" style="color: #856404;">
+                                            <field name="expiring_60_days"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </button>
+                            <div invisible="expiring_60_days != 0" class="card" style="background-color: #f8f9fa;">
+                                <div class="card-body text-center py-3">
+                                    <div class="fw-bold mb-1 text-muted">
+                                        <i class="fa fa-clock-o me-1"/> 30-60 jours
+                                    </div>
+                                    <div class="display-4 text-muted">0</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <!-- Expiring 60-90 days - Yellow -->
+                            <button name="action_view_expiring_90" type="object" invisible="expiring_90_days == 0"
+                                    class="btn w-100 p-0 border-0" style="background: transparent;">
+                                <div class="card" style="background-color: #fefce8; border-color: #facc15 !important;">
+                                    <div class="card-body text-center py-3">
+                                        <div class="fw-bold mb-1" style="color: #a16207;">
+                                            <i class="fa fa-info-circle me-1"/> 60-90 jours
+                                        </div>
+                                        <div class="display-4" style="color: #a16207;">
+                                            <field name="expiring_90_days"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </button>
+                            <div invisible="expiring_90_days != 0" class="card" style="background-color: #f8f9fa;">
+                                <div class="card-body text-center py-3">
+                                    <div class="fw-bold mb-1 text-muted">
+                                        <i class="fa fa-info-circle me-1"/> 60-90 jours
+                                    </div>
+                                    <div class="display-4 text-muted">0</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <!-- Expired - Gray -->
+                            <button name="action_view_expired" type="object" invisible="expired_consents == 0"
+                                    class="btn w-100 p-0 border-0" style="background: transparent;">
+                                <div class="card" style="background-color: #e9ecef; border-color: #6c757d !important;">
+                                    <div class="card-body text-center py-3">
+                                        <div class="fw-bold mb-1" style="color: #6c757d;">
+                                            <i class="fa fa-ban me-1"/> Expiré
+                                        </div>
+                                        <div class="display-4" style="color: #6c757d;">
+                                            <field name="expired_consents"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </button>
+                            <div invisible="expired_consents != 0" class="card" style="background-color: #f8f9fa;">
+                                <div class="card-body text-center py-3">
+                                    <div class="fw-bold mb-1 text-muted">
+                                        <i class="fa fa-ban me-1"/> Expiré
+                                    </div>
+                                    <div class="display-4 text-muted">0</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section: Rates and Alerts -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <h5 class="text-muted mb-3">
+                                <i class="fa fa-bar-chart me-2"/> Indicateurs et alertes
+                            </h5>
+                        </div>
+                        <div class="col-md-3">
+                            <!-- Consent Rate -->
+                            <div class="card" style="background-color: #d1e7dd; border-color: #198754 !important;">
+                                <div class="card-body text-center py-3">
+                                    <div class="fw-bold mb-1" style="color: #198754;">
+                                        <i class="fa fa-percent me-1"/> Taux de consentement
+                                    </div>
+                                    <div class="display-4" style="color: #198754;">
+                                        <field name="consent_rate"/>%
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <!-- Evidence Rate -->
+                            <div class="card" style="background-color: #cfe2ff; border-color: #0d6efd !important;">
+                                <div class="card-body text-center py-3">
+                                    <div class="fw-bold mb-1" style="color: #0d6efd;">
+                                        <i class="fa fa-file-text me-1"/> Taux de preuve
+                                    </div>
+                                    <div class="display-4" style="color: #0d6efd;">
+                                        <field name="evidence_rate"/>%
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <!-- DNC Count - Red if > 0 -->
+                            <button name="action_view_dnc" type="object" invisible="dnc_count == 0"
+                                    class="btn w-100 p-0 border-0" style="background: transparent;">
+                                <div class="card" style="background-color: #f8d7da; border-color: #dc3545 !important;">
+                                    <div class="card-body text-center py-3">
+                                        <div class="fw-bold mb-1" style="color: #dc3545;">
+                                            <i class="fa fa-ban me-1"/> Ne pas contacter
+                                        </div>
+                                        <div class="display-4" style="color: #dc3545;">
+                                            <field name="dnc_count"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </button>
+                            <div invisible="dnc_count != 0" class="card" style="background-color: #f8f9fa;">
+                                <div class="card-body text-center py-3">
+                                    <div class="fw-bold mb-1 text-muted">
+                                        <i class="fa fa-ban me-1"/> Ne pas contacter
+                                    </div>
+                                    <div class="display-4 text-muted">0</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <!-- Pending Destructions -->
+                            <button name="action_view_pending_destructions" type="object" invisible="pending_destructions == 0"
+                                    class="btn w-100 p-0 border-0" style="background: transparent;">
+                                <div class="card" style="background-color: #fff3cd; border-color: #ffc107 !important;">
+                                    <div class="card-body text-center py-3">
+                                        <div class="fw-bold mb-1" style="color: #856404;">
+                                            <i class="fa fa-trash me-1"/> Destructions en attente
+                                        </div>
+                                        <div class="display-4" style="color: #856404;">
+                                            <field name="pending_destructions"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </button>
+                            <div invisible="pending_destructions != 0" class="card" style="background-color: #f8f9fa;">
+                                <div class="card-body text-center py-3">
+                                    <div class="fw-bold mb-1 text-muted">
+                                        <i class="fa fa-trash me-1"/> Destructions en attente
+                                    </div>
+                                    <div class="display-4 text-muted">0</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section: Automation -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <h5 class="text-muted mb-3">
+                                <i class="fa fa-envelope me-2"/> Automatisation
+                            </h5>
+                        </div>
+                        <div class="col-md-3">
+                            <!-- Renewal Emails Pending - Cyan -->
+                            <button name="action_view_renewal_emails_pending" type="object" invisible="renewal_emails_pending == 0"
+                                    class="btn w-100 p-0 border-0" style="background: transparent;">
+                                <div class="card" style="background-color: #cff4fc; border-color: #0dcaf0 !important;">
+                                    <div class="card-body text-center py-3">
+                                        <div class="fw-bold mb-1" style="color: #055160;">
+                                            <i class="fa fa-refresh me-1"/> Courriels de renouvellement
+                                        </div>
+                                        <div class="display-4" style="color: #055160;">
+                                            <field name="renewal_emails_pending"/>
+                                        </div>
+                                        <small class="text-muted">Expire dans &lt; 90 jours</small>
+                                    </div>
+                                </div>
+                            </button>
+                            <div invisible="renewal_emails_pending != 0" class="card" style="background-color: #f8f9fa;">
+                                <div class="card-body text-center py-3">
+                                    <div class="fw-bold mb-1 text-muted">
+                                        <i class="fa fa-refresh me-1"/> Courriels de renouvellement
+                                    </div>
+                                    <div class="display-4 text-muted">0</div>
+                                    <small class="text-muted">Expire dans &lt; 90 jours</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section: Document Destruction -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <h5 class="text-muted mb-3">
+                                <i class="fa fa-fire me-2"/> Destruction et anonymisation documentaire
+                            </h5>
+                        </div>
+                        <div class="col-md-2">
+                            <button name="action_view_register" type="object"
+                                    class="btn w-100 p-0 border-0" style="background: transparent;">
+                                <div class="card" style="background-color: #e9ecef; border-color: #6c757d !important;">
+                                    <div class="card-body text-center py-3">
+                                        <div class="fw-bold mb-1" style="color: #6c757d;">
+                                            <i class="fa fa-book me-1"/> Registre
+                                        </div>
+                                        <div class="display-6" style="color: #6c757d;">
+                                            <field name="register_entries_count"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </button>
+                        </div>
+                        <div class="col-md-2">
+                            <button name="action_view_register_month" type="object"
+                                    class="btn w-100 p-0 border-0" style="background: transparent;">
+                                <div class="card" style="background-color: #cfe2ff; border-color: #0d6efd !important;">
+                                    <div class="card-body text-center py-3">
+                                        <div class="fw-bold mb-1" style="color: #0d6efd;">
+                                            <i class="fa fa-calendar me-1"/> Ce mois
+                                        </div>
+                                        <div class="display-6" style="color: #0d6efd;">
+                                            <field name="register_entries_month"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </button>
+                        </div>
+                        <div class="col-md-2">
+                            <button name="action_view_documents_classified" type="object"
+                                    class="btn w-100 p-0 border-0" style="background: transparent;">
+                                <div class="card" style="background-color: #d1e7dd; border-color: #198754 !important;">
+                                    <div class="card-body text-center py-3">
+                                        <div class="fw-bold mb-1" style="color: #198754;">
+                                            <i class="fa fa-tags me-1"/> Classifiés
+                                        </div>
+                                        <div class="display-6" style="color: #198754;">
+                                            <field name="documents_classified"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </button>
+                        </div>
+                        <div class="col-md-2">
+                            <button name="action_view_documents_past_retention" type="object" invisible="documents_past_retention == 0"
+                                    class="btn w-100 p-0 border-0" style="background: transparent;">
+                                <div class="card" style="background-color: #f8d7da; border-color: #dc3545 !important;">
+                                    <div class="card-body text-center py-3">
+                                        <div class="fw-bold mb-1" style="color: #dc3545;">
+                                            <i class="fa fa-exclamation-triangle me-1"/> Rétention dépassée
+                                        </div>
+                                        <div class="display-6" style="color: #dc3545;">
+                                            <field name="documents_past_retention"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </button>
+                            <div invisible="documents_past_retention != 0" class="card" style="background-color: #f8f9fa;">
+                                <div class="card-body text-center py-3">
+                                    <div class="fw-bold mb-1 text-muted">
+                                        <i class="fa fa-exclamation-triangle me-1"/> Rétention dépassée
+                                    </div>
+                                    <div class="display-6 text-muted">0</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <button name="action_view_active_campaigns" type="object" invisible="active_campaigns == 0"
+                                    class="btn w-100 p-0 border-0" style="background: transparent;">
+                                <div class="card" style="background-color: #fff3cd; border-color: #ffc107 !important;">
+                                    <div class="card-body text-center py-3">
+                                        <div class="fw-bold mb-1" style="color: #856404;">
+                                            <i class="fa fa-rocket me-1"/> Campagnes
+                                        </div>
+                                        <div class="display-6" style="color: #856404;">
+                                            <field name="active_campaigns"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </button>
+                            <div invisible="active_campaigns != 0" class="card" style="background-color: #f8f9fa;">
+                                <div class="card-body text-center py-3">
+                                    <div class="fw-bold mb-1 text-muted">
+                                        <i class="fa fa-rocket me-1"/> Campagnes
+                                    </div>
+                                    <div class="display-6 text-muted">0</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <button name="action_view_assessments_due" type="object" invisible="assessments_due == 0"
+                                    class="btn w-100 p-0 border-0" style="background: transparent;">
+                                <div class="card" style="background-color: #f8d7da; border-color: #dc3545 !important;">
+                                    <div class="card-body text-center py-3">
+                                        <div class="fw-bold mb-1" style="color: #dc3545;">
+                                            <i class="fa fa-flask me-1"/> Rééval. dues
+                                        </div>
+                                        <div class="display-6" style="color: #dc3545;">
+                                            <field name="assessments_due"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </button>
+                            <div invisible="assessments_due != 0" class="card" style="background-color: #f8f9fa;">
+                                <div class="card-body text-center py-3">
+                                    <div class="fw-bold mb-1 text-muted">
+                                        <i class="fa fa-flask me-1"/> Rééval. dues
+                                    </div>
+                                    <div class="display-6 text-muted">0</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Footer -->
+                    <div class="row">
+                        <div class="col-12 text-center text-muted">
+                            <small>
+                                <i class="fa fa-clock-o me-1"/>
+                                Dernière actualisation : <field name="last_refresh" widget="datetime"/>
+                            </small>
+                        </div>
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Dashboard Action -->
+    <record id="action_privacy_dashboard" model="ir.actions.act_window">
+        <field name="name">Tableau de bord de la vie privée</field>
+        <field name="res_model">privacy.dashboard</field>
+        <field name="view_mode">form</field>
+        <field name="target">inline</field>
+    </record>
+</odoo>

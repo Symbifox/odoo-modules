@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="hour_bank_threshold_event_list" model="ir.ui.view">
+        <field name="name">hour.bank.threshold.event.list</field>
+        <field name="model">hour.bank.threshold.event</field>
+        <field name="arch" type="xml">
+            <list string="Alertes de palier" create="false" edit="false">
+                <field name="fired_date"/>
+                <field name="bank_id"/>
+                <field name="mode_snapshot"/>
+                <field name="value_snapshot"/>
+                <field name="measured_value"/>
+                <field name="recipient_ids" widget="many2many_tags"/>
+                <field name="attachment_id"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="hour_bank_threshold_event_form" model="ir.ui.view">
+        <field name="name">hour.bank.threshold.event.form</field>
+        <field name="model">hour.bank.threshold.event</field>
+        <field name="arch" type="xml">
+            <form string="Alerte de palier" create="false" edit="false">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="bank_id"/>
+                            <field name="threshold_line_id"/>
+                            <field name="fired_date"/>
+                            <field name="period_key"/>
+                        </group>
+                        <group>
+                            <field name="mode_snapshot"/>
+                            <field name="value_snapshot"/>
+                            <field name="measured_value"/>
+                        </group>
+                    </group>
+                    <separator string="Destinataires"/>
+                    <field name="recipient_ids" widget="many2many_tags"/>
+                    <group>
+                        <field name="attachment_id"/>
+                        <field name="mail_message_id"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="hour_bank_threshold_event_search" model="ir.ui.view">
+        <field name="name">hour.bank.threshold.event.search</field>
+        <field name="model">hour.bank.threshold.event</field>
+        <field name="arch" type="xml">
+            <search string="Alertes de palier">
+                <field name="bank_id"/>
+                <field name="mode_snapshot"/>
+                <filter name="unbilled" string="Heures non factur&#233;es"
+                        domain="[('mode_snapshot', '=', 'unbilled')]"/>
+                <filter name="budget_pct" string="% du budget"
+                        domain="[('mode_snapshot', '=', 'budget_pct')]"/>
+                <filter name="balance_floor" string="Solde sous seuil"
+                        domain="[('mode_snapshot', '=', 'balance_floor')]"/>
+                <group expand="0" string="Group&#233; par">
+                    <filter name="group_bank" string="Banque"
+                            context="{'group_by': 'bank_id'}"/>
+                    <filter name="group_mode" string="Mode"
+                            context="{'group_by': 'mode_snapshot'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+</odoo>

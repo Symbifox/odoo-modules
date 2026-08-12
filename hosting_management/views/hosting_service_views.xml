@@ -1,0 +1,418 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Hosting Service Tree View -->
+    <record id="hosting_service_view_tree" model="ir.ui.view">
+        <field name="name">hosting.service.tree</field>
+        <field name="model">hosting.service</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="state == 'expired'" decoration-warning="storage_alert or (date_expiration and days_until_expiration &lt; 30)" decoration-info="state == 'to_disconnect'" decoration-muted="state == 'cancelled'">
+                <field name="code"/>
+                <field name="name" string="Nom"/>
+                <field name="partner_id" string="Client"/>
+                <field name="software_id" string="Logiciel"/>
+                <field name="installed_version_id" string="Version installée"/>
+                <field name="environment" string="Environnement"/>
+                <field name="storage_used_percent" string="Stockage" widget="progressbar"/>
+                <field name="date_expiration" string="Date d'expiration"/>
+                <field name="days_until_expiration" string="Jours restants"/>
+                <field name="state" string="État" widget="badge" decoration-success="state == 'active'" decoration-info="state in ('draft', 'to_disconnect')" decoration-warning="state == 'suspended'" decoration-danger="state == 'expired'" decoration-muted="state == 'cancelled'"/>
+                <field name="update_available" string="Mise à jour dispo." optional="show"/>
+                <field name="storage_alert" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Hosting Service Form View -->
+    <record id="hosting_service_view_form" model="ir.ui.view">
+        <field name="name">hosting.service.form</field>
+        <field name="model">hosting.service</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_activate" string="Activer" type="object" class="oe_highlight" invisible="state != 'draft'"/>
+                    <button name="action_acknowledge_disconnect" string="Marquer à déconnecter" type="object" invisible="state != 'active'"/>
+                    <button name="action_suspend" string="Suspendre" type="object" invisible="state not in ('active', 'to_disconnect')"/>
+                    <button name="action_activate" string="Réactiver" type="object" class="oe_highlight" invisible="state not in ('suspended', 'expired')"/>
+                    <button name="action_activate" string="Reprendre le service" type="object" class="oe_highlight" invisible="state != 'to_disconnect'"/>
+                    <button name="action_cancel" string="Annuler" type="object" invisible="state in ('cancelled',)"/>
+                    <button name="action_set_draft" string="Remettre en brouillon" type="object" invisible="state not in ('cancelled',)"/>
+                    <button name="action_mark_updated" string="Marquer comme mis à jour" type="object" class="btn-secondary" invisible="not target_version_id"/>
+                    <button name="action_update_to_latest" string="Mettre à jour vers la dernière version" type="object" class="btn-secondary" invisible="not update_available"/>
+                    <button name="action_check_docker_version" string="Vérifier la version Docker" type="object" class="btn-secondary" invisible="not docker_container"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,active,to_disconnect,expired"/>
+                </header>
+                <sheet>
+                    <!-- Environment Ribbon -->
+                    <widget name="web_ribbon" title="Pré-production" bg_color="text-bg-warning" invisible="environment != 'staging'"/>
+                    <widget name="web_ribbon" title="Développement" bg_color="text-bg-info" invisible="environment != 'development'"/>
+                    <widget name="web_ribbon" title="Test" bg_color="text-bg-secondary" invisible="environment != 'testing'"/>
+
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_contract" type="object" class="oe_stat_button" icon="fa-file-text-o" invisible="not contract_id">
+                            <span class="o_stat_text">Contrat</span>
+                        </button>
+                        <button name="action_view_update_history" type="object" class="oe_stat_button" icon="fa-history">
+                            <field name="update_log_ids" widget="statinfo" string="Mises à jour"/>
+                        </button>
+                        <button name="action_view_health_history" type="object" class="oe_stat_button"
+                                invisible="not server_url" icon="fa-heartbeat">
+                            <field name="health_check_count" widget="statinfo" string="Santé"/>
+                        </button>
+                        <button name="action_view_maintenance_schedules" type="object" class="oe_stat_button" icon="fa-wrench">
+                            <div class="o_stat_info">
+                                <field name="maintenance_schedule_count" class="o_stat_value"/>
+                                <span class="o_stat_text">Maintenance</span>
+                            </div>
+                            <span class="badge text-bg-danger" invisible="maintenance_overdue_count == 0">
+                                <field name="maintenance_overdue_count"/> en retard
+                            </span>
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <label for="code"/>
+                        <h3>
+                            <field name="code" readonly="1"/>
+                        </h3>
+                        <label for="name"/>
+                        <h1>
+                            <field name="name" placeholder="Nom du service"/>
+                        </h1>
+                    </div>
+
+                    <group>
+                        <group string="Informations du service">
+                            <field name="partner_id" string="Client"/>
+                            <field name="user_id" string="Responsable"/>
+                            <field name="software_id" string="Logiciel"/>
+                            <field name="environment" string="Environnement"/>
+                            <field name="linked_production_id" string="Production liée" invisible="environment == 'production'"/>
+                            <field name="tag_ids" string="Étiquettes" widget="many2many_tags" options="{'color_field': 'color'}"/>
+                        </group>
+                        <group string="Informations de version">
+                            <field name="installed_version_id" string="Version installée" options="{'no_create': True}"/>
+                            <field name="target_version_id" string="Version cible" options="{'no_create': True}"/>
+                            <field name="version_policy" string="Politique de version"/>
+                            <field name="version_notes" string="Notes de version" invisible="version_policy != 'frozen'"/>
+                            <field name="update_available" string="Mise à jour disponible" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <group>
+                        <group string="Connexion">
+                            <field name="server_url" string="URL du serveur" widget="url"/>
+                            <field name="accepted_http_code_ids" widget="many2many_tags"
+                                   string="Codes HTTP acceptés"
+                                   invisible="not server_url"/>
+                            <field name="domain_id" string="Domaine"/>
+                            <field name="domain_name" string="Nom de domaine"/>
+                            <field name="server_id" string="Serveur"/>
+                            <field name="docker_container" string="Conteneur Docker"/>
+                            <field name="docker_host" string="Hôte Docker" readonly="1" invisible="not server_id"/>
+                        </group>
+                        <group string="Stockage">
+                            <field name="storage_quota_gb" string="Quota (Go)"/>
+                            <field name="storage_used_gb" string="Utilisé (Go)"/>
+                            <label for="storage_used_percent"/>
+                            <div class="o_row">
+                                <field name="storage_used_percent" widget="progressbar" options="{'max_value': 100}"/>
+                            </div>
+                            <field name="storage_alert_threshold" string="Seuil d'alerte (%)"/>
+                            <field name="storage_alert" string="Alerte de stockage" readonly="1"/>
+                            <field name="storage_last_check" string="Dernière mesure" readonly="1"/>
+                            <field name="storage_check_type" string="Type de mesure"/>
+                            <field name="storage_check_path" string="Chemin"
+                                   invisible="storage_check_type not in ('container_directory', 'docker_volume', 'host_directory')"/>
+                            <field name="storage_check_db_name" string="Nom de la base"
+                                   invisible="storage_check_type not in ('postgres', 'mariadb', 'nextcloud_db')"/>
+                            <field name="storage_check_db_user" string="Utilisateur BD"
+                                   invisible="storage_check_type not in ('postgres', 'mariadb', 'nextcloud_db')"/>
+                        </group>
+                    </group>
+
+                    <group>
+                        <group string="Dates">
+                            <field name="date_start" string="Date de début"/>
+                            <field name="date_expiration" string="Date d'expiration"/>
+                            <field name="days_until_expiration" string="Jours restants" readonly="1"/>
+                            <field name="disconnect_acknowledged_date" invisible="state != 'to_disconnect'"/>
+                            <field name="disconnect_reason" invisible="state != 'to_disconnect'"/>
+                        </group>
+                        <group string="Facturation">
+                            <field name="contract_id" string="Contrat"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Historique des mises à jour" name="updates">
+                            <field name="update_log_ids" readonly="1">
+                                <list>
+                                    <field name="update_date" string="Date"/>
+                                    <field name="from_version_id" string="De"/>
+                                    <field name="to_version_id" string="Vers"/>
+                                    <field name="user_id" string="Par"/>
+                                    <field name="success" string="Succès"/>
+                                    <field name="notes" string="Notes"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Santé" name="health" invisible="not server_url">
+                            <group>
+                                <group string="État de santé">
+                                    <field name="last_health_status" string="Dernier état" widget="badge"
+                                           decoration-success="last_health_status == 'up'"
+                                           decoration-warning="last_health_status == 'degraded'"
+                                           decoration-danger="last_health_status in ('down', 'timeout')"/>
+                                    <field name="last_health_check" string="Dernière vérification"/>
+                                    <field name="uptime_30d" string="Disponibilité (30j)" widget="progressbar" options="{'max_value': 100}"/>
+                                </group>
+                                <group string="Actions">
+                                    <button name="action_run_health_check" type="object"
+                                            string="Vérifier maintenant" class="btn-primary"
+                                            icon="fa-heartbeat"/>
+                                </group>
+                            </group>
+                            <group string="Vérifications récentes">
+                                <field name="health_check_ids" nolabel="1" readonly="1">
+                                    <list limit="10" decoration-success="status == 'up'"
+                                          decoration-warning="status == 'degraded'"
+                                          decoration-danger="status in ('down', 'timeout')">
+                                        <field name="check_date" string="Date"/>
+                                        <field name="status" string="État" widget="badge"
+                                               decoration-success="status == 'up'"
+                                               decoration-warning="status == 'degraded'"
+                                               decoration-danger="status in ('down', 'timeout')"/>
+                                        <field name="response_time_ms" string="Temps de réponse (ms)"/>
+                                        <field name="http_status_code" string="Code HTTP"/>
+                                        <field name="error_message" string="Erreur" optional="hide"/>
+                                    </list>
+                                </field>
+                            </group>
+                        </page>
+                        <page string="Maintenance" name="maintenance">
+                            <group>
+                                <button name="%(hosting_maintenance_schedule_action)d" type="action"
+                                        string="Ajouter une maintenance" class="btn-primary"
+                                        icon="fa-plus" context="{'default_service_id': id}"/>
+                                <button name="action_apply_maintenance_templates" type="object"
+                                        string="Appliquer les modèles" class="btn-secondary"
+                                        icon="fa-magic" invisible="state != 'active'"/>
+                            </group>
+                            <field name="maintenance_schedule_ids" nolabel="1">
+                                <list decoration-danger="is_overdue" decoration-warning="days_until_due >= 0 and days_until_due &lt;= 7">
+                                    <field name="name" string="Nom"/>
+                                    <field name="maintenance_type" string="Type" widget="badge"/>
+                                    <field name="frequency" string="Fréquence"/>
+                                    <field name="last_performed" string="Dernière exécution"/>
+                                    <field name="next_due" string="Prochaine échéance"/>
+                                    <field name="days_until_due" string="Jours restants"/>
+                                    <field name="is_overdue" column_invisible="1"/>
+                                    <field name="user_id" string="Responsable" widget="many2one_avatar_user"/>
+                                    <button name="action_mark_done" type="object" string="Fait" icon="fa-check" class="btn-success"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Sauvegardes Restic" name="restic_backups">
+                            <group>
+                                <group>
+                                    <field name="restic_snapshot_count" string="Snapshots"/>
+                                    <field name="restic_last_backup" string="Dernière sauvegarde"/>
+                                    <field name="restic_is_stale" string="Périmé (>27h)" widget="boolean_toggle" readonly="1"/>
+                                </group>
+                            </group>
+                            <field name="restic_repository_ids" widget="many2many_tags" placeholder="Lier les dépôts Restic qui couvrent ce service…"/>
+                            <field name="restic_repository_ids" nolabel="1" readonly="1">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="snapshot_count"/>
+                                    <field name="latest_snapshot_date"/>
+                                    <field name="is_stale" widget="boolean"/>
+                                    <field name="size_human" string="Taille"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+
+                    <field name="active" invisible="1"/>
+                    <field name="expiration_activity_created" invisible="1"/>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Hosting Service Kanban View -->
+    <record id="hosting_service_view_kanban" model="ir.ui.view">
+        <field name="name">hosting.service.kanban</field>
+        <field name="model">hosting.service</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="state" class="o_kanban_small_column">
+                <field name="id"/>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="partner_id"/>
+                <field name="software_id"/>
+                <field name="environment"/>
+                <field name="state"/>
+                <field name="storage_used_percent"/>
+                <field name="days_until_expiration"/>
+                <field name="update_available"/>
+                <templates>
+                    <t t-name="card">
+                        <div t-attf-class="#{record.environment.raw_value != 'production' ? 'border-warning border-2' : ''}">
+                            <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
+                            <div class="o_kanban_details">
+                                <strong class="o_kanban_record_title">
+                                    <field name="name"/>
+                                </strong>
+                                <div class="text-muted">
+                                    <field name="code"/> - <field name="partner_id"/>
+                                </div>
+                                <div class="mt-2">
+                                    <field name="software_id"/>
+                                    <span t-if="record.environment.raw_value != 'production'" class="badge text-bg-warning ms-1">
+                                        <field name="environment"/>
+                                    </span>
+                                </div>
+                                <div class="mt-2" t-if="record.storage_used_percent.raw_value">
+                                    <span class="text-muted">Stockage : </span>
+                                    <field name="storage_used_percent" widget="progressbar"/>
+                                </div>
+                                <div t-if="record.days_until_expiration.raw_value" t-attf-class="mt-1 #{record.days_until_expiration.raw_value &lt; 30 ? 'text-danger fw-bold' : 'text-muted'}">
+                                    <span t-if="record.days_until_expiration.raw_value > 0">
+                                        Expire dans <field name="days_until_expiration"/> jours
+                                    </span>
+                                    <span t-else="">
+                                        Expiré
+                                    </span>
+                                </div>
+                                <div t-if="record.update_available.raw_value" class="mt-1">
+                                    <span class="badge text-bg-info">Mise à jour disponible</span>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Hosting Service Search View -->
+    <record id="hosting_service_view_search" model="ir.ui.view">
+        <field name="name">hosting.service.search</field>
+        <field name="model">hosting.service</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="partner_id"/>
+                <field name="software_id"/>
+                <field name="domain_name"/>
+                <field name="domain_id"/>
+                <separator/>
+                <filter name="filter_my_services" string="Mes services" domain="[('user_id', '=', uid)]"/>
+                <separator/>
+                <filter name="filter_in_service" string="En service" domain="[('state', 'in', ('active', 'to_disconnect'))]"/>
+                <filter name="filter_active" string="Actifs" domain="[('state', '=', 'active')]"/>
+                <filter name="filter_to_disconnect" string="À déconnecter" domain="[('state', '=', 'to_disconnect')]"/>
+                <filter name="filter_draft" string="Brouillon" domain="[('state', '=', 'draft')]"/>
+                <filter name="filter_suspended" string="Suspendus" domain="[('state', '=', 'suspended')]"/>
+                <filter name="filter_expired" string="Expirés" domain="[('state', '=', 'expired')]"/>
+                <separator/>
+                <filter name="filter_production" string="Production" domain="[('environment', '=', 'production')]"/>
+                <filter name="filter_staging" string="Pré-production" domain="[('environment', '=', 'staging')]"/>
+                <filter name="filter_development" string="Développement" domain="[('environment', '=', 'development')]"/>
+                <filter name="filter_testing" string="Test" domain="[('environment', '=', 'testing')]"/>
+                <separator/>
+                <filter name="filter_expiring_soon" string="Expirant bientôt (90 jours)" domain="[('date_expiration', '&lt;=', (context_today() + relativedelta(days=90)).strftime('%Y-%m-%d')), ('date_expiration', '&gt;', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter name="filter_storage_alert" string="Alerte de stockage" domain="[('storage_alert', '=', True)]"/>
+                <filter name="filter_update_available" string="Mises à jour disponibles" domain="[('update_available', '=', True)]"/>
+                <filter name="filter_storage_configured" string="Stockage configuré" domain="[('storage_check_type', '!=', 'none')]"/>
+                <filter name="filter_service_down" string="Service hors ligne" domain="[('is_service_up', '=', False)]"/>
+                <separator/>
+                <filter name="filter_archived" string="Archivés" domain="[('active', '=', False)]"/>
+                <group expand="0" string="Grouper par">
+                    <filter name="group_partner" string="Client" context="{'group_by': 'partner_id'}"/>
+                    <filter name="group_software" string="Logiciel" context="{'group_by': 'software_id'}"/>
+                    <filter name="group_environment" string="Environnement" context="{'group_by': 'environment'}"/>
+                    <filter name="group_state" string="État" context="{'group_by': 'state'}"/>
+                    <filter name="group_user" string="Responsable" context="{'group_by': 'user_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Hosting Service Action -->
+    <record id="hosting_service_action" model="ir.actions.act_window">
+        <field name="name">Services d'hébergement</field>
+        <field name="res_model">hosting.service</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="search_view_id" ref="hosting_service_view_search"/>
+        <field name="context">{'search_default_filter_in_service': 1, 'search_default_filter_production': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Créez votre premier service d'hébergement
+            </p>
+            <p>
+                Suivez les services d'hébergement de vos clients, y compris la gestion des versions, les quotas de stockage et les dates d'expiration.
+            </p>
+        </field>
+    </record>
+
+    <!-- All Services Action (no default filters) -->
+    <record id="hosting_service_action_all" model="ir.actions.act_window">
+        <field name="name">Tous les services</field>
+        <field name="res_model">hosting.service</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="search_view_id" ref="hosting_service_view_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Créez votre premier service d'hébergement
+            </p>
+        </field>
+    </record>
+
+    <!-- Expiring Services Action -->
+    <record id="hosting_service_action_expiring" model="ir.actions.act_window">
+        <field name="name">Expirant bientôt</field>
+        <field name="res_model">hosting.service</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="search_view_id" ref="hosting_service_view_search"/>
+        <field name="domain">[('date_expiration', '&lt;=', (context_today() + relativedelta(days=90)).strftime('%Y-%m-%d')), ('date_expiration', '&gt;', context_today().strftime('%Y-%m-%d')), ('state', 'in', ('active', 'to_disconnect'))]</field>
+    </record>
+
+    <!-- Services Needing Updates Action -->
+    <record id="hosting_service_action_updates" model="ir.actions.act_window">
+        <field name="name">Mises à jour disponibles</field>
+        <field name="res_model">hosting.service</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="search_view_id" ref="hosting_service_view_search"/>
+        <field name="domain">[('update_available', '=', True), ('state', 'in', ('active', 'to_disconnect'))]</field>
+    </record>
+
+    <!-- Disconnect Wizard Form -->
+    <record id="hosting_service_disconnect_wizard_view_form" model="ir.ui.view">
+        <field name="name">hosting.service.disconnect.wizard.form</field>
+        <field name="model">hosting.service.disconnect.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Confirmer la non-reconduction">
+                <sheet>
+                    <group>
+                        <field name="service_id" readonly="1" options="{'no_open': True}"/>
+                        <field name="disconnect_acknowledged_date"/>
+                        <field name="disconnect_reason" placeholder="Ex. migration vers Microsoft 365, fin de contrat client, etc."/>
+                    </group>
+                    <div class="alert alert-info" role="alert">
+                        Le service restera en ligne jusqu'à sa date d'expiration, puis sera automatiquement marqué comme expiré. Les rappels de renouvellement sont désactivés.
+                    </div>
+                </sheet>
+                <footer>
+                    <button name="action_confirm" string="Confirmer" type="object" class="btn-primary"/>
+                    <button string="Annuler" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>

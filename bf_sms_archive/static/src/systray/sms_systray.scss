@@ -1,0 +1,31 @@
+.o_sms_systray {
+    display: flex;
+    align-items: center;
+    height: 100%;
+
+    .o_sms_systray_btn {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        color: inherit;
+        padding: 0 10px;
+        border: 0;
+        background: transparent;
+
+        .fa-mobile {
+            font-size: 22px;   // fa-mobile is narrow → bump it up
+            line-height: 1;
+        }
+    }
+
+    .o_sms_systray_badge {
+        position: absolute;
+        top: 6px;
+        right: 2px;
+        font-size: 9px;
+        padding: 2px 5px;
+        line-height: 1;
+    }
+}

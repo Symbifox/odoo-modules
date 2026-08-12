@@ -1,0 +1,91 @@
+/* CX dashboard. Diverging NPS palette: blue pole (promoters) / neutral gray
+   midpoint (passives) / red pole (detractors) - polarity semantics, validated
+   for CVD separation; sequential single hue (blue) for magnitudes. Text
+   always wears text tokens, never series colors. */
+.o_bf_cx_dashboard {
+    --cx-promoter: #2a78d6;
+    --cx-passive: #b9b8b4;
+    --cx-detractor: #d03b3b;
+    --cx-seq: #2a78d6;
+    --cx-serious: #d03b3b;
+
+    overflow-y: auto;
+    max-height: 100%;
+
+    .o_cx_hero {
+        font-size: 44px;
+        font-weight: 700;
+        line-height: 1.1;
+    }
+
+    .o_cx_n {
+        font-size: 11px;
+        opacity: 0.8;
+    }
+
+    .o_cx_serious {
+        color: var(--cx-serious);
+    }
+
+    .o_cx_tile {
+        transition: box-shadow 0.15s ease;
+        &:hover {
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
+        }
+    }
+
+    .o_cx_tile_alert {
+        border-color: var(--cx-serious);
+    }
+
+    .o_cx_date {
+        width: auto;
+    }
+
+    .o_cx_reloading {
+        opacity: 0.55;
+        pointer-events: none;
+        transition: opacity 0.15s ease;
+    }
+
+    .o_cx_chart {
+        overflow-x: auto;
+        padding-bottom: 4px;
+    }
+
+    .o_cx_fill_promoter { fill: var(--cx-promoter); background-color: var(--cx-promoter); }
+    .o_cx_fill_passive { fill: var(--cx-passive); background-color: var(--cx-passive); }
+    .o_cx_fill_detractor { fill: var(--cx-detractor); background-color: var(--cx-detractor); }
+    .o_cx_fill_seq { fill: var(--cx-seq); background-color: var(--cx-seq); }
+
+    .o_cx_dot {
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        border-radius: 3px;
+        margin-right: 4px;
+        vertical-align: baseline;
+    }
+
+    .o_cx_axis {
+        font-size: 9px;
+        fill: currentColor;
+        opacity: 0.6;
+    }
+
+    .o_cx_bar_total {
+        font-size: 11px;
+        font-weight: 600;
+    }
+
+    .o_cx_theme_label {
+        width: 160px;
+        font-size: 13px;
+    }
+
+    .o_cx_theme_bar {
+        height: 10px;
+        border-radius: 4px;
+        min-width: 2px;
+    }
+}

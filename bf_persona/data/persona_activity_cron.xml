@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="cron_create_persona_refresh_activities" model="ir.cron">
+        <field name="name">Persona : créer activités « Réévaluer le persona »</field>
+        <field name="model_id" ref="model_contact_persona"/>
+        <field name="state">code</field>
+        <field name="code">model.cron_create_persona_refresh_activities()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active">False</field>
+    </record>
+
+</odoo>

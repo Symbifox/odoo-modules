@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Module Category -->
+    <record id="module_category_sms_archive" model="ir.module.category">
+        <field name="name">SMS &amp; Calls</field>
+        <field name="description">Archivage et recherche de SMS et journaux d'appels</field>
+        <field name="sequence">60</field>
+    </record>
+
+    <!-- User Group (owner-only) -->
+    <record id="group_sms_user" model="res.groups">
+        <field name="name">Utilisateur SMS</field>
+        <field name="category_id" ref="module_category_sms_archive"/>
+        <field name="comment">Peut consulter et importer ses propres SMS</field>
+    </record>
+
+    <!-- Manager Group -->
+    <record id="group_sms_manager" model="res.groups">
+        <field name="name">Gestionnaire SMS</field>
+        <field name="category_id" ref="module_category_sms_archive"/>
+        <field name="implied_ids" eval="[(4, ref('group_sms_user'))]"/>
+        <field name="comment">Accès complet à toutes les archives SMS</field>
+    </record>
+
+    <!-- Record Rules: Thread -->
+    <record id="sms_thread_rule_user" model="ir.rule">
+        <field name="name">Fil SMS : propriétaire seulement</field>
+        <field name="model_id" ref="model_sms_archive_thread"/>
+        <field name="domain_force">[('owner_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('group_sms_user'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <record id="sms_thread_rule_manager" model="ir.rule">
+        <field name="name">Fil SMS : gestionnaire voit tout</field>
+        <field name="model_id" ref="model_sms_archive_thread"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('group_sms_manager'))]"/>
+    </record>
+
+    <!-- Record Rules: Message -->
+    <record id="sms_message_rule_user" model="ir.rule">
+        <field name="name">Message SMS : propriétaire seulement</field>
+        <field name="model_id" ref="model_sms_archive_message"/>
+        <field name="domain_force">[('owner_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('group_sms_user'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <record id="sms_message_rule_manager" model="ir.rule">
+        <field name="name">Message SMS : gestionnaire voit tout</field>
+        <field name="model_id" ref="model_sms_archive_message"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('group_sms_manager'))]"/>
+    </record>
+
+    <!-- Record Rules: MMS Part -->
+    <record id="sms_mms_part_rule_user" model="ir.rule">
+        <field name="name">MMS Part : propriétaire seulement</field>
+        <field name="model_id" ref="model_sms_archive_mms_part"/>
+        <field name="domain_force">[('owner_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('group_sms_user'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <record id="sms_mms_part_rule_manager" model="ir.rule">
+        <field name="name">MMS Part : gestionnaire voit tout</field>
+        <field name="model_id" ref="model_sms_archive_mms_part"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('group_sms_manager'))]"/>
+    </record>
+
+    <!-- Record Rules: Call -->
+    <record id="call_archive_rule_user" model="ir.rule">
+        <field name="name">Appel archivé : propriétaire seulement</field>
+        <field name="model_id" ref="model_call_archive_call"/>
+        <field name="domain_force">[('owner_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('group_sms_user'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <record id="call_archive_rule_manager" model="ir.rule">
+        <field name="name">Appel archivé : gestionnaire voit tout</field>
+        <field name="model_id" ref="model_call_archive_call"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('group_sms_manager'))]"/>
+    </record>
+
+    <!-- Record Rule: Device (manager only sees devices they own; superuser sees all) -->
+    <record id="sms_device_rule_manager" model="ir.rule">
+        <field name="name">Appareil Android : gestionnaire voit ses appareils</field>
+        <field name="model_id" ref="model_sms_archive_device"/>
+        <field name="domain_force">[('owner_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('group_sms_manager'))]"/>
+    </record>
+
+    <!-- Record Rule: Line (owner sees own; superuser sees all) -->
+    <record id="sms_line_rule_user" model="ir.rule">
+        <field name="name">Ligne SMS : propriétaire seulement</field>
+        <field name="model_id" ref="model_sms_archive_line"/>
+        <field name="domain_force">[('owner_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('group_sms_user'))]"/>
+    </record>
+
+    <record id="sms_line_rule_manager" model="ir.rule">
+        <field name="name">Ligne SMS : gestionnaire voit tout</field>
+        <field name="model_id" ref="model_sms_archive_line"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('group_sms_manager'))]"/>
+    </record>
+
+    <!-- Record Rule: Push subscription (utilisateur ne voit que les siennes) -->
+    <record id="sms_push_sub_rule_user" model="ir.rule">
+        <field name="name">Abonnement push : propriétaire seulement</field>
+        <field name="model_id" ref="model_sms_archive_push_subscription"/>
+        <field name="domain_force">[('user_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('group_sms_user'))]"/>
+    </record>
+
+    <record id="sms_push_sub_rule_manager" model="ir.rule">
+        <field name="name">Abonnement push : gestionnaire voit tout</field>
+        <field name="model_id" ref="model_sms_archive_push_subscription"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('group_sms_manager'))]"/>
+    </record>
+
+    <!-- Record Rule: Mobile device (utilisateur ne voit que les siens) -->
+    <record id="sms_mobile_device_rule_user" model="ir.rule">
+        <field name="name">Appareil mobile : propriétaire seulement</field>
+        <field name="model_id" ref="model_sms_archive_mobile_device"/>
+        <field name="domain_force">[('user_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('group_sms_user'))]"/>
+    </record>
+
+    <record id="sms_mobile_device_rule_manager" model="ir.rule">
+        <field name="name">Appareil mobile : gestionnaire voit tout</field>
+        <field name="model_id" ref="model_sms_archive_mobile_device"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('group_sms_manager'))]"/>
+    </record>
+
+</odoo>

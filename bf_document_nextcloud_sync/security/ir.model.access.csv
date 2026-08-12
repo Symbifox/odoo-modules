@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_nc_doc_config_read,NC Document Config Read,model_nextcloud_document_config,project_knowledge_matrix.group_document_user,1,0,0,0
+access_nc_doc_config_admin,NC Document Config Admin,model_nextcloud_document_config,base.group_system,1,1,1,1
+access_nc_upload_wizard_doc_user,NC Upload Wizard Document User,model_document_nc_upload_wizard,project_knowledge_matrix.group_document_user,1,1,1,1
+access_nc_upload_wizard_doc_manager,NC Upload Wizard Document Manager,model_document_nc_upload_wizard,project_knowledge_matrix.group_document_manager,1,1,1,1

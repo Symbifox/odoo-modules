@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+  <record id="view_helpdesk_macro_form" model="ir.ui.view">
+    <field name="name">helpdesk.macro.form</field>
+    <field name="model">helpdesk.macro</field>
+    <field name="arch" type="xml">
+      <form>
+        <sheet>
+          <group>
+            <group>
+              <field name="name"/>
+              <field name="sequence"/>
+              <field name="active"/>
+            </group>
+            <group>
+              <field name="applicable_team_ids" widget="many2many_tags"/>
+            </group>
+          </group>
+          <group string="Contenu">
+            <field name="body_html" nolabel="1"/>
+          </group>
+        </sheet>
+      </form>
+    </field>
+  </record>
+
+  <record id="view_helpdesk_macro_list" model="ir.ui.view">
+    <field name="name">helpdesk.macro.list</field>
+    <field name="model">helpdesk.macro</field>
+    <field name="arch" type="xml">
+      <list>
+        <field name="sequence" widget="handle"/>
+        <field name="name"/>
+        <field name="applicable_team_ids" widget="many2many_tags" optional="show"/>
+        <field name="active" optional="hide"/>
+      </list>
+    </field>
+  </record>
+
+  <record id="action_helpdesk_macro" model="ir.actions.act_window">
+    <field name="name">Macros</field>
+    <field name="res_model">helpdesk.macro</field>
+    <field name="view_mode">list,form</field>
+  </record>
+
+  <menuitem id="menu_helpdesk_macro"
+            name="Macros"
+            parent="helpdesk_mgmt.helpdesk_ticket_main_menu"
+            action="action_helpdesk_macro"
+            sequence="80"/>
+
+  <!-- Wizard form -->
+  <record id="view_helpdesk_macro_apply_wizard" model="ir.ui.view">
+    <field name="name">helpdesk.macro.apply.wizard.form</field>
+    <field name="model">helpdesk.macro.apply.wizard</field>
+    <field name="arch" type="xml">
+      <form string="Appliquer une macro">
+        <group>
+          <field name="ticket_id" invisible="1"/>
+          <field name="ticket_team_id" invisible="1"/>
+          <field name="macro_id" required="1"/>
+          <field name="preview_html" readonly="1" nolabel="1"
+                 invisible="not macro_id"/>
+        </group>
+        <footer>
+          <button name="action_apply" type="object"
+                  string="Appliquer" class="btn-primary"/>
+          <button special="cancel" string="Annuler" class="btn-secondary"/>
+        </footer>
+      </form>
+    </field>
+  </record>
+
+</odoo>

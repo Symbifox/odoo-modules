@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_bf_llm_provider_list" model="ir.ui.view">
+        <field name="name">bf.llm.provider.list</field>
+        <field name="model">bf.llm.provider</field>
+        <field name="arch" type="xml">
+            <list string="LLM Providers">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="provider"/>
+                <field name="model"/>
+                <field name="enabled" widget="boolean_toggle"/>
+                <field name="is_default" widget="boolean_toggle"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_bf_llm_provider_form" model="ir.ui.view">
+        <field name="name">bf.llm.provider.form</field>
+        <field name="model">bf.llm.provider</field>
+        <field name="arch" type="xml">
+            <form string="LLM Provider">
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name" placeholder="e.g. Anthropic (prod)"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Connection">
+                            <field name="provider"/>
+                            <field name="base_url" placeholder="Blank = per-provider default"/>
+                            <field name="api_key" password="True"/>
+                            <field name="timeout"/>
+                        </group>
+                        <group string="Status">
+                            <field name="enabled"/>
+                            <field name="is_default"/>
+                            <field name="sequence"/>
+                            <field name="max_tokens"/>
+                            <field name="supports_vision"/>
+                            <field name="supports_tools"/>
+                        </group>
+                    </group>
+                    <group string="Models">
+                        <field name="model"/>
+                        <field name="model_chat"/>
+                        <field name="model_vision"/>
+                        <field name="model_title"/>
+                        <field name="model_triage"/>
+                        <field name="model_ocr"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_bf_llm_provider" model="ir.actions.act_window">
+        <field name="name">LLM Providers</field>
+        <field name="res_model">bf.llm.provider</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Configure an LLM provider
+            </p>
+            <p>
+                Define a provider (Anthropic, OpenAI, or an OpenAI-compatible/local
+                server), set its API key, and mark one provider as the default.
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="menu_bf_llm_provider"
+              name="LLM Providers"
+              parent="base.menu_custom"
+              action="action_bf_llm_provider"
+              sequence="50"/>
+</odoo>

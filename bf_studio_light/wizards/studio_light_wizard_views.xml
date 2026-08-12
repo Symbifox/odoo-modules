@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="studio_light_wizard_form" model="ir.ui.view">
+        <field name="name">studio.light.wizard.form</field>
+        <field name="model">studio.light.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Add a custom field">
+                <sheet>
+                    <group>
+                        <field name="model_id" options="{'no_create': True, 'no_open': True}"/>
+                        <field name="label"/>
+                        <field name="field_name" placeholder="auto-derived from label"/>
+                        <field name="field_type"/>
+                        <field name="help_text"/>
+                        <field name="required"/>
+                    </group>
+                    <group string="Selection values" invisible="field_type != 'selection'">
+                        <field name="selection_text"
+                               nolabel="1"
+                               placeholder="gold=Gold member&#10;silver=Silver member"/>
+                    </group>
+                    <group string="Linked model" invisible="field_type not in ('many2one', 'many2many') or is_related">
+                        <field name="relation_model_id"
+                               options="{'no_create': True, 'no_open': True}"/>
+                    </group>
+                    <group string="Allowed reference targets" invisible="field_type != 'reference' or is_related">
+                        <field name="reference_model_ids"
+                               nolabel="1"
+                               widget="many2many_tags"
+                               options="{'no_create': True, 'no_open': True}"/>
+                    </group>
+                    <group string="Read from another field (advanced)">
+                        <field name="is_related"/>
+                        <field name="related_path"
+                               invisible="not is_related"
+                               placeholder="partner_id.email"/>
+                    </group>
+                    <group string="Where to show this field">
+                        <field name="inject_in_form"/>
+                        <field name="target_field"
+                               invisible="not inject_in_form"
+                               placeholder="email"/>
+                        <field name="inject_in_list"/>
+                        <field name="inject_in_kanban"/>
+                        <field name="inject_in_search"/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button name="action_create"
+                            type="object"
+                            string="Create field"
+                            class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_studio_light_wizard" model="ir.actions.act_window">
+        <field name="name">Add custom field</field>
+        <field name="res_model">studio.light.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

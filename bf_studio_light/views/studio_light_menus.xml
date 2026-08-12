@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_studio_light_root"
+              name="Customization"
+              web_icon="bf_studio_light,static/description/icon.png"
+              groups="group_studio_light_admin"
+              sequence="95"/>
+
+    <menuitem id="menu_studio_light_new"
+              name="Add custom field"
+              parent="menu_studio_light_root"
+              action="action_studio_light_wizard"
+              sequence="10"/>
+
+    <menuitem id="menu_studio_light_new_smart_button"
+              name="Add smart button"
+              parent="menu_studio_light_root"
+              action="action_studio_light_smart_button_wizard"
+              sequence="15"/>
+
+    <menuitem id="menu_studio_light_fields"
+              name="Custom fields"
+              parent="menu_studio_light_root"
+              action="action_studio_light_field"
+              sequence="20"/>
+
+    <menuitem id="menu_studio_light_smart_buttons"
+              name="Smart buttons"
+              parent="menu_studio_light_root"
+              action="action_studio_light_smart_button"
+              sequence="25"/>
+
+    <menuitem id="menu_studio_light_view_injections"
+              name="View injections"
+              parent="menu_studio_light_root"
+              action="action_studio_light_view_injection"
+              sequence="30"/>
+
+    <record id="action_studio_light_default_values" model="ir.actions.act_window">
+        <field name="name">Default values</field>
+        <field name="res_model">ir.default</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No default values set yet.</p>
+            <p>Set per-user or company-wide default values for any field.
+            For example: default sales team for new opportunities.</p>
+        </field>
+    </record>
+
+    <menuitem id="menu_studio_light_default_values"
+              name="Default values"
+              parent="menu_studio_light_root"
+              action="action_studio_light_default_values"
+              sequence="50"/>
+
+    <record id="action_studio_light_shared_filters" model="ir.actions.act_window">
+        <field name="name">Shared filters</field>
+        <field name="res_model">ir.filters</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('user_id', '=', False)]</field>
+        <field name="context">{'default_user_id': False}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No shared filters yet.</p>
+            <p>Create filters available to all users on any model.
+            Use the regular filter UI on a list view, then move it here by
+            removing the user.</p>
+        </field>
+    </record>
+
+    <menuitem id="menu_studio_light_shared_filters"
+              name="Shared filters"
+              parent="menu_studio_light_root"
+              action="action_studio_light_shared_filters"
+              sequence="60"/>
+</odoo>

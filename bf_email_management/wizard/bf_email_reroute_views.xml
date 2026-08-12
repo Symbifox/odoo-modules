@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="bf_email_reroute_view_form" model="ir.ui.view">
+        <field name="name">bf.email.reroute.form</field>
+        <field name="model">bf.email.reroute</field>
+        <field name="arch" type="xml">
+            <form string="Importer dans un chatter">
+                <group invisible="state != 'draft'">
+                    <group string="Courriel(s) sélectionné(s)">
+                        <field name="bf_email_count"/>
+                        <field name="sample_subject" readonly="1"
+                               invisible="bf_email_count != 1"/>
+                        <field name="sample_from" readonly="1"
+                               invisible="bf_email_count != 1"/>
+                        <field name="bf_email_ids" widget="many2many_tags"
+                               invisible="bf_email_count == 1"
+                               readonly="1"
+                               options="{'no_create': True}"/>
+                    </group>
+                    <group string="Cible">
+                        <field name="quick_paste"
+                               placeholder="URL Odoo, 22299, INV/2026/00017, task:22299…"/>
+                        <field name="target_reference"
+                               context="{'bf_email_reroute_search': True}"/>
+                        <field name="mark_replied"/>
+                        <field name="archive_after"/>
+                    </group>
+                    <div class="alert alert-info" role="alert" colspan="2">
+                        <p class="mb-1"><strong>Comment ça fonctionne :</strong></p>
+                        <ul class="mb-0">
+                            <li>Tape un numéro (<code>22299</code>), un nom de facture (<code>INV/2026/00017</code>) ou colle une URL Odoo dans <em>Lien rapide</em> — la cible se résout automatiquement.</li>
+                            <li>Le courriel est posté sur le chatter du dossier choisi avec son <code>Message-ID</code> d'origine.</li>
+                            <li>La ligne dans le module Courriels est mise à jour : elle passe de « IMAP orphelin » à « rattachée au chatter ».</li>
+                            <li>Les pièces jointes sont reconstruites et liées au dossier cible.</li>
+                            <li>Aucun nouveau courriel n'est envoyé : c'est un import interne uniquement.</li>
+                        </ul>
+                    </div>
+                </group>
+                <group invisible="state != 'done'">
+                    <field name="result_text" nolabel="1" colspan="2"/>
+                </group>
+                <field name="state" invisible="1"/>
+                <footer>
+                    <button name="action_confirm"
+                            string="Importer"
+                            type="object"
+                            class="btn-primary"
+                            invisible="state != 'draft'"/>
+                    <button string="Fermer" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_bf_email_reroute" model="ir.actions.act_window">
+        <field name="name">Importer dans un chatter</field>
+        <field name="res_model">bf.email.reroute</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <!-- Server action for bulk reroute from list view -->
+    <record id="action_bf_email_reroute_bulk" model="ir.actions.server">
+        <field name="name">Importer dans un chatter</field>
+        <field name="model_id" ref="model_bf_email"/>
+        <field name="binding_model_id" ref="model_bf_email"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">action = records.action_reroute()</field>
+    </record>
+
+</odoo>

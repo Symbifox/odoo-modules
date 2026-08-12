@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Form View -->
+    <record id="privacy_purpose_form_view" model="ir.ui.view">
+        <field name="name">privacy.purpose.form</field>
+        <field name="model">privacy.purpose</field>
+        <field name="arch" type="xml">
+            <form string="Finalité">
+                <sheet>
+                    <widget name="web_ribbon" title="Archivé" bg_color="bg-danger" invisible="active"/>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name" placeholder="ex. : Communications marketing"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Identification">
+                            <field name="code"/>
+                            <field name="sequence"/>
+                            <field name="active" invisible="1"/>
+                        </group>
+                        <group string="Exigences">
+                            <field name="requires_consent"/>
+                            <field name="requires_express_opt_in"/>
+                            <field name="default_validity_days"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Portée">
+                            <field name="channel_scope"/>
+                            <field name="context_scope"/>
+                        </group>
+                        <group string="Société">
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                    <separator string="Résumé en langage clair"/>
+                    <field name="plain_language_summary" placeholder="Explication claire de cette finalité en langage simple..."/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- List View -->
+    <record id="privacy_purpose_list_view" model="ir.ui.view">
+        <field name="name">privacy.purpose.list</field>
+        <field name="model">privacy.purpose</field>
+        <field name="arch" type="xml">
+            <list decoration-muted="not active">
+                <field name="sequence" widget="handle"/>
+                <field name="code"/>
+                <field name="name"/>
+                <field name="requires_consent"/>
+                <field name="requires_express_opt_in"/>
+                <field name="default_validity_days"/>
+                <field name="channel_scope"/>
+                <field name="context_scope"/>
+                <field name="active" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="privacy_purpose_search_view" model="ir.ui.view">
+        <field name="name">privacy.purpose.search</field>
+        <field name="model">privacy.purpose</field>
+        <field name="arch" type="xml">
+            <search string="Rechercher les finalités">
+                <field name="name"/>
+                <field name="code"/>
+                <filter string="Nécessite un consentement" name="requires_consent" domain="[('requires_consent', '=', True)]"/>
+                <filter string="Consentement exprès" name="express_opt_in" domain="[('requires_express_opt_in', '=', True)]"/>
+                <separator/>
+                <filter string="Archivé" name="archived" domain="[('active', '=', False)]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter string="Canal" name="channel" context="{'group_by': 'channel_scope'}"/>
+                    <filter string="Contexte" name="context" context="{'group_by': 'context_scope'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_privacy_purpose" model="ir.actions.act_window">
+        <field name="name">Finalités</field>
+        <field name="res_model">privacy.purpose</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Créez votre première finalité de consentement
+            </p>
+            <p>
+                Les finalités définissent pourquoi vous collectez des renseignements personnels (ex. : marketing, enregistrement, référence).
+            </p>
+        </field>
+    </record>
+</odoo>

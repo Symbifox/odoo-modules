@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Destruction Request Form View -->
+    <record id="privacy_destruction_request_view_form" model="ir.ui.view">
+        <field name="name">privacy.destruction.request.form</field>
+        <field name="model">privacy.destruction.request</field>
+        <field name="arch" type="xml">
+            <form string="Demande de destruction">
+                <header>
+                    <button name="action_approve" type="object" string="Approuver"
+                            class="btn-primary" invisible="state != 'pending'"/>
+                    <button name="action_execute" type="object" string="Exécuter la destruction"
+                            class="btn-danger" invisible="state != 'approved'"
+                            confirm="Cette action détruira définitivement les données. Continuer?"/>
+                    <button name="action_cancel" type="object" string="Annuler"
+                            invisible="state in ('executed', 'cancelled')"/>
+                    <field name="state" widget="statusbar" statusbar_visible="pending,approved,executed"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="certificate_number" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Demande">
+                            <field name="request_type"/>
+                            <field name="partner_id"/>
+                            <field name="consent_id" invisible="request_type not in ('consent', 'erasure_right')"/>
+                            <field name="purpose_id" invisible="request_type not in ('consent', 'erasure_right')"/>
+                            <field name="policy_id" invisible="request_type in ('document', 'campaign')"/>
+                            <field name="retention_calendar_id" invisible="request_type not in ('document', 'campaign')"/>
+                            <field name="campaign_id" invisible="request_type != 'campaign'"/>
+                        </group>
+                        <group string="Planification">
+                            <field name="trigger_date"/>
+                            <field name="scheduled_date"/>
+                            <field name="document_count" invisible="request_type == 'consent'"/>
+                        </group>
+                    </group>
+                    <group invisible="state != 'executed'">
+                        <group string="Détails d'exécution">
+                            <field name="executed_at"/>
+                            <field name="executed_by_id"/>
+                            <field name="destruction_method_used"/>
+                        </group>
+                        <group string="Certificat">
+                            <field name="verification_hash"/>
+                        </group>
+                    </group>
+                    <group invisible="state != 'executed'" string="Destruction de données externes">
+                        <group>
+                            <field name="credentials_destroyed"/>
+                            <field name="nextcloud_folder_path"/>
+                        </group>
+                        <group>
+                            <field name="nextcloud_activity_id"/>
+                        </group>
+                    </group>
+                    <notebook invisible="request_type == 'consent' and not register_entry_ids">
+                        <page string="Documents classifiés" name="classifications"
+                              invisible="request_type == 'consent'">
+                            <field name="classification_ids">
+                                <list>
+                                    <field name="res_name" string="Document"/>
+                                    <field name="pi_category"/>
+                                    <field name="sensitivity_level"/>
+                                    <field name="retention_calendar_id"/>
+                                    <field name="retention_expiry_date"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Registre" name="register"
+                              invisible="not register_entry_ids">
+                            <field name="register_entry_ids" readonly="1">
+                                <list>
+                                    <field name="register_number"/>
+                                    <field name="destruction_date"/>
+                                    <field name="destruction_method"/>
+                                    <field name="res_name"/>
+                                    <field name="approved_by_id"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                    <group string="Notes">
+                        <field name="notes" nolabel="1"/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Destruction Request List View -->
+    <record id="privacy_destruction_request_view_list" model="ir.ui.view">
+        <field name="name">privacy.destruction.request.list</field>
+        <field name="model">privacy.destruction.request</field>
+        <field name="arch" type="xml">
+            <list string="Demandes de destruction" decoration-danger="state == 'pending' and scheduled_date &lt;= current_date"
+                  decoration-warning="state == 'approved'" decoration-muted="state == 'cancelled'">
+                <field name="certificate_number"/>
+                <field name="request_type" widget="badge"
+                       decoration-info="request_type == 'consent'"
+                       decoration-warning="request_type == 'document'"
+                       decoration-danger="request_type == 'erasure_right'"
+                       decoration-success="request_type == 'campaign'"/>
+                <field name="partner_id"/>
+                <field name="purpose_id" optional="show"/>
+                <field name="policy_id" optional="show"/>
+                <field name="scheduled_date"/>
+                <field name="state" widget="badge"
+                       decoration-info="state == 'pending'"
+                       decoration-warning="state == 'approved'"
+                       decoration-success="state == 'executed'"
+                       decoration-danger="state == 'cancelled'"/>
+                <field name="executed_at"/>
+                <field name="credentials_destroyed" optional="show"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Destruction Request Search View -->
+    <record id="privacy_destruction_request_view_search" model="ir.ui.view">
+        <field name="name">privacy.destruction.request.search</field>
+        <field name="model">privacy.destruction.request</field>
+        <field name="arch" type="xml">
+            <search string="Rechercher les demandes de destruction">
+                <field name="certificate_number"/>
+                <field name="partner_id"/>
+                <field name="purpose_id"/>
+                <field name="consent_id"/>
+                <separator/>
+                <filter string="En attente" name="pending" domain="[('state', '=', 'pending')]"/>
+                <filter string="Approuvé" name="approved" domain="[('state', '=', 'approved')]"/>
+                <filter string="Exécuté" name="executed" domain="[('state', '=', 'executed')]"/>
+                <filter string="Annulé" name="cancelled" domain="[('state', '=', 'cancelled')]"/>
+                <separator/>
+                <filter string="En retard" name="overdue" domain="[('state', 'in', ['pending', 'approved']), ('scheduled_date', '&lt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter string="Dû cette semaine" name="due_week" domain="[('state', 'in', ['pending', 'approved']), ('scheduled_date', '&lt;=', (context_today() + datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
+                <separator/>
+                <group expand="0" string="Regrouper par">
+                    <filter string="État" name="group_by_state" context="{'group_by': 'state'}"/>
+                    <filter string="Finalité" name="group_by_purpose" context="{'group_by': 'purpose_id'}"/>
+                    <filter string="Politique" name="group_by_policy" context="{'group_by': 'policy_id'}"/>
+                    <filter string="Date planifiée" name="group_by_scheduled" context="{'group_by': 'scheduled_date:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Destruction Request Action -->
+    <record id="action_privacy_destruction_request" model="ir.actions.act_window">
+        <field name="name">Demandes de destruction</field>
+        <field name="res_model">privacy.destruction.request</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_pending': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Aucune demande de destruction pour l'instant
+            </p>
+            <p>
+                Les demandes de destruction sont créées automatiquement en fonction des politiques de rétention
+                lorsque les consentements expirent ou sont révoqués.
+            </p>
+        </field>
+    </record>
+
+    <!-- Pending Destructions Action (for dashboard) -->
+    <record id="action_privacy_destruction_pending" model="ir.actions.act_window">
+        <field name="name">Destructions en attente</field>
+        <field name="res_model">privacy.destruction.request</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('state', '=', 'pending')]</field>
+    </record>
+
+    <!-- Server Action: Create Destruction Request from Partner -->
+    <record id="action_create_destruction_request_from_partner" model="ir.actions.server">
+        <field name="name">Demander l'effacement des données (droit à l'oubli)</field>
+        <field name="model_id" ref="base.model_res_partner"/>
+        <field name="binding_model_id" ref="base.model_res_partner"/>
+        <field name="binding_view_types">form</field>
+        <field name="groups_id" eval="[(4, ref('privacy_consent.group_privacy_officer'))]"/>
+        <field name="state">code</field>
+        <field name="code">
+if records:
+    for partner in records:
+        request = env['privacy.destruction.request'].create_partner_destruction_request(
+            partner.id,
+            reason="Demande de droit à l'effacement initiée depuis la fiche du contact"
+        )
+        action = {
+            'type': 'ir.actions.act_window',
+            'name': 'Demande de destruction',
+            'res_model': 'privacy.destruction.request',
+            'res_id': request.id,
+            'view_mode': 'form',
+            'target': 'current',
+        }
+</field>
+    </record>
+</odoo>

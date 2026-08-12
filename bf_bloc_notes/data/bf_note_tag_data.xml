@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="tag_idee" model="bf.note.tag">
+            <field name="name">Idée</field>
+            <field name="color">2</field>
+        </record>
+        <record id="tag_a_faire" model="bf.note.tag">
+            <field name="name">À faire</field>
+            <field name="color">3</field>
+        </record>
+        <record id="tag_reference" model="bf.note.tag">
+            <field name="name">Référence</field>
+            <field name="color">4</field>
+        </record>
+        <record id="tag_brouillon" model="bf.note.tag">
+            <field name="name">Brouillon</field>
+            <field name="color">7</field>
+        </record>
+    </data>
+</odoo>

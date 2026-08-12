@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Must be loaded LAST in the manifest: menu items reference actions
+         defined across the other view files. -->
+
+    <menuitem id="menu_securetransfer_root" name="Transferts sécurisés"
+              sequence="47" web_icon="bf_securetransfer,static/description/icon.png"
+              groups="group_securetransfer_user"/>
+
+    <menuitem id="menu_dashboard" name="Tableau de bord"
+              parent="menu_securetransfer_root" action="action_secure_transfer_dashboard" sequence="5"/>
+
+    <menuitem id="menu_secure_send" name="Nouveau message sécurisé"
+              parent="menu_securetransfer_root" action="action_secure_send_wizard" sequence="8"/>
+
+    <menuitem id="menu_transfers" name="Transferts"
+              parent="menu_securetransfer_root" action="action_secure_transfer" sequence="10"/>
+
+    <menuitem id="menu_access_log" name="Journal d'accès"
+              parent="menu_securetransfer_root" action="action_access_log" sequence="20"/>
+
+    <menuitem id="menu_config" name="Configuration"
+              parent="menu_securetransfer_root" sequence="90"
+              groups="group_securetransfer_manager"/>
+
+    <menuitem id="menu_config_brands" name="Marques"
+              parent="menu_config" action="action_brand" sequence="10"/>
+
+    <menuitem id="menu_config_settings" name="Paramètres"
+              parent="menu_config" action="action_securetransfer_settings" sequence="20"/>
+
+</odoo>

@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- List view : table with completion checkboxes -->
+    <record id="meeting_dashboard_line_view_list" model="ir.ui.view">
+        <field name="name">meeting.dashboard.line.list</field>
+        <field name="model">meeting.dashboard.line</field>
+        <field name="arch" type="xml">
+            <list create="0" delete="0" edit="0"
+                  decoration-danger="is_past and not has_minutes_drafted"
+                  decoration-warning="is_past and has_minutes_drafted and not has_minutes_sent"
+                  decoration-info="is_upcoming and not has_agenda_drafted"
+                  default_order="date desc">
+                <field name="date" widget="datetime"/>
+                <field name="name"/>
+                <field name="project_id" optional="show"/>
+                <field name="partner_id" optional="show"/>
+                <field name="has_agenda_drafted" string="OdJ rédigé" widget="boolean_toggle" readonly="1"/>
+                <field name="has_agenda_reviewed" string="OdJ révisé" widget="boolean_toggle" readonly="1"/>
+                <field name="has_agenda_sent" string="OdJ envoyé" widget="boolean_toggle" readonly="1"/>
+                <field name="is_waiting_for_meeting" string="En attente" widget="boolean_toggle" readonly="1"/>
+                <field name="has_minutes_drafted" string="CR rédigé" widget="boolean_toggle" readonly="1"/>
+                <field name="has_minutes_reviewed" string="CR révisé" widget="boolean_toggle" readonly="1"/>
+                <field name="has_minutes_sent" string="CR envoyé" widget="boolean_toggle" readonly="1"/>
+                <field name="completion_score" optional="hide"/>
+                <field name="is_past" column_invisible="1"/>
+                <field name="is_upcoming" column_invisible="1"/>
+                <field name="agenda_id" optional="hide"/>
+                <field name="record_id" optional="hide"/>
+                <field name="event_id" optional="hide"/>
+                <button name="action_open_agenda" type="object"
+                        icon="fa-list-alt" title="Ouvrir l'OdJ"
+                        invisible="not agenda_id"/>
+                <button name="action_open_record" type="object"
+                        icon="fa-file-text-o" title="Ouvrir le CR"
+                        invisible="not record_id"/>
+                <button name="action_open_event" type="object"
+                        icon="fa-calendar" title="Ouvrir l'événement"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Search view : pre-canned filters and group-by -->
+    <record id="meeting_dashboard_line_view_search" model="ir.ui.view">
+        <field name="name">meeting.dashboard.line.search</field>
+        <field name="model">meeting.dashboard.line</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="project_id"/>
+                <field name="partner_id"/>
+
+                <filter name="filter_upcoming" string="À venir"
+                        domain="[('is_upcoming', '=', True)]"/>
+                <filter name="filter_past" string="Passées"
+                        domain="[('is_past', '=', True)]"/>
+
+                <separator/>
+
+                <filter name="filter_upcoming_no_agenda" string="À venir sans OdJ"
+                        domain="[('is_upcoming', '=', True), ('has_agenda_drafted', '=', False)]"/>
+                <filter name="filter_upcoming_no_sent_agenda" string="À venir — OdJ non envoyé"
+                        domain="[('is_upcoming', '=', True), ('has_agenda_sent', '=', False)]"/>
+
+                <separator/>
+
+                <filter name="filter_past_no_minutes" string="Passées sans compte rendu"
+                        domain="[('is_past', '=', True), ('has_minutes_drafted', '=', False)]"/>
+                <filter name="filter_minutes_not_sent" string="CR à envoyer"
+                        domain="[('has_minutes_drafted', '=', True), ('has_minutes_sent', '=', False)]"/>
+                <filter name="filter_minutes_not_reviewed" string="CR à réviser"
+                        domain="[('has_minutes_drafted', '=', True), ('has_minutes_reviewed', '=', False)]"/>
+
+                <separator/>
+
+                <filter name="filter_this_week" string="Cette semaine"
+                        domain="[('date', '&gt;=', (context_today() + relativedelta(weeks=-0, weekday=0)).strftime('%Y-%m-%d 00:00:00')),
+                                 ('date', '&lt;=', (context_today() + relativedelta(weeks=0, weekday=6)).strftime('%Y-%m-%d 23:59:59'))]"/>
+                <filter name="filter_today" string="Aujourd'hui"
+                        domain="[('date', '&gt;=', context_today().strftime('%Y-%m-%d 00:00:00')),
+                                 ('date', '&lt;=', context_today().strftime('%Y-%m-%d 23:59:59'))]"/>
+
+                <group expand="0" string="Grouper par">
+                    <filter name="groupby_project" string="Projet"
+                            context="{'group_by': 'project_id'}"/>
+                    <filter name="groupby_partner" string="Client"
+                            context="{'group_by': 'partner_id'}"/>
+                    <filter name="groupby_date" string="Mois"
+                            context="{'group_by': 'date:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Liste détaillée (utilisée par les click-throughs depuis le dashboard) -->
+    <record id="meeting_dashboard_line_action" model="ir.actions.act_window">
+        <field name="name">Rencontres — Liste de suivi</field>
+        <field name="res_model">meeting.dashboard.line</field>
+        <field name="view_mode">list</field>
+        <field name="search_view_id" ref="meeting_dashboard_line_view_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Aucune rencontre à traiter — tout est à jour !
+            </p>
+            <p>
+                Cette liste contient les rencontres avec participants externes
+                qui nécessitent encore une action.
+            </p>
+        </field>
+    </record>
+
+    <!-- Client action : tableau de bord OWL -->
+    <record id="meeting_dashboard_client_action" model="ir.actions.client">
+        <field name="name">Tableau de bord</field>
+        <field name="tag">meeting_dashboard</field>
+    </record>
+
+    <!-- ===== Exclusions ===== -->
+
+    <!-- Project list with skip toggle -->
+    <record id="meeting_dashboard_excluded_projects_list" model="ir.ui.view">
+        <field name="name">project.project.dashboard.exclusion.list</field>
+        <field name="model">project.project</field>
+        <field name="arch" type="xml">
+            <list editable="bottom" default_order="bf_skip_dashboard desc, name">
+                <field name="name"/>
+                <field name="partner_id" optional="show"/>
+                <field name="user_id" optional="hide"/>
+                <field name="bf_skip_dashboard" widget="boolean_toggle" string="Exclure"/>
+            </list>
+        </field>
+    </record>
+    <record id="meeting_dashboard_excluded_projects_search" model="ir.ui.view">
+        <field name="name">project.project.dashboard.exclusion.search</field>
+        <field name="model">project.project</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="user_id"/>
+                <filter name="filter_excluded" string="Exclus"
+                        domain="[('bf_skip_dashboard', '=', True)]"/>
+                <filter name="filter_active" string="Actifs"
+                        domain="[('active', '=', True)]"/>
+            </search>
+        </field>
+    </record>
+    <record id="meeting_dashboard_excluded_projects_action" model="ir.actions.act_window">
+        <field name="name">Projets exclus</field>
+        <field name="res_model">project.project</field>
+        <field name="view_mode">list</field>
+        <field name="view_id" ref="meeting_dashboard_excluded_projects_list"/>
+        <field name="search_view_id" ref="meeting_dashboard_excluded_projects_search"/>
+        <field name="context">{'search_default_filter_active': 1}</field>
+        <field name="help" type="html">
+            <p>Cochez « Exclure » sur les projets dont les rencontres ne
+            doivent pas apparaître au tableau de bord.</p>
+        </field>
+    </record>
+
+    <!-- Partner list with skip toggle -->
+    <record id="meeting_dashboard_excluded_partners_list" model="ir.ui.view">
+        <field name="name">res.partner.dashboard.exclusion.list</field>
+        <field name="model">res.partner</field>
+        <field name="arch" type="xml">
+            <list editable="bottom" default_order="bf_skip_dashboard desc, name">
+                <field name="name"/>
+                <field name="email" optional="show"/>
+                <field name="is_company" optional="hide"/>
+                <field name="bf_skip_dashboard" widget="boolean_toggle" string="Exclure"/>
+            </list>
+        </field>
+    </record>
+    <record id="meeting_dashboard_excluded_partners_search" model="ir.ui.view">
+        <field name="name">res.partner.dashboard.exclusion.search</field>
+        <field name="model">res.partner</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="email"/>
+                <filter name="filter_excluded" string="Exclus"
+                        domain="[('bf_skip_dashboard', '=', True)]"/>
+            </search>
+        </field>
+    </record>
+    <record id="meeting_dashboard_excluded_partners_action" model="ir.actions.act_window">
+        <field name="name">Clients exclus</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">list</field>
+        <field name="view_id" ref="meeting_dashboard_excluded_partners_list"/>
+        <field name="search_view_id" ref="meeting_dashboard_excluded_partners_search"/>
+        <field name="context">{'search_default_filter_excluded': 1}</field>
+        <field name="help" type="html">
+            <p>Cochez « Exclure » sur les contacts dont les rencontres ne
+            doivent pas apparaître au tableau de bord. Utile pour les
+            partenaires de collaborations externes (ex. un partenaire externe).</p>
+        </field>
+    </record>
+
+    <!-- Excluded calendar events list -->
+    <record id="meeting_dashboard_excluded_events_list" model="ir.ui.view">
+        <field name="name">calendar.event.dashboard.exclusion.list</field>
+        <field name="model">calendar.event</field>
+        <field name="arch" type="xml">
+            <list editable="bottom" default_order="start desc">
+                <field name="name"/>
+                <field name="start"/>
+                <field name="user_id" optional="show"/>
+                <field name="bf_skip_dashboard" widget="boolean_toggle" string="Exclure"/>
+            </list>
+        </field>
+    </record>
+    <record id="meeting_dashboard_excluded_events_action" model="ir.actions.act_window">
+        <field name="name">Rencontres exclues</field>
+        <field name="res_model">calendar.event</field>
+        <field name="view_mode">list</field>
+        <field name="view_id" ref="meeting_dashboard_excluded_events_list"/>
+        <field name="domain">[('bf_skip_dashboard', '=', True)]</field>
+        <field name="help" type="html">
+            <p>Rencontres manuellement masquées du tableau de bord
+            (via le bouton 👁️ sur la carte). Décochez « Exclure » pour
+            les ré-activer.</p>
+        </field>
+    </record>
+
+    <!-- Menus -->
+    <menuitem id="menu_meeting_dashboard"
+              name="Tableau de bord"
+              parent="menu_meeting_root"
+              action="meeting_dashboard_client_action"
+              groups="group_meeting_user"
+              sequence="5"/>
+    <menuitem id="menu_meeting_dashboard_list"
+              name="Liste de suivi"
+              parent="menu_meeting_dashboard"
+              action="meeting_dashboard_line_action"
+              groups="group_meeting_user"
+              sequence="10"/>
+    <menuitem id="menu_meeting_dashboard_exclusions"
+              name="Exclusions"
+              parent="menu_meeting_dashboard"
+              groups="group_meeting_user"
+              sequence="20"/>
+    <menuitem id="menu_meeting_dashboard_excl_projects"
+              name="Projets exclus"
+              parent="menu_meeting_dashboard_exclusions"
+              action="meeting_dashboard_excluded_projects_action"
+              groups="group_meeting_user"
+              sequence="10"/>
+    <menuitem id="menu_meeting_dashboard_excl_partners"
+              name="Clients exclus"
+              parent="menu_meeting_dashboard_exclusions"
+              action="meeting_dashboard_excluded_partners_action"
+              groups="group_meeting_user"
+              sequence="20"/>
+    <menuitem id="menu_meeting_dashboard_excl_events"
+              name="Rencontres exclues"
+              parent="menu_meeting_dashboard_exclusions"
+              action="meeting_dashboard_excluded_events_action"
+              groups="group_meeting_user"
+              sequence="30"/>
+
+</odoo>

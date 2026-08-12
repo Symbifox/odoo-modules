@@ -1,0 +1,395 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- ============================================================ -->
+        <!-- La Chasse (Productivity / Timesheets / Streaks)              -->
+        <!-- ============================================================ -->
+        <record id="badge_first_timesheet" model="bf.gamification.badge">
+            <field name="name">Premi&#232;res Pattes</field>
+            <field name="description">Poser vos premi&#232;res pattes dans Fox Quest</field>
+            <field name="category_id" ref="badge_cat_productivity"/>
+            <field name="xp_reward">10</field>
+            <field name="rarity">common</field>
+            <field name="condition_type">automatic</field>
+            <field name="condition_model">account.analytic.line</field>
+            <field name="condition_domain">[('project_id', '!=', False)]</field>
+            <field name="condition_threshold">1</field>
+            <field name="popup_effect">confetti</field>
+            <field name="popup_message">Bienvenue dans la meute !</field>
+        </record>
+        <record id="badge_streak_7" model="bf.gamification.badge">
+            <field name="name">Queue de Feu</field>
+            <field name="description">Maintenir votre flamme pendant 7 jours cons&#233;cutifs</field>
+            <field name="category_id" ref="badge_cat_productivity"/>
+            <field name="xp_reward">25</field>
+            <field name="rarity">uncommon</field>
+            <field name="condition_type">threshold</field>
+            <field name="threshold_field">longest_streak</field>
+            <field name="condition_threshold">7</field>
+            <field name="popup_effect">fireworks</field>
+            <field name="popup_message">Votre queue brille dans la nuit !</field>
+        </record>
+        <record id="badge_streak_30" model="bf.gamification.badge">
+            <field name="name">Renard Infatigable</field>
+            <field name="description">Maintenir votre flamme pendant 30 jours cons&#233;cutifs</field>
+            <field name="category_id" ref="badge_cat_productivity"/>
+            <field name="xp_reward">100</field>
+            <field name="rarity">epic</field>
+            <field name="condition_type">threshold</field>
+            <field name="threshold_field">longest_streak</field>
+            <field name="condition_threshold">30</field>
+            <field name="popup_effect">fireworks</field>
+            <field name="popup_message">Rien ne peut &#233;teindre votre flamme !</field>
+            <field name="hidden" eval="True"/>
+        </record>
+        <record id="badge_streak_90" model="bf.gamification.badge">
+            <field name="name">Flamme &#201;ternelle</field>
+            <field name="description">Maintenir votre flamme pendant 90 jours cons&#233;cutifs</field>
+            <field name="category_id" ref="badge_cat_productivity"/>
+            <field name="xp_reward">200</field>
+            <field name="rarity">legendary</field>
+            <field name="condition_type">threshold</field>
+            <field name="threshold_field">longest_streak</field>
+            <field name="condition_threshold">90</field>
+            <field name="popup_effect">fireworks</field>
+            <field name="popup_message">Votre flamme illumine toute la for&#234;t !</field>
+            <field name="hidden" eval="True"/>
+        </record>
+
+        <!-- ============================================================ -->
+        <!-- Le Terrier (Knowledge / Documents)                           -->
+        <!-- ============================================================ -->
+        <record id="badge_first_doc" model="bf.gamification.badge">
+            <field name="name">Renard Lettr&#233;</field>
+            <field name="description">Cr&#233;er votre premier document</field>
+            <field name="category_id" ref="badge_cat_knowledge"/>
+            <field name="xp_reward">15</field>
+            <field name="rarity">common</field>
+            <field name="condition_type">automatic</field>
+            <field name="condition_model">project.document</field>
+            <field name="condition_domain">[]</field>
+            <field name="condition_threshold">1</field>
+            <field name="popup_effect">glow</field>
+            <field name="popup_message">La plume est plus forte que la griffe !</field>
+        </record>
+        <record id="badge_10_docs" model="bf.gamification.badge">
+            <field name="name">Sage du Terrier</field>
+            <field name="description">Cr&#233;er 10 documents dans le terrier</field>
+            <field name="category_id" ref="badge_cat_knowledge"/>
+            <field name="xp_reward">50</field>
+            <field name="rarity">rare</field>
+            <field name="condition_type">automatic</field>
+            <field name="condition_model">project.document</field>
+            <field name="condition_domain">[]</field>
+            <field name="condition_threshold">10</field>
+            <field name="popup_effect">confetti</field>
+            <field name="popup_message">Gardien du savoir ancestral !</field>
+        </record>
+        <record id="badge_25_docs" model="bf.gamification.badge">
+            <field name="name">Archiviste</field>
+            <field name="description">Cr&#233;er 25 documents &#8212; la m&#233;moire du terrier</field>
+            <field name="category_id" ref="badge_cat_knowledge"/>
+            <field name="xp_reward">30</field>
+            <field name="rarity">uncommon</field>
+            <field name="condition_type">automatic</field>
+            <field name="condition_model">project.document</field>
+            <field name="condition_domain">[]</field>
+            <field name="condition_threshold">25</field>
+            <field name="popup_effect">confetti</field>
+            <field name="popup_message">Rien n'&#233;chappe &#224; vos archives !</field>
+        </record>
+        <record id="badge_50_docs" model="bf.gamification.badge">
+            <field name="name">Biblioth&#233;caire</field>
+            <field name="description">Cr&#233;er 50 documents &#8212; gardien de tout le savoir</field>
+            <field name="category_id" ref="badge_cat_knowledge"/>
+            <field name="xp_reward">100</field>
+            <field name="rarity">epic</field>
+            <field name="condition_type">automatic</field>
+            <field name="condition_model">project.document</field>
+            <field name="condition_domain">[]</field>
+            <field name="condition_threshold">50</field>
+            <field name="popup_effect">fireworks</field>
+            <field name="popup_message">Le terrier d&#233;borde de sagesse !</field>
+            <field name="hidden" eval="True"/>
+        </record>
+
+        <!-- ============================================================ -->
+        <!-- La Meute (Teamwork / Tasks)                                  -->
+        <!-- ============================================================ -->
+        <record id="badge_first_task" model="bf.gamification.badge">
+            <field name="name">Renard Aventurier</field>
+            <field name="description">Compl&#233;ter votre premi&#232;re t&#226;che</field>
+            <field name="category_id" ref="badge_cat_teamwork"/>
+            <field name="xp_reward">10</field>
+            <field name="rarity">common</field>
+            <field name="condition_type">automatic</field>
+            <field name="condition_model">project.task</field>
+            <field name="condition_domain">[('stage_id.fold', '=', True)]</field>
+            <field name="condition_threshold">1</field>
+            <field name="condition_user_field">user_ids</field>
+            <field name="popup_effect">confetti</field>
+            <field name="popup_message">La for&#234;t n'attend que vous !</field>
+        </record>
+        <record id="badge_10_tasks" model="bf.gamification.badge">
+            <field name="name">Chasseur Agile</field>
+            <field name="description">Compl&#233;ter 10 t&#226;ches &#8212; vos pattes s'aiguisent</field>
+            <field name="category_id" ref="badge_cat_teamwork"/>
+            <field name="xp_reward">20</field>
+            <field name="rarity">uncommon</field>
+            <field name="condition_type">automatic</field>
+            <field name="condition_model">project.task</field>
+            <field name="condition_domain">[('stage_id.fold', '=', True)]</field>
+            <field name="condition_threshold">10</field>
+            <field name="condition_user_field">user_ids</field>
+            <field name="popup_effect">confetti</field>
+            <field name="popup_message">Vos griffes ne manquent jamais leur cible !</field>
+        </record>
+        <record id="badge_50_tasks" model="bf.gamification.badge">
+            <field name="name">Renard Implacable</field>
+            <field name="description">Compl&#233;ter 50 t&#226;ches comme un vrai renard</field>
+            <field name="category_id" ref="badge_cat_teamwork"/>
+            <field name="xp_reward">75</field>
+            <field name="rarity">rare</field>
+            <field name="condition_type">automatic</field>
+            <field name="condition_model">project.task</field>
+            <field name="condition_domain">[('stage_id.fold', '=', True)]</field>
+            <field name="condition_threshold">50</field>
+            <field name="condition_user_field">user_ids</field>
+            <field name="popup_effect">fireworks</field>
+            <field name="popup_message">Aucune proie ne vous &#233;chappe !</field>
+        </record>
+        <record id="badge_100_tasks" model="bf.gamification.badge">
+            <field name="name">Chasseur Expert</field>
+            <field name="description">Compl&#233;ter 100 t&#226;ches &#8212; ma&#238;tre de la for&#234;t</field>
+            <field name="category_id" ref="badge_cat_teamwork"/>
+            <field name="xp_reward">150</field>
+            <field name="rarity">epic</field>
+            <field name="condition_type">automatic</field>
+            <field name="condition_model">project.task</field>
+            <field name="condition_domain">[('stage_id.fold', '=', True)]</field>
+            <field name="condition_threshold">100</field>
+            <field name="condition_user_field">user_ids</field>
+            <field name="popup_effect">fireworks</field>
+            <field name="popup_message">La for&#234;t enti&#232;re conna&#238;t votre nom !</field>
+            <field name="hidden" eval="True"/>
+        </record>
+
+        <!-- ============================================================ -->
+        <!-- La Meute (Teamwork / Helpdesk)                               -->
+        <!-- ============================================================ -->
+        <record id="badge_first_ticket" model="bf.gamification.badge">
+            <field name="name">D&#233;panneur</field>
+            <field name="description">R&#233;soudre votre premier ticket d'assistance</field>
+            <field name="category_id" ref="badge_cat_teamwork"/>
+            <field name="xp_reward">10</field>
+            <field name="rarity">common</field>
+            <field name="condition_type">automatic</field>
+            <field name="condition_model">helpdesk.ticket</field>
+            <field name="condition_domain">[('stage_id.fold', '=', True)]</field>
+            <field name="condition_threshold">1</field>
+            <field name="condition_user_field">user_id</field>
+            <field name="popup_effect">confetti</field>
+            <field name="popup_message">Toujours pr&#234;t &#224; aider la meute !</field>
+        </record>
+        <record id="badge_10_tickets" model="bf.gamification.badge">
+            <field name="name">D&#233;panneur Aguerri</field>
+            <field name="description">R&#233;soudre 10 tickets &#8212; on vous fait confiance</field>
+            <field name="category_id" ref="badge_cat_teamwork"/>
+            <field name="xp_reward">25</field>
+            <field name="rarity">uncommon</field>
+            <field name="condition_type">automatic</field>
+            <field name="condition_model">helpdesk.ticket</field>
+            <field name="condition_domain">[('stage_id.fold', '=', True)]</field>
+            <field name="condition_threshold">10</field>
+            <field name="condition_user_field">user_id</field>
+            <field name="popup_effect">confetti</field>
+            <field name="popup_message">La meute peut compter sur vous !</field>
+        </record>
+        <record id="badge_25_tickets" model="bf.gamification.badge">
+            <field name="name">Renard Serviable</field>
+            <field name="description">R&#233;soudre 25 tickets &#8212; toujours pr&#234;t &#224; d&#233;panner</field>
+            <field name="category_id" ref="badge_cat_teamwork"/>
+            <field name="xp_reward">50</field>
+            <field name="rarity">rare</field>
+            <field name="condition_type">automatic</field>
+            <field name="condition_model">helpdesk.ticket</field>
+            <field name="condition_domain">[('stage_id.fold', '=', True)]</field>
+            <field name="condition_threshold">25</field>
+            <field name="condition_user_field">user_id</field>
+            <field name="popup_effect">fireworks</field>
+            <field name="popup_message">Le h&#233;ros de la meute !</field>
+        </record>
+
+        <!-- ============================================================ -->
+        <!-- La Tani&#232;re (Hosting / Maintenance)                      -->
+        <!-- ============================================================ -->
+        <record id="badge_first_maintenance" model="bf.gamification.badge">
+            <field name="name">Gardien de la Tani&#232;re</field>
+            <field name="description">Compl&#233;ter votre premi&#232;re maintenance</field>
+            <field name="category_id" ref="badge_cat_hosting"/>
+            <field name="xp_reward">10</field>
+            <field name="rarity">common</field>
+            <field name="condition_type">automatic</field>
+            <field name="condition_model">hosting.maintenance.schedule</field>
+            <field name="condition_domain">[('last_performed_date', '!=', False)]</field>
+            <field name="condition_threshold">1</field>
+            <field name="condition_user_field">write_uid</field>
+            <field name="popup_effect">glow</field>
+            <field name="popup_message">La tani&#232;re est entre bonnes pattes !</field>
+        </record>
+        <record id="badge_10_maintenance" model="bf.gamification.badge">
+            <field name="name">Technicien de la Tani&#232;re</field>
+            <field name="description">Compl&#233;ter 10 maintenances &#8212; les murs tiennent bon</field>
+            <field name="category_id" ref="badge_cat_hosting"/>
+            <field name="xp_reward">25</field>
+            <field name="rarity">uncommon</field>
+            <field name="condition_type">automatic</field>
+            <field name="condition_model">hosting.maintenance.schedule</field>
+            <field name="condition_domain">[('last_performed_date', '!=', False)]</field>
+            <field name="condition_threshold">10</field>
+            <field name="condition_user_field">write_uid</field>
+            <field name="popup_effect">confetti</field>
+            <field name="popup_message">Les fondations sont solides !</field>
+        </record>
+        <record id="badge_50_maintenance" model="bf.gamification.badge">
+            <field name="name">Ma&#238;tre de la Tani&#232;re</field>
+            <field name="description">Compl&#233;ter 50 maintenances &#8212; architecte de la tani&#232;re</field>
+            <field name="category_id" ref="badge_cat_hosting"/>
+            <field name="xp_reward">75</field>
+            <field name="rarity">rare</field>
+            <field name="condition_type">automatic</field>
+            <field name="condition_model">hosting.maintenance.schedule</field>
+            <field name="condition_domain">[('last_performed_date', '!=', False)]</field>
+            <field name="condition_threshold">50</field>
+            <field name="condition_user_field">write_uid</field>
+            <field name="popup_effect">fireworks</field>
+            <field name="popup_message">La tani&#232;re est une forteresse !</field>
+        </record>
+
+        <!-- ============================================================ -->
+        <!-- Le Glapissement (Communication / Messages)                   -->
+        <!-- ============================================================ -->
+        <record id="badge_first_message" model="bf.gamification.badge">
+            <field name="name">Premier Glapissement</field>
+            <field name="description">Poster votre premier message</field>
+            <field name="category_id" ref="badge_cat_communication"/>
+            <field name="xp_reward">10</field>
+            <field name="rarity">common</field>
+            <field name="condition_type">automatic</field>
+            <field name="condition_model">mail.message</field>
+            <field name="condition_domain">[('message_type', '=', 'comment')]</field>
+            <field name="condition_threshold">1</field>
+            <field name="popup_effect">confetti</field>
+            <field name="popup_message">Votre voix porte dans la for&#234;t !</field>
+        </record>
+        <record id="badge_50_messages" model="bf.gamification.badge">
+            <field name="name">Renard Bavard</field>
+            <field name="description">Poster 50 messages &#8212; la for&#234;t enti&#232;re vous entend</field>
+            <field name="category_id" ref="badge_cat_communication"/>
+            <field name="xp_reward">25</field>
+            <field name="rarity">uncommon</field>
+            <field name="condition_type">automatic</field>
+            <field name="condition_model">mail.message</field>
+            <field name="condition_domain">[('message_type', '=', 'comment')]</field>
+            <field name="condition_threshold">50</field>
+            <field name="popup_effect">confetti</field>
+            <field name="popup_message">Le renard le plus bavard de la for&#234;t !</field>
+        </record>
+        <record id="badge_100_messages" model="bf.gamification.badge">
+            <field name="name">Voix de la For&#234;t</field>
+            <field name="description">Poster 100 messages &#8212; votre voix r&#233;sonne partout</field>
+            <field name="category_id" ref="badge_cat_communication"/>
+            <field name="xp_reward">50</field>
+            <field name="rarity">rare</field>
+            <field name="condition_type">automatic</field>
+            <field name="condition_model">mail.message</field>
+            <field name="condition_domain">[('message_type', '=', 'comment')]</field>
+            <field name="condition_threshold">100</field>
+            <field name="popup_effect">fireworks</field>
+            <field name="popup_message">Chaque renard conna&#238;t votre voix !</field>
+        </record>
+
+        <!-- ============================================================ -->
+        <!-- Les &#201;toiles (Milestones / XP thresholds)                -->
+        <!-- ============================================================ -->
+        <record id="badge_100_hours" model="bf.gamification.badge">
+            <field name="name">Renard Endurant</field>
+            <field name="description">Atteindre 100 XP &#8212; les premiers pas comptent</field>
+            <field name="category_id" ref="badge_cat_milestone"/>
+            <field name="xp_reward">50</field>
+            <field name="rarity">uncommon</field>
+            <field name="condition_type">threshold</field>
+            <field name="condition_threshold">100</field>
+            <field name="popup_effect">confetti</field>
+        </record>
+        <record id="badge_xp_500" model="bf.gamification.badge">
+            <field name="name">Renard d'Argent</field>
+            <field name="description">Atteindre 500 XP</field>
+            <field name="category_id" ref="badge_cat_milestone"/>
+            <field name="xp_reward">25</field>
+            <field name="rarity">uncommon</field>
+            <field name="condition_type">threshold</field>
+            <field name="condition_threshold">500</field>
+            <field name="popup_effect">confetti</field>
+            <field name="popup_message">Votre pelage brille d'argent !</field>
+        </record>
+        <record id="badge_xp_1000" model="bf.gamification.badge">
+            <field name="name">Renard de Platine</field>
+            <field name="description">Atteindre 1 000 XP</field>
+            <field name="category_id" ref="badge_cat_milestone"/>
+            <field name="xp_reward">50</field>
+            <field name="rarity">rare</field>
+            <field name="condition_type">threshold</field>
+            <field name="condition_threshold">1000</field>
+            <field name="popup_effect">confetti</field>
+            <field name="popup_message">Le platine vous va &#224; merveille !</field>
+        </record>
+        <record id="badge_xp_2500" model="bf.gamification.badge">
+            <field name="name">Renard de Diamant</field>
+            <field name="description">Atteindre 2 500 XP</field>
+            <field name="category_id" ref="badge_cat_milestone"/>
+            <field name="xp_reward">75</field>
+            <field name="rarity">epic</field>
+            <field name="condition_type">threshold</field>
+            <field name="condition_threshold">2500</field>
+            <field name="popup_effect">fireworks</field>
+            <field name="popup_message">Dur comme le diamant !</field>
+        </record>
+        <record id="badge_xp_5000" model="bf.gamification.badge">
+            <field name="name">Renard d'Or</field>
+            <field name="description">Atteindre 5 000 XP</field>
+            <field name="category_id" ref="badge_cat_milestone"/>
+            <field name="xp_reward">100</field>
+            <field name="rarity">epic</field>
+            <field name="condition_type">threshold</field>
+            <field name="condition_threshold">5000</field>
+            <field name="popup_effect">fireworks</field>
+            <field name="popup_message">Votre pelage brille d'or pur !</field>
+            <field name="hidden" eval="True"/>
+        </record>
+        <record id="badge_xp_10000" model="bf.gamification.badge">
+            <field name="name">Renard &#201;ternel</field>
+            <field name="description">Atteindre 10 000 XP &#8212; une l&#233;gende vivante</field>
+            <field name="category_id" ref="badge_cat_milestone"/>
+            <field name="xp_reward">200</field>
+            <field name="rarity">legendary</field>
+            <field name="condition_type">threshold</field>
+            <field name="condition_threshold">10000</field>
+            <field name="popup_effect">fireworks</field>
+            <field name="popup_message">Votre l&#233;gende traversera les &#226;ges !</field>
+            <field name="hidden" eval="True"/>
+        </record>
+        <record id="badge_xp_20000" model="bf.gamification.badge">
+            <field name="name">Kitsune L&#233;gendaire</field>
+            <field name="description">Atteindre 20 000 XP &#8212; transcendance renarde</field>
+            <field name="category_id" ref="badge_cat_milestone"/>
+            <field name="xp_reward">500</field>
+            <field name="rarity">legendary</field>
+            <field name="condition_type">threshold</field>
+            <field name="condition_threshold">20000</field>
+            <field name="popup_effect">fireworks</field>
+            <field name="popup_message">Vous &#234;tes devenu Kitsune !</field>
+            <field name="hidden" eval="True"/>
+        </record>
+    </data>
+</odoo>

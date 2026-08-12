@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Show cancellation reason on the booking form when present. -->
+    <record id="resource_booking_form_inherit_cancellation_reason" model="ir.ui.view">
+        <field name="name">resource.booking.form.inherit.bf_appointment.cancellation_reason</field>
+        <field name="model">resource.booking</field>
+        <field name="inherit_id" ref="resource_booking.resource_booking_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='videocall_location']" position="after">
+                <field name="cancellation_reason"
+                       invisible="state != 'canceled' and not cancellation_reason"
+                       readonly="state == 'canceled'"
+                       placeholder="Saisie par le client lors de l'annulation"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

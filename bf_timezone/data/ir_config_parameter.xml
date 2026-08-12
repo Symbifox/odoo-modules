@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Seed the configurable default once. noupdate=1 so a later change via
+         Settings (e.g. to Pacific/Auckland) survives module upgrades. -->
+    <data noupdate="1">
+        <record id="param_bf_default_tz" model="ir.config_parameter">
+            <field name="key">bf_timezone.default_tz</field>
+            <field name="value">America/Toronto</field>
+        </record>
+    </data>
+</odoo>

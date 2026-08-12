@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Menu under Settings > Technical -->
+    <menuitem id="menu_nextcloud_sync_root"
+        name="Nextcloud Calendar Sync"
+        parent="base.menu_custom"
+        sequence="100"/>
+
+    <menuitem id="menu_nextcloud_sync_config"
+        name="Calendar Configurations"
+        parent="menu_nextcloud_sync_root"
+        action="action_nextcloud_sync_config"
+        sequence="10"/>
+</odoo>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Transaction List View -->
+    <record id="hosting_voip_transaction_view_tree" model="ir.ui.view">
+        <field name="name">hosting.voip.transaction.list</field>
+        <field name="model">hosting.voip.transaction</field>
+        <field name="arch" type="xml">
+            <list create="false" edit="false">
+                <field name="tx_date" string="Date"/>
+                <field name="description" string="Description"/>
+                <field name="amount" string="Montant" sum="Total"/>
+                <field name="balance_after" string="Solde après" optional="show"/>
+                <field name="voipms_ref" string="Référence" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Transaction Search View -->
+    <record id="hosting_voip_transaction_view_search" model="ir.ui.view">
+        <field name="name">hosting.voip.transaction.search</field>
+        <field name="model">hosting.voip.transaction</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="description"/>
+                <field name="voipms_ref"/>
+                <filter name="filter_this_month" string="Ce mois-ci"
+                        domain="[('tx_date', '>=', (context_today().replace(day=1)).strftime('%Y-%m-%d'))]"/>
+                <group expand="0" string="Grouper par">
+                    <filter name="group_month" string="Mois"
+                            context="{'group_by': 'tx_date:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Transaction Pivot View -->
+    <record id="hosting_voip_transaction_view_pivot" model="ir.ui.view">
+        <field name="name">hosting.voip.transaction.pivot</field>
+        <field name="model">hosting.voip.transaction</field>
+        <field name="arch" type="xml">
+            <pivot string="Coûts VOIP.ms">
+                <field name="tx_date" interval="month" type="row"/>
+                <field name="amount" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="hosting_voip_transaction_action" model="ir.actions.act_window">
+        <field name="name">Transactions VOIP.ms</field>
+        <field name="res_model">hosting.voip.transaction</field>
+        <field name="view_mode">list,pivot</field>
+        <field name="search_view_id" ref="hosting_voip_transaction_view_search"/>
+    </record>
+
+</odoo>

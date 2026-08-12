@@ -1,0 +1,429 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Dashboard Client Action -->
+    <record id="action_knowledge_dashboard" model="ir.actions.client">
+        <field name="name">Tableau de bord</field>
+        <field name="tag">knowledge_dashboard</field>
+        <field name="target">main</field>
+    </record>
+
+    <!-- Alternative: QWeb-based Dashboard View -->
+    <record id="view_knowledge_dashboard_qweb" model="ir.ui.view">
+        <field name="name">knowledge.dashboard.qweb</field>
+        <field name="type">qweb</field>
+        <field name="arch" type="xml">
+            <t t-name="project_knowledge_matrix.Dashboard">
+                <div class="o_knowledge_dashboard container-fluid py-4">
+                    <!-- Header -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <h1 class="mb-0">
+                                <i class="fa fa-dashboard me-2"/>Tableau de bord - Base de connaissances
+                            </h1>
+                            <p class="text-muted mb-0">Vue d'ensemble des indicateurs clés de performance</p>
+                        </div>
+                    </div>
+
+                    <!-- Alert Row - Critical Items -->
+                    <div class="row mb-4" t-if="data.review_metrics.total_attention > 0">
+                        <div class="col-12">
+                            <div class="alert alert-danger d-flex align-items-center" role="alert">
+                                <i class="fa fa-exclamation-triangle fa-2x me-3"/>
+                                <div>
+                                    <strong>Attention requise!</strong>
+                                    <span t-esc="data.review_metrics.total_attention"/> document(s) nécessitent une action immédiate
+                                    (expirés, en retard de révision, ou expirant bientôt).
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- KPI Cards Row 1: Document Overview -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <h5 class="text-uppercase text-muted mb-3">
+                                <i class="fa fa-file-text-o me-2"/>Aperçu des documents
+                            </h5>
+                        </div>
+                        <div class="col-md-2 col-sm-4 col-6 mb-3">
+                            <div class="card h-100 border-primary">
+                                <div class="card-body text-center">
+                                    <h2 class="text-primary mb-0" t-esc="data.document_overview.active"/>
+                                    <small class="text-muted">Documents actifs</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-2 col-sm-4 col-6 mb-3">
+                            <div class="card h-100">
+                                <div class="card-body text-center">
+                                    <h2 class="text-info mb-0" t-esc="data.document_overview.internal"/>
+                                    <small class="text-muted">Internes</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-2 col-sm-4 col-6 mb-3">
+                            <div class="card h-100">
+                                <div class="card-body text-center">
+                                    <h2 class="text-success mb-0" t-esc="data.document_overview.client"/>
+                                    <small class="text-muted">Clients</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-2 col-sm-4 col-6 mb-3">
+                            <div class="card h-100">
+                                <div class="card-body text-center">
+                                    <h2 class="text-secondary mb-0" t-esc="data.document_overview.draft"/>
+                                    <small class="text-muted">Brouillons</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-2 col-sm-4 col-6 mb-3">
+                            <div class="card h-100">
+                                <div class="card-body text-center">
+                                    <h2 class="text-muted mb-0" t-esc="data.document_overview.archived"/>
+                                    <small class="text-muted">Archivés</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-2 col-sm-4 col-6 mb-3">
+                            <div class="card h-100">
+                                <div class="card-body text-center">
+                                    <h2 class="mb-0" t-esc="data.content_quality.versions_this_year"/>
+                                    <small class="text-muted">Versions cette année</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- KPI Cards Row 2: Review & Expiration -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <h5 class="text-uppercase text-muted mb-3">
+                                <i class="fa fa-calendar-times-o me-2"/>Révisions et expirations
+                            </h5>
+                        </div>
+                        <div class="col-md-3 col-sm-6 mb-3">
+                            <div class="card h-100 border-danger">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h3 class="text-danger mb-0" t-esc="data.review_metrics.overdue_review"/>
+                                            <small class="text-muted">Révisions en retard</small>
+                                        </div>
+                                        <i class="fa fa-exclamation-circle fa-2x text-danger"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-6 mb-3">
+                            <div class="card h-100 border-danger">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h3 class="text-danger mb-0" t-esc="data.review_metrics.expired"/>
+                                            <small class="text-muted">Documents expirés</small>
+                                        </div>
+                                        <i class="fa fa-times-circle fa-2x text-danger"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-6 mb-3">
+                            <div class="card h-100 border-warning">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h3 class="text-warning mb-0" t-esc="data.review_metrics.expiring_0_30"/>
+                                            <small class="text-muted">Expirent sous 30j</small>
+                                        </div>
+                                        <i class="fa fa-clock-o fa-2x text-warning"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-6 mb-3">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h3 class="mb-0" t-esc="data.review_metrics.no_review_date"/>
+                                            <small class="text-muted">Sans date de révision</small>
+                                        </div>
+                                        <i class="fa fa-question-circle fa-2x text-secondary"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Review Timeline -->
+                    <div class="row mb-4">
+                        <div class="col-md-6 mb-3">
+                            <div class="card h-100">
+                                <div class="card-header bg-light">
+                                    <h6 class="mb-0"><i class="fa fa-calendar me-2"/>Calendrier des révisions</h6>
+                                </div>
+                                <div class="card-body">
+                                    <table class="table table-sm mb-0">
+                                        <tbody>
+                                            <tr>
+                                                <td><span class="badge text-bg-danger">0-30 jours</span></td>
+                                                <td class="text-end"><strong t-esc="data.review_metrics.review_0_30"/></td>
+                                            </tr>
+                                            <tr>
+                                                <td><span class="badge text-bg-warning">30-60 jours</span></td>
+                                                <td class="text-end"><strong t-esc="data.review_metrics.review_30_60"/></td>
+                                            </tr>
+                                            <tr>
+                                                <td><span class="badge text-bg-info">60-90 jours</span></td>
+                                                <td class="text-end"><strong t-esc="data.review_metrics.review_60_90"/></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="card h-100">
+                                <div class="card-header bg-light">
+                                    <h6 class="mb-0"><i class="fa fa-hourglass-end me-2"/>Calendrier des expirations</h6>
+                                </div>
+                                <div class="card-body">
+                                    <table class="table table-sm mb-0">
+                                        <tbody>
+                                            <tr>
+                                                <td><span class="badge text-bg-danger">0-30 jours</span></td>
+                                                <td class="text-end"><strong t-esc="data.review_metrics.expiring_0_30"/></td>
+                                            </tr>
+                                            <tr>
+                                                <td><span class="badge text-bg-warning">30-60 jours</span></td>
+                                                <td class="text-end"><strong t-esc="data.review_metrics.expiring_30_60"/></td>
+                                            </tr>
+                                            <tr>
+                                                <td><span class="badge text-bg-info">60-90 jours</span></td>
+                                                <td class="text-end"><strong t-esc="data.review_metrics.expiring_60_90"/></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Client & Internal Compliance Row -->
+                    <div class="row mb-4">
+                        <!-- Client Documentation -->
+                        <div class="col-md-6 mb-3">
+                            <div class="card h-100">
+                                <div class="card-header bg-success text-white">
+                                    <h6 class="mb-0"><i class="fa fa-users me-2"/>Documentation clients</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row text-center mb-3">
+                                        <div class="col-4">
+                                            <h3 class="mb-0" t-esc="data.client_metrics.total_distributions"/>
+                                            <small class="text-muted">Distributions</small>
+                                        </div>
+                                        <div class="col-4">
+                                            <h3 class="text-success mb-0"><t t-esc="data.client_metrics.acknowledgment_rate"/>%</h3>
+                                            <small class="text-muted">Taux d'accusé</small>
+                                        </div>
+                                        <div class="col-4">
+                                            <h3 class="text-warning mb-0" t-esc="data.client_metrics.outdated"/>
+                                            <small class="text-muted">Obsolètes</small>
+                                        </div>
+                                    </div>
+                                    <hr/>
+                                    <div class="d-flex justify-content-between">
+                                        <span><i class="fa fa-clock-o text-warning me-2"/>En attente d'accusé</span>
+                                        <strong t-esc="data.client_metrics.pending"/>
+                                    </div>
+                                    <div class="d-flex justify-content-between">
+                                        <span><i class="fa fa-building text-info me-2"/>Clients avec docs obsolètes</span>
+                                        <strong t-esc="data.client_metrics.clients_with_outdated"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Internal Compliance -->
+                        <div class="col-md-6 mb-3">
+                            <div class="card h-100">
+                                <div class="card-header bg-info text-white">
+                                    <h6 class="mb-0"><i class="fa fa-building me-2"/>Conformité interne</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row text-center mb-3">
+                                        <div class="col-4">
+                                            <h3 class="mb-0" t-esc="data.internal_metrics.total_distributions"/>
+                                            <small class="text-muted">Distributions</small>
+                                        </div>
+                                        <div class="col-4">
+                                            <h3 class="text-info mb-0"><t t-esc="data.internal_metrics.compliance_rate"/>%</h3>
+                                            <small class="text-muted">Taux conformité</small>
+                                        </div>
+                                        <div class="col-4">
+                                            <h3 class="text-danger mb-0" t-esc="data.internal_metrics.overdue_procedures"/>
+                                            <small class="text-muted">Procédures en retard</small>
+                                        </div>
+                                    </div>
+                                    <hr/>
+                                    <div class="d-flex justify-content-between">
+                                        <span><i class="fa fa-clock-o text-warning me-2"/>En attente d'accusé</span>
+                                        <strong t-esc="data.internal_metrics.pending"/>
+                                    </div>
+                                    <div class="d-flex justify-content-between">
+                                        <span><i class="fa fa-user text-info me-2"/>Employés avec accusés en attente</span>
+                                        <strong t-esc="data.internal_metrics.employees_pending"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Content Quality & Matrices Row -->
+                    <div class="row mb-4">
+                        <!-- Content Quality -->
+                        <div class="col-md-4 mb-3">
+                            <div class="card h-100">
+                                <div class="card-header bg-light">
+                                    <h6 class="mb-0"><i class="fa fa-check-circle me-2"/>Qualité du contenu</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span>Documents sans versions</span>
+                                        <span class="badge text-bg-warning" t-esc="data.content_quality.docs_without_versions"/>
+                                    </div>
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span>Contenu périmé (6+ mois)</span>
+                                        <span class="badge text-bg-secondary" t-esc="data.content_quality.stale_documents"/>
+                                    </div>
+                                    <div class="d-flex justify-content-between">
+                                        <span>Couverture logiciels</span>
+                                        <span class="badge text-bg-success"><t t-esc="data.content_quality.software_coverage"/>%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Knowledge Matrices -->
+                        <div class="col-md-4 mb-3">
+                            <div class="card h-100">
+                                <div class="card-header bg-light">
+                                    <h6 class="mb-0"><i class="fa fa-th me-2"/>Matrices de connaissances</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="text-center mb-3">
+                                        <h2 class="text-primary mb-0"><t t-esc="data.matrix_metrics.completion_rate"/>%</h2>
+                                        <small class="text-muted">Taux de complétion</small>
+                                    </div>
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span>Total matrices</span>
+                                        <strong t-esc="data.matrix_metrics.total_matrices"/>
+                                    </div>
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span>Éléments en cours</span>
+                                        <span class="badge text-bg-info" t-esc="data.matrix_metrics.in_progress_items"/>
+                                    </div>
+                                    <div class="d-flex justify-content-between">
+                                        <span>Éléments bloqués</span>
+                                        <span class="badge text-bg-danger" t-esc="data.matrix_metrics.blocked_items"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Credentials -->
+                        <div class="col-md-4 mb-3">
+                            <div class="card h-100">
+                                <div class="card-header bg-light">
+                                    <h6 class="mb-0"><i class="fa fa-key me-2"/>Identifiants</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span>Identifiants actifs</span>
+                                        <strong t-esc="data.credential_metrics.total"/>
+                                    </div>
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span>Expirent sous 30j</span>
+                                        <span class="badge text-bg-warning" t-esc="data.credential_metrics.expiring_soon"/>
+                                    </div>
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span>Expirés</span>
+                                        <span class="badge text-bg-danger" t-esc="data.credential_metrics.expired"/>
+                                    </div>
+                                    <div class="d-flex justify-content-between">
+                                        <span>Révoqués</span>
+                                        <span class="badge text-bg-secondary" t-esc="data.credential_metrics.revoked"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Activity Row -->
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <div class="card h-100">
+                                <div class="card-header bg-light">
+                                    <h6 class="mb-0"><i class="fa fa-line-chart me-2"/>Activité de distribution</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row text-center">
+                                        <div class="col-6">
+                                            <h2 class="text-primary mb-0" t-esc="data.distribution_activity.this_month"/>
+                                            <small class="text-muted">Ce mois</small>
+                                            <div t-if="data.distribution_activity.trend > 0" class="text-success">
+                                                <i class="fa fa-arrow-up"/> +<t t-esc="data.distribution_activity.trend"/>%
+                                            </div>
+                                            <div t-if="data.distribution_activity.trend &lt; 0" class="text-danger">
+                                                <i class="fa fa-arrow-down"/> <t t-esc="data.distribution_activity.trend"/>%
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <h2 class="text-muted mb-0" t-esc="data.distribution_activity.last_month"/>
+                                            <small class="text-muted">Mois dernier</small>
+                                        </div>
+                                    </div>
+                                    <hr/>
+                                    <div class="d-flex justify-content-between">
+                                        <span><i class="fa fa-exclamation-triangle text-warning me-2"/>Accusés en retard (7+ jours)</span>
+                                        <strong class="text-warning" t-esc="data.distribution_activity.overdue_acknowledgment"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Quick Actions -->
+                        <div class="col-md-6 mb-3">
+                            <div class="card h-100">
+                                <div class="card-header bg-light">
+                                    <h6 class="mb-0"><i class="fa fa-bolt me-2"/>Actions rapides</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="d-grid gap-2">
+                                        <a href="/web#action=project_knowledge_matrix.project_document_action_needs_attention"
+                                           class="btn btn-outline-danger">
+                                            <i class="fa fa-exclamation-circle me-2"/>Documents à traiter
+                                        </a>
+                                        <a href="/web#action=project_knowledge_matrix.document_distribution_action_outdated"
+                                           class="btn btn-outline-warning">
+                                            <i class="fa fa-refresh me-2"/>Documentation obsolète
+                                        </a>
+                                        <a href="/web#action=project_knowledge_matrix.project_document_action"
+                                           class="btn btn-outline-primary">
+                                            <i class="fa fa-file-text-o me-2"/>Tous les documents
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </t>
+        </field>
+    </record>
+
+</odoo>

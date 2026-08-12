@@ -1,0 +1,685 @@
+/* bf_securetransfer — public pages (upload, download, unavailable).
+ *
+ * The brand_style QWeb template injects the per-brand values of --st-primary
+ * and --st-dark on :root; the defaults below are the Blue Fox palette so the
+ * pages stay presentable even without a brand override. Lexend is used when
+ * available locally, with a plain sans-serif fallback (the CSP blocks any
+ * remote font fetch by design).
+ */
+
+:root {
+    --st-primary: #29ABE1;
+    --st-dark: #2D3031;
+    --st-bg: #f4f6f8;
+    --st-card-bg: #ffffff;
+    --st-text: #2D3031;
+    --st-muted: #6b7280;
+    --st-border: #d9dee3;
+    --st-danger: #b3261e;
+    --st-danger-bg: #fdecea;
+    --st-success: #1e7e34;
+    --st-success-bg: #e8f5ec;
+    --st-radius: 12px;
+    /* Let native form controls (inputs, selects) follow the OS theme. */
+    color-scheme: light dark;
+}
+
+/* Browser-driven dark mode. Only the NEUTRAL surfaces flip; the brand
+ * colours (--st-primary / --st-dark, injected per brand by brand_style)
+ * stay so the identity is preserved on both themes. */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --st-bg: #16181a;
+        --st-card-bg: #23262a;
+        --st-text: #e6e8ea;
+        --st-muted: #9aa4ad;
+        --st-border: #3a4046;
+        --st-danger: #f2b8b5;
+        --st-danger-bg: #3a201e;
+        --st-success: #a6d9b4;
+        --st-success-bg: #1d3324;
+    }
+}
+
+/* ── Base ──────────────────────────────────────────────────────────────────── */
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: "Lexend", -apple-system, BlinkMacSystemFont, "Segoe UI",
+        Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: var(--st-bg);
+    color: var(--st-text);
+    line-height: 1.5;
+    font-size: 16px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+a {
+    color: var(--st-primary);
+}
+
+/* ── Layout: centered card ─────────────────────────────────────────────────── */
+
+.st-wrap {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 2.5rem 1rem 1.5rem;
+}
+
+.st-card {
+    width: 100%;
+    max-width: 560px;
+    background: var(--st-card-bg);
+    border: 1px solid var(--st-border);
+    border-radius: var(--st-radius);
+    box-shadow: 0 10px 30px rgba(45, 48, 49, 0.08);
+    padding: 2rem;
+}
+
+.st-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+}
+
+.st-logo {
+    max-height: 44px;
+    max-width: 180px;
+    object-fit: contain;
+}
+
+.st-brand-name {
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--st-text);
+}
+
+.st-title {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: var(--st-text);
+    margin: 0 0 0.25rem;
+}
+
+.st-subtitle {
+    color: var(--st-muted);
+    font-size: 0.95rem;
+    margin: 0 0 1.25rem;
+}
+
+/* Small label above the title on the download page: keeps « shared files »
+   vs « secure message » legible once the sender's own subject takes the h1. */
+.st-eyebrow {
+    color: var(--st-muted);
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin: 0 0 0.2rem;
+}
+
+/* ── Dropzone ──────────────────────────────────────────────────────────────── */
+
+.st-dropzone {
+    border: 2px dashed var(--st-border);
+    border-radius: var(--st-radius);
+    padding: 2.25rem 1rem;
+    text-align: center;
+    color: var(--st-muted);
+    cursor: pointer;
+    transition: border-color 0.15s ease, background-color 0.15s ease;
+    outline: none;
+}
+
+.st-dropzone:hover,
+.st-dropzone:focus-visible,
+.st-dropzone.st-dragover {
+    border-color: var(--st-primary);
+    background: color-mix(in srgb, var(--st-primary) 6%, transparent);
+}
+
+.st-dropzone-icon {
+    font-size: 2rem;
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--st-primary);
+}
+
+.st-dropzone-hint {
+    font-size: 0.9rem;
+}
+
+/* ── File list ─────────────────────────────────────────────────────────────── */
+
+.st-file-list {
+    margin-top: 1rem;
+}
+
+.st-file {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    grid-template-areas:
+        "info status remove"
+        "bar  bar    bar";
+    align-items: center;
+    gap: 0.25rem 0.75rem;
+    padding: 0.6rem 0.25rem;
+    border-bottom: 1px solid var(--st-border);
+}
+
+.st-file:last-child {
+    border-bottom: none;
+}
+
+.st-file-info {
+    grid-area: info;
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    min-width: 0;
+}
+
+.st-file-name {
+    font-weight: 500;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.st-file-size {
+    color: var(--st-muted);
+    font-size: 0.85rem;
+    flex-shrink: 0;
+}
+
+.st-file-status {
+    grid-area: status;
+    font-size: 0.85rem;
+    color: var(--st-muted);
+    white-space: nowrap;
+}
+
+.st-file-remove {
+    grid-area: remove;
+    border: none;
+    background: transparent;
+    color: var(--st-muted);
+    font-size: 1.2rem;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0.2rem 0.45rem;
+    border-radius: 6px;
+}
+
+.st-file-remove:hover {
+    color: var(--st-danger);
+    background: var(--st-danger-bg);
+}
+
+/* ── Progress bars ─────────────────────────────────────────────────────────── */
+
+.st-progress {
+    width: 100%;
+    height: 8px;
+    background: var(--st-bg);
+    border-radius: 999px;
+    overflow: hidden;
+    margin: 0.75rem 0;
+}
+
+.st-progress-small {
+    grid-area: bar;
+    height: 5px;
+    margin: 0;
+}
+
+.st-progress-bar {
+    height: 100%;
+    width: 0;
+    background: var(--st-primary);
+    border-radius: inherit;
+    transition: width 0.2s ease;
+}
+
+/* ── Form fields ───────────────────────────────────────────────────────────── */
+
+.st-field {
+    margin-bottom: 0.9rem;
+}
+
+.st-field label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--st-text);
+    margin-bottom: 0.25rem;
+}
+
+.st-input,
+.st-field input[type="text"],
+.st-field input[type="email"],
+.st-field input[type="password"],
+.st-field select,
+.st-field textarea {
+    width: 100%;
+    padding: 0.55rem 0.75rem;
+    border: 1px solid var(--st-border);
+    border-radius: 8px;
+    font: inherit;
+    font-size: 0.95rem;
+    color: var(--st-text);
+    background: var(--st-card-bg);
+}
+
+.st-input:focus,
+.st-field input:focus,
+.st-field select:focus,
+.st-field textarea:focus {
+    outline: 2px solid color-mix(in srgb, var(--st-primary) 45%, transparent);
+    outline-offset: 0;
+    border-color: var(--st-primary);
+}
+
+.st-field textarea {
+    resize: vertical;
+    min-height: 4.5rem;
+}
+
+.st-field-hint {
+    font-size: 0.8rem;
+    color: var(--st-muted);
+    margin-top: 0.2rem;
+}
+
+.st-options {
+    margin-top: 1.25rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--st-border);
+}
+
+.st-options-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 1rem;
+}
+
+/* Honeypot: visually removed without display:none (some bots skip hidden
+   inputs) — off-screen and inert for real users. */
+.st-hp {
+    position: absolute;
+    left: -9999px;
+    top: -9999px;
+    height: 1px;
+    width: 1px;
+    overflow: hidden;
+}
+
+/* ── Buttons ───────────────────────────────────────────────────────────────── */
+
+.st-btn {
+    display: inline-block;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    padding: 0.65rem 1.4rem;
+    font: inherit;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    transition: filter 0.15s ease;
+}
+
+.st-btn-primary {
+    background: var(--st-primary);
+    color: #ffffff;
+    width: 100%;
+}
+
+.st-btn-primary:hover:not(:disabled) {
+    filter: brightness(0.92);
+}
+
+.st-btn-primary:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+.st-btn-secondary {
+    background: transparent;
+    color: var(--st-primary);
+    border-color: var(--st-primary);
+}
+
+.st-btn-secondary:hover {
+    background: color-mix(in srgb, var(--st-primary) 8%, transparent);
+}
+
+.st-btn-link {
+    background: none;
+    border: none;
+    color: var(--st-muted);
+    font-size: 0.85rem;
+    cursor: pointer;
+    text-decoration: underline;
+    padding: 0.25rem;
+}
+
+.st-btn-link:hover {
+    color: var(--st-danger);
+}
+
+/* ── Alerts & notices ──────────────────────────────────────────────────────── */
+
+.st-error {
+    background: var(--st-danger-bg);
+    color: var(--st-danger);
+    border-radius: 8px;
+    padding: 0.65rem 0.9rem;
+    font-size: 0.9rem;
+    margin: 0.75rem 0;
+}
+
+.st-notice {
+    background: var(--st-success-bg);
+    color: var(--st-success);
+    border-radius: 8px;
+    padding: 0.65rem 0.9rem;
+    font-size: 0.9rem;
+    margin: 0.75rem 0;
+}
+
+.st-resume {
+    background: color-mix(in srgb, var(--st-primary) 8%, transparent);
+    border: 1px solid color-mix(in srgb, var(--st-primary) 35%, transparent);
+    border-radius: 8px;
+    padding: 0.75rem 0.9rem;
+    margin: 0.75rem 0;
+    font-size: 0.9rem;
+}
+
+.st-resume-title {
+    font-weight: 600;
+    margin: 0 0 0.4rem;
+    color: var(--st-text);
+}
+
+.st-resume-line {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.3rem 0;
+}
+
+/* ── Success panel ─────────────────────────────────────────────────────────── */
+
+.st-success-panel {
+    text-align: center;
+}
+
+.st-success-icon {
+    font-size: 2.5rem;
+    color: var(--st-success);
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.st-share-row {
+    display: flex;
+    gap: 0.5rem;
+    margin: 1rem 0 0.5rem;
+}
+
+.st-share-row input {
+    flex: 1;
+    padding: 0.55rem 0.75rem;
+    border: 1px solid var(--st-border);
+    border-radius: 8px;
+    font: inherit;
+    font-size: 0.9rem;
+    color: var(--st-text);
+    background: var(--st-bg);
+}
+
+.st-share-row .st-btn {
+    flex-shrink: 0;
+    width: auto;
+}
+
+.st-expiry-note {
+    color: var(--st-muted);
+    font-size: 0.85rem;
+}
+
+/* ── Download page ─────────────────────────────────────────────────────────── */
+
+.st-download-meta {
+    color: var(--st-muted);
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+}
+
+.st-download-message {
+    background: var(--st-bg);
+    border-radius: 8px;
+    padding: 0.9rem 1rem;
+    margin-bottom: 1.25rem;
+    white-space: pre-wrap;
+    word-break: break-word;
+    font-size: 0.95rem;
+}
+
+.st-download-file {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.75rem 0.25rem;
+    border-bottom: 1px solid var(--st-border);
+}
+
+.st-download-file:last-child {
+    border-bottom: none;
+}
+
+.st-download-file .st-btn {
+    width: auto;
+    flex-shrink: 0;
+    padding: 0.45rem 1rem;
+}
+
+.st-report {
+    margin-top: 1.5rem;
+    text-align: center;
+}
+
+/* ── Password gate ─────────────────────────────────────────────────────────── */
+
+.st-gate {
+    text-align: center;
+}
+
+.st-gate-icon {
+    font-size: 2rem;
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--st-primary);
+}
+
+.st-gate form {
+    margin-top: 1rem;
+}
+
+.st-gate input[type="password"],
+.st-gate input[type="email"],
+.st-gate input[type="text"],
+#st-otp-code {
+    width: 100%;
+    padding: 0.6rem 0.75rem;
+    border: 1px solid var(--st-border);
+    border-radius: 8px;
+    font: inherit;
+    margin-bottom: 0.75rem;
+    text-align: center;
+}
+
+#st-otp-code {
+    font-size: 1.5rem;
+    letter-spacing: 0.4rem;
+}
+
+/* ── Unavailable page ──────────────────────────────────────────────────────── */
+
+.st-unavailable {
+    text-align: center;
+    color: var(--st-muted);
+    padding: 1.5rem 0;
+}
+
+.st-unavailable-icon {
+    font-size: 2.5rem;
+    display: block;
+    margin-bottom: 0.75rem;
+    color: var(--st-border);
+}
+
+.st-unavailable-title {
+    color: var(--st-text);
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 0.4rem;
+}
+
+/* ── Tabs (Files / Message) ──────────────────────────────────────────────────── */
+
+.st-tabs {
+    display: flex;
+    gap: 0.25rem;
+    border-bottom: 1px solid var(--st-border);
+    margin: 0.75rem 0 1rem;
+}
+
+.st-tab {
+    appearance: none;
+    background: transparent;
+    border: 0;
+    border-bottom: 2px solid transparent;
+    padding: 0.5rem 0.9rem;
+    font: inherit;
+    font-weight: 500;
+    color: var(--st-muted);
+    cursor: pointer;
+    margin-bottom: -1px;
+}
+
+.st-tab-active {
+    color: var(--st-primary);
+    border-bottom-color: var(--st-primary);
+}
+
+/* ── Drop page: fixed recipient banner ──────────────────────────────────────── */
+
+.st-drop-to {
+    display: flex;
+    align-items: baseline;
+    gap: 0.6rem;
+    padding: 0.7rem 0.9rem;
+    margin-bottom: 1rem;
+    background: var(--st-bg);
+    border: 1px solid var(--st-border);
+    border-radius: var(--st-radius);
+}
+
+.st-drop-to-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--st-muted);
+}
+
+.st-drop-to-value {
+    font-weight: 600;
+    color: var(--st-text);
+}
+
+/* ── Footer ────────────────────────────────────────────────────────────────── */
+
+.st-footer {
+    text-align: center;
+    padding: 1.25rem 1rem 2rem;
+    color: var(--st-muted);
+    font-size: 0.8rem;
+}
+
+.st-tagline {
+    display: block;
+    margin-bottom: 0.35rem;
+    color: var(--st-muted);
+}
+
+.st-powered a {
+    color: var(--st-muted);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.st-powered a:hover {
+    color: var(--st-primary);
+}
+
+/* ── Responsive ────────────────────────────────────────────────────────────── */
+
+@media (max-width: 480px) {
+    .st-wrap {
+        padding: 1rem 0.5rem;
+    }
+
+    .st-card {
+        padding: 1.25rem;
+        border-radius: 8px;
+    }
+
+    .st-options-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .st-share-row {
+        flex-direction: column;
+    }
+
+    .st-file {
+        grid-template-columns: 1fr auto;
+        grid-template-areas:
+            "info   remove"
+            "status status"
+            "bar    bar";
+    }
+}
+
+/* Instructions « après l'envoi » (page de dépôt) */
+.st-after-note {
+    margin-top: 14px;
+    padding: 12px 14px;
+    background: rgba(127, 127, 127, 0.08);
+    border-radius: 8px;
+    font-size: 0.92em;
+    line-height: 1.5;
+    color: var(--st-muted);
+}

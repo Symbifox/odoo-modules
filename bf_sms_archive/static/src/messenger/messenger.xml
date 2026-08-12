@@ -1,0 +1,398 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates xml:space="preserve">
+
+    <t t-name="bf_sms_archive.Messenger">
+        <div class="o_sms_messenger d-flex">
+
+            <!-- ───────────── Left pane: thread list ───────────── -->
+            <div class="o_sms_sidebar d-flex flex-column">
+                <div class="o_sms_sidebar_head">
+                    <!-- Web Push : proposer l'activation tant que non abonné -->
+                    <button t-if="state.pushSupported and !state.pushReady"
+                            class="btn btn-sm btn-primary w-100 mb-2 o_sms_enable_push"
+                            t-on-click="enablePush"
+                            title="Recevoir les SMS en notification, même l'application fermée">
+                        <i class="fa fa-bell me-1"/>Activer les notifications
+                    </button>
+                    <!-- ===== Advanced (legacy) toolbar ===== -->
+                    <t t-if="state.advanced">
+                        <div class="d-flex align-items-center mb-2">
+                            <h5 class="flex-grow-1 m-0">Messagerie</h5>
+                            <button class="btn btn-sm btn-light me-1" t-on-click="markAllRead"
+                                    title="Tout marquer lu">
+                                <i class="fa fa-check"/>
+                            </button>
+                            <button class="btn btn-sm btn-light me-1" t-on-click="toggleSound"
+                                    t-att-title="state.soundOn ? 'Couper le son' : 'Activer le son'">
+                                <i class="fa" t-att-class="state.soundOn ? 'fa-bell' : 'fa-bell-slash-o'"/>
+                            </button>
+                            <button class="btn btn-sm btn-light me-1"
+                                    t-att-class="{ active: state.selectMode }"
+                                    t-on-click="toggleSelectMode" title="Sélectionner plusieurs">
+                                <i class="fa fa-check-square-o"/>
+                            </button>
+                            <button class="btn btn-sm btn-light me-1" t-on-click="toggleUiMode"
+                                    title="Affichage simple">
+                                <i class="fa fa-compress"/>
+                            </button>
+                            <button class="btn btn-sm btn-primary" t-on-click="startNewConversation"
+                                    title="Nouveau message">
+                                <i class="fa fa-pencil-square-o"/>
+                            </button>
+                        </div>
+                        <input type="text" class="form-control form-control-sm mb-2"
+                               placeholder="Rechercher…"
+                               t-att-value="state.search" t-on-input="onSearchInput"/>
+                        <select t-if="state.lines.length > 1"
+                                class="form-select form-select-sm mb-2"
+                                t-on-change="onLineFilterChange">
+                            <option value="" t-att-selected="!state.lineFilter">Toutes les lignes</option>
+                            <option t-foreach="state.lines" t-as="line" t-key="line.id"
+                                    t-att-value="line.id" t-att-selected="line.id === state.lineFilter">
+                                <t t-esc="line.label"/>
+                            </option>
+                        </select>
+                        <button class="btn btn-sm w-100"
+                                t-att-class="state.archived ? 'btn-secondary' : 'btn-light'"
+                                t-on-click="toggleArchived">
+                            <i class="fa fa-archive me-1"/>
+                            <t t-esc="state.archived ? 'Voir les actifs' : 'Voir les archivés'"/>
+                        </button>
+                        <div t-if="state.selectMode" class="o_sms_bulkbar d-flex align-items-center mt-2">
+                            <span class="flex-grow-1 small text-muted">
+                                <t t-esc="state.selectedIds.length"/> sélectionné(s)
+                            </span>
+                            <button class="btn btn-sm btn-secondary" t-on-click="bulkArchive"
+                                    t-att-disabled="!state.selectedIds.length">
+                                <i class="fa me-1" t-att-class="state.archived ? 'fa-inbox' : 'fa-archive'"/>
+                                <t t-esc="state.archived ? 'Désarchiver' : 'Archiver'"/>
+                            </button>
+                        </div>
+                    </t>
+                    <!-- ===== Simple (decluttered) toolbar ===== -->
+                    <t t-else="">
+                        <div class="d-flex align-items-center mb-2">
+                            <input type="text" class="form-control form-control-sm flex-grow-1"
+                                   placeholder="Rechercher…"
+                                   t-att-value="state.search" t-on-input="onSearchInput"/>
+                            <button class="btn btn-sm btn-primary ms-1" t-on-click="startNewConversation"
+                                    title="Nouveau message">
+                                <i class="fa fa-pencil-square-o"/>
+                            </button>
+                            <Dropdown position="'bottom-end'">
+                                <button class="btn btn-sm btn-light ms-1" title="Plus d'options">
+                                    <i class="fa fa-ellipsis-v"/>
+                                </button>
+                                <t t-set-slot="content">
+                                    <DropdownItem onSelected.bind="markAllRead">
+                                        <i class="fa fa-check fa-fw me-2"/>Tout marquer lu
+                                    </DropdownItem>
+                                    <DropdownItem onSelected.bind="toggleSound">
+                                        <i class="fa fa-fw me-2" t-att-class="state.soundOn ? 'fa-bell' : 'fa-bell-slash-o'"/>
+                                        <t t-esc="state.soundOn ? 'Son : activé' : 'Son : coupé'"/>
+                                    </DropdownItem>
+                                    <DropdownItem onSelected.bind="toggleSelectMode">
+                                        <i class="fa fa-check-square-o fa-fw me-2"/>Sélection multiple
+                                    </DropdownItem>
+                                    <DropdownItem onSelected.bind="toggleArchived">
+                                        <i class="fa fa-fw me-2" t-att-class="state.archived ? 'fa-inbox' : 'fa-archive'"/>
+                                        <t t-esc="state.archived ? 'Voir les actifs' : 'Voir les archivés'"/>
+                                    </DropdownItem>
+                                    <div class="dropdown-divider"/>
+                                    <DropdownItem onSelected.bind="toggleUiMode">
+                                        <i class="fa fa-sliders fa-fw me-2"/>Affichage avancé
+                                    </DropdownItem>
+                                </t>
+                            </Dropdown>
+                        </div>
+                        <select t-if="state.lines.length > 1"
+                                class="form-select form-select-sm mb-2"
+                                t-on-change="onLineFilterChange">
+                            <option value="" t-att-selected="!state.lineFilter">Toutes les lignes</option>
+                            <option t-foreach="state.lines" t-as="line" t-key="line.id"
+                                    t-att-value="line.id" t-att-selected="line.id === state.lineFilter">
+                                <t t-esc="line.label"/>
+                            </option>
+                        </select>
+                        <div t-if="state.archived" class="o_sms_archive_flag small text-secondary mb-1">
+                            <i class="fa fa-archive me-1"/>Conversations archivées
+                        </div>
+                        <div t-if="state.selectMode" class="o_sms_bulkbar d-flex align-items-center">
+                            <span class="flex-grow-1 small text-muted">
+                                <t t-esc="state.selectedIds.length"/> sélectionné(s)
+                            </span>
+                            <button class="btn btn-sm btn-secondary" t-on-click="bulkArchive"
+                                    t-att-disabled="!state.selectedIds.length">
+                                <i class="fa me-1" t-att-class="state.archived ? 'fa-inbox' : 'fa-archive'"/>
+                                <t t-esc="state.archived ? 'Désarchiver' : 'Archiver'"/>
+                            </button>
+                        </div>
+                    </t>
+                </div>
+
+                <div class="o_sms_thread_list flex-grow-1">
+                    <div t-if="state.loadingThreads" class="text-center text-muted p-3">
+                        <i class="fa fa-spin fa-circle-o-notch"/>
+                    </div>
+                    <t t-if="!state.loadingThreads">
+                        <div t-if="!state.threads.length" class="text-center text-muted p-4">
+                            Aucune conversation.
+                        </div>
+                        <div t-foreach="state.threads" t-as="t" t-key="t.id"
+                             class="o_sms_thread_item d-flex align-items-center"
+                             t-att-class="{ o_active: t.id === state.activeThreadId, o_unread: t.unread_count > 0, o_selected: isSelected(t.id) }"
+                             t-on-click="() => this.onThreadClick(t)">
+                            <div t-if="state.selectMode" class="o_sms_check">
+                                <i class="fa" t-att-class="isSelected(t.id) ? 'fa-check-circle text-primary' : 'fa-circle-o text-muted'"/>
+                            </div>
+                            <img t-if="avatarUrl(t)" t-att-src="avatarUrl(t)" class="o_sms_avatar_img"
+                                 alt="" loading="lazy"/>
+                            <div t-else="" class="o_sms_avatar"
+                                 t-esc="initials(t.contact_name or t.partner_name, t.phone)"/>
+                            <div class="flex-grow-1 o_sms_thread_meta">
+                                <div class="d-flex">
+                                    <span class="o_sms_thread_name flex-grow-1 text-truncate">
+                                        <i t-if="t.is_pinned" class="fa fa-thumb-tack me-1 text-muted small"/>
+                                        <t t-esc="threadTitle(t)"/>
+                                    </span>
+                                    <small class="text-muted ms-1" t-esc="formatRelative(t.last_message_date)"/>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <small class="text-muted text-truncate flex-grow-1" t-esc="t.last_preview"/>
+                                    <span t-if="t.line_label and state.lines.length > 1"
+                                          class="o_sms_line_badge badge ms-1" t-esc="t.line_label"/>
+                                    <span t-if="t.unread_count > 0" class="badge bg-primary rounded-pill ms-1"
+                                          t-esc="t.unread_count"/>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </div>
+            </div>
+
+            <!-- ───────────── Right pane: conversation ───────────── -->
+            <div class="o_sms_conversation d-flex flex-column flex-grow-1">
+
+                <t t-if="!state.activeThread and !state.newConvMode">
+                    <div class="o_sms_empty d-flex flex-column align-items-center justify-content-center h-100 text-muted">
+                        <i class="fa fa-mobile fa-3x mb-3"/>
+                        <p>Sélectionnez une conversation ou démarrez-en une nouvelle.</p>
+                    </div>
+                </t>
+
+                <t t-if="state.activeThread or state.newConvMode">
+                    <!-- Conversation header -->
+                    <div class="o_sms_conv_head d-flex align-items-center">
+                        <t t-if="state.activeThread">
+                            <img t-if="avatarUrl(state.activeThread)" t-att-src="avatarUrl(state.activeThread)"
+                                 class="o_sms_avatar_img" alt=""/>
+                            <div t-else="" class="o_sms_avatar"
+                                 t-esc="initials(state.activeThread.contact_name or state.activeThread.partner_name, state.activeThread.phone)"/>
+                            <div class="flex-grow-1">
+                                <div class="fw-bold o_sms_conv_name"
+                                     t-att-class="{ o_clickable: state.activeThread.partner_id }"
+                                     t-on-click="() => this.openPartner(state.activeThread.partner_id)">
+                                    <t t-esc="threadTitle(state.activeThread)"/>
+                                    <i t-if="state.activeThread.partner_id"
+                                       class="fa fa-external-link ms-1 small text-muted"/>
+                                </div>
+                                <small class="text-muted" t-esc="state.activeThread.phone"/>
+                            </div>
+                            <t t-if="state.advanced">
+                                <button class="btn btn-sm btn-light me-1" t-on-click="toggleConvSearch"
+                                        title="Rechercher dans la conversation">
+                                    <i class="fa fa-search"/>
+                                </button>
+                                <button class="btn btn-sm btn-light me-1" t-on-click="togglePin"
+                                        t-att-class="{ active: state.activeThread.is_pinned }"
+                                        t-att-title="state.activeThread.is_pinned ? 'Désépingler' : 'Épingler'">
+                                    <i class="fa fa-thumb-tack"/>
+                                </button>
+                                <button class="btn btn-sm btn-light me-1" t-on-click="markActiveUnread"
+                                        title="Marquer non lu">
+                                    <i class="fa fa-envelope-o"/>
+                                </button>
+                                <button t-if="!state.activeThread.partner_id" class="btn btn-sm btn-light me-1"
+                                        t-on-click="toggleLinkMode" title="Lier à un contact Odoo">
+                                    <i class="fa fa-user-plus"/>
+                                </button>
+                                <button class="btn btn-sm btn-light" t-on-click="archiveActive"
+                                        t-att-title="state.archived ? 'Désarchiver' : 'Archiver'">
+                                    <i class="fa" t-att-class="state.archived ? 'fa-inbox' : 'fa-archive'"/>
+                                </button>
+                            </t>
+                            <t t-else="">
+                                <button class="btn btn-sm btn-light" t-on-click="toggleConvSearch"
+                                        t-att-class="{ active: state.convSearchMode }"
+                                        title="Rechercher dans la conversation">
+                                    <i class="fa fa-search"/>
+                                </button>
+                                <Dropdown position="'bottom-end'">
+                                    <button class="btn btn-sm btn-light" title="Plus d'options">
+                                        <i class="fa fa-ellipsis-v"/>
+                                    </button>
+                                    <t t-set-slot="content">
+                                        <DropdownItem onSelected.bind="togglePin">
+                                            <i class="fa fa-thumb-tack fa-fw me-2"/>
+                                            <t t-esc="state.activeThread.is_pinned ? 'Désépingler' : 'Épingler'"/>
+                                        </DropdownItem>
+                                        <DropdownItem onSelected.bind="markActiveUnread">
+                                            <i class="fa fa-envelope-o fa-fw me-2"/>Marquer non lu
+                                        </DropdownItem>
+                                        <DropdownItem t-if="!state.activeThread.partner_id"
+                                                      onSelected.bind="toggleLinkMode">
+                                            <i class="fa fa-user-plus fa-fw me-2"/>Lier à un contact Odoo
+                                        </DropdownItem>
+                                        <DropdownItem onSelected.bind="archiveActive">
+                                            <i class="fa fa-fw me-2" t-att-class="state.archived ? 'fa-inbox' : 'fa-archive'"/>
+                                            <t t-esc="state.archived ? 'Désarchiver' : 'Archiver'"/>
+                                        </DropdownItem>
+                                    </t>
+                                </Dropdown>
+                            </t>
+                        </t>
+                        <t t-if="state.newConvMode">
+                            <div class="flex-grow-1 d-flex align-items-center">
+                                <span class="me-2 text-muted text-nowrap">À :</span>
+                                <input type="text" class="form-control form-control-sm"
+                                       placeholder="Nom du contact ou numéro…"
+                                       autocomplete="off"
+                                       t-att-value="state.newConvPhone"
+                                       t-on-input="onNewConvInput"/>
+                            </div>
+                        </t>
+                    </div>
+
+                    <!-- New-conversation contact suggestions (typeahead) -->
+                    <div t-if="state.newConvMode and state.newConvResults.length"
+                         class="o_sms_newconv_results">
+                        <div t-foreach="state.newConvResults" t-as="r" t-key="r.id"
+                             class="o_sms_newconv_item d-flex align-items-center"
+                             t-on-click="() => this.pickNewConvContact(r)">
+                            <img t-att-src="'/web/image/res.partner/' + r.id + '/avatar_128'"
+                                 class="o_sms_avatar_sm me-2" alt="" loading="lazy"/>
+                            <div class="flex-grow-1 o_sms_minw0">
+                                <div class="text-truncate" t-esc="r.name"/>
+                                <small class="text-muted" t-esc="r.phone"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- In-conversation search -->
+                    <div t-if="state.convSearchMode and state.activeThread" class="o_sms_convsearch">
+                        <input type="text" class="form-control form-control-sm"
+                               placeholder="Rechercher dans cette conversation…"
+                               t-att-value="state.convSearch" t-on-input="onConvSearchInput"/>
+                    </div>
+
+                    <!-- Link-to-contact search box -->
+                    <div t-if="state.linkMode and state.activeThread" class="o_sms_link_box">
+                        <input type="text" class="form-control form-control-sm"
+                               placeholder="Rechercher un contact Odoo…"
+                               t-att-value="state.linkSearch" t-on-input="onLinkSearch"/>
+                        <div t-if="state.linkResults.length" class="o_sms_link_results">
+                            <div t-foreach="state.linkResults" t-as="r" t-key="r.id"
+                                 class="o_sms_link_item" t-on-click="() => this.linkPartner(r.id)">
+                                <t t-esc="r.name"/>
+                            </div>
+                        </div>
+                        <button class="btn btn-sm btn-link p-0 mt-1" t-on-click="createPartner">
+                            <i class="fa fa-plus me-1"/>Créer « <t t-esc="state.linkSearch or state.activeThread.phone"/> »
+                        </button>
+                    </div>
+
+                    <!-- Messages -->
+                    <div class="o_sms_messages flex-grow-1" t-ref="messages">
+                        <div t-if="state.loadingConv" class="text-center text-muted p-3">
+                            <i class="fa fa-spin fa-circle-o-notch"/>
+                        </div>
+                        <div t-if="state.hasMore and !state.convSearch" class="text-center my-2">
+                            <button class="btn btn-sm btn-link" t-on-click="loadMore">
+                                Charger les messages précédents
+                            </button>
+                        </div>
+                        <t t-foreach="visibleMessages" t-as="msg" t-key="msg.id">
+                            <div t-if="showDaySep(msg_index)" class="o_sms_daysep">
+                                <span t-esc="formatDay(msg.date_ms)"/>
+                            </div>
+                            <div class="o_sms_row d-flex"
+                                 t-att-class="msg.direction === 'out' ? 'o_sms_out' : 'o_sms_in'">
+                                <div class="o_sms_bubble"
+                                     t-att-class="{ o_out: msg.direction === 'out', o_in: msg.direction !== 'out', o_failed: msg.delivery_state === 'failed' }">
+                                    <t t-if="msg.media.length">
+                                        <div t-foreach="msg.media" t-as="m" t-key="m_index" class="o_sms_media">
+                                            <img t-if="m.is_image" t-att-src="m.url" class="o_sms_img"
+                                                 loading="lazy"/>
+                                            <a t-elif="m.url" t-att-href="m.url" target="_blank" rel="noopener">
+                                                <i class="fa fa-paperclip me-1"/><t t-esc="m.filename"/>
+                                            </a>
+                                            <span t-else="" class="text-muted small" t-esc="m.text or m.filename"/>
+                                        </div>
+                                    </t>
+                                    <div t-if="msg.body" class="o_sms_text" t-esc="msg.body"/>
+                                    <div class="o_sms_meta">
+                                        <span t-esc="formatTime(msg.date_ms)"/>
+                                        <i t-if="deliveryIcon(msg)" class="fa ms-1" t-att-class="deliveryIcon(msg)"/>
+                                    </div>
+                                    <div t-if="msg.error" class="o_sms_errmsg small" t-esc="msg.error"/>
+                                </div>
+                            </div>
+                        </t>
+                        <div t-if="state.convSearch and !visibleMessages.length" class="text-center text-muted p-3">
+                            Aucun message ne correspond.
+                        </div>
+                    </div>
+
+                    <!-- Composer -->
+                    <div class="o_sms_composer">
+                        <div t-if="state.attachments.length" class="o_sms_attachments d-flex flex-wrap mb-1">
+                            <div t-foreach="state.attachments" t-as="a" t-key="a_index"
+                                 class="o_sms_chip d-flex align-items-center">
+                                <img t-if="a.is_image" t-att-src="a.dataUrl" class="o_sms_chip_img"/>
+                                <i t-else="" class="fa fa-file me-1"/>
+                                <span class="text-truncate" t-esc="a.filename"/>
+                                <i class="fa fa-times ms-1 o_sms_chip_x"
+                                   t-on-click="() => this.removeAttachment(a_index)"/>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-end">
+                            <select t-if="state.advanced or state.lines.length > 1"
+                                    class="form-select form-select-sm o_sms_line_select"
+                                    t-on-change="onLineChange"
+                                    t-att-title="'Numéro d\'envoi'">
+                                <option t-foreach="state.lines" t-as="line" t-key="line.id"
+                                        t-att-value="line.id"
+                                        t-att-selected="line.id === state.selectedLineId">
+                                    <t t-esc="line.label"/> (<t t-esc="line.did"/>)
+                                </option>
+                            </select>
+                            <button class="btn btn-sm btn-light ms-1" t-on-click="triggerFilePicker"
+                                    title="Joindre (MMS)">
+                                <i class="fa fa-paperclip"/>
+                            </button>
+                            <input type="file" class="d-none" t-ref="fileInput" multiple="multiple"
+                                   t-on-change="onFileChange"/>
+                            <textarea class="form-control form-control-sm mx-1 o_sms_input"
+                                      rows="1" placeholder="Écrire un message…"
+                                      t-model="state.composeBody"
+                                      t-on-input="onComposeInput"
+                                      t-on-keydown="onComposerKeydown"/>
+                            <button class="btn btn-sm btn-primary" t-on-click="send"
+                                    t-att-disabled="!canSend">
+                                <i t-if="!state.sending" class="fa fa-paper-plane"/>
+                                <i t-if="state.sending" class="fa fa-spin fa-circle-o-notch"/>
+                            </button>
+                        </div>
+                        <div t-if="state.advanced or segmentCount > 1 or state.composeBody.length > 120" class="o_sms_counter text-muted">
+                            <t t-esc="state.composeBody.length"/> car.<t t-if="isUnicodeBody"> · Unicode (70/SMS)</t>
+                            <t t-if="segmentCount > 1">
+                                · <t t-if="willSendAsMms">→ 1 MMS</t><t t-else=""><t t-esc="segmentCount"/> SMS</t>
+                            </t>
+                        </div>
+                    </div>
+                </t>
+            </div>
+        </div>
+    </t>
+
+</templates>

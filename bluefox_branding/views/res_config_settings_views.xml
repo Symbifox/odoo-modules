@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="res_config_settings_view_form_branding" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.bluefox_branding</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//app[@data-string='General Settings']//block[@name='companies_setting_container']" position="after">
+                <block title="Identité de marque" name="bluefox_branding_white_label">
+
+                    <setting string="Identité visuelle"
+                             help="Logo, favicon et coordonnées affichés dans les courriels et rapports brandés.">
+                        <div class="row mt16">
+                            <label for="company_logo" class="col-lg-3 o_light_label"/>
+                            <field name="company_logo" widget="image" class="oe_avatar" options="{'preview_image': 'logo'}"/>
+                        </div>
+                        <div class="row mt16">
+                            <label for="company_favicon" class="col-lg-3 o_light_label"/>
+                            <field name="company_favicon" widget="image" class="oe_avatar" options="{'preview_image': 'favicon'}"/>
+                        </div>
+                        <div class="row mt16">
+                            <label for="company_website" class="col-lg-3 o_light_label"/>
+                            <field name="company_website" placeholder="https://exemple.com"/>
+                        </div>
+                        <div class="row mt16">
+                            <label for="company_report_header" class="col-lg-3 o_light_label" string="Tagline (en-tête de rapport)"/>
+                            <field name="company_report_header" placeholder="Phrase courte affichée en haut des rapports PDF"/>
+                        </div>
+                    </setting>
+
+                    <setting string="Couleurs de marque (interface et courriels)"
+                             help="Couleurs utilisées dans la navbar, les boutons et les courriels brandés. Les rapports PDF utilisent les couleurs « (PDF) » ci-dessous.">
+                        <div class="row mt16">
+                            <label for="report_brand_primary" class="col-lg-3 o_light_label"/>
+                            <field name="report_brand_primary" widget="color"/>
+                            <label for="report_brand_dark" class="col-lg-3 o_light_label"/>
+                            <field name="report_brand_dark" widget="color"/>
+                        </div>
+                        <div class="row mt16">
+                            <label for="report_brand_logo" class="col-lg-3 o_light_label" string="Logo sur fond foncé"/>
+                            <field name="report_brand_logo" widget="image" class="oe_avatar"
+                                   options="{'size': [0, 64]}"/>
+                        </div>
+                    </setting>
+
+                    <setting string="Couleurs des rapports PDF"
+                             help="Couleurs natives Odoo utilisées dans l'en-tête et les accents des rapports PDF (factures, devis, etc.) via la mise en page des documents.">
+                        <div class="row mt16">
+                            <label for="primary_color" class="col-lg-3 o_light_label" string="Couleur primaire (PDF)"/>
+                            <field name="primary_color" widget="color"/>
+                            <label for="secondary_color" class="col-lg-3 o_light_label" string="Couleur secondaire (PDF)"/>
+                            <field name="secondary_color" widget="color"/>
+                        </div>
+                    </setting>
+
+                    <setting string="Typographie"
+                             help="Police utilisée dans l'interface Odoo, les rapports PDF et les courriels brandés.">
+                        <div class="row mt16">
+                            <label for="company_font" class="col-lg-3 o_light_label"/>
+                            <field name="company_font"/>
+                        </div>
+                    </setting>
+
+                    <setting string="Courriels brandés"
+                             help="Texte additionnel injecté dans le gabarit de courriel brandé (bf_mail_layout).">
+                        <div class="row mt16">
+                            <label for="brand_email_tagline" class="col-lg-3 o_light_label"/>
+                            <field name="brand_email_tagline" placeholder="Solutions éthiques et souveraines pour vos données."/>
+                        </div>
+                        <div class="row mt16">
+                            <label for="brand_email_footer_html" class="col-lg-3 o_light_label"/>
+                            <field name="brand_email_footer_html" placeholder="HTML libre. Remplace la ligne courriel · téléphone · site web."/>
+                        </div>
+                        <div class="row mt16">
+                            <label for="brand_email_signature_default" class="col-lg-3 o_light_label"/>
+                            <field name="brand_email_signature_default" placeholder="Signature HTML par défaut quand l'utilisateur n'en a pas."/>
+                        </div>
+                        <div class="row mt16">
+                            <label for="brand_privacy_url" class="col-lg-3 o_light_label"/>
+                            <field name="brand_privacy_url" placeholder="https://exemple.com/politique-de-confidentialite"/>
+                        </div>
+                        <div class="row mt16">
+                            <label for="brand_terms_url" class="col-lg-3 o_light_label"/>
+                            <field name="brand_terms_url" placeholder="https://exemple.com/termes-et-conditions"/>
+                        </div>
+                    </setting>
+
+                </block>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

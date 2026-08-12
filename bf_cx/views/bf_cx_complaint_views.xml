@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_cx_complaint_list" model="ir.ui.view">
+        <field name="name">bf.cx.complaint.list</field>
+        <field name="model">bf.cx.complaint</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="severity == 'critical'"
+                  decoration-warning="severity == 'high'">
+                <field name="number"/>
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="severity"/>
+                <field name="date_received"/>
+                <field name="ack_deadline" optional="show"/>
+                <field name="user_id" widget="many2one_avatar_user"/>
+                <field name="state" widget="badge"
+                       decoration-danger="state == 'received'"
+                       decoration-warning="state in ('ack', 'analysis')"
+                       decoration-success="state in ('resolved', 'closed')"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_cx_complaint_form" model="ir.ui.view">
+        <field name="name">bf.cx.complaint.form</field>
+        <field name="model">bf.cx.complaint</field>
+        <field name="arch" type="xml">
+            <form string="Plainte">
+                <header>
+                    <button name="action_acknowledge" type="object"
+                            string="Accuser réception" class="btn-primary"
+                            invisible="state != 'received'"/>
+                    <button name="action_start_analysis" type="object"
+                            string="Démarrer l'analyse" class="btn-primary"
+                            invisible="state != 'ack'"/>
+                    <button name="action_resolve" type="object"
+                            string="Marquer résolue" class="btn-primary"
+                            invisible="state != 'analysis'"/>
+                    <button name="action_close" type="object"
+                            string="Fermer"
+                            invisible="state != 'resolved'"/>
+                    <button name="action_reopen" type="object"
+                            string="Rouvrir"
+                            invisible="state not in ('resolved', 'closed')"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="received,ack,analysis,resolved,closed"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h3>
+                            <field name="number" readonly="1"/> ·
+                            <field name="confirmation_code" readonly="1"
+                                   help="Référence communiquée au plaignant"/>
+                        </h3>
+                        <h1><field name="name" placeholder="Objet de la plainte"/></h1>
+                    </div>
+                    <group>
+                        <group name="who">
+                            <field name="partner_id"/>
+                            <field name="contact_name" invisible="partner_id"/>
+                            <field name="contact_email" invisible="partner_id"/>
+                            <field name="project_id"/>
+                            <field name="feedback_id" invisible="not feedback_id"/>
+                        </group>
+                        <group name="when">
+                            <field name="severity"/>
+                            <field name="date_received"/>
+                            <field name="ack_deadline"/>
+                            <field name="date_acknowledged" invisible="not date_acknowledged"/>
+                            <field name="ack_delay_hours" invisible="not date_acknowledged"/>
+                            <field name="date_resolved" invisible="not date_resolved"/>
+                            <field name="resolution_delay_days" invisible="not date_resolved"/>
+                            <field name="user_id" widget="many2one_avatar_user"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Description" name="description">
+                            <field name="description" placeholder="Description factuelle de la plainte…"/>
+                        </page>
+                        <page string="Résolution" name="resolution">
+                            <group>
+                                <field name="root_cause" colspan="2"
+                                       placeholder="Pourquoi est-ce arrivé ?"/>
+                                <field name="corrective_action" colspan="2"
+                                       placeholder="Ce qu'on met en place pour éviter la récidive."/>
+                                <field name="complainant_satisfied"/>
+                                <field name="theme_ids" widget="many2many_tags"
+                                       options="{'color_field': 'color'}" colspan="2"/>
+                            </group>
+                            <field name="resolution" placeholder="Réponse donnée au plaignant…"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_cx_complaint_search" model="ir.ui.view">
+        <field name="name">bf.cx.complaint.search</field>
+        <field name="model">bf.cx.complaint</field>
+        <field name="arch" type="xml">
+            <search string="Plaintes">
+                <field name="name"/>
+                <field name="number"/>
+                <field name="confirmation_code"/>
+                <field name="partner_id"/>
+                <filter string="Ouvertes" name="filter_open"
+                        domain="[('state', 'not in', ('resolved', 'closed'))]"/>
+                <filter string="Accusé de réception en retard" name="filter_ack_overdue"
+                        domain="[('state', '=', 'received'), ('ack_deadline', '&lt;', (datetime.datetime.now().to_utc()).strftime('%Y-%m-%d %H:%M:%S'))]"/>
+                <separator/>
+                <filter string="Mes plaintes" name="filter_my" domain="[('user_id', '=', uid)]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter string="État" name="group_state" context="{'group_by': 'state'}"/>
+                    <filter string="Gravité" name="group_severity" context="{'group_by': 'severity'}"/>
+                    <filter string="Plaignant" name="group_partner" context="{'group_by': 'partner_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_cx_complaint" model="ir.actions.act_window">
+        <field name="name">Plaintes</field>
+        <field name="res_model">bf.cx.complaint</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_cx_complaint_search"/>
+        <field name="context">{'search_default_filter_open': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Aucune plainte - tant mieux
+            </p>
+            <p>
+                Consigner ici toute plainte reçue : gravité, échéance
+                d'accusé de réception, analyse de cause et action corrective.
+            </p>
+        </field>
+    </record>
+
+</odoo>

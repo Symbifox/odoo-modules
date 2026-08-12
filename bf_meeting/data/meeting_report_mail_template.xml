@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+
+        <record id="meeting_report_mail_template" model="mail.template">
+            <field name="name">Compte rendu de réunion</field>
+            <field name="model_id" ref="bf_meeting.model_meeting_record"/>
+            <field name="lang">{{ object.lang or (object.partner_id and object.partner_id.lang) or 'fr_CA' }}</field>
+            <field name="subject">Compte rendu — {{ object.room_name or object.name }} ({{ object.date.strftime('%Y-%m-%d') }})</field>
+            <field name="email_from">{{ (object.company_id.email or user.email_formatted) }}</field>
+            <field name="partner_to">{{ object.partner_to_ids }}</field>
+            <field name="body_html" type="html">
+
+<t t-set="company" t-value="(object.company_id if hasattr(object, 'company_id') and object.company_id else user.company_id)"/>
+<t t-set="brand_primary" t-value="(company and company.report_brand_primary) or '#714B67'"/>
+<t t-set="brand_dark" t-value="(company and company.report_brand_dark) or '#212529'"/>
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#F8FAFC;">
+    <tbody>
+        <tr>
+            <td align="center" style="padding:24px;">
+                <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px; max-width:600px; margin:0 auto; background-color:#ffffff; border-radius:12px; border:1px solid #e5e7eb; border-collapse:collapse;">
+                    <tbody>
+                        <!-- Header -->
+                        <tr>
+                            <td t-attf-style="background-color:{{ brand_dark }}; padding:16px 24px; border-radius:12px 12px 0 0;">
+                                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                                    <tbody>
+                                        <tr>
+                                            <td align="left" style="color:#FFFFFF; font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:16px; font-weight:600;">
+                                                <img t-att-src="'/web/image/res.company/%d/%s' % (object.company_id.id, 'meeting_logo' if object.company_id.meeting_logo else 'logo')" alt="Logo" style="height:40px; width:auto; display:block; border:0;"/>
+                                            </td>
+                                            <td align="right" style="color:#E6EDF3; font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:22px; font-weight:800; letter-spacing:0.2px;">
+                                                Compte rendu
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>
+
+                        <!-- Accent bar -->
+                        <tr>
+                            <td t-attf-style="height:4px; line-height:4px; background-color:{{ brand_primary }};">&amp;nbsp;</td>
+                        </tr>
+
+                        <!-- Content -->
+                        <tr>
+                            <td style="padding:24px; font-family:'Lexend','Segoe UI',Arial,sans-serif;">
+
+                                <h2 t-attf-style="font-size:20px; font-weight:700; color:{{ brand_dark }}; margin:0 0 12px 0;">
+                                    <t t-out="object.room_name or object.name"/>
+                                </h2>
+
+                                <p style="font-size:13px; color:#6B7280; margin:0 0 20px 0;">
+                                    <t t-if="object.date">
+                                        <t t-set="is_placeholder" t-value="object.date.hour == 0 and object.date.minute == 0 and object.date.second == 0"/>
+                                        <strong style="color:#374151;">Date :</strong>
+                                        <t t-if="is_placeholder">
+                                            <t t-out="object.date.strftime('%Y-%m-%d')"/>
+                                        </t>
+                                        <t t-else="">
+                                            <t t-out="object.report_date_display_html()"/>
+                                        </t>
+                                    </t>
+                                    <t t-if="object.duration_minutes">
+                                        &#160;·&#160; <strong style="color:#374151;">Durée :</strong> <t t-out="object.duration_minutes"/> min
+                                    </t>
+                                    <t t-if="object.location">
+                                        &#160;·&#160; <strong style="color:#374151;">Lieu :</strong> <t t-out="object.location"/>
+                                    </t>
+                                </p>
+
+                                <p style="font-size:16px; line-height:26px; color:#374151; margin:0 0 16px 0;">
+                                    Bonjour,
+                                </p>
+                                <p style="font-size:16px; line-height:26px; color:#374151; margin:0 0 20px 0;">
+                                    Veuillez trouver ci-dessous le compte rendu de la rencontre. Le PDF complet est joint à ce courriel.
+                                </p>
+
+                                <t t-if="object.attendance_ids or object.participant_ids">
+                                <div style="margin:0 0 20px 0; padding:12px 14px; background:#F5F7FA; border-radius:6px; font-size:13px; color:#374151;">
+                                    <strong t-attf-style="color:{{ brand_dark }};">Participants :</strong>
+                                    <t t-if="object.attendance_ids">
+                                        <t t-foreach="object.attendance_ids" t-as="a">
+                                            <t t-set="absent" t-value="a.status != 'present'"/>
+                                            <span t-attf-style="display:inline-block; margin:2px 4px; padding:2px 10px; background:#FFFFFF; border:1px solid #D8DEE4; border-radius:12px; font-size:12px; color:{{ '#9CA3AF' if absent else brand_dark }};"><t t-out="a.partner_id.name"/><t t-if="a.status == 'excused'"> (excusé)</t><t t-if="a.status == 'absent'"> (absent)</t></span>
+                                        </t>
+                                    </t>
+                                    <t t-else="">
+                                        <t t-foreach="object.participant_ids" t-as="p">
+                                            <span t-attf-style="display:inline-block; margin:2px 4px; padding:2px 10px; background:#FFFFFF; border:1px solid #D8DEE4; border-radius:12px; font-size:12px; color:{{ brand_dark }};"><t t-out="p.name"/></span>
+                                        </t>
+                                    </t>
+                                </div>
+                                </t>
+
+                                <t t-if="object.summary">
+                                <h3 t-attf-style="color:{{ brand_dark }}; font-size:16px; font-weight:600; margin:24px 0 10px 0; padding-left:10px; border-left:4px solid {{ brand_primary }};">Résumé</h3>
+                                <div style="margin:0 0 20px 0; white-space:pre-wrap; color:#374151; font-size:15px; line-height:24px;"><t t-out="object.summary"/></div>
+                                </t>
+
+                                <t t-if="object.topic_ids">
+                                <h3 t-attf-style="color:{{ brand_dark }}; font-size:16px; font-weight:600; margin:24px 0 10px 0; padding-left:10px; border-left:4px solid {{ brand_primary }};">Sujets abordés</h3>
+                                <ol style="margin:0 0 20px 0; padding-left:24px; color:#374151;">
+                                    <t t-foreach="object.topic_ids" t-as="topic">
+                                        <li style="margin-bottom:10px;">
+                                            <strong t-attf-style="color:{{ brand_dark }};"><t t-out="topic.name"/></strong>
+                                            <t t-if="topic.points_html">
+                                                <div style="margin-top:4px; color:#5C6368; font-size:14px;"><t t-out="topic.points_html"/></div>
+                                            </t>
+                                        </li>
+                                    </t>
+                                </ol>
+                                </t>
+
+                                <t t-if="object.decision_ids">
+                                <h3 t-attf-style="color:{{ brand_dark }}; font-size:16px; font-weight:600; margin:24px 0 10px 0; padding-left:10px; border-left:4px solid {{ brand_primary }};">Décisions</h3>
+                                <ul style="margin:0 0 20px 0; padding-left:0; list-style:none;">
+                                    <t t-foreach="object.decision_ids" t-as="decision">
+                                        <li t-attf-style="margin-bottom:8px; padding:8px 12px; background:#F5F7FA; border-left:3px solid {{ brand_primary }}; border-radius:3px; color:#374151;">
+                                            <strong t-attf-style="color:{{ brand_dark }};"><t t-out="decision.name"/></strong>
+                                            <t t-if="decision.decision_maker_id">
+                                                <span style="color:#6B7280; font-size:13px;"> — <t t-out="decision.decision_maker_id.name"/></span>
+                                            </t>
+                                        </li>
+                                    </t>
+                                </ul>
+                                </t>
+
+                                <t t-if="object.task_ids">
+                                <h3 t-attf-style="color:{{ brand_dark }}; font-size:16px; font-weight:600; margin:24px 0 10px 0; padding-left:10px; border-left:4px solid {{ brand_primary }};">Éléments d'action</h3>
+                                <ul style="margin:0 0 20px 0; padding-left:24px; color:#374151;">
+                                    <t t-foreach="object.task_ids" t-as="task">
+                                        <li style="margin-bottom:6px;">
+                                            <t t-out="task.name"/>
+                                            <t t-if="task.user_ids">
+                                                <span style="color:#6B7280; font-size:13px;"> — <t t-foreach="task.user_ids" t-as="u"><t t-if="not u_first" t-out="', '"/><t t-out="u.name"/></t></span>
+                                            </t>
+                                            <t t-if="task.date_deadline">
+                                                <span style="color:#6B7280; font-size:13px;"> (échéance <t t-out="task.date_deadline.strftime('%Y-%m-%d')"/>)</span>
+                                            </t>
+                                        </li>
+                                    </t>
+                                </ul>
+                                </t>
+
+                                <p style="font-size:14px; line-height:22px; color:#6B7280; margin:28px 0 0 0;">
+                                    N'hésitez pas à répondre à ce courriel pour toute correction ou précision.
+                                </p>
+
+                                <p style="font-size:16px; line-height:26px; color:#374151; margin:24px 0 0 0;">
+                                    Cordialement,<br/>
+                                    <t t-out="user.name"/>
+                                </p>
+                            </td>
+                        </tr>
+
+                        <!-- Separator -->
+                        <tr>
+                            <td style="height:1px; line-height:1px; background-color:#E5E7EB;">&amp;nbsp;</td>
+                        </tr>
+
+                        <!-- Footer -->
+                        <tr>
+                            <td style="padding:16px 24px 20px 24px; background-color:#FFFFFF; border-radius:0 0 12px 12px;">
+                                <p style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:12px; color:#6B7280; margin:0;">
+                                    <strong t-attf-style="color:{{ brand_dark }};">Compte rendu généré depuis le module Rencontres.</strong>
+                                    <t t-if="object.company_id.name"><br/><t t-out="object.company_id.name"/></t>
+                                </p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- Bottom split accent -->
+                <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px; max-width:600px; margin:12px auto 0;">
+                    <tbody>
+                        <tr>
+                            <td t-attf-style="height:3px; line-height:3px; background-color:{{ brand_primary }}; width:50%;">&amp;nbsp;</td>
+                            <td t-attf-style="height:3px; line-height:3px; background-color:{{ brand_dark }}; width:50%;">&amp;nbsp;</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+    </tbody>
+</table>
+            </field>
+            <field name="report_template_ids" eval="[(4, ref('bf_meeting.action_report_meeting_record'))]"/>
+        </record>
+
+    </data>
+</odoo>

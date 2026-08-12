@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_users_form_google_calendar" model="ir.ui.view">
+        <field name="name">res.users.form.google.calendar</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Google Calendar" name="google_calendar">
+                    <group>
+                        <group string="Status">
+                            <field name="x_google_oauth_connected" widget="boolean_toggle"
+                                readonly="1"/>
+                            <field name="x_google_email" readonly="1"/>
+                            <field name="x_google_oauth_expiry" readonly="1"/>
+                            <field name="x_google_oauth_scope" readonly="1"/>
+                        </group>
+                        <group string="Actions">
+                            <button name="action_connect_google_calendar"
+                                type="object"
+                                string="Connecter Google Calendar"
+                                class="btn-primary"
+                                invisible="x_google_oauth_connected"/>
+                            <button name="action_disconnect_google_calendar"
+                                type="object"
+                                string="Deconnecter"
+                                class="btn-secondary"
+                                invisible="not x_google_oauth_connected"
+                                confirm="Deconnecter votre compte Google ?
+Les configurations de synchronisation liees a votre compte cesseront de synchroniser
+jusqu'a ce que vous vous reconnectiez."/>
+                        </group>
+                    </group>
+                    <group string="Alias additionnels (Google Workspace)">
+                        <field name="x_google_self_addresses"
+                            nolabel="1"
+                            placeholder="alias1@exemple.com, alias2@exemple.com"/>
+                    </group>
+                    <div class="text-muted" style="margin-top: 1em; font-size: 0.9em;">
+                        <p>
+                            Connectez votre compte Google pour que ce module puisse
+                            lire et ecrire dans votre agenda. La liaison se fait via
+                            OAuth 2.0 : vos identifiants Google ne sont jamais
+                            transmis a Odoo. Pour revoquer l'acces, visitez
+                            <a href="https://myaccount.google.com/permissions" target="_blank">
+                                myaccount.google.com/permissions
+                            </a>.
+                        </p>
+                        <p>
+                            Une fois connecte, un administrateur peut creer une
+                            configuration de synchronisation
+                            (Settings &gt; Calendar &gt; Configure Calendar Sync) qui
+                            pointe vers un ou plusieurs de vos agendas Google.
+                        </p>
+                    </div>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Same view on the lighter "preferences" form -->
+    <record id="view_users_form_simple_modif_google_calendar" model="ir.ui.view">
+        <field name="name">res.users.preferences.form.google.calendar</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_form_simple_modif"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Google Calendar" name="google_calendar_preferences">
+                    <group>
+                        <group string="Status">
+                            <field name="x_google_oauth_connected" widget="boolean_toggle"
+                                readonly="1"/>
+                            <field name="x_google_email" readonly="1"/>
+                            <field name="x_google_oauth_expiry" readonly="1"/>
+                        </group>
+                        <group string="Actions">
+                            <button name="action_connect_google_calendar"
+                                type="object"
+                                string="Connecter Google Calendar"
+                                class="btn-primary"
+                                invisible="x_google_oauth_connected"/>
+                            <button name="action_disconnect_google_calendar"
+                                type="object"
+                                string="Deconnecter"
+                                class="btn-secondary"
+                                invisible="not x_google_oauth_connected"/>
+                        </group>
+                    </group>
+                    <group string="Alias additionnels (Google Workspace)">
+                        <field name="x_google_self_addresses"
+                            nolabel="1"
+                            placeholder="alias1@exemple.com, alias2@exemple.com"/>
+                        <div class="text-muted" colspan="2" style="font-size: 0.9em;">
+                            Adresses qui pointent vers le même compte Google
+                            que celui connecté ci-dessus (alias Google
+                            Workspace, domaines alternatifs). Évite que Google
+                            renvoie une invitation iCal à votre boîte quand
+                            vous êtes à la fois organisateur et participant
+                            d'un événement sous deux identités équivalentes.
+                        </div>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

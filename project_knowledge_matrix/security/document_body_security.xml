@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+
+        <!--
+            Isolation multi-société. Les documents portent un company_id depuis
+            l'origine, mais aucune règle ne s'en servait: sur une base à
+            plusieurs sociétés, les documents d'une société étaient lisibles
+            depuis les autres. À partir du moment où le corps des politiques
+            vit dans Odoo, ce n'est plus un titre qui fuit, c'est le texte.
+        -->
+
+        <record id="rule_document_company" model="ir.rule">
+            <field name="name">Documents : isolation par société</field>
+            <field name="model_id" ref="model_project_document"/>
+            <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+            <field name="global" eval="True"/>
+        </record>
+
+        <record id="rule_document_version_company" model="ir.rule">
+            <field name="name">Versions de documents : isolation par société</field>
+            <field name="model_id" ref="model_project_document_version"/>
+            <field name="domain_force">['|', ('document_id.company_id', '=', False), ('document_id.company_id', 'in', company_ids)]</field>
+            <field name="global" eval="True"/>
+        </record>
+
+        <record id="rule_document_section_company" model="ir.rule">
+            <field name="name">Sections de documents : isolation par société</field>
+            <field name="model_id" ref="model_project_document_section"/>
+            <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+            <field name="global" eval="True"/>
+        </record>
+
+        <record id="rule_document_version_section_company" model="ir.rule">
+            <field name="name">Sections publiées : isolation par société</field>
+            <field name="model_id" ref="model_project_document_version_section"/>
+            <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+            <field name="global" eval="True"/>
+        </record>
+
+    </data>
+</odoo>

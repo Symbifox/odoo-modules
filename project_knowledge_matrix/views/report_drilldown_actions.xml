@@ -1,0 +1,350 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        Actions de forage du rapport documentaire par courriel.
+
+        Chaque chiffre du courriel pointe vers l'action correspondante. Le
+        domaine de l'action doit rester le MIROIR EXACT du compteur qui produit
+        le chiffre dans `project.document._get_dashboard_report_data()` : un
+        écart entre les deux fait atterrir le lecteur sur une liste qui
+        contredit le nombre sur lequel il a cliqué.
+
+        Les domaines sont évalués côté client (`action_service.js`
+        `_preprocessAction` -> `evaluateExpr`), qui expose `context_today()` et
+        `relativedelta` — d'où les bornes de dates calculées à l'ouverture
+        plutôt que figées à la génération du courriel.
+
+        Ne jamais poser ici un champ calculé non stocké : Odoo 18 IGNORE le
+        critère en silence au lieu de lever, et la liste rend alors tous les
+        enregistrements. Vérifier `store=True` avant d'ajouter un critère.
+    -->
+
+    <!-- ==================================================== -->
+    <!-- DOCUMENTS                                            -->
+    <!-- ==================================================== -->
+
+    <record id="report_action_docs_active" model="ir.actions.act_window">
+        <field name="name">Documents actifs</field>
+        <field name="res_model">project.document</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="search_view_id" ref="view_project_document_search"/>
+        <field name="domain">[('state', '=', 'active')]</field>
+    </record>
+
+    <record id="report_action_docs_internal" model="ir.actions.act_window">
+        <field name="name">Documents internes actifs</field>
+        <field name="res_model">project.document</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="search_view_id" ref="view_project_document_search"/>
+        <field name="domain">[('state', '=', 'active'), ('is_internal', '=', True)]</field>
+    </record>
+
+    <record id="report_action_docs_client" model="ir.actions.act_window">
+        <field name="name">Documents clients actifs</field>
+        <field name="res_model">project.document</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="search_view_id" ref="view_project_document_search"/>
+        <field name="domain">[('state', '=', 'active'), ('is_internal', '=', False)]</field>
+    </record>
+
+    <record id="report_action_docs_archived" model="ir.actions.act_window">
+        <field name="name">Documents archivés</field>
+        <field name="res_model">project.document</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="search_view_id" ref="view_project_document_search"/>
+        <field name="domain">[('state', '=', 'archived')]</field>
+    </record>
+
+    <record id="report_action_docs_by_type" model="ir.actions.act_window">
+        <field name="name">Documents actifs par type</field>
+        <field name="res_model">project.document</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="search_view_id" ref="view_project_document_search"/>
+        <field name="domain">[('state', '=', 'active')]</field>
+        <field name="context">{'search_default_groupby_type': 1}</field>
+    </record>
+
+    <!-- Attention requise -->
+
+    <record id="report_action_docs_expired" model="ir.actions.act_window">
+        <field name="name">Documents expirés</field>
+        <field name="res_model">project.document</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="search_view_id" ref="view_project_document_search"/>
+        <field name="domain">[('state', '=', 'active'), ('expiration_date', '&lt;', context_today().strftime('%Y-%m-%d'))]</field>
+    </record>
+
+    <record id="report_action_docs_overdue_review" model="ir.actions.act_window">
+        <field name="name">Révisions en retard</field>
+        <field name="res_model">project.document</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="search_view_id" ref="view_project_document_search"/>
+        <field name="domain">[('state', '=', 'active'), ('review_date', '&lt;', context_today().strftime('%Y-%m-%d'))]</field>
+    </record>
+
+    <record id="report_action_docs_expiring_30d" model="ir.actions.act_window">
+        <field name="name">Documents expirant sous 30 jours</field>
+        <field name="res_model">project.document</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="search_view_id" ref="view_project_document_search"/>
+        <field name="domain">[('state', '=', 'active'), ('expiration_date', '&gt;=', context_today().strftime('%Y-%m-%d')), ('expiration_date', '&lt;=', (context_today() + relativedelta(days=30)).strftime('%Y-%m-%d'))]</field>
+    </record>
+
+    <!-- Calendrier des révisions -->
+
+    <record id="report_action_docs_review_0_30" model="ir.actions.act_window">
+        <field name="name">Révisions dans 0 à 30 jours</field>
+        <field name="res_model">project.document</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="search_view_id" ref="view_project_document_search"/>
+        <field name="domain">[('state', '=', 'active'), ('review_date', '&gt;=', context_today().strftime('%Y-%m-%d')), ('review_date', '&lt;=', (context_today() + relativedelta(days=30)).strftime('%Y-%m-%d'))]</field>
+    </record>
+
+    <record id="report_action_docs_review_30_60" model="ir.actions.act_window">
+        <field name="name">Révisions dans 30 à 60 jours</field>
+        <field name="res_model">project.document</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="search_view_id" ref="view_project_document_search"/>
+        <field name="domain">[('state', '=', 'active'), ('review_date', '&gt;', (context_today() + relativedelta(days=30)).strftime('%Y-%m-%d')), ('review_date', '&lt;=', (context_today() + relativedelta(days=60)).strftime('%Y-%m-%d'))]</field>
+    </record>
+
+    <record id="report_action_docs_review_60_90" model="ir.actions.act_window">
+        <field name="name">Révisions dans 60 à 90 jours</field>
+        <field name="res_model">project.document</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="search_view_id" ref="view_project_document_search"/>
+        <field name="domain">[('state', '=', 'active'), ('review_date', '&gt;', (context_today() + relativedelta(days=60)).strftime('%Y-%m-%d')), ('review_date', '&lt;=', (context_today() + relativedelta(days=90)).strftime('%Y-%m-%d'))]</field>
+    </record>
+
+    <!-- Qualité -->
+
+    <record id="report_action_docs_without_version" model="ir.actions.act_window">
+        <field name="name">Documents actifs sans aucune version</field>
+        <field name="res_model">project.document</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="search_view_id" ref="view_project_document_search"/>
+        <field name="domain">[('state', '=', 'active'), ('version_ids', '=', False)]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Chaque document actif porte au moins une version
+            </p>
+            <p>
+                Un document sans version n'a jamais été figé : son contenu n'est
+                ni daté ni distribuable.
+            </p>
+        </field>
+    </record>
+
+    <!-- ==================================================== -->
+    <!-- DISTRIBUTIONS                                        -->
+    <!-- ==================================================== -->
+
+    <record id="report_action_dist_client" model="ir.actions.act_window">
+        <field name="name">Distributions clients</field>
+        <field name="res_model">project.document.distribution</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="search_view_id" ref="view_document_distribution_search"/>
+        <field name="domain">[('recipient_type', '=', 'partner')]</field>
+    </record>
+
+    <record id="report_action_dist_client_ack" model="ir.actions.act_window">
+        <field name="name">Distributions clients accusées</field>
+        <field name="res_model">project.document.distribution</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="search_view_id" ref="view_document_distribution_search"/>
+        <field name="domain">[('recipient_type', '=', 'partner'), ('state', '=', 'acknowledged')]</field>
+    </record>
+
+    <record id="report_action_dist_client_pending" model="ir.actions.act_window">
+        <field name="name">Accusés clients en attente</field>
+        <field name="res_model">project.document.distribution</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="search_view_id" ref="view_document_distribution_search"/>
+        <field name="domain">[('recipient_type', '=', 'partner'), ('state', '=', 'pending')]</field>
+    </record>
+
+    <record id="report_action_dist_client_outdated" model="ir.actions.act_window">
+        <field name="name">Distributions clients obsolètes</field>
+        <field name="res_model">project.document.distribution</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="search_view_id" ref="view_document_distribution_search"/>
+        <field name="domain">[('recipient_type', '=', 'partner'), ('is_outdated', '=', True)]</field>
+    </record>
+
+    <record id="report_action_dist_internal" model="ir.actions.act_window">
+        <field name="name">Distributions internes</field>
+        <field name="res_model">project.document.distribution</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="search_view_id" ref="view_document_distribution_search"/>
+        <field name="domain">[('recipient_type', '=', 'employee')]</field>
+    </record>
+
+    <record id="report_action_dist_internal_ack" model="ir.actions.act_window">
+        <field name="name">Distributions internes accusées</field>
+        <field name="res_model">project.document.distribution</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="search_view_id" ref="view_document_distribution_search"/>
+        <field name="domain">[('recipient_type', '=', 'employee'), ('state', '=', 'acknowledged')]</field>
+    </record>
+
+    <record id="report_action_dist_internal_pending" model="ir.actions.act_window">
+        <field name="name">Accusés internes en attente</field>
+        <field name="res_model">project.document.distribution</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="search_view_id" ref="view_document_distribution_search"/>
+        <field name="domain">[('recipient_type', '=', 'employee'), ('state', '=', 'pending')]</field>
+    </record>
+
+    <record id="report_action_dist_overdue_ack" model="ir.actions.act_window">
+        <field name="name">Accusés en attente depuis plus de 7 jours</field>
+        <field name="res_model">project.document.distribution</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="search_view_id" ref="view_document_distribution_search"/>
+        <field name="domain">[('state', '=', 'pending'), ('distribution_date', '&lt;', (context_today() + relativedelta(days=-7)).strftime('%Y-%m-%d'))]</field>
+    </record>
+
+    <record id="report_action_dist_this_month" model="ir.actions.act_window">
+        <field name="name">Distributions du mois courant</field>
+        <field name="res_model">project.document.distribution</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="search_view_id" ref="view_document_distribution_search"/>
+        <field name="domain">[('distribution_date', '&gt;=', context_today().strftime('%Y-%m-01'))]</field>
+    </record>
+
+    <record id="report_action_dist_last_month" model="ir.actions.act_window">
+        <field name="name">Distributions du mois précédent</field>
+        <field name="res_model">project.document.distribution</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="search_view_id" ref="view_document_distribution_search"/>
+        <field name="domain">[('distribution_date', '&gt;=', (context_today() + relativedelta(months=-1)).strftime('%Y-%m-01')), ('distribution_date', '&lt;', context_today().strftime('%Y-%m-01'))]</field>
+    </record>
+
+    <!-- ==================================================== -->
+    <!-- IDENTIFIANTS                                         -->
+    <!-- ==================================================== -->
+
+    <record id="report_action_cred_active" model="ir.actions.act_window">
+        <field name="name">Identifiants actifs</field>
+        <field name="res_model">project.credential</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="search_view_id" ref="credential_view_search"/>
+        <field name="domain">[('state', '=', 'active')]</field>
+    </record>
+
+    <record id="report_action_cred_expiring" model="ir.actions.act_window">
+        <field name="name">Identifiants expirant sous 30 jours</field>
+        <field name="res_model">project.credential</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="search_view_id" ref="credential_view_search"/>
+        <field name="domain">[('state', '=', 'active'), ('expiration_date', '&gt;=', context_today().strftime('%Y-%m-%d')), ('expiration_date', '&lt;=', (context_today() + relativedelta(days=30)).strftime('%Y-%m-%d'))]</field>
+    </record>
+
+    <record id="report_action_cred_expired" model="ir.actions.act_window">
+        <field name="name">Identifiants expirés</field>
+        <field name="res_model">project.credential</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="search_view_id" ref="credential_view_search"/>
+        <field name="domain">[('state', '=', 'active'), ('expiration_date', '&lt;', context_today().strftime('%Y-%m-%d'))]</field>
+    </record>
+
+    <!-- ==================================================== -->
+    <!-- DÉCISIONS                                            -->
+    <!-- ==================================================== -->
+    <!--
+        `matrix_id.active = True` reproduit le compteur : archiver une matrice
+        stratégique doit sortir ses décisions du rapport ET de la liste.
+    -->
+
+    <record id="report_action_decisions_all" model="ir.actions.act_window">
+        <field name="name">Décisions</field>
+        <field name="res_model">project.knowledge.item</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="search_view_id" ref="knowledge_item_view_search"/>
+        <field name="domain">[('item_type', '=', 'decision'), ('matrix_id.active', '=', True)]</field>
+    </record>
+
+    <record id="report_action_decisions_accepted" model="ir.actions.act_window">
+        <field name="name">Décisions acceptées</field>
+        <field name="res_model">project.knowledge.item</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="search_view_id" ref="knowledge_item_view_search"/>
+        <field name="domain">[('item_type', '=', 'decision'), ('matrix_id.active', '=', True), ('state', '=', 'accepted')]</field>
+    </record>
+
+    <record id="report_action_decisions_proposed" model="ir.actions.act_window">
+        <field name="name">Décisions proposées</field>
+        <field name="res_model">project.knowledge.item</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="search_view_id" ref="knowledge_item_view_search"/>
+        <field name="domain">[('item_type', '=', 'decision'), ('matrix_id.active', '=', True), ('state', '=', 'proposed')]</field>
+    </record>
+
+    <record id="report_action_decisions_rejected" model="ir.actions.act_window">
+        <field name="name">Décisions rejetées</field>
+        <field name="res_model">project.knowledge.item</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="search_view_id" ref="knowledge_item_view_search"/>
+        <field name="domain">[('item_type', '=', 'decision'), ('matrix_id.active', '=', True), ('state', '=', 'rejected')]</field>
+    </record>
+
+    <record id="report_action_decisions_high_impact" model="ir.actions.act_window">
+        <field name="name">Décisions haute importance en attente</field>
+        <field name="res_model">project.knowledge.item</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="search_view_id" ref="knowledge_item_view_search"/>
+        <field name="domain">[('item_type', '=', 'decision'), ('matrix_id.active', '=', True), ('impact_level', '=', 'high'), ('state', 'in', ['pending', 'proposed'])]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Aucune décision haute importance en suspens
+            </p>
+            <p>
+                Les décisions à fort impact encore à trancher apparaîtront ici.
+            </p>
+        </field>
+    </record>
+
+    <!-- ==================================================== -->
+    <!-- GOUVERNANCE CORPORATIVE                              -->
+    <!-- ==================================================== -->
+
+    <record id="report_action_corp_directors" model="ir.actions.act_window">
+        <field name="name">Administrateurs actifs</field>
+        <field name="res_model">corporate.director</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="corporate_director_view_search"/>
+        <field name="domain">[('is_active', '=', True)]</field>
+    </record>
+
+    <record id="report_action_corp_officers" model="ir.actions.act_window">
+        <field name="name">Dirigeants actifs</field>
+        <field name="res_model">corporate.officer</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="corporate_officer_view_search"/>
+        <field name="domain">[('is_active', '=', True)]</field>
+    </record>
+
+    <record id="report_action_corp_resolutions_adopted" model="ir.actions.act_window">
+        <field name="name">Résolutions adoptées</field>
+        <field name="res_model">corporate.resolution</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="corporate_resolution_view_search"/>
+        <field name="domain">[('status', '=', 'adopted')]</field>
+    </record>
+
+    <record id="report_action_corp_compliance_overdue" model="ir.actions.act_window">
+        <field name="name">Conformité corporative en retard</field>
+        <field name="res_model">corporate.compliance.event</field>
+        <field name="view_mode">list,calendar,form</field>
+        <field name="search_view_id" ref="corporate_compliance_view_search"/>
+        <field name="domain">[('completed_date', '=', False), ('status', '=', 'overdue')]</field>
+    </record>
+
+    <record id="report_action_corp_compliance_due_soon" model="ir.actions.act_window">
+        <field name="name">Conformité corporative à échéance proche</field>
+        <field name="res_model">corporate.compliance.event</field>
+        <field name="view_mode">list,calendar,form</field>
+        <field name="search_view_id" ref="corporate_compliance_view_search"/>
+        <field name="domain">[('completed_date', '=', False), ('status', '=', 'due_soon')]</field>
+    </record>
+
+</odoo>

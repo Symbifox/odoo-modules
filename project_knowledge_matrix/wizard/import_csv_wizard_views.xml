@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Import Wizard Form -->
+    <record id="import_csv_wizard_view_form" model="ir.ui.view">
+        <field name="name">project.knowledge.import.wizard.form</field>
+        <field name="model">project.knowledge.import.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Import Knowledge Matrix from CSV">
+                <group>
+                    <group string="Target">
+                        <field name="matrix_id"
+                               options="{'no_create': True, 'no_open': True}"/>
+                    </group>
+                    <group string="File">
+                        <field name="csv_file" filename="csv_filename"/>
+                        <field name="csv_filename" invisible="1"/>
+                    </group>
+                </group>
+                <group>
+                    <group string="CSV Settings">
+                        <field name="delimiter"/>
+                        <field name="skip_header"/>
+                        <field name="header_rows" invisible="not skip_header"/>
+                        <field name="update_existing"/>
+                    </group>
+                    <group string="Summary">
+                        <field name="import_count"/>
+                    </group>
+                </group>
+                <group string="Preview" invisible="not preview">
+                    <field name="preview" nolabel="1" readonly="1"
+                           widget="text" class="font-monospace"/>
+                </group>
+                <footer>
+                    <button name="action_import" string="Import" type="object"
+                            class="btn-primary" invisible="import_count == 0"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Import Wizard Action -->
+    <record id="import_csv_wizard_action" model="ir.actions.act_window">
+        <field name="name">Import from CSV</field>
+        <field name="res_model">project.knowledge.import.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="context">{}</field>
+    </record>
+
+</odoo>

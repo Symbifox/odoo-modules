@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- Type d'activit&#233; : &#233;ch&#233;ance qui approche -->
+        <record id="mail_activity_type_knowledge_deadline" model="mail.activity.type">
+            <field name="name">&#201;ch&#233;ance matrice approche</field>
+            <field name="summary">&#201;ch&#233;ance dans moins de 7 jours</field>
+            <field name="res_model">project.knowledge.item</field>
+            <field name="icon">fa-clock-o</field>
+            <field name="delay_count">0</field>
+            <field name="delay_unit">days</field>
+            <field name="delay_from">previous_activity</field>
+        </record>
+
+        <!-- Type d'activit&#233; : &#233;l&#233;ment en retard -->
+        <record id="mail_activity_type_knowledge_overdue" model="mail.activity.type">
+            <field name="name">&#201;l&#233;ment matrice en retard</field>
+            <field name="summary">&#201;ch&#233;ance d&#233;pass&#233;e</field>
+            <field name="res_model">project.knowledge.item</field>
+            <field name="icon">fa-exclamation-triangle</field>
+            <field name="delay_count">0</field>
+            <field name="delay_unit">days</field>
+            <field name="delay_from">previous_activity</field>
+        </record>
+
+        <!-- Type d'activit&#233; : &#233;l&#233;ment sans progression -->
+        <record id="mail_activity_type_knowledge_stale" model="mail.activity.type">
+            <field name="name">&#201;l&#233;ment matrice sans progression</field>
+            <field name="summary">Aucune mise &#224; jour depuis plus de 30 jours</field>
+            <field name="res_model">project.knowledge.item</field>
+            <field name="icon">fa-hourglass-half</field>
+            <field name="delay_count">0</field>
+            <field name="delay_unit">days</field>
+            <field name="delay_from">previous_activity</field>
+        </record>
+
+    </data>
+</odoo>

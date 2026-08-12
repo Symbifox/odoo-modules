@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo noupdate="1">
+    <record id="bf_onb_step_list" model="onboarding.onboarding.step">
+        <field name="title">Lister vos abonnements actifs</field>
+        <field name="description">[action:bf_subscription.action_subscription_subscription] Créez une fiche pour chaque abonnement récurrent : SaaS, memberships, infrastructure.</field>
+        <field name="button_text">Ouvrir Abonnements</field>
+        <field name="done_text">Abonnements listés</field>
+        <field name="panel_step_open_action_name">bf_open_action</field>
+        <field name="sequence">1</field>
+    </record>
+    <record id="bf_onb_step_managed_for" model="onboarding.onboarding.step">
+        <field name="title">Configurer la refacturation pour les clients</field>
+        <field name="description">[action:bf_subscription.action_subscription_subscription] Pour chaque abonnement géré au nom d'un client, cochez « Géré pour le client » et activez la refacturation.</field>
+        <field name="button_text">Voir les abonnements</field>
+        <field name="done_text">Refacturation configurée</field>
+        <field name="panel_step_open_action_name">bf_open_action</field>
+        <field name="sequence">2</field>
+    </record>
+    <record id="bf_onb_step_renewals" model="onboarding.onboarding.step">
+        <field name="title">Vérifier les renouvellements à venir</field>
+        <field name="description">[action:bf_subscription.action_subscription_renewals_30d] Survol des abonnements qui arrivent à échéance dans les 30 prochains jours.</field>
+        <field name="button_text">Voir les renouvellements</field>
+        <field name="done_text">Renouvellements survolés</field>
+        <field name="panel_step_open_action_name">bf_open_action</field>
+        <field name="sequence">3</field>
+    </record>
+    <record id="bf_onboarding_panel" model="onboarding.onboarding">
+        <field name="name">Abonnements</field>
+        <field name="route_name">bf_subscription_onboarding</field>
+        <field name="panel_close_action_name">action_close_panel_bf_subscription</field>
+        <field name="step_ids" eval="[
+            Command.link(ref('bf_subscription.bf_onb_step_list')),
+            Command.link(ref('bf_subscription.bf_onb_step_managed_for')),
+            Command.link(ref('bf_subscription.bf_onb_step_renewals')),
+        ]"/>
+    </record>
+</odoo>

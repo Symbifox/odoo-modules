@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="bf_note_reroute_view_form" model="ir.ui.view">
+        <field name="name">bf.note.reroute.form</field>
+        <field name="model">bf.note.reroute</field>
+        <field name="arch" type="xml">
+            <form string="Re-router la note">
+                <group invisible="state != 'draft'">
+                    <group string="Note(s) sélectionnée(s)">
+                        <field name="note_count"/>
+                        <field name="sample_name" readonly="1"
+                               invisible="note_count != 1"/>
+                        <field name="current_target" readonly="1"
+                               invisible="note_count != 1"/>
+                        <field name="note_ids" widget="many2many_tags"
+                               invisible="note_count == 1"
+                               readonly="1"
+                               options="{'no_create': True}"/>
+                    </group>
+                    <group string="Destination">
+                        <field name="quick_paste"
+                               placeholder="URL Odoo, 22299, INV/2026/00017, task:22299, bf.email:17…"/>
+                        <field name="target_reference" required="1"/>
+                        <field name="mode" widget="radio"/>
+                    </group>
+                    <div class="alert alert-info" role="alert" colspan="2">
+                        <p class="mb-1"><strong>Comment ça fonctionne :</strong></p>
+                        <ul class="mb-0">
+                            <li>Toute fiche dotée d'un chatter est une destination valide — tâche, ticket, contact, opportunité, courriel archivé, ordre du jour, transfert sécurisé…</li>
+                            <li>Tape un numéro (<code>22299</code>), un raccourci (<code>task:22299</code>), une référence technique (<code>bf.email:17</code>) ou colle une URL Odoo dans <em>Lien rapide</em> — la cible se résout automatiquement.</li>
+                            <li><em>Remplacer</em> déplace la note : ses liens actuels sont retirés au profit de la nouvelle fiche. <em>Ajouter</em> la laisse rattachée aux deux.</li>
+                            <li>Rien n'est publié ni envoyé : seuls les liens de la note changent.</li>
+                        </ul>
+                    </div>
+                </group>
+                <group invisible="state != 'done'">
+                    <field name="result_text" nolabel="1" colspan="2"/>
+                </group>
+                <field name="state" invisible="1"/>
+                <footer>
+                    <button name="action_confirm"
+                            string="Re-router"
+                            type="object"
+                            class="btn-primary"
+                            invisible="state != 'draft'"/>
+                    <button string="Fermer" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="bf_note_reroute_action" model="ir.actions.act_window">
+        <field name="name">Re-router la note</field>
+        <field name="res_model">bf.note.reroute</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <!-- Re-routage en lot depuis la liste des notes -->
+    <record id="bf_note_reroute_action_bulk" model="ir.actions.server">
+        <field name="name">Re-router vers une fiche</field>
+        <field name="model_id" ref="model_bf_note"/>
+        <field name="binding_model_id" ref="model_bf_note"/>
+        <field name="binding_view_types">list,kanban</field>
+        <field name="state">code</field>
+        <field name="code">action = records.action_open_reroute_wizard()</field>
+    </record>
+
+</odoo>

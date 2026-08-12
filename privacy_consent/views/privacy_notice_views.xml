@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Notice Form View -->
+    <record id="privacy_notice_form_view" model="ir.ui.view">
+        <field name="name">privacy.notice.form</field>
+        <field name="model">privacy.notice</field>
+        <field name="arch" type="xml">
+            <form string="Modèle de consentement">
+                <sheet>
+                    <widget name="web_ribbon" title="Archivé" bg_color="bg-danger" invisible="active"/>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_versions" type="object"
+                                class="oe_stat_button" icon="fa-history"
+                                invisible="version_count == 0">
+                            <field name="version_count" widget="statinfo" string="Versions"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name" placeholder="ex. : Consentement marketing"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Paramètres">
+                            <field name="purpose_id" invisible="1"/>
+                            <field name="purpose_code"/>
+                            <field name="default_validity_days"/>
+                            <field name="requires_consent"/>
+                            <field name="requires_express_opt_in"/>
+                            <field name="current_version_id" readonly="1"/>
+                        </group>
+                        <group string="Portée">
+                            <field name="channel_scope"/>
+                            <field name="context_scope"/>
+                            <field name="auto_expire_pending_days"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="active" invisible="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Contenu en français" name="fr">
+                            <field name="body_fr" placeholder="Saisissez le texte du modèle de consentement en français..."/>
+                        </page>
+                        <page string="Contenu en anglais" name="en">
+                            <field name="body_en" placeholder="Saisissez le texte du modèle de consentement en anglais..."/>
+                        </page>
+                        <page string="Résumé en langage clair" name="summary">
+                            <field name="plain_language_summary"
+                                   placeholder="Explication claire de la finalité en langage simple (exigence Loi 25)..."/>
+                        </page>
+                    </notebook>
+                    <div class="oe_right mt-3">
+                        <button name="action_create_version" type="object"
+                                string="Créer une nouvelle version" class="btn-primary"
+                                icon="fa-plus"/>
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Notice List View -->
+    <record id="privacy_notice_list_view" model="ir.ui.view">
+        <field name="name">privacy.notice.list</field>
+        <field name="model">privacy.notice</field>
+        <field name="arch" type="xml">
+            <list decoration-muted="not active">
+                <field name="name"/>
+                <field name="purpose_code"/>
+                <field name="current_version_id"/>
+                <field name="version_count"/>
+                <field name="default_validity_days"/>
+                <field name="active" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Notice Search View -->
+    <record id="privacy_notice_search_view" model="ir.ui.view">
+        <field name="name">privacy.notice.search</field>
+        <field name="model">privacy.notice</field>
+        <field name="arch" type="xml">
+            <search string="Rechercher les modèles de consentement">
+                <field name="name"/>
+                <field name="purpose_code"/>
+                <filter string="Archivé" name="archived" domain="[('active', '=', False)]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter string="Portée du contexte" name="context" context="{'group_by': 'context_scope'}"/>
+                    <filter string="Canal" name="channel" context="{'group_by': 'channel_scope'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Notice Action -->
+    <record id="action_privacy_notice" model="ir.actions.act_window">
+        <field name="name">Modèles de consentement</field>
+        <field name="res_model">privacy.notice</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Créez votre premier modèle de consentement
+            </p>
+            <p>
+                Les modèles contiennent le texte et les paramètres présentés aux contacts lors d'une demande de consentement.
+            </p>
+        </field>
+    </record>
+
+    <!-- Notice Version Form View -->
+    <record id="privacy_notice_version_form_view" model="ir.ui.view">
+        <field name="name">privacy.notice.version.form</field>
+        <field name="model">privacy.notice.version</field>
+        <field name="arch" type="xml">
+            <form string="Version du modèle">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_consents" type="object"
+                                class="oe_stat_button" icon="fa-check-circle"
+                                invisible="consent_count == 0">
+                            <field name="consent_count" widget="statinfo" string="Consentements"/>
+                        </button>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="notice_id"/>
+                            <field name="version"/>
+                            <field name="effective_date"/>
+                        </group>
+                        <group>
+                            <field name="hash" readonly="1"/>
+                            <field name="created_by_id" readonly="1"/>
+                        </group>
+                    </group>
+                    <separator string="Contenu"/>
+                    <field name="body" readonly="consent_count > 0"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Notice Version List View -->
+    <record id="privacy_notice_version_list_view" model="ir.ui.view">
+        <field name="name">privacy.notice.version.list</field>
+        <field name="model">privacy.notice.version</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="notice_id"/>
+                <field name="version"/>
+                <field name="effective_date"/>
+                <field name="consent_count"/>
+                <field name="created_by_id"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Notice Version Action -->
+    <record id="action_privacy_notice_version" model="ir.actions.act_window">
+        <field name="name">Versions des modèles</field>
+        <field name="res_model">privacy.notice.version</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

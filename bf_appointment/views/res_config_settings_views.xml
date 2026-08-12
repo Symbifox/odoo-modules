@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form_inherit" model="ir.ui.view">
+        <field name="name">res.config.settings.form.inherit.bf_appointment</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app data-string="Rendez-vous" string="Rendez-vous"
+                     name="bf_appointment"
+                     groups="resource_booking.group_manager">
+                    <block title="Vid&#233;oconf&#233;rence">
+                        <setting string="Jitsi Meet"
+                                 help="Domaine du serveur Jitsi Meet pour les vid&#233;oconf&#233;rences.">
+                            <div class="content-group mt16">
+                                <field name="bf_appointment_jitsi_domain"
+                                       placeholder="meet.jit.si"/>
+                            </div>
+                        </setting>
+                        <setting string="Nextcloud Talk"
+                                 help="Cr&#233;ation automatique de salles Nextcloud Talk.">
+                            <div class="content-group mt16">
+                                <div class="row">
+                                    <label for="bf_appointment_nc_talk_base_url"
+                                           class="col-3 col-lg-4"/>
+                                    <field name="bf_appointment_nc_talk_base_url"
+                                           placeholder="https://cloud.example.com"
+                                           class="col-9 col-lg-8"/>
+                                </div>
+                                <div class="row mt8">
+                                    <label for="bf_appointment_nc_talk_user"
+                                           class="col-3 col-lg-4"/>
+                                    <field name="bf_appointment_nc_talk_user"
+                                           class="col-9 col-lg-8"/>
+                                </div>
+                                <div class="row mt8">
+                                    <label for="bf_appointment_nc_talk_password"
+                                           class="col-3 col-lg-4"/>
+                                    <field name="bf_appointment_nc_talk_password"
+                                           password="True"
+                                           class="col-9 col-lg-8"/>
+                                </div>
+                            </div>
+                        </setting>
+                    </block>
+                    <block title="Image de marque" id="bf_appointment_brand">
+                        <setting string="Identit&#233; visuelle"
+                                 help="Logo, couleurs et URLs utilis&#233;s dans les courriels de rendez-vous et sur la page publique. Param&#233;tr&#233; par soci&#233;t&#233; pour permettre le multi-tenant.">
+                            <div class="content-group mt16">
+                                <div class="row">
+                                    <label for="appointment_brand_name" class="col-3 col-lg-4"/>
+                                    <field name="appointment_brand_name" class="col-9 col-lg-8"/>
+                                </div>
+                                <div class="row mt8">
+                                    <label for="appointment_brand_logo_url" class="col-3 col-lg-4"/>
+                                    <field name="appointment_brand_logo_url" class="col-9 col-lg-8"
+                                           placeholder="https://example.com/logo.png"/>
+                                </div>
+                                <div class="row mt8">
+                                    <label for="appointment_brand_website_url" class="col-3 col-lg-4"/>
+                                    <field name="appointment_brand_website_url" class="col-9 col-lg-8"
+                                           placeholder="https://example.com"/>
+                                </div>
+                                <div class="row mt8">
+                                    <label for="appointment_brand_tagline" class="col-3 col-lg-4"/>
+                                    <field name="appointment_brand_tagline" class="col-9 col-lg-8"
+                                           placeholder="Solutions éthiques et souveraines pour vos données."/>
+                                </div>
+                                <div class="row mt8">
+                                    <label for="appointment_brand_primary" class="col-3 col-lg-4"/>
+                                    <field name="appointment_brand_primary" widget="color"
+                                           class="col-9 col-lg-8"/>
+                                </div>
+                                <div class="row mt8">
+                                    <label for="appointment_brand_dark" class="col-3 col-lg-4"/>
+                                    <field name="appointment_brand_dark" widget="color"
+                                           class="col-9 col-lg-8"/>
+                                </div>
+                            </div>
+                        </setting>
+                        <setting string="Coordonn&#233;es de soutien"
+                                 help="Affich&#233;es dans les courriels de rendez-vous et la page publique. Permet aux invit&#233;s de joindre votre &#233;quipe en cas de question.">
+                            <div class="content-group mt16">
+                                <div class="row">
+                                    <label for="appointment_brand_support_email" class="col-3 col-lg-4"/>
+                                    <field name="appointment_brand_support_email"
+                                           class="col-9 col-lg-8"
+                                           placeholder="service@example.com"/>
+                                </div>
+                                <div class="row mt8">
+                                    <label for="appointment_brand_support_phone" class="col-3 col-lg-4"/>
+                                    <field name="appointment_brand_support_phone"
+                                           class="col-9 col-lg-8"
+                                           placeholder="+15145551212"/>
+                                </div>
+                                <div class="row mt8">
+                                    <label for="appointment_brand_support_phone_display" class="col-3 col-lg-4"/>
+                                    <field name="appointment_brand_support_phone_display"
+                                           class="col-9 col-lg-8"
+                                           placeholder="514-555-1212"/>
+                                </div>
+                            </div>
+                        </setting>
+                        <setting string="Liens conformit&#233;"
+                                 help="URLs vers la politique de confidentialit&#233; et les conditions d&#8217;utilisation, ins&#233;r&#233;es dans les courriels et formulaires.">
+                            <div class="content-group mt16">
+                                <div class="row">
+                                    <label for="appointment_brand_privacy_url" class="col-3 col-lg-4"/>
+                                    <field name="appointment_brand_privacy_url"
+                                           class="col-9 col-lg-8"/>
+                                </div>
+                                <div class="row mt8">
+                                    <label for="appointment_brand_terms_url" class="col-3 col-lg-4"/>
+                                    <field name="appointment_brand_terms_url"
+                                           class="col-9 col-lg-8"/>
+                                </div>
+                            </div>
+                        </setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+</odoo>

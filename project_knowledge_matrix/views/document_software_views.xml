@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ==================== -->
+    <!-- SOFTWARE VIEWS       -->
+    <!-- ==================== -->
+
+    <!-- Software Tree View -->
+    <record id="view_document_software_tree" model="ir.ui.view">
+        <field name="name">document.software.tree</field>
+        <field name="model">document.software</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="code"/>
+                <field name="name"/>
+                <field name="current_version"/>
+                <field name="version_date"/>
+                <field name="icon"/>
+                <field name="document_count"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Software Form View -->
+    <record id="view_document_software_form" model="ir.ui.view">
+        <field name="name">document.software.form</field>
+        <field name="model">document.software</field>
+        <field name="arch" type="xml">
+            <form string="Logiciel">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button" type="object"
+                                name="action_view_documents" icon="fa-file-text-o"
+                                invisible="document_count == 0">
+                            <field name="document_count" widget="statinfo" string="Documents"/>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Archivé" bg_color="text-bg-danger" invisible="active"/>
+                    <div class="oe_title">
+                        <label for="name" string="Nom du logiciel"/>
+                        <h1>
+                            <field name="name" placeholder="ex: Nextcloud"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="code" placeholder="NC"/>
+                            <field name="website" widget="url"/>
+                            <field name="active"/>
+                        </group>
+                        <group>
+                            <field name="current_version" placeholder="28.0.1"/>
+                            <field name="version_date"/>
+                            <field name="icon" placeholder="fa-cloud"/>
+                            <field name="color" widget="color_picker"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="description" placeholder="Description du logiciel..."/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Software Search View -->
+    <record id="view_document_software_search" model="ir.ui.view">
+        <field name="name">document.software.search</field>
+        <field name="model">document.software</field>
+        <field name="arch" type="xml">
+            <search string="Rechercher les logiciels">
+                <field name="name"/>
+                <field name="code"/>
+                <separator/>
+                <filter name="filter_archived" string="Archivés" domain="[('active', '=', False)]"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- Software Action -->
+    <record id="document_software_action" model="ir.actions.act_window">
+        <field name="name">Logiciels documentés</field>
+        <field name="res_model">document.software</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_document_software_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Créer un logiciel
+            </p>
+            <p>
+                Les logiciels permettent de catégoriser la documentation par application (ex: Nextcloud, Odoo).
+            </p>
+        </field>
+    </record>
+
+    <!-- ==================== -->
+    <!-- SOFTWARE VERSION     -->
+    <!-- ==================== -->
+
+    <!-- Software Version Tree View -->
+    <record id="view_document_software_version_tree" model="ir.ui.view">
+        <field name="name">document.software.version.tree</field>
+        <field name="model">document.software.version</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="software_id"/>
+                <field name="version"/>
+                <field name="release_date"/>
+                <field name="is_lts" widget="boolean_toggle"/>
+                <field name="support_status"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Software Version Form View -->
+    <record id="view_document_software_version_form" model="ir.ui.view">
+        <field name="name">document.software.version.form</field>
+        <field name="model">document.software.version</field>
+        <field name="arch" type="xml">
+            <form string="Version de logiciel">
+                <sheet>
+                    <widget name="web_ribbon" title="LTS" bg_color="text-bg-success" invisible="not is_lts"/>
+                    <widget name="web_ribbon" title="Fin de vie" bg_color="text-bg-danger" invisible="support_status != 'eol'"/>
+                    <div class="oe_title">
+                        <label for="software_id" string="Logiciel"/>
+                        <h1>
+                            <field name="software_id" options="{'no_create': True}"/>
+                        </h1>
+                        <h2>
+                            Version <field name="version" class="oe_inline" placeholder="28.0.1"/>
+                        </h2>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="release_date"/>
+                            <field name="is_lts"/>
+                            <field name="support_status"/>
+                        </group>
+                        <group>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="notes" placeholder="Notes sur cette version..."/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Software Version Search View -->
+    <record id="view_document_software_version_search" model="ir.ui.view">
+        <field name="name">document.software.version.search</field>
+        <field name="model">document.software.version</field>
+        <field name="arch" type="xml">
+            <search string="Rechercher les versions">
+                <field name="software_id"/>
+                <field name="version"/>
+                <separator/>
+                <filter name="filter_lts" string="LTS" domain="[('is_lts', '=', True)]"/>
+                <filter name="filter_current" string="Actuelles" domain="[('support_status', '=', 'current')]"/>
+                <filter name="filter_supported" string="Supportées" domain="[('support_status', 'in', ['current', 'supported'])]"/>
+                <filter name="filter_eol" string="Fin de vie" domain="[('support_status', '=', 'eol')]"/>
+                <separator/>
+                <filter name="filter_archived" string="Archivés" domain="[('active', '=', False)]"/>
+                <group expand="0" string="Grouper par">
+                    <filter name="groupby_software" string="Logiciel" context="{'group_by': 'software_id'}"/>
+                    <filter name="groupby_status" string="Statut" context="{'group_by': 'support_status'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Software Version Action -->
+    <record id="document_software_version_action" model="ir.actions.act_window">
+        <field name="name">Versions de logiciels</field>
+        <field name="res_model">document.software.version</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_document_software_version_search"/>
+        <field name="context">{'search_default_filter_supported': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Créer une version de logiciel
+            </p>
+            <p>
+                Les versions permettent de suivre la documentation par version de logiciel.
+            </p>
+        </field>
+    </record>
+
+</odoo>

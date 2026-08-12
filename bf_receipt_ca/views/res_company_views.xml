@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+<odoo>
+    <record id="res_company_form_bf_receipt" model="ir.ui.view">
+        <field name="name">res.company.form.bf.receipt</field>
+        <field name="model">res.company</field>
+        <field name="inherit_id" ref="base.view_company_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <group string="Reçus de dons (bienfaisance)" name="bf_charity">
+                    <group>
+                        <field name="charity_registration_number" />
+                        <field name="charity_signatory_name" />
+                        <field name="charity_signatory_title" />
+                        <field name="charity_signature" widget="image" />
+                    </group>
+                    <group>
+                        <field name="charity_cra_url" />
+                        <field name="receipt_show_place_of_issue" />
+                        <field
+                            name="receipt_place_of_issue"
+                            invisible="not receipt_show_place_of_issue"
+                        />
+                        <field name="receipt_show_appraiser" />
+                    </group>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>

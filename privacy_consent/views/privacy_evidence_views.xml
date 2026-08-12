@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Form View -->
+    <record id="privacy_consent_evidence_form_view" model="ir.ui.view">
+        <field name="name">privacy.consent.evidence.form</field>
+        <field name="model">privacy.consent.evidence</field>
+        <field name="arch" type="xml">
+            <form string="Preuve de consentement">
+                <sheet>
+                    <group>
+                        <group string="Preuve">
+                            <field name="consent_id"/>
+                            <field name="evidence_type"/>
+                            <field name="attachment_file" filename="attachment_filename"/>
+                            <field name="attachment_filename" invisible="1"/>
+                        </group>
+                        <group string="Info de collecte">
+                            <field name="collected_by_user_id"/>
+                            <field name="collected_at"/>
+                        </group>
+                    </group>
+                    <group string="Métadonnées techniques" groups="privacy_consent.group_privacy_officer">
+                        <field name="ip_address"/>
+                        <field name="user_agent"/>
+                    </group>
+                    <separator string="Notes"/>
+                    <field name="note" placeholder="Description de cette preuve..."/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- List View -->
+    <record id="privacy_consent_evidence_list_view" model="ir.ui.view">
+        <field name="name">privacy.consent.evidence.list</field>
+        <field name="model">privacy.consent.evidence</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="consent_id"/>
+                <field name="evidence_type"/>
+                <field name="attachment_filename"/>
+                <field name="collected_at"/>
+                <field name="collected_by_user_id"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="privacy_consent_evidence_search_view" model="ir.ui.view">
+        <field name="name">privacy.consent.evidence.search</field>
+        <field name="model">privacy.consent.evidence</field>
+        <field name="arch" type="xml">
+            <search string="Rechercher les preuves">
+                <field name="consent_id"/>
+                <field name="evidence_type"/>
+                <group expand="0" string="Regrouper par">
+                    <filter string="Type" name="type" context="{'group_by': 'evidence_type'}"/>
+                    <filter string="Collecté par" name="collected_by" context="{'group_by': 'collected_by_user_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_privacy_consent_evidence" model="ir.actions.act_window">
+        <field name="name">Preuves</field>
+        <field name="res_model">privacy.consent.evidence</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

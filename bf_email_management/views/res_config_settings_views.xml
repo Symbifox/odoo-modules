@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Action: open the user's IMAP account list (replaces the legacy
+         global settings page now that the module is per-user). -->
+    <record id="action_bf_email_settings" model="ir.actions.act_window">
+        <field name="name">Mes comptes IMAP</field>
+        <field name="res_model">bf.email.account</field>
+        <field name="view_mode">list,form</field>
+        <field name="target">current</field>
+        <field name="context">{'default_user_id': uid}</field>
+    </record>
+
+</odoo>

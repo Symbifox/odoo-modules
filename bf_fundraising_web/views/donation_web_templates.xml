@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+<odoo>
+    <template id="donation_form" name="Formulaire de don">
+        <t t-call="website.layout">
+            <div class="container my-5">
+                <div class="row justify-content-center">
+                    <div class="col-lg-7">
+                        <h1 class="mb-4">Faire un don</h1>
+                        <p class="text-muted">
+                            Votre don soutient notre mission. Un reçu officiel aux
+                            fins de l'impôt vous sera transmis.
+                        </p>
+                        <form action="/don/submit" method="post" class="mt-4">
+                            <input
+                                type="hidden"
+                                name="csrf_token"
+                                t-att-value="request.csrf_token()"
+                            />
+                            <div class="mb-3">
+                                <label class="form-label">Nom complet *</label>
+                                <input
+                                    type="text"
+                                    name="name"
+                                    t-attf-class="form-control #{'is-invalid' if error.get('name') else ''}"
+                                    t-att-value="values.get('name')"
+                                />
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Courriel *</label>
+                                <input
+                                    type="email"
+                                    name="email"
+                                    t-attf-class="form-control #{'is-invalid' if error.get('email') else ''}"
+                                    t-att-value="values.get('email')"
+                                />
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Adresse</label>
+                                    <input
+                                        type="text"
+                                        name="street"
+                                        class="form-control"
+                                        t-att-value="values.get('street')"
+                                    />
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label class="form-label">Ville</label>
+                                    <input
+                                        type="text"
+                                        name="city"
+                                        class="form-control"
+                                        t-att-value="values.get('city')"
+                                    />
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label class="form-label">Code postal</label>
+                                    <input
+                                        type="text"
+                                        name="zip"
+                                        class="form-control"
+                                        t-att-value="values.get('zip')"
+                                    />
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Montant du don (CAD) *</label>
+                                <input
+                                    type="number"
+                                    step="0.01"
+                                    min="1"
+                                    name="amount"
+                                    t-attf-class="form-control #{'is-invalid' if error.get('amount') else ''}"
+                                    t-att-value="values.get('amount')"
+                                />
+                            </div>
+                            <div class="row" t-if="funds or campaigns">
+                                <div class="col-md-6 mb-3" t-if="funds">
+                                    <label class="form-label">Fonds</label>
+                                    <select name="fund_id" class="form-select">
+                                        <option value="">— Aucun —</option>
+                                        <t t-foreach="funds" t-as="fund">
+                                            <option t-att-value="fund.id">
+                                                <t t-out="fund.display_name" />
+                                            </option>
+                                        </t>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-3" t-if="campaigns">
+                                    <label class="form-label">Campagne</label>
+                                    <select name="campaign_id" class="form-select">
+                                        <option value="">— Aucune —</option>
+                                        <t t-foreach="campaigns" t-as="campaign">
+                                            <option t-att-value="campaign.id">
+                                                <t t-out="campaign.display_name" />
+                                            </option>
+                                        </t>
+                                    </select>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-lg mt-2">
+                                Donner
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="donation_thanks" name="Merci de votre don">
+        <t t-call="website.layout">
+            <div class="container my-5">
+                <div class="row justify-content-center">
+                    <div class="col-lg-7 text-center">
+                        <h1 class="mb-3">Merci de votre générosité&#160;!</h1>
+                        <p class="lead">
+                            Nous avons bien reçu votre don de
+                            <strong><span t-field="donation.amount_total" /></strong>.
+                        </p>
+                        <p class="text-muted">
+                            Un reçu officiel aux fins de l'impôt sera transmis à
+                            <strong><t t-out="partner.email" /></strong> une fois le
+                            don confirmé.
+                        </p>
+                        <a href="/" class="btn btn-secondary mt-3">Retour à l'accueil</a>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- No website menu is auto-created: the public form lives at /don and each
+         organisation adds its own « Faire un don » link/button where it wants
+         (a consultancy site, for instance, should not carry a donate link). -->
+</odoo>

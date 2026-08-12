@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Le certificat d'accès : ce que le journal chaîné devient quand il faut
+         l'OPPOSER à quelqu'un. L'export CSV rend les lignes ; celui-ci rend une
+         preuve — verdict d'intégrité, empreintes de bout de chaîne, et la
+         recette exacte pour la recalculer sans nous faire confiance.
+
+         Il porte la marque du CLIENT (secure.transfer.brand), pas celle de la
+         société Odoo : c'est le concessionnaire qui l'oppose à son client, pas
+         Blue Fox. D'où l'absence de web.external_layout. -->
+
+    <template id="report_access_certificate_document">
+        <!-- Le certificat est lu par le CLIENT, pas par l'employé : il se rend
+             dans la langue du transfert, pas dans celle de qui l'imprime (sans
+             quoi un dossier francophone sort avec des dates en 07/13/2026). -->
+        <t t-set="doc" t-value="doc.with_context(lang=doc.locale or 'fr_CA')"/>
+        <t t-set="brand" t-value="doc.brand_id"/>
+        <t t-set="c" t-value="doc._certificate_context()"/>
+        <t t-set="primary" t-value="brand.color_primary or '#1f2937'"/>
+        <t t-set="dark" t-value="brand.color_dark or '#111827'"/>
+
+        <t t-call="web.basic_layout">
+            <div class="page" style="font-family: Arial, Helvetica, sans-serif; font-size: 10pt; color: #1f2937;">
+
+                <!-- En-tête de marque -->
+                <table style="width:100%; border-collapse:collapse; margin-bottom:18px;">
+                    <tr>
+                        <td style="vertical-align:middle;">
+                            <img t-if="brand.logo"
+                                 t-att-src="image_data_uri(brand.logo)"
+                                 style="max-height:46px; max-width:200px;"/>
+                            <div t-else="" t-out="brand.name"
+                                 t-attf-style="font-size:18pt; font-weight:bold; color:#{dark};"/>
+                        </td>
+                        <td style="text-align:right; vertical-align:middle;">
+                            <div t-attf-style="font-size:15pt; font-weight:bold; color:#{primary};">
+                                Certificat d'accès
+                            </div>
+                            <div style="font-size:9pt; color:#6b7280;">
+                                Journal d'accès chaîné — preuve d'intégrité
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+                <div t-attf-style="height:3px; background:#{primary}; margin-bottom:16px;"/>
+
+                <!-- Verdict d'intégrité : d'abord, parce que c'est la question -->
+                <table style="width:100%; border-collapse:collapse; margin-bottom:16px;">
+                    <tr>
+                        <td t-attf-style="padding:10px 12px; border-left:4px solid #{'#15803d' if c['intact'] else '#b91c1c'}; background:#{'#f0fdf4' if c['intact'] else '#fef2f2'};">
+                            <strong t-if="c['intact']" style="color:#15803d;">
+                                Chaîne d'intégrité INTACTE
+                            </strong>
+                            <strong t-else="" style="color:#b91c1c;">
+                                ALERTE — chaîne d'intégrité BRISÉE
+                            </strong>
+                            <span style="color:#374151;">
+                                — <t t-out="len(c['rows'])"/> entrée(s), recalculées une à une à l'instant de l'impression.
+                            </span>
+                        </td>
+                    </tr>
+                </table>
+
+                <!-- Identité du transfert -->
+                <table style="width:100%; border-collapse:collapse; margin-bottom:16px; font-size:9.5pt;">
+                    <tr>
+                        <td style="width:25%; padding:3px 0; color:#6b7280;">Transfert</td>
+                        <td style="width:25%; padding:3px 0;"><strong t-out="doc.name"/></td>
+                        <td style="width:25%; padding:3px 0; color:#6b7280;">État</td>
+                        <td style="width:25%; padding:3px 0;"><span t-field="doc.state"/></td>
+                    </tr>
+                    <tr>
+                        <td style="padding:3px 0; color:#6b7280;">Expéditeur</td>
+                        <td style="padding:3px 0;">
+                            <t t-out="doc.sender_name or ''"/>
+                            <t t-if="doc.sender_email"> &lt;<t t-out="doc.sender_email"/>&gt;</t>
+                        </td>
+                        <td style="padding:3px 0; color:#6b7280;">Destinataire(s)</td>
+                        <td style="padding:3px 0;" t-out="doc.recipient_emails or ''"/>
+                    </tr>
+                    <tr>
+                        <td style="padding:3px 0; color:#6b7280;">Créé le</td>
+                        <td style="padding:3px 0;" t-out="c['created_at']"/>
+                        <td style="padding:3px 0; color:#6b7280;">Échéance</td>
+                        <td style="padding:3px 0;" t-out="c['expiry_at']"/>
+                    </tr>
+                    <tr>
+                        <td style="padding:3px 0; color:#6b7280;">Rétention</td>
+                        <td style="padding:3px 0;"><t t-out="doc.retention_days"/> jour(s)</td>
+                        <td style="padding:3px 0; color:#6b7280;">Téléchargements</td>
+                        <td style="padding:3px 0;"><t t-out="doc.download_count"/></td>
+                    </tr>
+                </table>
+
+                <!-- Pièces -->
+                <div t-if="doc.file_ids" style="margin-bottom:6px; font-weight:bold;" t-attf-style="color:#{dark};">
+                    Pièces (<t t-out="len(doc.file_ids)"/>)
+                </div>
+                <table t-if="doc.file_ids" style="width:100%; border-collapse:collapse; margin-bottom:16px; font-size:9pt;">
+                    <thead>
+                        <tr t-attf-style="background:#{dark}; color:#ffffff;">
+                            <th style="padding:5px 6px; text-align:left;">Nom</th>
+                            <th style="padding:5px 6px; text-align:right;">Taille confirmée</th>
+                            <th style="padding:5px 6px; text-align:left;">Empreinte du stockage (ETag)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr t-foreach="doc.file_ids" t-as="f" style="border-bottom:1px solid #e5e7eb;">
+                            <td style="padding:4px 6px;" t-out="f.filename"/>
+                            <!-- La taille CONFIRMÉE (HEAD côté serveur), pas celle
+                                 que le déposant a déclarée : un certificat n'oppose
+                                 que ce que le serveur a vérifié lui-même. -->
+                            <td style="padding:4px 6px; text-align:right;">
+                                <t t-out="'%.1f' % ((f.size_confirmed or f.size or 0) / 1024.0)"/> ko
+                            </td>
+                            <td style="padding:4px 6px; font-family:monospace; font-size:8pt;"
+                                t-out="(f.etag or '—')"/>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- Le journal -->
+                <div style="margin-bottom:6px; font-weight:bold;" t-attf-style="color:#{dark};">
+                    Journal d'accès
+                </div>
+                <table style="width:100%; border-collapse:collapse; font-size:8pt;">
+                    <thead>
+                        <tr t-attf-style="background:#{dark}; color:#ffffff;">
+                            <th style="padding:5px 4px; text-align:left;">#</th>
+                            <th style="padding:5px 4px; text-align:left;">Horodatage (UTC)</th>
+                            <th style="padding:5px 4px; text-align:left;">Action</th>
+                            <th style="padding:5px 4px; text-align:left;">Acteur</th>
+                            <th style="padding:5px 4px; text-align:left;">IP</th>
+                            <th style="padding:5px 4px; text-align:left;">Empreinte</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr t-foreach="c['rows']" t-as="r" style="border-bottom:1px solid #e5e7eb;">
+                            <td style="padding:3px 4px;" t-out="r['seq']"/>
+                            <td style="padding:3px 4px; white-space:nowrap;" t-out="r['timestamp']"/>
+                            <td style="padding:3px 4px;">
+                                <t t-out="r['action']"/>
+                                <div t-if="r['file']" style="color:#6b7280;" t-out="r['file']"/>
+                            </td>
+                            <td style="padding:3px 4px;" t-out="r['actor']"/>
+                            <td style="padding:3px 4px;" t-out="r['ip']"/>
+                            <td style="padding:3px 4px; font-family:monospace;"
+                                t-out="r['hash'][:16]"/>
+                        </tr>
+                        <tr t-if="not c['rows']">
+                            <td colspan="6" style="padding:8px 4px; color:#6b7280;">
+                                Aucune entrée.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- La recette : sans elle, le client doit nous croire sur parole -->
+                <div style="margin-top:18px; padding:10px 12px; background:#f9fafb; border:1px solid #e5e7eb; font-size:8pt; color:#374151;">
+                    <strong>Comment vérifier ce certificat sans nous faire confiance.</strong>
+                    Chaque entrée porte une empreinte
+                    <span style="font-family:monospace;">SHA-256(empreinte précédente + charge utile canonique)</span>,
+                    où la charge utile est le JSON trié des champs de l'entrée
+                    (identifiant et nom du transfert, action, horodatage UTC, IP,
+                    agent utilisateur, acteur, note) et où la première entrée part
+                    d'une empreinte vide. Modifier, retirer ou intercaler une seule
+                    entrée casse toutes les empreintes suivantes.
+                    <div style="margin-top:5px;">
+                        Première empreinte :
+                        <span style="font-family:monospace;" t-out="c['first_hash'] or '—'"/>
+                    </div>
+                    <div>
+                        Dernière empreinte :
+                        <span style="font-family:monospace;" t-out="c['last_hash'] or '—'"/>
+                    </div>
+                </div>
+
+                <div style="margin-top:14px; font-size:8pt; color:#9ca3af;">
+                    Certificat produit le <t t-out="c['generated_at']"/> par
+                    <t t-out="c['generated_by']"/>.
+                    <!-- « Propulsé par » crédite l'OPÉRATEUR de l'instance, jamais
+                         la marque servie — et il se lit sur la société, sinon un
+                         déploiement en marque blanche imprime « Blue Fox » sur le
+                         certificat que son client oppose au sien. -->
+                    <t t-if="brand.powered_by"> — Propulsé par <t t-out="brand.company_id.name"/>.</t>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="report_access_certificate">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="bf_securetransfer.report_access_certificate_document"/>
+            </t>
+        </t>
+    </template>
+
+    <record id="action_report_access_certificate" model="ir.actions.report">
+        <field name="name">Certificat d'accès</field>
+        <field name="model">secure.transfer</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">bf_securetransfer.report_access_certificate</field>
+        <field name="report_file">bf_securetransfer.report_access_certificate</field>
+        <field name="print_report_name">'Certificat d\'acces - %s' % (object.name or '')</field>
+        <field name="binding_model_id" ref="model_secure_transfer"/>
+        <field name="binding_type">report</field>
+    </record>
+
+</odoo>

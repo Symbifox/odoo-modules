@@ -1,0 +1,330 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="bf_email_management.Dashboard">
+        <div class="o_bf_email_dashboard">
+            <!-- Loading -->
+            <div t-if="state.loading" class="d-flex justify-content-center align-items-center" style="min-height: 400px;">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Chargement...</span>
+                </div>
+            </div>
+
+            <!-- Error -->
+            <div t-elif="!state.data" class="container-fluid py-4">
+                <div class="alert alert-warning d-flex align-items-center">
+                    <i class="fa fa-exclamation-triangle fa-2x me-3"/>
+                    <div class="flex-grow-1">
+                        <strong>Erreur de chargement</strong>
+                        <p class="mb-0">Impossible de charger les donn&#233;es.</p>
+                    </div>
+                    <button class="btn btn-outline-warning" t-on-click="refresh">
+                        <i class="fa fa-refresh me-1"/>R&#233;essayer
+                    </button>
+                </div>
+            </div>
+
+            <!-- Dashboard -->
+            <div t-else="" class="container-fluid py-4">
+
+                <!-- Header -->
+                <div class="row mb-3">
+                    <div class="col-12 d-flex justify-content-between align-items-center flex-wrap gap-2">
+                        <div>
+                            <h1 class="mb-0">
+                                <i class="fa fa-envelope me-2"/>Tableau de bord courriels
+                            </h1>
+                            <p class="text-muted mb-0">
+                                <t t-esc="state.data.volume.total"/> courriels
+                                <t t-if="state.preset !== 'all'">
+                                    (<t t-esc="periodLabel"/>)
+                                </t>
+                            </p>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-outline-secondary" t-on-click="refresh">
+                                <i class="fa fa-refresh me-1"/>Actualiser
+                            </button>
+                            <button class="btn btn-primary" t-on-click="openAllEmails">
+                                <i class="fa fa-list me-1"/>Voir tous
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Date range bar -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body py-2 d-flex align-items-center flex-wrap gap-2">
+                                <i class="fa fa-calendar text-muted me-1"/>
+                                <div class="btn-group btn-group-sm me-3">
+                                    <t t-foreach="presets" t-as="p" t-key="p.key">
+                                        <button t-attf-class="btn {{state.preset === p.key ? 'btn-primary' : 'btn-outline-secondary'}}"
+                                                t-on-click="() => this.selectPreset(p.key)">
+                                            <t t-esc="p.label"/>
+                                        </button>
+                                    </t>
+                                </div>
+                                <div class="d-flex align-items-center gap-2">
+                                    <input type="date" class="form-control form-control-sm"
+                                           style="width: 150px;"
+                                           t-att-value="state.dateFrom || ''"
+                                           t-on-change="onDateFromChange"/>
+                                    <span class="text-muted">&#8212;</span>
+                                    <input type="date" class="form-control form-control-sm"
+                                           style="width: 150px;"
+                                           t-att-value="state.dateTo || ''"
+                                           t-on-change="onDateToChange"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Actionable Inbox-Zero Cards -->
+                <div class="row mb-3 g-3">
+                    <div class="col-md-3 col-sm-6">
+                        <div class="card h-100 border-info" style="cursor: pointer;" t-on-click="openInboxActive">
+                            <div class="card-body text-center">
+                                <div class="text-muted small mb-1">
+                                    <i class="fa fa-inbox me-1"/>Boîte de réception
+                                </div>
+                                <div t-attf-class="fs-1 fw-bold {{state.data.actionable.inbox_active > 0 ? 'text-info' : 'text-success'}}">
+                                    <t t-esc="state.data.actionable.inbox_active"/>
+                                </div>
+                                <div class="text-muted small">à traiter</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6">
+                        <div class="card h-100 border-warning" style="cursor: pointer;" t-on-click="openAwaitingReply">
+                            <div class="card-body text-center">
+                                <div class="text-muted small mb-1">
+                                    <i class="fa fa-hourglass-half me-1"/>En attente &gt; 24h
+                                </div>
+                                <div t-attf-class="fs-1 fw-bold {{state.data.actionable.awaiting_reply > 0 ? 'text-warning' : 'text-success'}}">
+                                    <t t-esc="state.data.actionable.awaiting_reply"/>
+                                </div>
+                                <div class="text-muted small">sans réponse</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6">
+                        <div class="card h-100 border-secondary" style="cursor: pointer;" t-on-click="openUnroutedOrphans">
+                            <div class="card-body text-center">
+                                <div class="text-muted small mb-1">
+                                    <i class="fa fa-link me-1"/>IMAP orphelins
+                                </div>
+                                <div t-attf-class="fs-1 fw-bold {{state.data.actionable.unrouted_orphans > 0 ? 'text-secondary' : 'text-success'}}">
+                                    <t t-esc="state.data.actionable.unrouted_orphans"/>
+                                </div>
+                                <div class="text-muted small">à router</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6">
+                        <div class="card h-100 border-danger" style="cursor: pointer;" t-on-click="openVipPending">
+                            <div class="card-body text-center">
+                                <div class="text-muted small mb-1">
+                                    <i class="fa fa-star me-1"/>VIP en attente
+                                </div>
+                                <div t-attf-class="fs-1 fw-bold {{state.data.actionable.vip_pending > 0 ? 'text-danger' : 'text-success'}}">
+                                    <t t-esc="state.data.actionable.vip_pending"/>
+                                </div>
+                                <div class="text-muted small">priorité élevée+</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Handled rate badge -->
+                <div class="row mb-3" t-if="state.data.handled_rate.total > 0">
+                    <div class="col-12">
+                        <div class="alert alert-light border d-flex align-items-center gap-3 mb-0 py-2">
+                            <i class="fa fa-check-circle fa-2x text-success"/>
+                            <div class="flex-grow-1">
+                                <strong>Tout traité ?</strong>
+                                <t t-esc="state.data.handled_rate.handled"/> /
+                                <t t-esc="state.data.handled_rate.total"/>
+                                courriel(s) traité(s) sur la période —
+                                <strong><t t-esc="state.data.handled_rate.rate"/>%</strong>
+                            </div>
+                            <div class="progress flex-grow-1" style="height: 8px; max-width: 300px;">
+                                <div class="progress-bar bg-success"
+                                     role="progressbar"
+                                     t-att-style="'width: ' + state.data.handled_rate.rate + '%'"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- KPI Cards Row -->
+                <div class="row mb-4 g-3">
+                    <!-- Received -->
+                    <div class="col-md-3 col-sm-6">
+                        <div class="card h-100" style="cursor: pointer;" t-on-click="openReceived">
+                            <div class="card-body text-center">
+                                <div class="text-muted small mb-1">Re&#231;us</div>
+                                <div class="fs-1 fw-bold text-info">
+                                    <t t-esc="state.data.volume.received"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Sent -->
+                    <div class="col-md-3 col-sm-6">
+                        <div class="card h-100" style="cursor: pointer;" t-on-click="openSent">
+                            <div class="card-body text-center">
+                                <div class="text-muted small mb-1">Envoy&#233;s</div>
+                                <div class="fs-1 fw-bold text-success">
+                                    <t t-esc="state.data.volume.sent"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Unread -->
+                    <div class="col-md-3 col-sm-6">
+                        <div class="card h-100" style="cursor: pointer;" t-on-click="openUnread">
+                            <div class="card-body text-center">
+                                <div class="text-muted small mb-1">Non lus</div>
+                                <div t-attf-class="fs-1 fw-bold {{state.data.status.new > 0 ? 'text-danger' : 'text-success'}}">
+                                    <t t-esc="state.data.status.new"/>
+                                </div>
+                                <div class="text-muted small">
+                                    <t t-esc="state.data.status.read"/> lus,
+                                    <t t-esc="state.data.status.replied"/> r&#233;pondus
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Avg response time -->
+                    <div class="col-md-3 col-sm-6">
+                        <div class="card h-100">
+                            <div class="card-body text-center">
+                                <div class="text-muted small mb-1">Temps de r&#233;ponse moyen</div>
+                                <div class="fs-1 fw-bold text-primary">
+                                    <t t-esc="formatHours(state.data.response_time.avg_hours)"/>
+                                </div>
+                                <div class="text-muted small">
+                                    sur <t t-esc="state.data.response_time.sample_count"/> r&#233;ponses
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Categories + Top Partners Row -->
+                <div class="row mb-4 g-3">
+                    <!-- Categories -->
+                    <div class="col-md-4">
+                        <div class="card h-100">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">
+                                    <i class="fa fa-tags me-1"/>Cat&#233;gories
+                                </h5>
+                            </div>
+                            <div class="card-body p-0">
+                                <table class="table table-sm table-hover mb-0">
+                                    <tbody>
+                                        <t t-foreach="Object.entries(state.data.categories)" t-as="entry" t-key="entry[0]">
+                                            <tr style="cursor: pointer;" t-on-click="() => this.openCategory(entry[0])">
+                                                <td>
+                                                    <i t-attf-class="fa {{getCategoryIcon(entry[0])}} me-2"/>
+                                                    <t t-esc="getCategoryLabel(entry[0])"/>
+                                                </td>
+                                                <td class="text-end">
+                                                    <span t-attf-class="badge {{getCategoryClass(entry[0])}}">
+                                                        <t t-esc="entry[1]"/>
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Top Partners -->
+                    <div class="col-md-8">
+                        <div class="card h-100">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">
+                                    <i class="fa fa-users me-1"/>Top contacts
+                                </h5>
+                            </div>
+                            <div class="card-body p-0">
+                                <table class="table table-sm table-hover mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th>Contact</th>
+                                            <th class="text-center">Re&#231;us</th>
+                                            <th class="text-center">Envoy&#233;s</th>
+                                            <th class="text-center">Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-foreach="state.data.top_partners" t-as="p" t-key="p.partner_id">
+                                            <tr style="cursor: pointer;" t-on-click="() => this.openPartnerEmails(p.partner_id)">
+                                                <td><t t-esc="p.partner_name"/></td>
+                                                <td class="text-center text-info"><t t-esc="p.received"/></td>
+                                                <td class="text-center text-success"><t t-esc="p.sent"/></td>
+                                                <td class="text-center fw-bold"><t t-esc="p.email_count"/></td>
+                                            </tr>
+                                        </t>
+                                        <t t-if="!state.data.top_partners.length">
+                                            <tr><td colspan="4" class="text-center text-muted">Aucune donn&#233;e</td></tr>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Daily Volume Chart -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">
+                                    <i class="fa fa-bar-chart me-1"/>Volume quotidien
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="d-flex align-items-end justify-content-between" style="height: 150px; gap: 2px;">
+                                    <t t-foreach="state.data.daily_volume" t-as="d" t-key="d.day">
+                                        <div class="d-flex flex-column align-items-center flex-fill" style="min-width: 0;">
+                                            <div class="d-flex flex-column" style="width: 100%; max-width: 40px;">
+                                                <!-- Sent bar (top) -->
+                                                <div class="bg-success rounded-top"
+                                                     t-att-style="'height: ' + getBarHeight(d.sent, getMaxDailyVolume()) + 'px;'"
+                                                     t-att-title="'Envoy\u00e9s: ' + d.sent">
+                                                </div>
+                                                <!-- Received bar (bottom) -->
+                                                <div class="bg-info rounded-bottom"
+                                                     t-att-style="'height: ' + getBarHeight(d.received, getMaxDailyVolume()) + 'px;'"
+                                                     t-att-title="'Re\u00e7us: ' + d.received">
+                                                </div>
+                                            </div>
+                                            <small t-if="state.data.daily_volume.length &lt;= 45" class="text-muted mt-1" style="font-size: 0.6rem;">
+                                                <t t-esc="formatDay(d.day)"/>
+                                            </small>
+                                        </div>
+                                    </t>
+                                </div>
+                                <div class="d-flex justify-content-center gap-4 mt-2">
+                                    <span><span class="badge bg-info">&#160;&#160;</span> Re&#231;us</span>
+                                    <span><span class="badge bg-success">&#160;&#160;</span> Envoy&#233;s</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </t>
+
+</templates>

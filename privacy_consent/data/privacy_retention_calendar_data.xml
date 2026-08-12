@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!-- Calendrier de conservation — Règles communes (Art. 3.2 LPRPSP) -->
+
+    <record id="retention_calendar_contracts" model="privacy.retention.calendar">
+        <field name="name">Contrats et ententes</field>
+        <field name="code">CTR-001</field>
+        <field name="document_type">contract</field>
+        <field name="description">Contrats de service, ententes de confidentialité, baux, contrats de travail</field>
+        <field name="legal_basis">Art. 2925 C.c.Q. — Prescription de 3 ans pour les droits personnels. Conservation recommandée : 6 ans (délai fiscal + marge de sécurité).</field>
+        <field name="active_retention_years">6</field>
+        <field name="semi_active_retention_years">0</field>
+        <field name="final_disposition">destroy</field>
+        <field name="destruction_method">secure_wipe</field>
+        <field name="requires_approval" eval="True"/>
+    </record>
+
+    <record id="retention_calendar_invoices" model="privacy.retention.calendar">
+        <field name="name">Factures et documents fiscaux</field>
+        <field name="code">FIN-001</field>
+        <field name="document_type">invoice</field>
+        <field name="description">Factures clients et fournisseurs, relevés de TPS/TVQ, documents fiscaux</field>
+        <field name="legal_basis">Art. 35 de la Loi sur l'administration fiscale (L.R.Q., c. A-6.002) — Conservation de 6 ans après la fin de l'année d'imposition.</field>
+        <field name="active_retention_years">6</field>
+        <field name="semi_active_retention_years">1</field>
+        <field name="final_disposition">destroy</field>
+        <field name="destruction_method">delete</field>
+        <field name="requires_approval" eval="True"/>
+    </record>
+
+    <record id="retention_calendar_hr_files" model="privacy.retention.calendar">
+        <field name="name">Dossiers d'employés</field>
+        <field name="code">RH-001</field>
+        <field name="document_type">hr_file</field>
+        <field name="description">Dossiers d'embauche, évaluations, formation, paie, cessation d'emploi</field>
+        <field name="legal_basis">Art. 2925 C.c.Q. — 3 ans après la fin de l'emploi. CNESST : conservation de 5 ans pour les registres de salaires.</field>
+        <field name="active_retention_years">3</field>
+        <field name="semi_active_retention_years">2</field>
+        <field name="final_disposition">destroy</field>
+        <field name="destruction_method">secure_wipe</field>
+        <field name="requires_approval" eval="True"/>
+    </record>
+
+    <record id="retention_calendar_project_files" model="privacy.retention.calendar">
+        <field name="name">Dossiers de projets</field>
+        <field name="code">PRJ-001</field>
+        <field name="document_type">project_file</field>
+        <field name="description">Documentation de projets, livrables, comptes rendus, matrice de connaissances</field>
+        <field name="legal_basis">Art. 23 LPRPSP — Destruction une fois les fins atteintes. Recommandation : 5 ans après clôture du projet pour couvrir les réclamations contractuelles.</field>
+        <field name="active_retention_years">5</field>
+        <field name="semi_active_retention_years">0</field>
+        <field name="final_disposition">destroy</field>
+        <field name="destruction_method">delete</field>
+        <field name="requires_approval" eval="True"/>
+    </record>
+
+    <record id="retention_calendar_correspondence" model="privacy.retention.calendar">
+        <field name="name">Correspondance</field>
+        <field name="code">COR-001</field>
+        <field name="document_type">correspondence</field>
+        <field name="description">Courriels, lettres, échanges avec les clients et fournisseurs</field>
+        <field name="legal_basis">Art. 23 LPRPSP — Conservation le temps nécessaire aux fins de la collecte. Recommandation : 3 ans.</field>
+        <field name="active_retention_years">3</field>
+        <field name="semi_active_retention_years">0</field>
+        <field name="final_disposition">destroy</field>
+        <field name="destruction_method">delete</field>
+        <field name="requires_approval" eval="False"/>
+    </record>
+
+    <record id="retention_calendar_medical" model="privacy.retention.calendar">
+        <field name="name">Documents médicaux</field>
+        <field name="code">MED-001</field>
+        <field name="document_type">medical</field>
+        <field name="description">Certificats médicaux, dossiers de santé au travail, notes médicales</field>
+        <field name="legal_basis">Art. 17 du Règlement sur les dossiers de santé (LSST) — 7 ans après la fin du lien d'emploi ou de service.</field>
+        <field name="active_retention_years">7</field>
+        <field name="semi_active_retention_years">0</field>
+        <field name="final_disposition">destroy</field>
+        <field name="destruction_method">secure_wipe</field>
+        <field name="requires_approval" eval="True"/>
+    </record>
+
+    <record id="retention_calendar_credentials" model="privacy.retention.calendar">
+        <field name="name">Identifiants et mots de passe</field>
+        <field name="code">SEC-001</field>
+        <field name="document_type">credential</field>
+        <field name="description">Mots de passe, clés API, certificats, jetons d'accès</field>
+        <field name="legal_basis">Art. 23 LPRPSP — Destruction immédiate une fois les fins atteintes. Bonnes pratiques : effacement sécurisé dans les 30 jours suivant la fin du mandat.</field>
+        <field name="active_retention_years">0</field>
+        <field name="semi_active_retention_years">0</field>
+        <field name="final_disposition">destroy</field>
+        <field name="destruction_method">secure_wipe</field>
+        <field name="requires_approval" eval="False"/>
+    </record>
+
+    <record id="retention_calendar_consent_records" model="privacy.retention.calendar">
+        <field name="name">Enregistrements de consentement</field>
+        <field name="code">CST-001</field>
+        <field name="document_type">consent_record</field>
+        <field name="description">Preuves de consentement, formulaires signés, journaux de consentement portail</field>
+        <field name="legal_basis">Art. 14 et 23 LPRPSP — Conservation aussi longtemps que le consentement est actif, plus la période de prescription applicable (3 ans, art. 2925 C.c.Q.).</field>
+        <field name="active_retention_years">3</field>
+        <field name="semi_active_retention_years">0</field>
+        <field name="final_disposition">anonymize</field>
+        <field name="destruction_method">anonymize</field>
+        <field name="requires_approval" eval="True"/>
+    </record>
+</odoo>

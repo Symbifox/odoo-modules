@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <!-- The chatter projection cron (_cron_sync_emails) uses a global
+         watermark on mail.message create_date — it doesn't read per-account
+         credentials. Since 18.0.6.0.0 the cron fans each message out to
+         every involved internal user (author + notified recipients), so
+         the single watermark is shared by all users. Kept here for fresh
+         installs. -->
+    <record id="bf_email_last_sync_date" model="ir.config_parameter">
+        <field name="key">bf_email.last_sync_date</field>
+        <field name="value">2000-01-01 00:00:00</field>
+    </record>
+
+    <record id="bf_email_sync_batch_size" model="ir.config_parameter">
+        <field name="key">bf_email.sync_batch_size</field>
+        <field name="value">200</field>
+    </record>
+
+    <!-- How many days back the IMAP reconciliation pass (_cron_imap_reconcile)
+         re-scans the live folders for gaps. -->
+    <record id="bf_email_reconcile_days" model="ir.config_parameter">
+        <field name="key">bf_email.reconcile_days</field>
+        <field name="value">30</field>
+    </record>
+
+    <!-- When "1", inbound emails carrying a calendar invitation
+         (text/calendar, METHOD:REQUEST/CANCEL) auto-create a *tentative*
+         calendar.event on the mailbox owner's default calendar. Set to "0"
+         to disable per tenant. See bf.email._maybe_ingest_calendar_invite. -->
+    <record id="bf_email_auto_add_calendar_invites" model="ir.config_parameter">
+        <field name="key">bf_email.auto_add_calendar_invites</field>
+        <field name="value">1</field>
+    </record>
+
+    <!--
+      18.0.4.0.0: All IMAP credentials, watermarks, archive folders, batch
+      sizes, and auto-link thresholds moved to bf.email.account (per-user).
+      The migration in 18.0.4.0.0/post-migrate.py removes the legacy
+      bf_email.imap_* rows from existing databases.
+    -->
+
+</odoo>

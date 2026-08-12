@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="meeting_record_view_form_inherit_call_archive" model="ir.ui.view">
+        <field name="name">meeting.record.form.inherit.call.archive</field>
+        <field name="model">meeting.record</field>
+        <field name="inherit_id" ref="bf_meeting.meeting_record_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='meeting_type']" position="after">
+                <field name="call_archive_id"
+                       invisible="meeting_type != 'phone'"
+                       options="{'no_create': True, 'no_open': False}"
+                       placeholder="Lier un appel archivé..."/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

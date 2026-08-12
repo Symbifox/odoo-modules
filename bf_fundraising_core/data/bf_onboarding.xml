@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+<odoo noupdate="1">
+    <record id="bf_onb_step_funds" model="onboarding.onboarding.step">
+        <field name="title">Configurer vos fonds</field>
+        <field name="description">[action:bf_fundraising_core.action_bf_fund] Créez vos fonds (désignations) et reliez chacun à un compte analytique pour la ventilation comptable.</field>
+        <field name="button_text">Ouvrir les fonds</field>
+        <field name="done_text">Fonds configurés</field>
+        <field name="panel_step_open_action_name">bf_open_action</field>
+        <field name="sequence">1</field>
+    </record>
+    <record id="bf_onb_step_campaign" model="onboarding.onboarding.step">
+        <field name="title">Lancer une campagne</field>
+        <field name="description">[action:donation.donation_campaign_action] Créez une campagne avec un objectif, puis ajoutez-y des sollicitations et des trousses.</field>
+        <field name="button_text">Ouvrir les campagnes</field>
+        <field name="done_text">Campagne créée</field>
+        <field name="panel_step_open_action_name">bf_open_action</field>
+        <field name="sequence">2</field>
+    </record>
+    <record id="bf_onb_step_gift" model="onboarding.onboarding.step">
+        <field name="title">Enregistrer un premier don</field>
+        <field name="description">[action:donation.donation_action] Saisissez un don, affectez-le à un fonds et à une campagne, puis validez-le.</field>
+        <field name="button_text">Ouvrir les dons</field>
+        <field name="done_text">Don enregistré</field>
+        <field name="panel_step_open_action_name">bf_open_action</field>
+        <field name="sequence">3</field>
+    </record>
+    <record id="bf_onboarding_panel" model="onboarding.onboarding">
+        <field name="name">Levée de fonds</field>
+        <field name="route_name">bf_fundraising_onboarding</field>
+        <field name="panel_close_action_name">action_close_panel_bf_fundraising</field>
+        <field name="step_ids" eval="[
+            Command.link(ref('bf_fundraising_core.bf_onb_step_funds')),
+            Command.link(ref('bf_fundraising_core.bf_onb_step_campaign')),
+            Command.link(ref('bf_fundraising_core.bf_onb_step_gift')),
+        ]"/>
+    </record>
+</odoo>

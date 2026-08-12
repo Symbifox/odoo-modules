@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- Users can only see/modify their own timers -->
+        <record id="rule_bf_timer_own" model="ir.rule">
+            <field name="name">BF Timer: own timers only</field>
+            <field name="model_id" ref="model_bf_timer"/>
+            <field name="domain_force">[('user_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('hr_timesheet.group_hr_timesheet_user'))]"/>
+        </record>
+
+        <!-- Users can only see/modify their own pinned tasks -->
+        <record id="rule_bf_timer_pinned_task_own" model="ir.rule">
+            <field name="name">BF Pinned Task: own pins only</field>
+            <field name="model_id" ref="model_bf_timer_pinned_task"/>
+            <field name="domain_force">[('user_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('hr_timesheet.group_hr_timesheet_user'))]"/>
+        </record>
+
+        <!-- Timesheet managers can see all timers (for supervision) -->
+        <record id="rule_bf_timer_manager" model="ir.rule">
+            <field name="name">BF Timer: manager full access</field>
+            <field name="model_id" ref="model_bf_timer"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('hr_timesheet.group_hr_timesheet_approver'))]"/>
+        </record>
+
+    </data>
+</odoo>

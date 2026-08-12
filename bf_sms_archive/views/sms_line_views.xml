@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Line: List -->
+    <record id="sms_line_view_list" model="ir.ui.view">
+        <field name="name">sms.archive.line.list</field>
+        <field name="model">sms.archive.line</field>
+        <field name="arch" type="xml">
+            <list string="Lignes SMS/MMS">
+                <field name="label"/>
+                <field name="did"/>
+                <field name="owner_id"/>
+                <field name="is_default" widget="boolean_toggle"/>
+                <field name="sms_enabled" widget="boolean_toggle"/>
+                <field name="mms_enabled" widget="boolean_toggle"/>
+                <field name="active" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Line: Form -->
+    <record id="sms_line_view_form" model="ir.ui.view">
+        <field name="name">sms.archive.line.form</field>
+        <field name="model">sms.archive.line</field>
+        <field name="arch" type="xml">
+            <form string="Ligne SMS/MMS">
+                <header>
+                    <button name="action_configure_webhook" type="object"
+                            string="Configurer le webhook VOIP.ms"
+                            class="btn-primary"
+                            confirm="Poser l'URL de callback de cette ligne dans VOIP.ms (setSMS) ?"/>
+                    <button name="action_regenerate_token" type="object"
+                            string="Régénérer le jeton" class="btn-secondary"
+                            confirm="Régénérer le jeton invalidera l'URL de callback actuelle. Continuer ?"/>
+                </header>
+                <sheet>
+                    <widget name="web_ribbon" title="Inactif" bg_color="bg-danger"
+                            invisible="active"/>
+                    <div class="oe_title">
+                        <label for="label"/>
+                        <h1><field name="label" placeholder="Blue Fox principal"/></h1>
+                    </div>
+                    <group>
+                        <group string="Numéro">
+                            <field name="did" placeholder="5145551234"/>
+                            <field name="did_normalized" readonly="1"/>
+                            <field name="owner_id" options="{'no_create': True}"/>
+                            <field name="voipms_subaccount" readonly="1"/>
+                        </group>
+                        <group string="Capacités">
+                            <field name="is_default"/>
+                            <field name="sms_enabled"/>
+                            <field name="mms_enabled"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                    <group string="Webhook entrant">
+                        <field name="webhook_url" widget="CopyClipboardChar" readonly="1"/>
+                    </group>
+                    <group string="Notes">
+                        <field name="note" nolabel="1"
+                               placeholder="Particularités de la ligne…"/>
+                    </group>
+                    <div class="alert alert-info" role="alert">
+                        Réglez « URL publique » dans
+                        <strong>Configuration ▸ Paramètres SMS</strong>, puis cliquez
+                        <em>Configurer le webhook VOIP.ms</em> pour activer la réception
+                        temps réel (ou collez l'URL ci-dessus dans le portail VOIP.ms).
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Line: Action -->
+    <record id="sms_line_action" model="ir.actions.act_window">
+        <field name="name">Lignes SMS/MMS</field>
+        <field name="res_model">sms.archive.line</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Aucune ligne configurée</p>
+            <p>
+                Une ligne rattache un DID VOIP.ms à un propriétaire Odoo. Utilisez
+                <em>Synchroniser depuis VOIP.ms</em> ou créez-en une manuellement.
+            </p>
+        </field>
+    </record>
+
+    <!-- Server action: sync from VOIP.ms -->
+    <record id="sms_line_sync_action" model="ir.actions.server">
+        <field name="name">Synchroniser depuis VOIP.ms</field>
+        <field name="model_id" ref="model_sms_archive_line"/>
+        <field name="binding_model_id" ref="model_sms_archive_line"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">model.action_sync_lines()</field>
+    </record>
+
+    <!-- Menu -->
+    <menuitem
+        id="sms_archive_menu_lines"
+        name="Lignes SMS/MMS"
+        parent="sms_archive_menu_configuration"
+        action="sms_line_action"
+        sequence="5"
+        groups="bf_sms_archive.group_sms_manager"/>
+
+</odoo>

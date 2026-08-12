@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Retention Policy Form View -->
+    <record id="privacy_retention_policy_view_form" model="ir.ui.view">
+        <field name="name">privacy.retention.policy.form</field>
+        <field name="model">privacy.retention.policy</field>
+        <field name="arch" type="xml">
+            <form string="Politique de rétention">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_destruction_requests" type="object"
+                                class="oe_stat_button" icon="fa-trash">
+                            <field name="destruction_request_count" widget="statinfo" string="Destructions"/>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Archivé" bg_color="text-bg-danger" invisible="active"/>
+                    <group>
+                        <group string="Configuration de la politique">
+                            <field name="purpose_id"/>
+                            <field name="retention_days"/>
+                            <field name="trigger_on"/>
+                            <field name="destruction_method"/>
+                            <field name="active" invisible="1"/>
+                        </group>
+                        <group string="Société">
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                    <group string="Catégories de données">
+                        <field name="data_categories" nolabel="1" placeholder="ex. : Coordonnées, données de projet, historique de communications..."/>
+                    </group>
+                    <group string="Notes">
+                        <field name="notes" nolabel="1" placeholder="Notes supplémentaires sur cette politique de rétention..."/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Retention Policy List View -->
+    <record id="privacy_retention_policy_view_list" model="ir.ui.view">
+        <field name="name">privacy.retention.policy.list</field>
+        <field name="model">privacy.retention.policy</field>
+        <field name="arch" type="xml">
+            <list string="Politiques de rétention">
+                <field name="purpose_id"/>
+                <field name="retention_days"/>
+                <field name="trigger_on"/>
+                <field name="destruction_method"/>
+                <field name="destruction_request_count" string="Demandes"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Retention Policy Search View -->
+    <record id="privacy_retention_policy_view_search" model="ir.ui.view">
+        <field name="name">privacy.retention.policy.search</field>
+        <field name="model">privacy.retention.policy</field>
+        <field name="arch" type="xml">
+            <search string="Rechercher les politiques de rétention">
+                <field name="purpose_id"/>
+                <field name="destruction_method"/>
+                <filter string="Anonymiser" name="anonymize" domain="[('destruction_method', '=', 'anonymize')]"/>
+                <filter string="Supprimer" name="delete" domain="[('destruction_method', '=', 'delete')]"/>
+                <filter string="Révision manuelle" name="manual" domain="[('destruction_method', '=', 'manual')]"/>
+                <separator/>
+                <filter string="Archivé" name="inactive" domain="[('active', '=', False)]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter string="Finalité" name="group_by_purpose" context="{'group_by': 'purpose_id'}"/>
+                    <filter string="Méthode" name="group_by_method" context="{'group_by': 'destruction_method'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Retention Policy Action -->
+    <record id="action_privacy_retention_policy" model="ir.actions.act_window">
+        <field name="name">Politiques de rétention</field>
+        <field name="res_model">privacy.retention.policy</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Créez votre première politique de rétention
+            </p>
+            <p>
+                Les politiques de rétention définissent combien de temps les renseignements personnels
+                doivent être conservés après l'expiration ou le retrait du consentement, en conformité avec la Loi 25.
+            </p>
+        </field>
+    </record>
+</odoo>

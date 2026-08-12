@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="mail_activity_type_audit_watchpoint" model="mail.activity.type">
+            <field name="name">Point de vigilance Audit TI</field>
+            <field name="summary">Suivi d'un point de vigilance</field>
+            <field name="res_model">audit.watchpoint</field>
+            <field name="icon">fa-exclamation-triangle</field>
+            <field name="delay_count">7</field>
+            <field name="delay_unit">days</field>
+        </record>
+    </data>
+</odoo>

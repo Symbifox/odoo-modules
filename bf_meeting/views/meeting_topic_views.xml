@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="meeting_topic_view_list" model="ir.ui.view">
+        <field name="name">meeting.topic.list</field>
+        <field name="model">meeting.topic</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="sequence" widget="handle"/>
+                <field name="meeting_id"/>
+                <field name="name"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="meeting_topic_view_form" model="ir.ui.view">
+        <field name="name">meeting.topic.form</field>
+        <field name="model">meeting.topic</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="meeting_id"/>
+                    <field name="sequence"/>
+                    <field name="name"/>
+                </group>
+                <separator string="Points clés"/>
+                <field name="points_html" nolabel="1"/>
+            </form>
+        </field>
+    </record>
+
+</odoo>

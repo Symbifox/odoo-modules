@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="cron_subscription_renewal_alerts" model="ir.cron">
+            <field name="name">Abonnements : Relances de renouvellement</field>
+            <field name="model_id" ref="model_subscription_subscription"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_renewal_alerts()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="nextcall" eval="(DateTime.now() + timedelta(days=1)).strftime('%Y-%m-%d 06:00:00')"/>
+            <field name="active" eval="True"/>
+            <field name="priority">30</field>
+        </record>
+
+        <record id="cron_subscription_digest" model="ir.cron">
+            <field name="name">Abonnements : Envoi des récapitulatifs</field>
+            <field name="model_id" ref="model_subscription_digest"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_send_digests()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="nextcall" eval="(DateTime.now() + timedelta(days=1)).strftime('%Y-%m-%d 07:00:00')"/>
+            <field name="active" eval="True"/>
+            <field name="priority">35</field>
+        </record>
+    </data>
+</odoo>

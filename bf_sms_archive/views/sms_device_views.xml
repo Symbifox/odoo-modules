@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Action -->
+    <record id="sms_device_action" model="ir.actions.act_window">
+        <field name="name">Appareils Android</field>
+        <field name="res_model">sms.archive.device</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Aucun appareil enregistré
+            </p>
+            <p>
+                Enregistrez un appareil Android pour autoriser l'app
+                <em>bf-sms-relay</em> à pousser SMS, MMS et appels en direct.
+                Un token API est généré automatiquement; configurez-le dans l'app
+                avec l'URL <code>/bf_sms_archive/api/ingest</code>.
+            </p>
+        </field>
+    </record>
+
+    <!-- List view -->
+    <record id="sms_device_view_list" model="ir.ui.view">
+        <field name="name">sms.archive.device.list</field>
+        <field name="model">sms.archive.device</field>
+        <field name="arch" type="xml">
+            <list string="Appareils">
+                <field name="name"/>
+                <field name="owner_id"/>
+                <field name="active" widget="boolean_toggle"/>
+                <field name="last_sync_at"/>
+                <field name="last_sync_count"/>
+                <field name="total_received"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form view -->
+    <record id="sms_device_view_form" model="ir.ui.view">
+        <field name="name">sms.archive.device.form</field>
+        <field name="model">sms.archive.device</field>
+        <field name="arch" type="xml">
+            <form string="Appareil Android">
+                <header>
+                    <button name="action_regenerate_token"
+                            type="object"
+                            string="Régénérer le token"
+                            confirm="Régénérer le token invalidera immédiatement la configuration de l'app sur cet appareil. Continuer ?"
+                            class="btn-secondary"/>
+                </header>
+                <sheet>
+                    <widget name="web_ribbon"
+                            title="Inactif"
+                            bg_color="bg-danger"
+                            invisible="active"/>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name" placeholder="Pixel 8"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Configuration">
+                            <field name="owner_id" options="{'no_create': True}"/>
+                            <field name="api_token" widget="CopyClipboardChar"/>
+                            <field name="active"/>
+                        </group>
+                        <group string="Synchronisation">
+                            <field name="last_sync_at"/>
+                            <field name="last_sync_count"/>
+                            <field name="total_received"/>
+                        </group>
+                    </group>
+                    <group string="Notes">
+                        <field name="note" nolabel="1" placeholder="Modèle, version Android, particularités..."/>
+                    </group>
+                    <div class="alert alert-info" role="alert">
+                        <strong>Endpoint :</strong>
+                        <code>POST &lt;base_url&gt;/bf_sms_archive/api/ingest</code><br/>
+                        <strong>Auth :</strong>
+                        <code>Authorization: Bearer &lt;api_token&gt;</code><br/>
+                        L'app <em>bf-sms-relay</em> attend ces deux valeurs dans
+                        ses préférences.
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Menu -->
+    <menuitem
+        id="sms_archive_menu_configuration"
+        name="Configuration"
+        parent="sms_archive_menu_root"
+        sequence="80"/>
+
+    <menuitem
+        id="sms_archive_menu_devices"
+        name="Appareils Android"
+        parent="sms_archive_menu_configuration"
+        action="sms_device_action"
+        sequence="10"
+        groups="bf_sms_archive.group_sms_manager"/>
+
+</odoo>

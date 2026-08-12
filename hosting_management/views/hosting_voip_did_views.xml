@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- DID List View -->
+    <record id="hosting_voip_did_view_tree" model="ir.ui.view">
+        <field name="name">hosting.voip.did.list</field>
+        <field name="model">hosting.voip.did</field>
+        <field name="arch" type="xml">
+            <list decoration-muted="state != 'active'">
+                <field name="name" string="Numéro"/>
+                <field name="description" string="Description"/>
+                <field name="partner_id" string="Client"/>
+                <field name="is_reseller" string="Revendeur" optional="show"/>
+                <field name="voipms_subaccount" string="Sous-compte" optional="hide"/>
+                <field name="call_count_month" string="Appels (mois)" optional="show"/>
+                <field name="minutes_month" string="Minutes (mois)" optional="show"/>
+                <field name="monthly_cost" string="Coût mensuel" optional="show" sum="Total"/>
+                <field name="state" string="État" widget="badge"
+                       decoration-success="state == 'active'"
+                       decoration-warning="state == 'inactive'"
+                       decoration-danger="state == 'cancelled'"/>
+                <field name="last_call_date" string="Dernier appel" optional="hide"/>
+                <field name="voipms_last_sync" string="Synchro" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- DID Form View -->
+    <record id="hosting_voip_did_view_form" model="ir.ui.view">
+        <field name="name">hosting.voip.did.form</field>
+        <field name="model">hosting.voip.did</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="active,inactive,cancelled"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_cdr" type="object"
+                                class="oe_stat_button" icon="fa-phone">
+                            <field name="call_count_month" widget="statinfo"
+                                   string="Appels (mois)"/>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Revendeur — ne pas toucher"
+                            bg_color="text-bg-warning" invisible="not is_reseller"/>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="+1 514 555 0123"/></h1>
+                    </div>
+                    <group>
+                        <group string="Affectation">
+                            <field name="description"/>
+                            <field name="partner_id"/>
+                            <field name="service_id"/>
+                            <field name="is_reseller"/>
+                        </group>
+                        <group string="Facturation">
+                            <field name="monthly_cost"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="cost_month" readonly="1"/>
+                            <field name="minutes_month" readonly="1"/>
+                            <field name="last_call_date" readonly="1"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="VOIP.ms (lecture seule)">
+                            <field name="voipms_subaccount" readonly="1"/>
+                            <field name="routing" readonly="1"/>
+                            <field name="pop" readonly="1"/>
+                            <field name="billing_type" readonly="1"/>
+                        </group>
+                        <group string="Options">
+                            <field name="cnam" readonly="1"/>
+                            <field name="e911_enabled" readonly="1"/>
+                            <field name="sms_enabled" readonly="1"/>
+                        </group>
+                    </group>
+                    <group string="Synchronisation">
+                        <field name="voipms_last_sync" readonly="1"/>
+                        <field name="voipms_sync_error" readonly="1"
+                               invisible="not voipms_sync_error"/>
+                    </group>
+                    <notebook>
+                        <page string="Appels (CDR)" name="cdr">
+                            <field name="cdr_ids" nolabel="1" readonly="1">
+                                <list>
+                                    <field name="call_date"/>
+                                    <field name="direction"/>
+                                    <field name="caller"/>
+                                    <field name="destination"/>
+                                    <field name="disposition" widget="badge"/>
+                                    <field name="minutes"/>
+                                    <field name="cost"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Données VOIP.ms (brut)" name="raw">
+                            <field name="voipms_did_raw" nolabel="1" readonly="1"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- DID Search View -->
+    <record id="hosting_voip_did_view_search" model="ir.ui.view">
+        <field name="name">hosting.voip.did.search</field>
+        <field name="model">hosting.voip.did</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="description"/>
+                <field name="partner_id"/>
+                <field name="voipms_subaccount"/>
+                <separator/>
+                <filter name="filter_active" string="Actifs"
+                        domain="[('state', '=', 'active')]"/>
+                <filter name="filter_inactive" string="Inactifs"
+                        domain="[('state', '=', 'inactive')]"/>
+                <filter name="filter_reseller" string="Revendeur"
+                        domain="[('is_reseller', '=', True)]"/>
+                <filter name="filter_unassigned" string="Sans client"
+                        domain="[('partner_id', '=', False)]"/>
+                <group expand="0" string="Grouper par">
+                    <filter name="group_partner" string="Client"
+                            context="{'group_by': 'partner_id'}"/>
+                    <filter name="group_state" string="État"
+                            context="{'group_by': 'state'}"/>
+                    <filter name="group_subaccount" string="Sous-compte"
+                            context="{'group_by': 'voipms_subaccount'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="hosting_voip_did_action" model="ir.actions.act_window">
+        <field name="name">DID</field>
+        <field name="res_model">hosting.voip.did</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="hosting_voip_did_view_search"/>
+        <field name="context">{'search_default_filter_active': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Aucun DID synchronisé pour l'instant
+            </p>
+            <p>
+                Activez l'intégration VOIP.ms dans Configuration &gt; Paramètres,
+                puis lancez « Synchroniser VOIP.ms maintenant ».
+            </p>
+        </field>
+    </record>
+
+</odoo>

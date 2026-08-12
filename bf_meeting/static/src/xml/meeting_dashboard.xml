@@ -1,0 +1,338 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="bf_meeting.Dashboard">
+        <div class="o_bf_meeting_dashboard">
+            <!-- Loading -->
+            <div t-if="state.loading" class="d-flex justify-content-center align-items-center" style="min-height: 400px;">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Chargement...</span>
+                </div>
+            </div>
+
+            <!-- Error -->
+            <div t-elif="!state.data" class="container-fluid py-4">
+                <div class="alert alert-warning d-flex align-items-center">
+                    <i class="fa fa-exclamation-triangle fa-2x me-3"/>
+                    <div class="flex-grow-1">
+                        <strong>Erreur de chargement</strong>
+                        <p class="mb-0">Impossible de charger le tableau de bord.</p>
+                    </div>
+                    <button class="btn btn-outline-warning" t-on-click="refresh">
+                        <i class="fa fa-refresh me-1"/>Réessayer
+                    </button>
+                </div>
+            </div>
+
+            <!-- Dashboard content -->
+            <div t-else="" class="container-fluid py-4">
+
+                <!-- Header -->
+                <div class="row mb-3">
+                    <div class="col-12 d-flex justify-content-between align-items-center flex-wrap gap-2">
+                        <div>
+                            <h1 class="mb-0">
+                                <i class="fa fa-calendar-check-o me-2"/>Tableau de bord des rencontres
+                            </h1>
+                            <p class="text-muted mb-0">
+                                Ordres du jour à préparer et comptes rendus à compléter
+                            </p>
+                        </div>
+                        <button class="btn btn-outline-secondary" t-on-click="refresh">
+                            <i class="fa fa-refresh me-1"/>Recharger
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Toolbar : search + group toggle + bulk dismiss -->
+                <div class="row mb-3">
+                    <div class="col-12 d-flex flex-wrap align-items-center gap-2">
+                        <div class="input-group" style="max-width: 320px;">
+                            <span class="input-group-text bg-white"><i class="fa fa-search"/></span>
+                            <input type="text" class="form-control"
+                                   placeholder="Filtrer par nom, projet ou client…"
+                                   t-model="state.search"/>
+                            <button t-if="state.search" class="btn btn-outline-secondary"
+                                    t-on-click="() => state.search = ''" title="Effacer">
+                                <i class="fa fa-times"/>
+                            </button>
+                        </div>
+
+                        <div class="form-check form-switch ms-2 mb-0">
+                            <input class="form-check-input" type="checkbox" id="bf_mine_toggle"
+                                   t-att-checked="state.onlyMine"
+                                   t-on-change="() => state.onlyMine = !state.onlyMine"/>
+                            <label class="form-check-label small text-muted" for="bf_mine_toggle">
+                                Mes responsabilités
+                            </label>
+                        </div>
+
+                        <div class="form-check form-switch ms-2 mb-0">
+                            <input class="form-check-input" type="checkbox" id="bf_group_toggle"
+                                   t-att-checked="state.groupByProject"
+                                   t-on-change="() => state.groupByProject = !state.groupByProject"/>
+                            <label class="form-check-label small text-muted" for="bf_group_toggle">
+                                Regrouper par projet
+                            </label>
+                        </div>
+
+                        <div class="ms-auto d-flex gap-2" t-if="selectedCount() > 0">
+                            <span class="align-self-center text-muted small">
+                                <t t-esc="selectedCount()"/> sélectionnée(s)
+                            </span>
+                            <button class="btn btn-sm btn-outline-secondary" t-on-click="clearSelection">
+                                <i class="fa fa-times me-1"/>Désélectionner
+                            </button>
+                            <button class="btn btn-sm btn-danger" t-on-click="dismissSelection">
+                                <i class="fa fa-eye-slash me-1"/>Masquer la sélection
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- KPI row (reactive to search + Mes responsabilités) -->
+                <t t-set="kpis" t-value="displayedKpis()"/>
+                <div class="row mb-4">
+                    <div class="col-lg-2 col-md-4 col-6 mb-3">
+                        <div t-attf-class="card h-100 cursor-pointer {{kpis.upcoming_without_agenda > 0 ? 'border-info' : ''}}"
+                             t-on-click="() => this.openFiltered('filter_upcoming_no_agenda')">
+                            <div class="card-body text-center">
+                                <h2 t-attf-class="mb-0 {{kpis.upcoming_without_agenda > 0 ? 'text-info' : 'text-muted'}}"
+                                    t-esc="kpis.upcoming_without_agenda"/>
+                                <small class="text-muted"><i class="fa fa-list-alt me-1"/>À venir sans OdJ</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-md-4 col-6 mb-3">
+                        <div t-attf-class="card h-100 cursor-pointer {{kpis.upcoming_agenda_not_sent > 0 ? 'border-warning' : ''}}"
+                             t-on-click="() => this.openFiltered('filter_upcoming_no_sent_agenda')">
+                            <div class="card-body text-center">
+                                <h2 t-attf-class="mb-0 {{kpis.upcoming_agenda_not_sent > 0 ? 'text-warning' : 'text-muted'}}"
+                                    t-esc="kpis.upcoming_agenda_not_sent"/>
+                                <small class="text-muted"><i class="fa fa-envelope-o me-1"/>OdJ à envoyer</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-md-4 col-6 mb-3">
+                        <div t-attf-class="card h-100 cursor-pointer {{kpis.past_without_minutes > 0 ? 'border-danger' : ''}}"
+                             t-on-click="() => this.openFiltered('filter_past_no_minutes')">
+                            <div class="card-body text-center">
+                                <h2 t-attf-class="mb-0 {{kpis.past_without_minutes > 0 ? 'text-danger' : 'text-muted'}}"
+                                    t-esc="kpis.past_without_minutes"/>
+                                <small class="text-muted"><i class="fa fa-file-text-o me-1"/>Passées sans CR</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-md-4 col-6 mb-3">
+                        <div t-attf-class="card h-100 cursor-pointer {{kpis.minutes_to_review > 0 ? 'border-warning' : ''}}"
+                             t-on-click="() => this.openFiltered('filter_minutes_not_reviewed')">
+                            <div class="card-body text-center">
+                                <h2 t-attf-class="mb-0 {{kpis.minutes_to_review > 0 ? 'text-warning' : 'text-muted'}}"
+                                    t-esc="kpis.minutes_to_review"/>
+                                <small class="text-muted"><i class="fa fa-search me-1"/>CR à réviser</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-md-4 col-6 mb-3">
+                        <div t-attf-class="card h-100 cursor-pointer {{kpis.minutes_to_send > 0 ? 'border-warning' : ''}}"
+                             t-on-click="() => this.openFiltered('filter_minutes_not_sent')">
+                            <div class="card-body text-center">
+                                <h2 t-attf-class="mb-0 {{kpis.minutes_to_send > 0 ? 'text-warning' : 'text-muted'}}"
+                                    t-esc="kpis.minutes_to_send"/>
+                                <small class="text-muted"><i class="fa fa-paper-plane-o me-1"/>CR à envoyer</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-md-4 col-6 mb-3">
+                        <div class="card h-100 cursor-pointer"
+                             t-on-click="() => this.openFiltered('filter_this_week')">
+                            <div class="card-body text-center">
+                                <h2 class="mb-0 text-primary" t-esc="kpis.this_week"/>
+                                <small class="text-muted"><i class="fa fa-calendar me-1"/>Cette semaine</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Two-column split -->
+                <div class="row">
+                    <!-- LEFT : OdJ -->
+                    <div class="col-lg-6 mb-4">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="text-uppercase text-muted mb-0">
+                                <i class="fa fa-list-alt me-2"/>OdJ à préparer
+                                <span class="badge text-bg-light ms-2" t-esc="filteredCards('left').length"/>
+                            </h5>
+                        </div>
+
+                        <div t-if="filteredCards('left').length === 0" class="alert alert-success d-flex align-items-center">
+                            <i class="fa fa-check-circle me-2"/>
+                            <div t-if="state.data.cards_left_total === 0">Tous les OdJ sont à jour.</div>
+                            <div t-else="">Aucun résultat pour ce filtre.</div>
+                        </div>
+
+                        <t t-if="state.groupByProject">
+                            <t t-foreach="groupedCards('left')" t-as="grp" t-key="grp.project_id || 0">
+                                <t t-call="bf_meeting.DashboardProjectGroup">
+                                    <t t-set="grp" t-value="grp"/>
+                                </t>
+                            </t>
+                        </t>
+                        <t t-else="">
+                            <t t-foreach="filteredCards('left')" t-as="card" t-key="card.id">
+                                <t t-call="bf_meeting.DashboardCard">
+                                    <t t-set="card" t-value="card"/>
+                                    <t t-set="side" t-value="'left'"/>
+                                </t>
+                            </t>
+                        </t>
+                    </div>
+
+                    <!-- RIGHT : CR -->
+                    <div class="col-lg-6 mb-4">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="text-uppercase text-muted mb-0">
+                                <i class="fa fa-file-text-o me-2"/>CR à compléter
+                                <span class="badge text-bg-light ms-2" t-esc="filteredCards('right').length"/>
+                            </h5>
+                        </div>
+
+                        <div t-if="filteredCards('right').length === 0" class="alert alert-success d-flex align-items-center">
+                            <i class="fa fa-check-circle me-2"/>
+                            <div t-if="state.data.cards_right_total === 0">Tous les comptes rendus sont à jour.</div>
+                            <div t-else="">Aucun résultat pour ce filtre.</div>
+                        </div>
+
+                        <t t-if="state.groupByProject">
+                            <t t-foreach="groupedCards('right')" t-as="grp" t-key="grp.project_id || 0">
+                                <t t-call="bf_meeting.DashboardProjectGroup">
+                                    <t t-set="grp" t-value="grp"/>
+                                </t>
+                            </t>
+                        </t>
+                        <t t-else="">
+                            <t t-foreach="filteredCards('right')" t-as="card" t-key="card.id">
+                                <t t-call="bf_meeting.DashboardCard">
+                                    <t t-set="card" t-value="card"/>
+                                    <t t-set="side" t-value="'right'"/>
+                                </t>
+                            </t>
+                        </t>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </t>
+
+    <!-- Project group sub-template -->
+    <t t-name="bf_meeting.DashboardProjectGroup">
+        <div class="mb-3">
+            <div class="d-flex align-items-center cursor-pointer text-muted mb-2"
+                 t-on-click="() => this.toggleProjectCollapse(grp.project_id)">
+                <i t-attf-class="fa me-1 {{isProjectCollapsed(grp.project_id) ? 'fa-caret-right' : 'fa-caret-down'}}"/>
+                <strong t-esc="grp.project_name"/>
+                <span class="badge text-bg-light ms-2" t-esc="grp.cards.length"/>
+            </div>
+            <div t-if="!isProjectCollapsed(grp.project_id)">
+                <t t-foreach="grp.cards" t-as="card" t-key="card.id">
+                    <t t-call="bf_meeting.DashboardCard">
+                        <t t-set="card" t-value="card"/>
+                        <t t-set="side" t-value="side"/>
+                    </t>
+                </t>
+            </div>
+        </div>
+    </t>
+
+    <!-- Card sub-template -->
+    <t t-name="bf_meeting.DashboardCard">
+        <div t-attf-class="card mb-3 {{cardBorderClass(card.row_state)}} {{isSelected(card) ? 'bf_card_selected' : ''}}">
+            <div class="card-body pb-2">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <div class="d-flex align-items-start flex-grow-1" style="min-width: 0;">
+                        <div t-if="card.event_id" class="form-check me-2 mt-1">
+                            <input type="checkbox" class="form-check-input"
+                                   t-att-checked="isSelected(card)"
+                                   t-on-change="() => this.toggleSelect(card)"/>
+                        </div>
+                        <div class="flex-grow-1" style="min-width: 0;">
+                            <h6 class="mb-1 text-truncate">
+                                <a href="#" t-on-click.prevent="() => this.openRowBest(card)"
+                                   class="text-decoration-none text-body">
+                                    <strong t-esc="card.name"/>
+                                </a>
+                            </h6>
+                            <div class="small text-muted">
+                                <i class="fa fa-clock-o me-1"/>
+                                <t t-esc="formatDate(card.date)"/>
+                                <span t-if="card.is_past and card.days_overdue > 0"
+                                      t-attf-class="badge ms-2 {{card.days_overdue > 14 ? 'text-bg-danger' : 'text-bg-warning'}}">
+                                    il y a <t t-esc="card.days_overdue"/> j
+                                </span>
+                                <span t-if="card.is_upcoming" class="badge text-bg-primary ms-2">à venir</span>
+                            </div>
+                            <div class="small text-muted mt-1">
+                                <span t-if="card.project_name and card.project_name !== '(Sans projet)'">
+                                    <i class="fa fa-folder-o me-1"/><t t-esc="card.project_name"/>
+                                </span>
+                                <span t-if="card.partner_name" class="ms-2">
+                                    <i class="fa fa-user-o me-1"/><t t-esc="card.partner_name"/>
+                                </span>
+                            </div>
+                            <!-- Responsible chip : agenda on left side, minutes on right -->
+                            <div class="small mt-1">
+                                <t t-set="resp_name"
+                                   t-value="side === 'left' ? card.agenda_resp_name : card.minutes_resp_name"/>
+                                <t t-set="resp_id"
+                                   t-value="side === 'left' ? card.agenda_resp_id : card.minutes_resp_id"/>
+                                <span t-if="resp_id"
+                                      t-attf-class="badge {{resp_id === userId ? 'text-bg-primary' : 'text-bg-light text-dark'}}"
+                                      t-att-title="respLabel(side)">
+                                    <i class="fa fa-user-circle-o me-1"/><t t-esc="resp_name"/>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ms-2 d-flex gap-1">
+                        <button t-if="card.agenda_id" class="btn btn-sm btn-light p-1" title="Ouvrir l'OdJ"
+                                t-on-click="() => this.openAgenda(card)">
+                            <i class="fa fa-list-alt"/>
+                        </button>
+                        <button t-if="card.record_id" class="btn btn-sm btn-light p-1" title="Ouvrir le CR"
+                                t-on-click="() => this.openRecordRow(card)">
+                            <i class="fa fa-file-text-o"/>
+                        </button>
+                        <button class="btn btn-sm btn-light p-1" title="Ouvrir l'événement calendrier"
+                                t-on-click="() => this.openEvent(card)">
+                            <i class="fa fa-calendar"/>
+                        </button>
+                        <button t-if="card.event_id" class="btn btn-sm btn-light p-1 text-muted" title="Masquer du tableau de bord"
+                                t-on-click="() => this.dismissEvent(card)">
+                            <i class="fa fa-eye-slash"/>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Stepper : clickable to skip/unskip a step (event-anchored cards only) -->
+                <div class="bf_stepper d-flex align-items-center">
+                    <t t-foreach="card.steps" t-as="step" t-key="step.idx">
+                        <div t-attf-class="bf_stepper_step text-center {{step.status !== 'done' and card.event_id ? 'bf_stepper_clickable' : ''}}"
+                             t-attf-title="{{step.full}}{{step.status === 'current' ? ' — à faire (clic = ignorer)' : step.status === 'skipped' ? ' — ignorée (clic = ré-activer)' : step.status === 'pending' ? ' — clic = ignorer' : ''}}"
+                             t-on-click="() => this.toggleStepSkip(card, step)">
+                            <div t-attf-class="bf_stepper_node {{stepNodeClass(step.status)}}">
+                                <i t-if="step.status === 'done'" class="fa fa-check"/>
+                                <i t-elif="step.status === 'skipped'" class="fa fa-minus"/>
+                                <i t-else="" t-attf-class="fa {{step.icon}}"/>
+                            </div>
+                            <small t-attf-class="bf_stepper_label {{step.status === 'pending' || step.status === 'skipped' ? 'text-muted' : ''}}"
+                                   t-esc="step.short"/>
+                        </div>
+                        <div t-if="!step_last" t-attf-class="bf_stepper_bar flex-grow-1 {{stepBarClass(step.status)}}"/>
+                    </t>
+                </div>
+            </div>
+        </div>
+    </t>
+
+</templates>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_partner_form_subscription" model="ir.ui.view">
+        <field name="name">res.partner.form.subscription</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <div name="button_box" position="inside">
+                <button class="oe_stat_button" type="object"
+                        name="action_view_managed_subscriptions"
+                        icon="fa-repeat"
+                        invisible="managed_subscription_count == 0">
+                    <field name="managed_subscription_count" widget="statinfo"
+                           string="Abonnements gérés"/>
+                </button>
+                <button class="oe_stat_button" type="object"
+                        name="action_view_own_subscriptions"
+                        icon="fa-credit-card"
+                        invisible="own_subscription_count == 0">
+                    <field name="own_subscription_count" widget="statinfo"
+                           string="Abonnements"/>
+                </button>
+            </div>
+        </field>
+    </record>
+
+</odoo>

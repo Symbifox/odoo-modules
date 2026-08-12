@@ -1,0 +1,365 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Root Menu — dashboard opens on app click -->
+    <menuitem
+        id="hosting_menu_root"
+        name="Hébergement"
+        web_icon="hosting_management,static/description/icon.png"
+        action="hosting_dashboard_action"
+        sequence="45"/>
+
+    <!-- Services Menu -->
+    <menuitem
+        id="hosting_menu_services"
+        name="Services"
+        parent="hosting_menu_root"
+        sequence="10"/>
+
+    <menuitem
+        id="hosting_menu_services_all"
+        name="Tous les services"
+        parent="hosting_menu_services"
+        action="hosting_service_action_all"
+        sequence="10"/>
+
+    <menuitem
+        id="hosting_menu_services_active"
+        name="Services actifs"
+        parent="hosting_menu_services"
+        action="hosting_service_action"
+        sequence="20"/>
+
+    <menuitem
+        id="hosting_menu_services_expiring"
+        name="Expirant bientôt"
+        parent="hosting_menu_services"
+        action="hosting_service_action_expiring"
+        sequence="30"/>
+
+    <menuitem
+        id="hosting_menu_services_updates"
+        name="Mises à jour disponibles"
+        parent="hosting_menu_services"
+        action="hosting_service_action_updates"
+        sequence="40"/>
+
+    <!-- Maintenance Menu -->
+    <menuitem
+        id="hosting_menu_maintenance"
+        name="Maintenance"
+        parent="hosting_menu_root"
+        sequence="15"/>
+
+    <menuitem
+        id="hosting_menu_maintenance_all"
+        name="Tous les horaires"
+        parent="hosting_menu_maintenance"
+        action="hosting_maintenance_schedule_action"
+        sequence="10"/>
+
+    <menuitem
+        id="hosting_menu_maintenance_overdue"
+        name="En retard"
+        parent="hosting_menu_maintenance"
+        action="hosting_maintenance_schedule_action_overdue"
+        sequence="20"/>
+
+    <menuitem
+        id="hosting_menu_maintenance_due_week"
+        name="Cette semaine"
+        parent="hosting_menu_maintenance"
+        action="hosting_maintenance_schedule_action_due_week"
+        sequence="30"/>
+
+    <menuitem
+        id="hosting_menu_maintenance_templates"
+        name="Modèles"
+        parent="hosting_menu_maintenance"
+        action="hosting_maintenance_template_action"
+        groups="hosting_management.group_hosting_manager"
+        sequence="90"/>
+
+    <!-- Infrastructure Menu -->
+    <menuitem
+        id="hosting_menu_infrastructure"
+        name="Infrastructure"
+        parent="hosting_menu_root"
+        sequence="18"/>
+
+    <menuitem
+        id="hosting_menu_servers"
+        name="Serveurs"
+        parent="hosting_menu_infrastructure"
+        action="hosting_server_action"
+        sequence="10"/>
+
+    <menuitem
+        id="hosting_menu_domains"
+        name="Domaines"
+        parent="hosting_menu_infrastructure"
+        action="hosting_domain_action"
+        sequence="20"/>
+
+    <menuitem
+        id="hosting_menu_domains_expiring"
+        name="Domaines expirant"
+        parent="hosting_menu_infrastructure"
+        action="hosting_domain_action_expiring"
+        sequence="25"/>
+
+    <menuitem
+        id="hosting_menu_dmarc_reports"
+        name="Rapports DMARC"
+        parent="hosting_menu_infrastructure"
+        action="hosting_dmarc_report_action"
+        sequence="27"/>
+
+    <!-- Parc client (SLA) -->
+    <menuitem
+        id="hosting_menu_endpoints_root"
+        name="Parc client"
+        parent="hosting_menu_infrastructure"
+        sequence="30"/>
+
+    <menuitem
+        id="hosting_menu_endpoints_all"
+        name="Tous les postes"
+        parent="hosting_menu_endpoints_root"
+        action="hosting_endpoint_action_all"
+        sequence="10"/>
+
+    <menuitem
+        id="hosting_menu_endpoints_warranty"
+        name="Garantie expirante"
+        parent="hosting_menu_endpoints_root"
+        action="hosting_endpoint_action_warranty_warning"
+        sequence="20"/>
+
+    <menuitem
+        id="hosting_menu_endpoints_os_eol"
+        name="OS en fin de support"
+        parent="hosting_menu_endpoints_root"
+        action="hosting_endpoint_action_os_eol"
+        sequence="30"/>
+
+    <menuitem
+        id="hosting_menu_endpoints_retired"
+        name="Postes retirés"
+        parent="hosting_menu_endpoints_root"
+        action="hosting_endpoint_action_retired"
+        sequence="40"/>
+
+    <menuitem
+        id="hosting_menu_endpoint_groups"
+        name="Groupes (mapping Action1)"
+        parent="hosting_menu_endpoints_root"
+        action="hosting_endpoint_group_action"
+        sequence="50"/>
+
+    <!-- Téléphonie (VOIP.ms) Menu -->
+    <menuitem
+        id="hosting_menu_voip"
+        name="Téléphonie"
+        parent="hosting_menu_root"
+        sequence="24"/>
+
+    <menuitem
+        id="hosting_menu_voip_dids"
+        name="DID"
+        parent="hosting_menu_voip"
+        action="hosting_voip_did_action"
+        sequence="10"/>
+
+    <menuitem
+        id="hosting_menu_voip_cdr"
+        name="Statistiques d'appels"
+        parent="hosting_menu_voip"
+        action="hosting_voip_cdr_action"
+        sequence="20"/>
+
+    <menuitem
+        id="hosting_menu_voip_transactions"
+        name="Transactions"
+        parent="hosting_menu_voip"
+        action="hosting_voip_transaction_action"
+        groups="hosting_management.group_hosting_manager"
+        sequence="30"/>
+
+    <!-- Security Menu -->
+    <menuitem
+        id="hosting_menu_security"
+        name="Sécurité"
+        parent="hosting_menu_root"
+        sequence="25"/>
+
+    <menuitem
+        id="hosting_menu_audit_log"
+        name="Journal d'audit"
+        parent="hosting_menu_security"
+        action="hosting_audit_log_action"
+        sequence="10"/>
+
+    <menuitem
+        id="hosting_menu_security_events"
+        name="Événements de sécurité"
+        parent="hosting_menu_security"
+        action="hosting_security_event_action"
+        sequence="20"/>
+
+    <!-- Software Catalog Menu -->
+    <menuitem
+        id="hosting_menu_software"
+        name="Logiciels"
+        parent="hosting_menu_root"
+        sequence="20"/>
+
+    <!-- Licences Menu -->
+    <menuitem
+        id="hosting_menu_licenses"
+        name="Licences"
+        parent="hosting_menu_root"
+        sequence="22"/>
+
+    <menuitem
+        id="hosting_menu_licenses_all"
+        name="Pools"
+        parent="hosting_menu_licenses"
+        action="hosting_license_action_all"
+        sequence="10"/>
+
+    <menuitem
+        id="hosting_menu_licenses_seats_free"
+        name="Sièges libres"
+        parent="hosting_menu_licenses"
+        action="hosting_license_seat_action_free"
+        sequence="20"/>
+
+    <menuitem
+        id="hosting_menu_licenses_expiring"
+        name="Expirant (≤ 90 j)"
+        parent="hosting_menu_licenses"
+        action="hosting_license_action_expiring"
+        sequence="30"/>
+
+    <menuitem
+        id="hosting_menu_licenses_over_allocated"
+        name="Sur-allocations"
+        parent="hosting_menu_licenses"
+        action="hosting_license_action_over_allocated"
+        sequence="40"/>
+
+    <menuitem
+        id="hosting_menu_licenses_import"
+        name="Importer un pool"
+        parent="hosting_menu_licenses"
+        action="hosting_license_import_wizard_action"
+        sequence="50"/>
+
+    <menuitem
+        id="hosting_menu_software_catalog"
+        name="Catalogue de logiciels"
+        parent="hosting_menu_software"
+        action="hosting_software_action"
+        sequence="10"/>
+
+    <menuitem
+        id="hosting_menu_software_versions"
+        name="Versions"
+        parent="hosting_menu_software"
+        action="hosting_software_version_action"
+        sequence="20"/>
+
+    <!-- Reporting Menu -->
+    <menuitem
+        id="hosting_menu_reporting"
+        name="Rapports"
+        parent="hosting_menu_root"
+        sequence="30"/>
+
+    <menuitem
+        id="hosting_menu_reporting_dashboard"
+        name="Tableau de bord"
+        parent="hosting_menu_reporting"
+        action="hosting_dashboard_action"
+        sequence="1"/>
+
+    <menuitem
+        id="hosting_menu_reporting_updates"
+        name="Historique des mises à jour"
+        parent="hosting_menu_reporting"
+        action="hosting_update_log_action"
+        sequence="10"/>
+
+    <menuitem
+        id="hosting_menu_reporting_health"
+        name="Vérifications de santé"
+        parent="hosting_menu_reporting"
+        action="hosting_health_check_action"
+        sequence="20"/>
+
+    <menuitem
+        id="hosting_menu_reporting_health_snapshots"
+        name="Snapshots quotidiens (>30j)"
+        parent="hosting_menu_reporting"
+        action="hosting_health_daily_snapshot_action"
+        sequence="22"/>
+
+    <menuitem
+        id="hosting_menu_reporting_backups"
+        name="Sauvegardes"
+        parent="hosting_menu_reporting"
+        action="hosting_backup_run_action"
+        sequence="25"/>
+
+    <menuitem
+        id="hosting_menu_reporting_backup_repos"
+        name="Dépôts Restic"
+        parent="hosting_menu_reporting"
+        action="hosting_backup_repository_action"
+        sequence="26"/>
+
+    <menuitem
+        id="hosting_menu_reporting_backup_snapshots"
+        name="Snapshots Restic"
+        parent="hosting_menu_reporting"
+        action="hosting_backup_snapshot_action"
+        sequence="27"/>
+
+    <!-- Configuration Menu -->
+    <menuitem
+        id="hosting_menu_config"
+        name="Configuration"
+        parent="hosting_menu_root"
+        groups="hosting_management.group_hosting_manager"
+        sequence="90"/>
+
+    <menuitem
+        id="hosting_menu_config_tags"
+        name="Étiquettes de service"
+        parent="hosting_menu_config"
+        action="hosting_service_tag_action"
+        sequence="10"/>
+
+    <menuitem
+        id="hosting_menu_config_digests"
+        name="Courriels récapitulatifs"
+        parent="hosting_menu_config"
+        action="hosting_digest_action"
+        sequence="20"/>
+
+    <menuitem
+        id="hosting_menu_config_backup_reports"
+        name="Rapports de sauvegarde"
+        parent="hosting_menu_config"
+        action="action_hosting_config_settings"
+        sequence="30"/>
+
+    <menuitem
+        id="hosting_menu_config_settings"
+        name="Paramètres"
+        parent="hosting_menu_config"
+        action="action_hosting_config_settings"
+        sequence="99"/>
+
+</odoo>

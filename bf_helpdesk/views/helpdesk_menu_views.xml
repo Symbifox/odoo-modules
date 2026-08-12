@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+  <!-- Override the OCA helpdesk_mgmt root menu so the BF-branded fox icon
+       and a clearer label appear in the app launcher. The model and actions
+       remain shared with helpdesk_mgmt — this is just visual rebrand. -->
+  <menuitem
+      id="helpdesk_mgmt.helpdesk_ticket_main_menu"
+      name="Helpdesk Blue Fox"
+      web_icon="bf_helpdesk,static/description/icon.png"
+      sequence="16"
+      groups="helpdesk_mgmt.group_helpdesk_user_own"/>
+
+</odoo>

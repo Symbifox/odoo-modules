@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo noupdate="1">
+    <record id="bf_onb_step_settings" model="onboarding.onboarding.step">
+        <field name="title">Configurer les plages horaires</field>
+        <field name="description">Définissez les périodes (matin, après-midi, soir) utilisées pour le filtrage et le routage des tâches.</field>
+        <field name="button_text">Ouvrir Paramètres</field>
+        <field name="done_text">Plages définies</field>
+        <field name="panel_step_open_action_name">bf_open_res_config_settings</field>
+        <field name="sequence">1</field>
+    </record>
+    <record id="bf_onboarding_panel" model="onboarding.onboarding">
+        <field name="name">Plages horaires BF</field>
+        <field name="route_name">bf_time_of_day_onboarding</field>
+        <field name="panel_close_action_name">action_close_panel_bf_time_of_day</field>
+        <field name="step_ids" eval="[Command.link(ref('bf_time_of_day.bf_onb_step_settings'))]"/>
+    </record>
+</odoo>

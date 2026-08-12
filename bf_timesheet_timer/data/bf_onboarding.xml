@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo noupdate="1">
+    <record id="bf_onb_step_settings" model="onboarding.onboarding.step">
+        <field name="title">Régler le minuteur</field>
+        <field name="description">Choisissez l'arrondi, le seuil d'inactivité et le raccourci clavier du minuteur.</field>
+        <field name="button_text">Ouvrir Paramètres</field>
+        <field name="done_text">Minuteur prêt</field>
+        <field name="panel_step_open_action_name">bf_open_res_config_settings</field>
+        <field name="sequence">1</field>
+    </record>
+    <record id="bf_onb_step_presets" model="onboarding.onboarding.step">
+        <field name="title">Configurer les présets</field>
+        <field name="description">[action:bf_timesheet_timer.action_bf_timer_preset] Préparez des préréglages projet/tâche pour démarrer un minuteur en un clic.</field>
+        <field name="button_text">Voir les présets</field>
+        <field name="done_text">Présets prêts</field>
+        <field name="panel_step_open_action_name">bf_open_action</field>
+        <field name="sequence">2</field>
+    </record>
+    <record id="bf_onboarding_panel" model="onboarding.onboarding">
+        <field name="name">Minuteur de feuille de temps</field>
+        <field name="route_name">bf_timesheet_timer_onboarding</field>
+        <field name="panel_close_action_name">action_close_panel_bf_timesheet_timer</field>
+        <field name="step_ids" eval="[
+            Command.link(ref('bf_timesheet_timer.bf_onb_step_settings')),
+            Command.link(ref('bf_timesheet_timer.bf_onb_step_presets')),
+        ]"/>
+    </record>
+</odoo>

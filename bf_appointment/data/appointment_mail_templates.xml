@@ -1,0 +1,826 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- ============================================================ -->
+        <!-- INTAKE ACKNOWLEDGEMENT (sent right after the form is posted, -->
+        <!-- before the booker picks a slot)                              -->
+        <!-- ============================================================ -->
+        <record id="mail_template_intake_acknowledgement" model="mail.template">
+            <field name="name">Rendez-vous : Accusé de réception</field>
+            <field name="model_id" ref="resource_booking.model_resource_booking"/>
+            <field name="subject">{{ object.type_id.name }} | {{ object.partner_id.name }}</field>
+            <field name="email_from">{{ (object.user_id.email_formatted or object.type_id.company_id.email_formatted or '') }}</field>
+            <field name="email_to">{{ object.partner_id.email }}</field>
+            <field name="lang">{{ object.partner_id.lang }}</field>
+            <field name="body_html"><![CDATA[
+
+<t t-set="company" t-value="(object.type_id.company_id) or user.company_id"/>
+<t t-set="brand_primary" t-value="(company and company.report_brand_primary) or '#714B67'"/>
+<t t-set="brand_dark" t-value="(company and company.report_brand_dark) or '#212529'"/>
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#F8FAFC;">
+    <tbody><tr><td align="center" style="padding:24px;">
+        <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px; max-width:600px; margin:0 auto; background-color:#ffffff; border-radius:12px; border:1px solid #e5e7eb; border-collapse:collapse;">
+            <tbody>
+                <tr><td t-attf-style="background-color:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_dark) or brand_dark }}; padding:16px 24px; border-radius:12px 12px 0 0;">
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tbody><tr>
+                        <td align="left" style="color:#FFFFFF; font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:16px; font-weight:600;">
+                            <a t-attf-href="{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_website_url) or 'https://www.bluefoxconsultant.com' }}" style="text-decoration:none;">
+                                <img t-attf-src="{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_logo_url) or 'https://www.bluefoxconsultant.com/web/image/website/1/logo/Blue%20Fox?unique=803cc14' }}" t-attf-alt="{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_name) or 'Blue Fox' }}" style="height:48px; width:auto; display:block; border:0;"/>
+                            </a>
+                        </td>
+                        <td align="right" style="color:#E6EDF3; font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:22px; font-weight:800;">Demande reçue</td>
+                    </tr></tbody></table>
+                </td></tr>
+                <tr><td t-attf-style="height:4px; line-height:4px; background-color:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_primary) or brand_primary }};">&#160;</td></tr>
+                <tr><td style="padding:24px; font-family:'Lexend','Segoe UI',Arial,sans-serif;">
+                    <p style="font-size:16px; line-height:26px; color:#374151; margin:0 0 16px 0;">
+                        Bonjour <t t-out="object.partner_id.name or ''">Client</t>,
+                    </p>
+                    <p style="font-size:16px; line-height:26px; color:#374151; margin:0 0 16px 0;">
+                        Nous avons bien reçu votre demande de rendez-vous. Il ne reste qu'une étape : choisir le créneau qui vous convient le mieux.
+                    </p>
+                    <p style="text-align:center; margin:24px 0 16px 0;">
+                        <a t-attf-href="{{ object.get_base_url() }}/appointment/b/{{ object.id }}/{{ object.access_token }}/schedule"
+                           t-attf-style="background-color:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_primary) or brand_primary }}; color:#ffffff; padding:14px 40px; text-decoration:none; border-radius:6px; font-weight:600; font-size:15px; display:inline-block;">
+                            Choisir un créneau
+                        </a>
+                    </p>
+                    <p style="font-size:13px; line-height:20px; color:#6B7280; text-align:center; margin:0 0 24px 0;">
+                        Ce lien reste valide. Vous pouvez le rouvrir plus tard si vous fermez cette page.
+                    </p>
+                    <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:16px 0 8px 0; border:1px solid #e5e7eb; border-radius:8px; border-collapse:separate;">
+                        <tbody>
+                            <tr>
+                                <td style="padding:12px 16px; background-color:#f9fafb; border-bottom:1px solid #e5e7eb; color:#6B7280; font-size:14px; width:35%;">Type de rencontre</td>
+                                <td style="padding:12px 16px; background-color:#f9fafb; border-bottom:1px solid #e5e7eb; font-size:14px; font-weight:600; color:#374151;"><t t-out="object.type_id.name or ''"/></td>
+                            </tr>
+                            <tr>
+                                <td style="padding:12px 16px; border-bottom:1px solid #e5e7eb; color:#6B7280; font-size:14px;">Durée prévue</td>
+                                <td style="padding:12px 16px; border-bottom:1px solid #e5e7eb; font-size:14px; font-weight:600; color:#374151;"><t t-out="object.get_duration_display()"/></td>
+                            </tr>
+                            <t t-if="object.intake_answer_ids">
+                                <tr>
+                                    <td colspan="2" style="padding:12px 16px; background-color:#f9fafb; border-bottom:1px solid #e5e7eb; color:#6B7280; font-size:13px; font-weight:600;">Vos réponses</td>
+                                </tr>
+                                <t t-foreach="object.intake_answer_ids" t-as="answer">
+                                    <tr>
+                                        <td style="padding:8px 16px; border-bottom:1px solid #f3f4f6; color:#6B7280; font-size:13px; vertical-align:top;"><t t-out="answer.field_name or ''"/></td>
+                                        <td style="padding:8px 16px; border-bottom:1px solid #f3f4f6; font-size:13px; color:#374151; white-space:pre-wrap;"><t t-out="answer.value or ''"/></td>
+                                    </tr>
+                                </t>
+                            </t>
+                        </tbody>
+                    </table>
+                    <p style="font-size:12px; line-height:18px; color:#9CA3AF; margin:24px 0 0 0;">
+                        Référence interne : RDV-<t t-out="object.id"/>. Conservez ce courriel comme preuve de votre demande et de vos consentements (Loi 25).
+                    </p>
+                    <p style="font-size:13px; line-height:20px; color:#6B7280; margin:16px 0 0 0;">
+                        Pour toute question :
+                        <a t-attf-href="mailto:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_support_email) or 'service@example.com' }}" t-attf-style="color:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_primary) or brand_primary }}; text-decoration:none;"><t t-out="(object.type_id.company_id and object.type_id.company_id.appointment_brand_support_email) or 'service@example.com'"/></a>
+                        | <a t-attf-href="tel:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_support_phone) or '+15555555555' }}" t-attf-style="color:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_primary) or brand_primary }}; text-decoration:none;"><t t-out="(object.type_id.company_id and object.type_id.company_id.appointment_brand_support_phone_display) or '555-555-5555'"/></a>.
+                    </p>
+                </td></tr>
+                <tr><td style="height:1px; line-height:1px; background-color:#E5E7EB;">&#160;</td></tr>
+                <tr><td style="padding:16px 24px 24px 24px; background-color:#FFFFFF; border-radius:0 0 12px 12px;">
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tbody><tr>
+                        <td style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:12px; color:#6B7280;">
+                            <strong t-attf-style="color:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_dark) or brand_dark }};">Rendez-vous par <t t-out="(object.type_id.company_id and object.type_id.company_id.appointment_brand_name) or 'Blue Fox'"/></strong><br/>
+                            <t t-out="(object.type_id.company_id and object.type_id.company_id.appointment_brand_tagline) or 'Solutions éthiques et souveraines pour vos données.'"/>
+                        </td>
+                        <td align="right" style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:12px; color:#9CA3AF;">
+                            <a t-attf-href="{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_privacy_url) or 'https://www.bluefoxconsultant.com/r/politique-de-confidentialite' }}" style="color:#9CA3AF; text-decoration:underline;">Confidentialité</a>
+                            <span style="color:#9CA3AF;"> | </span>
+                            <a t-attf-href="{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_terms_url) or 'https://www.bluefoxconsultant.com/r/termes-et-conditions' }}" style="color:#9CA3AF; text-decoration:underline;">Conditions</a>
+                        </td>
+                    </tr></tbody></table>
+                </td></tr>
+            </tbody>
+        </table>
+        <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px; max-width:600px; margin:12px auto 0;">
+            <tbody><tr>
+                <td t-attf-style="height:3px; line-height:3px; background-color:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_primary) or brand_primary }}; width:50%;">&#160;</td>
+                <td t-attf-style="height:3px; line-height:3px; background-color:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_dark) or brand_dark }}; width:50%;">&#160;</td>
+            </tr></tbody>
+        </table>
+    </td></tr></tbody>
+</table>
+]]></field>
+        </record>
+
+        <!-- ============================================================ -->
+        <!-- CONFIRMATION EMAIL (sent immediately on booking)             -->
+        <!-- ============================================================ -->
+        <record id="mail_template_appointment_confirmation" model="mail.template">
+            <field name="name">Rendez-vous : Confirmation</field>
+            <field name="model_id" ref="resource_booking.model_resource_booking"/>
+            <field name="subject">{{ object.type_id.name }} | {{ object.partner_id.name }}</field>
+            <field name="email_from">{{ (object.user_id.email_formatted or object.type_id.company_id.email_formatted or '') }}</field>
+            <field name="email_to">{{ object.partner_id.email }}</field>
+            <field name="lang">{{ object.partner_id.lang }}</field>
+            <field name="body_html"><![CDATA[
+
+<t t-set="company" t-value="(object.type_id.company_id) or user.company_id"/>
+<t t-set="brand_primary" t-value="(company and company.report_brand_primary) or '#714B67'"/>
+<t t-set="brand_dark" t-value="(company and company.report_brand_dark) or '#212529'"/>
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" t-attf-style="background-color:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_dark) or brand_dark }};">
+    <tbody>
+        <tr>
+            <td align="center" style="padding:24px;">
+                <table cellspacing="0" cellpadding="0" border="0" width="100%" align="center" role="presentation">
+                    <tbody>
+                        <tr>
+                            <td>
+                                <br/>
+                                <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px; max-width:600px; margin:0 auto; background-color:#ffffff; border-radius:12px; border:1px solid #e5e7eb; border-collapse:collapse;">
+                                    <tbody>
+                                        <tr>
+                                            <td t-attf-style="background-color:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_dark) or brand_dark }}; padding:16px 24px; border-radius:12px 12px 0 0;">
+                                                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                                                    <tbody>
+                                                        <tr>
+                                                            <td align="left" style="color:#FFFFFF; font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:16px; font-weight:600;">
+                                                                <a t-attf-href="{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_website_url) or 'https://www.bluefoxconsultant.com' }}" style="text-decoration:none;">
+                                                                    <img t-attf-src="{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_logo_url) or 'https://www.bluefoxconsultant.com/web/image/website/1/logo/Blue%20Fox?unique=803cc14' }}" t-attf-alt="{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_name) or 'Blue Fox' }}" style="height:48px; width:auto; display:block; border:0;"/>
+                                                                </a>
+                                                            </td>
+                                                            <td align="right" style="color:#E6EDF3; font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:22px; font-weight:800; letter-spacing:0.2px;">
+                                                                Rendez-vous
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td t-attf-style="height:4px; line-height:4px; background-color:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_primary) or brand_primary }};">&#160;</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding:24px; font-family:'Lexend','Segoe UI',Arial,sans-serif;">
+                                                <p style="font-size:16px; line-height:26px; color:#374151; margin:0 0 16px 0;">
+                                                    Bonjour <t t-out="object.partner_id.name or ''">Client</t>,
+                                                </p>
+                                                <p style="font-size:16px; line-height:26px; color:#374151; margin:0 0 20px 0;">
+                                                    Votre rendez-vous a &#233;t&#233; confirm&#233; avec succ&#232;s.
+                                                </p>
+                                                <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:16px 0 20px 0; border:1px solid #e5e7eb; border-radius:8px; border-collapse:separate;">
+                                                    <tbody>
+                                                        <tr>
+                                                            <td style="padding:12px 16px; background-color:#f9fafb; border-bottom:1px solid #e5e7eb; color:#6B7280; font-size:14px; width:35%;">Type</td>
+                                                            <td style="padding:12px 16px; background-color:#f9fafb; border-bottom:1px solid #e5e7eb; font-size:14px; font-weight:600; color:#374151;"><t t-out="object.type_id.name or ''">Consultation</t></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td style="padding:12px 16px; border-bottom:1px solid #e5e7eb; color:#6B7280; font-size:14px;">Date</td>
+                                                            <td style="padding:12px 16px; border-bottom:1px solid #e5e7eb; font-size:14px; font-weight:600; color:#374151;"><t t-out="object.start_date_local"/></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td style="padding:12px 16px; border-bottom:1px solid #e5e7eb; color:#6B7280; font-size:14px;">Heure</td>
+                                                            <td style="padding:12px 16px; border-bottom:1px solid #e5e7eb; font-size:14px; font-weight:600; color:#374151;"><t t-out="object.start_time_local"/></td>
+                                                        </tr>
+                                                        <t t-if="object.videocall_location">
+                                                            <tr>
+                                                                <td style="padding:12px 16px; border-bottom:1px solid #e5e7eb; color:#6B7280; font-size:14px;">Vid&#233;oconf&#233;rence</td>
+                                                                <td style="padding:12px 16px; border-bottom:1px solid #e5e7eb; font-size:14px;">
+                                                                    <a t-att-href="object.videocall_location" t-attf-style="color:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_primary) or brand_primary }}; text-decoration:none; font-weight:600;">Rejoindre la r&#233;union</a>
+                                                                </td>
+                                                            </tr>
+                                                        </t>
+                                                        <t t-if="object.location">
+                                                            <tr>
+                                                                <td style="padding:12px 16px; color:#6B7280; font-size:14px;">Lieu</td>
+                                                                <td style="padding:12px 16px; font-size:14px; color:#374151;"><t t-out="object.location or ''">Bureau</t></td>
+                                                            </tr>
+                                                        </t>
+                                                    </tbody>
+                                                </table>
+                                                <t t-if="object.access_token">
+                                                <p style="text-align:center; margin:24px 0 16px 0;">
+                                                    <a t-attf-href="{{ object.get_base_url() }}/appointment/b/{{ object.id }}/{{ object.access_token }}"
+                                                       t-attf-style="background-color:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_primary) or brand_primary }}; color:#ffffff; padding:12px 32px; text-decoration:none; border-radius:6px; font-weight:600; font-size:14px; display:inline-block;">
+                                                        Voir mon rendez-vous
+                                                    </a>
+                                                </p>
+                                                </t>
+                                                <p style="font-size:13px; line-height:20px; color:#6B7280; margin:16px 0 0 0;">
+                                                    Pour toute question, contactez-nous &#224;
+                                                    <a t-attf-href="mailto:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_support_email) or 'service@example.com' }}" t-attf-style="color:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_primary) or brand_primary }}; text-decoration:none;"><t t-out="(object.type_id.company_id and object.type_id.company_id.appointment_brand_support_email) or 'service@example.com'"/></a>
+                                                    ou appelez le
+                                                    <a t-attf-href="tel:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_support_phone) or '+15555555555' }}" t-attf-style="color:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_primary) or brand_primary }}; text-decoration:none;"><t t-out="(object.type_id.company_id and object.type_id.company_id.appointment_brand_support_phone_display) or '555-555-5555'"/></a>.
+                                                </p>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="height:1px; line-height:1px; background-color:#E5E7EB;">&#160;</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding:16px 24px 24px 24px; background-color:#FFFFFF; border-radius:0 0 12px 12px;">
+                                                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                                                    <tbody>
+                                                        <tr>
+                                                            <td style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:12px; color:#6B7280;">
+                                                                <strong t-attf-style="color:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_dark) or brand_dark }};">Rendez-vous par <t t-out="(object.type_id.company_id and object.type_id.company_id.appointment_brand_name) or 'Blue Fox'"/></strong><br/>
+                                                                <t t-out="(object.type_id.company_id and object.type_id.company_id.appointment_brand_tagline) or 'Solutions éthiques et souveraines pour vos données.'"/>
+                                                            </td>
+                                                            <td align="right" style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:12px; color:#9CA3AF;">
+                                                                <a t-attf-href="{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_privacy_url) or 'https://www.bluefoxconsultant.com/r/politique-de-confidentialite' }}" style="color:#9CA3AF; text-decoration:underline;">Confidentialit&#233;</a>
+                                                                <span style="color:#9CA3AF;"> | </span>
+                                                                <a t-attf-href="{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_terms_url) or 'https://www.bluefoxconsultant.com/r/termes-et-conditions' }}" style="color:#9CA3AF; text-decoration:underline;">Conditions</a>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px; max-width:600px; margin:12px auto 0;">
+                                    <tbody>
+                                        <tr>
+                                            <td t-attf-style="height:3px; line-height:3px; background-color:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_primary) or brand_primary }}; width:50%;">&#160;</td>
+                                            <td t-attf-style="height:3px; line-height:3px; background-color:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_dark) or brand_dark }}; width:50%;">&#160;</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+    </tbody>
+</table>
+]]></field>
+        </record>
+
+        <!-- ============================================================ -->
+        <!-- REMINDER: 2 DAYS BEFORE                                      -->
+        <!-- ============================================================ -->
+        <record id="mail_template_reminder_2d" model="mail.template">
+            <field name="name">Rendez-vous : Rappel 2 jours</field>
+            <field name="model_id" ref="resource_booking.model_resource_booking"/>
+            <field name="subject">{{ object.type_id.name }} | {{ object.partner_id.name }}</field>
+            <field name="email_from">{{ (object.user_id.email_formatted or object.type_id.company_id.email_formatted or '') }}</field>
+            <field name="email_to">{{ object.partner_id.email }}</field>
+            <field name="lang">{{ object.partner_id.lang }}</field>
+            <field name="body_html"><![CDATA[
+
+<t t-set="company" t-value="(object.type_id.company_id) or user.company_id"/>
+<t t-set="brand_primary" t-value="(company and company.report_brand_primary) or '#714B67'"/>
+<t t-set="brand_dark" t-value="(company and company.report_brand_dark) or '#212529'"/>
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" t-attf-style="background-color:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_dark) or brand_dark }};">
+    <tbody>
+        <tr>
+            <td align="center" style="padding:24px;">
+                <table cellspacing="0" cellpadding="0" border="0" width="100%" align="center" role="presentation">
+                    <tbody>
+                        <tr>
+                            <td>
+                                <br/>
+                                <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px; max-width:600px; margin:0 auto; background-color:#ffffff; border-radius:12px; border:1px solid #e5e7eb; border-collapse:collapse;">
+                                    <tbody>
+                                        <tr>
+                                            <td t-attf-style="background-color:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_dark) or brand_dark }}; padding:16px 24px; border-radius:12px 12px 0 0;">
+                                                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                                                    <tbody>
+                                                        <tr>
+                                                            <td align="left"><a t-attf-href="{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_website_url) or 'https://www.bluefoxconsultant.com' }}" style="text-decoration:none;"><img t-attf-src="{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_logo_url) or 'https://www.bluefoxconsultant.com/web/image/website/1/logo/Blue%20Fox?unique=803cc14' }}" t-attf-alt="{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_name) or 'Blue Fox' }}" style="height:48px; width:auto; display:block; border:0;"/></a></td>
+                                                            <td align="right" style="color:#E6EDF3; font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:22px; font-weight:800;">Rappel</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                        <tr><td style="height:4px; line-height:4px; background-color:#F0AD4E;">&#160;</td></tr>
+                                        <tr>
+                                            <td style="padding:24px; font-family:'Lexend','Segoe UI',Arial,sans-serif;">
+                                                <p style="font-size:16px; line-height:26px; color:#374151; margin:0 0 16px 0;">Bonjour <t t-out="object.partner_id.name or ''">Client</t>,</p>
+                                                <p style="font-size:16px; line-height:26px; color:#374151; margin:0 0 20px 0;">
+                                                    Ceci est un rappel pour votre rendez-vous <strong>dans 2 jours</strong>.
+                                                </p>
+                                                <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:16px 0 20px 0; border:1px solid #e5e7eb; border-radius:8px; border-collapse:separate;">
+                                                    <tbody>
+                                                        <tr><td style="padding:12px 16px; background-color:#f9fafb; border-bottom:1px solid #e5e7eb; color:#6B7280; font-size:14px; width:35%;">Type</td><td style="padding:12px 16px; background-color:#f9fafb; border-bottom:1px solid #e5e7eb; font-size:14px; font-weight:600; color:#374151;"><t t-out="object.type_id.name or ''"/></td></tr>
+                                                        <tr><td style="padding:12px 16px; border-bottom:1px solid #e5e7eb; color:#6B7280; font-size:14px;">Date</td><td style="padding:12px 16px; border-bottom:1px solid #e5e7eb; font-size:14px; font-weight:600; color:#374151;"><t t-out="object.start_date_local"/></td></tr>
+                                                        <tr><td style="padding:12px 16px; border-bottom:1px solid #e5e7eb; color:#6B7280; font-size:14px;">Heure</td><td style="padding:12px 16px; border-bottom:1px solid #e5e7eb; font-size:14px; font-weight:600; color:#374151;"><t t-out="object.start_time_local"/></td></tr>
+                                                        <t t-if="object.videocall_location"><tr><td style="padding:12px 16px; color:#6B7280; font-size:14px;">Vid&#233;o</td><td style="padding:12px 16px; font-size:14px;"><a t-att-href="object.videocall_location" t-attf-style="color:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_primary) or brand_primary }}; text-decoration:none; font-weight:600;">Rejoindre</a></td></tr></t>
+                                                    </tbody>
+                                                </table>
+                                                <t t-if="object.access_token">
+                                                <p style="text-align:center; margin:24px 0 16px 0;">
+                                                    <a t-attf-href="{{ object.get_base_url() }}/appointment/b/{{ object.id }}/{{ object.access_token }}" style="background-color:#dc3545; color:#ffffff; padding:12px 32px; text-decoration:none; border-radius:6px; font-weight:600; font-size:14px; display:inline-block;">Annuler mon rendez-vous</a>
+                                                </p>
+                                                </t>
+                                                <p style="font-size:13px; line-height:20px; color:#6B7280; margin:16px 0 0 0;">Pour toute question : <a t-attf-href="mailto:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_support_email) or 'service@example.com' }}" t-attf-style="color:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_primary) or brand_primary }}; text-decoration:none;"><t t-out="(object.type_id.company_id and object.type_id.company_id.appointment_brand_support_email) or 'service@example.com'"/></a> | <a t-attf-href="tel:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_support_phone) or '+15555555555' }}" t-attf-style="color:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_primary) or brand_primary }}; text-decoration:none;"><t t-out="(object.type_id.company_id and object.type_id.company_id.appointment_brand_support_phone_display) or '555-555-5555'"/></a></p>
+                                            </td>
+                                        </tr>
+                                        <tr><td style="height:1px; line-height:1px; background-color:#E5E7EB;">&#160;</td></tr>
+                                        <tr>
+                                            <td style="padding:16px 24px 24px 24px; background-color:#FFFFFF; border-radius:0 0 12px 12px;">
+                                                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tbody><tr>
+                                                    <td style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:12px; color:#6B7280;"><strong t-attf-style="color:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_dark) or brand_dark }};">Rendez-vous par <t t-out="(object.type_id.company_id and object.type_id.company_id.appointment_brand_name) or 'Blue Fox'"/></strong><br/><t t-out="(object.type_id.company_id and object.type_id.company_id.appointment_brand_tagline) or 'Solutions éthiques et souveraines pour vos données.'"/></td>
+                                                    <td align="right" style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:12px; color:#9CA3AF;"><a t-attf-href="{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_privacy_url) or 'https://www.bluefoxconsultant.com/r/politique-de-confidentialite' }}" style="color:#9CA3AF; text-decoration:underline;">Confidentialit&#233;</a> | <a t-attf-href="{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_terms_url) or 'https://www.bluefoxconsultant.com/r/termes-et-conditions' }}" style="color:#9CA3AF; text-decoration:underline;">Conditions</a></td>
+                                                </tr></tbody></table>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px; max-width:600px; margin:12px auto 0;"><tbody><tr><td t-attf-style="height:3px; line-height:3px; background-color:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_primary) or brand_primary }}; width:50%;">&#160;</td><td t-attf-style="height:3px; line-height:3px; background-color:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_dark) or brand_dark }}; width:50%;">&#160;</td></tr></tbody></table>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+    </tbody>
+</table>
+]]></field>
+        </record>
+
+        <!-- ============================================================ -->
+        <!-- REMINDER: 1 DAY BEFORE                                       -->
+        <!-- ============================================================ -->
+        <record id="mail_template_reminder_1d" model="mail.template">
+            <field name="name">Rendez-vous : Rappel 1 jour</field>
+            <field name="model_id" ref="resource_booking.model_resource_booking"/>
+            <field name="subject">{{ object.type_id.name }} | {{ object.partner_id.name }}</field>
+            <field name="email_from">{{ (object.user_id.email_formatted or object.type_id.company_id.email_formatted or '') }}</field>
+            <field name="email_to">{{ object.partner_id.email }}</field>
+            <field name="lang">{{ object.partner_id.lang }}</field>
+            <field name="body_html"><![CDATA[
+
+<t t-set="company" t-value="(object.type_id.company_id) or user.company_id"/>
+<t t-set="brand_primary" t-value="(company and company.report_brand_primary) or '#714B67'"/>
+<t t-set="brand_dark" t-value="(company and company.report_brand_dark) or '#212529'"/>
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" t-attf-style="background-color:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_dark) or brand_dark }};">
+    <tbody><tr><td align="center" style="padding:24px;">
+        <table cellspacing="0" cellpadding="0" border="0" width="100%" align="center" role="presentation"><tbody><tr><td><br/>
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px; max-width:600px; margin:0 auto; background-color:#ffffff; border-radius:12px; border:1px solid #e5e7eb; border-collapse:collapse;">
+                <tbody>
+                    <tr><td t-attf-style="background-color:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_dark) or brand_dark }}; padding:16px 24px; border-radius:12px 12px 0 0;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tbody><tr><td align="left"><a t-attf-href="{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_website_url) or 'https://www.bluefoxconsultant.com' }}" style="text-decoration:none;"><img t-attf-src="{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_logo_url) or 'https://www.bluefoxconsultant.com/web/image/website/1/logo/Blue%20Fox?unique=803cc14' }}" t-attf-alt="{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_name) or 'Blue Fox' }}" style="height:48px; width:auto; display:block; border:0;"/></a></td><td align="right" style="color:#E6EDF3; font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:22px; font-weight:800;">Rappel</td></tr></tbody></table></td></tr>
+                    <tr><td style="height:4px; line-height:4px; background-color:#F0AD4E;">&#160;</td></tr>
+                    <tr><td style="padding:24px; font-family:'Lexend','Segoe UI',Arial,sans-serif;">
+                        <p style="font-size:16px; line-height:26px; color:#374151; margin:0 0 16px 0;">Bonjour <t t-out="object.partner_id.name or ''">Client</t>,</p>
+                        <p style="font-size:16px; line-height:26px; color:#374151; margin:0 0 20px 0;">Votre rendez-vous est <strong>demain</strong>.</p>
+                        <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:16px 0 20px 0; border:1px solid #e5e7eb; border-radius:8px; border-collapse:separate;"><tbody>
+                            <tr><td style="padding:12px 16px; background-color:#f9fafb; border-bottom:1px solid #e5e7eb; color:#6B7280; font-size:14px; width:35%;">Type</td><td style="padding:12px 16px; background-color:#f9fafb; border-bottom:1px solid #e5e7eb; font-size:14px; font-weight:600; color:#374151;"><t t-out="object.type_id.name or ''"/></td></tr>
+                            <tr><td style="padding:12px 16px; border-bottom:1px solid #e5e7eb; color:#6B7280; font-size:14px;">Date</td><td style="padding:12px 16px; border-bottom:1px solid #e5e7eb; font-size:14px; font-weight:600; color:#374151;"><t t-out="object.start_date_local"/></td></tr>
+                            <tr><td style="padding:12px 16px; border-bottom:1px solid #e5e7eb; color:#6B7280; font-size:14px;">Heure</td><td style="padding:12px 16px; border-bottom:1px solid #e5e7eb; font-size:14px; font-weight:600; color:#374151;"><t t-out="object.start_time_local"/></td></tr>
+                            <t t-if="object.videocall_location"><tr><td style="padding:12px 16px; color:#6B7280; font-size:14px;">Vid&#233;o</td><td style="padding:12px 16px; font-size:14px;"><a t-att-href="object.videocall_location" t-attf-style="color:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_primary) or brand_primary }}; text-decoration:none; font-weight:600;">Rejoindre</a></td></tr></t>
+                        </tbody></table>
+                        <t t-if="object.access_token"><p style="text-align:center; margin:24px 0 16px 0;"><a t-attf-href="{{ object.get_base_url() }}/appointment/b/{{ object.id }}/{{ object.access_token }}" style="background-color:#dc3545; color:#ffffff; padding:12px 32px; text-decoration:none; border-radius:6px; font-weight:600; font-size:14px; display:inline-block;">Annuler mon rendez-vous</a></p></t>
+                        <p style="font-size:13px; line-height:20px; color:#6B7280; margin:16px 0 0 0;">Pour toute question : <a t-attf-href="mailto:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_support_email) or 'service@example.com' }}" t-attf-style="color:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_primary) or brand_primary }}; text-decoration:none;"><t t-out="(object.type_id.company_id and object.type_id.company_id.appointment_brand_support_email) or 'service@example.com'"/></a> | <a t-attf-href="tel:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_support_phone) or '+15555555555' }}" t-attf-style="color:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_primary) or brand_primary }}; text-decoration:none;"><t t-out="(object.type_id.company_id and object.type_id.company_id.appointment_brand_support_phone_display) or '555-555-5555'"/></a></p>
+                    </td></tr>
+                    <tr><td style="height:1px; line-height:1px; background-color:#E5E7EB;">&#160;</td></tr>
+                    <tr><td style="padding:16px 24px 24px 24px; background-color:#FFFFFF; border-radius:0 0 12px 12px;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tbody><tr><td style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:12px; color:#6B7280;"><strong t-attf-style="color:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_dark) or brand_dark }};">Rendez-vous par <t t-out="(object.type_id.company_id and object.type_id.company_id.appointment_brand_name) or 'Blue Fox'"/></strong><br/><t t-out="(object.type_id.company_id and object.type_id.company_id.appointment_brand_tagline) or 'Solutions éthiques et souveraines pour vos données.'"/></td><td align="right" style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:12px; color:#9CA3AF;"><a t-attf-href="{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_privacy_url) or 'https://www.bluefoxconsultant.com/r/politique-de-confidentialite' }}" style="color:#9CA3AF; text-decoration:underline;">Confidentialit&#233;</a> | <a t-attf-href="{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_terms_url) or 'https://www.bluefoxconsultant.com/r/termes-et-conditions' }}" style="color:#9CA3AF; text-decoration:underline;">Conditions</a></td></tr></tbody></table></td></tr>
+                </tbody>
+            </table>
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px; max-width:600px; margin:12px auto 0;"><tbody><tr><td t-attf-style="height:3px; line-height:3px; background-color:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_primary) or brand_primary }}; width:50%;">&#160;</td><td t-attf-style="height:3px; line-height:3px; background-color:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_dark) or brand_dark }}; width:50%;">&#160;</td></tr></tbody></table>
+        </td></tr></tbody></table>
+    </td></tr></tbody>
+</table>
+]]></field>
+        </record>
+
+        <!-- ============================================================ -->
+        <!-- REMINDER: 2 HOURS BEFORE                                     -->
+        <!-- ============================================================ -->
+        <record id="mail_template_reminder_2h" model="mail.template">
+            <field name="name">Rendez-vous : Rappel 2 heures</field>
+            <field name="model_id" ref="resource_booking.model_resource_booking"/>
+            <field name="subject">{{ object.type_id.name }} | {{ object.partner_id.name }}</field>
+            <field name="email_from">{{ (object.user_id.email_formatted or object.type_id.company_id.email_formatted or '') }}</field>
+            <field name="email_to">{{ object.partner_id.email }}</field>
+            <field name="lang">{{ object.partner_id.lang }}</field>
+            <field name="body_html"><![CDATA[
+
+<t t-set="company" t-value="(object.type_id.company_id) or user.company_id"/>
+<t t-set="brand_primary" t-value="(company and company.report_brand_primary) or '#714B67'"/>
+<t t-set="brand_dark" t-value="(company and company.report_brand_dark) or '#212529'"/>
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" t-attf-style="background-color:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_dark) or brand_dark }};">
+    <tbody><tr><td align="center" style="padding:24px;">
+        <table cellspacing="0" cellpadding="0" border="0" width="100%" align="center" role="presentation"><tbody><tr><td><br/>
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px; max-width:600px; margin:0 auto; background-color:#ffffff; border-radius:12px; border:1px solid #e5e7eb; border-collapse:collapse;">
+                <tbody>
+                    <tr><td t-attf-style="background-color:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_dark) or brand_dark }}; padding:16px 24px; border-radius:12px 12px 0 0;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tbody><tr><td align="left"><a t-attf-href="{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_website_url) or 'https://www.bluefoxconsultant.com' }}" style="text-decoration:none;"><img t-attf-src="{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_logo_url) or 'https://www.bluefoxconsultant.com/web/image/website/1/logo/Blue%20Fox?unique=803cc14' }}" t-attf-alt="{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_name) or 'Blue Fox' }}" style="height:48px; width:auto; display:block; border:0;"/></a></td><td align="right" style="color:#E6EDF3; font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:22px; font-weight:800;">Rappel</td></tr></tbody></table></td></tr>
+                    <tr><td style="height:4px; line-height:4px; background-color:#F0AD4E;">&#160;</td></tr>
+                    <tr><td style="padding:24px; font-family:'Lexend','Segoe UI',Arial,sans-serif;">
+                        <p style="font-size:16px; line-height:26px; color:#374151; margin:0 0 16px 0;">Bonjour <t t-out="object.partner_id.name or ''">Client</t>,</p>
+                        <p style="font-size:16px; line-height:26px; color:#374151; margin:0 0 20px 0;">Votre rendez-vous commence <strong>dans 2 heures</strong>.</p>
+                        <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:16px 0 20px 0; border:1px solid #e5e7eb; border-radius:8px; border-collapse:separate;"><tbody>
+                            <tr><td style="padding:12px 16px; background-color:#f9fafb; border-bottom:1px solid #e5e7eb; color:#6B7280; font-size:14px; width:35%;">Heure</td><td style="padding:12px 16px; background-color:#f9fafb; border-bottom:1px solid #e5e7eb; font-size:14px; font-weight:600; color:#374151;"><t t-out="object.start_time_local"/></td></tr>
+                            <t t-if="object.videocall_location"><tr><td style="padding:12px 16px; color:#6B7280; font-size:14px;">Vid&#233;o</td><td style="padding:12px 16px; font-size:14px;"><a t-att-href="object.videocall_location" t-attf-style="color:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_primary) or brand_primary }}; text-decoration:none; font-weight:600;">Rejoindre la r&#233;union</a></td></tr></t>
+                        </tbody></table>
+                        <t t-if="object.access_token"><p style="text-align:center; margin:24px 0 16px 0;"><a t-attf-href="{{ object.get_base_url() }}/appointment/b/{{ object.id }}/{{ object.access_token }}" style="background-color:#dc3545; color:#ffffff; padding:12px 32px; text-decoration:none; border-radius:6px; font-weight:600; font-size:14px; display:inline-block;">Annuler mon rendez-vous</a></p></t>
+                    </td></tr>
+                    <tr><td style="height:1px; line-height:1px; background-color:#E5E7EB;">&#160;</td></tr>
+                    <tr><td style="padding:16px 24px 24px 24px; background-color:#FFFFFF; border-radius:0 0 12px 12px;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tbody><tr><td style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:12px; color:#6B7280;"><strong t-attf-style="color:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_dark) or brand_dark }};">Rendez-vous par <t t-out="(object.type_id.company_id and object.type_id.company_id.appointment_brand_name) or 'Blue Fox'"/></strong></td><td align="right" style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:12px; color:#9CA3AF;"><a t-attf-href="{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_privacy_url) or 'https://www.bluefoxconsultant.com/r/politique-de-confidentialite' }}" style="color:#9CA3AF; text-decoration:underline;">Confidentialit&#233;</a> | <a t-attf-href="{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_terms_url) or 'https://www.bluefoxconsultant.com/r/termes-et-conditions' }}" style="color:#9CA3AF; text-decoration:underline;">Conditions</a></td></tr></tbody></table></td></tr>
+                </tbody>
+            </table>
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px; max-width:600px; margin:12px auto 0;"><tbody><tr><td t-attf-style="height:3px; line-height:3px; background-color:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_primary) or brand_primary }}; width:50%;">&#160;</td><td t-attf-style="height:3px; line-height:3px; background-color:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_dark) or brand_dark }}; width:50%;">&#160;</td></tr></tbody></table>
+        </td></tr></tbody></table>
+    </td></tr></tbody>
+</table>
+]]></field>
+        </record>
+
+        <!-- ============================================================ -->
+        <!-- REMINDER: 1 HOUR BEFORE                                      -->
+        <!-- ============================================================ -->
+        <record id="mail_template_reminder_1h" model="mail.template">
+            <field name="name">Rendez-vous : Rappel 1 heure</field>
+            <field name="model_id" ref="resource_booking.model_resource_booking"/>
+            <field name="subject">{{ object.type_id.name }} | {{ object.partner_id.name }}</field>
+            <field name="email_from">{{ (object.user_id.email_formatted or object.type_id.company_id.email_formatted or '') }}</field>
+            <field name="email_to">{{ object.partner_id.email }}</field>
+            <field name="lang">{{ object.partner_id.lang }}</field>
+            <field name="body_html"><![CDATA[
+
+<t t-set="company" t-value="(object.type_id.company_id) or user.company_id"/>
+<t t-set="brand_primary" t-value="(company and company.report_brand_primary) or '#714B67'"/>
+<t t-set="brand_dark" t-value="(company and company.report_brand_dark) or '#212529'"/>
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" t-attf-style="background-color:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_dark) or brand_dark }};">
+    <tbody><tr><td align="center" style="padding:24px;">
+        <table cellspacing="0" cellpadding="0" border="0" width="100%" align="center" role="presentation"><tbody><tr><td><br/>
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px; max-width:600px; margin:0 auto; background-color:#ffffff; border-radius:12px; border:1px solid #e5e7eb; border-collapse:collapse;">
+                <tbody>
+                    <tr><td t-attf-style="background-color:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_dark) or brand_dark }}; padding:16px 24px; border-radius:12px 12px 0 0;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tbody><tr><td align="left"><a t-attf-href="{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_website_url) or 'https://www.bluefoxconsultant.com' }}" style="text-decoration:none;"><img t-attf-src="{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_logo_url) or 'https://www.bluefoxconsultant.com/web/image/website/1/logo/Blue%20Fox?unique=803cc14' }}" t-attf-alt="{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_name) or 'Blue Fox' }}" style="height:48px; width:auto; display:block; border:0;"/></a></td><td align="right" style="color:#E6EDF3; font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:22px; font-weight:800;">Rappel</td></tr></tbody></table></td></tr>
+                    <tr><td style="height:4px; line-height:4px; background-color:#F0AD4E;">&#160;</td></tr>
+                    <tr><td style="padding:24px; font-family:'Lexend','Segoe UI',Arial,sans-serif;">
+                        <p style="font-size:16px; line-height:26px; color:#374151; margin:0 0 16px 0;">Bonjour <t t-out="object.partner_id.name or ''">Client</t>,</p>
+                        <p style="font-size:16px; line-height:26px; color:#374151; margin:0 0 20px 0;">Votre rendez-vous commence <strong>dans 1 heure</strong>.</p>
+                        <t t-if="object.videocall_location">
+                            <p style="text-align:center; margin:20px 0;">
+                                <a t-att-href="object.videocall_location" t-attf-style="background-color:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_primary) or brand_primary }}; color:#ffffff; padding:14px 40px; text-decoration:none; border-radius:6px; font-weight:600; font-size:16px; display:inline-block;">Rejoindre la vid&#233;oconf&#233;rence</a>
+                            </p>
+                        </t>
+                        <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:16px 0 20px 0; border:1px solid #e5e7eb; border-radius:8px; border-collapse:separate;"><tbody>
+                            <tr><td style="padding:12px 16px; background-color:#f9fafb; border-bottom:1px solid #e5e7eb; color:#6B7280; font-size:14px; width:35%;">Heure</td><td style="padding:12px 16px; background-color:#f9fafb; border-bottom:1px solid #e5e7eb; font-size:14px; font-weight:600; color:#374151;"><t t-out="object.start_time_local"/></td></tr>
+                            <tr><td style="padding:12px 16px; color:#6B7280; font-size:14px;">Type</td><td style="padding:12px 16px; font-size:14px; font-weight:600; color:#374151;"><t t-out="object.type_id.name or ''"/></td></tr>
+                        </tbody></table>
+                    </td></tr>
+                    <tr><td style="height:1px; line-height:1px; background-color:#E5E7EB;">&#160;</td></tr>
+                    <tr><td style="padding:16px 24px 24px 24px; background-color:#FFFFFF; border-radius:0 0 12px 12px;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tbody><tr><td style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:12px; color:#6B7280;"><strong t-attf-style="color:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_dark) or brand_dark }};">Rendez-vous par <t t-out="(object.type_id.company_id and object.type_id.company_id.appointment_brand_name) or 'Blue Fox'"/></strong></td><td align="right" style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:12px; color:#9CA3AF;"><a t-attf-href="{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_privacy_url) or 'https://www.bluefoxconsultant.com/r/politique-de-confidentialite' }}" style="color:#9CA3AF; text-decoration:underline;">Confidentialit&#233;</a> | <a t-attf-href="{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_terms_url) or 'https://www.bluefoxconsultant.com/r/termes-et-conditions' }}" style="color:#9CA3AF; text-decoration:underline;">Conditions</a></td></tr></tbody></table></td></tr>
+                </tbody>
+            </table>
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px; max-width:600px; margin:12px auto 0;"><tbody><tr><td t-attf-style="height:3px; line-height:3px; background-color:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_primary) or brand_primary }}; width:50%;">&#160;</td><td t-attf-style="height:3px; line-height:3px; background-color:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_dark) or brand_dark }}; width:50%;">&#160;</td></tr></tbody></table>
+        </td></tr></tbody></table>
+    </td></tr></tbody>
+</table>
+]]></field>
+        </record>
+
+        <!-- ============================================================ -->
+        <!-- FOLLOW-UP: IMMEDIATELY AFTER                                 -->
+        <!-- ============================================================ -->
+        <record id="mail_template_followup_immediate" model="mail.template">
+            <field name="name">Rendez-vous : Suivi imm&#233;diat</field>
+            <field name="model_id" ref="resource_booking.model_resource_booking"/>
+            <field name="subject">{{ object.type_id.name }} | {{ object.partner_id.name }}</field>
+            <field name="email_from">{{ (object.user_id.email_formatted or object.type_id.company_id.email_formatted or '') }}</field>
+            <field name="email_to">{{ object.partner_id.email }}</field>
+            <field name="lang">{{ object.partner_id.lang }}</field>
+            <field name="body_html"><![CDATA[
+
+<t t-set="company" t-value="(object.type_id.company_id) or user.company_id"/>
+<t t-set="brand_primary" t-value="(company and company.report_brand_primary) or '#714B67'"/>
+<t t-set="brand_dark" t-value="(company and company.report_brand_dark) or '#212529'"/>
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" t-attf-style="background-color:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_dark) or brand_dark }};">
+    <tbody><tr><td align="center" style="padding:24px;">
+        <table cellspacing="0" cellpadding="0" border="0" width="100%" align="center" role="presentation"><tbody><tr><td><br/>
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px; max-width:600px; margin:0 auto; background-color:#ffffff; border-radius:12px; border:1px solid #e5e7eb; border-collapse:collapse;">
+                <tbody>
+                    <tr><td t-attf-style="background-color:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_dark) or brand_dark }}; padding:16px 24px; border-radius:12px 12px 0 0;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tbody><tr><td align="left"><a t-attf-href="{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_website_url) or 'https://www.bluefoxconsultant.com' }}" style="text-decoration:none;"><img t-attf-src="{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_logo_url) or 'https://www.bluefoxconsultant.com/web/image/website/1/logo/Blue%20Fox?unique=803cc14' }}" t-attf-alt="{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_name) or 'Blue Fox' }}" style="height:48px; width:auto; display:block; border:0;"/></a></td><td align="right" style="color:#E6EDF3; font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:22px; font-weight:800;">Merci!</td></tr></tbody></table></td></tr>
+                    <tr><td style="height:4px; line-height:4px; background-color:#5CB85C;">&#160;</td></tr>
+                    <tr><td style="padding:24px; font-family:'Lexend','Segoe UI',Arial,sans-serif;">
+                        <p style="font-size:16px; line-height:26px; color:#374151; margin:0 0 16px 0;">Bonjour <t t-out="object.partner_id.name or ''">Client</t>,</p>
+                        <p style="font-size:16px; line-height:26px; color:#374151; margin:0 0 20px 0;">
+                            Merci d'avoir pris le temps de nous rencontrer pour <strong><t t-out="object.type_id.name or ''"/></strong>.
+                        </p>
+                        <p style="font-size:16px; line-height:26px; color:#374151; margin:0 0 20px 0;">
+                            Si vous avez des questions ou si vous souhaitez planifier un suivi, n'h&#233;sitez pas &#224; nous contacter.
+                        </p>
+                        <p style="text-align:center; margin:24px 0 16px 0;">
+                            <a t-attf-href="{{ object.get_base_url() }}/appointment" t-attf-style="background-color:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_primary) or brand_primary }}; color:#ffffff; padding:12px 32px; text-decoration:none; border-radius:6px; font-weight:600; font-size:14px; display:inline-block;">Prendre un autre rendez-vous</a>
+                        </p>
+                        <p style="font-size:13px; line-height:20px; color:#6B7280; margin:16px 0 0 0;">Pour toute question : <a t-attf-href="mailto:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_support_email) or 'service@example.com' }}" t-attf-style="color:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_primary) or brand_primary }}; text-decoration:none;"><t t-out="(object.type_id.company_id and object.type_id.company_id.appointment_brand_support_email) or 'service@example.com'"/></a> | <a t-attf-href="tel:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_support_phone) or '+15555555555' }}" t-attf-style="color:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_primary) or brand_primary }}; text-decoration:none;"><t t-out="(object.type_id.company_id and object.type_id.company_id.appointment_brand_support_phone_display) or '555-555-5555'"/></a></p>
+                    </td></tr>
+                    <tr><td style="height:1px; line-height:1px; background-color:#E5E7EB;">&#160;</td></tr>
+                    <tr><td style="padding:16px 24px 24px 24px; background-color:#FFFFFF; border-radius:0 0 12px 12px;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tbody><tr><td style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:12px; color:#6B7280;"><strong t-attf-style="color:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_dark) or brand_dark }};">Rendez-vous par <t t-out="(object.type_id.company_id and object.type_id.company_id.appointment_brand_name) or 'Blue Fox'"/></strong><br/><t t-out="(object.type_id.company_id and object.type_id.company_id.appointment_brand_tagline) or 'Solutions éthiques et souveraines pour vos données.'"/></td><td align="right" style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:12px; color:#9CA3AF;"><a t-attf-href="{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_privacy_url) or 'https://www.bluefoxconsultant.com/r/politique-de-confidentialite' }}" style="color:#9CA3AF; text-decoration:underline;">Confidentialit&#233;</a> | <a t-attf-href="{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_terms_url) or 'https://www.bluefoxconsultant.com/r/termes-et-conditions' }}" style="color:#9CA3AF; text-decoration:underline;">Conditions</a></td></tr></tbody></table></td></tr>
+                </tbody>
+            </table>
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px; max-width:600px; margin:12px auto 0;"><tbody><tr><td t-attf-style="height:3px; line-height:3px; background-color:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_primary) or brand_primary }}; width:50%;">&#160;</td><td t-attf-style="height:3px; line-height:3px; background-color:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_dark) or brand_dark }}; width:50%;">&#160;</td></tr></tbody></table>
+        </td></tr></tbody></table>
+    </td></tr></tbody>
+</table>
+]]></field>
+        </record>
+
+        <!-- ============================================================ -->
+        <!-- FOLLOW-UP: 1 HOUR AFTER                                      -->
+        <!-- ============================================================ -->
+        <record id="mail_template_followup_1h" model="mail.template">
+            <field name="name">Rendez-vous : Suivi 1 heure apr&#232;s</field>
+            <field name="model_id" ref="resource_booking.model_resource_booking"/>
+            <field name="subject">{{ object.type_id.name }} | {{ object.partner_id.name }}</field>
+            <field name="email_from">{{ (object.user_id.email_formatted or object.type_id.company_id.email_formatted or '') }}</field>
+            <field name="email_to">{{ object.partner_id.email }}</field>
+            <field name="lang">{{ object.partner_id.lang }}</field>
+            <field name="body_html"><![CDATA[
+
+<t t-set="company" t-value="(object.type_id.company_id) or user.company_id"/>
+<t t-set="brand_primary" t-value="(company and company.report_brand_primary) or '#714B67'"/>
+<t t-set="brand_dark" t-value="(company and company.report_brand_dark) or '#212529'"/>
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" t-attf-style="background-color:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_dark) or brand_dark }};">
+    <tbody><tr><td align="center" style="padding:24px;">
+        <table cellspacing="0" cellpadding="0" border="0" width="100%" align="center" role="presentation"><tbody><tr><td><br/>
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px; max-width:600px; margin:0 auto; background-color:#ffffff; border-radius:12px; border:1px solid #e5e7eb; border-collapse:collapse;">
+                <tbody>
+                    <tr><td t-attf-style="background-color:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_dark) or brand_dark }}; padding:16px 24px; border-radius:12px 12px 0 0;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tbody><tr><td align="left"><a t-attf-href="{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_website_url) or 'https://www.bluefoxconsultant.com' }}" style="text-decoration:none;"><img t-attf-src="{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_logo_url) or 'https://www.bluefoxconsultant.com/web/image/website/1/logo/Blue%20Fox?unique=803cc14' }}" t-attf-alt="{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_name) or 'Blue Fox' }}" style="height:48px; width:auto; display:block; border:0;"/></a></td><td align="right" style="color:#E6EDF3; font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:22px; font-weight:800;">Suivi</td></tr></tbody></table></td></tr>
+                    <tr><td style="height:4px; line-height:4px; background-color:#5CB85C;">&#160;</td></tr>
+                    <tr><td style="padding:24px; font-family:'Lexend','Segoe UI',Arial,sans-serif;">
+                        <p style="font-size:16px; line-height:26px; color:#374151; margin:0 0 16px 0;">Bonjour <t t-out="object.partner_id.name or ''">Client</t>,</p>
+                        <p style="font-size:16px; line-height:26px; color:#374151; margin:0 0 20px 0;">
+                            Nous esp&#233;rons que votre rendez-vous s'est bien d&#233;roul&#233;.
+                            N'h&#233;sitez pas &#224; nous faire part de vos commentaires ou questions.
+                        </p>
+                        <p style="text-align:center; margin:24px 0 16px 0;">
+                            <a t-attf-href="{{ object.get_base_url() }}/appointment" t-attf-style="background-color:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_primary) or brand_primary }}; color:#ffffff; padding:12px 32px; text-decoration:none; border-radius:6px; font-weight:600; font-size:14px; display:inline-block;">Prendre un autre rendez-vous</a>
+                        </p>
+                        <p style="font-size:13px; line-height:20px; color:#6B7280; margin:16px 0 0 0;">Pour toute question : <a t-attf-href="mailto:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_support_email) or 'service@example.com' }}" t-attf-style="color:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_primary) or brand_primary }}; text-decoration:none;"><t t-out="(object.type_id.company_id and object.type_id.company_id.appointment_brand_support_email) or 'service@example.com'"/></a> | <a t-attf-href="tel:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_support_phone) or '+15555555555' }}" t-attf-style="color:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_primary) or brand_primary }}; text-decoration:none;"><t t-out="(object.type_id.company_id and object.type_id.company_id.appointment_brand_support_phone_display) or '555-555-5555'"/></a></p>
+                    </td></tr>
+                    <tr><td style="height:1px; line-height:1px; background-color:#E5E7EB;">&#160;</td></tr>
+                    <tr><td style="padding:16px 24px 24px 24px; background-color:#FFFFFF; border-radius:0 0 12px 12px;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tbody><tr><td style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:12px; color:#6B7280;"><strong t-attf-style="color:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_dark) or brand_dark }};">Rendez-vous par <t t-out="(object.type_id.company_id and object.type_id.company_id.appointment_brand_name) or 'Blue Fox'"/></strong><br/><t t-out="(object.type_id.company_id and object.type_id.company_id.appointment_brand_tagline) or 'Solutions éthiques et souveraines pour vos données.'"/></td><td align="right" style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:12px; color:#9CA3AF;"><a t-attf-href="{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_privacy_url) or 'https://www.bluefoxconsultant.com/r/politique-de-confidentialite' }}" style="color:#9CA3AF; text-decoration:underline;">Confidentialit&#233;</a> | <a t-attf-href="{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_terms_url) or 'https://www.bluefoxconsultant.com/r/termes-et-conditions' }}" style="color:#9CA3AF; text-decoration:underline;">Conditions</a></td></tr></tbody></table></td></tr>
+                </tbody>
+            </table>
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px; max-width:600px; margin:12px auto 0;"><tbody><tr><td t-attf-style="height:3px; line-height:3px; background-color:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_primary) or brand_primary }}; width:50%;">&#160;</td><td t-attf-style="height:3px; line-height:3px; background-color:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_dark) or brand_dark }}; width:50%;">&#160;</td></tr></tbody></table>
+        </td></tr></tbody></table>
+    </td></tr></tbody>
+</table>
+]]></field>
+        </record>
+
+        <!-- ============================================================ -->
+        <!-- FOLLOW-UP: 2 HOURS AFTER                                     -->
+        <!-- ============================================================ -->
+        <record id="mail_template_followup_2h" model="mail.template">
+            <field name="name">Rendez-vous : Suivi 2 heures apr&#232;s</field>
+            <field name="model_id" ref="resource_booking.model_resource_booking"/>
+            <field name="subject">{{ object.type_id.name }} | {{ object.partner_id.name }}</field>
+            <field name="email_from">{{ (object.user_id.email_formatted or object.type_id.company_id.email_formatted or '') }}</field>
+            <field name="email_to">{{ object.partner_id.email }}</field>
+            <field name="lang">{{ object.partner_id.lang }}</field>
+            <field name="body_html"><![CDATA[
+
+<t t-set="company" t-value="(object.type_id.company_id) or user.company_id"/>
+<t t-set="brand_primary" t-value="(company and company.report_brand_primary) or '#714B67'"/>
+<t t-set="brand_dark" t-value="(company and company.report_brand_dark) or '#212529'"/>
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" t-attf-style="background-color:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_dark) or brand_dark }};">
+    <tbody><tr><td align="center" style="padding:24px;">
+        <table cellspacing="0" cellpadding="0" border="0" width="100%" align="center" role="presentation"><tbody><tr><td><br/>
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px; max-width:600px; margin:0 auto; background-color:#ffffff; border-radius:12px; border:1px solid #e5e7eb; border-collapse:collapse;">
+                <tbody>
+                    <tr><td t-attf-style="background-color:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_dark) or brand_dark }}; padding:16px 24px; border-radius:12px 12px 0 0;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tbody><tr><td align="left"><a t-attf-href="{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_website_url) or 'https://www.bluefoxconsultant.com' }}" style="text-decoration:none;"><img t-attf-src="{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_logo_url) or 'https://www.bluefoxconsultant.com/web/image/website/1/logo/Blue%20Fox?unique=803cc14' }}" t-attf-alt="{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_name) or 'Blue Fox' }}" style="height:48px; width:auto; display:block; border:0;"/></a></td><td align="right" style="color:#E6EDF3; font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:22px; font-weight:800;">Suivi</td></tr></tbody></table></td></tr>
+                    <tr><td style="height:4px; line-height:4px; background-color:#5CB85C;">&#160;</td></tr>
+                    <tr><td style="padding:24px; font-family:'Lexend','Segoe UI',Arial,sans-serif;">
+                        <p style="font-size:16px; line-height:26px; color:#374151; margin:0 0 16px 0;">Bonjour <t t-out="object.partner_id.name or ''">Client</t>,</p>
+                        <p style="font-size:16px; line-height:26px; color:#374151; margin:0 0 20px 0;">
+                            Suite &#224; votre rendez-vous <strong><t t-out="object.type_id.name or ''"/></strong>,
+                            nous vous remercions de votre confiance.
+                        </p>
+                        <p style="font-size:16px; line-height:26px; color:#374151; margin:0 0 20px 0;">
+                            Si des &#233;tapes suivantes ont &#233;t&#233; convenues, nous vous enverrons les d&#233;tails sous peu.
+                            Vous pouvez &#233;galement r&#233;server un nouveau rendez-vous en tout temps.
+                        </p>
+                        <p style="text-align:center; margin:24px 0 16px 0;">
+                            <a t-attf-href="{{ object.get_base_url() }}/appointment" t-attf-style="background-color:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_primary) or brand_primary }}; color:#ffffff; padding:12px 32px; text-decoration:none; border-radius:6px; font-weight:600; font-size:14px; display:inline-block;">Prendre un autre rendez-vous</a>
+                        </p>
+                        <p style="font-size:13px; line-height:20px; color:#6B7280; margin:16px 0 0 0;">Pour toute question : <a t-attf-href="mailto:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_support_email) or 'service@example.com' }}" t-attf-style="color:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_primary) or brand_primary }}; text-decoration:none;"><t t-out="(object.type_id.company_id and object.type_id.company_id.appointment_brand_support_email) or 'service@example.com'"/></a> | <a t-attf-href="tel:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_support_phone) or '+15555555555' }}" t-attf-style="color:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_primary) or brand_primary }}; text-decoration:none;"><t t-out="(object.type_id.company_id and object.type_id.company_id.appointment_brand_support_phone_display) or '555-555-5555'"/></a></p>
+                    </td></tr>
+                    <tr><td style="height:1px; line-height:1px; background-color:#E5E7EB;">&#160;</td></tr>
+                    <tr><td style="padding:16px 24px 24px 24px; background-color:#FFFFFF; border-radius:0 0 12px 12px;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tbody><tr><td style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:12px; color:#6B7280;"><strong t-attf-style="color:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_dark) or brand_dark }};">Rendez-vous par <t t-out="(object.type_id.company_id and object.type_id.company_id.appointment_brand_name) or 'Blue Fox'"/></strong><br/><t t-out="(object.type_id.company_id and object.type_id.company_id.appointment_brand_tagline) or 'Solutions éthiques et souveraines pour vos données.'"/></td><td align="right" style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:12px; color:#9CA3AF;"><a t-attf-href="{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_privacy_url) or 'https://www.bluefoxconsultant.com/r/politique-de-confidentialite' }}" style="color:#9CA3AF; text-decoration:underline;">Confidentialit&#233;</a> | <a t-attf-href="{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_terms_url) or 'https://www.bluefoxconsultant.com/r/termes-et-conditions' }}" style="color:#9CA3AF; text-decoration:underline;">Conditions</a></td></tr></tbody></table></td></tr>
+                </tbody>
+            </table>
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px; max-width:600px; margin:12px auto 0;"><tbody><tr><td t-attf-style="height:3px; line-height:3px; background-color:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_primary) or brand_primary }}; width:50%;">&#160;</td><td t-attf-style="height:3px; line-height:3px; background-color:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_dark) or brand_dark }}; width:50%;">&#160;</td></tr></tbody></table>
+        </td></tr></tbody></table>
+    </td></tr></tbody>
+</table>
+]]></field>
+        </record>
+
+        <!-- ============================================================ -->
+        <!-- ORGANIZER NOTIFICATION -sent to the BF employee on confirm  -->
+        <!-- ============================================================ -->
+        <record id="mail_template_organizer_new_booking" model="mail.template">
+            <field name="name">Rendez-vous : Notification organisateur</field>
+            <field name="model_id" ref="resource_booking.model_resource_booking"/>
+            <field name="subject">{{ object.type_id.name }} | {{ object.partner_id.name }}</field>
+            <field name="email_from">{{ (object.type_id.company_id.email_formatted or '') }}</field>
+            <field name="email_to">{{ object.user_id.partner_id.email or object.user_id.login }}</field>
+            <field name="lang">{{ object.user_id.lang }}</field>
+            <field name="body_html"><![CDATA[
+
+<t t-set="company" t-value="(object.type_id.company_id) or user.company_id"/>
+<t t-set="brand_primary" t-value="(company and company.report_brand_primary) or '#714B67'"/>
+<t t-set="brand_dark" t-value="(company and company.report_brand_dark) or '#212529'"/>
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" t-attf-style="background-color:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_dark) or brand_dark }};">
+    <tbody><tr><td align="center" style="padding:24px;">
+        <table cellspacing="0" cellpadding="0" border="0" width="100%" align="center" role="presentation"><tbody><tr><td><br/>
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px; max-width:600px; margin:0 auto; background-color:#ffffff; border-radius:12px; border:1px solid #e5e7eb; border-collapse:collapse;">
+                <tbody>
+                    <tr><td t-attf-style="background-color:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_dark) or brand_dark }}; padding:16px 24px; border-radius:12px 12px 0 0;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tbody><tr><td align="left"><a t-attf-href="{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_website_url) or 'https://www.bluefoxconsultant.com' }}" style="text-decoration:none;"><img t-attf-src="{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_logo_url) or 'https://www.bluefoxconsultant.com/web/image/website/1/logo/Blue%20Fox?unique=803cc14' }}" t-attf-alt="{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_name) or 'Blue Fox' }}" style="height:48px; width:auto; display:block; border:0;"/></a></td><td align="right" style="color:#E6EDF3; font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:22px; font-weight:800;">Nouveau RDV</td></tr></tbody></table></td></tr>
+                    <tr><td t-attf-style="height:4px; line-height:4px; background-color:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_primary) or brand_primary }};">&#160;</td></tr>
+                    <tr><td style="padding:24px; font-family:'Lexend','Segoe UI',Arial,sans-serif;">
+                        <p style="font-size:16px; line-height:26px; color:#374151; margin:0 0 16px 0;">Bonjour <t t-out="object.user_id.name or ''"/>,</p>
+                        <p style="font-size:16px; line-height:26px; color:#374151; margin:0 0 20px 0;">Un nouveau rendez-vous a &#233;t&#233; pris par <strong><t t-out="object.partner_id.name or ''"/></strong>.</p>
+                        <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:16px 0 20px 0; border:1px solid #e5e7eb; border-radius:8px; border-collapse:separate;"><tbody>
+                            <tr><td style="padding:12px 16px; background-color:#f9fafb; border-bottom:1px solid #e5e7eb; color:#6B7280; font-size:14px; width:35%;">Type</td><td style="padding:12px 16px; background-color:#f9fafb; border-bottom:1px solid #e5e7eb; font-size:14px; font-weight:600; color:#374151;"><t t-out="object.type_id.name or ''"/></td></tr>
+                            <tr><td style="padding:12px 16px; border-bottom:1px solid #e5e7eb; color:#6B7280; font-size:14px;">Client</td><td style="padding:12px 16px; border-bottom:1px solid #e5e7eb; font-size:14px; color:#374151;"><t t-out="object.partner_id.name or ''"/> &lt;<t t-out="object.partner_id.email or ''"/>&gt;</td></tr>
+                            <t t-if="object.partner_id.phone"><tr><td style="padding:12px 16px; border-bottom:1px solid #e5e7eb; color:#6B7280; font-size:14px;">T&#233;l&#233;phone</td><td style="padding:12px 16px; border-bottom:1px solid #e5e7eb; font-size:14px; color:#374151;"><t t-out="object.partner_id.phone or ''"/></td></tr></t>
+                            <tr><td style="padding:12px 16px; border-bottom:1px solid #e5e7eb; color:#6B7280; font-size:14px;">Date</td><td style="padding:12px 16px; border-bottom:1px solid #e5e7eb; font-size:14px; font-weight:600; color:#374151;"><t t-out="object.start_date_local"/></td></tr>
+                            <tr><td style="padding:12px 16px; border-bottom:1px solid #e5e7eb; color:#6B7280; font-size:14px;">Heure</td><td style="padding:12px 16px; border-bottom:1px solid #e5e7eb; font-size:14px; font-weight:600; color:#374151;"><t t-out="object.start_time_local"/></td></tr>
+                            <tr><td style="padding:12px 16px; border-bottom:1px solid #e5e7eb; color:#6B7280; font-size:14px;">Dur&#233;e</td><td style="padding:12px 16px; border-bottom:1px solid #e5e7eb; font-size:14px; color:#374151;"><t t-out="object.get_duration_display()"/></td></tr>
+                            <t t-if="object.videocall_location"><tr><td style="padding:12px 16px; color:#6B7280; font-size:14px;">Vid&#233;o</td><td style="padding:12px 16px; font-size:14px;"><a t-att-href="object.videocall_location" t-attf-style="color:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_primary) or brand_primary }}; text-decoration:none; font-weight:600;">Rejoindre la r&#233;union</a></td></tr></t>
+                        </tbody></table>
+                        <t t-if="object.intake_answer_ids">
+                        <p t-attf-style="font-size:14px; color:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_dark) or brand_dark }}; font-weight:600; margin:24px 0 8px 0;">R&#233;ponses au formulaire</p>
+                        <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:0 0 20px 0; border:1px solid #e5e7eb; border-radius:8px; border-collapse:separate;"><tbody>
+                            <t t-foreach="object.intake_answer_ids" t-as="ans">
+                                <tr><td style="padding:10px 16px; color:#6B7280; font-size:13px; width:35%; border-bottom:1px solid #e5e7eb;"><t t-out="ans.field_name or ''"/></td><td style="padding:10px 16px; color:#374151; font-size:13px; border-bottom:1px solid #e5e7eb;"><t t-out="ans.value or ''"/></td></tr>
+                            </t>
+                        </tbody></table>
+                        </t>
+                        <p style="text-align:center; margin:24px 0 16px 0;">
+                            <a t-attf-href="{{ object.get_base_url() }}/odoo/all-bookings/{{ object.id }}" t-attf-style="background-color:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_primary) or brand_primary }}; color:#ffffff; padding:12px 32px; text-decoration:none; border-radius:6px; font-weight:600; font-size:14px; display:inline-block;">Ouvrir dans Odoo</a>
+                        </p>
+                    </td></tr>
+                    <tr><td style="height:1px; line-height:1px; background-color:#E5E7EB;">&#160;</td></tr>
+                    <tr><td style="padding:16px 24px 24px 24px; background-color:#FFFFFF; border-radius:0 0 12px 12px;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tbody><tr><td style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:12px; color:#6B7280;"><strong t-attf-style="color:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_dark) or brand_dark }};">Notification interne <t t-out="(object.type_id.company_id and object.type_id.company_id.appointment_brand_name) or 'Blue Fox'"/></strong></td></tr></tbody></table></td></tr>
+                </tbody>
+            </table>
+        </td></tr></tbody></table>
+    </td></tr></tbody>
+</table>
+]]></field>
+        </record>
+
+        <!-- Keep old reminder template as alias -->
+        <record id="mail_template_appointment_reminder" model="mail.template">
+            <field name="name">Rendez-vous : Rappel (ancien)</field>
+            <field name="model_id" ref="resource_booking.model_resource_booking"/>
+            <field name="subject">{{ object.type_id.name }} | {{ object.partner_id.name }}</field>
+            <field name="email_from">{{ (object.user_id.email_formatted or object.type_id.company_id.email_formatted or '') }}</field>
+            <field name="email_to">{{ object.partner_id.email }}</field>
+            <field name="lang">{{ object.partner_id.lang }}</field>
+            <field name="body_html"><![CDATA[
+<t t-set="company" t-value="(object.type_id.company_id) or user.company_id"/>
+<t t-set="brand_primary" t-value="(company and company.report_brand_primary) or '#714B67'"/>
+<t t-set="brand_dark" t-value="(company and company.report_brand_dark) or '#212529'"/>
+<p>Ce mod&#232;le est remplac&#233; par les rappels planifi&#233;s. Voir Rendez-vous &gt; Configuration &gt; Mod&#232;les de courriel.</p>]]></field>
+        </record>
+
+        <!-- ============================================================ -->
+        <!-- CANCELLATION -to client                                     -->
+        <!-- ============================================================ -->
+        <record id="mail_template_appointment_cancellation" model="mail.template">
+            <field name="name">Rendez-vous : Annulation (client)</field>
+            <field name="model_id" ref="resource_booking.model_resource_booking"/>
+            <field name="subject">{{ object.type_id.name }} | {{ object.partner_id.name }}</field>
+            <field name="email_from">{{ (object.user_id.email_formatted or object.type_id.company_id.email_formatted or '') }}</field>
+            <field name="email_to">{{ object.partner_id.email }}</field>
+            <field name="lang">{{ object.partner_id.lang }}</field>
+            <field name="body_html"><![CDATA[
+
+<t t-set="company" t-value="(object.type_id.company_id) or user.company_id"/>
+<t t-set="brand_primary" t-value="(company and company.report_brand_primary) or '#714B67'"/>
+<t t-set="brand_dark" t-value="(company and company.report_brand_dark) or '#212529'"/>
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" t-attf-style="background-color:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_dark) or brand_dark }};">
+    <tbody><tr><td align="center" style="padding:24px;">
+        <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px; max-width:600px; margin:0 auto; background-color:#ffffff; border-radius:12px; border:1px solid #e5e7eb; border-collapse:collapse;">
+            <tbody>
+                <tr><td t-attf-style="background-color:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_dark) or brand_dark }}; padding:16px 24px; border-radius:12px 12px 0 0;">
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tbody><tr>
+                        <td align="left" style="color:#FFFFFF; font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:16px; font-weight:600;">
+                            <a t-attf-href="{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_website_url) or 'https://www.bluefoxconsultant.com' }}" style="text-decoration:none;">
+                                <img t-attf-src="{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_logo_url) or 'https://www.bluefoxconsultant.com/web/image/website/1/logo/Blue%20Fox?unique=803cc14' }}" t-attf-alt="{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_name) or 'Blue Fox' }}" style="height:48px; width:auto; display:block; border:0;"/>
+                            </a>
+                        </td>
+                        <td align="right" style="color:#E6EDF3; font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:22px; font-weight:800;">Annulation</td>
+                    </tr></tbody></table>
+                </td></tr>
+                <tr><td t-attf-style="height:4px; line-height:4px; background-color:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_primary) or brand_primary }};">&#160;</td></tr>
+                <tr><td style="padding:24px; font-family:'Lexend','Segoe UI',Arial,sans-serif;">
+                    <p style="font-size:16px; line-height:26px; color:#374151; margin:0 0 16px 0;">
+                        Bonjour <t t-out="object.partner_id.name or ''">Client</t>,
+                    </p>
+                    <p style="font-size:16px; line-height:26px; color:#374151; margin:0 0 20px 0;">
+                        Votre rendez-vous a &#233;t&#233; annul&#233;.
+                    </p>
+                    <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:16px 0 20px 0; border:1px solid #e5e7eb; border-radius:8px; border-collapse:separate;">
+                        <tbody>
+                            <tr>
+                                <td style="padding:12px 16px; background-color:#f9fafb; border-bottom:1px solid #e5e7eb; color:#6B7280; font-size:14px; width:35%;">Type</td>
+                                <td style="padding:12px 16px; background-color:#f9fafb; border-bottom:1px solid #e5e7eb; font-size:14px; font-weight:600; color:#374151;"><t t-out="object.type_id.name or ''"/></td>
+                            </tr>
+                            <t t-if="object.start">
+                                <tr>
+                                    <td style="padding:12px 16px; border-bottom:1px solid #e5e7eb; color:#6B7280; font-size:14px;">Date pr&#233;vue</td>
+                                    <td style="padding:12px 16px; border-bottom:1px solid #e5e7eb; font-size:14px; font-weight:600; color:#374151;"><t t-out="object.start_date_local"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="padding:12px 16px; color:#6B7280; font-size:14px; border-bottom:1px solid #e5e7eb;">Heure pr&#233;vue</td>
+                                    <td style="padding:12px 16px; font-size:14px; font-weight:600; color:#374151; border-bottom:1px solid #e5e7eb;"><t t-out="object.start_time_local"/></td>
+                                </tr>
+                            </t>
+                            <t t-if="object.cancellation_reason">
+                                <tr>
+                                    <td style="padding:12px 16px; color:#6B7280; font-size:14px; vertical-align:top;">Raison</td>
+                                    <td style="padding:12px 16px; font-size:14px; color:#374151; white-space:pre-wrap;"><t t-out="object.cancellation_reason"/></td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                    <p style="text-align:center; margin:24px 0 16px 0;">
+                        <a t-attf-href="{{ object.get_base_url() }}/appointment"
+                           t-attf-style="background-color:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_primary) or brand_primary }}; color:#ffffff; padding:12px 32px; text-decoration:none; border-radius:6px; font-weight:600; font-size:14px; display:inline-block;">
+                            Prendre un nouveau rendez-vous
+                        </a>
+                    </p>
+                    <p style="font-size:13px; line-height:20px; color:#6B7280; margin:16px 0 0 0;">
+                        Pour toute question, contactez-nous &#224;
+                        <a t-attf-href="mailto:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_support_email) or 'service@example.com' }}" t-attf-style="color:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_primary) or brand_primary }}; text-decoration:none;"><t t-out="(object.type_id.company_id and object.type_id.company_id.appointment_brand_support_email) or 'service@example.com'"/></a>
+                        ou appelez le
+                        <a t-attf-href="tel:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_support_phone) or '+15555555555' }}" t-attf-style="color:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_primary) or brand_primary }}; text-decoration:none;"><t t-out="(object.type_id.company_id and object.type_id.company_id.appointment_brand_support_phone_display) or '555-555-5555'"/></a>.
+                    </p>
+                </td></tr>
+                <tr><td style="height:1px; line-height:1px; background-color:#E5E7EB;">&#160;</td></tr>
+                <tr><td style="padding:16px 24px 24px 24px; background-color:#FFFFFF; border-radius:0 0 12px 12px;">
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tbody><tr>
+                        <td style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:12px; color:#6B7280;">
+                            <strong t-attf-style="color:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_dark) or brand_dark }};">Rendez-vous par <t t-out="(object.type_id.company_id and object.type_id.company_id.appointment_brand_name) or 'Blue Fox'"/></strong><br/>
+                            <t t-out="(object.type_id.company_id and object.type_id.company_id.appointment_brand_tagline) or 'Solutions éthiques et souveraines pour vos données.'"/>
+                        </td>
+                        <td align="right" style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:12px; color:#9CA3AF;">
+                            <a t-attf-href="{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_privacy_url) or 'https://www.bluefoxconsultant.com/r/politique-de-confidentialite' }}" style="color:#9CA3AF; text-decoration:underline;">Confidentialit&#233;</a>
+                            <span style="color:#9CA3AF;"> | </span>
+                            <a t-attf-href="{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_terms_url) or 'https://www.bluefoxconsultant.com/r/termes-et-conditions' }}" style="color:#9CA3AF; text-decoration:underline;">Conditions</a>
+                        </td>
+                    </tr></tbody></table>
+                </td></tr>
+            </tbody>
+        </table>
+        <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px; max-width:600px; margin:12px auto 0;">
+            <tbody><tr>
+                <td t-attf-style="height:3px; line-height:3px; background-color:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_primary) or brand_primary }}; width:50%;">&#160;</td>
+                <td t-attf-style="height:3px; line-height:3px; background-color:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_dark) or brand_dark }}; width:50%;">&#160;</td>
+            </tr></tbody>
+        </table>
+    </td></tr></tbody>
+</table>
+]]></field>
+        </record>
+
+        <!-- ============================================================ -->
+        <!-- CANCELLATION -to organizer                                  -->
+        <!-- ============================================================ -->
+        <record id="mail_template_organizer_cancellation" model="mail.template">
+            <field name="name">Rendez-vous : Annulation (organisateur)</field>
+            <field name="model_id" ref="resource_booking.model_resource_booking"/>
+            <field name="subject">{{ object.type_id.name }} | {{ object.partner_id.name }}</field>
+            <field name="email_from">{{ (object.type_id.company_id.email_formatted or '') }}</field>
+            <field name="email_to">{{ object.user_id.partner_id.email or object.user_id.email }}</field>
+            <field name="lang">{{ object.user_id.lang }}</field>
+            <field name="body_html"><![CDATA[
+
+<t t-set="company" t-value="(object.type_id.company_id) or user.company_id"/>
+<t t-set="brand_primary" t-value="(company and company.report_brand_primary) or '#714B67'"/>
+<t t-set="brand_dark" t-value="(company and company.report_brand_dark) or '#212529'"/>
+<div style="font-family:'Lexend','Segoe UI',Arial,sans-serif; max-width:600px; margin:0 auto; padding:24px;">
+    <h2 t-attf-style="color:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_dark) or brand_dark }}; margin:0 0 16px 0;">Rendez-vous annul&#233;</h2>
+    <p style="color:#374151; font-size:14px; line-height:22px;">
+        Le rendez-vous suivant a &#233;t&#233; annul&#233; par le client (ou via le lien d'annulation public) :
+    </p>
+    <table cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:12px 0; border:1px solid #e5e7eb; border-radius:8px; border-collapse:separate;">
+        <tr><td style="padding:10px 14px; background-color:#f9fafb; border-bottom:1px solid #e5e7eb; color:#6B7280; font-size:13px; width:30%;">Client</td>
+            <td style="padding:10px 14px; background-color:#f9fafb; border-bottom:1px solid #e5e7eb; font-size:13px; color:#374151;"><t t-out="object.partner_id.name or ''"/> &lt;<t t-out="object.partner_id.email or ''"/>&gt;</td></tr>
+        <tr><td style="padding:10px 14px; border-bottom:1px solid #e5e7eb; color:#6B7280; font-size:13px;">Type</td>
+            <td style="padding:10px 14px; border-bottom:1px solid #e5e7eb; font-size:13px; color:#374151;"><t t-out="object.type_id.name or ''"/></td></tr>
+        <t t-if="object.start">
+            <tr><td style="padding:10px 14px; border-bottom:1px solid #e5e7eb; color:#6B7280; font-size:13px;">Date pr&#233;vue</td>
+                <td style="padding:10px 14px; border-bottom:1px solid #e5e7eb; font-size:13px; color:#374151;"><t t-out="(object.start_date_local + ' ' + object.start_time_local)"/></td></tr>
+        </t>
+        <tr><td style="padding:10px 14px; color:#6B7280; font-size:13px; border-bottom:1px solid #e5e7eb;">Dur&#233;e</td>
+            <td style="padding:10px 14px; font-size:13px; color:#374151; border-bottom:1px solid #e5e7eb;"><t t-out="'%g h' % (object.duration or 0)"/></td></tr>
+        <t t-if="object.cancellation_reason">
+            <tr><td style="padding:10px 14px; color:#6B7280; font-size:13px; vertical-align:top;">Raison</td>
+                <td style="padding:10px 14px; font-size:13px; color:#374151; white-space:pre-wrap;"><t t-out="object.cancellation_reason"/></td></tr>
+        </t>
+    </table>
+    <p style="color:#6B7280; font-size:12px; margin-top:16px;">
+        Le cr&#233;neau est libre &#224; nouveau dans votre agenda.
+    </p>
+</div>
+]]></field>
+        </record>
+
+    </data>
+</odoo>

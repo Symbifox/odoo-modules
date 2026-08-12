@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Form View -->
+    <record id="corporate_director_view_form" model="ir.ui.view">
+        <field name="name">corporate.director.form</field>
+        <field name="model">corporate.director</field>
+        <field name="arch" type="xml">
+            <form string="Administrateur">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="partner_id" placeholder="Sélectionner un administrateur..."/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Nomination">
+                            <field name="appointment_date"/>
+                            <field name="appointment_resolution_id"/>
+                            <field name="domicile" placeholder="Ville, Province, Pays"/>
+                        </group>
+                        <group string="Statut">
+                            <field name="is_active"/>
+                            <field name="end_date"/>
+                            <field name="end_reason" invisible="not end_date"/>
+                            <field name="end_resolution_id" invisible="not end_date"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- List View -->
+    <record id="corporate_director_view_list" model="ir.ui.view">
+        <field name="name">corporate.director.list</field>
+        <field name="model">corporate.director</field>
+        <field name="arch" type="xml">
+            <list string="Administrateurs"
+                  decoration-muted="not is_active"
+                  decoration-success="is_active">
+                <field name="partner_id"/>
+                <field name="appointment_date"/>
+                <field name="end_date"/>
+                <field name="domicile" optional="show"/>
+                <field name="is_active" widget="boolean_toggle"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="corporate_director_view_search" model="ir.ui.view">
+        <field name="name">corporate.director.search</field>
+        <field name="model">corporate.director</field>
+        <field name="arch" type="xml">
+            <search string="Rechercher des administrateurs">
+                <field name="partner_id"/>
+                <separator/>
+                <filter string="Actifs" name="active_directors"
+                        domain="[('is_active', '=', True)]"/>
+                <filter string="Anciens" name="former_directors"
+                        domain="[('is_active', '=', False)]"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="corporate_director_action" model="ir.actions.act_window">
+        <field name="name">Registre des administrateurs</field>
+        <field name="res_model">corporate.director</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="corporate_director_view_search"/>
+        <field name="context">{'search_default_active_directors': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Ajouter votre premier administrateur
+            </p>
+        </field>
+    </record>
+
+</odoo>

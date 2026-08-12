@@ -1,0 +1,340 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Report action — auto-binds to the Print menu on letter.document -->
+    <record id="action_report_letter_document" model="ir.actions.report">
+        <field name="name">Lettre</field>
+        <field name="model">letter.document</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">bf_letter_writer.report_letter_document</field>
+        <field name="report_file">bf_letter_writer.report_letter_document</field>
+        <field name="print_report_name">'%s_%s' % (object.reference, (object.name or '').replace(' ', '_'))</field>
+        <field name="binding_model_id" ref="model_letter_document"/>
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="paperformat_letter"/>
+    </record>
+
+    <!-- QWeb template — branded official letter.
+         banner / classic  : generated letterhead chrome (locked)
+         image             : full-page background from company.letterhead_image
+         pdf_overlay        : chrome-less; body stamped onto company.letterhead_pdf
+         plain             : chrome-less; body offset for pre-printed paper -->
+    <template id="report_letter_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-set="company" t-value="doc.company_id"/>
+                <t t-set="primary" t-value="company.report_brand_primary or '#714B67'"/>
+                <t t-set="dark" t-value="company.report_brand_dark or '#212529'"/>
+                <t t-set="mode" t-value="doc.letterhead_style"/>
+                <t t-set="generated" t-value="mode in ('banner', 'classic')"/>
+                <t t-set="top_mm" t-value="company.letter_body_top_margin or 45"/>
+                <t t-set="bottom_mm" t-value="company.letter_body_bottom_margin or 25"/>
+                <div class="article" style="padding: 0 !important; margin: 0 !important;">
+                    <link rel="stylesheet" href="/bf_lexend/static/src/scss/lexend_report.css"/>
+                    <style>
+                        .container, .o_body_html, body, #wrapwrap, main, .article {
+                            max-width: 100% !important;
+                            width: 100% !important;
+                            padding-left: 0 !important;
+                            padding-right: 0 !important;
+                            margin-left: 0 !important;
+                            margin-right: 0 !important;
+                        }
+                        .letter-page {
+                            font-family: "Lexend", system-ui, -apple-system, sans-serif;
+                            font-size: 11pt;
+                            line-height: 1.6;
+                            color: <t t-esc="dark"/>;
+                            position: relative;
+                            min-height: 255mm;
+                        }
+
+                        /* ── Banner header (mode = banner) ── */
+                        .letter-banner {
+                            background: <t t-esc="dark"/>;
+                            padding: 26pt 32pt 22pt 32pt;
+                            display: table;
+                            width: 100%;
+                        }
+                        .letter-banner .banner-logo {
+                            display: table-cell;
+                            vertical-align: middle;
+                            width: 110px;
+                            padding-right: 22pt;
+                        }
+                        .letter-banner .banner-logo img {
+                            max-height: 58px;
+                            max-width: 100px;
+                        }
+                        .letter-banner .banner-content {
+                            display: table-cell;
+                            vertical-align: middle;
+                        }
+                        .letter-banner h1 {
+                            font-size: 16pt;
+                            font-weight: 600;
+                            color: #ffffff;
+                            margin: 0 0 2pt 0;
+                        }
+                        .letter-banner .banner-note {
+                            font-size: 9.5pt;
+                            color: rgba(255,255,255,0.7);
+                            margin: 0 0 4pt 0;
+                        }
+                        .letter-banner .banner-address {
+                            font-size: 9pt;
+                            color: rgba(255,255,255,0.6);
+                            margin: 0;
+                            line-height: 1.4;
+                        }
+
+                        /* ── Classic header (mode = classic) ── */
+                        .letter-classic {
+                            padding: 24pt 32pt 14pt 32pt;
+                            display: table;
+                            width: 100%;
+                        }
+                        .letter-classic .classic-logo {
+                            display: table-cell;
+                            vertical-align: middle;
+                            width: 110px;
+                            padding-right: 22pt;
+                        }
+                        .letter-classic .classic-logo img {
+                            max-height: 56px;
+                            max-width: 100px;
+                        }
+                        .letter-classic .classic-content {
+                            display: table-cell;
+                            vertical-align: middle;
+                        }
+                        .letter-classic h1 {
+                            font-size: 15pt;
+                            font-weight: 600;
+                            color: <t t-esc="dark"/>;
+                            margin: 0 0 2pt 0;
+                        }
+                        .letter-classic .classic-note {
+                            font-size: 9.5pt;
+                            color: #666;
+                            margin: 0 0 2pt 0;
+                        }
+                        .letter-classic .classic-address {
+                            font-size: 9pt;
+                            color: #888;
+                            margin: 0;
+                            line-height: 1.4;
+                        }
+
+                        /* Accent bar — generated modes only */
+                        .letter-accent-bar {
+                            height: 4px;
+                            background: <t t-esc="primary"/>;
+                            margin: 0 0 22pt 0;
+                            width: 100%;
+                        }
+
+                        /* Full-page background — image mode */
+                        .letter-bg {
+                            position: absolute;
+                            top: 0;
+                            left: 0;
+                            width: 100%;
+                            height: 277mm;
+                            z-index: -1;
+                        }
+
+                        /* ── Content area ── */
+                        .letter-content {
+                            padding: 0 32pt;
+                        }
+                        /* Chrome-less modes: offset the body to clear the
+                           uploaded / pre-printed letterhead. */
+                        .letter-content-plain {
+                            padding-top: <t t-esc="top_mm"/>mm;
+                            padding-bottom: <t t-esc="bottom_mm"/>mm;
+                        }
+                        .letter-meta {
+                            display: table;
+                            width: 100%;
+                            margin-bottom: 20pt;
+                        }
+                        .letter-recipient {
+                            display: table-cell;
+                            vertical-align: top;
+                            white-space: pre-line;
+                            font-size: 10.5pt;
+                        }
+                        .letter-dateref {
+                            display: table-cell;
+                            vertical-align: top;
+                            text-align: right;
+                            font-size: 10.5pt;
+                            width: 200px;
+                        }
+                        .letter-dateref .ref {
+                            color: <t t-esc="primary"/>;
+                            font-weight: 600;
+                            font-size: 9.5pt;
+                            letter-spacing: 0.5pt;
+                        }
+                        .letter-salutation {
+                            margin-bottom: 12pt;
+                        }
+                        .letter-body {
+                            margin-bottom: 16pt;
+                            line-height: 1.7;
+                        }
+                        .letter-closing {
+                            margin-bottom: 6pt;
+                        }
+
+                        /* ── Signature ── */
+                        .letter-signature {
+                            margin-top: 8pt;
+                            page-break-inside: avoid;
+                            width: 280px;
+                        }
+                        .letter-signature img {
+                            max-height: 64px;
+                            max-width: 240px;
+                            display: block;
+                        }
+                        .letter-sig-line {
+                            border-bottom: 1.5px solid <t t-esc="dark"/>;
+                            height: 48pt;
+                            width: 240px;
+                        }
+                        .letter-sig-name {
+                            padding-top: 4pt;
+                            font-size: 10.5pt;
+                            font-weight: 600;
+                            color: <t t-esc="dark"/>;
+                        }
+                        .letter-sig-role {
+                            font-size: 9.5pt;
+                            color: #888;
+                        }
+
+                        /* ── Footer — generated modes only ── */
+                        .letter-footer {
+                            position: absolute;
+                            bottom: 1cm;
+                            left: 0;
+                            right: 0;
+                            padding: 8pt 32pt 0 32pt;
+                            border-top: 1px solid #dde0e4;
+                            font-size: 8.5pt;
+                            color: #aaa;
+                            line-height: 1.4;
+                        }
+                    </style>
+
+                    <div class="letter-page">
+
+                        <!-- Full-page background image (mode = image) -->
+                        <t t-if="mode == 'image' and company.letterhead_image">
+                            <img class="letter-bg"
+                                 t-att-src="image_data_uri(company.letterhead_image)"
+                                 alt="En-tête"/>
+                        </t>
+
+                        <!-- Generated header — locked branded chrome -->
+                        <t t-if="mode == 'classic'">
+                            <div class="letter-classic">
+                                <div class="classic-logo">
+                                    <img t-att-src="image_data_uri(company.logo)" alt="Logo"/>
+                                </div>
+                                <div class="classic-content">
+                                    <h1 t-out="company.name"/>
+                                    <p t-if="company.letter_header_note" class="classic-note"
+                                       t-out="company.letter_header_note"/>
+                                    <p class="classic-address">
+                                        <t t-out="company.street or ''"/>
+                                        <t t-if="company.street2"><br/><t t-out="company.street2"/></t>
+                                        <br/>
+                                        <t t-out="' '.join(filter(None, [company.zip, company.city, company.state_id.name if company.state_id else '']))"/>
+                                        <t t-if="company.country_id"><br/><t t-out="company.country_id.name"/></t>
+                                    </p>
+                                </div>
+                            </div>
+                        </t>
+                        <t t-if="mode == 'banner'">
+                            <div class="letter-banner">
+                                <div class="banner-logo">
+                                    <img t-att-src="image_data_uri(company.logo)" alt="Logo"/>
+                                </div>
+                                <div class="banner-content">
+                                    <h1 t-out="company.name"/>
+                                    <p t-if="company.letter_header_note" class="banner-note"
+                                       t-out="company.letter_header_note"/>
+                                    <p class="banner-address">
+                                        <t t-out="' '.join(filter(None, [company.street, company.street2]))"/>
+                                        <t t-if="company.street or company.street2"> · </t>
+                                        <t t-out="' '.join(filter(None, [company.zip, company.city]))"/>
+                                        <t t-if="company.phone"> · <t t-out="company.phone"/></t>
+                                        <t t-if="company.email"> · <t t-out="company.email"/></t>
+                                    </p>
+                                </div>
+                            </div>
+                        </t>
+                        <t t-if="generated">
+                            <div class="letter-accent-bar"/>
+                        </t>
+
+                        <!-- Body content — rendered for every mode -->
+                        <div t-att-class="'letter-content' if generated else 'letter-content letter-content-plain'">
+
+                            <div class="letter-meta">
+                                <div class="letter-recipient"><t t-out="doc.recipient_address or doc.recipient_name or doc.partner_id.name"/></div>
+                                <div class="letter-dateref">
+                                    <div><span t-field="doc.letter_date" t-options='{"format": "d MMMM yyyy"}'/></div>
+                                    <div class="ref" t-out="doc.reference"/>
+                                </div>
+                            </div>
+
+                            <div t-if="doc.salutation" class="letter-salutation" t-out="doc.salutation"/>
+
+                            <div class="letter-body">
+                                <t t-out="doc.body_html"/>
+                            </div>
+
+                            <div t-if="doc.closing" class="letter-closing" t-out="doc.closing"/>
+
+                            <div class="letter-signature">
+                                <t t-if="company.letter_signature_image">
+                                    <img t-att-src="image_data_uri(company.letter_signature_image)" alt="Signature"/>
+                                </t>
+                                <t t-else="">
+                                    <div class="letter-sig-line"/>
+                                </t>
+                                <div t-if="doc.signatory_id" class="letter-sig-name" t-out="doc.signatory_id.name"/>
+                                <div t-if="doc.signatory_function or (doc.signatory_id and doc.signatory_id.function)"
+                                     class="letter-sig-role"
+                                     t-out="doc.signatory_function or doc.signatory_id.function"/>
+                            </div>
+
+                        </div>
+
+                        <!-- Footer — generated modes only (uploaded/pre-printed
+                             letterheads carry their own footer). -->
+                        <t t-if="generated">
+                            <div class="letter-footer">
+                                <t t-if="company.letter_footer_html">
+                                    <t t-out="company.letter_footer_html"/>
+                                </t>
+                                <t t-else="">
+                                    <t t-out="company.name"/>
+                                    <t t-if="company.phone"> · <t t-out="company.phone"/></t>
+                                    <t t-if="company.email"> · <t t-out="company.email"/></t>
+                                    <t t-if="company.website"> · <t t-out="company.website"/></t>
+                                </t>
+                            </div>
+                        </t>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+
+</odoo>

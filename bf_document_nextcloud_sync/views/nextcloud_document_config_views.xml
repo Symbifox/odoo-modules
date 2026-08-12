@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- List View -->
+    <record id="view_nextcloud_document_config_tree" model="ir.ui.view">
+        <field name="name">nextcloud.document.config.list</field>
+        <field name="model">nextcloud.document.config</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="nextcloud_base_url"/>
+                <field name="nextcloud_user"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="last_sync"/>
+                <field name="last_sync_status" widget="badge"
+                    decoration-success="last_sync_status == 'success'"
+                    decoration-danger="last_sync_status == 'error'"
+                    decoration-warning="last_sync_status == 'partial'"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_nextcloud_document_config_form" model="ir.ui.view">
+        <field name="name">nextcloud.document.config.form</field>
+        <field name="model">nextcloud.document.config</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_test_connection" type="object"
+                        string="Tester la connexion" class="btn-primary"/>
+                </header>
+                <sheet>
+                    <widget name="web_ribbon" title="Archive" bg_color="text-bg-danger"
+                        invisible="active"/>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name" placeholder="ex: Nextcloud Blue Fox"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group name="nextcloud" string="Configuration Nextcloud">
+                            <field name="nextcloud_base_url"
+                                placeholder="https://nextcloud.example.com"/>
+                            <field name="webdav_path"
+                                placeholder="/remote.php/dav/files/"/>
+                            <field name="nextcloud_user"/>
+                            <field name="nextcloud_app_password" password="True"
+                                groups="base.group_system"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="active"/>
+                        </group>
+                        <group name="sharing" string="Parametres de partage">
+                            <field name="default_share_expiry_days"/>
+                            <field name="share_password_enabled"/>
+                        </group>
+                    </group>
+                    <group name="tls" string="Securite TLS" groups="base.group_system">
+                        <group>
+                            <field name="ca_bundle_path"
+                                placeholder="/etc/ssl/certs/ca-certificates.crt"/>
+                            <field name="allow_insecure"/>
+                        </group>
+                    </group>
+                    <group name="status" string="Statut" invisible="not last_sync">
+                        <group>
+                            <field name="last_sync"/>
+                            <field name="last_sync_status" widget="badge"
+                                decoration-success="last_sync_status == 'success'"
+                                decoration-danger="last_sync_status == 'error'"
+                                decoration-warning="last_sync_status == 'partial'"/>
+                        </group>
+                        <group>
+                            <field name="last_sync_message"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_nextcloud_document_config_search" model="ir.ui.view">
+        <field name="name">nextcloud.document.config.search</field>
+        <field name="model">nextcloud.document.config</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="nextcloud_user"/>
+                <filter name="active" string="Actifs" domain="[('active', '=', True)]"/>
+                <filter name="inactive" string="Archives" domain="[('active', '=', False)]"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_nextcloud_document_config" model="ir.actions.act_window">
+        <field name="name">Configurations Nextcloud Documents</field>
+        <field name="res_model">nextcloud.document.config</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_nextcloud_document_config_search"/>
+        <field name="context">{'search_default_active': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Configurer une connexion Nextcloud pour les documents
+            </p>
+            <p>
+                Ajoutez une configuration pour connecter vos documents Odoo
+                au stockage Nextcloud via WebDAV.
+            </p>
+        </field>
+    </record>
+
+</odoo>

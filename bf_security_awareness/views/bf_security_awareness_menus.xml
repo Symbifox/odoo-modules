@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Single app for everyone: internal users see only their own self-service
+         entries (dashboard + report button); operators/managers additionally see
+         the campaign/triage/clawback/config entries, each gated by its group. -->
+    <menuitem id="menu_secaware_root"
+              name="Sensibilisation"
+              web_icon="bf_security_awareness,static/description/icon.png"
+              groups="base.group_user"
+              sequence="55"/>
+
+    <menuitem id="menu_secaware_campaigns"
+              name="Campagnes"
+              parent="menu_secaware_root"
+              action="bf_phishing_campaign_action"
+              groups="group_bf_secaware_user"
+              sequence="10"/>
+
+    <menuitem id="menu_secaware_results"
+              name="Résultats"
+              parent="menu_secaware_root"
+              action="bf_phishing_result_action"
+              groups="group_bf_secaware_manager"
+              sequence="20"/>
+
+    <menuitem id="menu_secaware_profiles"
+              name="Profils de risque"
+              parent="menu_secaware_root"
+              action="bf_security_profile_action"
+              groups="group_bf_secaware_manager"
+              sequence="30"/>
+
+    <menuitem id="menu_secaware_training_root"
+              name="Formation"
+              parent="menu_secaware_root"
+              groups="group_bf_secaware_user"
+              sequence="40"/>
+
+    <menuitem id="menu_secaware_training_assignments"
+              name="Assignations"
+              parent="menu_secaware_training_root"
+              action="bf_training_assignment_action"
+              groups="group_bf_secaware_user"
+              sequence="10"/>
+
+    <menuitem id="menu_secaware_courses"
+              name="Cours"
+              parent="menu_secaware_training_root"
+              action="slide_channel_action_secaware"
+              groups="group_bf_secaware_user"
+              sequence="20"/>
+
+    <menuitem id="menu_secaware_config"
+              name="Configuration"
+              parent="menu_secaware_root"
+              groups="group_bf_secaware_manager"
+              sequence="90"/>
+
+    <menuitem id="menu_secaware_templates"
+              name="Modèles de leurre"
+              parent="menu_secaware_config"
+              action="bf_phishing_template_action"
+              groups="group_bf_secaware_manager"
+              sequence="10"/>
+
+</odoo>

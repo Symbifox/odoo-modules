@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- bf.email form: one-click create/enrich the sender's contact -->
+    <record id="view_bf_email_form_enrichment" model="ir.ui.view">
+        <field name="name">bf.email.form.enrichment</field>
+        <field name="model">bf.email</field>
+        <field name="inherit_id" ref="bf_email_management.bf_email_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="action_bf_create_or_enrich_contact" type="object"
+                        string="Créer / enrichir le contact" class="btn-secondary"
+                        groups="bf_contact_enrichment.group_bf_contact_enrich"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

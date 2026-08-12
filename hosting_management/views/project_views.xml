@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="project_view_form_inherit_hosting_license" model="ir.ui.view">
+        <field name="name">project.project.form.inherit.hosting.license</field>
+        <field name="model">project.project</field>
+        <field name="inherit_id" ref="project.edit_project"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_licenses" type="object"
+                        class="oe_stat_button" icon="fa-key"
+                        invisible="license_seat_count == 0">
+                    <field name="license_seat_count" widget="statinfo" string="Licences"/>
+                </button>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

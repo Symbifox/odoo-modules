@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="hosting_health_daily_snapshot_view_tree" model="ir.ui.view">
+        <field name="name">hosting.health.daily.snapshot.tree</field>
+        <field name="model">hosting.health.daily.snapshot</field>
+        <field name="arch" type="xml">
+            <list decoration-success="uptime_pct >= 99.5"
+                  decoration-warning="uptime_pct &gt;= 95 and uptime_pct &lt; 99.5"
+                  decoration-danger="uptime_pct &lt; 95">
+                <field name="snapshot_date"/>
+                <field name="service_id"/>
+                <field name="partner_id" optional="show"/>
+                <field name="software_id" optional="hide"/>
+                <field name="uptime_pct" widget="percentage" string="Disponibilité"/>
+                <field name="check_count" string="Vérifs"/>
+                <field name="up_count" string="Up" optional="hide"/>
+                <field name="excluded_count" string="Exclues" optional="hide"/>
+                <field name="avg_response_ms" string="Temps moyen (ms)" optional="show"/>
+                <field name="archive_filename" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="hosting_health_daily_snapshot_view_search" model="ir.ui.view">
+        <field name="name">hosting.health.daily.snapshot.search</field>
+        <field name="model">hosting.health.daily.snapshot</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="service_id"/>
+                <field name="partner_id"/>
+                <field name="snapshot_date"/>
+                <filter string="100 % uptime" name="filter_perfect"
+                        domain="[('uptime_pct', '=', 100)]"/>
+                <filter string="Dégradé (&lt; 99.5 %)" name="filter_degraded"
+                        domain="[('uptime_pct', '&lt;', 99.5)]"/>
+                <filter string="Sous SLA (&lt; 95 %)" name="filter_under_sla"
+                        domain="[('uptime_pct', '&lt;', 95)]"/>
+                <separator/>
+                <filter string="30 derniers jours archivés" name="filter_recent"
+                        domain="[('snapshot_date', '&gt;=', (context_today() - relativedelta(days=30)).strftime('%Y-%m-%d'))]"/>
+                <group expand="1" string="Regrouper par">
+                    <filter string="Service" name="group_service"
+                            context="{'group_by': 'service_id'}"/>
+                    <filter string="Client" name="group_partner"
+                            context="{'group_by': 'partner_id'}"/>
+                    <filter string="Mois" name="group_month"
+                            context="{'group_by': 'snapshot_date:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="hosting_health_daily_snapshot_action" model="ir.actions.act_window">
+        <field name="name">Snapshots quotidiens (&gt;30j)</field>
+        <field name="res_model">hosting.health.daily.snapshot</field>
+        <field name="view_mode">list</field>
+        <field name="search_view_id" ref="hosting_health_daily_snapshot_view_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Aucun snapshot quotidien
+            </p>
+            <p>
+                Les snapshots quotidiens consolident les vérifications de santé
+                de plus de 30 jours en une seule entrée par service et par jour
+                (% de disponibilité moyen). Les données brutes sont archivées
+                en 7z sur Nextcloud avant consolidation.
+            </p>
+        </field>
+    </record>
+
+</odoo>

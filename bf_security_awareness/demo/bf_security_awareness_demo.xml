@@ -1,0 +1,690 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- ============================================================ -->
+        <!-- Mock organization + employees (fictional)                    -->
+        <!-- ============================================================ -->
+        <record id="demo_company" model="res.partner">
+            <field name="name">Demitech inc.</field>
+            <field name="is_company" eval="True"/>
+            <field name="email">info@demitech.example</field>
+            <field name="comment">Société fictive utilisée pour la démonstration du module de sensibilisation.</field>
+        </record>
+
+        <record id="demo_emp_alex" model="res.partner">
+            <field name="name">Alex Tremblay</field>
+            <field name="parent_id" ref="demo_company"/>
+            <field name="function">Direction générale</field>
+            <field name="email">alex.tremblay@demitech.example</field>
+        </record>
+        <record id="demo_emp_marie" model="res.partner">
+            <field name="name">Marie Lavoie</field>
+            <field name="parent_id" ref="demo_company"/>
+            <field name="function">Comptabilité</field>
+            <field name="email">marie.lavoie@demitech.example</field>
+        </record>
+        <record id="demo_emp_karim" model="res.partner">
+            <field name="name">Karim Haddad</field>
+            <field name="parent_id" ref="demo_company"/>
+            <field name="function">Finances</field>
+            <field name="email">karim.haddad@demitech.example</field>
+        </record>
+        <record id="demo_emp_julie" model="res.partner">
+            <field name="name">Julie Bélanger</field>
+            <field name="parent_id" ref="demo_company"/>
+            <field name="function">Ressources humaines</field>
+            <field name="email">julie.belanger@demitech.example</field>
+        </record>
+        <record id="demo_emp_simon" model="res.partner">
+            <field name="name">Simon Côté</field>
+            <field name="parent_id" ref="demo_company"/>
+            <field name="function">Ventes</field>
+            <field name="email">simon.cote@demitech.example</field>
+        </record>
+        <record id="demo_emp_nadia" model="res.partner">
+            <field name="name">Nadia Roy</field>
+            <field name="parent_id" ref="demo_company"/>
+            <field name="function">Marketing</field>
+            <field name="email">nadia.roy@demitech.example</field>
+        </record>
+        <record id="demo_emp_louis" model="res.partner">
+            <field name="name">Louis Gagné</field>
+            <field name="parent_id" ref="demo_company"/>
+            <field name="function">Technologies de l'information</field>
+            <field name="email">louis.gagne@demitech.example</field>
+        </record>
+        <record id="demo_emp_chloe" model="res.partner">
+            <field name="name">Chloé Fortin</field>
+            <field name="parent_id" ref="demo_company"/>
+            <field name="function">Service à la clientèle</field>
+            <field name="email">chloe.fortin@demitech.example</field>
+        </record>
+
+        <!-- ============================================================ -->
+        <!-- eLearning course: real cybersecurity content                 -->
+        <!-- ============================================================ -->
+        <record id="demo_channel" model="slide.channel">
+            <field name="name">Sensibilisation à la cybersécurité — Les fondamentaux</field>
+            <field name="description">Reconnaître l'hameçonnage, protéger ses accès et savoir réagir. Parcours court de sensibilisation pour tout le personnel.</field>
+            <field name="channel_type">training</field>
+            <field name="enroll">invite</field>
+            <field name="visibility">connected</field>
+            <field name="is_published" eval="True"/>
+        </record>
+
+        <record id="demo_slide_intro" model="slide.slide">
+            <field name="name">1. Pourquoi la cybersécurité vous concerne</field>
+            <field name="channel_id" ref="demo_channel"/>
+            <field name="slide_category">article</field>
+            <field name="sequence">1</field>
+            <field name="is_published" eval="True"/>
+            <field name="html_content" type="html">
+                <h2>La sécurité, c'est l'affaire de tous</h2>
+                <p>La grande majorité des incidents de sécurité commencent par un geste
+                   humain : un clic sur un mauvais lien, un mot de passe réutilisé, une
+                   pièce jointe ouverte trop vite. La bonne nouvelle : ces gestes
+                   s'apprennent et se corrigent.</p>
+                <p>Ce parcours prend une dizaine de minutes. À la fin, vous saurez :</p>
+                <ul>
+                    <li>repérer un courriel d'hameçonnage avant de cliquer;</li>
+                    <li>créer et protéger des mots de passe robustes;</li>
+                    <li>réagir et signaler correctement un message suspect.</li>
+                </ul>
+            </field>
+        </record>
+
+        <record id="demo_slide_phishing" model="slide.slide">
+            <field name="name">2. Reconnaître l'hameçonnage</field>
+            <field name="channel_id" ref="demo_channel"/>
+            <field name="slide_category">article</field>
+            <field name="sequence">2</field>
+            <field name="is_published" eval="True"/>
+            <field name="html_content" type="html">
+                <h2>Les 6 signaux d'alerte</h2>
+                <ol>
+                    <li><strong>L'urgence.</strong> « Votre compte sera fermé dans 24 h. »
+                        La pression vise à vous faire agir sans réfléchir.</li>
+                    <li><strong>L'expéditeur.</strong> Le nom affiché semble légitime, mais
+                        l'adresse réelle ne correspond pas au domaine officiel.</li>
+                    <li><strong>Le lien.</strong> Survolez-le (sans cliquer) : l'adresse
+                        affichée diffère de la destination réelle.</li>
+                    <li><strong>La demande d'identifiants.</strong> Un service légitime ne
+                        vous demande jamais votre mot de passe par courriel.</li>
+                    <li><strong>Les pièces jointes inattendues.</strong> Facture, bon de
+                        livraison ou « document partagé » que vous n'attendiez pas.</li>
+                    <li><strong>Le ton et la forme.</strong> Fautes, salutations génériques
+                        (« Cher client »), mise en page approximative.</li>
+                </ol>
+                <p><strong>Règle d'or : en cas de doute, on ne clique pas — on vérifie par
+                   un autre canal et on signale.</strong></p>
+            </field>
+        </record>
+
+        <record id="demo_slide_passwords" model="slide.slide">
+            <field name="name">3. Mots de passe et double authentification</field>
+            <field name="channel_id" ref="demo_channel"/>
+            <field name="slide_category">article</field>
+            <field name="sequence">3</field>
+            <field name="is_published" eval="True"/>
+            <field name="html_content" type="html">
+                <h2>Des accès vraiment protégés</h2>
+                <ul>
+                    <li><strong>Une phrase de passe</strong> longue (4 mots ou plus) vaut
+                        mieux qu'un mot court compliqué : « cheval-orange-tunnel-42 ».</li>
+                    <li><strong>Jamais de réutilisation.</strong> Un mot de passe par
+                        service. Un gestionnaire de mots de passe s'en souvient pour vous.</li>
+                    <li><strong>La double authentification (MFA)</strong> ajoute une seconde
+                        preuve. Même si votre mot de passe fuit, le compte reste protégé.</li>
+                    <li><strong>Attention à la fatigue MFA.</strong> Si vous recevez une
+                        demande d'approbation que vous n'avez pas déclenchée, refusez et
+                        signalez : quelqu'un tente peut-être d'entrer.</li>
+                </ul>
+            </field>
+        </record>
+
+        <record id="demo_slide_reporting" model="slide.slide">
+            <field name="name">4. Signaler et réagir</field>
+            <field name="channel_id" ref="demo_channel"/>
+            <field name="slide_category">article</field>
+            <field name="sequence">4</field>
+            <field name="is_published" eval="True"/>
+            <field name="html_content" type="html">
+                <h2>Le bon réflexe : signaler</h2>
+                <p>Signaler un courriel suspect n'est jamais une perte de temps. C'est ce
+                   qui permet à l'équipe TI de protéger tout le monde.</p>
+                <ul>
+                    <li><strong>Vous avez un doute ?</strong> Transférez le message à votre
+                        équipe TI plutôt que de cliquer.</li>
+                    <li><strong>Vous avez cliqué ?</strong> Pas de panique, mais agissez
+                        vite : changez votre mot de passe et prévenez les TI.</li>
+                    <li><strong>Vous avez saisi vos identifiants ?</strong> Changez-les
+                        immédiatement partout où ils étaient réutilisés, et signalez.</li>
+                </ul>
+                <p>Personne n'est blâmé pour avoir signalé. On est blâmé pour avoir caché.</p>
+            </field>
+        </record>
+
+        <record id="demo_slide_quiz" model="slide.slide">
+            <field name="name">5. Quiz : testez vos réflexes</field>
+            <field name="channel_id" ref="demo_channel"/>
+            <field name="slide_category">quiz</field>
+            <field name="sequence">5</field>
+            <field name="is_published" eval="True"/>
+        </record>
+
+        <record id="demo_q1" model="slide.question">
+            <field name="slide_id" ref="demo_slide_quiz"/>
+            <field name="sequence">1</field>
+            <field name="question">Un courriel « urgent » vous demande de confirmer votre mot de passe via un lien. Que faites-vous ?</field>
+        </record>
+        <record id="demo_q1_a1" model="slide.answer">
+            <field name="question_id" ref="demo_q1"/>
+            <field name="sequence">1</field>
+            <field name="text_value">Je ne clique pas et je signale le message à l'équipe TI</field>
+            <field name="is_correct" eval="True"/>
+            <field name="comment">Exactement. Un service légitime ne demande jamais votre mot de passe par courriel.</field>
+        </record>
+        <record id="demo_q1_a2" model="slide.answer">
+            <field name="question_id" ref="demo_q1"/>
+            <field name="sequence">2</field>
+            <field name="text_value">Je clique pour vérifier rapidement avant la fermeture</field>
+            <field name="is_correct" eval="False"/>
+            <field name="comment">C'est précisément ce que l'attaquant veut. L'urgence est un piège.</field>
+        </record>
+        <record id="demo_q1_a3" model="slide.answer">
+            <field name="question_id" ref="demo_q1"/>
+            <field name="sequence">3</field>
+            <field name="text_value">Je saisis mon mot de passe pour confirmer mon identité</field>
+            <field name="is_correct" eval="False"/>
+            <field name="comment">Jamais. Vous donneriez vos accès directement à l'attaquant.</field>
+        </record>
+
+        <record id="demo_q2" model="slide.question">
+            <field name="slide_id" ref="demo_slide_quiz"/>
+            <field name="sequence">2</field>
+            <field name="question">Quelle est la meilleure façon de protéger un compte ?</field>
+        </record>
+        <record id="demo_q2_a1" model="slide.answer">
+            <field name="question_id" ref="demo_q2"/>
+            <field name="sequence">1</field>
+            <field name="text_value">Une phrase de passe unique et la double authentification (MFA)</field>
+            <field name="is_correct" eval="True"/>
+            <field name="comment">Oui : long, unique, et une seconde preuve d'identité.</field>
+        </record>
+        <record id="demo_q2_a2" model="slide.answer">
+            <field name="question_id" ref="demo_q2"/>
+            <field name="sequence">2</field>
+            <field name="text_value">Le même mot de passe partout pour ne pas l'oublier</field>
+            <field name="is_correct" eval="False"/>
+            <field name="comment">Une seule fuite compromettrait alors tous vos comptes.</field>
+        </record>
+        <record id="demo_q2_a3" model="slide.answer">
+            <field name="question_id" ref="demo_q2"/>
+            <field name="sequence">3</field>
+            <field name="text_value">Un mot de passe court mais très compliqué</field>
+            <field name="is_correct" eval="False"/>
+            <field name="comment">La longueur protège bien plus que la complexité d'un mot court.</field>
+        </record>
+
+        <record id="demo_q3" model="slide.question">
+            <field name="slide_id" ref="demo_slide_quiz"/>
+            <field name="sequence">3</field>
+            <field name="question">Vous réalisez que vous avez cliqué sur un lien suspect. Quelle est la bonne réaction ?</field>
+        </record>
+        <record id="demo_q3_a1" model="slide.answer">
+            <field name="question_id" ref="demo_q3"/>
+            <field name="sequence">1</field>
+            <field name="text_value">Je préviens l'équipe TI et je change mon mot de passe</field>
+            <field name="is_correct" eval="True"/>
+            <field name="comment">Parfait. Agir vite et signaler limite les dégâts.</field>
+        </record>
+        <record id="demo_q3_a2" model="slide.answer">
+            <field name="question_id" ref="demo_q3"/>
+            <field name="sequence">2</field>
+            <field name="text_value">Je ne dis rien en espérant qu'il ne se passe rien</field>
+            <field name="is_correct" eval="False"/>
+            <field name="comment">Le silence laisse le temps à l'attaquant d'agir. On signale toujours.</field>
+        </record>
+        <record id="demo_q3_a3" model="slide.answer">
+            <field name="question_id" ref="demo_q3"/>
+            <field name="sequence">3</field>
+            <field name="text_value">J'éteins mon ordinateur et je rentre chez moi</field>
+            <field name="is_correct" eval="False"/>
+            <field name="comment">Éteindre ne règle rien et empêche les TI de réagir à temps.</field>
+        </record>
+
+        <!-- ============================================================ -->
+        <!-- Phishing templates (3 scenarios)                             -->
+        <!-- ============================================================ -->
+        <record id="demo_tpl_m365" model="bf.phishing.template">
+            <field name="name">Microsoft 365 — Expiration du mot de passe</field>
+            <field name="category">credential_harvest</field>
+            <field name="difficulty">easy</field>
+            <field name="landing_mode">credential</field>
+            <field name="capture_field_lengths" eval="True"/>
+            <field name="sender_name">Microsoft 365 — Sécurité du compte</field>
+            <field name="email_from">no-reply@m365-securite.example</field>
+            <field name="subject">Action requise : votre mot de passe expire aujourd'hui</field>
+            <field name="landing_title">Connectez-vous à votre compte Microsoft</field>
+            <field name="training_channel_id" ref="demo_channel"/>
+            <field name="email_body" type="html">
+                <div style="font-family:Segoe UI,Arial,sans-serif;font-size:14px;color:#222;">
+                    <p>Bonjour,</p>
+                    <p>Votre mot de passe Microsoft 365 <strong>expire aujourd'hui</strong>.
+                       Pour éviter la suspension de votre boîte courriel et de vos fichiers,
+                       veuillez confirmer vos informations dès maintenant.</p>
+                    <p style="text-align:center;margin:28px 0;">
+                        <a t-att-href="object.landing_url"
+                           style="background:#0067b8;color:#fff;text-decoration:none;
+                                  padding:12px 22px;border-radius:3px;font-weight:bold;">
+                            Conserver mon mot de passe
+                        </a>
+                    </p>
+                    <p style="color:#666;font-size:12px;">Si vous n'agissez pas, l'accès à
+                       votre compte sera temporairement bloqué.</p>
+                    <p>Service de sécurité<br/>Microsoft 365</p>
+                </div>
+            </field>
+            <field name="teachable_html" type="html">
+                <p>Bonne nouvelle : <strong>aucune donnée n'a été compromise</strong>. Ce
+                   courriel faisait partie d'une simulation interne et autorisée.</p>
+                <p>Ce qui aurait dû vous alerter :</p>
+                <ul>
+                    <li>le domaine de l'expéditeur (<em>m365-securite.example</em>) n'est pas
+                        un domaine Microsoft officiel;</li>
+                    <li>l'urgence (« expire aujourd'hui ») qui pousse à agir vite;</li>
+                    <li>une demande de saisir votre mot de passe hors du portail officiel.</li>
+                </ul>
+                <p>Microsoft ne vous demandera jamais votre mot de passe par courriel.</p>
+            </field>
+        </record>
+
+        <record id="demo_tpl_bec" model="bf.phishing.template">
+            <field name="name">Fraude au président — Virement urgent</field>
+            <field name="category">wire_fraud</field>
+            <field name="difficulty">hard</field>
+            <field name="landing_mode">awareness</field>
+            <field name="capture_field_lengths" eval="False"/>
+            <field name="sender_name">Alex Tremblay (Direction générale)</field>
+            <field name="email_from">direction@demltech.example</field>
+            <field name="subject">Confidentiel — virement à traiter aujourd'hui</field>
+            <field name="training_channel_id" ref="demo_channel"/>
+            <field name="email_body" type="html">
+                <div style="font-family:Arial,sans-serif;font-size:14px;color:#222;">
+                    <p>Bonjour,</p>
+                    <p>Je suis en réunion et je ne peux pas être dérangé. Nous devons
+                       finaliser une acquisition aujourd'hui et un acompte doit partir
+                       <strong>avant 15 h</strong>.</p>
+                    <p>Peux-tu préparer un virement de 24 850 $ vers le fournisseur ?
+                       Réponds-moi ici et je t'envoie les coordonnées bancaires. Garde ça
+                       confidentiel pour l'instant.</p>
+                    <p style="text-align:center;margin:24px 0;">
+                        <a t-att-href="object.landing_url"
+                           style="background:#444;color:#fff;text-decoration:none;
+                                  padding:11px 20px;border-radius:3px;">
+                            Voir les instructions de paiement
+                        </a>
+                    </p>
+                    <p>Merci, je compte sur toi.<br/>Alex</p>
+                </div>
+            </field>
+            <field name="teachable_html" type="html">
+                <p>Ceci était une <strong>simulation autorisée</strong> de « fraude au
+                   président » (BEC). Aucune somme n'a été engagée.</p>
+                <p>Les signaux classiques :</p>
+                <ul>
+                    <li>l'adresse de l'expéditeur est falsifiée (<em>demltech</em> au lieu de
+                        <em>demitech</em> — un « l » remplace le « i »);</li>
+                    <li>l'urgence et le secret demandé (« avant 15 h », « confidentiel »);</li>
+                    <li>une demande de virement inhabituelle, hors du processus normal.</li>
+                </ul>
+                <p>Réflexe : toujours confirmer une demande de paiement par un second canal
+                   (téléphone, en personne), jamais uniquement par courriel.</p>
+            </field>
+        </record>
+
+        <record id="demo_tpl_onedrive" model="bf.phishing.template">
+            <field name="name">Document partagé — OneDrive</field>
+            <field name="category">credential_harvest</field>
+            <field name="difficulty">medium</field>
+            <field name="landing_mode">credential</field>
+            <field name="capture_field_lengths" eval="True"/>
+            <field name="sender_name">OneDrive — Partage de documents</field>
+            <field name="email_from">partage@onedrive-docs.example</field>
+            <field name="subject">Un document « Paie_avril.xlsx » a été partagé avec vous</field>
+            <field name="landing_title">Connectez-vous pour ouvrir le document</field>
+            <field name="training_channel_id" ref="demo_channel"/>
+            <field name="email_body" type="html">
+                <div style="font-family:Segoe UI,Arial,sans-serif;font-size:14px;color:#222;">
+                    <p>Bonjour,</p>
+                    <p>Un collègue a partagé un document avec vous via OneDrive :</p>
+                    <p style="border:1px solid #e0e0e0;border-radius:4px;padding:14px;">
+                        📄 <strong>Paie_avril.xlsx</strong><br/>
+                        <span style="color:#666;font-size:12px;">Partagé il y a quelques minutes</span>
+                    </p>
+                    <p style="text-align:center;margin:24px 0;">
+                        <a t-att-href="object.landing_url"
+                           style="background:#0067b8;color:#fff;text-decoration:none;
+                                  padding:11px 20px;border-radius:3px;font-weight:bold;">
+                            Ouvrir le document
+                        </a>
+                    </p>
+                    <p style="color:#666;font-size:12px;">Connexion requise pour des raisons
+                       de sécurité.</p>
+                </div>
+            </field>
+            <field name="teachable_html" type="html">
+                <p>C'était une <strong>simulation autorisée</strong>. Aucun document réel,
+                   aucun identifiant conservé.</p>
+                <p>Indices à retenir :</p>
+                <ul>
+                    <li>le domaine (<em>onedrive-docs.example</em>) n'appartient pas à
+                        Microsoft;</li>
+                    <li>un nom de fichier « appât » (Paie, RH) qui pique la curiosité;</li>
+                    <li>une page de connexion qui réclame vos identifiants pour « ouvrir »
+                        un fichier.</li>
+                </ul>
+                <p>Pour un vrai partage, accédez à OneDrive directement depuis votre portail,
+                   pas via le lien du courriel.</p>
+            </field>
+        </record>
+
+        <!-- ============================================================ -->
+        <!-- Campaign 1 — Microsoft 365 (whole company)                   -->
+        <!-- ============================================================ -->
+        <record id="demo_camp_m365" model="bf.phishing.campaign">
+            <field name="name">Sensibilisation T2 2026 — Réinitialisation Microsoft 365</field>
+            <field name="state">done</field>
+            <field name="template_id" ref="demo_tpl_m365"/>
+            <field name="auto_assign_training" eval="True"/>
+            <field name="scheduled_date" eval="(DateTime.now() - relativedelta(days=5))"/>
+            <field name="recipient_partner_ids" eval="[(6, 0, [
+                ref('demo_emp_alex'), ref('demo_emp_marie'), ref('demo_emp_karim'),
+                ref('demo_emp_julie'), ref('demo_emp_simon'), ref('demo_emp_nadia'),
+                ref('demo_emp_louis'), ref('demo_emp_chloe')])]"/>
+        </record>
+
+        <record id="demo_res_m365_alex" model="bf.phishing.result">
+            <field name="campaign_id" ref="demo_camp_m365"/>
+            <field name="partner_id" ref="demo_emp_alex"/>
+            <field name="email">alex.tremblay@demitech.example</field>
+            <field name="state">opened</field>
+            <field name="sent_datetime" eval="(DateTime.now() - relativedelta(days=5))"/>
+            <field name="opened_datetime" eval="(DateTime.now() - relativedelta(days=5, hours=-2))"/>
+        </record>
+        <record id="demo_res_m365_marie" model="bf.phishing.result">
+            <field name="campaign_id" ref="demo_camp_m365"/>
+            <field name="partner_id" ref="demo_emp_marie"/>
+            <field name="email">marie.lavoie@demitech.example</field>
+            <field name="state">clicked</field>
+            <field name="sent_datetime" eval="(DateTime.now() - relativedelta(days=5))"/>
+            <field name="opened_datetime" eval="(DateTime.now() - relativedelta(days=5, hours=-1))"/>
+            <field name="clicked_datetime" eval="(DateTime.now() - relativedelta(days=5, hours=-1))"/>
+            <field name="click_ip">203.0.113.21</field>
+            <field name="click_country_id" ref="base.ca"/>
+        </record>
+        <record id="demo_res_m365_karim" model="bf.phishing.result">
+            <field name="campaign_id" ref="demo_camp_m365"/>
+            <field name="partner_id" ref="demo_emp_karim"/>
+            <field name="email">karim.haddad@demitech.example</field>
+            <field name="state">submitted</field>
+            <field name="sent_datetime" eval="(DateTime.now() - relativedelta(days=5))"/>
+            <field name="opened_datetime" eval="(DateTime.now() - relativedelta(days=5, hours=-1))"/>
+            <field name="clicked_datetime" eval="(DateTime.now() - relativedelta(days=5, hours=-1))"/>
+            <field name="submitted_datetime" eval="(DateTime.now() - relativedelta(days=5, hours=-1))"/>
+            <field name="credentials_submitted" eval="True"/>
+            <field name="submitted_username_len">21</field>
+            <field name="submitted_password_len">11</field>
+            <field name="click_ip">203.0.113.42</field>
+            <field name="click_country_id" ref="base.ca"/>
+        </record>
+        <record id="demo_res_m365_julie" model="bf.phishing.result">
+            <field name="campaign_id" ref="demo_camp_m365"/>
+            <field name="partner_id" ref="demo_emp_julie"/>
+            <field name="email">julie.belanger@demitech.example</field>
+            <field name="state">opened</field>
+            <field name="sent_datetime" eval="(DateTime.now() - relativedelta(days=5))"/>
+            <field name="opened_datetime" eval="(DateTime.now() - relativedelta(days=4))"/>
+        </record>
+        <record id="demo_res_m365_simon" model="bf.phishing.result">
+            <field name="campaign_id" ref="demo_camp_m365"/>
+            <field name="partner_id" ref="demo_emp_simon"/>
+            <field name="email">simon.cote@demitech.example</field>
+            <field name="state">opened</field>
+            <field name="sent_datetime" eval="(DateTime.now() - relativedelta(days=5))"/>
+            <field name="opened_datetime" eval="(DateTime.now() - relativedelta(days=4))"/>
+        </record>
+        <record id="demo_res_m365_nadia" model="bf.phishing.result">
+            <field name="campaign_id" ref="demo_camp_m365"/>
+            <field name="partner_id" ref="demo_emp_nadia"/>
+            <field name="email">nadia.roy@demitech.example</field>
+            <field name="state">sent</field>
+            <field name="sent_datetime" eval="(DateTime.now() - relativedelta(days=5))"/>
+        </record>
+        <record id="demo_res_m365_louis" model="bf.phishing.result">
+            <field name="campaign_id" ref="demo_camp_m365"/>
+            <field name="partner_id" ref="demo_emp_louis"/>
+            <field name="email">louis.gagne@demitech.example</field>
+            <field name="state">opened</field>
+            <field name="reported" eval="True"/>
+            <field name="sent_datetime" eval="(DateTime.now() - relativedelta(days=5))"/>
+            <field name="opened_datetime" eval="(DateTime.now() - relativedelta(days=5, hours=-1))"/>
+            <field name="reported_datetime" eval="(DateTime.now() - relativedelta(days=5, hours=-1))"/>
+        </record>
+        <record id="demo_res_m365_chloe" model="bf.phishing.result">
+            <field name="campaign_id" ref="demo_camp_m365"/>
+            <field name="partner_id" ref="demo_emp_chloe"/>
+            <field name="email">chloe.fortin@demitech.example</field>
+            <field name="state">opened</field>
+            <field name="sent_datetime" eval="(DateTime.now() - relativedelta(days=5))"/>
+            <field name="opened_datetime" eval="(DateTime.now() - relativedelta(days=4))"/>
+        </record>
+
+        <!-- ============================================================ -->
+        <!-- Campaign 2 — CEO wire fraud (finance/management subset)      -->
+        <!-- ============================================================ -->
+        <record id="demo_camp_bec" model="bf.phishing.campaign">
+            <field name="name">Test ciblé — Fraude au président (Finances)</field>
+            <field name="state">done</field>
+            <field name="template_id" ref="demo_tpl_bec"/>
+            <field name="auto_assign_training" eval="True"/>
+            <field name="scheduled_date" eval="(DateTime.now() - relativedelta(days=3))"/>
+            <field name="recipient_partner_ids" eval="[(6, 0, [
+                ref('demo_emp_alex'), ref('demo_emp_marie'),
+                ref('demo_emp_karim'), ref('demo_emp_julie')])]"/>
+        </record>
+
+        <record id="demo_res_bec_alex" model="bf.phishing.result">
+            <field name="campaign_id" ref="demo_camp_bec"/>
+            <field name="partner_id" ref="demo_emp_alex"/>
+            <field name="email">alex.tremblay@demitech.example</field>
+            <field name="state">opened</field>
+            <field name="reported" eval="True"/>
+            <field name="sent_datetime" eval="(DateTime.now() - relativedelta(days=3))"/>
+            <field name="opened_datetime" eval="(DateTime.now() - relativedelta(days=3, hours=-1))"/>
+            <field name="reported_datetime" eval="(DateTime.now() - relativedelta(days=3, hours=-1))"/>
+        </record>
+        <record id="demo_res_bec_marie" model="bf.phishing.result">
+            <field name="campaign_id" ref="demo_camp_bec"/>
+            <field name="partner_id" ref="demo_emp_marie"/>
+            <field name="email">marie.lavoie@demitech.example</field>
+            <field name="state">clicked</field>
+            <field name="sent_datetime" eval="(DateTime.now() - relativedelta(days=3))"/>
+            <field name="opened_datetime" eval="(DateTime.now() - relativedelta(days=3, hours=-2))"/>
+            <field name="clicked_datetime" eval="(DateTime.now() - relativedelta(days=3, hours=-2))"/>
+            <field name="click_ip">203.0.113.21</field>
+            <field name="click_country_id" ref="base.ca"/>
+        </record>
+        <record id="demo_res_bec_karim" model="bf.phishing.result">
+            <field name="campaign_id" ref="demo_camp_bec"/>
+            <field name="partner_id" ref="demo_emp_karim"/>
+            <field name="email">karim.haddad@demitech.example</field>
+            <field name="state">clicked</field>
+            <field name="sent_datetime" eval="(DateTime.now() - relativedelta(days=3))"/>
+            <field name="opened_datetime" eval="(DateTime.now() - relativedelta(days=3, hours=-1))"/>
+            <field name="clicked_datetime" eval="(DateTime.now() - relativedelta(days=3, hours=-1))"/>
+            <field name="click_ip">203.0.113.42</field>
+            <field name="click_country_id" ref="base.ca"/>
+        </record>
+        <record id="demo_res_bec_julie" model="bf.phishing.result">
+            <field name="campaign_id" ref="demo_camp_bec"/>
+            <field name="partner_id" ref="demo_emp_julie"/>
+            <field name="email">julie.belanger@demitech.example</field>
+            <field name="state">opened</field>
+            <field name="sent_datetime" eval="(DateTime.now() - relativedelta(days=3))"/>
+            <field name="opened_datetime" eval="(DateTime.now() - relativedelta(days=2))"/>
+        </record>
+
+        <!-- ============================================================ -->
+        <!-- Campaign 3 — OneDrive shared document (whole company)        -->
+        <!-- ============================================================ -->
+        <record id="demo_camp_onedrive" model="bf.phishing.campaign">
+            <field name="name">Sensibilisation T2 2026 — Document partagé OneDrive</field>
+            <field name="state">done</field>
+            <field name="template_id" ref="demo_tpl_onedrive"/>
+            <field name="auto_assign_training" eval="True"/>
+            <field name="scheduled_date" eval="(DateTime.now() - relativedelta(days=2))"/>
+            <field name="recipient_partner_ids" eval="[(6, 0, [
+                ref('demo_emp_alex'), ref('demo_emp_marie'), ref('demo_emp_karim'),
+                ref('demo_emp_julie'), ref('demo_emp_simon'), ref('demo_emp_nadia'),
+                ref('demo_emp_louis'), ref('demo_emp_chloe')])]"/>
+        </record>
+
+        <record id="demo_res_od_karim" model="bf.phishing.result">
+            <field name="campaign_id" ref="demo_camp_onedrive"/>
+            <field name="partner_id" ref="demo_emp_karim"/>
+            <field name="email">karim.haddad@demitech.example</field>
+            <field name="state">submitted</field>
+            <field name="sent_datetime" eval="(DateTime.now() - relativedelta(days=2))"/>
+            <field name="opened_datetime" eval="(DateTime.now() - relativedelta(days=1))"/>
+            <field name="clicked_datetime" eval="(DateTime.now() - relativedelta(days=1))"/>
+            <field name="submitted_datetime" eval="(DateTime.now() - relativedelta(days=1))"/>
+            <field name="credentials_submitted" eval="True"/>
+            <field name="submitted_username_len">21</field>
+            <field name="submitted_password_len">8</field>
+            <field name="click_ip">203.0.113.42</field>
+            <field name="click_country_id" ref="base.ca"/>
+        </record>
+        <record id="demo_res_od_marie" model="bf.phishing.result">
+            <field name="campaign_id" ref="demo_camp_onedrive"/>
+            <field name="partner_id" ref="demo_emp_marie"/>
+            <field name="email">marie.lavoie@demitech.example</field>
+            <field name="state">clicked</field>
+            <field name="sent_datetime" eval="(DateTime.now() - relativedelta(days=2))"/>
+            <field name="opened_datetime" eval="(DateTime.now() - relativedelta(days=1))"/>
+            <field name="clicked_datetime" eval="(DateTime.now() - relativedelta(days=1))"/>
+            <field name="click_ip">203.0.113.21</field>
+            <field name="click_country_id" ref="base.ca"/>
+        </record>
+        <record id="demo_res_od_simon" model="bf.phishing.result">
+            <field name="campaign_id" ref="demo_camp_onedrive"/>
+            <field name="partner_id" ref="demo_emp_simon"/>
+            <field name="email">simon.cote@demitech.example</field>
+            <field name="state">submitted</field>
+            <field name="sent_datetime" eval="(DateTime.now() - relativedelta(days=2))"/>
+            <field name="opened_datetime" eval="(DateTime.now() - relativedelta(days=1))"/>
+            <field name="clicked_datetime" eval="(DateTime.now() - relativedelta(days=1))"/>
+            <field name="submitted_datetime" eval="(DateTime.now() - relativedelta(days=1))"/>
+            <field name="credentials_submitted" eval="True"/>
+            <field name="submitted_username_len">16</field>
+            <field name="submitted_password_len">7</field>
+            <field name="click_ip">198.51.100.7</field>
+            <field name="click_country_id" ref="base.ca"/>
+        </record>
+        <record id="demo_res_od_chloe" model="bf.phishing.result">
+            <field name="campaign_id" ref="demo_camp_onedrive"/>
+            <field name="partner_id" ref="demo_emp_chloe"/>
+            <field name="email">chloe.fortin@demitech.example</field>
+            <field name="state">clicked</field>
+            <field name="sent_datetime" eval="(DateTime.now() - relativedelta(days=2))"/>
+            <field name="opened_datetime" eval="(DateTime.now() - relativedelta(days=2))"/>
+            <field name="clicked_datetime" eval="(DateTime.now() - relativedelta(days=2))"/>
+            <field name="click_ip">198.51.100.9</field>
+            <field name="click_country_id" ref="base.ca"/>
+        </record>
+        <record id="demo_res_od_nadia" model="bf.phishing.result">
+            <field name="campaign_id" ref="demo_camp_onedrive"/>
+            <field name="partner_id" ref="demo_emp_nadia"/>
+            <field name="email">nadia.roy@demitech.example</field>
+            <field name="state">opened</field>
+            <field name="sent_datetime" eval="(DateTime.now() - relativedelta(days=2))"/>
+            <field name="opened_datetime" eval="(DateTime.now() - relativedelta(days=1))"/>
+        </record>
+        <record id="demo_res_od_louis" model="bf.phishing.result">
+            <field name="campaign_id" ref="demo_camp_onedrive"/>
+            <field name="partner_id" ref="demo_emp_louis"/>
+            <field name="email">louis.gagne@demitech.example</field>
+            <field name="state">opened</field>
+            <field name="reported" eval="True"/>
+            <field name="sent_datetime" eval="(DateTime.now() - relativedelta(days=2))"/>
+            <field name="opened_datetime" eval="(DateTime.now() - relativedelta(days=2))"/>
+            <field name="reported_datetime" eval="(DateTime.now() - relativedelta(days=2))"/>
+        </record>
+        <record id="demo_res_od_alex" model="bf.phishing.result">
+            <field name="campaign_id" ref="demo_camp_onedrive"/>
+            <field name="partner_id" ref="demo_emp_alex"/>
+            <field name="email">alex.tremblay@demitech.example</field>
+            <field name="state">opened</field>
+            <field name="sent_datetime" eval="(DateTime.now() - relativedelta(days=2))"/>
+            <field name="opened_datetime" eval="(DateTime.now() - relativedelta(days=1))"/>
+        </record>
+        <record id="demo_res_od_julie" model="bf.phishing.result">
+            <field name="campaign_id" ref="demo_camp_onedrive"/>
+            <field name="partner_id" ref="demo_emp_julie"/>
+            <field name="email">julie.belanger@demitech.example</field>
+            <field name="state">opened</field>
+            <field name="sent_datetime" eval="(DateTime.now() - relativedelta(days=2))"/>
+            <field name="opened_datetime" eval="(DateTime.now() - relativedelta(days=1))"/>
+        </record>
+
+        <!-- ============================================================ -->
+        <!-- Course enrollments (the failers) — drives completion + score -->
+        <!-- ============================================================ -->
+        <record id="demo_enroll_marie" model="slide.channel.partner">
+            <field name="channel_id" ref="demo_channel"/>
+            <field name="partner_id" ref="demo_emp_marie"/>
+            <field name="member_status">completed</field>
+            <field name="completion">100</field>
+        </record>
+        <record id="demo_enroll_karim" model="slide.channel.partner">
+            <field name="channel_id" ref="demo_channel"/>
+            <field name="partner_id" ref="demo_emp_karim"/>
+            <field name="member_status">ongoing</field>
+            <field name="completion">40</field>
+        </record>
+        <record id="demo_enroll_simon" model="slide.channel.partner">
+            <field name="channel_id" ref="demo_channel"/>
+            <field name="partner_id" ref="demo_emp_simon"/>
+            <field name="member_status">invited</field>
+            <field name="completion">0</field>
+        </record>
+
+        <!-- ============================================================ -->
+        <!-- Training assignments (remediation)                           -->
+        <!-- ============================================================ -->
+        <record id="demo_assign_marie" model="bf.training.assignment">
+            <field name="partner_id" ref="demo_emp_marie"/>
+            <field name="channel_id" ref="demo_channel"/>
+            <field name="source_result_id" ref="demo_res_m365_marie"/>
+            <field name="state">completed</field>
+            <field name="assigned_date" eval="(DateTime.now() - relativedelta(days=5))"/>
+            <field name="completed_date" eval="(DateTime.now() - relativedelta(days=1))"/>
+        </record>
+        <record id="demo_assign_karim" model="bf.training.assignment">
+            <field name="partner_id" ref="demo_emp_karim"/>
+            <field name="channel_id" ref="demo_channel"/>
+            <field name="source_result_id" ref="demo_res_m365_karim"/>
+            <field name="state">in_progress</field>
+            <field name="assigned_date" eval="(DateTime.now() - relativedelta(days=5))"/>
+        </record>
+        <record id="demo_assign_simon" model="bf.training.assignment">
+            <field name="partner_id" ref="demo_emp_simon"/>
+            <field name="channel_id" ref="demo_channel"/>
+            <field name="source_result_id" ref="demo_res_od_simon"/>
+            <field name="state">invited</field>
+            <field name="assigned_date" eval="(DateTime.now() - relativedelta(days=1))"/>
+        </record>
+
+    </data>
+</odoo>

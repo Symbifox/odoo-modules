@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Destruction Campaign Form View -->
+    <record id="privacy_destruction_campaign_view_form" model="ir.ui.view">
+        <field name="name">privacy.destruction.campaign.form</field>
+        <field name="model">privacy.destruction.campaign</field>
+        <field name="arch" type="xml">
+            <form string="Campagne de destruction">
+                <header>
+                    <button name="action_scan" type="object"
+                            string="Balayer les documents"
+                            class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_approve" type="object"
+                            string="Approuver"
+                            class="btn-primary" invisible="state != 'review'"
+                            groups="privacy_consent.group_privacy_officer"/>
+                    <button name="action_execute" type="object"
+                            string="Exécuter la destruction"
+                            class="btn-danger" invisible="state != 'approved'"
+                            confirm="Cette action détruira définitivement les documents identifiés. Continuer?"/>
+                    <button name="action_cancel" type="object"
+                            string="Annuler"
+                            invisible="state in ('completed', 'cancelled')"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,review,approved,executing,completed"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name" placeholder="Nom de la campagne"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Paramètres">
+                            <field name="retention_calendar_id"/>
+                            <field name="cutoff_date"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                        <group string="Progression">
+                            <field name="line_count"/>
+                            <field name="executed_count"/>
+                            <field name="failed_count"/>
+                            <field name="skipped_count"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Approbation">
+                            <field name="created_by_id"/>
+                            <field name="approved_by_id"/>
+                            <field name="approved_date"/>
+                        </group>
+                        <group string="Exécution">
+                            <field name="started_at"/>
+                            <field name="completed_at"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Documents" name="lines">
+                            <field name="line_ids">
+                                <list decoration-danger="state == 'failed'"
+                                      decoration-muted="state == 'skipped'"
+                                      decoration-success="state == 'done'"
+                                      editable="bottom">
+                                    <field name="res_name" string="Document"/>
+                                    <field name="res_model" optional="hide"/>
+                                    <field name="retention_calendar_id" optional="show"/>
+                                    <field name="retention_expiry_date"/>
+                                    <field name="destruction_method"/>
+                                    <field name="state" widget="badge"
+                                           decoration-info="state == 'pending'"
+                                           decoration-success="state == 'done'"
+                                           decoration-danger="state == 'failed'"
+                                           decoration-muted="state == 'skipped'"/>
+                                    <field name="register_entry_id" optional="show"/>
+                                    <field name="error_message" optional="hide"/>
+                                    <button name="action_skip" type="object" string="Ignorer"
+                                            icon="fa-ban" invisible="state != 'pending'"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Notes" name="notes">
+                            <field name="notes" nolabel="1"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Destruction Campaign List View -->
+    <record id="privacy_destruction_campaign_view_list" model="ir.ui.view">
+        <field name="name">privacy.destruction.campaign.list</field>
+        <field name="model">privacy.destruction.campaign</field>
+        <field name="arch" type="xml">
+            <list string="Campagnes de destruction"
+                  decoration-danger="state in ('executing',)"
+                  decoration-muted="state == 'cancelled'">
+                <field name="name"/>
+                <field name="retention_calendar_id" optional="show"/>
+                <field name="cutoff_date"/>
+                <field name="line_count" string="Docs"/>
+                <field name="executed_count" string="OK"/>
+                <field name="failed_count" string="Échecs"/>
+                <field name="state" widget="badge"
+                       decoration-info="state in ('draft', 'scanning')"
+                       decoration-warning="state in ('review', 'approved')"
+                       decoration-danger="state == 'executing'"
+                       decoration-success="state == 'completed'"
+                       decoration-muted="state == 'cancelled'"/>
+                <field name="approved_by_id" optional="show"/>
+                <field name="completed_at" optional="show"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Destruction Campaign Search View -->
+    <record id="privacy_destruction_campaign_view_search" model="ir.ui.view">
+        <field name="name">privacy.destruction.campaign.search</field>
+        <field name="model">privacy.destruction.campaign</field>
+        <field name="arch" type="xml">
+            <search string="Rechercher">
+                <field name="name"/>
+                <field name="retention_calendar_id"/>
+                <separator/>
+                <filter string="En cours" name="active"
+                        domain="[('state', 'in', ['scanning', 'review', 'approved', 'executing'])]"/>
+                <filter string="Terminée" name="completed" domain="[('state', '=', 'completed')]"/>
+                <filter string="Annulée" name="cancelled" domain="[('state', '=', 'cancelled')]"/>
+                <separator/>
+                <group expand="0" string="Regrouper par">
+                    <filter string="État" name="group_by_state" context="{'group_by': 'state'}"/>
+                    <filter string="Règle" name="group_by_calendar"
+                            context="{'group_by': 'retention_calendar_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Destruction Campaign Action -->
+    <record id="action_privacy_destruction_campaign" model="ir.actions.act_window">
+        <field name="name">Campagnes de destruction</field>
+        <field name="res_model">privacy.destruction.campaign</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_active': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Aucune campagne de destruction
+            </p>
+            <p>
+                Les campagnes permettent de détruire en lot les documents dont la
+                période de conservation est expirée, conformément au calendrier de conservation.
+            </p>
+        </field>
+    </record>
+</odoo>

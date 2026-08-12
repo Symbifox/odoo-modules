@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- RACI Stakeholder: List View -->
+    <record id="raci_stakeholder_view_list" model="ir.ui.view">
+        <field name="name">knowledge.raci.stakeholder.list</field>
+        <field name="model">knowledge.raci.stakeholder</field>
+        <field name="arch" type="xml">
+            <list create="false" edit="false" delete="false">
+                <field name="partner_id" widget="many2one_avatar"/>
+                <field name="partner_name" column_invisible="True"/>
+                <field name="project_id"/>
+                <field name="project_name" column_invisible="True"/>
+                <field name="role" widget="badge"
+                       decoration-success="role == 'R'"
+                       decoration-info="role == 'A'"
+                       decoration-warning="role == 'C'"
+                       decoration-muted="role == 'I'"/>
+                <field name="item_count" sum="Total"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- RACI Stakeholder: Pivot View -->
+    <record id="raci_stakeholder_view_pivot" model="ir.ui.view">
+        <field name="name">knowledge.raci.stakeholder.pivot</field>
+        <field name="model">knowledge.raci.stakeholder</field>
+        <field name="arch" type="xml">
+            <pivot string="Résumé RACI">
+                <field name="partner_id" type="row"/>
+                <field name="role" type="col"/>
+                <field name="item_count" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- RACI Stakeholder: Search View -->
+    <record id="raci_stakeholder_view_search" model="ir.ui.view">
+        <field name="name">knowledge.raci.stakeholder.search</field>
+        <field name="model">knowledge.raci.stakeholder</field>
+        <field name="arch" type="xml">
+            <search string="Résumé RACI">
+                <field name="partner_id"/>
+                <field name="project_id"/>
+                <separator/>
+                <filter name="filter_responsible" string="Responsable (R)" domain="[('role', '=', 'R')]"/>
+                <filter name="filter_accountable" string="Décideur (A)" domain="[('role', '=', 'A')]"/>
+                <filter name="filter_consulted" string="Consulté (C)" domain="[('role', '=', 'C')]"/>
+                <filter name="filter_informed" string="Informé (I)" domain="[('role', '=', 'I')]"/>
+                <separator/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="group_partner" string="Partie prenante" context="{'group_by': 'partner_id'}"/>
+                    <filter name="group_project" string="Projet" context="{'group_by': 'project_id'}"/>
+                    <filter name="group_role" string="Rôle" context="{'group_by': 'role'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- RACI Stakeholder: Action -->
+    <record id="raci_stakeholder_action" model="ir.actions.act_window">
+        <field name="name">Résumé RACI</field>
+        <field name="res_model">knowledge.raci.stakeholder</field>
+        <field name="view_mode">pivot,list</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Aucune donnée RACI disponible
+            </p>
+            <p>
+                Assignez des responsables, décideurs, consultés et informés
+                dans les éléments de matrice pour voir le résumé RACI.
+            </p>
+        </field>
+    </record>
+
+</odoo>

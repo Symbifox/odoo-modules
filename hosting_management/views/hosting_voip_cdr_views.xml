@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- CDR List View -->
+    <record id="hosting_voip_cdr_view_tree" model="ir.ui.view">
+        <field name="name">hosting.voip.cdr.list</field>
+        <field name="model">hosting.voip.cdr</field>
+        <field name="arch" type="xml">
+            <list create="false" edit="false">
+                <field name="call_date" string="Date"/>
+                <field name="direction" string="Sens"/>
+                <field name="caller" string="Appelant"/>
+                <field name="destination" string="Destination"/>
+                <field name="did_id" string="DID"/>
+                <field name="partner_id" string="Client" optional="show"/>
+                <field name="disposition" string="Issue" widget="badge"
+                       decoration-success="disposition == 'answered'"
+                       decoration-warning="disposition in ('noanswer', 'busy')"
+                       decoration-danger="disposition == 'failed'"/>
+                <field name="minutes" string="Minutes" sum="Total"/>
+                <field name="cost" string="Coût" sum="Total"/>
+                <field name="voipms_account" string="Sous-compte" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- CDR Form View (read-only detail) -->
+    <record id="hosting_voip_cdr_view_form" model="ir.ui.view">
+        <field name="name">hosting.voip.cdr.form</field>
+        <field name="model">hosting.voip.cdr</field>
+        <field name="arch" type="xml">
+            <form create="false" edit="false">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="call_date"/>
+                            <field name="direction"/>
+                            <field name="disposition"/>
+                            <field name="seconds"/>
+                            <field name="minutes"/>
+                            <field name="cost"/>
+                        </group>
+                        <group>
+                            <field name="caller"/>
+                            <field name="destination"/>
+                            <field name="did_id"/>
+                            <field name="partner_id"/>
+                            <field name="voipms_account"/>
+                            <field name="voipms_uniqueid"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- CDR Search View -->
+    <record id="hosting_voip_cdr_view_search" model="ir.ui.view">
+        <field name="name">hosting.voip.cdr.search</field>
+        <field name="model">hosting.voip.cdr</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="caller"/>
+                <field name="destination"/>
+                <field name="did_id"/>
+                <field name="partner_id"/>
+                <separator/>
+                <filter name="filter_incoming" string="Entrants"
+                        domain="[('direction', '=', 'incoming')]"/>
+                <filter name="filter_outgoing" string="Sortants"
+                        domain="[('direction', '=', 'outgoing')]"/>
+                <filter name="filter_answered" string="Répondus"
+                        domain="[('disposition', '=', 'answered')]"/>
+                <separator/>
+                <filter name="filter_this_month" string="Ce mois-ci"
+                        domain="[('call_date', '>=', (context_today().replace(day=1)).strftime('%Y-%m-%d'))]"/>
+                <group expand="0" string="Grouper par">
+                    <filter name="group_did" string="DID"
+                            context="{'group_by': 'did_id'}"/>
+                    <filter name="group_partner" string="Client"
+                            context="{'group_by': 'partner_id'}"/>
+                    <filter name="group_direction" string="Sens"
+                            context="{'group_by': 'direction'}"/>
+                    <filter name="group_disposition" string="Issue"
+                            context="{'group_by': 'disposition'}"/>
+                    <filter name="group_month" string="Mois"
+                            context="{'group_by': 'call_date:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- CDR Pivot View (stats) -->
+    <record id="hosting_voip_cdr_view_pivot" model="ir.ui.view">
+        <field name="name">hosting.voip.cdr.pivot</field>
+        <field name="model">hosting.voip.cdr</field>
+        <field name="arch" type="xml">
+            <pivot string="Statistiques d'appels">
+                <field name="did_id" type="row"/>
+                <field name="call_date" interval="month" type="col"/>
+                <field name="minutes" type="measure"/>
+                <field name="cost" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- CDR Graph View -->
+    <record id="hosting_voip_cdr_view_graph" model="ir.ui.view">
+        <field name="name">hosting.voip.cdr.graph</field>
+        <field name="model">hosting.voip.cdr</field>
+        <field name="arch" type="xml">
+            <graph string="Statistiques d'appels" type="bar">
+                <field name="did_id"/>
+                <field name="minutes" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="hosting_voip_cdr_action" model="ir.actions.act_window">
+        <field name="name">Statistiques d'appels</field>
+        <field name="res_model">hosting.voip.cdr</field>
+        <field name="view_mode">pivot,graph,list,form</field>
+        <field name="search_view_id" ref="hosting_voip_cdr_view_search"/>
+        <field name="context">{'search_default_this_month': 1, 'search_default_group_did': 1}</field>
+    </record>
+
+</odoo>

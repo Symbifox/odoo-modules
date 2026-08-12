@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_contact_persona_kanban" model="ir.ui.view">
+        <field name="name">contact.persona.kanban</field>
+        <field name="model">contact.persona</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="relationship_health"
+                    class="o_kanban_dashboard o_kanban_small_column"
+                    sample="1">
+                <field name="partner_id"/>
+                <field name="relationship_health"/>
+                <field name="addressing_style"/>
+                <field name="tone_summary"/>
+                <field name="our_tone_summary"/>
+                <field name="payer_quality"/>
+                <field name="avg_payment_delay_days"/>
+                <field name="last_interaction_date"/>
+                <field name="tone_drift_score"/>
+                <field name="tone_is_stale"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="d-flex justify-content-between align-items-start mb-1">
+                            <div class="fw-bold fs-6">
+                                <field name="partner_id"/>
+                            </div>
+                            <span t-if="record.relationship_health.raw_value == 'degraded'"
+                                  class="badge text-bg-danger">Dégradée</span>
+                            <span t-if="record.relationship_health.raw_value == 'watch'"
+                                  class="badge text-bg-warning">À surveiller</span>
+                            <span t-if="record.relationship_health.raw_value == 'healthy'"
+                                  class="badge text-bg-success">Saine</span>
+                        </div>
+                        <div class="text-muted small">
+                            <span>Style: <field name="addressing_style"/></span>
+                            <span class="ms-2">Leur ton: <field name="tone_summary"/></span>
+                        </div>
+                        <div class="text-muted small">
+                            <span>Payeur: <field name="payer_quality"/></span>
+                            <span t-if="record.avg_payment_delay_days.raw_value" class="ms-2">
+                                (<field name="avg_payment_delay_days" widget="float" digits="[8,0]"/>j)
+                            </span>
+                        </div>
+                        <div class="text-muted small mt-1" t-if="record.last_interaction_date.raw_value">
+                            Dernière: <field name="last_interaction_date" widget="date"/>
+                        </div>
+                        <div t-if="record.tone_drift_score.raw_value > 0.25" class="small mt-1">
+                            <span class="badge text-bg-warning">
+                                Dérive <field name="tone_drift_score" widget="float" digits="[4,2]"/>
+                            </span>
+                        </div>
+                        <div t-if="record.tone_is_stale.raw_value" class="small mt-1">
+                            <span class="badge text-bg-info">Ton à rafraîchir</span>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="action_contact_persona_dashboard" model="ir.actions.act_window">
+        <field name="name">Personas — Tableau de bord</field>
+        <field name="res_model">contact.persona</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="search_view_id" ref="view_contact_persona_search"/>
+        <field name="context">{'search_default_group_health': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Aucun persona — lancer le cron de seed ou créer manuellement.
+            </p>
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Extend res.partner form view to show sync fields -->
+    <record id="view_partner_form_nc_contacts_sync" model="ir.ui.view">
+        <field name="name">res.partner.form.nc.contacts.sync</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <group name="nextcloud_contacts_sync" string="Nextcloud Contacts Sync"
+                    invisible="not x_nc_contacts_config_id"
+                    groups="base.group_no_one">
+                    <group>
+                        <field name="x_nc_contacts_config_id"/>
+                        <field name="x_contact_sync_source"/>
+                        <field name="x_contact_last_sync"/>
+                    </group>
+                    <group>
+                        <field name="x_nc_contact_uid"/>
+                        <field name="x_carddav_etag"/>
+                        <field name="x_carddav_href"/>
+                    </group>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Extend res.partner list view -->
+    <record id="view_partner_tree_nc_contacts_sync" model="ir.ui.view">
+        <field name="name">res.partner.list.nc.contacts.sync</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list" position="inside">
+                <field name="x_nc_contacts_config_id" optional="hide"/>
+                <field name="x_contact_sync_source" optional="hide"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

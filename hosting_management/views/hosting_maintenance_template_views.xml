@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Maintenance Template Tree View -->
+    <record id="hosting_maintenance_template_view_tree" model="ir.ui.view">
+        <field name="name">hosting.maintenance.template.tree</field>
+        <field name="model">hosting.maintenance.template</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="software_id"/>
+                <field name="is_default" widget="boolean"/>
+                <field name="task_count"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Maintenance Template Form View -->
+    <record id="hosting_maintenance_template_view_form" model="ir.ui.view">
+        <field name="name">hosting.maintenance.template.form</field>
+        <field name="model">hosting.maintenance.template</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_tasks" type="object"
+                                class="oe_stat_button" icon="fa-tasks">
+                            <field name="task_count" widget="statinfo" string="Tâches"/>
+                        </button>
+                    </div>
+
+                    <widget name="web_ribbon" title="Par défaut" bg_color="text-bg-info"
+                            invisible="not is_default"/>
+
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name" placeholder="Nom du modèle"/>
+                        </h1>
+                    </div>
+
+                    <group>
+                        <group>
+                            <field name="software_id" options="{'no_create': True}"/>
+                            <field name="is_default" invisible="1"/>
+                            <field name="active"/>
+                        </group>
+                        <group>
+                            <field name="sequence"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Tâches de maintenance" name="tasks">
+                            <field name="line_ids">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="name"/>
+                                    <field name="maintenance_type" widget="badge"/>
+                                    <field name="frequency"/>
+                                    <field name="days_after_activation"
+                                           invisible="frequency != 'once'"
+                                           optional="show"/>
+                                    <field name="create_activity"
+                                           invisible="frequency != 'once'"
+                                           optional="show"/>
+                                    <field name="active"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Notes" name="notes">
+                            <field name="notes" placeholder="Notes supplémentaires sur ce modèle..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Maintenance Template Search View -->
+    <record id="hosting_maintenance_template_view_search" model="ir.ui.view">
+        <field name="name">hosting.maintenance.template.search</field>
+        <field name="model">hosting.maintenance.template</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="software_id"/>
+                <separator/>
+                <filter name="filter_default" string="Modèles par défaut"
+                        domain="[('software_id', '=', False)]"/>
+                <filter name="filter_software_specific" string="Spécifiques au logiciel"
+                        domain="[('software_id', '!=', False)]"/>
+                <separator/>
+                <filter name="filter_archived" string="Archivé"
+                        domain="[('active', '=', False)]"/>
+                <group expand="0" string="Grouper par">
+                    <filter name="group_software" string="Logiciel"
+                            context="{'group_by': 'software_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Template Line Form View (for popup editing) -->
+    <record id="hosting_maintenance_template_line_view_form" model="ir.ui.view">
+        <field name="name">hosting.maintenance.template.line.form</field>
+        <field name="model">hosting.maintenance.template.line</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group string="Détails de la tâche">
+                            <field name="name"/>
+                            <field name="maintenance_type"/>
+                            <field name="frequency"/>
+                            <field name="days_after_activation"
+                                   invisible="frequency != 'once'"/>
+                            <field name="create_activity"
+                                   invisible="frequency != 'once'"/>
+                        </group>
+                        <group string="Paramètres">
+                            <field name="template_id" invisible="1"/>
+                            <field name="sequence"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                    <group string="Instructions">
+                        <field name="instructions" nolabel="1"
+                               placeholder="Instructions étape par étape pour cette tâche de maintenance..."/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Maintenance Template Action -->
+    <record id="hosting_maintenance_template_action" model="ir.actions.act_window">
+        <field name="name">Modèles de maintenance</field>
+        <field name="res_model">hosting.maintenance.template</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="hosting_maintenance_template_view_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Créez votre premier modèle de maintenance
+            </p>
+            <p>
+                Les modèles de maintenance définissent des tâches récurrentes qui sont automatiquement
+                créées lorsqu'un service d'hébergement est activé. Vous pouvez créer des modèles
+                pour des logiciels spécifiques ou des modèles par défaut qui s'appliquent à tous les services.
+            </p>
+        </field>
+    </record>
+
+</odoo>

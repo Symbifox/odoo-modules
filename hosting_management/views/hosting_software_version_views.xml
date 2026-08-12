@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Software Version Tree View -->
+    <record id="hosting_software_version_view_tree" model="ir.ui.view">
+        <field name="name">hosting.software.version.tree</field>
+        <field name="model">hosting.software.version</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="software_id"/>
+                <field name="version"/>
+                <field name="release_date"/>
+                <field name="is_lts"/>
+                <field name="support_status"/>
+                <field name="update_impact"/>
+                <field name="service_count"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Software Version Form View -->
+    <record id="hosting_software_version_view_form" model="ir.ui.view">
+        <field name="name">hosting.software.version.form</field>
+        <field name="model">hosting.software.version</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="software_id"/>
+                        <h1>
+                            <field name="software_id" options="{'no_create': True}"/>
+                        </h1>
+                        <label for="version"/>
+                        <h2>
+                            <field name="version" placeholder="Numéro de version"/>
+                        </h2>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="release_date"/>
+                            <field name="is_lts"/>
+                            <field name="support_status"/>
+                        </group>
+                        <group>
+                            <field name="update_impact"/>
+                            <field name="service_count" readonly="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Notes de version" name="release_notes">
+                            <field name="release_notes"/>
+                        </page>
+                        <page string="Changements incompatibles" name="breaking_changes">
+                            <field name="breaking_changes"/>
+                        </page>
+                        <page string="Notes de migration" name="migration_notes">
+                            <field name="migration_notes"/>
+                        </page>
+                        <page string="Services" name="services">
+                            <field name="service_ids" readonly="1">
+                                <list>
+                                    <field name="code"/>
+                                    <field name="name"/>
+                                    <field name="partner_id"/>
+                                    <field name="environment"/>
+                                    <field name="state"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Software Version Search View -->
+    <record id="hosting_software_version_view_search" model="ir.ui.view">
+        <field name="name">hosting.software.version.search</field>
+        <field name="model">hosting.software.version</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="software_id"/>
+                <field name="version"/>
+                <filter name="filter_lts" string="LTS uniquement" domain="[('is_lts', '=', True)]"/>
+                <separator/>
+                <filter name="filter_supported" string="Supporté" domain="[('support_status', '=', 'supported')]"/>
+                <filter name="filter_security" string="Sécurité uniquement" domain="[('support_status', '=', 'security_only')]"/>
+                <filter name="filter_deprecated" string="Obsolète" domain="[('support_status', '=', 'deprecated')]"/>
+                <filter name="filter_eol" string="Fin de vie" domain="[('support_status', '=', 'eol')]"/>
+                <group expand="0" string="Grouper par">
+                    <filter name="group_software" string="Logiciel" context="{'group_by': 'software_id'}"/>
+                    <filter name="group_status" string="État du support" context="{'group_by': 'support_status'}"/>
+                    <filter name="group_impact" string="Impact de la mise à jour" context="{'group_by': 'update_impact'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Software Version Action -->
+    <record id="hosting_software_version_action" model="ir.actions.act_window">
+        <field name="name">Versions logicielles</field>
+        <field name="res_model">hosting.software.version</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="hosting_software_version_view_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Suivre les versions logicielles
+            </p>
+            <p>
+                Suivez les versions logicielles, les notes de version et les instructions de migration.
+            </p>
+        </field>
+    </record>
+
+</odoo>

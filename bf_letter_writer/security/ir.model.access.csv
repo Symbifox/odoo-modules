@@ -1,0 +1,10 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_letter_document_user,letter.document.user,model_letter_document,base.group_user,1,1,1,0
+access_letter_document_manager,letter.document.manager,model_letter_document,group_letter_manager,1,1,1,1
+access_letter_template_user,letter.template.user,model_letter_template,base.group_user,1,0,0,0
+access_letter_template_manager,letter.template.manager,model_letter_template,group_letter_manager,1,1,1,1
+access_letter_quicktext_user,letter.quicktext.user,model_letter_quicktext,base.group_user,1,0,0,0
+access_letter_quicktext_manager,letter.quicktext.manager,model_letter_quicktext,group_letter_manager,1,1,1,1
+access_letter_merge_wizard_user,letter.merge.wizard.user,model_letter_merge_wizard,base.group_user,1,1,1,1
+access_letter_send_wizard_user,letter.send.wizard.user,model_letter_send_wizard,base.group_user,1,1,1,1
+access_letter_quicktext_picker_user,letter.quicktext.picker.user,model_letter_quicktext_picker,base.group_user,1,1,1,1

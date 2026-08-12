@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <!-- Le noeud ciblé est ajouté par bf_cx_dashboard (dépendance directe) :
+         son extension s'applique avant celle-ci, donc le noeud existe déjà.
+         On étend bf_dashboard.Dashboard car une extension OWL n'est jamais
+         enregistrée sous son propre t-name (elle ne peut pas être héritée). -->
+    <t t-name="bf_cx_subscription.Tile" t-inherit="bf_dashboard.Dashboard" t-inherit-mode="extension">
+        <xpath expr="//t[@t-if='state.data.cx.complaints_open > 0']" position="after">
+            <t t-if="state.data.cx.revenue_at_risk > 0">
+                <br/>
+                <small class="text-danger fw-bold">
+                    <t t-esc="state.data.cx.revenue_at_risk.toFixed(0)"/> $/mois à risque
+                </small>
+            </t>
+        </xpath>
+    </t>
+
+</templates>

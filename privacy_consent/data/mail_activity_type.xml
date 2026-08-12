@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!-- Type d'activité : Suivi de consentement -->
+    <record id="mail_activity_type_consent_followup" model="mail.activity.type">
+        <field name="name">Suivi de consentement</field>
+        <field name="summary">Suivi de la demande de consentement</field>
+        <field name="res_model">privacy.consent</field>
+        <field name="icon">fa-shield</field>
+        <field name="delay_count">1</field>
+        <field name="delay_unit">days</field>
+        <field name="delay_from">previous_activity</field>
+    </record>
+
+    <!-- Type d'activité : Consentement expirant -->
+    <record id="mail_activity_type_consent_expiring" model="mail.activity.type">
+        <field name="name">Consentement expirant bientôt</field>
+        <field name="summary">Consentement expirant, action requise</field>
+        <field name="res_model">privacy.consent</field>
+        <field name="icon">fa-calendar-times-o</field>
+        <field name="delay_count">7</field>
+        <field name="delay_unit">days</field>
+        <field name="delay_from">previous_activity</field>
+    </record>
+
+    <!-- Type d'activité : Révision de destruction -->
+    <record id="mail_activity_type_destruction_review" model="mail.activity.type">
+        <field name="name">Révision de destruction de données</field>
+        <field name="summary">Réviser et approuver la demande de destruction de données</field>
+        <field name="res_model">privacy.destruction.request</field>
+        <field name="icon">fa-trash</field>
+        <field name="delay_count">1</field>
+        <field name="delay_unit">days</field>
+        <field name="delay_from">previous_activity</field>
+    </record>
+</odoo>

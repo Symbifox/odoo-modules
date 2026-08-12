@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_company_form_letter_writer" model="ir.ui.view">
+        <field name="name">res.company.form.letter.writer</field>
+        <field name="model">res.company</field>
+        <field name="inherit_id" ref="base.view_company_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Lettres" name="letter_writer">
+                    <group>
+                        <group string="En-tête par défaut">
+                            <field name="letter_default_mode"/>
+                            <field name="letter_body_top_margin"
+                                   invisible="letter_default_mode in ('banner', 'classic')"/>
+                            <field name="letter_body_bottom_margin"
+                                   invisible="letter_default_mode in ('banner', 'classic')"/>
+                        </group>
+                        <group string="Signature">
+                            <field name="letter_signatory_id"/>
+                            <field name="letter_signatory_function"/>
+                            <field name="letter_signature_image" widget="image"
+                                   class="oe_avatar"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="En-tête image (PNG/JPG)">
+                            <field name="letterhead_image" widget="image"
+                                   filename="letterhead_image_filename"/>
+                            <field name="letterhead_image_filename" invisible="1"/>
+                        </group>
+                        <group string="En-tête PDF (superposition)">
+                            <field name="letterhead_pdf"
+                                   filename="letterhead_pdf_filename"/>
+                            <field name="letterhead_pdf_filename" invisible="1"/>
+                        </group>
+                    </group>
+                    <group string="Mention d'en-tête (modes générés)">
+                        <field name="letter_header_note" nolabel="1"/>
+                    </group>
+                    <separator string="Pied de page des lettres (modes générés)"/>
+                    <field name="letter_footer_html" widget="html" nolabel="1"/>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

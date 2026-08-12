@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="survey_form_inherit_bf_survey_upload" model="ir.ui.view">
+        <field name="name">survey.survey.form.inherit.bf_survey_upload</field>
+        <field name="model">survey.survey</field>
+        <field name="inherit_id" ref="survey.survey_survey_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='options']" position="inside">
+                <group string="Téléversement de fichiers">
+                    <field name="bf_link_uploads_to_project"/>
+                    <field name="bf_target_project_id"
+                           invisible="not bf_link_uploads_to_project"
+                           required="bf_link_uploads_to_project"
+                           domain="[('active', '=', True)]"
+                           options="{'no_create': True}"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Add a "Téléversements" page on the survey.user_input form so the
+         reviewer can see and download uploaded files in one place. -->
+    <record id="survey_user_input_form_inherit_bf_survey_upload" model="ir.ui.view">
+        <field name="name">survey.user_input.form.inherit.bf_survey_upload</field>
+        <field name="model">survey.user_input</field>
+        <field name="inherit_id" ref="survey.survey_user_input_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='page_answers']" position="after">
+                <page string="Téléversements"
+                      name="bf_uploads"
+                      invisible="bf_attachment_count == 0">
+                    <field name="bf_attachment_count" invisible="1"/>
+                    <field name="bf_attachment_ids"
+                           widget="many2many_binary"
+                           readonly="True"/>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

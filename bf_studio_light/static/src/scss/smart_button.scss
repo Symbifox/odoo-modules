@@ -1,0 +1,15 @@
+// Studio Light — smart button widget styling.
+// Keeps the visual contract of Odoo's native oe_stat_button while
+// adding a tiny "?" affordance for the masked-error state.
+
+.studio_light_smart_button {
+    cursor: pointer;
+
+    &[disabled] {
+        cursor: default;
+    }
+
+    .o_stat_value {
+        font-weight: 500;
+    }
+}

@@ -1,0 +1,565 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!--
+        Default purposes based on Loi 25 / LCAP (CASL) requirements
+        Mapped to Your Company consent forms: F-00 through F-07
+    -->
+
+    <!-- Marketing (F-01) -->
+    <record id="purpose_marketing" model="privacy.purpose">
+        <field name="code">marketing</field>
+        <field name="name">Communications marketing et infolettres</field>
+        <field name="plain_language_summary"><![CDATA[
+            <p>Nous souhaitons recueillir votre <strong>consentement exprès</strong> à recevoir
+            certaines communications de Your Company à des fins d'information et de marketing.
+            Ces communications sont <strong>optionnelles</strong> et ne sont pas nécessaires
+            à l'exécution de nos services de consultation ou d'hébergement.</p>
+            <p>Les types de communications proposés incluent :</p>
+            <ul>
+                <li><strong>Infolettres et contenus éducatifs</strong> : articles de blogue sur la Loi 25,
+                la souveraineté numérique, l'hébergement souverain; guides pratiques, modèles, checklists;
+                annonces de nouvelles ressources gratuites (webinaires, gabarits, etc.).</li>
+                <li><strong>Invitations à des événements, webinaires et ateliers</strong> : webinaires ou
+                ateliers sur la conformité, la cybersécurité, l'open source; démonstrations de solutions
+                (Nextcloud, Odoo, etc.).</li>
+                <li><strong>Offres, promotions et propositions de services</strong> : offres d'implantation,
+                d'audit, de formation; propositions personnalisées liées à vos besoins.</li>
+            </ul>
+            <p>Chaque catégorie est indépendante : vous pouvez accepter certaines fins et en refuser d'autres.
+            Vous pouvez refuser ou retirer votre consentement sans que cela n'affecte vos services existants.</p>
+            <hr/>
+            <p><em>We wish to collect your <strong>express consent</strong> to receive certain communications
+            from Your Company for information and marketing purposes. These communications are
+            <strong>optional</strong> and are not necessary for the delivery of our consulting or
+            hosting services.</em></p>
+            <p><em>The types of communications offered include:</em></p>
+            <ul>
+                <li><em><strong>Newsletters and educational content</strong>: blog posts about Law 25,
+                digital sovereignty, sovereign hosting; practical guides, templates, checklists;
+                announcements of new free resources (webinars, templates, etc.).</em></li>
+                <li><em><strong>Invitations to events, webinars and workshops</strong>: webinars or
+                workshops on compliance, cybersecurity, open source; solution demos
+                (Nextcloud, Odoo, etc.).</em></li>
+                <li><em><strong>Offers, promotions and service proposals</strong>: implementation,
+                audit, training offers; personalized proposals related to your needs.</em></li>
+            </ul>
+            <p><em>Each category is independent: you can accept some purposes and refuse others.
+            You may refuse or withdraw your consent without affecting your existing services.</em></p>
+        ]]></field>
+        <field name="requires_consent" eval="True"/>
+        <field name="requires_express_opt_in" eval="True"/>
+        <!-- LCAP/CASL: express consent has no expiry, but Loi 25 requires temporal limit. Best practice: 2 years with periodic reconfirmation -->
+        <field name="default_validity_days">730</field>
+        <field name="channel_scope">email</field>
+        <field name="context_scope">marketing</field>
+        <field name="sequence">10</field>
+    </record>
+
+    <!-- Recording (F-02) -->
+    <record id="purpose_recording" model="privacy.purpose">
+        <field name="code">recording</field>
+        <field name="name">Enregistrement ponctuel de rencontres</field>
+        <field name="plain_language_summary"><![CDATA[
+            <p>Dans le cadre de ses mandats de consultation, d'implantation et de formation,
+            Your Company peut souhaiter, à l'occasion, <strong>enregistrer certaines rencontres</strong>
+            (visioconférences ou ateliers) afin de faciliter :</p>
+            <ul>
+                <li>la prise de notes et le suivi du projet;</li>
+                <li>la formation interne de l'équipe;</li>
+                <li>ou, le cas échéant, la préparation de contenus de formation ou de communication.</li>
+            </ul>
+            <p>Ce consentement général est soumis à :</p>
+            <ul>
+                <li>un <strong>avis clair</strong> au début de chaque rencontre enregistrée;</li>
+                <li>votre <strong>droit de refuser</strong> ponctuellement l'enregistrement d'une rencontre
+                ou d'en limiter l'usage.</li>
+            </ul>
+            <p>Types de rencontres pouvant être enregistrées : ateliers de travail / cartographie / Loi 25,
+            rencontres de suivi de projet / comités de pilotage, formations ou webinaires,
+            démonstrations techniques.</p>
+            <hr/>
+            <p><em>As part of its consulting, implementation and training mandates, Your Company may wish,
+            on occasion, to <strong>record certain meetings</strong> (video conferences or workshops)
+            in order to facilitate:</em></p>
+            <ul>
+                <li><em>note taking and project follow-up;</em></li>
+                <li><em>internal team training;</em></li>
+                <li><em>or, where applicable, preparation of training or communication content.</em></li>
+            </ul>
+            <p><em>This general consent is subject to:</em></p>
+            <ul>
+                <li><em>a <strong>clear notice</strong> at the beginning of each recorded meeting;</em></li>
+                <li><em>your <strong>right to refuse</strong> the recording of a specific meeting or to
+                limit its use.</em></li>
+            </ul>
+        ]]></field>
+        <field name="requires_consent" eval="True"/>
+        <field name="requires_express_opt_in" eval="True"/>
+        <!-- Loi 25: consentement par projet/session recommandé. 365 jours pour blanket consent avec rappel -->
+        <field name="default_validity_days">365</field>
+        <field name="channel_scope">video</field>
+        <field name="context_scope">meeting</field>
+        <field name="sequence">20</field>
+    </record>
+
+    <!-- Audio Recording -->
+    <record id="purpose_recording_audio" model="privacy.purpose">
+        <field name="code">recording_audio</field>
+        <field name="name">Enregistrement audio</field>
+        <field name="plain_language_summary"><![CDATA[
+            <p>Nous enregistrons l'audio de nos appels téléphoniques à des fins de qualité
+            et de formation.</p>
+            <p><em>We record the audio of our phone calls for quality and training purposes.</em></p>
+        ]]></field>
+        <field name="requires_consent" eval="True"/>
+        <field name="requires_express_opt_in" eval="True"/>
+        <!-- Loi 25: consentement par projet/session recommandé. 365 jours pour blanket consent -->
+        <field name="default_validity_days">365</field>
+        <field name="channel_scope">phone</field>
+        <field name="context_scope">meeting</field>
+        <field name="sequence">21</field>
+    </record>
+
+    <!-- Transcription -->
+    <record id="purpose_transcription" model="privacy.purpose">
+        <field name="code">transcription</field>
+        <field name="name">Transcription des communications</field>
+        <field name="plain_language_summary"><![CDATA[
+            <p>Nous transcrivons (convertissons en texte) les enregistrements de nos réunions
+            pour faciliter la documentation et le suivi.</p>
+            <p><em>We transcribe (convert to text) our meeting recordings to facilitate
+            documentation and follow-up.</em></p>
+        ]]></field>
+        <field name="requires_consent" eval="True"/>
+        <field name="requires_express_opt_in" eval="True"/>
+        <!-- Loi 25: lié à l'enregistrement, même durée -->
+        <field name="default_validity_days">365</field>
+        <field name="channel_scope">video</field>
+        <field name="context_scope">meeting</field>
+        <field name="sequence">22</field>
+    </record>
+
+    <!-- Reference / Testimonial -->
+    <record id="purpose_reference" model="privacy.purpose">
+        <field name="code">reference</field>
+        <field name="name">Utilisation comme référence client</field>
+        <field name="plain_language_summary"><![CDATA[
+            <p>Nous mentionnons votre nom et/ou celui de votre entreprise comme référence
+            dans nos communications commerciales, sur notre site web ou dans nos présentations.</p>
+            <p><em>We mention your name and/or your company's name as a reference in our
+            business communications, on our website or in our presentations.</em></p>
+        ]]></field>
+        <field name="requires_consent" eval="True"/>
+        <field name="requires_express_opt_in" eval="False"/>
+        <!-- Loi 25: durée liée à la relation d'affaires. 3 ans avec révision périodique -->
+        <field name="default_validity_days">1095</field>
+        <field name="channel_scope">all</field>
+        <field name="context_scope">project</field>
+        <field name="sequence">30</field>
+    </record>
+
+    <!-- Logo Usage -->
+    <record id="purpose_logo" model="privacy.purpose">
+        <field name="code">logo</field>
+        <field name="name">Utilisation du logo</field>
+        <field name="plain_language_summary"><![CDATA[
+            <p>Nous affichons le logo de votre entreprise sur notre site web, dans nos
+            présentations ou dans nos documents commerciaux.</p>
+            <p><em>We display your company's logo on our website, in our presentations
+            or in our business documents.</em></p>
+        ]]></field>
+        <field name="requires_consent" eval="True"/>
+        <field name="requires_express_opt_in" eval="False"/>
+        <!-- Loi 25: durée liée à la relation d'affaires. 3 ans avec révision périodique -->
+        <field name="default_validity_days">1095</field>
+        <field name="channel_scope">all</field>
+        <field name="context_scope">project</field>
+        <field name="sequence">31</field>
+    </record>
+
+    <!-- Case Study -->
+    <record id="purpose_case_study" model="privacy.purpose">
+        <field name="code">case_study</field>
+        <field name="name">Étude de cas</field>
+        <field name="plain_language_summary"><![CDATA[
+            <p>Nous documentons notre collaboration dans une étude de cas qui peut inclure
+            le nom de votre entreprise, une description du projet et les résultats obtenus.</p>
+            <p><em>We document our collaboration in a case study that may include your
+            company name, project description and results achieved.</em></p>
+        ]]></field>
+        <field name="requires_consent" eval="True"/>
+        <field name="requires_express_opt_in" eval="True"/>
+        <!-- Loi 25: contenu plus permanent, 5 ans avec révision périodique -->
+        <field name="default_validity_days">1825</field>
+        <field name="channel_scope">all</field>
+        <field name="context_scope">project</field>
+        <field name="sequence">32</field>
+    </record>
+
+    <!-- Service Communications (usually not requiring consent) -->
+    <record id="purpose_service" model="privacy.purpose">
+        <field name="code">service</field>
+        <field name="name">Communications de service</field>
+        <field name="plain_language_summary"><![CDATA[
+            <p>Communications essentielles liées à la prestation de nos services : suivis de projet,
+            notifications importantes, informations contractuelles.</p>
+            <p><em>Essential communications related to our service delivery: project follow-ups,
+            important notifications, contractual information.</em></p>
+        ]]></field>
+        <field name="requires_consent" eval="False"/>
+        <field name="requires_express_opt_in" eval="False"/>
+        <field name="default_validity_days">0</field>
+        <field name="channel_scope">all</field>
+        <field name="context_scope">general</field>
+        <field name="sequence">40</field>
+    </record>
+
+    <!-- Third-party Sharing -->
+    <record id="purpose_third_party" model="privacy.purpose">
+        <field name="code">third_party</field>
+        <field name="name">Partage avec des tiers</field>
+        <field name="plain_language_summary"><![CDATA[
+            <p>Nous partageons certaines de vos informations avec des partenaires ou
+            sous-traitants pour la réalisation de nos services. Ces tiers sont tenus
+            aux mêmes obligations de confidentialité.</p>
+            <p><em>We share some of your information with partners or subcontractors
+            to deliver our services. These third parties are bound by the same
+            confidentiality obligations.</em></p>
+        ]]></field>
+        <field name="requires_consent" eval="True"/>
+        <field name="requires_express_opt_in" eval="False"/>
+        <field name="default_validity_days">365</field>
+        <field name="channel_scope">all</field>
+        <field name="context_scope">general</field>
+        <field name="sequence">50</field>
+    </record>
+
+    <!-- Software / Agent Installation (F-03) - LCAP/CASL -->
+    <record id="purpose_software_install" model="privacy.purpose">
+        <field name="code">agent</field>
+        <field name="name">Installation d'agent Your Company</field>
+        <field name="plain_language_summary"><![CDATA[
+            <p>Your Company souhaite installer un ou des programmes dans le cadre d'un mandat professionnel,
+            sur un ordinateur, un serveur ou un autre dispositif dont vous avez la gestion ou la responsabilité.</p>
+            <p>Ce consentement est requis par la <strong>Loi canadienne anti-pourriel (LCAP)</strong> pour
+            l'installation de programmes d'ordinateur dans le cadre d'activités commerciales.</p>
+            <p>Les fins possibles incluent :</p>
+            <ul>
+                <li>Sauvegarde et restauration de données</li>
+                <li>Supervision / monitoring de l'état du système</li>
+                <li>Télémaintenance / assistance à distance</li>
+                <li>Sécurité (ex. agent antivirus, agent EDR)</li>
+            </ul>
+            <p>Your Company ne configure ce programme que pour les fins strictement nécessaires au mandat,
+            et prend des mesures pour limiter les données collectées au minimum requis.</p>
+            <hr/>
+            <p><em>Your Company wishes to install one or more programs as part of a professional mandate,
+            on a computer, server or other device that you manage or are responsible for.</em></p>
+            <p><em>This consent is required by <strong>Canada's Anti-Spam Legislation (CASL)</strong> for
+            the installation of computer programs in the course of commercial activities.</em></p>
+            <p><em>Possible purposes include:</em></p>
+            <ul>
+                <li><em>Data backup and restore</em></li>
+                <li><em>Supervision / monitoring of system status</em></li>
+                <li><em>Remote maintenance / remote assistance</em></li>
+                <li><em>Security (e.g., antivirus agent, EDR agent)</em></li>
+            </ul>
+            <p><em>Your Company configures this program only for strictly necessary purposes for the mandate,
+            and takes measures to limit the data collected to the minimum required.</em></p>
+        ]]></field>
+        <field name="requires_consent" eval="True"/>
+        <field name="requires_express_opt_in" eval="True"/>
+        <!-- LCAP/CASL: consent tied to mandate duration, 0 = no fixed expiration -->
+        <field name="default_validity_days">0</field>
+        <field name="channel_scope">all</field>
+        <field name="context_scope">project</field>
+        <field name="sequence">60</field>
+    </record>
+
+    <!-- High-Risk Processing / Sensitive Data (F-07) -->
+    <record id="purpose_high_risk" model="privacy.purpose">
+        <field name="code">sensibles</field>
+        <field name="name">Traitements à risque élevé &amp; données sensibles</field>
+        <field name="plain_language_summary"><![CDATA[
+            <p>Ce consentement vise le traitement de renseignements personnels présentant un
+            <strong>risque élevé</strong> pour votre vie privée, en raison de la nature sensible
+            des données ou du contexte.</p>
+            <p>Les catégories de renseignements concernés peuvent inclure :</p>
+            <ul>
+                <li>Données de santé ou d'évaluation psychosociale</li>
+                <li>Données financières détaillées (revenus personnels, dettes, etc.)</li>
+                <li>Renseignements biométriques</li>
+                <li>Données sur des enfants / mineurs</li>
+                <li>Autres données particulièrement sensibles</li>
+            </ul>
+            <p>Your Company s'engage à n'entreprendre ce traitement que si cela est
+            <strong>strictement nécessaire</strong> et adéquatement protégé.</p>
+            <hr/>
+            <p><em>This consent applies to the processing of personal information presenting a
+            <strong>high risk</strong> to your privacy, due to the sensitive nature of the data
+            or the context.</em></p>
+            <p><em>The categories of information involved may include:</em></p>
+            <ul>
+                <li><em>Health data or psychosocial assessment data</em></li>
+                <li><em>Detailed financial data (personal income, debts, etc.)</em></li>
+                <li><em>Biometric information</em></li>
+                <li><em>Data about children / minors</em></li>
+                <li><em>Other particularly sensitive data</em></li>
+            </ul>
+            <p><em>Your Company undertakes to carry out this processing only if it is
+            <strong>strictly necessary</strong> and adequately protected.</em></p>
+        ]]></field>
+        <field name="requires_consent" eval="True"/>
+        <field name="requires_express_opt_in" eval="True"/>
+        <!-- Loi 25: explicit consent, reviewed annually -->
+        <field name="default_validity_days">365</field>
+        <field name="channel_scope">all</field>
+        <field name="context_scope">general</field>
+        <field name="sequence">70</field>
+    </record>
+
+    <!-- Internal Training -->
+    <record id="purpose_training" model="privacy.purpose">
+        <field name="code">training</field>
+        <field name="name">Formation interne Your Company</field>
+        <field name="plain_language_summary"><![CDATA[
+            <p>Your Company peut souhaiter utiliser des extraits de rencontres, ateliers ou sessions de travail
+            à des <strong>fins de formation interne</strong> pour son équipe. Cela peut inclure :</p>
+            <ul>
+                <li>Des enregistrements vidéo ou audio de rencontres/ateliers;</li>
+                <li>Des transcriptions ou résumés de sessions;</li>
+                <li>Des captures d'écran ou démonstrations techniques.</li>
+            </ul>
+            <p>Ce contenu est utilisé <strong>exclusivement à l'interne</strong> et n'est pas partagé
+            publiquement. Votre consentement est requis avant toute utilisation.</p>
+            <hr/>
+            <p><em>Your Company may wish to use excerpts from meetings, workshops or work sessions
+            for <strong>internal training</strong> purposes for its team. This may include:</em></p>
+            <ul>
+                <li><em>Video or audio recordings of meetings/workshops;</em></li>
+                <li><em>Transcriptions or session summaries;</em></li>
+                <li><em>Screenshots or technical demonstrations.</em></li>
+            </ul>
+            <p><em>This content is used <strong>exclusively internally</strong> and is not shared
+            publicly. Your consent is required before any use.</em></p>
+        ]]></field>
+        <field name="requires_consent" eval="True"/>
+        <field name="requires_express_opt_in" eval="True"/>
+        <field name="default_validity_days">365</field>
+        <field name="channel_scope">video</field>
+        <field name="context_scope">meeting</field>
+        <field name="sequence">25</field>
+    </record>
+
+    <!-- ================================================================ -->
+    <!-- CPE-SPECIFIC PURPOSES                                            -->
+    <!-- ================================================================ -->
+
+    <!-- Administration de médicaments -->
+    <record id="purpose_medicaments" model="privacy.purpose">
+        <field name="code">medicaments</field>
+        <field name="name">Administration de médicaments</field>
+        <field name="plain_language_summary"><![CDATA[
+            <p>Nous avons besoin de votre <strong>autorisation écrite</strong> pour administrer
+            des médicaments à votre enfant pendant sa présence au CPE :</p>
+            <ul>
+                <li><strong>Médicaments prescrits</strong> (antibiotiques, pompes, EpiPen, etc.);</li>
+                <li><strong>Médicaments en vente libre</strong> (acétaminophène, ibuprofène) selon le protocole;</li>
+                <li><strong>Insectifuge et crème solaire</strong> fournis par le parent.</li>
+            </ul>
+            <p>L'administration est effectuée par du personnel formé, selon un protocole
+            strict et le formulaire d'autorisation médicale du CPE.</p>
+            <hr/>
+            <p><em>We need your <strong>written authorization</strong> to administer
+            medication to your child while at the CPE:</em></p>
+            <ul>
+                <li><em><strong>Prescribed medication</strong> (antibiotics, pumps, EpiPen, etc.);</em></li>
+                <li><em><strong>Over-the-counter medication</strong> (acetaminophen, ibuprofen) per protocol;</em></li>
+                <li><em><strong>Insect repellent and sunscreen</strong> provided by the parent.</em></li>
+            </ul>
+            <p><em>Administration is performed by trained staff, following a strict protocol
+            and the CPE's medical authorization form.</em></p>
+        ]]></field>
+        <field name="requires_consent" eval="True"/>
+        <field name="requires_express_opt_in" eval="True"/>
+        <field name="default_validity_days">365</field>
+        <field name="channel_scope">all</field>
+        <field name="context_scope">general</field>
+        <field name="sequence">15</field>
+    </record>
+
+    <!-- Sorties éducatives -->
+    <record id="purpose_sorties" model="privacy.purpose">
+        <field name="code">sorties</field>
+        <field name="name">Sorties éducatives et excursions</field>
+        <field name="plain_language_summary"><![CDATA[
+            <p>Nous organisons des <strong>sorties éducatives</strong> à l'extérieur des
+            locaux du CPE. Votre consentement est requis pour la participation de votre enfant :</p>
+            <ul>
+                <li><strong>Sorties de quartier :</strong> parc, bibliothèque, caserne de pompiers;</li>
+                <li><strong>Sorties spéciales :</strong> ferme, musée, théâtre, cabane à sucre;</li>
+                <li><strong>Activités extérieures :</strong> promenades, jeux au parc.</li>
+            </ul>
+            <p>Le CPE assure un ratio éducatrice/enfants conforme à la réglementation pour
+            chaque sortie. Un avis spécifique est envoyé avant chaque sortie avec les détails.</p>
+            <hr/>
+            <p><em>We organize <strong>educational outings</strong> outside CPE premises.
+            Your consent is required for your child's participation:</em></p>
+            <ul>
+                <li><em><strong>Neighbourhood outings:</strong> park, library, fire station;</em></li>
+                <li><em><strong>Special outings:</strong> farm, museum, theatre, sugar shack;</em></li>
+                <li><em><strong>Outdoor activities:</strong> walks, playground.</em></li>
+            </ul>
+            <p><em>The CPE ensures an educator/child ratio compliant with regulations for
+            each outing. A specific notice is sent before each outing with details.</em></p>
+        ]]></field>
+        <field name="requires_consent" eval="True"/>
+        <field name="requires_express_opt_in" eval="True"/>
+        <field name="default_validity_days">365</field>
+        <field name="channel_scope">all</field>
+        <field name="context_scope">general</field>
+        <field name="sequence">16</field>
+    </record>
+
+    <!-- Baignades et activités aquatiques -->
+    <record id="purpose_baignades" model="privacy.purpose">
+        <field name="code">baignades</field>
+        <field name="name">Baignades et activités aquatiques</field>
+        <field name="plain_language_summary"><![CDATA[
+            <p>Certaines activités du CPE incluent des <strong>jeux d'eau ou des baignades</strong>.
+            En raison des risques associés, votre consentement exprès est requis :</p>
+            <ul>
+                <li><strong>Jeux d'eau :</strong> arroseurs, tables d'eau, pataugeoire;</li>
+                <li><strong>Baignades supervisées :</strong> piscine municipale ou privée;</li>
+                <li><strong>Sorties à la plage ou au lac</strong> (le cas échéant).</li>
+            </ul>
+            <p>Le CPE respecte les ratios de surveillance prescrits par le Règlement sur les
+            services de garde éducatifs à l'enfance. Du personnel qualifié en secourisme
+            aquatique est présent lors de toute activité de baignade.</p>
+            <hr/>
+            <p><em>Some CPE activities include <strong>water play or swimming</strong>.
+            Due to associated risks, your express consent is required:</em></p>
+            <ul>
+                <li><em><strong>Water play:</strong> sprinklers, water tables, wading pool;</em></li>
+                <li><em><strong>Supervised swimming:</strong> municipal or private pool;</em></li>
+                <li><em><strong>Beach or lake outings</strong> (where applicable).</em></li>
+            </ul>
+            <p><em>The CPE complies with supervision ratios prescribed by the Educational
+            Childcare Regulation. Staff qualified in aquatic first aid is present during
+            all swimming activities.</em></p>
+        ]]></field>
+        <field name="requires_consent" eval="True"/>
+        <field name="requires_express_opt_in" eval="True"/>
+        <field name="default_validity_days">365</field>
+        <field name="channel_scope">all</field>
+        <field name="context_scope">general</field>
+        <field name="sequence">17</field>
+    </record>
+
+    <!-- Transport des enfants -->
+    <record id="purpose_transport" model="privacy.purpose">
+        <field name="code">transport</field>
+        <field name="name">Transport des enfants</field>
+        <field name="plain_language_summary"><![CDATA[
+            <p>Votre consentement est requis pour le <strong>transport de votre enfant</strong>
+            dans le cadre des activités du CPE :</p>
+            <ul>
+                <li><strong>Autobus scolaire ou nolisé :</strong> pour les sorties éducatives;</li>
+                <li><strong>Transport en commun :</strong> pour certaines sorties de groupe;</li>
+                <li><strong>Véhicule du CPE :</strong> le cas échéant.</li>
+            </ul>
+            <p>Tous les véhicules utilisés sont conformes aux normes de sécurité en vigueur.
+            Les sièges d'auto appropriés sont utilisés conformément au Code de la sécurité routière.</p>
+            <hr/>
+            <p><em>Your consent is required for <strong>transporting your child</strong>
+            as part of CPE activities:</em></p>
+            <ul>
+                <li><em><strong>School or chartered bus:</strong> for educational outings;</em></li>
+                <li><em><strong>Public transit:</strong> for certain group outings;</em></li>
+                <li><em><strong>CPE vehicle:</strong> where applicable.</em></li>
+            </ul>
+            <p><em>All vehicles used comply with current safety standards.
+            Appropriate car seats are used in accordance with the Highway Safety Code.</em></p>
+        ]]></field>
+        <field name="requires_consent" eval="True"/>
+        <field name="requires_express_opt_in" eval="True"/>
+        <field name="default_validity_days">365</field>
+        <field name="channel_scope">all</field>
+        <field name="context_scope">general</field>
+        <field name="sequence">18</field>
+    </record>
+
+    <!-- Personnes autorisées à récupérer l'enfant -->
+    <record id="purpose_autorisation_depart" model="privacy.purpose">
+        <field name="code">depart</field>
+        <field name="name">Personnes autorisées à récupérer l'enfant</field>
+        <field name="plain_language_summary"><![CDATA[
+            <p>Le CPE doit consigner les <strong>personnes autorisées à venir chercher
+            votre enfant</strong>. Ce consentement porte sur :</p>
+            <ul>
+                <li><strong>Liste des personnes autorisées :</strong> nom, lien avec l'enfant,
+                numéro de téléphone, pièce d'identité;</li>
+                <li><strong>Cas d'urgence :</strong> personne à contacter si les parents
+                ne sont pas joignables;</li>
+                <li><strong>Restrictions :</strong> personnes non autorisées (le cas échéant,
+                ordonnance de la cour).</li>
+            </ul>
+            <p>Ces renseignements sont essentiels à la <strong>sécurité de votre enfant</strong>
+            et sont accessibles uniquement au personnel du CPE.</p>
+            <hr/>
+            <p><em>The CPE must record the <strong>persons authorized to pick up
+            your child</strong>. This consent covers:</em></p>
+            <ul>
+                <li><em><strong>List of authorized persons:</strong> name, relationship to child,
+                phone number, identification;</em></li>
+                <li><em><strong>Emergency cases:</strong> person to contact if parents
+                are unreachable;</em></li>
+                <li><em><strong>Restrictions:</strong> unauthorized persons (if applicable,
+                court order).</em></li>
+            </ul>
+            <p><em>This information is essential for <strong>your child's safety</strong>
+            and is accessible only to CPE staff.</em></p>
+        ]]></field>
+        <field name="requires_consent" eval="True"/>
+        <field name="requires_express_opt_in" eval="False"/>
+        <field name="default_validity_days">365</field>
+        <field name="channel_scope">all</field>
+        <field name="context_scope">general</field>
+        <field name="sequence">19</field>
+    </record>
+
+    <!-- Captation vidéo / surveillance -->
+    <record id="purpose_surveillance" model="privacy.purpose">
+        <field name="code">surveillance</field>
+        <field name="name">Vidéosurveillance des locaux</field>
+        <field name="plain_language_summary"><![CDATA[
+            <p>Le CPE utilise un système de <strong>vidéosurveillance</strong> dans certaines
+            zones de ses locaux à des fins de <strong>sécurité</strong> :</p>
+            <ul>
+                <li><strong>Entrées et sorties :</strong> contrôle d'accès;</li>
+                <li><strong>Aires communes :</strong> couloirs, cour extérieure;</li>
+                <li><strong>Stationnement</strong> (le cas échéant).</li>
+            </ul>
+            <p>Les caméras ne sont <strong>pas installées</strong> dans les locaux de jeu,
+            les salles de repos ni les salles de bain. Les enregistrements sont conservés
+            pour une durée maximale de 30 jours, sauf en cas d'incident.</p>
+            <hr/>
+            <p><em>The CPE uses a <strong>video surveillance</strong> system in certain
+            areas of its premises for <strong>security</strong> purposes:</em></p>
+            <ul>
+                <li><em><strong>Entrances and exits:</strong> access control;</em></li>
+                <li><em><strong>Common areas:</strong> hallways, outdoor yard;</em></li>
+                <li><em><strong>Parking lot</strong> (where applicable).</em></li>
+            </ul>
+            <p><em>Cameras are <strong>not installed</strong> in play areas, rest rooms
+            or bathrooms. Recordings are kept for a maximum of 30 days, except in case
+            of an incident.</em></p>
+        ]]></field>
+        <field name="requires_consent" eval="False"/>
+        <field name="requires_express_opt_in" eval="False"/>
+        <field name="default_validity_days">0</field>
+        <field name="channel_scope">all</field>
+        <field name="context_scope">general</field>
+        <field name="sequence">55</field>
+    </record>
+</odoo>

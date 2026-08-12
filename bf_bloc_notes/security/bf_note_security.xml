@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- Lecture : auteur OU note partagée -->
+        <record id="bf_note_rule_read" model="ir.rule">
+            <field name="name">Notes : lecture (auteur ou partagée)</field>
+            <field name="model_id" ref="model_bf_note"/>
+            <field name="domain_force">['|', ('user_id', '=', user.id), ('is_shared', '=', True)]</field>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- Écriture / suppression : auteur seul -->
+        <record id="bf_note_rule_write" model="ir.rule">
+            <field name="name">Notes : modification (auteur seul)</field>
+            <field name="model_id" ref="model_bf_note"/>
+            <field name="domain_force">[('user_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+            <field name="perm_read" eval="False"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+        <record id="bf_note_rule_admin" model="ir.rule">
+            <field name="name">Notes : admin tout voir</field>
+            <field name="model_id" ref="model_bf_note"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('base.group_system'))]"/>
+        </record>
+
+        <!-- Lien : suit la visibilité de la note parent -->
+        <record id="bf_note_link_rule_read" model="ir.rule">
+            <field name="name">Liens de notes : lecture</field>
+            <field name="model_id" ref="model_bf_note_link"/>
+            <field name="domain_force">['|', ('note_id.user_id', '=', user.id), ('note_id.is_shared', '=', True)]</field>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="bf_note_link_rule_write" model="ir.rule">
+            <field name="name">Liens de notes : modification (auteur seul)</field>
+            <field name="model_id" ref="model_bf_note_link"/>
+            <field name="domain_force">[('note_id.user_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+            <field name="perm_read" eval="False"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+    </data>
+</odoo>

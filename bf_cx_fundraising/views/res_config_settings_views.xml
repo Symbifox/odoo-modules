@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="res_config_settings_view_form" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.bf.cx.fundraising</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="bf_cx.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//block[@name='bf_cx_loop_block']" position="inside">
+                <setting string="Sondage expérience donateur"
+                         help="Quand un don est validé, envoyer le sondage de ce programme au donateur (une fois par don, garde-fou anti-sursollicitation appliqué ; cadence minimale du programme recommandée : 90 jours).">
+                    <field name="bf_cx_donor_program_id"/>
+                </setting>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Certificat de consentement (brand&#233; Consentement.Quebec) -->
+    <template id="report_consent_certificate_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-set="framework" t-value="o.consent_id.get_framework()"/>
+                <div class="article" style="font-family: 'Segoe UI', Arial, sans-serif; color: #1a1a1a;">
+                    <!-- En-t&#234;te brand&#233; -->
+                    <div style="text-align: center; margin-bottom: 24px; border-bottom: 3px solid #32373c; padding-bottom: 16px;">
+                        <div style="font-size: 28px; font-weight: 700; color: #32373c; letter-spacing: 1px;">
+                            CONSENTEMENT.QUEBEC
+                        </div>
+                        <div style="font-size: 11px; color: #6B7280; margin-top: 4px; letter-spacing: 0.5px;">
+                            CERTIFICAT DE CONSENTEMENT &#8212; <t t-esc="framework.law_short_label"/>
+                        </div>
+                    </div>
+
+                    <!-- Titre de l'action -->
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        <h2 style="color: #000000; font-size: 20px; font-weight: 600; margin: 0;">
+                            <t t-if="o.consent_action == 'grant'">CERTIFICAT DE CONSENTEMENT ACCORD&#201;</t>
+                            <t t-elif="o.consent_action == 'refuse'">CERTIFICAT DE CONSENTEMENT REFUS&#201;</t>
+                            <t t-elif="o.consent_action == 'withdraw'">CERTIFICAT DE RETRAIT DE CONSENTEMENT</t>
+                            <t t-elif="o.consent_action == 'renew'">CERTIFICAT DE RENOUVELLEMENT DE CONSENTEMENT</t>
+                            <t t-else="">CERTIFICAT D'ACTION DE CONSENTEMENT</t>
+                        </h2>
+                        <div style="font-size: 11px; color: #9CA3AF; margin-top: 4px; font-style: italic;">
+                            <t t-if="o.consent_action == 'grant'">CONSENT GRANTED CERTIFICATE</t>
+                            <t t-elif="o.consent_action == 'refuse'">CONSENT REFUSED CERTIFICATE</t>
+                            <t t-elif="o.consent_action == 'withdraw'">CONSENT WITHDRAWAL CERTIFICATE</t>
+                            <t t-elif="o.consent_action == 'renew'">CONSENT RENEWAL CERTIFICATE</t>
+                            <t t-else="">CONSENT ACTION CERTIFICATE</t>
+                        </div>
+                    </div>
+
+                    <!-- R&#233;f&#233;rence -->
+                    <div style="text-align: center; margin-bottom: 24px;">
+                        <div style="display: inline-block; background-color: #f3f4f6; padding: 10px 20px; border-radius: 6px; border: 1px solid #e5e7eb;">
+                            <span style="font-size: 11px; color: #6B7280;">R&#233;f&#233;rence :</span>
+                            <span style="font-size: 14px; font-weight: 600; color: #32373c;">
+                                CONS-<t t-esc="o.consent_id.id"/>-<t t-esc="o.id"/>
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Personne concern&#233;e -->
+                    <div style="margin-bottom: 20px;">
+                        <h4 style="font-size: 13px; font-weight: 700; color: #32373c; border-bottom: 2px solid #32373c; padding-bottom: 6px; margin-bottom: 12px;">
+                            PERSONNE CONCERN&#201;E / DATA SUBJECT
+                        </h4>
+                        <table style="width: 100%; border-collapse: collapse;">
+                            <tr>
+                                <td style="width: 35%; padding: 6px 0; font-size: 12px; color: #6B7280;">Nom / Name</td>
+                                <td style="padding: 6px 0; font-size: 12px; font-weight: 600;">
+                                    <t t-esc="o.consent_id.subject_partner_id.name"/>
+                                </td>
+                            </tr>
+                            <tr t-if="o.consent_id.is_minor and o.consent_id.given_by_partner_ids">
+                                <td style="padding: 6px 0; font-size: 12px; color: #6B7280;">Responsable(s) l&#233;gal(aux) / Legal guardian(s)</td>
+                                <td style="padding: 6px 0; font-size: 12px; font-weight: 600;">
+                                    <t t-foreach="o.consent_id.given_by_partner_ids" t-as="guardian">
+                                        <t t-esc="guardian.name"/><t t-if="not guardian_last">, </t>
+                                    </t>
+                                </td>
+                            </tr>
+                            <tr t-if="o.consent_id.is_minor">
+                                <td style="padding: 6px 0; font-size: 12px; color: #6B7280;">Personne mineure / Minor</td>
+                                <td style="padding: 6px 0; font-size: 12px;">
+                                    <span style="background: #fef3c7; padding: 2px 8px; border-radius: 4px; font-size: 11px;">Oui / Yes</span>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <!-- D&#233;tails du consentement -->
+                    <div style="margin-bottom: 20px;">
+                        <h4 style="font-size: 13px; font-weight: 700; color: #32373c; border-bottom: 2px solid #32373c; padding-bottom: 6px; margin-bottom: 12px;">
+                            D&#201;TAILS DU CONSENTEMENT / CONSENT DETAILS
+                        </h4>
+                        <table style="width: 100%; border-collapse: collapse;">
+                            <tr>
+                                <td style="width: 35%; padding: 6px 0; font-size: 12px; color: #6B7280;">Objet / Purpose</td>
+                                <td style="padding: 6px 0; font-size: 12px; font-weight: 600;">
+                                    <t t-esc="o.consent_id.purpose_id.name or 'N/A'"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 6px 0; font-size: 12px; color: #6B7280;">Mod&#232;le / Notice</td>
+                                <td style="padding: 6px 0; font-size: 12px;">
+                                    <t t-esc="o.consent_id.notice_id.name or 'N/A'"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 6px 0; font-size: 12px; color: #6B7280;">Action</td>
+                                <td style="padding: 6px 0; font-size: 12px;">
+                                    <t t-if="o.consent_action == 'grant'">
+                                        <span style="background: #d1fae5; color: #065f46; padding: 2px 10px; border-radius: 4px; font-weight: 600; font-size: 11px;">ACCORD&#201; / GRANTED</span>
+                                    </t>
+                                    <t t-elif="o.consent_action == 'refuse'">
+                                        <span style="background: #fee2e2; color: #991b1b; padding: 2px 10px; border-radius: 4px; font-weight: 600; font-size: 11px;">REFUS&#201; / REFUSED</span>
+                                    </t>
+                                    <t t-elif="o.consent_action == 'withdraw'">
+                                        <span style="background: #fef3c7; color: #92400e; padding: 2px 10px; border-radius: 4px; font-weight: 600; font-size: 11px;">RETIR&#201; / WITHDRAWN</span>
+                                    </t>
+                                    <t t-elif="o.consent_action == 'renew'">
+                                        <span style="background: #dbeafe; color: #1e40af; padding: 2px 10px; border-radius: 4px; font-weight: 600; font-size: 11px;">RENOUVEL&#201; / RENEWED</span>
+                                    </t>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 6px 0; font-size: 12px; color: #6B7280;">Date et heure / Date and time</td>
+                                <td style="padding: 6px 0; font-size: 12px;">
+                                    <t t-esc="o.collected_at" t-options="{'widget': 'datetime'}"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 6px 0; font-size: 12px; color: #6B7280;">M&#233;thode de collecte / Collection method</td>
+                                <td style="padding: 6px 0; font-size: 12px;">
+                                    <t t-if="o.access_type == 'portal_authenticated'">Portail (authentifi&#233;)</t>
+                                    <t t-elif="o.access_type == 'portal_public'">Lien s&#233;curis&#233; par courriel</t>
+                                    <t t-else=""><t t-esc="o.access_type or 'N/A'"/></t>
+                                </td>
+                            </tr>
+                            <tr t-if="o.consent_id.expires_at">
+                                <td style="padding: 6px 0; font-size: 12px; color: #6B7280;">Expiration</td>
+                                <td style="padding: 6px 0; font-size: 12px;">
+                                    <t t-esc="o.consent_id.expires_at" t-options="{'widget': 'date'}"/>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <!-- Donn&#233;es probantes -->
+                    <div style="margin-bottom: 20px;">
+                        <h4 style="font-size: 13px; font-weight: 700; color: #32373c; border-bottom: 2px solid #32373c; padding-bottom: 6px; margin-bottom: 12px;">
+                            DONN&#201;ES PROBANTES / FORENSIC DATA
+                        </h4>
+                        <table style="width: 100%; border-collapse: collapse; font-size: 11px;">
+                            <tr t-if="o.ip_address">
+                                <td style="width: 35%; padding: 4px 0; color: #6B7280;">Adresse IP</td>
+                                <td style="padding: 4px 0; font-family: monospace;"><t t-esc="o.ip_address"/></td>
+                            </tr>
+                            <tr t-if="o.timestamp_utc">
+                                <td style="padding: 4px 0; color: #6B7280;">Horodatage UTC</td>
+                                <td style="padding: 4px 0; font-family: monospace;"><t t-esc="o.timestamp_utc"/></td>
+                            </tr>
+                            <tr t-if="o.user_agent">
+                                <td style="padding: 4px 0; color: #6B7280;">Navigateur</td>
+                                <td style="padding: 4px 0; font-family: monospace; font-size: 9px; word-break: break-all;"><t t-esc="o.user_agent"/></td>
+                            </tr>
+                            <tr t-if="o.session_id">
+                                <td style="padding: 4px 0; color: #6B7280;">Session</td>
+                                <td style="padding: 4px 0; font-family: monospace; font-size: 9px;"><t t-esc="o.session_id"/></td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <!-- Empreinte d'int&#233;grit&#233; -->
+                    <div style="margin-bottom: 20px;" t-if="o.evidence_hash">
+                        <h4 style="font-size: 13px; font-weight: 700; color: #32373c; border-bottom: 2px solid #32373c; padding-bottom: 6px; margin-bottom: 12px;">
+                            INT&#201;GRIT&#201; / INTEGRITY
+                        </h4>
+                        <div style="background-color: #f3f4f6; padding: 10px; border-radius: 6px; font-family: monospace; font-size: 9px; word-break: break-all; border: 1px solid #e5e7eb;">
+                            <strong>SHA-256 :</strong> <t t-esc="o.evidence_hash"/>
+                        </div>
+                    </div>
+
+                    <!-- Avis juridique -->
+                    <div style="margin-top: 24px; background-color: #f0f4f8; padding: 14px; border-radius: 6px; border-left: 4px solid #32373c;">
+                        <p style="font-size: 10px; font-weight: 700; color: #32373c; margin: 0 0 6px 0;">
+                            AVIS JURIDIQUE / LEGAL NOTICE
+                        </p>
+                        <p style="font-size: 9px; color: #374151; line-height: 14px; margin: 0 0 6px 0;">
+                            Ce certificat constitue une preuve de l&#8217;action de consentement enregistr&#233;e
+                            conform&#233;ment &#224; la <t t-esc="framework.law_citation_fr"/>.
+                            L&#8217;empreinte SHA-256 garantit l&#8217;int&#233;grit&#233; du document.
+                        </p>
+                        <p style="font-size: 9px; color: #6B7280; line-height: 14px; margin: 0; font-style: italic;">
+                            This certificate constitutes evidence of the consent action recorded in accordance
+                            with <t t-esc="framework.law_citation_en"/>.
+                            The SHA-256 hash ensures the document&#8217;s integrity.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Pied de page -->
+                <div class="footer" style="font-size: 9px; color: #9CA3AF; text-align: center; border-top: 1px solid #e5e7eb; padding-top: 6px;">
+                    <span style="font-weight: 600; color: #32373c;">CONSENTEMENT.QUEBEC</span>
+                    &#160;&#8212;&#160;
+                    Propuls&#233; par Your Company Name &#160;|&#160;
+                    R&#233;f. CONS-<t t-esc="o.consent_id.id"/>-<t t-esc="o.id"/>
+                    &#160;|&#160;
+                    <t t-esc="o.collected_at" t-options="{'widget': 'date'}"/>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <!-- Action du rapport -->
+    <record id="action_report_consent_certificate" model="ir.actions.report">
+        <field name="name">Certificat de consentement</field>
+        <field name="model">privacy.consent.evidence</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">privacy_consent.report_consent_certificate_document</field>
+        <field name="report_file">privacy_consent.report_consent_certificate_document</field>
+        <field name="print_report_name">'Certificat_Consentement_CONS-%s-%s' % (object.consent_id.id, object.id)</field>
+        <field name="binding_model_id" ref="model_privacy_consent_evidence"/>
+        <field name="binding_type">report</field>
+    </record>
+</odoo>

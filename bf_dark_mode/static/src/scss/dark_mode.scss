@@ -1,0 +1,810 @@
+// =============================================================================
+// Blue Fox Dark Mode — Odoo 18
+// Palette based on Blue Fox brand grays (#2E3132, #333738)
+// =============================================================================
+
+// --- Blue Fox dark palette ---
+$dk-bg:          #1a1d1e;   // deepest: body / webclient
+$dk-surface:     #2E3132;   // main surface (BF brand dark gray)
+$dk-surface-alt: #363b3c;   // slightly lighter: hover, alt rows
+$dk-raised:      #3d4344;   // raised: kanban cards, modals, quick-create
+$dk-border:      #4a5153;   // borders & separators
+$dk-border-soft: #555c5e;   // subtle borders
+$dk-text:        #d1d5d8;   // main text
+$dk-text-bright: #e8eaec;   // headings, emphasis
+$dk-text-muted:  #8e9496;   // muted / secondary
+$dk-accent:      #29ABE2;   // Blue Fox blue
+$dk-accent-dim:  rgba(41, 171, 226, 0.12);
+$dk-input-bg:    #2E3132;   // input backgrounds
+$dk-hover:       #414849;   // hover highlights
+
+// =============================================================================
+// 1. BOOTSTRAP 5 CSS VARIABLE OVERRIDES
+// =============================================================================
+body.bf_dark_mode {
+  --bs-body-bg: #{$dk-bg};
+  --bs-body-color: #{$dk-text};
+  --bs-secondary-bg: #{$dk-surface};
+  --bs-tertiary-bg: #{$dk-raised};
+  --bs-border-color: #{$dk-border};
+  --bs-border-color-translucent: rgba(74, 81, 83, 0.6);
+  --bs-emphasis-color: #{$dk-text-bright};
+  --bs-heading-color: #{$dk-text-bright};
+  --bs-link-color: #54bfe8;
+  --bs-link-hover-color: #7fd2ef;
+  --bs-code-color: #e685b5;
+  --bs-card-bg: #{$dk-surface};
+  --bs-card-border-color: #{$dk-border};
+  --bs-card-cap-bg: #{$dk-raised};
+  --bs-card-color: #{$dk-text};
+  --bs-table-bg: #{$dk-surface};
+  --bs-table-color: #{$dk-text};
+  --bs-table-border-color: #{$dk-border};
+  --bs-table-striped-bg: #{$dk-surface-alt};
+  --bs-table-hover-bg: #{$dk-hover};
+  --bs-table-active-bg: #{$dk-hover};
+  --bs-modal-bg: #{$dk-raised};
+  --bs-modal-color: #{$dk-text};
+  --bs-modal-border-color: #{$dk-border-soft};
+  --bs-modal-header-border-color: #{$dk-border};
+  --bs-modal-footer-border-color: #{$dk-border};
+  --bs-form-control-bg: #{$dk-input-bg};
+  --bs-form-select-bg: #{$dk-input-bg};
+  --bs-list-group-bg: #{$dk-surface};
+  --bs-list-group-border-color: #{$dk-border};
+  --bs-list-group-color: #{$dk-text};
+  --bs-list-group-action-hover-bg: #{$dk-hover};
+  --bs-list-group-action-active-bg: #{$dk-hover};
+  --bs-toast-bg: #{$dk-surface};
+  --bs-popover-bg: #{$dk-surface};
+  --bs-popover-border-color: #{$dk-border-soft};
+  --bs-popover-header-bg: #{$dk-raised};
+  --bs-popover-body-color: #{$dk-text};
+  --bs-tooltip-bg: #{$dk-raised};
+  --bs-tooltip-color: #{$dk-text-bright};
+  --bs-accordion-bg: #{$dk-surface};
+  --bs-accordion-border-color: #{$dk-border};
+  --bs-accordion-btn-color: #{$dk-text};
+  --bs-accordion-active-bg: #{$dk-surface-alt};
+  --bs-accordion-active-color: #{$dk-text-bright};
+  --bs-offcanvas-bg: #{$dk-surface};
+  --bs-offcanvas-color: #{$dk-text};
+  color-scheme: dark;
+}
+
+// =============================================================================
+// 2. ODOO 18 COMPONENT CSS VARIABLES
+// =============================================================================
+body.bf_dark_mode {
+  &.o_web_client,
+  .o_web_client {
+    --o-webclient-color-scheme: dark;
+  }
+  --o-view-background-color: #{$dk-surface};
+}
+
+body.bf_dark_mode .o_control_panel {
+  --ControlPanel-border-bottom: 1px solid #{$dk-border};
+}
+
+body.bf_dark_mode .o_list_renderer {
+  --ListRenderer-thead-bg-color: #{$dk-surface};
+  --ListRenderer-thead-bg-active-color: #{$dk-hover};
+  --ListRenderer-thead-border-end-color: #{$dk-border};
+  --ListRenderer-tfoot-bg-color: #{$dk-surface};
+  --table-bg: #{$dk-surface};
+}
+
+body.bf_dark_mode .o_kanban_renderer {
+  --Kanban-background: #{$dk-surface} !important;
+  --KanbanGroup-background: #{$dk-surface};
+  --KanbanColumn__highlight-background: #{$dk-accent-dim};
+  --KanbanColumn__highlight-border: #{$dk-accent};
+  --KanbanRecord__image-bg-color: #{$dk-raised};
+}
+
+body.bf_dark_mode .o_form_view {
+  --formView-sheet-border-width: 1px;
+  --o-input-border-color: #{$dk-border};
+  --o-input-background-color: #{$dk-input-bg};
+}
+
+body.bf_dark_mode {
+  --o-input-border-color: #{$dk-border};
+  --o-caret-color: #{$dk-text};
+}
+
+body.bf_dark_mode .o_main_navbar {
+  --NavBar-entry-color: #{$dk-text-bright};
+  --NavBar-entry-color--hover: white;
+  --NavBar-entry-backgroundColor--hover: #{$dk-hover};
+}
+
+body.bf_dark_mode .o_calendar_renderer {
+  --o-cw-border-color: #{$dk-border} !important;
+}
+
+body.bf_dark_mode .o_base_settings_view .o_form_renderer {
+  --settings__tab-bg: #{$dk-raised};
+  --settings__tab-bg--active: #{$dk-surface-alt};
+  --settings__tab-color: #{$dk-text};
+  --settings__title-bg: #{$dk-surface};
+}
+
+// =============================================================================
+// 3. BOOTSTRAP UTILITY OVERRIDES
+// =============================================================================
+body.bf_dark_mode {
+  .bg-white      { background-color: $dk-surface !important; }
+  .bg-light      { background-color: $dk-surface !important; }
+  .bg-body       { background-color: $dk-bg !important; }
+  .bg-body-tertiary  { background-color: $dk-raised !important; }
+  .bg-body-secondary { background-color: $dk-surface-alt !important; }
+  .bg-view, .text-bg-view { background-color: $dk-surface !important; color: $dk-text !important; }
+  .bg-100        { background-color: $dk-surface !important; color: $dk-text; }
+  .bg-200        { background-color: $dk-surface-alt !important; }
+  .bg-info       { background-color: $dk-surface !important; }
+  .text-body     { color: $dk-text !important; }
+  .text-dark     { color: $dk-text !important; }
+  .text-black    { color: $dk-text-bright !important; }
+  .text-muted    { color: $dk-text-muted !important; }
+  .text-body-secondary { color: $dk-text-muted !important; }
+  .text-body-tertiary  { color: $dk-text-muted !important; }
+  .text-700      { color: $dk-text !important; }
+  .border        { border-color: $dk-border !important; }
+  .border-bottom { border-bottom-color: $dk-border !important; color: inherit; }
+  .border-top    { border-top-color: $dk-border !important; }
+  .border-start  { border-left-color: $dk-border !important; }
+  .border-end    { border-right-color: $dk-border !important; }
+}
+
+// =============================================================================
+// 4. GLOBAL STRUCTURE
+// =============================================================================
+body.bf_dark_mode {
+  background-color: $dk-bg;
+
+  &.o_web_client {
+    background-color: $dk-bg;
+  }
+
+  // Home menu
+  &.o_home_menu_background {
+    background-color: $dk-bg;
+    --homeMenu-bg-color: #{$dk-bg};
+    --homeMenu-bg-image: none;
+
+    .o_home_menu .o_app .o_caption {
+      color: $dk-text-bright !important;
+      text-shadow: none !important;
+    }
+  }
+
+  .o_content          { background-color: $dk-bg; color: $dk-text; }
+  .o_action_manager   { background-color: $dk-bg; }
+  .o_action           { background-color: $dk-bg; color: $dk-text; }
+  .o_view_controller  { background-color: $dk-bg; color: $dk-text; }
+
+  // Generic headings, labels
+  h1, h2, h3, h4, h5, h6 { color: $dk-text-bright !important; }
+  label { color: $dk-text !important; }
+  p { color: $dk-text; }
+  b, strong { color: $dk-text-bright; }
+
+  .row { color: $dk-text; }
+
+  // Scrollbar
+  ::-webkit-scrollbar       { background: $dk-bg; width: 8px; height: 8px; }
+  ::-webkit-scrollbar-thumb { background-color: $dk-border; border-radius: 4px;
+    &:hover { background-color: $dk-text-muted; }
+  }
+  ::-webkit-scrollbar-track { background: $dk-bg; }
+
+  ::selection { background-color: rgba(41, 171, 226, 0.3); color: $dk-text-bright; }
+  ::placeholder { color: $dk-text-muted; }
+
+  // Links
+  a:not(.btn):not([class*="text-"]):not(.badge) {
+    color: #47b8e5;
+  }
+}
+
+// =============================================================================
+// 5. NAVBAR
+// =============================================================================
+body.bf_dark_mode {
+  .o_main_navbar {
+    background: $dk-surface;
+    border-color: $dk-border;
+    border: none;
+
+    .o_menu_toggle, .o_menu_brand, .o_nav_entry, .dropdown-toggle {
+      color: #ffffff;
+      background-color: $dk-surface;
+    }
+    .o_menu_brand { color: $dk-text-bright; }
+
+    > ul > li > a, > ul > li > label { color: $dk-text; }
+    > ul > li > a:hover, > ul > li > label:hover {
+      background: $dk-hover !important;
+      color: $dk-text-bright !important;
+    }
+
+    .show .dropdown-toggle {
+      background: $dk-hover !important;
+      color: $dk-text-bright !important;
+    }
+
+    .o_menu_apps .dropdown.show .dropdown-menu {
+      background: $dk-surface !important;
+      border: 0 !important;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+    }
+    .o_menu_apps .dropdown .fa.fa-bars { color: $dk-text-bright; }
+  }
+
+  .o_main_navbar .o_menu_apps .dropdown.show .dropdown-menu.show .dropdown-item.o_app.active {
+    background-color: $dk-hover;
+  }
+}
+
+// =============================================================================
+// 6. CONTROL PANEL & SEARCH
+// =============================================================================
+body.bf_dark_mode {
+  .o_control_panel {
+    background-color: $dk-surface !important;
+    border-bottom: 1px solid $dk-border;
+    color: white !important;
+  }
+
+  .breadcrumb {
+    background-color: transparent !important;
+    .breadcrumb-item { color: $dk-text;
+      &.active { color: $dk-text-muted; }
+      + .breadcrumb-item::before { color: $dk-text-muted; }
+    }
+  }
+
+  .o_searchview {
+    background-color: $dk-surface;
+    border: 1px solid $dk-border-soft;
+    .o_searchview_input { background-color: $dk-surface; color: $dk-text; }
+    .o_searchview_facet { background: $dk-raised; border-color: $dk-border;
+      .o_searchview_facet_label { background-color: $dk-accent; color: black; }
+    }
+  }
+
+  .o_search_bar_menu {
+    background-color: $dk-surface;
+    border-color: $dk-border;
+    color: $dk-text;
+    .o_dropdown_container { border-color: $dk-border; }
+  }
+
+  .o_search_panel {
+    background-color: $dk-surface;
+    border-right: 1px solid $dk-border;
+    color: $dk-text;
+    .o_search_panel_label { color: $dk-text; }
+    .o_search_panel_section_header { color: $dk-text-bright; }
+  }
+
+  .o_cp_bottom_right .dropdown-toggle {
+    background-color: $dk-surface !important;
+    color: white !important;
+  }
+}
+
+// =============================================================================
+// 7. DROPDOWN MENUS
+// =============================================================================
+body.bf_dark_mode {
+  .dropdown-menu {
+    background-color: $dk-surface !important;
+    border: 1px solid $dk-border-soft !important;
+    box-shadow: 0 0 20px 4px rgba(0,0,0,0.25) !important;
+  }
+  .dropdown-item {
+    color: $dk-text;
+    &:hover { background-color: $dk-hover; color: $dk-text-bright !important; }
+    &:active { background-color: $dk-hover; color: $dk-text-bright !important; }
+    &:focus { background-color: $dk-hover; color: $dk-text-bright !important; }
+  }
+  .dropdown-header { color: $dk-text-muted; }
+  .dropdown-divider { border-color: $dk-border; }
+
+  .o-dropdown--menu .dropdown-toggle.focus,
+  .o-dropdown--menu .dropdown-item.focus {
+    background-color: $dk-hover !important;
+    color: $dk-text-bright;
+  }
+}
+
+// =============================================================================
+// 8. FORM VIEW
+// =============================================================================
+body.bf_dark_mode {
+  .o_form_view { background-color: $dk-surface; }
+  .o_form_sheet_bg { background-color: $dk-surface !important; }
+  .o_form_sheet { background: $dk-surface; border-color: $dk-border-soft; }
+  .o_form_nosheet { background-color: $dk-raised; color: $dk-text; }
+
+  .o_form_statusbar {
+    background-color: $dk-surface;
+    border-bottom-color: $dk-border;
+  }
+
+  // Status bar arrow buttons
+  .o_field_statusbar > .o_statusbar_status > .o_arrow_button {
+    &.o_arrow_button_current:not(.d-none):disabled {
+      background-color: $dk-surface; border-color: $dk-text; color: $dk-text;
+    }
+    &:not(.d-none):disabled:not(.o_arrow_button_current) {
+      color: $dk-text-muted;
+    }
+    &.btn-secondary:disabled { background: $dk-surface !important; }
+    &:not(:first-child):after { border-left-color: $dk-border-soft; }
+    &:not(:first-child):before { border-left-color: $dk-border; }
+    &:not(.disabled):hover { background: $dk-hover !important; color: #ffffff !important; }
+  }
+
+  .o_statusbar_buttons .btn-secondary { border: 1.5px solid $dk-border !important; }
+
+  // Sheet elements
+  .oe_button_box {
+    background-color: $dk-surface;
+    box-shadow: inset 0 -1px 0 $dk-border;
+    .oe_stat_button {
+      background-color: $dk-surface;
+      border-color: $dk-border;
+      color: $dk-text;
+      .o_button_icon, .o_stat_info .o_stat_value, .o_stat_info .o_stat_text { color: $dk-text; }
+    }
+  }
+
+  .o_group .o_td_label { border-right-color: $dk-border; }
+  .o_form_label { color: $dk-text-muted; }
+
+  .o_horizontal_separator { color: $dk-text-bright; border-color: $dk-border; }
+
+  // Notebook / Tabs
+  .o_notebook {
+    .tab-content { background-color: $dk-surface; }
+    .nav-tabs {
+      background-color: $dk-surface;
+      border-bottom-color: $dk-border;
+      border-color: $dk-border-soft $dk-surface;
+    }
+    .nav-link { color: $dk-text;
+      &.active { background-color: $dk-surface; border-color: $dk-accent $dk-border-soft $dk-surface; color: $dk-text-bright; }
+      &:hover:not(.active) { border-color: $dk-border $dk-border transparent; }
+    }
+  }
+
+  .nav-tabs .nav-link.active, .nav-tabs .nav-item.show .nav-link {
+    border-color: $dk-accent $dk-border-soft $dk-surface;
+    background-color: $dk-surface;
+  }
+
+  // Inputs & fields
+  .o_input { color: $dk-text; background-color: $dk-input-bg; }
+  .o_required_modifier .o_input,
+  .o_required_modifier.o_input,
+  .o_field_number .o_input,
+  .o_field_number.o_input { background: $dk-input-bg !important; }
+  .o_field_widget { color: $dk-text !important;
+    .o_input { background-color: $dk-input-bg; color: $dk-text; }
+    select.o_input { background-color: $dk-input-bg; color: $dk-text; }
+    .o_external_button { color: $dk-text-muted; }
+  }
+  .o_field_widget.o_readonly_modifier { color: $dk-text; }
+  input:-webkit-autofill { box-shadow: 0 0 0 50px $dk-surface inset; }
+
+  // HTML fields
+  .o_field_html {
+    .odoo-editor-editable, .o_readonly { background-color: $dk-surface; color: $dk-text; }
+  }
+
+  // Many2many tags
+  .o_field_many2manytags .badge > a { color: unset !important; }
+  .o_field_many2manytags .o_tag_color_0 { background-color: $dk-raised !important; color: $dk-text !important; border-color: $dk-border; }
+
+  // Alerts inside forms
+  .alert {
+    background-color: $dk-raised; border-color: $dk-border; color: $dk-text;
+    &.alert-info    { background-color: #1b2d3f; border-color: #6ab5fb; color: $dk-text-bright; }
+    &.alert-warning { background-color: #3d3019; border-color: #b8860b; color: $dk-text-bright; }
+    &.alert-danger  { background-color: #3d1921; border-color: #dc3545; color: $dk-text-bright; }
+    &.alert-success { background-color: #1a3d2a; border-color: #28a745; color: $dk-text-bright; }
+  }
+
+  // Select options
+  select option { background-color: $dk-surface !important; color: $dk-text; }
+  select option:hover, select option:checked { background: $dk-hover !important; }
+
+  // Form control (Bootstrap)
+  .form-control { background-color: $dk-input-bg; color: $dk-text; }
+  .form-check-input { border: 1px solid $dk-border-soft !important; }
+
+  // Subtotal footer
+  .o_inner_group.oe_subtotal_footer { border-top-color: $dk-border; }
+  .oe_subtotal_footer_separator { border-top-color: $dk-border; }
+
+  // Note editor
+  .note-editor { border-color: $dk-border; }
+  .note-editor .note-editing-area .note-editable { background-color: $dk-surface; }
+}
+
+// =============================================================================
+// 9. LIST VIEW
+// =============================================================================
+body.bf_dark_mode {
+  .o_list_view {
+    background-color: $dk-surface;
+    .o_list_table { background-color: $dk-surface; color: $dk-text; }
+  }
+
+  .o_list_view thead { background: $dk-surface !important; color: $dk-text-bright; }
+  .o_list_view thead > tr > th { border-left-color: $dk-surface; background-color: $dk-surface; }
+  .o_list_renderer .o_list_table thead th { color: $dk-text-bright; border: none; }
+
+  .o_list_renderer .o_list_table tbody > tr > td:not(.o_list_record_selector):not(.o_handle_cell):not(.o_list_button):not(.o_list_record_remove):not(.o_list_record_open_form_view) {
+    background-color: $dk-surface; color: $dk-text; border-bottom: none;
+  }
+  .o_list_renderer .o_list_table .o_list_record_selector { background-color: $dk-surface; border-bottom: none; }
+  .o_list_renderer .o_data_row { border-color: $dk-border; }
+  .o_list_renderer .o_list_table > thead > tr > :last-child,
+  .o_list_renderer .o_list_table > tbody > tr > :last-child,
+  .o_list_renderer .o_list_table > tfoot > tr > :last-child {
+    background-color: $dk-surface; border-bottom: none;
+  }
+
+  .o_list_view tbody tr { background: $dk-surface !important; color: $dk-text; }
+  .o_list_view tbody tr:hover { background: $dk-hover !important; }
+  .o_list_view tfoot { background: $dk-surface !important; }
+  .o_list_view tfoot td { color: $dk-text-bright; background-color: $dk-surface; }
+  .o_list_view .o_column_sortable::after { color: $dk-text-bright !important; }
+  .o_list_view .o_list_record_remove button { background: $dk-surface; }
+
+  .o_list_view .o_data_row.o_selected_row > .o_data_cell:not(.o_readonly_modifier) .o_input { background-color: $dk-raised; }
+  .o_list_renderer .o_list_table .o_data_row:not(.o_selected_row) .o_list_number { background-color: $dk-surface; }
+  .o_list_renderer .o_list_sortable_caret { background: $dk-border; }
+
+  .o_list_view tbody > tr.o_group_header { background: $dk-raised !important; color: $dk-text-bright; }
+  .o_list_view .o_list_table.o_list_table_grouped > tbody > tr.o_group_header {
+    background-color: $dk-raised; box-shadow: unset; color: $dk-text;
+  }
+
+  table.o_section_list_view tr.o_data_row.o_is_section { background-color: $dk-accent; color: #000; }
+  table.o_section_and_note_list_view tr.o_data_row.o_is_line_section { background-color: $dk-surface; }
+}
+
+// =============================================================================
+// 10. KANBAN VIEW
+// =============================================================================
+body.bf_dark_mode {
+  .o_kanban_view {
+    .o_kanban_group { background-color: $dk-surface;
+      .o_kanban_header { background-color: $dk-surface; color: $dk-text-bright; }
+    }
+    .o_kanban_record {
+      background-color: $dk-raised; border: 1px solid $dk-border; color: $dk-text !important;
+      &:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
+      .o_kanban_record_title { color: $dk-text !important; }
+      .o_dropdown_kanban .dropdown-toggle { color: $dk-text-bright; }
+    }
+    .o_kanban_quick_create { background-color: $dk-raised; border-color: $dk-border;
+      .o_input { background-color: $dk-input-bg; color: $dk-text; }
+    }
+    .o_column_quick_create .o_quick_create_folded,
+    .o_column_quick_create .o_quick_create_unfolded { background-color: $dk-surface; color: $dk-text; }
+    .o_column_quick_create .o_kanban_add_column { background-color: $dk-surface; color: $dk-text-bright; }
+
+    &.o_kanban_grouped, .o_search_panel { background-color: $dk-surface !important; }
+    .o_kanban_group.o_column_folded { background-color: $dk-surface; }
+  }
+
+  .o_kanban_renderer { --Kanban-background: #{$dk-surface} !important; }
+  .o_kanban_renderer .o_group_draggable .o_column_title { color: $dk-text-bright !important; }
+  .o_kanban_renderer .o_kanban_record:not(.o_legacy_kanban_record):not(.o_kanban_ghost) {
+    background-color: $dk-raised; border: 1px solid $dk-border;
+  }
+
+  // Ungrouped
+  .o_kanban_renderer.o_kanban_ungrouped { background-color: $dk-surface; }
+  .o_view_controller .o_kanban_ungrouped .oe_kanban_global_click { background-color: $dk-surface; }
+
+  // Dashboard kanban
+  .o_kanban_view.o_kanban_dashboard .o_kanban_record {
+    .o_kanban_card_header { border-bottom-color: $dk-border; }
+    .o_kanban_card_manage_pane { background-color: $dk-surface; border-color: $dk-border; }
+  }
+
+  .o_spreadsheet_dashboard_action { background-color: $dk-surface;
+    .o-spreadsheet .o-grid { background-color: $dk-surface; }
+  }
+  .o-grid .o-grid-overlay { background-color: $dk-surface; }
+}
+
+// =============================================================================
+// 11. CHATTER & MAIL (Odoo 18 o-mail-* classes)
+// =============================================================================
+body.bf_dark_mode {
+  .o-mail-Form-chatter, .o-mail-ChatterContainer, .o-mail-Chatter { background-color: $dk-surface; color: $dk-text; }
+  .o-mail-Chatter-top, .o-mail-Chatter-topbar { background-color: $dk-surface !important; }
+  .o-mail-Thread { background-color: $dk-surface; color: $dk-text; }
+  .o-mail-Message { color: $dk-text;
+    &:hover { background-color: $dk-surface-alt; }
+  }
+  .o-mail-Message-body { color: $dk-text; }
+  .o-mail-Message-header { color: $dk-text-muted; }
+  .o-mail-Message-author { color: $dk-text-bright; }
+  .o-mail-Message-actions button:hover { background-color: $dk-hover !important; }
+
+  .o-mail-Activity, .o-mail-ActivityList { background-color: $dk-surface; border-color: $dk-border; color: $dk-text; }
+  .o-mail-Followers { background-color: $dk-surface; }
+
+  .o-mail-Composer { background-color: $dk-surface;
+    textarea { background-color: $dk-input-bg !important; color: $dk-text !important; }
+  }
+  .o-mail-Composer-coreHeader { color: $dk-text; background-color: $dk-surface; }
+  .o-mail-Composer-coreMain { background-color: $dk-surface; }
+  .o-mail-Composer-bg { background-color: $dk-surface; }
+
+  .o-mail-AttachmentCard { background-color: $dk-raised; border-color: $dk-border; color: $dk-text; }
+
+  .o-mail-DiscussSidebar { background-color: $dk-surface !important; color: $dk-text; }
+  .o-mail-DiscussSidebarCategory { background-color: $dk-surface; }
+  .o-mail-DiscussSidebar-item { color: $dk-text;
+    &:hover, &.o-active { background-color: $dk-hover; }
+  }
+  .o-mail-discussSidebarBgColor { color: $dk-text; background-color: $dk-surface; }
+  .o-mail-Discuss-header { background-color: $dk-surface; }
+  .o-mail-Discuss-content .o-mail-Thread { background-color: $dk-surface; }
+
+  .o-mail-MessagingMenu-list { background-color: $dk-surface; }
+  .o-mail-MessagingMenu { --mail-MessagingMenu-bg: #{$dk-surface}; }
+  .o-mail-NotificationItem { background-color: $dk-surface; color: $dk-text;
+    &:hover { background-color: $dk-hover !important; }
+    &.o-important { border-color: $dk-border !important; background-color: $dk-surface !important; }
+  }
+
+  .o-mail-ChatWindow { background-color: $dk-surface; border-color: $dk-border; }
+  .o-mail-ChatWindow-header { background-color: $dk-raised; }
+
+  // Legacy chatter
+  .o_chatter .o_chatter_topbar > .btn { background-color: $dk-accent; border: 1.5px solid $dk-accent !important; color: #fff !important; }
+}
+
+// =============================================================================
+// 12. MODALS & DIALOGS
+// =============================================================================
+body.bf_dark_mode {
+  .modal-content { background: $dk-raised; color: $dk-text; box-shadow: 0 0 20px 4px rgba(0,0,0,0.3) !important; border-color: $dk-border-soft; }
+  .modal-header { border-bottom-color: $dk-border; color: $dk-text-bright;
+    .btn-close { filter: invert(1); }
+  }
+  .modal-body { background-color: $dk-raised; color: $dk-text; }
+  .modal-footer { border-top-color: $dk-border;
+    .btn-secondary { background: $dk-surface; color: $dk-text-bright; }
+    button.btn.btn-primary { color: #fff !important; }
+  }
+
+  .o_notification { background-color: $dk-surface !important; color: $dk-text; }
+}
+
+// =============================================================================
+// 13. POPOVER & TOOLTIP
+// =============================================================================
+body.bf_dark_mode {
+  .o_popover { background-color: $dk-surface; border-color: $dk-border-soft; color: $dk-text; box-shadow: 0 4px 16px rgba(0,0,0,0.4); }
+  .popover { background-color: $dk-surface; }
+  .popover-header { background-color: $dk-raised; }
+  .popover-body { background-color: $dk-surface; color: $dk-text; }
+  .tooltip .tooltip-inner { background: $dk-raised !important; }
+}
+
+// =============================================================================
+// 14. DATETIME PICKER (Odoo 18)
+// =============================================================================
+body.bf_dark_mode {
+  .o_datetime_picker {
+    background-color: $dk-surface; color: $dk-text; border-color: $dk-border-soft;
+    .o_date_item_cell { color: $dk-text;
+      &:hover { background-color: $dk-hover; }
+      &.o_today { background-color: $dk-raised; font-weight: bold; }
+      &.o_selected { background-color: $dk-accent; color: black; }
+      &.o_out_of_range { color: $dk-text-muted; }
+    }
+    .o_date_item_cell.o_day_of_week_cell { color: $dk-text-muted; }
+    .o_zoom_out, .o_previous, .o_next { color: $dk-text-bright;
+      &:hover { background-color: $dk-hover; }
+    }
+    .o_time_picker { background-color: $dk-surface; border-top: 1px solid $dk-border; }
+    input { background-color: $dk-input-bg; color: $dk-text; border-color: $dk-border; }
+  }
+}
+
+// =============================================================================
+// 15. CALENDAR
+// =============================================================================
+body.bf_dark_mode {
+  .o_calendar_renderer { background-color: $dk-surface; }
+  .o_calendar_sidebar { background-color: $dk-surface; }
+
+  .fc {
+    .fc-scrollgrid { border-color: $dk-border; }
+    .fc-col-header-cell { background-color: $dk-raised; color: $dk-text; }
+    .fc-daygrid-day { background-color: $dk-surface;
+      &.fc-day-today { background-color: $dk-surface-alt !important; }
+    }
+    .fc-timegrid-slot { border-color: $dk-border; }
+    .fc-timegrid-col { background-color: $dk-surface; }
+    th, td { border-color: $dk-border; }
+    .fc-scrollgrid-section-header td { background-color: $dk-raised; }
+    .fc-scrollgrid-liquid { background-color: $dk-raised; }
+  }
+
+  .fc-view-container *, .fc-view-container *:before, .fc-view-container *:after { color: $dk-text; }
+  .fc-unthemed th, .fc-unthemed td, .fc-unthemed .fc-row {
+    border-color: $dk-border !important; background-color: $dk-surface; color: $dk-text;
+  }
+  .fc-unthemed .fc-today { background: $dk-hover !important; }
+
+  .o_calendar_sidebar_container { background-color: $dk-surface; }
+}
+
+// =============================================================================
+// 16. PIVOT & GRAPH
+// =============================================================================
+body.bf_dark_mode {
+  .o_pivot { background-color: $dk-surface;
+    table { background-color: $dk-surface; color: $dk-text;
+      th, td { background-color: $dk-surface; border-color: $dk-border; color: $dk-text; }
+    }
+  }
+  .o_graph_view .o_graph_renderer canvas { background-color: $dk-surface; }
+  .o_graph_renderer .o_graph_canvas_container { background-color: $dk-surface; }
+  .o_graph_controller div.o_graph_custom_tooltip { background-color: $dk-surface; }
+}
+
+// =============================================================================
+// 17. TABLE — generic
+// =============================================================================
+body.bf_dark_mode {
+  .table > :not(caption) > * > * { background-color: $dk-surface; color: $dk-text; border-bottom-color: $dk-border; }
+  .table th, .table td { border-top-color: $dk-border; }
+  .table thead th { border-bottom-color: $dk-border; }
+  table.table { color: $dk-text; }
+  .table-bordered th, .table-bordered td { border-color: $dk-border; }
+  table.table-hover tbody tr:hover { color: $dk-text; background-color: $dk-hover; }
+}
+
+// =============================================================================
+// 18. BUTTONS
+// =============================================================================
+body.bf_dark_mode {
+  button, [type="button"], [type="reset"], [type="submit"] { color: white; }
+
+  .btn-secondary {
+    background: $dk-raised !important; color: $dk-text-bright; border-color: $dk-border;
+    &:hover { background: $dk-hover !important; color: $dk-text-bright !important; }
+    &:not(:disabled):not(.disabled):active,
+    &:not(:disabled):not(.disabled).active { background: $dk-hover !important; color: $dk-text-bright !important; border-color: $dk-border-soft; }
+  }
+  .btn-outline-secondary { border-color: $dk-border; }
+  .btn-link { color: $dk-text-bright !important; }
+  .btn-light { color: $dk-text; background-color: $dk-raised; border-color: $dk-border; }
+
+  .btn-group > .btn:not(:first-child), .btn-group .btn-group:not(:first-child) {
+    background-color: $dk-surface; color: $dk-text;
+  }
+
+  // Icon buttons / close buttons
+  .oi-close:before { color: #d50e0e; }
+
+  .o_cp_buttons .btn-secondary { border-color: $dk-border !important; }
+}
+
+// =============================================================================
+// 19. BADGES & TAGS
+// =============================================================================
+body.bf_dark_mode {
+  .badge {
+    &.text-bg-light, &.bg-light { background-color: $dk-raised !important; color: $dk-text !important; }
+    &.text-bg-secondary { background-color: $dk-border-soft !important; color: $dk-text !important; }
+  }
+  .badge-primary { background: $dk-accent !important; color: #000 !important; }
+  .badge.badge-default { border: 1px solid $dk-accent !important; color: $dk-accent; }
+}
+
+// =============================================================================
+// 20. SETTINGS
+// =============================================================================
+body.bf_dark_mode {
+  .o_settings_container { background-color: $dk-surface;
+    .o_setting_box { background-color: $dk-surface; border-color: $dk-border;
+      .o_setting_right_pane { border-left-color: $dk-border; }
+    }
+  }
+  .app_settings_block { background-color: $dk-surface; color: $dk-text; }
+  .o_base_settings .o_setting_container .settings { background-color: $dk-surface; }
+  .o_base_settings .o_setting_container .settings_tab { background: $dk-raised; }
+  .o_base_settings .o_setting_container .settings_tab .tab { color: $dk-text; }
+  .o_base_settings .o_setting_container .settings_tab .selected { background-color: $dk-surface-alt; }
+  .o_base_settings_view .o_form_renderer .o_setting_container .settings { background-color: $dk-surface; }
+  .o_base_settings_view .o_form_renderer .o_setting_container .settings .settingSearchHeader { background-color: $dk-raised !important; }
+  .o_web_settings_dashboard { background: $dk-surface; }
+}
+
+// =============================================================================
+// 21. CARDS & ACCORDION
+// =============================================================================
+body.bf_dark_mode {
+  .card { background-color: $dk-surface; border-color: $dk-border; color: $dk-text; }
+  .card-body { background-color: $dk-surface; color: $dk-text; }
+  .card-header { background-color: $dk-raised; border-bottom-color: $dk-border; color: $dk-text-bright; }
+  .card-footer { background-color: $dk-raised; border-top-color: $dk-border; }
+
+  .accordion-item { background-color: $dk-surface; border-color: $dk-border; color: $dk-text; }
+  .accordion-button { background-color: $dk-surface; color: $dk-text;
+    &:not(.collapsed) { background-color: $dk-surface-alt; color: $dk-text-bright; }
+    &::after { filter: invert(1); }
+  }
+}
+
+// =============================================================================
+// 22. MISC
+// =============================================================================
+body.bf_dark_mode {
+  .list-group-item { color: $dk-text; background-color: $dk-surface; border-color: $dk-border; }
+  .list-group-item-light { background-color: $dk-surface; }
+  .o_view_nocontent { color: $dk-text-muted; }
+  .progress { background-color: $dk-raised; }
+  .input-group-text { background-color: $dk-raised; border-color: $dk-border; color: $dk-text; }
+  .ui-widget-content { background: $dk-surface !important; color: $dk-text; box-shadow: 0 4px 16px rgba(0,0,0,0.3); border: 0; }
+  .ui-autocomplete .ui-menu-item > a { color: $dk-text;
+    &:hover { color: $dk-text-bright !important; background-color: $dk-hover !important; }
+  }
+  .ui-widget-content .ui-menu-item.ui-state-focus { background: $dk-hover !important; color: $dk-text-bright; }
+  .ui-menu.ui-widget .ui-menu-item-wrapper.ui-state-active { background-color: $dk-hover !important; }
+  .o_onboarding { border-color: $dk-border; }
+  .o_onboarding_main { background: linear-gradient(19deg, $dk-raised 0%, $dk-surface-alt 100%); }
+
+  .o_form_view button.fa.fa-external-link.btn.btn-secondary.o_external_button { background: transparent !important; }
+  .fa-external-link:before { color: $dk-text-bright; }
+  .fa-trash-o:before { color: $dk-text-bright; }
+  .oi { color: $dk-text; }
+
+  .o_discuss-badge.o-muted { --o-discuss-badge-bg: #{$dk-border-soft}; }
+  .bg-300 { background-color: $dk-border-soft; }
+
+  .form-inline { background: $dk-surface; }
+  .o_export, .oe_import { background-color: $dk-surface; color: $dk-text; }
+
+  // Checkbox
+  .custom-checkbox .custom-control-input:checked ~ .custom-control-label::before { background-color: $dk-accent; border-color: $dk-accent; }
+
+  // Stock / Manufacturing
+  .o_stock_reports_page { background-color: $dk-surface; }
+  .o_mrp_bom_report_page { background-color: $dk-surface; }
+
+  // Activity view
+  .o_activity_view > table { background-color: $dk-surface; }
+
+  // Mail activity color
+  .o_mail_activity .o_activity_color_default { color: $dk-text-bright; }
+}
+
+// =============================================================================
+// 23. MOBILE
+// =============================================================================
+@media only screen and (max-width: 767.98px) {
+  body.bf_dark_mode {
+    .o_cp_searchview .o_searchview { background-color: $dk-surface; border-color: $dk-border; }
+    .o_control_panel .btn.o_enable_searchview { background-color: $dk-surface; }
+    .o_mobile_search, .o_mobile_search .o_searchview_input_container .o_searchview_input { background: $dk-surface; }
+    .o_mail_mobile_tabs, .o_kanban_view.o_kanban_grouped .o_kanban_mobile_tabs { background-color: $dk-surface !important; }
+  }
+}

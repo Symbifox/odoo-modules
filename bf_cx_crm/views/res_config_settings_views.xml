@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="res_config_settings_view_form" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.bf.cx.crm</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="bf_cx.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//block[@name='bf_cx_loop_block']" position="inside">
+                <setting string="Sondage post-perte (CRM)"
+                         help="Quand une opportunité est marquée perdue, envoyer le sondage de ce programme au contact (une fois par opportunité, garde-fou anti-sursollicitation appliqué).">
+                    <field name="bf_cx_loss_program_id"/>
+                </setting>
+                <setting string="Enrôlement NPS au gagné (CRM)"
+                         help="À la signature, ajouter le client à la prochaine vague brouillon de ce programme. Aucun envoi immédiat : la vague part manuellement.">
+                    <field name="bf_cx_won_program_id"/>
+                </setting>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

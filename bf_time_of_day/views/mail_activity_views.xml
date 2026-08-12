@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="mail_activity_view_form_popup_inherit_bf_time_of_day" model="ir.ui.view">
+        <field name="name">mail.activity.form.popup.bf.time.of.day</field>
+        <field name="model">mail.activity</field>
+        <field name="inherit_id" ref="mail.mail_activity_view_form_popup"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='date_deadline']" position="after">
+                <field name="time_of_day_id"
+                       options="{'no_create': True, 'no_open': True}"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="mail_activity_view_tree_inherit_bf_time_of_day" model="ir.ui.view">
+        <field name="name">mail.activity.list.bf.time.of.day</field>
+        <field name="model">mail.activity</field>
+        <field name="inherit_id" ref="mail.mail_activity_view_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='date_deadline']" position="after">
+                <field name="time_of_day_id" optional="show"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

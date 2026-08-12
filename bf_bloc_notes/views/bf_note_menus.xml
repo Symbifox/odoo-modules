@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <menuitem id="bf_note_menu_root"
+              name="Bloc-notes"
+              web_icon="bf_bloc_notes,static/description/icon.png"
+              sequence="35"/>
+
+    <menuitem id="bf_note_menu_all"
+              name="Toutes les notes"
+              parent="bf_note_menu_root"
+              action="bf_note_action"
+              sequence="10"/>
+
+    <menuitem id="bf_note_menu_pinned"
+              name="Épinglées"
+              parent="bf_note_menu_root"
+              action="bf_note_action_pinned"
+              sequence="20"/>
+
+    <menuitem id="bf_note_menu_config"
+              name="Configuration"
+              parent="bf_note_menu_root"
+              sequence="90"/>
+
+    <menuitem id="bf_note_menu_tags"
+              name="Étiquettes"
+              parent="bf_note_menu_config"
+              action="bf_note_tag_action"
+              sequence="10"/>
+
+    <menuitem id="bf_note_menu_preferences"
+              name="Mes préférences"
+              parent="bf_note_menu_config"
+              action="bf_note_user_pref_action"
+              sequence="20"/>
+
+</odoo>

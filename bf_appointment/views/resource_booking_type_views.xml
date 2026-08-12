@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Extend booking type form with appointment fields -->
+    <record id="resource_booking_type_form_inherit" model="ir.ui.view">
+        <field name="name">resource.booking.type.form.inherit.bf_appointment</field>
+        <field name="model">resource.booking.type</field>
+        <field name="inherit_id" ref="resource_booking.resource_booking_type_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='videocall_location']" position="after">
+                <field name="video_provider"/>
+            </xpath>
+            <!-- Ventilation du « Modifications Deadline » OCA : le champ existant
+                 (relabellé « Préavis minimum avant réservation ») reste en place;
+                 on ajoute juste à côté le nouveau verrou de modification. -->
+            <xpath expr="//field[@name='modifications_deadline']" position="after">
+                <field name="modification_lock_hours"/>
+            </xpath>
+            <xpath expr="//group[@name='main']" position="after">
+                <group string="Page publique de rendez-vous">
+                    <group>
+                        <field name="project_id"/>
+                        <field name="is_public"/>
+                        <field name="listed_on_landing" invisible="not is_public"/>
+                        <field name="is_in_person"/>
+                        <field name="slug" invisible="not is_public"/>
+                        <field name="color_hex" invisible="not is_public"
+                               widget="color"/>
+                        <field name="sequence"/>
+                    </group>
+                    <group>
+                        <field name="reminder_hours" widget="float_time"/>
+                        <field name="duration_options"
+                               placeholder="15,30,45,60"/>
+                        <field name="default_duration"
+                               placeholder="0.5"
+                               help="En heures (ex: 0.5 = 30 min, 1.0 = 1h)"/>
+                        <field name="public_image" widget="image"
+                               invisible="not is_public"/>
+                    </group>
+                    <field name="public_description"
+                           invisible="not is_public"
+                           colspan="2"/>
+                </group>
+                <group string="Consentements (Loi 25 / LCAP)">
+                    <group>
+                        <field name="requires_recording_consent"/>
+                        <field name="recording_notice_id"
+                               invisible="not requires_recording_consent"
+                               required="requires_recording_consent"/>
+                    </group>
+                    <group>
+                        <field name="offers_newsletter_signup"/>
+                        <field name="newsletter_notice_id"
+                               invisible="not offers_newsletter_signup"
+                               required="offers_newsletter_signup"/>
+                    </group>
+                </group>
+                <group string="Confirmation de demande" invisible="not is_public">
+                    <field name="sends_intake_acknowledgement"/>
+                </group>
+                <group string="Lien public" invisible="not is_public">
+                    <field name="public_url" widget="CopyClipboardChar" readonly="1"/>
+                </group>
+                <notebook invisible="not is_public">
+                    <page string="Champs du formulaire" name="intake_fields">
+                        <field name="intake_field_ids">
+                            <list editable="bottom">
+                                <field name="sequence" widget="handle"/>
+                                <field name="name"/>
+                                <field name="field_type"/>
+                                <field name="required"/>
+                                <field name="placeholder"/>
+                                <field name="select_options" invisible="field_type != 'select'"/>
+                            </list>
+                        </field>
+                    </page>
+                    <page string="Courriels planifiés" name="email_schedules">
+                        <field name="email_schedule_ids">
+                            <list editable="bottom">
+                                <field name="trigger"/>
+                                <field name="hours" widget="float_time"/>
+                                <field name="template_id"/>
+                                <field name="active"/>
+                            </list>
+                        </field>
+                    </page>
+                </notebook>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Add is_public column to list view -->
+    <record id="resource_booking_type_tree_inherit" model="ir.ui.view">
+        <field name="name">resource.booking.type.list.inherit.bf_appointment</field>
+        <field name="model">resource.booking.type</field>
+        <field name="inherit_id" ref="resource_booking.resource_booking_type_view_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='duration']" position="after">
+                <field name="is_public" string="Publié"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Add is_public filter to search view -->
+    <record id="resource_booking_type_search_inherit" model="ir.ui.view">
+        <field name="name">resource.booking.type.search.inherit.bf_appointment</field>
+        <field name="model">resource.booking.type</field>
+        <field name="inherit_id" ref="resource_booking.resource_booking_type_view_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="is_public"/>
+                <filter name="filter_published" string="Publié" domain="[('is_public', '=', True)]"/>
+                <filter name="filter_not_published" string="Non publié" domain="[('is_public', '=', False)]"/>
+                <separator/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Add public URL button to form -->
+    <record id="resource_booking_type_form_button" model="ir.ui.view">
+        <field name="name">resource.booking.type.form.button.bf_appointment</field>
+        <field name="model">resource.booking.type</field>
+        <field name="inherit_id" ref="resource_booking.resource_booking_type_view_form"/>
+        <field name="priority">20</field>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_public_page" type="object"
+                        class="oe_stat_button" icon="fa-globe"
+                        invisible="not is_public">
+                    <span>Page publique</span>
+                </button>
+            </xpath>
+        </field>
+    </record>
+</odoo>

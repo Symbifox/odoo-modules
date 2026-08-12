@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Contact form: enrichment actions + completeness smart button -->
+    <record id="view_partner_form_enrichment" model="ir.ui.view">
+        <field name="name">res.partner.form.enrichment</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="before">
+                <header groups="bf_contact_enrichment.group_bf_contact_enrich">
+                    <button name="action_scan_business_card" type="object"
+                            string="Numériser une carte" class="btn-secondary"/>
+                    <button name="action_bf_enrich_signature_direct" type="object"
+                            string="Enrichir maintenant (signatures)" class="btn-primary"/>
+                    <button name="action_enrich_from_emails" type="object"
+                            string="Enrichir (réviser)" class="btn-secondary"/>
+                    <button name="action_enrich_from_web" type="object"
+                            string="Enrichir (site web)" class="btn-secondary"/>
+                </header>
+            </xpath>
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button class="oe_stat_button" icon="fa-id-card-o" type="object"
+                        name="action_enrich_from_emails"
+                        groups="bf_contact_enrichment.group_bf_contact_enrich">
+                    <field name="x_enrichment_completeness" widget="statinfo"
+                           string="Complétude"/>
+                </button>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Search: "Contacts incomplets" filter -->
+    <record id="view_res_partner_filter_enrichment" model="ir.ui.view">
+        <field name="name">res.partner.search.enrichment</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_res_partner_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">
+                <separator/>
+                <filter name="bf_incomplete" string="Contacts incomplets"
+                        domain="[('x_enrichment_completeness', '&lt;', 60)]"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

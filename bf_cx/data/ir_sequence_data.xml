@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="seq_cx_complaint" model="ir.sequence">
+            <field name="name">Plaintes clients</field>
+            <field name="code">bf.cx.complaint</field>
+            <field name="prefix">PLT</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
+    </data>
+</odoo>

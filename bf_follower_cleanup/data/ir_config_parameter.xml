@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <record id="param_always_remove_partner_ids" model="ir.config_parameter">
+            <field name="key">bf_follower_cleanup.always_remove_partner_ids</field>
+            <!-- Empty by default. Optional: comma-separated res.partner IDs
+                 (e.g. service accounts) to purge unconditionally. -->
+            <field name="value"></field>
+        </record>
+
+        <record id="param_batch_size" model="ir.config_parameter">
+            <field name="key">bf_follower_cleanup.batch_size</field>
+            <field name="value">5000</field>
+        </record>
+
+    </data>
+</odoo>

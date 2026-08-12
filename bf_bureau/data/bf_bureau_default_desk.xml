@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <!--
+        Seed default desk for the configured admin user (uid=2).
+        noupdate="1" means subsequent module upgrades won't touch user edits.
+        If the records are deleted by the user they won't be recreated.
+        Other users start empty and create their own via "Mes bureaux".
+    -->
+
+    <record id="default_desk_admin" model="bf.bureau.desk">
+        <field name="name">Mon bureau</field>
+        <field name="user_id" ref="base.user_admin"/>
+        <field name="sequence">10</field>
+        <field name="is_default" eval="True"/>
+        <field name="layout">two_top_one_bottom</field>
+    </record>
+
+    <record id="default_pane_admin_top_left" model="bf.bureau.pane">
+        <field name="desk_id" ref="default_desk_admin"/>
+        <field name="slot">top_left</field>
+        <field name="action_id" ref="mail.mail_activity_action_my"/>
+        <field name="view_type">kanban</field>
+    </record>
+
+    <record id="default_pane_admin_top_right" model="bf.bureau.pane">
+        <field name="desk_id" ref="default_desk_admin"/>
+        <field name="slot">top_right</field>
+        <field name="action_id" ref="project.action_view_all_task"/>
+        <field name="view_type">kanban</field>
+    </record>
+
+    <record id="default_pane_admin_bottom" model="bf.bureau.pane">
+        <field name="desk_id" ref="default_desk_admin"/>
+        <field name="slot">bottom_full</field>
+        <field name="action_id" ref="bf_email_management.bf_email_action"/>
+        <field name="view_type">kanban</field>
+    </record>
+
+</odoo>

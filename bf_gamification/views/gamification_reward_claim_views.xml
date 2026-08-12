@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_reward_claim_form" model="ir.ui.view">
+        <field name="name">bf.gamification.reward.claim.form</field>
+        <field name="model">bf.gamification.reward.claim</field>
+        <field name="arch" type="xml">
+            <form string="R&#233;clamation">
+                <header>
+                    <button name="action_approve" string="Approuver" type="object"
+                            class="btn-primary"
+                            invisible="state != 'pending'"
+                            groups="bf_gamification.group_gamification_manager"/>
+                    <button name="action_refuse" string="Refuser" type="object"
+                            class="btn-danger"
+                            invisible="state != 'pending'"
+                            groups="bf_gamification.group_gamification_manager"/>
+                    <button name="action_consume" string="Consommer" type="object"
+                            invisible="state != 'approved'"
+                            groups="bf_gamification.group_gamification_manager"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="pending,approved,consumed"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="user_id"/>
+                            <field name="reward_id"/>
+                            <field name="xp_spent"/>
+                        </group>
+                        <group>
+                            <field name="date_claimed"/>
+                            <field name="date_processed"/>
+                            <field name="approved_by"/>
+                        </group>
+                    </group>
+                    <group invisible="state != 'refused'">
+                        <field name="refusal_reason"/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_reward_claim_list" model="ir.ui.view">
+        <field name="name">bf.gamification.reward.claim.list</field>
+        <field name="model">bf.gamification.reward.claim</field>
+        <field name="arch" type="xml">
+            <list string="R&#233;clamations" create="0">
+                <field name="date_claimed"/>
+                <field name="user_id" widget="many2one_avatar"/>
+                <field name="reward_id"/>
+                <field name="xp_spent"/>
+                <field name="state" widget="badge"
+                       decoration-info="state == 'pending'"
+                       decoration-success="state == 'approved'"
+                       decoration-danger="state == 'refused'"
+                       decoration-muted="state == 'consumed'"/>
+                <field name="approved_by"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_reward_claim_search" model="ir.ui.view">
+        <field name="name">bf.gamification.reward.claim.search</field>
+        <field name="model">bf.gamification.reward.claim</field>
+        <field name="arch" type="xml">
+            <search string="Rechercher">
+                <field name="user_id"/>
+                <field name="reward_id"/>
+                <filter name="my_claims" string="Mes r&#233;clamations" domain="[('user_id', '=', uid)]"/>
+                <separator/>
+                <filter name="pending" string="En attente" domain="[('state', '=', 'pending')]"/>
+                <filter name="approved" string="Approuv&#233;es" domain="[('state', '=', 'approved')]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="group_state" string="&#201;tat" context="{'group_by': 'state'}"/>
+                    <filter name="group_user" string="Utilisateur" context="{'group_by': 'user_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_my_claims" model="ir.actions.act_window">
+        <field name="name">Mes r&#233;clamations</field>
+        <field name="res_model">bf.gamification.reward.claim</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_my_claims': 1}</field>
+    </record>
+
+    <record id="action_all_claims" model="ir.actions.act_window">
+        <field name="name">Toutes les r&#233;clamations</field>
+        <field name="res_model">bf.gamification.reward.claim</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

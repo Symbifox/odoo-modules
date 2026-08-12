@@ -1,0 +1,379 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="report_meeting_record">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-set="lang" t-value="doc.lang or (doc.partner_id and doc.partner_id.lang) or 'fr_CA'"/>
+                <t t-set="data" t-value="doc.with_context(lang=lang)._get_report_data()"/>
+                <div class="article" style="padding: 0 !important; margin: 0 !important;">
+                    <link rel="stylesheet" href="/bf_lexend/static/src/scss/lexend_report.css"/>
+                    <style>
+                        .container, .o_body_html, body, #wrapwrap, main, .article {
+                            max-width: 100% !important;
+                            width: 100% !important;
+                            padding-left: 0 !important;
+                            padding-right: 0 !important;
+                            margin-left: 0 !important;
+                            margin-right: 0 !important;
+                        }
+
+                        .mr-page {
+                            font-family: "Lexend", system-ui, -apple-system, sans-serif;
+                            font-size: 9pt;
+                            line-height: 1.4;
+                            color: <t t-esc="(env.company and env.company.report_brand_dark) or '#212529'"/>;
+                        }
+
+                        .mr-banner {
+                            background: <t t-esc="(env.company and env.company.report_brand_dark) or '#212529'"/>;
+                            padding: 18pt 24pt 16pt 24pt;
+                            display: table;
+                            width: 100%;
+                        }
+                        .mr-banner .banner-logo {
+                            display: table-cell;
+                            vertical-align: middle;
+                            width: 90px;
+                            padding-right: 18pt;
+                        }
+                        .mr-banner .banner-logo img {
+                            max-height: 50px;
+                            max-width: 80px;
+                        }
+                        .mr-banner .banner-content {
+                            display: table-cell;
+                            vertical-align: middle;
+                        }
+                        .mr-banner .doc-type {
+                            font-size: 8pt;
+                            font-weight: 600;
+                            text-transform: uppercase;
+                            letter-spacing: 2pt;
+                            color: <t t-esc="(env.company and env.company.report_brand_primary) or '#714B67'"/>;
+                            margin: 0 0 3pt 0;
+                        }
+                        .mr-banner h1 {
+                            font-size: 16pt;
+                            font-weight: 600;
+                            color: #ffffff;
+                            margin: 0 0 2pt 0;
+                            line-height: 1.25;
+                        }
+                        .mr-banner .doc-subtitle {
+                            font-size: 10pt;
+                            color: rgba(255,255,255,0.7);
+                            margin: 0;
+                        }
+                        .mr-accent-bar {
+                            height: 3px;
+                            background: <t t-esc="(env.company and env.company.report_brand_primary) or '#714B67'"/>;
+                            margin: 0;
+                            width: 100%;
+                        }
+
+                        .mr-meta {
+                            display: table;
+                            width: 100%;
+                            background: #f8f9fb;
+                            padding: 10pt 24pt;
+                            border-bottom: 1px solid #eaedf0;
+                        }
+                        .mr-meta-item {
+                            display: table-cell;
+                            vertical-align: middle;
+                        }
+                        .mr-meta-item.right {
+                            text-align: right;
+                        }
+                        .mr-meta-label {
+                            font-size: 8pt;
+                            color: #888;
+                            text-transform: uppercase;
+                            letter-spacing: 0.5pt;
+                        }
+                        .mr-meta-value {
+                            font-size: 11pt;
+                            font-weight: 600;
+                            color: <t t-esc="(env.company and env.company.report_brand_dark) or '#212529'"/>;
+                        }
+
+                        .mr-kpi-grid {
+                            display: table;
+                            width: 100%;
+                            padding: 12pt 24pt 8pt 24pt;
+                            table-layout: fixed;
+                        }
+                        .mr-kpi-card {
+                            display: table-cell;
+                            text-align: center;
+                            padding: 10pt 8pt;
+                            border: 1px solid #eaedf0;
+                            border-radius: 4px;
+                            background: #fff;
+                        }
+                        .mr-kpi-card + .mr-kpi-card {
+                            border-left: none;
+                        }
+                        .mr-kpi-number {
+                            font-size: 18pt;
+                            font-weight: 700;
+                            line-height: 1.2;
+                            color: <t t-esc="(env.company and env.company.report_brand_dark) or '#212529'"/>;
+                        }
+                        .mr-kpi-label {
+                            font-size: 7.5pt;
+                            color: #888;
+                            text-transform: uppercase;
+                            letter-spacing: 0.5pt;
+                            margin-top: 2pt;
+                        }
+
+                        .mr-content {
+                            padding: 12pt 24pt;
+                        }
+                        .mr-section-title {
+                            font-size: 11pt;
+                            font-weight: 600;
+                            color: <t t-esc="(env.company and env.company.report_brand_dark) or '#212529'"/>;
+                            margin: 16pt 0 8pt 0;
+                            padding-bottom: 4pt;
+                            border-bottom: 2px solid <t t-esc="(env.company and env.company.report_brand_primary) or '#714B67'"/>;
+                            display: inline-block;
+                        }
+                        .mr-section-title:first-child {
+                            margin-top: 0;
+                        }
+
+                        .mr-table {
+                            width: 100%;
+                            border-collapse: collapse;
+                            font-size: 8pt;
+                            margin-bottom: 6pt;
+                        }
+                        .mr-table th {
+                            background: <t t-esc="(env.company and env.company.report_brand_dark) or '#212529'"/>;
+                            color: #fff;
+                            padding: 5pt 6pt;
+                            text-align: left;
+                            font-weight: 600;
+                            font-size: 7.5pt;
+                        }
+                        .mr-table td {
+                            padding: 4pt 6pt;
+                            border-bottom: 1px solid #eaedf0;
+                            vertical-align: middle;
+                        }
+                        .mr-table tr:nth-child(even) td {
+                            background: #f8f9fb;
+                        }
+
+                        .mr-footer {
+                            padding: 8pt 24pt 0 24pt;
+                            border-top: 1px solid #dde0e4;
+                            display: table;
+                            width: 100%;
+                            font-size: 8pt;
+                            color: #aaa;
+                            margin-top: 16pt;
+                        }
+                        .mr-footer-left {
+                            display: table-cell;
+                            text-align: left;
+                        }
+                        .mr-footer-right {
+                            display: table-cell;
+                            text-align: right;
+                        }
+                    </style>
+
+                    <div class="mr-page">
+
+                        <!-- Banner -->
+                        <div class="mr-banner">
+                            <div class="banner-logo">
+                                <img t-att-src="image_data_uri(doc.company_id.meeting_logo or doc.company_id.logo)" alt="Logo"/>
+                            </div>
+                            <div class="banner-content">
+                                <div class="doc-type">Compte rendu</div>
+                                <h1><t t-out="doc.room_name or doc.name"/></h1>
+                                <div class="doc-subtitle">
+                                    <t t-if="doc.project_id">
+                                        Projet : <t t-out="doc.project_id.name"/>
+                                    </t>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mr-accent-bar"/>
+
+                        <!-- Metadata -->
+                        <div class="mr-meta">
+                            <div class="mr-meta-item">
+                                <div class="mr-meta-label">Date de la r&#233;union</div>
+                                <div class="mr-meta-value">
+                                    <t t-out="data['date_display']"/>
+                                </div>
+                            </div>
+                            <div class="mr-meta-item right">
+                                <div class="mr-meta-label">Dur&#233;e</div>
+                                <div class="mr-meta-value">
+                                    <t t-if="doc.duration_minutes">
+                                        <t t-out="doc.duration_minutes"/> min
+                                    </t>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- KPI -->
+                        <div class="mr-kpi-grid">
+                            <div class="mr-kpi-card">
+                                <div class="mr-kpi-number"><t t-if="doc.attendance_count"><t t-out="doc.attendance_count"/></t><t t-else=""><t t-out="data['participant_count']"/></t></div>
+                                <div class="mr-kpi-label">Participants</div>
+                            </div>
+                            <div class="mr-kpi-card">
+                                <div class="mr-kpi-number"><t t-out="data['decision_count']"/></div>
+                                <div class="mr-kpi-label">D&#233;cisions</div>
+                            </div>
+                            <div class="mr-kpi-card">
+                                <div class="mr-kpi-number"><t t-out="data['task_count']"/></div>
+                                <div class="mr-kpi-label">&#201;l&#233;ments d'action</div>
+                            </div>
+                        </div>
+
+                        <div class="mr-content">
+
+                            <!-- Participants -->
+                            <t t-if="doc.attendance_ids or doc.participant_ids">
+                                <div class="mr-section-title">Participants</div>
+                                <p>
+                                    <t t-if="doc.attendance_ids">
+                                        <t t-foreach="doc.attendance_ids" t-as="a">
+                                            <t t-set="absent" t-value="a.status != 'present'"/>
+                                            <span t-attf-style="color: {{ '#999999' if absent else 'inherit' }};"><t t-out="a.partner_id.name"/><t t-if="a.status == 'excused'"> (excusé)</t><t t-if="a.status == 'absent'"> (absent)</t></span><t t-if="not a_last">, </t>
+                                        </t>
+                                    </t>
+                                    <t t-else="">
+                                        <t t-foreach="doc.participant_ids" t-as="p">
+                                            <t t-out="p.name"/><t t-if="not p_last">, </t>
+                                        </t>
+                                    </t>
+                                </p>
+                            </t>
+
+                            <!-- Summary -->
+                            <t t-if="doc.summary">
+                                <div class="mr-section-title">R&#233;sum&#233;</div>
+                                <p><t t-out="doc.summary"/></p>
+                            </t>
+
+                            <!-- Topics -->
+                            <t t-if="data['topics']">
+                                <t t-foreach="data['topics']" t-as="topic">
+                                    <div class="mr-section-title"><t t-out="topic.get('title', '')"/></div>
+                                    <t t-if="topic.get('points')">
+                                        <ul>
+                                            <t t-foreach="topic['points']" t-as="point">
+                                                <li><t t-out="point"/></li>
+                                            </t>
+                                        </ul>
+                                    </t>
+                                </t>
+                            </t>
+
+                            <!-- Decisions -->
+                            <t t-if="doc.decision_ids">
+                                <div class="mr-section-title">D&#233;cisions</div>
+                                <table class="mr-table">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 5%;">#</th>
+                                            <th style="width: 55%;">D&#233;cision</th>
+                                            <th style="width: 20%;">D&#233;cideur</th>
+                                            <th style="width: 20%;">&#201;l&#233;ment li&#233;</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-foreach="doc.decision_ids" t-as="dec">
+                                            <tr>
+                                                <td><t t-out="dec.sequence"/></td>
+                                                <td><t t-out="dec.name"/></td>
+                                                <td><t t-out="dec.decision_maker_id.name or ''"/></td>
+                                                <td><t t-out="dec.knowledge_item_id.name or ''"/></td>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </t>
+
+                            <!-- Action items -->
+                            <t t-if="doc.task_ids">
+                                <div class="mr-section-title">&#201;l&#233;ments d'action</div>
+                                <table class="mr-table">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 55%;">T&#226;che</th>
+                                            <th style="width: 25%;">Assign&#233;</th>
+                                            <th style="width: 20%;">&#201;ch&#233;ance</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-foreach="doc.task_ids" t-as="task">
+                                            <tr>
+                                                <td><t t-out="task.name"/></td>
+                                                <td>
+                                                    <t t-foreach="task.user_ids" t-as="u">
+                                                        <t t-out="u.name"/><t t-if="not u_last">, </t>
+                                                    </t>
+                                                </td>
+                                                <td><t t-out="str(task.date_deadline) if task.date_deadline else ''"/></td>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </t>
+
+                            <!-- Open questions -->
+                            <t t-if="data['open_questions']">
+                                <div class="mr-section-title">Questions ouvertes</div>
+                                <ul>
+                                    <t t-foreach="data['open_questions']" t-as="q">
+                                        <li>
+                                            <t t-if="isinstance(q, str)"><t t-out="q"/></t>
+                                            <t t-else=""><t t-out="q.get('question', str(q))"/></t>
+                                        </li>
+                                    </t>
+                                </ul>
+                            </t>
+
+                            <!-- Deliverables -->
+                            <t t-if="data['deliverables']">
+                                <div class="mr-section-title">Livrables</div>
+                                <ul>
+                                    <t t-foreach="data['deliverables']" t-as="d">
+                                        <li>
+                                            <t t-if="isinstance(d, str)"><t t-out="d"/></t>
+                                            <t t-else=""><t t-out="d.get('description', str(d))"/></t>
+                                        </li>
+                                    </t>
+                                </ul>
+                            </t>
+
+                        </div>
+
+                        <!-- Footer -->
+                        <div class="mr-footer">
+                            <div class="mr-footer-left">
+                                <t t-out="doc.company_id.name"/>
+                            </div>
+                            <div class="mr-footer-right">
+                                Compte rendu &#8212; Document confidentiel
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+
+</odoo>

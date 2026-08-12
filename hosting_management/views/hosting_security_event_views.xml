@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- List View -->
+    <record id="hosting_security_event_view_list" model="ir.ui.view">
+        <field name="name">hosting.security.event.list</field>
+        <field name="model">hosting.security.event</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="severity in ('critical', 'high')" decoration-warning="severity == 'medium'">
+                <field name="event_date"/>
+                <field name="name"/>
+                <field name="event_type"/>
+                <field name="severity" widget="badge"
+                       decoration-danger="severity in ('critical', 'high')"
+                       decoration-warning="severity == 'medium'"
+                       decoration-info="severity == 'low'"/>
+                <field name="state" widget="badge"
+                       decoration-danger="state == 'open'"
+                       decoration-warning="state == 'investigating'"
+                       decoration-info="state == 'mitigated'"
+                       decoration-success="state in ('resolved', 'false_positive')"/>
+                <field name="assigned_user_id" widget="many2one_avatar_user" optional="show"/>
+                <field name="server_id" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="hosting_security_event_view_form" model="ir.ui.view">
+        <field name="name">hosting.security.event.form</field>
+        <field name="model">hosting.security.event</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_investigate" string="Investiguer"
+                            type="object" class="btn-primary"
+                            invisible="state != 'open'"/>
+                    <button name="action_mitigate" string="Atténuer"
+                            type="object" class="btn-primary"
+                            invisible="state not in ('open', 'investigating')"/>
+                    <button name="action_resolve" string="Résoudre"
+                            type="object" class="btn-success"
+                            invisible="state in ('resolved', 'false_positive')"/>
+                    <button name="action_false_positive" string="Faux positif"
+                            type="object"
+                            invisible="state in ('resolved', 'false_positive')"/>
+                    <button name="action_reopen" string="Rouvrir"
+                            type="object"
+                            invisible="state not in ('resolved', 'false_positive')"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="open,investigating,mitigated,resolved"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="Titre de l'incident"/></h1>
+                    </div>
+                    <group>
+                        <group string="Événement">
+                            <field name="event_date"/>
+                            <field name="event_type"/>
+                            <field name="severity"/>
+                            <field name="reported_by_id"/>
+                        </group>
+                        <group string="Affectation">
+                            <field name="assigned_user_id"/>
+                            <field name="server_id"/>
+                            <field name="service_ids" widget="many2many_tags"/>
+                            <field name="resolved_date"
+                                   invisible="state not in ('resolved', 'false_positive')"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Description" name="description">
+                            <field name="description"/>
+                        </page>
+                        <page string="Impact" name="impact">
+                            <field name="impact"/>
+                        </page>
+                        <page string="Résolution" name="resolution">
+                            <field name="resolution"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="hosting_security_event_view_search" model="ir.ui.view">
+        <field name="name">hosting.security.event.search</field>
+        <field name="model">hosting.security.event</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="assigned_user_id"/>
+                <field name="server_id"/>
+                <separator/>
+                <filter name="filter_open" string="Ouverts"
+                        domain="[('state', '=', 'open')]"/>
+                <filter name="filter_active" string="Actifs (non résolus)"
+                        domain="[('state', 'not in', ('resolved', 'false_positive'))]"/>
+                <filter name="filter_resolved" string="Résolus"
+                        domain="[('state', '=', 'resolved')]"/>
+                <separator/>
+                <filter name="filter_critical" string="Critiques"
+                        domain="[('severity', '=', 'critical')]"/>
+                <filter name="filter_high" string="Élevés"
+                        domain="[('severity', '=', 'high')]"/>
+                <separator/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="group_by_state" string="État"
+                            context="{'group_by': 'state'}"/>
+                    <filter name="group_by_severity" string="Sévérité"
+                            context="{'group_by': 'severity'}"/>
+                    <filter name="group_by_type" string="Type"
+                            context="{'group_by': 'event_type'}"/>
+                    <filter name="group_by_server" string="Serveur"
+                            context="{'group_by': 'server_id'}"/>
+                    <filter name="group_by_assigned" string="Assigné à"
+                            context="{'group_by': 'assigned_user_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="hosting_security_event_action" model="ir.actions.act_window">
+        <field name="name">Événements de sécurité</field>
+        <field name="res_model">hosting.security.event</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_filter_active': 1}</field>
+    </record>
+
+</odoo>

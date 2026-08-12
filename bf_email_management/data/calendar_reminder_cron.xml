@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <record id="ir_cron_bf_calendar_snooze_refire" model="ir.cron">
+            <field name="name">Rappels calendrier : reprendre les snoozes &#233;chus</field>
+            <field name="model_id" ref="calendar.model_calendar_attendee"/>
+            <field name="state">code</field>
+            <field name="code">model._bf_refire_expired_snoozes()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">minutes</field>
+            <field name="active">True</field>
+            <field name="user_id" ref="base.user_admin"/>
+        </record>
+
+        <record id="ir_cron_bf_calendar_ntfy_push" model="ir.cron">
+            <field name="name">Rappels calendrier : pousser sur ntfy</field>
+            <field name="model_id" ref="calendar.model_calendar_attendee"/>
+            <field name="state">code</field>
+            <field name="code">model._bf_push_ntfy_for_imminent_alarms()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">minutes</field>
+            <field name="active">True</field>
+            <field name="user_id" ref="base.user_admin"/>
+        </record>
+
+    </data>
+</odoo>

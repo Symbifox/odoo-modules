@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_contact_cc_rule_list" model="ir.ui.view">
+        <field name="name">contact.cc.rule.list</field>
+        <field name="model">contact.cc.rule</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="category_id"/>
+                <field name="cc_partner_ids" widget="many2many_tags" options="{'no_create': True}"/>
+                <field name="mandatory" widget="boolean_toggle"/>
+                <field name="notes"/>
+            </list>
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="task_merge_wizard_form" model="ir.ui.view">
+        <field name="name">bf.task.merge.wizard.form</field>
+        <field name="model">bf.task.merge.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Regrouper des tâches">
+                <field name="target_mode" widget="radio" options="{'horizontal': True}" />
+                <group>
+                    <field
+                        name="source_task_ids"
+                        widget="many2many_tags"
+                        options="{'no_create': True}"
+                    />
+                    <field name="assignee_ids" widget="many2many_tags_avatar" />
+                </group>
+                <group string="Tâche de destination">
+                    <field
+                        name="target_task_id"
+                        invisible="target_mode != 'existing'"
+                        required="target_mode == 'existing'"
+                        options="{'no_create': True}"
+                    />
+                    <field
+                        name="new_task_name"
+                        invisible="target_mode != 'new'"
+                        required="target_mode == 'new'"
+                    />
+                    <field
+                        name="new_project_id"
+                        invisible="target_mode != 'new'"
+                        required="target_mode == 'new'"
+                    />
+                </group>
+                <p class="text-muted">
+                    La conversation, les activités, les pièces jointes, les heures et
+                    les dépendances des autres tâches seront déplacées vers la tâche
+                    conservée ; ces tâches seront ensuite archivées. Les messages
+                    système (changements d'étape, suivi de champs) restent sur la tâche
+                    d'origine comme trace.
+                </p>
+                <footer>
+                    <button
+                        name="action_merge"
+                        type="object"
+                        string="Regrouper"
+                        class="btn-primary"
+                    />
+                    <button special="cancel" string="Annuler" class="btn-secondary" />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_task_merge_wizard" model="ir.actions.act_window">
+        <field name="name">Regrouper les tâches</field>
+        <field name="res_model">bf.task.merge.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="binding_model_id" ref="project.model_project_task" />
+        <field name="binding_view_types">list,form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

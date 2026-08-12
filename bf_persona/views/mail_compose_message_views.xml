@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_mail_compose_message_persona" model="ir.ui.view">
+        <field name="name">mail.compose.message.persona.hint</field>
+        <field name="model">mail.compose.message</field>
+        <field name="inherit_id" ref="mail.email_compose_message_wizard_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='body']" position="before">
+                <field name="persona_hint_partner_id" invisible="1"/>
+                <div class="alert alert-info py-2 mb-2" role="status"
+                     invisible="not persona_hint_html">
+                    <field name="persona_hint_html" widget="html" readonly="1" nolabel="1" options="{'safe': True}"/>
+                    <button name="action_apply_persona" type="object"
+                            string="Appliquer le persona"
+                            class="btn btn-sm btn-primary mt-1"/>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

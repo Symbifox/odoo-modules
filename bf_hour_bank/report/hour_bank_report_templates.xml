@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="report_hour_bank">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-set="data" t-value="doc._get_report_data()"/>
+                <t t-set="entries" t-value="data['entries']"/>
+                <t t-set="balance" t-value="data['balance']"/>
+                <t t-set="summary_by_project" t-value="data['summary_by_project']"/>
+                <t t-set="summary_by_month" t-value="data['summary_by_month']"/>
+                <div class="article" style="padding: 0 !important; margin: 0 !important;">
+                    <link rel="stylesheet" href="/bf_lexend/static/src/scss/lexend_report.css"/>
+                    <style>
+                        .container, .o_body_html, body, #wrapwrap, main, .article {
+                            max-width: 100% !important;
+                            width: 100% !important;
+                            padding-left: 0 !important;
+                            padding-right: 0 !important;
+                            margin-left: 0 !important;
+                            margin-right: 0 !important;
+                        }
+
+                        .hb-page {
+                            font-family: "Lexend", system-ui, -apple-system, sans-serif;
+                            font-size: 9pt;
+                            line-height: 1.4;
+                            color: <t t-esc="(env.company and env.company.report_brand_dark) or '#212529'"/>;
+                        }
+
+                        /* ── Top Banner ── */
+                        .hb-banner {
+                            background: <t t-esc="(env.company and env.company.report_brand_dark) or '#212529'"/>;
+                            padding: 18pt 24pt 16pt 24pt;
+                            display: table;
+                            width: 100%;
+                        }
+                        .hb-banner .banner-logo {
+                            display: table-cell;
+                            vertical-align: middle;
+                            width: 90px;
+                            padding-right: 18pt;
+                        }
+                        .hb-banner .banner-logo img {
+                            max-height: 50px;
+                            max-width: 80px;
+                        }
+                        .hb-banner .banner-content {
+                            display: table-cell;
+                            vertical-align: middle;
+                        }
+                        .hb-banner .doc-type {
+                            font-size: 8pt;
+                            font-weight: 600;
+                            text-transform: uppercase;
+                            letter-spacing: 2pt;
+                            color: <t t-esc="(env.company and env.company.report_brand_primary) or '#714B67'"/>;
+                            margin: 0 0 3pt 0;
+                        }
+                        .hb-banner h1 {
+                            font-size: 16pt;
+                            font-weight: 600;
+                            color: #ffffff;
+                            margin: 0 0 2pt 0;
+                            line-height: 1.25;
+                        }
+                        .hb-banner .doc-subtitle {
+                            font-size: 10pt;
+                            color: rgba(255,255,255,0.7);
+                            margin: 0;
+                        }
+                        .hb-accent-bar {
+                            height: 3px;
+                            background: <t t-esc="(env.company and env.company.report_brand_primary) or '#714B67'"/>;
+                            margin: 0;
+                            width: 100%;
+                        }
+
+                        /* ── Metadata bar ── */
+                        .hb-meta {
+                            display: table;
+                            width: 100%;
+                            background: #f8f9fb;
+                            padding: 10pt 24pt;
+                            border-bottom: 1px solid #eaedf0;
+                        }
+                        .hb-meta-item {
+                            display: table-cell;
+                            vertical-align: middle;
+                        }
+                        .hb-meta-item.right {
+                            text-align: right;
+                        }
+                        .hb-meta-label {
+                            font-size: 8pt;
+                            color: #888;
+                            text-transform: uppercase;
+                            letter-spacing: 0.5pt;
+                        }
+                        .hb-meta-value {
+                            font-size: 11pt;
+                            font-weight: 600;
+                            color: <t t-esc="(env.company and env.company.report_brand_dark) or '#212529'"/>;
+                        }
+                        .hb-meta-value.balance-positive {
+                            color: #27ae60;
+                        }
+                        .hb-meta-value.balance-negative {
+                            color: #e74c3c;
+                        }
+
+                        /* ── Data table ── */
+                        .hb-content {
+                            padding: 12pt 24pt;
+                        }
+                        .hb-table {
+                            width: 100%;
+                            border-collapse: collapse;
+                            font-size: 8.5pt;
+                        }
+                        .hb-table th {
+                            background: <t t-esc="(env.company and env.company.report_brand_dark) or '#212529'"/>;
+                            color: #fff;
+                            padding: 6pt 8pt;
+                            text-align: left;
+                            font-weight: 600;
+                            font-size: 8pt;
+                        }
+                        .hb-table th.num {
+                            text-align: right;
+                        }
+                        .hb-table td {
+                            padding: 4pt 8pt;
+                            border-bottom: 1px solid #eaedf0;
+                        }
+                        .hb-table td.num {
+                            text-align: right;
+                            font-variant-numeric: tabular-nums;
+                        }
+                        .hb-table tr.credit td {
+                            background: #C6EFCE;
+                        }
+                        .hb-table tr:nth-child(even):not(.credit) td {
+                            background: #f8f9fb;
+                        }
+
+                        /* ── Summary section ── */
+                        .hb-section-title {
+                            font-size: 12pt;
+                            font-weight: 600;
+                            color: <t t-esc="(env.company and env.company.report_brand_dark) or '#212529'"/>;
+                            margin: 20pt 0 10pt 0;
+                            padding-bottom: 4pt;
+                            border-bottom: 2px solid <t t-esc="(env.company and env.company.report_brand_primary) or '#714B67'"/>;
+                            display: inline-block;
+                        }
+                        .hb-summary-table {
+                            width: 100%;
+                            border-collapse: collapse;
+                            font-size: 9pt;
+                        }
+                        .hb-summary-table th {
+                            background: #f0f1f3;
+                            padding: 6pt 10pt;
+                            text-align: left;
+                            font-weight: 600;
+                            border-bottom: 2px solid #ddd;
+                        }
+                        .hb-summary-table th.num {
+                            text-align: right;
+                        }
+                        .hb-summary-table td {
+                            padding: 5pt 10pt;
+                            border-bottom: 1px solid #eaedf0;
+                        }
+                        .hb-summary-table td.num {
+                            text-align: right;
+                            font-variant-numeric: tabular-nums;
+                        }
+                        .hb-summary-table tr.total td {
+                            font-weight: 700;
+                            border-top: 2px solid <t t-esc="(env.company and env.company.report_brand_dark) or '#212529'"/>;
+                        }
+
+                        /* ── Footer ── */
+                        .hb-footer {
+                            padding: 8pt 24pt 0 24pt;
+                            border-top: 1px solid #dde0e4;
+                            display: table;
+                            width: 100%;
+                            font-size: 8pt;
+                            color: #aaa;
+                            margin-top: 16pt;
+                        }
+                        .hb-footer-left {
+                            display: table-cell;
+                            text-align: left;
+                        }
+                        .hb-footer-right {
+                            display: table-cell;
+                            text-align: right;
+                        }
+                    </style>
+
+                    <div class="hb-page">
+
+                        <!-- Dark banner header -->
+                        <div class="hb-banner">
+                            <div class="banner-logo">
+                                <img t-att-src="image_data_uri(doc.company_id.logo)" alt="Logo"/>
+                            </div>
+                            <div class="banner-content">
+                                <div class="doc-type">Rapport</div>
+                                <h1>&#201;tat des banques d'heures</h1>
+                                <div class="doc-subtitle">Client : <t t-out="doc.partner_id.name"/></div>
+                            </div>
+                        </div>
+                        <div class="hb-accent-bar"/>
+
+                        <!-- Metadata bar -->
+                        <div class="hb-meta">
+                            <div class="hb-meta-item">
+                                <div class="hb-meta-label">Derni&#232;re mise &#224; jour</div>
+                                <div class="hb-meta-value">
+                                    <t t-out="data['last_update'].strftime('%Y-%m-%d %H:%M')"/>
+                                </div>
+                            </div>
+                            <div class="hb-meta-item right">
+                                <div class="hb-meta-label">Solde restant</div>
+                                <div t-attf-class="hb-meta-value {{ 'balance-positive' if balance &gt;= 0 else 'balance-negative' }}">
+                                    <t t-out="'%.2f h' % balance"/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Entries table -->
+                        <div class="hb-content">
+                            <table class="hb-table">
+                                <thead>
+                                    <tr>
+                                        <th style="width:12%">Date</th>
+                                        <th class="num" style="width:12%">Nb d'heures</th>
+                                        <th class="num" style="width:12%">Solde cumulatif</th>
+                                        <th style="width:40%">Description / D&#233;tails</th>
+                                        <th style="width:24%">Projet</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-foreach="entries" t-as="e">
+                                        <tr t-attf-class="{{ 'credit' if e['entry_type'] == 'credit' else '' }}">
+                                            <td><t t-out="str(e['date'])"/></td>
+                                            <td class="num"><t t-out="'%.2f' % e['hours']"/></td>
+                                            <td class="num"><t t-out="'%.2f' % e['cumulative']"/></td>
+                                            <td><t t-out="e['description']"/></td>
+                                            <td><t t-out="e['project']"/></td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+
+                            <!-- Summary by project -->
+                            <div style="page-break-before: auto; margin-top: 24pt;">
+                                <div class="hb-section-title">Sommaire par projet</div>
+                                <table class="hb-summary-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Projet</th>
+                                            <th class="num">Heures totales</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-set="grand_total" t-value="0"/>
+                                        <t t-foreach="summary_by_project.items()" t-as="item">
+                                            <tr>
+                                                <td><t t-out="item[0]"/></td>
+                                                <td class="num"><t t-out="'%.2f' % item[1]"/></td>
+                                            </tr>
+                                            <t t-set="grand_total" t-value="grand_total + item[1]"/>
+                                        </t>
+                                        <tr class="total">
+                                            <td>Total</td>
+                                            <td class="num"><t t-out="'%.2f' % grand_total"/></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- Summary by month -->
+                            <div style="margin-top: 24pt;">
+                                <div class="hb-section-title">Synth&#232;se par mois</div>
+                                <t t-set="all_projects" t-value="sorted(set(p for md in summary_by_month.values() for p in md))"/>
+                                <table class="hb-summary-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Mois</th>
+                                            <t t-foreach="all_projects" t-as="proj">
+                                                <th class="num"><t t-out="proj"/></th>
+                                            </t>
+                                            <th class="num">Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-foreach="sorted(summary_by_month.items())" t-as="month_item">
+                                            <tr>
+                                                <td><t t-out="'%04d-%02d' % (month_item[0][0], month_item[0][1])"/></td>
+                                                <t t-set="month_total" t-value="0"/>
+                                                <t t-foreach="all_projects" t-as="proj">
+                                                    <t t-set="val" t-value="month_item[1].get(proj, 0.0)"/>
+                                                    <td class="num"><t t-out="'%.2f' % val"/></td>
+                                                    <t t-set="month_total" t-value="month_total + val"/>
+                                                </t>
+                                                <td class="num" style="font-weight:700"><t t-out="'%.2f' % month_total"/></td>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- Footer -->
+                            <div class="hb-footer">
+                                <div class="hb-footer-left">
+                                    <t t-out="doc.company_id.name"/>
+                                </div>
+                                <div class="hb-footer-right">
+                                    Banque d'heures &#8212; Document confidentiel
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+
+</odoo>

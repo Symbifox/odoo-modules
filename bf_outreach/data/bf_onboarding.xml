@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo noupdate="1">
+
+    <record id="bf_onb_step_campaign" model="onboarding.onboarding.step">
+        <field name="title">Créer une campagne</field>
+        <field name="description">[action:bf_outreach.action_bf_outreach_campaign] Définissez la période, l'équipe et la cadence de relance (combien d'appels et de courriels, à quel intervalle).</field>
+        <field name="button_text">Voir les campagnes</field>
+        <field name="done_text">Campagne créée</field>
+        <field name="panel_step_open_action_name">bf_open_action</field>
+        <field name="sequence">1</field>
+    </record>
+
+    <record id="bf_onb_step_targets" model="onboarding.onboarding.step">
+        <field name="title">Charger la liste de cibles</field>
+        <field name="description">[action:bf_outreach.action_bf_outreach_target] Ajoutez les cibles depuis vos contacts, ou sélectionnez-les dans la liste des contacts et utilisez l'action « Ajouter à une campagne de démarchage ».</field>
+        <field name="button_text">Voir les cibles</field>
+        <field name="done_text">Cibles chargées</field>
+        <field name="panel_step_open_action_name">bf_open_action</field>
+        <field name="sequence">2</field>
+    </record>
+
+    <record id="bf_onb_step_touches" model="onboarding.onboarding.step">
+        <field name="title">Journaliser les contacts</field>
+        <field name="description">[action:bf_outreach.action_bf_outreach_touch] Chaque appel et chaque courriel se note en deux clics ; les prochaines relances se calculent seules.</field>
+        <field name="button_text">Voir les interactions</field>
+        <field name="done_text">Suivi en marche</field>
+        <field name="panel_step_open_action_name">bf_open_action</field>
+        <field name="sequence">3</field>
+    </record>
+
+    <record id="bf_onboarding_panel" model="onboarding.onboarding">
+        <field name="name">Démarchage</field>
+        <field name="route_name">bf_outreach_onboarding</field>
+        <field name="panel_close_action_name">action_close_panel_bf_outreach</field>
+        <field name="step_ids" eval="[
+            Command.link(ref('bf_outreach.bf_onb_step_campaign')),
+            Command.link(ref('bf_outreach.bf_onb_step_targets')),
+            Command.link(ref('bf_outreach.bf_onb_step_touches')),
+        ]"/>
+    </record>
+
+</odoo>

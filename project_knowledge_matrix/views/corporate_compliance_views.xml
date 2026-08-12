@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Form View -->
+    <record id="corporate_compliance_view_form" model="ir.ui.view">
+        <field name="name">corporate.compliance.event.form</field>
+        <field name="model">corporate.compliance.event</field>
+        <field name="arch" type="xml">
+            <form string="Événement de conformité">
+                <header>
+                    <button name="action_complete" string="Marquer complété" type="object"
+                            class="btn-success" invisible="completed_date"/>
+                    <button name="action_reset" string="Réinitialiser" type="object"
+                            invisible="not completed_date"/>
+                    <field name="status" widget="statusbar"
+                           statusbar_visible="upcoming,due_soon,completed"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Détails">
+                            <field name="event_type"/>
+                            <field name="fiscal_year"/>
+                            <field name="due_date"/>
+                            <field name="completed_date"/>
+                        </group>
+                        <group string="Référence">
+                            <field name="resolution_id"/>
+                            <field name="filing_reference"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                    <group string="Notes">
+                        <field name="notes" nolabel="1"/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- List View -->
+    <record id="corporate_compliance_view_list" model="ir.ui.view">
+        <field name="name">corporate.compliance.event.list</field>
+        <field name="model">corporate.compliance.event</field>
+        <field name="arch" type="xml">
+            <list string="Événements de conformité"
+                  decoration-danger="status == 'overdue'"
+                  decoration-warning="status == 'due_soon'"
+                  decoration-success="status == 'upcoming'"
+                  decoration-muted="status == 'completed'">
+                <field name="name"/>
+                <field name="event_type"/>
+                <field name="fiscal_year" optional="show"/>
+                <field name="due_date"/>
+                <field name="completed_date"/>
+                <field name="filing_reference" optional="show"/>
+                <field name="status" widget="badge"
+                       decoration-danger="status == 'overdue'"
+                       decoration-warning="status == 'due_soon'"
+                       decoration-success="status == 'upcoming'"
+                       decoration-muted="status == 'completed'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Calendar View -->
+    <record id="corporate_compliance_view_calendar" model="ir.ui.view">
+        <field name="name">corporate.compliance.event.calendar</field>
+        <field name="model">corporate.compliance.event</field>
+        <field name="arch" type="xml">
+            <calendar string="Calendrier de conformité" date_start="due_date"
+                      color="event_type" mode="year">
+                <field name="name"/>
+                <field name="status"/>
+            </calendar>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="corporate_compliance_view_search" model="ir.ui.view">
+        <field name="name">corporate.compliance.event.search</field>
+        <field name="model">corporate.compliance.event</field>
+        <field name="arch" type="xml">
+            <search string="Rechercher des événements de conformité">
+                <field name="name"/>
+                <field name="fiscal_year"/>
+                <separator/>
+                <filter string="En retard" name="overdue"
+                        domain="[('status', '=', 'overdue')]"/>
+                <filter string="Échéance proche" name="due_soon"
+                        domain="[('status', '=', 'due_soon')]"/>
+                <filter string="À venir" name="upcoming"
+                        domain="[('status', '=', 'upcoming')]"/>
+                <filter string="Complété" name="completed"
+                        domain="[('status', '=', 'completed')]"/>
+                <separator/>
+                <filter string="En cours" name="pending"
+                        domain="[('completed_date', '=', False)]"/>
+                <separator/>
+                <group expand="0" string="Regrouper par">
+                    <filter string="Type" name="group_type"
+                            context="{'group_by': 'event_type'}"/>
+                    <filter string="Statut" name="group_status"
+                            context="{'group_by': 'status'}"/>
+                    <filter string="Année fiscale" name="group_fiscal_year"
+                            context="{'group_by': 'fiscal_year'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="corporate_compliance_action" model="ir.actions.act_window">
+        <field name="name">Calendrier de conformité</field>
+        <field name="res_model">corporate.compliance.event</field>
+        <field name="view_mode">list,calendar,form</field>
+        <field name="search_view_id" ref="corporate_compliance_view_search"/>
+        <field name="context">{'search_default_pending': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Créer votre premier événement de conformité
+            </p>
+        </field>
+    </record>
+
+    <!-- Minute Book: filtered document action -->
+    <record id="corporate_minute_book_action" model="ir.actions.act_window">
+        <field name="name">Livre des minutes</field>
+        <field name="res_model">project.document</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('minute_book_section', '!=', False)]</field>
+        <field name="context">{'search_default_filter_active': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Ajouter un document avec une section du livre des minutes pour le voir ici
+            </p>
+        </field>
+    </record>
+
+</odoo>

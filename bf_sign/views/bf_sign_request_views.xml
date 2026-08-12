@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Form -->
+    <record id="view_bf_sign_request_form" model="ir.ui.view">
+        <field name="name">bf.sign.request.form</field>
+        <field name="model">bf.sign.request</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_send" type="object" string="Envoyer pour signature"
+                            class="oe_highlight" invisible="state not in ('draft',)"/>
+                    <button name="action_remind_pending" type="object" string="Relancer les signataires"
+                            invisible="state not in ('sent', 'in_progress')"/>
+                    <button name="action_download_signed" type="object" string="Télécharger le document signé"
+                            class="oe_highlight" invisible="state != 'signed'"/>
+                    <button name="action_download_certificate" type="object" string="Certificat"
+                            invisible="state != 'signed'"/>
+                    <button name="action_verify_integrity" type="object" string="Vérifier l'intégrité"
+                            invisible="state != 'signed'"/>
+                    <button name="action_cancel" type="object" string="Annuler"
+                            invisible="state in ('signed', 'cancelled')"/>
+                    <button name="action_reset_to_draft" type="object" string="Remettre en brouillon"
+                            invisible="state not in ('cancelled', 'expired', 'refused')"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,sent,in_progress,signed"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                        <h2><field name="title" placeholder="Titre du document (optionnel)"/></h2>
+                    </div>
+                    <field name="progress" widget="progressbar" invisible="state == 'draft'"/>
+                    <group>
+                        <group string="Document">
+                            <field name="document_file" filename="document_filename"
+                                   readonly="state == 'signed'"/>
+                        </group>
+                        <group string="Paramètres">
+                            <field name="signature_method" readonly="1"/>
+                            <field name="signing_order" readonly="state != 'draft'"/>
+                            <field name="require_signer_otp" readonly="state != 'draft'"/>
+                            <field name="append_certificate" readonly="state != 'draft'"/>
+                            <field name="reminder_enabled"/>
+                            <field name="verify_qr" readonly="state != 'draft'"/>
+                            <field name="verify_qr_position" readonly="state != 'draft'"
+                                   invisible="not verify_qr"/>
+                            <field name="verify_qr_pages" readonly="state != 'draft'"
+                                   invisible="not verify_qr"/>
+                            <field name="expiry_date" readonly="state == 'signed'"/>
+                            <field name="company_id" groups="base.group_multi_company"
+                                   readonly="state != 'draft'"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Signataires">
+                            <div class="alert alert-info mb-2" role="alert" invisible="state == 'draft'">
+                                Les destinataires sont verrouillés. Remettez la demande en brouillon
+                                pour ajouter, modifier ou retirer un signataire.
+                            </div>
+                            <field name="signer_ids" readonly="state != 'draft'">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="name"/>
+                                    <field name="email"/>
+                                    <field name="partner_id"/>
+                                    <field name="field_count" string="Pavés"/>
+                                    <field name="state"/>
+                                    <field name="first_viewed_on" string="Ouvert le"/>
+                                    <field name="reminder_count" string="Relances" optional="show"/>
+                                    <field name="last_reminder_on" optional="hide"/>
+                                    <field name="view_count" string="Ouvertures" optional="hide"/>
+                                    <field name="last_viewed_on" optional="hide"/>
+                                    <field name="signed_on"/>
+                                    <button name="action_resend_invitation" type="object"
+                                            string="Relancer ce signataire" icon="fa-paper-plane"
+                                            invisible="parent.state not in ('sent','in_progress') or state in ('signed','refused')"/>
+                                    <button name="action_reveal_signing_link" type="object"
+                                            string="Copier le lien" icon="fa-link"
+                                            groups="bf_sign.group_sign_manager"
+                                            invisible="parent.state == 'draft'"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Disposition des pavés">
+                            <div class="text-muted mb-2" invisible="state != 'draft'">
+                                Enregistrez la demande, ajoutez les signataires, puis cliquez « Signature / Paraphe / Date »
+                                et déposez les pavés sur le document. Glissez pour déplacer, coin pour redimensionner.
+                            </div>
+                            <div class="alert alert-info mb-2" role="alert" invisible="state == 'draft'">
+                                La disposition des pavés est verrouillée. Remettez la demande en brouillon
+                                pour la modifier.
+                            </div>
+                            <widget name="bf_sign_placement"/>
+                        </page>
+                        <page string="Consentement">
+                            <field name="consent_text" nolabel="1" readonly="state == 'signed'"/>
+                        </page>
+                        <page string="Preuve" invisible="state != 'signed'">
+                            <group>
+                                <group>
+                                    <field name="signed_on" readonly="1"/>
+                                    <field name="signed_attachment_id" readonly="1"/>
+                                    <field name="certificate_attachment_id" readonly="1"/>
+                                </group>
+                                <group>
+                                    <field name="verify_url" widget="url" readonly="1"
+                                           invisible="not verify_url"/>
+                                    <div colspan="2" invisible="not verify_url">
+                                        <button name="action_share_verify_link" type="object"
+                                                class="btn-link ps-0" icon="fa-paper-plane"
+                                                string="Partager le lien de vérification"/>
+                                    </div>
+                                    <div colspan="2" class="text-muted"
+                                         invisible="verify_url or state != 'signed'">
+                                        Ce document a été scellé avant l'existence de la page
+                                        de vérification publique&#160;: il n'a pas de lien à
+                                        partager. Sa preuve reste entière et se contrôle par
+                                        «&#160;Vérifier l'intégrité&#160;». Les documents signés
+                                        depuis en portent un.
+                                    </div>
+                                    <field name="hash_original" readonly="1"/>
+                                    <field name="hash_signed" readonly="1"/>
+                                    <field name="hash_stamped" readonly="1" invisible="not hash_stamped"/>
+                                    <field name="tsa_url" readonly="1" invisible="not tsa_url"/>
+                                    <field name="tsa_timestamp" readonly="1" invisible="not tsa_url"/>
+                                    <field name="tsa_gentime" readonly="1" invisible="not tsa_gentime"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Piste de vérification">
+                            <field name="log_ids" readonly="1">
+                                <list>
+                                    <field name="timestamp_utc"/>
+                                    <field name="event"/>
+                                    <field name="actor"/>
+                                    <field name="ip_address"/>
+                                    <field name="identity_method"/>
+                                    <field name="entry_hash"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- List -->
+    <record id="view_bf_sign_request_list" model="ir.ui.view">
+        <field name="name">bf.sign.request.list</field>
+        <field name="model">bf.sign.request</field>
+        <field name="arch" type="xml">
+            <list decoration-success="state == 'signed'" decoration-muted="state in ('cancelled','expired')">
+                <field name="name"/>
+                <field name="title" string="Titre" optional="show"/>
+                <field name="signer_count" string="Signataires"/>
+                <field name="viewed_count" string="Ouvert par" optional="show"/>
+                <field name="signed_count" string="Signés"/>
+                <field name="view_status" widget="badge" string="Consultation"
+                       optional="show"
+                       decoration-success="view_status == 'all'"
+                       decoration-warning="view_status == 'partial'"
+                       decoration-muted="view_status == 'none'"
+                       invisible="state == 'draft'"/>
+                <field name="last_viewed_on" string="Dernière ouverture" optional="hide"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'signed'"
+                       decoration-info="state in ('sent','in_progress')"/>
+                <field name="signed_on"/>
+                <field name="create_date"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Kanban -->
+    <record id="view_bf_sign_request_kanban" model="ir.ui.view">
+        <field name="name">bf.sign.request.kanban</field>
+        <field name="model">bf.sign.request</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="state">
+                <field name="state"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_global_click">
+                            <div class="o_kanban_record_title"><strong><field name="title"/></strong></div>
+                            <div class="text-muted"><field name="name"/></div>
+                            <div><field name="signed_count"/> / <field name="signer_count"/> signataire(s)</div>
+                            <div class="text-muted"><field name="signed_on"/></div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Search -->
+    <record id="view_bf_sign_request_search" model="ir.ui.view">
+        <field name="name">bf.sign.request.search</field>
+        <field name="model">bf.sign.request</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" string="Document"
+                       filter_domain="['|', ('name','ilike',self), ('title','ilike',self)]"/>
+                <field name="title"/>
+                <field name="signer_ids" string="Signataire"/>
+                <filter name="f_draft" string="Brouillon" domain="[('state','=','draft')]"/>
+                <filter name="f_pending" string="En cours" domain="[('state','in',('sent','in_progress'))]"/>
+                <filter name="f_signed" string="Signées" domain="[('state','=','signed')]"/>
+                <separator/>
+                <filter name="g_state" string="État" context="{'group_by': 'state'}"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_sign_request" model="ir.actions.act_window">
+        <field name="name">Demandes de signature</field>
+        <field name="res_model">bf.sign.request</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="search_view_id" ref="view_bf_sign_request_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Créez une demande de signature électronique</p>
+            <p>Téléversez un PDF, ajoutez les signataires, placez les pavés, et envoyez les liens.</p>
+        </field>
+    </record>
+
+</odoo>

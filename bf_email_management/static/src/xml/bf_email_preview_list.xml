@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="bf_email_management.PreviewListView" t-inherit="web.ListView" t-inherit-mode="primary">
+
+        <!-- Reading-pane position control (right / bottom / off), next to the cog menu -->
+        <xpath expr="//t[@t-set-slot='control-panel-additional-actions']" position="inside">
+            <div class="btn-group o_bf_preview_toggle d-none d-lg-inline-flex" role="group" aria-label="Panneau de lecture">
+                <button type="button"
+                        class="btn btn-light"
+                        t-att-class="{ 'active text-primary': previewState.mode === 'right' }"
+                        t-att-title="previewRightTitle"
+                        t-on-click="() => this.setPreviewMode('right')">
+                    <i class="fa fa-columns"/>
+                </button>
+                <button type="button"
+                        class="btn btn-light"
+                        t-att-class="{ 'active text-primary': previewState.mode === 'bottom' }"
+                        t-att-title="previewBottomTitle"
+                        t-on-click="() => this.setPreviewMode('bottom')">
+                    <i class="fa fa-columns fa-rotate-270"/>
+                </button>
+            </div>
+        </xpath>
+
+        <!-- Wrap the renderer in a split layout with the reading pane -->
+        <xpath expr="//t[@t-component='props.Renderer']" position="replace">
+            <div class="o_bf_email_split d-flex w-100 h-100 overflow-hidden"
+                 t-att-class="previewState.mode === 'bottom' ? 'flex-column' : 'flex-nowrap'">
+                <!-- NOTE: `$0` must be the EXACT text content (no whitespace) —
+                     template_inheritance.js matches .//*[text()='$0'] strictly. -->
+                <div class="o_bf_email_split_list flex-grow-1 overflow-auto" style="min-height: 0; min-width: 0;">$0</div>
+                <div t-if="previewEnabled"
+                     class="o_bf_email_splitter d-none d-lg-block flex-shrink-0"
+                     t-att-style="splitterStyle"
+                     title="Glisser pour redimensionner"
+                     t-on-mousedown="onSplitterMouseDown"/>
+                <div t-if="previewEnabled"
+                     class="o_bf_email_split_pane bg-view d-none d-lg-flex flex-column"
+                     t-att-class="previewState.mode === 'bottom' ? 'w-100' : 'h-100'"
+                     t-att-style="previewPaneStyle">
+                    <t t-if="previewState.loading">
+                        <div class="d-flex align-items-center justify-content-center flex-grow-1 text-muted">
+                            <i class="fa fa-circle-o-notch fa-spin me-2"/> Chargement…
+                        </div>
+                    </t>
+                    <t t-elif="previewState.record">
+                        <!-- Single scroll context: the header (and its action
+                             buttons) scrolls away with the body, freeing the
+                             full pane height for the message. -->
+                        <div class="flex-grow-1 overflow-auto" style="min-height: 0;">
+                        <!-- Header -->
+                        <div class="border-bottom p-2">
+                            <div class="d-flex align-items-start">
+                                <div class="fw-bold flex-grow-1 text-break" t-esc="previewState.record.subject || '(sans objet)'"/>
+                                <button type="button" class="btn btn-sm btn-link text-muted ms-1 p-0"
+                                        title="Fermer l'aperçu" t-on-click="closePreview">
+                                    <i class="fa fa-times"/>
+                                </button>
+                            </div>
+                            <div class="text-muted small mt-1">
+                                <div><strong>De :</strong> <t t-esc="previewState.record.email_from"/></div>
+                                <div t-if="previewState.record.email_to"><strong>À :</strong> <t t-esc="previewState.record.email_to"/></div>
+                                <div t-if="previewState.record.email_cc"><strong>Cc :</strong> <t t-esc="previewState.record.email_cc"/></div>
+                                <div>
+                                    <strong>Date :</strong> <t t-esc="formatPreviewDate(previewState.record.date)"/>
+                                    <span t-if="previewState.record.attachment_count" class="badge bg-light text-dark ms-2">
+                                        <i class="fa fa-paperclip me-1"/><t t-esc="previewState.record.attachment_count"/>
+                                    </span>
+                                    <span t-if="previewState.record.is_handled" class="badge bg-success ms-2">Traité</span>
+                                </div>
+                                <div t-if="previewState.record.record_name">
+                                    <strong>Dossier :</strong>
+                                    <a href="#" t-on-click.prevent="openPreviewSourceRecord" t-esc="previewState.record.record_name"/>
+                                </div>
+                                <div t-if="previewState.record.attachments.length" class="d-flex flex-wrap gap-1 mt-1">
+                                    <a t-foreach="previewState.record.attachments" t-as="att" t-key="att.id"
+                                       class="badge bg-light text-dark border text-decoration-none"
+                                       t-att-href="attachmentUrl(att)"
+                                       t-att-title="att.name"
+                                       target="_blank" rel="noopener">
+                                        <i class="fa fa-paperclip me-1"/><t t-esc="att.name"/>
+                                    </a>
+                                </div>
+                            </div>
+                            <!-- Actions -->
+                            <div class="d-flex flex-wrap gap-1 mt-2">
+                                <button type="button" class="btn btn-sm btn-primary" t-on-click="previewReply">
+                                    <i class="fa fa-reply me-1"/>Répondre
+                                </button>
+                                <button type="button" class="btn btn-sm btn-secondary" title="Transférer"
+                                        t-on-click="previewForward">
+                                    <i class="fa fa-share me-1"/>Transférer
+                                </button>
+                                <button t-if="!previewState.record.is_handled" type="button"
+                                        class="btn btn-sm btn-secondary" title="Raccourci : E"
+                                        t-on-click="previewMarkHandled">
+                                    <i class="fa fa-check me-1"/>Traité
+                                </button>
+                                <button t-else="" type="button"
+                                        class="btn btn-sm btn-secondary" t-on-click="previewUnhandle">
+                                    <i class="fa fa-inbox me-1"/>Remettre en boîte
+                                </button>
+                                <button type="button" class="btn btn-sm btn-secondary" t-on-click="previewSnooze">
+                                    <i class="fa fa-clock-o me-1"/>Reporter
+                                </button>
+                                <button type="button" class="btn btn-sm btn-secondary ms-auto" title="Télécharger en .eml"
+                                        t-on-click="previewDownloadEml">
+                                    <i class="fa fa-download"/>
+                                </button>
+                                <button type="button" class="btn btn-sm btn-secondary" t-on-click="openPreviewForm">
+                                    <i class="fa fa-expand me-1"/>Ouvrir
+                                </button>
+                            </div>
+                        </div>
+                        <!-- Body: iframe auto-sized to its content (no inner
+                             scrollbar) so the outer container is the only
+                             scroll context. pe-none while dragging the
+                             splitter so the iframe doesn't eat mouse events. -->
+                        <iframe class="border-0 w-100 d-block"
+                                t-att-class="{ 'pe-none': previewState.dragging }"
+                                title="Aperçu du courriel"
+                                sandbox="allow-same-origin allow-popups allow-popups-to-escape-sandbox"
+                                t-on-load="onPreviewIframeLoad"
+                                t-att-srcdoc="previewSrcdoc"/>
+                        </div>
+                    </t>
+                    <t t-else="">
+                        <div class="d-flex flex-column align-items-center justify-content-center flex-grow-1 text-muted p-3">
+                            <i class="fa fa-envelope-open-o fa-2x mb-2"/>
+                            <div>Sélectionnez un courriel pour l'afficher ici.</div>
+                        </div>
+                    </t>
+                </div>
+            </div>
+        </xpath>
+
+    </t>
+
+</templates>

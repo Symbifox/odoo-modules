@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Module category -->
+        <record id="module_category_fox_quest" model="ir.module.category">
+            <field name="name">Fox Quest</field>
+            <field name="sequence">60</field>
+        </record>
+
+        <!-- User group -->
+        <record id="group_gamification_user" model="res.groups">
+            <field name="name">Utilisateur</field>
+            <field name="category_id" ref="module_category_fox_quest"/>
+        </record>
+
+        <!-- Manager group (implies user) -->
+        <record id="group_gamification_manager" model="res.groups">
+            <field name="name">Gestionnaire</field>
+            <field name="category_id" ref="module_category_fox_quest"/>
+            <field name="implied_ids" eval="[(4, ref('group_gamification_user'))]"/>
+        </record>
+
+        <!-- All internal users get gamification user group -->
+        <record id="base.group_user" model="res.groups">
+            <field name="implied_ids" eval="[(4, ref('group_gamification_user'))]"/>
+        </record>
+
+        <!-- Profile: all users can read all profiles (leaderboard) -->
+        <record id="rule_profile_read" model="ir.rule">
+            <field name="name">Profil: tous peuvent lire</field>
+            <field name="model_id" ref="model_bf_gamification_profile"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_gamification_user'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+        <!-- Profile: users edit own only -->
+        <record id="rule_profile_write" model="ir.rule">
+            <field name="name">Profil: modifier le sien</field>
+            <field name="model_id" ref="model_bf_gamification_profile"/>
+            <field name="domain_force">[('user_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('group_gamification_user'))]"/>
+            <field name="perm_read" eval="False"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+        <record id="rule_profile_manager" model="ir.rule">
+            <field name="name">Profil: gestionnaire voit tout</field>
+            <field name="model_id" ref="model_bf_gamification_profile"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_gamification_manager'))]"/>
+        </record>
+
+        <!-- XP Transaction: users see own -->
+        <record id="rule_xp_transaction_user" model="ir.rule">
+            <field name="name">XP Transaction: voir les siennes</field>
+            <field name="model_id" ref="model_bf_gamification_xp_transaction"/>
+            <field name="domain_force">[('user_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('group_gamification_user'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+        <record id="rule_xp_transaction_manager" model="ir.rule">
+            <field name="name">XP Transaction: gestionnaire voit tout</field>
+            <field name="model_id" ref="model_bf_gamification_xp_transaction"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_gamification_manager'))]"/>
+        </record>
+
+        <!-- Reward claims: users see own -->
+        <record id="rule_reward_claim_user" model="ir.rule">
+            <field name="name">Réclamation: voir les siennes</field>
+            <field name="model_id" ref="model_bf_gamification_reward_claim"/>
+            <field name="domain_force">[('user_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('group_gamification_user'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+        <record id="rule_reward_claim_manager" model="ir.rule">
+            <field name="name">Réclamation: gestionnaire voit tout</field>
+            <field name="model_id" ref="model_bf_gamification_reward_claim"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_gamification_manager'))]"/>
+        </record>
+    </data>
+</odoo>

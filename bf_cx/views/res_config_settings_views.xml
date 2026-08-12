@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="res_config_settings_view_form" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.bf.cx</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app data-string="Expérience client" string="Expérience client" name="bf_cx">
+                    <block title="Boucle fermée" name="bf_cx_loop_block">
+                        <setting string="Activité automatique de suivi"
+                                 help="Un détracteur NPS (note ≤ 6) ou une note insatisfaite crée une activité assignée au responsable du compte.">
+                            <field name="bf_cx_auto_activity"/>
+                        </setting>
+                        <setting string="Ingérer les évaluations par courriel"
+                                 help="Copier chaque évaluation (projets, tickets…) dans le registre unifié des feedbacks.">
+                            <field name="bf_cx_ingest_ratings"/>
+                        </setting>
+                        <setting string="Anti-sursollicitation"
+                                 help="Nombre de jours minimum entre deux demandes de feedback au même contact, tous canaux (vagues, post-rencontre, post-perte, ratings de projets et tickets). 0 = aucun garde-fou. Réglable par programme pour une cadence relationnelle plus lente (90 j recommandé).">
+                            <field name="bf_cx_solicitation_cooldown_days"/>
+                        </setting>
+                        <setting string="Échéance de boucle fermée"
+                                 help="Échéance de l'activité créée pour un détracteur ou une note insatisfaite (pratique : 24-72 h).">
+                            <field name="bf_cx_followup_days"/>
+                        </setting>
+                        <setting string="Candidats témoignage"
+                                 help="Créer une activité (échéance 5 jours) quand un répondant accepte d'être cité.">
+                            <field name="bf_cx_testimonial_activity"/>
+                        </setting>
+                        <setting string="Fenêtre NPS"
+                                 help="Fenêtre glissante du score affiché (tableau de bord, digest, programmes). Le score est masqué sous 10 réponses - en deçà, la marge d'erreur dépasse ±20 points.">
+                            <field name="bf_cx_nps_window_days"/>
+                        </setting>
+                    </block>
+                    <block title="Plaintes" name="bf_cx_complaint_block">
+                        <setting string="Délai d'accusé de réception"
+                                 help="Nombre de jours pour accuser réception d'une plainte. Sert à calculer l'échéance affichée sur chaque plainte.">
+                            <field name="bf_cx_complaint_ack_days"/>
+                        </setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="action_cx_settings" model="ir.actions.act_window">
+        <field name="name">Paramètres</field>
+        <field name="res_model">res.config.settings</field>
+        <field name="view_mode">form</field>
+        <field name="target">inline</field>
+        <field name="context">{'module': 'bf_cx'}</field>
+    </record>
+
+</odoo>

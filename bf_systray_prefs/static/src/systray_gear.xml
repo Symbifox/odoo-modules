@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates xml:space="preserve">
+
+    <t t-name="bf_systray_prefs.Gear">
+        <Dropdown position="'bottom-end'">
+            <button class="btn o_bf_systray_gear" title="Icônes de la barre">
+                <i class="fa fa-sliders"/>
+            </button>
+            <t t-set-slot="content">
+                <div class="o_bf_systray_prefs_menu">
+                    <div class="px-3 py-2 small text-muted text-uppercase">Afficher dans la barre</div>
+                    <div t-foreach="items" t-as="it" t-key="it.key"
+                         class="o_bf_systray_pref_row d-flex align-items-center px-3 py-1"
+                         t-on-click.stop="() => this.toggle(it.key)">
+                        <i class="fa fa-fw me-2"
+                           t-att-class="isVisible(it.key) ? 'fa-check-square-o text-primary' : 'fa-square-o text-muted'"/>
+                        <span t-esc="it.label"/>
+                    </div>
+                    <div t-if="!items.length" class="px-3 py-2 small text-muted">
+                        Aucune icône configurable.
+                    </div>
+                </div>
+            </t>
+        </Dropdown>
+    </t>
+
+</templates>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_audit_element_list" model="ir.ui.view">
+        <field name="name">audit.element.list</field>
+        <field name="model">audit.element</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="num"/>
+                <field name="name"/>
+                <field name="description"/>
+                <field name="sequence" widget="handle"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_audit_element_form" model="ir.ui.view">
+        <field name="name">audit.element.form</field>
+        <field name="model">audit.element</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="num"/>
+                            <field name="name"/>
+                            <field name="sequence"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="description"/>
+                    </group>
+                    <notebook>
+                        <page string="Meilleures pratiques Loi 25">
+                            <field name="best_practices"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_audit_element" model="ir.actions.act_window">
+        <field name="name">Éléments d'audit</field>
+        <field name="res_model">audit.element</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+</odoo>

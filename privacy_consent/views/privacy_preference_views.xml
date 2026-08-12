@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Form View -->
+    <record id="privacy_contact_preference_form_view" model="ir.ui.view">
+        <field name="name">privacy.contact.preference.form</field>
+        <field name="model">privacy.contact.preference</field>
+        <field name="arch" type="xml">
+            <form string="Préférences de contact">
+                <sheet>
+                    <div class="alert alert-danger" role="alert"
+                         invisible="not do_not_contact">
+                        <strong>Ne pas contacter</strong> — Toutes les communications sont bloquées pour ce contact.
+                    </div>
+                    <group>
+                        <group string="Contact">
+                            <field name="partner_id"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                        <group string="Contrôle principal">
+                            <field name="do_not_contact" widget="boolean_toggle"/>
+                        </group>
+                    </group>
+                    <group invisible="do_not_contact">
+                        <group string="Préférences de courriel">
+                            <field name="allow_service_email" widget="boolean_toggle"/>
+                            <field name="allow_marketing_email" widget="boolean_toggle"/>
+                        </group>
+                        <group string="Autres canaux">
+                            <field name="allow_phone" widget="boolean_toggle"/>
+                            <field name="allow_sms" widget="boolean_toggle"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Préférences">
+                            <field name="preferred_language"/>
+                            <field name="preferred_contact_time"/>
+                        </group>
+                        <group string="Info de désabonnement" invisible="not opt_out_date">
+                            <field name="opt_out_reason"/>
+                            <field name="opt_out_date"/>
+                        </group>
+                    </group>
+                    <separator string="Notes"/>
+                    <field name="notes" placeholder="Notes supplémentaires sur les préférences..."/>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- List View -->
+    <record id="privacy_contact_preference_list_view" model="ir.ui.view">
+        <field name="name">privacy.contact.preference.list</field>
+        <field name="model">privacy.contact.preference</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="do_not_contact">
+                <field name="partner_id"/>
+                <field name="do_not_contact" widget="boolean"/>
+                <field name="allow_service_email" widget="boolean"/>
+                <field name="allow_marketing_email" widget="boolean"/>
+                <field name="allow_phone" widget="boolean"/>
+                <field name="allow_sms" widget="boolean"/>
+                <field name="preferred_language"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="privacy_contact_preference_search_view" model="ir.ui.view">
+        <field name="name">privacy.contact.preference.search</field>
+        <field name="model">privacy.contact.preference</field>
+        <field name="arch" type="xml">
+            <search string="Rechercher les préférences">
+                <field name="partner_id"/>
+                <filter string="Ne pas contacter" name="dnc" domain="[('do_not_contact', '=', True)]"/>
+                <filter string="Marketing autorisé" name="marketing" domain="[('allow_marketing_email', '=', True)]"/>
+                <filter string="Téléphone autorisé" name="phone" domain="[('allow_phone', '=', True)]"/>
+                <separator/>
+                <group expand="0" string="Regrouper par">
+                    <filter string="Langue" name="language" context="{'group_by': 'preferred_language'}"/>
+                    <filter string="Raison de désabonnement" name="optout" context="{'group_by': 'opt_out_reason'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_privacy_preference" model="ir.actions.act_window">
+        <field name="name">Préférences de contact</field>
+        <field name="res_model">privacy.contact.preference</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Aucune préférence de contact configurée
+            </p>
+            <p>
+                Les préférences sont créées automatiquement lors de leur configuration sur les contacts.
+            </p>
+        </field>
+    </record>
+</odoo>

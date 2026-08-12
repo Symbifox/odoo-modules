@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="preset_developpement" model="bf.timer.description.preset">
+            <field name="name">D&#233;veloppement</field>
+            <field name="text">D&#233;veloppement</field>
+            <field name="sequence">10</field>
+        </record>
+        <record id="preset_reunion" model="bf.timer.description.preset">
+            <field name="name">R&#233;union</field>
+            <field name="text">R&#233;union</field>
+            <field name="sequence">20</field>
+        </record>
+        <record id="preset_support" model="bf.timer.description.preset">
+            <field name="name">Support</field>
+            <field name="text">Support</field>
+            <field name="sequence">30</field>
+        </record>
+        <record id="preset_revision" model="bf.timer.description.preset">
+            <field name="name">R&#233;vision</field>
+            <field name="text">R&#233;vision de code</field>
+            <field name="sequence">40</field>
+        </record>
+    </data>
+</odoo>

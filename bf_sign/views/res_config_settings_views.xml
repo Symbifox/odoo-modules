@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="res_config_settings_view_form_bf_sign" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.bf.sign</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app data-string="Signature électronique" string="Signature électronique" name="bf_sign">
+                    <block title="Signature électronique" name="bf_sign_block">
+                        <setting string="Échéance par défaut"
+                                 help="Délai par défaut avant expiration d'un lien de signature.">
+                            <div class="content-group">
+                                <field name="bf_sign_default_expiry_days" class="o_light_label"/>
+                                <span class="ms-1">jours</span>
+                            </div>
+                        </setting>
+                        <setting string="Vérification par code (OTP)"
+                                 help="Exiger par défaut qu'un signataire saisisse un code envoyé à son courriel avant de consulter et signer. Activable/désactivable par demande.">
+                            <field name="bf_sign_require_signer_otp"/>
+                        </setting>
+                        <setting string="Relances automatiques"
+                                 help="Relancer les signataires qui n'ont pas signé, en comptant depuis l'invitation de chacun. Activable/désactivable par demande.">
+                            <field name="bf_sign_reminder_enabled"/>
+                            <div class="content-group" invisible="not bf_sign_reminder_enabled">
+                                <div class="mt-2">
+                                    <field name="bf_sign_reminder_days" class="o_light_label" style="width:90px;"/>
+                                    <span class="ms-1">jours après l'invitation</span>
+                                </div>
+                                <div class="mt-2">
+                                    <field name="bf_sign_reminder_before_expiry_hours" class="o_light_label"/>
+                                    <span class="ms-1">h avant l'échéance (dernier rappel)</span>
+                                </div>
+                                <div class="mt-2">
+                                    <field name="bf_sign_reminder_max" class="o_light_label"/>
+                                    <span class="ms-1">relances maximum par signataire</span>
+                                </div>
+                                <div class="mt-2">
+                                    <field name="bf_sign_unopened_alert_days" class="o_light_label"/>
+                                    <span class="ms-1">jours avant d'alerter sur un document jamais ouvert</span>
+                                </div>
+                            </div>
+                        </setting>
+                        <setting string="Code QR de vérification"
+                                 help="Appose sur le document signé un code QR menant à une page publique qui atteste de son origine et rejoue les contrôles d'intégrité. Le code est imprimé par-dessus le contenu : choisissez un coin libre sur la demande.">
+                            <field name="bf_sign_verify_qr"/>
+                        </setting>
+                        <setting string="Certificat joint au document"
+                                 help="Relier le certificat de signature à la fin du document signé. Décoché, le document est livré seul et le certificat reste une pièce distincte, produite et scellée de la même façon. Réglable par demande.">
+                            <field name="bf_sign_append_certificate"/>
+                        </setting>
+                        <setting string="Limites de taille"
+                                 help="Plafonds de sécurité sur les images de signature et le document téléversé.">
+                            <div class="content-group">
+                                <div>
+                                    <field name="bf_sign_max_signature_kb" class="o_light_label"/>
+                                    <span class="ms-1">Ko par signature</span>
+                                </div>
+                                <div class="mt-2">
+                                    <field name="bf_sign_max_document_mb" class="o_light_label"/>
+                                    <span class="ms-1">Mo par document</span>
+                                </div>
+                            </div>
+                        </setting>
+                        <setting string="Clé de chiffrement (scellement)"
+                                 help="Clé Fernet protégeant le certificat de scellement. Sur un nouveau serveur, générez-la ici (stockée en base de données) ou collez une clé existante. Une clé définie dans odoo.conf ou l'environnement a toujours priorité.">
+                            <field name="bf_sign_fernet_key_present" invisible="1"/>
+                            <div class="text-muted">
+                                État : <field name="bf_sign_fernet_key_status" nolabel="1" class="oe_inline"/>
+                            </div>
+                            <div class="mt-2" invisible="bf_sign_fernet_key_present">
+                                <button name="action_bf_sign_generate_fernet_key" type="object"
+                                        string="Générer la clé de chiffrement"
+                                        class="btn btn-secondary"/>
+                            </div>
+                            <div class="content-group mt-2">
+                                <label for="bf_sign_fernet_key_input" string="Importer une clé existante"/>
+                                <field name="bf_sign_fernet_key_input" password="True"
+                                       placeholder="clé Fernet base64…"/>
+                            </div>
+                        </setting>
+                        <setting string="Sceau numérique (PAdES)"
+                                 help="Signature numérique « Blue Fox Inc. » sur le document scellé — inaltérabilité vérifiable dans un lecteur PDF (type DocuSeal). Actif automatiquement dès qu'un certificat existe ; décochez pour le désactiver.">
+                            <field name="bf_sign_pdf_seal_enabled"/>
+                            <div class="mt-2">
+                                <button name="action_bf_sign_generate_seal_cert" type="object"
+                                        string="Générer le certificat de scellement"
+                                        class="btn btn-secondary"/>
+                            </div>
+                        </setting>
+                        <setting string="Horodatage de confiance (RFC 3161)"
+                                 help="Obtenir un jeton TSA sur chaque document signé — preuve indépendante de la plateforme.">
+                            <field name="bf_sign_rfc3161_enabled"/>
+                            <div class="content-group mt-2" invisible="not bf_sign_rfc3161_enabled">
+                                <label for="bf_sign_tsa_url" string="URL de la TSA"/>
+                                <field name="bf_sign_tsa_url"/>
+                            </div>
+                        </setting>
+                        <setting string="Texte de consentement par défaut"
+                                 help="Texte présenté au signataire. Laissez vide pour le texte intégré.">
+                            <field name="bf_sign_default_consent_text" widget="text"/>
+                        </setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="action_bf_sign_settings" model="ir.actions.act_window">
+        <field name="name">Paramètres</field>
+        <field name="res_model">res.config.settings</field>
+        <field name="view_mode">form</field>
+        <field name="target">inline</field>
+        <field name="context">{'module': 'bf_sign'}</field>
+    </record>
+
+</odoo>

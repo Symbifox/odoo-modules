@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- Demo Tags -->
+        <record id="tag_critical" model="hosting.service.tag">
+            <field name="name">Critical</field>
+            <field name="color">1</field>
+        </record>
+        <record id="tag_backup" model="hosting.service.tag">
+            <field name="name">Backup Required</field>
+            <field name="color">2</field>
+        </record>
+        <record id="tag_premium" model="hosting.service.tag">
+            <field name="name">Premium</field>
+            <field name="color">10</field>
+        </record>
+
+        <!-- Software Catalog -->
+
+        <!-- Odoo -->
+        <record id="software_odoo" model="hosting.software">
+            <field name="name">Odoo</field>
+            <field name="code">OD</field>
+            <field name="software_type">self_hosted</field>
+            <field name="latest_version">18.0</field>
+            <field name="latest_version_date">2024-10-01</field>
+            <field name="github_url">https://github.com/odoo/odoo</field>
+            <field name="docker_image">odoo:18</field>
+            <field name="notes">&lt;p&gt;Open source ERP and business management software.&lt;/p&gt;</field>
+        </record>
+
+        <!-- Nextcloud -->
+        <record id="software_nextcloud" model="hosting.software">
+            <field name="name">Nextcloud</field>
+            <field name="code">NC</field>
+            <field name="software_type">self_hosted</field>
+            <field name="latest_version">30.0.2</field>
+            <field name="latest_version_date">2024-12-15</field>
+            <field name="github_url">https://github.com/nextcloud/server</field>
+            <field name="docker_image">nextcloud:30</field>
+            <field name="notes">&lt;p&gt;Self-hosted file sync and share platform.&lt;/p&gt;</field>
+        </record>
+
+        <!-- CryptPad -->
+        <record id="software_cryptpad" model="hosting.software">
+            <field name="name">CryptPad</field>
+            <field name="code">CP</field>
+            <field name="software_type">self_hosted</field>
+            <field name="latest_version">2024.12.0</field>
+            <field name="latest_version_date">2024-12-01</field>
+            <field name="github_url">https://github.com/cryptpad/cryptpad</field>
+            <field name="docker_image">cryptpad/cryptpad:latest</field>
+            <field name="notes">&lt;p&gt;End-to-end encrypted collaboration suite.&lt;/p&gt;</field>
+        </record>
+
+        <!-- Vaultwarden -->
+        <record id="software_vaultwarden" model="hosting.software">
+            <field name="name">Vaultwarden</field>
+            <field name="code">VW</field>
+            <field name="software_type">self_hosted</field>
+            <field name="latest_version">1.32.4</field>
+            <field name="latest_version_date">2024-12-20</field>
+            <field name="github_url">https://github.com/dani-garcia/vaultwarden</field>
+            <field name="docker_image">vaultwarden/server:latest</field>
+            <field name="notes">&lt;p&gt;Lightweight Bitwarden-compatible password manager server.&lt;/p&gt;</field>
+        </record>
+
+        <!-- OnlyOffice -->
+        <record id="software_onlyoffice" model="hosting.software">
+            <field name="name">OnlyOffice</field>
+            <field name="code">OO</field>
+            <field name="software_type">self_hosted</field>
+            <field name="latest_version">8.2.2</field>
+            <field name="latest_version_date">2024-12-10</field>
+            <field name="github_url">https://github.com/ONLYOFFICE/DocumentServer</field>
+            <field name="docker_image">onlyoffice/documentserver:latest</field>
+            <field name="notes">&lt;p&gt;Online document editing suite compatible with MS Office.&lt;/p&gt;</field>
+        </record>
+
+        <!-- Docuseal -->
+        <record id="software_docuseal" model="hosting.software">
+            <field name="name">Docuseal</field>
+            <field name="code">DS</field>
+            <field name="software_type">self_hosted</field>
+            <field name="latest_version">1.8.2</field>
+            <field name="latest_version_date">2024-12-15</field>
+            <field name="github_url">https://github.com/docusealco/docuseal</field>
+            <field name="docker_image">docuseal/docuseal:latest</field>
+            <field name="notes">&lt;p&gt;Open source document signing platform.&lt;/p&gt;</field>
+        </record>
+
+        <!-- Collabora -->
+        <record id="software_collabora" model="hosting.software">
+            <field name="name">Collabora Online</field>
+            <field name="code">CO</field>
+            <field name="software_type">self_hosted</field>
+            <field name="latest_version">24.04.9</field>
+            <field name="latest_version_date">2024-12-01</field>
+            <field name="github_url">https://github.com/CollaboraOnline/online</field>
+            <field name="docker_image">collabora/code:latest</field>
+            <field name="notes">&lt;p&gt;LibreOffice Online for collaborative document editing.&lt;/p&gt;</field>
+        </record>
+
+        <!-- Migadu (SaaS) -->
+        <record id="software_migadu" model="hosting.software">
+            <field name="name">Migadu</field>
+            <field name="code">MG</field>
+            <field name="software_type">saas</field>
+            <field name="notes">&lt;p&gt;Email hosting service (SaaS).&lt;/p&gt;</field>
+        </record>
+
+        <!-- Shlink -->
+        <record id="software_shlink" model="hosting.software">
+            <field name="name">Shlink</field>
+            <field name="code">SL</field>
+            <field name="software_type">self_hosted</field>
+            <field name="latest_version">4.3.1</field>
+            <field name="latest_version_date">2024-11-15</field>
+            <field name="github_url">https://github.com/shlinkio/shlink</field>
+            <field name="docker_image">shlinkio/shlink:latest</field>
+            <field name="notes">&lt;p&gt;Self-hosted URL shortener with analytics.&lt;/p&gt;</field>
+        </record>
+
+        <!-- Talk HPB -->
+        <record id="software_talk_hpb" model="hosting.software">
+            <field name="name">Nextcloud Talk HPB</field>
+            <field name="code">HPB</field>
+            <field name="software_type">self_hosted</field>
+            <field name="latest_version">0.7.1</field>
+            <field name="latest_version_date">2024-10-01</field>
+            <field name="github_url">https://github.com/nextcloud/spreed</field>
+            <field name="docker_image">nextcloud/aio-talk:latest</field>
+            <field name="notes">&lt;p&gt;High-Performance Backend for Nextcloud Talk.&lt;/p&gt;</field>
+        </record>
+
+        <!-- PrivateBin -->
+        <record id="software_privatebin" model="hosting.software">
+            <field name="name">PrivateBin</field>
+            <field name="code">PB</field>
+            <field name="software_type">self_hosted</field>
+            <field name="latest_version">1.7.4</field>
+            <field name="latest_version_date">2024-09-01</field>
+            <field name="github_url">https://github.com/PrivateBin/PrivateBin</field>
+            <field name="docker_image">privatebin/nginx-fpm-alpine:latest</field>
+            <field name="notes">&lt;p&gt;Zero-knowledge encrypted pastebin.&lt;/p&gt;</field>
+        </record>
+
+        <!-- Grist -->
+        <record id="software_grist" model="hosting.software">
+            <field name="name">Grist</field>
+            <field name="code">GR</field>
+            <field name="software_type">self_hosted</field>
+            <field name="latest_version">1.3.1</field>
+            <field name="latest_version_date">2024-12-01</field>
+            <field name="github_url">https://github.com/gristlabs/grist-core</field>
+            <field name="docker_image">gristlabs/grist:latest</field>
+            <field name="notes">&lt;p&gt;Modern relational spreadsheets.&lt;/p&gt;</field>
+        </record>
+
+        <!-- CubeBackup -->
+        <record id="software_cubebackup" model="hosting.software">
+            <field name="name">CubeBackup</field>
+            <field name="code">CB</field>
+            <field name="software_type">managed</field>
+            <field name="latest_version">2.1.5</field>
+            <field name="latest_version_date">2024-11-01</field>
+            <field name="notes">&lt;p&gt;Microsoft 365 and Google Workspace backup solution.&lt;/p&gt;</field>
+        </record>
+
+        <!-- Hostinger (SaaS) -->
+        <record id="software_hostinger" model="hosting.software">
+            <field name="name">Hostinger</field>
+            <field name="code">HG</field>
+            <field name="software_type">saas</field>
+            <field name="notes">&lt;p&gt;Web hosting provider (SaaS).&lt;/p&gt;</field>
+        </record>
+
+        <!-- Software Versions -->
+
+        <!-- Odoo versions -->
+        <record id="version_odoo_18" model="hosting.software.version">
+            <field name="software_id" ref="software_odoo"/>
+            <field name="version">18.0</field>
+            <field name="release_date">2024-10-01</field>
+            <field name="is_lts" eval="False"/>
+            <field name="support_status">supported</field>
+            <field name="update_impact">major</field>
+        </record>
+        <record id="version_odoo_17" model="hosting.software.version">
+            <field name="software_id" ref="software_odoo"/>
+            <field name="version">17.0</field>
+            <field name="release_date">2023-10-01</field>
+            <field name="is_lts" eval="True"/>
+            <field name="support_status">supported</field>
+            <field name="update_impact">major</field>
+        </record>
+        <record id="version_odoo_16" model="hosting.software.version">
+            <field name="software_id" ref="software_odoo"/>
+            <field name="version">16.0</field>
+            <field name="release_date">2022-10-01</field>
+            <field name="is_lts" eval="False"/>
+            <field name="support_status">security_only</field>
+            <field name="update_impact">major</field>
+        </record>
+
+        <!-- Nextcloud versions -->
+        <record id="version_nextcloud_30" model="hosting.software.version">
+            <field name="software_id" ref="software_nextcloud"/>
+            <field name="version">30.0.2</field>
+            <field name="release_date">2024-12-15</field>
+            <field name="is_lts" eval="False"/>
+            <field name="support_status">supported</field>
+            <field name="update_impact">minor</field>
+        </record>
+        <record id="version_nextcloud_29" model="hosting.software.version">
+            <field name="software_id" ref="software_nextcloud"/>
+            <field name="version">29.0.8</field>
+            <field name="release_date">2024-11-01</field>
+            <field name="is_lts" eval="True"/>
+            <field name="support_status">supported</field>
+            <field name="update_impact">minor</field>
+        </record>
+        <record id="version_nextcloud_28" model="hosting.software.version">
+            <field name="software_id" ref="software_nextcloud"/>
+            <field name="version">28.0.12</field>
+            <field name="release_date">2024-10-01</field>
+            <field name="is_lts" eval="False"/>
+            <field name="support_status">security_only</field>
+            <field name="update_impact">minor</field>
+        </record>
+
+    </data>
+</odoo>

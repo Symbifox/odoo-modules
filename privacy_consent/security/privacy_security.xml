@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        <!-- Catégorie du module -->
+        <record id="module_privacy_category" model="ir.module.category">
+            <field name="name">Vie privée (Loi 25)</field>
+            <field name="description">Gestion de la vie privée et du consentement pour la conformité à la Loi 25</field>
+            <field name="sequence">50</field>
+        </record>
+
+        <!-- Groupes de sécurité -->
+        <record id="group_privacy_user" model="res.groups">
+            <field name="name">Utilisateur vie privée</field>
+            <field name="comment">Peut consulter les enregistrements de consentement et en créer de nouveaux.</field>
+            <field name="category_id" ref="module_privacy_category"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+
+        <record id="group_privacy_manager" model="res.groups">
+            <field name="name">Gestionnaire vie privée</field>
+            <field name="comment">Accès complet à tous les enregistrements de vie privée. Peut configurer les finalités et avis.</field>
+            <field name="category_id" ref="module_privacy_category"/>
+            <field name="implied_ids" eval="[(4, ref('group_privacy_user'))]"/>
+        </record>
+
+        <record id="group_privacy_officer" model="res.groups">
+            <field name="name">Responsable vie privée</field>
+            <field name="comment">Accès administrateur. Peut exporter les données et gérer toute la configuration.</field>
+            <field name="category_id" ref="module_privacy_category"/>
+            <field name="implied_ids" eval="[(4, ref('group_privacy_manager'))]"/>
+            <field name="users" eval="[(4, ref('base.user_admin'))]"/>
+        </record>
+    </data>
+
+    <data noupdate="1">
+        <!-- Règles d'enregistrement -->
+
+        <!-- Consentement : Règle de société (global) -->
+        <record id="rule_consent_company" model="ir.rule">
+            <field name="name">Consentement : Règle de société</field>
+            <field name="model_id" ref="model_privacy_consent"/>
+            <field name="global" eval="True"/>
+            <field name="domain_force">[('company_id', 'in', company_ids + [False])]</field>
+        </record>
+
+        <!-- Finalité : Règle de société (global) -->
+        <record id="rule_purpose_company" model="ir.rule">
+            <field name="name">Finalité : Règle de société</field>
+            <field name="model_id" ref="model_privacy_purpose"/>
+            <field name="global" eval="True"/>
+            <field name="domain_force">[('company_id', 'in', company_ids + [False])]</field>
+        </record>
+
+        <!-- Préférence : Règle de société (global) -->
+        <record id="rule_preference_company" model="ir.rule">
+            <field name="name">Préférence : Règle de société</field>
+            <field name="model_id" ref="model_privacy_contact_preference"/>
+            <field name="global" eval="True"/>
+            <field name="domain_force">[('company_id', 'in', company_ids + [False])]</field>
+        </record>
+
+        <!-- Avis : Règle de société (global) -->
+        <record id="rule_notice_company" model="ir.rule">
+            <field name="name">Modèle de consentement : Règle de société</field>
+            <field name="model_id" ref="model_privacy_notice"/>
+            <field name="global" eval="True"/>
+            <field name="domain_force">[('company_id', 'in', company_ids + [False])]</field>
+        </record>
+
+        <!-- Règles d'accès portail -->
+        <record id="rule_consent_portal" model="ir.rule">
+            <field name="name">Consentement : Accès portail</field>
+            <field name="model_id" ref="model_privacy_consent"/>
+            <field name="domain_force">[('subject_partner_id', '=', user.partner_id.id)]</field>
+            <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="rule_preference_portal" model="ir.rule">
+            <field name="name">Préférence : Accès portail</field>
+            <field name="model_id" ref="model_privacy_contact_preference"/>
+            <field name="domain_force">[('partner_id', '=', user.partner_id.id)]</field>
+            <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- Demande de destruction : Règle de société -->
+        <record id="rule_destruction_request_company" model="ir.rule">
+            <field name="name">Demande de destruction : Règle de société</field>
+            <field name="model_id" ref="model_privacy_destruction_request"/>
+            <field name="global" eval="True"/>
+            <field name="domain_force">[('company_id', 'in', company_ids + [False])]</field>
+        </record>
+
+        <!-- Politique de rétention : Règle de société -->
+        <record id="rule_retention_policy_company" model="ir.rule">
+            <field name="name">Politique de rétention : Règle de société</field>
+            <field name="model_id" ref="model_privacy_retention_policy"/>
+            <field name="global" eval="True"/>
+            <field name="domain_force">[('company_id', 'in', company_ids + [False])]</field>
+        </record>
+
+        <!-- Registre de destruction : no-unlink pour tous les groupes (belt & suspenders with Python unlink override) -->
+        <record id="rule_destruction_register_no_unlink" model="ir.rule">
+            <field name="name">Registre de destruction : Suppression interdite</field>
+            <field name="model_id" ref="model_privacy_destruction_register"/>
+            <field name="global" eval="True"/>
+            <field name="domain_force">[(0, '=', 1)]</field>
+            <field name="perm_read" eval="False"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+        <!-- === Destruction documentaire — Nouvelles règles === -->
+
+        <!-- Calendrier de conservation : Règle de société -->
+        <record id="rule_retention_calendar_company" model="ir.rule">
+            <field name="name">Calendrier de conservation : Règle de société</field>
+            <field name="model_id" ref="model_privacy_retention_calendar"/>
+            <field name="global" eval="True"/>
+            <field name="domain_force">[('company_id', 'in', company_ids + [False])]</field>
+        </record>
+
+        <!-- Classification documentaire : Règle de société -->
+        <record id="rule_document_classification_company" model="ir.rule">
+            <field name="name">Classification documentaire : Règle de société</field>
+            <field name="model_id" ref="model_privacy_document_classification"/>
+            <field name="global" eval="True"/>
+            <field name="domain_force">[('company_id', 'in', company_ids + [False])]</field>
+        </record>
+
+        <!-- Registre de destruction : Règle de société -->
+        <record id="rule_destruction_register_company" model="ir.rule">
+            <field name="name">Registre de destruction : Règle de société</field>
+            <field name="model_id" ref="model_privacy_destruction_register"/>
+            <field name="global" eval="True"/>
+            <field name="domain_force">[('company_id', 'in', company_ids + [False])]</field>
+        </record>
+
+        <!-- Évaluation d'anonymisation : Règle de société -->
+        <record id="rule_anonymization_assessment_company" model="ir.rule">
+            <field name="name">Évaluation d'anonymisation : Règle de société</field>
+            <field name="model_id" ref="model_privacy_anonymization_assessment"/>
+            <field name="global" eval="True"/>
+            <field name="domain_force">[('company_id', 'in', company_ids + [False])]</field>
+        </record>
+
+        <!-- Campagne de destruction : Règle de société -->
+        <record id="rule_destruction_campaign_company" model="ir.rule">
+            <field name="name">Campagne de destruction : Règle de société</field>
+            <field name="model_id" ref="model_privacy_destruction_campaign"/>
+            <field name="global" eval="True"/>
+            <field name="domain_force">[('company_id', 'in', company_ids + [False])]</field>
+        </record>
+
+        <!-- === Cadres réglementaires — données de référence globales === -->
+
+        <!-- Cadre réglementaire : Règle de société (les cadres globaux company_id=False sont visibles par tous) -->
+        <record id="rule_framework_company" model="ir.rule">
+            <field name="name">Cadre réglementaire : Règle de société</field>
+            <field name="model_id" ref="model_privacy_framework"/>
+            <field name="global" eval="True"/>
+            <field name="domain_force">[('company_id', 'in', company_ids + [False])]</field>
+        </record>
+
+        <!-- Base légale : Règle de société -->
+        <record id="rule_lawful_basis_company" model="ir.rule">
+            <field name="name">Base légale : Règle de société</field>
+            <field name="model_id" ref="model_privacy_lawful_basis"/>
+            <field name="global" eval="True"/>
+            <field name="domain_force">[('company_id', 'in', company_ids + [False])]</field>
+        </record>
+
+        <!-- Droit de la personne concernée : Règle de société -->
+        <record id="rule_right_company" model="ir.rule">
+            <field name="name">Droit : Règle de société</field>
+            <field name="model_id" ref="model_privacy_right"/>
+            <field name="global" eval="True"/>
+            <field name="domain_force">[('company_id', 'in', company_ids + [False])]</field>
+        </record>
+
+        <!-- === Cloisonnement des enregistrements rattachés (2026-07-31) ===
+
+             Ces deux modèles n'ont pas de champ société et n'avaient AUCUNE
+             règle : ils échappaient donc au cloisonnement qui protège leur
+             parent. Mesuré le 2026-07-31 sur une instance à deux sociétés — un
+             gestionnaire vie privée voyait les preuves et les versions d'avis
+             de l'autre société, alors que les consentements eux-mêmes lui
+             étaient bien masqués. La preuve porte l'IP, l'agent utilisateur et
+             un instantané nominatif : elle doit suivre exactement la
+             visibilité du consentement dont elle dépend.
+
+             Le cloisonnement passe par le parent plutôt que par un nouveau
+             champ société : pas de colonne à ajouter, pas de migration, et
+             aucun risque de voir le champ diverger de celui du parent. -->
+
+        <record id="rule_consent_evidence_company" model="ir.rule">
+            <field name="name">Preuve de consentement : Règle de société</field>
+            <field name="model_id" ref="model_privacy_consent_evidence"/>
+            <field name="global" eval="True"/>
+            <field name="domain_force">[('consent_id.company_id', 'in', company_ids + [False])]</field>
+        </record>
+
+        <record id="rule_notice_version_company" model="ir.rule">
+            <field name="name">Version d'avis : Règle de société</field>
+            <field name="model_id" ref="model_privacy_notice_version"/>
+            <field name="global" eval="True"/>
+            <field name="domain_force">[('notice_id.company_id', 'in', company_ids + [False])]</field>
+        </record>
+
+    </data>
+</odoo>

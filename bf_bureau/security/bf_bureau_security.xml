@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="bf_bureau_desk_rule_own" model="ir.rule">
+        <field name="name">BF Bureau : voir uniquement ses propres bureaux</field>
+        <field name="model_id" ref="model_bf_bureau_desk"/>
+        <field name="domain_force">[('user_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="bf_bureau_desk_rule_admin" model="ir.rule">
+        <field name="name">BF Bureau : admin voit tout</field>
+        <field name="model_id" ref="model_bf_bureau_desk"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('base.group_system'))]"/>
+    </record>
+
+    <record id="bf_bureau_pane_rule_own" model="ir.rule">
+        <field name="name">BF Bureau : panneau suit la règle du bureau parent</field>
+        <field name="model_id" ref="model_bf_bureau_pane"/>
+        <field name="domain_force">[('desk_id.user_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="bf_bureau_pane_rule_admin" model="ir.rule">
+        <field name="name">BF Bureau : panneau admin voit tout</field>
+        <field name="model_id" ref="model_bf_bureau_pane"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('base.group_system'))]"/>
+    </record>
+
+</odoo>

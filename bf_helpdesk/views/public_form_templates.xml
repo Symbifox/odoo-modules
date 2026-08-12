@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+  <template id="public_form_page" name="BF Helpdesk — Public Support Form">
+    <t t-call="website.layout">
+      <t t-set="additional_title" t-value="team.name"/>
+      <div class="bf-support-page">
+        <div class="container py-5" style="max-width: 720px;">
+          <div class="bf-support-header mb-4">
+            <h1 class="bf-support-title" t-esc="team.name"/>
+            <p class="bf-support-tagline">Décrivez ce dont vous avez besoin — on vous répond dans les meilleurs délais.</p>
+          </div>
+
+          <div t-if="team.public_form_intro_html" class="bf-support-intro mb-4">
+            <t t-out="team.public_form_intro_html"/>
+          </div>
+
+          <div t-if="error" class="alert alert-danger" role="alert">
+            <t t-esc="error"/>
+          </div>
+
+          <form t-attf-action="/support/#{team.slug}/submit"
+                method="post" enctype="multipart/form-data" class="bf-support-form">
+            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+            <!-- Honeypot: real users leave this empty. Hidden via inline CSS
+                 + label aria, name="website" matches a common bot heuristic. -->
+            <div style="position:absolute;left:-9999px;top:-9999px;height:0;width:0;overflow:hidden;" aria-hidden="true">
+              <label for="bf_support_website">Site web (laisser vide)</label>
+              <input type="text" id="bf_support_website" name="website" tabindex="-1" autocomplete="off"/>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label" for="bf_support_name">Nom <span class="text-muted">(optionnel)</span></label>
+              <input type="text" id="bf_support_name" name="name" class="form-control"
+                     t-att-value="prefill.get('name', '')"/>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label" for="bf_support_email">Courriel <span class="bf-required">*</span></label>
+              <input type="email" id="bf_support_email" name="email" class="form-control"
+                     required="required" t-att-value="prefill.get('email', '')"/>
+            </div>
+
+            <div class="mb-3" t-if="tags">
+              <label class="form-label" for="bf_support_tag">
+                <t t-esc="team.public_form_tag_label or 'Catégorie'"/>
+                <span class="bf-required" t-if="team.public_form_tag_required">*</span>
+              </label>
+              <select id="bf_support_tag" name="tag_id" class="form-select"
+                      t-att-required="'required' if team.public_form_tag_required else None">
+                <option value="">— Choisir —</option>
+                <t t-foreach="tags" t-as="tag">
+                  <option t-att-value="tag.id"
+                          t-att-selected="'selected' if str(tag.id) == prefill.get('tag_id', '') else None">
+                    <t t-esc="tag.name"/>
+                  </option>
+                </t>
+              </select>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label" for="bf_support_subject">Sujet <span class="bf-required">*</span></label>
+              <input type="text" id="bf_support_subject" name="subject" class="form-control"
+                     required="required" t-att-value="prefill.get('subject', '')"
+                     placeholder="Ex. Imprimante en panne au poste 3"/>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label" for="bf_support_description">Description <span class="bf-required">*</span></label>
+              <textarea id="bf_support_description" name="description" class="form-control" rows="6"
+                        required="required"
+                        placeholder="Que se passe-t-il ? Quand est-ce arrivé ? Y a-t-il un message d'erreur ?"
+                        ><t t-esc="prefill.get('description', '')"/></textarea>
+            </div>
+
+            <div class="mb-4">
+              <label class="form-label" for="bf_support_attachment">Pièce(s) jointe(s) <span class="text-muted">(optionnel)</span></label>
+              <input type="file" id="bf_support_attachment" name="attachment" class="form-control" multiple="multiple"/>
+              <small class="text-muted">Capture d'écran, log, document — max ~25 Mo par fichier.</small>
+            </div>
+
+            <button type="submit" class="btn bf-support-submit">Envoyer la demande</button>
+          </form>
+        </div>
+      </div>
+    </t>
+  </template>
+
+  <template id="public_form_thanks" name="BF Helpdesk — Public Form Success">
+    <t t-call="website.layout">
+      <t t-set="additional_title">Demande reçue</t>
+      <div class="bf-support-page">
+        <div class="container py-5 text-center" style="max-width: 640px;">
+          <div class="bf-support-success-card">
+            <h1 class="bf-support-title">Merci, c'est reçu.</h1>
+            <p t-if="ticket" class="bf-support-tagline">Votre demande a été enregistrée sous le numéro
+              <strong t-esc="ticket.number"/>. Un membre de l'équipe <strong t-esc="team.name"/>
+              prendra contact avec vous bientôt.
+            </p>
+            <p t-else="" class="bf-support-tagline">Un membre de l'équipe <strong t-esc="team.name"/>
+              prendra contact avec vous bientôt.</p>
+            <div t-if="team.public_form_success_html" class="bf-support-intro mt-4">
+              <t t-out="team.public_form_success_html"/>
+            </div>
+          </div>
+        </div>
+      </div>
+    </t>
+  </template>
+
+</odoo>

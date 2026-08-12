@@ -1,0 +1,29 @@
+{
+    "name": "Expérience client - tuile tableau de bord",
+    "summary": "Tuile NPS et détracteurs à traiter sur le tableau de bord Blue Fox",
+    "version": "18.0.1.1.0",
+    "category": "Marketing/Customer Experience",
+    "author": "Blue Fox Inc.",
+    "website": "https://bluefoxconsultant.com",
+    "license": "LGPL-3",
+    "application": False,
+    "installable": True,
+    "auto_install": True,
+    "description": """
+Pont Expérience client ↔ Tableau de bord
+========================================
+
+S'auto-installe quand bf_cx et bf_dashboard sont tous deux installés.
+Ajoute une tuile « NPS 30 jours » (score, détracteurs à traiter, plaintes
+ouvertes) dans la rangée « Actions requises » du tableau de bord.
+""",
+    "depends": [
+        "bf_cx",
+        "bf_dashboard",
+    ],
+    "assets": {
+        "web.assets_backend": [
+            "bf_cx_dashboard/static/src/xml/bf_cx_dashboard.xml",
+        ],
+    },
+}

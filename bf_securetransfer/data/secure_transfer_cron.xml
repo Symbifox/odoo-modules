@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- Nightly purge: flip overdue transfers to expired, delete their S3
+             objects in batches, keep metadata + access log (Loi 25 evidence).
+             03:15 — after the nightly backups, before business hours. -->
+        <record id="cron_st_purge" model="ir.cron">
+            <field name="name">Transfert sécurisé : purge des transferts expirés</field>
+            <field name="model_id" ref="model_secure_transfer"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_purge_expired()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="nextcall" eval="(DateTime.now() + timedelta(days=1)).strftime('%Y-%m-%d 03:15:00')"/>
+            <field name="active" eval="True"/>
+        </record>
+
+        <!-- Hourly garbage collection of abandoned drafts: abort pending
+             multipart uploads, delete orphan objects, cancel the draft.
+             Offset to :35 to stay clear of other on-the-hour crons. -->
+        <record id="cron_st_gc_drafts" model="ir.cron">
+            <field name="name">Transfert sécurisé : nettoyage des brouillons abandonnés</field>
+            <field name="model_id" ref="model_secure_transfer"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_gc_drafts()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">hours</field>
+            <field name="nextcall" eval="(DateTime.now() + timedelta(hours=1)).strftime('%Y-%m-%d %H:35:00')"/>
+            <field name="active" eval="True"/>
+        </record>
+
+        <!-- Hourly chatter sweep: blot the share token out of the e-mail
+             bodies the transfer retains, unless a recipient code gates the
+             link. Safety net behind the post-send hook — it catches mail that
+             was still queued, a send that had to be retried, and the day the
+             instance-wide recipient-code setting is turned off. :50 to stay
+             clear of the draft GC on :35. -->
+        <record id="cron_st_redact_links" model="ir.cron">
+            <field name="name">Transfert sécurisé : masquage des liens dans le suivi</field>
+            <field name="model_id" ref="model_secure_transfer"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_redact_chatter_links()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">hours</field>
+            <field name="nextcall" eval="(DateTime.now() + timedelta(hours=1)).strftime('%Y-%m-%d %H:50:00')"/>
+            <field name="active" eval="True"/>
+        </record>
+
+        <!-- Weekly hard GC: the ONLY code path that deletes purged transfers
+             and their access-log entries, once log_retention_days is past. -->
+        <record id="cron_st_gc_logs" model="ir.cron">
+            <field name="name">Transfert sécurisé : GC des journaux hors rétention</field>
+            <field name="model_id" ref="model_secure_transfer"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_gc_logs()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">weeks</field>
+            <field name="nextcall" eval="(DateTime.now() + timedelta(days=2)).strftime('%Y-%m-%d 04:45:00')"/>
+            <field name="active" eval="True"/>
+        </record>
+
+    </data>
+</odoo>

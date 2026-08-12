@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Inline list view for meeting.attendance (used in meeting.record form) -->
+    <record id="meeting_attendance_view_list" model="ir.ui.view">
+        <field name="name">meeting.attendance.list</field>
+        <field name="model">meeting.attendance</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="partner_id"/>
+                <field name="status" widget="badge"
+                       decoration-success="status == 'present'"
+                       decoration-danger="status == 'absent'"
+                       decoration-warning="status == 'excused'"/>
+                <field name="role"/>
+            </list>
+        </field>
+    </record>
+
+</odoo>

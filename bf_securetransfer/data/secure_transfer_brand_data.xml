@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- Default brand: serves any Host header that matches no explicit
+             brand domain. No domain on purpose — visuals fall back to the
+             company's report branding, links to the configured public base
+             URL. Operators customize it in Configuration → Marques. -->
+        <record id="brand_default" model="secure.transfer.brand">
+            <field name="name">Défaut</field>
+            <field name="sequence">10</field>
+            <field name="is_default" eval="True"/>
+            <field name="powered_by" eval="True"/>
+        </record>
+
+    </data>
+</odoo>

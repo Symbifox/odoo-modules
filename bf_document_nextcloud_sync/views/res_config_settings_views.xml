@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="res_config_settings_view_form_nc_doc_sync" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.nc.doc.sync</field>
+        <field name="model">res.config.settings</field>
+        <field name="priority">50</field>
+        <field name="inherit_id" ref="project_knowledge_matrix.res_config_settings_view_form_knowledge_matrix"/>
+        <field name="arch" type="xml">
+            <xpath expr="//app[@name='project_knowledge_matrix']" position="inside">
+                <block title="Nextcloud Documents" name="nc_doc_sync_settings">
+                    <setting string="Configuration Nextcloud par defaut"
+                        help="Configuration utilisee par defaut pour les nouveaux projets">
+                        <field name="nc_doc_default_config_id"
+                            options="{'no_create': True}"/>
+                    </setting>
+                    <setting string="Gerer les configurations"
+                        help="Configurer les connexions Nextcloud">
+                        <button name="%(bf_document_nextcloud_sync.action_nextcloud_document_config)d"
+                            type="action" string="Configurations Nextcloud"
+                            class="btn-link" icon="fa-arrow-right"/>
+                    </setting>
+                </block>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

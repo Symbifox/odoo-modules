@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data noupdate="1">
+        <!-- Le groupe portail ne lit que les feedbacks de sa propre
+             société, jamais le feedback interne (360). Les règles de
+             groupe se combinent en OU, mais un utilisateur portail
+             n'appartient à aucun groupe bf_cx : celle-ci est donc la
+             seule qui s'applique à lui, et la règle multi-société
+             GLOBALE de bf_cx continue de s'y ajouter en ET. -->
+        <record id="rule_cx_feedback_portal" model="ir.rule">
+            <field name="name">Feedbacks : portail (les siens, hors interne)</field>
+            <field name="model_id" ref="bf_cx.model_bf_cx_feedback"/>
+            <field name="domain_force">[('partner_id', 'child_of', user.partner_id.commercial_partner_id.id), ('kind', '!=', 'internal')]</field>
+            <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+        </record>
+    </data>
+
+</odoo>

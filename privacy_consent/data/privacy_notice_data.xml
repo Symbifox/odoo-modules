@@ -1,0 +1,1895 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!--
+        Privacy Notice Templates - Loi 25 / LCAP (CASL) Compliant
+        ===========================================================
+        Based on Your Company consent forms F-00 through F-07.
+        CAI (Commission d'accès à l'information) guidelines:
+        - Critères de validité du consentement (2023-1)
+        - 8 criteria: manifeste, libre, éclairé, spécifique, temporaire, granulaire, compréhensible, distinct
+
+        Key requirements:
+        - Plain language (langage clair)
+        - Bilingual content (FR/EN)
+        - Specific purpose explanation
+        - Duration and retention info
+        - Rights information
+        - Easy withdrawal process
+
+        RPRP / PPPO: privacy@example.com
+    -->
+
+    <!-- ========================================== -->
+    <!-- MARKETING COMMUNICATIONS (F-01) - 730 days (2 years) -->
+    <!-- ========================================== -->
+    <record id="notice_marketing" model="privacy.notice">
+        <field name="name">F-01 — Consentement aux communications marketing et infolettres</field>
+        <field name="purpose_id" ref="purpose_marketing"/>
+        <field name="body_fr"><![CDATA[
+<div class="privacy-notice">
+    <h3>F-01 — Consentement aux communications marketing et infolettres</h3>
+
+    <p><strong>Organisation concernée :</strong> Your Company Name<br/>
+    <strong>RPRP :</strong> <a href="mailto:privacy@example.com">privacy@example.com</a></p>
+
+    <h4>1. Objet du formulaire</h4>
+    <p>Le présent formulaire vise à recueillir votre <strong>consentement exprès</strong> à recevoir
+    certaines communications de Your Company à des fins <strong>d'information et de marketing</strong>.</p>
+    <p>Ces communications sont <strong>optionnelles</strong> et <strong>ne sont pas nécessaires</strong>
+    à l'exécution de nos services de consultation ou d'hébergement. Vous pouvez refuser ou retirer
+    votre consentement sans que cela n'affecte vos services existants, sauf si une communication
+    est strictement nécessaire pour vous fournir le service ou remplir une obligation légale.</p>
+
+    <h4>2. Types de communications proposés</h4>
+    <p>Merci de cocher les catégories pour lesquelles vous souhaitez donner votre consentement.
+    Chaque catégorie est <strong>indépendante</strong> : vous pouvez accepter certaines fins et en
+    refuser d'autres.</p>
+
+    <h5>2.1 Infolettres et contenus éducatifs</h5>
+    <p>Exemples :</p>
+    <ul>
+        <li>articles de blogue sur la Loi 25, la souveraineté numérique, l'hébergement souverain;</li>
+        <li>guides pratiques, modèles, checklists;</li>
+        <li>annonces de nouvelles ressources gratuites (webinaires, gabarits, etc.).</li>
+    </ul>
+
+    <h5>2.2 Invitations à des événements, webinaires et ateliers</h5>
+    <p>Exemples :</p>
+    <ul>
+        <li>invitations à des webinaires ou ateliers sur la conformité, la cybersécurité, l'open source;</li>
+        <li>invitations à des démonstrations de solutions (Nextcloud, Odoo, etc.).</li>
+    </ul>
+
+    <h5>2.3 Offres, promotions et propositions de services</h5>
+    <p>Exemples :</p>
+    <ul>
+        <li>offres d'implantation, d'audit, de formation;</li>
+        <li>propositions personnalisées liées à vos besoins (ex. offre d'accompagnement Loi 25).</li>
+    </ul>
+
+    <h5>2.4 Canal et fréquence</h5>
+    <p>Canaux autorisés possibles : courriel, téléphone, SMS / messages texte.<br/>
+    Fréquence indicative : 1 à 2 courriels par mois maximum.</p>
+
+    <h4>3. Durée, retrait et conséquences</h4>
+    <p>Votre consentement demeure valide <strong>jusqu'à son retrait</strong>, ou jusqu'à ce qu'il
+    ne soit plus nécessaire pour les fins visées. Vous pouvez <strong>retirer ou modifier</strong>
+    votre consentement à tout moment :</p>
+    <ul>
+        <li>en cliquant sur le lien de désabonnement prévu dans nos courriels;</li>
+        <li>en écrivant à : <a href="mailto:privacy@example.com">privacy@example.com</a>
+        ou à votre personne-ressource Your Company;</li>
+        <li>en remplissant le formulaire F-00 – Gestion de mes consentements.</li>
+    </ul>
+    <p>Le retrait de votre consentement n'affectera pas les communications <strong>nécessaires</strong>
+    à la gestion de vos mandats (ex. avis de maintenance, facturation, suivi de projet).</p>
+
+    <h4>4. Confirmation du consentement</h4>
+    <p>En acceptant, je confirme :</p>
+    <ul>
+        <li>que mon consentement est <strong>libre</strong> (non obligatoire pour recevoir les services standard);</li>
+        <li>que je comprends les <strong>fins spécifiques</strong> de chaque type de communication;</li>
+        <li>que je peux retirer mon consentement en tout temps.</li>
+    </ul>
+</div>
+        ]]></field>
+        <field name="body_en"><![CDATA[
+<div class="privacy-notice">
+    <h3>F-01 — Consent to Marketing Communications and Newsletters</h3>
+
+    <p><strong>Organization concerned:</strong> Your Company Name<br/>
+    <strong>PPPO:</strong> <a href="mailto:privacy@example.com">privacy@example.com</a></p>
+
+    <h4>1. Purpose of the form</h4>
+    <p>This form aims to collect your <strong>express consent</strong> to receive certain communications
+    from Your Company for <strong>information and marketing</strong> purposes.</p>
+    <p>These communications are <strong>optional</strong> and <strong>are not necessary</strong>
+    for the delivery of our consulting or hosting services. You may refuse or withdraw your consent
+    without affecting your existing services, unless a communication is strictly necessary to provide
+    you the service or meet a legal obligation.</p>
+
+    <h4>2. Types of communications offered</h4>
+    <p>Please tick the categories for which you wish to give your consent.
+    Each category is <strong>independent</strong>: you can accept some purposes and refuse others.</p>
+
+    <h5>2.1 Newsletters and educational content</h5>
+    <p>Examples:</p>
+    <ul>
+        <li>blog posts about Law 25, digital sovereignty, sovereign hosting;</li>
+        <li>practical guides, templates, checklists;</li>
+        <li>announcements of new free resources (webinars, templates, etc.).</li>
+    </ul>
+
+    <h5>2.2 Invitations to events, webinars and workshops</h5>
+    <p>Examples:</p>
+    <ul>
+        <li>invitations to webinars or workshops on compliance, cybersecurity, open source;</li>
+        <li>invitations to solution demos (Nextcloud, Odoo, etc.).</li>
+    </ul>
+
+    <h5>2.3 Offers, promotions and service proposals</h5>
+    <p>Examples:</p>
+    <ul>
+        <li>implementation, audit, training offers;</li>
+        <li>personalized proposals related to your needs (e.g., Law 25 support offer).</li>
+    </ul>
+
+    <h5>2.4 Channel and frequency</h5>
+    <p>Authorized channels: email, phone (calls), SMS / text messages.<br/>
+    Indicative frequency: 1 to 2 emails per month maximum.</p>
+
+    <h4>3. Duration, withdrawal and consequences</h4>
+    <p>Your consent remains valid <strong>until it is withdrawn</strong>, or until it is no longer
+    necessary for the stated purposes. You can <strong>withdraw or change</strong> your consent
+    at any time:</p>
+    <ul>
+        <li>by clicking the unsubscribe link in our emails;</li>
+        <li>by writing to: <a href="mailto:privacy@example.com">privacy@example.com</a>
+        or to your Your Company contact;</li>
+        <li>by filling in form F-00 – Managing my consents.</li>
+    </ul>
+    <p>Withdrawal of your consent will not affect communications <strong>necessary</strong> for
+    managing your mandates (e.g., maintenance notices, billing, project follow-up).</p>
+
+    <h4>4. Confirmation of consent</h4>
+    <p>By accepting, I confirm:</p>
+    <ul>
+        <li>that my consent is <strong>free</strong> (not required to receive standard services);</li>
+        <li>that I understand the <strong>specific purposes</strong> of each type of communication;</li>
+        <li>that I can withdraw my consent at any time.</li>
+    </ul>
+</div>
+        ]]></field>
+    </record>
+
+    <!-- ========================================== -->
+    <!-- RECORDING (F-02) - 365 days (1 year) -->
+    <!-- ========================================== -->
+    <record id="notice_recording" model="privacy.notice">
+        <field name="name">F-02 — Consentement à l'enregistrement ponctuel de rencontres</field>
+        <field name="purpose_id" ref="purpose_recording"/>
+        <field name="body_fr"><![CDATA[
+<div class="privacy-notice">
+    <h3>F-02 — Consentement général à l'enregistrement ponctuel de certaines rencontres</h3>
+
+    <p><strong>Organisation concernée :</strong> Your Company Name<br/>
+    <strong>RPRP :</strong> <a href="mailto:privacy@example.com">privacy@example.com</a></p>
+
+    <h4>1. Objet</h4>
+    <p>Dans le cadre de ses mandats de consultation, d'implantation et de formation, Your Company peut souhaiter,
+    à l'occasion, <strong>enregistrer certaines rencontres</strong> (visioconférences ou ateliers)
+    afin de faciliter :</p>
+    <ul>
+        <li>la prise de notes;</li>
+        <li>le suivi du projet;</li>
+        <li>la formation interne de l'équipe;</li>
+        <li>ou, le cas échéant, la préparation de contenus de formation ou de communication.</li>
+    </ul>
+    <p>Le présent formulaire vise à recueillir votre <strong>consentement général</strong> pour ces
+    enregistrements, sous réserve :</p>
+    <ul>
+        <li>d'un <strong>avis clair</strong> au début de chaque rencontre enregistrée;</li>
+        <li>de votre <strong>droit de refuser</strong> ponctuellement l'enregistrement d'une rencontre
+        ou d'en limiter l'usage.</li>
+    </ul>
+
+    <h4>2. Types de rencontres pouvant être enregistrées</h4>
+    <ul>
+        <li>Ateliers de travail / ateliers de cartographie / ateliers Loi 25</li>
+        <li>Rencontres de suivi de projet / comités de pilotage</li>
+        <li>Formations ou webinaires offerts à votre organisation</li>
+        <li>Démonstrations techniques (solutions Nextcloud, Odoo, etc.)</li>
+    </ul>
+
+    <h4>3. Fins pour lesquelles l'enregistrement peut être utilisé</h4>
+    <p>Vous pouvez accepter certaines fins et en refuser d'autres.</p>
+
+    <h5>3.1 Prise de notes et suivi du mandat</h5>
+    <p>Rédaction de comptes rendus, clarification de décisions, vérification d'éléments techniques.</p>
+    <p><em>Note : le refus de cette fin peut avoir un impact sur le temps administratif dédié
+    au projet et pourrait engendrer des frais de gestion supplémentaires.</em></p>
+
+    <h5>3.2 Formation interne de l'équipe Your Company</h5>
+    <p>Utilisation de l'enregistrement comme matériel de formation interne seulement.
+    Accès limité aux personnes qui travaillent sur des mandats similaires.</p>
+
+    <h5>3.3 Réutilisation sous forme d'extraits anonymisés</h5>
+    <p>Extraits audio/vidéo anonymisés (sans nom, visage, ni éléments permettant une identification directe),
+    utilisés pour des formations, des conférences ou du matériel pédagogique.</p>
+
+    <h5>3.4 Extraits identifiables (témoignage, étude de cas, etc.)</h5>
+    <p>Pour tout usage où vous seriez clairement identifiable (nom, image, voix, logo) dans un
+    contexte externe, Your Company s'engage à :</p>
+    <ul>
+        <li>obtenir un <strong>consentement spécifique supplémentaire</strong>;</li>
+        <li>vous soumettre le contenu avant diffusion.</li>
+    </ul>
+    <p><strong>Aucun enregistrement ne sera utilisé ainsi sans consentement distinct.</strong></p>
+
+    <h4>4. Modalités opérationnelles</h4>
+    <p>Même avec le présent consentement général :</p>
+    <ul>
+        <li>Your Company annoncera clairement, dans l'invitation ou au début de la rencontre,
+        qu'un enregistrement est en cours ou envisagé;</li>
+        <li>un indicateur visuel (ex. icône d'enregistrement dans Teams/Meet) sera visible;</li>
+        <li>vous pourrez refuser ponctuellement l'enregistrement ou demander l'arrêt à tout moment.</li>
+    </ul>
+
+    <h4>5. Conservation</h4>
+    <p>Les enregistrements sont conservés :</p>
+    <ul>
+        <li>pour la durée nécessaire à la réalisation du mandat et à la production des livrables;</li>
+        <li>pour toute période supplémentaire requise par la loi ou pour la preuve contractuelle;</li>
+        <li>puis supprimés ou anonymisés, selon le calendrier de conservation de Your Company.</li>
+    </ul>
+    <p>Les enregistrements utilisés pour la formation interne sont révisés périodiquement
+    et retirés lorsqu'ils ne sont plus pertinents.</p>
+
+    <h4>6. Retrait du consentement</h4>
+    <p>Vous pouvez <strong>retirer ce consentement général</strong> en tout temps pour l'avenir en
+    écrivant à : <a href="mailto:privacy@example.com">privacy@example.com</a>.</p>
+    <p>Vous pouvez également, pour une rencontre précise :</p>
+    <ul>
+        <li>refuser l'enregistrement;</li>
+        <li>demander l'arrêt de l'enregistrement en cours;</li>
+        <li>demander que votre segment ne soit pas réutilisé à certaines fins (ex. formation interne).</li>
+    </ul>
+
+    <h4>7. Confirmation</h4>
+    <p>En acceptant, je confirme :</p>
+    <ul>
+        <li>avoir reçu des explications sur la possibilité que certaines rencontres soient enregistrées;</li>
+        <li>comprendre les fins pour lesquelles ces enregistrements peuvent être utilisés;</li>
+        <li>savoir que je peux refuser l'enregistrement d'une rencontre particulière ou retirer
+        mon consentement général pour l'avenir.</li>
+    </ul>
+</div>
+        ]]></field>
+        <field name="body_en"><![CDATA[
+<div class="privacy-notice">
+    <h3>F-02 — General Consent to Occasional Recording of Certain Meetings</h3>
+
+    <p><strong>Organization concerned:</strong> Your Company Name<br/>
+    <strong>PPPO:</strong> <a href="mailto:privacy@example.com">privacy@example.com</a></p>
+
+    <h4>1. Purpose</h4>
+    <p>As part of its consulting, implementation and training mandates, Your Company may wish, on occasion,
+    to <strong>record certain meetings</strong> (video conferences or workshops) in order to facilitate:</p>
+    <ul>
+        <li>note taking;</li>
+        <li>project follow-up;</li>
+        <li>internal team training;</li>
+        <li>or, where applicable, preparation of training or communication content.</li>
+    </ul>
+    <p>This form aims to collect your <strong>general consent</strong> for these recordings, subject to:</p>
+    <ul>
+        <li>a <strong>clear notice</strong> at the beginning of each recorded meeting;</li>
+        <li>your <strong>right to refuse</strong> the recording of a specific meeting or to limit its use.</li>
+    </ul>
+
+    <h4>2. Types of meetings that may be recorded</h4>
+    <ul>
+        <li>Workshops / mapping workshops / Law 25 workshops</li>
+        <li>Project follow-up meetings / steering committees</li>
+        <li>Training sessions or webinars offered to your organization</li>
+        <li>Technical demos (Nextcloud, Odoo solutions, etc.)</li>
+    </ul>
+
+    <h4>3. Purposes for which the recording may be used</h4>
+    <p>You can accept some purposes and refuse others.</p>
+
+    <h5>3.1 Note taking and mandate follow-up</h5>
+    <p>Drafting minutes, clarifying decisions, verifying technical items.</p>
+    <p><em>Note: refusing this purpose may impact the administrative time dedicated to the project
+    and could lead to additional management fees.</em></p>
+
+    <h5>3.2 Internal training for the Your Company team</h5>
+    <p>Use of the recording as internal training material only.
+    Access limited to people working on similar mandates.</p>
+
+    <h5>3.3 Reuse as anonymized excerpts</h5>
+    <p>Anonymized audio/video excerpts (without name, face, or elements enabling direct identification),
+    used for training, conferences, or educational material.</p>
+
+    <h5>3.4 Identifiable excerpts (testimonial, case study, etc.)</h5>
+    <p>For any use where you would be clearly identifiable (name, image, voice, organization logo)
+    in an external context, Your Company commits to:</p>
+    <ul>
+        <li>obtain an <strong>additional specific consent</strong>;</li>
+        <li>submit the content to you before publication.</li>
+    </ul>
+    <p><strong>No recording will be used in this way without separate consent.</strong></p>
+
+    <h4>4. Operational modalities</h4>
+    <p>Even with this general consent:</p>
+    <ul>
+        <li>Your Company will clearly announce, in the invitation or at the start of the meeting,
+        that a recording is in progress or being considered;</li>
+        <li>a visual indicator (e.g., recording icon in Teams/Meet) will be visible;</li>
+        <li>you may refuse recording for a specific meeting or request that recording stop at any time.</li>
+    </ul>
+
+    <h4>5. Retention</h4>
+    <p>Recordings are retained:</p>
+    <ul>
+        <li>for the duration necessary to carry out the mandate and produce deliverables;</li>
+        <li>for any additional period required by law or for contractual evidence;</li>
+        <li>then deleted or anonymized, according to Your Company's retention schedule.</li>
+    </ul>
+    <p>Recordings used for internal training are reviewed periodically and removed when they
+    are no longer relevant.</p>
+
+    <h4>6. Withdrawal of consent</h4>
+    <p>You can <strong>withdraw this general consent</strong> at any time for future meetings by
+    writing to: <a href="mailto:privacy@example.com">privacy@example.com</a>.</p>
+    <p>You can also, for a specific meeting:</p>
+    <ul>
+        <li>refuse recording;</li>
+        <li>ask for the current recording to stop;</li>
+        <li>ask that your segment not be reused for certain purposes (e.g., internal training).</li>
+    </ul>
+
+    <h4>7. Confirmation</h4>
+    <p>By accepting, I confirm:</p>
+    <ul>
+        <li>having received explanations about the possibility that some meetings may be recorded;</li>
+        <li>understanding the purposes for which these recordings may be used;</li>
+        <li>knowing that I can refuse the recording of a particular meeting or withdraw my general
+        consent for the future.</li>
+    </ul>
+</div>
+        ]]></field>
+    </record>
+
+    <!-- ========================================== -->
+    <!-- AUDIO RECORDING - 365 days (1 year) -->
+    <!-- ========================================== -->
+    <record id="notice_recording_audio" model="privacy.notice">
+        <field name="name">Avis — Enregistrement audio</field>
+        <field name="purpose_id" ref="purpose_recording_audio"/>
+        <field name="body_fr"><![CDATA[
+<div class="privacy-notice">
+    <h3>Demande de consentement — Enregistrement audio des appels</h3>
+
+    <p><strong>Organisation concernée :</strong> Your Company Name<br/>
+    <strong>RPRP :</strong> <a href="mailto:privacy@example.com">privacy@example.com</a></p>
+
+    <h4>Ce que nous demandons</h4>
+    <p>Nous souhaitons obtenir votre autorisation pour <strong>enregistrer l'audio</strong>
+    de nos appels téléphoniques.</p>
+
+    <h4>Finalités de l'enregistrement</h4>
+    <ul>
+        <li>Assurance qualité et amélioration de nos services</li>
+        <li>Formation de notre personnel</li>
+        <li>Documentation des échanges importants</li>
+    </ul>
+
+    <h4>Conservation</h4>
+    <p>Les enregistrements audio sont conservés de manière sécurisée pour une durée maximale
+    de <strong>6 mois</strong>, puis supprimés de façon sécuritaire.</p>
+
+    <h4>Durée du consentement</h4>
+    <p>Ce consentement est valide pour <strong>1 an</strong> et couvre tous vos appels
+    avec notre équipe pendant cette période.</p>
+
+    <h4>Vos droits</h4>
+    <p>Vous pouvez refuser l'enregistrement de tout appel spécifique en nous le mentionnant
+    au début de la conversation. Vous pouvez également retirer votre consentement à tout moment
+    pour les appels futurs en écrivant à :
+    <a href="mailto:privacy@example.com">privacy@example.com</a>.</p>
+</div>
+        ]]></field>
+        <field name="body_en"><![CDATA[
+<div class="privacy-notice">
+    <h3>Consent Request — Audio Recording of Calls</h3>
+
+    <p><strong>Organization concerned:</strong> Your Company Name<br/>
+    <strong>PPPO:</strong> <a href="mailto:privacy@example.com">privacy@example.com</a></p>
+
+    <h4>What we are requesting</h4>
+    <p>We would like to obtain your authorization to <strong>record the audio</strong>
+    of our phone calls.</p>
+
+    <h4>Recording purposes</h4>
+    <ul>
+        <li>Quality assurance and service improvement</li>
+        <li>Staff training</li>
+        <li>Documentation of important discussions</li>
+    </ul>
+
+    <h4>Retention</h4>
+    <p>Audio recordings are securely stored for a maximum of <strong>6 months</strong>,
+    then securely deleted.</p>
+
+    <h4>Duration of consent</h4>
+    <p>This consent is valid for <strong>1 year</strong> and covers all your calls
+    with our team during this period.</p>
+
+    <h4>Your rights</h4>
+    <p>You may refuse the recording of any specific call by mentioning it at the beginning
+    of the conversation. You may also withdraw your consent at any time for future calls by
+    writing to: <a href="mailto:privacy@example.com">privacy@example.com</a>.</p>
+</div>
+        ]]></field>
+    </record>
+
+    <!-- ========================================== -->
+    <!-- TRANSCRIPTION - 365 days (1 year) -->
+    <!-- ========================================== -->
+    <record id="notice_transcription" model="privacy.notice">
+        <field name="name">Avis — Transcription des communications</field>
+        <field name="purpose_id" ref="purpose_transcription"/>
+        <field name="body_fr"><![CDATA[
+<div class="privacy-notice">
+    <h3>Demande de consentement — Transcription des réunions</h3>
+
+    <p><strong>Organisation concernée :</strong> Your Company Name<br/>
+    <strong>RPRP :</strong> <a href="mailto:privacy@example.com">privacy@example.com</a></p>
+
+    <h4>Ce que nous demandons</h4>
+    <p>Nous souhaitons obtenir votre autorisation pour <strong>transcrire</strong>
+    (convertir en texte) les enregistrements de nos réunions.</p>
+
+    <h4>Comment fonctionne la transcription</h4>
+    <p>La transcription peut être effectuée par :</p>
+    <ul>
+        <li>Des outils d'intelligence artificielle (transcription automatique)</li>
+        <li>Notre équipe (transcription manuelle)</li>
+    </ul>
+
+    <h4>Utilisation des transcriptions</h4>
+    <ul>
+        <li>Création de comptes-rendus et procès-verbaux</li>
+        <li>Suivi des actions et décisions</li>
+        <li>Recherche et référence ultérieure</li>
+    </ul>
+
+    <h4>Conservation</h4>
+    <p>Les transcriptions sont conservées aussi longtemps que nécessaire pour le projet,
+    puis archivées ou supprimées selon notre politique de rétention.</p>
+
+    <h4>Durée du consentement</h4>
+    <p>Ce consentement est valide pour <strong>1 an</strong>. Il peut être retiré à tout moment
+    pour les réunions futures.</p>
+
+    <h4>Vos droits</h4>
+    <p>Vous pouvez demander l'accès aux transcriptions vous concernant, demander des corrections,
+    ou refuser la transcription d'une réunion spécifique. Contact :
+    <a href="mailto:privacy@example.com">privacy@example.com</a>.</p>
+</div>
+        ]]></field>
+        <field name="body_en"><![CDATA[
+<div class="privacy-notice">
+    <h3>Consent Request — Meeting Transcription</h3>
+
+    <p><strong>Organization concerned:</strong> Your Company Name<br/>
+    <strong>PPPO:</strong> <a href="mailto:privacy@example.com">privacy@example.com</a></p>
+
+    <h4>What we are requesting</h4>
+    <p>We would like to obtain your authorization to <strong>transcribe</strong>
+    (convert to text) the recordings of our meetings.</p>
+
+    <h4>How transcription works</h4>
+    <p>Transcription may be performed by:</p>
+    <ul>
+        <li>Artificial intelligence tools (automatic transcription)</li>
+        <li>Our team (manual transcription)</li>
+    </ul>
+
+    <h4>Use of transcriptions</h4>
+    <ul>
+        <li>Creation of meeting notes and minutes</li>
+        <li>Action and decision tracking</li>
+        <li>Future search and reference</li>
+    </ul>
+
+    <h4>Retention</h4>
+    <p>Transcriptions are retained as long as necessary for the project, then archived
+    or deleted according to our retention policy.</p>
+
+    <h4>Duration of consent</h4>
+    <p>This consent is valid for <strong>1 year</strong>. It may be withdrawn at any time
+    for future meetings.</p>
+
+    <h4>Your rights</h4>
+    <p>You may request access to transcriptions concerning you, request corrections,
+    or refuse the transcription of a specific meeting. Contact:
+    <a href="mailto:privacy@example.com">privacy@example.com</a>.</p>
+</div>
+        ]]></field>
+    </record>
+
+    <!-- ========================================== -->
+    <!-- REFERENCE / TESTIMONIAL - 1095 days (3 years) -->
+    <!-- ========================================== -->
+    <record id="notice_reference" model="privacy.notice">
+        <field name="name">Avis — Utilisation comme référence client</field>
+        <field name="purpose_id" ref="purpose_reference"/>
+        <field name="body_fr"><![CDATA[
+<div class="privacy-notice">
+    <h3>Demande de consentement — Référence client</h3>
+
+    <p><strong>Organisation concernée :</strong> Your Company Name<br/>
+    <strong>RPRP :</strong> <a href="mailto:privacy@example.com">privacy@example.com</a></p>
+
+    <h4>Ce que nous demandons</h4>
+    <p>Nous souhaitons obtenir votre autorisation pour vous mentionner comme
+    <strong>client de référence</strong>.</p>
+
+    <h4>Ce que cela implique</h4>
+    <p>Avec votre consentement, nous pourrions :</p>
+    <ul>
+        <li>Mentionner le nom de votre entreprise comme client</li>
+        <li>Indiquer le type de projet réalisé ensemble</li>
+        <li>Partager votre nom et coordonnées avec des clients potentiels
+        qui souhaitent obtenir une référence (avec votre accord préalable pour chaque demande)</li>
+    </ul>
+
+    <h4>Ce que nous ne ferons PAS sans autorisation supplémentaire</h4>
+    <ul>
+        <li>Publier un témoignage en votre nom</li>
+        <li>Utiliser votre logo</li>
+        <li>Rédiger une étude de cas détaillée</li>
+    </ul>
+
+    <h4>Durée du consentement</h4>
+    <p>Ce consentement est valide pour <strong>3 ans</strong>. Nous vous contacterons
+    avant l'expiration pour vous permettre de le renouveler si vous le souhaitez.</p>
+
+    <h4>Vos droits</h4>
+    <p>Vous pouvez retirer ce consentement à tout moment. Nous cesserons alors de vous
+    mentionner comme référence dans nos futures communications. Contact :
+    <a href="mailto:privacy@example.com">privacy@example.com</a>.</p>
+</div>
+        ]]></field>
+        <field name="body_en"><![CDATA[
+<div class="privacy-notice">
+    <h3>Consent Request — Client Reference</h3>
+
+    <p><strong>Organization concerned:</strong> Your Company Name<br/>
+    <strong>PPPO:</strong> <a href="mailto:privacy@example.com">privacy@example.com</a></p>
+
+    <h4>What we are requesting</h4>
+    <p>We would like to obtain your authorization to mention you as a
+    <strong>reference client</strong>.</p>
+
+    <h4>What this implies</h4>
+    <p>With your consent, we may:</p>
+    <ul>
+        <li>Mention your company name as a client</li>
+        <li>Indicate the type of project completed together</li>
+        <li>Share your name and contact information with potential clients
+        who wish to obtain a reference (with your prior agreement for each request)</li>
+    </ul>
+
+    <h4>What we will NOT do without additional authorization</h4>
+    <ul>
+        <li>Publish a testimonial in your name</li>
+        <li>Use your logo</li>
+        <li>Write a detailed case study</li>
+    </ul>
+
+    <h4>Duration of consent</h4>
+    <p>This consent is valid for <strong>3 years</strong>. We will contact you
+    before it expires to allow you to renew it if you wish.</p>
+
+    <h4>Your rights</h4>
+    <p>You may withdraw this consent at any time. We will then stop mentioning you
+    as a reference in our future communications. Contact:
+    <a href="mailto:privacy@example.com">privacy@example.com</a>.</p>
+</div>
+        ]]></field>
+    </record>
+
+    <!-- ========================================== -->
+    <!-- LOGO USAGE - 1095 days (3 years) -->
+    <!-- ========================================== -->
+    <record id="notice_logo" model="privacy.notice">
+        <field name="name">Avis — Utilisation du logo</field>
+        <field name="purpose_id" ref="purpose_logo"/>
+        <field name="body_fr"><![CDATA[
+<div class="privacy-notice">
+    <h3>Demande de consentement — Utilisation de votre logo</h3>
+
+    <p><strong>Organisation concernée :</strong> Your Company Name<br/>
+    <strong>RPRP :</strong> <a href="mailto:privacy@example.com">privacy@example.com</a></p>
+
+    <h4>Ce que nous demandons</h4>
+    <p>Nous souhaitons obtenir votre autorisation pour afficher le <strong>logo</strong>
+    de votre entreprise.</p>
+
+    <h4>Où votre logo pourrait apparaître</h4>
+    <ul>
+        <li>Notre site web (section « Nos clients » ou « Ils nous font confiance »)</li>
+        <li>Nos présentations commerciales</li>
+        <li>Nos documents marketing (brochures, propositions)</li>
+        <li>Nos réseaux sociaux professionnels</li>
+    </ul>
+
+    <h4>Engagement de notre part</h4>
+    <ul>
+        <li>Votre logo sera utilisé tel que fourni, sans modification</li>
+        <li>Il sera affiché de manière professionnelle et respectueuse</li>
+        <li>Aucune association avec des contenus controversés</li>
+    </ul>
+
+    <h4>Durée du consentement</h4>
+    <p>Ce consentement est valide pour <strong>3 ans</strong>.</p>
+
+    <h4>Vos droits</h4>
+    <p>Vous pouvez retirer ce consentement à tout moment. Nous retirerons alors votre logo
+    de tous nos supports dans un délai raisonnable (généralement 30 jours). Contact :
+    <a href="mailto:privacy@example.com">privacy@example.com</a>.</p>
+</div>
+        ]]></field>
+        <field name="body_en"><![CDATA[
+<div class="privacy-notice">
+    <h3>Consent Request — Logo Usage</h3>
+
+    <p><strong>Organization concerned:</strong> Your Company Name<br/>
+    <strong>PPPO:</strong> <a href="mailto:privacy@example.com">privacy@example.com</a></p>
+
+    <h4>What we are requesting</h4>
+    <p>We would like to obtain your authorization to display your company's
+    <strong>logo</strong>.</p>
+
+    <h4>Where your logo may appear</h4>
+    <ul>
+        <li>Our website ("Our Clients" or "They Trust Us" section)</li>
+        <li>Our business presentations</li>
+        <li>Our marketing materials (brochures, proposals)</li>
+        <li>Our professional social media</li>
+    </ul>
+
+    <h4>Our commitment</h4>
+    <ul>
+        <li>Your logo will be used as provided, without modification</li>
+        <li>It will be displayed professionally and respectfully</li>
+        <li>No association with controversial content</li>
+    </ul>
+
+    <h4>Duration of consent</h4>
+    <p>This consent is valid for <strong>3 years</strong>.</p>
+
+    <h4>Your rights</h4>
+    <p>You may withdraw this consent at any time. We will then remove your logo
+    from all our materials within a reasonable timeframe (typically 30 days). Contact:
+    <a href="mailto:privacy@example.com">privacy@example.com</a>.</p>
+</div>
+        ]]></field>
+    </record>
+
+    <!-- ========================================== -->
+    <!-- CASE STUDY - 1825 days (5 years) -->
+    <!-- ========================================== -->
+    <record id="notice_case_study" model="privacy.notice">
+        <field name="name">Avis — Étude de cas</field>
+        <field name="purpose_id" ref="purpose_case_study"/>
+        <field name="body_fr"><![CDATA[
+<div class="privacy-notice">
+    <h3>Demande de consentement — Étude de cas</h3>
+
+    <p><strong>Organisation concernée :</strong> Your Company Name<br/>
+    <strong>RPRP :</strong> <a href="mailto:privacy@example.com">privacy@example.com</a></p>
+
+    <h4>Ce que nous demandons</h4>
+    <p>Nous souhaitons obtenir votre autorisation pour documenter notre collaboration
+    dans une <strong>étude de cas</strong> qui pourrait être publiée.</p>
+
+    <h4>Ce que l'étude de cas peut inclure</h4>
+    <ul>
+        <li>Le nom de votre entreprise</li>
+        <li>Une description du contexte et des défis rencontrés</li>
+        <li>Les solutions mises en place</li>
+        <li>Les résultats obtenus (avec votre approbation des données partagées)</li>
+        <li>Des citations de votre part (soumises à votre approbation avant publication)</li>
+    </ul>
+
+    <h4>Processus d'approbation</h4>
+    <p>Avant toute publication, nous vous soumettrons l'étude de cas pour
+    <strong>approbation finale</strong>. Vous pourrez demander des modifications
+    ou retirer votre consentement.</p>
+
+    <h4>Où l'étude de cas peut être publiée</h4>
+    <ul>
+        <li>Notre site web</li>
+        <li>Nos présentations commerciales</li>
+        <li>Publications professionnelles</li>
+        <li>Réseaux sociaux professionnels</li>
+    </ul>
+
+    <h4>Durée du consentement</h4>
+    <p>Ce consentement est valide pour <strong>5 ans</strong>. L'étude de cas publiée
+    peut rester accessible pendant cette période, sauf si vous demandez son retrait.</p>
+
+    <h4>Vos droits</h4>
+    <p>Vous pouvez retirer ce consentement à tout moment. Si l'étude de cas est déjà publiée,
+    nous la retirerons de nos plateformes dans un délai de 30 jours. Contact :
+    <a href="mailto:privacy@example.com">privacy@example.com</a>.</p>
+</div>
+        ]]></field>
+        <field name="body_en"><![CDATA[
+<div class="privacy-notice">
+    <h3>Consent Request — Case Study</h3>
+
+    <p><strong>Organization concerned:</strong> Your Company Name<br/>
+    <strong>PPPO:</strong> <a href="mailto:privacy@example.com">privacy@example.com</a></p>
+
+    <h4>What we are requesting</h4>
+    <p>We would like to obtain your authorization to document our collaboration
+    in a <strong>case study</strong> that could be published.</p>
+
+    <h4>What the case study may include</h4>
+    <ul>
+        <li>Your company name</li>
+        <li>A description of the context and challenges faced</li>
+        <li>The solutions implemented</li>
+        <li>The results achieved (with your approval of shared data)</li>
+        <li>Quotes from you (submitted for your approval before publication)</li>
+    </ul>
+
+    <h4>Approval process</h4>
+    <p>Before any publication, we will submit the case study for your
+    <strong>final approval</strong>. You may request modifications
+    or withdraw your consent.</p>
+
+    <h4>Where the case study may be published</h4>
+    <ul>
+        <li>Our website</li>
+        <li>Our business presentations</li>
+        <li>Professional publications</li>
+        <li>Professional social media</li>
+    </ul>
+
+    <h4>Duration of consent</h4>
+    <p>This consent is valid for <strong>5 years</strong>. The published case study
+    may remain accessible during this period, unless you request its removal.</p>
+
+    <h4>Your rights</h4>
+    <p>You may withdraw this consent at any time. If the case study is already published,
+    we will remove it from our platforms within 30 days. Contact:
+    <a href="mailto:privacy@example.com">privacy@example.com</a>.</p>
+</div>
+        ]]></field>
+    </record>
+
+    <!-- ========================================== -->
+    <!-- THIRD-PARTY SHARING - 365 days (1 year) -->
+    <!-- ========================================== -->
+    <record id="notice_third_party" model="privacy.notice">
+        <field name="name">Avis — Partage avec des tiers</field>
+        <field name="purpose_id" ref="purpose_third_party"/>
+        <field name="body_fr"><![CDATA[
+<div class="privacy-notice">
+    <h3>Demande de consentement — Partage de renseignements avec des tiers</h3>
+
+    <p><strong>Organisation concernée :</strong> Your Company Name<br/>
+    <strong>RPRP :</strong> <a href="mailto:privacy@example.com">privacy@example.com</a></p>
+
+    <h4>Ce que nous demandons</h4>
+    <p>Nous souhaitons obtenir votre autorisation pour partager certains de vos
+    <strong>renseignements personnels</strong> avec des tiers dans le cadre de nos services.</p>
+
+    <h4>Quels renseignements peuvent être partagés</h4>
+    <ul>
+        <li>Votre nom et coordonnées professionnelles</li>
+        <li>Informations liées au projet (selon les besoins)</li>
+        <li>Documents que vous nous avez transmis (si nécessaire pour le service)</li>
+    </ul>
+
+    <h4>Avec qui nous partageons</h4>
+    <p>Vos renseignements peuvent être partagés avec :</p>
+    <ul>
+        <li>Nos sous-traitants et partenaires impliqués dans votre projet</li>
+        <li>Nos fournisseurs de services technologiques (hébergement, outils)</li>
+        <li>Des professionnels externes (comptables, avocats) si requis</li>
+    </ul>
+
+    <h4>Nos engagements</h4>
+    <ul>
+        <li>Tous les tiers sont liés par des ententes de confidentialité</li>
+        <li>Le partage est limité au minimum nécessaire</li>
+        <li>Nous n'effectuons <strong>pas</strong> de transfert hors Canada sans votre
+        consentement spécifique additionnel</li>
+    </ul>
+
+    <h4>Durée du consentement</h4>
+    <p>Ce consentement est valide pour <strong>1 an</strong>. Il peut être retiré à tout moment,
+    bien que cela puisse affecter notre capacité à vous fournir certains services.</p>
+
+    <h4>Vos droits</h4>
+    <p>Vous pouvez demander la liste des tiers avec qui vos renseignements ont été partagés,
+    et retirer votre consentement pour les partages futurs. Contact :
+    <a href="mailto:privacy@example.com">privacy@example.com</a>.</p>
+</div>
+        ]]></field>
+        <field name="body_en"><![CDATA[
+<div class="privacy-notice">
+    <h3>Consent Request — Third-Party Information Sharing</h3>
+
+    <p><strong>Organization concerned:</strong> Your Company Name<br/>
+    <strong>PPPO:</strong> <a href="mailto:privacy@example.com">privacy@example.com</a></p>
+
+    <h4>What we are requesting</h4>
+    <p>We would like to obtain your authorization to share some of your
+    <strong>personal information</strong> with third parties as part of our services.</p>
+
+    <h4>What information may be shared</h4>
+    <ul>
+        <li>Your name and professional contact information</li>
+        <li>Project-related information (as needed)</li>
+        <li>Documents you have provided to us (if necessary for the service)</li>
+    </ul>
+
+    <h4>With whom we share</h4>
+    <p>Your information may be shared with:</p>
+    <ul>
+        <li>Our subcontractors and partners involved in your project</li>
+        <li>Our technology service providers (hosting, tools)</li>
+        <li>External professionals (accountants, lawyers) if required</li>
+    </ul>
+
+    <h4>Our commitments</h4>
+    <ul>
+        <li>All third parties are bound by confidentiality agreements</li>
+        <li>Sharing is limited to the minimum necessary</li>
+        <li>We do <strong>not</strong> transfer data outside Canada without your
+        specific additional consent</li>
+    </ul>
+
+    <h4>Duration of consent</h4>
+    <p>This consent is valid for <strong>1 year</strong>. It may be withdrawn at any time,
+    although this may affect our ability to provide you with certain services.</p>
+
+    <h4>Your rights</h4>
+    <p>You may request a list of third parties with whom your information has been shared,
+    and withdraw your consent for future sharing. Contact:
+    <a href="mailto:privacy@example.com">privacy@example.com</a>.</p>
+</div>
+        ]]></field>
+    </record>
+
+    <!-- ========================================== -->
+    <!-- SERVICE COMMUNICATIONS (no consent required, informational) -->
+    <!-- ========================================== -->
+    <record id="notice_service" model="privacy.notice">
+        <field name="name">Avis — Communications de service (informatif)</field>
+        <field name="purpose_id" ref="purpose_service"/>
+        <field name="body_fr"><![CDATA[
+<div class="privacy-notice">
+    <h3>Information — Communications de service</h3>
+
+    <p><strong>Organisation concernée :</strong> Your Company Name<br/>
+    <strong>RPRP :</strong> <a href="mailto:privacy@example.com">privacy@example.com</a></p>
+
+    <p><strong>Note :</strong> Cette communication est fournie à titre informatif.
+    Le consentement n'est pas requis pour les communications de service essentielles.</p>
+
+    <h4>Ce que sont les communications de service</h4>
+    <p>Les communications de service sont des messages essentiels liés à :</p>
+    <ul>
+        <li>L'exécution de nos contrats et projets en cours</li>
+        <li>Des informations importantes concernant votre compte</li>
+        <li>Des notifications de sécurité ou urgentes</li>
+        <li>Des suivis de facturation</li>
+        <li>Des informations légales ou réglementaires requises</li>
+    </ul>
+
+    <h4>Pourquoi ces communications ne nécessitent pas de consentement</h4>
+    <p>Conformément à la <em>Loi 25</em> et à la <em>LCAP (Loi C-28)</em>, les communications
+    essentielles à la fourniture d'un service demandé ne nécessitent pas de consentement
+    préalable. Elles sont envoyées dans votre intérêt et celui de notre relation d'affaires.</p>
+
+    <h4>Vos droits</h4>
+    <p>Bien que vous ne puissiez pas refuser ces communications essentielles, vous pouvez :</p>
+    <ul>
+        <li>Mettre fin à notre relation d'affaires</li>
+        <li>Demander à recevoir les communications par un autre canal</li>
+        <li>Contacter notre responsable de la vie privée :
+        <a href="mailto:privacy@example.com">privacy@example.com</a></li>
+    </ul>
+</div>
+        ]]></field>
+        <field name="body_en"><![CDATA[
+<div class="privacy-notice">
+    <h3>Information — Service Communications</h3>
+
+    <p><strong>Organization concerned:</strong> Your Company Name<br/>
+    <strong>PPPO:</strong> <a href="mailto:privacy@example.com">privacy@example.com</a></p>
+
+    <p><strong>Note:</strong> This communication is provided for informational purposes.
+    Consent is not required for essential service communications.</p>
+
+    <h4>What are service communications</h4>
+    <p>Service communications are essential messages related to:</p>
+    <ul>
+        <li>Execution of our ongoing contracts and projects</li>
+        <li>Important information regarding your account</li>
+        <li>Security or urgent notifications</li>
+        <li>Billing follow-ups</li>
+        <li>Required legal or regulatory information</li>
+    </ul>
+
+    <h4>Why these communications do not require consent</h4>
+    <p>In accordance with <em>Law 25</em> and <em>CASL (C-28)</em>, communications
+    essential to providing a requested service do not require prior consent.
+    They are sent in your interest and that of our business relationship.</p>
+
+    <h4>Your rights</h4>
+    <p>While you cannot refuse these essential communications, you may:</p>
+    <ul>
+        <li>End our business relationship</li>
+        <li>Request to receive communications through another channel</li>
+        <li>Contact our privacy officer:
+        <a href="mailto:privacy@example.com">privacy@example.com</a></li>
+    </ul>
+</div>
+        ]]></field>
+    </record>
+
+    <!-- ========================================== -->
+    <!-- SOFTWARE INSTALLATION (F-03) - LCAP/CASL -->
+    <!-- ========================================== -->
+    <record id="notice_software_install" model="privacy.notice">
+        <field name="name">F-03 — Consentement à l'installation d'un agent Your Company</field>
+        <field name="purpose_id" ref="purpose_software_install"/>
+        <field name="body_fr"><![CDATA[
+<div class="privacy-notice">
+    <h3>F-03 — Consentement exprès à l'installation d'un logiciel ou agent Your Company</h3>
+
+    <p><strong>Organisation concernée (installatrice) :</strong> Your Company Name<br/>
+    <strong>RPRP :</strong> <a href="mailto:privacy@example.com">privacy@example.com</a></p>
+
+    <h4>1. Contexte</h4>
+    <p>Your Company souhaite installer le(s) programme(s) suivant(s) dans le cadre d'un mandat professionnel,
+    sur un ordinateur, un serveur ou un autre dispositif dont vous avez la gestion ou la responsabilité.</p>
+    <p>Ce formulaire vise à obtenir votre <strong>consentement exprès</strong>, comme l'exige la
+    <strong>Loi canadienne anti-pourriel (LCAP)</strong> pour l'installation de programmes d'ordinateur
+    dans le cadre d'activités commerciales.</p>
+
+    <h4>2. Informations sur le programme</h4>
+
+    <h5>2.1 Appareil / environnement visé</h5>
+    <p>Types d'appareils possibles : ordinateur de bureau, portable, serveur, appareil mobile, autre.</p>
+
+    <h5>2.2 Programme à installer</h5>
+    <p>Le nom du programme, l'éditeur / fournisseur et la personne responsable de l'installation
+    seront précisés dans le formulaire de consentement.</p>
+
+    <h5>2.3 Fonction et objet du programme</h5>
+    <p>La fonction principale du programme et sa finalité seront décrites en termes simples,
+    clairs et généraux.</p>
+
+    <h5>2.4 Types de données susceptibles d'être touchées</h5>
+    <p>Le programme pourrait, selon sa nature, collecter, traiter ou transmettre certains
+    renseignements, notamment :</p>
+    <ul>
+        <li>Fichiers professionnels (documents, bases de données, etc.)</li>
+        <li>Métadonnées techniques (journaux, adresses IP, identifiants de machine)</li>
+        <li>Informations d'utilisation (horodatages, erreurs, performance)</li>
+        <li>Identifiants d'utilisateurs (nom d'usager, adresse courriel)</li>
+    </ul>
+    <p>Your Company ne configure ce programme que pour les fins <strong>strictement nécessaires</strong>
+    au mandat, et prend des mesures pour limiter les données collectées au minimum requis.</p>
+
+    <h4>3. Fins spécifiques de l'installation</h4>
+    <ul>
+        <li>Sauvegarde et restauration de données (backup)</li>
+        <li>Supervision / monitoring de l'état du système (performance, erreurs)</li>
+        <li>Télémaintenance / assistance à distance (avec votre accord ponctuel au besoin)</li>
+        <li>Sécurité (ex. agent antivirus, agent EDR)</li>
+    </ul>
+
+    <h4>4. Risques et mesures de sécurité</h4>
+    <p>Your Company s'engage à :</p>
+    <ul>
+        <li>installer et configurer le programme en suivant les meilleures pratiques de sécurité;</li>
+        <li>limiter l'accès aux données collectées aux personnes qui en ont besoin dans le cadre du mandat;</li>
+        <li>chiffrer les communications lorsque l'outil le permet;</li>
+        <li>désinstaller ou désactiver le programme lorsque le mandat se termine ou à votre demande,
+        sous réserve d'obligations légales ou de sécurité.</li>
+    </ul>
+
+    <h4>5. Durée et retrait du consentement</h4>
+    <p>Votre consentement à l'installation de ce programme est valable pour la <strong>durée du
+    mandat</strong> entre votre organisation et Your Company, sauf retrait de votre part.</p>
+    <p>Vous pouvez retirer votre consentement à tout moment en demandant la
+    <strong>désinstallation</strong> du programme (dans la mesure où cela ne compromet pas la
+    sécurité ou l'intégrité de vos systèmes ou données). Your Company vous informera des conséquences
+    possibles (ex. impossibilité de fournir le service de sauvegarde).</p>
+
+    <h4>6. Consentement exprès</h4>
+    <p>En acceptant, je déclare :</p>
+    <ul>
+        <li>avoir lu et compris la nature du programme, ses fonctions et ses fins;</li>
+        <li>donner mon <strong>consentement exprès</strong> à son installation et à son fonctionnement
+        aux fins indiquées;</li>
+        <li>comprendre que je peux retirer mon consentement ultérieurement, en tenant compte
+        des impacts sur le service.</li>
+    </ul>
+</div>
+        ]]></field>
+        <field name="body_en"><![CDATA[
+<div class="privacy-notice">
+    <h3>F-03 — Express Consent to the Installation of a Your Company Software or Agent</h3>
+
+    <p><strong>Organization concerned (installer):</strong> Your Company Name<br/>
+    <strong>PPPO:</strong> <a href="mailto:privacy@example.com">privacy@example.com</a></p>
+
+    <h4>1. Context</h4>
+    <p>Your Company wishes to install the following program(s) as part of a professional mandate,
+    on a computer, server or other device that you manage or are responsible for.</p>
+    <p>This form aims to obtain your <strong>express consent</strong>, as required by
+    <strong>Canada's Anti-Spam Legislation (CASL)</strong> for the installation of computer
+    programs in the course of commercial activities.</p>
+
+    <h4>2. Program information</h4>
+
+    <h5>2.1 Target device / environment</h5>
+    <p>Possible device types: desktop computer, laptop, server, mobile device, other.</p>
+
+    <h5>2.2 Program to be installed</h5>
+    <p>The program name, publisher/vendor, and person responsible for installation
+    will be specified in the consent form.</p>
+
+    <h5>2.3 Function and purpose of the program</h5>
+    <p>The main function of the program and its purpose will be described in simple,
+    clear and general terms.</p>
+
+    <h5>2.4 Types of data that may be affected</h5>
+    <p>The program may, depending on its nature, collect, process or transmit certain
+    information, including:</p>
+    <ul>
+        <li>Business files (documents, databases, etc.)</li>
+        <li>Technical metadata (logs, IP addresses, machine identifiers)</li>
+        <li>Usage information (timestamps, errors, performance)</li>
+        <li>User identifiers (username, email address)</li>
+    </ul>
+    <p>Your Company configures this program only for <strong>strictly necessary purposes</strong>
+    for the mandate, and takes measures to limit the data collected to the minimum required.</p>
+
+    <h4>3. Specific purposes of the installation</h4>
+    <ul>
+        <li>Data backup and restore</li>
+        <li>Supervision / monitoring of system status (performance, errors)</li>
+        <li>Remote maintenance / remote assistance (with your ad hoc approval if needed)</li>
+        <li>Security (e.g., antivirus agent, EDR agent)</li>
+    </ul>
+
+    <h4>4. Risks and security measures</h4>
+    <p>Your Company commits to:</p>
+    <ul>
+        <li>installing and configuring the program following security best practices;</li>
+        <li>limiting access to collected data to people who need it within the scope of the mandate;</li>
+        <li>encrypting communications when the tool allows it;</li>
+        <li>uninstalling or disabling the program when the mandate ends or at your request,
+        subject to legal or security obligations.</li>
+    </ul>
+
+    <h4>5. Duration and withdrawal of consent</h4>
+    <p>Your consent to the installation of this program is valid for the <strong>duration of the
+    mandate</strong> between your organization and Your Company, unless you withdraw it.</p>
+    <p>You can withdraw your consent at any time by requesting the <strong>uninstallation</strong>
+    of the program (as long as this does not compromise the security or integrity of your systems
+    or data). Your Company will inform you of possible impacts (e.g., inability to provide the
+    backup service).</p>
+
+    <h4>6. Express consent</h4>
+    <p>By accepting, I declare:</p>
+    <ul>
+        <li>having read and understood the nature of the program, its functions and purposes;</li>
+        <li>giving my <strong>express consent</strong> to its installation and operation for the
+        purposes indicated;</li>
+        <li>understanding that I can withdraw my consent later, taking into account the impacts
+        on the service.</li>
+    </ul>
+</div>
+        ]]></field>
+    </record>
+
+    <!-- ========================================== -->
+    <!-- HIGH-RISK PROCESSING / SENSITIVE DATA (F-07) -->
+    <!-- ========================================== -->
+    <record id="notice_high_risk" model="privacy.notice">
+        <field name="name">F-07 — Consentement pour traitements à risque élevé &amp; données sensibles</field>
+        <field name="purpose_id" ref="purpose_high_risk"/>
+        <field name="body_fr"><![CDATA[
+<div class="privacy-notice">
+    <h3>F-07 — Consentement explicite pour traitements à risque élevé / données sensibles</h3>
+
+    <p><strong>Organisation concernée :</strong> Your Company Name<br/>
+    <strong>RPRP :</strong> <a href="mailto:privacy@example.com">privacy@example.com</a></p>
+
+    <h4>1. Objet</h4>
+    <p>Ce formulaire vise à recueillir votre <strong>consentement explicite</strong> à un traitement
+    de renseignements personnels présentant un <strong>risque élevé</strong> pour votre vie privée,
+    en raison de la nature sensible des données ou du contexte (ex. santé, situation financière
+    détaillée, profilage, etc.).</p>
+    <p>Your Company s'engage à n'entreprendre ce traitement que si cela est <strong>strictement
+    nécessaire</strong> et adéquatement protégé.</p>
+
+    <h4>2. Nature des données collectées</h4>
+    <p>Les catégories de renseignements personnels suivants peuvent être concernées :</p>
+    <ul>
+        <li>Données de santé ou d'évaluation psychosociale</li>
+        <li>Données financières détaillées (revenus personnels, dettes, etc.)</li>
+        <li>Renseignements biométriques</li>
+        <li>Données sur des enfants / mineurs</li>
+        <li>Autres données particulièrement sensibles</li>
+    </ul>
+
+    <h4>3. Finalité du traitement</h4>
+    <p>Le traitement est réalisé à une fin spécifique qui sera décrite dans le formulaire de
+    consentement. Your Company ne traitera pas ces données à d'autres fins sans votre consentement
+    explicite, sauf si la loi l'exige.</p>
+
+    <h4>4. Modalités de traitement</h4>
+    <ul>
+        <li><strong>Collecte :</strong> comment les données sont obtenues (formulaire, entretien, import, etc.)</li>
+        <li><strong>Stockage :</strong> où elles sont stockées (serveurs, pays, mesures de chiffrement)</li>
+        <li><strong>Accès :</strong> qui peut y accéder (rôles chez Your Company et, éventuellement, chez des partenaires)</li>
+        <li><strong>Conservation :</strong> combien de temps elles sont conservées avant destruction ou anonymisation.</li>
+    </ul>
+
+    <h4>5. Risques et mesures de protection</h4>
+    <p>En raison de la nature sensible des données, un incident de confidentialité pourrait avoir
+    des conséquences plus importantes (ex. atteinte à la réputation, risque de discrimination,
+    perte financière).</p>
+    <p>Your Company a mis en place les mesures suivantes :</p>
+    <ul>
+        <li>Chiffrement en transit et au repos</li>
+        <li>Accès limité à un nombre restreint de personnes</li>
+        <li>Journalisation renforcée</li>
+        <li>Anonymisation ou pseudonymisation lorsque possible</li>
+    </ul>
+
+    <h4>6. Caractère facultatif du consentement</h4>
+    <p>Ce traitement <strong>n'est pas obligatoire</strong>, sauf si indiqué autrement.
+    Vous pouvez refuser sans perdre l'accès au service principal. En cas de refus, certaines
+    limitations du service pourront s'appliquer.</p>
+
+    <h4>7. Vos droits</h4>
+    <p>Vous pouvez :</p>
+    <ul>
+        <li>demander l'accès à ces données;</li>
+        <li>en demander la correction;</li>
+        <li>demander la cessation du traitement et la suppression, dans la mesure permise par la loi;</li>
+        <li>demander des explications supplémentaires au RPRP :
+        <a href="mailto:privacy@example.com">privacy@example.com</a>.</li>
+    </ul>
+
+    <h4>8. Consentement explicite</h4>
+    <p>En acceptant, je confirme :</p>
+    <ul>
+        <li>avoir reçu des explications claires sur la nature et la finalité du traitement;</li>
+        <li>comprendre les risques potentiels et les mesures prises pour les réduire;</li>
+        <li>donner mon <strong>consentement explicite</strong> à ce traitement pour la ou les finalités décrites;</li>
+        <li>comprendre que je peux retirer mon consentement pour l'avenir, selon les modalités précisées.</li>
+    </ul>
+</div>
+        ]]></field>
+        <field name="body_en"><![CDATA[
+<div class="privacy-notice">
+    <h3>F-07 — Explicit Consent for High-Risk Processing / Sensitive Data</h3>
+
+    <p><strong>Organization concerned:</strong> Your Company Name<br/>
+    <strong>PPPO:</strong> <a href="mailto:privacy@example.com">privacy@example.com</a></p>
+
+    <h4>1. Purpose</h4>
+    <p>This form is intended to obtain your <strong>explicit consent</strong> for the processing of
+    personal information presenting a <strong>high risk</strong> to your privacy, due to the
+    sensitive nature of the data or the context (e.g., health, detailed financial situation,
+    profiling, etc.).</p>
+    <p>Your Company undertakes to carry out this processing only if it is <strong>strictly
+    necessary</strong> and adequately protected.</p>
+
+    <h4>2. Nature of the data collected</h4>
+    <p>The following categories of personal information may be involved:</p>
+    <ul>
+        <li>Health data or psychosocial assessment data</li>
+        <li>Detailed financial data (personal income, debts, etc.)</li>
+        <li>Biometric information</li>
+        <li>Data about children / minors</li>
+        <li>Other particularly sensitive data</li>
+    </ul>
+
+    <h4>3. Purpose of the processing</h4>
+    <p>The processing is carried out for a specific purpose that will be described in the
+    consent form. Your Company will not process this data for other purposes without your explicit
+    consent, unless required by law.</p>
+
+    <h4>4. Processing modalities</h4>
+    <ul>
+        <li><strong>Collection:</strong> how the data is obtained (form, interview, import, etc.)</li>
+        <li><strong>Storage:</strong> where it is stored (servers, country, encryption measures)</li>
+        <li><strong>Access:</strong> who can access it (roles at Your Company and, where applicable, with partners)</li>
+        <li><strong>Retention:</strong> how long it is retained before destruction or anonymization.</li>
+    </ul>
+
+    <h4>5. Risks and protective measures</h4>
+    <p>Given the sensitive nature of the data, a privacy incident could have more significant
+    consequences (e.g., reputational harm, risk of discrimination, financial loss).</p>
+    <p>Your Company has implemented the following measures:</p>
+    <ul>
+        <li>Encryption in transit and at rest</li>
+        <li>Access limited to a restricted number of individuals</li>
+        <li>Enhanced logging</li>
+        <li>Anonymization or pseudonymization where possible</li>
+    </ul>
+
+    <h4>6. Optional nature of consent</h4>
+    <p>This processing <strong>is not mandatory</strong>, unless otherwise indicated.
+    You may refuse without losing access to the main service. In the event of refusal,
+    certain service limitations may apply.</p>
+
+    <h4>7. Your rights</h4>
+    <p>You may:</p>
+    <ul>
+        <li>request access to this data;</li>
+        <li>request its correction;</li>
+        <li>request that processing cease and that the data be deleted, to the extent permitted by law;</li>
+        <li>request additional explanations from the PPPO:
+        <a href="mailto:privacy@example.com">privacy@example.com</a>.</li>
+    </ul>
+
+    <h4>8. Explicit consent</h4>
+    <p>By accepting, I confirm:</p>
+    <ul>
+        <li>having received clear explanations regarding the nature and purpose of the processing;</li>
+        <li>understanding the potential risks and the measures taken to reduce them;</li>
+        <li>giving my <strong>explicit consent</strong> to this processing for the purpose(s) described;</li>
+        <li>understanding that I may withdraw my consent for the future, in accordance with the
+        specified modalities.</li>
+    </ul>
+</div>
+        ]]></field>
+    </record>
+
+    <!-- ========================================== -->
+    <!-- INTERNAL TRAINING -->
+    <!-- ========================================== -->
+    <record id="notice_training" model="privacy.notice">
+        <field name="name">Avis — Formation interne Your Company</field>
+        <field name="purpose_id" ref="purpose_training"/>
+        <field name="body_fr"><![CDATA[
+<div class="privacy-notice">
+    <h3>Avis de consentement — Utilisation d'extraits à des fins de formation interne</h3>
+
+    <p><strong>Organisation concernée :</strong> Your Company Name<br/>
+    <strong>RPRP :</strong> <a href="mailto:privacy@example.com">privacy@example.com</a></p>
+
+    <h4>1. Objet</h4>
+    <p>Le présent avis vise à obtenir votre consentement pour l'utilisation d'extraits de rencontres,
+    d'ateliers ou de sessions de travail auxquels vous participez, à des fins de
+    <strong>formation interne</strong> de l'équipe Your Company.</p>
+
+    <h4>2. Types de contenus visés</h4>
+    <p>Les contenus pouvant être utilisés incluent :</p>
+    <ul>
+        <li>Des <strong>enregistrements vidéo ou audio</strong> de rencontres ou ateliers;</li>
+        <li>Des <strong>transcriptions ou résumés</strong> de sessions;</li>
+        <li>Des <strong>captures d'écran ou démonstrations techniques</strong> réalisées en contexte de projet.</li>
+    </ul>
+
+    <h4>3. Fins d'utilisation</h4>
+    <p>Ces contenus seront utilisés <strong>exclusivement à l'interne</strong> pour :</p>
+    <ul>
+        <li>La formation de nouveaux membres de l'équipe Your Company;</li>
+        <li>Le perfectionnement des méthodes de travail et processus internes;</li>
+        <li>La documentation de bonnes pratiques et de cas d'usage.</li>
+    </ul>
+
+    <h4>4. Engagement</h4>
+    <ul>
+        <li>Les contenus ne seront <strong>jamais diffusés publiquement</strong> ni partagés à l'extérieur
+        de Your Company sans votre consentement distinct.</li>
+        <li>Vous pouvez demander le retrait ou la suppression de tout contenu vous concernant à tout moment.</li>
+        <li>Les contenus seront conservés aussi longtemps qu'ils demeurent pertinents pour la formation,
+        et supprimés au plus tard <strong>un (1) an</strong> après la fin du mandat, sauf entente contraire.</li>
+    </ul>
+
+    <h4>5. Retrait du consentement</h4>
+    <p>Vous pouvez retirer votre consentement en tout temps en écrivant à
+    <a href="mailto:privacy@example.com">privacy@example.com</a>.
+    Le retrait s'appliquera pour le futur et n'affectera pas la validité des utilisations déjà effectuées.</p>
+
+    <h4>6. Confirmation</h4>
+    <p>En donnant votre consentement, vous confirmez :</p>
+    <ul>
+        <li>avoir été informé(e) des fins d'utilisation décrites ci-dessus;</li>
+        <li>accepter que des extraits de rencontres auxquelles vous participez soient utilisés
+        pour la formation interne de l'équipe Your Company;</li>
+        <li>comprendre que vous pouvez retirer votre consentement en tout temps.</li>
+    </ul>
+</div>
+        ]]></field>
+        <field name="body_en"><![CDATA[
+<div class="privacy-notice">
+    <h3>Consent Notice — Use of Excerpts for Internal Training</h3>
+
+    <p><strong>Organization:</strong> Your Company Name<br/>
+    <strong>Privacy Officer:</strong> <a href="mailto:privacy@example.com">privacy@example.com</a></p>
+
+    <h4>1. Purpose</h4>
+    <p>This notice seeks your consent for the use of excerpts from meetings, workshops or work sessions
+    in which you participate, for <strong>internal training</strong> purposes for the Your Company team.</p>
+
+    <h4>2. Types of Content</h4>
+    <p>Content that may be used includes:</p>
+    <ul>
+        <li><strong>Video or audio recordings</strong> of meetings or workshops;</li>
+        <li><strong>Transcriptions or summaries</strong> of sessions;</li>
+        <li><strong>Screenshots or technical demonstrations</strong> made in a project context.</li>
+    </ul>
+
+    <h4>3. Intended Use</h4>
+    <p>This content will be used <strong>exclusively internally</strong> for:</p>
+    <ul>
+        <li>Training new Your Company team members;</li>
+        <li>Improving work methods and internal processes;</li>
+        <li>Documenting best practices and use cases.</li>
+    </ul>
+
+    <h4>4. Commitment</h4>
+    <ul>
+        <li>Content will <strong>never be publicly distributed</strong> or shared outside Your Company
+        without your separate consent.</li>
+        <li>You may request the removal or deletion of any content concerning you at any time.</li>
+        <li>Content will be retained as long as it remains relevant for training,
+        and deleted no later than <strong>one (1) year</strong> after the end of the mandate, unless otherwise agreed.</li>
+    </ul>
+
+    <h4>5. Withdrawal</h4>
+    <p>You may withdraw your consent at any time by writing to
+    <a href="mailto:privacy@example.com">privacy@example.com</a>.
+    Withdrawal will apply going forward and will not affect the validity of uses already made.</p>
+
+    <h4>6. Confirmation</h4>
+    <p>By giving your consent, you confirm:</p>
+    <ul>
+        <li>having been informed of the intended uses described above;</li>
+        <li>agreeing that excerpts from meetings in which you participate may be used
+        for internal training of the Your Company team;</li>
+        <li>understanding that you may withdraw your consent at any time.</li>
+    </ul>
+</div>
+        ]]></field>
+    </record>
+
+    <!-- ================================================================ -->
+    <!-- CPE-SPECIFIC NOTICES                                             -->
+    <!-- ================================================================ -->
+
+    <!-- Administration de médicaments -->
+    <record id="notice_medicaments" model="privacy.notice">
+        <field name="name">Consentement — Administration de médicaments</field>
+        <field name="purpose_id" ref="purpose_medicaments"/>
+        <field name="body_fr"><![CDATA[
+<div class="privacy-notice">
+    <h3>Consentement — Administration de médicaments</h3>
+
+    <p><strong>Organisation :</strong> Le CPE<br/>
+    <strong>RPRP :</strong> La direction du CPE</p>
+
+    <h4>1. Objet</h4>
+    <p>Le présent formulaire vise à recueillir votre <strong>autorisation écrite</strong>
+    pour l'administration de médicaments à votre enfant pendant sa présence au CPE,
+    conformément au <em>Règlement sur les services de garde éducatifs à l'enfance</em>.</p>
+
+    <h4>2. Types de médicaments</h4>
+    <ul>
+        <li><strong>Médicaments prescrits :</strong> antibiotiques, pompes pour l'asthme,
+        auto-injecteur d'épinéphrine (EpiPen), anticonvulsivants, etc.;</li>
+        <li><strong>Médicaments en vente libre :</strong> acétaminophène (Tylenol),
+        ibuprofène (Advil), selon le protocole établi;</li>
+        <li><strong>Produits topiques :</strong> crème solaire et insectifuge
+        fournis par le parent.</li>
+    </ul>
+
+    <h4>3. Protocole</h4>
+    <ul>
+        <li>Tout médicament doit être dans son <strong>contenant original</strong>
+        avec le nom de l'enfant;</li>
+        <li>Un <strong>formulaire d'autorisation médicale</strong> distinct est requis
+        pour chaque médicament prescrit;</li>
+        <li>L'administration est effectuée par du <strong>personnel formé</strong>
+        et consignée dans un registre;</li>
+        <li>En cas de réaction allergique grave, le protocole d'urgence est appliqué
+        immédiatement.</li>
+    </ul>
+
+    <h4>4. Durée et retrait</h4>
+    <p>Ce consentement est valide pour <strong>un (1) an</strong>, renouvelable.
+    Vous pouvez le modifier ou le retirer en tout temps en avisant la direction du CPE.</p>
+
+    <h4>5. Vos droits</h4>
+    <ul>
+        <li>Vous avez le droit de consulter le registre d'administration des médicaments
+        de votre enfant;</li>
+        <li>Vous pouvez modifier les autorisations en tout temps;</li>
+        <li>Le refus de ce consentement peut limiter la capacité du CPE à administrer
+        certains médicaments à votre enfant.</li>
+    </ul>
+</div>
+        ]]></field>
+        <field name="body_en"><![CDATA[
+<div class="privacy-notice">
+    <h3>Consent — Medication Administration</h3>
+
+    <p><strong>Organization:</strong> The CPE<br/>
+    <strong>Privacy Officer (PPPO):</strong> CPE Management</p>
+
+    <h4>1. Purpose</h4>
+    <p>This form aims to collect your <strong>written authorization</strong>
+    for administering medication to your child while at the CPE, in accordance
+    with the <em>Educational Childcare Regulation</em>.</p>
+
+    <h4>2. Types of Medication</h4>
+    <ul>
+        <li><strong>Prescribed medication:</strong> antibiotics, asthma pumps,
+        epinephrine auto-injector (EpiPen), anticonvulsants, etc.;</li>
+        <li><strong>Over-the-counter medication:</strong> acetaminophen (Tylenol),
+        ibuprofen (Advil), per established protocol;</li>
+        <li><strong>Topical products:</strong> sunscreen and insect repellent
+        provided by the parent.</li>
+    </ul>
+
+    <h4>3. Protocol</h4>
+    <ul>
+        <li>All medication must be in its <strong>original container</strong>
+        with the child's name;</li>
+        <li>A separate <strong>medical authorization form</strong> is required
+        for each prescribed medication;</li>
+        <li>Administration is performed by <strong>trained staff</strong>
+        and recorded in a log;</li>
+        <li>In case of a severe allergic reaction, the emergency protocol is
+        applied immediately.</li>
+    </ul>
+
+    <h4>4. Duration and Withdrawal</h4>
+    <p>This consent is valid for <strong>one (1) year</strong>, renewable.
+    You may modify or withdraw it at any time by notifying CPE management.</p>
+
+    <h4>5. Your Rights</h4>
+    <ul>
+        <li>You have the right to consult your child's medication administration log;</li>
+        <li>You may modify authorizations at any time;</li>
+        <li>Refusing this consent may limit the CPE's ability to administer certain
+        medications to your child.</li>
+    </ul>
+</div>
+        ]]></field>
+    </record>
+
+    <!-- Sorties éducatives -->
+    <record id="notice_sorties" model="privacy.notice">
+        <field name="name">Consentement — Sorties éducatives et excursions</field>
+        <field name="purpose_id" ref="purpose_sorties"/>
+        <field name="body_fr"><![CDATA[
+<div class="privacy-notice">
+    <h3>Consentement — Sorties éducatives et excursions</h3>
+
+    <p><strong>Organisation :</strong> Le CPE<br/>
+    <strong>RPRP :</strong> La direction du CPE</p>
+
+    <h4>1. Objet</h4>
+    <p>Le présent formulaire vise à recueillir votre <strong>consentement</strong>
+    pour la participation de votre enfant aux sorties organisées par le CPE.</p>
+
+    <h4>2. Types de sorties</h4>
+    <ul>
+        <li><strong>Sorties de quartier :</strong> parc, bibliothèque, caserne de pompiers,
+        épicerie, marché;</li>
+        <li><strong>Sorties spéciales :</strong> ferme, musée, théâtre, cabane à sucre,
+        centre de sciences;</li>
+        <li><strong>Activités extérieures régulières :</strong> promenades, jeux au parc
+        du voisinage.</li>
+    </ul>
+
+    <h4>3. Mesures de sécurité</h4>
+    <ul>
+        <li>Le ratio <strong>éducatrice/enfants</strong> est conforme au Règlement sur
+        les services de garde éducatifs à l'enfance;</li>
+        <li>Une <strong>trousse de premiers soins</strong> accompagne chaque sortie;</li>
+        <li>Les <strong>fiches d'urgence</strong> de chaque enfant sont disponibles;</li>
+        <li>Un <strong>avis détaillé</strong> est envoyé avant chaque sortie spéciale
+        (lieu, heure, transport, repas).</li>
+    </ul>
+
+    <h4>4. Durée et retrait</h4>
+    <p>Ce consentement général est valide pour <strong>un (1) an</strong>.
+    Vous pouvez refuser la participation de votre enfant à une sortie spécifique
+    sans affecter le consentement général.</p>
+
+    <h4>5. Vos droits</h4>
+    <ul>
+        <li>Vous pouvez refuser toute sortie sans impact sur les services de garde;</li>
+        <li>Un service de garde est offert au CPE lorsqu'un enfant ne participe pas
+        à une sortie.</li>
+    </ul>
+</div>
+        ]]></field>
+        <field name="body_en"><![CDATA[
+<div class="privacy-notice">
+    <h3>Consent — Educational Outings and Excursions</h3>
+
+    <p><strong>Organization:</strong> The CPE<br/>
+    <strong>Privacy Officer (PPPO):</strong> CPE Management</p>
+
+    <h4>1. Purpose</h4>
+    <p>This form aims to collect your <strong>consent</strong> for your child's
+    participation in outings organized by the CPE.</p>
+
+    <h4>2. Types of Outings</h4>
+    <ul>
+        <li><strong>Neighbourhood outings:</strong> park, library, fire station,
+        grocery store, market;</li>
+        <li><strong>Special outings:</strong> farm, museum, theatre, sugar shack,
+        science centre;</li>
+        <li><strong>Regular outdoor activities:</strong> walks, neighbourhood
+        playground.</li>
+    </ul>
+
+    <h4>3. Safety Measures</h4>
+    <ul>
+        <li>The <strong>educator/child ratio</strong> complies with the Educational
+        Childcare Regulation;</li>
+        <li>A <strong>first aid kit</strong> accompanies each outing;</li>
+        <li><strong>Emergency cards</strong> for each child are available;</li>
+        <li>A <strong>detailed notice</strong> is sent before each special outing
+        (location, time, transportation, meals).</li>
+    </ul>
+
+    <h4>4. Duration and Withdrawal</h4>
+    <p>This general consent is valid for <strong>one (1) year</strong>.
+    You may refuse your child's participation in a specific outing without
+    affecting the general consent.</p>
+
+    <h4>5. Your Rights</h4>
+    <ul>
+        <li>You may refuse any outing without impact on childcare services;</li>
+        <li>Childcare is provided at the CPE when a child does not participate
+        in an outing.</li>
+    </ul>
+</div>
+        ]]></field>
+    </record>
+
+    <!-- Baignades et activités aquatiques -->
+    <record id="notice_baignades" model="privacy.notice">
+        <field name="name">Consentement — Baignades et activités aquatiques</field>
+        <field name="purpose_id" ref="purpose_baignades"/>
+        <field name="body_fr"><![CDATA[
+<div class="privacy-notice">
+    <h3>Consentement — Baignades et activités aquatiques</h3>
+
+    <p><strong>Organisation :</strong> Le CPE<br/>
+    <strong>RPRP :</strong> La direction du CPE</p>
+
+    <h4>1. Objet</h4>
+    <p>Le présent formulaire vise à recueillir votre <strong>consentement exprès</strong>
+    pour la participation de votre enfant à des activités impliquant de l'eau.</p>
+
+    <h4>2. Types d'activités</h4>
+    <ul>
+        <li><strong>Jeux d'eau :</strong> arroseurs, tables d'eau, pataugeoire
+        sur le terrain du CPE;</li>
+        <li><strong>Baignades supervisées :</strong> piscine municipale, piscine privée;</li>
+        <li><strong>Sorties à la plage ou au lac</strong> (le cas échéant).</li>
+    </ul>
+
+    <h4>3. Mesures de sécurité</h4>
+    <ul>
+        <li>Le ratio de <strong>surveillance</strong> est conforme au Règlement sur les
+        services de garde éducatifs à l'enfance;</li>
+        <li>Du <strong>personnel qualifié en secourisme aquatique</strong> est présent;</li>
+        <li>Les enfants portent des <strong>vêtements de flottaison individuels</strong>
+        (VFI) lorsque requis;</li>
+        <li>L'état de santé de l'enfant est vérifié avant chaque activité aquatique.</li>
+    </ul>
+
+    <h4>4. Durée et retrait</h4>
+    <p>Ce consentement est valide pour <strong>un (1) an</strong>. Vous pouvez
+    le retirer en tout temps. Votre enfant ne participera alors à aucune activité
+    aquatique et sera gardé au CPE.</p>
+
+    <h4>5. Vos droits</h4>
+    <ul>
+        <li>Vous pouvez refuser sans impact sur les autres services de garde;</li>
+        <li>Vous pouvez limiter le consentement à certains types d'activités
+        (ex. : jeux d'eau seulement, pas de piscine).</li>
+    </ul>
+</div>
+        ]]></field>
+        <field name="body_en"><![CDATA[
+<div class="privacy-notice">
+    <h3>Consent — Swimming and Water Activities</h3>
+
+    <p><strong>Organization:</strong> The CPE<br/>
+    <strong>Privacy Officer (PPPO):</strong> CPE Management</p>
+
+    <h4>1. Purpose</h4>
+    <p>This form aims to collect your <strong>express consent</strong> for your
+    child's participation in activities involving water.</p>
+
+    <h4>2. Types of Activities</h4>
+    <ul>
+        <li><strong>Water play:</strong> sprinklers, water tables, wading pool
+        on CPE grounds;</li>
+        <li><strong>Supervised swimming:</strong> municipal pool, private pool;</li>
+        <li><strong>Beach or lake outings</strong> (where applicable).</li>
+    </ul>
+
+    <h4>3. Safety Measures</h4>
+    <ul>
+        <li>The <strong>supervision ratio</strong> complies with the Educational
+        Childcare Regulation;</li>
+        <li><strong>Staff qualified in aquatic first aid</strong> is present;</li>
+        <li>Children wear <strong>personal flotation devices</strong> (PFDs)
+        when required;</li>
+        <li>The child's health status is verified before each water activity.</li>
+    </ul>
+
+    <h4>4. Duration and Withdrawal</h4>
+    <p>This consent is valid for <strong>one (1) year</strong>. You may withdraw
+    at any time. Your child will then not participate in any water activity and
+    will be kept at the CPE.</p>
+
+    <h4>5. Your Rights</h4>
+    <ul>
+        <li>You may refuse without impact on other childcare services;</li>
+        <li>You may limit consent to certain types of activities
+        (e.g., water play only, no pool).</li>
+    </ul>
+</div>
+        ]]></field>
+    </record>
+
+    <!-- Transport des enfants -->
+    <record id="notice_transport" model="privacy.notice">
+        <field name="name">Consentement — Transport des enfants</field>
+        <field name="purpose_id" ref="purpose_transport"/>
+        <field name="body_fr"><![CDATA[
+<div class="privacy-notice">
+    <h3>Consentement — Transport des enfants</h3>
+
+    <p><strong>Organisation :</strong> Le CPE<br/>
+    <strong>RPRP :</strong> La direction du CPE</p>
+
+    <h4>1. Objet</h4>
+    <p>Le présent formulaire vise à recueillir votre <strong>consentement</strong>
+    pour le transport de votre enfant dans le cadre des sorties et activités du CPE.</p>
+
+    <h4>2. Modes de transport</h4>
+    <ul>
+        <li><strong>Autobus scolaire ou nolisé :</strong> pour les sorties éducatives
+        nécessitant un déplacement;</li>
+        <li><strong>Transport en commun :</strong> pour certaines sorties de groupe;</li>
+        <li><strong>Marche :</strong> pour les sorties de quartier à proximité du CPE.</li>
+    </ul>
+
+    <h4>3. Mesures de sécurité</h4>
+    <ul>
+        <li>Les véhicules sont conformes aux <strong>normes de sécurité</strong> en vigueur;</li>
+        <li>Les <strong>sièges d'auto</strong> appropriés sont utilisés conformément
+        au Code de la sécurité routière;</li>
+        <li>Le ratio éducatrice/enfants est maintenu pendant le transport;</li>
+        <li>Une liste de présence est vérifiée au départ et au retour.</li>
+    </ul>
+
+    <h4>4. Durée et retrait</h4>
+    <p>Ce consentement est valide pour <strong>un (1) an</strong>. Votre enfant
+    restera au CPE si vous refusez le transport pour une sortie donnée.</p>
+</div>
+        ]]></field>
+        <field name="body_en"><![CDATA[
+<div class="privacy-notice">
+    <h3>Consent — Child Transportation</h3>
+
+    <p><strong>Organization:</strong> The CPE<br/>
+    <strong>Privacy Officer (PPPO):</strong> CPE Management</p>
+
+    <h4>1. Purpose</h4>
+    <p>This form aims to collect your <strong>consent</strong> for transporting
+    your child as part of CPE outings and activities.</p>
+
+    <h4>2. Modes of Transportation</h4>
+    <ul>
+        <li><strong>School or chartered bus:</strong> for educational outings
+        requiring travel;</li>
+        <li><strong>Public transit:</strong> for certain group outings;</li>
+        <li><strong>Walking:</strong> for neighbourhood outings near the CPE.</li>
+    </ul>
+
+    <h4>3. Safety Measures</h4>
+    <ul>
+        <li>Vehicles comply with current <strong>safety standards</strong>;</li>
+        <li>Appropriate <strong>car seats</strong> are used in accordance with
+        the Highway Safety Code;</li>
+        <li>The educator/child ratio is maintained during transportation;</li>
+        <li>An attendance list is checked at departure and return.</li>
+    </ul>
+
+    <h4>4. Duration and Withdrawal</h4>
+    <p>This consent is valid for <strong>one (1) year</strong>. Your child will
+    remain at the CPE if you refuse transportation for a given outing.</p>
+</div>
+        ]]></field>
+    </record>
+
+    <!-- Personnes autorisées à récupérer l'enfant -->
+    <record id="notice_autorisation_depart" model="privacy.notice">
+        <field name="name">Consentement — Personnes autorisées à récupérer l'enfant</field>
+        <field name="purpose_id" ref="purpose_autorisation_depart"/>
+        <field name="body_fr"><![CDATA[
+<div class="privacy-notice">
+    <h3>Consentement — Personnes autorisées à récupérer l'enfant</h3>
+
+    <p><strong>Organisation :</strong> Le CPE<br/>
+    <strong>RPRP :</strong> La direction du CPE</p>
+
+    <h4>1. Objet</h4>
+    <p>Le CPE doit consigner et vérifier l'identité des personnes autorisées à venir
+    chercher votre enfant chaque jour. Ce consentement porte sur la
+    <strong>collecte et l'utilisation de ces renseignements</strong>.</p>
+
+    <h4>2. Renseignements recueillis</h4>
+    <ul>
+        <li><strong>Personnes autorisées :</strong> nom complet, lien avec l'enfant,
+        numéro de téléphone;</li>
+        <li><strong>Pièce d'identité :</strong> pour les personnes non connues du personnel;</li>
+        <li><strong>Contacts d'urgence :</strong> personnes à joindre si les parents
+        ne sont pas disponibles;</li>
+        <li><strong>Restrictions :</strong> personnes non autorisées (ordonnance de la cour,
+        entente parentale).</li>
+    </ul>
+
+    <h4>3. Utilisation</h4>
+    <p>Ces renseignements sont utilisés <strong>exclusivement</strong> pour assurer
+    la sécurité de votre enfant lors des départs. Ils sont accessibles uniquement
+    au personnel du CPE et ne sont pas partagés avec des tiers.</p>
+
+    <h4>4. Durée et mise à jour</h4>
+    <p>Ces renseignements sont conservés pour la <strong>durée de la fréquentation</strong>
+    de votre enfant. Il est de votre responsabilité de les maintenir à jour en avisant
+    la direction de tout changement.</p>
+</div>
+        ]]></field>
+        <field name="body_en"><![CDATA[
+<div class="privacy-notice">
+    <h3>Consent — Authorized Pickup Persons</h3>
+
+    <p><strong>Organization:</strong> The CPE<br/>
+    <strong>Privacy Officer (PPPO):</strong> CPE Management</p>
+
+    <h4>1. Purpose</h4>
+    <p>The CPE must record and verify the identity of persons authorized to pick up
+    your child each day. This consent covers the <strong>collection and use of
+    this information</strong>.</p>
+
+    <h4>2. Information Collected</h4>
+    <ul>
+        <li><strong>Authorized persons:</strong> full name, relationship to child,
+        phone number;</li>
+        <li><strong>Identification:</strong> for persons not known to staff;</li>
+        <li><strong>Emergency contacts:</strong> persons to reach if parents
+        are unavailable;</li>
+        <li><strong>Restrictions:</strong> unauthorized persons (court order,
+        parental agreement).</li>
+    </ul>
+
+    <h4>3. Use</h4>
+    <p>This information is used <strong>exclusively</strong> to ensure your child's
+    safety at pickup. It is accessible only to CPE staff and is not shared with
+    third parties.</p>
+
+    <h4>4. Duration and Updates</h4>
+    <p>This information is kept for the <strong>duration of your child's enrollment</strong>.
+    It is your responsibility to keep it up to date by notifying management of
+    any changes.</p>
+</div>
+        ]]></field>
+    </record>
+
+    <!-- Vidéosurveillance -->
+    <record id="notice_surveillance" model="privacy.notice">
+        <field name="name">Avis — Vidéosurveillance des locaux</field>
+        <field name="purpose_id" ref="purpose_surveillance"/>
+        <field name="body_fr"><![CDATA[
+<div class="privacy-notice">
+    <h3>Avis — Vidéosurveillance des locaux</h3>
+
+    <p><strong>Organisation :</strong> Le CPE</p>
+
+    <h4>Nature de la surveillance</h4>
+    <p>Le CPE utilise un système de <strong>vidéosurveillance</strong> dans certaines
+    zones de ses locaux à des fins de sécurité :</p>
+    <ul>
+        <li><strong>Entrées et sorties :</strong> contrôle d'accès au bâtiment;</li>
+        <li><strong>Aires communes :</strong> couloirs, hall d'entrée;</li>
+        <li><strong>Cour extérieure :</strong> surveillance générale;</li>
+        <li><strong>Stationnement</strong> (le cas échéant).</li>
+    </ul>
+
+    <h4>Zones exclues</h4>
+    <p>Les caméras ne sont <strong>jamais installées</strong> dans :</p>
+    <ul>
+        <li>les locaux de jeu et les salles d'activités;</li>
+        <li>les aires de repos et de sieste;</li>
+        <li>les salles de bain et les aires de changement de couches.</li>
+    </ul>
+
+    <h4>Conservation et accès</h4>
+    <ul>
+        <li>Les enregistrements sont conservés pour un maximum de <strong>30 jours</strong>;</li>
+        <li>L'accès est limité à la <strong>direction du CPE</strong>;</li>
+        <li>Les enregistrements ne sont consultés qu'en cas d'incident de sécurité;</li>
+        <li>Ils peuvent être transmis aux autorités sur demande légale.</li>
+    </ul>
+
+    <p><strong>Cet avis est informatif.</strong> La vidéosurveillance à des fins de sécurité
+    ne nécessite pas de consentement, mais le CPE s'engage à respecter votre vie privée
+    conformément à la Loi 25.</p>
+</div>
+        ]]></field>
+        <field name="body_en"><![CDATA[
+<div class="privacy-notice">
+    <h3>Notice — Video Surveillance</h3>
+
+    <p><strong>Organization:</strong> The CPE</p>
+
+    <h4>Nature of Surveillance</h4>
+    <p>The CPE uses a <strong>video surveillance</strong> system in certain areas
+    of its premises for security purposes:</p>
+    <ul>
+        <li><strong>Entrances and exits:</strong> building access control;</li>
+        <li><strong>Common areas:</strong> hallways, entrance hall;</li>
+        <li><strong>Outdoor yard:</strong> general surveillance;</li>
+        <li><strong>Parking lot</strong> (where applicable).</li>
+    </ul>
+
+    <h4>Excluded Areas</h4>
+    <p>Cameras are <strong>never installed</strong> in:</p>
+    <ul>
+        <li>play rooms and activity rooms;</li>
+        <li>rest and nap areas;</li>
+        <li>bathrooms and diaper changing areas.</li>
+    </ul>
+
+    <h4>Retention and Access</h4>
+    <ul>
+        <li>Recordings are kept for a maximum of <strong>30 days</strong>;</li>
+        <li>Access is limited to <strong>CPE management</strong>;</li>
+        <li>Recordings are only reviewed in case of a security incident;</li>
+        <li>They may be provided to authorities upon legal request.</li>
+    </ul>
+
+    <p><strong>This is an informational notice.</strong> Video surveillance for security
+    purposes does not require consent, but the CPE commits to respecting your privacy
+    in accordance with Law 25.</p>
+</div>
+        ]]></field>
+    </record>
+
+</odoo>

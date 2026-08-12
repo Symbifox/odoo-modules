@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Document Classification Form View -->
+    <record id="privacy_document_classification_view_form" model="ir.ui.view">
+        <field name="name">privacy.document.classification.form</field>
+        <field name="model">privacy.document.classification</field>
+        <field name="arch" type="xml">
+            <form string="Classification documentaire">
+                <sheet>
+                    <group>
+                        <group string="Document">
+                            <field name="res_model"/>
+                            <field name="res_id"/>
+                            <field name="res_name"/>
+                            <button name="action_view_source_record" type="object"
+                                    string="Voir le document" class="btn-link"
+                                    icon="fa-external-link"/>
+                        </group>
+                        <group string="Classification">
+                            <field name="pi_category"/>
+                            <field name="sensitivity_level"/>
+                            <field name="contains_direct_identifiers"/>
+                            <field name="contains_indirect_identifiers"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Liens">
+                            <field name="subject_partner_id"/>
+                            <field name="retention_calendar_id"/>
+                            <field name="document_date"/>
+                            <field name="retention_expiry_date"/>
+                        </group>
+                        <group string="Audit">
+                            <field name="classified_by_id"/>
+                            <field name="classified_at"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="active" invisible="1"/>
+                        </group>
+                    </group>
+                    <group string="Notes">
+                        <field name="notes" nolabel="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Document Classification List View -->
+    <record id="privacy_document_classification_view_list" model="ir.ui.view">
+        <field name="name">privacy.document.classification.list</field>
+        <field name="model">privacy.document.classification</field>
+        <field name="arch" type="xml">
+            <list string="Classifications documentaires"
+                  decoration-danger="retention_expiry_date and retention_expiry_date &lt;= current_date">
+                <field name="res_name" string="Document"/>
+                <field name="res_model" optional="hide"/>
+                <field name="pi_category"/>
+                <field name="sensitivity_level" widget="badge"
+                       decoration-danger="sensitivity_level == 'highly_confidential'"
+                       decoration-warning="sensitivity_level == 'confidential'"
+                       decoration-info="sensitivity_level == 'internal'"
+                       decoration-success="sensitivity_level == 'public'"/>
+                <field name="contains_direct_identifiers" optional="show"/>
+                <field name="subject_partner_id" optional="show"/>
+                <field name="retention_calendar_id"/>
+                <field name="retention_expiry_date"/>
+                <field name="classified_by_id" optional="hide"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Document Classification Search View -->
+    <record id="privacy_document_classification_view_search" model="ir.ui.view">
+        <field name="name">privacy.document.classification.search</field>
+        <field name="model">privacy.document.classification</field>
+        <field name="arch" type="xml">
+            <search string="Rechercher">
+                <field name="res_name"/>
+                <field name="subject_partner_id"/>
+                <field name="retention_calendar_id"/>
+                <separator/>
+                <filter string="Hautement confidentiel" name="highly_confidential"
+                        domain="[('sensitivity_level', '=', 'highly_confidential')]"/>
+                <filter string="Confidentiel" name="confidential"
+                        domain="[('sensitivity_level', '=', 'confidential')]"/>
+                <filter string="Identifiants directs" name="direct_ids"
+                        domain="[('contains_direct_identifiers', '=', True)]"/>
+                <separator/>
+                <filter string="Rétention dépassée" name="past_retention"
+                        domain="[('retention_expiry_date', '&lt;=', context_today().strftime('%Y-%m-%d')), ('retention_expiry_date', '!=', False)]"/>
+                <separator/>
+                <group expand="0" string="Regrouper par">
+                    <filter string="Catégorie de RP" name="group_by_category"
+                            context="{'group_by': 'pi_category'}"/>
+                    <filter string="Sensibilité" name="group_by_sensitivity"
+                            context="{'group_by': 'sensitivity_level'}"/>
+                    <filter string="Règle de conservation" name="group_by_calendar"
+                            context="{'group_by': 'retention_calendar_id'}"/>
+                    <filter string="Sujet" name="group_by_subject"
+                            context="{'group_by': 'subject_partner_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Document Classification Action -->
+    <record id="action_privacy_document_classification" model="ir.actions.act_window">
+        <field name="name">Classifications documentaires</field>
+        <field name="res_model">privacy.document.classification</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Aucun document classifié
+            </p>
+            <p>
+                Classifiez les documents contenant des renseignements personnels
+                pour appliquer les règles du calendrier de conservation.
+            </p>
+        </field>
+    </record>
+</odoo>

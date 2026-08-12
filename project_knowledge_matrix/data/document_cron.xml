@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- Daily cron job to check pending acknowledgments -->
+        <record id="ir_cron_document_pending_acknowledgments" model="ir.cron">
+            <field name="name">Documents: Vérifier accusés en attente</field>
+            <field name="model_id" ref="model_project_document_distribution"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_check_pending_acknowledgments()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Daily cron job to check document reviews and expirations -->
+        <record id="ir_cron_document_review_expiration" model="ir.cron">
+            <field name="name">Documents: Vérifier révisions et expirations</field>
+            <field name="model_id" ref="model_project_document"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_check_document_reviews()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Daily cron job to check for clients with outdated documentation -->
+        <record id="ir_cron_document_outdated_client_docs" model="ir.cron">
+            <field name="name">Documents: Vérifier documentation obsolète clients</field>
+            <field name="model_id" ref="model_project_document"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_check_outdated_client_docs()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Biweekly dashboard report -->
+        <record id="ir_cron_document_dashboard_report" model="ir.cron">
+            <field name="name">Documents: Rapport tableau de bord (bimensuel)</field>
+            <field name="model_id" ref="model_project_document"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_send_dashboard_report()</field>
+            <field name="interval_number">2</field>
+            <field name="interval_type">weeks</field>
+            <field name="active">True</field>
+        </record>
+
+    </data>
+</odoo>

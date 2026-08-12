@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Maintenance Schedule Tree View -->
+    <record id="hosting_maintenance_schedule_view_tree" model="ir.ui.view">
+        <field name="name">hosting.maintenance.schedule.tree</field>
+        <field name="model">hosting.maintenance.schedule</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="is_overdue" decoration-warning="days_until_due >= 0 and days_until_due &lt;= 7" decoration-muted="not active">
+                <field name="service_id"/>
+                <field name="partner_id"/>
+                <field name="name"/>
+                <field name="maintenance_type" widget="badge"/>
+                <field name="frequency"/>
+                <field name="last_performed"/>
+                <field name="next_due"/>
+                <field name="days_until_due" decoration-danger="days_until_due &lt; 0" decoration-warning="days_until_due >= 0 and days_until_due &lt;= 7"/>
+                <field name="is_overdue" widget="boolean" column_invisible="1"/>
+                <field name="user_id" widget="many2one_avatar_user"/>
+                <field name="active" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Maintenance Schedule Form View -->
+    <record id="hosting_maintenance_schedule_view_form" model="ir.ui.view">
+        <field name="name">hosting.maintenance.schedule.form</field>
+        <field name="model">hosting.maintenance.schedule</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_mark_done" string="Marquer comme fait" type="object" class="oe_highlight" icon="fa-check"/>
+                </header>
+                <sheet>
+                    <!-- Overdue Ribbon -->
+                    <widget name="web_ribbon" title="EN RETARD" bg_color="text-bg-danger" invisible="not is_overdue"/>
+
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name" placeholder="Nom de la tâche de maintenance"/>
+                        </h1>
+                    </div>
+
+                    <group>
+                        <group string="Détails du calendrier">
+                            <field name="service_id" options="{'no_create': True}"/>
+                            <field name="partner_id"/>
+                            <field name="maintenance_type"/>
+                            <field name="frequency"/>
+                            <field name="user_id"/>
+                            <field name="active"/>
+                        </group>
+                        <group string="État">
+                            <field name="last_performed"/>
+                            <field name="next_due"/>
+                            <field name="days_until_due" decoration-danger="days_until_due &lt; 0" decoration-warning="days_until_due >= 0 and days_until_due &lt;= 7"/>
+                            <field name="is_overdue" widget="boolean"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Instructions" name="instructions">
+                            <field name="instructions" placeholder="Instructions étape par étape pour effectuer cette tâche de maintenance..."/>
+                        </page>
+                        <page string="Notes" name="notes">
+                            <field name="notes" placeholder="Notes ou commentaires supplémentaires..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Maintenance Schedule Search View -->
+    <record id="hosting_maintenance_schedule_view_search" model="ir.ui.view">
+        <field name="name">hosting.maintenance.schedule.search</field>
+        <field name="model">hosting.maintenance.schedule</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="service_id"/>
+                <field name="partner_id"/>
+                <field name="user_id"/>
+                <separator/>
+                <filter name="filter_my_schedules" string="Mes calendriers" domain="[('user_id', '=', uid)]"/>
+                <separator/>
+                <filter name="filter_overdue" string="En retard" domain="[('is_overdue', '=', True)]"/>
+                <filter name="filter_due_this_week" string="Dû cette semaine" domain="[('next_due', '&lt;=', (context_today() + relativedelta(days=7)).strftime('%Y-%m-%d')), ('next_due', '>=', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter name="filter_due_this_month" string="Dû ce mois-ci" domain="[('next_due', '&lt;=', (context_today() + relativedelta(days=30)).strftime('%Y-%m-%d')), ('next_due', '>=', context_today().strftime('%Y-%m-%d'))]"/>
+                <separator/>
+                <filter name="filter_security_patch" string="Correction de sécurité" domain="[('maintenance_type', '=', 'security_patch')]"/>
+                <filter name="filter_db_optimize" string="Optimisation de la BD" domain="[('maintenance_type', '=', 'db_optimize')]"/>
+                <filter name="filter_backup_verify" string="Vérification des sauvegardes" domain="[('maintenance_type', '=', 'backup_verify')]"/>
+                <filter name="filter_log_cleanup" string="Nettoyage des journaux" domain="[('maintenance_type', '=', 'log_cleanup')]"/>
+                <filter name="filter_container_update" string="Mise à jour des conteneurs" domain="[('maintenance_type', '=', 'container_update')]"/>
+                <filter name="filter_ssl_renewal" string="Renouvellement SSL" domain="[('maintenance_type', '=', 'ssl_renewal')]"/>
+                <separator/>
+                <filter name="filter_archived" string="Archivé" domain="[('active', '=', False)]"/>
+                <group expand="0" string="Grouper par">
+                    <filter name="group_service" string="Service" context="{'group_by': 'service_id'}"/>
+                    <filter name="group_partner" string="Client" context="{'group_by': 'partner_id'}"/>
+                    <filter name="group_type" string="Type" context="{'group_by': 'maintenance_type'}"/>
+                    <filter name="group_frequency" string="Fréquence" context="{'group_by': 'frequency'}"/>
+                    <filter name="group_user" string="Assigné à" context="{'group_by': 'user_id'}"/>
+                    <filter name="group_next_due" string="Prochaine échéance (mois)" context="{'group_by': 'next_due:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Maintenance Schedule Kanban View -->
+    <record id="hosting_maintenance_schedule_view_kanban" model="ir.ui.view">
+        <field name="name">hosting.maintenance.schedule.kanban</field>
+        <field name="model">hosting.maintenance.schedule</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="maintenance_type" class="o_kanban_small_column">
+                <field name="id"/>
+                <field name="name"/>
+                <field name="service_id"/>
+                <field name="partner_id"/>
+                <field name="maintenance_type"/>
+                <field name="next_due"/>
+                <field name="days_until_due"/>
+                <field name="is_overdue"/>
+                <field name="user_id"/>
+                <templates>
+                    <t t-name="card">
+                        <div t-attf-class="#{record.is_overdue.raw_value ? 'border-danger border-2' : (record.days_until_due.raw_value &lt;= 7 ? 'border-warning border-2' : '')}">
+                            <div class="o_kanban_details">
+                                <strong class="o_kanban_record_title">
+                                    <field name="name"/>
+                                </strong>
+                                <div class="text-muted">
+                                    <field name="service_id"/> - <field name="partner_id"/>
+                                </div>
+                                <div class="mt-2">
+                                    <span t-if="record.is_overdue.raw_value" class="badge text-bg-danger">
+                                        En retard (<field name="days_until_due"/> jours)
+                                    </span>
+                                    <span t-elif="record.days_until_due.raw_value &lt;= 7" class="badge text-bg-warning">
+                                        Dû dans <field name="days_until_due"/> jours
+                                    </span>
+                                    <span t-else="" class="badge text-bg-secondary">
+                                        Dû : <field name="next_due"/>
+                                    </span>
+                                </div>
+                                <div class="mt-2">
+                                    <field name="user_id" widget="many2one_avatar_user"/>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Maintenance Schedule Calendar View -->
+    <record id="hosting_maintenance_schedule_view_calendar" model="ir.ui.view">
+        <field name="name">hosting.maintenance.schedule.calendar</field>
+        <field name="model">hosting.maintenance.schedule</field>
+        <field name="arch" type="xml">
+            <calendar string="Calendrier de maintenance" date_start="next_due" color="maintenance_type" mode="month">
+                <field name="name"/>
+                <field name="service_id"/>
+                <field name="maintenance_type"/>
+                <field name="user_id" widget="many2one_avatar_user"/>
+            </calendar>
+        </field>
+    </record>
+
+    <!-- All Maintenance Schedules Action -->
+    <record id="hosting_maintenance_schedule_action" model="ir.actions.act_window">
+        <field name="name">Calendriers de maintenance</field>
+        <field name="res_model">hosting.maintenance.schedule</field>
+        <field name="view_mode">list,kanban,calendar,activity,form</field>
+        <field name="search_view_id" ref="hosting_maintenance_schedule_view_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Créez votre premier calendrier de maintenance
+            </p>
+            <p>
+                Suivez les tâches de maintenance routinières pour vos services hébergés, incluant les corrections de sécurité, l'optimisation de la base de données, la vérification des sauvegardes, et plus encore.
+            </p>
+        </field>
+    </record>
+
+    <!-- Overdue Maintenance Action -->
+    <record id="hosting_maintenance_schedule_action_overdue" model="ir.actions.act_window">
+        <field name="name">Maintenance en retard</field>
+        <field name="res_model">hosting.maintenance.schedule</field>
+        <field name="view_mode">list,kanban,calendar,activity,form</field>
+        <field name="search_view_id" ref="hosting_maintenance_schedule_view_search"/>
+        <field name="domain">[('is_overdue', '=', True), ('active', '=', True)]</field>
+    </record>
+
+    <!-- Due This Week Maintenance Action -->
+    <record id="hosting_maintenance_schedule_action_due_week" model="ir.actions.act_window">
+        <field name="name">Dû cette semaine</field>
+        <field name="res_model">hosting.maintenance.schedule</field>
+        <field name="view_mode">list,kanban,calendar,activity,form</field>
+        <field name="search_view_id" ref="hosting_maintenance_schedule_view_search"/>
+        <field name="domain">[('next_due', '&lt;=', (context_today() + relativedelta(days=7)).strftime('%Y-%m-%d')), ('next_due', '>=', context_today().strftime('%Y-%m-%d')), ('active', '=', True)]</field>
+    </record>
+
+</odoo>

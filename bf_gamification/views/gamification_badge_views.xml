@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Badge Kanban -->
+    <record id="view_gamification_badge_kanban" model="ir.ui.view">
+        <field name="name">bf.gamification.badge.kanban</field>
+        <field name="model">bf.gamification.badge</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_mobile" create="0">
+                <field name="name"/>
+                <field name="image"/>
+                <field name="rarity"/>
+                <field name="xp_reward"/>
+                <field name="category_id"/>
+                <field name="earned_count"/>
+                <field name="earned_percentage"/>
+                <field name="hidden"/>
+                <field name="description"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="d-flex flex-column align-items-center p-2">
+                            <field name="image" widget="image" options='{"size": [120, 120]}'
+                                   class="mb-2"/>
+                            <strong class="fs-5"><field name="name"/></strong>
+                            <t t-if="record.hidden.raw_value">
+                                <span class="badge text-bg-dark mt-1">
+                                    <i class="fa fa-eye-slash me-1"/>Cach&#233;
+                                </span>
+                            </t>
+                            <span class="badge rounded-pill mt-1"
+                                  t-attf-class="#{record.rarity.raw_value === 'legendary' ? 'text-bg-warning' : record.rarity.raw_value === 'epic' ? 'text-bg-danger' : record.rarity.raw_value === 'rare' ? 'text-bg-primary' : record.rarity.raw_value === 'uncommon' ? 'text-bg-success' : 'text-bg-secondary'}">
+                                <field name="rarity"/>
+                            </span>
+                            <span class="text-muted small mt-1">
+                                <field name="xp_reward"/> XP
+                            </span>
+                            <span class="text-muted small">
+                                <field name="earned_percentage"/>% des joueurs
+                            </span>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Badge Form -->
+    <record id="view_gamification_badge_form" model="ir.ui.view">
+        <field name="name">bf.gamification.badge.form</field>
+        <field name="model">bf.gamification.badge</field>
+        <field name="arch" type="xml">
+            <form string="Badge">
+                <sheet>
+                    <field name="image" widget="image" class="oe_avatar"/>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="Nom du badge"/></h1>
+                    </div>
+                    <group>
+                        <group string="G&#233;n&#233;ral">
+                            <field name="category_id"/>
+                            <field name="rarity"/>
+                            <field name="xp_reward"/>
+                            <field name="unique"/>
+                            <field name="hidden"/>
+                            <field name="active"/>
+                            <field name="earned_percentage" readonly="1"/>
+                        </group>
+                        <group string="Conditions">
+                            <field name="condition_type"/>
+                            <field name="condition_model" invisible="condition_type == 'manual'"/>
+                            <field name="condition_domain" invisible="condition_type == 'manual'"/>
+                            <field name="condition_threshold" invisible="condition_type == 'manual'"/>
+                        </group>
+                    </group>
+                    <group string="Effets visuels">
+                        <group>
+                            <field name="popup_effect"/>
+                            <field name="popup_sound"/>
+                            <field name="popup_message"/>
+                        </group>
+                        <group>
+                            <field name="image_locked" widget="image"/>
+                        </group>
+                    </group>
+                    <group string="Description">
+                        <field name="description" nolabel="1" colspan="2"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Badge List -->
+    <record id="view_gamification_badge_list" model="ir.ui.view">
+        <field name="name">bf.gamification.badge.list</field>
+        <field name="model">bf.gamification.badge</field>
+        <field name="arch" type="xml">
+            <list string="Badges">
+                <field name="name"/>
+                <field name="category_id"/>
+                <field name="rarity"/>
+                <field name="xp_reward"/>
+                <field name="condition_type"/>
+                <field name="hidden"/>
+                <field name="earned_percentage" string="Raret&#233; %"/>
+                <field name="earned_count"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Actions -->
+    <record id="action_all_badges" model="ir.actions.act_window">
+        <field name="name">Tous les badges</field>
+        <field name="res_model">bf.gamification.badge</field>
+        <field name="view_mode">kanban,list,form</field>
+    </record>
+</odoo>

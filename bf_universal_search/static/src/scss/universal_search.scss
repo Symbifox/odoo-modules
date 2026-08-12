@@ -1,0 +1,29 @@
+.o_universal_search_systray {
+    .btn {
+        transition: opacity 0.15s;
+    }
+}
+
+.o_universal_search_command {
+    gap: 1rem;
+
+    .o_universal_search_icon {
+        width: 1.1em;
+        text-align: center;
+        flex-shrink: 0;
+    }
+
+    .o_universal_search_detail {
+        max-width: 45%;
+    }
+
+    // Done / cancelled records: greyed out and struck through, so a closed task
+    // never reads like a live one.
+    &.o_universal_search_closed {
+        .o_command_name {
+            text-decoration: line-through;
+        }
+
+        opacity: 0.55;
+    }
+}

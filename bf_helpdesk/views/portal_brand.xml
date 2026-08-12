@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+  <!-- BF brand polish on the OCA helpdesk_mgmt portal pages.
+       We only inject a brand stylesheet — no template overrides — so OCA
+       stays the single source of truth for layout/structure. -->
+  <template id="portal_assets_brand" name="BF Helpdesk — Portal brand assets"
+            inherit_id="portal.frontend_layout"
+            customize_show="False">
+    <xpath expr="//head" position="inside">
+      <link rel="stylesheet" type="text/css"
+            href="/bf_helpdesk/static/src/scss/portal_brand.scss"/>
+    </xpath>
+  </template>
+
+</odoo>

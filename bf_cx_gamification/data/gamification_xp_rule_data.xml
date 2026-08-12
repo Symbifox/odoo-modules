@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- CX closed loop rule -->
+        <record id="xp_rule_cx_feedback_done" model="bf.gamification.xp.rule">
+            <field name="name">Boucle fermée complétée</field>
+            <field name="source">cx_feedback</field>
+            <field name="trigger">complete</field>
+            <field name="xp_amount">5</field>
+            <field name="condition_description">Suivi de feedback passé en « Traité »</field>
+        </record>
+
+        <!-- CX complaint rule -->
+        <record id="xp_rule_cx_complaint_resolved" model="bf.gamification.xp.rule">
+            <field name="name">Plainte résolue</field>
+            <field name="source">cx_complaint</field>
+            <field name="trigger">complete</field>
+            <field name="xp_amount">8</field>
+            <field name="condition_description">Plainte passée en « Résolue »</field>
+        </record>
+    </data>
+</odoo>

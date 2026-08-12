@@ -1,0 +1,1295 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+
+        <!-- ================================================================== -->
+        <!-- RAPPELS DE PAIEMENT (om_account_followup)                          -->
+        <!-- Ces templates sont envoy&#233;s directement (pas de layout wrapping)     -->
+        <!-- Full Blue Fox HTML self-contained + texte fran&#231;ais                  -->
+        <!-- ================================================================== -->
+
+        <!-- ===================== NIVEAU 0 : Rappel poli ===================== -->
+        <record id="om_account_followup.email_template_om_account_followup_level0" model="mail.template">
+            <field name="name">Rappel de paiement - Premier avis</field>
+            <field name="subject">{{ user.company_id.name }} - Rappel de paiement amical</field>
+            <field name="body_html" type="html">
+
+<t t-set="company" t-value="(object.company_id if hasattr(object, 'company_id') and object.company_id else user.company_id)"/>
+<t t-set="brand_primary" t-value="(company and company.report_brand_primary) or '#714B67'"/>
+<t t-set="brand_dark" t-value="(company and company.report_brand_dark) or '#212529'"/>
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#F8FAFC;">
+  <tbody>
+    <tr>
+      <td align="center" style="padding:32px 16px;">
+        <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px;max-width:600px;margin:0 auto;background-color:#ffffff;border-radius:16px;box-shadow:0 4px 24px rgba(0,0,0,0.08);">
+          <tbody>
+            <tr>
+              <td t-attf-style="background-color:{{ brand_dark }};padding:20px 32px;border-radius:16px 16px 0 0;">
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                  <tbody>
+                    <tr>
+                      <td align="left">
+                        <a t-att-href="company.website or '#'" style="text-decoration:none;">
+                          <img t-attf-src="/web/image/res.company/{{ company.id }}/logo" t-att-alt="company.name" style="height:44px;width:auto;display:block;border:0;" height="44"/>
+                        </a>
+                      </td>
+                      <td align="right" style="color:#E6EDF3;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:20px;font-weight:700;letter-spacing:0.3px;">
+                        Rappel de paiement
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td t-attf-style="height:4px;line-height:4px;background-color:{{ brand_primary }};">&amp;nbsp;</td>
+            </tr>
+            <tr>
+              <td style="padding:32px;">
+                <p t-attf-style="margin:0 0 8px 0;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:18px;line-height:28px;color:{{ brand_dark }};font-weight:500;">
+                  Bonjour <t t-out="object.name"/>,
+                </p>
+                <p style="margin:0 0 20px 0;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:16px;line-height:26px;color:#374151;font-weight:300;">
+                  Nous esp&#233;rons que vous allez bien. Sauf erreur de notre part, il semble que le(s) montant(s) suivant(s) reste(nt) impay&#233;(s). Nous vous serions reconnaissants de bien vouloir proc&#233;der au r&#232;glement dans les meilleurs d&#233;lais.
+                </p>
+                <p style="margin:0 0 24px 0;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:16px;line-height:26px;color:#374151;font-weight:300;">
+                  Si votre paiement a d&#233;j&#224; &#233;t&#233; effectu&#233; apr&#232;s l'envoi de ce courriel, veuillez ne pas en tenir compte.
+                </p>
+
+                <!-- Followup table -->
+                <t t-out="object.get_followup_table_html()"/>
+
+                <p style="margin:24px 0 0 0;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:16px;line-height:26px;color:#374151;font-weight:300;">
+                  N'h&#233;sitez pas &#224; contacter notre d&#233;partement de comptabilit&#233; pour toute question.
+                </p>
+                <p t-attf-style="margin:16px 0 0 0;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:16px;line-height:26px;color:{{ brand_dark }};font-weight:400;">
+                  Cordialement,<br/>
+                  <strong><t t-out="user.name"/></strong>
+                </p>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:0 32px;">
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                  <tbody><tr><td style="height:1px;line-height:1px;background-color:#E5E7EB;">&amp;nbsp;</td></tr></tbody>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:24px 32px 28px 32px;">
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                  <tbody>
+                    <tr>
+                      <td style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:13px;color:#6B7280;line-height:20px;">
+                        <t t-set="brand_tagline" t-value="(company.brand_email_tagline or company.report_header) or ''"/>
+                        <strong t-attf-style="color:{{ brand_dark }};font-size:14px;"><t t-out="company.name"/></strong>
+                        <t t-if="brand_tagline"><br/><span t-out="brand_tagline"/></t>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style="padding-top:12px;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:12px;color:#9CA3AF;line-height:18px;">
+                        <t t-if="not is_html_empty(company.brand_email_footer_html)" t-out="company.brand_email_footer_html"/>
+                        <t t-else="">
+                          <a t-if="company.email" t-attf-href="mailto:{{ company.email }}" t-attf-style="color:{{ brand_primary }};text-decoration:none;" t-out="company.email"/>
+                          <t t-if="company.email and company.phone"><span style="color:#D1D5DB;"> &#183; </span></t>
+                          <a t-if="company.phone" t-attf-href="tel:{{ company.phone }}" t-attf-style="color:{{ brand_primary }};text-decoration:none;" t-out="company.phone"/>
+                          <t t-if="(company.email or company.phone) and company.website"><span style="color:#D1D5DB;"> &#183; </span></t>
+                          <a t-if="company.website" t-att-href="company.website" t-attf-style="color:{{ brand_primary }};text-decoration:none;" t-out="company.website"/>
+                        </t>
+                      </td>
+                    </tr>
+                    <tr t-if="company.brand_privacy_url or company.brand_terms_url">
+                      <td style="padding-top:12px;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:11px;">
+                        <a t-if="company.brand_privacy_url" t-att-href="company.brand_privacy_url" style="color:#9CA3AF;text-decoration:underline;">Confidentialit&#233;</a>
+                        <t t-if="company.brand_privacy_url and company.brand_terms_url"><span style="color:#D1D5DB;"> | </span></t>
+                        <a t-if="company.brand_terms_url" t-att-href="company.brand_terms_url" style="color:#9CA3AF;text-decoration:underline;">Conditions</a>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px;max-width:600px;margin:12px auto 0;">
+          <tbody>
+            <tr>
+              <td t-attf-style="height:3px;line-height:3px;background-color:{{ brand_primary }};width:50%;border-radius:2px 0 0 2px;">&amp;nbsp;</td>
+              <td t-attf-style="height:3px;line-height:3px;background-color:{{ brand_dark }};width:50%;border-radius:0 2px 2px 0;">&amp;nbsp;</td>
+            </tr>
+          </tbody>
+        </table>
+      </td>
+    </tr>
+  </tbody>
+</table>
+            </field>
+        </record>
+
+        <!-- ===================== NIVEAU 1 : Rappel pressant ================ -->
+        <record id="om_account_followup.email_template_om_account_followup_level1" model="mail.template">
+            <field name="name">Rappel de paiement - Deuxi&#232;me avis</field>
+            <field name="subject">{{ user.company_id.name }} - Deuxi&#232;me rappel de paiement</field>
+            <field name="body_html" type="html">
+
+<t t-set="company" t-value="(object.company_id if hasattr(object, 'company_id') and object.company_id else user.company_id)"/>
+<t t-set="brand_primary" t-value="(company and company.report_brand_primary) or '#714B67'"/>
+<t t-set="brand_dark" t-value="(company and company.report_brand_dark) or '#212529'"/>
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#F8FAFC;">
+  <tbody>
+    <tr>
+      <td align="center" style="padding:32px 16px;">
+        <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px;max-width:600px;margin:0 auto;background-color:#ffffff;border-radius:16px;box-shadow:0 4px 24px rgba(0,0,0,0.08);">
+          <tbody>
+            <tr>
+              <td t-attf-style="background-color:{{ brand_dark }};padding:20px 32px;border-radius:16px 16px 0 0;">
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                  <tbody>
+                    <tr>
+                      <td align="left">
+                        <a t-att-href="company.website or '#'" style="text-decoration:none;">
+                          <img t-attf-src="/web/image/res.company/{{ company.id }}/logo" t-att-alt="company.name" style="height:44px;width:auto;display:block;border:0;" height="44"/>
+                        </a>
+                      </td>
+                      <td align="right" style="color:#FDE68A;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:20px;font-weight:700;letter-spacing:0.3px;">
+                        Deuxi&#232;me rappel
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td style="height:4px;line-height:4px;background-color:#F59E0B;">&amp;nbsp;</td>
+            </tr>
+            <tr>
+              <td style="padding:32px;">
+                <p t-attf-style="margin:0 0 8px 0;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:18px;line-height:28px;color:{{ brand_dark }};font-weight:500;">
+                  Bonjour <t t-out="object.name"/>,
+                </p>
+                <p style="margin:0 0 20px 0;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:16px;line-height:26px;color:#374151;font-weight:300;">
+                  Malgr&#233; notre pr&#233;c&#233;dent rappel, nous constatons que votre compte pr&#233;sente toujours un solde impay&#233;. Nous vous prions de bien vouloir r&#233;gulariser cette situation dans les plus brefs d&#233;lais.
+                </p>
+                <p style="margin:0 0 24px 0;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:16px;line-height:26px;color:#374151;font-weight:300;">
+                  Si un probl&#232;me de facturation explique ce retard, n'h&#233;sitez pas &#224; contacter notre d&#233;partement de comptabilit&#233; afin que nous puissions r&#233;soudre la situation rapidement.
+                </p>
+
+                <t t-out="object.get_followup_table_html()"/>
+
+                <p style="margin:24px 0 0 0;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:16px;line-height:26px;color:#374151;font-weight:300;">
+                  Nous comptons sur votre collaboration pour un r&#232;glement rapide.
+                </p>
+                <p t-attf-style="margin:16px 0 0 0;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:16px;line-height:26px;color:{{ brand_dark }};font-weight:400;">
+                  Cordialement,<br/>
+                  <strong><t t-out="user.name"/></strong>
+                </p>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:0 32px;">
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                  <tbody><tr><td style="height:1px;line-height:1px;background-color:#E5E7EB;">&amp;nbsp;</td></tr></tbody>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:24px 32px 28px 32px;">
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                  <tbody>
+                    <tr>
+                      <td style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:13px;color:#6B7280;line-height:20px;">
+                        <t t-set="brand_tagline" t-value="(company.brand_email_tagline or company.report_header) or ''"/>
+                        <strong t-attf-style="color:{{ brand_dark }};font-size:14px;"><t t-out="company.name"/></strong>
+                        <t t-if="brand_tagline"><br/><span t-out="brand_tagline"/></t>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style="padding-top:12px;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:12px;color:#9CA3AF;line-height:18px;">
+                        <t t-if="not is_html_empty(company.brand_email_footer_html)" t-out="company.brand_email_footer_html"/>
+                        <t t-else="">
+                          <a t-if="company.email" t-attf-href="mailto:{{ company.email }}" t-attf-style="color:{{ brand_primary }};text-decoration:none;" t-out="company.email"/>
+                          <t t-if="company.email and company.phone"><span style="color:#D1D5DB;"> &#183; </span></t>
+                          <a t-if="company.phone" t-attf-href="tel:{{ company.phone }}" t-attf-style="color:{{ brand_primary }};text-decoration:none;" t-out="company.phone"/>
+                          <t t-if="(company.email or company.phone) and company.website"><span style="color:#D1D5DB;"> &#183; </span></t>
+                          <a t-if="company.website" t-att-href="company.website" t-attf-style="color:{{ brand_primary }};text-decoration:none;" t-out="company.website"/>
+                        </t>
+                      </td>
+                    </tr>
+                    <tr t-if="company.brand_privacy_url or company.brand_terms_url">
+                      <td style="padding-top:12px;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:11px;">
+                        <a t-if="company.brand_privacy_url" t-att-href="company.brand_privacy_url" style="color:#9CA3AF;text-decoration:underline;">Confidentialit&#233;</a>
+                        <t t-if="company.brand_privacy_url and company.brand_terms_url"><span style="color:#D1D5DB;"> | </span></t>
+                        <a t-if="company.brand_terms_url" t-att-href="company.brand_terms_url" style="color:#9CA3AF;text-decoration:underline;">Conditions</a>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px;max-width:600px;margin:12px auto 0;">
+          <tbody>
+            <tr>
+              <td style="height:3px;line-height:3px;background-color:#F59E0B;width:50%;border-radius:2px 0 0 2px;">&amp;nbsp;</td>
+              <td t-attf-style="height:3px;line-height:3px;background-color:{{ brand_dark }};width:50%;border-radius:0 2px 2px 0;">&amp;nbsp;</td>
+            </tr>
+          </tbody>
+        </table>
+      </td>
+    </tr>
+  </tbody>
+</table>
+            </field>
+        </record>
+
+        <!-- ===================== NIVEAU 2 : Rappel urgent ================== -->
+        <record id="om_account_followup.email_template_om_account_followup_level2" model="mail.template">
+            <field name="name">Rappel de paiement - Dernier avis</field>
+            <field name="subject">{{ user.company_id.name }} - Dernier rappel de paiement</field>
+            <field name="body_html" type="html">
+
+<t t-set="company" t-value="(object.company_id if hasattr(object, 'company_id') and object.company_id else user.company_id)"/>
+<t t-set="brand_primary" t-value="(company and company.report_brand_primary) or '#714B67'"/>
+<t t-set="brand_dark" t-value="(company and company.report_brand_dark) or '#212529'"/>
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#F8FAFC;">
+  <tbody>
+    <tr>
+      <td align="center" style="padding:32px 16px;">
+        <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px;max-width:600px;margin:0 auto;background-color:#ffffff;border-radius:16px;box-shadow:0 4px 24px rgba(0,0,0,0.08);">
+          <tbody>
+            <tr>
+              <td t-attf-style="background-color:{{ brand_dark }};padding:20px 32px;border-radius:16px 16px 0 0;">
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                  <tbody>
+                    <tr>
+                      <td align="left">
+                        <a t-att-href="company.website or '#'" style="text-decoration:none;">
+                          <img t-attf-src="/web/image/res.company/{{ company.id }}/logo" t-att-alt="company.name" style="height:44px;width:auto;display:block;border:0;" height="44"/>
+                        </a>
+                      </td>
+                      <td align="right" style="color:#FCA5A5;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:20px;font-weight:700;letter-spacing:0.3px;">
+                        Dernier avis
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td style="height:4px;line-height:4px;background-color:#DC2626;">&amp;nbsp;</td>
+            </tr>
+            <tr>
+              <td style="padding:32px;">
+                <p t-attf-style="margin:0 0 8px 0;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:18px;line-height:28px;color:{{ brand_dark }};font-weight:500;">
+                  Bonjour <t t-out="object.name"/>,
+                </p>
+
+                <!-- Urgency badge -->
+                <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-bottom:20px;">
+                  <tbody>
+                    <tr>
+                      <td style="padding:12px 16px;background-color:#FEF2F2;border-radius:10px;border-left:4px solid #DC2626;">
+                        <p style="margin:0;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:14px;font-weight:600;color:#DC2626;">
+                          Action imm&#233;diate requise
+                        </p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+
+                <p style="margin:0 0 20px 0;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:16px;line-height:26px;color:#374151;font-weight:300;">
+                  Malgr&#233; nos rappels pr&#233;c&#233;dents, votre compte demeure en souffrance. Sans r&#232;glement complet dans les <strong>8 prochains jours</strong>, nous serons dans l'obligation de prendre les mesures n&#233;cessaires pour le recouvrement de cette cr&#233;ance.
+                </p>
+                <p style="margin:0 0 24px 0;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:16px;line-height:26px;color:#374151;font-weight:300;">
+                  Nous esp&#233;rons que cette d&#233;marche ne sera pas n&#233;cessaire. En cas de question concernant cette situation, veuillez contacter notre d&#233;partement de comptabilit&#233; sans d&#233;lai.
+                </p>
+
+                <t t-out="object.get_followup_table_html()"/>
+
+                <p t-attf-style="margin:16px 0 0 0;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:16px;line-height:26px;color:{{ brand_dark }};font-weight:400;">
+                  Cordialement,<br/>
+                  <strong><t t-out="user.name"/></strong>
+                </p>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:0 32px;">
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                  <tbody><tr><td style="height:1px;line-height:1px;background-color:#E5E7EB;">&amp;nbsp;</td></tr></tbody>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:24px 32px 28px 32px;">
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                  <tbody>
+                    <tr>
+                      <td style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:13px;color:#6B7280;line-height:20px;">
+                        <t t-set="brand_tagline" t-value="(company.brand_email_tagline or company.report_header) or ''"/>
+                        <strong t-attf-style="color:{{ brand_dark }};font-size:14px;"><t t-out="company.name"/></strong>
+                        <t t-if="brand_tagline"><br/><span t-out="brand_tagline"/></t>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style="padding-top:12px;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:12px;color:#9CA3AF;line-height:18px;">
+                        <t t-if="not is_html_empty(company.brand_email_footer_html)" t-out="company.brand_email_footer_html"/>
+                        <t t-else="">
+                          <a t-if="company.email" t-attf-href="mailto:{{ company.email }}" t-attf-style="color:{{ brand_primary }};text-decoration:none;" t-out="company.email"/>
+                          <t t-if="company.email and company.phone"><span style="color:#D1D5DB;"> &#183; </span></t>
+                          <a t-if="company.phone" t-attf-href="tel:{{ company.phone }}" t-attf-style="color:{{ brand_primary }};text-decoration:none;" t-out="company.phone"/>
+                          <t t-if="(company.email or company.phone) and company.website"><span style="color:#D1D5DB;"> &#183; </span></t>
+                          <a t-if="company.website" t-att-href="company.website" t-attf-style="color:{{ brand_primary }};text-decoration:none;" t-out="company.website"/>
+                        </t>
+                      </td>
+                    </tr>
+                    <tr t-if="company.brand_privacy_url or company.brand_terms_url">
+                      <td style="padding-top:12px;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:11px;">
+                        <a t-if="company.brand_privacy_url" t-att-href="company.brand_privacy_url" style="color:#9CA3AF;text-decoration:underline;">Confidentialit&#233;</a>
+                        <t t-if="company.brand_privacy_url and company.brand_terms_url"><span style="color:#D1D5DB;"> | </span></t>
+                        <a t-if="company.brand_terms_url" t-att-href="company.brand_terms_url" style="color:#9CA3AF;text-decoration:underline;">Conditions</a>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px;max-width:600px;margin:12px auto 0;">
+          <tbody>
+            <tr>
+              <td style="height:3px;line-height:3px;background-color:#DC2626;width:50%;border-radius:2px 0 0 2px;">&amp;nbsp;</td>
+              <td t-attf-style="height:3px;line-height:3px;background-color:{{ brand_dark }};width:50%;border-radius:0 2px 2px 0;">&amp;nbsp;</td>
+            </tr>
+          </tbody>
+        </table>
+      </td>
+    </tr>
+  </tbody>
+</table>
+            </field>
+        </record>
+
+        <!-- ===================== NIVEAU DEFAULT ============================= -->
+        <record id="om_account_followup.email_template_om_account_followup_default" model="mail.template">
+            <field name="name">Rappel de paiement - Avis par d&#233;faut</field>
+            <field name="subject">{{ user.company_id.name }} - Rappel de paiement</field>
+            <field name="body_html" type="html">
+
+<t t-set="company" t-value="(object.company_id if hasattr(object, 'company_id') and object.company_id else user.company_id)"/>
+<t t-set="brand_primary" t-value="(company and company.report_brand_primary) or '#714B67'"/>
+<t t-set="brand_dark" t-value="(company and company.report_brand_dark) or '#212529'"/>
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#F8FAFC;">
+  <tbody>
+    <tr>
+      <td align="center" style="padding:32px 16px;">
+        <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px;max-width:600px;margin:0 auto;background-color:#ffffff;border-radius:16px;box-shadow:0 4px 24px rgba(0,0,0,0.08);">
+          <tbody>
+            <tr>
+              <td t-attf-style="background-color:{{ brand_dark }};padding:20px 32px;border-radius:16px 16px 0 0;">
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                  <tbody>
+                    <tr>
+                      <td align="left">
+                        <a t-att-href="company.website or '#'" style="text-decoration:none;">
+                          <img t-attf-src="/web/image/res.company/{{ company.id }}/logo" t-att-alt="company.name" style="height:44px;width:auto;display:block;border:0;" height="44"/>
+                        </a>
+                      </td>
+                      <td align="right" style="color:#E6EDF3;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:20px;font-weight:700;letter-spacing:0.3px;">
+                        Rappel de paiement
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td t-attf-style="height:4px;line-height:4px;background-color:{{ brand_primary }};">&amp;nbsp;</td>
+            </tr>
+            <tr>
+              <td style="padding:32px;">
+                <p t-attf-style="margin:0 0 8px 0;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:18px;line-height:28px;color:{{ brand_dark }};font-weight:500;">
+                  Bonjour <t t-out="object.name"/>,
+                </p>
+                <p style="margin:0 0 20px 0;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:16px;line-height:26px;color:#374151;font-weight:300;">
+                  Nous vous contactons au sujet d'un solde impay&#233; sur votre compte. Veuillez trouver ci-dessous le d&#233;tail des factures concern&#233;es.
+                </p>
+                <p style="margin:0 0 24px 0;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:16px;line-height:26px;color:#374151;font-weight:300;">
+                  Nous vous prions de bien vouloir proc&#233;der au r&#232;glement dans les meilleurs d&#233;lais. Si votre paiement a d&#233;j&#224; &#233;t&#233; envoy&#233;, veuillez ne pas tenir compte de ce message.
+                </p>
+
+                <t t-out="object.get_followup_table_html()"/>
+
+                <p style="margin:24px 0 0 0;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:16px;line-height:26px;color:#374151;font-weight:300;">
+                  N'h&#233;sitez pas &#224; contacter notre d&#233;partement de comptabilit&#233; pour toute question.
+                </p>
+                <p t-attf-style="margin:16px 0 0 0;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:16px;line-height:26px;color:{{ brand_dark }};font-weight:400;">
+                  Cordialement,<br/>
+                  <strong><t t-out="user.name"/></strong>
+                </p>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:0 32px;">
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                  <tbody><tr><td style="height:1px;line-height:1px;background-color:#E5E7EB;">&amp;nbsp;</td></tr></tbody>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:24px 32px 28px 32px;">
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                  <tbody>
+                    <tr>
+                      <td style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:13px;color:#6B7280;line-height:20px;">
+                        <t t-set="brand_tagline" t-value="(company.brand_email_tagline or company.report_header) or ''"/>
+                        <strong t-attf-style="color:{{ brand_dark }};font-size:14px;"><t t-out="company.name"/></strong>
+                        <t t-if="brand_tagline"><br/><span t-out="brand_tagline"/></t>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style="padding-top:12px;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:12px;color:#9CA3AF;line-height:18px;">
+                        <t t-if="not is_html_empty(company.brand_email_footer_html)" t-out="company.brand_email_footer_html"/>
+                        <t t-else="">
+                          <a t-if="company.email" t-attf-href="mailto:{{ company.email }}" t-attf-style="color:{{ brand_primary }};text-decoration:none;" t-out="company.email"/>
+                          <t t-if="company.email and company.phone"><span style="color:#D1D5DB;"> &#183; </span></t>
+                          <a t-if="company.phone" t-attf-href="tel:{{ company.phone }}" t-attf-style="color:{{ brand_primary }};text-decoration:none;" t-out="company.phone"/>
+                          <t t-if="(company.email or company.phone) and company.website"><span style="color:#D1D5DB;"> &#183; </span></t>
+                          <a t-if="company.website" t-att-href="company.website" t-attf-style="color:{{ brand_primary }};text-decoration:none;" t-out="company.website"/>
+                        </t>
+                      </td>
+                    </tr>
+                    <tr t-if="company.brand_privacy_url or company.brand_terms_url">
+                      <td style="padding-top:12px;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:11px;">
+                        <a t-if="company.brand_privacy_url" t-att-href="company.brand_privacy_url" style="color:#9CA3AF;text-decoration:underline;">Confidentialit&#233;</a>
+                        <t t-if="company.brand_privacy_url and company.brand_terms_url"><span style="color:#D1D5DB;"> | </span></t>
+                        <a t-if="company.brand_terms_url" t-att-href="company.brand_terms_url" style="color:#9CA3AF;text-decoration:underline;">Conditions</a>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px;max-width:600px;margin:12px auto 0;">
+          <tbody>
+            <tr>
+              <td t-attf-style="height:3px;line-height:3px;background-color:{{ brand_primary }};width:50%;border-radius:2px 0 0 2px;">&amp;nbsp;</td>
+              <td t-attf-style="height:3px;line-height:3px;background-color:{{ brand_dark }};width:50%;border-radius:0 2px 2px 0;">&amp;nbsp;</td>
+            </tr>
+          </tbody>
+        </table>
+      </td>
+    </tr>
+  </tbody>
+</table>
+            </field>
+        </record>
+
+
+        <!-- ================================================================== -->
+        <!-- CONTRATS (contract module)                                         -->
+        <!-- Set email_layout_xmlid so the BF layout wraps them automatically   -->
+        <!-- Simplify body to content only + franciser                          -->
+        <!-- ================================================================== -->
+
+        <record id="contract.email_contract_template" model="mail.template">
+            <field name="name">Contrat : Envoi</field>
+            <field name="subject">Votre contrat {{ object.name }} - {{ object.company_id.name }}</field>
+            <field name="email_layout_xmlid">bluefox_branding.bf_mail_layout_with_signature</field>
+            <field name="body_html" type="html">
+
+<t t-set="company" t-value="(object.company_id if hasattr(object, 'company_id') and object.company_id else user.company_id)"/>
+<t t-set="brand_primary" t-value="(company and company.report_brand_primary) or '#714B67'"/>
+<t t-set="brand_dark" t-value="(company and company.report_brand_dark) or '#212529'"/>
+<div style="margin:0;padding:0;">
+    <p style="margin:0 0 16px 0;font-size:15px;">
+        Bonjour
+        <t t-if="object.partner_id.parent_id">
+            <t t-out="object.partner_id.name or ''"/> (<t t-out="object.partner_id.parent_id.name or ''"/>),
+        </t>
+        <t t-else="">
+            <t t-out="object.partner_id.name or ''"/>,
+        </t>
+    </p>
+    <p style="margin:0 0 16px 0;font-size:15px;">
+        Veuillez trouver ci-joint votre contrat
+        <strong><t t-out="object.name or ''"/></strong>
+        de <t t-out="object.company_id.name or ''"/>.
+    </p>
+    <p style="margin:0 0 16px 0;font-size:15px;">
+        N'h&#233;sitez pas &#224; nous contacter pour toute question.
+    </p>
+</div>
+            </field>
+        </record>
+
+        <record id="contract.mail_template_contract_modification" model="mail.template">
+            <field name="name">Contrat : Modification</field>
+            <field name="subject">Modification de votre contrat {{ object.name }} - {{ object.company_id.name }}</field>
+        </record>
+
+
+        <!-- ================================================================== -->
+        <!-- HELPDESK (helpdesk_mgmt module)                                    -->
+        <!-- Remove the purple table shell, keep content only.                  -->
+        <!-- The overridden layout provides the Blue Fox branding.              -->
+        <!-- ================================================================== -->
+
+        <record id="helpdesk_mgmt.assignment_email_template" model="mail.template">
+            <field name="name">Helpdesk : Assignation de ticket</field>
+            <field name="subject">Ticket assign&#233; : {{ object.number }} - {{ object.name }}</field>
+            <field name="body_html" type="html">
+
+<t t-set="company" t-value="(object.company_id if hasattr(object, 'company_id') and object.company_id else user.company_id)"/>
+<t t-set="brand_primary" t-value="(company and company.report_brand_primary) or '#714B67'"/>
+<t t-set="brand_dark" t-value="(company and company.report_brand_dark) or '#212529'"/>
+<div style="margin:0;padding:0;">
+    <p style="margin:0 0 16px 0;font-size:15px;">
+        Bonjour <t t-out="object.user_id.name or ''"/>,
+    </p>
+    <p style="margin:0 0 16px 0;font-size:15px;">
+        Le ticket <strong>#<t t-out="object.number or ''"/></strong> vous a &#233;t&#233; assign&#233; :
+    </p>
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-bottom:16px;border-radius:8px;border:1px solid #E5E7EB;">
+        <tbody>
+            <tr>
+                <td style="padding:12px 16px;background-color:#F9FAFB;font-size:13px;font-weight:600;color:#6B7280;width:120px;">Ticket</td>
+                <td t-attf-style="padding:12px 16px;font-size:14px;color:{{ brand_dark }};"><t t-out="object.number or ''"/> - <t t-out="object.name or ''"/></td>
+            </tr>
+            <tr>
+                <td style="padding:12px 16px;background-color:#F9FAFB;font-size:13px;font-weight:600;color:#6B7280;border-top:1px solid #E5E7EB;">Client</td>
+                <td t-attf-style="padding:12px 16px;font-size:14px;color:{{ brand_dark }};border-top:1px solid #E5E7EB;"><t t-out="object.partner_id.name or 'Non sp&#233;cifi&#233;'"/></td>
+            </tr>
+            <tr t-if="object.stage_id">
+                <td style="padding:12px 16px;background-color:#F9FAFB;font-size:13px;font-weight:600;color:#6B7280;border-top:1px solid #E5E7EB;">&#201;tape</td>
+                <td t-attf-style="padding:12px 16px;font-size:14px;color:{{ brand_dark }};border-top:1px solid #E5E7EB;"><t t-out="object.stage_id.name or ''"/></td>
+            </tr>
+        </tbody>
+    </table>
+    <p style="margin:0;font-size:15px;">
+        Merci de prendre en charge ce ticket dans les meilleurs d&#233;lais.
+    </p>
+</div>
+            </field>
+        </record>
+
+        <record id="helpdesk_mgmt.closed_ticket_template" model="mail.template">
+            <field name="name">Helpdesk : Ticket ferm&#233;</field>
+            <field name="subject">Ticket ferm&#233; : {{ object.number }} - {{ object.name }}</field>
+            <field name="body_html" type="html">
+
+<t t-set="company" t-value="(object.company_id if hasattr(object, 'company_id') and object.company_id else user.company_id)"/>
+<t t-set="brand_primary" t-value="(company and company.report_brand_primary) or '#714B67'"/>
+<t t-set="brand_dark" t-value="(company and company.report_brand_dark) or '#212529'"/>
+<div style="margin:0;padding:0;">
+    <p style="margin:0 0 16px 0;font-size:15px;">
+        Bonjour,
+    </p>
+    <p style="margin:0 0 16px 0;font-size:15px;">
+        Le ticket <strong>#<t t-out="object.number or ''"/></strong> a &#233;t&#233; ferm&#233;.
+    </p>
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-bottom:16px;border-radius:8px;border:1px solid #E5E7EB;">
+        <tbody>
+            <tr>
+                <td style="padding:12px 16px;background-color:#F9FAFB;font-size:13px;font-weight:600;color:#6B7280;width:120px;">Ticket</td>
+                <td t-attf-style="padding:12px 16px;font-size:14px;color:{{ brand_dark }};"><t t-out="object.number or ''"/> - <t t-out="object.name or ''"/></td>
+            </tr>
+            <tr>
+                <td style="padding:12px 16px;background-color:#F9FAFB;font-size:13px;font-weight:600;color:#6B7280;border-top:1px solid #E5E7EB;">Client</td>
+                <td t-attf-style="padding:12px 16px;font-size:14px;color:{{ brand_dark }};border-top:1px solid #E5E7EB;"><t t-out="object.partner_id.name or 'Non sp&#233;cifi&#233;'"/></td>
+            </tr>
+            <tr t-if="object.user_id">
+                <td style="padding:12px 16px;background-color:#F9FAFB;font-size:13px;font-weight:600;color:#6B7280;border-top:1px solid #E5E7EB;">Assign&#233; &#224;</td>
+                <td t-attf-style="padding:12px 16px;font-size:14px;color:{{ brand_dark }};border-top:1px solid #E5E7EB;"><t t-out="object.user_id.name or ''"/></td>
+            </tr>
+        </tbody>
+    </table>
+    <p style="margin:0;font-size:15px;">
+        Si vous avez d'autres questions, n'h&#233;sitez pas &#224; ouvrir un nouveau ticket.
+    </p>
+</div>
+            </field>
+        </record>
+
+        <record id="helpdesk_mgmt.changed_stage_template" model="mail.template">
+            <field name="name">Helpdesk : Changement d'&#233;tape</field>
+            <field name="subject">Mise &#224; jour du ticket {{ object.number }} - {{ object.name }}</field>
+            <field name="body_html" type="html">
+
+<t t-set="company" t-value="(object.company_id if hasattr(object, 'company_id') and object.company_id else user.company_id)"/>
+<t t-set="brand_primary" t-value="(company and company.report_brand_primary) or '#714B67'"/>
+<t t-set="brand_dark" t-value="(company and company.report_brand_dark) or '#212529'"/>
+<div style="margin:0;padding:0;">
+    <p style="margin:0 0 16px 0;font-size:15px;">
+        Bonjour,
+    </p>
+    <p style="margin:0 0 16px 0;font-size:15px;">
+        Le ticket <strong>#<t t-out="object.number or ''"/></strong> a &#233;t&#233; mis &#224; jour.
+    </p>
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-bottom:16px;border-radius:8px;border:1px solid #E5E7EB;">
+        <tbody>
+            <tr>
+                <td style="padding:12px 16px;background-color:#F9FAFB;font-size:13px;font-weight:600;color:#6B7280;width:120px;">Ticket</td>
+                <td t-attf-style="padding:12px 16px;font-size:14px;color:{{ brand_dark }};"><t t-out="object.number or ''"/> - <t t-out="object.name or ''"/></td>
+            </tr>
+            <tr>
+                <td style="padding:12px 16px;background-color:#F9FAFB;font-size:13px;font-weight:600;color:#6B7280;border-top:1px solid #E5E7EB;">Nouvelle &#233;tape</td>
+                <td t-attf-style="padding:12px 16px;font-size:14px;color:{{ brand_dark }};font-weight:600;border-top:1px solid #E5E7EB;"><t t-out="object.stage_id.name or ''"/></td>
+            </tr>
+            <tr t-if="object.user_id">
+                <td style="padding:12px 16px;background-color:#F9FAFB;font-size:13px;font-weight:600;color:#6B7280;border-top:1px solid #E5E7EB;">Assign&#233; &#224;</td>
+                <td t-attf-style="padding:12px 16px;font-size:14px;color:{{ brand_dark }};border-top:1px solid #E5E7EB;"><t t-out="object.user_id.name or ''"/></td>
+            </tr>
+        </tbody>
+    </table>
+    <p style="margin:0;font-size:15px;">
+        Nous vous tiendrons inform&#233; de l'&#233;volution de votre demande.
+    </p>
+</div>
+            </field>
+        </record>
+
+
+        <!-- ================================================================== -->
+        <!-- SONDAGES (survey module)                                           -->
+        <!-- Template d'invitation au sondage — Blue Fox branding + fran&#231;ais    -->
+        <!-- ================================================================== -->
+
+        <record id="survey.mail_template_user_input_invite" model="mail.template">
+            <field name="name">Sondage : Invitation</field>
+            <field name="subject">{{ object.survey_id.title }} - {{ user.company_id.name }}</field>
+            <field name="body_html" type="html">
+
+<t t-set="company" t-value="(object.company_id if hasattr(object, 'company_id') and object.company_id else user.company_id)"/>
+<t t-set="brand_primary" t-value="(company and company.report_brand_primary) or '#714B67'"/>
+<t t-set="brand_dark" t-value="(company and company.report_brand_dark) or '#212529'"/>
+<div style="margin:0; padding:0; background-color:#F8FAFC;">
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#F8FAFC;">
+    <tbody>
+        <tr>
+            <td align="center" style="padding:24px;">
+                <table cellspacing="0" cellpadding="0" border="0" width="100%" align="center" role="presentation">
+                    <tbody>
+                        <tr>
+                            <td>
+                                <br/>
+                                <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px; max-width:600px; margin:0 auto; background-color:#ffffff; border-radius:12px; border:1px solid #e5e7eb; border-collapse:collapse;">
+                                    <tbody>
+                                        <!-- En-t&#234;te -->
+                                        <tr>
+                                            <td t-attf-style="background-color:{{ brand_dark }}; padding:16px 24px; border-radius:12px 12px 0 0;">
+                                                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                                                    <tbody>
+                                                        <tr>
+                                                            <td align="left" style="color:#FFFFFF; font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:16px; font-weight:600;">
+                                                                <a t-att-href="company.website or '#'" style="text-decoration:none;">
+                                                                    <img t-attf-src="/web/image/res.company/{{ company.id }}/logo" t-att-alt="company.name" style="height:48px; width:auto; display:block; border:0;"/>
+                                                                </a>
+                                                            </td>
+                                                            <td align="right" style="color:#E6EDF3; font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:22px; font-weight:800; letter-spacing:0.2px;">
+                                                                Invitation questionnaire
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </td>
+                                        </tr>
+
+                                        <!-- Barre d'accentuation -->
+                                        <tr>
+                                            <td t-attf-style="height:4px; line-height:4px; background-color:{{ brand_primary }};">&amp;nbsp;</td>
+                                        </tr>
+
+                                        <!-- Contenu -->
+                                        <tr>
+                                            <td style="padding:24px; background-color:#ffffff; font-family:'Lexend','Segoe UI',Arial,sans-serif;">
+                                                <p style="font-size:16px; line-height:26px; color:#111827; margin:0 0 16px 0;">
+                                                    Bonjour <t t-out="object.partner_id.name or 'participant'"/>,
+                                                </p>
+                                                <p style="font-size:16px; line-height:26px; color:#1F2937; margin:0 0 20px 0;">
+                                                    Nous vous invitons &#224; r&#233;pondre au questionnaire suivant. Vos r&#233;ponses nous aideront &#224; mieux pr&#233;parer les prochaines &#233;tapes du projet.
+                                                </p>
+
+                                                <!-- Carte du sondage -->
+                                                <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-bottom:20px; border-radius:8px; border:1px solid #E5E7EB; background-color:#F3F4F6;">
+                                                    <tbody>
+                                                        <tr>
+                                                            <td style="padding:14px 18px; background-color:#F3F4F6;">
+                                                                <p style="margin:0 0 4px 0; font-size:12px; font-weight:700; color:#4B5563; text-transform:uppercase; letter-spacing:0.5px;">
+                                                                    Sondage
+                                                                </p>
+                                                                <p style="margin:0; font-size:17px; font-weight:600; color:#111827;">
+                                                                    <t t-out="object.survey_id.title"/>
+                                                                </p>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+
+                                                <!-- Bouton CTA -->
+                                                <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
+                                                    <tbody>
+                                                        <tr>
+                                                            <td align="center" style="padding:4px 0 20px 0; background-color:#ffffff;">
+                                                                <a t-att-href="object.get_start_url()"
+                                                                   t-attf-style="display:inline-block; background-color:{{ brand_primary }}; color:#ffffff; font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:16px; font-weight:600; text-decoration:none; padding:12px 36px; border-radius:8px; letter-spacing:0.3px;">
+                                                                    Acc&#233;der au questionnaire
+                                                                </a>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+
+                                                <p style="font-size:13px; line-height:20px; color:#4B5563; margin:0 0 4px 0;">
+                                                    Vous pouvez sauvegarder votre progression et revenir compl&#233;ter le sondage plus tard.
+                                                </p>
+                                                <p style="font-size:13px; line-height:20px; color:#4B5563; margin:0;">
+                                                    Pour toute question, n'h&#233;sitez pas &#224; nous contacter<t t-if="company.email or company.phone"> :</t>
+                                                    <a t-if="company.email" t-attf-href="mailto:{{ company.email }}" t-attf-style="color:{{ brand_primary }}; text-decoration:none;" t-out="company.email"/>
+                                                    <t t-if="company.email and company.phone"><span style="color:#9CA3AF;"> &#183; </span></t>
+                                                    <a t-if="company.phone" t-attf-href="tel:{{ company.phone }}" t-attf-style="color:{{ brand_primary }}; text-decoration:none;" t-out="company.phone"/>
+                                                </p>
+                                            </td>
+                                        </tr>
+
+                                        <!-- S&#233;parateur -->
+                                        <tr>
+                                            <td style="height:1px; line-height:1px; background-color:#E5E7EB;">&amp;nbsp;</td>
+                                        </tr>
+
+                                        <!-- Pied de page -->
+                                        <tr>
+                                            <td style="padding:16px 24px 24px 24px; background-color:#ffffff; border-radius:0 0 12px 12px;">
+                                                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                                                    <tbody>
+                                                        <tr>
+                                                            <td style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:12px; color:#4B5563;">
+                                                                <t t-set="brand_tagline" t-value="(company.brand_email_tagline or company.report_header) or ''"/>
+                                                                <strong style="color:#111827;"><t t-out="company.name"/></strong>
+                                                                <t t-if="brand_tagline"><br/><span t-out="brand_tagline"/></t>
+                                                            </td>
+                                                            <td align="right" style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:12px; color:#6B7280;">
+                                                                <a t-if="company.brand_privacy_url" t-att-href="company.brand_privacy_url" style="color:#6B7280; text-decoration:underline;">Confidentialit&#233;</a>
+                                                                <t t-if="company.brand_privacy_url and company.brand_terms_url"><span style="color:#9CA3AF;"> | </span></t>
+                                                                <a t-if="company.brand_terms_url" t-att-href="company.brand_terms_url" style="color:#6B7280; text-decoration:underline;">Conditions</a>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                                <!-- Barre d'accentuation inf&#233;rieure -->
+                                <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px; max-width:600px; margin:12px auto 0;">
+                                    <tbody>
+                                        <tr>
+                                            <td t-attf-style="height:3px; line-height:3px; background-color:{{ brand_primary }}; width:50%;">&amp;nbsp;</td>
+                                            <td t-attf-style="height:3px; line-height:3px; background-color:{{ brand_dark }}; width:50%;">&amp;nbsp;</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+    </tbody>
+</table>
+</div>
+            </field>
+        </record>
+
+        <!-- ================================================================== -->
+        <!-- CALENDRIER : Templates brandés (modèles calendar.attendee/event)   -->
+        <!-- Coquille alignée sur bf_meeting (outer #F8FAFC, header compact,    -->
+        <!-- accent unique #29ABE2, footer minimaliste — palette bf_branding).  -->
+        <!-- ================================================================== -->
+
+        <record id="calendar.calendar_template_meeting_invitation" model="mail.template">
+            <field name="name">Calendrier : Invitation &#224; une r&#233;union</field>
+            <field name="subject">Invitation &#224; {{ object.event_id.name }}</field>
+            <field name="body_html" type="html">
+
+<t t-set="company" t-value="(object.company_id if hasattr(object, 'company_id') and object.company_id else user.company_id)"/>
+<t t-set="brand_primary" t-value="(company and company.report_brand_primary) or '#714B67'"/>
+<t t-set="brand_dark" t-value="(company and company.report_brand_dark) or '#212529'"/>
+<div>
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#F8FAFC;">
+  <tbody>
+    <tr>
+      <td align="center" style="padding:24px;">
+        <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px; max-width:600px; margin:0 auto; background-color:#ffffff; border-radius:12px; border:1px solid #e5e7eb; border-collapse:collapse;">
+          <tbody>
+            <tr>
+              <td t-attf-style="background-color:{{ brand_dark }}; padding:16px 24px; border-radius:12px 12px 0 0;">
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                  <tbody>
+                    <tr>
+                      <td align="left" style="color:#FFFFFF; font-family:&apos;Lexend&apos;,&apos;Segoe UI&apos;,Arial,sans-serif; font-size:16px; font-weight:600;">
+                        <img t-attf-src="/web/image/res.company/{{ company.id }}/logo" t-att-alt="company.name" style="height:40px; width:auto; display:block; border:0;"/>
+                      </td>
+                      <td align="right" style="color:#E6EDF3; font-family:&apos;Lexend&apos;,&apos;Segoe UI&apos;,Arial,sans-serif; font-size:22px; font-weight:800; letter-spacing:0.2px;">
+                        Invitation
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td t-attf-style="height:4px; line-height:4px; background-color:{{ brand_primary }};">&amp;nbsp;</td>
+            </tr>
+            <tr>
+              <td style="padding:24px; font-family:&apos;Lexend&apos;,&apos;Segoe UI&apos;,Arial,sans-serif;">
+                <t t-set="colors" t-value="{&apos;needsAction&apos;: &apos;#9CA3AF&apos;, &apos;accepted&apos;: &apos;#10B981&apos;, &apos;tentative&apos;: &apos;#F59E0B&apos;, &apos;declined&apos;: &apos;#EF4444&apos;}"/>
+                <t t-set="customer" t-value="object.event_id.find_partner_customer()"/>
+                <t t-set="target_responsible" t-value="object.partner_id == object.event_id.partner_id"/>
+                <t t-set="recurrent" t-value="object.recurrence_id and not ctx.get(&apos;calendar_template_ignore_recurrence&apos;)"/>
+
+                <p style="margin:0 0 12px 0;font-size:16px;line-height:26px;color:#374151;font-weight:300;">
+                  Bonjour <t t-out="object.common_name or &apos;&apos;"/>,
+                </p>
+                <p style="margin:0 0 20px 0;font-size:15px;line-height:24px;color:#374151;font-weight:300;">
+                  <t t-if="not target_responsible">
+                    <t t-if="not object.event_id.user_id.active">Vous avez &#233;t&#233; invit&#233; &#224; la r&#233;union <strong t-attf-style="color:{{ brand_dark }};" t-out="object.event_id.name or &apos;&apos;"/>.</t>
+                    <t t-else=""><t t-out="object.event_id.user_id.partner_id.name or &apos;&apos;"/> vous a invit&#233; &#224; la r&#233;union <strong t-attf-style="color:{{ brand_dark }};" t-out="object.event_id.name or &apos;&apos;"/>.</t>
+                  </t>
+                  <t t-else="">Votre r&#233;union <strong t-attf-style="color:{{ brand_dark }};" t-out="object.event_id.name or &apos;&apos;"/> a &#233;t&#233; planifi&#233;e.</t>
+                </p>
+                <table role="presentation" border="0" cellpadding="0" cellspacing="0" style="margin:0 0 16px 0;">
+                  <tr>
+                    <td width="120" style="min-width:120px;vertical-align:top;">
+                      <div t-attf-style="border-top-left-radius:6px;border-top-right-radius:6px;font-size:12px;text-align:center;font-weight:600;color:#FFFFFF;background-color:{{ brand_primary }};padding:6px 0;"><t t-out="format_datetime(dt=object.event_id.start, tz=object.mail_tz if not object.event_id.allday else None, dt_format=&apos;EEEE&apos;, lang_code=object.env.lang) or &apos;&apos;"/></div>
+                      <div t-attf-style="font-size:44px;font-weight:700;text-align:center;color:{{ brand_dark }};background-color:#F5F7FA;border-left:1px solid {{ brand_primary }};border-right:1px solid {{ brand_primary }};padding:6px 0;line-height:1;"><t t-out="format_datetime(dt=object.event_id.start, tz=object.mail_tz if not object.event_id.allday else None, dt_format=&apos;d&apos;, lang_code=object.env.lang) or &apos;&apos;"/></div>
+                      <div t-attf-style="font-size:12px;text-align:center;font-weight:600;color:#FFFFFF;background-color:{{ brand_primary }};padding:6px 0;"><t t-out="format_datetime(dt=object.event_id.start, tz=object.mail_tz if not object.event_id.allday else None, dt_format=&apos;MMMM y&apos;, lang_code=object.env.lang) or &apos;&apos;"/></div>
+                      <div t-attf-style="border-bottom-left-radius:6px;border-bottom-right-radius:6px;color:{{ brand_dark }};text-align:center;font-size:13px;font-weight:600;background-color:#F5F7FA;border-left:1px solid {{ brand_primary }};border-right:1px solid {{ brand_primary }};border-bottom:1px solid {{ brand_primary }};padding:8px 0;">
+                        <t t-if="not object.event_id.allday">
+                          <div><t t-out="format_time(time=object.event_id.start, tz=object.mail_tz, time_format=&apos;short&apos;, lang_code=object.env.lang) or &apos;&apos;"/></div>
+                          <t t-if="object.mail_tz"><div style="font-size:10px;font-weight:400;color:#6B7280;">(<t t-out="object.mail_tz or &apos;&apos;"/>)</div></t>
+                        </t>
+                      </div>
+                    </td>
+                    <td width="20"/>
+                    <td style="vertical-align:top;font-size:14px;color:#374151;">
+                      <p t-attf-style="margin:0 0 8px 0;color:{{ brand_dark }};font-weight:600;font-size:15px;">D&#233;tails de l&apos;&#233;v&#233;nement</p>
+                      <ul style="margin:0;padding-left:18px;line-height:22px;">
+                        <t t-if="object.event_id.location"><li><strong t-attf-style="color:{{ brand_dark }};">Lieu :</strong> <t t-out="object.event_id.location or &apos;&apos;"/></li></t>
+                        <t t-if="recurrent"><li><strong t-attf-style="color:{{ brand_dark }};">Quand :</strong> <t t-out="object.recurrence_id.get_recurrence_name()"/></li></t>
+                        <t t-if="not object.event_id.allday and object.event_id.duration"><li><strong t-attf-style="color:{{ brand_dark }};">Dur&#233;e :</strong> <t t-out="(&apos;%dH%02d&apos; % (object.event_id.duration,round(object.event_id.duration*60)%60)) or &apos;&apos;"/></li></t>
+                        <t t-if="object.event_id.videocall_location"><li><strong t-attf-style="color:{{ brand_dark }};">Visio :</strong> <a t-att-href="object.event_id.videocall_location" target="_blank" t-attf-style="color:{{ brand_primary }};text-decoration:none;" t-out="object.event_id.videocall_location or &apos;&apos;"/></li></t>
+                        <li><strong t-attf-style="color:{{ brand_dark }};">Participants :</strong>
+                          <ul style="margin:4px 0 0 0;padding-left:18px;">
+                            <li t-foreach="object.event_id.attendee_ids" t-as="attendee" style="list-style:none;margin:2px 0;">
+                              <span t-attf-style="display:inline-block;border-radius:50%;width:9px;height:9px;background:{{ colors.get(attendee.state) or &apos;#9CA3AF&apos; }};vertical-align:middle;"> </span>
+                              <t t-if="attendee.common_name != object.common_name"><span style="margin-left:6px;color:#374151;" t-out="attendee.common_name or &apos;&apos;"/></t>
+                              <t t-else=""><span t-attf-style="margin-left:6px;color:{{ brand_dark }};font-weight:600;">Vous</span></t>
+                            </li>
+                          </ul>
+                        </li>
+                        <t t-if="not is_html_empty(object.event_id.description)"><li><strong t-attf-style="color:{{ brand_dark }};">Description :</strong> <div style="margin-top:4px;color:#374151;"><t t-out="object.event_id.description"/></div></li></t>
+                      </ul>
+                    </td>
+                  </tr>
+                </table>
+                <div style="text-align:center;padding:8px 0 4px 0;">
+                  <a t-attf-href="/calendar/meeting/accept?token={{object.access_token}}&amp;id={{object.event_id.id}}" t-attf-style="display:inline-block;padding:10px 22px;margin:4px;color:#FFFFFF;text-decoration:none;background-color:{{ brand_primary }};border-radius:6px;font-weight:600;font-size:14px;border:1px solid {{ brand_primary }};">Accepter</a>
+                  <a t-attf-href="/calendar/meeting/decline?token={{object.access_token}}&amp;id={{object.event_id.id}}" t-attf-style="display:inline-block;padding:10px 22px;margin:4px;color:{{ brand_dark }};text-decoration:none;background-color:#FFFFFF;border-radius:6px;font-weight:600;font-size:14px;border:1px solid #D8DEE4;">D&#233;cliner</a>
+                  <a t-attf-href="/calendar/meeting/view?token={{object.access_token}}&amp;id={{object.event_id.id}}" t-attf-style="display:inline-block;padding:10px 22px;margin:4px;color:{{ brand_dark }};text-decoration:none;background-color:#FFFFFF;border-radius:6px;font-weight:600;font-size:14px;border:1px solid #D8DEE4;">Voir</a>
+                </div>
+                <p style="margin:24px 0 0 0;font-size:15px;line-height:24px;color:#374151;font-weight:300;">
+                  Au plaisir,<br/>
+                  <t t-if="object.event_id.user_id.signature" data-o-mail-quote-container="1"><t t-out="object.event_id.user_id.signature or &apos;&apos;" data-o-mail-quote="1"/></t>
+                  <t t-else=""><strong t-attf-style="color:{{ brand_dark }};"><t t-out="object.event_id.user_id.partner_id.name or user.name"/></strong></t>
+                </p>
+              </td>
+            </tr>
+            <tr>
+              <td style="height:1px; line-height:1px; background-color:#E5E7EB;">&amp;nbsp;</td>
+            </tr>
+            <tr>
+              <td style="padding:16px 24px 20px 24px; background-color:#FFFFFF; border-radius:0 0 12px 12px;">
+                <p style="font-family:&apos;Lexend&apos;,&apos;Segoe UI&apos;,Arial,sans-serif; font-size:12px; color:#6B7280; margin:0;">
+                  <strong t-attf-style="color:{{ brand_dark }};">Invitation envoy&#233;e depuis le calendrier de <t t-out="company.name"/>.</strong>
+                  <t t-if="object.event_id.user_id.partner_id.company_id.name"><br/><t t-out="object.event_id.user_id.partner_id.company_id.name"/></t>
+                </p>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px; max-width:600px; margin:12px auto 0;">
+          <tbody>
+            <tr>
+              <td t-attf-style="height:3px; line-height:3px; background-color:{{ brand_primary }}; width:50%;">&amp;nbsp;</td>
+              <td t-attf-style="height:3px; line-height:3px; background-color:{{ brand_dark }}; width:50%;">&amp;nbsp;</td>
+            </tr>
+          </tbody>
+        </table>
+      </td>
+    </tr>
+  </tbody>
+</table>
+</div>
+            </field>
+        </record>
+
+        <record id="calendar.calendar_template_meeting_changedate" model="mail.template">
+            <field name="name">Calendrier : Date mise &#224; jour</field>
+            <field name="subject">{{ object.event_id.name }} : date mise &#224; jour</field>
+            <field name="body_html" type="html">
+
+<t t-set="company" t-value="(object.company_id if hasattr(object, 'company_id') and object.company_id else user.company_id)"/>
+<t t-set="brand_primary" t-value="(company and company.report_brand_primary) or '#714B67'"/>
+<t t-set="brand_dark" t-value="(company and company.report_brand_dark) or '#212529'"/>
+<div>
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#F8FAFC;">
+  <tbody>
+    <tr>
+      <td align="center" style="padding:24px;">
+        <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px; max-width:600px; margin:0 auto; background-color:#ffffff; border-radius:12px; border:1px solid #e5e7eb; border-collapse:collapse;">
+          <tbody>
+            <tr>
+              <td t-attf-style="background-color:{{ brand_dark }}; padding:16px 24px; border-radius:12px 12px 0 0;">
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                  <tbody>
+                    <tr>
+                      <td align="left" style="color:#FFFFFF; font-family:&apos;Lexend&apos;,&apos;Segoe UI&apos;,Arial,sans-serif; font-size:16px; font-weight:600;">
+                        <img t-attf-src="/web/image/res.company/{{ company.id }}/logo" t-att-alt="company.name" style="height:40px; width:auto; display:block; border:0;"/>
+                      </td>
+                      <td align="right" style="color:#E6EDF3; font-family:&apos;Lexend&apos;,&apos;Segoe UI&apos;,Arial,sans-serif; font-size:22px; font-weight:800; letter-spacing:0.2px;">
+                        Date mise &#224; jour
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td t-attf-style="height:4px; line-height:4px; background-color:{{ brand_primary }};">&amp;nbsp;</td>
+            </tr>
+            <tr>
+              <td style="padding:24px; font-family:&apos;Lexend&apos;,&apos;Segoe UI&apos;,Arial,sans-serif;">
+                <t t-set="colors" t-value="{&apos;needsAction&apos;: &apos;#9CA3AF&apos;, &apos;accepted&apos;: &apos;#10B981&apos;, &apos;tentative&apos;: &apos;#F59E0B&apos;, &apos;declined&apos;: &apos;#EF4444&apos;}"/>
+                <t t-set="is_online" t-value="&apos;appointment_type_id&apos; in object.event_id and object.event_id.appointment_type_id"/>
+                <t t-set="customer" t-value="object.event_id.find_partner_customer()"/>
+                <t t-set="target_responsible" t-value="object.partner_id == object.event_id.partner_id"/>
+                <t t-set="target_customer" t-value="object.partner_id == customer"/>
+                <t t-set="recurrent" t-value="object.recurrence_id and not ctx.get(&apos;calendar_template_ignore_recurrence&apos;)"/>
+
+                <p style="margin:0 0 12px 0;font-size:16px;line-height:26px;color:#374151;font-weight:300;">
+                  Bonjour <t t-out="object.common_name or &apos;&apos;"/>,
+                </p>
+                <p style="margin:0 0 20px 0;font-size:15px;line-height:24px;color:#374151;font-weight:300;">
+                  <t t-if="is_online and target_responsible">
+                    <t t-if="customer">La date de votre rendez-vous avec <t t-out="customer.name or &apos;&apos;"/> a &#233;t&#233; modifi&#233;e.</t>
+                    <t t-else="">Votre rendez-vous a &#233;t&#233; modifi&#233;.</t>
+                    Le rendez-vous <strong t-attf-style="color:{{ brand_dark }};" t-out="object.event_id.appointment_type_id.name or &apos;&apos;"/> est d&#233;sormais planifi&#233; le <strong t-attf-style="color:{{ brand_dark }};" t-out="object.event_id.get_display_time_tz(tz=object.partner_id.tz) or &apos;&apos;"/>.
+                  </t>
+                  <t t-elif="is_online and target_customer">
+                    La date de votre rendez-vous avec <t t-out="object.event_id.user_id.partner_id.name or &apos;&apos;"/> a &#233;t&#233; modifi&#233;e. Le rendez-vous <strong t-attf-style="color:{{ brand_dark }};" t-out="object.event_id.appointment_type_id.name or &apos;&apos;"/> est d&#233;sormais planifi&#233; le <strong t-attf-style="color:{{ brand_dark }};" t-out="object.event_id.get_display_time_tz(tz=object.partner_id.tz) or &apos;&apos;"/>.
+                  </t>
+                  <t t-else="">
+                    La date de la r&#233;union a &#233;t&#233; modifi&#233;e. La r&#233;union <strong t-attf-style="color:{{ brand_dark }};" t-out="object.event_id.name or &apos;&apos;"/> est d&#233;sormais planifi&#233;e le <strong t-attf-style="color:{{ brand_dark }};" t-out="object.event_id.get_display_time_tz(tz=object.partner_id.tz) or &apos;&apos;"/>.
+                  </t>
+                </p>
+                <table role="presentation" border="0" cellpadding="0" cellspacing="0" style="margin:0 0 16px 0;">
+                  <tr>
+                    <td width="120" style="min-width:120px;vertical-align:top;">
+                      <div t-attf-style="border-top-left-radius:6px;border-top-right-radius:6px;font-size:12px;text-align:center;font-weight:600;color:#FFFFFF;background-color:{{ brand_primary }};padding:6px 0;"><t t-out="format_datetime(dt=object.event_id.start, tz=object.mail_tz if not object.event_id.allday else None, dt_format=&apos;EEEE&apos;, lang_code=object.env.lang) or &apos;&apos;"/></div>
+                      <div t-attf-style="font-size:44px;font-weight:700;text-align:center;color:{{ brand_dark }};background-color:#F5F7FA;border-left:1px solid {{ brand_primary }};border-right:1px solid {{ brand_primary }};padding:6px 0;line-height:1;"><t t-out="format_datetime(dt=object.event_id.start, tz=object.mail_tz if not object.event_id.allday else None, dt_format=&apos;d&apos;, lang_code=object.env.lang) or &apos;&apos;"/></div>
+                      <div t-attf-style="font-size:12px;text-align:center;font-weight:600;color:#FFFFFF;background-color:{{ brand_primary }};padding:6px 0;"><t t-out="format_datetime(dt=object.event_id.start, tz=object.mail_tz if not object.event_id.allday else None, dt_format=&apos;MMMM y&apos;, lang_code=object.env.lang) or &apos;&apos;"/></div>
+                      <div t-attf-style="border-bottom-left-radius:6px;border-bottom-right-radius:6px;color:{{ brand_dark }};text-align:center;font-size:13px;font-weight:600;background-color:#F5F7FA;border-left:1px solid {{ brand_primary }};border-right:1px solid {{ brand_primary }};border-bottom:1px solid {{ brand_primary }};padding:8px 0;">
+                        <t t-if="not object.event_id.allday">
+                          <div><t t-out="format_time(time=object.event_id.start, tz=object.mail_tz, time_format=&apos;short&apos;, lang_code=object.env.lang) or &apos;&apos;"/></div>
+                          <t t-if="object.mail_tz"><div style="font-size:10px;font-weight:400;color:#6B7280;">(<t t-out="object.mail_tz or &apos;&apos;"/>)</div></t>
+                        </t>
+                      </div>
+                    </td>
+                    <td width="20"/>
+                    <td style="vertical-align:top;font-size:14px;color:#374151;">
+                      <p t-attf-style="margin:0 0 8px 0;color:{{ brand_dark }};font-weight:600;font-size:15px;">D&#233;tails de l&apos;&#233;v&#233;nement</p>
+                      <ul style="margin:0;padding-left:18px;line-height:22px;">
+                        <t t-if="object.event_id.location"><li><strong t-attf-style="color:{{ brand_dark }};">Lieu :</strong> <t t-out="object.event_id.location or &apos;&apos;"/></li></t>
+                        <t t-if="recurrent"><li><strong t-attf-style="color:{{ brand_dark }};">Quand :</strong> <t t-out="object.recurrence_id.get_recurrence_name()"/></li></t>
+                        <t t-if="not object.event_id.allday and object.event_id.duration"><li><strong t-attf-style="color:{{ brand_dark }};">Dur&#233;e :</strong> <t t-out="(&apos;%dH%02d&apos; % (object.event_id.duration,round(object.event_id.duration*60)%60)) or &apos;&apos;"/></li></t>
+                        <t t-if="object.event_id.videocall_location"><li><strong t-attf-style="color:{{ brand_dark }};">Visio :</strong> <a t-att-href="object.event_id.videocall_location" target="_blank" t-attf-style="color:{{ brand_primary }};text-decoration:none;" t-out="object.event_id.videocall_location or &apos;&apos;"/></li></t>
+                        <li><strong t-attf-style="color:{{ brand_dark }};">Participants :</strong>
+                          <ul style="margin:4px 0 0 0;padding-left:18px;">
+                            <li t-foreach="object.event_id.attendee_ids" t-as="attendee" style="list-style:none;margin:2px 0;">
+                              <span t-attf-style="display:inline-block;border-radius:50%;width:9px;height:9px;background:{{ colors.get(attendee.state) or &apos;#9CA3AF&apos; }};vertical-align:middle;"> </span>
+                              <t t-if="attendee.common_name != object.common_name"><span style="margin-left:6px;color:#374151;" t-out="attendee.common_name or &apos;&apos;"/></t>
+                              <t t-else=""><span t-attf-style="margin-left:6px;color:{{ brand_dark }};font-weight:600;">Vous</span></t>
+                            </li>
+                          </ul>
+                        </li>
+                        <t t-if="not is_html_empty(object.event_id.description)"><li><strong t-attf-style="color:{{ brand_dark }};">Description :</strong> <div style="margin-top:4px;color:#374151;"><t t-out="object.event_id.description"/></div></li></t>
+                      </ul>
+                    </td>
+                  </tr>
+                </table>
+                <div style="text-align:center;padding:8px 0 4px 0;">
+                  <a t-attf-href="/calendar/meeting/accept?token={{object.access_token}}&amp;id={{object.event_id.id}}" t-attf-style="display:inline-block;padding:10px 22px;margin:4px;color:#FFFFFF;text-decoration:none;background-color:{{ brand_primary }};border-radius:6px;font-weight:600;font-size:14px;border:1px solid {{ brand_primary }};">Accepter</a>
+                  <a t-attf-href="/calendar/meeting/decline?token={{object.access_token}}&amp;id={{object.event_id.id}}" t-attf-style="display:inline-block;padding:10px 22px;margin:4px;color:{{ brand_dark }};text-decoration:none;background-color:#FFFFFF;border-radius:6px;font-weight:600;font-size:14px;border:1px solid #D8DEE4;">D&#233;cliner</a>
+                  <a t-attf-href="/calendar/meeting/view?token={{object.access_token}}&amp;id={{object.event_id.id}}" t-attf-style="display:inline-block;padding:10px 22px;margin:4px;color:{{ brand_dark }};text-decoration:none;background-color:#FFFFFF;border-radius:6px;font-weight:600;font-size:14px;border:1px solid #D8DEE4;">Voir</a>
+                </div>
+                <p style="margin:24px 0 0 0;font-size:15px;line-height:24px;color:#374151;font-weight:300;">
+                  Au plaisir,<br/>
+                  <t t-if="object.event_id.user_id.signature" data-o-mail-quote-container="1"><t t-out="object.event_id.user_id.signature or &apos;&apos;" data-o-mail-quote="1"/></t>
+                  <t t-else=""><strong t-attf-style="color:{{ brand_dark }};"><t t-out="object.event_id.user_id.partner_id.name or user.name"/></strong></t>
+                </p>
+              </td>
+            </tr>
+            <tr>
+              <td style="height:1px; line-height:1px; background-color:#E5E7EB;">&amp;nbsp;</td>
+            </tr>
+            <tr>
+              <td style="padding:16px 24px 20px 24px; background-color:#FFFFFF; border-radius:0 0 12px 12px;">
+                <p style="font-family:&apos;Lexend&apos;,&apos;Segoe UI&apos;,Arial,sans-serif; font-size:12px; color:#6B7280; margin:0;">
+                  <strong t-attf-style="color:{{ brand_dark }};">Mise &#224; jour envoy&#233;e depuis le calendrier de <t t-out="company.name"/>.</strong>
+                  <t t-if="object.event_id.user_id.partner_id.company_id.name"><br/><t t-out="object.event_id.user_id.partner_id.company_id.name"/></t>
+                </p>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px; max-width:600px; margin:12px auto 0;">
+          <tbody>
+            <tr>
+              <td t-attf-style="height:3px; line-height:3px; background-color:{{ brand_primary }}; width:50%;">&amp;nbsp;</td>
+              <td t-attf-style="height:3px; line-height:3px; background-color:{{ brand_dark }}; width:50%;">&amp;nbsp;</td>
+            </tr>
+          </tbody>
+        </table>
+      </td>
+    </tr>
+  </tbody>
+</table>
+</div>
+            </field>
+        </record>
+
+        <record id="calendar.calendar_template_meeting_reminder" model="mail.template">
+            <field name="name">Calendrier : Rappel</field>
+            <field name="subject">{{ object.event_id.name }} - Rappel</field>
+            <field name="body_html" type="html">
+
+<t t-set="company" t-value="(object.company_id if hasattr(object, 'company_id') and object.company_id else user.company_id)"/>
+<t t-set="brand_primary" t-value="(company and company.report_brand_primary) or '#714B67'"/>
+<t t-set="brand_dark" t-value="(company and company.report_brand_dark) or '#212529'"/>
+<div>
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#F8FAFC;">
+  <tbody>
+    <tr>
+      <td align="center" style="padding:24px;">
+        <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px; max-width:600px; margin:0 auto; background-color:#ffffff; border-radius:12px; border:1px solid #e5e7eb; border-collapse:collapse;">
+          <tbody>
+            <tr>
+              <td t-attf-style="background-color:{{ brand_dark }}; padding:16px 24px; border-radius:12px 12px 0 0;">
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                  <tbody>
+                    <tr>
+                      <td align="left" style="color:#FFFFFF; font-family:&apos;Lexend&apos;,&apos;Segoe UI&apos;,Arial,sans-serif; font-size:16px; font-weight:600;">
+                        <img t-attf-src="/web/image/res.company/{{ company.id }}/logo" t-att-alt="company.name" style="height:40px; width:auto; display:block; border:0;"/>
+                      </td>
+                      <td align="right" style="color:#E6EDF3; font-family:&apos;Lexend&apos;,&apos;Segoe UI&apos;,Arial,sans-serif; font-size:22px; font-weight:800; letter-spacing:0.2px;">
+                        Rappel
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td t-attf-style="height:4px; line-height:4px; background-color:{{ brand_primary }};">&amp;nbsp;</td>
+            </tr>
+            <tr>
+              <td style="padding:24px; font-family:&apos;Lexend&apos;,&apos;Segoe UI&apos;,Arial,sans-serif;">
+                <t t-set="recurrent" t-value="object.recurrence_id and not ctx.get(&apos;calendar_template_ignore_recurrence&apos;)"/>
+
+                <p style="margin:0 0 12px 0;font-size:16px;line-height:26px;color:#374151;font-weight:300;">
+                  Bonjour <t t-out="object.common_name or &apos;&apos;"/>,
+                </p>
+                <p style="margin:0 0 20px 0;font-size:15px;line-height:24px;color:#374151;font-weight:300;">
+                  Petit rappel pour la r&#233;union <strong t-attf-style="color:{{ brand_dark }};" t-out="object.event_id.name or &apos;&apos;"/>.
+                </p>
+                <table role="presentation" border="0" cellpadding="0" cellspacing="0" style="margin:0 0 16px 0;">
+                  <tr>
+                    <td width="120" style="min-width:120px;vertical-align:top;">
+                      <div t-attf-style="border-top-left-radius:6px;border-top-right-radius:6px;font-size:12px;text-align:center;font-weight:600;color:#FFFFFF;background-color:{{ brand_primary }};padding:6px 0;"><t t-out="format_datetime(dt=object.event_id.start, tz=object.mail_tz if not object.event_id.allday else None, dt_format=&apos;EEEE&apos;, lang_code=object.env.lang) or &apos;&apos;"/></div>
+                      <div t-attf-style="font-size:44px;font-weight:700;text-align:center;color:{{ brand_dark }};background-color:#F5F7FA;border-left:1px solid {{ brand_primary }};border-right:1px solid {{ brand_primary }};padding:6px 0;line-height:1;"><t t-out="format_datetime(dt=object.event_id.start, tz=object.mail_tz if not object.event_id.allday else None, dt_format=&apos;d&apos;, lang_code=object.env.lang) or &apos;&apos;"/></div>
+                      <div t-attf-style="font-size:12px;text-align:center;font-weight:600;color:#FFFFFF;background-color:{{ brand_primary }};padding:6px 0;"><t t-out="format_datetime(dt=object.event_id.start, tz=object.mail_tz if not object.event_id.allday else None, dt_format=&apos;MMMM y&apos;, lang_code=object.env.lang) or &apos;&apos;"/></div>
+                      <div t-attf-style="border-bottom-left-radius:6px;border-bottom-right-radius:6px;color:{{ brand_dark }};text-align:center;font-size:13px;font-weight:600;background-color:#F5F7FA;border-left:1px solid {{ brand_primary }};border-right:1px solid {{ brand_primary }};border-bottom:1px solid {{ brand_primary }};padding:8px 0;">
+                        <t t-if="not object.event_id.allday">
+                          <div><t t-out="format_time(time=object.event_id.start, tz=object.mail_tz, time_format=&apos;short&apos;, lang_code=object.env.lang) or &apos;&apos;"/></div>
+                          <t t-if="object.mail_tz"><div style="font-size:10px;font-weight:400;color:#6B7280;">(<t t-out="object.mail_tz or &apos;&apos;"/>)</div></t>
+                        </t>
+                      </div>
+                    </td>
+                    <td width="20"/>
+                    <td style="vertical-align:top;font-size:14px;color:#374151;">
+                      <p t-attf-style="margin:0 0 8px 0;color:{{ brand_dark }};font-weight:600;font-size:15px;">D&#233;tails</p>
+                      <ul style="margin:0;padding-left:18px;line-height:22px;">
+                        <t t-if="object.event_id.location"><li><strong t-attf-style="color:{{ brand_dark }};">Lieu :</strong> <t t-out="object.event_id.location or &apos;&apos;"/></li></t>
+                        <t t-if="recurrent"><li><strong t-attf-style="color:{{ brand_dark }};">Quand :</strong> <t t-out="object.recurrence_id.get_recurrence_name()"/></li></t>
+                        <t t-if="not object.event_id.allday and object.event_id.duration"><li><strong t-attf-style="color:{{ brand_dark }};">Dur&#233;e :</strong> <t t-out="(&apos;%dH%02d&apos; % (object.event_id.duration,round(object.event_id.duration*60)%60)) or &apos;&apos;"/></li></t>
+                        <t t-if="object.event_id.videocall_location"><li><strong t-attf-style="color:{{ brand_dark }};">Visio :</strong> <a t-att-href="object.event_id.videocall_location" target="_blank" t-attf-style="color:{{ brand_primary }};text-decoration:none;" t-out="object.event_id.videocall_location or &apos;&apos;"/></li></t>
+                      </ul>
+                    </td>
+                  </tr>
+                </table>
+                <div style="text-align:center;padding:8px 0 4px 0;">
+                  <a t-attf-href="/calendar/meeting/view?token={{object.access_token}}&amp;id={{object.event_id.id}}" t-attf-style="display:inline-block;padding:10px 22px;color:#FFFFFF;text-decoration:none;background-color:{{ brand_primary }};border-radius:6px;font-weight:600;font-size:14px;border:1px solid {{ brand_primary }};">Voir l&apos;&#233;v&#233;nement</a>
+                </div>
+                <p style="margin:24px 0 0 0;font-size:15px;line-height:24px;color:#374151;font-weight:300;">
+                  &#192; bient&#244;t,<br/>
+                  <strong t-attf-style="color:{{ brand_dark }};"><t t-out="object.event_id.user_id.partner_id.name or user.name"/></strong>
+                </p>
+              </td>
+            </tr>
+            <tr>
+              <td style="height:1px; line-height:1px; background-color:#E5E7EB;">&amp;nbsp;</td>
+            </tr>
+            <tr>
+              <td style="padding:16px 24px 20px 24px; background-color:#FFFFFF; border-radius:0 0 12px 12px;">
+                <p style="font-family:&apos;Lexend&apos;,&apos;Segoe UI&apos;,Arial,sans-serif; font-size:12px; color:#6B7280; margin:0;">
+                  <strong t-attf-style="color:{{ brand_dark }};">Rappel envoy&#233; depuis le calendrier de <t t-out="company.name"/>.</strong>
+                  <t t-if="object.event_id.user_id.partner_id.company_id.name"><br/><t t-out="object.event_id.user_id.partner_id.company_id.name"/></t>
+                </p>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px; max-width:600px; margin:12px auto 0;">
+          <tbody>
+            <tr>
+              <td t-attf-style="height:3px; line-height:3px; background-color:{{ brand_primary }}; width:50%;">&amp;nbsp;</td>
+              <td t-attf-style="height:3px; line-height:3px; background-color:{{ brand_dark }}; width:50%;">&amp;nbsp;</td>
+            </tr>
+          </tbody>
+        </table>
+      </td>
+    </tr>
+  </tbody>
+</table>
+</div>
+            </field>
+        </record>
+
+        <record id="calendar.calendar_template_meeting_update" model="mail.template">
+            <field name="name">Calendrier : Mise &#224; jour de l&apos;&#233;v&#233;nement</field>
+            <field name="subject">{{ object.name }} : mise &#224; jour de l&apos;&#233;v&#233;nement</field>
+            <field name="body_html" type="html">
+
+<t t-set="company" t-value="(object.company_id if hasattr(object, 'company_id') and object.company_id else user.company_id)"/>
+<t t-set="brand_primary" t-value="(company and company.report_brand_primary) or '#714B67'"/>
+<t t-set="brand_dark" t-value="(company and company.report_brand_dark) or '#212529'"/>
+<div>
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#F8FAFC;">
+  <tbody>
+    <tr>
+      <td align="center" style="padding:24px;">
+        <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px; max-width:600px; margin:0 auto; background-color:#ffffff; border-radius:12px; border:1px solid #e5e7eb; border-collapse:collapse;">
+          <tbody>
+            <tr>
+              <td t-attf-style="background-color:{{ brand_dark }}; padding:16px 24px; border-radius:12px 12px 0 0;">
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                  <tbody>
+                    <tr>
+                      <td align="left" style="color:#FFFFFF; font-family:&apos;Lexend&apos;,&apos;Segoe UI&apos;,Arial,sans-serif; font-size:16px; font-weight:600;">
+                        <img t-attf-src="/web/image/res.company/{{ company.id }}/logo" t-att-alt="company.name" style="height:40px; width:auto; display:block; border:0;"/>
+                      </td>
+                      <td align="right" style="color:#E6EDF3; font-family:&apos;Lexend&apos;,&apos;Segoe UI&apos;,Arial,sans-serif; font-size:22px; font-weight:800; letter-spacing:0.2px;">
+                        Mise &#224; jour
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td t-attf-style="height:4px; line-height:4px; background-color:{{ brand_primary }};">&amp;nbsp;</td>
+            </tr>
+            <tr>
+              <td style="padding:24px; font-family:&apos;Lexend&apos;,&apos;Segoe UI&apos;,Arial,sans-serif;">
+                <t t-set="recurrent" t-value="object.recurrence_id and not ctx.get(&apos;calendar_template_ignore_recurrence&apos;)"/>
+                <t t-set="mail_tz" t-value="object._get_mail_tz() or ctx.get(&apos;mail_tz&apos;)"/>
+
+                <p style="margin:0 0 12px 0;font-size:16px;line-height:26px;color:#374151;font-weight:300;">
+                  Bonjour,
+                </p>
+                <p style="margin:0 0 20px 0;font-size:15px;line-height:24px;color:#374151;font-weight:300;">
+                  L&apos;&#233;v&#233;nement <strong t-attf-style="color:{{ brand_dark }};" t-out="object.name or &apos;&apos;"/> a &#233;t&#233; mis &#224; jour.
+                </p>
+                <table role="presentation" border="0" cellpadding="0" cellspacing="0" style="margin:0 0 16px 0;">
+                  <tr>
+                    <td width="120" style="min-width:120px;vertical-align:top;">
+                      <div t-attf-style="border-top-left-radius:6px;border-top-right-radius:6px;font-size:12px;text-align:center;font-weight:600;color:#FFFFFF;background-color:{{ brand_primary }};padding:6px 0;"><t t-out="format_datetime(dt=object.start, tz=mail_tz if not object.allday else None, dt_format=&apos;EEEE&apos;, lang_code=object.env.lang) or &apos;&apos;"/></div>
+                      <div t-attf-style="font-size:44px;font-weight:700;text-align:center;color:{{ brand_dark }};background-color:#F5F7FA;border-left:1px solid {{ brand_primary }};border-right:1px solid {{ brand_primary }};padding:6px 0;line-height:1;"><t t-out="format_datetime(dt=object.start, tz=mail_tz if not object.allday else None, dt_format=&apos;d&apos;, lang_code=object.env.lang) or &apos;&apos;"/></div>
+                      <div t-attf-style="font-size:12px;text-align:center;font-weight:600;color:#FFFFFF;background-color:{{ brand_primary }};padding:6px 0;"><t t-out="format_datetime(dt=object.start, tz=mail_tz if not object.allday else None, dt_format=&apos;MMMM y&apos;, lang_code=object.env.lang) or &apos;&apos;"/></div>
+                      <div t-attf-style="border-bottom-left-radius:6px;border-bottom-right-radius:6px;color:{{ brand_dark }};text-align:center;font-size:13px;font-weight:600;background-color:#F5F7FA;border-left:1px solid {{ brand_primary }};border-right:1px solid {{ brand_primary }};border-bottom:1px solid {{ brand_primary }};padding:8px 0;">
+                        <t t-if="not object.allday">
+                          <div><t t-out="format_time(time=object.start, tz=mail_tz, time_format=&apos;short&apos;, lang_code=object.env.lang) or &apos;&apos;"/></div>
+                          <t t-if="mail_tz"><div style="font-size:10px;font-weight:400;color:#6B7280;">(<t t-out="mail_tz or &apos;&apos;"/>)</div></t>
+                        </t>
+                      </div>
+                    </td>
+                    <td width="20"/>
+                    <td style="vertical-align:top;font-size:14px;color:#374151;">
+                      <p t-attf-style="margin:0 0 8px 0;color:{{ brand_dark }};font-weight:600;font-size:15px;">D&#233;tails</p>
+                      <ul style="margin:0;padding-left:18px;line-height:22px;">
+                        <t t-if="not is_html_empty(object.description)"><li><strong t-attf-style="color:{{ brand_dark }};">Description :</strong> <div style="margin-top:4px;color:#374151;"><t t-out="object.description"/></div></li></t>
+                        <t t-if="object.videocall_location"><li><strong t-attf-style="color:{{ brand_dark }};">Visio :</strong> <a t-att-href="object.videocall_location" target="_blank" t-attf-style="color:{{ brand_primary }};text-decoration:none;" t-out="object.videocall_location or &apos;&apos;"/></li></t>
+                        <t t-if="object.location"><li><strong t-attf-style="color:{{ brand_dark }};">Lieu :</strong> <t t-out="object.location or &apos;&apos;"/></li></t>
+                        <t t-if="recurrent"><li><strong t-attf-style="color:{{ brand_dark }};">Quand :</strong> <t t-out="object.recurrence_id.get_recurrence_name()"/></li></t>
+                        <t t-if="not object.allday and object.duration"><li><strong t-attf-style="color:{{ brand_dark }};">Dur&#233;e :</strong> <t t-out="(&apos;%dH%02d&apos; % (object.duration,round(object.duration*60)%60))"/></li></t>
+                      </ul>
+                    </td>
+                  </tr>
+                </table>
+
+                <div class="user_input" style="margin-top:16px;border-top:1px solid #E5E7EB;padding-top:12px;">
+                  <p placeholder="Enter your message here" style="margin:0;color:#374151;font-size:14px;"><br/></p>
+                </div>
+                <p style="margin:24px 0 0 0;font-size:15px;line-height:24px;color:#374151;font-weight:300;">
+                  Au plaisir,<br/>
+                  <t t-if="object.user_id.signature" data-o-mail-quote-container="1"><t t-out="object.user_id.signature or &apos;&apos;" data-o-mail-quote="1"/></t>
+                  <t t-else=""><strong t-attf-style="color:{{ brand_dark }};"><t t-out="object.user_id.partner_id.name or user.name"/></strong></t>
+                </p>
+              </td>
+            </tr>
+            <tr>
+              <td style="height:1px; line-height:1px; background-color:#E5E7EB;">&amp;nbsp;</td>
+            </tr>
+            <tr>
+              <td style="padding:16px 24px 20px 24px; background-color:#FFFFFF; border-radius:0 0 12px 12px;">
+                <p style="font-family:&apos;Lexend&apos;,&apos;Segoe UI&apos;,Arial,sans-serif; font-size:12px; color:#6B7280; margin:0;">
+                  <strong t-attf-style="color:{{ brand_dark }};">Mise &#224; jour envoy&#233;e depuis le calendrier de <t t-out="company.name"/>.</strong>
+                  <t t-if="object.user_id.partner_id.company_id.name"><br/><t t-out="object.user_id.partner_id.company_id.name"/></t>
+                </p>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px; max-width:600px; margin:12px auto 0;">
+          <tbody>
+            <tr>
+              <td t-attf-style="height:3px; line-height:3px; background-color:{{ brand_primary }}; width:50%;">&amp;nbsp;</td>
+              <td t-attf-style="height:3px; line-height:3px; background-color:{{ brand_dark }}; width:50%;">&amp;nbsp;</td>
+            </tr>
+          </tbody>
+        </table>
+      </td>
+    </tr>
+  </tbody>
+</table>
+</div>
+            </field>
+        </record>
+
+    </data>
+</odoo>

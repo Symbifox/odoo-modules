@@ -1,0 +1,514 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="hosting_management.Dashboard">
+        <div class="o_hosting_dashboard">
+            <!-- Loading State -->
+            <div t-if="state.loading" class="d-flex justify-content-center align-items-center" style="min-height: 400px;">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Chargement...</span>
+                </div>
+            </div>
+
+            <!-- Error State -->
+            <div t-elif="!state.data" class="container-fluid py-4">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="alert alert-warning d-flex align-items-center" role="alert">
+                            <i class="fa fa-exclamation-triangle fa-2x me-3"/>
+                            <div class="flex-grow-1">
+                                <strong>Erreur de chargement</strong>
+                                <p class="mb-0">Impossible de charger les données du tableau de bord. Veuillez réessayer.</p>
+                            </div>
+                            <button class="btn btn-outline-warning" t-on-click="refresh">
+                                <i class="fa fa-refresh me-1"/>Réessayer
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dashboard Content -->
+            <div t-else="" class="container-fluid py-4">
+
+                <!-- Header -->
+                <div class="row mb-4">
+                    <div class="col-12 d-flex justify-content-between align-items-center flex-wrap gap-2">
+                        <div>
+                            <h1 class="mb-0">
+                                <i class="fa fa-server me-2"/>Tableau de bord d'hébergement
+                            </h1>
+                            <p class="text-muted mb-0">Vue d'ensemble de l'infrastructure et des services</p>
+                        </div>
+                        <div class="d-flex gap-2 flex-wrap">
+                            <button class="btn btn-primary" t-on-click="refreshAll" t-att-disabled="state.refreshing">
+                                <i t-attf-class="fa {{state.refreshing ? 'fa-spinner fa-spin' : 'fa-sync'}} me-1"/>Actualiser tout
+                            </button>
+                            <button class="btn btn-outline-secondary" t-on-click="runHealthChecks" t-att-disabled="state.refreshing">
+                                <i class="fa fa-heartbeat me-1"/>Santé
+                            </button>
+                            <button class="btn btn-outline-secondary" t-on-click="checkVersions" t-att-disabled="state.refreshing">
+                                <i class="fa fa-code-fork me-1"/>Versions
+                            </button>
+                            <button class="btn btn-outline-secondary" t-on-click="refresh" t-att-disabled="state.refreshing">
+                                <i class="fa fa-refresh me-1"/>Recharger
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Alert: Services Down -->
+                <div t-if="state.data.uptime_overview.down_count > 0" class="row mb-4">
+                    <div class="col-12">
+                        <div class="alert alert-danger d-flex align-items-center cursor-pointer" role="alert" t-on-click="openHealthIssues">
+                            <i class="fa fa-exclamation-triangle fa-2x me-3"/>
+                            <div class="flex-grow-1">
+                                <strong>Attention!</strong>
+                                <t t-esc="state.data.uptime_overview.down_count"/> service(s) actuellement en panne.
+                            </div>
+                            <i class="fa fa-chevron-right"/>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Uptime Overview -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <h5 class="text-uppercase text-muted mb-3">
+                            <i class="fa fa-signal me-2"/>Disponibilité (24h)
+                        </h5>
+                    </div>
+                    <div class="col-lg-3 col-md-6 mb-3">
+                        <div class="card h-100">
+                            <div class="card-body text-center">
+                                <h2 t-attf-class="mb-0 {{state.data.uptime_overview.uptime_pct >= 99.5 ? 'text-success' : state.data.uptime_overview.uptime_pct >= 95 ? 'text-warning' : 'text-danger'}}">
+                                    <t t-esc="state.data.uptime_overview.uptime_pct"/>%
+                                </h2>
+                                <small class="text-muted">Disponibilité globale</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 mb-3">
+                        <div class="card h-100">
+                            <div class="card-body text-center">
+                                <h2 class="text-primary mb-0">
+                                    <t t-esc="formatResponseTime(state.data.uptime_overview.avg_response_ms)"/>
+                                </h2>
+                                <small class="text-muted">Temps de réponse moyen</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 mb-3">
+                        <div t-attf-class="card h-100 cursor-pointer {{state.data.uptime_overview.down_count > 0 ? 'border-danger' : ''}}" t-on-click="openHealthIssues">
+                            <div class="card-body text-center">
+                                <h2 t-attf-class="mb-0 {{state.data.uptime_overview.down_count > 0 ? 'text-danger' : 'text-success'}}" t-esc="state.data.uptime_overview.down_count"/>
+                                <small class="text-muted">Services en panne</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 mb-3">
+                        <div class="card h-100 cursor-pointer" t-on-click="openHealthChecks">
+                            <div class="card-body text-center">
+                                <h2 class="text-muted mb-0" t-esc="state.data.uptime_overview.monitored_services"/>
+                                <small class="text-muted">Services surveillés</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Uptime by Software (grouped, expandable) -->
+                <div t-if="state.data.uptime_by_software.length > 0" class="row mb-4">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                                <h6 class="mb-0"><i class="fa fa-cubes me-2"/>Disponibilité par logiciel</h6>
+                                <span class="badge text-bg-secondary">
+                                    <t t-esc="state.data.uptime_by_software.length"/> logiciels ·
+                                    <t t-esc="state.data.uptime_by_service.length"/> services
+                                </span>
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="table-responsive">
+                                    <table class="table table-sm table-hover mb-0 align-middle">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th style="width: 28px;"/>
+                                                <th>Logiciel / Service</th>
+                                                <th>Client</th>
+                                                <th class="text-end">24h</th>
+                                                <th class="text-end">7j</th>
+                                                <th class="text-end">30j</th>
+                                                <th class="text-end">Stockage</th>
+                                                <th class="text-end">Temps rép.</th>
+                                                <th class="text-end">Vérif. (30j)</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <t t-foreach="state.data.uptime_by_software" t-as="grp" t-key="grp.software_id">
+                                                <!-- Group summary row (clickable) -->
+                                                <tr class="cursor-pointer table-group-divider"
+                                                    t-att-class="grp.has_issues ? 'table-warning' : ''"
+                                                    t-on-click="() => this.toggleSoftware(grp.software_id)">
+                                                    <td class="text-center text-muted">
+                                                        <i t-attf-class="fa {{isSoftwareExpanded(grp.software_id) ? 'fa-caret-down' : 'fa-caret-right'}}"/>
+                                                    </td>
+                                                    <td>
+                                                        <strong t-esc="grp.software_name"/>
+                                                        <span class="badge text-bg-light ms-2"
+                                                              t-esc="grp.service_count + ' svc'"/>
+                                                        <span t-if="grp.worst_status !== 'up'"
+                                                              t-att-class="'badge ms-1 ' + getStatusClass(grp.worst_status)"
+                                                              t-esc="getStatusLabel(grp.worst_status)"/>
+                                                    </td>
+                                                    <td class="text-muted small">
+                                                        <span t-if="grp.down_count > 0" class="text-danger me-2">
+                                                            <i class="fa fa-circle me-1"/><t t-esc="grp.down_count"/> en panne
+                                                        </span>
+                                                        <span t-if="grp.degraded_count > 0" class="text-warning me-2">
+                                                            <i class="fa fa-circle me-1"/><t t-esc="grp.degraded_count"/> dégradé
+                                                        </span>
+                                                        <span t-if="grp.up_count > 0" class="text-success">
+                                                            <i class="fa fa-circle me-1"/><t t-esc="grp.up_count"/> ok
+                                                        </span>
+                                                    </td>
+                                                    <td class="text-end">
+                                                        <span t-att-class="getUptimeClass(grp.min_uptime_24h)">
+                                                            <t t-esc="grp.min_uptime_24h"/>%
+                                                        </span>
+                                                    </td>
+                                                    <td class="text-end text-muted">—</td>
+                                                    <td class="text-end text-muted">—</td>
+                                                    <td class="text-end">
+                                                        <t t-if="grp.max_storage_pct > 0">
+                                                            <span t-att-class="grp.max_storage_pct >= 90 ? 'text-danger fw-bold' : grp.max_storage_pct >= 75 ? 'text-warning' : 'text-muted'">
+                                                                <t t-esc="grp.max_storage_pct"/>%
+                                                            </span>
+                                                        </t>
+                                                        <t t-else="">
+                                                            <span class="text-muted">-</span>
+                                                        </t>
+                                                    </td>
+                                                    <td class="text-end">
+                                                        <t t-esc="formatResponseTime(grp.max_avg_response_ms)"/>
+                                                    </td>
+                                                    <td class="text-end text-muted">—</td>
+                                                </tr>
+
+                                                <!-- Per-service detail rows (shown when expanded) -->
+                                                <t t-if="isSoftwareExpanded(grp.software_id)"
+                                                   t-foreach="grp.services" t-as="svc" t-key="svc.service_id">
+                                                    <tr class="cursor-pointer" t-on-click="() => this.openService(svc.service_id)">
+                                                        <td/>
+                                                        <td class="ps-4">
+                                                            <span t-att-class="'badge me-2 ' + getStatusClass(svc.current_status)"
+                                                                  t-esc="getStatusLabel(svc.current_status)"/>
+                                                            <span t-esc="svc.service_name"/>
+                                                            <small t-if="svc.service_code" class="text-muted ms-1">(<t t-esc="svc.service_code"/>)</small>
+                                                        </td>
+                                                        <td class="text-muted" t-esc="svc.partner_name"/>
+                                                        <td class="text-end">
+                                                            <span t-att-class="getUptimeClass(svc.uptime_24h)">
+                                                                <t t-esc="svc.uptime_24h"/>%
+                                                            </span>
+                                                        </td>
+                                                        <td class="text-end">
+                                                            <span t-att-class="getUptimeClass(svc.uptime_7d)">
+                                                                <t t-esc="svc.uptime_7d"/>%
+                                                            </span>
+                                                        </td>
+                                                        <td class="text-end">
+                                                            <span t-att-class="getUptimeClass(svc.uptime_30d)">
+                                                                <t t-esc="svc.uptime_30d"/>%
+                                                            </span>
+                                                        </td>
+                                                        <td class="text-end">
+                                                            <t t-if="svc.storage_quota_gb > 0">
+                                                                <span t-att-class="svc.storage_used_percent >= 90 ? 'text-danger fw-bold' : svc.storage_used_percent >= 75 ? 'text-warning' : ''">
+                                                                    <t t-esc="svc.storage_used_percent"/>%
+                                                                </span>
+                                                            </t>
+                                                            <t t-else="">
+                                                                <span class="text-muted">-</span>
+                                                            </t>
+                                                        </td>
+                                                        <td class="text-end">
+                                                            <t t-esc="formatResponseTime(svc.avg_response_ms)"/>
+                                                        </td>
+                                                        <td class="text-end text-muted" t-esc="svc.total_checks_30d"/>
+                                                    </tr>
+                                                </t>
+                                            </t>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Alerts Row -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <h5 class="text-uppercase text-muted mb-3">
+                            <i class="fa fa-exclamation-triangle me-2"/>Alertes
+                        </h5>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div t-attf-class="card h-100 cursor-pointer {{state.data.alerts.updates_available > 0 ? 'border-primary' : ''}}" t-on-click="openUpdates">
+                            <div class="card-body text-center">
+                                <h2 t-attf-class="mb-0 {{state.data.alerts.updates_available > 0 ? 'text-primary' : 'text-muted'}}" t-esc="state.data.alerts.updates_available"/>
+                                <small class="text-muted"><i class="fa fa-refresh me-1"/>Mises à jour</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div t-attf-class="card h-100 cursor-pointer {{state.data.alerts.storage_alerts > 0 ? 'border-warning' : ''}}" t-on-click="openStorageAlerts">
+                            <div class="card-body text-center">
+                                <h2 t-attf-class="mb-0 {{state.data.alerts.storage_alerts > 0 ? 'text-warning' : 'text-muted'}}" t-esc="state.data.alerts.storage_alerts"/>
+                                <small class="text-muted"><i class="fa fa-database me-1"/>Stockage</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div t-attf-class="card h-100 cursor-pointer {{state.data.alerts.health_issues > 0 ? 'border-danger' : ''}}" t-on-click="openHealthIssues">
+                            <div class="card-body text-center">
+                                <h2 t-attf-class="mb-0 {{state.data.alerts.health_issues > 0 ? 'text-danger' : 'text-muted'}}" t-esc="state.data.alerts.health_issues"/>
+                                <small class="text-muted"><i class="fa fa-heartbeat me-1"/>Santé</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Expiring Services Row -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <h5 class="text-uppercase text-muted mb-3">
+                            <i class="fa fa-clock-o me-2"/>Services expirant
+                        </h5>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div t-attf-class="card h-100 cursor-pointer {{state.data.expiring.expiring_30 > 0 ? 'border-danger' : ''}}" t-on-click="openExpiring30">
+                            <div class="card-body text-center">
+                                <h2 t-attf-class="mb-0 {{state.data.expiring.expiring_30 > 0 ? 'text-danger' : 'text-muted'}}" t-esc="state.data.expiring.expiring_30"/>
+                                <small class="text-muted">30 jours</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div t-attf-class="card h-100 cursor-pointer {{state.data.expiring.expiring_60 > 0 ? 'border-warning' : ''}}" t-on-click="openExpiring60">
+                            <div class="card-body text-center">
+                                <h2 t-attf-class="mb-0 {{state.data.expiring.expiring_60 > 0 ? 'text-warning' : 'text-muted'}}" t-esc="state.data.expiring.expiring_60"/>
+                                <small class="text-muted">60 jours</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div t-attf-class="card h-100 cursor-pointer {{state.data.expiring.expiring_90 > 0 ? 'border-info' : ''}}" t-on-click="openExpiring90">
+                            <div class="card-body text-center">
+                                <h2 t-attf-class="mb-0 {{state.data.expiring.expiring_90 > 0 ? 'text-info' : 'text-muted'}}" t-esc="state.data.expiring.expiring_90"/>
+                                <small class="text-muted">90 jours</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Maintenance + Backups Row -->
+                <div class="row mb-4">
+                    <!-- Maintenance -->
+                    <div class="col-md-6 mb-3">
+                        <div class="card h-100">
+                            <div class="card-header bg-light">
+                                <h6 class="mb-0"><i class="fa fa-wrench me-2"/>Maintenance</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between mb-2 cursor-pointer" t-on-click="openMaintenanceOverdue">
+                                    <span><i class="fa fa-exclamation-circle text-danger me-2"/>En retard</span>
+                                    <strong t-attf-class="{{state.data.maintenance.overdue > 0 ? 'text-danger' : 'text-success'}}" t-esc="state.data.maintenance.overdue"/>
+                                </div>
+                                <div class="d-flex justify-content-between mb-2 cursor-pointer" t-on-click="openMaintenanceDueWeek">
+                                    <span><i class="fa fa-calendar text-warning me-2"/>Cette semaine</span>
+                                    <strong t-attf-class="{{state.data.maintenance.due_week > 0 ? 'text-warning' : ''}}" t-esc="state.data.maintenance.due_week"/>
+                                </div>
+                                <div class="d-flex justify-content-between cursor-pointer" t-on-click="openMaintenanceDueMonth">
+                                    <span><i class="fa fa-calendar-o text-primary me-2"/>Ce mois-ci</span>
+                                    <strong t-esc="state.data.maintenance.due_month"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Backups -->
+                    <div class="col-md-6 mb-3">
+                        <div class="card h-100">
+                            <div class="card-header bg-light">
+                                <h6 class="mb-0"><i class="fa fa-database me-2"/>Sauvegardes</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between mb-2 cursor-pointer" t-on-click="openBackupRuns">
+                                    <span><i class="fa fa-clock-o me-2"/>Dernière exécution</span>
+                                    <span t-if="state.data.backups.last_run_date">
+                                        <span t-attf-class="badge {{state.data.backups.last_run_state === 'success' ? 'text-bg-success' : state.data.backups.last_run_state === 'partial' ? 'text-bg-warning' : 'text-bg-danger'}}"
+                                              t-esc="state.data.backups.last_run_state"/>
+                                    </span>
+                                    <span t-else="" class="text-muted">-</span>
+                                </div>
+                                <div class="d-flex justify-content-between mb-2 cursor-pointer" t-on-click="openBackupRuns">
+                                    <span><i class="fa fa-check-circle text-success me-2"/>Réussis</span>
+                                    <strong class="text-success" t-esc="state.data.backups.success_count"/>
+                                </div>
+                                <div class="d-flex justify-content-between cursor-pointer" t-on-click="openFailedBackups">
+                                    <span><i class="fa fa-times-circle text-danger me-2"/>Échoués</span>
+                                    <strong t-attf-class="{{state.data.backups.failed_count > 0 ? 'text-danger' : ''}}" t-esc="state.data.backups.failed_count"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Restic -->
+                    <div t-if="state.data.backups.restic_repo_count" class="col-md-6 mb-3">
+                        <div t-attf-class="card h-100 {{state.data.backups.restic_stale_count > 0 ? 'border-warning' : 'border-success'}}">
+                            <div class="card-header bg-light">
+                                <h6 class="mb-0"><i class="fa fa-snowflake-o me-2"/>Restic <small class="text-muted ms-1">dédup</small></h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between mb-2 cursor-pointer" t-on-click="openResticRepos">
+                                    <span><i class="fa fa-archive me-2"/>Dépôts actifs</span>
+                                    <strong t-esc="state.data.backups.restic_repo_count"/>
+                                </div>
+                                <div class="d-flex justify-content-between mb-2 cursor-pointer" t-on-click="openResticRepos">
+                                    <span><i class="fa fa-exclamation-triangle me-2"/>Périmés (>27h)</span>
+                                    <strong t-attf-class="{{state.data.backups.restic_stale_count > 0 ? 'text-warning' : 'text-muted'}}" t-esc="state.data.backups.restic_stale_count"/>
+                                </div>
+                                <div class="d-flex justify-content-between mb-2 cursor-pointer" t-on-click="openResticSnapshots">
+                                    <span><i class="fa fa-camera me-2"/>Snapshots 24h</span>
+                                    <strong t-esc="state.data.backups.restic_snapshots_24h"/>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <span><i class="fa fa-cloud me-2"/>Bucket S3</span>
+                                    <strong t-esc="state.data.backups.bucket_total_human"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Domains Row -->
+                <div t-if="state.data.domains" class="row mb-4">
+                    <div class="col-12">
+                        <h5 class="text-uppercase text-muted mb-3">
+                            <i class="fa fa-globe me-2"/>Domaines
+                        </h5>
+                    </div>
+                    <div class="col-lg-3 col-md-6 mb-3">
+                        <div class="card h-100 cursor-pointer" t-on-click="openDomains">
+                            <div class="card-body text-center">
+                                <h2 class="text-primary mb-0" t-esc="state.data.domains.total"/>
+                                <small class="text-muted">Total</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 mb-3">
+                        <div t-attf-class="card h-100 cursor-pointer {{state.data.domains.expiring_30 > 0 ? 'border-danger' : ''}}" t-on-click="openDomainsExpiring">
+                            <div class="card-body text-center">
+                                <h2 t-attf-class="mb-0 {{state.data.domains.expiring_30 > 0 ? 'text-danger' : 'text-muted'}}" t-esc="state.data.domains.expiring_30"/>
+                                <small class="text-muted">Expirant (30j)</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 mb-3">
+                        <div t-attf-class="card h-100 cursor-pointer {{state.data.domains.ssl_expiring > 0 ? 'border-warning' : ''}}" t-on-click="openSslExpiring">
+                            <div class="card-body text-center">
+                                <h2 t-attf-class="mb-0 {{state.data.domains.ssl_expiring > 0 ? 'text-warning' : 'text-muted'}}" t-esc="state.data.domains.ssl_expiring"/>
+                                <small class="text-muted">SSL expirant</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 mb-3">
+                        <div t-attf-class="card h-100 cursor-pointer {{state.data.domains.no_auto_renew > 0 ? 'border-info' : ''}}" t-on-click="openDomainsNoAutoRenew">
+                            <div class="card-body text-center">
+                                <h2 t-attf-class="mb-0 {{state.data.domains.no_auto_renew > 0 ? 'text-info' : 'text-muted'}}" t-esc="state.data.domains.no_auto_renew"/>
+                                <small class="text-muted">Sans renouvellement auto</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Security / Audit Row -->
+                <div t-if="state.data.security" class="row mb-4">
+                    <div class="col-12">
+                        <h5 class="text-uppercase text-muted mb-3">
+                            <i class="fa fa-shield me-2"/>Sécurité et audit
+                        </h5>
+                    </div>
+                    <div class="col-lg-3 col-md-6 mb-3">
+                        <div class="card h-100 cursor-pointer" t-on-click="openAuditLog24h">
+                            <div class="card-body text-center">
+                                <h2 class="text-primary mb-0" t-esc="state.data.security.audit_24h"/>
+                                <small class="text-muted">Audit (24h)</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 mb-3">
+                        <div class="card h-100 cursor-pointer" t-on-click="openAuditLog7d">
+                            <div class="card-body text-center">
+                                <h2 class="text-muted mb-0" t-esc="state.data.security.audit_7d"/>
+                                <small class="text-muted">Audit (7j)</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 mb-3">
+                        <div t-attf-class="card h-100 cursor-pointer {{state.data.security.critical_7d > 0 ? 'border-danger' : ''}}" t-on-click="openAuditCritical7d">
+                            <div class="card-body text-center">
+                                <h2 t-attf-class="mb-0 {{state.data.security.critical_7d > 0 ? 'text-danger' : 'text-muted'}}" t-esc="state.data.security.critical_7d"/>
+                                <small class="text-muted">Critiques (7j)</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 mb-3">
+                        <div t-attf-class="card h-100 cursor-pointer {{state.data.security.incidents_open > 0 ? 'border-warning' : ''}}" t-on-click="openSecurityEventsOpen">
+                            <div class="card-body text-center">
+                                <h2 t-attf-class="mb-0 {{state.data.security.incidents_open > 0 ? 'text-warning' : 'text-muted'}}" t-esc="state.data.security.incidents_open"/>
+                                <small class="text-muted">Incidents ouverts</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Services Row -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <h5 class="text-uppercase text-muted mb-3">
+                            <i class="fa fa-server me-2"/>Services
+                        </h5>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="card h-100 cursor-pointer border-success" t-on-click="openActiveServices">
+                            <div class="card-body text-center">
+                                <h2 class="text-success mb-0" t-esc="state.data.services.active"/>
+                                <small class="text-muted">Actifs</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="card h-100 cursor-pointer" t-on-click="openSuspendedServices">
+                            <div class="card-body text-center">
+                                <h2 t-attf-class="mb-0 {{state.data.services.suspended > 0 ? 'text-secondary' : 'text-muted'}}" t-esc="state.data.services.suspended"/>
+                                <small class="text-muted">Suspendus</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div t-attf-class="card h-100 cursor-pointer {{state.data.services.expired > 0 ? 'border-danger' : ''}}" t-on-click="openExpiredServices">
+                            <div class="card-body text-center">
+                                <h2 t-attf-class="mb-0 {{state.data.services.expired > 0 ? 'text-danger' : 'text-muted'}}" t-esc="state.data.services.expired"/>
+                                <small class="text-muted">Expirés</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </t>
+
+</templates>

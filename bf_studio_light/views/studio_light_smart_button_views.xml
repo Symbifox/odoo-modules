@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_studio_light_smart_button_list" model="ir.ui.view">
+        <field name="name">studio.light.smart.button.list</field>
+        <field name="model">studio.light.smart.button</field>
+        <field name="arch" type="xml">
+            <list string="Smart buttons">
+                <field name="name"/>
+                <field name="source_model_name"/>
+                <field name="target_model_name"/>
+                <field name="relation_field_id"/>
+                <field name="label"/>
+                <field name="active"/>
+                <field name="failed_count"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_studio_light_smart_button_form" model="ir.ui.view">
+        <field name="name">studio.light.smart.button.form</field>
+        <field name="model">studio.light.smart.button</field>
+        <field name="arch" type="xml">
+            <form string="Smart button">
+                <sheet>
+                    <group>
+                        <group string="Identity">
+                            <field name="name"/>
+                            <field name="active"/>
+                            <field name="sequence"/>
+                        </group>
+                        <group string="Status">
+                            <field name="failed_count"/>
+                            <field name="last_failure_message"/>
+                            <field name="view_injection_id"/>
+                            <field name="box_injection_id"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Where the button appears">
+                            <field name="source_model_id"
+                                   options="{'no_create': True, 'no_open': True}"/>
+                            <field name="source_model_name" invisible="1"/>
+                        </group>
+                        <group string="What it counts">
+                            <field name="target_model_id"
+                                   options="{'no_create': True, 'no_open': True}"/>
+                            <field name="target_model_name" invisible="1"/>
+                            <field name="relation_field_id"
+                                   options="{'no_create': True, 'no_open': True}"/>
+                        </group>
+                    </group>
+                    <group string="Appearance">
+                        <field name="label"/>
+                        <field name="icon"/>
+                        <field name="color"/>
+                        <field name="open_on_click"/>
+                    </group>
+                    <group string="Filtering (optional)">
+                        <field name="domain"
+                               placeholder="[('state', '=', 'active')]"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_studio_light_smart_button"
+            model="ir.actions.act_window">
+        <field name="name">Smart buttons</field>
+        <field name="res_model">studio.light.smart.button</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No smart buttons yet.</p>
+            <p>Smart buttons appear at the top of a record's form view and
+            show a live count of related records on another model.</p>
+        </field>
+    </record>
+
+</odoo>

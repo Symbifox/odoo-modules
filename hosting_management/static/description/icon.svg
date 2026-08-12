@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1d4ed8;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <!-- Background -->
+  <rect width="100" height="100" rx="15" fill="url(#bgGradient)"/>
+  <!-- Server/Cloud icon -->
+  <g fill="white">
+    <!-- Server box 1 -->
+    <rect x="20" y="25" width="60" height="15" rx="3"/>
+    <circle cx="70" cy="32.5" r="3" fill="#3b82f6"/>
+    <rect x="25" y="30" width="20" height="5" fill="#3b82f6" rx="1"/>
+    <!-- Server box 2 -->
+    <rect x="20" y="45" width="60" height="15" rx="3"/>
+    <circle cx="70" cy="52.5" r="3" fill="#3b82f6"/>
+    <rect x="25" y="50" width="15" height="5" fill="#3b82f6" rx="1"/>
+    <!-- Server box 3 -->
+    <rect x="20" y="65" width="60" height="15" rx="3"/>
+    <circle cx="70" cy="72.5" r="3" fill="#3b82f6"/>
+    <rect x="25" y="70" width="25" height="5" fill="#3b82f6" rx="1"/>
+  </g>
+</svg>

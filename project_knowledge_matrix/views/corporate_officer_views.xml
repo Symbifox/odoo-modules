@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Form View -->
+    <record id="corporate_officer_view_form" model="ir.ui.view">
+        <field name="name">corporate.officer.form</field>
+        <field name="model">corporate.officer</field>
+        <field name="arch" type="xml">
+            <form string="Dirigeant">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="partner_id" placeholder="Sélectionner un dirigeant..."/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Poste">
+                            <field name="title"/>
+                            <field name="title_custom" invisible="title != 'other'"
+                                   placeholder="Titre personnalisé..."/>
+                        </group>
+                        <group string="Nomination">
+                            <field name="appointment_date"/>
+                            <field name="end_date"/>
+                            <field name="appointment_resolution_id"/>
+                            <field name="is_active"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- List View -->
+    <record id="corporate_officer_view_list" model="ir.ui.view">
+        <field name="name">corporate.officer.list</field>
+        <field name="model">corporate.officer</field>
+        <field name="arch" type="xml">
+            <list string="Dirigeants"
+                  decoration-muted="not is_active"
+                  decoration-success="is_active">
+                <field name="partner_id"/>
+                <field name="title"/>
+                <field name="title_custom" optional="hide"/>
+                <field name="appointment_date"/>
+                <field name="end_date"/>
+                <field name="is_active" widget="boolean_toggle"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="corporate_officer_view_search" model="ir.ui.view">
+        <field name="name">corporate.officer.search</field>
+        <field name="model">corporate.officer</field>
+        <field name="arch" type="xml">
+            <search string="Rechercher des dirigeants">
+                <field name="partner_id"/>
+                <field name="title"/>
+                <separator/>
+                <filter string="Actifs" name="active_officers"
+                        domain="[('is_active', '=', True)]"/>
+                <filter string="Anciens" name="former_officers"
+                        domain="[('is_active', '=', False)]"/>
+                <separator/>
+                <group expand="0" string="Regrouper par">
+                    <filter string="Titre" name="group_title"
+                            context="{'group_by': 'title'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="corporate_officer_action" model="ir.actions.act_window">
+        <field name="name">Registre des dirigeants</field>
+        <field name="res_model">corporate.officer</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="corporate_officer_view_search"/>
+        <field name="context">{'search_default_active_officers': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Ajouter votre premier dirigeant
+            </p>
+        </field>
+    </record>
+
+</odoo>

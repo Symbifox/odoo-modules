@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- List View -->
+    <record id="hosting_audit_log_view_list" model="ir.ui.view">
+        <field name="name">hosting.audit.log.list</field>
+        <field name="model">hosting.audit.log</field>
+        <field name="arch" type="xml">
+            <list create="0" edit="0" delete="0" decoration-danger="severity == 'critical'" decoration-warning="severity == 'warning'">
+                <field name="event_date"/>
+                <field name="user_id" widget="many2one_avatar_user"/>
+                <field name="action_type"/>
+                <field name="category"/>
+                <field name="res_name"/>
+                <field name="service_id" optional="show"/>
+                <field name="server_id" optional="hide"/>
+                <field name="field_name" optional="hide"/>
+                <field name="description" optional="show"/>
+                <field name="severity" widget="badge"
+                       decoration-danger="severity == 'critical'"
+                       decoration-warning="severity == 'warning'"
+                       decoration-info="severity == 'info'"/>
+                <field name="status" widget="badge"
+                       decoration-success="status == 'success'"
+                       decoration-danger="status == 'failure'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="hosting_audit_log_view_form" model="ir.ui.view">
+        <field name="name">hosting.audit.log.form</field>
+        <field name="model">hosting.audit.log</field>
+        <field name="arch" type="xml">
+            <form create="0" edit="0" delete="0">
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="display_name"/></h1>
+                    </div>
+                    <group>
+                        <group string="Événement">
+                            <field name="event_date"/>
+                            <field name="user_id" widget="many2one_avatar_user"/>
+                            <field name="action_type"/>
+                            <field name="category"/>
+                            <field name="severity"/>
+                            <field name="status"/>
+                        </group>
+                        <group string="Cible">
+                            <field name="res_model"/>
+                            <field name="res_id"/>
+                            <field name="res_name"/>
+                            <field name="service_id"/>
+                            <field name="server_id"/>
+                            <field name="partner_id"/>
+                        </group>
+                    </group>
+                    <group string="Détails du changement">
+                        <field name="field_name"/>
+                        <field name="old_value"/>
+                        <field name="new_value"/>
+                    </group>
+                    <group string="Description">
+                        <field name="description" nolabel="1" colspan="2"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="hosting_audit_log_view_search" model="ir.ui.view">
+        <field name="name">hosting.audit.log.search</field>
+        <field name="model">hosting.audit.log</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="description"/>
+                <field name="user_id"/>
+                <field name="res_name"/>
+                <field name="service_id"/>
+                <field name="server_id"/>
+                <separator/>
+                <filter name="filter_today" string="Aujourd'hui"
+                        domain="[('event_date', '>=', datetime.datetime.combine(context_today(), datetime.time(0,0,0)))]"/>
+                <filter name="filter_week" string="7 derniers jours"
+                        domain="[('event_date', '>=', (context_today() - datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
+                <filter name="filter_month" string="30 derniers jours"
+                        domain="[('event_date', '>=', (context_today() - datetime.timedelta(days=30)).strftime('%Y-%m-%d'))]"/>
+                <separator/>
+                <filter name="filter_critical" string="Critiques"
+                        domain="[('severity', '=', 'critical')]"/>
+                <filter name="filter_warning" string="Avertissements"
+                        domain="[('severity', '=', 'warning')]"/>
+                <separator/>
+                <filter name="filter_state_change" string="Changements d'état"
+                        domain="[('action_type', '=', 'state_change')]"/>
+                <filter name="filter_config" string="Configuration"
+                        domain="[('category', '=', 'config')]"/>
+                <filter name="filter_security" string="Sécurité"
+                        domain="[('category', '=', 'security')]"/>
+                <filter name="filter_ops" string="Opérations"
+                        domain="[('category', '=', 'ops')]"/>
+                <separator/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="group_by_user" string="Utilisateur"
+                            context="{'group_by': 'user_id'}"/>
+                    <filter name="group_by_action" string="Type d'action"
+                            context="{'group_by': 'action_type'}"/>
+                    <filter name="group_by_category" string="Catégorie"
+                            context="{'group_by': 'category'}"/>
+                    <filter name="group_by_severity" string="Sévérité"
+                            context="{'group_by': 'severity'}"/>
+                    <filter name="group_by_service" string="Service"
+                            context="{'group_by': 'service_id'}"/>
+                    <filter name="group_by_date" string="Date"
+                            context="{'group_by': 'event_date:day'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="hosting_audit_log_action" model="ir.actions.act_window">
+        <field name="name">Journal d'audit</field>
+        <field name="res_model">hosting.audit.log</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_filter_week': 1}</field>
+    </record>
+
+</odoo>

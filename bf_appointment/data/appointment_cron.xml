@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="ir_cron_appointment_emails" model="ir.cron">
+            <field name="name">Rendez-vous : Envoi des courriels planifi&#233;s</field>
+            <field name="model_id" ref="resource_booking.model_resource_booking"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_send_appointment_emails()</field>
+            <field name="interval_number">15</field>
+            <field name="interval_type">minutes</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <!-- Safety net: unlink calendar.event records that were left behind by
+             a cancelled or deleted resource.booking. action_cancel was patched
+             to unlink the linked meeting, but a reschedule, an admin manual
+             cancel, or any code path bypassing action_cancel could still
+             leave an orphan blocking future slots. -->
+        <record id="ir_cron_appointment_orphan_cleanup" model="ir.cron">
+            <field name="name">Rendez-vous : Nettoyage des calendar.event orphelins</field>
+            <field name="model_id" ref="calendar.model_calendar_event"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_cleanup_orphan_booking_events()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="active" eval="True"/>
+        </record>
+    </data>
+</odoo>

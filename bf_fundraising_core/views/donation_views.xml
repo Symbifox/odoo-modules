@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+<odoo>
+    <!-- Add Appeal / Package next to Campaign on the gift form -->
+    <record id="donation_form_bf" model="ir.ui.view">
+        <field name="name">donation.form.bf</field>
+        <field name="model">donation.donation</field>
+        <field name="inherit_id" ref="donation.donation_form" />
+        <field name="arch" type="xml">
+            <field name="campaign_id" position="after">
+                <field name="appeal_id" readonly="state == 'done'" />
+                <field name="package_id" readonly="state == 'done'" />
+            </field>
+        </field>
+    </record>
+
+    <!-- Add the Fund column on gift lines (drives analytic distribution) -->
+    <record id="donation_line_tree_bf" model="ir.ui.view">
+        <field name="name">donation.line.list.bf</field>
+        <field name="model">donation.line</field>
+        <field name="inherit_id" ref="donation.donation_line_tree" />
+        <field name="arch" type="xml">
+            <field name="product_id" position="after">
+                <field name="fund_id" />
+            </field>
+        </field>
+    </record>
+
+    <!-- Add Appeal / Package search + group-by axes on the gift search -->
+    <record id="donation_search_bf" model="ir.ui.view">
+        <field name="name">donation.search.bf</field>
+        <field name="model">donation.donation</field>
+        <field name="inherit_id" ref="donation.donation_search" />
+        <field name="arch" type="xml">
+            <field name="partner_id" position="after">
+                <field name="campaign_id" />
+                <field name="appeal_id" />
+                <field name="package_id" />
+            </field>
+            <filter name="commercial_partner_groupby" position="after">
+                <filter
+                    name="campaign_groupby"
+                    string="Campagne"
+                    context="{'group_by': 'campaign_id'}"
+                />
+                <filter
+                    name="appeal_groupby"
+                    string="Sollicitation"
+                    context="{'group_by': 'appeal_id'}"
+                />
+            </filter>
+        </field>
+    </record>
+</odoo>

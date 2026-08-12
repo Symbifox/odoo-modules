@@ -1,0 +1,2510 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* privacy_consent
+#
+# Translators:
+# Example Inc. <info@example.com>, 2026
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-07 00:00+0000\n"
+"PO-Revision-Date: 2026-02-07 00:00+0000\n"
+"Last-Translator: Example Inc. <info@example.com>\n"
+"Language-Team: French (Canada) (https://www.transifex.com/odoo/teams/)\n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: privacy_consent
+#: model:ir.model,name:privacy_consent.model_privacy_purpose
+msgid "Privacy Consent Purpose"
+msgstr "Finalité de consentement"
+
+#. module: privacy_consent
+#: model:ir.model,name:privacy_consent.model_privacy_notice
+msgid "Privacy Consent Notice Template"
+msgstr "Modèle d'avis de consentement"
+
+#. module: privacy_consent
+#: model:ir.model,name:privacy_consent.model_privacy_notice_version
+msgid "Privacy Notice Version"
+msgstr "Version d'avis de consentement"
+
+#. module: privacy_consent
+#: model:ir.model,name:privacy_consent.model_privacy_consent
+msgid "Privacy Consent Record"
+msgstr "Enregistrement de consentement"
+
+#. module: privacy_consent
+#: model:ir.model,name:privacy_consent.model_privacy_consent_evidence
+msgid "Privacy Consent Evidence"
+msgstr "Preuve de consentement"
+
+#. module: privacy_consent
+#: model:ir.model,name:privacy_consent.model_privacy_contact_preference
+msgid "Privacy Contact Preferences"
+msgstr "Préférences de contact"
+
+#. module: privacy_consent
+#: model:ir.model,name:privacy_consent.model_privacy_consent_request_wizard
+msgid "Request Consent Wizard"
+msgstr "Assistant de demande de consentement"
+
+#. module: privacy_consent
+#: model:ir.model,name:privacy_consent.model_privacy_consent_withdraw_wizard
+msgid "Withdraw Consent Wizard"
+msgstr "Assistant de retrait de consentement"
+
+#. module: privacy_consent
+#: model:ir.module.category,name:privacy_consent.module_privacy_category
+msgid "Privacy (Loi 25)"
+msgstr "Vie privée (Loi 25)"
+
+#. module: privacy_consent
+#: model:res.groups,name:privacy_consent.group_privacy_user
+msgid "Privacy User"
+msgstr "Utilisateur Vie privée"
+
+#. module: privacy_consent
+#: model:res.groups,name:privacy_consent.group_privacy_manager
+msgid "Privacy Manager"
+msgstr "Gestionnaire Vie privée"
+
+#. module: privacy_consent
+#: model:res.groups,name:privacy_consent.group_privacy_officer
+msgid "Privacy Officer"
+msgstr "Responsable de la vie privée"
+
+#. module: privacy_consent
+#: model:res.groups,comment:privacy_consent.group_privacy_user
+msgid "Can view consent records and create new ones."
+msgstr ""
+"Peut consulter les enregistrements de consentement et en créer de nouveaux."
+
+#. module: privacy_consent
+#: model:res.groups,comment:privacy_consent.group_privacy_manager
+msgid "Full CRUD on all privacy records. Can configure purposes and notices."
+msgstr ""
+"Accès complet à tous les enregistrements. Peut configurer les finalités et "
+"les avis."
+
+#. module: privacy_consent
+#: model:res.groups,comment:privacy_consent.group_privacy_officer
+msgid "Admin access. Can export data and manage all configuration."
+msgstr ""
+"Accès administrateur. Peut exporter les données et gérer toute la "
+"configuration."
+
+#. module: privacy_consent
+#: model:ir.ui.menu,name:privacy_consent.menu_privacy_root
+msgid "Privacy"
+msgstr "Vie privée"
+
+#. module: privacy_consent
+#: model:ir.ui.menu,name:privacy_consent.menu_privacy_operations
+msgid "Operations"
+msgstr "Opérations"
+
+#. module: privacy_consent
+#: model:ir.ui.menu,name:privacy_consent.menu_privacy_consents
+msgid "Consents"
+msgstr "Consentements"
+
+#. module: privacy_consent
+#: model:ir.ui.menu,name:privacy_consent.menu_privacy_pending
+msgid "Pending Requests"
+msgstr "Demandes en attente"
+
+#. module: privacy_consent
+#: model:ir.ui.menu,name:privacy_consent.menu_privacy_config
+msgid "Configuration"
+msgstr "Configuration"
+
+#. module: privacy_consent
+#: model:ir.ui.menu,name:privacy_consent.menu_privacy_purposes
+msgid "Purposes"
+msgstr "Finalités"
+
+#. module: privacy_consent
+#: model:ir.ui.menu,name:privacy_consent.menu_privacy_notices
+msgid "Notices"
+msgstr "Avis"
+
+#. module: privacy_consent
+#: model:ir.ui.menu,name:privacy_consent.menu_privacy_preferences
+msgid "Contact Preferences"
+msgstr "Préférences de contact"
+
+#. module: privacy_consent
+#: model:ir.actions.act_window,name:privacy_consent.action_privacy_consent_request_wizard
+msgid "Request Consent"
+msgstr "Demander un consentement"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.privacy_purpose_form_view
+msgid "Privacy Purpose"
+msgstr "Finalité"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_purpose__code
+msgid "Code"
+msgstr "Code"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_purpose__name
+msgid "Name"
+msgstr "Nom"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_purpose__plain_language_summary
+msgid "Plain Language Summary"
+msgstr "Résumé en langage clair"
+
+#. module: privacy_consent
+#: model:ir.model.fields,help:privacy_consent.field_privacy_purpose__plain_language_summary
+msgid "Clear explanation of the purpose in plain language (Loi 25 requirement)"
+msgstr "Explication claire de la finalité en langage simple (exigence Loi 25)"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_purpose__requires_consent
+msgid "Requires Consent"
+msgstr "Consentement requis"
+
+#. module: privacy_consent
+#: model:ir.model.fields,help:privacy_consent.field_privacy_purpose__requires_consent
+msgid "If checked, explicit consent is required for this purpose"
+msgstr "Si coché, un consentement explicite est requis pour cette finalité"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_purpose__requires_express_opt_in
+msgid "Requires Express Opt-In"
+msgstr "Opt-in express requis"
+
+#. module: privacy_consent
+#: model:ir.model.fields,help:privacy_consent.field_privacy_purpose__requires_express_opt_in
+msgid "If checked, requires explicit affirmative consent (not implied)"
+msgstr ""
+"Si coché, nécessite un consentement affirmatif explicite (non implicite)"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_purpose__default_validity_days
+msgid "Default Validity (Days)"
+msgstr "Validité par défaut (jours)"
+
+#. module: privacy_consent
+#: model:ir.model.fields,help:privacy_consent.field_privacy_purpose__default_validity_days
+msgid "Number of days consent remains valid (0 = no expiration)"
+msgstr ""
+"Nombre de jours pendant lesquels le consentement reste valide (0 = sans "
+"expiration)"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_purpose__channel_scope
+msgid "Channel Scope"
+msgstr "Portée du canal"
+
+#. module: privacy_consent
+#: model:ir.model.fields,help:privacy_consent.field_privacy_purpose__channel_scope
+msgid "Which communication channel this purpose applies to"
+msgstr "À quel canal de communication cette finalité s'applique"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_purpose__context_scope
+msgid "Context Scope"
+msgstr "Portée du contexte"
+
+#. module: privacy_consent
+#: model:ir.model.fields,help:privacy_consent.field_privacy_purpose__context_scope
+msgid "In which context this purpose is typically used"
+msgstr "Dans quel contexte cette finalité est généralement utilisée"
+
+#. module: privacy_consent
+#: model:ir.model.fields.selection,name:privacy_consent.selection__privacy_purpose__channel_scope__email
+msgid "Email"
+msgstr "Courriel"
+
+#. module: privacy_consent
+#: model:ir.model.fields.selection,name:privacy_consent.selection__privacy_purpose__channel_scope__sms
+msgid "SMS"
+msgstr "SMS"
+
+#. module: privacy_consent
+#: model:ir.model.fields.selection,name:privacy_consent.selection__privacy_purpose__channel_scope__phone
+msgid "Phone"
+msgstr "Téléphone"
+
+#. module: privacy_consent
+#: model:ir.model.fields.selection,name:privacy_consent.selection__privacy_purpose__channel_scope__video
+msgid "Video"
+msgstr "Vidéo"
+
+#. module: privacy_consent
+#: model:ir.model.fields.selection,name:privacy_consent.selection__privacy_purpose__channel_scope__in_person
+msgid "In Person"
+msgstr "En personne"
+
+#. module: privacy_consent
+#: model:ir.model.fields.selection,name:privacy_consent.selection__privacy_purpose__channel_scope__all
+msgid "All Channels"
+msgstr "Tous les canaux"
+
+#. module: privacy_consent
+#: model:ir.model.fields.selection,name:privacy_consent.selection__privacy_purpose__context_scope__project
+msgid "Project"
+msgstr "Projet"
+
+#. module: privacy_consent
+#: model:ir.model.fields.selection,name:privacy_consent.selection__privacy_purpose__context_scope__marketing
+msgid "Marketing"
+msgstr "Marketing"
+
+#. module: privacy_consent
+#: model:ir.model.fields.selection,name:privacy_consent.selection__privacy_purpose__context_scope__meeting
+msgid "Meeting"
+msgstr "Réunion"
+
+#. module: privacy_consent
+#: model:ir.model.fields.selection,name:privacy_consent.selection__privacy_purpose__context_scope__crm
+msgid "Sales/CRM"
+msgstr "Ventes/CRM"
+
+#. module: privacy_consent
+#: model:ir.model.fields.selection,name:privacy_consent.selection__privacy_purpose__context_scope__general
+msgid "General"
+msgstr "Général"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.privacy_purpose_form_view
+msgid "Identification"
+msgstr "Identification"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.privacy_purpose_form_view
+msgid "Requirements"
+msgstr "Exigences"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.privacy_purpose_form_view
+msgid "Scope"
+msgstr "Portée"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.privacy_purpose_form_view
+msgid "Company"
+msgstr "Société"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_notice__purpose_id
+msgid "Purpose"
+msgstr "Finalité"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_notice__body_fr
+msgid "Content (French)"
+msgstr "Contenu (français)"
+
+#. module: privacy_consent
+#: model:ir.model.fields,help:privacy_consent.field_privacy_notice__body_fr
+msgid "Consent notice text in French"
+msgstr "Texte de l'avis de consentement en français"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_notice__body_en
+msgid "Content (English)"
+msgstr "Contenu (anglais)"
+
+#. module: privacy_consent
+#: model:ir.model.fields,help:privacy_consent.field_privacy_notice__body_en
+msgid "Consent notice text in English"
+msgstr "Texte de l'avis de consentement en anglais"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_notice__current_version_id
+msgid "Current Version"
+msgstr "Version actuelle"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_notice__version_count
+msgid "Version Count"
+msgstr "Nombre de versions"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.privacy_notice_form_view
+msgid "Versions"
+msgstr "Versions"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.privacy_notice_form_view
+msgid "French Content"
+msgstr "Contenu français"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.privacy_notice_form_view
+msgid "English Content"
+msgstr "Contenu anglais"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.privacy_notice_form_view
+msgid "Create New Version"
+msgstr "Créer une nouvelle version"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_notice_version__notice_id
+msgid "Notice"
+msgstr "Avis"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_notice_version__version
+msgid "Version"
+msgstr "Version"
+
+#. module: privacy_consent
+#: model:ir.model.fields,help:privacy_consent.field_privacy_notice_version__version
+msgid "Version number (e.g., '1.0', '1.1', '2.0')"
+msgstr "Numéro de version (ex. : « 1.0 », « 1.1 », « 2.0 »)"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_notice_version__effective_date
+msgid "Effective Date"
+msgstr "Date d'entrée en vigueur"
+
+#. module: privacy_consent
+#: model:ir.model.fields,help:privacy_consent.field_privacy_notice_version__effective_date
+msgid "Date from which this version becomes effective"
+msgstr "Date à partir de laquelle cette version entre en vigueur"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_notice_version__body
+msgid "Content"
+msgstr "Contenu"
+
+#. module: privacy_consent
+#: model:ir.model.fields,help:privacy_consent.field_privacy_notice_version__body
+msgid "Exact content shown at consent time (immutable snapshot)"
+msgstr "Contenu exact présenté au moment du consentement (instantané immuable)"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_notice_version__hash
+msgid "Content Hash"
+msgstr "Empreinte du contenu"
+
+#. module: privacy_consent
+#: model:ir.model.fields,help:privacy_consent.field_privacy_notice_version__hash
+msgid "SHA256 hash of the content for integrity verification"
+msgstr "Empreinte SHA256 du contenu pour vérification d'intégrité"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_notice_version__created_by_id
+msgid "Created By"
+msgstr "Créé par"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_notice_version__consent_count
+msgid "Consent Count"
+msgstr "Nombre de consentements"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_consent__subject_partner_id
+msgid "Subject"
+msgstr "Personne concernée"
+
+#. module: privacy_consent
+#: model:ir.model.fields,help:privacy_consent.field_privacy_consent__subject_partner_id
+msgid "The person whose consent is being tracked"
+msgstr "La personne dont le consentement est suivi"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_consent__given_by_partner_id
+msgid "Given By"
+msgstr "Donné par"
+
+#. module: privacy_consent
+#: model:ir.model.fields,help:privacy_consent.field_privacy_consent__given_by_partner_id
+msgid ""
+"For minors or representatives: who gave consent on behalf of the subject"
+msgstr ""
+"Pour les mineurs ou représentants : qui a donné le consentement au nom de la "
+"personne concernée"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_consent__is_minor
+msgid "Is Minor"
+msgstr "Est mineur"
+
+#. module: privacy_consent
+#: model:ir.model.fields,help:privacy_consent.field_privacy_consent__is_minor
+msgid "Check if the subject is under 14 years old (Loi 25 special rules apply)"
+msgstr "Cocher si la personne a moins de 14 ans (règles spéciales Loi 25)"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_consent__notice_version_id
+msgid "Notice Version"
+msgstr "Version de l'avis"
+
+#. module: privacy_consent
+#: model:ir.model.fields,help:privacy_consent.field_privacy_consent__notice_version_id
+msgid "The exact version of the notice shown at consent time"
+msgstr "La version exacte de l'avis présenté au moment du consentement"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_consent__status
+msgid "Status"
+msgstr "Statut"
+
+#. module: privacy_consent
+#: model:ir.model.fields.selection,name:privacy_consent.selection__privacy_consent__status__draft
+msgid "Draft"
+msgstr "Brouillon"
+
+#. module: privacy_consent
+#: model:ir.model.fields.selection,name:privacy_consent.selection__privacy_consent__status__pending
+msgid "Pending"
+msgstr "En attente"
+
+#. module: privacy_consent
+#: model:ir.model.fields.selection,name:privacy_consent.selection__privacy_consent__status__granted
+msgid "Granted"
+msgstr "Accordé"
+
+#. module: privacy_consent
+#: model:ir.model.fields.selection,name:privacy_consent.selection__privacy_consent__status__refused
+msgid "Refused"
+msgstr "Refusé"
+
+#. module: privacy_consent
+#: model:ir.model.fields.selection,name:privacy_consent.selection__privacy_consent__status__withdrawn
+msgid "Withdrawn"
+msgstr "Retiré"
+
+#. module: privacy_consent
+#: model:ir.model.fields.selection,name:privacy_consent.selection__privacy_consent__status__expired
+msgid "Expired"
+msgstr "Expiré"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_consent__requested_at
+msgid "Requested At"
+msgstr "Demandé le"
+
+#. module: privacy_consent
+#: model:ir.model.fields,help:privacy_consent.field_privacy_consent__requested_at
+msgid "When the consent request was sent"
+msgstr "Quand la demande de consentement a été envoyée"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_consent__granted_at
+msgid "Granted At"
+msgstr "Accordé le"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_consent__refused_at
+msgid "Refused At"
+msgstr "Refusé le"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_consent__withdrawn_at
+msgid "Withdrawn At"
+msgstr "Retiré le"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_consent__expires_at
+msgid "Expires At"
+msgstr "Expire le"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_consent__collection_method
+msgid "Collection Method"
+msgstr "Méthode de collecte"
+
+#. module: privacy_consent
+#: model:ir.model.fields.selection,name:privacy_consent.selection__privacy_consent__collection_method__portal
+msgid "Portal"
+msgstr "Portail"
+
+#. module: privacy_consent
+#: model:ir.model.fields.selection,name:privacy_consent.selection__privacy_consent__collection_method__signature
+msgid "Digital Signature"
+msgstr "Signature numérique"
+
+#. module: privacy_consent
+#: model:ir.model.fields.selection,name:privacy_consent.selection__privacy_consent__collection_method__verbal
+msgid "Verbal"
+msgstr "Verbal"
+
+#. module: privacy_consent
+#: model:ir.model.fields.selection,name:privacy_consent.selection__privacy_consent__collection_method__written
+msgid "Written Form"
+msgstr "Formulaire écrit"
+
+#. module: privacy_consent
+#: model:ir.model.fields.selection,name:privacy_consent.selection__privacy_consent__collection_method__import
+msgid "Imported"
+msgstr "Importé"
+
+#. module: privacy_consent
+#: model:ir.model.fields,help:privacy_consent.field_privacy_consent__project_id
+msgid "Project this consent is specifically linked to"
+msgstr "Projet auquel ce consentement est spécifiquement lié"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_consent__context_ref
+msgid "Context Reference"
+msgstr "Référence de contexte"
+
+#. module: privacy_consent
+#: model:ir.model.fields,help:privacy_consent.field_privacy_consent__context_ref
+msgid "Optional link to related record (project, contact)"
+msgstr "Lien optionnel vers un enregistrement connexe (projet, contact)"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_consent__notes
+msgid "Notes"
+msgstr "Notes"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_consent__withdrawal_reason
+msgid "Withdrawal Reason"
+msgstr "Motif de retrait"
+
+#. module: privacy_consent
+#: model:ir.model.fields,help:privacy_consent.field_privacy_consent__withdrawal_reason
+msgid "Reason provided when consent was withdrawn"
+msgstr "Raison fournie lors du retrait du consentement"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_consent__evidence_ids
+msgid "Evidence"
+msgstr "Preuves"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_consent__evidence_count
+msgid "Evidence Count"
+msgstr "Nombre de preuves"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.privacy_consent_form_view
+msgid "Send Request"
+msgstr "Envoyer la demande"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.privacy_consent_form_view
+msgid "Grant"
+msgstr "Accorder"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.privacy_consent_form_view
+msgid "Refuse"
+msgstr "Refuser"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.privacy_consent_form_view
+msgid "Withdraw"
+msgstr "Retirer"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.privacy_consent_form_view
+msgid "Reset to Draft"
+msgstr "Remettre en brouillon"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.privacy_consent_form_view
+msgid "Consent Details"
+msgstr "Détails du consentement"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.privacy_consent_form_view
+msgid "Context"
+msgstr "Contexte"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.privacy_consent_form_view
+msgid "Representative (for minors)"
+msgstr "Représentant (pour mineurs)"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.privacy_consent_form_view
+msgid "Timestamps"
+msgstr "Horodatages"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_consent_evidence__consent_id
+msgid "Consent"
+msgstr "Consentement"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_consent_evidence__attachment_file
+msgid "File"
+msgstr "Fichier"
+
+#. module: privacy_consent
+#: model:ir.model.fields,help:privacy_consent.field_privacy_consent_evidence__attachment_file
+msgid "PDF, screenshot, or other proof document"
+msgstr "PDF, capture d'écran ou autre document de preuve"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_consent_evidence__attachment_filename
+msgid "File Name"
+msgstr "Nom du fichier"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_consent_evidence__evidence_type
+msgid "Evidence Type"
+msgstr "Type de preuve"
+
+#. module: privacy_consent
+#: model:ir.model.fields.selection,name:privacy_consent.selection__privacy_consent_evidence__evidence_type__pdf_signed
+msgid "Signed PDF"
+msgstr "PDF signé"
+
+#. module: privacy_consent
+#: model:ir.model.fields.selection,name:privacy_consent.selection__privacy_consent_evidence__evidence_type__screenshot
+msgid "Screenshot"
+msgstr "Capture d'écran"
+
+#. module: privacy_consent
+#: model:ir.model.fields.selection,name:privacy_consent.selection__privacy_consent_evidence__evidence_type__document
+msgid "Document"
+msgstr "Document"
+
+#. module: privacy_consent
+#: model:ir.model.fields.selection,name:privacy_consent.selection__privacy_consent_evidence__evidence_type__verbal_note
+msgid "Verbal Confirmation Note"
+msgstr "Note de confirmation verbale"
+
+#. module: privacy_consent
+#: model:ir.model.fields.selection,name:privacy_consent.selection__privacy_consent_evidence__evidence_type__email
+msgid "Email Confirmation"
+msgstr "Confirmation par courriel"
+
+#. module: privacy_consent
+#: model:ir.model.fields.selection,name:privacy_consent.selection__privacy_consent_evidence__evidence_type__portal_log
+msgid "Portal Activity Log"
+msgstr "Journal d'activité du portail"
+
+#. module: privacy_consent
+#: model:ir.model.fields.selection,name:privacy_consent.selection__privacy_consent_evidence__evidence_type__other
+msgid "Other"
+msgstr "Autre"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_consent_evidence__note
+msgid "Note"
+msgstr "Note"
+
+#. module: privacy_consent
+#: model:ir.model.fields,help:privacy_consent.field_privacy_consent_evidence__note
+msgid "Description or notes about this evidence"
+msgstr "Description ou notes concernant cette preuve"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_consent_evidence__collected_by_user_id
+msgid "Collected By"
+msgstr "Collecté par"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_consent_evidence__collected_at
+msgid "Collected At"
+msgstr "Collecté le"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_consent_evidence__ip_address
+msgid "IP Address"
+msgstr "Adresse IP"
+
+#. module: privacy_consent
+#: model:ir.model.fields,help:privacy_consent.field_privacy_consent_evidence__ip_address
+msgid "IP address when consent was given via portal"
+msgstr "Adresse IP lors du consentement donné via le portail"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_consent_evidence__user_agent
+msgid "User Agent"
+msgstr "Agent utilisateur"
+
+#. module: privacy_consent
+#: model:ir.model.fields,help:privacy_consent.field_privacy_consent_evidence__user_agent
+msgid "Browser user agent when consent was given via portal"
+msgstr ""
+"Agent utilisateur du navigateur lors du consentement donné via le portail"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.privacy_consent_evidence_form_view
+msgid "Collection Info"
+msgstr "Informations de collecte"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.privacy_consent_evidence_form_view
+msgid "Technical Metadata"
+msgstr "Métadonnées techniques"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_contact_preference__partner_id
+msgid "Contact"
+msgstr "Contact"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_contact_preference__allow_service_email
+msgid "Allow Service Emails"
+msgstr "Autoriser les courriels de service"
+
+#. module: privacy_consent
+#: model:ir.model.fields,help:privacy_consent.field_privacy_contact_preference__allow_service_email
+msgid "Allow essential service-related communications"
+msgstr "Autoriser les communications essentielles liées au service"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_contact_preference__allow_marketing_email
+msgid "Allow Marketing Emails"
+msgstr "Autoriser les courriels marketing"
+
+#. module: privacy_consent
+#: model:ir.model.fields,help:privacy_consent.field_privacy_contact_preference__allow_marketing_email
+msgid "Allow promotional and marketing communications"
+msgstr "Autoriser les communications promotionnelles et marketing"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_contact_preference__allow_phone
+msgid "Allow Phone Calls"
+msgstr "Autoriser les appels téléphoniques"
+
+#. module: privacy_consent
+#: model:ir.model.fields,help:privacy_consent.field_privacy_contact_preference__allow_phone
+msgid "Allow phone contact"
+msgstr "Autoriser le contact téléphonique"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_contact_preference__allow_sms
+msgid "Allow SMS"
+msgstr "Autoriser les SMS"
+
+#. module: privacy_consent
+#: model:ir.model.fields,help:privacy_consent.field_privacy_contact_preference__allow_sms
+msgid "Allow SMS text messages"
+msgstr "Autoriser les messages texte SMS"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_contact_preference__do_not_contact
+msgid "Do Not Contact"
+msgstr "Ne pas contacter"
+
+#. module: privacy_consent
+#: model:ir.model.fields,help:privacy_consent.field_privacy_contact_preference__do_not_contact
+msgid "Master switch to disable all contact (overrides individual settings)"
+msgstr ""
+"Interrupteur principal pour désactiver tout contact (remplace les paramètres "
+"individuels)"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_contact_preference__preferred_language
+msgid "Preferred Language"
+msgstr "Langue préférée"
+
+#. module: privacy_consent
+#: model:ir.model.fields.selection,name:privacy_consent.selection__privacy_contact_preference__preferred_language__fr_CA
+msgid "French (Canada)"
+msgstr "Français (Canada)"
+
+#. module: privacy_consent
+#: model:ir.model.fields.selection,name:privacy_consent.selection__privacy_contact_preference__preferred_language__en_CA
+msgid "English (Canada)"
+msgstr "Anglais (Canada)"
+
+#. module: privacy_consent
+#: model:ir.model.fields.selection,name:privacy_consent.selection__privacy_contact_preference__preferred_language__en_US
+msgid "English (US)"
+msgstr "Anglais (É.-U.)"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_contact_preference__preferred_contact_time
+msgid "Preferred Contact Time"
+msgstr "Heure de contact préférée"
+
+#. module: privacy_consent
+#: model:ir.model.fields.selection,name:privacy_consent.selection__privacy_contact_preference__preferred_contact_time__morning
+msgid "Morning (8am-12pm)"
+msgstr "Matin (8h-12h)"
+
+#. module: privacy_consent
+#: model:ir.model.fields.selection,name:privacy_consent.selection__privacy_contact_preference__preferred_contact_time__afternoon
+msgid "Afternoon (12pm-5pm)"
+msgstr "Après-midi (12h-17h)"
+
+#. module: privacy_consent
+#: model:ir.model.fields.selection,name:privacy_consent.selection__privacy_contact_preference__preferred_contact_time__evening
+msgid "Evening (5pm-8pm)"
+msgstr "Soir (17h-20h)"
+
+#. module: privacy_consent
+#: model:ir.model.fields.selection,name:privacy_consent.selection__privacy_contact_preference__preferred_contact_time__anytime
+msgid "Anytime"
+msgstr "N'importe quand"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_contact_preference__opt_out_reason
+msgid "Opt-out Reason"
+msgstr "Motif de désabonnement"
+
+#. module: privacy_consent
+#: model:ir.model.fields,help:privacy_consent.field_privacy_contact_preference__opt_out_reason
+msgid "Reason for opting out of communications"
+msgstr "Raison du désabonnement aux communications"
+
+#. module: privacy_consent
+#: model:ir.model.fields.selection,name:privacy_consent.selection__privacy_contact_preference__opt_out_reason__too_frequent
+msgid "Too Frequent"
+msgstr "Trop fréquent"
+
+#. module: privacy_consent
+#: model:ir.model.fields.selection,name:privacy_consent.selection__privacy_contact_preference__opt_out_reason__not_relevant
+msgid "Not Relevant"
+msgstr "Non pertinent"
+
+#. module: privacy_consent
+#: model:ir.model.fields.selection,name:privacy_consent.selection__privacy_contact_preference__opt_out_reason__privacy
+msgid "Privacy Concerns"
+msgstr "Préoccupations de confidentialité"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_contact_preference__opt_out_date
+msgid "Opt-out Date"
+msgstr "Date de désabonnement"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.privacy_contact_preference_form_view
+msgid "All communications are blocked for this contact."
+msgstr "Toutes les communications sont bloquées pour ce contact."
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.privacy_contact_preference_form_view
+msgid "Master Control"
+msgstr "Contrôle principal"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.privacy_contact_preference_form_view
+msgid "Email Preferences"
+msgstr "Préférences de courriel"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.privacy_contact_preference_form_view
+msgid "Other Channels"
+msgstr "Autres canaux"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.privacy_contact_preference_form_view
+msgid "Preferences"
+msgstr "Préférences"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.privacy_contact_preference_form_view
+msgid "Opt-out Info"
+msgstr "Info désabonnement"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_res_partner__consent_ids
+msgid "Consent Records"
+msgstr "Enregistrements de consentement"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_res_partner__preference_id
+msgid "Privacy Preferences"
+msgstr "Préférences de confidentialité"
+
+#. module: privacy_consent
+#: model:ir.model.fields,help:privacy_consent.field_res_partner__preference_id
+msgid "Contact's privacy and communication preferences"
+msgstr "Préférences de confidentialité et de communication du contact"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_res_partner__has_marketing_consent
+msgid "Has Marketing Consent"
+msgstr "A un consentement marketing"
+
+#. module: privacy_consent
+#: model:ir.model.fields,help:privacy_consent.field_res_partner__has_marketing_consent
+msgid "Has an active granted consent for marketing purposes"
+msgstr "A un consentement actif accordé pour des fins marketing"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_res_partner__has_recording_consent
+msgid "Has Recording Consent"
+msgstr "A un consentement d'enregistrement"
+
+#. module: privacy_consent
+#: model:ir.model.fields,help:privacy_consent.field_res_partner__has_recording_consent
+msgid "Has an active granted consent for recording purposes"
+msgstr "A un consentement actif accordé pour l'enregistrement"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_res_partner__has_reference_consent
+msgid "Has Reference Consent"
+msgstr "A un consentement de référence"
+
+#. module: privacy_consent
+#: model:ir.model.fields,help:privacy_consent.field_res_partner__has_reference_consent
+msgid "Has an active granted consent to be used as reference"
+msgstr "A un consentement actif accordé pour être utilisé comme référence"
+
+#. module: privacy_consent
+#: model:ir.model.fields,help:privacy_consent.field_res_partner__do_not_contact
+msgid "Master do-not-contact flag from preferences"
+msgstr "Indicateur principal « ne pas contacter » des préférences"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.view_partner_form_privacy
+msgid "Vie privée (Loi 25)"
+msgstr "Vie privée (Loi 25)"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.view_partner_form_privacy
+msgid "Consent Status"
+msgstr "Statut des consentements"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.view_partner_form_privacy
+msgid "Marketing OK"
+msgstr "Marketing OK"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.view_partner_form_privacy
+msgid "Marketing --"
+msgstr "Marketing --"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.view_partner_form_privacy
+msgid "Recording OK"
+msgstr "Enregistrement OK"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.view_partner_form_privacy
+msgid "Recording --"
+msgstr "Enregistrement --"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.view_partner_form_privacy
+msgid "Reference OK"
+msgstr "Référence OK"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.view_partner_form_privacy
+msgid "Reference --"
+msgstr "Référence --"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.view_partner_form_privacy
+msgid "View/Edit Preferences"
+msgstr "Voir/Modifier les préférences"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.view_partner_form_privacy
+msgid "Actions"
+msgstr "Actions"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_project_project__consent_ids
+msgid "Project Consents"
+msgstr "Consentements du projet"
+
+#. module: privacy_consent
+#: model:ir.model.fields,help:privacy_consent.field_project_project__consent_ids
+msgid "Consent records specifically linked to this project"
+msgstr "Enregistrements de consentement spécifiquement liés à ce projet"
+
+#. module: privacy_consent
+#: model:ir.model.fields,help:privacy_consent.field_project_project__consent_status
+msgid "Overall consent status for this project"
+msgstr "Statut global des consentements pour ce projet"
+
+#. module: privacy_consent
+#: model:ir.model.fields.selection,name:privacy_consent.selection__project_project__consent_status__none
+msgid "No Consents"
+msgstr "Aucun consentement"
+
+#. module: privacy_consent
+#: model:ir.model.fields.selection,name:privacy_consent.selection__project_project__consent_status__partial
+msgid "Partial"
+msgstr "Partiel"
+
+#. module: privacy_consent
+#: model:ir.model.fields.selection,name:privacy_consent.selection__project_project__consent_status__complete
+msgid "All Granted"
+msgstr "Tous accordés"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.view_project_form_privacy
+msgid "Consentements"
+msgstr "Consentements"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.view_project_form_privacy
+msgid "Project-Linked Consents"
+msgstr "Consentements liés au projet"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_consent_request_wizard__partner_ids
+msgid "Recipients"
+msgstr "Destinataires"
+
+#. module: privacy_consent
+#: model:ir.model.fields,help:privacy_consent.field_privacy_consent_request_wizard__partner_ids
+msgid "Contacts to request consent from"
+msgstr "Contacts auxquels demander le consentement"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_consent_request_wizard__notice_id
+msgid "Notice Template"
+msgstr "Modèle d'avis"
+
+#. module: privacy_consent
+#: model:ir.model.fields,help:privacy_consent.field_privacy_consent_request_wizard__project_id
+msgid "Optionally link the consent to a specific project"
+msgstr "Lier optionnellement le consentement à un projet spécifique"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_consent_request_wizard__send_email
+msgid "Send Email Notification"
+msgstr "Envoyer une notification par courriel"
+
+#. module: privacy_consent
+#: model:ir.model.fields,help:privacy_consent.field_privacy_consent_request_wizard__send_email
+msgid "Send an email to recipients asking for their consent"
+msgstr "Envoyer un courriel aux destinataires pour demander leur consentement"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.privacy_consent_request_wizard_form
+msgid "Create Requests"
+msgstr "Créer les demandes"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.privacy_consent_request_wizard_form
+msgid "Cancel"
+msgstr "Annuler"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.privacy_consent_request_wizard_form
+msgid "Options"
+msgstr "Options"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_consent_withdraw_wizard__withdrawal_reason
+msgid "Reason"
+msgstr "Motif"
+
+#. module: privacy_consent
+#: model:ir.model.fields.selection,name:privacy_consent.selection__privacy_consent_withdraw_wizard__withdrawal_reason__request
+msgid "Subject's Request"
+msgstr "Demande de la personne concernée"
+
+#. module: privacy_consent
+#: model:ir.model.fields.selection,name:privacy_consent.selection__privacy_consent_withdraw_wizard__withdrawal_reason__data_deletion
+msgid "Data Deletion Request"
+msgstr "Demande de suppression des données"
+
+#. module: privacy_consent
+#: model:ir.model.fields.selection,name:privacy_consent.selection__privacy_consent_withdraw_wizard__withdrawal_reason__error
+msgid "Consent Given in Error"
+msgstr "Consentement donné par erreur"
+
+#. module: privacy_consent
+#: model:ir.model.fields.selection,name:privacy_consent.selection__privacy_consent_withdraw_wizard__withdrawal_reason__no_longer_needed
+msgid "No Longer Needed"
+msgstr "Plus nécessaire"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_consent_withdraw_wizard__withdrawal_notes
+msgid "Additional Notes"
+msgstr "Notes additionnelles"
+
+#. module: privacy_consent
+#: model:ir.model.fields,help:privacy_consent.field_privacy_consent_withdraw_wizard__withdrawal_notes
+msgid "Any additional details about this withdrawal"
+msgstr "Tout détail supplémentaire concernant ce retrait"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_consent_withdraw_wizard__update_preferences
+msgid "Update Contact Preferences"
+msgstr "Mettre à jour les préférences de contact"
+
+#. module: privacy_consent
+#: model:ir.model.fields,help:privacy_consent.field_privacy_consent_withdraw_wizard__update_preferences
+msgid "Also update contact preferences based on this withdrawal"
+msgstr "Mettre également à jour les préférences de contact suite à ce retrait"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.privacy_consent_withdraw_wizard_form
+msgid "Withdraw Consent"
+msgstr "Retirer le consentement"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.privacy_consent_withdraw_wizard_form
+msgid "Consent Info"
+msgstr "Info consentement"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.privacy_consent_withdraw_wizard_form
+msgid "Withdrawal Details"
+msgstr "Détails du retrait"
+
+#. module: privacy_consent
+#: model:ir.cron,name:privacy_consent.cron_check_expiring_consents
+msgid "Privacy: Check Expiring Consents (30-day warning)"
+msgstr ""
+"Vie privée : Vérifier les consentements expirant (avertissement 30 jours)"
+
+#. module: privacy_consent
+#: model:ir.cron,name:privacy_consent.cron_mark_expired_consents
+msgid "Privacy: Mark Expired Consents"
+msgstr "Vie privée : Marquer les consentements expirés"
+
+#. module: privacy_consent
+#: model:mail.template,name:privacy_consent.mail_template_consent_request
+msgid "Privacy: Consent Request"
+msgstr "Vie privée : Demande de consentement"
+
+#. module: privacy_consent
+#: model:mail.template,name:privacy_consent.mail_template_consent_expiring
+msgid "Privacy: Consent Expiring Warning"
+msgstr "Vie privée : Avertissement d'expiration de consentement"
+
+#. module: privacy_consent
+#: model:privacy.purpose,name:privacy_consent.purpose_marketing
+msgid "Communications marketing et infolettres"
+msgstr "Communications marketing et infolettres"
+
+#. module: privacy_consent
+#: model:privacy.purpose,name:privacy_consent.purpose_recording
+msgid "Enregistrement ponctuel de rencontres"
+msgstr "Enregistrement ponctuel de rencontres"
+
+#. module: privacy_consent
+#: model:privacy.purpose,name:privacy_consent.purpose_recording_audio
+msgid "Enregistrement audio"
+msgstr "Enregistrement audio"
+
+#. module: privacy_consent
+#: model:privacy.purpose,name:privacy_consent.purpose_transcription
+msgid "Transcription des communications"
+msgstr "Transcription des communications"
+
+#. module: privacy_consent
+#: model:privacy.purpose,name:privacy_consent.purpose_reference
+msgid "Utilisation comme référence client"
+msgstr "Utilisation comme référence client"
+
+#. module: privacy_consent
+#: model:privacy.purpose,name:privacy_consent.purpose_logo
+msgid "Utilisation du logo"
+msgstr "Utilisation du logo"
+
+#. module: privacy_consent
+#: model:privacy.purpose,name:privacy_consent.purpose_case_study
+msgid "Étude de cas"
+msgstr "Étude de cas"
+
+#. module: privacy_consent
+#: model:privacy.purpose,name:privacy_consent.purpose_service
+msgid "Communications de service"
+msgstr "Communications de service"
+
+#. module: privacy_consent
+#: model:privacy.purpose,name:privacy_consent.purpose_third_party
+msgid "Partage avec des tiers"
+msgstr "Partage avec des tiers"
+
+#. module: privacy_consent
+#: model:privacy.purpose,name:privacy_consent.purpose_software_install
+msgid "Installation d'agent Example Platform"
+msgstr "Installation d'agent Example Platform"
+
+#. module: privacy_consent
+#: model:privacy.purpose,name:privacy_consent.purpose_high_risk
+msgid "Traitements à risque élevé & données sensibles"
+msgstr "Traitements à risque élevé & données sensibles"
+
+#. module: privacy_consent
+#: model:privacy.purpose,name:privacy_consent.purpose_training
+msgid "Formation interne Example Platform"
+msgstr "Formation interne Example Platform"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.portal_privacy_preferences
+msgid "Your preferences have been saved successfully."
+msgstr "Vos préférences ont été enregistrées avec succès."
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.portal_privacy_preferences
+msgid "Communication Preferences"
+msgstr "Préférences de communication"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.portal_privacy_preferences
+msgid "Do Not Contact (Block All Communications)"
+msgstr "Ne pas contacter (Bloquer toutes les communications)"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.portal_privacy_preferences
+msgid "Allow Service Emails (essential communications)"
+msgstr "Autoriser les courriels de service (communications essentielles)"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.portal_privacy_preferences
+msgid "Allow Marketing Emails (newsletters, promotions)"
+msgstr "Autoriser les courriels marketing (infolettres, promotions)"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.portal_privacy_preferences
+msgid "Allow SMS Text Messages"
+msgstr "Autoriser les messages texte SMS"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.portal_privacy_preferences
+msgid "Language Preference"
+msgstr "Préférence de langue"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.portal_privacy_preferences
+msgid "-- Select --"
+msgstr "-- Sélectionner --"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.portal_privacy_preferences
+msgid "Save Preferences"
+msgstr "Enregistrer les préférences"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.portal_privacy_preferences
+msgid "View Consent History"
+msgstr "Voir l'historique des consentements"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.portal_privacy_preferences
+msgid "About Privacy (Loi 25)"
+msgstr "À propos de la confidentialité (Loi 25)"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.portal_privacy_consents
+msgid "Consent History"
+msgstr "Historique des consentements"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.portal_privacy_consents
+msgid "Back to Preferences"
+msgstr "Retour aux préférences"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.portal_privacy_consents
+msgid "Expires"
+msgstr "Expire"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.portal_privacy_consents
+msgid "Action"
+msgstr "Action"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.portal_privacy_consents
+msgid "View"
+msgstr "Voir"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.portal_privacy_consents
+msgid "Never"
+msgstr "Jamais"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.portal_privacy_consents
+msgid "No consent records found."
+msgstr "Aucun enregistrement de consentement trouvé."
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.portal_consent_detail
+msgid "Back to Consent History"
+msgstr "Retour à l'historique des consentements"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.portal_consent_detail
+msgid "Your response has been recorded. Thank you."
+msgstr "Votre réponse a été enregistrée. Merci."
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.portal_consent_detail
+msgid "Description"
+msgstr "Description"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.portal_consent_detail
+msgid "Requested"
+msgstr "Demandé"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.portal_consent_detail
+msgid "Consent Notice"
+msgstr "Avis de consentement"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.portal_consent_detail
+msgid "Your Response"
+msgstr "Votre réponse"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.portal_consent_detail
+msgid "Please indicate whether you grant or refuse this consent request."
+msgstr ""
+"Veuillez indiquer si vous accordez ou refusez cette demande de consentement."
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.portal_consent_detail
+msgid "Grant Consent"
+msgstr "Accorder le consentement"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.portal_my_home_privacy
+msgid "Manage your privacy preferences and consent settings"
+msgstr "Gérer vos préférences de confidentialité et paramètres de consentement"
+
+#. module: privacy_consent
+#: model_terms:ir.actions.act_window,help:privacy_consent.action_privacy_purpose
+msgid "Create your first consent purpose"
+msgstr "Créer votre première finalité de consentement"
+
+#. module: privacy_consent
+#: model_terms:ir.actions.act_window,help:privacy_consent.action_privacy_purpose
+msgid ""
+"Purposes define why you collect personal information (e.g., Marketing, "
+"Recording, Reference)."
+msgstr ""
+"Les finalités définissent pourquoi vous collectez des renseignements "
+"personnels (ex. : Marketing, Enregistrement, Référence)."
+
+#. module: privacy_consent
+#: model_terms:ir.actions.act_window,help:privacy_consent.action_privacy_notice
+msgid "Create your first consent notice"
+msgstr "Créer votre premier avis de consentement"
+
+#. module: privacy_consent
+#: model_terms:ir.actions.act_window,help:privacy_consent.action_privacy_notice
+msgid "Notices contain the text shown to users when requesting their consent."
+msgstr ""
+"Les avis contiennent le texte présenté aux utilisateurs lors de la demande "
+"de consentement."
+
+#. module: privacy_consent
+#: model_terms:ir.actions.act_window,help:privacy_consent.action_privacy_consent
+msgid "Create your first consent record"
+msgstr "Créer votre premier enregistrement de consentement"
+
+#. module: privacy_consent
+#: model_terms:ir.actions.act_window,help:privacy_consent.action_privacy_consent
+msgid ""
+"Track consent from contacts for various purposes (marketing, recording, "
+"references)."
+msgstr ""
+"Suivre le consentement des contacts pour diverses finalités (marketing, "
+"enregistrement, références)."
+
+#. module: privacy_consent
+#: model_terms:ir.actions.act_window,help:privacy_consent.action_privacy_consent_pending
+msgid "No pending consent requests"
+msgstr "Aucune demande de consentement en attente"
+
+#. module: privacy_consent
+#: model_terms:ir.actions.act_window,help:privacy_consent.action_privacy_preference
+msgid "No contact preferences configured yet"
+msgstr "Aucune préférence de contact configurée"
+
+#. module: privacy_consent
+#: model_terms:ir.actions.act_window,help:privacy_consent.action_privacy_preference
+msgid "Preferences are created automatically when setting them on contacts."
+msgstr ""
+"Les préférences sont créées automatiquement lors de leur configuration sur "
+"les contacts."
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.privacy_consent_search_view
+msgid "Expiring Soon (30 days)"
+msgstr "Expire bientôt (30 jours)"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.privacy_consent_search_view
+msgid "Archived"
+msgstr "Archivé"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.privacy_consent_search_view
+msgid "Group By"
+msgstr "Grouper par"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_purpose__active
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_notice__active
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_consent__active
+msgid "Active"
+msgstr "Actif"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_purpose__sequence
+msgid "Sequence"
+msgstr "Séquence"
+
+#. module: privacy_consent
+#: model:privacy.notice,name:privacy_consent.notice_marketing
+msgid "F-01 — Consentement aux communications marketing et infolettres"
+msgstr "F-01 — Consentement aux communications marketing et infolettres"
+
+#. module: privacy_consent
+#: model:privacy.notice,name:privacy_consent.notice_recording
+msgid "F-02 — Consentement à l'enregistrement ponctuel de rencontres"
+msgstr "F-02 — Consentement à l'enregistrement ponctuel de rencontres"
+
+#. module: privacy_consent
+#: model:privacy.notice,name:privacy_consent.notice_recording_audio
+msgid "Avis — Enregistrement audio"
+msgstr "Avis — Enregistrement audio"
+
+#. module: privacy_consent
+#: model:privacy.notice,name:privacy_consent.notice_transcription
+msgid "Avis — Transcription des communications"
+msgstr "Avis — Transcription des communications"
+
+#. module: privacy_consent
+#: model:privacy.notice,name:privacy_consent.notice_reference
+msgid "Avis — Utilisation comme référence client"
+msgstr "Avis — Utilisation comme référence client"
+
+#. module: privacy_consent
+#: model:privacy.notice,name:privacy_consent.notice_logo
+msgid "Avis — Utilisation du logo"
+msgstr "Avis — Utilisation du logo"
+
+#. module: privacy_consent
+#: model:privacy.notice,name:privacy_consent.notice_case_study
+msgid "Avis — Étude de cas"
+msgstr "Avis — Étude de cas"
+
+#. module: privacy_consent
+#: model:privacy.notice,name:privacy_consent.notice_third_party
+msgid "Avis — Partage avec des tiers"
+msgstr "Avis — Partage avec des tiers"
+
+#. module: privacy_consent
+#: model:privacy.notice,name:privacy_consent.notice_service
+msgid "Avis — Communications de service (informatif)"
+msgstr "Avis — Communications de service (informatif)"
+
+#. module: privacy_consent
+#: model:privacy.notice,name:privacy_consent.notice_software_install
+msgid "F-03 — Consentement à l'installation d'un agent Example Platform"
+msgstr "F-03 — Consentement à l'installation d'un agent Example Platform"
+
+#. module: privacy_consent
+#: model:privacy.notice,name:privacy_consent.notice_high_risk
+msgid "F-07 — Consentement pour traitements à risque élevé & données sensibles"
+msgstr "F-07 — Consentement pour traitements à risque élevé & données sensibles"
+
+#. module: privacy_consent
+#: model:privacy.notice,name:privacy_consent.notice_training
+msgid "Avis — Formation interne Example Platform"
+msgstr "Avis — Formation interne Example Platform"
+
+#
+# === NEW FEATURES: Dashboard, Retention, Destruction, DocuSeal, Email Sequences, Renewal ===
+#
+#. module: privacy_consent
+#: model:ir.model,name:privacy_consent.model_privacy_dashboard
+msgid "Privacy Consent Dashboard"
+msgstr "Tableau de bord des consentements"
+
+#. module: privacy_consent
+#: model:ir.model,name:privacy_consent.model_privacy_retention_policy
+msgid "Privacy Retention Policy"
+msgstr "Politique de conservation"
+
+#. module: privacy_consent
+#: model:ir.model,name:privacy_consent.model_privacy_destruction_request
+msgid "Privacy Destruction Request"
+msgstr "Demande de destruction"
+
+#. module: privacy_consent
+#: model:ir.model,name:privacy_consent.model_privacy_docuseal_config
+msgid "DocuSeal Configuration"
+msgstr "Configuration DocuSeal"
+
+#. module: privacy_consent
+#: model:ir.model,name:privacy_consent.model_privacy_docuseal_template
+msgid "DocuSeal Template Mapping"
+msgstr "Mappage de modèle DocuSeal"
+
+#. module: privacy_consent
+#: model:ir.model,name:privacy_consent.model_privacy_docuseal_send_wizard
+msgid "DocuSeal Send Wizard"
+msgstr "Assistant d'envoi DocuSeal"
+
+#. module: privacy_consent
+#: model:ir.model,name:privacy_consent.model_privacy_email_sequence
+msgid "Privacy Email Sequence"
+msgstr "Séquence de courriels"
+
+#. module: privacy_consent
+#: model:ir.ui.menu,name:privacy_consent.menu_privacy_dashboard
+msgid "Dashboard"
+msgstr "Tableau de bord"
+
+#. module: privacy_consent
+#: model:ir.ui.menu,name:privacy_consent.menu_privacy_destructions
+msgid "Destruction Requests"
+msgstr "Demandes de destruction"
+
+#. module: privacy_consent
+#: model:ir.ui.menu,name:privacy_consent.menu_privacy_retention
+msgid "Retention Policies"
+msgstr "Politiques de conservation"
+
+#. module: privacy_consent
+#: model:ir.ui.menu,name:privacy_consent.menu_privacy_email_sequences
+msgid "Email Sequences"
+msgstr "Séquences de courriels"
+
+#. module: privacy_consent
+#: model:ir.ui.menu,name:privacy_consent.menu_privacy_docuseal
+msgid "DocuSeal"
+msgstr "DocuSeal"
+
+#. module: privacy_consent
+#: model:ir.ui.menu,name:privacy_consent.menu_privacy_docuseal_templates
+msgid "DocuSeal Templates"
+msgstr "Modèles DocuSeal"
+
+#. module: privacy_consent
+#: model:ir.actions.act_window,name:privacy_consent.action_privacy_dashboard
+msgid "Privacy Dashboard"
+msgstr "Tableau de bord Vie privée"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.privacy_dashboard_view_form
+msgid "Refresh"
+msgstr "Actualiser"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.privacy_dashboard_view_form
+msgid "Requests & Status"
+msgstr "Demandes et statuts"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_dashboard__granted_consents
+msgid "Granted Consents"
+msgstr "Consentements accordés"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_dashboard__refused_consents
+msgid "Refused Consents"
+msgstr "Consentements refusés"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_dashboard__withdrawn_consents
+msgid "Withdrawn Consents"
+msgstr "Consentements retirés"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.privacy_dashboard_view_form
+msgid "Expiring Consents"
+msgstr "Consentements expirant"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_dashboard__expiring_30_days
+msgid "Expiring 0-30 Days"
+msgstr "Expire 0-30 jours"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_dashboard__expiring_60_days
+msgid "Expiring 30-60 Days"
+msgstr "Expire 30-60 jours"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_dashboard__expiring_90_days
+msgid "Expiring 60-90 Days"
+msgstr "Expire 60-90 jours"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_dashboard__expired_consents
+msgid "Expired Consents"
+msgstr "Consentements expirés"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.privacy_dashboard_view_form
+msgid "Metrics & Alerts"
+msgstr "Métriques et alertes"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_dashboard__consent_rate
+msgid "Consent Rate (%)"
+msgstr "Taux de consentement (%)"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_dashboard__evidence_rate
+msgid "Evidence Rate (%)"
+msgstr "Taux de preuves (%)"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_dashboard__pending_destructions
+msgid "Pending Destructions"
+msgstr "Destructions en attente"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_dashboard__renewal_emails_pending
+msgid "Renewal Emails Pending"
+msgstr "Courriels de renouvellement en attente"
+
+#. module: privacy_consent
+#: model:ir.model.fields,help:privacy_consent.field_privacy_dashboard__renewal_emails_pending
+msgid "Consents expiring within 90 days that haven't been renewed yet"
+msgstr ""
+"Consentements expirant dans 90 jours qui n'ont pas encore été renouvelés"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.privacy_dashboard_view_form
+msgid "Automation"
+msgstr "Automatisation"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.privacy_dashboard_view_form
+msgid "Renewal Emails"
+msgstr "Courriels de renouvellement"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_dashboard__last_refresh
+msgid "Last Refresh"
+msgstr "Dernière actualisation"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_retention_policy__retention_days
+msgid "Retention Days"
+msgstr "Jours de conservation"
+
+#. module: privacy_consent
+#: model:ir.model.fields,help:privacy_consent.field_privacy_retention_policy__retention_days
+msgid "Number of days to retain data after trigger event"
+msgstr ""
+"Nombre de jours pour conserver les données après l'événement déclencheur"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_retention_policy__trigger_on
+msgid "Trigger On"
+msgstr "Déclencher sur"
+
+#. module: privacy_consent
+#: model:ir.model.fields,help:privacy_consent.field_privacy_retention_policy__trigger_on
+msgid "When to start the retention countdown"
+msgstr "Quand démarrer le compte à rebours de conservation"
+
+#. module: privacy_consent
+#: model:ir.model.fields.selection,name:privacy_consent.selection__privacy_retention_policy__trigger_on__expiration
+msgid "Expiration"
+msgstr "Expiration"
+
+#. module: privacy_consent
+#: model:ir.model.fields.selection,name:privacy_consent.selection__privacy_retention_policy__trigger_on__withdrawal
+msgid "Withdrawal"
+msgstr "Retrait"
+
+#. module: privacy_consent
+#: model:ir.model.fields.selection,name:privacy_consent.selection__privacy_retention_policy__trigger_on__both
+msgid "Both"
+msgstr "Les deux"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_retention_policy__destruction_method
+msgid "Destruction Method"
+msgstr "Méthode de destruction"
+
+#. module: privacy_consent
+#: model:ir.model.fields.selection,name:privacy_consent.selection__privacy_retention_policy__destruction_method__anonymize
+msgid "Anonymize"
+msgstr "Anonymiser"
+
+#. module: privacy_consent
+#: model:ir.model.fields.selection,name:privacy_consent.selection__privacy_retention_policy__destruction_method__delete
+msgid "Delete"
+msgstr "Supprimer"
+
+#. module: privacy_consent
+#: model:ir.model.fields.selection,name:privacy_consent.selection__privacy_retention_policy__destruction_method__archive
+msgid "Archive"
+msgstr "Archiver"
+
+#. module: privacy_consent
+#: model:ir.model.fields.selection,name:privacy_consent.selection__privacy_retention_policy__destruction_method__manual
+msgid "Manual Review"
+msgstr "Révision manuelle"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.privacy_retention_policy_form_view
+msgid "Retention Policy"
+msgstr "Politique de conservation"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.privacy_retention_policy_form_view
+msgid "Policy Configuration"
+msgstr "Configuration de la politique"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_destruction_request__policy_id
+msgid "Policy"
+msgstr "Politique"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_destruction_request__scheduled_date
+msgid "Scheduled Date"
+msgstr "Date prévue"
+
+#. module: privacy_consent
+#: model:ir.model.fields,help:privacy_consent.field_privacy_destruction_request__scheduled_date
+msgid "Date when destruction is scheduled to occur"
+msgstr "Date à laquelle la destruction est prévue"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_destruction_request__state
+msgid "State"
+msgstr "État"
+
+#. module: privacy_consent
+#: model:ir.model.fields.selection,name:privacy_consent.selection__privacy_destruction_request__state__approved
+msgid "Approved"
+msgstr "Approuvé"
+
+#. module: privacy_consent
+#: model:ir.model.fields.selection,name:privacy_consent.selection__privacy_destruction_request__state__executed
+msgid "Executed"
+msgstr "Exécuté"
+
+#. module: privacy_consent
+#: model:ir.model.fields.selection,name:privacy_consent.selection__privacy_destruction_request__state__cancelled
+msgid "Cancelled"
+msgstr "Annulé"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_destruction_request__certificate_number
+msgid "Certificate Number"
+msgstr "Numéro de certificat"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_destruction_request__certificate_file
+msgid "Certificate File"
+msgstr "Fichier de certificat"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_destruction_request__verification_hash
+msgid "Verification Hash"
+msgstr "Empreinte de vérification"
+
+#. module: privacy_consent
+#: model:ir.model.fields,help:privacy_consent.field_privacy_destruction_request__verification_hash
+msgid "SHA256 hash for integrity verification"
+msgstr "Empreinte SHA256 pour vérification d'intégrité"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_destruction_request__executed_at
+msgid "Executed At"
+msgstr "Exécuté le"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_destruction_request__executed_by_id
+msgid "Executed By"
+msgstr "Exécuté par"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_destruction_request__approved_by_id
+msgid "Approved By"
+msgstr "Approuvé par"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_destruction_request__approved_at
+msgid "Approved At"
+msgstr "Approuvé le"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.privacy_destruction_request_form_view
+msgid "Destruction Request"
+msgstr "Demande de destruction"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.privacy_destruction_request_form_view
+msgid "Approve"
+msgstr "Approuver"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.privacy_destruction_request_form_view
+msgid "Execute"
+msgstr "Exécuter"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.privacy_destruction_request_form_view
+msgid "Request Details"
+msgstr "Détails de la demande"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.privacy_destruction_request_form_view
+msgid "Execution"
+msgstr "Exécution"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.privacy_destruction_request_form_view
+msgid "Certificate"
+msgstr "Certificat"
+
+#. module: privacy_consent
+#: model:ir.actions.report,name:privacy_consent.action_report_destruction_certificate
+msgid "Destruction Certificate"
+msgstr "Certificat de destruction"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_docuseal_config__api_url
+msgid "API URL"
+msgstr "URL de l'API"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_docuseal_config__api_key
+msgid "API Key"
+msgstr "Clé API"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_docuseal_config__api_key_encrypted
+msgid "Encrypted API Key"
+msgstr "Clé API chiffrée"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_docuseal_config__webhook_secret
+msgid "Webhook Secret"
+msgstr "Secret du webhook"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_docuseal_config__is_default
+msgid "Default Configuration"
+msgstr "Configuration par défaut"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.privacy_docuseal_config_form_view
+msgid "Test Connection"
+msgstr "Tester la connexion"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.privacy_docuseal_config_form_view
+msgid "Fetch Templates"
+msgstr "Récupérer les modèles"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.privacy_docuseal_config_form_view
+msgid "API Settings"
+msgstr "Paramètres de l'API"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.privacy_docuseal_config_form_view
+msgid "Security"
+msgstr "Sécurité"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_docuseal_template__docuseal_template_id
+msgid "DocuSeal Template ID"
+msgstr "ID du modèle DocuSeal"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_docuseal_template__docuseal_template_name
+msgid "DocuSeal Template Name"
+msgstr "Nom du modèle DocuSeal"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_docuseal_template__field_mapping
+msgid "Field Mapping"
+msgstr "Mappage des champs"
+
+#. module: privacy_consent
+#: model:ir.model.fields,help:privacy_consent.field_privacy_docuseal_template__field_mapping
+msgid "JSON mapping of DocuSeal fields to Odoo fields"
+msgstr "Mappage JSON des champs DocuSeal vers les champs Odoo"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.privacy_docuseal_template_form_view
+msgid "DocuSeal Template"
+msgstr "Modèle DocuSeal"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.privacy_docuseal_template_form_view
+msgid "Template Configuration"
+msgstr "Configuration du modèle"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.privacy_docuseal_template_form_view
+msgid "Field Mapping (JSON)"
+msgstr "Mappage des champs (JSON)"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_consent__docuseal_submission_id
+msgid "DocuSeal Submission ID"
+msgstr "ID de soumission DocuSeal"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_consent__docuseal_status
+msgid "DocuSeal Status"
+msgstr "Statut DocuSeal"
+
+#. module: privacy_consent
+#: model:ir.model.fields.selection,name:privacy_consent.selection__privacy_consent__docuseal_status__pending
+msgid "Pending Signature"
+msgstr "Signature en attente"
+
+#. module: privacy_consent
+#: model:ir.model.fields.selection,name:privacy_consent.selection__privacy_consent__docuseal_status__completed
+msgid "Completed"
+msgstr "Complété"
+
+#. module: privacy_consent
+#: model:ir.model.fields.selection,name:privacy_consent.selection__privacy_consent__docuseal_status__declined
+msgid "Declined"
+msgstr "Refusé"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_consent__docuseal_sent_at
+msgid "Sent to DocuSeal At"
+msgstr "Envoyé à DocuSeal le"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_consent__docuseal_completed_at
+msgid "DocuSeal Completed At"
+msgstr "DocuSeal complété le"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.privacy_consent_form_view
+msgid "Sign (DocuSeal)"
+msgstr "Signer (DocuSeal)"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.privacy_consent_form_view
+msgid "Sign (LibreSign)"
+msgstr "Signer (LibreSign)"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.privacy_consent_form_view
+msgid "Submission Details"
+msgstr "Détails de la soumission"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.privacy_consent_form_view
+msgid "LibreSign"
+msgstr "LibreSign"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.privacy_consent_form_view
+msgid "File Details"
+msgstr "Détails du fichier"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.privacy_docuseal_send_wizard_form_view
+msgid "Send for Signature"
+msgstr "Envoyer pour signature"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_docuseal_send_wizard__template_id
+msgid "Template"
+msgstr "Modèle"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_docuseal_send_wizard__email
+msgid "Signer Email"
+msgstr "Courriel du signataire"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.privacy_docuseal_send_wizard_form_view
+msgid "Send"
+msgstr "Envoyer"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_email_sequence__days_after_previous
+msgid "Days After Previous"
+msgstr "Jours après le précédent"
+
+#. module: privacy_consent
+#: model:ir.model.fields,help:privacy_consent.field_privacy_email_sequence__days_after_previous
+msgid "Number of days to wait after the previous step"
+msgstr "Nombre de jours à attendre après l'étape précédente"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_email_sequence__mail_template_id
+msgid "Email Template"
+msgstr "Modèle de courriel"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_email_sequence__only_if_not_opened
+msgid "Only If Not Opened"
+msgstr "Seulement si non ouvert"
+
+#. module: privacy_consent
+#: model:ir.model.fields,help:privacy_consent.field_privacy_email_sequence__only_if_not_opened
+msgid "Only send if previous email was not opened (requires mail_tracking)"
+msgstr ""
+"Envoyer seulement si le courriel précédent n'a pas été ouvert (nécessite "
+"mail_tracking)"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.privacy_email_sequence_form_view
+msgid "Email Sequence"
+msgstr "Séquence de courriels"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.privacy_email_sequence_form_view
+msgid "Sequence Configuration"
+msgstr "Configuration de la séquence"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.privacy_email_sequence_form_view
+msgid "Email Settings"
+msgstr "Paramètres de courriel"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.privacy_email_sequence_form_view
+msgid "How Email Sequences Work"
+msgstr "Fonctionnement des séquences de courriels"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_purpose__auto_expire_pending_days
+msgid "Auto-Expire Pending (Days)"
+msgstr "Expiration auto. en attente (jours)"
+
+#. module: privacy_consent
+#: model:ir.model.fields,help:privacy_consent.field_privacy_purpose__auto_expire_pending_days
+msgid "Automatically expire pending consents after this many days (0 = never)"
+msgstr ""
+"Expirer automatiquement les consentements en attente après ce nombre de "
+"jours (0 = jamais)"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.privacy_purpose_view_form_sequences
+msgid "Retention"
+msgstr "Conservation"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_consent__reminder_count
+msgid "Reminder Count"
+msgstr "Nombre de rappels"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_consent__last_reminder_sent_at
+msgid "Last Reminder Sent"
+msgstr "Dernier rappel envoyé"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.privacy_consent_form_view
+msgid "Email Tracking"
+msgstr "Suivi des courriels"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.privacy_consent_form_view
+msgid "Reminder Status"
+msgstr "Statut des rappels"
+
+#
+# Renewal fields
+#
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_consent__renewed_from_id
+msgid "Renewed From"
+msgstr "Renouvelé depuis"
+
+#. module: privacy_consent
+#: model:ir.model.fields,help:privacy_consent.field_privacy_consent__renewed_from_id
+msgid "The previous consent this one was renewed from"
+msgstr "Le consentement précédent à partir duquel celui-ci a été renouvelé"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_consent__renewed_to_id
+msgid "Renewed To"
+msgstr "Renouvelé vers"
+
+#. module: privacy_consent
+#: model:ir.model.fields,help:privacy_consent.field_privacy_consent__renewed_to_id
+msgid "The new consent this one was renewed to"
+msgstr "Le nouveau consentement vers lequel celui-ci a été renouvelé"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.privacy_consent_form_view
+msgid "Renew"
+msgstr "Renouveler"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.privacy_consent_form_view
+msgid "Renewal"
+msgstr "Renouvellement"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.privacy_consent_form_view
+msgid "Renewal Chain"
+msgstr "Chaîne de renouvellement"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.privacy_consent_form_view
+msgid "View Full History"
+msgstr "Voir l'historique complet"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.portal_templates
+msgid "Renew Consent"
+msgstr "Renouveler le consentement"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.portal_templates
+msgid "This consent has been renewed"
+msgstr "Ce consentement a été renouvelé"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.portal_templates
+msgid "View renewed consent"
+msgstr "Voir le consentement renouvelé"
+
+#
+# Cron jobs
+#
+#. module: privacy_consent
+#: model:ir.cron,name:privacy_consent.cron_process_email_sequences
+msgid "Privacy: Process Email Sequences"
+msgstr "Vie privée : Traiter les séquences de courriels"
+
+#. module: privacy_consent
+#: model:ir.cron,name:privacy_consent.cron_auto_expire_pending
+msgid "Privacy: Auto-Expire Pending Consents"
+msgstr "Vie privée : Expirer auto. les consentements en attente"
+
+#. module: privacy_consent
+#: model:ir.cron,name:privacy_consent.cron_create_destruction_requests
+msgid "Privacy: Create Destruction Requests"
+msgstr "Vie privée : Créer les demandes de destruction"
+
+#. module: privacy_consent
+#: model:ir.cron,name:privacy_consent.cron_process_scheduled_destructions
+msgid "Privacy: Process Scheduled Destructions"
+msgstr "Vie privée : Traiter les destructions planifiées"
+
+#
+# Mail templates
+#
+#. module: privacy_consent
+#: model:mail.template,name:privacy_consent.mail_template_consent_reminder_1
+msgid "Privacy: First Reminder"
+msgstr "Vie privée : Premier rappel"
+
+#. module: privacy_consent
+#: model:mail.template,name:privacy_consent.mail_template_consent_reminder_2
+msgid "Privacy: Second Reminder"
+msgstr "Vie privée : Deuxième rappel"
+
+#. module: privacy_consent
+#: model:mail.template,name:privacy_consent.mail_template_consent_renewal_confirmation
+msgid "Privacy: Renewal Confirmation"
+msgstr "Vie privée : Confirmation de renouvellement"
+
+#. module: privacy_consent
+#: model:mail.template,name:privacy_consent.mail_template_consent_granted_confirmation
+msgid "Privacy: Consent Granted Confirmation"
+msgstr "Vie privée : Confirmation de consentement accordé"
+
+#
+# Activity types
+#
+#. module: privacy_consent
+#: model:mail.activity.type,name:privacy_consent.activity_type_consent_follow_up
+msgid "Consent Follow-up"
+msgstr "Suivi de consentement"
+
+#. module: privacy_consent
+#: model:mail.activity.type,summary:privacy_consent.activity_type_consent_follow_up
+msgid "Follow up on consent request"
+msgstr "Faire le suivi de la demande de consentement"
+
+#
+# Error messages and notifications
+#
+#. module: privacy_consent
+msgid "Cannot renew a consent that is not granted or expired"
+msgstr ""
+"Impossible de renouveler un consentement qui n'est pas accordé ou expiré"
+
+#. module: privacy_consent
+msgid "This consent has already been renewed"
+msgstr "Ce consentement a déjà été renouvelé"
+
+#. module: privacy_consent
+msgid "DocuSeal configuration not found"
+msgstr "Configuration DocuSeal introuvable"
+
+#. module: privacy_consent
+msgid "DocuSeal template not found for this purpose"
+msgstr "Modèle DocuSeal introuvable pour cette finalité"
+
+#. module: privacy_consent
+msgid "Connection successful!"
+msgstr "Connexion réussie !"
+
+#. module: privacy_consent
+msgid "Connection failed"
+msgstr "Échec de la connexion"
+
+#. module: privacy_consent
+msgid "Destruction request approved"
+msgstr "Demande de destruction approuvée"
+
+#. module: privacy_consent
+msgid "Destruction executed successfully"
+msgstr "Destruction exécutée avec succès"
+
+#. module: privacy_consent
+msgid "Certificate generated"
+msgstr "Certificat généré"
+
+#
+# === LibreSign Integration ===
+#
+#. module: privacy_consent
+#: model:ir.model,name:privacy_consent.model_privacy_libresign_config
+msgid "LibreSign Configuration"
+msgstr "Configuration LibreSign"
+
+#. module: privacy_consent
+#: model:ir.model,name:privacy_consent.model_privacy_libresign_template
+msgid "LibreSign Template"
+msgstr "Modèle LibreSign"
+
+#. module: privacy_consent
+#: model:ir.model,name:privacy_consent.model_privacy_libresign_send_wizard
+msgid "Send for LibreSign Signature"
+msgstr "Envoyer pour signature LibreSign"
+
+#. module: privacy_consent
+#: model:ir.ui.menu,name:privacy_consent.menu_privacy_libresign_templates
+msgid "LibreSign Templates"
+msgstr "Modèles LibreSign"
+
+#. module: privacy_consent
+#: model:ir.actions.act_window,name:privacy_consent.action_privacy_libresign_send_wizard
+msgid "Send for Signature (LibreSign)"
+msgstr "Envoyer pour signature (LibreSign)"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_libresign_config__nextcloud_url
+msgid "Nextcloud URL"
+msgstr "URL Nextcloud"
+
+#. module: privacy_consent
+#: model:ir.model.fields,help:privacy_consent.field_privacy_libresign_config__nextcloud_url
+msgid "Base URL of the Nextcloud instance (e.g. https://nextcloud.example.com)"
+msgstr ""
+"URL de base de l'instance Nextcloud (ex. https://nextcloud.example.com)"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_libresign_config__username
+msgid "Username"
+msgstr "Nom d'utilisateur"
+
+#. module: privacy_consent
+#: model:ir.model.fields,help:privacy_consent.field_privacy_libresign_config__username
+msgid "Nextcloud username for LibreSign API authentication"
+msgstr "Nom d'utilisateur Nextcloud pour l'authentification API LibreSign"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_libresign_config__password
+msgid "Password"
+msgstr "Mot de passe"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_libresign_config__webhook_url
+msgid "Webhook URL"
+msgstr "URL du webhook"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_libresign_config__auto_send
+msgid "Auto-Send Requests"
+msgstr "Envoi automatique des demandes"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.privacy_libresign_config_view_form
+msgid "Nextcloud Configuration"
+msgstr "Configuration Nextcloud"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.privacy_libresign_config_view_form
+msgid "Webhook Configuration"
+msgstr "Configuration du webhook"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.privacy_libresign_config_view_form
+msgid "Default Settings"
+msgstr "Paramètres par défaut"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.privacy_libresign_config_view_form
+msgid "Setup Instructions"
+msgstr "Instructions de configuration"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.privacy_libresign_config_view_form
+msgid "Install the <strong>LibreSign</strong> app on your Nextcloud instance"
+msgstr ""
+"Installer l'application <strong>LibreSign</strong> sur votre instance "
+"Nextcloud"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.privacy_libresign_config_view_form
+msgid "Enter your Nextcloud URL, username, and password above"
+msgstr ""
+"Entrez votre URL Nextcloud, nom d'utilisateur et mot de passe ci-dessus"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.privacy_libresign_config_view_form
+msgid "Click <em>Test Connection</em> to verify connectivity"
+msgstr "Cliquez sur <em>Tester la connexion</em> pour vérifier la connectivité"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.privacy_libresign_config_view_form
+msgid "Copy the Webhook URL and configure it in LibreSign settings (optional)"
+msgstr ""
+"Copiez l'URL du webhook et configurez-le dans les paramètres LibreSign "
+"(optionnel)"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.privacy_libresign_config_view_form
+msgid "Optionally set a webhook secret for signature verification"
+msgstr ""
+"Optionnellement, définissez un secret de webhook pour la vérification de "
+"signature"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.action_privacy_libresign_config
+msgid "Configure LibreSign Integration"
+msgstr "Configurer l'intégration LibreSign"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.action_privacy_libresign_config
+msgid ""
+"Set up your Nextcloud LibreSign credentials to enable digital signature "
+"collection for consent requests."
+msgstr ""
+"Configurez vos identifiants Nextcloud LibreSign pour activer la collecte de "
+"signatures numériques pour les demandes de consentement."
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_libresign_template__pdf_template
+msgid "PDF Template"
+msgstr "Modèle PDF"
+
+#. module: privacy_consent
+#: model:ir.model.fields,help:privacy_consent.field_privacy_libresign_template__pdf_template
+msgid "Upload a PDF to use as the signature document template"
+msgstr "Téléversez un PDF à utiliser comme modèle de document de signature"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_libresign_template__pdf_template_filename
+msgid "PDF Filename"
+msgstr "Nom du fichier PDF"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_libresign_template__custom_message
+msgid "Custom Message"
+msgstr "Message personnalisé"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.privacy_libresign_template_view_form
+msgid "Template Details"
+msgstr "Détails du modèle"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.privacy_libresign_template_view_form
+msgid "Message Settings"
+msgstr "Paramètres du message"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.action_privacy_libresign_template
+msgid "Create LibreSign Templates"
+msgstr "Créer des modèles LibreSign"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.action_privacy_libresign_template
+msgid ""
+"Configure PDF templates for LibreSign signature requests, mapped to privacy "
+"consent purposes."
+msgstr ""
+"Configurez des modèles PDF pour les demandes de signature LibreSign, "
+"associés aux finalités de consentement."
+
+# LibreSign Consent fields
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_consent__libresign_file_uuid
+msgid "LibreSign File UUID"
+msgstr "UUID du fichier LibreSign"
+
+#. module: privacy_consent
+#: model:ir.model.fields,help:privacy_consent.field_privacy_consent__libresign_file_uuid
+msgid "UUID of the file in LibreSign"
+msgstr "UUID du fichier dans LibreSign"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_consent__libresign_status
+msgid "LibreSign Status"
+msgstr "Statut LibreSign"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_consent__libresign_sent_at
+msgid "LibreSign Sent At"
+msgstr "Envoyé à LibreSign le"
+
+#. module: privacy_consent
+#: model:ir.model.fields,field_description:privacy_consent.field_privacy_consent__libresign_completed_at
+msgid "LibreSign Completed At"
+msgstr "LibreSign complété le"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.privacy_libresign_send_wizard_view_form
+msgid "LibreSign Settings"
+msgstr "Paramètres LibreSign"
+
+#. module: privacy_consent
+#: model_terms:ir.ui.view,arch_db:privacy_consent.privacy_libresign_send_wizard_view_form
+msgid "Custom Message (Optional)"
+msgstr "Message personnalisé (optionnel)"
+
+# LibreSign notifications and errors
+#. module: privacy_consent
+msgid "Connection Successful"
+msgstr "Connexion réussie"
+
+#. module: privacy_consent
+msgid "Successfully connected to LibreSign API."
+msgstr "Connexion à l'API LibreSign réussie."
+
+#. module: privacy_consent
+msgid "Connection Failed"
+msgstr "Échec de la connexion"
+
+#. module: privacy_consent
+msgid "LibreSign is not configured. Please configure it in Settings."
+msgstr ""
+"LibreSign n'est pas configuré. Veuillez le configurer dans les paramètres."
+
+#. module: privacy_consent
+msgid "Signature Request Sent"
+msgstr "Demande de signature envoyée"
+
+#. module: privacy_consent
+msgid ""
+"The contact must have an email address to receive the signature request."
+msgstr ""
+"Le contact doit avoir une adresse courriel pour recevoir la demande de "
+"signature."
+
+#. module: privacy_consent
+msgid "LibreSign did not return a file UUID."
+msgstr "LibreSign n'a pas retourné d'UUID de fichier."
+
+#. module: privacy_consent
+msgid "Only draft or pending consents can be sent for signature."
+msgstr ""
+"Seuls les consentements en brouillon ou en attente peuvent être envoyés pour "
+"signature."

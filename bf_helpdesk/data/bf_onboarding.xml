@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo noupdate="1">
+
+    <record id="bf_onb_step_settings" model="onboarding.onboarding.step">
+        <field name="title">Configurer Helpdesk</field>
+        <field name="description">Définissez les équipes, les domaines acceptés, les notifications et le tagging automatique.</field>
+        <field name="button_text">Ouvrir Paramètres</field>
+        <field name="done_text">Helpdesk configuré</field>
+        <field name="panel_step_open_action_name">bf_open_res_config_settings</field>
+        <field name="sequence">1</field>
+    </record>
+
+    <record id="bf_onb_step_macros" model="onboarding.onboarding.step">
+        <field name="title">Préparer les macros</field>
+        <field name="description">[action:bf_helpdesk.action_helpdesk_macro] Configurez les réponses pré-rédigées pour accélérer le traitement des tickets.</field>
+        <field name="button_text">Voir les macros</field>
+        <field name="done_text">Macros prêtes</field>
+        <field name="panel_step_open_action_name">bf_open_action</field>
+        <field name="sequence">2</field>
+    </record>
+
+    <record id="bf_onb_step_team" model="onboarding.onboarding.step">
+        <field name="title">Lier une équipe à une banque d'heures</field>
+        <field name="description">[action:helpdesk_mgmt.helpdesk_ticket_team_action] Associez chaque équipe à un client, une banque d'heures et un sondage de satisfaction.</field>
+        <field name="button_text">Voir les équipes</field>
+        <field name="done_text">Équipes connectées</field>
+        <field name="panel_step_open_action_name">bf_open_action</field>
+        <field name="sequence">3</field>
+    </record>
+
+    <record id="bf_onboarding_panel" model="onboarding.onboarding">
+        <field name="name">Blue Fox Helpdesk</field>
+        <field name="route_name">bf_helpdesk_onboarding</field>
+        <field name="panel_close_action_name">action_close_panel_bf_helpdesk</field>
+        <field name="step_ids" eval="[
+            Command.link(ref('bf_helpdesk.bf_onb_step_settings')),
+            Command.link(ref('bf_helpdesk.bf_onb_step_macros')),
+            Command.link(ref('bf_helpdesk.bf_onb_step_team')),
+        ]"/>
+    </record>
+
+</odoo>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="bf_note_user_pref_view_form" model="ir.ui.view">
+        <field name="name">bf.note.user.preferences.form</field>
+        <field name="model">res.users</field>
+        <field name="priority">99</field>
+        <field name="arch" type="xml">
+            <form string="Préférences Bloc-notes">
+                <sheet>
+                    <group>
+                        <field name="bf_note_default_reminder"/>
+                    </group>
+                    <p class="text-muted">
+                        Ce rappel sera pré-sélectionné dans le dialogue de création rapide
+                        (icône systray ou <kbd>Alt+N</kbd>). Tu peux toujours le changer au
+                        moment de la création.
+                    </p>
+                </sheet>
+                <footer>
+                    <button string="Enregistrer" type="object"
+                            name="action_open_bf_note_preferences"
+                            class="btn-primary" special="save"/>
+                    <button string="Annuler" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="bf_note_user_pref_action" model="ir.actions.server">
+        <field name="name">Mes préférences</field>
+        <field name="model_id" ref="base.model_res_users"/>
+        <field name="state">code</field>
+        <field name="code">action = env.user.action_open_bf_note_preferences()</field>
+    </record>
+
+</odoo>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_partner_form_persona" model="ir.ui.view">
+        <field name="name">res.partner.form.persona</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button type="object" name="action_open_persona"
+                        class="oe_stat_button" icon="fa-user-circle"
+                        groups="bf_persona.group_persona_user">
+                    <field name="has_persona" invisible="1"/>
+                    <div class="o_stat_info">
+                        <span class="o_stat_text">Persona</span>
+                    </div>
+                </button>
+                <button type="object" name="action_launch_persona_skill"
+                        class="oe_stat_button" icon="fa-magic"
+                        groups="bf_persona.group_persona_user"
+                        help="Lance la skill Claude /persona refresh sur ce contact.">
+                    <div class="o_stat_info">
+                        <span class="o_stat_text">/persona</span>
+                    </div>
+                </button>
+            </xpath>
+
+            <xpath expr="//notebook" position="inside">
+                <page string="Persona" name="persona"
+                      groups="bf_persona.group_persona_user"
+                      invisible="not has_persona">
+                    <field name="persona_summary" readonly="1" nolabel="1"/>
+                </page>
+            </xpath>
+
+        </field>
+    </record>
+
+</odoo>

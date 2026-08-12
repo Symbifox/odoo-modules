@@ -1,0 +1,383 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="report_meeting_agenda">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-set="lang" t-value="doc.lang or (doc.partner_id and doc.partner_id.lang) or 'fr_CA'"/>
+                <t t-set="data" t-value="doc.with_context(lang=lang)._get_report_data()"/>
+                <div class="article" style="padding: 0 !important; margin: 0 !important;">
+                    <link rel="stylesheet" href="/bf_lexend/static/src/scss/lexend_report.css"/>
+                    <style>
+                        .container, .o_body_html, body, #wrapwrap, main, .article {
+                            max-width: 100% !important;
+                            width: 100% !important;
+                            padding-left: 0 !important;
+                            padding-right: 0 !important;
+                            margin-left: 0 !important;
+                            margin-right: 0 !important;
+                        }
+
+                        .ma-page,
+                        .ma-page * {
+                            font-family: "Lexend", system-ui, -apple-system, sans-serif !important;
+                        }
+                        .ma-page {
+                            font-size: 11pt;
+                            line-height: 1.45;
+                            color: <t t-esc="(env.company and env.company.report_brand_dark) or '#212529'"/>;
+                        }
+
+                        .ma-banner {
+                            background: <t t-esc="(env.company and env.company.report_brand_dark) or '#212529'"/>;
+                            padding: 20pt 24pt 18pt 24pt;
+                            display: table;
+                            width: 100%;
+                        }
+                        .ma-banner .banner-logo {
+                            display: table-cell;
+                            vertical-align: middle;
+                            width: 90px;
+                            padding-right: 18pt;
+                        }
+                        .ma-banner .banner-logo img {
+                            max-height: 54px;
+                            max-width: 84px;
+                        }
+                        .ma-banner .banner-content {
+                            display: table-cell;
+                            vertical-align: middle;
+                        }
+                        .ma-banner .doc-type {
+                            font-size: 9.5pt;
+                            font-weight: 600;
+                            text-transform: uppercase;
+                            letter-spacing: 2pt;
+                            color: #29ABE1;
+                            margin: 0 0 4pt 0;
+                        }
+                        .ma-banner h1 {
+                            font-size: 19pt;
+                            font-weight: 600;
+                            color: #ffffff;
+                            margin: 0 0 3pt 0;
+                            line-height: 1.25;
+                        }
+                        .ma-banner .doc-subtitle {
+                            font-size: 11.5pt;
+                            color: rgba(255,255,255,0.78);
+                            margin: 0;
+                        }
+                        .ma-accent-bar {
+                            height: 3px;
+                            background: #29ABE1;
+                            margin: 0;
+                            width: 100%;
+                        }
+
+                        .ma-meta {
+                            display: table;
+                            width: 100%;
+                            background: #f8f9fb;
+                            padding: 12pt 24pt;
+                            border-bottom: 1px solid #eaedf0;
+                        }
+                        .ma-meta-item {
+                            display: table-cell;
+                            vertical-align: middle;
+                        }
+                        .ma-meta-item.right {
+                            text-align: right;
+                        }
+                        .ma-meta-label {
+                            font-size: 9.5pt;
+                            color: #777;
+                            text-transform: uppercase;
+                            letter-spacing: 0.5pt;
+                        }
+                        .ma-meta-value {
+                            font-size: 12.5pt;
+                            font-weight: 600;
+                            color: <t t-esc="(env.company and env.company.report_brand_dark) or '#212529'"/>;
+                        }
+
+                        .ma-kpi-grid {
+                            display: table;
+                            width: 100%;
+                            padding: 14pt 24pt 10pt 24pt;
+                            table-layout: fixed;
+                        }
+                        .ma-kpi-card {
+                            display: table-cell;
+                            text-align: center;
+                            padding: 12pt 8pt;
+                            border: 1px solid #eaedf0;
+                            border-radius: 4px;
+                            background: #fff;
+                        }
+                        .ma-kpi-card + .ma-kpi-card {
+                            border-left: none;
+                        }
+                        .ma-kpi-number {
+                            font-size: 22pt;
+                            font-weight: 700;
+                            line-height: 1.2;
+                            color: <t t-esc="(env.company and env.company.report_brand_dark) or '#212529'"/>;
+                        }
+                        .ma-kpi-label {
+                            font-size: 9pt;
+                            color: #777;
+                            text-transform: uppercase;
+                            letter-spacing: 0.5pt;
+                            margin-top: 3pt;
+                        }
+
+                        .ma-content {
+                            padding: 14pt 24pt;
+                        }
+                        .ma-section-title {
+                            font-size: 13.5pt;
+                            font-weight: 600;
+                            color: <t t-esc="(env.company and env.company.report_brand_dark) or '#212529'"/>;
+                            margin: 18pt 0 9pt 0;
+                            padding-bottom: 4pt;
+                            border-bottom: 2px solid #29ABE1;
+                            display: inline-block;
+                        }
+                        .ma-section-title:first-child {
+                            margin-top: 0;
+                        }
+
+                        .ma-table {
+                            width: 100%;
+                            border-collapse: collapse;
+                            font-size: 10pt;
+                            margin-bottom: 8pt;
+                        }
+                        .ma-table th {
+                            background: <t t-esc="(env.company and env.company.report_brand_dark) or '#212529'"/>;
+                            color: #fff;
+                            padding: 6pt 7pt;
+                            text-align: left;
+                            font-weight: 600;
+                            font-size: 9.5pt;
+                        }
+                        .ma-table td {
+                            padding: 5pt 7pt;
+                            border-bottom: 1px solid #eaedf0;
+                            vertical-align: top;
+                        }
+                        .ma-table tr:nth-child(even) td {
+                            background: #f8f9fb;
+                        }
+                        .ma-topic-desc {
+                            font-size: 9.5pt;
+                            color: #555;
+                            margin-top: 3pt;
+                        }
+                        .ma-topic-desc ul {
+                            margin: 2pt 0;
+                            padding-left: 14pt;
+                        }
+                        .ma-topic-desc li {
+                            margin-bottom: 2pt;
+                        }
+
+                        .ma-footer {
+                            padding: 10pt 24pt 0 24pt;
+                            border-top: 1px solid #dde0e4;
+                            display: table;
+                            width: 100%;
+                            font-size: 9pt;
+                            color: #999;
+                            margin-top: 18pt;
+                        }
+                        .ma-footer-left {
+                            display: table-cell;
+                            text-align: left;
+                        }
+                        .ma-footer-right {
+                            display: table-cell;
+                            text-align: right;
+                        }
+                    </style>
+
+                    <div class="ma-page">
+
+                        <!-- Banner -->
+                        <div class="ma-banner">
+                            <div class="banner-logo">
+                                <img t-att-src="image_data_uri(doc.company_id.meeting_logo or doc.company_id.logo)" alt="Logo"/>
+                            </div>
+                            <div class="banner-content">
+                                <div class="doc-type">Ordre du jour</div>
+                                <h1><t t-out="doc.name"/></h1>
+                                <div class="doc-subtitle">
+                                    <t t-if="doc.project_id">
+                                        Projet : <t t-out="doc.project_id.name"/>
+                                    </t>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ma-accent-bar"/>
+
+                        <!-- Metadata -->
+                        <div class="ma-meta">
+                            <div class="ma-meta-item">
+                                <div class="ma-meta-label">Date</div>
+                                <div class="ma-meta-value">
+                                    <t t-out="data['date_display']"/>
+                                </div>
+                            </div>
+                            <t t-if="doc.location">
+                                <div class="ma-meta-item">
+                                    <div class="ma-meta-label">Lieu</div>
+                                    <div class="ma-meta-value">
+                                        <t t-out="doc.location"/>
+                                    </div>
+                                </div>
+                            </t>
+                            <div class="ma-meta-item right">
+                                <div class="ma-meta-label">Dur&#233;e pr&#233;vue</div>
+                                <div class="ma-meta-value">
+                                    <t t-if="doc.duration_planned">
+                                        <t t-out="doc.duration_planned"/> min
+                                    </t>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- KPI -->
+                        <div class="ma-kpi-grid">
+                            <div class="ma-kpi-card">
+                                <div class="ma-kpi-number"><t t-out="data['participant_count']"/></div>
+                                <div class="ma-kpi-label">Participants</div>
+                            </div>
+                            <div class="ma-kpi-card">
+                                <div class="ma-kpi-number"><t t-out="data['topic_count']"/></div>
+                                <div class="ma-kpi-label">Sujets</div>
+                            </div>
+                            <div class="ma-kpi-card">
+                                <div class="ma-kpi-number"><t t-out="data['tagged_task_count']"/></div>
+                                <div class="ma-kpi-label">&#201;l&#233;ments d'action</div>
+                            </div>
+                        </div>
+
+                        <div class="ma-content">
+
+                            <!-- Participants -->
+                            <t t-if="doc.participant_ids">
+                                <div class="ma-section-title">Participants</div>
+                                <p>
+                                    <t t-foreach="doc.participant_ids" t-as="p">
+                                        <t t-out="p.name"/><t t-if="not p_last">, </t>
+                                    </t>
+                                </p>
+                            </t>
+
+                            <!-- Objectives -->
+                            <t t-if="doc.objectives">
+                                <div class="ma-section-title">Objectifs</div>
+                                <p style="white-space: pre-wrap;"><t t-out="doc.objectives"/></p>
+                            </t>
+
+                            <!-- Topics table -->
+                            <t t-if="data['topics']">
+                                <div class="ma-section-title">Sujets</div>
+                                <table class="ma-table">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 5%;">#</th>
+                                            <th style="width: 25%;">Sujet</th>
+                                            <th style="width: 8%; text-align: center;">Dur&#233;e</th>
+                                            <th style="width: 12%;">Intervenant</th>
+                                            <th style="width: 50%;">Notes</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-foreach="data['topics']" t-as="topic">
+                                            <tr>
+                                                <td><t t-out="topic['index']"/></td>
+                                                <td><strong><t t-out="topic['name']"/></strong></td>
+                                                <td style="text-align: center;">
+                                                    <t t-if="topic['duration']"><t t-out="topic['duration']"/> min</t>
+                                                </td>
+                                                <td><t t-out="topic['presenter']"/></td>
+                                                <td>
+                                                    <t t-if="topic['description']">
+                                                        <div class="ma-topic-desc">
+                                                            <t t-out="topic['description']"/>
+                                                        </div>
+                                                    </t>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </t>
+
+                            <!-- Tagged tasks -->
+                            <t t-if="data.get('tagged_tasks')">
+                                <div class="ma-section-title">&#201;l&#233;ments d'action &#224; discuter</div>
+                                <table class="ma-table">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 5%;">#</th>
+                                            <th style="width: 40%;">T&#226;che</th>
+                                            <th style="width: 20%;">Assign&#233;e &#224;</th>
+                                            <th style="width: 15%; text-align: center;">&#201;ch&#233;ance</th>
+                                            <th style="width: 20%;">Source</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-foreach="data['tagged_tasks']" t-as="task">
+                                            <tr>
+                                                <td><t t-out="task['index']"/></td>
+                                                <td>
+                                                    <strong><t t-out="task['name']"/></strong>
+                                                    <t t-if="task['project']">
+                                                        <br/><span style="color:#888; font-size: 8pt;"><t t-out="task['project']"/></span>
+                                                    </t>
+                                                </td>
+                                                <td><t t-out="task['assignees']"/></td>
+                                                <td style="text-align: center;">
+                                                    <t t-if="task['deadline']"><t t-out="task['deadline']"/></t>
+                                                </td>
+                                                <td><t t-out="task['source']"/></td>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </t>
+
+                            <!-- Context -->
+                            <t t-if="doc.context_html">
+                                <div class="ma-section-title">Contexte</div>
+                                <t t-out="doc.context_html"/>
+                            </t>
+
+                            <!-- Preparation -->
+                            <t t-if="doc.preparation_html">
+                                <div class="ma-section-title">Pr&#233;paration</div>
+                                <t t-out="doc.preparation_html"/>
+                            </t>
+
+                        </div>
+
+                        <!-- Footer -->
+                        <div class="ma-footer">
+                            <div class="ma-footer-left">
+                                <t t-out="doc.company_id.name"/>
+                            </div>
+                            <div class="ma-footer-right">
+                                Ordre du jour &#8212; Document confidentiel
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+
+</odoo>

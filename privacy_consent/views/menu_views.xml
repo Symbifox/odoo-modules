@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Root menu - standalone app -->
+    <menuitem id="menu_privacy_root"
+              name="Vie privée"
+              web_icon="privacy_consent,static/description/icon.png"
+              groups="privacy_consent.group_privacy_user"
+              sequence="90"/>
+
+    <!-- Dashboard (first item) -->
+    <menuitem id="menu_privacy_dashboard"
+              name="Tableau de bord"
+              parent="menu_privacy_root"
+              action="action_privacy_dashboard"
+              sequence="1"/>
+
+    <!-- Operations submenu -->
+    <menuitem id="menu_privacy_operations"
+              name="Opérations"
+              parent="menu_privacy_root"
+              sequence="10"/>
+
+    <menuitem id="menu_privacy_consents"
+              name="Consentements"
+              parent="menu_privacy_operations"
+              action="action_privacy_consent"
+              sequence="10"/>
+
+    <menuitem id="menu_privacy_pending"
+              name="Demandes en attente"
+              parent="menu_privacy_operations"
+              action="action_privacy_consent_pending"
+              sequence="20"/>
+
+    <menuitem id="menu_privacy_destructions"
+              name="Demandes de destruction"
+              parent="menu_privacy_operations"
+              action="action_privacy_destruction_request"
+              groups="privacy_consent.group_privacy_manager"
+              sequence="30"/>
+
+    <menuitem id="menu_privacy_register"
+              name="Registre de destruction"
+              parent="menu_privacy_operations"
+              action="action_privacy_destruction_register"
+              groups="privacy_consent.group_privacy_officer"
+              sequence="35"/>
+
+    <menuitem id="menu_privacy_campaigns"
+              name="Campagnes de destruction"
+              parent="menu_privacy_operations"
+              action="action_privacy_destruction_campaign"
+              groups="privacy_consent.group_privacy_manager"
+              sequence="40"/>
+
+    <menuitem id="menu_privacy_assessments"
+              name="Évaluations d'anonymisation"
+              parent="menu_privacy_operations"
+              action="action_privacy_anonymization_assessment"
+              groups="privacy_consent.group_privacy_manager"
+              sequence="45"/>
+
+    <!-- Configuration submenu -->
+    <menuitem id="menu_privacy_config"
+              name="Configuration"
+              parent="menu_privacy_root"
+              groups="privacy_consent.group_privacy_manager"
+              sequence="100"/>
+
+    <menuitem id="menu_privacy_notices"
+              name="Modèles de consentement"
+              parent="menu_privacy_config"
+              action="action_privacy_notice"
+              sequence="10"/>
+
+    <menuitem id="menu_privacy_consent_groups"
+              name="Groupes de consentement"
+              parent="menu_privacy_config"
+              action="action_privacy_consent_group"
+              sequence="15"/>
+
+    <!-- Objets: visible seulement pour admins techniques -->
+    <menuitem id="menu_privacy_purposes"
+              name="Objets (avanc&#233;)"
+              parent="menu_privacy_config"
+              action="action_privacy_purpose"
+              groups="base.group_system"
+              sequence="90"/>
+
+    <menuitem id="menu_privacy_preferences"
+              name="Préférences de contact"
+              parent="menu_privacy_config"
+              action="action_privacy_preference"
+              sequence="30"/>
+
+    <menuitem id="menu_privacy_retention"
+              name="Politiques de rétention"
+              parent="menu_privacy_config"
+              action="action_privacy_retention_policy"
+              sequence="40"/>
+
+    <menuitem id="menu_privacy_retention_calendar"
+              name="Calendrier de conservation"
+              parent="menu_privacy_config"
+              action="action_privacy_retention_calendar"
+              sequence="42"/>
+
+    <menuitem id="menu_privacy_classifications"
+              name="Classifications documentaires"
+              parent="menu_privacy_config"
+              action="action_privacy_document_classification"
+              sequence="44"/>
+
+    <menuitem id="menu_privacy_email_sequences"
+              name="Séquences de courriel"
+              parent="menu_privacy_config"
+              action="action_privacy_email_sequence"
+              sequence="50"/>
+
+    <!-- DocuSeal submenu -->
+    <menuitem id="menu_privacy_docuseal"
+              name="DocuSeal"
+              parent="menu_privacy_config"
+              sequence="60"/>
+
+    <menuitem id="menu_privacy_docuseal_config"
+              name="Configuration"
+              parent="menu_privacy_docuseal"
+              action="action_privacy_docuseal_config"
+              sequence="10"/>
+
+    <menuitem id="menu_privacy_docuseal_templates"
+              name="Modèles"
+              parent="menu_privacy_docuseal"
+              action="action_privacy_docuseal_template"
+              sequence="20"/>
+
+    <!-- LibreSign submenu -->
+    <menuitem id="menu_privacy_libresign"
+              name="LibreSign"
+              parent="menu_privacy_config"
+              sequence="65"/>
+
+    <menuitem id="menu_privacy_libresign_config"
+              name="Configuration"
+              parent="menu_privacy_libresign"
+              action="action_privacy_libresign_config"
+              sequence="10"/>
+
+    <menuitem id="menu_privacy_libresign_templates"
+              name="Modèles"
+              parent="menu_privacy_libresign"
+              action="action_privacy_libresign_template"
+              sequence="20"/>
+</odoo>

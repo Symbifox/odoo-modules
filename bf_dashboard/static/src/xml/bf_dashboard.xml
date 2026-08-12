@@ -1,0 +1,385 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="bf_dashboard.Dashboard">
+        <div class="o_bf_dashboard">
+            <!-- Loading State -->
+            <div t-if="state.loading" class="d-flex justify-content-center align-items-center" style="min-height: 400px;">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Chargement...</span>
+                </div>
+            </div>
+
+            <!-- Error State -->
+            <div t-elif="!state.data" class="container-fluid py-4">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="alert alert-warning d-flex align-items-center" role="alert">
+                            <i class="fa fa-exclamation-triangle fa-2x me-3"/>
+                            <div class="flex-grow-1">
+                                <strong>Erreur de chargement</strong>
+                                <p class="mb-0">Impossible de charger les donn&#233;es du tableau de bord.</p>
+                            </div>
+                            <button class="btn btn-outline-warning" t-on-click="refresh">
+                                <i class="fa fa-refresh me-1"/>R&#233;essayer
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dashboard Content -->
+            <div t-else="" class="container-fluid py-4">
+
+                <!-- Header -->
+                <div class="row mb-4">
+                    <div class="col-12 d-flex justify-content-between align-items-center flex-wrap gap-2">
+                        <div>
+                            <h1 class="mb-0">
+                                <i class="fa fa-dashboard me-2"/>Tableau de bord
+                            </h1>
+                            <p class="text-muted mb-0">Vue d'ensemble des op&#233;rations Blue Fox</p>
+                        </div>
+                        <button class="btn btn-outline-secondary" t-on-click="refresh">
+                            <i class="fa fa-refresh me-1"/>Actualiser
+                        </button>
+                    </div>
+                </div>
+
+                <!-- ============================== -->
+                <!-- ACTIONS REQUISES               -->
+                <!-- ============================== -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <h5 class="text-uppercase text-muted mb-3">
+                            <i class="fa fa-bell me-2"/>Actions requises
+                        </h5>
+                    </div>
+
+                    <!-- T&#226;ches en retard -->
+                    <t t-if="state.data.overdue_tasks">
+                        <div class="col-lg col-md-6 mb-3">
+                            <div t-attf-class="card h-100 cursor-pointer {{state.data.overdue_tasks.count > 0 ? 'border-danger' : ''}}"
+                                 t-on-click="openOverdueTasks">
+                                <div class="card-body text-center">
+                                    <h2 t-attf-class="mb-0 {{state.data.overdue_tasks.count > 0 ? 'text-danger' : 'text-muted'}}"
+                                        t-esc="state.data.overdue_tasks.count"/>
+                                    <small class="text-muted"><i class="fa fa-tasks me-1"/>T&#226;ches en retard</small>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+
+                    <!-- Activit&#233;s en retard -->
+                    <t t-if="state.data.overdue_activities">
+                        <div class="col-lg col-md-6 mb-3">
+                            <div t-attf-class="card h-100 cursor-pointer {{state.data.overdue_activities.count > 0 ? 'border-danger' : ''}}"
+                                 t-on-click="openOverdueActivities">
+                                <div class="card-body text-center">
+                                    <h2 t-attf-class="mb-0 {{state.data.overdue_activities.count > 0 ? 'text-danger' : 'text-muted'}}"
+                                        t-esc="state.data.overdue_activities.count"/>
+                                    <small class="text-muted"><i class="fa fa-clock-o me-1"/>Activit&#233;s en retard</small>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+
+                    <!-- Factures brouillon -->
+                    <t t-if="state.data.invoices_to_validate">
+                        <div class="col-lg col-md-6 mb-3">
+                            <div t-attf-class="card h-100 cursor-pointer {{state.data.invoices_to_validate.count > 0 ? 'border-warning' : ''}}"
+                                 t-on-click="openDraftInvoices">
+                                <div class="card-body text-center">
+                                    <h2 t-attf-class="mb-0 {{state.data.invoices_to_validate.count > 0 ? 'text-warning' : 'text-muted'}}"
+                                        t-esc="state.data.invoices_to_validate.count"/>
+                                    <small class="text-muted"><i class="fa fa-file-text-o me-1"/>Factures brouillon</small>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+
+                    <!-- Factures &#224; payer -->
+                    <t t-if="state.data.bills_to_pay">
+                        <div class="col-lg col-md-6 mb-3">
+                            <div t-attf-class="card h-100 cursor-pointer {{state.data.bills_to_pay.count > 0 ? 'border-warning' : ''}}"
+                                 t-on-click="openBillsToPay">
+                                <div class="card-body text-center">
+                                    <h2 t-attf-class="mb-0 {{state.data.bills_to_pay.count > 0 ? 'text-warning' : 'text-muted'}}"
+                                        t-esc="state.data.bills_to_pay.count"/>
+                                    <small class="text-muted"><i class="fa fa-credit-card me-1"/>Factures &#224; payer</small>
+                                    <t t-if="state.data.bills_to_pay.count > 0">
+                                        <br/>
+                                        <small class="text-warning fw-bold" t-esc="this.formatCurrency(state.data.bills_to_pay.total)"/>
+                                    </t>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+
+                    <!-- &#201;l&#233;ments &#224; lettrer -->
+                    <t t-if="state.data.reconciliation">
+                        <div class="col-lg col-md-6 mb-3">
+                            <div t-attf-class="card h-100 cursor-pointer {{state.data.reconciliation.total_count > 0 ? 'border-primary' : ''}}"
+                                 t-on-click="() => this.openUnreconciled()">
+                                <div class="card-body text-center">
+                                    <h2 t-attf-class="mb-0 {{state.data.reconciliation.total_count > 0 ? 'text-primary' : 'text-muted'}}"
+                                        t-esc="state.data.reconciliation.total_count"/>
+                                    <small class="text-muted"><i class="fa fa-exchange me-1"/>&#201;l&#233;ments &#224; lettrer</small>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </div>
+
+                <!-- ============================== -->
+                <!-- FACTURATION MENSUELLE          -->
+                <!-- ============================== -->
+                <t t-if="state.data.revenue and state.data.revenue.months and state.data.revenue.months.length > 0">
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                                    <h6 class="mb-0"><i class="fa fa-bar-chart me-2"/>Facturation mensuelle</h6>
+                                    <span class="badge text-bg-secondary">
+                                        <t t-esc="state.data.revenue.months.length"/> mois
+                                    </span>
+                                </div>
+                                <div class="card-body p-0">
+                                    <div class="table-responsive">
+                                        <table class="table table-sm table-hover mb-0">
+                                            <thead class="table-light">
+                                                <tr>
+                                                    <th>Mois</th>
+                                                    <th class="text-end">Revenus</th>
+                                                    <th class="text-end">Co&#251;ts</th>
+                                                    <th class="text-end">Net</th>
+                                                    <th style="width: 30%;"></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <t t-foreach="state.data.revenue.months" t-as="m" t-key="m.month">
+                                                    <tr>
+                                                        <td t-esc="this.formatMonth(m.month)"/>
+                                                        <td class="text-end" t-esc="this.formatCurrency(m.revenue)"/>
+                                                        <td class="text-end text-danger" t-esc="this.formatCurrency(m.costs)"/>
+                                                        <td class="text-end fw-bold" t-esc="this.formatCurrency(m.net)"/>
+                                                        <td>
+                                                            <div class="progress" style="height: 16px;">
+                                                                <div class="progress-bar bg-success"
+                                                                     role="progressbar"
+                                                                     t-att-style="'width: ' + this.getBarWidth(m.net, this.getMaxNet())"/>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                </t>
+                                            </tbody>
+                                            <tfoot class="table-light fw-bold">
+                                                <tr>
+                                                    <td>Total</td>
+                                                    <td class="text-end" t-esc="this.formatCurrency(state.data.revenue.total_revenue)"/>
+                                                    <td class="text-end text-danger" t-esc="this.formatCurrency(state.data.revenue.total_costs)"/>
+                                                    <td class="text-end" t-esc="this.formatCurrency(state.data.revenue.total_net)"/>
+                                                    <td></td>
+                                                </tr>
+                                            </tfoot>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+
+                <!-- ============================== -->
+                <!-- R&#201;SUM&#201;S MODULES      -->
+                <!-- ============================== -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <h5 class="text-uppercase text-muted mb-3">
+                            <i class="fa fa-cubes me-2"/>Modules
+                        </h5>
+                    </div>
+
+                    <!-- H&#233;bergement -->
+                    <div class="col-lg-4 mb-3">
+                        <t t-if="state.data.hosting">
+                            <div class="card h-100 cursor-pointer" t-on-click="openHostingDashboard">
+                                <div class="card-header bg-light">
+                                    <h6 class="mb-0"><i class="fa fa-server me-2"/>H&#233;bergement</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span><i class="fa fa-check-circle text-success me-2"/>Services actifs</span>
+                                        <strong class="text-success" t-esc="state.data.hosting.services_active"/>
+                                    </div>
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span><i class="fa fa-times-circle text-danger me-2"/>En panne</span>
+                                        <strong t-attf-class="{{state.data.hosting.services_down > 0 ? 'text-danger' : 'text-success'}}"
+                                                t-esc="state.data.hosting.services_down"/>
+                                    </div>
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span><i class="fa fa-exclamation-triangle text-warning me-2"/>Alertes</span>
+                                        <strong t-attf-class="{{state.data.hosting.alerts_count > 0 ? 'text-warning' : 'text-muted'}}"
+                                                t-esc="state.data.hosting.alerts_count"/>
+                                    </div>
+                                    <div class="d-flex justify-content-between">
+                                        <span><i class="fa fa-clock-o text-info me-2"/>Expirant (30j)</span>
+                                        <strong t-attf-class="{{state.data.hosting.expiring_count > 0 ? 'text-info' : 'text-muted'}}"
+                                                t-esc="state.data.hosting.expiring_count"/>
+                                    </div>
+                                </div>
+                                <div class="card-footer text-center text-primary">
+                                    <i class="fa fa-arrow-right me-1"/>Voir le tableau de bord
+                                </div>
+                            </div>
+                        </t>
+                        <t t-else="">
+                            <div class="card h-100">
+                                <div class="card-header bg-light">
+                                    <h6 class="mb-0"><i class="fa fa-server me-2"/>H&#233;bergement</h6>
+                                </div>
+                                <div class="card-body text-center text-muted py-4">
+                                    <i class="fa fa-spinner fa-spin me-1"/>Donn&#233;es non disponibles
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+
+                    <!-- Connaissances -->
+                    <div class="col-lg-4 mb-3">
+                        <t t-if="state.data.knowledge">
+                            <div class="card h-100 cursor-pointer" t-on-click="openKnowledgeDashboard">
+                                <div class="card-header bg-light">
+                                    <h6 class="mb-0"><i class="fa fa-book me-2"/>Connaissances</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span><i class="fa fa-exclamation-circle text-danger me-2"/>Attention requise</span>
+                                        <strong t-attf-class="{{state.data.knowledge.total_attention > 0 ? 'text-danger' : 'text-muted'}}"
+                                                t-esc="state.data.knowledge.total_attention"/>
+                                    </div>
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span><i class="fa fa-calendar-times-o text-warning me-2"/>R&#233;vision en retard</span>
+                                        <strong t-attf-class="{{state.data.knowledge.overdue_review > 0 ? 'text-warning' : 'text-muted'}}"
+                                                t-esc="state.data.knowledge.overdue_review"/>
+                                    </div>
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span><i class="fa fa-key text-warning me-2"/>Identifiants expirant</span>
+                                        <strong t-attf-class="{{state.data.knowledge.credentials_expiring > 0 ? 'text-warning' : 'text-muted'}}"
+                                                t-esc="state.data.knowledge.credentials_expiring"/>
+                                    </div>
+                                    <div class="d-flex justify-content-between">
+                                        <span><i class="fa fa-key text-danger me-2"/>Identifiants expir&#233;s</span>
+                                        <strong t-attf-class="{{state.data.knowledge.credentials_expired > 0 ? 'text-danger' : 'text-muted'}}"
+                                                t-esc="state.data.knowledge.credentials_expired"/>
+                                    </div>
+                                </div>
+                                <div class="card-footer text-center text-primary">
+                                    <i class="fa fa-arrow-right me-1"/>Voir le tableau de bord
+                                </div>
+                            </div>
+                        </t>
+                        <t t-else="">
+                            <div class="card h-100">
+                                <div class="card-header bg-light">
+                                    <h6 class="mb-0"><i class="fa fa-book me-2"/>Connaissances</h6>
+                                </div>
+                                <div class="card-body text-center text-muted py-4">
+                                    <i class="fa fa-spinner fa-spin me-1"/>Donn&#233;es non disponibles
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+
+                    <!-- Vie priv&#233;e -->
+                    <div class="col-lg-4 mb-3">
+                        <t t-if="state.data.privacy">
+                            <div class="card h-100 cursor-pointer" t-on-click="openPrivacyPending">
+                                <div class="card-header bg-light">
+                                    <h6 class="mb-0"><i class="fa fa-shield me-2"/>Vie priv&#233;e</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span><i class="fa fa-hourglass-half text-warning me-2"/>En attente</span>
+                                        <strong t-attf-class="{{state.data.privacy.pending > 0 ? 'text-warning' : 'text-muted'}}"
+                                                t-esc="state.data.privacy.pending"/>
+                                    </div>
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span><i class="fa fa-check-circle text-success me-2"/>Accord&#233;s</span>
+                                        <strong class="text-success" t-esc="state.data.privacy.granted"/>
+                                    </div>
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span><i class="fa fa-pie-chart text-primary me-2"/>Taux consentement</span>
+                                        <strong class="text-primary"><t t-esc="state.data.privacy.consent_rate"/>%</strong>
+                                    </div>
+                                    <div class="d-flex justify-content-between">
+                                        <span><i class="fa fa-clock-o text-info me-2"/>Expirant (30j)</span>
+                                        <strong t-attf-class="{{state.data.privacy.expiring_30 > 0 ? 'text-info' : 'text-muted'}}"
+                                                t-esc="state.data.privacy.expiring_30"/>
+                                    </div>
+                                </div>
+                                <div class="card-footer text-center text-primary">
+                                    <i class="fa fa-arrow-right me-1"/>Voir les consentements
+                                </div>
+                            </div>
+                        </t>
+                        <t t-else="">
+                            <div class="card h-100">
+                                <div class="card-header bg-light">
+                                    <h6 class="mb-0"><i class="fa fa-shield me-2"/>Vie priv&#233;e</h6>
+                                </div>
+                                <div class="card-body text-center text-muted py-4">
+                                    <i class="fa fa-spinner fa-spin me-1"/>Donn&#233;es non disponibles
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+                </div>
+
+                <!-- ============================== -->
+                <!-- TABLEAU LETTRAGE               -->
+                <!-- ============================== -->
+                <t t-if="state.data.reconciliation and state.data.reconciliation.accounts and state.data.reconciliation.accounts.length > 0">
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                                    <h6 class="mb-0"><i class="fa fa-exchange me-2"/>Comptes &#224; lettrer</h6>
+                                    <span class="badge text-bg-secondary">
+                                        Top <t t-esc="state.data.reconciliation.accounts.length"/>
+                                    </span>
+                                </div>
+                                <div class="card-body p-0">
+                                    <div class="table-responsive">
+                                        <table class="table table-sm table-hover mb-0">
+                                            <thead class="table-light">
+                                                <tr>
+                                                    <th>Compte</th>
+                                                    <th>Nom</th>
+                                                    <th class="text-end">&#201;l&#233;ments</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <t t-foreach="state.data.reconciliation.accounts" t-as="acct" t-key="acct.account_id">
+                                                    <tr class="cursor-pointer" t-on-click="() => this.openUnreconciled(acct.account_id)">
+                                                        <td><strong t-esc="acct.code"/></td>
+                                                        <td t-esc="acct.name"/>
+                                                        <td class="text-end">
+                                                            <span class="badge text-bg-primary" t-esc="acct.count"/>
+                                                        </td>
+                                                    </tr>
+                                                </t>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+
+            </div>
+        </div>
+    </t>
+
+</templates>

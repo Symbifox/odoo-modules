@@ -1,0 +1,398 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- List View -->
+    <record id="meeting_record_view_list" model="ir.ui.view">
+        <field name="name">meeting.record.list</field>
+        <field name="model">meeting.record</field>
+        <field name="arch" type="xml">
+            <list default_order="date desc">
+                <field name="date"/>
+                <field name="room_name"/>
+                <field name="meeting_type_icon" string="" optional="show" width="40px"/>
+                <field name="meeting_type" column_invisible="1"/>
+                <field name="project_id"/>
+                <field name="partner_id" optional="show"/>
+                <field name="series_name" optional="hide"/>
+                <field name="duration_minutes" optional="show"/>
+                <field name="report_state" widget="badge"
+                       decoration-success="report_state == 'sent'"
+                       decoration-info="report_state == 'reviewed'"
+                       decoration-warning="report_state == 'draft'"/>
+                <field name="task_count"/>
+                <field name="knowledge_item_count" optional="hide"/>
+                <field name="present_count" optional="hide" string="Présents"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Kanban View -->
+    <record id="meeting_record_view_kanban" model="ir.ui.view">
+        <field name="name">meeting.record.kanban</field>
+        <field name="model">meeting.record</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="report_state" class="o_kanban_small_column">
+                <field name="name"/>
+                <field name="room_name"/>
+                <field name="date"/>
+                <field name="project_id"/>
+                <field name="partner_id"/>
+                <field name="report_state"/>
+                <field name="task_count"/>
+                <field name="present_count"/>
+                <field name="attendance_count"/>
+                <field name="duration_minutes"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_content">
+                            <strong>
+                                <field name="room_name"/>
+                            </strong>
+                            <div class="text-muted">
+                                <field name="date" widget="date"/>
+                                <t t-if="record.duration_minutes.raw_value">
+                                    — <field name="duration_minutes"/> min
+                                </t>
+                            </div>
+                            <div t-if="record.project_id.value">
+                                <field name="project_id" widget="badge"/>
+                            </div>
+                            <div class="mt-1" t-if="record.attendance_count.raw_value > 0">
+                                <span class="badge text-bg-light">
+                                    <i class="fa fa-users"/> <field name="present_count"/> présent(s)
+                                </span>
+                            </div>
+                            <div class="mt-1" t-if="record.task_count.raw_value > 0">
+                                <span class="badge text-bg-secondary">
+                                    <i class="fa fa-tasks"/> <field name="task_count"/> tâches
+                                </span>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Calendar View -->
+    <record id="meeting_record_view_calendar" model="ir.ui.view">
+        <field name="name">meeting.record.calendar</field>
+        <field name="model">meeting.record</field>
+        <field name="arch" type="xml">
+            <calendar date_start="date" date_delay="date_delay"
+                      color="project_id" mode="month"
+                      event_open_popup="true" quick_create="false">
+                <field name="room_name"/>
+                <field name="project_id"/>
+                <field name="report_state"/>
+            </calendar>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="meeting_record_view_form" model="ir.ui.view">
+        <field name="name">meeting.record.form</field>
+        <field name="model">meeting.record</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_open_refine_wizard" type="object"
+                            string="Raffiner avec TentaClaude"
+                            class="btn-primary"
+                            groups="bf_meeting.group_meeting_manager"/>
+                    <button name="action_set_reviewed" type="object"
+                            string="Marquer révisé"
+                            class="btn-primary"
+                            invisible="report_state != 'draft'"/>
+                    <button name="action_send_report_direct" type="object"
+                            string="Envoyer le résumé"
+                            class="btn-primary"
+                            confirm="Le compte rendu sera envoyé immédiatement, en pièce jointe PDF, aux personnes listées dans « Destinataires ». Vérifiez la liste avant de confirmer l'envoi."
+                            invisible="report_state == 'draft'"/>
+                    <button name="action_send_report" type="object"
+                            string="Envoyer avec options..."
+                            invisible="report_state == 'draft'"/>
+                    <button name="action_send_report" type="object"
+                            string="Envoyer le rapport"
+                            invisible="report_state != 'draft'"/>
+                    <field name="report_state" widget="statusbar"
+                           statusbar_visible="draft,reviewed,sent"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_tasks" type="object"
+                                class="oe_stat_button" icon="fa-tasks"
+                                invisible="task_count == 0">
+                            <field name="task_count" widget="statinfo" string="Tâches"/>
+                        </button>
+                        <button name="action_view_knowledge_items" type="object"
+                                class="oe_stat_button" icon="fa-th-list"
+                                invisible="knowledge_item_count == 0">
+                            <field name="knowledge_item_count" widget="statinfo" string="Matrice"/>
+                        </button>
+                        <button name="action_view_agenda" type="object"
+                                class="oe_stat_button" icon="fa-list-ol"
+                                invisible="not agenda_id">
+                            <span class="o_stat_text">Ordre du jour</span>
+                        </button>
+                        <button name="action_view_calendar_event" type="object"
+                                class="oe_stat_button" icon="fa-calendar"
+                                invisible="not calendar_event_id">
+                            <span class="o_stat_text">Calendrier</span>
+                        </button>
+                        <button name="action_import_attendance" type="object"
+                                class="oe_stat_button" icon="fa-users"
+                                invisible="attendance_count > 0">
+                            <span class="o_stat_text">Importer présences</span>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Titre du compte rendu"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="project_id"/>
+                            <field name="partner_id"/>
+                            <field name="date"/>
+                            <field name="duration_minutes"/>
+                            <field name="meeting_type" widget="radio" options="{'horizontal': true}"/>
+                        </group>
+                        <group>
+                            <field name="room_name"/>
+                            <field name="location" invisible="meeting_type in ('phone', 'async')"/>
+                            <field name="series_name"/>
+                            <field name="organizer_id"/>
+                            <field name="lang"/>
+                            <field name="calendar_event_id"
+                                   options="{'no_create': True}"
+                                   placeholder="Lier un événement calendrier..."/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Destinataires du rapport">
+                            <field name="report_recipient_ids" widget="many2many_tags" nolabel="1"
+                                   placeholder="Ajouter les destinataires avant d'envoyer le PDF..."/>
+                            <span class="text-muted" colspan="2">
+                                Seules ces personnes recevront le compte rendu via « Envoyer le résumé ».
+                                La liste des participants affichée sur le rapport provient de l'onglet « Présences ».
+                            </span>
+                        </group>
+                        <group string="Invités">
+                            <field name="invited_ids" widget="many2many_tags" nolabel="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Résumé" name="summary">
+                            <group>
+                                <field name="summary" nolabel="1" placeholder="Résumé exécutif de la réunion..."/>
+                            </group>
+                            <separator string="Décisions"/>
+                            <field name="decision_ids">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="name"/>
+                                    <field name="decision_maker_id"/>
+                                    <field name="knowledge_item_id"/>
+                                </list>
+                            </field>
+                            <separator string="Questions ouvertes"/>
+                            <field name="open_questions_html" nolabel="1" readonly="1"/>
+                        </page>
+                        <page string="Sujets" name="topics">
+                            <field name="topic_ids">
+                                <list>
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="name"/>
+                                </list>
+                                <form>
+                                    <group>
+                                        <field name="name"/>
+                                        <field name="sequence"/>
+                                    </group>
+                                    <separator string="Points clés"/>
+                                    <field name="points_html" nolabel="1"/>
+                                </form>
+                            </field>
+                            <separator string="Notes structurées" invisible="not notes_html"/>
+                            <field name="notes_html" nolabel="1" readonly="1" invisible="not notes_html"/>
+                        </page>
+                        <page string="Présences" name="attendance">
+                            <p class="text-muted">
+                                Cette liste alimente la section « Participants » du compte rendu
+                                (PDF et courriel). Utilisez le bouton « Importer présences » pour la
+                                pré-remplir depuis l'événement calendrier lié.
+                            </p>
+                            <field name="attendance_ids">
+                                <list editable="bottom">
+                                    <field name="partner_id"/>
+                                    <field name="status" widget="badge"
+                                           decoration-success="status == 'present'"
+                                           decoration-danger="status == 'absent'"
+                                           decoration-warning="status == 'excused'"/>
+                                    <field name="role"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Éléments d'action" name="tasks">
+                            <field name="task_ids">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="user_ids" widget="many2many_tags"/>
+                                    <field name="date_deadline"/>
+                                    <field name="stage_id"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Matrice" name="knowledge">
+                            <p class="text-muted">
+                                Éléments de la matrice de connaissances touchés par cette rencontre.
+                                Le raffinage les rattache <em>et</em> les enrichit (notes, état,
+                                décision) ; le code et l'intitulé permettent de contester un
+                                rattachement sans ouvrir la matrice.
+                            </p>
+                            <field name="knowledge_item_ids" nolabel="1">
+                                <list>
+                                    <field name="decision_id" string="Code"/>
+                                    <field name="name"/>
+                                    <field name="section_id" optional="show"/>
+                                    <field name="state" widget="badge"/>
+                                    <field name="deadline" optional="hide"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Verbatim" name="verbatim">
+                            <field name="verbatim_html" nolabel="1"/>
+                            <separator string="Transcription brute" invisible="not verbatim"/>
+                            <field name="verbatim" nolabel="1" readonly="1" invisible="not verbatim"/>
+                        </page>
+                        <page string="Documents" name="documents">
+                            <p class="text-muted">
+                                Pièces jointes liées au compte rendu. La colonne <strong>Fenêtre</strong>
+                                permet de masquer un document hors d'une plage temporelle relative à la date
+                                de la rencontre — utile pour les pre-reads confidentiels ou les decks éphémères.
+                                Les gestionnaires voient toujours tout, indépendamment de la fenêtre.
+                            </p>
+                            <field name="meeting_attachment_ids" nolabel="1">
+                                <list editable="bottom">
+                                    <field name="name"/>
+                                    <field name="bf_visibility_window"/>
+                                    <field name="bf_visible_from" optional="hide"/>
+                                    <field name="bf_visible_until" optional="hide"/>
+                                    <field name="bf_is_visible_now" widget="boolean_toggle" readonly="1"/>
+                                    <field name="mimetype" optional="hide"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Technique" name="technical">
+                            <group>
+                                <group>
+                                    <field name="source_filename"/>
+                                    <field name="source_nc_path"/>
+                                    <field name="source_type"/>
+                                    <field name="agenda_id"/>
+                                </group>
+                                <group>
+                                    <field name="report_sent_date"/>
+                                    <field name="company_id" groups="base.group_multi_company"/>
+                                    <field name="active"/>
+                                </group>
+                            </group>
+                            <separator string="Notes de révision"
+                                       invisible="not review_notes"/>
+                            <field name="review_notes" nolabel="1" readonly="1"
+                                   invisible="not review_notes"/>
+                            <separator string="Notes structurées (JSON)"/>
+                            <field name="structured_notes_json" nolabel="1" readonly="1"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="meeting_record_view_search" model="ir.ui.view">
+        <field name="name">meeting.record.search</field>
+        <field name="model">meeting.record</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="room_name"/>
+                <field name="project_id"/>
+                <field name="partner_id"/>
+                <field name="series_name"/>
+                <field name="attendance_ids" string="Participant (présence)"
+                       filter_domain="[('attendance_ids.partner_id', 'ilike', self)]"/>
+                <filter name="filter_draft" string="Brouillon"
+                        domain="[('report_state', '=', 'draft')]"/>
+                <filter name="filter_reviewed" string="Révisé"
+                        domain="[('report_state', '=', 'reviewed')]"/>
+                <filter name="filter_sent" string="Envoyé"
+                        domain="[('report_state', '=', 'sent')]"/>
+                <separator/>
+                <filter name="filter_type_in_person" string="Présentiel"
+                        domain="[('meeting_type', '=', 'in_person')]"/>
+                <filter name="filter_type_video" string="Visio"
+                        domain="[('meeting_type', '=', 'video')]"/>
+                <filter name="filter_type_phone" string="Téléphonique"
+                        domain="[('meeting_type', '=', 'phone')]"/>
+                <filter name="filter_type_hybrid" string="Hybride"
+                        domain="[('meeting_type', '=', 'hybrid')]"/>
+                <filter name="filter_type_async" string="Asynchrone"
+                        domain="[('meeting_type', '=', 'async')]"/>
+                <separator/>
+                <filter name="filter_this_month" string="Ce mois"
+                        domain="[('date', '&gt;=', (context_today() - relativedelta(day=1)).strftime('%%Y-%%m-%%d')),
+                                 ('date', '&lt;', (context_today() + relativedelta(months=1, day=1)).strftime('%%Y-%%m-%%d'))]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="group_project" string="Projet"
+                            context="{'group_by': 'project_id'}"/>
+                    <filter name="group_month" string="Mois"
+                            context="{'group_by': 'date:month'}"/>
+                    <filter name="group_series" string="Série"
+                            context="{'group_by': 'series_name'}"/>
+                    <filter name="group_state" string="État"
+                            context="{'group_by': 'report_state'}"/>
+                    <filter name="group_meeting_type" string="Mode"
+                            context="{'group_by': 'meeting_type'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Actions -->
+    <record id="meeting_record_action" model="ir.actions.act_window">
+        <field name="name">Comptes rendus</field>
+        <field name="res_model">meeting.record</field>
+        <field name="view_mode">list,kanban,calendar,form</field>
+        <field name="search_view_id" ref="meeting_record_view_search"/>
+        <field name="context">{'search_default_filter_this_month': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Aucun compte rendu de réunion
+            </p>
+            <p>Les comptes rendus sont créés automatiquement par le Meeting Processor
+               ou peuvent être ajoutés manuellement.</p>
+        </field>
+    </record>
+
+    <record id="meeting_record_action_draft" model="ir.actions.act_window">
+        <field name="name">Brouillons</field>
+        <field name="res_model">meeting.record</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="search_view_id" ref="meeting_record_view_search"/>
+        <field name="context">{'search_default_filter_draft': 1}</field>
+    </record>
+
+    <record id="meeting_record_action_by_project" model="ir.actions.act_window">
+        <field name="name">Par projet</field>
+        <field name="res_model">meeting.record</field>
+        <field name="view_mode">list,kanban,calendar,form</field>
+        <field name="search_view_id" ref="meeting_record_view_search"/>
+        <field name="context">{'search_default_group_project': 1}</field>
+    </record>
+
+</odoo>

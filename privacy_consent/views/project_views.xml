@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Project Form Extension -->
+    <record id="view_project_form_privacy" model="ir.ui.view">
+        <field name="name">project.project.form.privacy</field>
+        <field name="model">project.project</field>
+        <field name="inherit_id" ref="project.edit_project"/>
+        <field name="arch" type="xml">
+            <!-- Smart button -->
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_consents"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="fa-shield"
+                        groups="privacy_consent.group_privacy_user"
+                        invisible="consent_count == 0">
+                    <div class="o_stat_info">
+                        <field name="consent_count"/>
+                        <span class="o_stat_text">Consentements</span>
+                    </div>
+                </button>
+            </xpath>
+
+            <!-- Consent tab in project settings -->
+            <xpath expr="//notebook" position="inside">
+                <page string="Consentements" name="consents"
+                      groups="privacy_consent.group_privacy_user">
+                    <group>
+                        <group string="Statut">
+                            <field name="consent_status" widget="badge"
+                                   decoration-success="consent_status == 'complete'"
+                                   decoration-warning="consent_status == 'partial'"
+                                   decoration-info="consent_status == 'pending'"
+                                   decoration-muted="consent_status == 'none'"/>
+                            <field name="consent_count"/>
+                        </group>
+                        <group string="Actions">
+                            <button name="action_request_consent" type="object"
+                                    string="Demander le consentement" class="btn-primary"
+                                    icon="fa-paper-plane"/>
+                        </group>
+                    </group>
+                    <separator string="Consentements liés au projet"/>
+                    <field name="consent_ids" nolabel="1" readonly="1">
+                        <list>
+                            <field name="subject_partner_id"/>
+                            <field name="purpose_id"/>
+                            <field name="status" widget="badge"
+                                   decoration-success="status == 'granted'"
+                                   decoration-danger="status in ('refused', 'withdrawn')"
+                                   decoration-warning="status == 'pending'"
+                                   decoration-muted="status == 'expired'"/>
+                            <field name="granted_at"/>
+                            <field name="expires_at"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

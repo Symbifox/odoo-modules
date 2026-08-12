@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="res_config_settings_view_form_bf_llm" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.bf.llm</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app data-string="LLM Gateway" string="LLM Gateway"
+                     name="bf_llm" groups="base.group_system">
+                    <block title="LLM Providers" name="bf_llm_providers">
+                        <setting string="Default provider"
+                                 help="Provider used by bf.llm.default(). Configure providers and encrypted API keys below.">
+                            <field name="bf_llm_default_provider_name" readonly="1"/>
+                            <div class="mt8">
+                                <button name="action_open_bf_llm_providers"
+                                        type="object"
+                                        string="Configure providers"
+                                        class="btn-link"
+                                        icon="fa-arrow-right"/>
+                            </div>
+                        </setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+</odoo>

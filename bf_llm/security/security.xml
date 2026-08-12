@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="group_bf_llm_manager" model="res.groups">
+        <field name="name">LLM Gateway Manager</field>
+        <field name="category_id" ref="base.module_category_hidden"/>
+    </record>
+
+    <!-- Settings administrators manage LLM providers and API keys. -->
+    <record id="base.group_system" model="res.groups">
+        <field name="implied_ids" eval="[(4, ref('bf_llm.group_bf_llm_manager'))]"/>
+    </record>
+</odoo>
