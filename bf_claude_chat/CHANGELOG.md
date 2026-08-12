@@ -1,10 +1,10 @@
-# Changelog - TentaClaude (bf_claude_chat)
+# Changelog - GenFox (bf_claude_chat)
 
 ## v18.0.1.4.1 - 2026-03-20
 
 ### Fixing the overlay hidden behind the chatter (portal pattern)
 
-**The problem**: the TentaClaude side panel displayed behind Odoo's chatter bar
+**The problem**: the GenFox side panel displayed behind Odoo's chatter bar
 ("Send message", "Log note", "Activities") and the form statusbar. Despite a
 `z-index: 2147483647` on the overlay, it was confined to the navbar's stacking
 context (`position: fixed` plus a z-index creates an isolated CSS stacking
@@ -47,7 +47,7 @@ details.
 
 ### Sessions filtered by the current record
 
-**The problem**: clicking TentaClaude in the systray showed EVERY conversation.
+**The problem**: clicking GenFox in the systray showed EVERY conversation.
 What you want is only the ones tied to the current record (the one you are
 looking at).
 
@@ -134,7 +134,7 @@ the right.
 ### Fixing the z-index
 
 **The problem**: Odoo's chatter bar ("Send message", "Log note", "Activities")
-positioned itself over the TentaClaude panel, blocking the view.
+positioned itself over the GenFox panel, blocking the view.
 
 **The solution**: the z-index raised to 100000 (versus ~1060 for Odoo's highest
 elements).

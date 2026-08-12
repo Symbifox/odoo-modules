@@ -6,12 +6,12 @@
         <field name="inherit_id" ref="base.res_config_settings_view_form"/>
         <field name="arch" type="xml">
             <xpath expr="//form" position="inside">
-                <app data-string="TentaClaude" string="TentaClaude"
+                <app data-string="GenFox" string="GenFox"
                      name="bf_claude_chat"
                      groups="base.group_system">
                     <block title="General">
-                        <setting string="TentaClaude Assistant"
-                                 help="Enable the TentaClaude chatbot for all users.">
+                        <setting string="GenFox Assistant"
+                                 help="Enable the GenFox chatbot for all users.">
                             <field name="claude_enabled"/>
                         </setting>
                         <setting string="Model"

@@ -649,7 +649,7 @@ class MeetingRecord(models.Model):
         self._check_refine_access()
         return {
             "type": "ir.actions.act_window",
-            "name": "Raffiner avec TentaClaude",
+            "name": "Raffiner avec GenFox",
             "res_model": "meeting.refine.wizard",
             "view_mode": "form",
             "target": "new",
@@ -695,7 +695,7 @@ class MeetingRecord(models.Model):
                     # (data-o-mail-quote) et le chatter la replie derrière
                     # un « … » — les consignes deviendraient invisibles.
                     "<p><b>Consignes de raffinage</b> — transmises à "
-                    "TentaClaude par %s :</p>"
+                    "GenFox par %s :</p>"
                     "<div style=\"border-left:3px solid #29ABE1;"
                     "padding-left:.75em;margin:.25em 0;color:#444;\">%s</div>"
                 ) % (

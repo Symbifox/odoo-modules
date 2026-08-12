@@ -1,4 +1,4 @@
-"""Thin client for the TentaClaude bridge Unix socket.
+"""Thin client for the GenFox bridge Unix socket.
 
 Uses the established Blue Fox bridge pattern: a hand-rolled HTTP/1.1 request
 over an ``AF_UNIX`` stream socket, so we depend on nothing beyond the
