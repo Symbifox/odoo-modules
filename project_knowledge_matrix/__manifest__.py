@@ -43,7 +43,7 @@ Fonctionnalités:
     """,
     'author': 'Les services de consultation Blue Fox, Inc.',
     'website': 'https://symbifox.com',
-    'license': 'LGPL-3',
+    'license': 'Other proprietary',
     # bf_onboarding_base porte les champs de marque (report_brand_*) sur
     # res.company. bluefox_branding n'est PAS requis: c'est le panneau de
     # marque blanche, optionnel. Sans lui, les documents sortent aux couleurs

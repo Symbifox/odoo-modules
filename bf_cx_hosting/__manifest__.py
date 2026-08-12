@@ -6,7 +6,7 @@
     "category": "Marketing/Customer Experience",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",
-    "license": "LGPL-3",
+    "license": "Other proprietary",
     "application": False,
     "installable": True,
     "auto_install": True,

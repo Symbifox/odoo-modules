@@ -21,7 +21,7 @@ installés.
     """,
     'author': 'Les services de consultation Blue Fox, Inc.',
     'website': 'https://symbifox.com',
-    'license': 'LGPL-3',
+    'license': 'Other proprietary',
     'depends': ['bf_meeting', 'bf_sms_archive'],
     'data': [
         'views/meeting_record_views.xml',

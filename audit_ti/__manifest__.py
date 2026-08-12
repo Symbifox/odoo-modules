@@ -5,7 +5,7 @@
     "category": "Services",
     'website': 'https://symbifox.com',
     "author": "Les services de consultation Blue Fox, Inc.",
-    'license': 'LGPL-3',
+    'license': 'Other proprietary',
     "application": True,
     "installable": True,
     "depends": ["base", "mail", "project"],

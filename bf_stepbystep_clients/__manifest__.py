@@ -6,7 +6,7 @@
     "category": "Project",
     "website": "https://symbifox.com",
     "author": "Les services de consultation Blue Fox, Inc.",
-    "license": "LGPL-3",
+    "license": "Other proprietary",
     "application": True,
     "installable": True,
     "post_init_hook": "post_init_hook",

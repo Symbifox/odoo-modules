@@ -5,7 +5,7 @@
     "summary": "Chat with GenFox, the AI assistant, directly inside Odoo",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",
-    "license": "LGPL-3",
+    "license": "Other proprietary",
     "depends": ["web", "base", "project", "mail"],
     "external_dependencies": {
         "python": ["cryptography"],

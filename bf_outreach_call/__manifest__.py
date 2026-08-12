@@ -25,7 +25,7 @@ rapprochement ne crée jamais deux fois le même appel.
     """,
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",
-    "license": "LGPL-3",
+    "license": "Other proprietary",
     "depends": ["bf_outreach", "bf_sms_archive"],
     "data": [
         "data/outreach_call_cron.xml",

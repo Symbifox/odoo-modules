@@ -23,7 +23,7 @@ qu'un filigrane de date, et ne crée jamais deux fois la même interaction.
     """,
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",
-    "license": "LGPL-3",
+    "license": "Other proprietary",
     "depends": ["bf_outreach", "bf_email_management"],
     "data": [
         "data/outreach_email_cron.xml",

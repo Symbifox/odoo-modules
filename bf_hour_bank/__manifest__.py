@@ -19,7 +19,7 @@ Fonctionnalités:
     """,
     'author': 'Les services de consultation Blue Fox, Inc.',
     'website': 'https://symbifox.com',
-    'license': 'LGPL-3',
+    'license': 'Other proprietary',
     'depends': ['project', 'account', 'hr_timesheet', 'mail', 'portal', 'bf_onboarding_base'],
     'external_dependencies': {
         'python': ['openpyxl'],

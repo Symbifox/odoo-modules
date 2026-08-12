@@ -3,7 +3,7 @@
     "summary": "Unified inbox, meetings, contact intelligence, and chatter polish for consulting/MSP teams",
     "version": "18.0.1.0.0",
     "category": "Productivity",
-    "license": "LGPL-3",
+    "license": "Other proprietary",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",
     "depends": [
