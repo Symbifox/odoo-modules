@@ -35,7 +35,7 @@ class HostingVoipDid(models.Model):
         "hosting.service", string="Service lié", tracking=True, ondelete="set null")
     is_reseller = fields.Boolean(
         string="DID revendeur (ne pas toucher)", tracking=True,
-        help="Coché pour les DID revendus à un client tiers (ex. Alvea Capital). "
+        help="Coché pour les DID revendus à un client tiers (ex. un partenaire revendeur). "
              "Exclus de toute future action de gestion.")
 
     # Champs VOIP.ms — lecture seule (getDIDsInfo)
