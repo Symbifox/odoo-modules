@@ -30,3 +30,7 @@ re-skin the backend UI and rewrite standard Odoo email templates.
 ## Dependencies
 
 - `web` (Odoo core)
+
+## Third-party assets
+
+The Lexend typeface is bundled under the SIL Open Font License 1.1, not the LGPL-3 that covers this module. See [`THIRD-PARTY.md`](THIRD-PARTY.md).

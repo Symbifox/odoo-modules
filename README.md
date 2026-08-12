@@ -47,6 +47,16 @@ the `bf_ops_pack` and `bf_productivity_pack` bundles.
 Modules that depend on an AGPL-3 addon are themselves AGPL-3 — see the `License`
 column in the table below.
 
+### Bundled typefaces
+
+Three modules self-host fonts rather than calling a font CDN, so no visitor IP ever reaches a third party. All are under the SIL Open Font License 1.1, which is **not** the licence covering the module around them — each carries a `THIRD-PARTY.md` and the full licence text beside the files:
+
+| Module | Typefaces |
+|---|---|
+| `bf_sign` | Caveat, Dancing Script, Great Vibes |
+| `bf_lexend` | Lexend |
+| `bf_sms_archive` | Noto Emoji |
+
 ## Bundles (recommended starting point)
 
 Install one of these meta-modules to pull in a coherent set in a single click:
