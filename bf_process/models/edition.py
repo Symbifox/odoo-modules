@@ -30,6 +30,8 @@ telle quelle plutôt que de la maquiller.
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
 
+from .erreurs import refus_lisible
+
 from ..generateur import geometrie as geo
 from .structure import ACTIVITES, KINDS
 
@@ -146,6 +148,7 @@ class BfProcessEdition(models.Model):
         return f"{prefixe}{n}"
 
     # ------------------------------------------------------------ opérations
+    @refus_lisible
     def deplacer_noeud(self, code, cx, cy):
         """Repose un nœud sur la grille. Surface RPC volontaire.
 
@@ -166,6 +169,7 @@ class BfProcessEdition(models.Model):
         noeud.write(vals)
         return self.rendu()
 
+    @refus_lisible
     def creer_noeud(self, genre, cx, cy, nom=None):
         """Pose un nœud là où on a cliqué. Surface RPC volontaire.
 
@@ -200,6 +204,7 @@ class BfProcessEdition(models.Model):
             % (noeud.display_name, self.display_name))
         return self.rendu()
 
+    @refus_lisible
     def supprimer_noeud(self, code):
         """Retire un nœud, et ce qui n'a plus de sens sans lui.
 
@@ -226,6 +231,7 @@ class BfProcessEdition(models.Model):
             % (nom, self.display_name))
         return self.rendu()
 
+    @refus_lisible
     def creer_flux(self, code_source, code_cible):
         """Relie deux nœuds. Surface RPC volontaire."""
         self.ensure_one()
@@ -258,6 +264,7 @@ class BfProcessEdition(models.Model):
         self._resequencer(self.flow_ids.sorted(lambda f: (f.sequence, f.id)))
         return self.rendu()
 
+    @refus_lisible
     def supprimer_flux(self, code_source, code_cible):
         """Coupe le lien entre deux nœuds. Surface RPC volontaire."""
         self.ensure_one()

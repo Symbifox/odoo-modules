@@ -18,6 +18,8 @@ import xml.etree.ElementTree as ET
 from odoo import _, fields, models
 from odoo.exceptions import UserError
 
+from .erreurs import refus_lisible
+
 from ..generateur import geometrie as geo
 from ..generateur.bpmn import ELEMENT
 
@@ -43,6 +45,7 @@ class BfProcessImportWizard(models.TransientModel):
     project_id = fields.Many2one("project.project", string="Projet")
     rapport = fields.Text(string="Ce qui a été lu", readonly=True)
 
+    @refus_lisible
     def action_importer(self):
         self.ensure_one()
         xml = base64.b64decode(self.fichier or b"")
