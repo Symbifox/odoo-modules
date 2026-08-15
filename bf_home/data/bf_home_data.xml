@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <!--
+        Make the screen the front door for users created from here on.
+
+        Installing the module used to add a menu at sequence 1 and nothing else:
+        res.users.action_id stayed False on every account, so the app grid
+        remained the landing page and the module's whole premise went unshipped.
+
+        Written as a default rather than onto existing users on purpose. A home
+        action is a personal setting; overwriting the ones people already chose
+        is not this module's call, and a default is undone from Settings without
+        touching the module. noupdate keeps a later change from being reverted
+        by the next upgrade.
+    -->
+    <function model="ir.default" name="set">
+        <value>res.users</value>
+        <value>action_id</value>
+        <value eval="ref('bf_home.bf_home_action')"/>
+    </function>
+
+</odoo>

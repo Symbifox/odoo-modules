@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+<t t-name="bf_home.Home">
+  <div class="bfh">
+
+    <div t-if="state.loading" class="bfh-load">Chargement…</div>
+
+    <div t-elif="state.error" class="bfh-err">
+      <b>L'écran n'a pas pu charger ses données.</b>
+      <span t-esc="state.error"/>
+      <button class="btn btn-sm btn-primary" t-on-click="() => this.load()">Réessayer</button>
+    </div>
+
+    <t t-else="">
+      <!-- barre du haut : la phrase, pas un clavardage -->
+      <div class="bfh-top">
+        <div class="bfh-wrap">
+          <div class="bfh-mark"><img src="/bf_home/static/src/img/mark.svg" alt="Symbifox"/></div>
+          <div class="bfh-hello">
+            <h1>Bonjour <t t-esc="state.data.user"/>.</h1>
+            <p><span class="bfh-gf">GenFox</span><t t-esc="state.data.headline"/></p>
+          </div>
+          <div class="bfh-clock"><b t-esc="state.data.date"/></div>
+        </div>
+      </div>
+
+      <div class="bfh-wrap bfh-main">
+
+        <!-- rien à signaler : un écran court est une bonne nouvelle -->
+        <div t-if="state.data.all_clear" class="bfh-band">
+          <div class="bfh-clear"><i/>Rien ne réclame votre attention. Les signaux surveillés sont
+            tous au vert ce matin.</div>
+        </div>
+
+        <div class="bfh-bands">
+        <section t-foreach="state.data.bands" t-as="band" t-key="band.key" class="bfh-band">
+          <header>
+            <h2 t-esc="band.title"/>
+            <span class="bfh-q" t-esc="band.q"/>
+            <span t-attf-class="bfh-n bfh-{{band.sev}}" t-esc="band.count"/>
+          </header>
+          <div class="bfh-rows">
+            <a t-foreach="band.rows" t-as="row" t-key="row_index"
+               class="bfh-row" href="#" t-on-click.prevent="() => this.openRow(row)">
+              <i t-attf-class="bfh-sev bfh-{{row.sev}}"/>
+              <img class="bfh-ico" t-att-src="iconUrl(row.icon)" alt=""
+                   onerror="this.style.visibility='hidden'"/>
+              <span class="bfh-what">
+                <b t-esc="row.title"/>
+                <span t-esc="row.sub"/>
+              </span>
+              <span class="bfh-age" t-esc="row.age"/>
+              <span class="bfh-go" t-esc="row.cta"/>
+            </a>
+          </div>
+        </section>
+        </div>
+
+        <!-- l'état des lieux : information de fond, pas d'action -->
+        <section t-if="state.data.panels.length" class="bfh-state-head">
+          <h2>L'état des lieux</h2>
+          <span class="bfh-q">ce qui tourne, sans rien exiger de vous</span>
+        </section>
+        <div t-if="state.data.panels.length" class="bfh-state">
+          <div t-foreach="state.data.panels" t-as="panel" t-key="panel.title" class="bfh-panel">
+            <header>
+              <img t-att-src="iconUrl(panel.icon)" alt=""
+                   onerror="this.style.visibility='hidden'"/>
+              <h3 t-esc="panel.title"/>
+              <a href="#" class="bfh-all" t-on-click.prevent="() => this.openPanel(panel)">Ouvrir</a>
+            </header>
+            <t t-foreach="panel.stats" t-as="s" t-key="s.k">
+              <!-- Presence, not truth: a meter of 0 is falsy, so `!s.meter` sent
+                   "Disponibilité 0 %" down the plain-stat branch and dropped its
+                   bar at the one moment the bar carries the whole message. -->
+              <div t-if="s.meter === undefined" class="bfh-stat">
+                <span t-esc="s.k"/><b t-esc="s.v"/>
+              </div>
+              <div t-else="" class="bfh-meter">
+                <div class="bfh-lbl"><span t-esc="s.k"/><b t-esc="s.v"/></div>
+                <div class="bfh-bar"><i t-attf-style="width:{{s.meter}}%"/></div>
+              </div>
+            </t>
+          </div>
+        </div>
+
+        <p class="bfh-foot">Les applications restent accessibles par la recherche universelle.</p>
+      </div>
+    </t>
+  </div>
+</t>
+
+</templates>
