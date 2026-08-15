@@ -4,6 +4,7 @@ from odoo.exceptions import UserError
 from odoo.tests import TransactionCase, tagged
 
 from .test_aller_retour import CARTE
+from ..generateur import mesure
 
 
 @tagged("post_install", "-at_install")
@@ -111,6 +112,44 @@ class TestEdition(TransactionCase):
             self.niveau.deplacer_noeud("t1", 300.0, 60.0)
         with self.assertRaisesRegex(UserError, r"U\+1F98A"):
             self.niveau.creer_noeud("task", 500.0, 60.0, "Ajoutée")
+
+    def test_le_message_du_refus_ne_derive_pas_de_celui_de_la_bibliotheque(self):
+        """La phrase existe en deux exemplaires : ils doivent rester d'accord.
+
+        `mesure.py` la porte en dur (il tourne hors serveur, donc sans `_()`)
+        et `erreurs.py` la reconstruit pour qu'elle soit traduisible. Rien ne
+        les relie : sans ce contrôle, corriger l'une et pas l'autre passerait
+        inaperçu et l'utilisateur lirait une phrase différente selon la porte.
+        """
+        note = self.niveau.node_ids.filtered(lambda n: n.kind == "note")
+        note.write({"name": "Renard \U0001F98A", "height": 0.0})
+        try:
+            self.niveau.deplacer_noeud("t1", 300.0, 60.0)
+        except UserError as vu:
+            attendu = mesure.MesureImpossible(
+                "Le caractère %s n'est pas dans la table de largeurs de Lexend."
+                " La carte ne peut pas être mesurée sans deviner."
+                % mesure._nommer("\U0001F98A"))
+            self.assertEqual(str(vu), str(attendu))
+        else:
+            self.fail("le refus de mesure n'a pas été levé")
+
+    def test_refus_sans_caractere_garde_son_propre_message(self):
+        """Un refus de mesure d'une autre nature ne doit pas être réécrit.
+
+        Le décorateur ne connaît que le cas « caractère hors table ». S'il
+        appliquait sa phrase à tout `MesureImpossible`, un futur refus sortirait
+        avec un diagnostic faux — et un trou là où le caractère aurait dû être.
+        """
+        from odoo.addons.bf_process.models.erreurs import refus_lisible
+
+        @refus_lisible
+        def refuser(self):
+            raise mesure.MesureImpossible("La police n'est pas étalonnée.")
+
+        with self.assertRaises(UserError) as pris:
+            refuser(self.niveau)
+        self.assertEqual(str(pris.exception), "La police n'est pas étalonnée.")
 
     def test_gel_ferme_l_editeur_avant_la_poignee(self):
         """Une version validée se dit non modifiable AVANT qu'on tire dessus."""

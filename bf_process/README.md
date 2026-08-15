@@ -220,22 +220,23 @@ copies, and — the property that actually matters — importing this module's
 own BPMN export reproduces the same node count, kinds, names, flows, messages
 and lane names as the source.
 
-`qa_bf_process.py` (repo root) runs a separate, non-unittest QA pass: static
-checks on the manifest/XML/ACL/RPC surface/licence/icon — including that every
-write-from-the-trace method goes through the freeze guard — plus live checks
-against a running instance: constraints actually posted in PostgreSQL, views
-that compile server-side, a loaded reference map's structure, both exports'
-SHA-256 matching a known-good reference, the PDF, the editor exercised on the
-real map and rolled back, and the backend asset bundle building with the editor
-in it.
+A separate, non-unittest QA harness — maintained outside this repository, since
+it needs a live instance and a reference rendering engine — runs a wider pass:
+static checks on the manifest/XML/ACL/RPC surface/licence/icon, including that
+every write-from-the-trace method goes through the freeze guard, plus live
+checks against a running instance: constraints actually posted in PostgreSQL,
+views that compile server-side, a loaded reference map's structure, both
+exports' SHA-256 matching a known-good reference, the PDF, the editor exercised
+on the real map and rolled back, and the backend asset bundle building with the
+editor in it.
 
-Two checks need the reference engine and therefore live outside the module,
-next to that harness:
+Two of its checks need the reference engine, which is why they cannot live in
+this repository at all:
 
-- `qa_mesure.py` — every character of the frozen table, at several sizes,
+- **The width table** — every character of the frozen table, at several sizes,
   against the font itself; the substitutes; a corpus of real strings; the line
   wrapping; both derived heights; and the refusal.
-- `qa_pdf.py` — takes the maps **as they are in the database**, renders each
+- **The PDF overlay** — takes the maps **as they are in the database**, renders each
   level twice (this module, then the reference engine) and overlays them:
   page size, every stroke and curve at its coordinates, every word and its box,
   and the two pages rendered to image and compared tile by tile. The image pass

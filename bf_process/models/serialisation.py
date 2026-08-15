@@ -18,8 +18,6 @@ from .erreurs import refus_lisible
 GROUPE = "bf_process.group_bf_process_manager"
 
 
-
-
 class BfProcessChargement(models.Model):
     _inherit = "bf.process"
 

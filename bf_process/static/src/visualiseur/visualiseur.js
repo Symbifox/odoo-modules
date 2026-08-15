@@ -27,6 +27,19 @@ import { useService } from "@web/core/utils/hooks";
 import { _t } from "@web/core/l10n/translation";
 import { ConfirmationDialog } from "@web/core/confirmation_dialog/confirmation_dialog";
 
+/** Le refus lisible du serveur voyage dans `data.message`.
+ *
+ * ⚠️ `e.message` est la chaîne d'enveloppe (« Odoo Server Error »), PAS un
+ * objet : `makeErrorFromResponse` pose `error.message = message` et
+ * `error.data = errorData`. Lire `e.message.data` rend donc toujours
+ * `undefined`, et le repli affichait « RPC_ERROR: Odoo Server Error » à la
+ * place de la phrase que le serveur avait pris soin de rédiger — le soin mis
+ * côté serveur à refuser lisiblement ne servait à rien ici.
+ */
+function messageDe(e) {
+    return e.data?.message || e.message || String(e);
+}
+
 const EV_R = 19;
 const INK = "#2D3031";
 const GRIS = "#73787A";
@@ -108,8 +121,7 @@ export class VisualiseurCartographie extends Component {
                 ? [id, niveauId || false] : [id];
             this.state.donnees = await this.orm.call(this.resModel, "rendu", args);
         } catch (e) {
-            this.state.erreur = e.message && e.message.data
-                ? e.message.data.message : String(e);
+            this.state.erreur = messageDe(e);
         }
     }
 
@@ -256,8 +268,7 @@ export class VisualiseurCartographie extends Component {
                 [this.state.donnees.niveau_id, ...args]);
             return true;
         } catch (e) {
-            const message = e.message && e.message.data
-                ? e.message.data.message : String(e);
+            const message = messageDe(e);
             this.notification.add(message, { type: "warning", sticky: false });
             return false;
         } finally {
