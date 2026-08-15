@@ -33,7 +33,7 @@ class TestPdf(TransactionCase):
         return [float(v) for v in trouve.group(1).split()]
 
     def test_pdf_produit_et_taille_sur_la_carte(self):
-        contenu = self.processus.exporter_pdf()
+        contenu = self.processus._pdf_octets()
         self.assertTrue(contenu.startswith(b"%PDF-"))
         self.assertIn(b"%%EOF", contenu)
         self.assertIn(b"/Count 1", contenu)
@@ -49,11 +49,29 @@ class TestPdf(TransactionCase):
         p = self.env["bf.process"].create({"name": "Deux pages",
                                            "pool_name": "Blue Fox"})
         p._charger_niveaux(carte)
-        self.assertIn(b"/Count 2", p.exporter_pdf())
+        self.assertIn(b"/Count 2", p._pdf_octets())
+
+    def test_export_public_est_base64_donc_franchit_xmlrpc(self):
+        """Rendre des octets bruts casse tout appelant XML-RPC.
+
+        `exporter_pdf` est publique, donc appelable par XML-RPC, qui sérialise
+        en chaîne : des octets bruts y lèvent un `UnicodeDecodeError` avant que
+        l'appelant voie le fichier. La forme publique est donc du base64.
+        """
+        import base64
+        publie = self.processus.exporter_pdf()
+        self.assertIsInstance(publie, str)
+        publie.encode("ascii")          # ce que fait XML-RPC, et qui échouait
+        # on ne compare pas à une seconde génération : reportlab pose un
+        # identifiant de document neuf à chaque appel, donc deux PDF du même
+        # contenu diffèrent par quelques octets.
+        octets = base64.b64decode(publie)
+        self.assertTrue(octets.startswith(b"%PDF-"))
+        self.assertIn(b"%%EOF", octets)
 
     def test_lexend_est_embarque(self):
         """Sans la police, les largeurs figées ne veulent plus rien dire."""
-        contenu = self.processus.exporter_pdf()
+        contenu = self.processus._pdf_octets()
         self.assertIn(b"Lexend", contenu)
         self.assertIn(b"/FontFile2", contenu)
 
@@ -86,4 +104,4 @@ class TestPdf(TransactionCase):
         note = self.niveau.node_ids.filtered(lambda n: n.kind == "note")
         note.write({"name": "Un renard \U0001F98A ici", "height": 0.0})
         with self.assertRaises(mesure.MesureImpossible):
-            self.processus.exporter_pdf()
+            self.processus._pdf_octets()

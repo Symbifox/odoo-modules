@@ -54,21 +54,34 @@ class BfProcessEdition(models.Model):
              " rangée. 0,05 est le pas des cartes produites par le générateur.")
 
     # ------------------------------------------------------------------ garde
+    #: modèles réellement écrits par le tracé. Le contrôle porte sur celui que
+    #: l'opération touche : sous les droits livrés les deux vont ensemble, mais
+    #: une personnalisation qui les sépare ne doit pas laisser passer une
+    #: écriture parce qu'un AUTRE modèle, lui, était accessible.
+    MODELES_EDITABLES = ("bf.process.node", "bf.process.flow")
+
     def _modifiable(self):
-        """Ni gelée, ni en lecture seule. Lu AVANT d'offrir une poignée."""
+        """Ni gelée, ni en lecture seule. Lu AVANT d'offrir une poignée.
+
+        Exige les deux modèles : la barre d'outils est tout ou rien, et offrir
+        un outil que le serveur refusera au relâchement serait pire que de ne
+        pas l'offrir.
+        """
         self.ensure_one()
         if self.process_id.state == "valide":
             return False
-        return self.env["bf.process.node"].has_access("write")
+        return all(self.env[m].has_access("write")
+                   for m in self.MODELES_EDITABLES)
 
-    def _exiger_modifiable(self):
+    def _exiger_modifiable(self, modele="bf.process.node"):
+        """`modele` est celui que l'opération va écrire."""
         self.ensure_one()
         if self.process_id.state == "valide":
             raise UserError(_(
                 "« %s v%s » est une version validée : son tracé ne se modifie "
                 "plus. Créez la version suivante, ou rouvrez celle-ci."
             ) % (self.process_id.name, self.process_id.version))
-        if not self.env["bf.process.node"].has_access("write"):
+        if not self.env[modele].has_access("write"):
             raise UserError(_(
                 "Modifier un tracé demande le droit de gestion des cartographies."))
 
@@ -216,7 +229,7 @@ class BfProcessEdition(models.Model):
     def creer_flux(self, code_source, code_cible):
         """Relie deux nœuds. Surface RPC volontaire."""
         self.ensure_one()
-        self._exiger_modifiable()
+        self._exiger_modifiable("bf.process.flow")
         par_code = {n.code: n for n in self.node_ids}
         source, cible = par_code.get(code_source), par_code.get(code_cible)
         if not source or not cible:
@@ -248,7 +261,7 @@ class BfProcessEdition(models.Model):
     def supprimer_flux(self, code_source, code_cible):
         """Coupe le lien entre deux nœuds. Surface RPC volontaire."""
         self.ensure_one()
-        self._exiger_modifiable()
+        self._exiger_modifiable("bf.process.flow")
         flux = self.flow_ids.filtered(
             lambda f: f.source_id.code == code_source
             and f.target_id.code == code_cible)
