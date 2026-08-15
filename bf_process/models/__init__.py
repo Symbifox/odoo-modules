@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from . import erreurs
 from . import gel
 from . import process
 from . import structure

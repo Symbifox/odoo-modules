@@ -39,6 +39,16 @@ EXT_MIN, EXT_MAX = 62.0, 132.0
 
 
 class MesureImpossible(Exception):
+    """Porte le caractère fautif à part du message.
+
+    La couche Odoo reconstruit un message traduisible à partir de
+    `caractere` ; recopier le message tel quel figerait le français en dur.
+    """
+
+    def __init__(self, message, caractere=""):
+        super().__init__(message)
+        self.caractere = caractere
+
     """Un caractère n'est pas dans la table étalonnée, et deviner serait pire."""
 
 
@@ -72,10 +82,11 @@ def text_length(texte, taille, gras=False):
         try:
             total += table[c]
         except KeyError:
+            nom = _nommer(c)
             raise MesureImpossible(
                 "Le caractère %s n'est pas dans la table de largeurs de Lexend."
-                " La carte ne peut pas être mesurée sans deviner."
-                % _nommer(c)) from None
+                " La carte ne peut pas être mesurée sans deviner." % nom,
+                caractere=nom) from None
     return total * taille
 
 

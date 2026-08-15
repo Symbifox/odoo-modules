@@ -97,6 +97,21 @@ class TestEdition(TransactionCase):
         niveau.creer_noeud("task", 700.0, 60.0, "Ajoutée")
         self.assertEqual(len(self.niveau.node_ids), avant + 1)
 
+    def test_caractere_hors_table_refuse_lisiblement_au_glisser(self):
+        """Le refus de mesure doit rester lisible AUSSI depuis l'éditeur.
+
+        `deplacer_noeud` refait la disposition avant d'écrire, donc il mesure
+        avant d'atteindre le rendu final. Sans garde propre à ce chemin, une
+        annotation non mesurée renvoie une trace de 500 au glisser, alors que
+        le même défaut donne un message ailleurs.
+        """
+        note = self.niveau.node_ids.filtered(lambda n: n.kind == "note")
+        note.write({"name": "Renard \U0001F98A", "height": 0.0})
+        with self.assertRaisesRegex(UserError, r"U\+1F98A"):
+            self.niveau.deplacer_noeud("t1", 300.0, 60.0)
+        with self.assertRaisesRegex(UserError, r"U\+1F98A"):
+            self.niveau.creer_noeud("task", 500.0, 60.0, "Ajoutée")
+
     def test_gel_ferme_l_editeur_avant_la_poignee(self):
         """Une version validée se dit non modifiable AVANT qu'on tire dessus."""
         self.processus.action_valider()
