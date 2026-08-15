@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="bf_home_action" model="ir.actions.client">
+        <field name="name">Accueil</field>
+        <field name="tag">bf_home</field>
+    </record>
+
+    <menuitem id="menu_bf_home_root"
+              name="Accueil"
+              action="bf_home_action"
+              web_icon="bf_home,static/description/icon.png"
+              sequence="1"/>
+</odoo>

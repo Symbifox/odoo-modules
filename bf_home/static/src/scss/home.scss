@@ -1,0 +1,187 @@
+// Symbifox home screen.
+//
+// Scoped under .bfh so nothing here leaks into the rest of the backend, and the
+// palette is declared as custom properties on that root rather than on :root,
+// for the same reason. Severity colours are deliberately separate from the
+// brand blue: an accent that also means "critical" stops meaning either.
+
+.bfh {
+    --bfh-navy: #071b4a;
+    --bfh-blue: #176cf2;
+    --bfh-sky: #8ebbfa;
+    --bfh-ground: #f6f9ff;
+    --bfh-paper: #ffffff;
+    --bfh-ink: #10213a;
+    --bfh-muted: #64748b;
+    --bfh-line: #dce6f3;
+    --bfh-soft: #edf4ff;
+    // Severity reads by hue, not by shade. The first pass used a brown-amber
+    // (#8a5a16) beside a brick red (#a3261e): two dark warm tones a metre from
+    // the screen are the same colour. Amber is now frankly yellow and red is
+    // frankly red, and the saturated -bar tones carry the stripe so the two
+    // never meet as muddy neighbours.
+    --bfh-ok: #dcfae6;
+    --bfh-ok-ink: #067647;
+    --bfh-warn: #fef7c3;
+    --bfh-warn-ink: #a15c07;
+    --bfh-warn-bar: #eaaa08;
+    --bfh-crit: #fee4e2;
+    --bfh-crit-ink: #b42318;
+    --bfh-crit-bar: #d92d20;
+
+    height: 100%;
+    overflow: auto;
+    background: var(--bfh-ground);
+    color: var(--bfh-ink);
+    font-variant-numeric: tabular-nums;
+
+    .bfh-wrap { max-width: 1080px; margin: 0 auto; padding: 0 22px; }
+
+    // ── barre du haut ────────────────────────────────────────────────
+    .bfh-top {
+        background: var(--bfh-navy);
+        color: #fff;
+        padding: 24px 0 28px;
+
+        .bfh-wrap { display: flex; align-items: flex-start; gap: 18px; flex-wrap: wrap; }
+    }
+    // White chip behind the mark: the logo runs from #176CF2 to #8EBBFA and its
+    // darkest blue sits too close to the navy bar to survive on it directly.
+    .bfh-mark {
+        width: 42px; height: 42px; border-radius: 13px; background: #fff;
+        display: flex; align-items: center; justify-content: center;
+        flex: 0 0 auto; padding: 6px;
+        img { width: 100%; height: 100%; object-fit: contain; display: block; }
+    }
+    .bfh-hello {
+        h1 { margin: 0; font-size: 24px; font-weight: 600; letter-spacing: -0.02em; color: #fff; }
+        p { margin: 6px 0 0; color: var(--bfh-sky); font-size: 15px; max-width: 66ch; line-height: 1.55; }
+    }
+    .bfh-gf {
+        display: inline-block; font-size: 10.5px; font-weight: 600; letter-spacing: 0.1em;
+        text-transform: uppercase; background: rgba(255, 255, 255, 0.13); color: #fff;
+        padding: 3px 9px; border-radius: 999px; margin-right: 8px; vertical-align: 2px;
+    }
+    .bfh-clock { margin-left: auto; color: var(--bfh-sky); font-size: 13px;
+        b { color: #fff; font-size: 17px; font-weight: 600; } }
+
+    // ── bandes ───────────────────────────────────────────────────────
+    // One column on a laptop, two once there is room. align-items: start keeps
+    // a short band short instead of stretching it to match its neighbour, which
+    // is what turns a scannable screen into a wall of boxes.
+    .bfh-main { padding: 24px 22px 60px; display: flex; flex-direction: column; gap: 22px; }
+    .bfh-bands { display: grid; gap: 22px; align-items: start; }
+    @media (min-width: 1180px) {
+        .bfh-wrap { max-width: 1320px; }
+        .bfh-bands { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        // The first band is the morning's headline; it keeps the full width.
+        .bfh-bands > :first-child { grid-column: 1 / -1; }
+    }
+
+    .bfh-band {
+        background: var(--bfh-paper); border: 1px solid var(--bfh-line); border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 1px 2px rgba(7, 27, 74, 0.05), 0 10px 30px -22px rgba(7, 27, 74, 0.35);
+
+        > header {
+            display: flex; align-items: baseline; gap: 12px;
+            padding: 15px 22px 12px; border-bottom: 1px solid var(--bfh-line);
+        }
+        h2 { margin: 0; font-size: 16px; font-weight: 600; }
+    }
+    .bfh-q { color: var(--bfh-muted); font-size: 13px; }
+    .bfh-n {
+        margin-left: auto; font-size: 12px; font-weight: 600;
+        padding: 3px 10px; border-radius: 999px;
+        &.bfh-warn { background: var(--bfh-warn); color: var(--bfh-warn-ink); }
+        &.bfh-crit { background: var(--bfh-crit); color: var(--bfh-crit-ink); }
+        &.bfh-calm { background: var(--bfh-soft); color: var(--bfh-blue); }
+    }
+
+    .bfh-rows { display: flex; flex-direction: column; }
+    .bfh-row {
+        display: grid; grid-template-columns: 4px 32px 1fr auto auto; gap: 14px;
+        align-items: center; padding: 12px 22px 12px 0;
+        border-bottom: 1px solid var(--bfh-line);
+        text-decoration: none; color: inherit;
+
+        &:last-child { border-bottom: 0; }
+        &:hover { background: var(--bfh-soft); text-decoration: none; color: inherit; }
+        &:focus-visible { outline: 2px solid var(--bfh-blue); outline-offset: -2px; }
+        &:hover .bfh-go::after { margin-left: 9px; }
+    }
+    .bfh-sev {
+        width: 4px; align-self: stretch; min-height: 32px; border-radius: 0 3px 3px 0;
+        &.bfh-crit { background: var(--bfh-crit-bar); }
+        &.bfh-warn { background: var(--bfh-warn-bar); }
+        &.bfh-calm { background: var(--bfh-line); }
+    }
+    .bfh-ico { width: 30px; height: 30px; border-radius: 9px; object-fit: contain;
+        background: var(--bfh-soft); }
+    .bfh-what {
+        min-width: 0;
+        b { display: block; font-weight: 600; font-size: 14.5px; }
+        span { display: block; color: var(--bfh-muted); font-size: 12.5px; margin-top: 1px;
+            overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    }
+    .bfh-age { font-size: 12.5px; color: var(--bfh-muted); white-space: nowrap; }
+    .bfh-go {
+        font-size: 12.5px; font-weight: 600; color: var(--bfh-blue); white-space: nowrap;
+        &::after {
+            content: ""; display: inline-block; width: 5px; height: 5px; margin-left: 6px;
+            border-right: 2px solid currentColor; border-top: 2px solid currentColor;
+            transform: rotate(45deg); vertical-align: 1px; transition: margin 0.15s;
+        }
+    }
+
+    .bfh-clear {
+        display: flex; align-items: center; gap: 11px; padding: 18px 22px;
+        color: var(--bfh-ok-ink); font-size: 14px;
+        i { width: 16px; height: 16px; border-radius: 50%; background: var(--bfh-ok);
+            flex: 0 0 auto; position: relative;
+            &::after { content: ""; position: absolute; left: 5px; top: 2px; width: 5px; height: 9px;
+                border-right: 2px solid var(--bfh-ok-ink); border-bottom: 2px solid var(--bfh-ok-ink);
+                transform: rotate(42deg); } }
+    }
+
+    // ── état des lieux ───────────────────────────────────────────────
+    .bfh-state-head {
+        display: flex; align-items: baseline; gap: 12px; margin: 4px 2px -8px;
+        h2 { margin: 0; font-size: 16px; font-weight: 600; }
+    }
+    .bfh-state { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+    .bfh-panel {
+        background: var(--bfh-paper); border: 1px solid var(--bfh-line); border-radius: 16px;
+        padding: 17px 19px 19px;
+        header { display: flex; align-items: center; gap: 11px; margin-bottom: 12px; }
+        img { width: 27px; height: 27px; border-radius: 8px; object-fit: contain;
+            background: var(--bfh-soft); }
+        h3 { margin: 0; font-size: 15px; font-weight: 600; }
+    }
+    .bfh-all { margin-left: auto; font-size: 12px; font-weight: 600; color: var(--bfh-blue); }
+    .bfh-stat {
+        display: flex; align-items: baseline; justify-content: space-between; gap: 12px;
+        padding: 7px 0; border-bottom: 1px solid var(--bfh-line); font-size: 13.5px;
+        &:last-child { border-bottom: 0; }
+        span { color: var(--bfh-muted); }
+        b { font-weight: 600; font-size: 15px; }
+    }
+    .bfh-meter { margin-top: 11px; }
+    .bfh-lbl { display: flex; justify-content: space-between; font-size: 12.5px;
+        color: var(--bfh-muted); margin-bottom: 6px;
+        b { color: var(--bfh-ink); font-weight: 600; } }
+    .bfh-bar { height: 7px; border-radius: 999px; background: var(--bfh-soft); overflow: hidden;
+        i { display: block; height: 100%; border-radius: 999px; background: var(--bfh-ok-ink); } }
+
+    .bfh-load, .bfh-err { padding: 40px 22px; color: var(--bfh-muted); }
+    .bfh-err { display: flex; flex-direction: column; align-items: flex-start; gap: 8px;
+        b { color: var(--bfh-crit-ink); } }
+    .bfh-foot { margin: 4px 0 0; font-size: 12.5px; color: var(--bfh-muted); text-align: center; }
+
+    @media (max-width: 720px) {
+        .bfh-row { grid-template-columns: 4px 1fr auto; padding-right: 14px; }
+        .bfh-ico, .bfh-age { display: none; }
+        .bfh-clock { margin-left: 0; }
+    }
+    @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+}
