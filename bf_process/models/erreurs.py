@@ -42,6 +42,10 @@ def refus_lisible(methode):
         try:
             return methode(self, *args, **kwargs)
         except mesure.MesureImpossible as exc:
+            if not exc.caractere:
+                # refus de mesure d'une autre nature : son propre message dit
+                # déjà quoi, et l'inventer ici donnerait un diagnostic faux.
+                raise UserError(str(exc)) from exc
             raise UserError(_(
                 "Le caractère %s n'est pas dans la table de largeurs de Lexend."
                 " La carte ne peut pas être mesurée sans deviner."

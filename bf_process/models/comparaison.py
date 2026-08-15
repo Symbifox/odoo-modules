@@ -34,7 +34,7 @@ class BfProcessCompareWizard(models.TransientModel):
     # `sanitize` reste actif : c'est la deuxième couche. La première est
     # l'échappement de chaque valeur interpolée dans `_rendre`.
     rapport_html = fields.Html(string="Écarts", readonly=True)
-    ecart_count = fields.Integer(string="Écarts", readonly=True)
+    ecart_count = fields.Integer(string="Nombre d'écarts", readonly=True)
 
     @api.onchange("source_id")
     def _onchange_source(self):

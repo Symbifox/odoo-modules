@@ -4,8 +4,8 @@
 Ce que ces tests peuvent prouver ici : que le PDF est produit, qu'il a une
 page par niveau, qu'il est taillé sur la carte et qu'il embarque Lexend. Ce
 qu'ils ne peuvent pas prouver, faute de PyMuPDF dans l'image : que le tracé est
-au point près celui du moteur de référence. C'est `qa_pdf.py`, hors serveur,
-qui superpose les deux — tracés, mots et pixels.
+au point près celui du moteur de référence. C'est un contrôle hors serveur,
+dans le harnais de QA, qui superpose les deux — tracés, mots et pixels.
 """
 import re
 

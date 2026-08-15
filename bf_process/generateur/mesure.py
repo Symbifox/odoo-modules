@@ -39,17 +39,17 @@ EXT_MIN, EXT_MAX = 62.0, 132.0
 
 
 class MesureImpossible(Exception):
-    """Porte le caractère fautif à part du message.
+    """Un caractère n'est pas dans la table étalonnée, et deviner serait pire.
+
+    L'exception porte le caractère fautif à part de son message.
 
     La couche Odoo reconstruit un message traduisible à partir de
     `caractere` ; recopier le message tel quel figerait le français en dur.
     """
 
-    def __init__(self, message, caractere=""):
+    def __init__(self, message="", caractere=""):
         super().__init__(message)
         self.caractere = caractere
-
-    """Un caractère n'est pas dans la table étalonnée, et deviner serait pire."""
 
 
 def _deplier(groupes):
