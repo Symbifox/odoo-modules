@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_bf_process_node_form" model="ir.ui.view">
+        <field name="name">bf.process.node.form</field>
+        <field name="model">bf.process.node</field>
+        <field name="arch" type="xml">
+            <form string="Nœud">
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="Verbe + complément"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="kind"/>
+                            <field name="tone" invisible="kind != 'note'"/>
+                            <field name="diagram_id"/>
+                            <field name="lane_id"
+                                   domain="[('diagram_id', '=', diagram_id)]"/>
+                            <field name="child_diagram_id" invisible="kind != 'sub'"
+                                   string="Déplié au niveau"
+                                   domain="[('process_id', '=', process_id)]"/>
+                            <field name="process_id" invisible="1"/>
+                        </group>
+                        <group string="Validation"
+                               invisible="kind not in ['task','send','receive','user','sub']">
+                            <field name="validation" widget="badge"
+                                   decoration-success="validation == 'validee'"
+                                   decoration-warning="validation == 'partielle'"
+                                   decoration-danger="validation == 'conteste'"/>
+                            <field name="valide_proprietaire"/>
+                            <field name="valide_executant"/>
+                            <field name="conteste"/>
+                            <field name="note_validation"
+                                   placeholder="Ce qui a été dit à la relecture"/>
+                        </group>
+                        <group>
+                            <field name="code"/>
+                            <field name="bpmn_id" groups="base.group_no_one"/>
+                            <field name="col"/>
+                            <field name="row"/>
+                            <field name="width" groups="base.group_no_one"/>
+                            <field name="height" groups="base.group_no_one"/>
+                        </group>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_bf_process_node_list" model="ir.ui.view">
+        <field name="name">bf.process.node.list</field>
+        <field name="model">bf.process.node</field>
+        <field name="arch" type="xml">
+            <list string="Nœuds">
+                <field name="process_id"/>
+                <field name="diagram_id"/>
+                <field name="kind"/>
+                <field name="name"/>
+                <field name="lane_id"/>
+                <field name="validation" widget="badge"
+                       decoration-success="validation == 'validee'"
+                       decoration-warning="validation == 'partielle'"
+                       decoration-danger="validation == 'conteste'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_bf_process_node_search" model="ir.ui.view">
+        <field name="name">bf.process.node.search</field>
+        <field name="model">bf.process.node</field>
+        <field name="arch" type="xml">
+            <search string="Nœuds">
+                <field name="name"/>
+                <field name="process_id"/>
+                <field name="diagram_id"/>
+                <filter name="activites" string="Activités"
+                        domain="[('kind', 'in', ['task', 'send', 'receive', 'user', 'sub'])]"/>
+                <filter name="a_valider" string="À valider"
+                        domain="[('validation', '=', 'a_valider'),
+                                 ('kind', 'in', ['task','send','receive','user','sub'])]"/>
+                <filter name="contestees" string="Contestées"
+                        domain="[('validation', '=', 'conteste')]"/>
+                <separator/>
+                <filter name="fragilites" string="Fragilités relevées"
+                        domain="[('tone', '=', 'risk')]"/>
+                <filter name="pistes" string="Pistes d'amélioration"
+                        domain="[('tone', '=', 'ai')]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="par_niveau" string="Niveau"
+                            context="{'group_by': 'diagram_id'}"/>
+                    <filter name="par_couloir" string="Couloir"
+                            context="{'group_by': 'lane_id'}"/>
+                    <filter name="par_type" string="Type"
+                            context="{'group_by': 'kind'}"/>
+                    <filter name="par_validation" string="Validation"
+                            context="{'group_by': 'validation'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_bf_process_node" model="ir.actions.act_window">
+        <field name="name">Nœuds</field>
+        <field name="res_model">bf.process.node</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

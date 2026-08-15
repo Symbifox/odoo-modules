@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+<t t-name="bf_process.Visualiseur">
+    <div class="o_bf_process_visualiseur"
+         t-att-class="{ 'o_bf_process_plein': state.plein }">
+        <div t-if="state.erreur" class="alert alert-info m-2" role="status">
+            <t t-esc="state.erreur"/>
+        </div>
+        <t t-elif="state.donnees">
+            <div class="o_bf_process_barre">
+                <select t-if="state.donnees.niveaux.length > 1"
+                        class="form-select form-select-sm o_bf_process_choix"
+                        t-on-change="changerNiveau">
+                    <option t-foreach="state.donnees.niveaux" t-as="n" t-key="n.id"
+                            t-att-value="n.id"
+                            t-att-selected="n.id === state.donnees.niveau_id"
+                            t-esc="n.titre"/>
+                </select>
+                <span t-else="" class="o_bf_process_titre"
+                      t-esc="state.donnees.titre"/>
+                <span class="flex-grow-1"/>
+                <button class="btn btn-sm btn-light" t-on-click="() => this.zoomer(-0.2)"
+                        title="Réduire">−</button>
+                <span class="o_bf_process_zoom"
+                      t-esc="Math.round(state.zoom * 100) + ' %'"/>
+                <button class="btn btn-sm btn-light" t-on-click="() => this.zoomer(0.2)"
+                        title="Agrandir (Ctrl + molette)">+</button>
+                <button class="btn btn-sm btn-light" t-on-click="() => this.ajuster()"
+                        title="Ajuster à la largeur">Ajuster</button>
+                <button class="btn btn-sm btn-light" t-on-click="() => this.telecharger()"
+                        title="Télécharger le tracé en SVG">SVG</button>
+                <button class="btn btn-sm btn-primary" t-on-click="() => this.plein_ecran()"
+                        t-att-title="state.plein ? 'Quitter le plein écran' : 'Plein écran'">
+                    <t t-esc="state.plein ? 'Réduire' : 'Plein écran'"/>
+                </button>
+            </div>
+            <div class="o_bf_process_toile" t-ref="toile"
+                 t-on-wheel="surMolette"
+                 t-on-mousedown="debutGlisse"
+                 t-on-mousemove="surGlisse"
+                 t-on-mouseup="finGlisse"
+                 t-on-mouseleave="finGlisse">
+                <svg t-ref="svg"
+                     t-att-width="state.donnees.largeur * state.zoom"
+                     t-att-height="state.donnees.hauteur * state.zoom"
+                     t-att-viewBox="'0 0 ' + state.donnees.largeur + ' ' + state.donnees.hauteur"
+                     xmlns="http://www.w3.org/2000/svg">
+                    <t t-foreach="elements" t-as="e" t-key="e_index">
+                        <rect t-if="e.t === 'rect'" t-att-x="e.x" t-att-y="e.y"
+                              t-att-width="e.w" t-att-height="e.h"
+                              t-att-rx="e.r or 0" t-att-fill="e.fill"
+                              t-att-stroke="e.stroke" t-att-stroke-width="e.sw"/>
+                        <circle t-if="e.t === 'cercle'" t-att-cx="e.cx" t-att-cy="e.cy"
+                                t-att-r="e.r" t-att-fill="e.fill"
+                                t-att-stroke="e.stroke" t-att-stroke-width="e.sw"/>
+                        <polyline t-if="e.t === 'ligne'" t-att-points="points(e.pts)"
+                                  fill="none" t-att-stroke="e.stroke"
+                                  t-att-stroke-width="e.sw"
+                                  t-att-stroke-dasharray="e.tirets"/>
+                        <polygon t-if="e.t === 'poly'" t-att-points="points(e.pts)"
+                                 t-att-fill="e.fill" t-att-stroke="e.stroke"
+                                 t-att-stroke-width="e.sw"/>
+                        <t t-if="e.t === 'bloc'">
+                            <t t-foreach="lignes(e)" t-as="l" t-key="l_index">
+                                <text t-att-x="e.x" t-att-y="l.y"
+                                      t-att-text-anchor="e.ancre or 'middle'"
+                                      t-att-font-size="e.taille"
+                                      t-att-font-weight="e.gras ? 600 : 400"
+                                      t-att-fill="e.couleur"
+                                      font-family="Lexend, sans-serif"
+                                      t-esc="l.s"/>
+                            </t>
+                        </t>
+                        <rect t-if="e.t === 'zone'" t-att-x="e.x" t-att-y="e.y"
+                              t-att-width="e.w" t-att-height="e.h"
+                              fill="transparent" class="o_bf_process_zone"
+                              t-att-data-rid="e.n.rid"
+                              t-on-click="() => this.ouvrir(e.n)">
+                            <title t-esc="(e.n.enfant ? 'Ouvrir le niveau déplié' : 'Ouvrir la fiche') + (e.n.fil ? ' · ' + e.n.fil + ' message(s)' : '') + (e.n.validation === 'validee' ? ' · validée' : (e.n.validation === 'conteste' ? ' · contestée' : (e.n.validation === 'partielle' ? ' · validation partielle' : '')))"/>
+                        </rect>
+                        <text t-if="e.t === 'vtexte'" t-att-x="e.x" t-att-y="e.y"
+                              text-anchor="middle" t-att-font-size="e.taille"
+                              t-att-font-weight="e.gras ? 600 : 400" fill="#2D3031"
+                              font-family="Lexend, sans-serif"
+                              t-att-transform="'rotate(-90 ' + e.x + ' ' + e.y + ')'"
+                              t-esc="e.s"/>
+                    </t>
+                </svg>
+            </div>
+        </t>
+    </div>
+</t>
+
+</templates>

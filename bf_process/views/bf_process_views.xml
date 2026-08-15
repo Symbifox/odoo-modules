@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_bf_process_list" model="ir.ui.view">
+        <field name="name">bf.process.list</field>
+        <field name="model">bf.process</field>
+        <field name="arch" type="xml">
+            <list string="Cartographies">
+                <field name="name"/>
+                <field name="version"/>
+                <field name="partner_id"/>
+                <field name="project_id" optional="show"/>
+                <field name="diagram_count" string="Niveaux"/>
+                <field name="node_count" string="Nœuds"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'valide'"
+                       decoration-muted="state == 'obsolete'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_bf_process_form" model="ir.ui.view">
+        <field name="name">bf.process.form</field>
+        <field name="model">bf.process</field>
+        <field name="arch" type="xml">
+            <form string="Cartographie">
+                <header>
+                    <button name="action_telecharger_mxgraph" type="object"
+                            string="Exporter pour diagrams.net" class="btn-primary"
+                            invisible="diagram_count == 0"/>
+                    <button name="action_telecharger_bpmn" type="object"
+                            string="Exporter en BPMN 2.0"
+                            invisible="diagram_count == 0"/>
+                    <button name="action_valider" type="object" string="Valider et geler"
+                            class="btn-primary" invisible="state != 'brouillon'"
+                            confirm="Une version validée ne se modifie plus. Continuer ?"/>
+                    <button name="action_rouvrir" type="object" string="Rouvrir"
+                            invisible="state != 'valide'"/>
+                    <button name="action_nouvelle_version" type="object"
+                            string="Nouvelle version"
+                            invisible="diagram_count == 0"/>
+                    <button name="action_comparer" type="object"
+                            string="Comparer" invisible="not version_precedente_id"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="brouillon,valide"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_ouvrir_niveaux" type="object"
+                                class="oe_stat_button" icon="fa-sitemap">
+                            <field name="diagram_count" widget="statinfo"
+                                   string="Niveaux"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="Nom du processus"/></h1>
+                        <h3>
+                            <field name="version" class="oe_inline"/>
+                            <span class="oe_inline"> · </span>
+                            <field name="code" class="oe_inline"
+                                   placeholder="code"/>
+                        </h3>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="pool_name"
+                                   placeholder="L'organisation qui exécute"/>
+                            <field name="partner_id"/>
+                            <field name="project_id"/>
+                        </group>
+                        <group>
+                            <field name="node_count"/>
+                            <field name="version_precedente_id" readonly="1"
+                                   invisible="not version_precedente_id"/>
+                            <field name="version_suivante_ids" widget="many2many_tags"
+                                   readonly="1"
+                                   invisible="not version_suivante_ids"/>
+                            <label for="taux_validation"/>
+                            <div>
+                                <field name="taux_validation" widget="percentage"
+                                       class="oe_inline" readonly="1"/>
+                                <span class="text-muted">
+                                    — <field name="validee_count" class="oe_inline"
+                                             readonly="1"/> sur
+                                    <field name="activite_count" class="oe_inline"
+                                           readonly="1"/> activités
+                                </span>
+                                <span class="text-danger"
+                                      invisible="conteste_count == 0">
+                                    · <field name="conteste_count" class="oe_inline"
+                                             readonly="1"/> contestée(s)
+                                </span>
+                            </div>
+                            <field name="active" invisible="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Tracé" name="trace"
+                              invisible="diagram_count == 0">
+                            <widget name="bf_process_visualiseur"/>
+                        </page>
+                        <page string="Niveaux" name="niveaux">
+                            <field name="diagram_ids" nolabel="1">
+                                <list>
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="level"/>
+                                    <field name="title"/>
+                                    <field name="code"/>
+                                    <field name="parent_node_ids" widget="many2many_tags"/>
+                                    <field name="node_count" string="Nœuds"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Source" name="source">
+                            <field name="source" nolabel="1"
+                                   placeholder="D'où vient la carte, et ce qui n'a pas été fait : aucune observation terrain, aucune donnée de système…"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_bf_process_search" model="ir.ui.view">
+        <field name="name">bf.process.search</field>
+        <field name="model">bf.process</field>
+        <field name="arch" type="xml">
+            <search string="Cartographies">
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="project_id"/>
+                <filter name="validees" string="Validées"
+                        domain="[('state', '=', 'valide')]"/>
+                <filter name="brouillons" string="Brouillons"
+                        domain="[('state', '=', 'brouillon')]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="par_client" string="Client"
+                            context="{'group_by': 'partner_id'}"/>
+                    <filter name="par_etat" string="État"
+                            context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_bf_process" model="ir.actions.act_window">
+        <field name="name">Cartographies</field>
+        <field name="res_model">bf.process</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Aucune cartographie</p>
+            <p>Le modèle est la vérité : le PDF et le XML n'en sont que des rendus.</p>
+        </field>
+    </record>
+</odoo>

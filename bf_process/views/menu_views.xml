@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_bf_process_root" name="Cartographies"
+              web_icon="bf_process,static/description/icon.png"
+              sequence="46" groups="bf_process.group_bf_process_user"/>
+    <menuitem id="menu_bf_process" name="Cartographies"
+              parent="menu_bf_process_root" action="action_bf_process"
+              sequence="10"/>
+    <menuitem id="menu_bf_process_diagram" name="Niveaux"
+              parent="menu_bf_process_root" action="action_bf_process_diagram"
+              sequence="20"/>
+    <menuitem id="menu_bf_process_import" name="Importer un BPMN"
+              parent="menu_bf_process_root" action="action_bf_process_import"
+              sequence="40" groups="bf_process.group_bf_process_manager"/>
+    <menuitem id="menu_bf_process_node" name="Nœuds"
+              parent="menu_bf_process_root" action="action_bf_process_node"
+              sequence="30"/>
+</odoo>
