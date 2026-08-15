@@ -21,6 +21,11 @@
         <field name="model">bf.process.diagram</field>
         <field name="arch" type="xml">
             <form string="Niveau">
+                <header>
+                    <button name="action_telecharger_pdf" type="object"
+                            string="Tracer ce niveau en PDF"
+                            invisible="node_count == 0"/>
+                </header>
                 <sheet>
                     <div class="oe_title">
                         <label for="title"/>
@@ -109,7 +114,8 @@
                                 <field name="row_h"/>
                                 <field name="lane_pad"/>
                                 <field name="ext_header"
-                                       help="Mesurée au rendu, puis conservée."/>
+                                       help="Vide : mesurée. Une valeur est une surcharge."/>
+                                <field name="pas_grille"/>
                             </group>
                         </page>
                     </notebook>

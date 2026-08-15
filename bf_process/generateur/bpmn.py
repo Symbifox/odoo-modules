@@ -2,11 +2,11 @@
 """Export BPMN 2.0 depuis les enregistrements.
 
 La géométrie vient de `geometrie.py`, qui ne dépend d'aucun moteur de rendu :
-c'est ce qui permet de calculer les mêmes coordonnées que celles montrées à
-l'écran sans embarquer de bibliothèque PDF/typographie dans l'image Odoo.
-Toute modification de ce fichier doit rester couverte par
-`tests/test_aller_retour.py`, qui vérifie que l'aller-retour enregistrements
-→ fichier → enregistrements reproduit exactement les mêmes nœuds et flux.
+les mêmes coordonnées que celles montrées à l'écran et tracées dans le PDF,
+sans embarquer de bibliothèque typographique dans l'image Odoo.
+Toute modification doit rester couverte par `tests/test_aller_retour.py`, qui
+vérifie que l'aller-retour enregistrements → fichier → enregistrements
+reproduit exactement les mêmes nœuds et flux.
 """
 from . import geometrie
 from .geometrie import node_box, plan, points_flux, points_message, MARGE

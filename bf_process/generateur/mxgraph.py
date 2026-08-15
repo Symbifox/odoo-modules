@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 """Export mxGraph (.drawio) depuis les enregistrements.
 
-La géométrie vient de `geometrie.py`, qui ne dépend d'aucun moteur de rendu :
-c'est ce qui permet de calculer les mêmes coordonnées que celles montrées à
-l'écran sans embarquer de bibliothèque PDF/typographie dans l'image Odoo.
+La géométrie vient de `geometrie.py`, qui ne dépend d'aucun moteur de rendu.
 Les styles sont ceux de la palette BPMN de draw.io lui-même
 (`js/diagramly/sidebar/Sidebar-BPMN.js`, dépôt jgraph/drawio), rassemblés dans
 `CATALOGUE` ci-dessous — c'est ce qui garantit que les formes sont celles que

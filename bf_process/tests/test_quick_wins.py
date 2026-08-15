@@ -105,6 +105,30 @@ class TestQuickWins(TransactionCase):
         self.assertIn("retrait", wiz.rapport_html)
         self.assertGreaterEqual(wiz.ecart_count, 2)
 
+    def test_comparaison_echappe_les_libelles(self):
+        """Un nom de nœud hostile ne doit pas s'exécuter dans le rapport.
+
+        Les libellés viennent de la saisie, d'un `.bpmn` tiers ou du tracé :
+        concaténés tels quels dans du HTML rendu sans filtre, ils s'exécutent
+        dans la session de quiconque ouvre la comparaison.
+        """
+        charge = '<img src=x onerror=alert(1)>'
+        suite = self.env["bf.process"].browse(
+            self.processus.action_nouvelle_version()["res_id"])
+        cible = {n.code: n for n in suite.diagram_ids.node_ids}
+        cible["t1"].name = charge
+        wiz = self.env["bf.process.compare.wizard"].create({
+            "source_id": suite.id, "cible_id": self.processus.id})
+        wiz.action_comparer()
+        rapport = str(wiz.rapport_html or "")
+        # ce qui compte n'est pas l'absence du mot « onerror » — il survit en
+        # texte inerte à l'intérieur de l'entité échappée — mais l'absence de
+        # la BALISE : sans « < » brut, rien ne s'exécute.
+        self.assertNotIn("<img", rapport)
+        self.assertNotIn("<script", rapport)
+        # et le texte reste lisible, simplement neutralisé
+        self.assertIn("&lt;img", rapport)
+
     def test_comparaison_sans_ecart(self):
         suite = self.env["bf.process"].browse(
             self.processus.action_nouvelle_version()["res_id"])

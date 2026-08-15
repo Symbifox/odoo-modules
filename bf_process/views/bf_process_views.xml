@@ -24,8 +24,11 @@
         <field name="arch" type="xml">
             <form string="Cartographie">
                 <header>
+                    <button name="action_telecharger_pdf" type="object"
+                            string="Tracer en PDF" class="btn-primary"
+                            invisible="diagram_count == 0"/>
                     <button name="action_telecharger_mxgraph" type="object"
-                            string="Exporter pour diagrams.net" class="btn-primary"
+                            string="Exporter pour diagrams.net"
                             invisible="diagram_count == 0"/>
                     <button name="action_telecharger_bpmn" type="object"
                             string="Exporter en BPMN 2.0"

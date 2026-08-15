@@ -30,6 +30,18 @@
         padding: .5rem;
     }
 
+    .o_bf_process_aide {
+        padding: .25rem .6rem;
+        font-size: .82rem;
+        color: #73787A;
+        background: #F5FBFE;
+        border-bottom: 1px solid #DEE2E6;
+    }
+
+    .o_bf_process_genre {
+        max-width: 13rem;
+    }
+
     svg text {
         user-select: text;
     }
@@ -62,6 +74,32 @@
     &:hover {
         fill: rgba(41, 171, 225, .12);
     }
+
+    // l'origine d'un lien en cours reste visible tant que la cible n'est pas
+    // choisie : sans ça, on ne sait plus d'où on part
+    &.o_bf_process_pris {
+        fill: rgba(41, 171, 225, .22);
+        stroke: #29ABE1;
+        stroke-width: 1.4;
+        stroke-dasharray: 4 3;
+    }
+}
+
+.o_bf_process_lien {
+    cursor: pointer;
+
+    &:hover {
+        stroke: rgba(192, 57, 43, .35);
+    }
+}
+
+// le curseur dit ce que l'outil en main va faire, avant le clic
+.o_bf_process_toile.o_bf_process_outil_deplacer .o_bf_process_zone { cursor: move; }
+.o_bf_process_toile.o_bf_process_outil_poser { cursor: crosshair; }
+.o_bf_process_toile.o_bf_process_outil_lier .o_bf_process_zone { cursor: alias; }
+.o_bf_process_toile.o_bf_process_outil_retirer .o_bf_process_zone,
+.o_bf_process_toile.o_bf_process_outil_retirer .o_bf_process_lien {
+    cursor: not-allowed;
 }
 
 .o_bf_process_choix {

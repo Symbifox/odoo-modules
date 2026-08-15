@@ -1,14 +1,20 @@
 # -*- coding: utf-8 -*-
 """Géométrie de la carte, sans moteur typographique.
 
-Le générateur hors serveur mesure le texte avec PyMuPDF pour décider de la
-hauteur d'une annotation et de la hauteur des pools externes. L'image Odoo n'a
-pas PyMuPDF, et n'en a pas besoin : ces deux mesures sont **conservées sur les
-enregistrements** (`bf.process.node.height`, `bf.process.diagram.ext_header`).
-Tout le reste se calcule.
+Deux hauteurs dépendent de la largeur du texte : celle d'une annotation et
+celle des bandeaux de pools externes. Le générateur hors serveur les mesure
+avec la police ; le serveur, lui, les recalcule avec `mesure`, dont la table de
+largeurs est étalonnée sur cette même police. Les deux tombent sur le même
+nombre — c'est ce qui permet à une carte créée à la main dans Odoo d'être
+tracée et exportée comme une carte produite par le générateur.
+
+Une mesure conservée sur l'enregistrement (`bf.process.node.height`,
+`bf.process.diagram.ext_header`) reste prioritaire : c'est une surcharge, et
+un ajustement humain doit survivre au recalcul.
 
 Ce module ne dépend de rien d'autre que la bibliothèque standard.
 """
+from . import mesure
 
 # --- constantes de tracé, identiques à celles du générateur ------------------
 EV_R, GW_S = 19.0, 46.0
@@ -25,11 +31,15 @@ PASSERELLES = ("xor", "and", "or")
 
 
 class GeometrieIncomplete(Exception):
-    """Une mesure manque sur l'enregistrement, et deviner serait pire."""
+    """Une mesure manque et ne se recalcule pas : deviner serait pire.
+
+    Ne se lève plus pour les deux hauteurs de texte, que `mesure` sait refaire.
+    Reste là pour ce qui, un jour, ne pourrait toujours pas se mesurer.
+    """
 
 
 def node_box(n):
-    """Bornes d'un nœud. Les mesures de texte viennent des enregistrements."""
+    """Bornes d'un nœud. Une mesure conservée l'emporte sur la mesure refaite."""
     k = n["kind"]
     if k in EVENEMENTS:
         return 2 * EV_R, 2 * EV_R
@@ -40,13 +50,8 @@ def node_box(n):
     if k == "store":
         return STORE_W, STORE_H
     if k == "note":
-        h = n.get("h")
-        if not h:
-            raise GeometrieIncomplete(
-                "L'annotation « %s » n'a pas de hauteur conservée : elle dépend"
-                " de la mesure du texte, que le serveur ne sait pas refaire."
-                % (n.get("name", "")[:40],))
-        return n.get("w", NOTE_W), h
+        w = n.get("w") or NOTE_W
+        return w, n.get("h") or mesure.hauteur_annotation(n.get("name", ""), w)
     return n.get("w", TASK_W), n.get("h", TASK_H)
 
 
@@ -75,11 +80,8 @@ def geometrie(d):
 
     ext_top = [p for p in d.get("ext", []) if p["pos"] == "top"]
     ext_bot = [p for p in d.get("ext", []) if p["pos"] == "bottom"]
-    ext_h = d.get("ext_header")
-    if d.get("ext") and not ext_h:
-        raise GeometrieIncomplete(
-            "La hauteur des pools externes n'est pas conservée sur le niveau.")
-    ext_h = ext_h or 62.0
+    ext_h = d.get("ext_header") or mesure.hauteur_pools_externes(
+        [p["name"] for p in d.get("ext", [])])
     y_pool = len(ext_top) * (ext_h + EXT_GAP)
 
     ext = {}
