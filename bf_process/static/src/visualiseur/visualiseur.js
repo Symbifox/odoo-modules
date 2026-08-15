@@ -1,21 +1,31 @@
 /** @odoo-module **/
 /**
- * Visualiseur de cartographie — dessine le niveau en SVG, depuis les
- * enregistrements.
+ * Éditeur de cartographie — dessine le niveau en SVG, depuis les
+ * enregistrements, et le repose dedans.
  *
  * Il ne recalcule aucune géométrie : le serveur envoie exactement les
  * coordonnées qui partent dans le `.bpmn`, dans le `.drawio` et dans le PDF.
- * Trois rendus, une seule géométrie — c'est ce qui garantit que ce qu'on voit
+ * Quatre rendus, une seule géométrie — c'est ce qui garantit que ce qu'on voit
  * ici est ce qu'on ouvrira ailleurs.
  *
- * Lecture seule, et sans bibliothèque tierce : un éditeur BPMN embarqué
- * (bpmn-js) impose un filigrane visible jusque dans l'usage commercial, ce qui
- * est une décision à prendre à part.
+ * L'écriture suit la même règle : rien n'est calculé ici. Un glisser-déposer
+ * envoie un centre en coordonnées du tracé, et c'est le serveur qui le
+ * reconvertit en pas de grille — le modèle stocke une colonne et une rangée,
+ * pas des pixels. Après chaque écriture, le serveur renvoie le tracé complet
+ * et le composant le remplace : jamais de disposition devinée localement.
+ *
+ * Le gel se lit AVANT d'offrir une poignée. Laisser déplacer une forme pour
+ * rendre une erreur au relâchement serait une promesse qu'on ne tient pas.
+ *
+ * Sans bibliothèque tierce : un éditeur BPMN embarqué (bpmn-js) impose un
+ * filigrane visible jusque dans l'usage commercial, ce qui est une décision à
+ * prendre à part.
  */
 import { Component, onWillStart, useState, useRef } from "@odoo/owl";
 import { registry } from "@web/core/registry";
 import { useService } from "@web/core/utils/hooks";
 import { _t } from "@web/core/l10n/translation";
+import { ConfirmationDialog } from "@web/core/confirmation_dialog/confirmation_dialog";
 
 const EV_R = 19;
 const INK = "#2D3031";
@@ -63,12 +73,19 @@ export class VisualiseurCartographie extends Component {
     setup() {
         this.orm = useService("orm");
         this.action = useService("action");
+        this.notification = useService("notification");
+        this.dialog = useService("dialog");
         // 100 % par défaut : une carte réduite pour tenir dans la colonne est
         // illisible, et c'est le défilement qui doit céder, pas le texte.
-        this.state = useState({ donnees: null, erreur: null, zoom: 1, plein: false });
+        this.state = useState({
+            donnees: null, erreur: null, zoom: 1, plein: false,
+            outil: "consulter", genre: "task", depuis: null, fantome: null,
+            occupe: false,
+        });
         this.svgRef = useRef("svg");
         this.toileRef = useRef("toile");
         this.glisse = null;
+        this.deplacement = null;
         onWillStart(() => this.charger());
     }
 
@@ -142,7 +159,7 @@ export class VisualiseurCartographie extends Component {
 
     /** Glisser pour déplacer la carte, comme dans n'importe quel plan. */
     debutGlisse(ev) {
-        if (ev.button !== 0 || ev.target.dataset.rid) {
+        if (ev.button !== 0 || ev.target.dataset.rid || this.deplacement) {
             return;
         }
         const toile = this.toileRef.el;
@@ -152,6 +169,10 @@ export class VisualiseurCartographie extends Component {
     }
 
     surGlisse(ev) {
+        if (this.deplacement) {
+            this.surDeplacement(ev);
+            return;
+        }
         if (!this.glisse) {
             return;
         }
@@ -160,10 +181,198 @@ export class VisualiseurCartographie extends Component {
         toile.scrollTop = this.glisse.gy - (ev.clientY - this.glisse.y);
     }
 
-    finGlisse() {
+    finGlisse(ev) {
+        if (this.deplacement) {
+            this.finDeplacement(ev);
+        }
         this.glisse = null;
         if (this.toileRef.el) {
             this.toileRef.el.classList.remove("o_bf_process_glisse");
+        }
+    }
+
+    /** Sortir du cadre abandonne le déplacement plutôt que de l'entériner. */
+    annulerGlisse() {
+        this.deplacement = null;
+        this.state.fantome = null;
+        this.finGlisse();
+    }
+
+    // --- édition ------------------------------------------------------------
+
+    /** Le tracé accepte-t-il d'être modifié ? Lu du serveur, pas déduit ici. */
+    get modifiable() {
+        return !!(this.state.donnees && this.state.donnees.modifiable);
+    }
+
+    get outils() {
+        return [
+            { code: "consulter", nom: _t("Consulter"),
+              aide: _t("Ouvrir la fiche d'une étape ou sa page dépliée.") },
+            { code: "deplacer", nom: _t("Déplacer"),
+              aide: _t("Glisser une forme. Elle se cale sur la grille.") },
+            { code: "poser", nom: _t("Poser"),
+              aide: _t("Cliquer sur le fond pour ajouter la forme choisie.") },
+            { code: "lier", nom: _t("Lier"),
+              aide: _t("Cliquer l'origine, puis la cible.") },
+            { code: "retirer", nom: _t("Retirer"),
+              aide: _t("Cliquer une forme ou un lien pour l'enlever.") },
+        ];
+    }
+
+    get aideOutil() {
+        const o = this.outils.find((x) => x.code === this.state.outil);
+        return o ? o.aide : "";
+    }
+
+    choisirOutil(code) {
+        this.state.outil = code;
+        this.state.depuis = null;
+        this.state.fantome = null;
+    }
+
+    /** Un événement de souris, en coordonnées du tracé. */
+    _modele(ev) {
+        const r = this.svgRef.el.getBoundingClientRect();
+        return { x: (ev.clientX - r.left) / this.state.zoom,
+                 y: (ev.clientY - r.top) / this.state.zoom };
+    }
+
+    /**
+     * Une écriture, et le tracé que le serveur renvoie en retour.
+     *
+     * Le composant ne rejoue pas l'opération de son côté : il remplace ce
+     * qu'il affichait. Deux nœuds d'un même couloir se repositionnent l'un par
+     * rapport à l'autre, et seule la géométrie du serveur sait comment.
+     */
+    async _ecrire(methode, args) {
+        if (this.state.occupe) {
+            return false;
+        }
+        this.state.occupe = true;
+        try {
+            this.state.donnees = await this.orm.call(
+                "bf.process.diagram", methode,
+                [this.state.donnees.niveau_id, ...args]);
+            return true;
+        } catch (e) {
+            const message = e.message && e.message.data
+                ? e.message.data.message : String(e);
+            this.notification.add(message, { type: "warning", sticky: false });
+            return false;
+        } finally {
+            this.state.occupe = false;
+            this.state.fantome = null;
+            this.state.depuis = null;
+        }
+    }
+
+    /** Prise d'une forme : le déplacement commence. */
+    debutDeplacement(n, ev) {
+        if (this.state.outil !== "deplacer" || !this.modifiable || ev.button !== 0) {
+            return;
+        }
+        ev.stopPropagation();
+        const p = this._modele(ev);
+        this.deplacement = {
+            code: n.id, cx: n.x + n.w / 2, cy: n.y + n.h / 2,
+            ox: p.x, oy: p.y, w: n.w, h: n.h, bouge: false,
+        };
+    }
+
+    surDeplacement(ev) {
+        const d = this.deplacement;
+        if (!d) {
+            return;
+        }
+        const p = this._modele(ev);
+        const pas = this.state.donnees.pas || 0.05;
+        const cale = (v, unite) => Math.round(v / (pas * unite)) * pas * unite;
+        const dx = cale(p.x - d.ox, this.state.donnees.col_w);
+        const dy = cale(p.y - d.oy, this.state.donnees.row_h);
+        if (dx || dy) {
+            d.bouge = true;
+        }
+        this.state.fantome = { x: d.cx + dx - d.w / 2, y: d.cy + dy - d.h / 2,
+                               w: d.w, h: d.h };
+    }
+
+    async finDeplacement(ev) {
+        const d = this.deplacement;
+        this.deplacement = null;
+        if (!d || !d.bouge) {
+            this.state.fantome = null;
+            return;
+        }
+        const p = this._modele(ev);
+        await this._ecrire("deplacer_noeud",
+                           [d.code, d.cx + (p.x - d.ox), d.cy + (p.y - d.oy)]);
+    }
+
+    /** Un clic sur une forme : ce qu'il fait dépend de l'outil en main. */
+    async surClicNoeud(n, ev) {
+        if (this.state.outil === "consulter" || !this.modifiable) {
+            this.ouvrir(n);
+            return;
+        }
+        ev.stopPropagation();
+        if (this.state.outil === "lier") {
+            if (!this.state.depuis) {
+                this.state.depuis = n.id;
+                return;
+            }
+            const depuis = this.state.depuis;
+            if (depuis !== n.id) {
+                await this._ecrire("creer_flux", [depuis, n.id]);
+            }
+            this.state.depuis = null;
+        } else if (this.state.outil === "retirer") {
+            this.dialog.add(ConfirmationDialog, {
+                title: _t("Retirer cette forme"),
+                body: _t(
+                    "« %s » et tout ce qui s'y raccorde seront retirés du tracé."
+                    + " Cette opération est inscrite au fil du processus.",
+                    n.nom || n.id),
+                confirmLabel: _t("Retirer"),
+                confirm: () => this._ecrire("supprimer_noeud", [n.id]),
+                cancel: () => {},
+            });
+        }
+    }
+
+    /** Un clic sur un lien, pour le couper. */
+    async surClicFlux(f, ev) {
+        if (this.state.outil !== "retirer" || !this.modifiable) {
+            return;
+        }
+        ev.stopPropagation();
+        await this._ecrire("supprimer_flux", [f.src, f.tgt]);
+    }
+
+    /** Un clic sur le fond : c'est là qu'on pose une forme. */
+    async surClicFond(ev) {
+        if (this.state.outil !== "poser" || !this.modifiable
+            || ev.target.dataset.rid) {
+            return;
+        }
+        const p = this._modele(ev);
+        const avant = new Set(this.state.donnees.noeuds.map((n) => n.id));
+        const ok = await this._ecrire("creer_noeud",
+                                      [this.state.genre, p.x, p.y]);
+        if (!ok) {
+            return;
+        }
+        // la fiche s'ouvre tout de suite : une forme posée doit être nommée,
+        // et c'est là que vivent son libellé, son ton et son registre
+        const neuf = this.state.donnees.noeuds.find((n) => !avant.has(n.id));
+        if (neuf && neuf.rid) {
+            this.action.doAction({
+                type: "ir.actions.act_window",
+                res_model: "bf.process.node",
+                res_id: neuf.rid,
+                views: [[false, "form"]],
+                target: "new",
+            }, { onClose: () => this.charger(this.state.donnees.niveau_id) });
         }
     }
 
@@ -252,7 +461,26 @@ export class VisualiseurCartographie extends Component {
                 out.push({ t: "cercle", cx: n.x + 5, cy: n.y + 5, r: 4,
                            fill: teinte, stroke: "#FFFFFF", sw: 1 });
             }
-            out.push({ t: "zone", x: n.x, y: n.y, w: n.w, h: n.h, n });
+        }
+        // les liens ne s'attrapent qu'au moment de les couper : une bande large
+        // et invisible par-dessus le trait, plutôt qu'un trait d'un point
+        if (this.state.outil === "retirer" && this.modifiable) {
+            for (const f of d.flux) {
+                out.push({ t: "lien", pts: f.points, f });
+            }
+        }
+        // en consultation, une annotation n'a pas de zone : son texte doit
+        // rester sélectionnable. En édition il faut pouvoir l'attraper.
+        const edite = this.state.outil !== "consulter" && this.modifiable;
+        for (const n of d.noeuds) {
+            if (n.genre === "note" && !edite) {
+                continue;
+            }
+            out.push({ t: "zone", x: n.x, y: n.y, w: n.w, h: n.h, n,
+                       pris: this.state.depuis === n.id });
+        }
+        if (this.state.fantome) {
+            out.push({ t: "fantome", ...this.state.fantome });
         }
         return out;
     }

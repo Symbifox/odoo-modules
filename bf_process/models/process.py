@@ -243,9 +243,9 @@ class BfProcessDiagram(models.Model):
     row_h = fields.Float(string="Hauteur de rangée", default=100.0)
     lane_pad = fields.Float(string="Marge de couloir", default=50.0)
     ext_header = fields.Float(
-        string="Hauteur des pools externes", default=62.0,
-        help="Mesurée au rendu, puis conservée : le serveur n'a pas de moteur"
-             " typographique pour la recalculer.")
+        string="Hauteur des pools externes", default=0.0,
+        help="Vide : mesurée à partir du plus long nom de participant."
+             " Une valeur ici est une surcharge, et elle survit au recalcul.")
 
     lane_ids = fields.One2many("bf.process.lane", "diagram_id", string="Couloirs")
     pool_ids = fields.One2many("bf.process.pool", "diagram_id", string="Pools externes")

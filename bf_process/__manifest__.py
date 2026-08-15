@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 {
     "name": "Cartographie de processus",
-    "version": "18.0.2.0.2",
+    "version": "18.0.3.0.1",
     "category": "Services/Project",
     "summary": "Cartographies BPMN vivantes : le modèle est la vérité, le PDF et"
-               " le XML n'en sont que des rendus",
+               " les deux XML n'en sont que des rendus",
     "description": """
 Cartographie de processus
 =========================
@@ -21,9 +21,14 @@ Fonctionnalités
   d'atelier, vidéos, documents), son fil et son historique. C'est ce qui fait
   vivre la donnée entre deux séances de cartographie.
 * Identifiants BPMN stables : un réimport fusionne au lieu de dupliquer.
-* Visualiseur intégré : le niveau se lit directement dans Odoo, tracé en SVG
-  depuis les enregistrements. Aucune bibliothèque tierce, donc aucun
-  filigrane imposé et aucun appel sortant.
+* Éditeur intégré : le niveau se lit ET se travaille directement dans Odoo,
+  tracé en SVG depuis les enregistrements. Glisser une forme la recale sur la
+  grille du modèle ; poser, lier et retirer écrivent dans les enregistrements.
+  Aucune bibliothèque tierce, donc aucun filigrane imposé et aucun appel
+  sortant.
+* **Tracé PDF côté serveur**, à l'échelle 1:1, sans navigateur ni moteur
+  typographique : la largeur de la police est étalonnée une fois et figée, et
+  le PDF sort de la même géométrie que les deux exports XML.
 * Export **mxGraph** (`.drawio`) pour **diagrams.net**, libre sous Apache-2.0 :
   c'est la cible de sortie retenue en priorité. Export **BPMN 2.0** (`.bpmn`
   avec sa partie DI) pour les éditeurs BPMN au sens large ; Lucidchart, qui
@@ -33,11 +38,15 @@ Fonctionnalités
 
 Limites assumées
 ----------------
-* Les deux exports vont dans un sens seulement. Ni diagrams.net ni Lucidchart
+* Les trois exports vont dans un sens seulement. Ni diagrams.net ni Lucidchart
   ne réexporte du BPMN : ce qu'un tiers y redessine ne revient pas ici tout
-  seul. La base reste ici, et c'est le visualiseur qui la donne à lire.
-* Le rendu PDF reste au générateur hors serveur tant que l'image Odoo n'embarque
-  pas PyMuPDF.
+  seul. La base reste ici, et c'est l'éditeur intégré qui la travaille.
+* La hauteur d'un couloir est celle de son contenu, et son premier nœud est
+  collé à sa marge haute. Déplacer verticalement le nœud le plus haut d'un
+  couloir ne le fait donc pas descendre : ce sont les autres qui remontent.
+  C'est la géométrie du générateur, et l'éditeur la montre telle quelle.
+* La mesure du texte couvre les caractères que Lexend porte. Un caractère hors
+  table — un émoji, par exemple — fait refuser la mesure plutôt que deviner.
     """,
     "author": "Blue Fox Inc.",
     "website": "https://bluefoxconsultant.com",

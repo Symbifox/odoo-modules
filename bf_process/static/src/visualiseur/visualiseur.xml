@@ -19,7 +19,27 @@
                 </select>
                 <span t-else="" class="o_bf_process_titre"
                       t-esc="state.donnees.titre"/>
+                <span t-if="state.donnees.gele" class="badge text-bg-secondary"
+                      title="Une version validée ne se modifie plus. Rouvrez-la, ou créez la suivante.">
+                    Version validée · lecture seule
+                </span>
                 <span class="flex-grow-1"/>
+                <div t-if="state.donnees.modifiable" class="btn-group btn-group-sm"
+                     role="group" aria-label="Outils d'édition">
+                    <button t-foreach="outils" t-as="o" t-key="o.code"
+                            type="button" class="btn"
+                            t-att-class="state.outil === o.code ? 'btn-primary' : 'btn-light'"
+                            t-att-title="o.aide"
+                            t-att-disabled="state.occupe"
+                            t-on-click="() => this.choisirOutil(o.code)"
+                            t-esc="o.nom"/>
+                </div>
+                <select t-if="state.donnees.modifiable and state.outil === 'poser'"
+                        class="form-select form-select-sm o_bf_process_genre"
+                        t-model="state.genre">
+                    <option t-foreach="state.donnees.palette" t-as="g" t-key="g.code"
+                            t-att-value="g.code" t-esc="g.nom"/>
+                </select>
                 <button class="btn btn-sm btn-light" t-on-click="() => this.zoomer(-0.2)"
                         title="Réduire">−</button>
                 <span class="o_bf_process_zoom"
@@ -35,12 +55,21 @@
                     <t t-esc="state.plein ? 'Réduire' : 'Plein écran'"/>
                 </button>
             </div>
+            <div t-if="state.donnees.modifiable and state.outil !== 'consulter'"
+                 class="o_bf_process_aide">
+                <t t-esc="aideOutil"/>
+                <t t-if="state.depuis">
+                    <t t-esc="' — origine prise : ' + state.depuis"/>
+                </t>
+            </div>
             <div class="o_bf_process_toile" t-ref="toile"
+                 t-att-class="'o_bf_process_outil_' + state.outil"
                  t-on-wheel="surMolette"
                  t-on-mousedown="debutGlisse"
                  t-on-mousemove="surGlisse"
                  t-on-mouseup="finGlisse"
-                 t-on-mouseleave="finGlisse">
+                 t-on-mouseleave="annulerGlisse"
+                 t-on-click="surClicFond">
                 <svg t-ref="svg"
                      t-att-width="state.donnees.largeur * state.zoom"
                      t-att-height="state.donnees.hauteur * state.zoom"
@@ -72,11 +101,24 @@
                                       t-esc="l.s"/>
                             </t>
                         </t>
+                        <polyline t-if="e.t === 'lien'" t-att-points="points(e.pts)"
+                                  fill="none" stroke="transparent"
+                                  stroke-width="12" data-rid="lien"
+                                  class="o_bf_process_lien"
+                                  t-on-click="(ev) => this.surClicFlux(e.f, ev)">
+                            <title>Couper ce lien</title>
+                        </polyline>
+                        <rect t-if="e.t === 'fantome'" t-att-x="e.x" t-att-y="e.y"
+                              t-att-width="e.w" t-att-height="e.h"
+                              fill="none" stroke="#29ABE1" stroke-width="1.4"
+                              stroke-dasharray="5 3" pointer-events="none"/>
                         <rect t-if="e.t === 'zone'" t-att-x="e.x" t-att-y="e.y"
                               t-att-width="e.w" t-att-height="e.h"
                               fill="transparent" class="o_bf_process_zone"
+                              t-att-class="{ 'o_bf_process_pris': e.pris }"
                               t-att-data-rid="e.n.rid"
-                              t-on-click="() => this.ouvrir(e.n)">
+                              t-on-mousedown="(ev) => this.debutDeplacement(e.n, ev)"
+                              t-on-click="(ev) => this.surClicNoeud(e.n, ev)">
                             <title t-esc="(e.n.enfant ? 'Ouvrir le niveau déplié' : 'Ouvrir la fiche') + (e.n.fil ? ' · ' + e.n.fil + ' message(s)' : '') + (e.n.validation === 'validee' ? ' · validée' : (e.n.validation === 'conteste' ? ' · contestée' : (e.n.validation === 'partielle' ? ' · validation partielle' : '')))"/>
                         </rect>
                         <text t-if="e.t === 'vtexte'" t-att-x="e.x" t-att-y="e.y"

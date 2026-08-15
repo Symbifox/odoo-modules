@@ -6,6 +6,8 @@ c'est ce qui permet de dire « cette étape a été renommée » plutôt que « 
 étape a disparu, une autre est apparue ». Sans eux, un diff n'aurait rien à
 dire d'utile.
 """
+from markupsafe import Markup
+
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
 
@@ -29,7 +31,9 @@ class BfProcessCompareWizard(models.TransientModel):
     cible_id = fields.Many2one(
         "bf.process", string="Comparer avec", required=True,
         help="En général la version précédente.")
-    rapport_html = fields.Html(string="Écarts", readonly=True, sanitize=False)
+    # `sanitize` reste actif : c'est la deuxième couche. La première est
+    # l'échappement de chaque valeur interpolée dans `_rendre`.
+    rapport_html = fields.Html(string="Écarts", readonly=True)
     ecart_count = fields.Integer(string="Écarts", readonly=True)
 
     @api.onchange("source_id")
@@ -144,22 +148,33 @@ class BfProcessCompareWizard(models.TransientModel):
     TEINTES = {"ajout": "#1B8A4B", "retrait": "#C0392B"}
 
     def _rendre(self, ecarts):
+        """Compose le rapport en échappant tout ce qui vient d'un enregistrement.
+
+        Les libellés comparés sont saisis par l'utilisateur, importés d'un
+        `.bpmn` tiers ou posés depuis le tracé : ils ne sont pas sûrs. Chaque
+        valeur passe donc par `Markup %`, qui échappe ses arguments, et le
+        champ garde son `sanitize`. Concaténer ces textes en f-string dans du
+        HTML rendu tel quel ferait exécuter un nom de nœud dans la session de
+        quiconque ouvre la comparaison.
+        """
         self.ensure_one()
-        entete = (f"<p class='text-muted'>De <b>v{self.cible_id.version}</b> "
-                  f"vers <b>v{self.source_id.version}</b>.</p>")
+        entete = Markup("<p class='text-muted'>De <b>v%s</b> vers "
+                        "<b>v%s</b>.</p>") % (self.cible_id.version or "",
+                                              self.source_id.version or "")
         if not any(ecarts.values()):
-            return entete + _("<p>Aucun écart : les deux versions disent la "
-                              "même chose.</p>")
+            return entete + Markup("<p>%s</p>") % _(
+                "Aucun écart : les deux versions disent la même chose.")
         blocs = []
         for titre, cle in (("Niveaux", "niveaux"), ("Nœuds", "noeuds"),
                            ("Flux", "flux"), ("Flux de message", "messages")):
             lignes = ecarts[cle]
             if not lignes:
                 continue
-            items = "".join(
-                f"<li><span style='color:{self.TEINTES.get(genre, '#B8860B')};"
-                f"font-weight:600'>{genre}</span> — {texte}</li>"
+            items = Markup("").join(
+                Markup("<li><span style='color:%s;font-weight:600'>%s</span>"
+                       " — %s</li>") % (self.TEINTES.get(genre, "#B8860B"),
+                                        genre, texte)
                 for genre, texte in lignes)
-            blocs.append(f"<h4>{titre} <span class='text-muted'>"
-                         f"({len(lignes)})</span></h4><ul>{items}</ul>")
-        return entete + "".join(blocs)
+            blocs.append(Markup("<h4>%s <span class='text-muted'>(%s)</span>"
+                                "</h4><ul>%s</ul>") % (titre, len(lignes), items))
+        return entete + Markup("").join(blocs)

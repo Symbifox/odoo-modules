@@ -40,18 +40,39 @@ class BfProcessChargement(models.Model):
         self.ensure_one()
         return gen_mx.to_mxgraph(self.to_dicts(), prefixes=self._prefixes())
 
+    def exporter_pdf(self, diagrammes=None):
+        """PDF vectoriel : une page par niveau, à l'échelle 1:1.
+
+        `reportlab` n'est importé qu'ici : les deux exports XML doivent rester
+        possibles même dans un environnement qui ne saurait pas tracer.
+        """
+        self.ensure_one()
+        from ..generateur import pdf as gen_pdf
+        pied = (self.source or "").strip().splitlines()
+        return gen_pdf.to_pdf(
+            diagrammes if diagrammes is not None else self.to_dicts(),
+            titre=f"{self.name} · v{self.version}",
+            sous_titre=self.partner_id.display_name or "",
+            pied=pied[0] if pied else "")
+
     def action_telecharger_bpmn(self):
         return self._telecharger(self.exporter_bpmn(), "bpmn", "application/xml")
 
     def action_telecharger_mxgraph(self):
         return self._telecharger(self.exporter_mxgraph(), "drawio", "application/xml")
 
-    def _telecharger(self, contenu, extension, mimetype):
+    def action_telecharger_pdf(self):
+        return self._telecharger(self.exporter_pdf(), "pdf", "application/pdf")
+
+    def _telecharger(self, contenu, extension, mimetype, suffixe=""):
         self.ensure_one()
-        nom = f"{(self.code or self.name).strip()}-v{self.version}.{extension}"
+        nom = (f"{(self.code or self.name).strip()}-v{self.version}"
+               f"{suffixe}.{extension}")
+        if isinstance(contenu, str):
+            contenu = contenu.encode("utf-8")
         piece = self.env["ir.attachment"].create({
             "name": nom,
-            "datas": base64.b64encode(contenu.encode("utf-8")),
+            "datas": base64.b64encode(contenu),
             "res_model": self._name,
             "res_id": self.id,
             "mimetype": mimetype,
@@ -111,7 +132,9 @@ class BfProcessChargement(models.Model):
                 "col_w": d.get("col_w", 168.0),
                 "row_h": d.get("row_h", 100.0),
                 "lane_pad": d.get("lane_pad", 50.0),
-                "ext_header": d.get("ext_header") or 62.0,
+                # 0.0 = à mesurer. Poser 62 par défaut donnait un bandeau
+                # plausible et faux dès qu'un participant avait un nom long.
+                "ext_header": d.get("ext_header") or 0.0,
             })
             self._charger_niveau(niveau, d)
             par_titre[d["title"].strip().lower()] = niveau
@@ -140,12 +163,11 @@ class BfProcessChargement(models.Model):
                 "diagram_id": niveau.id, "sequence": i * 10,
                 "name": p["name"], "code": p["id"], "position": p.get("pos", "top")})
 
+        # Une annotation sans hauteur n'est plus refusée : `mesure` la refait,
+        # et une carte saisie à la main dans Odoo n'a aucune raison d'en porter
+        # une. La hauteur qui arrive, quand elle arrive, reste conservée telle
+        # quelle — c'est ce qui garde les cartes déjà chargées au bit près.
         for i, n in enumerate(d["nodes"], 1):
-            if n["kind"] == "note" and not n.get("h"):
-                raise UserError(_(
-                    "L'annotation « %s » arrive sans hauteur. Elle dépend de la"
-                    " mesure du texte, que le serveur ne refait pas : le"
-                    " générateur doit la fournir.") % (n.get("name", "")[:60],))
             noeuds[n["id"]] = env["bf.process.node"].create({
                 "diagram_id": niveau.id, "sequence": i * 10,
                 "lane_id": couloirs[n["lane"]].id if n.get("lane") in couloirs else False,
@@ -193,6 +215,13 @@ class BfProcessDiagramRendu(models.Model):
 
     _inherit = "bf.process.diagram"
 
+    def action_telecharger_pdf(self):
+        """Ce niveau seul, en PDF — une page, taillée sur la carte."""
+        self.ensure_one()
+        contenu = self.process_id.exporter_pdf([self.to_dict()])
+        return self.process_id._telecharger(
+            contenu, "pdf", "application/pdf", suffixe=f"-{self.code}")
+
     def rendu(self):
         """Surface RPC volontaire : c'est ce que le composant OWL appelle."""
         self.ensure_one()
@@ -211,7 +240,7 @@ class BfProcessDiagramRendu(models.Model):
                          w=e["x1"] - e["x0"], h=e["y1"] - e["y0"])
                     for e in ext.values()]
         couloirs = [] if mono else [
-            dict(nom=ln["name"], x=pool["x_lane"] + dx,
+            dict(nom=ln["name"], code=ln["id"], x=pool["x_lane"] + dx,
                  y=pool["y0"] + lane_geo[ln["id"]]["y0"] + dy,
                  w=pool["x1"] - pool["x_lane"], h=lane_geo[ln["id"]]["h"])
             for ln in lanes]
@@ -241,6 +270,9 @@ class BfProcessDiagramRendu(models.Model):
                 etiquette=f.get("label") or "",
                 largeur_etiquette=f.get("lw") or 116,
                 decalage=[lp[0], lp[1]],
+                # de quoi couper un lien depuis le tracé, sans passer par la
+                # liste des flux
+                src=f["src"], tgt=f["tgt"],
                 association=f.get("r") == "assoc"))
         messages = []
         for m in d.get("msgs", []):
@@ -256,6 +288,15 @@ class BfProcessDiagramRendu(models.Model):
         return {
             "titre": " — ".join(filter(None, (self.level, self.title))),
             "niveau_id": self.id,
+            # l'éditeur lit le gel AVANT d'offrir une poignée : laisser
+            # déplacer une forme pour rendre une erreur au relâchement serait
+            # une promesse qu'on ne tient pas
+            "modifiable": self._modifiable(),
+            "gele": self.process_id.state == "valide",
+            "pas": self.pas_grille or 0.05,
+            "col_w": self.col_w or 168.0,
+            "row_h": self.row_h or 100.0,
+            "palette": self._palette(),
             # de quoi sauter d'un niveau à l'autre sans quitter le tracé
             "niveaux": [{"id": f.id,
                          "titre": " — ".join(filter(None, (f.level, f.title)))}

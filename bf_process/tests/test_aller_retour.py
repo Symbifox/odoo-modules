@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """Ce qui entre doit ressortir, et les exports doivent tenir debout."""
-from odoo.exceptions import UserError, ValidationError
+from odoo.exceptions import ValidationError
 from odoo.tests import TransactionCase, tagged
 
 CARTE = [
@@ -93,17 +93,77 @@ class TestAllerRetour(TransactionCase):
         noeud.write({"name": "Qualifier et documenter la demande"})
         self.assertEqual({n.code: n.bpmn_id for n in self.niveau.node_ids}, avant)
 
-    def test_annotation_sans_hauteur_refusee(self):
-        """Le serveur ne mesure pas le texte : il refuse plutôt que d'inventer."""
+    def _sans_hauteur(self, nom, texte=None):
+        """La même carte, mais l'annotation arrive sans hauteur mesurée."""
         carte = [dict(CARTE[0])]
         carte[0]["nodes"] = [dict(n) for n in CARTE[0]["nodes"]]
         carte[0]["nodes"][-1].pop("h")
+        if texte:
+            carte[0]["nodes"][-1]["name"] = texte
         autre = self.env["bf.process"].create({
-            "name": "Essai sans hauteur", "pool_name": "Blue Fox"})
-        # viser le motif, pas « une exception » : ce test passait pour une tout
-        # autre raison avant que l'unicité des identifiants soit corrigée.
-        with self.assertRaisesRegex(UserError, "hauteur"):
-            autre._charger_niveaux(carte)
+            "name": nom, "pool_name": "Blue Fox"})
+        autre._charger_niveaux(carte)
+        return autre
+
+    def test_annotation_sans_hauteur_mesuree(self):
+        """Le serveur mesure le texte : une carte saisie à la main tient debout.
+
+        14 (haut) + lignes × 8.6 × 1,32 + 6 (bas), la formule du générateur.
+        Une ligne ici, donc 31,352 — et pas une hauteur plausible posée au
+        jugé.
+        """
+        autre = self._sans_hauteur("Essai mesuré")
+        note = autre.diagram_ids.node_ids.filtered(lambda n: n.kind == "note")
+        self.assertFalse(note.height, "rien n'a été conservé sur le nœud")
+        boite = [n for n in autre.diagram_ids.rendu()["noeuds"]
+                 if n["genre"] == "note"][0]
+        self.assertAlmostEqual(boite["h"], 31.352, places=6)
+
+    def test_annotation_longue_prend_plusieurs_lignes(self):
+        """La mesure sert à quelque chose : un texte long est plus haut."""
+        long = ("Une annotation nettement plus longue, qui ne tient pas sur une"
+                " seule ligne et doit donc en occuper plusieurs.")
+        autre = self._sans_hauteur("Essai mesuré long", texte=long)
+        boite = [n for n in autre.diagram_ids.rendu()["noeuds"]
+                 if n["genre"] == "note"][0]
+        # 228 de large moins 20 de marge : trois lignes, contre une pour le
+        # texte court du test précédent.
+        self.assertAlmostEqual(boite["h"], 14 + 3 * 8.6 * 1.32 + 6, places=6)
+        self.assertGreater(boite["h"], 31.352)
+
+    def test_hauteur_conservee_l_emporte(self):
+        """Une mesure conservée est une surcharge : elle survit au recalcul.
+
+        C'est ce qui garde au bit près les cartes déjà chargées par le
+        générateur — le serveur ne remesure pas ce qui a déjà été mesuré.
+        """
+        boite = [n for n in self.niveau.rendu()["noeuds"]
+                 if n["genre"] == "note"][0]
+        self.assertEqual(boite["h"], 46.0)
+
+    def test_pools_externes_mesures(self):
+        """Sans hauteur conservée, le bandeau suit le plus long participant."""
+        carte = [dict(CARTE[0])]
+        carte[0].pop("ext_header")
+        carte[0]["ext"] = [{"id": "cli", "pos": "top",
+                            "name": "Fournisseur d'hébergement (Hetzner, OVH)"}]
+        autre = self.env["bf.process"].create({
+            "name": "Essai pools", "pool_name": "Blue Fox"})
+        autre._charger_niveaux(carte)
+        self.assertFalse(autre.diagram_ids.ext_header)
+        # nom long : le bandeau bute sur la borne haute plutôt que sur 62
+        self.assertEqual(autre.diagram_ids.rendu()["externes"][0]["h"], 132.0)
+
+    def test_caractere_hors_table_refuse(self):
+        """Ce qui ne se mesure pas se refuse, en nommant le caractère.
+
+        Le refus tombe au tracé, pas au chargement : c'est là que la mesure
+        est demandée, et c'est là qu'il faut le dire.
+        """
+        from ..generateur.mesure import MesureImpossible
+        autre = self._sans_hauteur("Essai emoji", texte="Un renard \U0001F98A ici")
+        with self.assertRaisesRegex(MesureImpossible, r"U\+1F98A"):
+            autre.diagram_ids.rendu()
 
     def test_annotation_reliee_par_association(self):
         noeuds = {n.code: n for n in self.niveau.node_ids}
