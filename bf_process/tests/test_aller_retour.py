@@ -160,10 +160,18 @@ class TestAllerRetour(TransactionCase):
         Le refus tombe au tracé, pas au chargement : c'est là que la mesure
         est demandée, et c'est là qu'il faut le dire.
         """
-        from ..generateur.mesure import MesureImpossible
+        from odoo.exceptions import UserError
+
+        from ..generateur import mesure
+
         autre = self._sans_hauteur("Essai emoji", texte="Un renard \U0001F98A ici")
-        with self.assertRaisesRegex(MesureImpossible, r"U\+1F98A"):
+        # côté interface : un message qui nomme le caractère, pas une trace de 500
+        with self.assertRaisesRegex(UserError, r"U\+1F98A"):
             autre.diagram_ids.rendu()
+        # côté bibliothèque : le refus reste une exception propre à `mesure`,
+        # qui doit rester utilisable hors serveur, donc sans dépendance à Odoo
+        with self.assertRaisesRegex(mesure.MesureImpossible, r"U\+1F98A"):
+            mesure.hauteur_annotation("Un renard \U0001F98A ici", 190.0)
 
     def test_annotation_reliee_par_association(self):
         noeuds = {n.code: n for n in self.niveau.node_ids}

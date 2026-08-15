@@ -6,6 +6,7 @@ la forme d'échange, pas un format de plus. Charger, c'est le poser en
 enregistrements ; exporter, c'est le reconstituer et le donner au générateur.
 """
 import base64
+import functools
 
 from odoo import _, api, models
 from odoo.exceptions import UserError
@@ -13,8 +14,27 @@ from odoo.exceptions import UserError
 from ..generateur import bpmn as gen_bpmn
 from ..generateur import mxgraph as gen_mx
 from ..generateur import geometrie as geo
+from ..generateur import mesure
 
 GROUPE = "bf_process.group_bf_process_manager"
+
+
+def _refus_lisible(methode):
+    """Traduit un refus de mesure ou de géométrie en message d'interface.
+
+    `mesure` et `geometrie` restent en bibliothèque standard pure : ils tournent
+    aussi hors serveur, donc ils ne peuvent pas lever un `UserError`. Leur refus
+    est délibéré et porte déjà l'explication — un caractère hors table est nommé.
+    Sans cette traduction, ce refus voulu sortait en trace de 500 : l'utilisateur
+    voyait un plantage là où le module avait quelque chose de précis à lui dire.
+    """
+    @functools.wraps(methode)
+    def enveloppe(self, *args, **kwargs):
+        try:
+            return methode(self, *args, **kwargs)
+        except (mesure.MesureImpossible, geo.GeometrieIncomplete) as exc:
+            raise UserError(str(exc)) from exc
+    return enveloppe
 
 
 class BfProcessChargement(models.Model):
@@ -30,17 +50,31 @@ class BfProcessChargement(models.Model):
         self.ensure_one()
         return [d.bpmn_id for d in self.diagram_ids]
 
+    @_refus_lisible
     def exporter_bpmn(self):
         """XML BPMN 2.0 des niveaux, avec la partie DI."""
         self.ensure_one()
         return gen_bpmn.to_bpmn(self.to_dicts(), prefixes=self._prefixes())
 
+    @_refus_lisible
     def exporter_mxgraph(self):
         """XML mxGraph : un onglet par niveau, pour diagrams.net."""
         self.ensure_one()
         return gen_mx.to_mxgraph(self.to_dicts(), prefixes=self._prefixes())
 
+    @_refus_lisible
     def exporter_pdf(self, diagrammes=None):
+        """PDF encodé en base64 — la forme qui traverse XML-RPC.
+
+        Les deux exports XML rendent du texte, donc une chaîne suffit ; un PDF
+        est binaire, et rendre des octets bruts fait échouer tout appelant
+        XML-RPC sur un `UnicodeDecodeError` avant même qu'il voie le fichier.
+        Les appelants internes prennent `_pdf_octets`, qui rend les octets.
+        """
+        self.ensure_one()
+        return base64.b64encode(self._pdf_octets(diagrammes)).decode("ascii")
+
+    def _pdf_octets(self, diagrammes=None):
         """PDF vectoriel : une page par niveau, à l'échelle 1:1.
 
         `reportlab` n'est importé qu'ici : les deux exports XML doivent rester
@@ -55,14 +89,17 @@ class BfProcessChargement(models.Model):
             sous_titre=self.partner_id.display_name or "",
             pied=pied[0] if pied else "")
 
+    @_refus_lisible
     def action_telecharger_bpmn(self):
         return self._telecharger(self.exporter_bpmn(), "bpmn", "application/xml")
 
+    @_refus_lisible
     def action_telecharger_mxgraph(self):
         return self._telecharger(self.exporter_mxgraph(), "drawio", "application/xml")
 
+    @_refus_lisible
     def action_telecharger_pdf(self):
-        return self._telecharger(self.exporter_pdf(), "pdf", "application/pdf")
+        return self._telecharger(self._pdf_octets(), "pdf", "application/pdf")
 
     def _telecharger(self, contenu, extension, mimetype, suffixe=""):
         self.ensure_one()
@@ -83,6 +120,7 @@ class BfProcessChargement(models.Model):
             "target": "self",
         }
 
+    @_refus_lisible
     def rendu(self, niveau_id=False):
         """Rendu d'un niveau du processus — le premier par défaut.
 
@@ -215,13 +253,15 @@ class BfProcessDiagramRendu(models.Model):
 
     _inherit = "bf.process.diagram"
 
+    @_refus_lisible
     def action_telecharger_pdf(self):
         """Ce niveau seul, en PDF — une page, taillée sur la carte."""
         self.ensure_one()
-        contenu = self.process_id.exporter_pdf([self.to_dict()])
+        contenu = self.process_id._pdf_octets([self.to_dict()])
         return self.process_id._telecharger(
             contenu, "pdf", "application/pdf", suffixe=f"-{self.code}")
 
+    @_refus_lisible
     def rendu(self):
         """Surface RPC volontaire : c'est ce que le composant OWL appelle."""
         self.ensure_one()

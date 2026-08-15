@@ -60,6 +60,43 @@ class TestEdition(TransactionCase):
         self.assertNotEqual(apres["x"] + apres["w"] / 2, cx)
 
     # --- gel ------------------------------------------------------------------
+    def _utilisateur(self, groupe):
+        return self.env["res.users"].create({
+            "name": "Essai %s" % groupe,
+            "login": "essai-edition-%s" % groupe,
+            "email": "essai-%s@example.invalid" % groupe,
+            "groups_id": [(6, 0, [self.env.ref("base.group_user").id,
+                                  self.env.ref("bf_process.%s" % groupe).id])]})
+
+    def test_lecture_seule_ne_peut_pas_ecrire_depuis_le_trace(self):
+        """L'autre moitié de la garde : le droit, pas seulement le gel.
+
+        Le gel refuse tout le monde ; un contrôle fait sur une carte validée ne
+        dit donc rien du contrôle d'accès. Celui-ci porte sur un BROUILLON,
+        où seul le droit d'écriture peut refuser.
+        """
+        lecteur = self._utilisateur("group_bf_process_user")
+        self.assertEqual(self.processus.state, "brouillon")
+        niveau = self.niveau.with_user(lecteur)
+        self.assertFalse(niveau._modifiable())
+        for appel in (
+            lambda: niveau.deplacer_noeud("t1", 300.0, 60.0),
+            lambda: niveau.creer_noeud("task", 500.0, 60.0, "Intrus"),
+            lambda: niveau.supprimer_noeud("t1"),
+            lambda: niveau.creer_flux("s", "e"),
+            lambda: niveau.supprimer_flux("s", "t1"),
+        ):
+            with self.assertRaises(UserError):
+                appel()
+
+    def test_gestion_peut_ecrire_depuis_le_trace(self):
+        gestion = self._utilisateur("group_bf_process_manager")
+        niveau = self.niveau.with_user(gestion)
+        self.assertTrue(niveau._modifiable())
+        avant = len(self.niveau.node_ids)
+        niveau.creer_noeud("task", 700.0, 60.0, "Ajoutée")
+        self.assertEqual(len(self.niveau.node_ids), avant + 1)
+
     def test_gel_ferme_l_editeur_avant_la_poignee(self):
         """Une version validée se dit non modifiable AVANT qu'on tire dessus."""
         self.processus.action_valider()
