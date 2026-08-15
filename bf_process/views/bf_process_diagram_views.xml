@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_bf_process_diagram_list" model="ir.ui.view">
+        <field name="name">bf.process.diagram.list</field>
+        <field name="model">bf.process.diagram</field>
+        <field name="arch" type="xml">
+            <list string="Niveaux">
+                <field name="sequence" widget="handle"/>
+                <field name="process_id"/>
+                <field name="level"/>
+                <field name="title"/>
+                <field name="code"/>
+                <field name="parent_node_ids" widget="many2many_tags"/>
+                <field name="node_count" string="Nœuds"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_bf_process_diagram_form" model="ir.ui.view">
+        <field name="name">bf.process.diagram.form</field>
+        <field name="model">bf.process.diagram</field>
+        <field name="arch" type="xml">
+            <form string="Niveau">
+                <sheet>
+                    <div class="oe_title">
+                        <label for="title"/>
+                        <h1><field name="title" placeholder="Verbe + complément"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="process_id"/>
+                            <field name="level" placeholder="Niveau 2"/>
+                            <field name="code"/>
+                            <field name="bpmn_id" groups="base.group_no_one"/>
+                            <field name="parent_node_ids" widget="many2many_tags"/>
+                        </group>
+                        <group>
+                            <field name="pool_name"
+                                   placeholder="celui du processus"/>
+                            <field name="flat"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Tracé" name="trace">
+                            <widget name="bf_process_visualiseur"/>
+                        </page>
+                        <page string="Couloirs et participants" name="cadres">
+                            <group>
+                                <field name="lane_ids" nolabel="1">
+                                    <list editable="bottom">
+                                        <field name="sequence" widget="handle"/>
+                                        <field name="code"/>
+                                        <field name="name"/>
+                                    </list>
+                                </field>
+                            </group>
+                            <group string="Pools boîte noire">
+                                <field name="pool_ids" nolabel="1">
+                                    <list editable="bottom">
+                                        <field name="sequence" widget="handle"/>
+                                        <field name="code"/>
+                                        <field name="name"/>
+                                        <field name="position"/>
+                                    </list>
+                                </field>
+                            </group>
+                        </page>
+                        <page string="Nœuds" name="noeuds">
+                            <field name="node_ids" nolabel="1">
+                                <list>
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="code"/>
+                                    <field name="kind"/>
+                                    <field name="name"/>
+                                    <field name="lane_id"/>
+                                    <field name="col"/>
+                                    <field name="row"/>
+                                    <field name="tone" optional="hide"/>
+                                    <field name="message_needaction" invisible="1"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Flux" name="flux">
+                            <field name="flow_ids" nolabel="1">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="source_id"/>
+                                    <field name="target_id"/>
+                                    <field name="label"/>
+                                    <field name="routing"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Flux de message" name="messages">
+                            <field name="message_ids" nolabel="1">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="node_id"/>
+                                    <field name="direction"/>
+                                    <field name="pool_id"/>
+                                    <field name="label"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Mise en page" name="geometrie"
+                              groups="base.group_no_one">
+                            <group>
+                                <field name="col_w"/>
+                                <field name="row_h"/>
+                                <field name="lane_pad"/>
+                                <field name="ext_header"
+                                       help="Mesurée au rendu, puis conservée."/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_bf_process_diagram" model="ir.actions.act_window">
+        <field name="name">Niveaux</field>
+        <field name="res_model">bf.process.diagram</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

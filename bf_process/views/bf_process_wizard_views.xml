@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_bf_process_compare_form" model="ir.ui.view">
+        <field name="name">bf.process.compare.form</field>
+        <field name="model">bf.process.compare.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Comparer deux versions">
+                <group>
+                    <field name="source_id" options="{'no_create': True}"/>
+                    <field name="cible_id" options="{'no_create': True}"/>
+                </group>
+                <field name="ecart_count" invisible="1"/>
+                <field name="rapport_html" widget="html" readonly="1"
+                       invisible="not rapport_html"/>
+                <footer>
+                    <button name="action_comparer" type="object" string="Comparer"
+                            class="btn-primary"/>
+                    <button string="Fermer" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_bf_process_compare" model="ir.actions.act_window">
+        <field name="name">Comparer deux versions</field>
+        <field name="res_model">bf.process.compare.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <record id="view_bf_process_import_form" model="ir.ui.view">
+        <field name="name">bf.process.import.form</field>
+        <field name="model">bf.process.import.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Importer un BPMN 2.0">
+                <div class="alert alert-info" role="status">
+                    Réimporter un fichier produit par ce module reconstitue les mêmes
+                    enregistrements. Un fichier venu d'un autre éditeur passe aussi,
+                    mais sa grille est déduite au mieux : relisez la carte avant de
+                    la valider.
+                </div>
+                <group>
+                    <field name="name" placeholder="Nom de la cartographie"/>
+                    <field name="version"/>
+                    <field name="fichier" filename="nom_fichier"/>
+                    <field name="nom_fichier" invisible="1"/>
+                    <field name="partner_id"/>
+                    <field name="project_id"/>
+                </group>
+                <footer>
+                    <button name="action_importer" type="object" string="Importer"
+                            class="btn-primary"/>
+                    <button string="Annuler" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_bf_process_import" model="ir.actions.act_window">
+        <field name="name">Importer un BPMN 2.0</field>
+        <field name="res_model">bf.process.import.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

@@ -1,0 +1,17 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_bf_process_user,bf.process user,model_bf_process,bf_process.group_bf_process_user,1,0,0,0
+access_bf_process_manager,bf.process manager,model_bf_process,bf_process.group_bf_process_manager,1,1,1,1
+access_bf_process_diagram_user,bf.process.diagram user,model_bf_process_diagram,bf_process.group_bf_process_user,1,0,0,0
+access_bf_process_diagram_manager,bf.process.diagram manager,model_bf_process_diagram,bf_process.group_bf_process_manager,1,1,1,1
+access_bf_process_lane_user,bf.process.lane user,model_bf_process_lane,bf_process.group_bf_process_user,1,0,0,0
+access_bf_process_lane_manager,bf.process.lane manager,model_bf_process_lane,bf_process.group_bf_process_manager,1,1,1,1
+access_bf_process_pool_user,bf.process.pool user,model_bf_process_pool,bf_process.group_bf_process_user,1,0,0,0
+access_bf_process_pool_manager,bf.process.pool manager,model_bf_process_pool,bf_process.group_bf_process_manager,1,1,1,1
+access_bf_process_node_user,bf.process.node user,model_bf_process_node,bf_process.group_bf_process_user,1,0,0,0
+access_bf_process_node_manager,bf.process.node manager,model_bf_process_node,bf_process.group_bf_process_manager,1,1,1,1
+access_bf_process_flow_user,bf.process.flow user,model_bf_process_flow,bf_process.group_bf_process_user,1,0,0,0
+access_bf_process_flow_manager,bf.process.flow manager,model_bf_process_flow,bf_process.group_bf_process_manager,1,1,1,1
+access_bf_process_message_user,bf.process.message user,model_bf_process_message,bf_process.group_bf_process_user,1,0,0,0
+access_bf_process_message_manager,bf.process.message manager,model_bf_process_message,bf_process.group_bf_process_manager,1,1,1,1
+access_bf_process_compare_wizard,bf.process.compare.wizard,model_bf_process_compare_wizard,bf_process.group_bf_process_user,1,1,1,1
+access_bf_process_import_wizard,bf.process.import.wizard,model_bf_process_import_wizard,bf_process.group_bf_process_manager,1,1,1,1

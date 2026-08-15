@@ -1,0 +1,69 @@
+.o_bf_process_visualiseur {
+    display: flex;
+    flex-direction: column;
+    min-height: 320px;
+
+    .o_bf_process_barre {
+        display: flex;
+        align-items: center;
+        gap: .35rem;
+        padding: .35rem .5rem;
+        border-bottom: 1px solid #DEE2E6;
+    }
+
+    .o_bf_process_titre {
+        font-weight: 600;
+        color: #2D3031;
+    }
+
+    .o_bf_process_zoom {
+        min-width: 3.5rem;
+        text-align: center;
+        color: #73787A;
+        font-variant-numeric: tabular-nums;
+    }
+
+    // la carte déborde volontiers : elle défile dans son cadre, jamais la page
+    .o_bf_process_toile {
+        overflow: auto;
+        background: #FFFFFF;
+        padding: .5rem;
+    }
+
+    svg text {
+        user-select: text;
+    }
+}
+
+.o_bf_process_visualiseur.o_bf_process_plein {
+    position: fixed;
+    inset: 0;
+    z-index: 1055;
+    background: #FFFFFF;
+
+    .o_bf_process_toile {
+        height: calc(100vh - 3rem);
+    }
+}
+
+.o_bf_process_toile {
+    min-height: 26rem;
+    cursor: grab;
+
+    &.o_bf_process_glisse {
+        cursor: grabbing;
+        user-select: none;
+    }
+}
+
+.o_bf_process_zone {
+    cursor: pointer;
+
+    &:hover {
+        fill: rgba(41, 171, 225, .12);
+    }
+}
+
+.o_bf_process_choix {
+    max-width: 22rem;
+}
