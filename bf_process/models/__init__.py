@@ -8,3 +8,4 @@ from . import serialisation
 from . import edition
 from . import comparaison
 from . import importation
+from . import fusion
