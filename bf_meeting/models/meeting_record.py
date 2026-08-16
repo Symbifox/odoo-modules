@@ -2,6 +2,7 @@ import json
 import logging
 import socket
 import threading
+from datetime import timedelta
 
 from markupsafe import Markup, escape
 
@@ -16,6 +17,16 @@ _DEFAULT_BRIDGE_SOCKET = "/run/claude-bridge/bridge.sock"
 # They are pasted into the `claude -p` prompt, so an unbounded field would
 # crowd out the skill body itself.
 _MAX_REFINE_INSTRUCTIONS = 4000
+
+# Ceiling on the status detail stored in `refine_message`: it is written by
+# remote callers (bridge, meeting-processor) and only ever shown as one line.
+_MAX_REFINE_MESSAGE = 500
+
+# Au-delà de ce délai sans signal, une passe « en cours » est réputée perdue
+# (voir `_compute_refine_in_progress`). Défaut aligné sur le plafond du pont
+# (REFINE_TIMEOUT = 900 s) plus une marge ; surchargeable par le paramètre
+# système `bf_meeting.refine_stale_minutes`.
+_REFINE_STALE_MINUTES = 20
 
 
 def _format_meeting_date_display(record):
@@ -318,6 +329,84 @@ class MeetingRecord(models.Model):
         # auto-filling caused accidental sends to clients (cf. action_send_report_direct).
         for rec in self:
             rec.partner_to_ids = ','.join(str(pid) for pid in rec.report_recipient_ids.ids)
+
+    # Raffinage GenFox (/refine-meeting)
+    # L'ordre du jour porte le même indicateur (`meeting.agenda.refine_state`).
+    # Ici il est indispensable : côté compte rendu, le pont rend la main DÈS le
+    # lancement (fire-and-forget, plusieurs minutes de traitement derrière), donc
+    # « la demande est partie » ne dit rien de l'état réel de la passe. Chaque
+    # lanceur — bouton Odoo, pont Claude, meeting-processor — écrit son
+    # avancement ici via `set_refine_state`.
+    refine_state = fields.Selection([
+        ('none', 'Non lancé'),
+        ('queued', 'En cours'),
+        ('done', 'Terminé'),
+        ('error', 'Erreur'),
+    ], string='Raffinage GenFox', default='none', readonly=True, copy=False,
+        help="Avancement de la dernière passe /refine-meeting sur ce compte "
+             "rendu.")
+    refine_date = fields.Datetime(
+        string='Raffinage — dernier signal',
+        readonly=True,
+        copy=False,
+        help="Horodatage du dernier changement d'état du raffinage.",
+    )
+    refine_message = fields.Char(
+        string='Raffinage — détail',
+        readonly=True,
+        copy=False,
+        help="Message rendu par le lanceur : cause de l'erreur, modèle "
+             "utilisé, etc.",
+    )
+    refine_in_progress = fields.Boolean(
+        string='Raffinage en cours',
+        compute='_compute_refine_in_progress',
+        help="Vrai seulement pendant la fenêtre où la passe peut encore "
+             "aboutir.",
+    )
+
+    @api.depends('refine_state', 'refine_date')
+    def _compute_refine_in_progress(self):
+        """« En cours » n'est vrai que dans la fenêtre où la passe peut encore
+        rendre un résultat.
+
+        Sans cette borne, un raffinage tué en vol (plafond du pont, recreate du
+        conteneur, redémarrage d'Odoo) laisserait l'état à « En cours » pour
+        toujours — et le bouton caché avec lui, rendant le compte rendu
+        irraffinable sans passer par la base.
+        """
+        try:
+            ceiling = int(self.env['ir.config_parameter'].sudo().get_param(
+                'bf_meeting.refine_stale_minutes', _REFINE_STALE_MINUTES))
+        except (TypeError, ValueError):
+            ceiling = _REFINE_STALE_MINUTES
+        cutoff = fields.Datetime.now() - timedelta(minutes=ceiling)
+        for rec in self:
+            rec.refine_in_progress = bool(
+                rec.refine_state == 'queued'
+                and rec.refine_date
+                and rec.refine_date > cutoff
+            )
+
+    def set_refine_state(self, state, message=''):
+        """Journaliser l'avancement du raffinage.
+
+        Méthode publique et sans garde de groupe : les appelants sont des
+        services (pont Claude, meeting-processor) qui écrivent par XML-RPC avec
+        leur propre compte technique — les droits du modèle s'appliquent
+        normalement. Renvoie False au lieu de lever sur un état inconnu : un
+        appelant distant ne doit jamais faire échouer sa passe sur un souci
+        d'affichage.
+        """
+        if state not in dict(self._fields['refine_state'].selection):
+            _logger.warning("set_refine_state : état inconnu %r", state)
+            return False
+        self.write({
+            'refine_state': state,
+            'refine_date': fields.Datetime.now(),
+            'refine_message': (message or '').strip()[:_MAX_REFINE_MESSAGE] or False,
+        })
+        return True
 
     # Source
     source_filename = fields.Char(
@@ -656,6 +745,18 @@ class MeetingRecord(models.Model):
             "context": {"default_meeting_id": self.id},
         }
 
+    def _bridge_tenant(self):
+        """Locataire annoncé au pont Claude.
+
+        Le module tourne sur plusieurs bases (BF, PME Conforme) et le pont
+        n'accepte qu'une liste fermée de locataires ; l'ancien littéral « bf »
+        faisait donc passer les demandes de PME Conforme pour des demandes BF
+        dans les journaux du pont. Le paramètre système
+        `bf_meeting.bridge_tenant` porte la valeur réelle par base.
+        """
+        return (self.env['ir.config_parameter'].sudo()
+                .get_param('bf_meeting.bridge_tenant', 'bf') or 'bf').strip()
+
     def _check_refine_access(self):
         """Garde-fou commun à l'assistant et au lancement.
 
@@ -721,6 +822,13 @@ class MeetingRecord(models.Model):
         db_name = self.env.cr.dbname
         uid = self.env.user.id
         triggered_by = self.env.user.login
+        tenant = self._bridge_tenant()
+
+        # Marqué « en cours » avant le lancement : le formulaire montre
+        # l'indicateur dès le retour du clic, et le bouton se retire le temps
+        # de la passe. La transaction de la requête commite pour nous.
+        self.set_refine_state(
+            'queued', f"Lancement demandé par {self.env.user.name}")
 
         def _run():
             from odoo import api as _api, registry as _registry
@@ -729,7 +837,7 @@ class MeetingRecord(models.Model):
                     socket_path, "/refine-meeting",
                     {
                         "meeting_id": record_id,
-                        "tenant": "bf",
+                        "tenant": tenant,
                         "triggered_by": triggered_by,
                         "user_notes": instructions,
                     },
@@ -744,6 +852,16 @@ class MeetingRecord(models.Model):
                 new_env = _api.Environment(new_cr, uid, {})
                 rec = new_env["meeting.record"].browse(record_id).exists()
                 if rec:
+                    # `ok` ne veut dire QUE « le pont a pris la demande » : la
+                    # passe elle-même dure plusieurs minutes et c'est le pont
+                    # qui écrira `done`/`error` en la terminant. On garde donc
+                    # « en cours » ici, et on n'écrase jamais un état terminal
+                    # déjà posé (course théorique sur une passe très courte).
+                    if status == "ok":
+                        if rec.refine_state == 'queued':
+                            rec.set_refine_state('queued', msg)
+                    else:
+                        rec.set_refine_state('error', msg or status)
                     body = (
                         f"<p><b>Raffinement /refine-meeting</b> — statut : "
                         f"<code>{escape(status)}</code></p>"

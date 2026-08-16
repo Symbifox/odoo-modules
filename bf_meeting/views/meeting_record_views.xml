@@ -99,7 +99,13 @@
                     <button name="action_open_refine_wizard" type="object"
                             string="Raffiner avec GenFox"
                             class="btn-primary"
-                            groups="bf_meeting.group_meeting_manager"/>
+                            groups="bf_meeting.group_meeting_manager"
+                            invisible="refine_state == 'queued'"/>
+                    <button name="action_open_refine_wizard" type="object"
+                            string="Relancer le raffinage"
+                            groups="bf_meeting.group_meeting_manager"
+                            invisible="refine_state != 'queued' or refine_in_progress"
+                            confirm="Le raffinage précédent est sans nouvelle depuis un moment — il a probablement été interrompu. Relancer une passe complète ?"/>
                     <button name="action_set_reviewed" type="object"
                             string="Marquer révisé"
                             class="btn-primary"
@@ -140,11 +146,41 @@
                                 invisible="not calendar_event_id">
                             <span class="o_stat_text">Calendrier</span>
                         </button>
+                        <!-- `action_import_attendance` skips partners already listed,
+                             so it stays available once the list is non-empty: hiding it
+                             made it impossible to pick up invitees added to the calendar
+                             event after the first import. -->
                         <button name="action_import_attendance" type="object"
                                 class="oe_stat_button" icon="fa-users"
-                                invisible="attendance_count > 0">
+                                invisible="not calendar_event_id">
                             <span class="o_stat_text">Importer présences</span>
                         </button>
+                    </div>
+                    <field name="refine_in_progress" invisible="1"/>
+                    <!-- Où en est GenFox. La passe dure plusieurs minutes et
+                         n'écrit au chatter qu'à la fin : sans cette bande, le
+                         formulaire est muet entre le clic et le résultat. -->
+                    <div class="alert alert-info d-flex align-items-center mb-2"
+                         role="status" invisible="not refine_in_progress">
+                        <i class="fa fa-circle-o-notch fa-spin me-2" title="En cours"/>
+                        <span>
+                            <b>GenFox raffine ce compte rendu.</b>
+                            Lancé le <field name="refine_date" readonly="1" class="d-inline"/> —
+                            comptez quelques minutes, puis rechargez la page.
+                        </span>
+                    </div>
+                    <div class="alert alert-warning mb-2" role="alert"
+                         invisible="refine_state != 'queued' or refine_in_progress">
+                        <b>Raffinage sans nouvelle.</b>
+                        La passe lancée le <field name="refine_date" readonly="1" class="d-inline"/>
+                        n'a jamais rendu de statut : elle a probablement été interrompue
+                        (plafond de temps, redémarrage du service). Le compte rendu n'a
+                        vraisemblablement pas été raffiné — relancez-la.
+                    </div>
+                    <div class="alert alert-danger mb-2" role="alert"
+                         invisible="refine_state != 'error'">
+                        <b>Le raffinage a échoué.</b>
+                        <field name="refine_message" readonly="1" class="d-inline" nolabel="1"/>
                     </div>
                     <div class="oe_title">
                         <h1>
@@ -225,9 +261,14 @@
                                 pré-remplir depuis l'événement calendrier lié.
                             </p>
                             <field name="attendance_ids">
+                                <!-- No widget="badge" on `status`: BadgeField renders a
+                                     plain <span>, so the cell is not editable and the
+                                     Présent/Absent/Excusé dropdown is unreachable. The
+                                     decorations below colour the cell in read mode and
+                                     the field stays a normal editable selection. -->
                                 <list editable="bottom">
                                     <field name="partner_id"/>
-                                    <field name="status" widget="badge"
+                                    <field name="status"
                                            decoration-success="status == 'present'"
                                            decoration-danger="status == 'absent'"
                                            decoration-warning="status == 'excused'"/>
@@ -297,6 +338,18 @@
                                     <field name="report_sent_date"/>
                                     <field name="company_id" groups="base.group_multi_company"/>
                                     <field name="active"/>
+                                </group>
+                            </group>
+                            <group string="Raffinage GenFox">
+                                <group>
+                                    <field name="refine_state" widget="badge"
+                                           decoration-info="refine_state == 'queued'"
+                                           decoration-success="refine_state == 'done'"
+                                           decoration-danger="refine_state == 'error'"/>
+                                    <field name="refine_date"/>
+                                </group>
+                                <group>
+                                    <field name="refine_message"/>
                                 </group>
                             </group>
                             <separator string="Notes de révision"

@@ -1,10 +1,12 @@
+import functools
 from datetime import timedelta
 
 from odoo import api, fields, models
-from odoo.exceptions import UserError
+from odoo.exceptions import AccessError
+from odoo.osv import expression
 
 
-_MEETING_MODELS = ('meeting.record', 'meeting.agenda')
+_MEETING_MODELS = ['meeting.record', 'meeting.agenda']
 
 
 class IrAttachment(models.Model):
@@ -79,10 +81,34 @@ class IrAttachment(models.Model):
     def _bf_visibility_domain(self):
         """Return a domain hiding meeting attachments outside their window.
 
-        Internal users in ``bf_meeting.group_meeting_manager`` always see
-        everything (organizers manage windows). Other users get filtered.
+        Rebuilt at every call, which is the whole point. The ``ir.rule`` that
+        used to carry this domain compared to ``time.strftime(...)``, and
+        ``ir.rule._compute_domain`` is ormcached on
+        ``(uid, su, model, mode, allowed_company_ids)`` — no time component.
+        The bound was therefore evaluated once per (uid, mode) and then frozen
+        for the lifetime of the worker, so an attachment stayed readable past
+        its ``bf_visible_until`` and could stay hidden past its
+        ``bf_visible_from``.
+
+        Returns an empty domain — no restriction whatsoever — for everyone the
+        window never covered, so the scope stays exactly that of the old rule:
+
+        * superuser / ``sudo()`` — internal code paths must not be narrowed;
+        * users outside ``group_meeting_user`` — the rule hung off that group,
+          so it never reached them;
+        * ``group_meeting_manager`` — organizers own the windows and always
+          see everything.
+
+        That scoping is deliberate rather than incidental: ``ir.attachment`` is
+        the model behind ``/web/image`` and ``/web/content``, and a blanket
+        restriction here would reach users the feature never covered.
         """
-        if self.env.user.has_group('bf_meeting.group_meeting_manager'):
+        if self.env.su:
+            return []
+        user = self.env.user
+        if not user.has_group('bf_meeting.group_meeting_user'):
+            return []
+        if user.has_group('bf_meeting.group_meeting_manager'):
             return []
         now = fields.Datetime.now()
         return [
@@ -91,3 +117,52 @@ class IrAttachment(models.Model):
             '|', ('bf_visible_from', '=', False), ('bf_visible_from', '<=', now),
             '|', ('bf_visible_until', '=', False), ('bf_visible_until', '>=', now),
         ]
+
+    def _bf_visibility_access_error(self, records):
+        return AccessError(
+            "Cette pièce jointe n'est accessible que pendant sa fenêtre de "
+            "visibilité, fixée par l'organisateur de la rencontre."
+        )
+
+    @api.model
+    def _search(self, domain, offset=0, limit=None, order=None):
+        """Apply the visibility window to searches, list views — and reads.
+
+        Reads included: ``BaseModel.fetch()`` routes every stored-column read
+        through ``_search([('id', 'in', self.ids)])``, so this is also what
+        covers direct URL access (``/web/image/ir.attachment/<id>/datas``,
+        ``/web/content/...``). Those controllers go through
+        ``ir.binary._find_record``, and for an internal user
+        ``ir.attachment.validate_access()`` hands the record back *unsudoed*;
+        reading ``mimetype`` / ``raw`` off it then hits ``fetch`` and raises
+        ``AccessError``. Both controllers catch it (``UserError`` is its
+        parent) and serve a placeholder / 404 — not a 500.
+        """
+        window = self._bf_visibility_domain()
+        if window:
+            # AND *after* the caller's domain so the ``id`` / ``res_field``
+            # sniffing in ``ir.attachment._search`` still sees the original
+            # leaves and keeps its ``res_field = False`` behaviour unchanged.
+            domain = expression.AND([domain, window])
+        return super()._search(domain, offset=offset, limit=limit, order=order)
+
+    def _check_access(self, operation):
+        """Apply the visibility window to the callers that never search.
+
+        ``check_access`` / ``has_access`` / ``_filtered_access`` all funnel
+        here, which is the sanctioned override point for record-level access
+        since 18.0. It covers the write and unlink paths and the mail /
+        chatter attachment filtering, none of which reach ``_search``.
+        """
+        result = super()._check_access(operation)
+        if result:
+            return result
+        window = self._bf_visibility_domain()
+        if not window or not any(self._ids):
+            return None
+        forbidden = self - self.sudo().filtered_domain(window)
+        if forbidden:
+            return forbidden, functools.partial(
+                self._bf_visibility_access_error, forbidden
+            )
+        return None

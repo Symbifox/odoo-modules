@@ -11,7 +11,11 @@ from markupsafe import Markup, escape
 from odoo import api, fields, models
 from odoo.exceptions import UserError
 
-from .meeting_record import _format_meeting_date_display
+from .meeting_record import (
+    _MAX_REFINE_MESSAGE,
+    _REFINE_STALE_MINUTES,
+    _format_meeting_date_display,
+)
 
 _logger = logging.getLogger(__name__)
 
@@ -468,11 +472,45 @@ class MeetingAgenda(models.Model):
     )
     active = fields.Boolean(default=True)
     refine_state = fields.Selection([
-        ('none', 'Aucun'),
+        ('none', 'Non lancé'),
         ('queued', "En cours"),
         ('done', 'Terminé'),
         ('error', 'Erreur'),
     ], string="Pré-remplissage GenFox", default='none', readonly=True, copy=False)
+    refine_date = fields.Datetime(
+        string='Pré-remplissage — dernier signal',
+        readonly=True,
+        copy=False,
+    )
+    refine_message = fields.Char(
+        string='Pré-remplissage — détail',
+        readonly=True,
+        copy=False,
+    )
+    refine_in_progress = fields.Boolean(
+        string='Pré-remplissage en cours',
+        compute='_compute_refine_in_progress',
+        help="Vrai seulement pendant la fenêtre où la passe peut encore "
+             "aboutir.",
+    )
+
+    @api.depends('refine_state', 'refine_date')
+    def _compute_refine_in_progress(self):
+        """Voir `meeting.record._compute_refine_in_progress` : même borne, même
+        raison — un pré-remplissage tué en vol cachait le bouton pour toujours.
+        """
+        try:
+            ceiling = int(self.env['ir.config_parameter'].sudo().get_param(
+                'bf_meeting.refine_stale_minutes', _REFINE_STALE_MINUTES))
+        except (TypeError, ValueError):
+            ceiling = _REFINE_STALE_MINUTES
+        cutoff = fields.Datetime.now() - timedelta(minutes=ceiling)
+        for rec in self:
+            rec.refine_in_progress = bool(
+                rec.refine_state == 'queued'
+                and rec.refine_date
+                and rec.refine_date > cutoff
+            )
     is_today = fields.Boolean(
         string="Aujourd'hui",
         compute='_compute_is_today',
@@ -741,6 +779,33 @@ class MeetingAgenda(models.Model):
         )
         return True
 
+    def _bridge_tenant(self):
+        """Locataire annoncé au pont Claude.
+
+        Voir `meeting.record._bridge_tenant` : même paramètre système
+        (`bf_meeting.bridge_tenant`), même raison — le module tourne sur
+        plusieurs bases et le littéral « bf » les faisait toutes passer pour BF.
+        """
+        return (self.env['ir.config_parameter'].sudo()
+                .get_param('bf_meeting.bridge_tenant', 'bf') or 'bf').strip()
+
+    def _set_refine_state(self, state, message=''):
+        """Journaliser l'avancement du pré-remplissage.
+
+        `skip_auto_refine` est conservé : `create` relance une passe quand il
+        voit passer un OdJ brouillon, et rien ne garantit qu'un appelant futur
+        n'écrira pas cet état depuis ce chemin-là.
+        """
+        if state not in dict(self._fields['refine_state'].selection):
+            _logger.warning("_set_refine_state : état inconnu %r", state)
+            return False
+        self.with_context(skip_auto_refine=True).write({
+            'refine_state': state,
+            'refine_date': fields.Datetime.now(),
+            'refine_message': (message or '').strip()[:_MAX_REFINE_MESSAGE] or False,
+        })
+        return True
+
     def action_refine_agenda(self):
         """Lancer le skill /refine-agenda via le bridge Claude.
 
@@ -788,10 +853,11 @@ class MeetingAgenda(models.Model):
         db_name = self.env.cr.dbname
         uid = self.env.user.id
         triggered_by = self.env.user.login
+        tenant = self._bridge_tenant()
 
         # Mark queued so the form shows progress; safe to commit (we're in a
         # request transaction). The thread will write the final state.
-        self.with_context(skip_auto_refine=True).write({'refine_state': 'queued'})
+        self._set_refine_state('queued', f"Lancement demandé par {self.env.user.name}")
 
         def _run():
             from odoo import api as _api, registry as _registry
@@ -800,7 +866,7 @@ class MeetingAgenda(models.Model):
                     socket_path, "/refine-agenda",
                     {
                         "agenda_id": agenda_id,
-                        "tenant": "bf",
+                        "tenant": tenant,
                         "triggered_by": triggered_by,
                     },
                     timeout,
@@ -815,8 +881,12 @@ class MeetingAgenda(models.Model):
                 rec = new_env["meeting.agenda"].browse(agenda_id).exists()
                 if not rec:
                     return
+                # `/refine-agenda` est SYNCHRONE côté pont : la réponse arrive
+                # une fois la passe finie, donc `ok` vaut bien « terminé » ici
+                # (contrairement au compte rendu, où le pont rend la main au
+                # lancement).
                 final = 'done' if status == 'ok' else 'error'
-                rec.with_context(skip_auto_refine=True).write({'refine_state': final})
+                rec._set_refine_state(final, msg or status)
                 if not silent or status != 'ok':
                     body = (
                         f"<p><b>Pré-remplissage /refine-agenda</b> — statut : "

@@ -594,6 +594,16 @@ class MeetingDashboardLine(models.Model):
             ALTER TABLE res_partner
                 ADD COLUMN IF NOT EXISTS bf_skip_dashboard BOOLEAN DEFAULT FALSE
         """)
+        # Same guard as the three above, and for the same reason: `init()` runs
+        # per model right after that model's `_auto_init()`, so on a *fresh*
+        # install this view can be initialised before `res.users` has been given
+        # the columns bf_meeting adds to it. Without this, the lookahead backfill
+        # below aborted the whole installation with
+        # `column "bf_meeting_dashboard_lookahead_days" does not exist`.
+        self.env.cr.execute("""
+            ALTER TABLE res_users
+                ADD COLUMN IF NOT EXISTS bf_meeting_dashboard_lookahead_days INTEGER
+        """)
         # Backfill responsible fields from the event's user_id (organizer).
         # Idempotent : only fills NULL values, plus the rows pointing at a user
         # who cannot be a responsible.

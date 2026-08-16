@@ -164,34 +164,14 @@
             <field name="groups" eval="[(4, ref('group_meeting_manager'))]"/>
         </record>
 
-        <!-- Time-windowed attachments: scoped to meeting.record / meeting.agenda
-             only. Other attachments are unaffected. Managers (group_meeting_manager)
-             always see everything regardless of window. -->
-        <record id="rule_meeting_attachment_visibility_user" model="ir.rule">
-            <field name="name">Pièces jointes rencontres : fenêtre de visibilité</field>
-            <field name="model_id" ref="base.model_ir_attachment"/>
-            <field name="domain_force">[
-                '|',
-                ('res_model', 'not in', ['meeting.record', 'meeting.agenda']),
-                '&amp;',
-                '|', ('bf_visible_from', '=', False),
-                     ('bf_visible_from', '&lt;=', time.strftime('%Y-%m-%d %H:%M:%S')),
-                '|', ('bf_visible_until', '=', False),
-                     ('bf_visible_until', '&gt;=', time.strftime('%Y-%m-%d %H:%M:%S'))
-            ]</field>
-            <field name="groups" eval="[(4, ref('group_meeting_user'))]"/>
-            <field name="perm_read" eval="True"/>
-            <field name="perm_write" eval="True"/>
-            <field name="perm_create" eval="True"/>
-            <field name="perm_unlink" eval="True"/>
-        </record>
-
-        <record id="rule_meeting_attachment_visibility_manager" model="ir.rule">
-            <field name="name">Pièces jointes rencontres : gestionnaire voit tout</field>
-            <field name="model_id" ref="base.model_ir_attachment"/>
-            <field name="domain_force">[(1, '=', 1)]</field>
-            <field name="groups" eval="[(4, ref('group_meeting_manager'))]"/>
-        </record>
+        <!-- Time-windowed attachments: NO ir.rule here, on purpose.
+             `ir.rule._compute_domain` is ormcached on
+             (uid, su, model, mode, allowed_company_ids) — no time component —
+             so a domain comparing to time.strftime(...) is evaluated once and
+             then frozen for the lifetime of the worker. The window is enforced
+             from Python instead, in ir_attachment._search / _check_access.
+             The two rules that used to live here (…_visibility_user and
+             …_visibility_manager) are dropped by the 18.0.3.45.0 migration. -->
 
         <!-- Dashboard lines: the SQL view aggregates every meeting in the base,
              so it needs the same guards as the models it reads from. These rules
