@@ -87,6 +87,10 @@ class AccountMove(models.Model):
         copy=False,
     )
 
+    def _ocr_company(self):
+        """Company every record written by the OCR must be consistent with."""
+        return self.company_id or self.env.company
+
     def _ocr_default_tax(self):
         """Resolve the default purchase tax for OCR'd invoice lines.
 
@@ -94,17 +98,25 @@ class AccountMove(models.Model):
           1. ``bf_invoice_ocr.default_tax_id`` system parameter (explicit id).
           2. The company's configured purchase tax.
           3. The first ``purchase``-type tax for the company.
-        Returns an ``account.tax`` recordset (possibly empty).
+        Returns an ``account.tax`` recordset (possibly empty), never a tax
+        belonging to another company.
         """
         Tax = self.env["account.tax"]
-        company = self.company_id or self.env.company
+        company = self._ocr_company()
+        company_domain = Tax._check_company_domain(company)
 
         param = self.env["ir.config_parameter"].sudo().get_param(_TAX_PARAM)
         if param:
             try:
-                tax = Tax.browse(int(param))
-                if tax.exists():
-                    return tax
+                # sudo() to inspect a tax that may sit in a company the user is
+                # not allowed into: it must be ignored, not raise.
+                tax = Tax.sudo().browse(int(param)).exists().filtered_domain(company_domain)
+                if tax:
+                    return Tax.browse(tax.ids)
+                _logger.warning(
+                    "%s points to tax %s, which does not belong to company %s — ignored",
+                    _TAX_PARAM, param, company.display_name,
+                )
             except (ValueError, TypeError):
                 _logger.warning("Invalid %s system parameter: %r", _TAX_PARAM, param)
 
@@ -113,9 +125,36 @@ class AccountMove(models.Model):
             return company_tax
 
         return Tax.search(
-            [("type_tax_use", "=", "purchase"), ("company_id", "=", company.id)],
+            [*company_domain, ("type_tax_use", "=", "purchase")],
             limit=1,
         )
+
+    def _ocr_line_taxes(self, product, default_taxes):
+        """Taxes to set on an OCR'd line, always scoped to the move's company.
+
+        ``supplier_taxes_id`` is shared across companies on a shared product: it
+        typically holds one purchase tax *per* company. Copying the whole set
+        onto a line raises "Incompatible companies on records" (``_check_company``),
+        so keep only this company's taxes — walking up the branch hierarchy —
+        then map them through the fiscal position, exactly like Odoo does in
+        ``account.move.line._get_computed_taxes``.
+        """
+        Tax = self.env["account.tax"]
+        company = self._ocr_company()
+
+        taxes = Tax
+        if product:
+            # sudo() for the filtering read only: inspecting the taxes of a company
+            # the user is not allowed into must not raise, it must exclude them.
+            candidates = product.sudo().supplier_taxes_id.filtered_domain(
+                Tax._check_company_domain(company)
+            )._filter_taxes_by_company(company)
+            taxes = Tax.browse(candidates.ids)
+        if not taxes:
+            taxes = default_taxes
+        if taxes and self.fiscal_position_id:
+            taxes = self.fiscal_position_id.map_tax(taxes)
+        return taxes
 
     def action_ocr_scan(self):
         """Button action: scan the attached PDF and pre-fill invoice fields."""
@@ -222,8 +261,18 @@ class AccountMove(models.Model):
             self._ocr_create_lines(data["lines"], partner)
 
     def _ocr_find_partner(self, data):
-        """Multi-signal vendor matching using name, VAT, email, website, phone, history."""
+        """Multi-signal vendor matching using name, VAT, email, website, phone, history.
+
+        Candidates are restricted to partners this company may use — ``partner_id``
+        on the move is ``check_company=True``.
+        """
         Partner = self.env["res.partner"]
+        company = self._ocr_company()
+        company_domain = Partner._check_company_domain(company)
+
+        def find(domain, **kw):
+            return Partner.search([*company_domain, *domain], limit=1, **kw)
+
         vendor_name = data.get("vendor_name", "")
         vendor_vat = data.get("vendor_vat")
         vendor_email = data.get("vendor_email")
@@ -233,39 +282,26 @@ class AccountMove(models.Model):
         # Step 0: VAT/tax number (most reliable)
         if vendor_vat:
             clean_vat = re.sub(r"[\s\-.]", "", vendor_vat)
-            partner = Partner.search(
-                [("vat", "ilike", clean_vat)], limit=1
-            )
+            partner = find([("vat", "ilike", clean_vat)])
             if partner:
                 return partner
-            partner = Partner.search(
-                [("company_registry", "ilike", clean_vat)], limit=1
-            )
+            partner = find([("company_registry", "ilike", clean_vat)])
             if partner:
                 return partner
 
         # Step 1: exact name ilike with supplier_rank
         if vendor_name:
-            partner = Partner.search(
-                [("name", "ilike", vendor_name), ("supplier_rank", ">", 0)],
-                limit=1,
-            )
+            partner = find([("name", "ilike", vendor_name), ("supplier_rank", ">", 0)])
             if partner:
                 return partner
 
         # Step 2: email domain match
         domain = _extract_domain(vendor_email) or _extract_domain(vendor_website)
         if domain and domain not in ("gmail.com", "hotmail.com", "outlook.com", "yahoo.com"):
-            partner = Partner.search(
-                [("email", "ilike", domain), ("supplier_rank", ">", 0)],
-                limit=1,
-            )
+            partner = find([("email", "ilike", domain), ("supplier_rank", ">", 0)])
             if partner:
                 return partner
-            partner = Partner.search(
-                [("website", "ilike", domain), ("supplier_rank", ">", 0)],
-                limit=1,
-            )
+            partner = find([("website", "ilike", domain), ("supplier_rank", ">", 0)])
             if partner:
                 return partner
 
@@ -275,11 +311,8 @@ class AccountMove(models.Model):
             if len(clean_phone) >= 7:
                 phone_suffix = clean_phone[-7:]
                 for phone_field in ("phone", "mobile"):
-                    partner = Partner.search(
-                        [(phone_field, "ilike", phone_suffix),
-                         ("supplier_rank", ">", 0)],
-                        limit=1,
-                    )
+                    partner = find([(phone_field, "ilike", phone_suffix),
+                                    ("supplier_rank", ">", 0)])
                     if partner:
                         return partner
 
@@ -287,10 +320,7 @@ class AccountMove(models.Model):
         if vendor_name:
             cleaned = _LEGAL_SUFFIXES.sub("", vendor_name).strip().strip(",. ")
             if cleaned and cleaned != vendor_name:
-                partner = Partner.search(
-                    [("name", "ilike", cleaned), ("supplier_rank", ">", 0)],
-                    limit=1,
-                )
+                partner = find([("name", "ilike", cleaned), ("supplier_rank", ">", 0)])
                 if partner:
                     return partner
 
@@ -299,18 +329,12 @@ class AccountMove(models.Model):
             sig_words = _significant_words(vendor_name)
             if len(sig_words) >= 2:
                 combined = " ".join(sig_words[:2])
-                partner = Partner.search(
-                    [("name", "ilike", combined), ("supplier_rank", ">", 0)],
-                    limit=1,
-                )
+                partner = find([("name", "ilike", combined), ("supplier_rank", ">", 0)])
                 if partner:
                     return partner
             for word in sig_words:
                 if len(word) >= 4:
-                    partner = Partner.search(
-                        [("name", "ilike", word), ("supplier_rank", ">", 0)],
-                        limit=1,
-                    )
+                    partner = find([("name", "ilike", word), ("supplier_rank", ">", 0)])
                     if partner:
                         return partner
 
@@ -318,6 +342,7 @@ class AccountMove(models.Model):
         if vendor_name:
             prev = self.search(
                 [
+                    ("company_id", "=", company.id),
                     ("move_type", "=", "in_invoice"),
                     ("partner_id", "!=", False),
                     ("ocr_raw_response", "ilike", vendor_name),
@@ -331,10 +356,7 @@ class AccountMove(models.Model):
 
         # Step 7: fallback — companies without supplier_rank
         if vendor_name:
-            partner = Partner.search(
-                [("name", "ilike", vendor_name), ("is_company", "=", True)],
-                limit=1,
-            )
+            partner = find([("name", "ilike", vendor_name), ("is_company", "=", True)])
             if partner:
                 return partner
 
@@ -348,8 +370,7 @@ class AccountMove(models.Model):
         if existing:
             return
 
-        default_tax = self._ocr_default_tax()
-        default_tax_ids = default_tax.ids
+        default_taxes = self._ocr_default_tax()
 
         line_vals = []
         for line in lines:
@@ -370,14 +391,12 @@ class AccountMove(models.Model):
                 partner,
             )
             if product:
+                # Let Odoo compute the account from the product
                 vals["product_id"] = product.id
-                # Let Odoo compute account and taxes from product
-                if product.supplier_taxes_id:
-                    vals["tax_ids"] = [(6, 0, product.supplier_taxes_id.ids)]
-                elif default_tax_ids:
-                    vals["tax_ids"] = [(6, 0, default_tax_ids)]
-            elif default_tax_ids:
-                vals["tax_ids"] = [(6, 0, default_tax_ids)]
+
+            taxes = self._ocr_line_taxes(product, default_taxes)
+            if taxes:
+                vals["tax_ids"] = [(6, 0, taxes.ids)]
 
             line_vals.append(vals)
 
@@ -387,19 +406,27 @@ class AccountMove(models.Model):
             })
 
     def _ocr_find_product(self, description, product_code=None, partner=None):
-        """Try to match an invoice line to an existing purchasable product."""
+        """Try to match an invoice line to an existing purchasable product.
+
+        Every lookup is restricted to the move's company: a session with several
+        companies enabled would otherwise match a product owned by another one,
+        which ``product_id`` (``check_company=True``) refuses on the line.
+        """
         Product = self.env["product.product"]
         SupplierInfo = self.env["product.supplierinfo"]
+        company = self._ocr_company()
+        product_domain = Product._check_company_domain(company)
+        info_domain = SupplierInfo._check_company_domain(company)
 
         # Step 1: product_code → default_code or barcode
         if product_code:
             product = Product.search(
-                [("default_code", "=ilike", product_code)], limit=1
+                [*product_domain, ("default_code", "=ilike", product_code)], limit=1
             )
             if product:
                 return product
             product = Product.search(
-                [("barcode", "=", product_code)], limit=1
+                [*product_domain, ("barcode", "=", product_code)], limit=1
             )
             if product:
                 return product
@@ -408,19 +435,14 @@ class AccountMove(models.Model):
         if partner:
             if product_code:
                 info = SupplierInfo.search(
-                    [("partner_id", "=", partner.id),
+                    [*info_domain,
+                     ("partner_id", "=", partner.id),
                      ("product_code", "ilike", product_code)],
                     limit=1,
                 )
-                if info and info.product_id:
-                    return info.product_id
-                if info and info.product_tmpl_id:
-                    product = Product.search(
-                        [("product_tmpl_id", "=", info.product_tmpl_id.id)],
-                        limit=1,
-                    )
-                    if product:
-                        return product
+                product = self._ocr_product_from_supplierinfo(info, product_domain)
+                if product:
+                    return product
 
             # Try matching by product_name in supplierinfo
             if description:
@@ -428,19 +450,16 @@ class AccountMove(models.Model):
                 for word in sig[:2]:
                     if len(word) >= 4:
                         info = SupplierInfo.search(
-                            [("partner_id", "=", partner.id),
+                            [*info_domain,
+                             ("partner_id", "=", partner.id),
                              ("product_name", "ilike", word)],
                             limit=1,
                         )
-                        if info and info.product_id:
-                            return info.product_id
-                        if info and info.product_tmpl_id:
-                            product = Product.search(
-                                [("product_tmpl_id", "=", info.product_tmpl_id.id)],
-                                limit=1,
-                            )
-                            if product:
-                                return product
+                        product = self._ocr_product_from_supplierinfo(
+                            info, product_domain
+                        )
+                        if product:
+                            return product
 
         # Step 3: product name search (only for distinctive descriptions)
         if description:
@@ -448,12 +467,27 @@ class AccountMove(models.Model):
             for word in sig[:2]:
                 if len(word) >= 5:
                     products = Product.search(
-                        [("name", "ilike", word), ("purchase_ok", "=", True)],
+                        [*product_domain,
+                         ("name", "ilike", word),
+                         ("purchase_ok", "=", True)],
                         limit=3,
                     )
                     if len(products) == 1:
                         return products[0]
 
+        return False
+
+    def _ocr_product_from_supplierinfo(self, info, product_domain):
+        """Resolve a ``product.supplierinfo`` hit to a product of this company."""
+        if not info:
+            return False
+        if info.product_id:
+            return info.product_id
+        if info.product_tmpl_id:
+            return self.env["product.product"].search(
+                [*product_domain, ("product_tmpl_id", "=", info.product_tmpl_id.id)],
+                limit=1,
+            )
         return False
 
     @api.model
