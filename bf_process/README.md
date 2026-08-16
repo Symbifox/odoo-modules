@@ -40,6 +40,14 @@ a file.
 - **Version comparison**: a wizard lists what was added, removed, renamed, or
   moved between lane, kind, or annotation tone between two versions — matched
   by the stable per-process node codes, not by guesswork
+- **Merging re-import**: a file retouched in a third-party BPMN editor comes
+  back **into the map it came from**, instead of landing beside it as a copy.
+  Levels and nodes are matched by their BPMN identifier — never by name — so a
+  rename reads as a rename, and each step keeps its discussion thread,
+  attachments and validation state. Every difference is arbitrated one by one,
+  and removals default to *ignore*: an editor that only re-exports the open
+  diagram produces a file in which every other page appears to be missing. See
+  [Merging re-import](#merging-re-import)
 - **BPMN 2.0 import**: reads a `.bpmn` file back into records. Round-tripping
   this module's own export reproduces the same nodes, flows and messages
   (covered by a test); a file from another editor also imports, with its grid
@@ -175,23 +183,83 @@ those, in that order. It needs the codes to be stable across versions, which
 ## BPMN import
 
 The wizard reads `<bpmndi:BPMNShape>`/`<BPMNEdge>` bounds and reconstructs the
-grid: column from x-position divided by the smallest observed horizontal gap,
-row from y-position within its lane or pool. This is layout-dependent — it
-works because this module's own exporter lays nodes out on a regular grid to
-begin with. A hand-drawn or third-party file with irregular spacing will still
-import, but the grid it lands on is a best guess: **review before
-validating**.
+grid: column from x-position divided by the column width, row from y-position
+within its lane or pool.
+
+When the level is already known — which is the case for every merge — the
+column width comes from the stored record, and the reconstruction is exact.
+When it is not, it is deduced from the smallest observed horizontal gap, and
+that deduction is only as good as the layout's regularity: an annotation
+parked at 2.2 columns makes the shortest gap shorter than a full column, and
+everything reads shifted. Harmless for a fresh map, which is at least
+consistent with itself; fatal for a merge, which would report every node as
+moved. That is why the merge always hands the reader the grid it already
+knows. A hand-drawn or third-party file with irregular spacing still imports,
+but the grid it lands on is a best guess: **review before validating**.
+
+Two details the format forces. A lane only lists flow nodes in its
+`flowNodeRef`s, so an annotation belongs to no lane as far as the file is
+concerned — the reader assigns it the lane whose band contains it, the same
+way the editor does for a node dropped with the mouse. And a node that
+declares no lane is written into the first one by the exporter, exactly as the
+geometry engine already places it, so an empty `lane_id` and "the first lane"
+mean the same drawing and are treated as equal.
+
+## Merging re-import
+
+Importing creates a new cartography. That is right the first time and wrong
+every time after: a map that comes back as a copy leaves its discussions,
+its validation register and its version lineage behind on a record nobody
+looks at again. The merge wizard (**Merge a file**, on the process form) reads
+a `.bpmn` and writes it back into the existing map.
+
+**Matching is by identifier.** A level is recognised by the `bpmn_id` the
+exporter wrote into every one of its element ids (`d3_process`, `d3_plane`,
+`d3_t1`), a node by its own code within that level. Stripping that prefix with
+a pattern that assumes "d followed by a number" was good enough while the only
+job was creating fresh maps; recognising a stored level needs the exact prefix,
+and the file carries it.
+
+**Coordinates are relative, and are re-anchored.** The geometry engine pins the
+pool's left edge to the leftmost node and each lane's height to its own
+contents, so a whole level shifted three columns draws identically to the same
+level flush at zero — an absolute position means nothing outside its page. The
+reader therefore returns a canonical form, and the merge carries it onto the
+target's frame using **the offset that leaves the largest number of nodes
+where they are**. Anchoring on the minimum instead would have been fine until
+the leftmost node itself moved, at which point the whole page would slide.
+
+**Arbitration, difference by difference.** The wizard lists what it found —
+added, removed, renamed, retyped, moved, resized, re-laned — each with an
+Apply/Ignore decision, and applies only what was kept. Removals arrive at
+*Ignore*, and the summary says loudly when the file holds fewer pages than the
+map. A hash of the target taken at analysis time is re-checked before writing,
+so a set of differences computed against a state that no longer exists is
+refused rather than applied blind.
+
+**What BPMN cannot carry is preserved, not re-derived.** The format has no
+place for an annotation's tone, nor for the link between a sub-process and the
+page it expands. Existing links are therefore left alone — re-deriving them by
+title is exactly what a rename in a third-party editor would silently break —
+and any sub-process left without a page is named in the summary.
+
+If no level in the file matches the target, the merge refuses outright and
+points at the import wizard: that is a different map, or an editor that
+renamed the identifiers, and merging would delete everything to re-add it.
 
 ## Security
 
 Two groups, `bf_process.group_bf_process_user` (read, and can discuss on
-nodes) and `bf_process.group_bf_process_manager` (full CRUD, BPMN import). 14
-access rules across 7 models plus the two transient wizards.
+nodes) and `bf_process.group_bf_process_manager` (full CRUD, BPMN import and
+merge). 14 access rules across 7 models plus the transient wizards; the merge
+wizard and its arbitration lines are manager-only, since merging is writing.
 
 Editing from the trace needs write access on `bf.process.node`, so a reader
 sees no tools at all. Each write method checks the freeze *and* the access
 right before touching anything, and `rendu()` reports both to the client so a
-handle is never offered on something that would refuse it.
+handle is never offered on something that would refuse it. The merge checks
+the freeze and write access on **all six** models it may touch before it
+starts, rather than discovering halfway through that it cannot finish.
 
 ## Testing
 
@@ -220,6 +288,28 @@ copies, and — the property that actually matters — importing this module's
 own BPMN export reproduces the same node count, kinds, names, flows, messages
 and lane names as the source.
 
+`tests/test_fusion.py` covers the merging re-import. Its hinge is
+`test_lecture_rend_les_memes_coordonnees`, which ties the coordinate inversion
+to the geometry engine: the engine pins the pool's left edge with a factor of
+its own, and if that factor ever changes this is the test that must fall — not
+a merge in production. Around it: lane and external-pool codes surviving the
+round trip, size overrides surviving it, an annotation recovering its lane, a
+merge of a map with its own export reporting nothing at all, a rename applied
+without the node losing its identity (its thread and validation state are
+asserted intact), removals defaulting to ignore and applying when chosen, a
+node added by the file landing in the right lane, the anchor holding when the
+leftmost node moves *and* when a lone node runs far right, a sub-process
+keeping its child page through a rename, a partial file warning instead of
+emptying the map, and the four refusals — foreign file, frozen version, map
+changed since analysis, and a hostile node name never becoming a tag.
+
+Four of those tests exist because the wider pass described below ran the merge
+against a real fifteen-level map and found 255 differences on a map where
+nothing had moved. None of the four was visible on a tidy six-node fixture: a
+clean fixture does not produce the cases a real map produces — a title that
+itself contains an em dash, a node in no lane, a size override that happens to
+equal the natural size, an annotation outside every `flowNodeRef`.
+
 A separate, non-unittest QA harness — maintained outside this repository, since
 it needs a live instance and a reference rendering engine — runs a wider pass:
 static checks on the manifest/XML/ACL/RPC surface/licence/icon, including that
@@ -227,8 +317,9 @@ every write-from-the-trace method goes through the freeze guard, plus live
 checks against a running instance: constraints actually posted in PostgreSQL,
 views that compile server-side, a loaded reference map's structure, both
 exports' SHA-256 matching a known-good reference, the PDF, the editor exercised
-on the real map and rolled back, and the backend asset bundle building with the
-editor in it.
+on the real map and rolled back, a merge of that same map with its own export
+reporting no difference and a forced difference then applying, and the backend
+asset bundle building with the editor in it.
 
 Two of its checks need the reference engine, which is why they cannot live in
 this repository at all:

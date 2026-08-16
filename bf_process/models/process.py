@@ -186,6 +186,18 @@ class BfProcess(models.Model):
                         "default_cible_id": self.version_precedente_id.id or False},
         }
 
+    def action_fusionner(self):
+        """Rapatrier un `.bpmn` retouché dans CETTE carte, plutôt qu'à côté."""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Fusionner un fichier BPMN 2.0"),
+            "res_model": "bf.process.merge.wizard",
+            "view_mode": "form",
+            "target": "new",
+            "context": {"default_process_id": self.id},
+        }
+
     def action_ouvrir_niveaux(self):
         self.ensure_one()
         return {

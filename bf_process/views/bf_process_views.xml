@@ -43,6 +43,9 @@
                             invisible="diagram_count == 0"/>
                     <button name="action_comparer" type="object"
                             string="Comparer" invisible="not version_precedente_id"/>
+                    <button name="action_fusionner" type="object"
+                            string="Fusionner un fichier"
+                            invisible="diagram_count == 0 or state == 'valide'"/>
                     <field name="state" widget="statusbar"
                            statusbar_visible="brouillon,valide"/>
                 </header>

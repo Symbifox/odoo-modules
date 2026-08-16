@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     "name": "Cartographie de processus",
-    "version": "18.0.3.1.2",
+    "version": "18.0.3.2.0",
     "category": "Services/Project",
     "summary": "Cartographies BPMN vivantes : le modèle est la vérité, le PDF et"
                " les deux XML n'en sont que des rendus",
@@ -20,7 +20,12 @@ Fonctionnalités
 * Nœuds sur discussion : chaque étape porte ses pièces jointes (photos
   d'atelier, vidéos, documents), son fil et son historique. C'est ce qui fait
   vivre la donnée entre deux séances de cartographie.
-* Identifiants BPMN stables : un réimport fusionne au lieu de dupliquer.
+* Identifiants BPMN stables : un fichier retouché ailleurs **revient dans la
+  carte d'origine** au lieu d'en créer une copie. Les niveaux et les nœuds se
+  reconnaissent à leur identifiant, jamais à leur nom, si bien qu'un
+  renommage se lit comme un renommage. Chaque écart s'arbitre un par un, et
+  les retraits ne s'appliquent pas tout seuls : un éditeur qui ne réexporte
+  que la page ouverte produit un fichier où toutes les autres « manquent ».
 * Éditeur intégré : le niveau se lit ET se travaille directement dans Odoo,
   tracé en SVG depuis les enregistrements. Glisser une forme la recale sur la
   grille du modèle ; poser, lier et retirer écrivent dans les enregistrements.
@@ -38,9 +43,13 @@ Fonctionnalités
 
 Limites assumées
 ----------------
-* Les trois exports vont dans un sens seulement. Ni diagrams.net ni Lucidchart
-  ne réexporte du BPMN : ce qu'un tiers y redessine ne revient pas ici tout
-  seul. La base reste ici, et c'est l'éditeur intégré qui la travaille.
+* Le retour n'existe qu'en BPMN 2.0, et seuls les éditeurs qui en réexportent
+  peuvent le nourrir. Ni diagrams.net ni Lucidchart n'en réexporte : ce qu'on
+  y redessine ne revient pas. La base reste ici, et c'est l'éditeur intégré
+  qui la travaille.
+* Un fichier BPMN ne porte ni le ton d'une annotation, ni le lien entre un
+  sous-processus et sa page. La fusion conserve donc ce qui est déjà en place
+  plutôt que de le redéduire, et nomme les sous-processus restés sans page.
 * La hauteur d'un couloir est celle de son contenu, et son premier nœud est
   collé à sa marge haute. Déplacer verticalement le nœud le plus haut d'un
   couloir ne le fait donc pas descendre : ce sont les autres qui remontent.

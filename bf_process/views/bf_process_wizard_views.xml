@@ -39,6 +39,12 @@
                     mais sa grille est déduite au mieux : relisez la carte avant de
                     la valider.
                 </div>
+                <div class="alert alert-warning" role="alert">
+                    Ceci crée une cartographie <b>neuve</b>. Pour faire revenir un
+                    fichier retouché dans une carte qui existe déjà — en gardant ses
+                    discussions et son registre de validation — ouvrez cette carte et
+                    utilisez <b>Fusionner un fichier</b>.
+                </div>
                 <group>
                     <field name="name" placeholder="Nom de la cartographie"/>
                     <field name="version"/>
@@ -59,6 +65,81 @@
     <record id="action_bf_process_import" model="ir.actions.act_window">
         <field name="name">Importer un BPMN 2.0</field>
         <field name="res_model">bf.process.import.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <record id="view_bf_process_merge_form" model="ir.ui.view">
+        <field name="name">bf.process.merge.form</field>
+        <field name="model">bf.process.merge.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Fusionner un BPMN 2.0">
+                <field name="etat" invisible="1"/>
+                <div class="alert alert-info" role="status"
+                     invisible="etat != 'depot'">
+                    Le fichier revient <b>dans</b> cette cartographie : les
+                    niveaux et les nœuds sont reconnus par leur identifiant BPMN,
+                    donc les discussions tenues sur les étapes et le registre de
+                    validation restent en place. Rien n'est écrit avant que vous
+                    ayez arbitré chaque écart.
+                </div>
+                <group invisible="etat != 'depot'">
+                    <field name="process_id" options="{'no_create': True}"
+                           readonly="1"/>
+                    <field name="fichier" filename="nom_fichier"/>
+                    <field name="nom_fichier" invisible="1"/>
+                </group>
+                <div invisible="etat != 'arbitrage'">
+                    <field name="resume_html" widget="html" readonly="1"/>
+                    <group col="4">
+                        <field name="ecart_count" readonly="1"/>
+                        <field name="retenu_count" string="Retenus" readonly="1"/>
+                    </group>
+                    <field name="line_ids" nolabel="1">
+                        <list editable="bottom" create="false" delete="false"
+                              decoration-muted="decision == 'ignorer'"
+                              decoration-danger="operation == 'retrait'">
+                            <field name="niveau_titre" string="Page" readonly="1"/>
+                            <field name="portee" readonly="1"/>
+                            <field name="operation" readonly="1"/>
+                            <field name="libelle" string="Ce qui change" readonly="1"/>
+                            <field name="avant" readonly="1"/>
+                            <field name="apres" readonly="1"/>
+                            <field name="remarque" readonly="1" optional="show"/>
+                            <field name="decision" widget="badge"
+                                   decoration-success="decision == 'appliquer'"
+                                   decoration-muted="decision == 'ignorer'"/>
+                            <field name="cle" column_invisible="1"/>
+                            <field name="niveau" column_invisible="1"/>
+                        </list>
+                    </field>
+                </div>
+                <footer>
+                    <button name="action_analyser" type="object"
+                            string="Analyser" class="btn-primary"
+                            invisible="etat != 'depot'"/>
+                    <button name="action_appliquer" type="object"
+                            string="Appliquer ce qui est retenu" class="btn-primary"
+                            invisible="etat != 'arbitrage' or retenu_count == 0"
+                            confirm="Les écarts retenus seront écrits dans la cartographie. Continuer ?"/>
+                    <button name="action_tout_appliquer" type="object"
+                            string="Tout appliquer" class="btn-secondary"
+                            invisible="etat != 'arbitrage'"/>
+                    <button name="action_retraits_ignorer" type="object"
+                            string="Ignorer les retraits" class="btn-secondary"
+                            invisible="etat != 'arbitrage'"/>
+                    <button name="action_tout_ignorer" type="object"
+                            string="Tout ignorer" class="btn-secondary"
+                            invisible="etat != 'arbitrage'"/>
+                    <button string="Fermer" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_bf_process_merge" model="ir.actions.act_window">
+        <field name="name">Fusionner un BPMN 2.0</field>
+        <field name="res_model">bf.process.merge.wizard</field>
         <field name="view_mode">form</field>
         <field name="target">new</field>
     </record>
