@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Standalone page: it carries its own <html> shell rather than extending
+         website.layout, so the module keeps no dependency on the website app
+         and the backend chrome never reaches a phone screen. -->
+    <template id="scan_page" name="Numériser une carte">
+        <html lang="fr-CA">
+            <head>
+                <meta charset="utf-8"/>
+                <meta name="viewport"
+                      content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+                <meta name="theme-color" content="#12161a"/>
+                <meta name="mobile-web-app-capable" content="yes"/>
+                <meta name="apple-mobile-web-app-capable" content="yes"/>
+                <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+                <meta name="apple-mobile-web-app-title" content="Carte"/>
+                <title>Numériser une carte</title>
+                <link rel="manifest" href="/scan/manifest.webmanifest"/>
+                <link rel="apple-touch-icon"
+                      href="/bf_contact_enrichment/static/src/scan/icon-192.png"/>
+                <link rel="icon" type="image/png"
+                      href="/bf_contact_enrichment/static/src/scan/icon-192.png"/>
+                <link rel="stylesheet"
+                      href="/bf_contact_enrichment/static/src/scan/scan.css"/>
+            </head>
+            <body>
+                <t t-if="not has_access">
+                    <main class="shell">
+                        <div class="card denied">
+                            <h1>Accès requis</h1>
+                            <p>Numériser une carte demande deux droits, et il
+                                vous en manque au moins un :</p>
+                            <ul>
+                                <li>le groupe <strong>Enrichissement de
+                                    contacts</strong>, qui autorise la lecture
+                                    de la carte;</li>
+                                <li>le droit <strong>Création de contacts</strong>,
+                                    sans lequel le contact ne peut pas être
+                                    enregistré.</li>
+                            </ul>
+                            <p>Demandez-les à un administrateur.</p>
+                        </div>
+                    </main>
+                </t>
+
+                <t t-else="">
+                    <main class="shell">
+
+                        <!-- Step 1 — capture -->
+                        <section id="step-capture" class="step">
+                            <h1>Numériser une carte</h1>
+                            <p class="lede">Prenez la carte en photo. Les champs
+                                seront lus, puis vous les corrigez avant
+                                d'enregistrer.</p>
+
+                            <!-- capture="environment" hands off to the phone's
+                                 own camera app: no getUserMedia, so no camera
+                                 permission is ever requested by this page. -->
+                            <label class="btn btn-primary" for="shot">
+                                <span class="ico">📷</span> Prendre en photo
+                            </label>
+                            <input id="shot" type="file" accept="image/*"
+                                   capture="environment" hidden="hidden"/>
+
+                            <label class="btn btn-ghost" for="pick">
+                                Choisir une photo existante
+                            </label>
+                            <input id="pick" type="file" accept="image/*,application/pdf"
+                                   hidden="hidden"/>
+
+                            <p class="signed-in">Connecté comme
+                                <strong t-esc="user_name"/></p>
+                        </section>
+
+                        <!-- Step 2 — working -->
+                        <section id="step-working" class="step hidden">
+                            <div class="spinner"></div>
+                            <h2>Lecture de la carte…</h2>
+                            <p class="lede">Une quinzaine de secondes, parfois
+                                davantage sur un réseau lent.</p>
+                            <img id="preview" alt="Carte numérisée" class="preview"/>
+                        </section>
+
+                        <!-- Step 3 — review -->
+                        <section id="step-review" class="step hidden">
+                            <h2>Vérifiez avant d'enregistrer</h2>
+
+                            <div id="match-banner" class="banner hidden">
+                                <p><strong>Contact déjà connu :</strong>
+                                    <span id="match-name"></span></p>
+                                <div class="choice">
+                                    <label>
+                                        <input type="radio" name="mode" value="update"
+                                               checked="checked"/>
+                                        Mettre à jour ce contact
+                                    </label>
+                                    <label>
+                                        <input type="radio" name="mode" value="create"/>
+                                        Créer quand même un nouveau contact
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div id="confidence" class="chip hidden"></div>
+
+                            <form id="review-form" autocomplete="off">
+                                <label>Nom complet
+                                    <input name="full_name" type="text"/></label>
+                                <div class="row">
+                                    <label>Prénom
+                                        <input name="first_name" type="text"/></label>
+                                    <label>Nom
+                                        <input name="last_name" type="text"/></label>
+                                </div>
+                                <label>Fonction
+                                    <input name="function" type="text"/></label>
+                                <label>Société
+                                    <input name="company" type="text"/></label>
+                                <label>Courriel
+                                    <input name="email" type="email"
+                                           inputmode="email" autocapitalize="off"/></label>
+                                <div class="row">
+                                    <label>Téléphone
+                                        <input name="phone" type="tel" inputmode="tel"/></label>
+                                    <label>Mobile
+                                        <input name="mobile" type="tel" inputmode="tel"/></label>
+                                </div>
+                                <label>Site web
+                                    <input name="website" type="text"
+                                           inputmode="url" autocapitalize="off"/></label>
+                                <label>Rue
+                                    <input name="street" type="text"/></label>
+                                <div class="row">
+                                    <label>Ville
+                                        <input name="city" type="text"/></label>
+                                    <label>Code postal
+                                        <input name="zip" type="text"
+                                               autocapitalize="characters"/></label>
+                                </div>
+                                <label>Pays
+                                    <input name="country" type="text"/></label>
+                            </form>
+
+                            <button id="save" class="btn btn-primary" type="button">
+                                Enregistrer le contact
+                            </button>
+                            <button id="restart" class="btn btn-ghost" type="button">
+                                Reprendre la photo
+                            </button>
+                        </section>
+
+                        <!-- Step 4 — done -->
+                        <section id="step-done" class="step hidden">
+                            <div class="tick">✓</div>
+                            <h2 id="done-title">Contact enregistré</h2>
+                            <p class="lede" id="done-name"></p>
+                            <a id="done-link" class="btn btn-primary" href="#">
+                                Ouvrir dans Odoo
+                            </a>
+                            <button id="again" class="btn btn-ghost" type="button">
+                                Numériser une autre carte
+                            </button>
+                        </section>
+
+                        <div id="error" class="error hidden" role="alert"></div>
+
+                    </main>
+                    <script type="text/javascript"
+                            src="/bf_contact_enrichment/static/src/scan/scan.js"></script>
+                </t>
+            </body>
+        </html>
+    </template>
+
+</odoo>

@@ -26,7 +26,28 @@ search).
 3. **Create a contact from an email** — a "Create / enrich the contact" button
    on a `bf.email` record: finds or creates the sender, then runs signature
    enrichment.
-4. **Quick wins**
+4. **Mobile scan page** (`/scan`) — the same card flow on a phone, as a
+   standalone installable page rather than a native app. Scanning a card is a
+   ten-second, foreground, occasional gesture: it needs no push, no offline
+   store and no background work, so a page costs one install-free URL instead
+   of a store listing. The page is a thin client — it re-implements neither
+   extraction, nor duplicate matching, nor the write to `res.partner`; every
+   route drives the same `bf.contact.card.wizard` as the desktop button.
+   - Capture uses `capture="environment"`, so the phone's own camera app takes
+     the photo and **the page never requests the CAMERA permission**.
+   - The photo is downscaled to 1600px on its long edge before upload: an 8MB
+     shot leaves as roughly 300KB, which matters on a conference-centre
+     network. The model reads the small image just as well.
+   - Access is checked at the door on **both** rights the flow needs. Holding
+     the enrichment group is not enough: on a stock Odoo only
+     `base.group_partner_manager` may create a `res.partner`, so a member
+     without it could otherwise read a card — and pay for it — then hit a
+     write refusal.
+   - Installable: the service worker answers navigations offline with a fixed
+     shell, which is what browsers require before offering to install. Nothing
+     personalised is ever cached; the authenticated page always goes to the
+     network.
+5. **Quick wins**
    - **vCard import** (`.vcf`) — built-in parser, no external dependency.
    - **Duplicate detector** — by email and by normalised name; opens the subset
      for merging through the native Contacts action.
@@ -57,6 +78,13 @@ emails) is treated as untrusted DATA, never as instructions.
 
 ## Changelog
 
+- **18.0.1.2.1** — Added the installable mobile scan page at `/scan`: a
+  standalone portal template (no `website` dependency, no backend chrome), two
+  JSON routes driving the existing card wizard, a web app manifest and a
+  service worker. The worker answers in-scope navigations with a cached offline
+  shell — without that a browser refuses to call the page installable and
+  degrades to a bookmark shortcut. Icons ship at 192 and 512 in both `any` and
+  `maskable` purposes. First tests for this module (21 HTTP cases).
 - **18.0.1.2.0** — Migrated the AI calls to the `bf_llm` gateway: business card
   → `extract()` (vision), email signatures → `chat()` (text). Added the
   `bf_llm` dependency. Domain enrichment stays on the bridge (agentic web
