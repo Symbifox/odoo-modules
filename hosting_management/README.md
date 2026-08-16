@@ -870,8 +870,16 @@ Contributions are welcome! Please:
 
 ## License
 
-This module is licensed under the GNU Lesser General Public License v3.0 (LGPL-3). See [LICENSE](LICENSE) for the full text.
+Distributed under the **Business Source License 1.1** (BUSL-1.1). See the
+[`LICENSE`](LICENSE) file for the exact parameters.
+
+- **Allowed without an agreement**: production use for your own internal
+  business operations.
+- **Requires a written agreement**: providing the module as a product or
+  service to third parties, whether hosted, managed or resold.
+- **Change Date**: on 2030-08-12, this version converts automatically to
+  **LGPL-3.0-or-later**.
+
 ## Support
 
 For support, please contact Les services de consultation Blue Fox, Inc. or open an issue in the repository.
-
