@@ -6,9 +6,12 @@
         <field name="name">meeting.attendance.list</field>
         <field name="model">meeting.attendance</field>
         <field name="arch" type="xml">
+            <!-- `status` deliberately has no widget="badge": BadgeField is a
+                 read-only <span>, which makes the cell uneditable even in an
+                 editable list. Decorations give the same colour cue. -->
             <list editable="bottom">
                 <field name="partner_id"/>
-                <field name="status" widget="badge"
+                <field name="status"
                        decoration-success="status == 'present'"
                        decoration-danger="status == 'absent'"
                        decoration-warning="status == 'excused'"/>
