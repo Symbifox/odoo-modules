@@ -73,7 +73,10 @@ invoice content is treated as **untrusted data**, never as an instruction.
 7. **OCR history** — searches previously scanned bills with the same vendor name
 8. **Fallback** — `is_company=True` with no `supplier_rank` filter
 
-With no match, `partner_id` is left empty (manual entry).
+With no match, `partner_id` is left empty (manual entry). Every lookup is
+restricted to the invoice's company: partners, products and taxes all carry a
+`check_company` constraint, so a record from another company would be refused
+on the line.
 
 ## Product matching (3 steps)
 
@@ -84,8 +87,13 @@ With no match, `partner_id` is left empty (manual entry).
 3. **Description** — searched by distinctive words (5+ characters,
    `purchase_ok=True`), only when the match is unique (avoids false positives)
 
-When a product is found, its vendor taxes (`supplier_taxes_id`) are used.
-Otherwise the default purchase tax applies (see below).
+When a product is found, its vendor taxes (`supplier_taxes_id`) are used —
+**filtered to the invoice's company**, then mapped through the invoice's fiscal
+position, exactly as Odoo does in `account.move.line._get_computed_taxes`. That
+filtering matters: `supplier_taxes_id` is shared across companies and usually
+holds one purchase tax *per* company, so copying the whole set onto a line would
+trip the multi-company consistency check. Otherwise the default purchase tax
+applies (see below).
 
 ## Default tax
 
@@ -97,8 +105,9 @@ its own) is resolved in this order:
 2. The purchase tax configured on the company (`account_purchase_tax_id`);
 3. Failing that, the company's first `purchase`-type tax.
 
-If no tax is found, lines are created without one (to be completed manually). No
-tax id is hardcoded in the module.
+A system parameter pointing at a tax owned by another company is ignored (and a
+warning logged). If no tax is found, lines are created without one (to be
+completed manually). No tax id is hardcoded in the module.
 
 ## Installation
 
