@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="fr-CA">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+    <meta name="theme-color" content="#12161a"/>
+    <title>Hors ligne — Numériser une carte</title>
+    <link rel="icon" type="image/png" href="/bf_contact_enrichment/static/src/scan/icon-192.png"/>
+    <link rel="stylesheet" href="/bf_contact_enrichment/static/src/scan/scan.css"/>
+</head>
+<!--
+  Served by the worker when a navigation inside /scan cannot reach the network.
+
+  It is not decoration: Chromium refuses to call a page installable unless the
+  start URL answers with a 200 while offline, so without this file the install
+  prompt never appears and the browser falls back to a bookmark shortcut. It
+  also has to stay honest — reading a card needs the server, so this page says
+  so rather than pretending the app works.
+
+  Nothing here is personalised. The authenticated page is never cached; only
+  this fixed shell is, so an installed icon on a shared phone reveals nothing.
+-->
+<body>
+    <main class="shell">
+        <section class="step">
+            <h1>Hors ligne</h1>
+            <p class="lede">L'appareil n'a pas de connexion. Numériser une carte
+                demande le serveur : la lecture et l'enregistrement s'y font.</p>
+            <p class="lede">Reprenez dès que le réseau revient. Rien n'est
+                perdu — aucune photo n'était en attente.</p>
+            <!-- Un lien, pas un bouton avec un gestionnaire en ligne : cette
+                 page doit rester entièrement fonctionnelle sans script, et un
+                 onclick mourrait en silence le jour où une CSP l'interdit. -->
+            <a class="btn btn-primary" href="/scan">Réessayer</a>
+        </section>
+    </main>
+</body>
+</html>

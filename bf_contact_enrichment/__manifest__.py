@@ -1,8 +1,9 @@
 {
     "name": "Enrichissement de contacts",
-    "summary": "Cartes d'affaires (OCR), signatures courriel, import vCard, "
-               "détection de doublons et score de complétude — via la passerelle bf_llm",
-    "version": "18.0.1.2.0",
+    "summary": "Cartes d'affaires (OCR, avec page mobile installable), signatures "
+               "courriel, import vCard, détection de doublons et score de "
+               "complétude — via la passerelle bf_llm",
+    "version": "18.0.1.2.1",
     "category": "Contacts",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",
@@ -23,6 +24,7 @@
         "views/res_partner_views.xml",
         "views/bf_email_views.xml",
         "views/menus.xml",
+        "views/portal_card_templates.xml",
     ],
     "installable": True,
     "application": False,

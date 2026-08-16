@@ -1,0 +1,207 @@
+/* Business-card scan page — one screen, one thumb, one hand.
+ *
+ * Dark by default because the page gets used in trade-show lighting, and
+ * because a white full-screen page at arm's length is a torch. Nothing here is
+ * loaded from the Odoo asset bundles: the page must render before the backend
+ * would even have finished parsing its own JS. */
+
+:root {
+    --bg: #12161a;
+    --surface: #1b2127;
+    --surface-2: #232b33;
+    --line: #2f3841;
+    --text: #e8edf2;
+    --muted: #9aa7b4;
+    --accent: #29abe1;
+    --accent-ink: #06283a;
+    --danger: #e5534b;
+    --good: #4caf7d;
+    --fair: #d9a441;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    font-size: 17px;              /* 16px minimum, or iOS zooms on focus */
+    line-height: 1.45;
+    -webkit-text-size-adjust: 100%;
+}
+
+.shell {
+    max-width: 34rem;
+    margin: 0 auto;
+    padding: max(1.25rem, env(safe-area-inset-top)) 1.25rem
+             max(2rem, env(safe-area-inset-bottom));
+}
+
+h1 { font-size: 1.5rem; margin: 0.25rem 0 0.5rem; letter-spacing: -0.01em; }
+h2 { font-size: 1.25rem; margin: 0.25rem 0 0.5rem; letter-spacing: -0.01em; }
+
+.lede { color: var(--muted); margin: 0 0 1.5rem; }
+.hidden { display: none !important; }
+.step { animation: rise 180ms ease-out; }
+
+@keyframes rise {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .step { animation: none; }
+    .spinner { animation-duration: 2s; }
+}
+
+/* ── Buttons ────────────────────────────────────────────────────── */
+
+.btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    width: 100%;
+    min-height: 3.5rem;           /* comfortably past the 44 px touch floor */
+    margin-bottom: 0.75rem;
+    padding: 0.75rem 1rem;
+    border: 1px solid transparent;
+    border-radius: 0.75rem;
+    font: inherit;
+    font-weight: 600;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.btn-primary { background: var(--accent); color: var(--accent-ink); }
+.btn-primary:active { filter: brightness(0.92); }
+.btn-primary:disabled { opacity: 0.6; }
+.btn-ghost { background: transparent; border-color: var(--line); color: var(--text); }
+.btn-ghost:active { background: var(--surface); }
+.btn .ico { font-size: 1.25rem; }
+
+/* ── Working ────────────────────────────────────────────────────── */
+
+.spinner {
+    width: 2.5rem;
+    height: 2.5rem;
+    margin: 2rem auto 1.5rem;
+    border: 3px solid var(--line);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 900ms linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.preview {
+    width: 100%;
+    margin-top: 1.5rem;
+    border: 1px solid var(--line);
+    border-radius: 0.75rem;
+    opacity: 0.5;
+}
+
+/* ── Review ─────────────────────────────────────────────────────── */
+
+form label {
+    display: block;
+    margin-bottom: 0.85rem;
+    color: var(--muted);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+}
+
+form input[type="text"], form input[type="email"], form input[type="tel"] {
+    display: block;
+    width: 100%;
+    margin-top: 0.3rem;
+    padding: 0.7rem 0.85rem;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 0.6rem;
+    color: var(--text);
+    font: inherit;
+    text-transform: none;
+    letter-spacing: normal;
+}
+
+form input:focus {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+    border-color: transparent;
+}
+
+.row { display: flex; gap: 0.75rem; }
+.row > label { flex: 1; min-width: 0; }
+
+.banner {
+    margin-bottom: 1.25rem;
+    padding: 0.9rem 1rem;
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--accent);
+    border-radius: 0.6rem;
+}
+
+.banner p { margin: 0 0 0.6rem; }
+
+.choice label {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin: 0.4rem 0;
+    color: var(--text);
+    font-size: 0.95rem;
+    font-weight: 400;
+    letter-spacing: normal;
+    text-transform: none;
+}
+
+.choice input[type="radio"] { width: 1.15rem; height: 1.15rem; accent-color: var(--accent); }
+
+.chip {
+    display: inline-block;
+    margin-bottom: 1.25rem;
+    padding: 0.3rem 0.7rem;
+    border-radius: 999px;
+    background: var(--surface-2);
+    font-size: 0.8125rem;
+    font-weight: 600;
+}
+
+.chip.good { color: var(--good); }
+.chip.fair { color: var(--fair); }
+.chip.poor { color: var(--danger); }
+
+/* ── Done, errors, denied ───────────────────────────────────────── */
+
+.tick {
+    width: 3.5rem;
+    height: 3.5rem;
+    margin: 2rem auto 1rem;
+    border-radius: 50%;
+    background: var(--good);
+    color: var(--bg);
+    font-size: 2rem;
+    line-height: 3.5rem;
+    text-align: center;
+}
+
+.error {
+    margin-top: 1.25rem;
+    padding: 0.9rem 1rem;
+    background: rgba(229, 83, 75, 0.12);
+    border: 1px solid var(--danger);
+    border-radius: 0.6rem;
+    color: #ffd9d6;
+}
+
+.signed-in { margin-top: 2rem; color: var(--muted); font-size: 0.875rem; text-align: center; }
+.card.denied { padding: 1.5rem; background: var(--surface); border-radius: 0.75rem; }
