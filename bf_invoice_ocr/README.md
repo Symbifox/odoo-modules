@@ -87,7 +87,7 @@ on the line.
 3. **Description** — searched by distinctive words (5+ characters,
    `purchase_ok=True`), only when the match is unique (avoids false positives)
 
-When a product is found, its vendor taxes (`supplier_taxes_id`) are used —
+When a product is found, its vendor taxes (`supplier_taxes_id`) are used,
 **filtered to the invoice's company**, then mapped through the invoice's fiscal
 position, exactly as Odoo does in `account.move.line._get_computed_taxes`. That
 filtering matters: `supplier_taxes_id` is shared across companies and usually

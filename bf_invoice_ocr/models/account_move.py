@@ -114,7 +114,7 @@ class AccountMove(models.Model):
                 if tax:
                     return Tax.browse(tax.ids)
                 _logger.warning(
-                    "%s points to tax %s, which does not belong to company %s — ignored",
+                    "%s points to tax %s, which does not belong to company %s, ignored",
                     _TAX_PARAM, param, company.display_name,
                 )
             except (ValueError, TypeError):
@@ -135,7 +135,7 @@ class AccountMove(models.Model):
         ``supplier_taxes_id`` is shared across companies on a shared product: it
         typically holds one purchase tax *per* company. Copying the whole set
         onto a line raises "Incompatible companies on records" (``_check_company``),
-        so keep only this company's taxes — walking up the branch hierarchy —
+        so keep only this company's taxes (walking up the branch hierarchy),
         then map them through the fiscal position, exactly like Odoo does in
         ``account.move.line._get_computed_taxes``.
         """
@@ -263,7 +263,7 @@ class AccountMove(models.Model):
     def _ocr_find_partner(self, data):
         """Multi-signal vendor matching using name, VAT, email, website, phone, history.
 
-        Candidates are restricted to partners this company may use — ``partner_id``
+        Candidates are restricted to partners this company may use: ``partner_id``
         on the move is ``check_company=True``.
         """
         Partner = self.env["res.partner"]
