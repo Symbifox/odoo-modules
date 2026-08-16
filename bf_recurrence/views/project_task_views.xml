@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_task_form2_repeat_anchor" model="ir.ui.view">
+        <field name="name">project.task.form.repeat.anchor</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="project.view_task_form2"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='repeat_intervals']" position="after">
+                <label for="repeat_anchor"
+                       groups="project.group_project_recurring_tasks"
+                       invisible="not recurring_task"/>
+                <div name="bf_repeat_anchor" class="d-flex"
+                     groups="project.group_project_recurring_tasks"
+                     invisible="not recurring_task">
+                    <field name="repeat_anchor" nolabel="1"
+                           required="recurring_task"
+                           class="me-2" style="max-width: 15rem !important;"/>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
