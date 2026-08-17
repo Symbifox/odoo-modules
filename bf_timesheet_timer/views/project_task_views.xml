@@ -21,21 +21,6 @@
         </field>
     </record>
 
-    <!-- Hide sh_task_time_adv Start/End buttons from form header -->
-    <record id="view_task_form_hide_sh_timer" model="ir.ui.view">
-        <field name="name">project.task.form.hide.sh.timer</field>
-        <field name="model">project.task</field>
-        <field name="inherit_id" ref="sh_task_time_adv.sh_project_task_time_inherit_form_view"/>
-        <field name="arch" type="xml">
-            <xpath expr="//button[@name='action_task_start']" position="attributes">
-                <attribute name="invisible">1</attribute>
-            </xpath>
-            <xpath expr="//button[@name='action_task_end']" position="attributes">
-                <attribute name="invisible">1</attribute>
-            </xpath>
-        </field>
-    </record>
-
     <!-- Add BF Timer Start/Stop buttons to kanban card footer -->
     <record id="view_task_kanban_bf_timer" model="ir.ui.view">
         <field name="name">project.task.kanban.bf.timer</field>
@@ -62,21 +47,6 @@
                         title="Arrêter">
                     <i class="fa fa-stop"/>
                 </button>
-            </xpath>
-        </field>
-    </record>
-
-    <!-- Hide sh_task_time_adv Start/End buttons from kanban -->
-    <record id="view_task_kanban_hide_sh_timer" model="ir.ui.view">
-        <field name="name">project.task.kanban.hide.sh.timer</field>
-        <field name="model">project.task</field>
-        <field name="inherit_id" ref="sh_task_time_adv.sh_project_task_time_inherit_kanban_view"/>
-        <field name="arch" type="xml">
-            <xpath expr="//button[@name='action_task_start']" position="attributes">
-                <attribute name="invisible">1</attribute>
-            </xpath>
-            <xpath expr="//button[@name='action_task_end']" position="attributes">
-                <attribute name="invisible">1</attribute>
             </xpath>
         </field>
     </record>

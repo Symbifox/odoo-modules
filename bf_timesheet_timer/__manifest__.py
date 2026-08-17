@@ -1,12 +1,12 @@
 {
     "name": "BF Timer - Feuilles de temps",
-    "version": "18.0.1.9.0",
+    "version": "18.0.1.10.0",
     "category": "Services/Timesheets",
     "summary": "Timer global de feuilles de temps avec multi-timer et interface OWL",
     'author': 'Les services de consultation Blue Fox, Inc.',
     'website': 'https://symbifox.com',
-    'license': 'LGPL-3',  # MIT — see README.md
-    "depends": ["hr_timesheet", "project", "sh_task_time_adv", "base_setup", "bf_onboarding_base"],
+    'license': 'LGPL-3',
+    "depends": ["hr_timesheet", "project", "base_setup", "bf_onboarding_base"],
     "data": [
         "security/bf_timer_security.xml",
         "security/ir.model.access.csv",
