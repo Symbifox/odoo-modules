@@ -303,6 +303,30 @@ getTimerClass(timer) {
 }
 ```
 
+### Coexisting with another timer
+
+This module adds its buttons to the standard `project.view_task_form2` and
+`project.view_task_kanban` views only, so it never fights another module for the
+same node. If a third-party timer already sits on those views, its buttons stay
+visible next to ours until you hide them, with a view override of your own:
+
+```xml
+<record id="hide_other_timer_buttons" model="ir.ui.view">
+    <field name="name">project.task.form.hide.other.timer</field>
+    <field name="model">project.task</field>
+    <field name="inherit_id" ref="THEIR_MODULE.their_task_form_view"/>
+    <field name="arch" type="xml">
+        <xpath expr="//button[@name='their_start_action']" position="attributes">
+            <attribute name="invisible">1</attribute>
+        </xpath>
+    </field>
+</record>
+```
+
+Keep that override in a separate small module that depends on both, rather than
+adding it here: a dependency on a commercial third-party module would make this
+timer impossible to install on databases that don't own it.
+
 ## Technical Notes
 
 ### Odoo 18 Compatibility
@@ -367,6 +391,11 @@ bf_timesheet_timer/
 ```
 
 ## Changelog
+
+### 18.0.1.10.0 (2026-08-16)
+- **Installs on its own, for good**: `sh_task_time_adv` (Softhealer, proprietary) is gone from `depends`, and so are the two `view_task_*_hide_sh_timer` overrides that were its only reason to be there. The 18.0.1.9.0 release had reintroduced both, which made the module impossible to install on a database that does not own that commercial module. Those overrides now belong to a separate bridge module kept outside this repository, so the timer stays self-contained here.
+- Added a [Coexisting with another timer](#coexisting-with-another-timer) section showing how to hide another module's buttons from your own module.
+- Dropped a stale `# MIT` comment next to the `license` key. The licence is LGPL-3, as `LICENSE` and this README always said.
 
 ### 18.0.1.8.1
 - **Dropped the `sh_task_time_adv` (Softhealer) dependency**: the module no longer depends on the proprietary Softhealer timer. Removed the two `view_task_*_hide_sh_timer` inherited views (their only purpose was to hide Softhealer's Start/End buttons). The native OWL timer is self-contained and needs neither. Fixed the `license` metadata comment (LGPL-3, not MIT).
