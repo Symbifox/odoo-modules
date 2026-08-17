@@ -25,6 +25,23 @@ class ResConfigSettings(models.TransientModel):
         config_parameter="bf_claude_chat.enabled",
         default=True,
     )
+    claude_streaming = fields.Boolean(
+        string="Stream responses (live tokens)",
+        config_parameter="bf_claude_chat.streaming",
+        default=True,
+        help="Stream the answer token by token with tool and thinking activity "
+             "(console-like). When off, the chat falls back to a single "
+             "buffered reply.",
+    )
+    claude_auto_brief = fields.Boolean(
+        string="Brief me when I open a record",
+        config_parameter="bf_claude_chat.auto_brief",
+        default=True,
+        help="The first time the panel opens on a record with no conversation "
+             "yet, Claude reads the record, its chatter and its latest activity "
+             "and opens with a short situation report plus next actions, "
+             "without waiting for a question.",
+    )
     claude_model = fields.Selection(
         [
             ("sonnet", "Sonnet (fast, recommended)"),
@@ -38,7 +55,7 @@ class ResConfigSettings(models.TransientModel):
     claude_max_turns = fields.Integer(
         string="Max Turns per Message",
         config_parameter="bf_claude_chat.max_turns",
-        default=25,
+        default=45,
         help="Maximum number of tool-use cycles Claude can perform per message. "
              "Higher values allow more complex queries but take longer.",
     )
@@ -46,8 +63,9 @@ class ResConfigSettings(models.TransientModel):
         string="Anthropic API Key",
         compute="_compute_api_key",
         inverse="_inverse_api_key",
-        help="Optional. If set, this tenant uses its own API key (pay-per-use) "
-             "instead of the shared Max plan. Leave empty to use the server's Max plan.",
+        help="Optional. If set, this tenant bills its own Anthropic key "
+             "(pay-per-use). Leave empty to use the credentials the bridge "
+             "already holds.",
     )
     claude_tenant = fields.Char(
         string="Tenant Slug",
@@ -68,7 +86,6 @@ class ResConfigSettings(models.TransientModel):
         default=660,
         help="Maximum time to wait for a Claude response.",
     )
-
     # --- Encryption helpers ---
 
     @staticmethod
@@ -155,3 +172,4 @@ class ResConfigSettings(models.TransientModel):
             self.env["ir.config_parameter"].sudo().set_param(
                 "bf_claude_chat.api_key", ""
             )
+

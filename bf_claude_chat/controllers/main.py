@@ -9,7 +9,8 @@ from collections import defaultdict
 
 import odoo
 from odoo import http
-from odoo.http import request
+from odoo.http import request, Response
+from odoo.modules.registry import Registry
 
 _logger = logging.getLogger(__name__)
 
@@ -169,8 +170,9 @@ def _get_settings():
     api_key = ResConfigSettings._decrypt_api_key(request.env, encrypted_key)
     return {
         "enabled": ICP.get_param("bf_claude_chat.enabled", "True") == "True",
+        "streaming": ICP.get_param("bf_claude_chat.streaming", "True") == "True",
         "model": ICP.get_param("bf_claude_chat.model", "sonnet"),
-        "max_turns": int(ICP.get_param("bf_claude_chat.max_turns", "25")),
+        "max_turns": int(ICP.get_param("bf_claude_chat.max_turns", "45")),
         "api_key": api_key,
         "tenant": ICP.get_param("bf_claude_chat.tenant", "pme"),
         "socket": ICP.get_param("bf_claude_chat.bridge_socket", _DEFAULT_SOCKET),
@@ -178,9 +180,21 @@ def _get_settings():
     }
 
 
-def _call_bridge(endpoint, payload, socket_path, timeout):
-    """Call the bridge service via Unix socket."""
+def _call_bridge(endpoint, payload, socket_path, timeout, headers=None):
+    """Call the bridge service via Unix socket.
+
+    ``headers`` carries what an endpoint demands beyond the basics — /assist
+    requires a device bearer token and fails closed without one. Values are
+    refused if they contain a line break: this builds a raw HTTP request by
+    hand, so a CR/LF would let a caller append headers of their own.
+    """
     body = json.dumps(payload).encode()
+    extra = ""
+    for name, value in (headers or {}).items():
+        text = str(value)
+        if "\r" in text or "\n" in text or "\r" in name or "\n" in name:
+            raise ValueError("Invalid header value")
+        extra += f"{name}: {text}\r\n"
     sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
     sock.settimeout(timeout)
     try:
@@ -189,6 +203,7 @@ def _call_bridge(endpoint, payload, socket_path, timeout):
             f"POST {endpoint} HTTP/1.1\r\n"
             f"Host: localhost\r\n"
             f"Content-Type: application/json\r\n"
+            f"{extra}"
             f"Content-Length: {len(body)}\r\n"
             f"Connection: close\r\n"
             f"\r\n"
@@ -235,6 +250,121 @@ def _call_bridge(endpoint, payload, socket_path, timeout):
         sock.close()
 
 
+# ── Streaming (Server-Sent Events) ──────────────────────────────────────────
+
+# After this many consecutive streamed failures, a session's Claude thread is
+# treated as poisoned: the next message forks a fresh thread instead of
+# resuming the broken one. This is what unsticks a context that kept failing.
+_STREAM_FAIL_THRESHOLD = 2
+
+_SSE_HEADERS = [
+    ("Cache-Control", "no-cache"),
+    ("Connection", "keep-alive"),
+    # Tell nginx / NPM not to buffer, so tokens reach the browser live.
+    ("X-Accel-Buffering", "no"),
+]
+
+
+def _sse_line(event, data):
+    """Format one Server-Sent Events frame as bytes."""
+    return (
+        f"event: {event}\n"
+        f"data: {json.dumps(data, ensure_ascii=False)}\n\n"
+    ).encode("utf-8")
+
+
+def _sse_response(iterable):
+    """Wrap a byte iterator in a streamed SSE response (no buffering)."""
+    return Response(
+        iterable,
+        headers=_SSE_HEADERS,
+        content_type="text/event-stream; charset=utf-8",
+        direct_passthrough=True,
+    )
+
+
+def _iter_bridge_stream(socket_path, endpoint, payload, timeout):
+    """Yield the bridge's streamed response body incrementally (bytes).
+
+    Speaks just enough HTTP/1.1 to POST over the Unix socket and decode a
+    chunked (or plain) response as the bytes arrive — never buffering the whole
+    body — so Server-Sent Events flow through to the browser in real time.
+    """
+    body = json.dumps(payload).encode()
+    sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+    sock.settimeout(timeout)  # per-recv; bridge keep-alives keep bytes flowing
+    try:
+        sock.connect(socket_path)
+        head = (
+            f"POST {endpoint} HTTP/1.1\r\n"
+            f"Host: localhost\r\n"
+            f"Content-Type: application/json\r\n"
+            f"Content-Length: {len(body)}\r\n"
+            f"Connection: close\r\n"
+            f"\r\n"
+        ).encode() + body
+        sock.sendall(head)
+
+        buf = b""
+        # 1) read status line + headers
+        while b"\r\n\r\n" not in buf:
+            chunk = sock.recv(65536)
+            if not chunk:
+                return
+            buf += chunk
+        header_blob, buf = buf.split(b"\r\n\r\n", 1)
+        try:
+            status = int(header_blob.split(b" ", 2)[1])
+        except (IndexError, ValueError):
+            status = 0
+        headers_l = header_blob.lower()
+        chunked = b"transfer-encoding: chunked" in headers_l
+        if status >= 400:
+            raise ValueError(f"Bridge returned HTTP {status}")
+
+        if not chunked:
+            # Non-streamed body (defensive) — yield what we have, then drain.
+            if buf:
+                yield buf
+            while True:
+                chunk = sock.recv(65536)
+                if not chunk:
+                    return
+                yield chunk
+            return
+
+        # 2) incremental chunked decode
+        while True:
+            # need a chunk-size line
+            while b"\r\n" not in buf:
+                chunk = sock.recv(65536)
+                if not chunk:
+                    return
+                buf += chunk
+            size_line, buf = buf.split(b"\r\n", 1)
+            size_line = size_line.strip()
+            if not size_line:
+                continue
+            try:
+                size = int(size_line.split(b";")[0], 16)
+            except ValueError:
+                return
+            if size == 0:
+                return  # terminating chunk
+            # ensure the full chunk data + trailing CRLF are buffered
+            while len(buf) < size + 2:
+                chunk = sock.recv(65536)
+                if not chunk:
+                    if buf:
+                        yield buf[:size]
+                    return
+                buf += chunk
+            yield buf[:size]
+            buf = buf[size + 2:]  # skip data + CRLF
+    finally:
+        sock.close()
+
+
 def _generate_smart_title(db_name, session_id, fallback, user_msg, asst_resp, api_key, socket_path):
     """Background thread: call /generate-title and update session name."""
     try:
@@ -249,7 +379,7 @@ def _generate_smart_title(db_name, session_id, fallback, user_msg, asst_resp, ap
         if not title:
             return
         # Open a new DB cursor (standard Odoo pattern for async writes)
-        registry = odoo.registry(db_name)
+        registry = Registry(db_name)
         with registry.cursor() as cr:
             env = odoo.api.Environment(cr, odoo.SUPERUSER_ID, {})
             session = env["claude.chat.session"].browse(session_id)
@@ -307,9 +437,7 @@ def _resolve_persona_summary(env, model, res_id):
     try:
         # Enforce the CALLER's read access on the record before any sudo, so a
         # crafted context (arbitrary model/res_id) cannot surface a record the
-        # user is not allowed to see (record rules + multi-company). Callers now
-        # arrive pre-validated via _validated_context_ref; this stays as the
-        # second lock on the sudo() below.
+        # user is not allowed to see (record rules + multi-company).
         record = env[model].browse(res_id)
         if not record.exists():
             return ""
@@ -333,10 +461,64 @@ def _resolve_persona_summary(env, model, res_id):
         return ""
 
 
+def _attach_steering(env, bridge_payload, ctx_model=None):
+    """Compose the user's steering instructions into the bridge payload.
+
+    Global instructions apply to every conversation, so this runs even when the
+    user is not on a record and ``bridge_payload`` has no context yet. Silent on
+    failure: a broken instruction must never cost the user their message.
+    """
+    try:
+        block = env["claude.chat.instruction"]._build_prompt_block(ctx_model)
+    except Exception:
+        _logger.debug("Steering lookup failed for %s", ctx_model, exc_info=True)
+        return
+    if not block:
+        return
+    bridge_payload.setdefault("context", {})["steering"] = block[:4000]
+
+
+# Directive sent on the user's behalf the first time the panel opens on a
+# record. It is stored as an internal message: Claude sees it, the panel does
+# not render it, so the conversation opens straight on the briefing.
+AUTO_BRIEF_PROMPT = (
+    "Bring me up to speed on the record I am looking at. Read it, go through "
+    "its chatter and its latest activity, then answer in two short blocks: "
+    "'Situation' (where this file stands, three bullets at most) then "
+    "'Next actions' (one to three concrete actions). Get straight to the "
+    "point, no preamble, no restating what I can already see on screen."
+)
+
+
+def usage_vals(payload):
+    """Map the bridge's usage block onto message fields.
+
+    Returns an empty dict when the bridge reports nothing, so an older bridge
+    (or a failed turn) simply stores no counters instead of zeros that would
+    look like a free answer.
+    """
+    u = (payload or {}).get("usage") or {}
+    if not isinstance(u, dict) or not u:
+        return {}
+    return {
+        "input_tokens": int(u.get("input_tokens") or 0),
+        "output_tokens": int(u.get("output_tokens") or 0),
+        "cache_read_tokens": int(u.get("cache_read_tokens") or 0),
+        "cache_write_tokens": int(u.get("cache_write_tokens") or 0),
+        "cost_usd": float(u.get("cost_usd") or 0.0),
+        "duration_ms": int(u.get("duration_ms") or 0),
+    }
+
+
+def settings_auto_brief(icp):
+    """True when the proactive brief is enabled (default on)."""
+    return icp.get_param("bf_claude_chat.auto_brief", "True") == "True"
+
+
 class ClaudeChatController(http.Controller):
 
     @http.route("/claude-chat/send", type="json", auth="user", methods=["POST"])
-    def send_message(self, session_id=None, message="", context=None):
+    def send_message(self, session_id=None, message="", context=None, internal=False):
         """Send a message to GenFox via the bridge service."""
         settings = _get_settings()
 
@@ -375,6 +557,7 @@ class ClaudeChatController(http.Controller):
             "session_id": session.id,
             "role": "user",
             "content": message.strip(),
+            "internal": bool(internal),
         })
 
         # Build bridge payload with settings
@@ -408,6 +591,11 @@ class ClaudeChatController(http.Controller):
                 )
                 if persona_summary:
                     bridge_payload["context"]["persona_summary"] = persona_summary[:2000]
+
+        _attach_steering(
+            request.env, bridge_payload,
+            bridge_payload.get("context", {}).get("model"),
+        )
 
         # Call bridge service via Unix socket
         try:
@@ -454,6 +642,7 @@ class ClaudeChatController(http.Controller):
             "session_id": session.id,
             "role": "assistant",
             "content": data.get("response", "(No response)"),
+            **usage_vals(data),
         })
 
         return {
@@ -464,9 +653,218 @@ class ClaudeChatController(http.Controller):
             "session_name": session.name,
         }
 
+    @http.route("/claude-chat/stream", type="http", auth="user", methods=["POST"],
+                csrf=False)
+    def stream_message(self, **kw):
+        """Streaming counterpart of /claude-chat/send.
+
+        Relays the bridge's Server-Sent Events so the browser shows tokens,
+        tool activity and thinking progress live — and keeps partial output on
+        timeout instead of returning nothing. Uses type=http because json routes
+        cannot stream. CSRF is off but a custom header (set by our fetch, which
+        a cross-site form cannot set) is required on top of auth=user.
+        """
+        # CSRF-equivalent gate.
+        if request.httprequest.headers.get("X-Claude-Stream") != "1":
+            return _sse_response([_sse_line("error", {
+                "response": "Bad request.", "reason": "cli_error", "interrupted": False,
+            })])
+
+        settings = _get_settings()
+        try:
+            data_in = json.loads(request.httprequest.get_data() or b"{}")
+        except Exception:
+            data_in = {}
+        session_id = data_in.get("session_id")
+        message = (data_in.get("message") or "").strip()
+        internal = bool(data_in.get("internal"))
+        context = data_in.get("context")
+        user = request.env.user
+
+        def _err(msg, reason="cli_error"):
+            return _sse_response([_sse_line("error", {
+                "response": msg, "reason": reason, "interrupted": False,
+            })])
+
+        # When streaming is disabled the client falls back to /claude-chat/send.
+        if not settings["enabled"] or not settings.get("streaming", True):
+            return _err("Streaming is turned off.", "disabled")
+        if not message:
+            return _err("Message vide.")
+        if not _check_rate_limit(user.id):
+            return _err("Too many requests. Please wait before trying again.",
+                        "rate_limit")
+
+        Session = request.env["claude.chat.session"]
+        Message = request.env["claude.chat.message"]
+
+        # Page context resolved ONCE, access check included, for the session
+        # record AND the bridge payload below.
+        ctx_model, ctx_res_id = _validated_context_ref(request.env, context)
+
+        # Find or create the Odoo session (same policy as send_message).
+        if session_id:
+            session = Session.browse(int(session_id))
+            if not session.exists() or session.user_id != user:
+                return _err("Session introuvable.")
+        else:
+            vals = {"name": "New Chat", "user_id": user.id}
+            if ctx_model and ctx_res_id:
+                vals["res_model"] = ctx_model
+                vals["res_id"] = ctx_res_id
+            session = Session.create(vals)
+
+        # Persist the user message now (committed when the handler returns).
+        Message.create({
+            "session_id": session.id, "role": "user", "content": message,
+            "internal": bool(internal),
+        })
+
+        # Anti-poison: a Claude thread that keeps failing gets forked, not
+        # resumed, so a heavy record stops being stuck for that context.
+        claude_sid = session.claude_session_id or None
+        forked = bool(claude_sid) and session.stream_fail_count >= _STREAM_FAIL_THRESHOLD
+        if forked:
+            claude_sid = None
+
+        bridge_payload = {
+            "session_id": claude_sid,
+            "message": message,
+            "user_name": user.name,
+            "user_id": user.id,
+            "user_email": user.email or "",
+            "model": settings["model"],
+            "max_turns": settings["max_turns"],
+            "tenant": settings["tenant"],
+        }
+        if settings["api_key"]:
+            bridge_payload["api_key"] = settings["api_key"]
+        # model/res_id travel ONLY when _validated_context_ref cleared them
+        # for this caller; the cosmetic fields are always safe to forward.
+        if context and isinstance(context, dict):
+            bridge_payload["context"] = {
+                "display_name": str(context.get("display_name", ""))[:200],
+                "view_type": str(context.get("view_type", ""))[:20],
+                "url": str(context.get("url", ""))[:500],
+            }
+            if ctx_model and ctx_res_id:
+                bridge_payload["context"]["model"] = ctx_model
+                bridge_payload["context"]["res_id"] = ctx_res_id
+                persona_summary = _resolve_persona_summary(
+                    request.env, ctx_model, ctx_res_id,
+                )
+                if persona_summary:
+                    bridge_payload["context"]["persona_summary"] = persona_summary[:2000]
+
+        _attach_steering(
+            request.env, bridge_payload,
+            bridge_payload.get("context", {}).get("model"),
+        )
+
+        # Capture everything the generator needs — request.env is gone once we
+        # return the streamed Response (its cursor is committed and closed).
+        db_name = request.env.cr.dbname
+        uid = user.id
+        odoo_session_id = session.id
+        session_was_new = not session_id
+        socket_path = settings["socket"]
+        timeout = settings["timeout"]
+        api_key = settings.get("api_key", "")
+
+        def _stream():
+            # Tell the client its Odoo session id right away.
+            yield _sse_line("session", {"odoo_session_id": odoo_session_id})
+            if forked:
+                yield _sse_line("notice", {
+                    "text": "Started a new conversation: the previous thread stayed stuck.",
+                })
+
+            final = {}
+            cur_event = None
+            line_buf = b""
+            try:
+                for data in _iter_bridge_stream(
+                        socket_path, "/chat-stream", bridge_payload, timeout):
+                    yield data  # forward raw bridge SSE bytes to the browser
+                    line_buf += data
+                    while b"\n" in line_buf:
+                        raw, line_buf = line_buf.split(b"\n", 1)
+                        ln = raw.strip()
+                        if ln.startswith(b"event:"):
+                            cur_event = ln[6:].strip()
+                        elif ln.startswith(b"data:") and cur_event in (b"done", b"error"):
+                            try:
+                                final = json.loads(ln[5:])
+                                final["_event"] = cur_event.decode()
+                            except Exception:
+                                pass
+            except Exception:
+                _logger.exception("Bridge stream error")
+                yield _sse_line("error", {
+                    "response": "GenFox is temporarily unavailable.",
+                    "reason": "cli_error", "interrupted": False,
+                })
+
+            # Persist the assistant message via a fresh cursor (the request
+            # cursor is gone while the response streams).
+            msg_id = None
+            try:
+                registry = Registry(db_name)
+                with registry.cursor() as cr:
+                    env = odoo.api.Environment(cr, uid, {})
+                    sess = env["claude.chat.session"].browse(odoo_session_id)
+                    if sess.exists():
+                        vals = {}
+                        new_sid = final.get("session_id")
+                        if new_sid and new_sid != sess.claude_session_id:
+                            vals["claude_session_id"] = new_sid
+                        if final.get("_event") == "error":
+                            vals["stream_fail_count"] = (sess.stream_fail_count or 0) + 1
+                            vals["last_stream_error"] = (final.get("reason") or "error")[:64]
+                        else:
+                            if sess.stream_fail_count:
+                                vals["stream_fail_count"] = 0
+                            vals["last_stream_error"] = False
+                        resp_text = final.get("response") or "(No response)"
+                        amsg = env["claude.chat.message"].create({
+                            "session_id": sess.id, "role": "assistant",
+                            "content": resp_text,
+                            **usage_vals(final),
+                        })
+                        msg_id = amsg.id
+                        if sess.name == "New Chat" and final.get("response"):
+                            fallback = message[:60] + ("..." if len(message) > 60 else "")
+                            vals["name"] = fallback
+                        if vals:
+                            sess.write(vals)
+            except Exception:
+                _logger.exception("Persisting streamed assistant message failed")
+
+            # Smart title in the background for a brand-new session.
+            if session_was_new and final.get("response"):
+                fallback = message[:60] + ("..." if len(message) > 60 else "")
+                threading.Thread(
+                    target=_generate_smart_title,
+                    args=(db_name, odoo_session_id, fallback, message,
+                          final.get("response", ""), api_key, socket_path),
+                    daemon=True,
+                ).start()
+
+            yield _sse_line("saved", {
+                "message_id": msg_id, "session_id": odoo_session_id,
+            })
+
+        return _sse_response(_stream())
+
     @http.route("/claude-chat/sessions", type="json", auth="user", methods=["POST"])
     def list_sessions(self, res_model=None, res_id=None):
-        """List the current user's chat sessions, optionally filtered by record context."""
+        """List the current user's chat sessions, optionally filtered by record context.
+
+        Mobile threads are included: since the app moved to /chat they share the
+        same session id, the same tools and the same rights, so a conversation
+        started on a phone continues here and the other way round. The `origin`
+        field survives as provenance, not as a filter.
+        """
         domain = [("user_id", "=", request.env.user.id)]
         if res_model and res_id:
             domain.append(("res_model", "=", str(res_model)[:64]))
@@ -477,7 +875,17 @@ class ClaudeChatController(http.Controller):
             order="write_date desc",
             limit=50,
         )
-        return {"sessions": sessions}
+        ICP = request.env["ir.config_parameter"].sudo()
+        streaming = (
+            ICP.get_param("bf_claude_chat.streaming", "True") == "True"
+            and ICP.get_param("bf_claude_chat.enabled", "True") == "True"
+        )
+        return {
+            "sessions": sessions,
+            "streaming": streaming,
+            "auto_brief": settings_auto_brief(ICP),
+            "auto_brief_prompt": AUTO_BRIEF_PROMPT,
+        }
 
     @http.route("/claude-chat/messages", type="json", auth="user", methods=["POST"])
     def get_messages(self, session_id):
@@ -487,7 +895,7 @@ class ClaudeChatController(http.Controller):
             return {"error": "Session not found"}
 
         messages = request.env["claude.chat.message"].search_read(
-            [("session_id", "=", session.id)],
+            [("session_id", "=", session.id), ("internal", "=", False)],
             ["role", "content", "create_date"],
             order="create_date asc, id asc",
         )

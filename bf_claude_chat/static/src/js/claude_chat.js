@@ -5,6 +5,7 @@ import { registry } from "@web/core/registry";
 import { useService } from "@web/core/utils/hooks";
 import { rpc } from "@web/core/network/rpc";
 import { _t } from "@web/core/l10n/translation";
+import { streamChat, prettyToolName } from "@bf_claude_chat/js/claude_stream";
 
 /**
  * Strip dangerous HTML tags/attributes from rendered HTML.
@@ -141,6 +142,8 @@ class ClaudeChatAction extends Component {
             activeSessionId: null,
             messages: [],
             isThinking: false,
+            streaming: true,
+            streamingActive: false,
             editingSessionId: null,
             editingName: "",
             shareOpen: false,
@@ -162,6 +165,7 @@ class ClaudeChatAction extends Component {
         try {
             const result = await rpc("/claude-chat/sessions", {});
             this.state.sessions = result.sessions || [];
+            if (result.streaming !== undefined) this.state.streaming = result.streaming;
         } catch (e) {
             this.notification.add(_t("Failed to load sessions"), { type: "danger" });
         }
@@ -254,58 +258,146 @@ class ClaudeChatAction extends Component {
         const sessionId = this.state.activeSessionId === -1 ? null : this.state.activeSessionId;
 
         // Optimistic UI: show user message immediately
-        const tempUserMsg = {
-            id: `temp-${Date.now()}`,
+        this.state.messages.push({
+            id: `u-${Date.now()}`,
             role: "user",
             content: message,
             create_date: new Date().toISOString(),
-        };
-        this.state.messages.push(tempUserMsg);
+        });
         textarea.value = "";
         this.autoResize(textarea);
+
+        const wasNewSession = !sessionId;
+
+        // Legacy buffered path when streaming is disabled server-side.
+        if (this.state.streaming === false) {
+            this.state.isThinking = true;
+            this.scrollToBottom();
+            try {
+                await this._sendBuffered(message, sessionId);
+            } finally {
+                this.state.isThinking = false;
+                await this.loadSessions();
+                if (wasNewSession) setTimeout(() => this.loadSessions(), 4000);
+                this.scrollToBottom();
+                this.focusInput();
+            }
+            return;
+        }
+
+        // Streaming path — live tokens, tool activity, thinking progress.
+        const idx = this.state.messages.push({
+            id: `a-${Date.now()}`,
+            role: "assistant",
+            content: "",
+            streaming: true,
+            tools: [],
+            thinkingTokens: 0,
+            interrupted: false,
+            notice: "",
+            create_date: new Date().toISOString(),
+        }) - 1;
+        const assistant = this.state.messages[idx];
+
         this.state.isThinking = true;
+        this.state.streamingActive = true;
         this.scrollToBottom();
 
+        const controller = new AbortController();
+        this._streamAbort = controller;
+
+        let gotText = false;
+        let disabled = false;
+        try {
+            await streamChat({
+                body: { session_id: sessionId, message },
+                signal: controller.signal,
+                onEvent: (event, data) => {
+                    switch (event) {
+                        case "session":
+                            if (data.odoo_session_id) this.state.activeSessionId = data.odoo_session_id;
+                            break;
+                        case "notice":
+                            assistant.notice = data.text || "";
+                            break;
+                        case "thinking":
+                            assistant.thinkingTokens = data.tokens || 0;
+                            break;
+                        case "tool":
+                            if (data.name) assistant.tools.push(prettyToolName(data.name));
+                            this.scrollToBottom();
+                            break;
+                        case "text":
+                            gotText = true;
+                            assistant.content += data.delta || "";
+                            this.scrollToBottom();
+                            break;
+                        case "done":
+                            if (data.response) assistant.content = data.response;
+                            assistant.streaming = false;
+                            break;
+                        case "error":
+                            if (data.reason === "disabled") { disabled = true; break; }
+                            if (data.response) assistant.content = data.response;
+                            assistant.interrupted = !!data.interrupted;
+                            assistant.streaming = false;
+                            break;
+                        case "saved":
+                            if (data.message_id) assistant.id = data.message_id;
+                            break;
+                    }
+                },
+            });
+            if (disabled) {
+                this.state.streaming = false;
+                this.state.messages.splice(idx, 1);
+                await this._sendBuffered(message, sessionId);
+            }
+        } catch (err) {
+            if (controller.signal.aborted) {
+                assistant.interrupted = true;
+            } else if (!gotText) {
+                this.state.messages.splice(idx, 1);
+                await this._sendBuffered(message, sessionId);
+            } else {
+                assistant.content += "\n\n_(connexion interrompue)_";
+            }
+        } finally {
+            assistant.streaming = false;
+            this.state.isThinking = false;
+            this.state.streamingActive = false;
+            this._streamAbort = null;
+            await this.loadSessions();
+            if (wasNewSession) setTimeout(() => this.loadSessions(), 4000);
+            this.scrollToBottom();
+            this.focusInput();
+        }
+    }
+
+    async _sendBuffered(message, sessionId) {
         try {
             const result = await rpc("/claude-chat/send", {
                 session_id: sessionId,
                 message: message,
             });
-
             if (result.error) {
-                this.state.isThinking = false;
                 this.notification.add(result.error, { type: "danger" });
                 return;
             }
-
-            // Update session ID (for new sessions)
-            const wasNewSession = !sessionId;
-            if (result.session_id) {
-                this.state.activeSessionId = result.session_id;
-            }
-
-            // Add assistant response
+            if (result.session_id) this.state.activeSessionId = result.session_id;
             this.state.messages.push({
                 id: result.message_id,
                 role: "assistant",
                 content: result.response,
                 create_date: new Date().toISOString(),
             });
-
-            // Refresh sidebar
-            await this.loadSessions();
-
-            // Re-fetch sessions after smart title generation (~4s)
-            if (wasNewSession) {
-                setTimeout(() => this.loadSessions(), 4000);
-            }
         } catch (e) {
             this.notification.add(_t("Failed to send message"), { type: "danger" });
-        } finally {
-            this.state.isThinking = false;
-            this.scrollToBottom();
-            this.focusInput();
         }
+    }
+
+    onStop() {
+        if (this._streamAbort) this._streamAbort.abort();
     }
 
     // ── Share to task ──────────────────────────────────────────

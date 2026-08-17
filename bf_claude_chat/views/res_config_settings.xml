@@ -14,12 +14,20 @@
                                  help="Enable the GenFox chatbot for all users.">
                             <field name="claude_enabled"/>
                         </setting>
+                        <setting string="Live streaming"
+                                 help="Stream answers token by token with tool and thinking activity (console-like). When off, replies are buffered.">
+                            <field name="claude_streaming"/>
+                        </setting>
+                        <setting string="Proactive brief"
+                                 help="When you open the panel on a record you have not discussed yet, Claude opens with a situation report and next actions instead of waiting for a question.">
+                            <field name="claude_auto_brief"/>
+                        </setting>
                         <setting string="Model"
                                  help="Choose the Claude model to use for responses.">
                             <field name="claude_model"/>
                         </setting>
                         <setting string="Max Turns"
-                                 help="Maximum tool-use cycles per message (1-30).">
+                                 help="Maximum tool-use cycles per message (e.g. 45).">
                             <field name="claude_max_turns"/>
                         </setting>
                         <setting string="Response Timeout"
@@ -29,7 +37,7 @@
                     </block>
                     <block title="Authentication">
                         <setting string="API Key (optional)"
-                                 help="Leave empty to use the server's Max plan. Set an Anthropic API key to bill this tenant independently.">
+                                 help="Leave empty to use the credentials the bridge already holds. Set an Anthropic API key to bill this tenant independently.">
                             <field name="claude_api_key" password="True"/>
                         </setting>
                     </block>

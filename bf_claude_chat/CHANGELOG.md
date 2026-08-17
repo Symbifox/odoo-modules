@@ -1,5 +1,57 @@
 # Changelog - GenFox (bf_claude_chat)
 
+## v18.0.1.13.0 - 2026-08-16
+
+Consolidated release covering everything since v18.0.1.5.2.
+
+### Live streaming
+
+Answers now stream token by token over Server-Sent Events (`/claude-chat/stream`,
+`type="http"`, CSRF replaced by a required `X-Claude-Stream: 1` header), with tool
+activity and thinking progress shown as they happen. A timeout keeps the partial
+answer instead of returning nothing. Streaming can be switched off in Settings,
+and the client falls back to the buffered `/claude-chat/send`. A session whose
+streamed turns keep failing is forked rather than resumed on the next message.
+
+### Mobile API
+
+`/bf_claude_chat/mobile/v1/*` serves the companion mobile app, with the same
+tools and the same session as the desktop, so a conversation started on the phone
+carries on at the desk. A turn is asynchronous: `/ask` returns a `turn_id`, a
+worker thread consumes the bridge stream and writes progress into the message,
+and the app polls `/turn`. Authentication is a device bearer token borrowed from
+`bf_sms_archive` or `bf_email_management`; without either module the routes
+answer 401.
+
+### Steering instructions
+
+New `claude.chat.instruction` model: short directives composed into the system
+prompt, global or scoped to one model, shared or private, with a coherence check
+that reports near-duplicates and contradictions.
+
+### Proactive brief
+
+Opening the panel on a record with no conversation yet asks for a situation
+report and next actions, stored as an internal message the panel never renders.
+
+### Admin cockpit and usage counters
+
+Sessions, token counts and API-equivalent cost per turn, in list, pivot and graph
+views, restricted to `base.group_system`.
+
+### Security
+
+- The page context is access-checked before it reaches the bridge: the caller's
+  ACL, record rules and multi-company are enforced on the (model, res_id) pair,
+  so a crafted context cannot have a record summarised that the caller may not
+  read.
+- Headers sent to the bridge refuse CR/LF, since the HTTP request is built by
+  hand; covered by tests.
+- The mobile controller refuses a device whose user has been archived.
+- `/ping` no longer discloses the installed version to an unauthenticated caller.
+- The Anthropic API key stays encrypted at rest (Fernet, key from the environment
+  or `odoo.conf`, never the database).
+
 ## v18.0.1.4.1 - 2026-03-20
 
 ### Fixing the overlay hidden behind the chatter (portal pattern)

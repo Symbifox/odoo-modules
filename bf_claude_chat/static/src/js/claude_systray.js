@@ -6,6 +6,7 @@ import { useService } from "@web/core/utils/hooks";
 import { rpc } from "@web/core/network/rpc";
 import { _t } from "@web/core/l10n/translation";
 import { router } from "@web/core/browser/router";
+import { streamChat, prettyToolName } from "@bf_claude_chat/js/claude_stream";
 
 /**
  * Strip dangerous HTML tags/attributes from rendered HTML.
@@ -238,6 +239,10 @@ export class ClaudeSystrayItem extends Component {
             activeSessionId: null,
             messages: [],
             isThinking: false,
+            streaming: true,        // server may turn this off; falls back to buffered
+            autoBrief: false,       // proactive brief enabled server-side
+            autoBriefPrompt: "",    // directive text, composed server-side
+            streamingActive: false, // a streamed response is in flight
             loaded: false,
             editingSessionId: null,
             editingName: "",
@@ -291,8 +296,20 @@ export class ClaudeSystrayItem extends Component {
             }
         };
 
+        // Only pull the overlay back into the component's DOM when the panel is
+        // actually closing (so Owl can unmount it cleanly). During streaming the
+        // panel stays open and only its content changes — restoring + re-portaling
+        // on every token made the whole panel flicker (the sidebar appearing to
+        // close and reopen on each new line). Content patches now leave it in
+        // <body>; Owl still updates its contents in place, so no flicker.
+        const _restoreIfClosing = () => {
+            if (this._overlayPlaceholder && !this.state.open) {
+                _restoreFromPortal();
+            }
+        };
+
         onMounted(_portalToBody);
-        onWillPatch(_restoreFromPortal);
+        onWillPatch(_restoreIfClosing);
         onPatched(_portalToBody);
         onWillUnmount(_restoreFromPortal);
 
@@ -333,6 +350,7 @@ export class ClaudeSystrayItem extends Component {
             this.state.loaded = true;
             this.scrollToBottom();
             this.focusInput();
+            await this._maybeAutoBrief();
         }
     }
 
@@ -383,6 +401,9 @@ export class ClaudeSystrayItem extends Component {
             const params = this._sessionFilterParams();
             const result = await rpc("/claude-chat/sessions", params);
             this.state.sessions = result.sessions || [];
+            if (result.streaming !== undefined) this.state.streaming = result.streaming;
+            if (result.auto_brief !== undefined) this.state.autoBrief = result.auto_brief;
+            if (result.auto_brief_prompt) this.state.autoBriefPrompt = result.auto_brief_prompt;
             // Auto-select most recent session if none active
             if (this.state.sessions.length > 0 && !this.state.activeSessionId) {
                 await this.selectSession(this.state.sessions[0].id);
@@ -425,68 +446,192 @@ export class ClaudeSystrayItem extends Component {
         if (!textarea) return;
         const message = textarea.value.trim();
         if (!message || this.state.isThinking) return;
+        textarea.value = "";
+        await this._send(message);
+    }
+
+    /**
+     * Proactive brief. The first time the panel opens on a record that has no
+     * conversation yet, ask Claude to situate it instead of waiting for the
+     * user to type. The directive rides the ordinary streaming path and is
+     * stored as an internal message, so Claude sees it but the transcript
+     * never shows it. No background thread and no job queue: the stream
+     * endpoint is already asynchronous from the browser's point of view.
+     */
+    async _maybeAutoBrief() {
+        if (!this.state.autoBrief || !this.state.autoBriefPrompt) return;
+        if (!this.hasFilteredContext) return;
+        if (this.state.sessions.length > 0) return;
+        if (this.state.isThinking) return;
+        this.state.activeSessionId = -1;
+        this.state.messages = [];
+        await this._send(this.state.autoBriefPrompt, { internal: true });
+    }
+
+    async _send(message, { internal = false } = {}) {
+        if (!message || this.state.isThinking) return;
 
         const sessionId = this.state.activeSessionId === -1 ? null : this.state.activeSessionId;
 
-        // Optimistic UI
-        this.state.messages.push({
-            id: `temp-${Date.now()}`,
-            role: "user",
-            content: message,
-        });
-        textarea.value = "";
-        this.state.isThinking = true;
-        this.scrollToBottom();
-
-        // Include page context on first message of a new session
-        const payload = {
-            session_id: sessionId,
-            message: message,
-        };
-        if (!sessionId && this.activeContext) {
-            payload.context = this.activeContext;
+        // Optimistic user message — a directive posted on the user's behalf
+        // must not appear as something they typed.
+        if (!internal) {
+            this.state.messages.push({
+                id: `u-${Date.now()}`,
+                role: "user",
+                content: message,
+            });
         }
 
+        const context = (!sessionId && this.activeContext) ? this.activeContext : null;
         const wasNewSession = !sessionId;
 
+        // Legacy buffered path when streaming is disabled server-side.
+        if (this.state.streaming === false) {
+            this.state.isThinking = true;
+            this.scrollToBottom();
+            try {
+                await this._sendBuffered(message, sessionId, context, internal);
+            } finally {
+                this.state.isThinking = false;
+                await this._refreshSessions(wasNewSession);
+                this.scrollToBottom();
+                this.focusInput();
+            }
+            return;
+        }
+
+        // Streaming path — live tokens, tool activity, thinking progress.
+        const idx = this.state.messages.push({
+            id: `a-${Date.now()}`,
+            role: "assistant",
+            content: "",
+            streaming: true,
+            tools: [],
+            thinkingTokens: 0,
+            interrupted: false,
+            notice: "",
+        }) - 1;
+        const assistant = this.state.messages[idx]; // reactive proxy
+
+        this.state.isThinking = true;
+        this.state.streamingActive = true;
+        this.scrollToBottom();
+
+        const controller = new AbortController();
+        this._streamAbort = controller;
+
+        const payload = { session_id: sessionId, message };
+        if (context) payload.context = context;
+        if (internal) payload.internal = true;
+
+        let gotText = false;
+        let disabled = false;
+        try {
+            await streamChat({
+                body: payload,
+                signal: controller.signal,
+                onEvent: (event, data) => {
+                    switch (event) {
+                        case "session":
+                            if (data.odoo_session_id) this.state.activeSessionId = data.odoo_session_id;
+                            break;
+                        case "notice":
+                            assistant.notice = data.text || "";
+                            break;
+                        case "thinking":
+                            assistant.thinkingTokens = data.tokens || 0;
+                            break;
+                        case "tool":
+                            if (data.name) assistant.tools.push(prettyToolName(data.name));
+                            this.scrollToBottom();
+                            break;
+                        case "text":
+                            gotText = true;
+                            assistant.content += data.delta || "";
+                            this.scrollToBottom();
+                            break;
+                        case "done":
+                            if (data.response) assistant.content = data.response;
+                            assistant.streaming = false;
+                            break;
+                        case "error":
+                            if (data.reason === "disabled") { disabled = true; break; }
+                            if (data.response) assistant.content = data.response;
+                            assistant.interrupted = !!data.interrupted;
+                            assistant.streaming = false;
+                            break;
+                        case "saved":
+                            if (data.message_id) assistant.id = data.message_id;
+                            break;
+                    }
+                },
+            });
+            if (disabled) {
+                // Server turned streaming off mid-flight — fall back cleanly.
+                this.state.streaming = false;
+                this.state.messages.splice(idx, 1);
+                await this._sendBuffered(message, sessionId, context, internal);
+            }
+        } catch (err) {
+            if (controller.signal.aborted) {
+                assistant.interrupted = true;
+            } else if (!gotText) {
+                // Streaming failed before any output → fall back to buffered.
+                this.state.messages.splice(idx, 1);
+                await this._sendBuffered(message, sessionId, context, internal);
+            } else {
+                assistant.content += "\n\n_(connexion interrompue)_";
+            }
+        } finally {
+            assistant.streaming = false;
+            this.state.isThinking = false;
+            this.state.streamingActive = false;
+            this._streamAbort = null;
+            await this._refreshSessions(wasNewSession);
+            this.scrollToBottom();
+            this.focusInput();
+        }
+    }
+
+    async _sendBuffered(message, sessionId, context, internal = false) {
+        const payload = { session_id: sessionId, message };
+        if (context) payload.context = context;
+        if (internal) payload.internal = true;
         try {
             const result = await rpc("/claude-chat/send", payload);
-
             if (result.error) {
-                this.state.isThinking = false;
                 this.notification.add(result.error, { type: "danger" });
                 return;
             }
-
-            if (result.session_id) {
-                this.state.activeSessionId = result.session_id;
-            }
-
+            if (result.session_id) this.state.activeSessionId = result.session_id;
             this.state.messages.push({
                 id: result.message_id,
                 role: "assistant",
                 content: result.response,
             });
+        } catch {
+            this.notification.add(_t("Failed to send message"), { type: "danger" });
+        }
+    }
 
-            // Refresh sessions sidebar (with same filter)
-            const filterParams = this._sessionFilterParams();
+    async _refreshSessions(wasNewSession) {
+        const filterParams = this._sessionFilterParams();
+        try {
             const sessResult = await rpc("/claude-chat/sessions", filterParams);
             this.state.sessions = sessResult.sessions || [];
-
-            // Re-fetch sessions after smart title generation (~4s)
+            if (sessResult.streaming !== undefined) this.state.streaming = sessResult.streaming;
             if (wasNewSession) {
                 setTimeout(async () => {
                     const r = await rpc("/claude-chat/sessions", filterParams);
                     this.state.sessions = r.sessions || [];
                 }, 4000);
             }
-        } catch {
-            this.notification.add(_t("Failed to send message"), { type: "danger" });
-        } finally {
-            this.state.isThinking = false;
-            this.scrollToBottom();
-            this.focusInput();
-        }
+        } catch { /* keep existing sidebar */ }
+    }
+
+    onStop() {
+        if (this._streamAbort) this._streamAbort.abort();
     }
 
     onInputKeydown(ev) {
