@@ -135,7 +135,7 @@ $bf-accent-badge: rgba($bf-accent, 0.1);
     }
 
     p {
-        margin-bottom: 0.5em;
+        margin-bottom: 0.9em;
 
         &:last-child {
             margin-bottom: 0;
@@ -510,4 +510,71 @@ $bf-accent-badge: rgba($bf-accent, 0.1);
 .bf-chat-panel-header {
     background: white;
     flex-shrink: 0;
+}
+
+// ── Streaming (live tokens, tool activity, thinking) ─────────
+// Blinking caret at the end of an answer that is still streaming.
+.bf-chat-content.bf-streaming::after {
+    content: "▋";
+    display: inline;
+    margin-left: 1px;
+    color: $bf-accent;
+    animation: bf-stream-caret 1s steps(2, start) infinite;
+}
+
+@keyframes bf-stream-caret {
+    0%, 100% { opacity: 1; }
+    50%      { opacity: 0; }
+}
+
+// Tool-activity chips ("odoo get task", "Read", ...) shown as GenFox works.
+.bf-stream-tools {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-bottom: 6px;
+}
+
+.bf-stream-tool-chip {
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.72rem;
+    line-height: 1.2;
+    padding: 2px 8px;
+    border-radius: 10px;
+    background: $bf-accent-badge;
+    color: $bf-accent;
+    white-space: nowrap;
+
+    .fa {
+        font-size: 0.66rem;
+        opacity: 0.8;
+    }
+}
+
+// Running thinking-token counter next to the bouncing dots.
+.bf-stream-tokens {
+    margin-left: 8px;
+    color: #999;
+    font-size: 0.7rem;
+}
+
+// "Response interrupted" banner (timeout / max-turns / Stop).
+.bf-stream-interrupted {
+    margin-top: 6px;
+    font-size: 0.75rem;
+    color: #b45309;
+    background: rgba(#f59e0b, 0.12);
+    border-radius: 6px;
+    padding: 4px 8px;
+}
+
+// "New conversation started" notice when a poisoned thread is forked.
+.bf-stream-notice {
+    margin-bottom: 6px;
+    font-size: 0.75rem;
+    color: $bf-accent;
+    background: $bf-accent-light;
+    border-radius: 6px;
+    padding: 4px 8px;
 }

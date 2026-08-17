@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!-- The Cockpit answers "is anything wrong, and what do I do about it".
+         Sessions carry the only operational signal the module produces:
+         stream_fail_count and last_stream_error. Usage counts live in a
+         separate, secondary view - they are informative, not actionable. -->
+
+    <record id="view_claude_session_cockpit_tree" model="ir.ui.view">
+        <field name="name">claude.chat.session.cockpit.list</field>
+        <field name="model">claude.chat.session</field>
+        <field name="arch" type="xml">
+            <list string="Sessions"
+                  decoration-danger="stream_fail_count >= 3"
+                  decoration-warning="stream_fail_count > 0 and stream_fail_count &lt; 3"
+                  decoration-muted="not active">
+                <field name="name"/>
+                <field name="user_id"/>
+                <field name="res_model" string="Record Type" optional="show"/>
+                <field name="message_count" string="Messages" sum="Total"/>
+                <field name="stream_fail_count" string="Failures"/>
+                <field name="last_stream_error" string="Last Error" optional="show"/>
+                <field name="write_date" string="Last Activity"/>
+                <field name="active" column_invisible="1"/>
+                <button name="action_reset_failures" type="object"
+                        string="Reset" icon="fa-refresh"
+                        invisible="stream_fail_count == 0"
+                        help="Clear the failure counter on this session"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_claude_session_cockpit_search" model="ir.ui.view">
+        <field name="name">claude.chat.session.cockpit.search</field>
+        <field name="model">claude.chat.session</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="user_id"/>
+                <field name="res_model"/>
+                <filter name="filter_failing" string="Failing"
+                        domain="[('stream_fail_count', '&gt;', 0)]"/>
+                <filter name="filter_broken" string="Forking on next message"
+                        domain="[('stream_fail_count', '&gt;=', 3)]"/>
+                <separator/>
+                <filter name="filter_week" string="Active This Week"
+                        domain="[('write_date', '&gt;=', (context_today() - datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
+                <filter name="filter_on_record" string="Attached to a Record"
+                        domain="[('res_model', '!=', False)]"/>
+                <separator/>
+                <filter name="filter_archived" string="Archived"
+                        domain="[('active', '=', False)]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_user" string="User"
+                            context="{'group_by': 'user_id'}"/>
+                    <filter name="group_model" string="Record Type"
+                            context="{'group_by': 'res_model'}"/>
+                    <filter name="group_error" string="Last Error"
+                            context="{'group_by': 'last_stream_error'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_claude_cockpit" model="ir.actions.act_window">
+        <field name="name">Cockpit</field>
+        <field name="res_model">claude.chat.session</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_claude_session_cockpit_search"/>
+        <field name="context">{'active_test': False}</field>
+        <field name="view_ids" eval="[
+            (5, 0, 0),
+            (0, 0, {'view_mode': 'list', 'view_id': ref('view_claude_session_cockpit_tree')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('view_claude_session_form')}),
+        ]"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Nothing to look at, which is good news</p>
+            <p>
+                Sessions show up here with their failure counter. A session that reaches
+                three consecutive stream failures stops resuming its Claude thread and
+                forks a fresh one on the next message. Clear the counter once the cause
+                is understood.
+            </p>
+        </field>
+    </record>
+
+    <!-- Usage: informative, kept separate from the operational view. -->
+
+    <record id="view_claude_message_pivot" model="ir.ui.view">
+        <field name="name">claude.chat.message.pivot</field>
+        <field name="model">claude.chat.message</field>
+        <field name="arch" type="xml">
+            <pivot string="Usage">
+                <field name="user_id" type="row"/>
+                <field name="total_tokens" type="measure"/>
+                <field name="output_tokens" type="measure"/>
+                <field name="cost_usd" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_claude_message_graph" model="ir.ui.view">
+        <field name="name">claude.chat.message.graph</field>
+        <field name="model">claude.chat.message</field>
+        <field name="arch" type="xml">
+            <graph string="Usage" type="line">
+                <field name="create_date" interval="week"/>
+                <field name="total_tokens" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="view_claude_message_search" model="ir.ui.view">
+        <field name="name">claude.chat.message.search</field>
+        <field name="model">claude.chat.message</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="content"/>
+                <field name="user_id"/>
+                <field name="session_id"/>
+                <filter name="filter_assistant" string="GenFox"
+                        domain="[('role', '=', 'assistant')]"/>
+                <filter name="filter_user" string="People"
+                        domain="[('role', '=', 'user')]"/>
+                <separator/>
+                <filter name="filter_counted" string="With token counts"
+                        domain="[('total_tokens', '>', 0)]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_user" string="User"
+                            context="{'group_by': 'user_id'}"/>
+                    <filter name="group_role" string="Role"
+                            context="{'group_by': 'role'}"/>
+                    <filter name="group_model" string="Record Type"
+                            context="{'group_by': 'res_model'}"/>
+                    <filter name="group_week" string="Week"
+                            context="{'group_by': 'create_date:week'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_claude_message_usage_tree" model="ir.ui.view">
+        <field name="name">claude.chat.message.usage.list</field>
+        <field name="model">claude.chat.message</field>
+        <field name="arch" type="xml">
+            <list string="Turns" create="false">
+                <field name="create_date" string="When"/>
+                <field name="user_id"/>
+                <field name="session_id"/>
+                <field name="role"/>
+                <field name="input_tokens" sum="Total"/>
+                <field name="output_tokens" sum="Total"/>
+                <field name="cache_read_tokens" sum="Total" optional="hide"/>
+                <field name="cache_write_tokens" sum="Total" optional="hide"/>
+                <field name="total_tokens" sum="Total"/>
+                <field name="cost_usd" string="API-equiv. $" sum="Total"/>
+                <field name="duration_ms" string="ms" optional="hide" sum="Total"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_claude_usage" model="ir.actions.act_window">
+        <field name="name">Usage</field>
+        <field name="res_model">claude.chat.message</field>
+        <field name="view_mode">graph,pivot,list</field>
+        <field name="search_view_id" ref="view_claude_message_search"/>
+        <field name="view_ids" eval="[
+            (5, 0, 0),
+            (0, 0, {'view_mode': 'graph', 'view_id': ref('view_claude_message_graph')}),
+            (0, 0, {'view_mode': 'pivot', 'view_id': ref('view_claude_message_pivot')}),
+            (0, 0, {'view_mode': 'list', 'view_id': ref('view_claude_message_usage_tree')}),
+        ]"/>
+    </record>
+
+    <menuitem
+        id="menu_claude_cockpit"
+        name="Cockpit"
+        parent="menu_claude_admin"
+        action="action_claude_cockpit"
+        sequence="20"
+        groups="base.group_system"
+    />
+    <menuitem
+        id="menu_claude_usage"
+        name="Usage"
+        parent="menu_claude_admin"
+        action="action_claude_usage"
+        sequence="30"
+        groups="base.group_system"
+    />
+
+</odoo>

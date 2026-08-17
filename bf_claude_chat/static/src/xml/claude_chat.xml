@@ -108,9 +108,28 @@
                                 <!-- Bubble -->
                                 <div t-att-class="'bf-chat-bubble '
                                                  + (msg.role === 'user' ? 'bf-chat-bubble-user' : 'bf-chat-bubble-assistant')">
-                                    <div t-if="msg.role === 'assistant'"
-                                         class="bf-chat-content"
-                                         t-out="renderMarkdown(msg.content)"/>
+                                    <t t-if="msg.role === 'assistant'">
+                                        <div t-if="msg.notice" class="bf-stream-notice">
+                                            <i class="fa fa-refresh me-1"/><t t-esc="msg.notice"/>
+                                        </div>
+                                        <div t-if="msg.tools and msg.tools.length" class="bf-stream-tools">
+                                            <span t-foreach="msg.tools" t-as="tool" t-key="tool_index"
+                                                  class="bf-stream-tool-chip">
+                                                <i class="fa fa-wrench me-1"/><t t-esc="tool"/>
+                                            </span>
+                                        </div>
+                                        <div t-if="msg.content"
+                                             t-att-class="'bf-chat-content' + (msg.streaming ? ' bf-streaming' : '')"
+                                             t-out="renderMarkdown(msg.content)"/>
+                                        <div t-elif="msg.streaming" class="bf-chat-thinking">
+                                            <span/><span/><span/>
+                                            <small t-if="msg.thinkingTokens" class="bf-stream-tokens"
+                                                   t-esc="msg.thinkingTokens + ' tokens'"/>
+                                        </div>
+                                        <div t-if="msg.interrupted" class="bf-stream-interrupted">
+                                            <i class="fa fa-exclamation-circle me-1"/>Answer interrupted - ask me to continue.
+                                        </div>
+                                    </t>
                                     <div t-else=""
                                          class="bf-chat-content">
                                         <t t-esc="msg.content"/>
@@ -123,8 +142,8 @@
                                 </div>
                             </div>
                         </t>
-                        <!-- Thinking indicator -->
-                        <div t-if="state.isThinking" class="bf-chat-message mb-3 d-flex align-items-end gap-2 justify-content-start">
+                        <!-- Thinking indicator (buffered path only; streaming shows it in-bubble) -->
+                        <div t-if="state.isThinking and !state.streamingActive" class="bf-chat-message mb-3 d-flex align-items-end gap-2 justify-content-start">
                             <div class="bf-chat-avatar bf-chat-avatar-assistant">
                                 <i class="fa fa-robot"/>
                             </div>
@@ -145,7 +164,13 @@
                                       t-on-keydown="onInputKeydown"
                                       rows="1"
                                       placeholder="Type your message..."/>
-                            <button class="btn btn-primary bf-chat-send-btn"
+                            <button t-if="state.streamingActive"
+                                    class="btn btn-outline-danger bf-chat-send-btn"
+                                    t-on-click="onStop" title="Stop">
+                                <i class="fa fa-stop"/>
+                            </button>
+                            <button t-else=""
+                                    class="btn btn-primary bf-chat-send-btn"
                                     t-att-disabled="state.isThinking"
                                     t-on-click="onSend">
                                 <i t-att-class="state.isThinking ? 'fa fa-spinner fa-spin' : 'fa fa-paper-plane'"/>
@@ -158,7 +183,7 @@
                 <t t-else="">
                     <div class="d-flex flex-column align-items-center justify-content-center h-100 text-muted">
                         <i class="fa fa-comments-o fa-3x mb-3 opacity-50"/>
-                        <h4>Claude AI Assistant</h4>
+                        <h4>GenFox</h4>
                         <p>Start a new chat or select an existing one</p>
                         <button class="btn btn-primary" t-on-click="onNewChat">
                             <i class="fa fa-plus me-1"/> New Chat
@@ -172,10 +197,10 @@
     <!-- Systray: button + side panel -->
     <t t-name="bf_claude_chat.SystrayItem">
         <!-- Systray button in navbar -->
-        <button class="btn d-flex align-items-center gap-1" title="Claude AI"
+        <button class="btn d-flex align-items-center gap-1" title="GenFox"
                 t-on-click="onTogglePanel">
             <i class="fa fa-commenting"/>
-            <span class="d-none d-lg-inline">Claude</span>
+            <span class="d-none d-lg-inline">GenFox</span>
         </button>
 
         <!-- Side panel (slides in from right) -->
@@ -188,7 +213,7 @@
                             <i class="fa fa-commenting text-primary"/>
                             <span t-if="showChat" class="fw-semibold text-truncate"
                                   t-esc="activeSessionName"/>
-                            <span t-else="" class="fw-semibold">Claude AI</span>
+                            <span t-else="" class="fw-semibold">GenFox</span>
                         </div>
                         <div class="d-flex align-items-center gap-1">
                             <button t-if="showChat and state.activeSessionId > 0"
@@ -297,9 +322,28 @@
                                             </div>
                                             <div t-att-class="'bf-side-panel-bubble px-2 py-1 '
                                                              + (msg.role === 'user' ? 'bf-chat-bubble-user' : 'bf-chat-bubble-assistant')">
-                                                <div t-if="msg.role === 'assistant'"
-                                                     class="bf-chat-content"
-                                                     t-out="renderMarkdown(msg.content)"/>
+                                                <t t-if="msg.role === 'assistant'">
+                                                    <div t-if="msg.notice" class="bf-stream-notice">
+                                                        <i class="fa fa-refresh me-1"/><t t-esc="msg.notice"/>
+                                                    </div>
+                                                    <div t-if="msg.tools and msg.tools.length" class="bf-stream-tools">
+                                                        <span t-foreach="msg.tools" t-as="tool" t-key="tool_index"
+                                                              class="bf-stream-tool-chip">
+                                                            <i class="fa fa-wrench me-1"/><t t-esc="tool"/>
+                                                        </span>
+                                                    </div>
+                                                    <div t-if="msg.content"
+                                                         t-att-class="'bf-chat-content' + (msg.streaming ? ' bf-streaming' : '')"
+                                                         t-out="renderMarkdown(msg.content)"/>
+                                                    <div t-elif="msg.streaming" class="bf-chat-thinking">
+                                                        <span/><span/><span/>
+                                                        <small t-if="msg.thinkingTokens" class="bf-stream-tokens"
+                                                               t-esc="msg.thinkingTokens + ' tokens'"/>
+                                                    </div>
+                                                    <div t-if="msg.interrupted" class="bf-stream-interrupted">
+                                                        <i class="fa fa-exclamation-circle me-1"/>Answer interrupted.
+                                                    </div>
+                                                </t>
                                                 <div t-else="">
                                                     <t t-esc="msg.content"/>
                                                 </div>
@@ -311,8 +355,8 @@
                                             </div>
                                         </div>
                                     </t>
-                                    <!-- Thinking -->
-                                    <div t-if="state.isThinking"
+                                    <!-- Thinking (buffered path only; streaming shows it in-bubble) -->
+                                    <div t-if="state.isThinking and !state.streamingActive"
                                          class="bf-side-panel-msg mb-2 d-flex align-items-end gap-1 justify-content-start">
                                         <div class="bf-side-panel-avatar bf-chat-avatar-assistant">
                                             <i class="fa fa-robot"/>
@@ -333,8 +377,14 @@
                                                   t-att-disabled="state.isThinking"
                                                   t-on-keydown="onInputKeydown"
                                                   rows="1"
-                                                  placeholder="Message Claude..."/>
-                                        <button class="btn btn-primary btn-sm bf-side-panel-send"
+                                                  placeholder="Message GenFox..."/>
+                                        <button t-if="state.streamingActive"
+                                                class="btn btn-outline-danger btn-sm bf-side-panel-send"
+                                                t-on-click.stop="onStop" title="Stop">
+                                            <i class="fa fa-stop"/>
+                                        </button>
+                                        <button t-else=""
+                                                class="btn btn-primary btn-sm bf-side-panel-send"
                                                 t-att-disabled="state.isThinking"
                                                 t-on-click.stop="onSend">
                                             <i t-att-class="state.isThinking ? 'fa fa-spinner fa-spin' : 'fa fa-paper-plane'"/>

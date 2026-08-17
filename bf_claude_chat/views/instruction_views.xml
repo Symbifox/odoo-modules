@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="view_claude_instruction_tree" model="ir.ui.view">
+        <field name="name">claude.chat.instruction.list</field>
+        <field name="model">claude.chat.instruction</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="scope"/>
+                <field name="model_id" optional="show"/>
+                <field name="user_id" optional="show"
+                       string="Owner" placeholder="Everyone"/>
+                <field name="active" widget="boolean_toggle"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_claude_instruction_form" model="ir.ui.view">
+        <field name="name">claude.chat.instruction.form</field>
+        <field name="model">claude.chat.instruction</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_check_coherence" type="object"
+                            string="Check Coherence" class="btn-secondary"/>
+                </header>
+                <sheet>
+                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger"
+                            invisible="active"/>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="e.g. Always quote the source"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="scope" widget="radio"/>
+                            <field name="model_id"
+                                   invisible="scope != 'model'"
+                                   required="scope == 'model'"
+                                   options="{'no_create': True}"/>
+                        </group>
+                        <group>
+                            <field name="user_id" string="Owner"
+                                   placeholder="Everyone"
+                                   options="{'no_create': True}"/>
+                            <field name="sequence"/>
+                            <field name="active" invisible="1"/>
+                        </group>
+                    </group>
+                    <separator string="Instruction"/>
+                    <field name="body" nolabel="1"
+                           placeholder="Write it the way you would say it to a colleague."/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_claude_instruction_search" model="ir.ui.view">
+        <field name="name">claude.chat.instruction.search</field>
+        <field name="model">claude.chat.instruction</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="body"/>
+                <field name="model_id"/>
+                <filter name="filter_active" string="Active" domain="[('active', '=', True)]"/>
+                <filter name="filter_shared" string="Shared with everyone"
+                        domain="[('user_id', '=', False)]"/>
+                <filter name="filter_mine" string="Mine"
+                        domain="[('user_id', '=', uid)]"/>
+                <separator/>
+                <filter name="filter_archived" string="Archived"
+                        domain="[('active', '=', False)]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_scope" string="Scope"
+                            context="{'group_by': 'scope'}"/>
+                    <filter name="group_model" string="Record Type"
+                            context="{'group_by': 'model_id'}"/>
+                    <filter name="group_owner" string="Owner"
+                            context="{'group_by': 'user_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_claude_coherence_report_form" model="ir.ui.view">
+        <field name="name">claude.chat.coherence.report.form</field>
+        <field name="model">claude.chat.coherence.report</field>
+        <field name="arch" type="xml">
+            <form>
+                <field name="body" nolabel="1" readonly="1"/>
+                <footer>
+                    <button string="Close" class="btn-primary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_claude_instruction" model="ir.actions.act_window">
+        <field name="name">Steering Instructions</field>
+        <field name="res_model">claude.chat.instruction</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_claude_instruction_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Write your first instruction</p>
+            <p>
+                Steering instructions are short directives Claude respects in every
+                conversation: tone, priorities, house rules. Keep one per idea, and
+                scope an instruction to a record type when it only applies there.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_claude_instruction_check" model="ir.actions.server">
+        <field name="name">Check Coherence</field>
+        <field name="model_id" ref="model_claude_chat_instruction"/>
+        <field name="binding_model_id" ref="model_claude_chat_instruction"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">action = records.action_check_coherence()</field>
+    </record>
+
+    <menuitem
+        id="menu_claude_instruction"
+        name="Steering Instructions"
+        parent="menu_claude_chat_root"
+        action="action_claude_instruction"
+        sequence="20"
+    />
+
+</odoo>

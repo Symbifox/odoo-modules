@@ -1,6 +1,6 @@
 {
     "name": "GenFox",
-    "version": "18.0.1.5.2",
+    "version": "18.0.1.13.0",
     "category": "Productivity",
     "summary": "Chat with GenFox, the AI assistant, directly inside Odoo",
     "author": "Les services de consultation Blue Fox, Inc.",
@@ -14,11 +14,14 @@
         "security/security.xml",
         "security/ir.model.access.csv",
         "views/menu.xml",
+        "views/instruction_views.xml",
+        "views/cockpit_views.xml",
         "views/res_config_settings.xml",
     ],
     "assets": {
         "web.assets_backend": [
             "bf_claude_chat/static/src/scss/claude_chat.scss",
+            "bf_claude_chat/static/src/js/claude_stream.js",
             "bf_claude_chat/static/src/js/claude_chat.js",
             "bf_claude_chat/static/src/js/claude_systray.js",
             "bf_claude_chat/static/src/xml/claude_chat.xml",
