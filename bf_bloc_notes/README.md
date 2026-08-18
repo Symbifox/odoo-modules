@@ -23,10 +23,11 @@ A note can be attached to multiple records at once. Model `bf.note.link` (`note_
 ### Rerouting (`bf.note.reroute`)
 A **"Reroute…"** button in a note's header, plus a bulk **"Reroute to a record"** action from the list and kanban views.
 
-- **Quick link**: paste an Odoo URL, a bare id (`22299`), an invoice name (`INV/2026/00017`), a shorthand (`task:22299`) or a technical reference (`sale.order:17`) — the target resolves on its own. Odoo 18 URLs resolve through `ir.actions.act_window.path`, so any menu URL works, not only the hardcoded shapes.
+- **One search box** (`bf_chatter_target` widget, since 2.9.0): type a name and the picker sweeps every chatter-bearing model at once — no model to choose first. Results are grouped by model with an icon and a context line, and closed records are greyed and struck out.
+- **The same box resolves a pasted reference**: an Odoo URL, a bare id (`22299`), an invoice name (`INV/2026/00017`), a shorthand (`task:22299`) or a technical reference (`sale.order:17`) surfaces as an *Exact reference* at the top of the list. The separate "Quick link" field is gone — it was folded into the picker. Odoo 18 URLs resolve through `ir.actions.act_window.path`, so any menu URL works, not only the hardcoded shapes.
 - **Mode**: *Replace* moves the note (its current links give way); *Add* leaves it attached to both records.
 - Nothing is posted or sent: only the links change. Archived notes stay reroutable.
-- A note's "Links" tab offers the same model + record picker (`target_ref`), with no technical model name to type.
+- A note's "Links" tab, its primary-link field and the activity wizard use the same picker, with no technical model name to type.
 
 ### Conversion to activity
 From a note's form view, quick header buttons:

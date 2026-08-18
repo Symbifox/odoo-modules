@@ -19,16 +19,18 @@
                                options="{'no_create': True}"/>
                     </group>
                     <group string="Destination">
-                        <field name="quick_paste"
-                               placeholder="URL Odoo, 22299, INV/2026/00017, task:22299, bf.email:17…"/>
-                        <field name="target_reference" required="1"/>
+                        <field name="target_reference"
+                               widget="bf_chatter_target"
+                               required="1"
+                               placeholder="Nom, numéro, task:22299, bf.email:17, ou URL Odoo…"/>
                         <field name="mode" widget="radio"/>
                     </group>
                     <div class="alert alert-info" role="alert" colspan="2">
                         <p class="mb-1"><strong>Comment ça fonctionne :</strong></p>
                         <ul class="mb-0">
                             <li>Toute fiche dotée d'un chatter est une destination valide — tâche, ticket, contact, opportunité, courriel archivé, ordre du jour, transfert sécurisé…</li>
-                            <li>Tape un numéro (<code>22299</code>), un raccourci (<code>task:22299</code>), une référence technique (<code>bf.email:17</code>) ou colle une URL Odoo dans <em>Lien rapide</em> — la cible se résout automatiquement.</li>
+                            <li>Cherchez la fiche par son nom : le sélecteur balaie tous les modules d'un coup, sans qu'on ait à choisir le type d'objet.</li>
+                            <li>Un numéro (<code>22299</code>), un raccourci (<code>task:22299</code>), une référence technique (<code>bf.email:17</code>) ou une URL Odoo collée se résolvent en fiche exacte, remontée en tête de liste.</li>
                             <li><em>Remplacer</em> déplace la note : ses liens actuels sont retirés au profit de la nouvelle fiche. <em>Ajouter</em> la laisse rattachée aux deux.</li>
                             <li>Rien n'est publié ni envoyé : seuls les liens de la note changent.</li>
                         </ul>

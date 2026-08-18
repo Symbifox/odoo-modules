@@ -44,8 +44,19 @@ class TestBfNoteReroute(TransactionCase):
         self.assertNotIn("ir.ui.view", selection)
 
     def test_selection_priority_models_come_first(self):
-        selection = self.Note._selection_target_model()
-        self.assertEqual(selection[0][0], "res.partner")
+        """L'ordre vient du socle depuis la 2.9.0 : la tâche passe devant le
+        contact, comme dans le re-routage de courriels. L'ordre ne se voit plus
+        que dans le repli `name_search` du sélecteur, qui n'affiche plus de
+        liste de modèles — mais deux ordres concurrents restaient deux vérités."""
+        from odoo.addons.bf_chatter_target.models.bf_chatter_target import (
+            PRIORITY_MODELS,
+        )
+        models = [name for name, _label in self.Note._selection_target_model()]
+        self.assertEqual(models[0], "project.task")
+        partner_index = models.index("res.partner")
+        for index, model in enumerate(models):
+            if model not in PRIORITY_MODELS:
+                self.assertGreater(index, partner_index)
 
     def test_selection_honours_allowlist_param(self):
         """Le paramètre reste une liste blanche pour qui veut restreindre."""
@@ -196,12 +207,47 @@ class TestBfNoteReroute(TransactionCase):
         self.assertFalse(self.Reroute._resolve_quick_paste("n'importe quoi"))
         self.assertFalse(self.Reroute._resolve_quick_paste(""))
 
-    def test_onchange_quick_paste_sets_target(self):
+    def test_picker_resolves_the_pasted_reference(self):
+        """Le champ « Lien rapide » a disparu en 2.9.0 : c'est le sélecteur qui
+        résout la saisie, en remontant la fiche exacte en tête de liste."""
+        groups = self.env["bf.chatter.target"].search_targets(f"task:{self.task.id}")
+        self.assertTrue(groups)
+        self.assertEqual(groups[0]["model"], "project.task")
+        self.assertEqual(groups[0]["results"][0]["id"], self.task.id)
+
+    # ------------------------------------------------------------------
+    # Gardes partagées de la cible (bf.chatter.target.mixin)
+    # ------------------------------------------------------------------
+    def test_target_guard_refuses_an_empty_target(self):
         note = self._note_on("res.partner", self.partner.id)
         wizard = self.Reroute.create({"note_ids": [(6, 0, note.ids)]})
-        wizard.quick_paste = f"task:{self.task.id}"
-        wizard._onchange_quick_paste()
-        self.assertEqual(wizard.target_reference, self.task)
+        with self.assertRaises(UserError):
+            wizard._get_chatter_target("read")
+
+    def test_target_guard_refuses_a_deleted_target(self):
+        note = self._note_on("res.partner", self.partner.id)
+        doomed = self.env["res.partner"].create({"name": "À supprimer"})
+        wizard = self.Reroute.create({
+            "note_ids": [(6, 0, note.ids)],
+            "target_reference": f"res.partner,{doomed.id}",
+        })
+        doomed.unlink()
+        with self.assertRaises(UserError):
+            wizard._get_chatter_target("read")
+
+    def test_target_guard_returns_a_valid_target(self):
+        note = self._note_on("res.partner", self.partner.id)
+        wizard = self.Reroute.create({
+            "note_ids": [(6, 0, note.ids)],
+            "target_reference": f"project.task,{self.task.id}",
+        })
+        self.assertEqual(wizard._get_chatter_target("read"), self.task)
+
+    def test_target_selection_comes_from_the_shared_socle(self):
+        self.assertEqual(
+            self.Reroute._selection_chatter_target(),
+            self.env["bf.chatter.target"]._thread_model_selection(),
+        )
 
     # ------------------------------------------------------------------
     # Sélecteur de fiche sur la ligne de lien

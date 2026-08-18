@@ -117,17 +117,21 @@
                             <field name="link_ids">
                                 <list editable="bottom">
                                     <field name="sequence" widget="handle"/>
-                                    <field name="target_ref" string="Fiche"/>
+                                    <field name="target_ref" string="Fiche"
+                                           widget="bf_chatter_target"/>
                                     <field name="res_name" string="Nom"/>
                                     <button name="action_open" type="object" icon="fa-external-link" string="Ouvrir"/>
                                 </list>
                             </field>
                             <p class="text-muted small">
                                 Astuce : « Re-router… » dans l'entête déplace la note vers une autre fiche
-                                (ou l'ajoute à une seconde) à partir d'une URL, d'un numéro ou d'une référence.
+                                (ou l'ajoute à une seconde). Partout ici, la fiche se cherche par son nom,
+                                son numéro, un raccourci (<code>task:22299</code>) ou une URL Odoo collée.
                             </p>
                             <group>
-                                <field name="res_ref" string="Ajouter un lien primaire"/>
+                                <field name="res_ref" string="Ajouter un lien primaire"
+                                       widget="bf_chatter_target"
+                                       placeholder="Nom, numéro, task:22299, ou URL Odoo…"/>
                             </group>
                         </page>
                     </notebook>

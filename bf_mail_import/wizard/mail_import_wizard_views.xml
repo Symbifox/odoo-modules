@@ -9,9 +9,12 @@
             <form string="Importer des courriels (.eml)">
                 <group>
                     <field name="state" invisible="1"/>
-                    <field name="res_model" invisible="1"/>
-                    <field name="res_id" invisible="1"/>
-                    <field name="record_display" string="Enregistrement cible"/>
+                    <field name="target_reference"
+                           string="Enregistrement cible"
+                           widget="bf_chatter_target"
+                           required="1"
+                           readonly="state == 'done'"
+                           placeholder="Nom, num&#233;ro, task:22299, ou URL Odoo&#8230;"/>
                 </group>
 
                 <!-- DRAFT state: file selection -->

@@ -1,0 +1,53 @@
+// Le sélecteur reprend volontairement l'allure de la palette de recherche
+// universelle : icône à gauche, ligne de contexte à droite, fiches terminées
+// grisées et biffées. Un même geste doit se lire pareil aux deux endroits.
+.o_bf_chatter_target {
+    min-width: 0;
+
+    .o-autocomplete {
+        width: 100%;
+    }
+
+    .o_bf_chatter_target_clear {
+        line-height: 1;
+    }
+}
+
+.o_bf_chatter_target_option {
+    min-width: 0;
+
+    .o_bf_chatter_target_group {
+        // L'en-tête vit dans la première ligne de son groupe : la liste plate
+        // d'AutoComplete n'a pas d'autre point d'accroche.
+        letter-spacing: 0.04em;
+        margin: 0.15rem 0 0.1rem;
+        padding-top: 0.15rem;
+        border-top: 1px solid var(--border-color, #dee2e6);
+    }
+
+    .o_bf_chatter_target_icon {
+        width: 1.1em;
+        text-align: center;
+        flex-shrink: 0;
+    }
+
+    .o_bf_chatter_target_detail {
+        max-width: 45%;
+        flex-shrink: 0;
+    }
+
+    .o_bf_chatter_target_closed {
+        opacity: 0.55;
+
+        .o_bf_chatter_target_name {
+            text-decoration: line-through;
+        }
+    }
+}
+
+// La première ligne de la liste n'a pas besoin du filet de séparation.
+.o-autocomplete--dropdown-menu li:first-child .o_bf_chatter_target_group {
+    border-top: 0;
+    margin-top: 0;
+    padding-top: 0;
+}
