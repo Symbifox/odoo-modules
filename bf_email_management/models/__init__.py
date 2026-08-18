@@ -2,6 +2,8 @@ from . import bf_email_account
 from . import bf_email
 from . import bf_email_dashboard
 from . import bf_email_rule
+# Surface RPC de l'action cliente « Boîte de réception » — _inherit bf.email.
+from . import bf_email_inbox
 # Mobile API layer — must load after bf_email (it _inherit's it).
 from . import bf_email_mobile_device
 from . import bf_email_mobile_send

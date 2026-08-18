@@ -1,7 +1,7 @@
 import base64
 import logging
 
-from odoo import _, models
+from odoo import _, fields, models
 
 from .subject_utils import dedup_subject_prefix
 
@@ -10,6 +10,69 @@ _logger = logging.getLogger(__name__)
 
 class MailMessage(models.Model):
     _inherit = "mail.message"
+
+    # ------------------------------------------------------------------
+    # Indicateur « traité / non traité » sur chaque message du chatter
+    # ------------------------------------------------------------------
+    def _to_store(self, store, /, **kwargs):
+        """Ajoute ``bfEmailState`` à chaque message envoyé au client web.
+
+        Les boutons « Traité » et « Remettre en boîte » vivaient côte à côte
+        sur tous les messages, sans jamais dire lequel s'appliquait : rien
+        n'indiquait si le courriel était déjà sorti de la boîte. On joint donc
+        l'état du miroir bf.email de l'usager courant, et le chatter affiche
+        une pastille.
+
+        Valeurs : ``handled``, ``snoozed``, ``inbox`` ou ``False`` (aucun
+        miroir). Posé uniquement quand ``for_current_user`` est vrai — c'est
+        le seul chemin qui n'est pas diffusé à d'autres usagers, et cet état
+        est strictement personnel.
+        """
+        res = super()._to_store(store, **kwargs)
+        if not kwargs.get("for_current_user"):
+            return res
+        try:
+            self._bf_email_state_to_store(store)
+        except Exception:
+            # Une pastille décorative ne doit jamais empêcher un chatter de
+            # se rendre.
+            _logger.warning(
+                "bf.email: calcul de l'état chatter échoué", exc_info=True,
+            )
+        return res
+
+    def _bf_email_state_to_store(self, store):
+        """Une seule requête pour tout le lot de messages affichés."""
+        candidates = self.filtered("message_id")
+        if not candidates:
+            return
+        mids = list({m.message_id for m in candidates})
+        # Env de l'usager (pas de sudo) : les règles d'enregistrement restent
+        # l'autorité, et le domaine est de toute façon borné à ses lignes.
+        rows = self.env["bf.email"].with_context(active_test=False).search_read(
+            [
+                ("message_id_header", "in", mids),
+                ("user_id", "=", self.env.uid),
+            ],
+            ["message_id_header", "is_handled", "snoozed_until"],
+        )
+        now = fields.Datetime.now()
+        state_by_mid = {}
+        for row in rows:
+            mid = row.get("message_id_header")
+            if not mid:
+                continue
+            snoozed = row.get("snoozed_until")
+            if snoozed and snoozed > now:
+                state_by_mid[mid] = "snoozed"
+            elif row.get("is_handled"):
+                state_by_mid[mid] = "handled"
+            else:
+                state_by_mid[mid] = "inbox"
+        for message in candidates:
+            store.add(message, {
+                "bfEmailState": state_by_mid.get(message.message_id, False),
+            })
 
     def reply_message(self):
         """Collapse stacked Re: on the standard chatter quoted-reply button.

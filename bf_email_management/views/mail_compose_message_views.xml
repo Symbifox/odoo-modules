@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Champ « Classer dans » sur le composeur, visible uniquement quand la
+         fenêtre vient du bouton « Composer » de la boîte de réception. Ailleurs
+         dans l'instance le composeur s'ouvre déjà sur une fiche : la question
+         ne se pose pas, et le champ resterait du bruit. -->
+    <record id="mail_compose_message_bf_target_form" model="ir.ui.view">
+        <field name="name">mail.compose.message.form.bf.chatter.target</field>
+        <field name="model">mail.compose.message</field>
+        <field name="inherit_id" ref="mail.email_compose_message_wizard_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='subject']" position="after">
+                <field name="bf_compose_shell_id" invisible="1"/>
+                <field name="target_reference"
+                       string="Classer dans"
+                       widget="bf_chatter_target"
+                       invisible="not bf_compose_shell_id"
+                       placeholder="Laisser vide pour classer plus tard — nom, task:22299, INV/2026/00017, ou URL Odoo…"
+                       help="La fiche dont le chatter recevra ce courriel. Le message y est posté directement à l'envoi. Sans cible, le courriel reste dans « Sans dossier » et le bouton « Router… » l'y classe plus tard."/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

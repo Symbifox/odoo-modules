@@ -4,6 +4,30 @@ All notable changes to `bf_email_management` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This module follows Odoo's `MAJOR.MINOR.PATCH` convention prefixed with the Odoo series (`18.0.X.Y.Z`).
 
+## [18.0.9.2.0] — 2026-08-18
+
+Consolidated entry covering 9.0.0 → 9.2.0, all released on 2026-08-17/18.
+
+### Added
+
+- **The inbox is an OWL client action (9.0.0).** Same layout as the IMAP browser — folder rail on the left, message list on top, preview below — but fed by `bf.email` instead of an IMAP session, so the "folders" are states: Inbox, Unread, To reply, Unfiled, Snoozed, Sent, Handled, plus a *By category* group. The preview toolbar finally offers everything the IMAP browser had — reply-all, forward, route with quick targets, activity, thread, record — and the keyboard vocabulary is identical (`J`/`K`, `R`, `Shift+R`, `F`, `E`, `Y`, `H`, `T`, `O`, `C`, `S` or `/`). Dragging a row onto Handled, Snoozed or Inbox files it there. Search is served by the database over the whole folder, not filtered client-side over the loaded page. The list view stays available as *Inbox (list)*: filters, group-by, pivot and export are things a client action does not provide.
+- **Shared UI foundation** (`bf_email_ui_common.js`): preferences, storage key, date format, sender rendering and preview scaffold live in one place, so the two screens cannot drift apart. Setting density on one sets it on both.
+- **Handled indicator on every chatter message.** `mail.message._to_store` joins the current user's mirror state in one query per rendered batch, and only on the `for_current_user` path — the state is personal and must never ride along in a broadcast. The message actions follow it, so *Handled* disappears once the mail is out of the inbox.
+- **Compose (9.1.0)** — a new email attached to nothing. Odoo always posts on a record, so the created row is its own thread, the same trick `_composer_target` uses for IMAP orphans. The shell is born handled, so an abandoned composer leaves nothing behind; on close it is either adopted (subject, recipients and Message-ID copied from the posted message) or deleted.
+- **Target picker in the composer (9.2.0)** — an optional *File under* field carrying the shared `bf_chatter_target` picker. Pick a record and the composer is retargeted **before** sending, so the message is born on the right chatter with its followers and thread rather than being moved afterwards. The same hook covers scheduled sends, which read `model`/`res_ids` too.
+- **Hourly write-back sweep `_cron_imap_writeback_sweep`.** `_cron_imap_reconcile` and `_cron_imap_mirror` both run server → Odoo; this closes the other direction. It reads the Message-IDs actually sitting in INBOX, resolves each owner's row, and replays the archive write-back on the ones already marked handled — covering a write-back that failed on a transient error, which nothing ever retried. Chatter-born rows carry no account and would be skipped, so the sweep binds them to the account whose INBOX it just observed them in. `dry_run=True` turns it into a plain gap report.
+
+### Fixed
+
+- **"Archive after import" left the mail in INBOX for good.** The re-route wizard wrote `active=False, status='archived'` by hand instead of calling `action_archive()`. Three silent consequences: `is_handled` stayed false so the mail never counted as handled; the row left *every* view, so it could not be found again to repair; and the IMAP write-back never fired, so the message stayed in the real mailbox. The wizard now goes through `action_archive()`, and the checkbox reads *Mark handled after import*.
+- **The mirror cron could not see deactivated rows.** `search()` without `active_test=False` skipped them, freezing their IMAP state at the day they vanished and leaving snoozed ones asleep forever.
+- **`imap_in_inbox` lied on chatter rows.** It defaulted to `True`, including on rows with no IMAP counterpart at all, so any gap count between the two sides started from a falsehood. It now defaults to `False`; only ingestion from an IMAP folder sets it. Views are unaffected — a chatter row enters the inbox through its `source`, not this flag.
+- **The composed body survived neither retargeting nor the send.** `subject` and `body` are stored computes depending on `model`/`res_ids`: pointing the composer at another record fires `_compute_body`, which blanks the body when no template is set, and `_compute_subject`, which rewrites the subject from the record. Both are read before and rewritten after, in a *separate* write — an explicit write removes the field from the recompute queue, which a write grouped with its own dependency does not guarantee.
+
+### Changed
+
+- Category folders now span **all** mail, handled included, plus an *Uncategorised* folder. Scoping them to unhandled looked logical — a category sorts what is left to do — but on an inbox-zero mailbox they are then permanently empty and therefore useless. What they are for is browsing the archive.
+
 ## [18.0.8.2.0] — 2026-08-17
 
 Consolidated entry. This release catches the public repository up from

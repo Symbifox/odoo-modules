@@ -26,40 +26,17 @@ import {
 import { useService } from "@web/core/utils/hooks";
 import { useHotkey } from "@web/core/hotkeys/hotkey_hook";
 import { _t } from "@web/core/l10n/translation";
-
-const FRENCH_WEEKDAY = ["dim.", "lun.", "mar.", "mer.", "jeu.", "ven.", "sam."];
-const FRENCH_MONTH = [
-    "janv.", "févr.", "mars", "avr.", "mai", "juin",
-    "juill.", "août", "sept.", "oct.", "nov.", "déc.",
-];
-
-const SETTINGS_KEY = "bf_email_browser_settings_v1";
-const DEFAULT_SETTINGS = {
-    dateFormat: "relative",     // "relative" | "absolute"
-    senderDisplay: "name",      // "name" | "email" | "both"
-    pageSize: 100,              // int
-    density: "comfortable",     // "comfortable" | "compact"
-    boldUnread: true,
-};
-
-function loadSettings() {
-    try {
-        const raw = window.localStorage.getItem(SETTINGS_KEY);
-        if (!raw) return { ...DEFAULT_SETTINGS };
-        const parsed = JSON.parse(raw);
-        return { ...DEFAULT_SETTINGS, ...parsed };
-    } catch (e) {
-        return { ...DEFAULT_SETTINGS };
-    }
-}
-
-function persistSettings(settings) {
-    try {
-        window.localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
-    } catch (e) {
-        // Quota / private-mode failure — settings just won't persist.
-    }
-}
+// Préférences, format de date, rendu de l'expéditeur et gabarit d'aperçu sont
+// partagés avec la boîte de réception Odoo (`bf_email_inbox`) : les deux
+// interfaces doivent se ressembler, donc elles lisent le même code et la même
+// clé de stockage local.
+import {
+    loadSettings,
+    persistSettings,
+    formatRelativeDate,
+    senderCell,
+    buildPreviewSrcdoc,
+} from "./bf_email_ui_common";
 
 export class BfEmailBrowser extends Component {
     static template = "bf_email_management.Browser";
@@ -666,59 +643,19 @@ export class BfEmailBrowser extends Component {
     // Display helpers
     // ------------------------------------------------------------------
     /**
-     * Apple-Mail-style relative date, OR plain "YYYY-MM-DD HH:mm" if the
-     * user picked absolute format in Settings. ``iso`` is server-format.
+     * Date relative à la Apple Mail (ou absolue selon les préférences).
+     * Implémentation partagée avec la boîte de réception Odoo.
      */
     formatRelativeDate(iso) {
-        if (!iso) return "";
-        const d = new Date(iso.replace(" ", "T") + (iso.endsWith("Z") ? "" : "Z"));
-        if (Number.isNaN(d.getTime())) return iso;
-        const hm = `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
-        if (this.state.settings.dateFormat === "absolute") {
-            const y = d.getFullYear();
-            const m = String(d.getMonth() + 1).padStart(2, "0");
-            const dd = String(d.getDate()).padStart(2, "0");
-            return `${y}-${m}-${dd} ${hm}`;
-        }
-        const now = new Date();
-        const sameDay = d.toDateString() === now.toDateString();
-        const yesterday = new Date(now);
-        yesterday.setDate(now.getDate() - 1);
-        const isYesterday = d.toDateString() === yesterday.toDateString();
-        if (sameDay) return `aujourd'hui ${hm}`;
-        if (isYesterday) return `hier ${hm}`;
-        const ageDays = (now - d) / (24 * 3600 * 1000);
-        if (ageDays >= 0 && ageDays < 7) {
-            return `${FRENCH_WEEKDAY[d.getDay()]} ${hm}`;
-        }
-        if (d.getFullYear() === now.getFullYear()) {
-            return `${d.getDate()} ${FRENCH_MONTH[d.getMonth()]}`;
-        }
-        const y = d.getFullYear();
-        const m = String(d.getMonth() + 1).padStart(2, "0");
-        const dd = String(d.getDate()).padStart(2, "0");
-        return `${y}-${m}-${dd}`;
+        return formatRelativeDate(iso, this.state.settings);
     }
 
     /**
-     * Sender column content, honors the senderDisplay setting.
-     * Returns the rendered string (full email kept in row tooltip via `from`).
+     * Contenu de la colonne « Expéditeur », selon la préférence senderDisplay.
+     * L'adresse complète reste dans l'infobulle de la ligne (`m.from`).
      */
     senderCell(m) {
-        const name = (m.sender_name || "").trim();
-        const from = (m.from || "").trim();
-        if (this.state.settings.senderDisplay === "email") {
-            // Try to extract just the bare address.
-            const match = from.match(/<([^>]+)>/);
-            return match ? match[1] : from;
-        }
-        if (this.state.settings.senderDisplay === "both") {
-            const match = from.match(/<([^>]+)>/);
-            const addr = match ? match[1] : "";
-            return name && addr && name !== addr ? `${name} <${addr}>` : (name || from);
-        }
-        // "name" (default): name if present, else fall back to from.
-        return name || from;
+        return senderCell(m.sender_name, m.from, this.state.settings);
     }
 
     // ------------------------------------------------------------------
@@ -752,29 +689,11 @@ export class BfEmailBrowser extends Component {
     }
 
     /**
-     * Wrap the email's HTML body in a minimal HTML document for safe iframe
-     * rendering. ``sandbox="allow-same-origin"`` keeps scripts off.
+     * Enveloppe le corps du courriel pour l'iframe d'aperçu. Gabarit partagé
+     * avec la boîte de réception Odoo.
      */
     get previewSrcdoc() {
-        if (!this.state.preview || !this.state.preview.body_html) {
-            return "<!doctype html><html><body></body></html>";
-        }
-        return `<!doctype html>
-<html>
-<head>
-<meta charset="utf-8"/>
-<base target="_blank"/>
-<style>
-  html, body { margin: 0; padding: 12px; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 14px; line-height: 1.5; color: #1f2329; word-wrap: break-word; }
-  img { max-width: 100%; height: auto; }
-  table { max-width: 100%; }
-  pre { white-space: pre-wrap; word-break: break-word; }
-  blockquote { border-left: 3px solid #d0d7de; margin: 0 0 0 8px; padding: 0 0 0 12px; color: #57606a; }
-  a { color: #29ABE1; }
-</style>
-</head>
-<body>${this.state.preview.body_html}</body>
-</html>`;
+        return buildPreviewSrcdoc(this.state.preview && this.state.preview.body_html);
     }
 }
 

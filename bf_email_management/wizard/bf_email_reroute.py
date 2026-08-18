@@ -65,9 +65,12 @@ class BfEmailReroute(models.TransientModel):
              "L'utilisateur reste libre de choisir un autre modèle.",
     )
     archive_after = fields.Boolean(
-        string="Archiver après import",
+        string="Marquer traité après import",
         default=False,
-        help="Archive la ligne bf.email après le re-routage réussi.",
+        help="Sort le courriel de la boîte de réception après un re-routage "
+             "réussi, exactement comme le bouton « Traité » : la ligne reste "
+             "consultable, elle compte dans les statistiques, et le message "
+             "part vers Archives/{YYYY} sur le serveur IMAP.",
     )
 
     state = fields.Selection(
@@ -257,9 +260,16 @@ class BfEmailReroute(models.TransientModel):
         extra_vals = {}
         if self.mark_replied and bf.direction == "in" and bf.status in ("new", "read"):
             extra_vals["status"] = "replied"
-        if self.archive_after:
-            extra_vals.update({"active": False, "status": "archived"})
         if extra_vals:
             bf.write(extra_vals)
+
+        # « Traiter après import » passe par action_archive(), comme partout
+        # ailleurs. L'ancienne écriture directe (active=False, status=archived)
+        # sortait la ligne de TOUTES les vues sans jamais poser is_handled ni
+        # déclencher la recopie IMAP : le courriel restait indéfiniment dans
+        # l'INBOX du serveur et la ligne devenait introuvable dans Odoo pour
+        # rattraper le coup.
+        if self.archive_after:
+            bf.action_archive()
 
         return new_msg.id if new_msg else False

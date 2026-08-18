@@ -1,0 +1,422 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="bf_email_management.Inbox">
+        <div class="o_bf_email_browser o_bf_email_inbox d-flex flex-grow-1" style="height: 100%;">
+
+            <!-- GAUCHE : dossiers virtuels (états, pas des boîtes IMAP) -->
+            <div class="o_bf_email_folders border-end bg-light" style="width: 260px; min-width: 260px; overflow-y: auto;">
+                <div class="p-2 border-bottom">
+                    <button class="btn btn-primary w-100"
+                            t-att-disabled="state.acting"
+                            t-on-click="compose"
+                            title="Écrire un courriel, sans dossier de départ (raccourci C)">
+                        <i class="fa fa-pencil me-2"/>Composer
+                    </button>
+                </div>
+                <div class="px-3 py-2 fw-bold border-bottom d-flex justify-content-between align-items-center">
+                    <span>Dossiers</span>
+                    <button class="btn btn-sm btn-link p-0"
+                            t-att-disabled="state.syncing"
+                            t-on-click="syncNow"
+                            title="Synchroniser maintenant : relever les chatters et l'IMAP, puis recompter">
+                        <i t-att-class="state.syncing ? 'fa fa-refresh fa-spin' : 'fa fa-refresh'"/>
+                    </button>
+                </div>
+                <div t-if="state.loadingFolders and !state.folders.length" class="p-3 text-center text-muted">
+                    <i class="fa fa-spinner fa-spin"/> Chargement…
+                </div>
+                <ul t-else="" class="list-unstyled mb-0">
+                    <li t-foreach="folderTree" t-as="f" t-key="f.key"
+                        t-att-class="(f.key === state.currentFolder ? 'bg-primary text-white ' : '') + (state.dropTarget === f.key ? 'bg-info-subtle ' : '') + 'o_bf_email_folder_item d-flex align-items-center'"
+                        t-att-style="'cursor: pointer; user-select: none; padding-left: ' + (8 + f.depth * 14) + 'px; padding-right: 12px; padding-top: 4px; padding-bottom: 4px;'"
+                        t-att-title="f.label"
+                        t-on-click="() => this.onFolderClick(f)"
+                        t-on-dragover="(ev) => this.onFolderDragOver(ev, f.key)"
+                        t-on-dragleave="() => this.onFolderDragLeave(f.key)"
+                        t-on-drop="(ev) => this.onFolderDrop(ev, f.key)">
+                        <span t-if="f.has_children"
+                              class="me-1"
+                              style="width: 14px; display: inline-block;"
+                              t-on-click.stop="() => this.toggleFolder(f.key)">
+                            <i t-att-class="state.expandedFolders[f.key] ? 'fa fa-caret-down' : 'fa fa-caret-right'"/>
+                        </span>
+                        <span t-else="" style="width: 14px; display: inline-block;"/>
+                        <i t-att-class="'fa ' + f.icon + ' me-2'"/>
+                        <span class="text-truncate flex-grow-1" t-esc="f.label"/>
+                        <span t-if="f.unread_count" class="badge ms-2"
+                              t-att-class="f.key === state.currentFolder ? 'bg-light text-dark' : 'bg-secondary'">
+                            <t t-esc="f.unread_count"/>
+                        </span>
+                        <span t-elif="f.count" class="small ms-2"
+                              t-att-class="f.key === state.currentFolder ? 'text-light' : 'text-muted'">
+                            <t t-esc="f.count"/>
+                        </span>
+                    </li>
+                </ul>
+                <div class="px-3 py-2 small text-muted border-top">
+                    Glisse une ligne sur <strong>Traités</strong>, <strong>Reportés</strong>
+                    ou <strong>Boîte de réception</strong> pour l'y envoyer.
+                </div>
+            </div>
+
+            <!-- DROITE : liste en haut, aperçu en bas -->
+            <div class="d-flex flex-column flex-grow-1" style="min-width: 0;">
+
+                <!-- Haut : liste -->
+                <div class="border-bottom d-flex flex-column" style="flex: 1 1 50%; min-height: 0;">
+                    <div class="px-3 py-2 d-flex justify-content-between align-items-center bg-white border-bottom gap-2 position-relative">
+                        <div class="flex-shrink-0">
+                            <strong t-esc="currentFolderLabel"/>
+                            <span class="text-muted ms-2 small">
+                                <t t-if="!state.loadingMessages">
+                                    <t t-esc="state.messages.length"/> / <t t-esc="state.total"/>
+                                </t>
+                                <t t-else="">
+                                    <i class="fa fa-spinner fa-spin"/>
+                                </t>
+                            </span>
+                        </div>
+                        <div class="flex-grow-1" style="max-width: 360px;">
+                            <input t-ref="searchInput"
+                                   type="search"
+                                   class="form-control form-control-sm"
+                                   placeholder="Rechercher (sujet, expéditeur, extrait)… touche /"
+                                   t-att-value="state.searchQuery"
+                                   t-on-input="(ev) => this.onSearchInput(ev)"/>
+                        </div>
+                        <button class="btn btn-sm btn-light"
+                                t-on-click="toggleSettings"
+                                title="Préférences (communes au navigateur IMAP)">
+                            <i class="fa fa-cog"/>
+                        </button>
+                        <!-- Préférences -->
+                        <div t-if="state.settingsOpen"
+                             class="card shadow position-absolute end-0 mt-1"
+                             style="top: 100%; width: 320px; z-index: 10;">
+                            <div class="card-header d-flex justify-content-between align-items-center py-2">
+                                <strong>Préférences</strong>
+                                <button class="btn-close" t-on-click="closeSettings"/>
+                            </div>
+                            <div class="card-body py-2">
+                                <div class="mb-2">
+                                    <label class="form-label small mb-1">Format de date</label>
+                                    <select class="form-select form-select-sm"
+                                            t-att-value="state.settings.dateFormat"
+                                            t-on-change="(ev) => this.onSettingChange('dateFormat', ev)">
+                                        <option value="relative">Relatif (aujourd'hui 14:35)</option>
+                                        <option value="absolute">Absolu (2026-05-10 14:35)</option>
+                                    </select>
+                                </div>
+                                <div class="mb-2">
+                                    <label class="form-label small mb-1">Affichage du correspondant</label>
+                                    <select class="form-select form-select-sm"
+                                            t-att-value="state.settings.senderDisplay"
+                                            t-on-change="(ev) => this.onSettingChange('senderDisplay', ev)">
+                                        <option value="name">Nom seulement</option>
+                                        <option value="email">Adresse seulement</option>
+                                        <option value="both">Nom &lt;adresse&gt;</option>
+                                    </select>
+                                </div>
+                                <div class="mb-2">
+                                    <label class="form-label small mb-1">Messages par page</label>
+                                    <select class="form-select form-select-sm"
+                                            t-att-value="state.settings.pageSize"
+                                            t-on-change="(ev) => this.onSettingChange('pageSize', ev)">
+                                        <option value="50">50</option>
+                                        <option value="100">100</option>
+                                        <option value="200">200</option>
+                                        <option value="500">500</option>
+                                    </select>
+                                </div>
+                                <div class="mb-2">
+                                    <label class="form-label small mb-1">Densité d'affichage</label>
+                                    <select class="form-select form-select-sm"
+                                            t-att-value="state.settings.density"
+                                            t-on-change="(ev) => this.onSettingChange('density', ev)">
+                                        <option value="comfortable">Confortable</option>
+                                        <option value="compact">Compacte</option>
+                                    </select>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input"
+                                           type="checkbox"
+                                           id="bf_email_inbox_bold_unread"
+                                           t-att-checked="state.settings.boldUnread"
+                                           t-on-change="(ev) => this.onSettingChange('boldUnread', ev)"/>
+                                    <label class="form-check-label small" for="bf_email_inbox_bold_unread">
+                                        Mettre les non-lus en gras
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="card-footer small text-muted py-1">
+                                Réglages communs avec le navigateur IMAP, gardés dans ce navigateur.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Barre d'actions groupées -->
+                    <div t-if="selectedCount > 0"
+                         class="px-3 py-2 bg-info-subtle border-bottom d-flex align-items-center gap-2 flex-wrap">
+                        <strong><t t-esc="selectedCount"/> sélectionné(s)</strong>
+                        <div class="btn-group btn-group-sm">
+                            <button class="btn btn-primary dropdown-toggle"
+                                    data-bs-toggle="dropdown"
+                                    t-att-disabled="state.acting">
+                                <i class="fa fa-share me-1"/> Router…
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><button class="dropdown-item" type="button" t-on-click="() => this.quickReroute('project.task')"><i class="fa fa-tasks me-2"/>Vers une tâche</button></li>
+                                <li><button class="dropdown-item" type="button" t-on-click="() => this.quickReroute('helpdesk.ticket')"><i class="fa fa-life-ring me-2"/>Vers un ticket</button></li>
+                                <li><button class="dropdown-item" type="button" t-on-click="() => this.quickReroute('res.partner')"><i class="fa fa-user me-2"/>Vers un contact</button></li>
+                                <li><hr class="dropdown-divider"/></li>
+                                <li><button class="dropdown-item" type="button" t-on-click="() => this.quickReroute(null)"><i class="fa fa-folder-open-o me-2"/>Autre cible…</button></li>
+                            </ul>
+                        </div>
+                        <button class="btn btn-sm btn-success"
+                                t-att-disabled="state.acting"
+                                t-on-click="markHandled"
+                                title="Traiter la sélection et archiver côté IMAP">
+                            <i class="fa fa-check me-1"/> Traité
+                        </button>
+                        <button class="btn btn-sm btn-light"
+                                t-att-disabled="state.acting"
+                                t-on-click="() => this.runAction('snooze')">
+                            <i class="fa fa-moon-o me-1"/> Reporter
+                        </button>
+                        <button class="btn btn-sm btn-light"
+                                t-att-disabled="state.acting"
+                                t-on-click="markUnhandled">
+                            <i class="fa fa-inbox me-1"/> Remettre en boîte
+                        </button>
+                        <button class="btn btn-sm btn-link ms-auto" t-on-click="clearSelection">
+                            Effacer la sélection
+                        </button>
+                    </div>
+
+                    <div class="flex-grow-1" style="overflow-y: auto;">
+                        <table t-att-class="'table table-hover mb-0 ' + (state.settings.density === 'compact' ? 'table-sm' : '')">
+                            <thead class="bg-light" style="position: sticky; top: 0; z-index: 1;">
+                                <tr>
+                                    <th class="ps-3" style="width: 32px;"></th>
+                                    <th style="width: 130px;">Date</th>
+                                    <th style="width: 250px;">Correspondant</th>
+                                    <th>Sujet</th>
+                                    <th style="width: 200px;">Dossier</th>
+                                    <th style="width: 72px;" title="Statut">État</th>
+                                    <th class="pe-3" style="width: 60px;"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="visibleMessages" t-as="m" t-key="m.id"
+                                    t-att-class="(m.id === state.selectedId ? 'table-primary ' : '') + (state.settings.boldUnread and !m.seen ? 'fw-bold ' : '') + (m.is_handled ? 'text-muted ' : '') + 'o_bf_email_msg_row'"
+                                    style="cursor: pointer;"
+                                    draggable="true"
+                                    t-on-click="() => this.selectMessage(m.id)"
+                                    t-on-dragstart="(ev) => this.onRowDragStart(ev, m.id)"
+                                    t-on-dragend="() => this.onRowDragEnd()">
+                                    <td class="ps-3" t-on-click.stop="">
+                                        <input type="checkbox"
+                                               class="form-check-input"
+                                               t-att-checked="state.selectedIds[m.id]"
+                                               t-on-click="(ev) => this.toggleSelection(m.id, ev)"/>
+                                    </td>
+                                    <td class="small"><t t-esc="formatDate(m.date)"/></td>
+                                    <td class="text-truncate" style="max-width: 250px;"
+                                        t-att-title="m.direction === 'out' ? m.to : m.from">
+                                        <i t-att-class="m.direction === 'out' ? 'fa fa-arrow-right text-success me-1' : 'fa fa-arrow-left text-info me-1'"
+                                           t-att-title="m.direction === 'out' ? 'Sortant' : 'Entrant'"/>
+                                        <t t-esc="senderCell(m)"/>
+                                    </td>
+                                    <td class="text-truncate" t-att-title="m.preview or m.subject">
+                                        <t t-esc="m.subject or '(sans objet)'"/>
+                                    </td>
+                                    <td class="text-truncate small" style="max-width: 200px;"
+                                        t-att-title="m.record_name">
+                                        <span t-if="m.record_name" class="badge bg-light text-dark border text-truncate mw-100">
+                                            <t t-esc="m.record_name"/>
+                                        </span>
+                                        <span t-else="" class="badge bg-warning-subtle text-dark border">
+                                            sans dossier
+                                        </span>
+                                    </td>
+                                    <td class="text-nowrap">
+                                        <i t-if="m.is_handled" class="fa fa-check-circle text-success" title="Traité"/>
+                                        <i t-if="m.is_snoozed" class="fa fa-moon-o text-info ms-1" title="Reporté"/>
+                                        <i t-if="m.is_replied" class="fa fa-reply text-muted ms-1" title="Répondu"/>
+                                        <i t-if="m.has_attachments" class="fa fa-paperclip text-muted ms-1" title="Pièces jointes"/>
+                                    </td>
+                                    <td class="pe-3 text-end">
+                                        <button t-if="!m.is_handled"
+                                                class="btn btn-sm btn-light"
+                                                t-att-disabled="state.acting"
+                                                t-on-click.stop="(ev) => this.markHandledForRow(m.id, ev)"
+                                                title="Marquer Traité (raccourci E)">
+                                            <i class="fa fa-check"/>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr t-if="!state.loadingMessages and visibleMessages.length === 0">
+                                    <td colspan="7" class="text-center text-muted p-4">
+                                        <t t-if="state.searchQuery">Aucun résultat pour « <t t-esc="state.searchQuery"/> ».</t>
+                                        <t t-else="">Rien ici. Inbox Zero atteint.</t>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div t-ref="listBottom" style="height: 1px;"/>
+                        <div t-if="state.loadingMoreMessages" class="text-center text-muted py-2">
+                            <i class="fa fa-spinner fa-spin"/> Chargement…
+                        </div>
+                        <div t-elif="!canLoadMore and state.messages.length"
+                             class="text-center text-muted small py-2">
+                            — fin de la liste —
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bas : aperçu -->
+                <div class="d-flex flex-column" style="flex: 1 1 50%; min-height: 0;">
+                    <t t-if="state.loadingPreview">
+                        <div class="p-4 text-center text-muted">
+                            <i class="fa fa-spinner fa-spin fa-2x"/>
+                        </div>
+                    </t>
+                    <t t-elif="state.preview">
+                        <div class="px-3 py-2 border-bottom bg-light">
+                            <div class="fw-bold"><t t-esc="state.preview.subject or '(sans objet)'"/></div>
+                            <div class="small text-muted">
+                                <span class="me-2"><strong>De :</strong> <t t-esc="state.preview.from"/></span>
+                                <span t-if="state.preview.to" class="me-2"><strong>À :</strong> <t t-esc="state.preview.to"/></span>
+                                <span t-if="state.preview.cc" class="me-2"><strong>Cc :</strong> <t t-esc="state.preview.cc"/></span>
+                                <span><strong>Date :</strong> <t t-esc="formatDate(state.preview.date)"/></span>
+                            </div>
+                            <div t-if="state.preview.record_name" class="small text-muted">
+                                <strong>Dossier :</strong>
+                                <a href="#" t-on-click.prevent="openSourceRecord" t-esc="state.preview.record_name"/>
+                            </div>
+                            <div t-if="state.preview.attachments.length" class="d-flex flex-wrap gap-1 mt-1">
+                                <a t-foreach="state.preview.attachments" t-as="att" t-key="att.id"
+                                   class="badge bg-light text-dark border text-decoration-none"
+                                   t-att-href="attachmentUrl(att)"
+                                   t-att-title="att.name"
+                                   target="_blank" rel="noopener">
+                                    <i class="fa fa-paperclip me-1"/><t t-esc="att.name"/>
+                                </a>
+                            </div>
+                            <div class="mt-2 d-flex flex-wrap gap-1">
+                                <button class="btn btn-sm btn-primary"
+                                        t-att-disabled="state.acting"
+                                        t-on-click="() => this.runAction('reply')"
+                                        title="Raccourci R">
+                                    <i class="fa fa-reply me-1"/> Répondre
+                                </button>
+                                <button class="btn btn-sm btn-light"
+                                        t-att-disabled="state.acting"
+                                        t-on-click="() => this.runAction('reply_all')"
+                                        title="Raccourci Shift+R">
+                                    <i class="fa fa-reply-all me-1"/> Répondre à tous
+                                </button>
+                                <button class="btn btn-sm btn-light"
+                                        t-att-disabled="state.acting"
+                                        t-on-click="() => this.runAction('forward')"
+                                        title="Raccourci F">
+                                    <i class="fa fa-share me-1"/> Transférer
+                                </button>
+                                <button t-if="!state.preview.is_handled"
+                                        class="btn btn-sm btn-success"
+                                        t-att-disabled="state.acting"
+                                        t-on-click="markHandled"
+                                        title="Traiter et archiver côté IMAP (raccourci E)">
+                                    <i class="fa fa-check me-1"/> Traité
+                                </button>
+                                <button t-else=""
+                                        class="btn btn-sm btn-secondary"
+                                        t-att-disabled="state.acting"
+                                        t-on-click="markUnhandled">
+                                    <i class="fa fa-inbox me-1"/> Remettre en boîte
+                                </button>
+                                <button class="btn btn-sm btn-light"
+                                        t-att-disabled="state.acting"
+                                        t-on-click="() => this.runAction('snooze')"
+                                        title="Reporter (raccourci H)">
+                                    <i class="fa fa-moon-o me-1"/> Reporter
+                                </button>
+                                <button class="btn btn-sm btn-light"
+                                        t-att-disabled="state.acting"
+                                        t-on-click="() => this.runAction('activity')"
+                                        title="Créer une activité (raccourci T)">
+                                    <i class="fa fa-bell me-1"/> Activité
+                                </button>
+                                <div class="btn-group btn-group-sm">
+                                    <button class="btn btn-secondary"
+                                            t-att-disabled="state.acting"
+                                            t-on-click="() => this.quickReroute(null)"
+                                            title="Router vers une tâche, un ticket, un contact… (raccourci Y)">
+                                        <i class="fa fa-share me-1"/> Router…
+                                    </button>
+                                    <button class="btn btn-secondary dropdown-toggle dropdown-toggle-split"
+                                            data-bs-toggle="dropdown"
+                                            t-att-disabled="state.acting">
+                                        <span class="visually-hidden">Cibles rapides</span>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><button class="dropdown-item" type="button" t-on-click="() => this.quickReroute('project.task')"><i class="fa fa-tasks me-2"/>Vers une tâche</button></li>
+                                        <li><button class="dropdown-item" type="button" t-on-click="() => this.quickReroute('helpdesk.ticket')"><i class="fa fa-life-ring me-2"/>Vers un ticket</button></li>
+                                        <li><button class="dropdown-item" type="button" t-on-click="() => this.quickReroute('res.partner')"><i class="fa fa-user me-2"/>Vers un contact</button></li>
+                                        <li><hr class="dropdown-divider"/></li>
+                                        <li><button class="dropdown-item" type="button" t-on-click="() => this.quickReroute(null)"><i class="fa fa-folder-open-o me-2"/>Autre cible…</button></li>
+                                    </ul>
+                                </div>
+                                <button t-if="state.preview.thread_count > 1"
+                                        class="btn btn-sm btn-light"
+                                        t-att-disabled="state.acting"
+                                        t-on-click="() => this.runAction('conversation')"
+                                        title="Voir le fil complet">
+                                    <i class="fa fa-comments-o me-1"/> Fil (<t t-esc="state.preview.thread_count"/>)
+                                </button>
+                                <button class="btn btn-sm btn-light ms-auto"
+                                        t-att-disabled="state.acting"
+                                        t-on-click="() => this.runAction('download_eml')"
+                                        title="Télécharger en .eml">
+                                    <i class="fa fa-download"/>
+                                </button>
+                                <button t-if="state.preview.res_model"
+                                        class="btn btn-sm btn-light"
+                                        t-on-click="openSourceRecord"
+                                        title="Ouvrir le dossier lié (raccourci O)">
+                                    <i class="fa fa-external-link me-1"/> Dossier
+                                </button>
+                                <button class="btn btn-sm btn-light"
+                                        t-att-disabled="state.acting"
+                                        t-on-click="() => this.runAction('open_form')"
+                                        title="Ouvrir la fiche complète du courriel">
+                                    <i class="fa fa-expand"/>
+                                </button>
+                            </div>
+                        </div>
+                        <iframe class="flex-grow-1 border-0 w-100"
+                                style="background: white;"
+                                title="Aperçu du courriel"
+                                sandbox="allow-same-origin allow-popups allow-popups-to-escape-sandbox"
+                                t-att-srcdoc="previewSrcdoc"/>
+                    </t>
+                    <t t-else="">
+                        <div class="p-4 text-center text-muted">
+                            <i class="fa fa-envelope-o fa-2x mb-2 d-block"/>
+                            Sélectionne un courriel dans la liste pour voir le corps.
+                            <div class="small mt-2">
+                                Raccourcis : <kbd>J</kbd>/<kbd>K</kbd> naviguer · <kbd>R</kbd> répondre ·
+                                <kbd>Shift+R</kbd> répondre à tous · <kbd>F</kbd> transférer ·
+                                <kbd>E</kbd> Traité · <kbd>Y</kbd> router · <kbd>H</kbd> reporter ·
+                                <kbd>T</kbd> activité · <kbd>O</kbd> dossier · <kbd>C</kbd> composer ·
+                                <kbd>S</kbd> ou <kbd>/</kbd> rechercher
+                            </div>
+                        </div>
+                    </t>
+                </div>
+            </div>
+        </div>
+    </t>
+
+</templates>

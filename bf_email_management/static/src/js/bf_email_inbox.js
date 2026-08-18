@@ -1,0 +1,726 @@
+/** @odoo-module **/
+/*
+ * Boîte de réception Odoo, en action cliente OWL.
+ *
+ * Même mise en page que le navigateur IMAP — dossiers à gauche, liste en haut,
+ * aperçu en bas — mais la source est ``bf.email`` au lieu du serveur IMAP :
+ * les « dossiers » sont des états (Boîte, Non lus, À répondre, Sans dossier,
+ * Reportés, Envoyés, Traités, par catégorie) et non des boîtes aux lettres.
+ *
+ * Clavier : j/k/↑/↓ naviguer · r répondre · shift+r répondre à tous ·
+ *           f transférer · e Traité · y router · h reporter · t activité ·
+ *           o ouvrir le dossier · s ou / rechercher · échap annuler.
+ *
+ * Tout l'accès aux données passe par les méthodes inbox_* de bf.email, qui
+ * restent dans l'environnement de l'usager : aucune ligne d'un collègue ne
+ * peut apparaître ici.
+ */
+
+import { registry } from "@web/core/registry";
+import {
+    Component,
+    useState,
+    onWillStart,
+    onMounted,
+    onWillUnmount,
+    useRef,
+} from "@odoo/owl";
+import { useService } from "@web/core/utils/hooks";
+import { useHotkey } from "@web/core/hotkeys/hotkey_hook";
+import { _t } from "@web/core/l10n/translation";
+import {
+    loadSettings,
+    persistSettings,
+    formatRelativeDate,
+    senderCell,
+    buildPreviewSrcdoc,
+    flattenTree,
+} from "./bf_email_ui_common";
+
+// Dossiers acceptant un dépôt de ligne, et l'action que ça déclenche.
+const DROP_ACTIONS = {
+    handled: "handle",
+    inbox: "unhandle",
+    snoozed: "snooze",
+};
+
+export class BfEmailInbox extends Component {
+    static template = "bf_email_management.Inbox";
+    static props = ["*"];
+
+    setup() {
+        this.orm = useService("orm");
+        this.action = useService("action");
+        this.notification = useService("notification");
+
+        this.searchInputRef = useRef("searchInput");
+        this.listBottomRef = useRef("listBottom");
+
+        const initialSettings = loadSettings();
+        this.state = useState({
+            folders: [],
+            currentFolder: "inbox",
+            messages: [],
+            total: 0,
+            offset: 0,
+            pageSize: initialSettings.pageSize,
+            selectedId: null,
+            // Objet simple pour la réactivité OWL : clés = ids, valeurs = true.
+            selectedIds: {},
+            preview: null,
+            loadingFolders: true,
+            loadingMessages: false,
+            loadingMoreMessages: false,
+            loadingPreview: false,
+            acting: false,
+            syncing: false,
+            searchQuery: "",
+            expandedFolders: { categories: false },
+            dragId: null,
+            dropTarget: null,
+            settings: initialSettings,
+            settingsOpen: false,
+        });
+
+        onWillStart(async () => {
+            await this.loadFolders();
+            await this.loadMessages("inbox", 0);
+        });
+
+        onMounted(() => {
+            this._observer = new IntersectionObserver((entries) => {
+                if (entries.some((e) => e.isIntersecting)
+                        && this.canLoadMore
+                        && !this.state.loadingMoreMessages
+                        && !this.state.loadingMessages) {
+                    this.loadMoreMessages();
+                }
+            }, { rootMargin: "200px" });
+            if (this.listBottomRef.el) {
+                this._observer.observe(this.listBottomRef.el);
+            }
+            document.addEventListener("keydown", this._onSlashKey);
+        });
+
+        onWillUnmount(() => {
+            if (this._observer) this._observer.disconnect();
+            if (this._searchTimer) clearTimeout(this._searchTimer);
+            document.removeEventListener("keydown", this._onSlashKey);
+        });
+
+        // --- Raccourcis, même vocabulaire que le navigateur IMAP ---
+        useHotkey("arrowdown", () => this.selectNext(), { bypassEditableProtection: false });
+        useHotkey("arrowup", () => this.selectPrev(), { bypassEditableProtection: false });
+        useHotkey("j", () => this.selectNext());
+        useHotkey("k", () => this.selectPrev());
+        useHotkey("r", () => this.runAction("reply"));
+        useHotkey("shift+r", () => this.runAction("reply_all"));
+        useHotkey("f", () => this.runAction("forward"));
+        useHotkey("e", () => this.markHandled());
+        useHotkey("y", () => this.runAction("reroute"));
+        useHotkey("h", () => this.runAction("snooze"));
+        useHotkey("t", () => this.runAction("activity"));
+        useHotkey("o", () => this.openSourceRecord());
+        useHotkey("c", () => this.compose());
+        useHotkey("s", () => this.focusSearch());
+        useHotkey("escape", () => this.onEscape(), { bypassEditableProtection: true });
+
+        // Odoo n'autorise pas "/" dans sa liste blanche de raccourcis ; on le
+        // câble nativement pour la mémoire musculaire Gmail/Thunderbird.
+        this._onSlashKey = (ev) => {
+            if (ev.key !== "/") return;
+            const t = ev.target;
+            const editable = t && (t.tagName === "INPUT" || t.tagName === "TEXTAREA" || t.isContentEditable);
+            if (editable) return;
+            ev.preventDefault();
+            this.focusSearch();
+        };
+    }
+
+    // ------------------------------------------------------------------
+    // Composer / synchroniser
+    // ------------------------------------------------------------------
+    /**
+     * Nouveau courriel, rattaché à aucun dossier. Le serveur crée une ligne
+     * qui sert de fil à elle-même ; à la fermeture du composeur elle est soit
+     * adoptée (un message a été posté), soit effacée (composeur annulé).
+     */
+    async compose() {
+        if (this.state.acting) return;
+        this.state.acting = true;
+        try {
+            const action = await this.orm.call("bf.email", "inbox_compose", []);
+            const shellId = action && action.context
+                ? action.context.bf_email_compose_shell_id
+                : null;
+            await this.action.doAction(action, {
+                onClose: async () => {
+                    if (shellId) {
+                        try {
+                            await this.orm.call(
+                                "bf.email", "inbox_close_compose", [],
+                                { shell_id: shellId }
+                            );
+                        } catch (err) {
+                            // Le ménage de la coquille ne doit jamais masquer
+                            // le fait que le courriel, lui, est parti.
+                            console.warn("bf_email_inbox: adoption échouée", err);
+                        }
+                    }
+                    await this.refreshCurrent();
+                },
+            });
+        } catch (err) {
+            this.notification.add(
+                _t("Composition impossible : ") + (err.message || err),
+                { type: "danger" }
+            );
+        } finally {
+            this.state.acting = false;
+        }
+    }
+
+    /**
+     * Même travail que « Synchroniser maintenant » de la vue liste : on tire
+     * les chatters et l'IMAP, puis on recharge dossiers et liste sur place.
+     * L'action serveur, elle, recharge tout le client web — ce qui jetterait
+     * l'aperçu ouvert.
+     */
+    async syncNow() {
+        if (this.state.syncing) return;
+        this.state.syncing = true;
+        try {
+            const res = await this.orm.call("bf.email", "inbox_sync_now", []);
+            await this.refreshCurrent();
+            this.notification.add(res.message || "", {
+                title: res.title,
+                type: res.type === "success" ? "success" : "info",
+            });
+        } catch (err) {
+            this.notification.add(
+                _t("Synchronisation impossible : ") + (err.message || err),
+                { type: "danger" }
+            );
+        } finally {
+            this.state.syncing = false;
+        }
+    }
+
+    // ------------------------------------------------------------------
+    // Dossiers
+    // ------------------------------------------------------------------
+    async loadFolders() {
+        this.state.loadingFolders = true;
+        try {
+            this.state.folders = await this.orm.call(
+                "bf.email", "inbox_get_folders", []
+            );
+        } catch (err) {
+            this.notification.add(
+                _t("Impossible de charger les dossiers : ") + (err.message || err),
+                { type: "danger" }
+            );
+        } finally {
+            this.state.loadingFolders = false;
+        }
+    }
+
+    get folderTree() {
+        return flattenTree(this.state.folders, this.state.expandedFolders);
+    }
+
+    get currentFolderLabel() {
+        const f = this.state.folders.find((x) => x.key === this.state.currentFolder);
+        return f ? f.label : this.state.currentFolder;
+    }
+
+    toggleFolder(key) {
+        this.state.expandedFolders[key] = !this.state.expandedFolders[key];
+    }
+
+    onFolderClick(folder) {
+        if (!folder.selectable) {
+            this.toggleFolder(folder.key);
+            return;
+        }
+        this.state.searchQuery = "";
+        this.loadMessages(folder.key, 0);
+    }
+
+    // ------------------------------------------------------------------
+    // Liste
+    // ------------------------------------------------------------------
+    async loadMessages(folder, offset = 0) {
+        this.state.loadingMessages = true;
+        this.state.currentFolder = folder;
+        this.state.offset = offset;
+        this.state.selectedId = null;
+        this.state.preview = null;
+        this.state.selectedIds = {};
+        try {
+            const result = await this.orm.call(
+                "bf.email", "inbox_get_messages", [],
+                {
+                    folder,
+                    offset,
+                    limit: this.state.pageSize,
+                    search: this.state.searchQuery || null,
+                }
+            );
+            this.state.messages = result.messages || [];
+            this.state.total = result.total || 0;
+        } catch (err) {
+            this.state.messages = [];
+            this.state.total = 0;
+            this.notification.add(
+                _t("Chargement impossible : ") + (err.message || err),
+                { type: "danger" }
+            );
+        } finally {
+            this.state.loadingMessages = false;
+        }
+    }
+
+    async loadMoreMessages() {
+        if (this.state.loadingMoreMessages || !this.canLoadMore) return;
+        this.state.loadingMoreMessages = true;
+        const nextOffset = this.state.offset + this.state.messages.length;
+        try {
+            const result = await this.orm.call(
+                "bf.email", "inbox_get_messages", [],
+                {
+                    folder: this.state.currentFolder,
+                    offset: nextOffset,
+                    limit: this.state.pageSize,
+                    search: this.state.searchQuery || null,
+                }
+            );
+            this.state.messages.push(...(result.messages || []));
+        } catch (err) {
+            this.notification.add(
+                _t("Chargement supplémentaire échoué : ") + (err.message || err),
+                { type: "danger" }
+            );
+        } finally {
+            this.state.loadingMoreMessages = false;
+        }
+    }
+
+    get canLoadMore() {
+        return this.state.offset + this.state.messages.length < this.state.total;
+    }
+
+    /** La recherche est servie par le serveur : pas de filtrage local. */
+    get visibleMessages() {
+        return this.state.messages;
+    }
+
+    selectMessage(id) {
+        if (!id || this.state.selectedId === id) return;
+        this.state.selectedId = id;
+        this._fetchPreview(id);
+    }
+
+    async _fetchPreview(id) {
+        this.state.loadingPreview = true;
+        this.state.preview = null;
+        try {
+            const preview = await this.orm.call(
+                "bf.email", "inbox_get_body", [], { email_id: id }
+            );
+            this.state.preview = preview;
+            const row = this.state.messages.find((m) => m.id === id);
+            if (row && preview.seen) {
+                // Le serveur vient de basculer « nouveau » en « lu » : on
+                // enlève le gras tout de suite plutôt qu'au prochain chargement.
+                row.seen = true;
+                row.status = preview.status;
+                this._refreshFolders();
+            }
+        } catch (err) {
+            this.notification.add(
+                _t("Aperçu impossible : ") + (err.message || err),
+                { type: "danger" }
+            );
+        } finally {
+            this.state.loadingPreview = false;
+        }
+    }
+
+    selectNext() {
+        const list = this.visibleMessages;
+        if (!list.length) return;
+        if (!this.state.selectedId) {
+            this.selectMessage(list[0].id);
+            return;
+        }
+        const i = list.findIndex((m) => m.id === this.state.selectedId);
+        if (i >= 0 && i < list.length - 1) {
+            this.selectMessage(list[i + 1].id);
+        }
+    }
+
+    selectPrev() {
+        const list = this.visibleMessages;
+        if (!list.length) return;
+        if (!this.state.selectedId) {
+            this.selectMessage(list[0].id);
+            return;
+        }
+        const i = list.findIndex((m) => m.id === this.state.selectedId);
+        if (i > 0) {
+            this.selectMessage(list[i - 1].id);
+        }
+    }
+
+    // ------------------------------------------------------------------
+    // Recherche
+    // ------------------------------------------------------------------
+    focusSearch() {
+        if (this.searchInputRef.el) {
+            this.searchInputRef.el.focus();
+            this.searchInputRef.el.select();
+        }
+    }
+
+    clearSearch() {
+        if (!this.state.searchQuery) {
+            if (this.searchInputRef.el) this.searchInputRef.el.blur();
+            return;
+        }
+        this.state.searchQuery = "";
+        if (this.searchInputRef.el) this.searchInputRef.el.blur();
+        this.loadMessages(this.state.currentFolder, 0);
+    }
+
+    onSearchInput(ev) {
+        this.state.searchQuery = ev.target.value;
+        // La requête part au serveur : on attend une pause de frappe plutôt
+        // que d'en lancer une par caractère.
+        if (this._searchTimer) clearTimeout(this._searchTimer);
+        this._searchTimer = setTimeout(() => {
+            this.loadMessages(this.state.currentFolder, 0);
+        }, 300);
+    }
+
+    onEscape() {
+        if (this.state.settingsOpen) {
+            this.closeSettings();
+        } else if (this.selectedCount > 0) {
+            this.clearSelection();
+        } else {
+            this.clearSearch();
+        }
+    }
+
+    // ------------------------------------------------------------------
+    // Sélection multiple
+    // ------------------------------------------------------------------
+    toggleSelection(id, ev) {
+        if (ev) ev.stopPropagation();
+        if (this.state.selectedIds[id]) {
+            delete this.state.selectedIds[id];
+        } else {
+            this.state.selectedIds[id] = true;
+        }
+    }
+
+    clearSelection() {
+        this.state.selectedIds = {};
+    }
+
+    get selectedCount() {
+        return Object.keys(this.state.selectedIds).length;
+    }
+
+    get selectedIdList() {
+        return Object.keys(this.state.selectedIds).map((k) => parseInt(k, 10));
+    }
+
+    /** Cibles de l'action : la sélection si elle existe, sinon l'aperçu. */
+    get actionTargets() {
+        if (this.selectedCount > 0) return this.selectedIdList;
+        return this.state.selectedId ? [this.state.selectedId] : [];
+    }
+
+    // ------------------------------------------------------------------
+    // Glisser-déposer sur un dossier
+    // ------------------------------------------------------------------
+    onRowDragStart(ev, id) {
+        ev.dataTransfer.setData("application/x-bf-email-id", String(id));
+        ev.dataTransfer.effectAllowed = "move";
+        this.state.dragId = id;
+    }
+
+    onRowDragEnd() {
+        this.state.dragId = null;
+        this.state.dropTarget = null;
+    }
+
+    onFolderDragOver(ev, folderKey) {
+        if (!(folderKey in DROP_ACTIONS) || folderKey === this.state.currentFolder) {
+            return;
+        }
+        ev.preventDefault();
+        ev.dataTransfer.dropEffect = "move";
+        this.state.dropTarget = folderKey;
+    }
+
+    onFolderDragLeave(folderKey) {
+        if (this.state.dropTarget === folderKey) {
+            this.state.dropTarget = null;
+        }
+    }
+
+    async onFolderDrop(ev, folderKey) {
+        this.state.dropTarget = null;
+        const action = DROP_ACTIONS[folderKey];
+        if (!action) return;
+        ev.preventDefault();
+        const raw = ev.dataTransfer.getData("application/x-bf-email-id");
+        const id = parseInt(raw, 10) || this.state.dragId;
+        this.state.dragId = null;
+        if (!id) return;
+        // Un dépôt agit sur la ligne déposée, jamais sur la sélection : c'est
+        // ce que le geste désigne.
+        await this._dispatch(action, [id], { removeIds: [id] });
+    }
+
+    // ------------------------------------------------------------------
+    // Actions
+    // ------------------------------------------------------------------
+    /**
+     * Appelle ``inbox_run_action`` et exécute l'action Odoo qui en revient.
+     * ``removeIds`` liste les lignes à retirer de la liste chargée une fois
+     * l'appel réussi (Traité dans la boîte, Remettre en boîte dans Traités…).
+     */
+    async _dispatch(action, ids, opts = {}) {
+        if (!ids || !ids.length || this.state.acting) return null;
+        this.state.acting = true;
+        try {
+            const result = await this.orm.call(
+                "bf.email", "inbox_run_action", [],
+                { action, email_ids: ids }
+            );
+            for (const id of opts.removeIds || []) {
+                this._removeAndJump(id);
+            }
+            if (opts.clearSelection !== false) {
+                this.clearSelection();
+            }
+            if (opts.notify) {
+                this.notification.add(opts.notify, { type: "success" });
+            }
+            this._refreshFolders();
+            if (result) {
+                this.action.doAction(result, {
+                    onClose: () => this.refreshCurrent(),
+                });
+            }
+            return result;
+        } catch (err) {
+            this.notification.add(
+                (opts.errorPrefix || _t("Échec : ")) + (err.message || err),
+                { type: "danger" }
+            );
+            return null;
+        } finally {
+            this.state.acting = false;
+        }
+    }
+
+    /** Action sur la cible courante (sélection, sinon aperçu). */
+    async runAction(action) {
+        const ids = this.actionTargets;
+        if (!ids.length) {
+            this.notification.add(
+                _t("Sélectionne d'abord un courriel."), { type: "warning" }
+            );
+            return;
+        }
+        // Répondre / transférer / activité ne valent que pour une ligne :
+        // on prend l'aperçu quand plusieurs cases sont cochées.
+        const single = ["reply", "reply_all", "forward", "activity",
+                        "open_record", "open_form", "conversation",
+                        "download_eml"];
+        const targets = single.includes(action) && ids.length > 1
+            ? [this.state.selectedId || ids[0]]
+            : ids;
+        await this._dispatch(action, targets, { clearSelection: false });
+    }
+
+    async markHandled() {
+        const ids = this.actionTargets;
+        if (!ids.length) return;
+        // Sortir de la boîte ne retire la ligne de la liste que dans les
+        // dossiers d'où le traitement la fait disparaître.
+        const removes = ["inbox", "unread", "to_reply", "unrouted"]
+            .includes(this.state.currentFolder) ? ids : [];
+        await this._dispatch("handle", ids, {
+            removeIds: removes,
+            notify: ids.length > 1
+                ? _t("%s courriels traités.", ids.length)
+                : _t("Courriel traité."),
+            errorPrefix: _t("Échec « Traité » : "),
+        });
+        if (!removes.length) await this.refreshCurrent();
+    }
+
+    async markUnhandled() {
+        const ids = this.actionTargets;
+        if (!ids.length) return;
+        const removes = ["handled", "snoozed"].includes(this.state.currentFolder)
+            ? ids : [];
+        await this._dispatch("unhandle", ids, {
+            removeIds: removes,
+            notify: _t("Remis en boîte de réception."),
+            errorPrefix: _t("Échec « Remettre en boîte » : "),
+        });
+        if (!removes.length) await this.refreshCurrent();
+    }
+
+    async markHandledForRow(id, ev) {
+        if (ev) ev.stopPropagation();
+        const removes = ["inbox", "unread", "to_reply", "unrouted"]
+            .includes(this.state.currentFolder) ? [id] : [];
+        await this._dispatch("handle", [id], {
+            removeIds: removes,
+            clearSelection: false,
+            errorPrefix: _t("Échec « Traité » : "),
+        });
+        if (!removes.length) await this.refreshCurrent();
+    }
+
+    async openSourceRecord() {
+        const preview = this.state.preview;
+        if (!preview || !preview.res_model || !preview.res_id) {
+            this.notification.add(
+                _t("Ce courriel n'est rattaché à aucun dossier."),
+                { type: "warning" }
+            );
+            return;
+        }
+        this.action.doAction({
+            type: "ir.actions.act_window",
+            res_model: preview.res_model,
+            res_id: preview.res_id,
+            views: [[false, "form"]],
+            target: "current",
+        });
+    }
+
+    async quickReroute(targetModel) {
+        const ids = this.actionTargets;
+        if (!ids.length) {
+            this.notification.add(
+                _t("Sélectionne au moins un courriel à router."),
+                { type: "warning" }
+            );
+            return;
+        }
+        if (this.state.acting) return;
+        this.state.acting = true;
+        try {
+            const context = { default_bf_email_ids: [[6, 0, ids]] };
+            if (targetModel) {
+                context.default_target_model_hint = targetModel;
+            }
+            this.clearSelection();
+            await this.action.doAction({
+                type: "ir.actions.act_window",
+                name: _t("Importer dans un chatter"),
+                res_model: "bf.email.reroute",
+                view_mode: "form",
+                views: [[false, "form"]],
+                target: "new",
+                context,
+            }, { onClose: () => this.refreshCurrent() });
+        } catch (err) {
+            this.notification.add(
+                _t("Routage impossible : ") + (err.message || err),
+                { type: "danger" }
+            );
+        } finally {
+            this.state.acting = false;
+        }
+    }
+
+    /**
+     * Retire la ligne de la liste chargée et sélectionne celle qui prend sa
+     * place — ou la précédente si c'était la dernière.
+     */
+    _removeAndJump(id) {
+        if (this.state.selectedIds[id]) {
+            delete this.state.selectedIds[id];
+        }
+        const i = this.state.messages.findIndex((m) => m.id === id);
+        if (i < 0) return;
+        this.state.messages.splice(i, 1);
+        this.state.total = Math.max(0, this.state.total - 1);
+        if (this.state.selectedId !== id) return;
+        const next = this.state.messages[i] || this.state.messages[i - 1];
+        this.state.selectedId = null;
+        this.state.preview = null;
+        if (next) this.selectMessage(next.id);
+    }
+
+    async refreshCurrent() {
+        const keepId = this.state.selectedId;
+        await this.loadMessages(this.state.currentFolder, 0);
+        await this.loadFolders();
+        if (keepId && this.state.messages.some((m) => m.id === keepId)) {
+            this.selectMessage(keepId);
+        }
+    }
+
+    /** Recompte les dossiers sans bloquer l'interface. */
+    _refreshFolders() {
+        this.loadFolders();
+    }
+
+    // ------------------------------------------------------------------
+    // Affichage
+    // ------------------------------------------------------------------
+    formatDate(iso) {
+        return formatRelativeDate(iso, this.state.settings);
+    }
+
+    senderCell(m) {
+        const raw = m.direction === "out" ? m.to : m.from;
+        return senderCell(m.correspondent, raw, this.state.settings);
+    }
+
+    get previewSrcdoc() {
+        return buildPreviewSrcdoc(this.state.preview && this.state.preview.body_html);
+    }
+
+    attachmentUrl(att) {
+        return `/web/content/${att.id}?download=true`;
+    }
+
+    // ------------------------------------------------------------------
+    // Préférences (partagées avec le navigateur IMAP)
+    // ------------------------------------------------------------------
+    toggleSettings() {
+        this.state.settingsOpen = !this.state.settingsOpen;
+    }
+
+    closeSettings() {
+        this.state.settingsOpen = false;
+    }
+
+    onSettingChange(key, ev) {
+        const value = ev.target.type === "checkbox"
+            ? ev.target.checked
+            : ev.target.value;
+        const next = { ...this.state.settings, [key]: value };
+        this.state.settings = next;
+        persistSettings(next);
+        if (key === "pageSize") {
+            this.state.pageSize = parseInt(value, 10);
+            this.loadMessages(this.state.currentFolder, 0);
+        }
+    }
+}
+
+registry.category("actions").add("bf_email_inbox", BfEmailInbox);

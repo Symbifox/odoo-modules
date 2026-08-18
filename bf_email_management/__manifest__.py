@@ -1,7 +1,7 @@
 {
     "name": "Gestion des courriels",
     "summary": "Inbox unifiée IMAP + chatters Odoo, avec re-routage UI",
-    "version": "18.0.8.2.0",
+    "version": "18.0.9.2.0",
     "category": "Productivity",
     'website': 'https://symbifox.com',
     "author": "Les services de consultation Blue Fox, Inc.",
@@ -27,6 +27,7 @@
         "data/email_sync_imap_cron.xml",
         "data/imap_mirror_cron.xml",
         "data/imap_reconcile_cron.xml",
+        "data/imap_writeback_sweep_cron.xml",
         "data/expected_reply_minutes_cron.xml",
         "data/auto_link_orphans_cron.xml",
         "data/bf_email_rule_default.xml",
@@ -42,6 +43,7 @@
         "views/bf_email_views.xml",
         "views/bf_email_rule_views.xml",
         "views/bf_email_dashboard_views.xml",
+        "views/mail_compose_message_views.xml",
         "views/mail_scheduled_message_views.xml",
         "views/res_config_settings_views.xml",
         "views/bf_email_menu.xml",
@@ -49,15 +51,21 @@
     ],
     "assets": {
         "web.assets_backend": [
+            # Socle commun aux deux actions clientes courriel — doit être
+            # chargé avant elles.
+            "bf_email_management/static/src/js/bf_email_ui_common.js",
             "bf_email_management/static/src/js/bf_email_dashboard.js",
             "bf_email_management/static/src/js/bf_email_chatter_action.js",
             "bf_email_management/static/src/js/bf_email_preview_list.js",
             "bf_email_management/static/src/xml/bf_email_preview_list.xml",
             "bf_email_management/static/src/js/bf_calendar_reminder.js",
             "bf_email_management/static/src/js/bf_email_browser.js",
+            "bf_email_management/static/src/js/bf_email_inbox.js",
             "bf_email_management/static/src/js/bf_email_new_record_dropdown.js",
             "bf_email_management/static/src/xml/bf_email_dashboard.xml",
             "bf_email_management/static/src/xml/bf_email_browser.xml",
+            "bf_email_management/static/src/xml/bf_email_inbox.xml",
+            "bf_email_management/static/src/xml/bf_email_chatter_badge.xml",
             "bf_email_management/static/src/xml/bf_email_new_record_dropdown.xml",
         ],
     },

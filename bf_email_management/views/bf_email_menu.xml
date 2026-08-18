@@ -5,7 +5,7 @@
     <menuitem id="menu_bf_email_root"
               name="Courriels"
               web_icon="bf_email_management,static/description/icon.png"
-              action="bf_email_action"
+              action="action_bf_email_inbox_owl"
               sequence="45"/>
 
     <!-- Dashboard -->
@@ -24,8 +24,16 @@
     <menuitem id="menu_bf_email_inbox"
               name="Bo&#238;te de r&#233;ception"
               parent="menu_bf_email_emails"
-              action="bf_email_action"
+              action="action_bf_email_inbox_owl"
               sequence="10"/>
+
+    <!-- M&#234;me contenu, en vue liste : filtres, regroupement, tableau crois&#233;,
+         export et actions serveur restent l&#224;. -->
+    <menuitem id="menu_bf_email_inbox_list"
+              name="Bo&#238;te de r&#233;ception (liste)"
+              parent="menu_bf_email_emails"
+              action="bf_email_action"
+              sequence="15"/>
 
     <menuitem id="menu_bf_email_all"
               name="Tous les courriels"
