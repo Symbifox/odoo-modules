@@ -96,7 +96,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_dashboard` | Tableau de bord Symbifox | 18.0.1.0.0 | BUSL-1.1 | Unified dashboard aggregating billing, hosting, knowledge and privacy |
 | `bf_default_all_companies` | BF Default All Companies | 18.0.1.0.0 | LGPL-3 | Pre-selects every allowed company in the multi-company switcher on first login |
 | `bf_document_nextcloud_sync` | Document Nextcloud Sync | 18.0.1.3.0 | LGPL-3 | Document sync between Odoo and Nextcloud via WebDAV |
-| `bf_email_management` | Gestion des courriels | 18.0.6.7.2 | BUSL-1.1 | Unified IMAP inbox + Odoo chatter projection, two-pane OWL folder browser (Apple Mail / Thunderbird), bulk per-row target inference |
+| `bf_email_management` | Gestion des courriels | 18.0.8.2.0 | BUSL-1.1 | Unified IMAP inbox + Odoo chatter projection, two-pane OWL folder browser (Apple Mail / Thunderbird), bulk per-row target inference |
 | `bf_email_systray` | Boîte de réception bf.email — barre Odoo | 18.0.1.1.0 | LGPL-3 | Systray button opening the bf.email inbox with a (read + unread) counter |
 | `bf_follower_cleanup` | BF — Nettoyage des abonnés (followers internes uniquement) | 18.0.1.0.1 | LGPL-3 | Cron that removes all non-employee followers from chatters |
 | `bf_fundraising_core` | Levée de fonds — Cœur | 18.0.1.0.0 | AGPL-3 | Donor management and fundraising structure (Funds / Campaigns / Appeals / Packages) on top of the Donation module — comparable to Raiser's Edge |
@@ -136,7 +136,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_sign_privacy` | Symbifox — Signature des consentements (Loi 25) | 18.0.1.0.1 | BUSL-1.1 | Sign Loi 25 consents with the native bf_sign engine (instead of external DocuSeal / LibreSign). |
 | `bf_sign_purchase` | Symbifox — Signature pour les achats | 18.0.1.0.1 | BUSL-1.1 | Send a purchase order for electronic signature (bf_sign). |
 | `bf_sign_sale` | Symbifox — Signature pour les ventes | 18.0.1.0.1 | BUSL-1.1 | Send a quotation / sales order for electronic signature (bf_sign). |
-| `bf_sms_archive` | SMS & Calls | 18.0.5.6.0 | BUSL-1.1 | Two-way live SMS/MMS messaging via VOIP.ms (chat workspace + systray) plus Android SMS/call-log archiving, search, PDF/CSV export and task linking |
+| `bf_sms_archive` | SMS & Calls | 18.0.5.8.0 | BUSL-1.1 | Two-way live SMS/MMS messaging via VOIP.ms (chat workspace + systray) plus Android SMS/call-log archiving, search, PDF/CSV export and task linking |
 | `bf_stepbystep_clients` | Step-by-Step — Suivi d'accompagnement client | 18.0.2.0.1 | BUSL-1.1 | Internal dashboard tracking each client mandate's linear step-by-step progression: current step, hours budget, timeline. |
 | `bf_studio_light` | Symbifox — Studio Light | 18.0.6.1.0 | LGPL-3 | Field builder for Odoo Community: add custom fields (incl. polymorphic reference with model whitelist), smart buttons (count via JSON controller, no compute Python), and inject them in views without writing a module — survives `-u all` upgrades |
 | `bf_subscription` | Abonnements | 18.0.1.3.1 | BUSL-1.1 | Paid subscription management with correlation to vendor bills |
