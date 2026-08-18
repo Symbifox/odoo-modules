@@ -163,6 +163,46 @@ class BfProcessNodeResource(models.Model):
         self._garde(self._processus_concernes())
         return super().unlink()
 
+    # --- ce que la page d'atelier a le droit d'ouvrir -------------------------
+    # La règle vit ici, pas dans le contrôleur : elle se prouve alors sans
+    # serveur. Un rendu PDF traversé par une requête HTTP ne s'éprouve pas dans
+    # un `HttpCase` — le serveur de test partage un seul curseur, et l'appel que
+    # wkhtmltopdf refait au serveur pour aller chercher la feuille de style
+    # bloque sur celui que la requête en cours tient déjà. En production, les
+    # ouvriers sont plusieurs et la question ne se pose pas.
+
+    def _piece_publique(self):
+        """Le fichier qu'on peut servir tel quel, ou rien.
+
+        Celui de la ressource d'abord, puis celui de la version **publiée** du
+        document. Une version en brouillon ne compte pas.
+        """
+        self.ensure_one()
+        return self.attachment_id \
+            or self.document_id.latest_version_id.attachment_id
+
+    def _corps_a_rendre(self):
+        """Le document dont il faut rendre le corps, ou un jeu vide.
+
+        Dans une base de connaissances tenue dans Odoo, le contenu d'une
+        procédure vit dans ses sections, pas en pièce jointe : sur les 191
+        versions publiées de la nôtre, deux portaient un fichier. S'en tenir au
+        fichier revenait donc à n'ouvrir à peu près rien, et la cible
+        « politique ou procédure » ne servait qu'à l'écran, jamais au mur.
+
+        Deux garde-fous : une version **publiée** (un brouillon n'a pas à se
+        retrouver au-dessus d'un poste de travail) et un corps qui vit **ici**
+        (un document qui pointe vers un fichier externe n'a rien à rendre).
+        """
+        self.ensure_one()
+        vide = self.env["project.document"]
+        doc = self.document_id
+        if not doc or self._piece_publique():
+            return vide
+        if doc.body_source != "internal" or not doc.latest_version_id:
+            return vide
+        return doc if doc._report_sections() else vide
+
     def action_ouvrir(self):
         """Ouvre la ressource là où elle vit."""
         self.ensure_one()

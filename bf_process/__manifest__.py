@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     "name": "Cartographie de processus",
-    "version": "18.0.4.1.2",
+    "version": "18.0.4.2.0",
     "category": "Services/Project",
     "summary": "Cartographies BPMN vivantes : le modèle est la vérité, le PDF et"
                " les deux XML n'en sont que des rendus",
