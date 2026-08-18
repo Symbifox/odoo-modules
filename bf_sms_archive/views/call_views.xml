@@ -31,6 +31,11 @@
         <field name="model">call.archive.call</field>
         <field name="arch" type="xml">
             <form>
+                <header>
+                    <button name="action_post_to_task" type="object"
+                            string="Poster sur une fiche" class="btn-primary"
+                            groups="bf_sms_archive.group_sms_user"/>
+                </header>
                 <sheet>
                     <group>
                         <group string="Appel">

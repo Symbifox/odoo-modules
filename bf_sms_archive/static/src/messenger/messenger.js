@@ -56,6 +56,16 @@ class SmsMessenger extends Component {
             // multi-select (bulk archive)
             selectMode: false,
             selectedIds: [],
+            // poster sur une tâche : sélection de messages + sélecteur de tâche
+            msgSelectMode: false,
+            selectedMsgIds: [],
+            taskPickerOpen: false,
+            taskTargets: [],
+            taskSearch: "",
+            taskResults: [],
+            taskPosting: false,
+            autoTaskId: false,
+            autoTaskName: "",
             // link unknown number to an Odoo contact
             linkMode: false,
             linkSearch: "",
@@ -151,6 +161,9 @@ class SmsMessenger extends Component {
         this.state.linkMode = false;
         this.state.convSearch = "";
         this.state.convSearchMode = false;
+        this.state.msgSelectMode = false;
+        this.state.selectedMsgIds = [];
+        this.state.taskPickerOpen = false;
         this.state.loadingConv = true;
         try {
             const res = await this.orm.call(MODEL, "get_conversation", [threadId], {
@@ -168,6 +181,23 @@ class SmsMessenger extends Component {
             this._scrollPending = true;
         } finally {
             this.state.loadingConv = false;
+        }
+        // Non bloquant : sert au libellé du bouton « → Tâche » et à l'état du suivi.
+        this._loadTaskTargets();
+    }
+
+    async _loadTaskTargets() {
+        try {
+            const res = await this.orm.call(MODEL, "messenger_task_targets", [
+                this.state.activeThreadId,
+            ]);
+            this.state.taskTargets = res.tasks || [];
+            this.state.autoTaskId = res.auto_post_task_id || false;
+            this.state.autoTaskName = res.auto_post_task_name || "";
+        } catch {
+            this.state.taskTargets = [];
+            this.state.autoTaskId = false;
+            this.state.autoTaskName = "";
         }
     }
 
@@ -258,6 +288,189 @@ class SmsMessenger extends Component {
         this.state.selectMode = false;
         this.state.selectedIds = [];
         await this.loadThreads();
+    }
+
+    // ── Poster sur une tâche ───────────────────────────────────
+    // Le sorcier existe depuis toujours, mais son seul point d'entrée était le menu
+    // Actions de la vue liste des messages : il fallait quitter la Messagerie, ouvrir le
+    // fil en vue liste, cocher, puis passer par le menu. Tout ce bloc sert à faire le même
+    // geste sans sortir de la conversation.
+
+    toggleMsgSelectMode() {
+        this.state.msgSelectMode = !this.state.msgSelectMode;
+        this.state.selectedMsgIds = [];
+    }
+
+    toggleMsgSelected(id) {
+        const i = this.state.selectedMsgIds.indexOf(id);
+        if (i === -1) {
+            this.state.selectedMsgIds.push(id);
+        } else {
+            this.state.selectedMsgIds.splice(i, 1);
+        }
+    }
+
+    isMsgSelected(id) {
+        return this.state.selectedMsgIds.includes(id);
+    }
+
+    /** Surlignage : uniquement pendant la sélection, pour ne pas marquer le fil au repos. */
+    isMsgHighlighted(id) {
+        return this.state.msgSelectMode && this.isMsgSelected(id);
+    }
+
+    rowClass(msg) {
+        const side = msg.direction === "out" ? "o_sms_out" : "o_sms_in";
+        return this.state.msgSelectMode ? `${side} o_selectable` : side;
+    }
+
+    onBubbleClick(msg) {
+        if (this.state.msgSelectMode) {
+            this.toggleMsgSelected(msg.id);
+        }
+    }
+
+    get selectedMsgCount() {
+        return this.state.selectedMsgIds.length;
+    }
+
+    /** Ids à poster : la sélection si elle existe, sinon toute la conversation chargée. */
+    get postScopeIds() {
+        if (this.state.selectedMsgIds.length) {
+            return this.state.selectedMsgIds.slice();
+        }
+        return this.state.conversation.map((m) => m.id);
+    }
+
+    _rpcError(e) {
+        // La charge d'erreur d'un RPC Owl est dans e.data.message, pas e.message.
+        return (e && e.data && e.data.message) || (e && e.message) || "Erreur inattendue";
+    }
+
+    async openTaskPicker() {
+        if (!this.state.activeThreadId) {
+            return;
+        }
+        try {
+            const res = await this.orm.call(MODEL, "messenger_task_targets", [
+                this.state.activeThreadId,
+            ]);
+            this.state.taskTargets = res.tasks || [];
+            this.state.autoTaskId = res.auto_post_task_id || false;
+            this.state.autoTaskName = res.auto_post_task_name || "";
+            // Une seule tâche déjà rattachée : c'est de très loin le cas courant, on poste
+            // sans rien demander. Le sélecteur ne sert qu'aux cas ambigus.
+            if (this.state.taskTargets.length === 1) {
+                await this.postToTask(this.state.taskTargets[0].id);
+                return;
+            }
+            this.state.taskSearch = "";
+            this.state.taskResults = [];
+            this.state.taskPickerOpen = true;
+            if (!this.state.taskTargets.length) {
+                await this._searchTasks("");
+            }
+        } catch (e) {
+            this.notification.add(this._rpcError(e), { type: "danger" });
+        }
+    }
+
+    closeTaskPicker() {
+        this.state.taskPickerOpen = false;
+    }
+
+    async onTaskSearchInput(ev) {
+        this.state.taskSearch = ev.target.value;
+        await this._searchTasks(this.state.taskSearch);
+    }
+
+    async _searchTasks(term) {
+        try {
+            this.state.taskResults = await this.orm.call(MODEL, "messenger_search_tasks", [
+                term || "",
+            ]);
+        } catch (e) {
+            this.state.taskResults = [];
+            this.notification.add(this._rpcError(e), { type: "danger" });
+        }
+    }
+
+    async postToTask(taskId) {
+        if (!this.state.activeThreadId || this.state.taskPosting) {
+            return;
+        }
+        this.state.taskPosting = true;
+        try {
+            const res = await this.orm.call(
+                MODEL,
+                "messenger_post_to_task",
+                [this.state.activeThreadId, taskId],
+                { message_ids: this.postScopeIds }
+            );
+            this.notification.add(
+                `${res.count} message(s) posté(s) sur « ${res.task_name} »`,
+                { type: "success" }
+            );
+            this.state.taskPickerOpen = false;
+            this.state.msgSelectMode = false;
+            this.state.selectedMsgIds = [];
+        } catch (e) {
+            this.notification.add(this._rpcError(e), { type: "danger" });
+        } finally {
+            this.state.taskPosting = false;
+        }
+    }
+
+    /** Sorcier complet : aperçu, choix libre de la fiche, suivi automatique.
+     *  Le sélecteur rapide ci-dessus ne connaît que les tâches ; le sorcier,
+     *  lui, atteint n'importe quelle fiche dotée d'un chatter. */
+    openTaskWizard() {
+        const ids = this.postScopeIds;
+        if (!ids.length) {
+            return;
+        }
+        this.state.taskPickerOpen = false;
+        this.action.doAction({
+            type: "ir.actions.act_window",
+            name: "Poster sur une fiche",
+            res_model: "sms.archive.post.to.task.wizard",
+            view_mode: "form",
+            views: [[false, "form"]],
+            target: "new",
+            context: { default_message_ids: [[6, 0, ids]] },
+        });
+    }
+
+    async toggleAutoTask() {
+        if (!this.state.activeThreadId) {
+            return;
+        }
+        try {
+            const next = this.state.autoTaskId
+                ? false
+                : (this.state.taskTargets[0] && this.state.taskTargets[0].id);
+            if (!next && !this.state.autoTaskId) {
+                this.notification.add(
+                    "Rattachez d'abord la conversation à une tâche.",
+                    { type: "warning" }
+                );
+                return;
+            }
+            const res = await this.orm.call(MODEL, "messenger_set_auto_task", [
+                this.state.activeThreadId,
+                next,
+            ]);
+            this.state.autoTaskId = res.auto_post_task_id || false;
+            this.state.autoTaskName = res.auto_post_task_name || "";
+            this.notification.add(
+                this.state.autoTaskId
+                    ? `Les prochains messages iront dans « ${this.state.autoTaskName} »`
+                    : "Suivi automatique désactivé",
+                { type: "success" }
+            );
+        } catch (e) {
+            this.notification.add(this._rpcError(e), { type: "danger" });
+        }
     }
 
     // ── Contact linking / opening ──────────────────────────────

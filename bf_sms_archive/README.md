@@ -54,9 +54,10 @@ A two-way SMS/MMS messaging and archiving module for Odoo 18. Send and receive l
 - **Owner-only security** -- Record rules ensure users only see their own SMS and call data
 - **Manager override** -- `group_sms_manager` can access all data for administration
 
-### Task Integration
-- **Thread <> Task linking** -- Many2many relationship between conversations and project tasks
-- **Post to task** -- Button on individual messages to post SMS content as a chatter note on linked tasks
+### Posting onto a record
+- **Post to any record (5.8+)** -- Select messages or calls and post them as one consolidated chatter note. The destination is picked through [`bf_chatter_target`](../bf_chatter_target): a single search box over every chatter-bearing model, with no project and no object type to choose first. Before 5.8 the wizard asked for a project, then a task, and could reach nothing else.
+- **Thread <> Task linking** -- Many2many relationship between conversations and project tasks. Linking the conversation and relaying its later messages are task-only by construction, so those two options appear only when the chosen destination *is* a task.
+- **Auto-follow** -- A conversation can be pinned to a task so subsequent messages relay to its chatter on their own.
 - **MCP tools** -- 9 tools for searching, browsing, and linking SMS and call data programmatically
 
 ## Installation
@@ -66,7 +67,7 @@ A two-way SMS/MMS messaging and archiving module for Odoo 18. Send and receive l
 - Odoo 18 Community or Enterprise
 - Python: `defusedxml` (required for safe XML parsing)
 - Python: `pillow-heif` (optional, for HEIC image conversion in MMS)
-- Odoo modules: `base`, `mail`, `project`
+- Odoo modules: `base`, `mail`, `project`, `bf_onboarding_base`, `bf_chatter_target`
 - Optional: `bf_lexend` -- Provides Lexend font and brand colour settings. Without it, reports use system-ui font and default Odoo colours.
 
 ### Install via CLI
@@ -128,13 +129,14 @@ ZIP files containing both SMS and call log XML files are imported in a single pa
 - **CSV** -- Click **Exporter CSV** for a spreadsheet-friendly format
 - **XML** -- Click **Exporter XML** for SMS Backup & Restore compatible format
 
-### Linking to Tasks
+### Posting onto a record
 
 **From a thread:**
 - Open the **Taches liees** tab and add project tasks
 
-**From a message:**
-- Open a message form and click **Poster sur tache liee** to post the SMS content as a note on the linked task's chatter
+**From messages or calls:**
+- Select them in the list and use **Action -> Poster sur une fiche**. Search the destination by name, by number, by a shorthand (`task:22299`) or by pasting an Odoo URL; the wizard previews the note before it is posted.
+- Linking the conversation and relaying later messages are offered only when the destination is a task.
 
 ### MCP Tools
 
@@ -530,7 +532,7 @@ curl -X POST https://odoo.example.com/bf_sms_archive/api/ingest \
 - Thread and message models with owner-only security
 - Confidential thread hiding (`is_hidden`)
 - Auto-match contacts by phone number
-- Post individual messages to linked task chatter
+- Post messages and calls onto any chatter-bearing record
 - 6 MCP tools for search, browse, import, and task linking
 - Full deduplication via SHA-256 hashing
 

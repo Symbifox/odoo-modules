@@ -7,21 +7,32 @@
         <field name="arch" type="xml">
             <form>
                 <group>
-                    <field name="message_count" string="Messages sélectionnés" readonly="1"/>
+                    <field name="message_count" string="Éléments sélectionnés" readonly="1"/>
                     <field name="message_ids" invisible="1"/>
+                    <field name="call_ids" invisible="1"/>
+                    <field name="single_thread_id" invisible="1"/>
                 </group>
                 <group>
-                    <field name="project_id" string="Projet"
-                           options="{'no_create': True}"/>
-                    <field name="task_id" string="Tâche"
-                           options="{'no_create': True}"/>
+                    <!-- Une seule zone de saisie : tâche, ticket, contact, ordre du jour…
+                         Ni le projet ni le type d'objet ne sont demandés d'abord. -->
+                    <field name="target_reference" string="Fiche"
+                           widget="bf_chatter_target"
+                           required="1"
+                           placeholder="Nom, numéro, task:22299, ou URL Odoo…"/>
+                    <field name="task_id" invisible="1"/>
+                    <!-- Rattacher la conversation et relayer la suite n'existe que
+                         vers une tâche : ces deux options disparaissent ailleurs. -->
                     <field name="link_threads"
-                           string="Lier la(les) conversation(s) à cette tâche"/>
+                           string="Lier la(les) conversation(s) à cette tâche"
+                           invisible="not task_id"/>
+                    <field name="follow_thread"
+                           string="Envoyer aussi les prochains messages à cette tâche"
+                           invisible="not task_id or not single_thread_id"/>
                 </group>
                 <separator string="Aperçu (sera posté en note interne)"/>
                 <field name="preview" nolabel="1" readonly="1"/>
                 <footer>
-                    <button name="action_post" string="Poster sur la tâche"
+                    <button name="action_post" string="Poster sur la fiche"
                             type="object" class="btn-primary"/>
                     <button string="Annuler" class="btn-secondary" special="cancel"/>
                 </footer>
@@ -31,9 +42,19 @@
 
     <!-- List-view binding: appears in the multi-select Actions menu on sms.archive.message -->
     <record id="action_sms_post_to_task_bulk" model="ir.actions.server">
-        <field name="name">Poster sur une tâche</field>
+        <field name="name">Poster sur une fiche</field>
         <field name="model_id" ref="model_sms_archive_message"/>
         <field name="binding_model_id" ref="model_sms_archive_message"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">action = records.action_post_to_task()</field>
+    </record>
+
+    <!-- Même geste depuis le journal d'appels, qui n'avait aucun lien vers les fiches -->
+    <record id="action_call_post_to_task_bulk" model="ir.actions.server">
+        <field name="name">Poster sur une fiche</field>
+        <field name="model_id" ref="model_call_archive_call"/>
+        <field name="binding_model_id" ref="model_call_archive_call"/>
         <field name="binding_view_types">list</field>
         <field name="state">code</field>
         <field name="code">action = records.action_post_to_task()</field>

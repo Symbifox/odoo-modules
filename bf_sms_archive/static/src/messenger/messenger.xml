@@ -198,7 +198,23 @@
                                 </div>
                                 <small class="text-muted" t-esc="state.activeThread.phone"/>
                             </div>
+                            <!-- Poster sur une tâche : visible dans les deux densités, c'est
+                                 le geste qu'on répète le plus souvent. -->
+                            <button class="btn btn-sm btn-light me-1 o_sms_task_btn"
+                                    t-on-click="openTaskPicker"
+                                    t-att-disabled="state.taskPosting"
+                                    t-att-title="state.taskTargets.length === 1
+                                        ? 'Poster sur « ' + state.taskTargets[0].name + ' »'
+                                        : 'Poster sur une tâche'">
+                                <i class="fa" t-att-class="state.taskPosting ? 'fa-spin fa-circle-o-notch' : 'fa-tasks'"/>
+                                <span t-if="selectedMsgCount" class="ms-1" t-esc="selectedMsgCount"/>
+                            </button>
                             <t t-if="state.advanced">
+                                <button class="btn btn-sm btn-light me-1" t-on-click="toggleMsgSelectMode"
+                                        t-att-class="{ active: state.msgSelectMode }"
+                                        title="Sélectionner des messages">
+                                    <i class="fa fa-check-square-o"/>
+                                </button>
                                 <button class="btn btn-sm btn-light me-1" t-on-click="toggleConvSearch"
                                         title="Rechercher dans la conversation">
                                     <i class="fa fa-search"/>
@@ -232,6 +248,21 @@
                                         <i class="fa fa-ellipsis-v"/>
                                     </button>
                                     <t t-set-slot="content">
+                                        <DropdownItem onSelected.bind="toggleMsgSelectMode">
+                                            <i class="fa fa-check-square-o fa-fw me-2"/>
+                                            <t t-esc="state.msgSelectMode ? 'Quitter la sélection' : 'Sélectionner des messages'"/>
+                                        </DropdownItem>
+                                        <DropdownItem onSelected.bind="openTaskWizard">
+                                            <i class="fa fa-tasks fa-fw me-2"/>Poster sur une fiche (options)
+                                        </DropdownItem>
+                                        <DropdownItem t-if="state.taskTargets.length or state.autoTaskId"
+                                                      onSelected.bind="toggleAutoTask">
+                                            <i class="fa fa-fw me-2"
+                                               t-att-class="state.autoTaskId ? 'fa-bell-slash-o' : 'fa-bell-o'"/>
+                                            <t t-esc="state.autoTaskId
+                                                ? 'Arrêter le suivi dans « ' + state.autoTaskName + ' »'
+                                                : 'Suivre dans la tâche'"/>
+                                        </DropdownItem>
                                         <DropdownItem onSelected.bind="togglePin">
                                             <i class="fa fa-thumb-tack fa-fw me-2"/>
                                             <t t-esc="state.activeThread.is_pinned ? 'Désépingler' : 'Épingler'"/>
@@ -278,6 +309,57 @@
                         </div>
                     </div>
 
+                    <!-- Bandeau de sélection de messages -->
+                    <div t-if="state.msgSelectMode and state.activeThread"
+                         class="o_sms_selbar d-flex align-items-center">
+                        <span class="flex-grow-1">
+                            <t t-if="selectedMsgCount">
+                                <t t-esc="selectedMsgCount"/> message(s) sélectionné(s)
+                            </t>
+                            <t t-else="">Touchez les messages à joindre à la tâche.</t>
+                        </span>
+                        <button class="btn btn-sm btn-primary me-1" t-on-click="openTaskPicker"
+                                t-att-disabled="!selectedMsgCount or state.taskPosting">
+                            <i class="fa fa-tasks me-1"/>Poster
+                        </button>
+                        <button class="btn btn-sm btn-light" t-on-click="toggleMsgSelectMode">
+                            Annuler
+                        </button>
+                    </div>
+
+                    <!-- Sélecteur de tâche : n'apparaît que quand la cible est ambiguë -->
+                    <div t-if="state.taskPickerOpen and state.activeThread" class="o_sms_taskpicker">
+                        <div class="d-flex align-items-center mb-1">
+                            <strong class="flex-grow-1">
+                                Poster <t t-esc="selectedMsgCount or state.conversation.length"/> message(s) sur…
+                            </strong>
+                            <button class="btn btn-sm btn-light" t-on-click="closeTaskPicker">
+                                <i class="fa fa-times"/>
+                            </button>
+                        </div>
+                        <div t-if="state.taskTargets.length" class="o_sms_task_group">
+                            <div class="text-muted small mb-1">Déjà liées à cette conversation</div>
+                            <div t-foreach="state.taskTargets" t-as="tk" t-key="'l' + tk.id"
+                                 class="o_sms_task_item" t-on-click="() => this.postToTask(tk.id)">
+                                <div class="text-truncate" t-esc="tk.name"/>
+                                <small class="text-muted" t-esc="tk.project_name"/>
+                            </div>
+                        </div>
+                        <input type="text" class="form-control form-control-sm mt-1"
+                               placeholder="Rechercher une tâche…"
+                               t-att-value="state.taskSearch" t-on-input="onTaskSearchInput"/>
+                        <div t-if="state.taskResults.length" class="o_sms_task_results">
+                            <div t-foreach="state.taskResults" t-as="tk" t-key="'s' + tk.id"
+                                 class="o_sms_task_item" t-on-click="() => this.postToTask(tk.id)">
+                                <div class="text-truncate" t-esc="tk.name"/>
+                                <small class="text-muted" t-esc="tk.project_name"/>
+                            </div>
+                        </div>
+                        <button class="btn btn-sm btn-link p-0 mt-1" t-on-click="openTaskWizard">
+                            <i class="fa fa-sliders me-1"/>Ouvrir le sorcier (aperçu, suivi…)
+                        </button>
+                    </div>
+
                     <!-- In-conversation search -->
                     <div t-if="state.convSearchMode and state.activeThread" class="o_sms_convsearch">
                         <input type="text" class="form-control form-control-sm"
@@ -316,9 +398,12 @@
                                 <span t-esc="formatDay(msg.date_ms)"/>
                             </div>
                             <div class="o_sms_row d-flex"
-                                 t-att-class="msg.direction === 'out' ? 'o_sms_out' : 'o_sms_in'">
+                                 t-att-class="rowClass(msg)"
+                                 t-on-click="() => this.onBubbleClick(msg)">
+                                <i t-if="state.msgSelectMode" class="fa o_sms_selmark"
+                                   t-att-class="isMsgSelected(msg.id) ? 'fa-check-circle' : 'fa-circle-o'"/>
                                 <div class="o_sms_bubble"
-                                     t-att-class="{ o_out: msg.direction === 'out', o_in: msg.direction !== 'out', o_failed: msg.delivery_state === 'failed' }">
+                                     t-att-class="{ o_out: msg.direction === 'out', o_in: msg.direction !== 'out', o_failed: msg.delivery_state === 'failed', o_selected: isMsgHighlighted(msg.id) }">
                                     <t t-if="msg.media.length">
                                         <div t-foreach="msg.media" t-as="m" t-key="m_index" class="o_sms_media">
                                             <img t-if="m.is_image" t-att-src="m.url" class="o_sms_img"

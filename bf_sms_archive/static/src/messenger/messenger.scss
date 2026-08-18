@@ -117,6 +117,49 @@
         }
     }
 
+    // ── Poster sur une tâche ─────────────────────────────────
+    .o_sms_selbar {
+        padding: 6px 16px;
+        border-bottom: 1px solid #e0e0e0;
+        background: #e6f4fb;
+        font-size: 13px;
+    }
+    .o_sms_taskpicker {
+        padding: 8px 16px;
+        border-bottom: 1px solid #e0e0e0;
+        background: #fafafa;
+
+        .o_sms_task_results,
+        .o_sms_task_group {
+            margin-top: 4px;
+            max-height: 220px;
+            overflow-y: auto;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            background: #fff;
+        }
+        .o_sms_task_item {
+            padding: 6px 10px;
+            cursor: pointer;
+            &:hover { background: #e6f4fb; }
+            & + .o_sms_task_item { border-top: 1px solid #f0f0f0; }
+        }
+    }
+    .o_sms_row.o_selectable {
+        cursor: pointer;
+        align-items: center;
+    }
+    .o_sms_selmark {
+        flex: 0 0 auto;
+        margin: 0 6px;
+        color: #1a7fb3;
+        font-size: 16px;
+    }
+    .o_sms_bubble.o_selected {
+        outline: 2px solid #1a7fb3;
+        outline-offset: 1px;
+    }
+
     // ── New-conversation typeahead ───────────────────────────
     .o_sms_minw0 { min-width: 0; }
     .o_sms_avatar_sm {
@@ -329,9 +372,25 @@ body.bf_dark_mode .o_sms_messenger {
     }
 
     .o_sms_convsearch,
-    .o_sms_link_box {
+    .o_sms_link_box,
+    .o_sms_taskpicker {
         background: $sms-dk-surface;
         border-bottom-color: $sms-dk-border;
+    }
+
+    .o_sms_selbar {
+        background: $sms-dk-raised;
+        border-bottom-color: $sms-dk-border;
+        color: $sms-dk-text;
+    }
+    .o_sms_taskpicker .o_sms_task_results,
+    .o_sms_taskpicker .o_sms_task_group {
+        background: $sms-dk-raised;
+        border-color: $sms-dk-border;
+    }
+    .o_sms_taskpicker .o_sms_task_item {
+        &:hover { background: $sms-dk-hover; }
+        & + .o_sms_task_item { border-top-color: $sms-dk-border; }
     }
 
     .o_sms_link_box .o_sms_link_results,

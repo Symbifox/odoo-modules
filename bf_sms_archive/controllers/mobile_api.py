@@ -12,6 +12,7 @@ propriétaire des fils s'appliquent telles quelles.
 """
 import functools
 import json
+import re
 import logging
 import threading
 import time
@@ -136,7 +137,68 @@ def _authed(fn):
     return wrapper
 
 
+# Odoo ships these on every fresh database. A company still wearing them has
+# not chosen anything, so treating them as "the tenant's brand" would paint the
+# app in stock Odoo purple — which is precisely the look this product exists to
+# avoid. Treated as unbranded, so the product default applies instead.
+ODOO_STOCK_COLOURS = {"#714B67", "#875A7B", "#212529", "#017E84"}
+
+
+def _branding():
+    """Marque de l'instance, pour que l'app porte les couleurs du locataire.
+
+    Dupliqué depuis ``bf_email_management`` — quinze lignes — plutôt que d'y
+    ajouter une dépendance : les deux modules sont installables séparément et
+    l'un ne doit pas exiger l'autre pour servir sa propre sonde.
+
+    Lecture défensive : ``report_brand_*`` vient de ``bluefox_branding``,
+    absent de bien des instances ; à défaut les champs natifs de
+    ``res.company`` ; à défaut rien, et l'app applique ses propres valeurs.
+    """
+    company = request.env.company.sudo()
+
+    def hex_colour(*names):
+        for name in names:
+            if name not in company._fields:
+                continue
+            value = (company[name] or "").strip()
+            if re.fullmatch(r"#[0-9A-Fa-f]{6}", value) \
+                    and value.upper() not in ODOO_STOCK_COLOURS:
+                return value.upper()
+        return None
+
+    return {
+        "name": company.name or "",
+        "primary": hex_colour("report_brand_primary", "primary_color"),
+        "dark": hex_colour("report_brand_dark", "secondary_color"),
+        "logo_url": "/web/binary/company_logo",
+    }
+
+
 class BfSmsMobileApi(http.Controller):
+
+    # ── Découverte ────────────────────────────────────────────────────
+    @http.route(f"{BASE}/ping", type="http", auth="public", methods=["GET"],
+                csrf=False, save_session=False)
+    def ping(self, **kw):
+        """Sonde de capacité, jumelle de celle de ``bf_email_management``.
+
+        Son absence était un défaut, pas un manque : l'app interroge ``/ping``
+        sur les DEUX modules pour décider des onglets à offrir. Sans réponse
+        ici, une installation NEUVE ne voyait pas la moitié SMS et n'en
+        demandait jamais le jeton — le symétrique exact du défaut côté
+        courriel, masqué jusqu'ici parce qu'un jeton SMS déjà présent suffit
+        à faire apparaître l'onglet.
+        """
+        module = request.env["ir.module.module"].sudo().search(
+            [("name", "=", "bf_sms_archive")], limit=1)
+        return _json({
+            "ok": True,
+            "module": "bf_sms_archive",
+            "api": 1,
+            "version": module.installed_version or "",
+            "branding": _branding(),
+        })
 
     # ── Auth ──────────────────────────────────────────────────────────
     @http.route(f"{BASE}/login", type="http", auth="public", methods=["POST"],

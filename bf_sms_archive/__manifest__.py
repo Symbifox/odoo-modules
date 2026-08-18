@@ -1,7 +1,7 @@
 {
     "name": "SMS & Calls",
     "summary": "Messagerie SMS/MMS live via VOIP.ms + archivage de SMS et journaux d'appels Android",
-    "version": "18.0.5.6.0",
+    "version": "18.0.5.8.0",
     "category": "Tools",
     'author': 'Les services de consultation Blue Fox, Inc.',
     'website': 'https://symbifox.com',
@@ -13,6 +13,7 @@
         "mail",
         "project",
         "bf_onboarding_base",
+        "bf_chatter_target",
     ],
     "external_dependencies": {
         "python": ["defusedxml", "requests", "pywebpush"],

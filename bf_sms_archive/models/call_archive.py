@@ -2,6 +2,8 @@ import hashlib
 import logging
 from datetime import datetime, timezone
 
+import markupsafe
+
 from odoo import api, fields, models
 
 _logger = logging.getLogger(__name__)
@@ -118,6 +120,73 @@ class CallArchiveCall(models.Model):
     display_name = fields.Char(
         compute="_compute_display_name",
     )
+
+    def action_post_to_task(self):
+        """Open the wizard to post the selected call(s) to a project task."""
+        if not self:
+            return False
+        return {
+            "type": "ir.actions.act_window",
+            "name": "Poster sur une fiche",
+            "res_model": "sms.archive.post.to.task.wizard",
+            "view_mode": "form",
+            "target": "new",
+            "context": {
+                "default_call_ids": [(6, 0, self.ids)],
+            },
+        }
+
+    # ── Rendu pour le chatter d'une tâche ──────────────────────────
+
+    def _render_task_post_body(self):
+        """HTML consolidé de ces appels, destiné au chatter d'une tâche.
+
+        L'entrée du journal ne vaut pas grand-chose sans l'audio : quand l'appel a été
+        enregistré, le lien Nextcloud est repris ici pour qu'on puisse l'écouter depuis la
+        tâche sans repasser par la Messagerie."""
+        calls = self.sorted("date")
+        if not calls:
+            return ""
+
+        threads = calls.thread_id
+        label = "appel" if len(calls) == 1 else "appels"
+        if len(threads) == 1:
+            contact = markupsafe.escape(
+                threads.contact_name or threads.phone_normalized or "")
+            header = f"<p><strong>{len(calls)} {label}</strong> — {contact}</p>"
+        else:
+            header = (
+                f"<p><strong>{len(calls)} {label}</strong> "
+                f"sur {len(threads)} conversations</p>"
+            )
+
+        rows = []
+        prev_thread_id = None
+        for call in calls:
+            if len(threads) > 1 and call.thread_id.id != prev_thread_id:
+                contact = markupsafe.escape(
+                    call.thread_id.contact_name or call.thread_id.phone_normalized or "")
+                rows.append(
+                    f"<p style='margin:8px 0 2px 0'><strong>— {contact}</strong></p>"
+                )
+                prev_thread_id = call.thread_id.id
+            arrow = _CALL_TYPE_LABELS.get(call.call_type, "?")
+            type_label = markupsafe.escape(
+                dict(self._fields["call_type"].selection).get(call.call_type, ""))
+            color = "#b02a2a" if call.call_type in ("missed", "rejected", "blocked") else "#0f4960"
+            date_str = markupsafe.escape(str(call.date or ""))
+            duration = markupsafe.escape(call.duration_display or "")
+            listen = ""
+            if call.recording_url:
+                url = markupsafe.escape(call.recording_url)
+                listen = f" — <a href='{url}'>🔊 Écouter</a>"
+            rows.append(
+                f"<p style='margin:2px 0'>"
+                f"<span style='color:{color};font-weight:600'>{arrow} {type_label}</span> "
+                f"<span style='color:#666;font-size:0.9em'>{date_str}</span> — {duration}"
+                f"{listen}</p>"
+            )
+        return markupsafe.Markup(header + "".join(rows))
 
     _sql_constraints = [
         (

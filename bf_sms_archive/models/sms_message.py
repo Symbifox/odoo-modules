@@ -4,6 +4,8 @@ import re
 import unicodedata
 from datetime import datetime, timezone
 
+import markupsafe
+
 from odoo import api, fields, models
 from odoo.exceptions import UserError
 
@@ -27,6 +29,10 @@ _DIRECTION_LABELS = {
     "out": "→",
     "draft": "~",
 }
+
+# Libellés lisibles pour la note postée au chatter d'une tâche (cf. _render_task_post_body).
+_POST_DIRECTION_LABELS = {"in": "Reçu", "out": "Envoyé", "draft": "Brouillon"}
+_POST_DIRECTION_COLORS = {"in": "#0a7d3a", "out": "#0f4960", "draft": "#999"}
 
 
 class SmsArchiveMessage(models.Model):
@@ -146,12 +152,15 @@ class SmsArchiveMessage(models.Model):
             msg.display_name = f"{arrow} {contact} — {dt} — {preview}"
 
     def action_post_to_task(self):
-        """Open wizard to post the selected SMS message(s) to a project task."""
+        """Ouvrir le sorcier pour poser ces SMS sur le chatter d'une fiche.
+
+        Le nom de la méthode date de l'époque « tâche seulement » ; il est
+        référencé par deux vues et deux actions serveur, d'où le statu quo."""
         if not self:
             return False
         return {
             "type": "ir.actions.act_window",
-            "name": "Poster sur une tâche",
+            "name": "Poster sur une fiche",
             "res_model": "sms.archive.post.to.task.wizard",
             "view_mode": "form",
             "target": "new",
@@ -159,6 +168,88 @@ class SmsArchiveMessage(models.Model):
                 "default_message_ids": [(6, 0, self.ids)],
             },
         }
+
+    # ── Rendu pour le chatter d'une tâche ──────────────────────────
+
+    def _render_task_post_body(self):
+        """HTML consolidé de ces messages, destiné au chatter d'une tâche.
+
+        Vit sur le modèle et non dans le sorcier : le bouton « → Tâche » de la Messagerie,
+        le suivi automatique d'un fil et le sorcier doivent tous produire exactement la
+        même note, sinon le chatter d'une tâche devient un patchwork selon le chemin pris.
+        """
+        messages = self.sorted("date_sent")
+        if not messages:
+            return ""
+
+        threads = messages.thread_id
+        if len(threads) == 1:
+            contact = markupsafe.escape(
+                threads.contact_name or threads.phone_normalized or "")
+            header = f"<p><strong>{len(messages)} SMS</strong> — {contact}</p>"
+        else:
+            header = (
+                f"<p><strong>{len(messages)} SMS</strong> "
+                f"sur {len(threads)} conversations</p>"
+            )
+
+        rows = []
+        prev_thread_id = None
+        for msg in messages:
+            if len(threads) > 1 and msg.thread_id.id != prev_thread_id:
+                contact = markupsafe.escape(
+                    msg.thread_id.contact_name or msg.thread_id.phone_normalized or "")
+                rows.append(
+                    f"<p style='margin:8px 0 2px 0'><strong>— {contact}</strong></p>"
+                )
+                prev_thread_id = msg.thread_id.id
+            direction = _POST_DIRECTION_LABELS.get(msg.direction, "Brouillon")
+            arrow_color = _POST_DIRECTION_COLORS.get(msg.direction, "#999")
+            date_str = markupsafe.escape(str(msg.date_sent or ""))
+            body_escaped = markupsafe.escape(msg.body or "")
+            rows.append(
+                f"<p style='margin:2px 0'>"
+                f"<span style='color:{arrow_color};font-weight:600'>{direction}</span> "
+                f"<span style='color:#666;font-size:0.9em'>{date_str}</span><br/>"
+                f"{body_escaped}"
+                f"</p>"
+            )
+        # Markup plutôt que body_is_html=True (déprécié en 18.0) : tout ce qui vient des
+        # données est déjà passé par markupsafe.escape juste au-dessus.
+        return markupsafe.Markup(header + "".join(rows))
+
+    def _post_to_task(self, task, link_threads=True):
+        """Post these messages on ``task``'s chatter as one note. Returns the task."""
+        if not self or not task:
+            return task
+        task.message_post(
+            body=self._render_task_post_body(),
+            message_type="comment",
+            subtype_xmlid="mail.mt_note",
+        )
+        if link_threads:
+            for thread in self.thread_id:
+                if task.id not in thread.task_ids.ids:
+                    thread.write({"task_ids": [(4, task.id, 0)]})
+        return task
+
+    def _auto_post_to_task(self):
+        """Relay a live message to the task the thread is set to follow, if any.
+
+        Deliberately called from the live paths only (webhook, poller, outbound send) and
+        never from ``create``: an Android backup import replays thousands of old messages,
+        and a ``create`` hook would dump every one of them into a task chatter."""
+        for msg in self:
+            task = msg.thread_id.auto_post_task_id
+            if not task or not task.exists():
+                continue
+            try:
+                msg._post_to_task(task, link_threads=False)
+            except Exception:  # noqa: BLE001 — un relais ne casse jamais la réception
+                _logger.exception(
+                    "Suivi automatique vers la tâche %s échoué (message %s)",
+                    task.id, msg.id,
+                )
 
     def action_export_csv(self):
         """Export the selected messages as a single CSV file."""
@@ -596,6 +687,7 @@ class SmsArchiveMessage(models.Model):
             } for m in media]
             self.env["sms.archive.mms.part"].sudo()._ingest_parts(rec.id, parts)
         rec._notify_bus(kind="out")
+        rec._auto_post_to_task()
         return rec.id
 
     def _messenger_dict(self):
