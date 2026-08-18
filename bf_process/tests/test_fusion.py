@@ -523,6 +523,125 @@ class TestFusion(TransactionCase):
         with self.assertRaisesRegex(UserError, "a changé depuis l'analyse"):
             wiz.action_appliquer()
 
+    # ============ ce qu'une relecture adverse a trouvé =====================
+    #
+    # Un `.bpmn` n'arrive pas forcément de chez nous, et un éditeur tiers n'a
+    # pas besoin d'être malveillant pour écrire salement. Ces contrôles
+    # existent parce qu'un audit indépendant a reproduit six fichiers qui
+    # sortaient en trace de 500 — ou, pire, qui passaient.
+
+    MODELE = '''<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
+ xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+ xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+ xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="D1">
+  <bpmn:collaboration id="%(colab)s">
+    <bpmn:participant id="d1_pool" name="P" processRef="d1_process"/>
+  </bpmn:collaboration>
+  <bpmn:process id="d1_process" isExecutable="false">
+    <bpmn:task id="d1_t1" name="T"/>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="d1_diagram" name="N">
+    <bpmndi:BPMNPlane id="d1_plane" bpmnElement="%(colab)s">
+      <bpmndi:BPMNShape id="d1_pool_di" bpmnElement="d1_pool">
+        <dc:Bounds x="0" y="0" width="500" height="200"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="d1_t1_di" bpmnElement="d1_t1">
+        %(bornes)s
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>'''
+    BORNES_OK = '<dc:Bounds x="100" y="50" width="152" height="68"/>'
+
+    def _bancal(self, colab="c1", bornes=None):
+        return (self.MODELE % {"colab": colab,
+                               "bornes": self.BORNES_OK if bornes is None
+                               else bornes}).encode("utf-8")
+
+    def test_fichier_bancal_refuse_lisiblement(self):
+        """Un fichier mal formé se refuse, il ne sort pas en trace de 500.
+
+        C'est la raison d'être du décorateur de refus lisible ; il ne couvrait
+        que les refus de mesure, et laissait passer tout ce que le XML lui-même
+        pouvait avoir de tordu.
+        """
+        Lecture = self.env["bf.process.lecture"]
+        cas = [
+            ("forme sans dc:Bounds", self._bancal(bornes="")),
+            ("bornes sans attribut", self._bancal(bornes="<dc:Bounds/>")),
+            ("borne non numérique",
+             self._bancal(bornes='<dc:Bounds x="abc" y="5" width="1" height="1"/>')),
+        ]
+        for nom, xml in cas:
+            with self.assertRaises(UserError, msg=nom):
+                Lecture._lire_fichier(xml)
+
+    def test_apostrophe_dans_un_identifiant_se_lit(self):
+        """Un identifiant qui contient une apostrophe n'est pas une anomalie.
+
+        La collaboration était retrouvée par un prédicat ElementPath composé
+        en f-string : l'identifiant du fichier entrait donc dans la SYNTAXE de
+        la requête, et une apostrophe — qu'un éditeur tiers produit sans
+        malice — cassait le prédicat. Indexer les collaborations une fois
+        supprime la question au lieu de l'échapper.
+        """
+        lu = self.env["bf.process.lecture"]._lire_fichier(self._bancal(colab="a'b"))
+        self.assertEqual(len(lu), 1)
+        self.assertEqual([n["id"] for n in lu[0]["nodes"]], ["t1"])
+
+    def test_coordonnee_non_finie_refusee(self):
+        """`nan` et `inf` se refusent, et c'est le contrôle qui compte le plus.
+
+        Les deux se lisent sans lever quoi que ce soit et traversent toute
+        l'arithmétique : ils s'écrivaient tels quels dans la colonne d'un
+        nœud, et chaque tracé, export ou PDF ultérieur rejouait l'opération.
+        Un plantage se voit ; celui-là ne se voyait pas.
+        """
+        Lecture = self.env["bf.process.lecture"]
+        for valeur in ("nan", "inf", "-inf"):
+            xml = self._bancal(
+                bornes=f'<dc:Bounds x="{valeur}" y="5" width="152" height="68"/>')
+            with self.assertRaisesRegex(UserError, valeur, msg=valeur):
+                Lecture._lire_fichier(xml)
+
+    def test_application_sans_analyse_refusee(self):
+        """Les lignes d'arbitrage sont des enregistrements que le client écrit.
+
+        Écrit « si une empreinte existe et diffère », le contrôle sautait en
+        entier pour un assistant dont l'analyse n'avait jamais tourné.
+        """
+        wiz = self._assistant()
+        wiz.write({"line_ids": [(0, 0, {
+            "portee": "noeud", "operation": "renommage", "niveau": "d1",
+            "cle": "t1", "libelle": "forgé", "decision": "appliquer"})]})
+        self.assertFalse(wiz.empreinte)
+        with self.assertRaisesRegex(UserError, "n'a pas été analysée"):
+            wiz.action_appliquer()
+
+    def test_application_d_un_fichier_etranger_refusee(self):
+        """Le refus du fichier étranger vit aussi à l'application.
+
+        Il n'existait qu'à l'analyse : par appel direct, un fichier sans aucun
+        niveau commun se fusionnait quand même — en retirant tout pour tout
+        remettre, ce que ce refus existe précisément pour empêcher.
+        """
+        autre = self.env["bf.process"].create({
+            "name": "Ailleurs bis", "pool_name": "Autre"})
+        autre._charger_niveaux(DEUX_NIVEAUX)
+        etranger = autre.exporter_bpmn().replace("d1_", "zz1_").replace("d2_", "zz2_")
+
+        # une analyse valide d'abord, pour obtenir une empreinte légitime
+        wiz = self._ecarts(self.processus.exporter_bpmn().replace(
+            "Qualifier la demande", "Autre libellé"))
+        self.assertTrue(wiz.empreinte)
+        # puis on lui substitue un fichier qui n'a rien à voir
+        wiz.fichier = base64.b64encode(etranger.encode("utf-8"))
+        with self.assertRaisesRegex(UserError, "Aucun niveau de ce fichier"):
+            wiz.action_appliquer()
+        self.assertEqual(len(self.processus.diagram_ids), 1,
+                         "la carte n'a pas été touchée")
+
     def test_compte_rendu_n_execute_pas_un_nom_de_noeud(self):
         """Un libellé venu d'un fichier tiers ne devient jamais une balise.
 

@@ -31,8 +31,11 @@ les deux ne puissent pas diverger en silence. C'est `fusion` qui reporte
 ensuite cette forme relative sur le repère de la carte visée.
 """
 import base64
+import math
 import re
 import xml.etree.ElementTree as ET
+
+from markupsafe import Markup
 
 from odoo import _, fields, models
 from odoo.exceptions import UserError
@@ -88,9 +91,15 @@ class BfProcessLecture(models.AbstractModel):
 
     def _lire(self, racine, grilles):
         procs = {p.get("id"): p for p in racine.iter(B + "process")}
+        # Les collaborations s'indexent une fois. Les chercher par un prédicat
+        # ElementPath composé en f-string faisait entrer un identifiant du
+        # FICHIER dans la syntaxe de la requête : une simple apostrophe dans un
+        # identifiant — qu'un éditeur tiers peut produire sans malice — cassait
+        # le prédicat et sortait en trace de 500.
+        colabs = {c.get("id"): c for c in racine.iter(B + "collaboration")}
         diagrammes = []
         for plan in racine.iter(DI + "BPMNPlane"):
-            d = self._lire_plan(racine, plan, procs, grilles)
+            d = self._lire_plan(racine, plan, procs, colabs, grilles)
             if d:
                 diagrammes.append(d)
         return diagrammes
@@ -139,15 +148,54 @@ class BfProcessLecture(models.AbstractModel):
     # ------------------------------------------------------------------ bornes
     @staticmethod
     def _bornes(forme):
-        b = forme.find(DC + "Bounds")
-        return (float(b.get("x")), float(b.get("y")),
-                float(b.get("width")), float(b.get("height")))
+        """Les bornes d'une forme, ou un refus qui nomme la forme fautive.
 
-    def _lire_plan(self, racine, plan, procs, grilles):
+        Un `.bpmn` n'arrive pas forcément de chez nous, et un éditeur tiers
+        n'a pas à être malveillant pour écrire salement. Une forme sans
+        `dc:Bounds`, un attribut absent ou une valeur non numérique tombaient
+        en trace de 500 — précisément ce que le décorateur de refus lisible
+        existe pour éviter.
+
+        ⚠️ Le cas qui compte vraiment est le dernier. `float("nan")` et
+        `float("inf")` se lisent SANS lever quoi que ce soit, traversent toute
+        l'arithmétique de la lecture, et s'écrivaient tels quels dans la
+        colonne d'un nœud. La carte devenait alors définitivement intraçable :
+        chaque tracé, chaque export et chaque PDF ultérieur rejouait la même
+        opération. Un plantage se voit ; celui-là ne se voyait pas.
+        """
+        quoi = forme.get("bpmnElement") or forme.get("id") or "?"
+        b = forme.find(DC + "Bounds")
+        if b is None:
+            raise UserError(_(
+                "La forme « %s » n'a pas de <dc:Bounds> : ce fichier porte sa "
+                "sémantique, pas ses coordonnées.") % quoi)
+        valeurs = []
+        for attr in ("x", "y", "width", "height"):
+            brut = b.get(attr)
+            if brut is None:
+                raise UserError(_(
+                    "Les bornes de la forme « %(quoi)s » n'ont pas d'attribut "
+                    "%(attr)s.", quoi=quoi, attr=attr))
+            try:
+                valeur = float(brut)
+            except (TypeError, ValueError):
+                raise UserError(_(
+                    "La borne %(attr)s de la forme « %(quoi)s » n'est pas un "
+                    "nombre : %(brut)s.", quoi=quoi, attr=attr, brut=brut))
+            if not math.isfinite(valeur):
+                raise UserError(_(
+                    "La borne %(attr)s de la forme « %(quoi)s » vaut "
+                    "%(brut)s. Une valeur pareille ne lève aucune erreur en se "
+                    "propageant : elle contaminerait la carte en silence.",
+                    quoi=quoi, attr=attr, brut=brut))
+            valeurs.append(valeur)
+        return tuple(valeurs)
+
+    def _lire_plan(self, racine, plan, procs, colabs, grilles):
         formes = {el.get("bpmnElement"): el for el in plan
                   if el.tag == DI + "BPMNShape"}
 
-        colab = racine.find(f".//{B}collaboration[@id='{plan.get('bpmnElement')}']")
+        colab = colabs.get(plan.get("bpmnElement"))
         if colab is None:
             return None
         participants = colab.findall(B + "participant")
@@ -403,8 +451,11 @@ class BfProcessImportWizard(models.TransientModel):
                 self.nom_fichier or "sans nom"),
         })
         processus._charger_niveaux(diagrammes)
-        processus.message_post(body=_(
-            "Import de <b>%s</b> : %d niveau(x), %d nœud(s).") % (
+        # `nom_fichier` est fourni par l'appelant, donc échappé comme le reste :
+        # la sanitisation de `mail.message` est un filet, pas une raison de
+        # composer du HTML par concaténation.
+        processus.message_post(body=Markup(_(
+            "Import de <b>%s</b> : %s niveau(x), %s nœud(s).")) % (
             self.nom_fichier or "?", len(diagrammes), processus.node_count))
         return {
             "type": "ir.actions.act_window",

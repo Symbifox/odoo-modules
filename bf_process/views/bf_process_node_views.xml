@@ -6,6 +6,26 @@
         <field name="arch" type="xml">
             <form string="Nœud">
                 <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_ouvrir_matrice" type="object"
+                                class="oe_stat_button" icon="fa-sitemap"
+                                invisible="knowledge_item_count == 0">
+                            <field name="knowledge_item_count" widget="statinfo"
+                                   string="Pourquoi"/>
+                        </button>
+                        <button name="action_ouvrir_page_atelier" type="object"
+                                class="oe_stat_button" icon="fa-qrcode"
+                                invisible="resource_count == 0">
+                            <field name="resource_count" widget="statinfo"
+                                   string="Page d'atelier"/>
+                        </button>
+                        <button name="action_ouvrir_rencontres" type="object"
+                                class="oe_stat_button" icon="fa-comments-o"
+                                invisible="meeting_count == 0">
+                            <field name="meeting_count" widget="statinfo"
+                                   string="Où ça s'est dit"/>
+                        </button>
+                    </div>
                     <div class="oe_title">
                         <label for="name"/>
                         <h1><field name="name" placeholder="Verbe + complément"/></h1>
@@ -43,6 +63,58 @@
                             <field name="height" groups="base.group_no_one"/>
                         </group>
                     </group>
+                    <notebook>
+                        <page string="Ressources" name="ressources"
+                              invisible="kind == 'note'">
+                            <p class="text-muted">
+                                Ce qu'il faut avoir sous la main pour exécuter
+                                l'étape. C'est ce que le code QR de la carte
+                                imprimée ouvre.
+                            </p>
+                            <field name="resource_ids">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="kind"/>
+                                    <field name="name"/>
+                                    <field name="attachment_id"
+                                           widget="many2one"
+                                           options="{'no_create': True}"/>
+                                    <field name="document_id"
+                                           options="{'no_create': True}"/>
+                                    <field name="url" widget="url"/>
+                                    <field name="note" optional="hide"/>
+                                    <field name="critique" optional="hide"/>
+                                    <button name="action_ouvrir" type="object"
+                                            icon="fa-external-link"
+                                            title="Ouvrir la ressource"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Pourquoi cette étape" name="tracabilite">
+                            <p class="text-muted">
+                                La décision qui a produit l'étape. La fiche de
+                                l'élément porte le décideur, le rationnel et les
+                                alternatives écartées ; le compte rendu se
+                                déduit de là, il ne se saisit pas à la main.
+                            </p>
+                            <field name="knowledge_item_ids" widget="many2many"
+                                   options="{'no_create': True}">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="item_type" optional="show"/>
+                                    <field name="decision_date" optional="show"/>
+                                    <field name="decision_maker_id" optional="show"/>
+                                    <field name="state" optional="show"/>
+                                </list>
+                            </field>
+                            <!-- Les comptes rendus s'ouvrent par le bouton
+                                 « Où ça s'est dit » : les lister ici demanderait
+                                 un champ typé sur meeting.record, donc une
+                                 dépendance obligatoire à bf_meeting. -->
+                            <field name="tracee" invisible="1"/>
+                            <field name="meeting_count" invisible="1"/>
+                        </page>
+                    </notebook>
                 </sheet>
                 <chatter/>
             </form>

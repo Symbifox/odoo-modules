@@ -280,6 +280,11 @@ class BfProcessDiagramRendu(models.Model):
                 fil=len(rec.message_ids.filtered(
                     lambda m: m.message_type == "comment")) if rec else 0,
                 validation=rec.validation if rec else "",
+                # ce qui s'ouvre depuis la case : les consignes à droite, le
+                # pourquoi à gauche. Ce sont les deux mêmes coins que le code
+                # QR et la pastille de validation occupent à l'impression.
+                ressources=len(rec.resource_ids) if rec else 0,
+                traces=len(rec.knowledge_item_ids) if rec else 0,
                 **boite(n["id"])))
 
         flux = []

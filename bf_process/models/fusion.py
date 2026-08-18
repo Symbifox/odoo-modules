@@ -148,18 +148,7 @@ class BfProcessMergeWizard(models.TransientModel):
         diagrammes = self._lire_fichier(
             base64.b64decode(self.fichier or b""), grilles=self._grilles(cible))
 
-        connus = {d.bpmn_id for d in cible.diagram_ids}
-        lus = {d.get("bpmn_id") for d in diagrammes if d.get("bpmn_id")}
-        if not (connus & lus):
-            raise UserError(_(
-                "Aucun niveau de ce fichier ne correspond à un niveau de "
-                "« %(carte)s ». Les identifiants ont probablement été "
-                "renommés par l'éditeur qui l'a produit, ou le fichier vient "
-                "d'une autre cartographie. Fusionner ici retirerait tout pour "
-                "tout remettre, sans conserver ni les discussions ni le "
-                "registre de validation : importez-le plutôt comme une "
-                "nouvelle cartographie.",
-                carte=cible.display_name))
+        self._exiger_niveaux_communs(cible, diagrammes)
 
         self.line_ids.unlink()
         lignes = self._ecarts(cible, diagrammes)
@@ -177,6 +166,26 @@ class BfProcessMergeWizard(models.TransientModel):
     #: écrite, ce qui est pire que de l'avoir refusée d'entrée.
     MODELES_ECRITS = ("bf.process.diagram", "bf.process.lane", "bf.process.pool",
                       "bf.process.node", "bf.process.flow", "bf.process.message")
+
+    @staticmethod
+    def _exiger_niveaux_communs(cible, diagrammes):
+        """Une fusion suppose une parenté. Sans elle, ce n'est pas une fusion.
+
+        Contrôlé à l'analyse ET à l'application : ce sont deux points d'entrée
+        RPC distincts, et un invariant qui ne tient qu'au premier ne tient pas.
+        """
+        connus = {d.bpmn_id for d in cible.diagram_ids}
+        lus = {d.get("bpmn_id") for d in diagrammes if d.get("bpmn_id")}
+        if not (connus & lus):
+            raise UserError(_(
+                "Aucun niveau de ce fichier ne correspond à un niveau de "
+                "« %(carte)s ». Les identifiants ont probablement été "
+                "renommés par l'éditeur qui l'a produit, ou le fichier vient "
+                "d'une autre cartographie. Fusionner ici retirerait tout pour "
+                "tout remettre, sans conserver ni les discussions ni le "
+                "registre de validation : importez-le plutôt comme une "
+                "nouvelle cartographie.",
+                carte=cible.display_name))
 
     def _exiger_modifiable(self, cible):
         if cible.state == "valide":
@@ -577,7 +586,17 @@ class BfProcessMergeWizard(models.TransientModel):
         self.ensure_one()
         cible = self.process_id
         self._exiger_modifiable(cible)
-        if self.empreinte and self.empreinte != self._empreinte(cible):
+        # `if self.empreinte and …` laissait passer un assistant dont l'analyse
+        # n'a jamais tourné : les lignes d'arbitrage sont des enregistrements
+        # que le client peut créer lui-même, et une empreinte vide sautait le
+        # contrôle en entier. Une empreinte est donc EXIGÉE, pas seulement
+        # comparée quand elle existe.
+        if not self.empreinte:
+            raise UserError(_(
+                "Cette fusion n'a pas été analysée. Lancez l'analyse : c'est "
+                "elle qui relève l'état de la carte auquel les écarts se "
+                "rapportent."))
+        if self.empreinte != self._empreinte(cible):
             raise UserError(_(
                 "« %s » a changé depuis l'analyse. Relancez l'analyse : les "
                 "écarts affichés ont été calculés contre un état qui n'existe "
@@ -588,6 +607,12 @@ class BfProcessMergeWizard(models.TransientModel):
 
         diagrammes = self._lire_fichier(
             base64.b64decode(self.fichier or b""), grilles=self._grilles(cible))
+        # Le refus « aucun niveau en commun » vivait dans l'analyse seule. Un
+        # appel direct à l'application le contournait, et un fichier étranger
+        # s'y fusionnait — en retirant tout pour tout remettre, ce que le
+        # refus existe justement pour empêcher. L'invariant appartient au
+        # serveur, pas au parcours d'interface.
+        self._exiger_niveaux_communs(cible, diagrammes)
         f_niv, f_lane, f_pool, f_noeud, f_flux, f_msg = self._index_fichier(diagrammes)
         fait, refuse = [], []
 
@@ -879,27 +904,38 @@ class BfProcessMergeWizard(models.TransientModel):
                     % rec.child_diagram_id.display_name
             rec.unlink()
             return True
+        # Un `unlink()` sur un ensemble vide ne fait rien et ne dit rien : la
+        # ligne se comptait « appliquée » et le compte rendu surestimait ce
+        # qui avait eu lieu. On rend donc le motif plutôt qu'un succès muet.
         if portee == "couloir":
             rec = niveau.lane_ids.filtered(lambda x: x.code == ligne.cle)
-            if rec and rec.node_ids:
+            if not rec:
+                return _("le couloir n'existe plus")
+            if rec.node_ids:
                 return _("ce couloir porte encore %d nœud(s)") % len(rec.node_ids)
             rec.unlink()
             return True
         if portee == "pool":
             rec = niveau.pool_ids.filtered(lambda x: x.code == ligne.cle)
+            if not rec:
+                return _("le participant n'existe plus")
             rec.unlink()
             return True
         if portee == "flux":
             src, tgt = _deux_morceaux(ligne.cle)
-            niveau.flow_ids.filtered(
-                lambda x: x.source_id.code == src
-                and x.target_id.code == tgt).unlink()
+            rec = niveau.flow_ids.filtered(
+                lambda x: x.source_id.code == src and x.target_id.code == tgt)
+            if not rec:
+                return _("ce lien n'existe plus")
+            rec.unlink()
             return True
         if portee == "message":
             noeud, pool = _deux_morceaux(ligne.cle)
-            niveau.message_ids.filtered(
-                lambda x: x.node_id.code == noeud
-                and x.pool_id.code == pool).unlink()
+            rec = niveau.message_ids.filtered(
+                lambda x: x.node_id.code == noeud and x.pool_id.code == pool)
+            if not rec:
+                return _("ce message n'existe plus")
+            rec.unlink()
             return True
         return _("portée inconnue")
 

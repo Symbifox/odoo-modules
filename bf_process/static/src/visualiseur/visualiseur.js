@@ -387,6 +387,32 @@ export class VisualiseurCartographie extends Component {
         }
     }
 
+    /** Ce que la forme annonce au survol : une phrase par pastille.
+     *
+     * Les pastilles sont des points de quatre pixels, donc muettes par
+     * construction. Le titre est le seul endroit où elles se nomment, et
+     * l'expression tenait sur une ligne de gabarit devenue illisible.
+     */
+    infobulle(n) {
+        const parts = [n.enfant ? _t("Ouvrir le niveau déplié")
+                                : _t("Ouvrir la fiche")];
+        if (n.fil) {
+            parts.push(_t("%s message(s)", n.fil));
+        }
+        const dit = { validee: _t("validée"), conteste: _t("contestée"),
+                      partielle: _t("validation partielle") }[n.validation];
+        if (dit) {
+            parts.push(dit);
+        }
+        if (n.ressources) {
+            parts.push(_t("%s ressource(s)", n.ressources));
+        }
+        if (n.traces) {
+            parts.push(_t("%s décision(s) consignée(s)", n.traces));
+        }
+        return parts.join(" · ");
+    }
+
     /** Un clic sur une forme ouvre ce qu'elle représente. */
     ouvrir(n) {
         if (n.enfant) {
@@ -471,6 +497,19 @@ export class VisualiseurCartographie extends Component {
             if (teinte) {
                 out.push({ t: "cercle", cx: n.x + 5, cy: n.y + 5, r: 4,
                            fill: teinte, stroke: "#FFFFFF", sw: 1 });
+            }
+            // en bas : ce que la case ouvre. À droite les consignes — c'est
+            // le coin que le code QR occupe sur la version imprimée, donc
+            // l'écran et le papier désignent le même endroit. À gauche le
+            // pourquoi, en face de la pastille de validation : l'un dit que
+            // l'étape est juste, l'autre dit d'où elle vient.
+            if (n.ressources) {
+                out.push({ t: "cercle", cx: n.x + n.w - 5, cy: n.y + n.h - 5,
+                           r: 4, fill: AMBRE, stroke: "#FFFFFF", sw: 1 });
+            }
+            if (n.traces) {
+                out.push({ t: "cercle", cx: n.x + 5, cy: n.y + n.h - 5, r: 4,
+                           fill: GRIS, stroke: "#FFFFFF", sw: 1 });
             }
         }
         // les liens ne s'attrapent qu'au moment de les couper : une bande large

@@ -33,6 +33,7 @@ from reportlab.pdfgen import canvas as rl_canvas
 
 from . import geometrie as geo
 from . import mesure
+from . import qr
 
 POLICES = Path(__file__).resolve().parent.parent / "static" / "fonts"
 REGULIER, GRAS = "BfProcessLexend", "BfProcessLexend-SemiBold"
@@ -53,6 +54,27 @@ MARGE = geo.MARGE
 BANDEAU = 34.0          # au-dessus de la marge de la carte : le titre
 PIED = 26.0             # sous la marge de la carte : la mention de source
 MAX_PDF = 14000.0       # au-delà, un lecteur PDF refuse la page
+
+# Le QR d'atelier. 30 pt tiennent dans l'écart de 32 pt entre deux rangées
+# d'un même couloir ; `qr.cote_lisible` l'agrandira si les modules devenaient
+# trop fins pour un téléphone, et il vaut mieux un QR qui déborde qu'un QR qui
+# ne se lit pas.
+QR_COTE = 30.0
+QR_PENDU = 2.0          # de combien il descend sous la case
+
+# Tabloïd, en points : c'est le format que l'atelier a sous la main.
+TABLOID = (792.0, 1224.0)
+# Bande commune entre deux tuiles. Elle sert d'abord au collage, mais sa
+# valeur est dictée par autre chose : un code QR à cheval sur une coupe est
+# tronqué sur les DEUX feuilles, donc illisible partout. Le recouvrement doit
+# rester plus large qu'un QR — `test_atelier` le verrouille.
+RECOUVREMENT = 72.0
+TUILE_MARGE = 24.0      # ce qu'une imprimante de bureau ne sait pas encrer
+TUILE_PIED = 22.0       # la bande où la tuile dit où elle se situe
+# Une affiche murale se lit debout, à bout de bras : à 1:1 le libellé d'une
+# case fait 9 pt et le module d'un code QR 0,27 mm. 1,6x met le libellé à 15 pt
+# et le module à 0,44 mm, au-dessus du seuil où un téléphone accroche.
+ECHELLE_ATELIER = 1.6
 
 EVENEMENTS = geo.EVENEMENTS
 PASSERELLES = geo.PASSERELLES
@@ -364,6 +386,47 @@ def _dessiner_niveau(t, d, etiquette_flux):
         cx, cy = pos[n["id"]]
         dessiner_noeud(t, n, X(cx), Y(cy))
 
+    for n in d["nodes"]:
+        if n.get("qr"):
+            cx, cy = pos[n["id"]]
+            w, h = geo.node_box(n)
+            _dessiner_qr(t, n["qr"], X(cx) + w / 2, Y(cy) + h / 2)
+
+
+def _dessiner_qr(t, adresse, x_droite, y_bas):
+    """Le code QR d'une étape, accroché sous son coin bas-droit.
+
+    **Dehors, pas dedans.** La largeur disponible pour le libellé d'une case
+    est de la géométrie partagée par les quatre rendus : un QR posé à
+    l'intérieur passerait par-dessus le texte, ou obligerait à replier le
+    libellé autrement ici et pas dans les exports XML. Il descend donc dans
+    l'espace entre deux rangées, qui existe déjà.
+
+    Il pend vers la GAUCHE depuis le coin droit : vers la droite, il entrerait
+    dans la colonne suivante, dont l'écart n'est que de 16 points.
+    """
+    cote, module = qr.cote_lisible(adresse, QR_COTE)
+    grille = qr.matrice(adresse)
+    module = cote / len(grille)
+    x0, y0 = x_droite - cote, y_bas + QR_PENDU
+    # un fond blanc franc : le QR se pose sur le fond du couloir, et un lecteur
+    # a besoin de sa zone de silence pour accrocher
+    t.rect(x0 - 1.5, y0 - 1.5, x0 + cote + 1.5, y0 + cote + 1.5,
+           fill=WHITE, color=None, w=0)
+    for i, rangee in enumerate(grille):
+        # les modules encrés d'affilée se dessinent d'un seul rectangle :
+        # moins d'objets dans la page, et surtout aucun liseré blanc entre
+        # deux carrés adjacents à l'affichage
+        debut = None
+        for j, encre in enumerate(list(rangee) + [False]):
+            if encre and debut is None:
+                debut = j
+            elif not encre and debut is not None:
+                t.rect(x0 + debut * module, y0 + i * module,
+                       x0 + j * module, y0 + (i + 1) * module,
+                       fill=INK, color=None, w=0)
+                debut = None
+
 
 def _milieu(pts, position):
     """Le point d'ancrage d'une étiquette : sur le plus long segment."""
@@ -385,12 +448,19 @@ def _bornes(d):
     return max(droites) + MARGE, max(bas) + MARGE
 
 
-def to_pdf(diagrammes, titre="", sous_titre="", pied="", entete=True):
+def to_pdf(diagrammes, titre="", sous_titre="", pied="", entete=True,
+           pave=None, echelle=ECHELLE_ATELIER):
     """Le PDF de la cartographie : une page par niveau, taillée sur la carte.
 
     `entete=False` rend le tracé nu, sans bandeau ni mention de source — c'est
     ce que le contrôle de superposition compare au moteur de référence, et ce
     qu'il faut quand la carte va être posée dans un autre document.
+
+    `pave=(largeur, hauteur)` change la question posée : au lieu d'une page
+    taillée sur la carte, un pavage de pages de ce format, à l'échelle 1:1,
+    qu'on imprime et qu'on assemble au mur. Une carte de quinze niveaux ne tient
+    pas sur une feuille, et la réduire jusqu'à ce qu'elle y tienne rend un
+    document qu'on ne lit pas debout.
     """
     _polices()
     tampon = io.BytesIO()
@@ -402,6 +472,12 @@ def to_pdf(diagrammes, titre="", sous_titre="", pied="", entete=True):
         largeur, hauteur = _bornes(d)
         haut = BANDEAU if entete else 0.0
         bas = PIED if entete else 0.0
+        if pave:
+            # le pavage ne réserve NI bandeau NI pied de carte : il a son
+            # propre pied de tuile, et il tuile l'étendue réelle du tracé
+            _paver(c, d, largeur, hauteur, pave, titre, sous_titre,
+                   pied if entete else "", echelle=echelle)
+            continue
         page_w, page_h = largeur, hauteur + haut + bas
         k = 1.0
         if page_w > MAX_PDF or page_h > MAX_PDF:
@@ -418,6 +494,78 @@ def to_pdf(diagrammes, titre="", sous_titre="", pied="", entete=True):
 
     c.save()
     return tampon.getvalue()
+
+
+def _paver(c, d, largeur, hauteur, pave, titre, sous_titre, pied,
+           echelle=ECHELLE_ATELIER):
+    """Découpe un niveau en pages assemblables, agrandies.
+
+    Chaque tuile reprend une bande de la précédente : sans recouvrement, la
+    moindre imprécision de massicot ou de marge d'imprimante coupe un trait de
+    flux en deux et la carte assemblée ment. Le pied de page dit où la tuile se
+    situe, parce que quinze feuilles étalées par terre se ressemblent toutes.
+
+    **Pourquoi agrandir plutôt que tirer à 1:1.** À l'échelle de l'écran, le
+    code QR d'une étape mesure 0,27 mm par module : bien formé, mais à la
+    limite de ce qu'un téléphone accroche, et le libellé d'une case se lit à
+    trente centimètres, pas à bout de bras devant un mur. L'agrandissement fait
+    grossir la carte ET ses codes ensemble, sans toucher à la géométrie —
+    c'est le facteur `k` de la toile, celui qui servait déjà à réduire une page
+    trop grande. Plus de feuilles, mais une affiche qui se lit debout.
+    """
+    page_w, page_h = pave
+    # ce que la tuile montre de la carte, une fois le pied de tuile réservé
+    utile_w = page_w - 2 * TUILE_MARGE
+    utile_h = page_h - 2 * TUILE_MARGE - TUILE_PIED
+    # les pas sont en coordonnées du MODÈLE : c'est là que la carte est
+    # découpée, alors que la page, elle, est en points agrandis
+    pas_x = max((utile_w - RECOUVREMENT) / echelle, 1.0)
+    pas_y = max((utile_h - RECOUVREMENT) / echelle, 1.0)
+    colonnes = max(1, math.ceil(
+        (largeur * echelle - RECOUVREMENT) / max(utile_w - RECOUVREMENT, 1.0)))
+    rangees = max(1, math.ceil(
+        (hauteur * echelle - RECOUVREMENT) / max(utile_h - RECOUVREMENT, 1.0)))
+
+    for j in range(rangees):
+        for i in range(colonnes):
+            c.setPageSize((page_w, page_h))
+            t = Toile(c, page_w, page_h, k=echelle)
+            # la tuile (i, j) montre la carte à partir de (i·pas_x, j·pas_y),
+            # posé au coin haut-gauche de la zone utile. Seule l'origine du
+            # repère bouge : le tracé, lui, est exactement le même.
+            t.ox = TUILE_MARGE - i * pas_x * echelle
+            t.oy = TUILE_MARGE - j * pas_y * echelle
+            _dessiner_niveau(t, d, 0.28 if d.get("flat") else 0.5)
+            t.commit()
+            _reperes_tuile(c, page_w, page_h, i, j, colonnes, rangees,
+                           d, titre, sous_titre, pied)
+            c.showPage()
+
+
+def _reperes_tuile(c, page_w, page_h, i, j, colonnes, rangees, d,
+                   titre, sous_titre, pied):
+    """Le cadre de coupe et le repère d'assemblage d'une tuile."""
+    c.setStrokeColorRGB(*HAIR)
+    c.setLineWidth(0.5)
+    c.setDash(3, 3)
+    c.rect(TUILE_MARGE, TUILE_MARGE + TUILE_PIED,
+           page_w - 2 * TUILE_MARGE, page_h - 2 * TUILE_MARGE - TUILE_PIED,
+           stroke=1, fill=0)
+    c.setDash()
+    haut = " — ".join(filter(None, (d.get("level"), d.get("title")))) or titre
+    c.setFont(GRAS, 8.5)
+    c.setFillColorRGB(*INK)
+    c.drawString(TUILE_MARGE, TUILE_MARGE + 10,
+                 "Colonne %d/%d · Rangée %d/%d" % (i + 1, colonnes,
+                                                   j + 1, rangees))
+    c.setFont(REGULIER, 8)
+    c.setFillColorRGB(*GREY)
+    reste = " · ".join(filter(None, (haut, sous_titre, titre if titre != haut
+                                     else "", pied)))
+    largeur_dispo = page_w - 2 * TUILE_MARGE - 120
+    while reste and mesure.text_length(reste, 8) > largeur_dispo:
+        reste = reste[:-4] + "…"
+    c.drawRightString(page_w - TUILE_MARGE, TUILE_MARGE + 10, reste)
 
 
 def _entete(c, d, page_w, page_h, titre, sous_titre, pied, k):

@@ -119,7 +119,7 @@
                               t-att-data-rid="e.n.rid"
                               t-on-mousedown="(ev) => this.debutDeplacement(e.n, ev)"
                               t-on-click="(ev) => this.surClicNoeud(e.n, ev)">
-                            <title t-esc="(e.n.enfant ? 'Ouvrir le niveau déplié' : 'Ouvrir la fiche') + (e.n.fil ? ' · ' + e.n.fil + ' message(s)' : '') + (e.n.validation === 'validee' ? ' · validée' : (e.n.validation === 'conteste' ? ' · contestée' : (e.n.validation === 'partielle' ? ' · validation partielle' : '')))"/>
+                            <title t-esc="this.infobulle(e.n)"/>
                         </rect>
                         <text t-if="e.t === 'vtexte'" t-att-x="e.x" t-att-y="e.y"
                               text-anchor="middle" t-att-font-size="e.taille"

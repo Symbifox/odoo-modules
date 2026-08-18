@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_bf_process_resource_list" model="ir.ui.view">
+        <field name="name">bf.process.node.resource.list</field>
+        <field name="model">bf.process.node.resource</field>
+        <field name="arch" type="xml">
+            <list string="Ressources">
+                <field name="process_id"/>
+                <field name="node_id"/>
+                <field name="kind"/>
+                <field name="name"/>
+                <field name="attachment_id" optional="show"/>
+                <field name="document_id" optional="show"/>
+                <field name="url" widget="url" optional="hide"/>
+                <field name="critique" optional="show"/>
+                <button name="action_ouvrir" type="object"
+                        icon="fa-external-link" title="Ouvrir la ressource"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_bf_process_resource_form" model="ir.ui.view">
+        <field name="name">bf.process.node.resource.form</field>
+        <field name="model">bf.process.node.resource</field>
+        <field name="arch" type="xml">
+            <form string="Ressource">
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name"
+                                   placeholder="Ce que la personne cherche"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="kind"/>
+                            <field name="node_id"/>
+                            <field name="process_id" readonly="1"/>
+                            <field name="critique" readonly="1"/>
+                        </group>
+                        <group string="Cible — une seule">
+                            <field name="attachment_id"
+                                   options="{'no_create': True}"/>
+                            <field name="document_id"
+                                   options="{'no_create': True}"/>
+                            <field name="url" widget="url"
+                                   placeholder="https://"/>
+                            <field name="cible" readonly="1"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="note" nolabel="1"
+                               placeholder="Quand s'en servir, ou ce qu'il faut en retenir"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_bf_process_resource_search" model="ir.ui.view">
+        <field name="name">bf.process.node.resource.search</field>
+        <field name="model">bf.process.node.resource</field>
+        <field name="arch" type="xml">
+            <search string="Ressources">
+                <field name="name"/>
+                <field name="node_id"/>
+                <field name="process_id"/>
+                <filter name="critiques" string="Critiques"
+                        domain="[('critique', '=', True)]"/>
+                <filter name="sans_fichier" string="Adresse externe"
+                        domain="[('url', '!=', False)]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="par_processus" string="Processus"
+                            context="{'group_by': 'process_id'}"/>
+                    <filter name="par_genre" string="Genre"
+                            context="{'group_by': 'kind'}"/>
+                    <filter name="par_etape" string="Étape"
+                            context="{'group_by': 'node_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_bf_process_resource" model="ir.actions.act_window">
+        <field name="name">Ressources</field>
+        <field name="res_model">bf.process.node.resource</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_bf_process_resource_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Aucune ressource accrochée aux étapes
+            </p>
+            <p>
+                Une procédure, une fiche signalétique ou une vidéo posée sur une
+                étape devient un code QR sur la carte imprimée.
+            </p>
+        </field>
+    </record>
+</odoo>

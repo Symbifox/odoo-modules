@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     "name": "Cartographie de processus",
-    "version": "18.0.3.2.0",
+    "version": "18.0.4.1.1",
     "category": "Services/Project",
     "summary": "Cartographies BPMN vivantes : le modèle est la vérité, le PDF et"
                " les deux XML n'en sont que des rendus",
@@ -57,10 +57,11 @@ Limites assumées
 * La mesure du texte couvre les caractères que Lexend porte. Un caractère hors
   table — un émoji, par exemple — fait refuser la mesure plutôt que deviner.
     """,
-    "author": "Blue Fox Inc.",
-    "website": "https://bluefoxconsultant.com",
+    "author": "Les services de consultation Blue Fox, Inc.",
+    "website": "https://symbifox.com",
     "license": "Other proprietary",
-    "depends": ["mail", "project", "contacts"],
+    "depends": ["mail", "project", "contacts", "portal",
+                "project_knowledge_matrix"],
     "data": [
         "security/bf_process_security.xml",
         "security/ir.model.access.csv",
