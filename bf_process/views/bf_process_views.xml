@@ -27,6 +27,12 @@
                     <button name="action_telecharger_pdf" type="object"
                             string="Tracer en PDF" class="btn-primary"
                             invisible="diagram_count == 0"/>
+                    <button name="action_telecharger_pdf_atelier" type="object"
+                            string="Tirage d'atelier (11x17 + codes QR)"
+                            invisible="diagram_count == 0"
+                            help="Pavé en tabloïd à l'échelle 1:1, avec un code
+                                  QR sur chaque étape qui porte une ressource.
+                                  À afficher au mur, pas à mettre au dossier."/>
                     <button name="action_telecharger_mxgraph" type="object"
                             string="Exporter pour diagrams.net"
                             invisible="diagram_count == 0"/>
@@ -82,8 +88,12 @@
                                    invisible="not version_suivante_ids"/>
                             <label for="taux_validation"/>
                             <div>
-                                <field name="taux_validation" widget="percentage"
-                                       class="oe_inline" readonly="1"/>
+                                <!-- pas de widget `percentage` : il multiplie
+                                     par 100 une valeur déjà exprimée en pour
+                                     cent, et 47,6 % s'affichait 4 760 %. -->
+                                <field name="taux_validation" digits="[3,0]"
+                                       class="oe_inline" readonly="1"/><span
+                                       class="oe_inline"> %</span>
                                 <span class="text-muted">
                                     — <field name="validee_count" class="oe_inline"
                                              readonly="1"/> sur
@@ -94,6 +104,19 @@
                                       invisible="conteste_count == 0">
                                     · <field name="conteste_count" class="oe_inline"
                                              readonly="1"/> contestée(s)
+                                </span>
+                            </div>
+                            <label for="taux_tracabilite"/>
+                            <div>
+                                <field name="taux_tracabilite" digits="[3,0]"
+                                       class="oe_inline" readonly="1"/><span
+                                       class="oe_inline"> %</span>
+                                <span class="text-muted">
+                                    — <field name="activite_tracee_count"
+                                             class="oe_inline" readonly="1"/> sur
+                                    <field name="activite_count" class="oe_inline"
+                                           readonly="1"/> activités adossées à une
+                                    décision consignée
                                 </span>
                             </div>
                             <field name="active" invisible="1"/>

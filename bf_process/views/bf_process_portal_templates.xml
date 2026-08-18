@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- La page d'atelier. Elle se lit debout, sur un téléphone, souvent avec
+         des gants : gros titres, grosses cibles tactiles, aucune colonne. -->
+    <template id="portail_etape" name="Étape de processus">
+        <t t-call="web.frontend_layout">
+            <t t-set="no_header" t-value="True"/>
+            <t t-set="no_footer" t-value="True"/>
+            <div class="container o_bf_process_atelier py-4"
+                 style="max-width: 640px;">
+                <p class="text-muted mb-1" style="font-size: .95rem;">
+                    <span t-esc="processus"/>
+                    <t t-if="niveau"> · <span t-esc="niveau"/></t>
+                    <t t-if="couloir"> · <span t-esc="couloir"/></t>
+                </p>
+                <h1 class="mb-4" style="font-size: 1.9rem; line-height: 1.2;">
+                    <span t-esc="etape"/>
+                </h1>
+
+                <t t-if="not ressources">
+                    <div class="alert alert-light border">
+                        Cette étape n'a plus de ressource attachée.
+                    </div>
+                </t>
+
+                <div t-foreach="ressources" t-as="r" class="mb-3">
+                    <a class="d-block p-3 border rounded text-decoration-none"
+                       t-attf-href="/carte/etape/#{node_id}/ressource/#{r['id']}?access_token=#{jeton}"
+                       t-att-target="'_blank' if r['externe'] else None">
+                        <div class="d-flex align-items-center mb-1">
+                            <span class="badge me-2"
+                                  t-attf-class="badge me-2 #{'text-bg-danger' if r['critique'] else 'text-bg-secondary'}"
+                                  t-esc="r['genre']"/>
+                        </div>
+                        <div style="font-size: 1.25rem; font-weight: 600;"
+                             t-esc="r['nom']"/>
+                        <div t-if="r['note']" class="text-muted mt-1"
+                             t-esc="r['note']"/>
+                    </a>
+                </div>
+
+                <p class="text-muted mt-4" style="font-size: .8rem;">
+                    Cette page ne montre que les consignes de cette étape.
+                </p>
+            </div>
+        </t>
+    </template>
+
+    <template id="portail_etape_refus" name="Étape inaccessible">
+        <t t-call="web.frontend_layout">
+            <t t-set="no_header" t-value="True"/>
+            <t t-set="no_footer" t-value="True"/>
+            <div class="container py-5" style="max-width: 640px;">
+                <h1 class="mb-3">Ce code ne mène nulle part</h1>
+                <p class="text-muted">
+                    Le lien est incomplet, ou l'étape a été retirée de la carte
+                    depuis l'impression. Demandez un tirage à jour.
+                </p>
+            </div>
+        </t>
+    </template>
+</odoo>

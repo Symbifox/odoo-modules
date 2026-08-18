@@ -27,6 +27,8 @@ le fait donc pas descendre : ce sont les autres qui remontent. Ce n'est pas un
 défaut de l'éditeur, c'est la géométrie du générateur, et l'éditeur la montre
 telle quelle plutôt que de la maquiller.
 """
+from markupsafe import Markup
+
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
 
@@ -199,8 +201,8 @@ class BfProcessEdition(models.Model):
             "col": col, "row": row,
         })
         self._resequencer(self.node_ids.sorted(lambda n: (n.sequence, n.id)))
-        self.process_id.message_post(body=_(
-            "Nœud <b>%s</b> ajouté au niveau « %s » depuis le tracé.")
+        self.process_id.message_post(body=Markup(_(
+            "Nœud <b>%s</b> ajouté au niveau « %s » depuis le tracé."))
             % (noeud.display_name, self.display_name))
         return self.rendu()
 
@@ -226,8 +228,8 @@ class BfProcessEdition(models.Model):
         noeud.unlink()
         self._resequencer(self.node_ids.sorted(lambda n: (n.sequence, n.id)))
         self._resequencer(self.flow_ids.sorted(lambda f: (f.sequence, f.id)))
-        self.process_id.message_post(body=_(
-            "Nœud <b>%s</b> retiré du niveau « %s » depuis le tracé.")
+        self.process_id.message_post(body=Markup(_(
+            "Nœud <b>%s</b> retiré du niveau « %s » depuis le tracé."))
             % (nom, self.display_name))
         return self.rendu()
 
