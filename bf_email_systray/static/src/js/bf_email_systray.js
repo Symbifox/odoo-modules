@@ -63,7 +63,13 @@ export class BfEmailSystray extends Component {
     }
 
     onOpen() {
-        this.actionService.doAction("bf_email_management.bf_email_action");
+        // La boîte de réception est une action cliente OWL depuis
+        // bf_email_management 18.0.9.0.0 ; `bf_email_action` est devenu la
+        // variante « (liste) », conservée pour les filtres et l'export. Le
+        // bouton de la barre doit mener à ce que le menu ouvre.
+        this.actionService.doAction(
+            "bf_email_management.action_bf_email_inbox_owl"
+        );
     }
 }
 

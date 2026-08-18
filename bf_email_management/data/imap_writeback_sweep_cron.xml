@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- Direction Odoo -> IMAP. Les deux autres crons IMAP vont dans le
+             sens serveur -> Odoo ; celui-ci ferme la boucle : tout courriel
+             marqué traité dans Odoo mais encore présent dans l'INBOX du
+             serveur repart vers Archives/{YYYY}. Sans lui, une recopie ratée
+             (réseau, quota, dossier absent) ou un chemin de code qui pose
+             is_handled sans passer par action_archive laisse le message dans
+             l'INBOX pour toujours, et rien ne le signale. -->
+        <record id="ir_cron_imap_writeback_sweep" model="ir.cron">
+            <field name="name">Courriels : recopie IMAP des traités (balayage)</field>
+            <field name="model_id" ref="model_bf_email"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_imap_writeback_sweep()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">hours</field>
+            <field name="active">True</field>
+            <field name="user_id" ref="base.user_admin"/>
+        </record>
+
+    </data>
+</odoo>

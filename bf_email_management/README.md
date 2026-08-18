@@ -55,6 +55,22 @@ A centralized email management module for Odoo 18 that provides a single, dedupl
 - KPI cards: received, sent, unread, average response time.
 - Category breakdown, top contacts, daily volume chart.
 
+### OWL Inbox (9.0+, client action)
+The **Boîte de réception** menu is an OWL client action (`bf_email_inbox`) laid out exactly like the IMAP browser — folder rail on the left, message list on top, preview below — but fed by `bf.email` instead of an IMAP session.
+
+- **Folders are states, not mailboxes** — Boîte de réception, Non lus, À répondre, Sans dossier, Reportés, Envoyés, Traités, plus a collapsible *Par catégorie* group (Client / Interne / Fournisseur / Notification / Marketing / Sans catégorie). Counts and unread badges come from one `search_count` per folder. The vocabulary deliberately mirrors `_mobile_filter_sql`, so phone, list view and client action agree on what "inbox" means. Category folders span **all** mail, handled included: scoping them to unhandled leaves them permanently empty on an inbox-zero mailbox, and what they are for is browsing the archive.
+- **Composer (9.1+, target picker 9.2+)** — a new email attached to nothing, with an optional « Classer dans » field carrying the same `bf_chatter_target` picker as the rest of the instance. Pick a record and the composer is *retargeted before sending*, so the message is born on the right chatter with its followers and thread rather than being moved afterwards; the same hook covers scheduled sends, which read `model`/`res_ids` too. Leave it empty and nothing changes. ⚠️ `subject` and `body` are stored computes depending on `model`/`res_ids`: retargeting fires `_compute_body` (which blanks the body with no template) and `_compute_subject`, so both are read before and rewritten after, in a *separate* write — an explicit write removes the field from the recompute queue, which a write grouped with its own dependency does not guarantee. Odoo always posts on a record, so the created `bf.email` row is its own thread, the same trick `_composer_target` already uses for IMAP orphans; the row lands in *Sans dossier* and « Router… » files it later. The shell is born handled so an abandoned composer leaves nothing behind, and `inbox_close_compose` either adopts it (subject, recipients, Message-ID copied from the posted message) or deletes it.
+- **Full preview toolbar** — Répondre, Répondre à tous, Transférer, Traité / Remettre en boîte, Reporter, Activité, Router… (with quick targets), Fil, Dossier, .eml, Ouvrir. Every one of them delegates to the existing record method through a server-side allow-list.
+- **Server-side search** across the whole folder (subject, from, to, body preview) — the source is an indexed table, so there is no reason to filter only the loaded page the way the IMAP browser has to.
+- **Drag a row onto a folder** — Traités marks it handled, Reportés opens the snooze wizard, Boîte de réception puts it back.
+- **Shared preferences** with the IMAP browser (`bf_email_ui_common.js`): storage key, date format, sender rendering and preview scaffold all live in one place, so the two screens cannot drift apart.
+- **Keyboard** — `J`/`K`/`↑`/`↓` navigate · `R` reply · `Shift+R` reply-all · `F` forward · `E` Traité · `Y` router · `H` reporter · `T` activité · `O` dossier · `C` composer · `S` or `/` search · `Escape` cancel.
+
+The list view is still there under **Boîte de réception (liste)**: filters, group-by, pivot, export and server actions are things a client action does not provide, and there was no reason to lose them.
+
+### Chatter handled indicator (9.0+)
+Every chatter message carries a badge — **À traiter**, **Traité** or **Reporté** — reflecting the current user's `bf.email` mirror. `mail.message._to_store` joins `bfEmailState` in one query per rendered batch, and only on the `for_current_user` path: the state is strictly personal and must never ride along in a broadcast. The message actions follow the same state, so « Traité » disappears once the mail is out of the inbox and « Remettre en boîte » only shows where it means something.
+
 ### IMAP Folder Browser (3.5+, OWL client action)
 A mail-client-style view of any IMAP folder, no permanent ingestion required.
 
@@ -163,6 +179,19 @@ The OWL client action calls these `@api.model` methods on `bf.email`. Each opens
 - `imap_browser_mark_handled(folder, uid)` — ingest + `action_archive` (sets `is_handled=True` and triggers the bilateral writeback to `Archives/{YYYY}`).
 - `imap_browser_move(folder, uid, dst_folder)` — `COPY uid dst_folder` + `STORE +FLAGS \Deleted` + `EXPUNGE`. Refuses empty / identical destination. Does NOT touch `bf.email`.
 - `imap_browser_move_to_trash(folder, uid)` — `COPY uid Trash` + `EXPUNGE`. Refuses when source is already `Trash/*`.
+
+### Inbox RPC surface (9.0+)
+The inbox client action calls these `@api.model` methods on `bf.email`. They stay in the current user's environment — no `sudo` anywhere — so record rules remain the authority and a colleague's mailbox can never surface.
+
+- `inbox_get_folders()` — `[{key, label, icon, parent, selectable, count, unread_count}]`. A parent (`selectable: False`) sums its children.
+- `inbox_get_messages(folder, offset, limit, search)` — `{folder, messages, total, offset, limit}`, newest first, page size capped at 500. Unknown or non-selectable folder keys raise.
+- `inbox_get_body(email_id)` — sanitized `body_html_display`, headers and attachments, and flips `new` → `read` for rows the user may actually write.
+- `inbox_run_action(action, email_ids)` — named actions only, through `_INBOX_ACTIONS`: the method name comes from the browser, so the server decides what is nameable. Window actions returned here get an explicit `views` key, because `call_kw` — unlike `call_button` — never runs them through `clean_action()`, and without it the web client maps over `undefined` and the dialog silently never opens.
+- `inbox_compose()` / `inbox_close_compose(shell_id)` — open the composer on a fresh unattached row, then adopt or delete that row when the dialog closes.
+- `inbox_sync_now()` — same work as the list view's *Synchroniser maintenant*, but returns only the notification text. `action_sync_now` ends with `next: {tag: reload}`, which reloads the whole web client and would throw away the open preview and selection.
+
+### IMAP write-back sweep (9.0+)
+`_cron_imap_writeback_sweep(dry_run=False)`, hourly. `_cron_imap_reconcile` and `_cron_imap_mirror` both run server → Odoo; this one closes the other direction. It reads the Message-IDs actually sitting in INBOX, resolves each owner's row, and replays `_imap_writeback_archive` on the ones already marked handled — covering both a write-back that failed on a transient error (nothing ever retried it) and any code path that sets `is_handled` without going through `action_archive`. Rows born from the chatter carry no `account_id` and would be skipped by the write-back; since the sweep has just observed their physical copy in that account's INBOX, it binds them to it first. Bounded by INBOX size, idempotent, and `dry_run=True` turns it into a plain gap report.
 
 ## Security
 

@@ -594,8 +594,20 @@
     <!-- ============================================================ -->
     <!-- ACTIONS                                                      -->
     <!-- ============================================================ -->
-    <record id="bf_email_action" model="ir.actions.act_window">
+
+    <!-- Bo&#238;te de r&#233;ception principale : action cliente OWL, m&#234;me mise en page
+         que le navigateur IMAP (dossiers &#224; gauche, liste en haut, aper&#231;u en
+         bas). La vue liste ci-dessous reste accessible sous
+         &#171;&#160;Bo&#238;te de r&#233;ception (liste)&#160;&#187; pour les filtres, le regroupement,
+         l'export et les actions serveur, qu'une action cliente n'offre pas.
+         T&#226;che #24628. -->
+    <record id="action_bf_email_inbox_owl" model="ir.actions.client">
         <field name="name">Bo&#238;te de r&#233;ception</field>
+        <field name="tag">bf_email_inbox</field>
+    </record>
+
+    <record id="bf_email_action" model="ir.actions.act_window">
+        <field name="name">Bo&#238;te de r&#233;ception (liste)</field>
         <field name="res_model">bf.email</field>
         <field name="view_mode">list,kanban,form,graph,pivot</field>
         <field name="search_view_id" ref="bf_email_view_search"/>

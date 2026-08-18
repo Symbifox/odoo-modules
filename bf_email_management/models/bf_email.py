@@ -327,11 +327,15 @@ class BfEmail(models.Model):
 
     imap_in_inbox = fields.Boolean(
         string="Dans INBOX IMAP",
-        default=True,
+        default=False,
         index=True,
         help="Reflète l'état IMAP réel : True si le message est encore "
              "dans INBOX selon le dernier scan. Mis à jour par "
-             "_cron_imap_mirror toutes les 5 minutes.",
+             "_cron_imap_mirror toutes les 5 minutes. Faux par défaut : "
+             "seules les lignes ingérées depuis un dossier IMAP le posent "
+             "(voir _ingest_rfc822), les lignes chatter/gateway n'ont aucune "
+             "contrepartie IMAP et entrent dans la boîte de réception par "
+             "leur `source`, pas par ce drapeau.",
     )
 
     raw_headers = fields.Text(
@@ -2659,7 +2663,12 @@ class BfEmail(models.Model):
         # ---- Snooze wake-up first (cheap, no IMAP). Sudo because the cron
         #      runs as admin but rows belong to many users. ----
         now = fields.Datetime.now()
-        woken = self.sudo().search([
+        # active_test=False : une ligne désactivée (héritage de l'ancien
+        # « Archiver après import ») reste invisible aux recherches ordinaires,
+        # donc ni son réveil ni son miroir IMAP ne tournaient jamais. Son
+        # état IMAP restait figé sur la valeur du jour où elle a disparu.
+        Rows = self.sudo().with_context(active_test=False)
+        woken = Rows.search([
             ("snoozed_until", "!=", False),
             ("snoozed_until", "<=", now),
             ("is_handled", "=", True),
@@ -2701,7 +2710,7 @@ class BfEmail(models.Model):
                 except Exception:
                     pass
 
-            rows = self.sudo().search([
+            rows = Rows.search([
                 ("account_id", "=", account.id),
                 ("imap_folder", "ilike", "INBOX"),
                 ("date", ">=", cutoff),
@@ -2728,6 +2737,106 @@ class BfEmail(models.Model):
                     "bf.email IMAP mirror (%s): %s in, %s out (%s auto-Traité)",
                     account.display_name, flipped_in, flipped_out, auto_handled,
                 )
+
+    @api.model
+    def _cron_imap_writeback_sweep(self, dry_run=False):
+        """Sens Odoo → IMAP : ce qui est traité ici doit sortir de l'INBOX là-bas.
+
+        ``_cron_imap_reconcile`` couvre la capture (IMAP → Odoo) et
+        ``_cron_imap_mirror`` recopie l'état du serveur vers les lignes
+        (IMAP → Odoo lui aussi). Personne ne surveillait la direction
+        inverse : une ligne marquée traitée par un chemin qui n'appelle pas
+        ``action_archive`` — ou dont la recopie IMAP a échoué sur un incident
+        réseau, un quota, un dossier absent — laisse le message dans l'INBOX
+        pour de bon, sans aucune trace, parce que la recopie n'est jamais
+        retentée.
+
+        Le balayage part de la vérité du serveur : on lit les Message-ID
+        réellement présents dans l'INBOX, on retrouve la ligne du
+        propriétaire, et on rejoue ``_imap_writeback_archive`` sur celles qui
+        sont traitées. Borné par la taille de l'INBOX, donc bon marché sur une
+        boîte tenue à l'Inbox Zero. Idempotent.
+
+        ``dry_run=True`` compte sans rien déplacer — c'est le rapport d'écart.
+        Retourne ``{account_id: [bf.email ids]}``.
+        """
+        Account = self.env["bf.email.account"].sudo()
+        accounts = Account.search([
+            ("active", "=", True), ("writeback_archive", "=", True),
+        ])
+        gaps = {}
+        for account in accounts:
+            if not (account.host and account.login and account.password):
+                continue
+            try:
+                conn = bf_email_imap.open_connection(
+                    account.host, account.port, account.login, account.password,
+                )
+            except bf_email_imap.ImapConnectionError as exc:
+                _logger.warning(
+                    "bf.email writeback sweep (%s): %s",
+                    account.display_name, exc,
+                )
+                continue
+            live_ids = []
+            try:
+                if not bf_email_imap.select_folder(conn, "INBOX", readonly=True):
+                    continue
+                uids = bf_email_imap.search_uids_in_range(conn)
+                for i in range(0, len(uids), 200):
+                    headers = bf_email_imap.fetch_headers_bulk(conn, uids[i:i + 200])
+                    for _uid, (msg, _seen) in headers.items():
+                        mid = str(msg.get("Message-ID", "")).strip()
+                        if mid:
+                            live_ids.append(mid)
+            except Exception:
+                _logger.warning(
+                    "bf.email writeback sweep (%s): lecture INBOX échouée",
+                    account.display_name, exc_info=True,
+                )
+                continue
+            finally:
+                try:
+                    conn.logout()
+                except Exception:
+                    pass
+
+            if not live_ids:
+                continue
+            # active_test=False : les lignes désactivées sont précisément
+            # celles que personne ne peut plus rattraper à la main.
+            stale = self.sudo().with_context(active_test=False).search([
+                ("message_id_header", "in", live_ids),
+                ("user_id", "=", account.user_id.id),
+                ("is_handled", "=", True),
+            ])
+            if not stale:
+                continue
+            # Une ligne née du chatter n'a pas d'account_id, et
+            # ``_imap_writeback_archive`` saute tout ce qui n'en a pas. Or on
+            # vient de constater que sa copie physique est bien dans l'INBOX
+            # de ce compte : on l'y rattache, sinon le message est
+            # définitivement hors de portée de la recopie.
+            orphans = stale.filtered(lambda r: not r.account_id)
+            if orphans and not dry_run:
+                orphans.write({"account_id": account.id})
+            gaps[account.id] = stale.ids
+            _logger.info(
+                "bf.email writeback sweep (%s): %s courriel(s) traité(s) "
+                "encore dans l'INBOX%s",
+                account.display_name, len(stale),
+                " (simulation)" if dry_run else "",
+            )
+            if dry_run:
+                continue
+            try:
+                stale._imap_writeback_archive()
+            except Exception:
+                _logger.warning(
+                    "bf.email writeback sweep (%s): recopie échouée",
+                    account.display_name, exc_info=True,
+                )
+        return gaps
 
     @api.model
     def _sync_imap_folder(self, conn, folder, account):

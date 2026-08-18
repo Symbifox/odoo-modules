@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <!-- Pastille « traité / non traité » dans l'en-tête de chaque message du
+         chatter. La valeur vient de `bfEmailState`, jointe par
+         mail.message._to_store pour l'usager courant uniquement.
+
+         Sans elle, les boutons « Traité » et « Remettre en boîte » du menu
+         du message s'affichaient tous les deux en permanence, sans dire
+         lequel avait du sens. -->
+    <t t-name="bf_email_management.MessageBfEmailBadge"
+       t-inherit="mail.Message" t-inherit-mode="extension">
+        <xpath expr="//div[@name='header']" position="inside">
+            <small t-if="message.bfEmailState === 'handled'"
+                   class="ms-2 badge bg-success-subtle text-success-emphasis fw-normal"
+                   title="Ce courriel est sorti de votre boîte de réception.">
+                <i class="fa fa-check me-1"/>Traité
+            </small>
+            <small t-elif="message.bfEmailState === 'snoozed'"
+                   class="ms-2 badge bg-info-subtle text-info-emphasis fw-normal"
+                   title="Ce courriel est reporté : il reviendra dans votre boîte.">
+                <i class="fa fa-moon-o me-1"/>Reporté
+            </small>
+            <small t-elif="message.bfEmailState === 'inbox'"
+                   class="ms-2 badge bg-warning-subtle text-warning-emphasis fw-normal"
+                   title="Ce courriel est encore dans votre boîte de réception.">
+                <i class="fa fa-inbox me-1"/>À traiter
+            </small>
+        </xpath>
+    </t>
+
+</templates>
