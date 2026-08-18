@@ -65,6 +65,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 |---|---|---|---|---|
 | `audit_ti` | Audit TI - Loi 25 | 18.0.1.17.1 | BUSL-1.1 | IT security audit management for Quebec's Loi 25 compliance |
 | `bf_appointment` | Symbifox Appointment | 18.0.2.34.0 | BUSL-1.1 | Self-service public booking pages (extends `resource_booking`) |
+| `bf_apps_menu` | Menu des applications cherchable | 18.0.1.0.0 | LGPL-3 | Le menu des applications devient une grille d'icônes cherchable au clavier |
 | `bf_bloc_notes` | BF Bloc-notes | 18.0.2.9.0 | LGPL-3 | Rich quick notes with multi-record links, one-click activity conversion, keyboard shortcuts, and systray icon (Alt+N) |
 | `bf_bureau` | BF Bureau — vues multi-panneaux | 18.0.3.1.0 | LGPL-3 | User-configurable dashboards ("desks") with multi-pane Odoo actions, six layouts, keyboard shortcuts, time slots, and a sidebar |
 | `bf_calendar_nc_talk` | BF Calendar — Nextcloud Talk button | 18.0.1.0.0 | LGPL-3 | Adds a '+ Nextcloud Talk' button next to '+ Odoo meeting' on calendar events. Creates a public Talk conversation via the Spreed OCS API and writes the room URL into videocall_location. |
@@ -72,7 +73,8 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_chatter_send_now_force` | BF Chatter — Force Send on Scheduled Send Now | 18.0.1.0.0 | LGPL-3 | The "Send Now" button on a scheduled chatter message sends immediately instead of waiting up to 5 min for the mail queue cron (restores parity with the daily auto-send cron) |
 | `bf_chatter_target` | BF Cible de chatter | 18.0.1.0.0 | LGPL-3 | One search box to pick the record an importer posts onto: every chatter-bearing model at once, no model or project to choose first, pasted Odoo URLs and shorthands resolved inline |
 | `bf_chatter_timesheet` | Symbifox — Feuille de temps depuis le chatter | 18.0.1.2.0 | LGPL-3 | Checkbox in the chatter composer to log a timesheet entry alongside an internal note. |
-| `bf_claude_chat` | GenFox | 18.0.1.13.0 | BUSL-1.1 | Chat with GenFox, the AI assistant, directly inside Odoo |
+| `bf_claude_chat` | GenFox | 18.0.1.13.2 | BUSL-1.1 | Chat with GenFox, the AI assistant, directly inside Odoo |
+| `bf_claude_chat_cockpit` | GenFox — Cockpit | 18.0.1.0.0 | BUSL-1.1 | Vue d'administration des sessions GenFox : pannes de flux et consommation |
 | `bf_contact_enrichment` | Enrichissement de contacts | 18.0.1.2.1 | BUSL-1.1 | Business cards (OCR) from the desktop or an installable mobile page, email signatures, vCard import, duplicate detection and completeness scoring, powered by GenFox |
 | `bf_cx` | Expérience client | 18.0.1.4.0 | BUSL-1.1 | Customer experience measurement: NPS programs, continuous feedback, complaints and consent-tracked testimonials |
 | `bf_cx_appointment` | Expérience client : feedback post-rendez-vous | 18.0.1.1.0 | BUSL-1.1 | Three-smiley feedback request when an appointment is completed (opt-in) |
@@ -125,7 +127,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_outreach_call` | Démarchage — appels journalisés | 18.0.1.0.0 | BUSL-1.1 | Reconciles the calls actually placed with the outreach targets, duration included |
 | `bf_outreach_email` | Démarchage — réponses courriel | 18.0.1.0.0 | BUSL-1.1 | Recognises replies from outreach targets in the received-email archive |
 | `bf_persona` | Persona des contacts | 18.0.2.1.0 | BUSL-1.1 | Active relationship intelligence: composer hint with auto-cc, monthly auto-seed from email signals, weekly degradation detector with optional ntfy alert, kanban dashboard |
-| `bf_process` | Cartographie de processus | 18.0.4.1.1 | BUSL-1.1 | Living AS-IS process maps stored as records, not files: BPMN 2.0 and diagrams.net export, an in-app SVG viewer, per-activity validation sign-off, versioning with freeze and diff, and BPMN re-import |
+| `bf_process` | Cartographie de processus | 18.0.4.1.2 | BUSL-1.1 | Living AS-IS process maps stored as records, not files: BPMN 2.0 and diagrams.net export, an in-app SVG viewer, per-activity validation sign-off, versioning with freeze and diff, and BPMN re-import |
 | `bf_project_merge` | Symbifox — Regroupement de tâches | 18.0.1.0.0 | LGPL-3 | Merge tasks by reassigning their content (messages, activities, hours, dependencies) to the kept task, then archive the rest. |
 | `bf_receipt_ca` | Reçus de dons — Canada (ARC + Revenu Québec) | 18.0.1.0.4 | AGPL-3 | CRA + Revenu Québec compliant official donation receipts, in French — eligible amount, advantage, in-kind gifts, void/reissue |
 | `bf_recurrence` | Symbifox — Ancrage de la récurrence | 18.0.1.0.0 | LGPL-3 | Choose, per recurring series, whether the next deadline is measured from the old deadline or from the actual completion date |
