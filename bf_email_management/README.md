@@ -78,6 +78,13 @@ A mail-client-style view of any IMAP folder, no permanent ingestion required.
 
 The browser is read-only on the IMAP side except for opt-in actions (ingest, move, trash, archive). Connection lifecycle is one IMAP4_SSL session per RPC call — same pattern as `_cron_sync_imap` and `_cron_imap_mirror`.
 
+### Mobile API (6.8+)
+A plain REST/JSON contract under `/bf_email_management/mobile/v1/`, consumed by the **Odoo Inbox** Android app (the client is not part of this repository). Deliberately not `call_kw`: the app is a third party, and pinning it to the ORM wire format would make every model rename a breaking client change. The full endpoint list, payload shapes and error contract live in [MOBILE_API.md](MOBILE_API.md).
+
+Authentication is bearer-token, and a token can only be obtained by completing a real Odoo web login: `GET /auth/start` runs under `auth="user"`, so password, SSO and TOTP all apply, and it redirects to the app's deep link with a single-use code (3 min TTL) that `POST /auth/exchange` swaps for the durable token. Every other route runs the request as the device's user, so the per-owner `ir.rule` on `bf.email` applies unchanged.
+
+Offline compose is supported through a send ledger (`bf.email.mobile.send`) that de-duplicates replays, and push notifications go out over **UnifiedPush (ntfy)** — no Google dependency, and no push transport ships with a token: the publish credential lives in a system parameter, never in the source.
+
 ### Bulk "Guess & import" (3.4+)
 Server action bound to the `bf.email` list view (`Action → Deviner et importer`). For each selected IMAP-orphan row, calls `bf.email.reroute._suggest_target_reference` *per row* to pre-fill an independent target (high confidence when the contact has exactly one open task / ticket). Editable preview list with badge (high / aucune) — confirm routes N rows to N independent chatters in a single transaction, preserving Message-ID per row.
 
@@ -109,7 +116,7 @@ The 8 heuristic signals are based on empirical email-overload research:
 
 - Odoo 18 Community or Enterprise.
 - `mail` module (included in Odoo) — provides `mail.message`, `mail.thread`, `mail.scheduled.message`.
-- Additional Odoo module dependencies (manifest `depends`): `base`, `mail_composer_cc_bcc`, `calendar`, `project`, `account`, `bf_onboarding_base`.
+- Additional Odoo module dependencies (manifest `depends`): `base`, `mail_composer_cc_bcc`, `calendar`, `project`, `account`, `bf_onboarding_base`, `bf_chatter_target`.
 - Python 3.10+ (uses standard library `imaplib`, `email.policy.default`, no extra pip deps).
 - Optional: `mail_quoted_reply` for quoted-reply composer body.
 
@@ -140,6 +147,7 @@ The 8 heuristic signals are based on empirical email-overload research:
 - Migration `18.0.1.5.1` retroactively promoted historical orphans whose Message-IDs already existed in `mail.message`.
 
 ### Re-routing
+- **Target selection is shared (8.2+).** The wizard, the *Guess & import* preview rows and the IMAP browser's quick-route all designate the destination through [`bf_chatter_target`](../bf_chatter_target): one search box over every chatter-bearing model, grouped results with an icon and a context line, and no model to pick first. A pasted Odoo URL, a bare id, a shorthand (`task:22299`) or a technical reference (`bf.email:17`) resolves in the same box and surfaces as an *Exact reference*. The module's own copy of the model list, of the resolver and the separate "quick link" field are gone, as are three `name_search` overrides on `project.task` / `res.partner` / `account.move` that only the old dropdown ever triggered.
 - The wizard reads the stored RFC 2822 (kept in `raw_rfc822` Binary attachment), parses it, and posts to the target via `record.message_post(...)` preserving Message-ID, original date, author, and attachments.
 - After posting, the `bf.email` row is promoted (linked to the new `mail.message`, `source` becomes `gateway`).
 
@@ -164,6 +172,9 @@ The OWL client action calls these `@api.model` methods on `bf.email`. Each opens
 - Re-routing wizard **and** the *Guess & import* bulk wizard validate `check_access_rights("write")` and `check_access_rule("write")` on the target record before posting into its chatter (the bulk path posts through a `sudo` proxy, so the user-level check is explicit — 5.7+).
 - **IMAP command hardening (5.7+)** — `imaplib` does not validate its arguments, so every folder name, UID and header value interpolated into an IMAP command is escaped/validated through `bf_email_imap.imap_quote_mailbox` / `imap_uid_token` / `imap_reject_crlf`. CR/LF are rejected outright, so a crafted Message-ID, folder name or UID cannot inject a second command into the authenticated session.
 - **No raw email HTML rendered with active content (5.7+)** — inbound HTML is stored raw (`body_html`, only NUL-stripped) but the form Body tab renders a sanitized projection (`body_html_display` = `html_sanitize(body_html)`) and the IMAP-browser preview field is `sanitize=True`. `body_html` is kept raw only for the reply/forward builders, which `html_sanitize` at their own use sites. The OWL browser preview additionally renders inside a scriptless sandboxed `<iframe>`.
+- **Mobile bearer tokens (6.8+)** are `secrets.token_urlsafe(32)`, minted only by `/auth/start` behind a real web login, and never by a client. Device rows are owner-scoped with no client create right, and the token fields are kept off ordinary RPC reads. `group_email_admin` is deliberately **not** extended to the device model: a read-all rule there would hand every user's live mailbox token to any admin. Deactivating a user revokes their tokens, because tokens themselves do not expire. Recipient counts (50), bulk actions (100 rows) and sends per device per hour (100) are all capped, so a stolen token cannot turn the tenant's SMTP into a relay.
+- **Push endpoints are SSRF-guarded** at registration *and* again at send time, redirects disabled — the server POSTs to that URL from a cron, so a private or loopback address is refused outright.
+- **Mobile attachments are indexed by position** in their own message, never by `ir.attachment` id: the id space is global, and a device that could name an arbitrary one would be reading the whole filestore. Ownership is re-checked on every stream, and the response carries `no-store`.
 - All SQL uses parameterized placeholders.
 - `sudo()` calls are scoped to cross-model display-name lookups, partner resolution by email, and the IMAP cron loop (which fetches each active account in admin context, then runs `_ingest_rfc822` via `with_user(account.user_id)` so created rows inherit the account owner's `user_id`).
 - IMAP body preview in the OWL browser renders inside `<iframe sandbox="allow-same-origin">` — no `allow-scripts`, so JS embedded in inbound mail is neutralised.

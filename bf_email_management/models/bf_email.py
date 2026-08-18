@@ -5,6 +5,7 @@ import email.policy
 import email.utils
 import logging
 import mimetypes
+import html
 import re
 import unicodedata
 from datetime import datetime, timedelta, timezone
@@ -523,9 +524,23 @@ class BfEmail(models.Model):
 
     @api.depends("body_html")
     def _compute_body_preview(self):
+        r"""Aperçu texte du courriel, tel qu'il s'affiche en liste et sur mobile.
+
+        ⚠️ Retirer les balises ne suffit pas : il faut aussi DÉCODER les
+        entités. Sans ça, un corps qui commence par ``&#xA0;`` — ce que font
+        Outlook et la plupart des infolettres — donne un aperçu qui commence
+        littéralement par « &#xA0; ». Mesuré avant correction sur cette
+        instance : 3 798 aperçus avec ``&nbsp;``, 499 avec ``&#xA0;``, et
+        quelques centaines de ``&amp;``, ``&#39;``, ``&quot;``.
+
+        L'ordre compte. Décoder AVANT de replier les blancs, parce que
+        ``&#xA0;`` devient une espace insécable (U+00A0) que ``\s+`` sait
+        alors absorber ; l'inverse laisserait une espace invisible en tête.
+        """
         for rec in self:
             body = rec.body_html or ""
             text = re.sub(r"<[^>]+>", " ", body)
+            text = html.unescape(text)
             text = re.sub(r"\s+", " ", text).strip()
             rec.body_preview = text[:300]
 
@@ -1017,8 +1032,137 @@ class BfEmail(models.Model):
             }
 
     def action_unhandle(self):
-        """Remettre dans la boîte de réception."""
+        """Remettre dans la boîte de réception — des DEUX côtés.
+
+        Archiver était bilatéral (le message part vers ``Archives/{YYYY}`` sur
+        le serveur IMAP) alors que restaurer ne touchait que les champs Odoo.
+        Conséquence : la ligne revenait « en boîte » sans que le message y
+        revienne, et comme le cron miroir avait déjà mis ``imap_in_inbox`` à
+        faux, elle échouait au filtre de la boîte de réception. Le message
+        n'était plus joignable ni depuis l'app, ni depuis la vraie INBOX —
+        il fallait aller le rechercher à la main dans le webmail.
+
+        Supportable tant qu'archiver était un clic délibéré sur un formulaire.
+        Depuis que c'est un balayage du doigt sur un téléphone, c'est l'erreur
+        que tout le monde fait.
+        """
+        restorable = self.filtered(
+            lambda r: r.is_handled and r.account_id
+            and r.account_id.writeback_archive and r.message_id_header
+            and not r.imap_in_inbox
+        )
         self.write({"is_handled": False, "handled_at": False, "snoozed_until": False})
+        if restorable:
+            try:
+                restorable._imap_writeback_restore()
+            except Exception:
+                _logger.warning(
+                    "bf.email IMAP writeback restore failed", exc_info=True,
+                )
+
+    def _imap_writeback_restore(self):
+        """Ramener les messages de leur dossier d'archive vers INBOX.
+
+        Contrepartie de ``_imap_writeback_archive``. La recherche se fait par
+        Message-ID et non par ``imap_uid`` : l'archivage y a laissé l'UID que
+        le message avait en INBOX, alors que la copie lui en a donné un autre
+        dans le dossier d'archive.
+
+        Même discipline que l'archivage : un ``COPY`` refusé laisse le message
+        où il est plutôt que de le supprimer d'un côté sans l'avoir posé de
+        l'autre.
+        """
+        candidates = self.filtered(lambda r: r.message_id_header and r.account_id)
+        if not candidates:
+            return
+
+        by_account = {}
+        for rec in candidates:
+            by_account.setdefault(rec.account_id, self.env["bf.email"])
+            by_account[rec.account_id] |= rec
+
+        for account, recs in by_account.items():
+            if not (account.host and account.login and account.password):
+                continue
+            try:
+                conn = bf_email_imap.open_connection(
+                    account.host, account.port, account.login, account.password,
+                )
+            except bf_email_imap.ImapConnectionError as exc:
+                _logger.warning(
+                    "bf.email IMAP restore (%s): %s", account.display_name, exc,
+                )
+                continue
+            try:
+                for rec in recs:
+                    source = rec.imap_folder or ""
+                    if not source or source.upper() == "INBOX":
+                        continue
+                    if not bf_email_imap.select_folder(conn, source, readonly=False):
+                        _logger.info(
+                            "bf.email IMAP restore: dossier %r non sélectionnable "
+                            "pour #%s", source, rec.id)
+                        continue
+                    uid = self._imap_find_uid(conn, rec.message_id_header)
+                    if not uid:
+                        _logger.info(
+                            "bf.email IMAP restore: #%s introuvable dans %r",
+                            rec.id, source)
+                        continue
+                    try:
+                        uid_tok = bf_email_imap.imap_uid_token(uid)
+                        status, resp = conn.uid(
+                            "COPY", uid_tok,
+                            bf_email_imap.imap_quote_mailbox("INBOX"),
+                        )
+                        if status != "OK":
+                            _logger.warning(
+                                "bf.email IMAP restore: COPY vers INBOX refusé "
+                                "pour #%s (UID %s): %s — message laissé dans %r",
+                                rec.id, uid, resp, source)
+                            continue
+                        conn.uid("STORE", uid_tok, "+FLAGS", "(\\Deleted)")
+                        conn.expunge()
+                    except Exception:
+                        _logger.warning(
+                            "bf.email IMAP restore failed for UID %s", uid,
+                            exc_info=True)
+                        continue
+                    # Le message porte un nouvel UID en INBOX ; le retrouver
+                    # évite de laisser la ligne pointer sur un UID périmé.
+                    new_uid = None
+                    if bf_email_imap.select_folder(conn, "INBOX", readonly=True):
+                        new_uid = self._imap_find_uid(conn, rec.message_id_header)
+                    rec.write({
+                        "imap_folder": "INBOX",
+                        "imap_in_inbox": True,
+                        "imap_uid": str(new_uid) if new_uid else rec.imap_uid,
+                    })
+            finally:
+                try:
+                    conn.logout()
+                except Exception:
+                    pass
+
+    @api.model
+    def _imap_find_uid(self, conn, message_id):
+        """Premier UID du dossier courant portant ce Message-ID, ou None."""
+        try:
+            status, data = conn.uid(
+                "SEARCH", None, "HEADER", "Message-ID",
+                bf_email_imap.imap_reject_crlf(message_id, "Message-ID"),
+            )
+        except Exception:
+            _logger.debug("bf.email: recherche Message-ID échouée (%s)",
+                          message_id, exc_info=True)
+            return None
+        if status != "OK" or not data or not data[0]:
+            return None
+        raw = data[0]
+        if isinstance(raw, bytes):
+            raw = raw.decode("ascii", errors="ignore")
+        found = [x for x in raw.split() if x.isdigit()]
+        return found[0] if found else None
 
     def action_snooze(self):
         """Open snooze wizard for selected emails."""

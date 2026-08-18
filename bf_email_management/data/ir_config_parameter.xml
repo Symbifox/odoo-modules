@@ -34,6 +34,28 @@
     </record>
 
     <!--
+      Mobile API (18.0.6.8.0).
+
+      mobile_redirect_schemes: comma-separated deep-link prefixes /auth/start
+      will redirect to. Anything not listed is refused — otherwise the route
+      is an open redirect handing a live exchange code to any URL. Ships with
+      the generic scheme only; a branded build adds its own here.
+
+      ntfy_publish_token: bearer token used to POST to the UnifiedPush
+      endpoints devices registered. Empty = push disabled, the app still works
+      by pull. The real value belongs in this parameter, never in the source.
+    -->
+    <record id="bf_email_mobile_redirect_schemes" model="ir.config_parameter">
+        <field name="key">bf_email_management.mobile_redirect_schemes</field>
+        <field name="value">odooinbox://</field>
+    </record>
+
+    <record id="bf_email_ntfy_publish_token" model="ir.config_parameter">
+        <field name="key">bf_email_management.ntfy_publish_token</field>
+        <field name="value"></field>
+    </record>
+
+    <!--
       18.0.4.0.0: All IMAP credentials, watermarks, archive folders, batch
       sizes, and auto-link thresholds moved to bf.email.account (per-user).
       The migration in 18.0.4.0.0/post-migrate.py removes the legacy

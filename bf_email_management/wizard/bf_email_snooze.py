@@ -5,7 +5,9 @@ The IMAP mirror cron flips them back to ``is_handled=False`` once the
 ``snoozed_until`` timestamp passes.
 """
 
-from datetime import timedelta
+from datetime import datetime, time, timedelta
+
+import pytz
 
 from odoo import api, fields, models
 
@@ -49,24 +51,36 @@ class BfEmailSnooze(models.TransientModel):
 
     @api.onchange("preset")
     def _onchange_preset(self):
+        """Resolve the preset in the USER's timezone, not UTC.
+
+        ``fields.Datetime.now()`` is naive UTC, so ``.replace(hour=18)`` used to
+        mean 18:00 UTC — 14:00 in Montreal. "Ce soir" fired mid-afternoon and
+        "Demain matin (8 h)" at 4 a.m., which is exactly when a snoozed email
+        should NOT come back. Wall-clock hours only mean something in a
+        timezone, so the arithmetic happens there and converts back to UTC for
+        storage.
+        """
         now = fields.Datetime.now()
+        tz = pytz.timezone(self.env.user.tz or "America/Montreal")
+        local_now = now.replace(tzinfo=pytz.UTC).astimezone(tz)
+
+        def at(day_offset, hour):
+            target = (local_now + timedelta(days=day_offset)).date()
+            naive = datetime.combine(target, time(hour=hour))
+            return tz.localize(naive).astimezone(pytz.UTC).replace(tzinfo=None)
+
         if self.preset == "1h":
             self.snoozed_until = now + timedelta(hours=1)
         elif self.preset == "3h":
             self.snoozed_until = now + timedelta(hours=3)
         elif self.preset == "tonight":
-            self.snoozed_until = now.replace(hour=18, minute=0, second=0, microsecond=0)
-            if self.snoozed_until <= now:
-                self.snoozed_until += timedelta(days=1)
+            tonight = at(0, 18)
+            self.snoozed_until = tonight if tonight > now else at(1, 18)
         elif self.preset == "tomorrow":
-            self.snoozed_until = (now + timedelta(days=1)).replace(
-                hour=8, minute=0, second=0, microsecond=0,
-            )
+            self.snoozed_until = at(1, 8)
         elif self.preset == "nextweek":
-            days_ahead = (7 - now.weekday()) % 7 or 7
-            self.snoozed_until = (now + timedelta(days=days_ahead)).replace(
-                hour=8, minute=0, second=0, microsecond=0,
-            )
+            days_ahead = (7 - local_now.weekday()) % 7 or 7
+            self.snoozed_until = at(days_ahead, 8)
 
     def action_apply(self):
         self.ensure_one()

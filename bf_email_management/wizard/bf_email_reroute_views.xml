@@ -19,17 +19,18 @@
                                options="{'no_create': True}"/>
                     </group>
                     <group string="Cible">
-                        <field name="quick_paste"
-                               placeholder="URL Odoo, 22299, INV/2026/00017, task:22299…"/>
                         <field name="target_reference"
-                               context="{'bf_email_reroute_search': True}"/>
+                               widget="bf_chatter_target"
+                               required="1"
+                               placeholder="Nom, numéro, task:22299, INV/2026/00017, ou URL Odoo…"/>
                         <field name="mark_replied"/>
                         <field name="archive_after"/>
                     </group>
                     <div class="alert alert-info" role="alert" colspan="2">
                         <p class="mb-1"><strong>Comment ça fonctionne :</strong></p>
                         <ul class="mb-0">
-                            <li>Tape un numéro (<code>22299</code>), un nom de facture (<code>INV/2026/00017</code>) ou colle une URL Odoo dans <em>Lien rapide</em> — la cible se résout automatiquement.</li>
+                            <li>Cherchez la fiche par son nom : le sélecteur balaie tous les modules d'un coup, sans qu'on ait à choisir le type d'objet.</li>
+                            <li>Un numéro (<code>22299</code>), un raccourci (<code>task:22299</code>), un nom de facture (<code>INV/2026/00017</code>) ou une URL Odoo collée se résolvent en fiche exacte, remontée en tête de liste.</li>
                             <li>Le courriel est posté sur le chatter du dossier choisi avec son <code>Message-ID</code> d'origine.</li>
                             <li>La ligne dans le module Courriels est mise à jour : elle passe de « IMAP orphelin » à « rattachée au chatter ».</li>
                             <li>Les pièces jointes sont reconstruites et liées au dossier cible.</li>
