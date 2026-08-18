@@ -12,6 +12,7 @@ to suggest a more relevant target chatter. On confirmation, updates the
 - `mail`
 - `bf_email_management`
 - `bf_onboarding_base`
+- `bf_chatter_target`
 
 ## Security
 
@@ -28,9 +29,13 @@ to suggest a more relevant target chatter. On confirmation, updates the
 - "Re-route" button in the header of the `bf.email` form view.
 - "Re-route this email" action menu available in the list view
   (multi-selection: one wizard per record).
-- `Target` field of type `Reference` combining a dropdown of the 12
-  common models (task, CRM lead, helpdesk ticket, contact, sale order,
-  invoice, etc.) and a Many2one picker filtered by the chosen model.
+- `Target` field of type `Reference` rendered by the shared
+  `bf_chatter_target` widget (since 2.3.0): a single search box over every
+  chatter-bearing model, grouped by model with an icon and a context line.
+  The previous dropdown of 12 hardcoded models is gone — an agenda, a
+  meeting record or a secure transfer could not be reached through it. The
+  same box resolves a pasted Odoo URL, a bare id, a shorthand
+  (`task:22299`) or a technical reference (`bf.email:17`).
 - If an automatic suggestion is available (via headers or parent_id),
   an "Apply suggestion" button pre-fills the `Target` field.
 

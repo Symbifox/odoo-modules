@@ -15,13 +15,30 @@ _EML_EXTENSIONS = {".eml"}
 
 
 class MailImportWizard(models.TransientModel):
+    """Importer des .eml dans un chatter.
+
+    Depuis la 1.4.0 la cible passe par ``bf.chatter.target.mixin``, comme les
+    autres importateurs. Ouvert depuis le chatter d'une fiche, l'assistant se
+    pré-remplit tout seul ; ouvert depuis le menu Paramètres, il demande la
+    fiche au lieu d'échouer sur « Aucun enregistrement cible défini ».
+    ``res_model`` / ``res_id`` restent lisibles, dérivés de la cible, parce que
+    le reste du fichier (fil parent, journalisation) s'en sert.
+    """
+
     _name = "bf.mail.import.wizard"
+    _inherit = ["bf.chatter.target.mixin"]
     _description = "Assistant d'import de courriels .eml"
 
-    res_model = fields.Char("Mod\u00e8le", readonly=True)
-    res_id = fields.Integer("ID enregistrement", readonly=True)
-    record_display = fields.Char(
-        "Enregistrement cible", compute="_compute_record_display"
+    target_reference = fields.Reference(
+        string="Enregistrement cible",
+        help="Cherchez la fiche par son nom, son numéro, un raccourci "
+             "(task:22299) ou collez une URL Odoo.",
+    )
+    res_model = fields.Char(
+        "Mod\u00e8le", compute="_compute_res_target",
+    )
+    res_id = fields.Integer(
+        "ID enregistrement", compute="_compute_res_target",
     )
     eml_files = fields.Many2many(
         "ir.attachment",
@@ -35,18 +52,12 @@ class MailImportWizard(models.TransientModel):
         default="draft",
     )
 
-    @api.depends("res_model", "res_id")
-    def _compute_record_display(self):
+    @api.depends("target_reference")
+    def _compute_res_target(self):
         for rec in self:
-            if rec.res_model and rec.res_id:
-                try:
-                    target = self.env[rec.res_model].browse(rec.res_id)
-                    if target.exists():
-                        rec.record_display = target.display_name
-                        continue
-                except Exception:
-                    pass
-            rec.record_display = False
+            target = rec.target_reference
+            rec.res_model = target._name if target else False
+            rec.res_id = target.id if target else 0
 
     @api.depends("eml_files")
     def _compute_file_count(self):
@@ -55,6 +66,10 @@ class MailImportWizard(models.TransientModel):
 
     @api.model
     def default_get(self, fields_list):
+        """Pré-remplit la cible avec la fiche d'où l'on vient.
+
+        Sans contexte de chatter (entrée du menu Paramètres), on ne lève plus :
+        le sélecteur demandera la fiche."""
         res = super().default_get(fields_list)
         ctx = self.env.context
         res_model = ctx.get("active_model")
@@ -72,9 +87,8 @@ class MailImportWizard(models.TransientModel):
                         res_model,
                     )
                 )
-            res["res_model"] = res_model
-        if res_id:
-            res["res_id"] = res_id
+            if res_id:
+                res["target_reference"] = f"{res_model},{res_id}"
         return res
 
     def _parse_eml(self, raw_bytes):
@@ -91,16 +105,9 @@ class MailImportWizard(models.TransientModel):
             )
 
     def _get_target(self):
-        """Return the target record, validated."""
+        """La fiche cible, une fois vérifiées existence, chatter et droits."""
         self.ensure_one()
-        if not self.res_model or not self.res_id:
-            raise UserError(_("Aucun enregistrement cible d\u00e9fini."))
-        target = self.env[self.res_model].browse(self.res_id)
-        if not target.exists():
-            raise UserError(
-                _("L'enregistrement cible a \u00e9t\u00e9 supprim\u00e9.")
-            )
-        return target
+        return self._get_chatter_target("write")
 
     def _validate_parent_id(self, parent_id):
         """Ensure parent_id belongs to the same thread. Return False if not."""

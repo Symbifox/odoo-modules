@@ -6,19 +6,6 @@ from odoo.exceptions import AccessError
 
 # Modèles remontés en tête du sélecteur : ce sont ceux qu'on route au
 # quotidien. Le reste de la liste suit par ordre alphabétique.
-PRIORITY_REFERENCE_MODELS = (
-    "res.partner",
-    "project.project",
-    "project.task",
-    "crm.lead",
-    "helpdesk.ticket",
-    "calendar.event",
-    "account.move",
-    "sale.order",
-    "purchase.order",
-    "hr.employee",
-)
-
 ALLOWED_QUICK_CREATE_KEYS = {
     "name",
     "body",
@@ -105,31 +92,12 @@ class BfNote(models.Model):
     def _selection_target_model(self):
         """Modèles auxquels une note peut être rattachée.
 
-        Même règle de compatibilité que le re-routage de `bf_email_management` :
-        toute fiche non transiente porteuse d'un chatter (`mail.thread`) est une
-        cible valide. `bf_bloc_notes.reference_models` reste disponible comme
-        liste blanche facultative — la renseigner restreint le sélecteur, la
-        laisser vide expose l'ensemble.
+        Délégué à `bf.chatter.target` depuis la 2.9.0 : la même liste sert
+        désormais à tous les importateurs. Le paramètre système
+        `bf_bloc_notes.reference_models` reste honoré par le socle, donc une
+        base qui l'avait renseigné garde sa restriction sans rien ressaisir.
         """
-        param = self.env["ir.config_parameter"].sudo().get_param(
-            "bf_bloc_notes.reference_models", ""
-        )
-        wanted = [m.strip() for m in (param or "").split(",") if m.strip()]
-        if wanted:
-            domain = [("model", "in", wanted), ("transient", "=", False)]
-        else:
-            domain = [("is_mail_thread", "=", True), ("transient", "=", False)]
-        models_ = self.env["ir.model"].sudo().search(domain)
-        # `ir.model` garde des lignes pour des modèles absents du registre
-        # (module désinstallé) : les proposer donnerait un Reference cassé.
-        items = [(m.model, m.name) for m in models_ if m.model in self.env]
-        items.sort(key=lambda item: (
-            PRIORITY_REFERENCE_MODELS.index(item[0])
-            if item[0] in PRIORITY_REFERENCE_MODELS
-            else len(PRIORITY_REFERENCE_MODELS),
-            item[1] or item[0],
-        ))
-        return items
+        return self.env["bf.chatter.target"]._thread_model_selection()
 
     @api.depends("link_ids", "link_ids.res_model", "link_ids.res_id")
     def _compute_res_ref(self):

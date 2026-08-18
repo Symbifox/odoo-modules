@@ -79,7 +79,7 @@ class BfEmail(models.Model):
             "suggested_reason": reason,
         }
         if model and res_id:
-            vals["target_ref"] = f"{model},{res_id}"
+            vals["target_reference"] = f"{model},{res_id}"
         wizard = self.env["bf.mail.reroute.wizard"].create(vals)
         return {
             "type": "ir.actions.act_window",

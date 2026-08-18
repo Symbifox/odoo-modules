@@ -1,3 +1,11 @@
+"""Re-router un courriel déjà posé sur un chatter vers le bon.
+
+La cible vient de ``bf.chatter.target.mixin``. Auparavant ce sorcier portait sa
+propre liste de douze modèles codée en dur : un ordre du jour, un transfert
+sécurisé ou un compte rendu n'étaient donc pas atteignables, et un modèle ajouté
+ailleurs n'y apparaissait jamais.
+"""
+
 import logging
 
 from odoo import api, fields, models, _
@@ -5,24 +13,10 @@ from odoo.exceptions import UserError
 
 _logger = logging.getLogger(__name__)
 
-_TARGET_MODELS = [
-    ("project.task", "T\u00e2che"),
-    ("crm.lead", "Piste / Opportunit\u00e9 CRM"),
-    ("helpdesk.ticket", "Ticket helpdesk"),
-    ("res.partner", "Contact"),
-    ("sale.order", "Bon de commande"),
-    ("account.move", "Facture"),
-    ("hr.expense", "Note de frais"),
-    ("hosting.service", "Service h\u00e9bergement"),
-    ("hosting.domain", "Domaine h\u00e9bergement"),
-    ("project.project", "Projet"),
-    ("calendar.event", "\u00c9v\u00e9nement"),
-    ("mailing.contact", "Contact mailing"),
-]
-
 
 class BfMailRerouteWizard(models.TransientModel):
     _name = "bf.mail.reroute.wizard"
+    _inherit = ["bf.chatter.target.mixin"]
     _description = "Re-router un courriel vers une autre chatter"
 
     email_id = fields.Many2one(
@@ -34,11 +28,7 @@ class BfMailRerouteWizard(models.TransientModel):
     suggested_display = fields.Char("Cible sugg\u00e9r\u00e9e", readonly=True)
     suggested_reason = fields.Char("Raison", readonly=True)
 
-    target_ref = fields.Reference(
-        selection=_TARGET_MODELS,
-        string="Cible",
-        required=True,
-    )
+    target_reference = fields.Reference(string="Cible")
 
     def _get_source_record(self):
         self.ensure_one()
@@ -51,8 +41,8 @@ class BfMailRerouteWizard(models.TransientModel):
         return source if source.exists() else None
 
     def _validate_access(self, target):
+        """Droits sur ce que le re-routage déplace, en plus de la cible."""
         self.ensure_one()
-        target.check_access("write")
         email = self.email_id
         email.check_access("write")
         source = self._get_source_record()
@@ -62,16 +52,11 @@ class BfMailRerouteWizard(models.TransientModel):
             email.mail_message_id.check_access("read")
 
     def _validate_target(self):
+        """Existence, chatter et droits sur la cible viennent de la garde
+        partagée ; il reste à vérifier ce qui est propre au re-routage : le
+        courriel lui-même, sa chatter d'origine et le message source."""
         self.ensure_one()
-        target = self.target_ref
-        if not target:
-            raise UserError(_("Choisissez une cible."))
-        if not target.exists():
-            raise UserError(_("L'enregistrement cible n'existe pas."))
-        if not hasattr(target, "message_post"):
-            raise UserError(
-                _("Le mod\u00e8le %s ne supporte pas la chatter.", target._name)
-            )
+        target = self._get_chatter_target("write")
         self._validate_access(target)
         return target
 
@@ -82,7 +67,7 @@ class BfMailRerouteWizard(models.TransientModel):
         target = self.env[self.suggested_model].browse(self.suggested_res_id)
         if not target.exists():
             raise UserError(_("La suggestion pointe vers un enregistrement supprim\u00e9."))
-        self.target_ref = target
+        self.target_reference = target
         return {
             "type": "ir.actions.act_window",
             "res_model": "bf.mail.reroute.wizard",

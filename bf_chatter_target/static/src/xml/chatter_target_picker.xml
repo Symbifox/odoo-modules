@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="bf_chatter_target.Picker">
+        <div class="o_bf_chatter_target d-flex align-items-center w-100">
+            <t t-if="props.readonly">
+                <!-- Texte nu, pas un lien : dans une liste éditable, un lien
+                     ouvrirait la fiche au lieu d'entrer en édition sur la case. -->
+                <span t-if="value" class="text-truncate" t-esc="displayName"/>
+                <span t-else="" class="text-muted">—</span>
+            </t>
+            <t t-else="">
+                <span t-if="value"
+                      class="o_bf_chatter_target_value d-inline-flex align-items-center gap-2 text-truncate">
+                    <span class="text-truncate" t-esc="displayName"/>
+                    <a t-att-href="targetUrl" class="text-muted o_bf_chatter_target_open"
+                       title="Ouvrir la fiche" target="_blank">
+                        <i class="fa fa-external-link"/>
+                    </a>
+                    <button type="button"
+                            class="btn btn-link p-0 text-muted o_bf_chatter_target_clear"
+                            title="Choisir une autre fiche"
+                            t-on-click="onClear">
+                        <i class="fa fa-times"/>
+                    </button>
+                </span>
+                <AutoComplete t-else=""
+                              value="''"
+                              sources="sources"
+                              placeholder="placeholder"
+                              resetOnSelect="true"
+                              onSelect.bind="onSelect"
+                              class="'w-100'"/>
+            </t>
+        </div>
+    </t>
+
+    <t t-name="bf_chatter_target.Option">
+        <div class="o_bf_chatter_target_option">
+            <div t-if="option.groupLabel"
+                 class="o_bf_chatter_target_group text-uppercase text-muted small fw-bold"
+                 t-esc="option.groupLabel"/>
+            <div class="d-flex align-items-center justify-content-between gap-2"
+                 t-att-class="{ o_bf_chatter_target_closed: option.closed }">
+                <span class="d-flex align-items-center gap-2 text-truncate">
+                    <i t-if="option.icon" t-att-class="option.icon"
+                       class="o_bf_chatter_target_icon text-muted" role="img"/>
+                    <span class="o_bf_chatter_target_name text-truncate" t-esc="option.label"/>
+                </span>
+                <small t-if="option.detail"
+                       class="o_bf_chatter_target_detail text-muted text-truncate"
+                       t-att-title="option.detail" t-esc="option.detail"/>
+            </div>
+        </div>
+    </t>
+
+</templates>

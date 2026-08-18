@@ -1,12 +1,12 @@
 {
     "name": "BF Bloc-notes",
-    "version": "18.0.2.8.0",
+    "version": "18.0.2.9.0",
     "category": "Productivity",
     "summary": "Notes rapides riches, multi-liens, conversion en activité, raccourcis et systray",
     'author': 'Les services de consultation Blue Fox, Inc.',
     "website": "https://symbifox.com",
     'license': 'LGPL-3',
-    "depends": ["web", "mail", "project", "crm", "contacts", "bf_onboarding_base"],
+    "depends": ["web", "mail", "project", "crm", "contacts", "bf_onboarding_base", "bf_chatter_target"],
     "data": [
         "security/ir.model.access.csv",
         "security/bf_note_security.xml",

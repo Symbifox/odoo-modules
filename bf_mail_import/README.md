@@ -9,6 +9,7 @@ When emails are received or sent outside of Odoo (external mail client, webmail,
 ## Features
 
 - **`.eml` button in the chatter** — visible on any record inheriting `mail.thread`
+- **Also usable outside a chatter** (since 1.4.0) — opened from Settings, the wizard asks for the target record through the shared `bf_chatter_target` picker instead of failing with "no target record set"
 - **Multi-file import** — upload multiple `.eml` files in a single operation
 - **Direct import** — single click to import (no preview step)
 - **Chronological order** — files are pre-sorted by send date before import, guaranteeing chronological display in the chatter
@@ -47,7 +48,9 @@ bf_mail_import/
 
 | Module | Role |
 |--------|------|
-| `mail` | Sole dependency — provides `mail.thread`, `message_parse()`, `message_post()` |
+| `mail` | Provides `mail.thread`, `message_parse()`, `message_post()` |
+| `bf_onboarding_base` | Shared onboarding panel helpers |
+| `bf_chatter_target` | The target-record picker (`target_reference` field, `bf_chatter_target` widget) |
 
 No external dependencies, no additional Python libraries.
 
@@ -66,7 +69,7 @@ Two-state `TransientModel`:
 
 | State | User action | Behavior |
 |-------|-------------|----------|
-| `draft` | Select `.eml` files + click Import | `many2many_binary` widget linked to `ir.attachment`, direct import |
+| `draft` | Pick the target record (pre-filled when opened from a chatter), select `.eml` files, click Import | `many2many_binary` widget linked to `ir.attachment`, direct import. `res_model` / `res_id` are computed from `target_reference`. |
 | `done` | Result displayed | Detailed per-file summary: imported (+), duplicates (-), errors (!) |
 
 **Three-phase import pipeline:**

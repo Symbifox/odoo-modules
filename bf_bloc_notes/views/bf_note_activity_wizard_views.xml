@@ -15,9 +15,11 @@
                     <group>
                         <field name="needs_target" invisible="1"/>
                         <field name="link_target_ref"
+                               widget="bf_chatter_target"
                                invisible="not needs_target"
                                required="needs_target"
-                               string="Fiche cible"/>
+                               string="Fiche cible"
+                               placeholder="Nom, numéro, task:22299, ou URL Odoo…"/>
                     </group>
                 </group>
                 <group>

@@ -20,8 +20,10 @@
                             class="btn-secondary" icon="fa-magic"/>
                 </group>
                 <group string="Choisir la cible">
-                    <field name="target_ref"
-                           options="{'no_create': True, 'no_create_edit': True}"/>
+                    <field name="target_reference"
+                           widget="bf_chatter_target"
+                           required="1"
+                           placeholder="Nom, numéro, task:22299, ou URL Odoo…"/>
                 </group>
                 <footer>
                     <button name="action_reroute" type="object"
