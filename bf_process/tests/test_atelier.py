@@ -188,6 +188,109 @@ class TestPortailAtelier(HttpCase):
         self.assertNotIn("CECI-NE-DOIT-PAS-SORTIR", r.text)
         self.assertEqual(r.status_code, 404)
 
+    def _politique(self, avec_version=True, fichier=True, corps=False):
+        """Une politique de la base de connaissances, comme en vrai.
+
+        Ce qui sort par cette route est ce que porte la version **publiée** :
+        son fichier s'il y en a un, sinon le corps rendu. Une version en
+        brouillon ne compte ni dans un cas ni dans l'autre.
+        """
+        import base64
+        Type = self.env["project.document.type"]
+        genre = Type.search([("code", "=", "PRO-ESSAI")], limit=1) or \
+            Type.create({"name": "Procédure", "code": "PRO-ESSAI"})
+        doc = self.env["project.document"].create({
+            "name": "Procédure de décapage", "type_id": genre.id,
+            "code": "PRO-ESSAI-%s" % (
+                self.env["project.document"].search_count([]) + 1)})
+        if corps:
+            doc.body_source = "internal"
+            self.env["project.document.section"].create({
+                "document_id": doc.id, "code": "OBJ", "name": "Objet",
+                "content_kind": "html",
+                "content": "<p>LE-GESTE-A-REPRODUIRE</p>"})
+        if avec_version:
+            vals = {"document_id": doc.id, "version_number": "1.0",
+                    "state": "released"}
+            if fichier:
+                piece = self.env["ir.attachment"].create({
+                    "name": "procedure.txt", "mimetype": "text/plain",
+                    "datas": base64.b64encode(b"LE-GESTE-A-REPRODUIRE")})
+                vals["attachment_id"] = piece.id
+            self.env["project.document.version"].create(vals)
+        return doc
+
+    def _ressource_politique(self, doc, libelle="Procédure de décapage"):
+        return self.env["bf.process.node.resource"].create({
+            "node_id": self.noeud.id, "name": libelle,
+            "kind": "procedure", "document_id": doc.id})
+
+    def _ouvrir(self, ressource):
+        return self.url_open(
+            "/carte/etape/%s/ressource/%s?access_token=%s"
+            % (self.noeud.id, ressource.id, self.noeud.access_token))
+
+    def test_une_politique_versionnee_sort_par_sa_version_publiee(self):
+        """La régression qui a coûté un tirage : le champ de la version
+        courante s'appelle `latest_version_id`. Avec un mauvais nom, la route
+        levait un AttributeError et rendait 500 — jamais vu en test parce que
+        rien n'accrochait de `project.document` à une étape."""
+        r = self._ouvrir(self._ressource_politique(self._politique()))
+        self.assertEqual(r.status_code, 200)
+        self.assertIn("LE-GESTE-A-REPRODUIRE", r.text)
+
+    def test_une_politique_sans_fichier_sort_par_son_corps_rendu(self):
+        """Le cas NORMAL d'une base de connaissances tenue dans Odoo : le
+        contenu vit dans les sections, pas en pièce jointe. Sur les 191
+        versions publiées de la nôtre, deux portaient un fichier — s'en tenir
+        au fichier revenait à n'ouvrir à peu près rien.
+
+        ⚠️ Le corps rendu sort en HTML SOUS TESTS : Odoo court-circuite
+        wkhtmltopdf quand `--test-enable` est posé. Le contrôleur lit donc le
+        genre produit plutôt que de l'affirmer, et c'est ce que le test vérifie
+        — le PDF pour de vrai se contrôle en prod, par un scan.
+        """
+        doc = self._politique(fichier=False, corps=True)
+        r = self._ouvrir(self._ressource_politique(doc))
+        self.assertEqual(r.status_code, 200)
+        self.assertIn(r.headers.get("Content-Type"),
+                      ("application/pdf", "text/html"))
+        self.assertIn("LE-GESTE-A-REPRODUIRE", r.text)
+
+    def test_un_corps_qui_vit_ailleurs_ne_se_rend_pas(self):
+        """Un document qui pointe vers un fichier externe n'a rien à rendre :
+        c'est un 404, pas une page blanche imprimée à l'atelier.
+
+        ⚠️ Les sections sont là et le document est publié : c'est le CAS QUI
+        MORD. Un document rédigé dans Odoo puis rebasculé vers un fichier
+        externe garde ses sections en base ; sans la garde sur `body_source`,
+        le mur afficherait un texte que le document dit ne plus être le sien.
+        Une première version de ce test créait un document sans section, si
+        bien qu'il passait au vert même la garde retirée.
+        """
+        doc = self._politique(fichier=False, corps=True)
+        doc.body_source = "external"
+        self.assertTrue(doc.section_ids)
+        self.assertTrue(doc.latest_version_id)
+        r = self._ouvrir(self._ressource_politique(doc))
+        self.assertEqual(r.status_code, 404)
+
+    def test_un_corps_non_publie_ne_sort_pas_meme_s_il_est_redige(self):
+        """La porte reste la PUBLICATION : un corps rédigé mais jamais publié
+        n'a pas à se retrouver au-dessus d'un poste de travail."""
+        doc = self._politique(avec_version=False, corps=True)
+        self.assertTrue(doc._report_sections())
+        r = self._ouvrir(self._ressource_politique(doc))
+        self.assertEqual(r.status_code, 404)
+
+    def test_une_politique_sans_version_publiee_refuse_proprement(self):
+        """Un document dont le contenu ne vit que dans son corps interne n'a
+        rien de public à servir. C'est un 404, pas une erreur serveur."""
+        doc = self._politique(avec_version=False)
+        r = self._ouvrir(self._ressource_politique(
+            doc, "Procédure jamais publiée"))
+        self.assertEqual(r.status_code, 404)
+
     def test_une_ressource_externe_part_vraiment_chez_le_fournisseur(self):
         """`request.redirect` est LOCAL par défaut : sans `local=False`, une
         fiche signalétique hébergée chez le fournisseur devient un chemin

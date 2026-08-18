@@ -62,6 +62,48 @@ class CarteAtelier(CustomerPortal):
         return request.render("bf_process.portail_etape",
                               self._ctx(noeud, access_token))
 
+    def _corps_en_pdf(self, document):
+        """La procédure rendue, quand sa version publiée n'a pas de fichier.
+
+        Dans une base de connaissances tenue dans Odoo, le contenu d'une
+        procédure vit dans son corps documentaire, pas en pièce jointe : sur
+        les 191 versions publiées de la nôtre, deux portaient un fichier.
+        S'en tenir au fichier revenait donc à n'ouvrir à peu près rien, et la
+        cible « politique ou procédure » d'une ressource ne servait qu'à
+        l'écran, jamais au mur.
+
+        Le tri est fait en amont par `_corps_a_rendre` : ce qui arrive ici a
+        déjà une version publiée et un corps qui vit dans Odoo.
+        """
+        # ⚠️ `env(su=True)` dès la RÉSOLUTION du rapport : l'utilisateur public
+        # n'a pas le droit de lire `ir.actions.report`, et un `env.ref` nu
+        # rendait 403 avant même d'arriver au rendu. Le rendu QWeb, lui, se
+        # fait dans l'environnement du rapport — celui-là doit donc aussi être
+        # élevé, sinon ni le document ni ses sections ne se lisent. Le jeton de
+        # l'étape a déjà tranché l'accès, c'est lui la frontière.
+        rapport = request.env(su=True).ref(
+            "project_knowledge_matrix.action_report_document_body",
+            raise_if_not_found=False)
+        if not rapport:
+            return request.not_found()
+        # ⚠️ Sous `--test-enable`, Odoo rend le HTML plutôt que d'appeler
+        # wkhtmltopdf, et rend « html » comme second terme. On lit donc le
+        # genre PRODUIT au lieu de l'affirmer : autrement l'en-tête annoncerait
+        # un PDF et livrerait du HTML. (Forcer le vrai rendu dans les tests ne
+        # marche pas : wkhtmltopdf rappelle le serveur d'essai pour aller
+        # chercher la feuille de style, et le curseur de la transaction est
+        # déjà pris — quatre tests en erreur, 90 secondes.)
+        rendu, genre = rapport._render_qweb_pdf(rapport.report_name,
+                                                document.ids)
+        nom = "%s-v%s.%s" % (document.code or document.name,
+                             document.current_version or "0", genre)
+        return request.make_response(rendu, headers=[
+            ("Content-Type", "application/pdf" if genre == "pdf"
+             else "text/html"),
+            ("Content-Length", len(rendu)),
+            ("Content-Disposition", content_disposition(nom)),
+        ])
+
     @http.route(["/carte/etape/<int:node_id>/ressource/<int:res_id>"],
                 type="http", auth="public", sitemap=False)
     def fichier_ressource(self, node_id, res_id, access_token=None, **kw):
@@ -86,13 +128,20 @@ class CarteAtelier(CustomerPortal):
             # signalétique hébergée chez le fournisseur — le cas normal — ne
             # s'ouvrait donc jamais.
             return request.redirect(ressource.url, local=False)
-        piece = ressource.sudo().attachment_id
+        # La règle de ce qui est servable vit sur le modèle (`_piece_publique`,
+        # `_corps_a_rendre`) : elle s'y prouve sans serveur.
+        # ⚠️ Le fichier d'une version se lit sur `latest_version_id` —
+        # `current_version` est le NUMÉRO, un Char. Avec le mauvais nom, la
+        # route levait un AttributeError et rendait 500 : le code QR d'une
+        # étape adossée à une procédure n'ouvrait rien, alors que fichier et
+        # adresse passaient.
+        ressource = ressource.sudo()
+        piece = ressource._piece_publique()
         if not piece:
-            # une politique versionnée : on sert le fichier de sa version
-            # courante, jamais le corps interne, qui n'est pas public
-            piece = ressource.sudo().document_id.current_version_id.attachment_id
-        if not piece:
-            return request.not_found()
+            document = ressource._corps_a_rendre()
+            if not document:
+                return request.not_found()
+            return self._corps_en_pdf(document)
         donnees = piece.raw
         return request.make_response(donnees, headers=[
             ("Content-Type", piece.mimetype or "application/octet-stream"),
