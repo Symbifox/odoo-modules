@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates xml:space="preserve">
+
+    <!--
+        Menu des applications : grille cherchable au lieu de la liste brute.
+
+        On ne remplace que le contenu du dropdown. Les `DropdownItem` restent
+        des `DropdownItem` : fermeture au choix, navigation au clavier, `href`
+        réels et classe `o_app` conservés — c'est sur eux que s'appuient les
+        tours et les tests d'Odoo.
+    -->
+    <t t-name="bf_apps_menu.AppsMenu"
+       t-inherit="web.NavBar.AppsMenu"
+       t-inherit-mode="extension">
+
+        <!-- Le dropdown est rendu dans le conteneur d'overlay, hors du DOM de
+             la barre : sans classe à lui, aucun sélecteur ne l'atteint. -->
+        <xpath expr="//Dropdown" position="attributes">
+            <attribute name="menuClass">'o_apps_menu_panel'</attribute>
+        </xpath>
+
+        <!-- Troisième filet : le clic sur l'icône programme lui aussi la mise
+             au point. Indépendant du `t-ref` comme du montage de l'effet. -->
+        <xpath expr="//div[@class='o_navbar_apps_menu']//button[@data-hotkey='h']"
+               position="attributes">
+            <attribute name="t-on-click">onAppsMenuToggle</attribute>
+        </xpath>
+
+        <xpath expr="//t[@t-set-slot='content']" position="replace">
+            <t t-set-slot="content">
+
+                <!--
+                    `o-navigable` : c'est le sélecteur que `useNavigation` du
+                    Dropdown utilise pour trouver ses éléments. En le posant
+                    ici, le champ devient le premier élément navigable du menu,
+                    et comme `shouldFocusChildInput` vaut vrai par défaut, la
+                    navigation d'Odoo focalise l'`<input>` qu'il contient. Le
+                    curseur y atterrit donc sans qu'on ait à lutter contre le
+                    focus que le dropdown pose de son côté.
+                -->
+                <div class="o_apps_menu_search o-navigable">
+                    <i class="oi oi-search" role="img" aria-hidden="true"/>
+                    <input type="text"
+                           class="o_apps_menu_search_input"
+                           placeholder="Rechercher une application"
+                           aria-label="Rechercher une application"
+                           autocomplete="off"
+                           t-ref="appsMenuSearch"
+                           t-model="appsSearch.query"
+                           t-on-keydown="onAppsMenuSearchKeydown"/>
+                </div>
+
+                <div class="o_apps_menu_grid">
+                    <DropdownItem
+                        t-foreach="appsMenuApps"
+                        t-as="app"
+                        t-key="app.id"
+                        class="{ 'o_app': true, 'o_apps_menu_tile': true, focus: menuService.getCurrentApp() === app }"
+                        onSelected="() => this.onNavBarDropdownItemSelection(app)"
+                        attrs="{ href: getMenuItemHref(app), 'data-menu-xmlid': app.xmlid, 'data-section': app.id }">
+                        <img t-if="app.webIconData"
+                             class="o_apps_menu_icon"
+                             t-att-src="app.webIconData"
+                             alt=""/>
+                        <span t-else="" class="o_apps_menu_icon o_apps_menu_icon_fallback">
+                            <i class="oi oi-apps" role="img" aria-hidden="true"/>
+                        </span>
+                        <span class="o_apps_menu_name" t-esc="app.name"/>
+                    </DropdownItem>
+                </div>
+
+                <div t-if="!appsMenuApps.length" class="o_apps_menu_empty">
+                    Aucune application ne correspond à cette recherche.
+                </div>
+
+            </t>
+        </xpath>
+    </t>
+
+</templates>

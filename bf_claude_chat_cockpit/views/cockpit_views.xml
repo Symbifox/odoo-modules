@@ -71,7 +71,7 @@
         <field name="view_ids" eval="[
             (5, 0, 0),
             (0, 0, {'view_mode': 'list', 'view_id': ref('view_claude_session_cockpit_tree')}),
-            (0, 0, {'view_mode': 'form', 'view_id': ref('view_claude_session_form')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('bf_claude_chat.view_claude_session_form')}),
         ]"/>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">Nothing to look at, which is good news</p>
@@ -175,7 +175,7 @@
     <menuitem
         id="menu_claude_cockpit"
         name="Cockpit"
-        parent="menu_claude_admin"
+        parent="bf_claude_chat.menu_claude_admin"
         action="action_claude_cockpit"
         sequence="20"
         groups="base.group_system"
@@ -183,7 +183,7 @@
     <menuitem
         id="menu_claude_usage"
         name="Usage"
-        parent="menu_claude_admin"
+        parent="bf_claude_chat.menu_claude_admin"
         action="action_claude_usage"
         sequence="30"
         groups="base.group_system"

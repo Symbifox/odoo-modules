@@ -1,8 +1,14 @@
-// ── Accent color (hardcoded, not theme-dependent) ──
-$bf-accent: #714bea;
-$bf-accent-light: rgba($bf-accent, 0.08);
-$bf-accent-focus: rgba($bf-accent, 0.25);
-$bf-accent-badge: rgba($bf-accent, 0.1);
+// ── Accent ───────────────────────────────────────────────────
+// Suit la marque de l'instance quand elle en pose une (`--brand-primary`, la
+// convention des modules d'habillage maison) et retombe sur le violet
+// historique de GenFox sinon — donc aucun changement là où rien n'est défini.
+//
+// ⚠️ `color-mix` et non `rgba()` : les fonctions SASS ne savent pas opérer sur
+// un `var()` CSS, qui n'est résolu qu'au navigateur.
+$bf-accent: var(--brand-primary, #714bea);
+$bf-accent-light: color-mix(in srgb, var(--brand-primary, #714bea) 8%, transparent);
+$bf-accent-focus: color-mix(in srgb, var(--brand-primary, #714bea) 25%, transparent);
+$bf-accent-badge: color-mix(in srgb, var(--brand-primary, #714bea) 10%, transparent);
 
 // ── Layout ───────────────────────────────────────────────────
 .bf-chat-container {
@@ -74,12 +80,12 @@ $bf-accent-badge: rgba($bf-accent, 0.1);
 }
 
 .bf-chat-avatar-assistant {
-    background: #c5d8f8;
-    color: #3367d6;
+    background: color-mix(in srgb, var(--brand-primary, #3367d6) 22%, white);
+    color: var(--brand-primary, #3367d6);
 }
 
 .bf-chat-avatar-user {
-    background: rgba($bf-accent, 0.15);
+    background: color-mix(in srgb, var(--brand-primary, #714bea) 15%, transparent);
     color: $bf-accent;
 }
 
@@ -116,7 +122,7 @@ $bf-accent-badge: rgba($bf-accent, 0.1);
 }
 
 .bf-chat-bubble-assistant {
-    background-color: #e8f0fe;
+    background-color: color-mix(in srgb, var(--brand-primary, #3367d6) 8%, white);
     border: 1px solid rgba(0, 0, 0, 0.08);
     color: #333;
     border-radius: 1rem 1rem 1rem 0.25rem;
