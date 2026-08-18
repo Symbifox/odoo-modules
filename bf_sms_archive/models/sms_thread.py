@@ -6,6 +6,8 @@ import re
 from datetime import timezone
 from xml.etree.ElementTree import Element, SubElement, tostring
 
+from markupsafe import Markup
+
 from odoo import api, fields, models
 from odoo.exceptions import UserError
 
@@ -68,6 +70,13 @@ class SmsArchiveThread(models.Model):
         column1="thread_id",
         column2="task_id",
         string="Tâches liées",
+    )
+    auto_post_task_id = fields.Many2one(
+        comodel_name="project.task",
+        string="Suivi dans la tâche",
+        help="Quand c'est renseigné, chaque nouveau message de cette conversation est "
+             "relayé automatiquement au chatter de cette tâche. Ne s'applique qu'aux "
+             "messages qui arrivent ensuite, jamais à un import rétroactif.",
     )
     call_ids = fields.One2many(
         comodel_name="call.archive.call",
@@ -861,6 +870,93 @@ class SmsArchiveThread(models.Model):
         })
         thread.write({"partner_id": partner.id})
         return thread._messenger_thread_dict()
+
+    # ── Poster sur une tâche depuis la Messagerie ──────────────────
+
+    @api.model
+    def messenger_task_targets(self, thread_id):
+        """Tâches proposables pour ce fil, du plus probable au moins probable.
+
+        Sert au bouton « → Tâche » : quand une seule tâche sort, la Messagerie poste
+        directement sans ouvrir le sorcier — c'est ce qui fait passer le geste de six
+        clics à un."""
+        thread = self.with_context(active_test=False).browse(int(thread_id))
+        thread._check_messenger_access()
+        linked = thread.task_ids.filtered(lambda t: t.active)
+        return {
+            "auto_post_task_id": thread.auto_post_task_id.id or False,
+            "auto_post_task_name": thread.auto_post_task_id.name or "",
+            "tasks": [{
+                "id": t.id,
+                "name": t.name,
+                "project_name": t.project_id.name or "",
+            } for t in linked],
+        }
+
+    @api.model
+    def messenger_search_tasks(self, term, limit=8):
+        """Recherche de tâches pour le sélecteur inline de la Messagerie."""
+        domain = [("name", "ilike", term)] if term else []
+        tasks = self.env["project.task"].search(domain, limit=int(limit), order="write_date desc")
+        return [{
+            "id": t.id,
+            "name": t.name,
+            "project_name": t.project_id.name or "",
+        } for t in tasks]
+
+    @api.model
+    def messenger_post_to_task(self, thread_id, task_id, message_ids=None, call_ids=None):
+        """Poste une sélection (ou toute la conversation chargée) sur une tâche.
+
+        ``message_ids``/``call_ids`` vides = tout le fil. Les identifiants reçus du client
+        sont réduits au fil visé avant tout envoi : on ne poste jamais un message qu'un
+        appelant aurait glissé dans la liste."""
+        thread = self.with_context(active_test=False).browse(int(thread_id))
+        thread._check_messenger_access()
+        task = self.env["project.task"].browse(int(task_id)).exists()
+        if not task:
+            raise UserError("Tâche introuvable.")
+
+        if message_ids:
+            messages = thread.message_ids.filtered(lambda m: m.id in set(message_ids))
+        elif call_ids:
+            messages = self.env["sms.archive.message"]
+        else:
+            messages = thread.message_ids
+        calls = (thread.call_ids.filtered(lambda c: c.id in set(call_ids))
+                 if call_ids else self.env["call.archive.call"])
+
+        if not messages and not calls:
+            raise UserError("Rien à poster.")
+
+        bodies = []
+        if messages:
+            bodies.append(messages._render_task_post_body())
+        if calls:
+            bodies.append(calls._render_task_post_body())
+        task.message_post(
+            body=Markup("").join(b for b in bodies if b),
+            message_type="comment",
+            subtype_xmlid="mail.mt_note",
+        )
+        if task.id not in thread.task_ids.ids:
+            thread.write({"task_ids": [(4, task.id, 0)]})
+        return {
+            "count": len(messages) + len(calls),
+            "task_name": task.name,
+            "project_name": task.project_id.name or "",
+        }
+
+    @api.model
+    def messenger_set_auto_task(self, thread_id, task_id):
+        """Active ou coupe le suivi automatique du fil vers une tâche."""
+        thread = self.with_context(active_test=False).browse(int(thread_id))
+        thread._check_messenger_access()
+        thread.write({"auto_post_task_id": int(task_id) if task_id else False})
+        return {
+            "auto_post_task_id": thread.auto_post_task_id.id or False,
+            "auto_post_task_name": thread.auto_post_task_id.name or "",
+        }
 
     @api.model
     def messenger_toggle_pin(self, thread_id):

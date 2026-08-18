@@ -228,4 +228,6 @@ class SmsArchiveLine(models.Model):
                 )
                 if created and direction == "in":
                     rec._notify_bus(kind="new")
+                if created:
+                    rec._auto_post_to_task()
         return True

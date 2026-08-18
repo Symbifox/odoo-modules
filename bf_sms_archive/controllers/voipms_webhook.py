@@ -235,6 +235,7 @@ class VoipmsSmsWebhook(http.Controller):
             )
             if created:
                 rec._notify_bus(kind="new")
+                rec._auto_post_to_task()
         except Exception:
             _logger.exception("Webhook VOIP.ms : échec d'ingestion")
             # On répond quand même 200/ok : un retry ne corrigera pas une erreur applicative.

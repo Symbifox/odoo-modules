@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="project_task_view_form_sms" model="ir.ui.view">
+        <field name="name">project.task.form.sms.threads</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="project.view_task_form2"/>
+        <field name="arch" type="xml">
+            <div name="button_box" position="inside">
+                <button name="action_open_sms_threads" type="object"
+                        class="oe_stat_button" icon="fa-comments-o"
+                        invisible="sms_thread_count == 0"
+                        groups="bf_sms_archive.group_sms_user">
+                    <field name="sms_thread_count" widget="statinfo"
+                           string="Conversations"/>
+                </button>
+            </div>
+        </field>
+    </record>
+
+</odoo>
