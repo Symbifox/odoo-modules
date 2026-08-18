@@ -4,48 +4,24 @@ Builds a real ``mail.message`` on the chosen target record while preserving
 the original Message-ID (so the RFC 2822 thread stays intact and the
 ``_should_sync`` cron path will skip the duplicate). Then promotes the
 existing bf.email row from ``source='imap'`` orphan to a chatter row.
+
+La désignation de la cible vient de ``bf.chatter.target.mixin`` : liste des
+modèles compatibles, résolution d'une URL ou d'un raccourci collé, contrôle
+d'accès. Ce fichier portait sa propre copie de ces trois choses, qui avait
+divergé de celle de ``bf_bloc_notes`` ; le champ « Lien rapide » séparé a
+disparu au profit du sélecteur, qui résout la même saisie.
 """
 
 import logging
-import re
-from urllib.parse import urlparse
 
 from odoo import _, api, exceptions, fields, models
 
 _logger = logging.getLogger(__name__)
 
-# Quick-paste parsing patterns.
-_URL_TASK_RE = re.compile(r"/all-tasks/(\d+)|/odoo/project/\d+/(\d+)")
-_URL_GENERIC_ID_RE = re.compile(r"/(\d+)(?:[/?#]|$)")
-_PREFIX_RE = re.compile(r"^(task|ticket|partner|invoice|move|lead|order)\s*[:#]\s*(\d+)$", re.IGNORECASE)
-_INVOICE_NAME_RE = re.compile(r"^[A-Za-z0-9]+/\d{4}/\d+$")
-_PREFIX_TO_MODEL = {
-    "task": "project.task",
-    "ticket": "helpdesk.ticket",
-    "partner": "res.partner",
-    "invoice": "account.move",
-    "move": "account.move",
-    "lead": "crm.lead",
-    "order": "sale.order",
-}
-
-
-# Priority models surfaced first in the dropdown.
-_PRIORITY_MODELS = (
-    "project.task",
-    "helpdesk.ticket",
-    "res.partner",
-    "crm.lead",
-    "calendar.event",
-    "account.move",
-    "sale.order",
-    "purchase.order",
-    "mail.channel",
-)
-
 
 class BfEmailReroute(models.TransientModel):
     _name = "bf.email.reroute"
+    _inherit = ["bf.chatter.target.mixin"]
     _description = "Importer un courriel dans un chatter"
 
     bf_email_ids = fields.Many2many(
@@ -66,19 +42,15 @@ class BfEmailReroute(models.TransientModel):
         compute="_compute_sample",
     )
 
+    # `required` reste côté vue : sur un transient, `required=True` poserait un
+    # NOT NULL sur la colonne, donc plus moyen d'instancier l'assistant avant
+    # que l'utilisateur ait choisi sa cible.
     target_reference = fields.Reference(
-        selection="_get_thread_models",
         string="Dossier cible",
-        required=True,
-        help="Sélectionnez le modèle puis l'enregistrement (tâche, ticket, "
-             "contact, opportunité, événement, facture, etc.) sur lequel "
-             "poster le courriel.",
-    )
-    quick_paste = fields.Char(
-        string="Lien rapide",
-        help="Coller une URL Odoo, un numéro de tâche (ex. 22299), un nom de "
-             "facture (INV/2026/00017) ou un préfixe (task:22299, "
-             "ticket:42) — la cible se résoudra automatiquement.",
+        help="Cherchez la fiche par son nom, son numéro, un raccourci "
+             "(task:22299, facture:42) ou collez une URL Odoo. Tâche, ticket, "
+             "contact, opportunité, ordre du jour, facture : toute fiche dotée "
+             "d'un chatter est une cible valide.",
     )
     mark_replied = fields.Boolean(
         string="Marquer comme répondu",
@@ -184,93 +156,6 @@ class BfEmailReroute(models.TransientModel):
                     return tickets
         return None
 
-    @api.onchange("quick_paste")
-    def _onchange_quick_paste(self):
-        for wiz in self:
-            if not wiz.quick_paste:
-                continue
-            target = wiz._resolve_quick_paste(wiz.quick_paste.strip())
-            if target:
-                wiz.target_reference = f"{target._name},{target.id}"
-
-    @api.model
-    def _resolve_quick_paste(self, text):
-        """Parse an Odoo URL, ID or prefixed reference; return the record or None.
-
-        Accepted forms:
-          * https://.../action-XXXX/.../<id>             → /all-tasks/<id> for tasks
-          * https://.../odoo/project/<pid>/<task_id>     → project.task
-          * task:22299, ticket:42, partner:1234          → prefix mapping
-          * 22299                                         → if a single bf_email_ids
-            partner has a matching task / ticket, prefer that model
-          * INV/2026/00017                                → account.move by name
-        """
-        if not text:
-            return None
-        # 1. Odoo URLs.
-        if text.startswith(("http://", "https://")):
-            try:
-                parsed = urlparse(text)
-                m = _URL_TASK_RE.search(parsed.path)
-                if m:
-                    rid = int(m.group(1) or m.group(2))
-                    rec = self.env["project.task"].browse(rid)
-                    if rec.exists():
-                        return rec
-                # Generic /<id> tail in path: try to map via the action prefix
-                # if present (action-NNNN). Best effort — leave the user to
-                # pick the right model otherwise.
-                tail = _URL_GENERIC_ID_RE.findall(parsed.path)
-                if tail:
-                    # Pick last id segment.
-                    rid = int(tail[-1])
-                    # Try common models in order.
-                    for model in ("project.task", "helpdesk.ticket",
-                                  "account.move", "crm.lead", "res.partner"):
-                        if model not in self.env:
-                            continue
-                        rec = self.env[model].browse(rid)
-                        if rec.exists():
-                            return rec
-                return None
-            except (ValueError, KeyError):
-                return None
-        # 2. Prefix syntax (task:22299, ticket:42).
-        m = _PREFIX_RE.match(text)
-        if m:
-            prefix = m.group(1).lower()
-            try:
-                rid = int(m.group(2))
-            except ValueError:
-                return None
-            model = _PREFIX_TO_MODEL.get(prefix)
-            if model and model in self.env:
-                rec = self.env[model].browse(rid)
-                if rec.exists():
-                    return rec
-            return None
-        # 3. Pure digits → match against models we care about.
-        if text.isdigit():
-            try:
-                rid = int(text)
-            except ValueError:
-                return None
-            for model in ("project.task", "helpdesk.ticket", "account.move"):
-                if model not in self.env:
-                    continue
-                rec = self.env[model].browse(rid)
-                if rec.exists():
-                    return rec
-            return None
-        # 4. Odoo invoice/bill name.
-        if _INVOICE_NAME_RE.match(text):
-            rec = self.env["account.move"].search(
-                [("name", "=", text)], limit=1,
-            )
-            if rec:
-                return rec
-        return None
-
     @api.depends("bf_email_ids")
     def _compute_bf_email_count(self):
         for rec in self:
@@ -283,44 +168,19 @@ class BfEmailReroute(models.TransientModel):
             rec.sample_subject = first.subject or ""
             rec.sample_from = first.email_from or ""
 
-    @api.model
-    def _get_thread_models(self):
-        """Return [(model, name)] for every model with mail.thread."""
-        Model = self.env["ir.model"].sudo()
-        records = Model.search([
-            ("is_mail_thread", "=", True),
-            ("transient", "=", False),
-        ])
-        items = [(r.model, r.name) for r in records if r.model]
-        items.sort(key=lambda x: (
-            _PRIORITY_MODELS.index(x[0]) if x[0] in _PRIORITY_MODELS else len(_PRIORITY_MODELS),
-            x[1] or x[0],
-        ))
-        return items
-
     # ------------------------------------------------------------------
     # Action
     # ------------------------------------------------------------------
     def action_confirm(self):
         self.ensure_one()
-        if not self.target_reference:
-            raise exceptions.UserError(_("Veuillez sélectionner un dossier cible."))
         if not self.bf_email_ids:
             raise exceptions.UserError(_("Aucun courriel à router."))
 
-        target = self.target_reference
+        # Existence, chatter et droits : une seule garde, partagée avec les
+        # autres importateurs.
+        target = self._get_chatter_target("write")
         target_model = target._name
         target_id = target.id
-
-        # Read access check on the target.
-        try:
-            self.env[target_model].check_access_rights("write")
-            target.check_access_rule("write")
-        except exceptions.AccessError as exc:
-            raise exceptions.UserError(_(
-                "Accès refusé sur %(model)s #%(id)s : %(err)s",
-                model=target_model, id=target_id, err=exc,
-            )) from exc
 
         results = []
         successes = 0

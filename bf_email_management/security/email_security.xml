@@ -83,6 +83,28 @@
         <field name="perm_unlink" eval="True"/>
     </record>
 
+    <!--
+      Mobile devices (18.0.6.8.0): owner-scoped like everything else, so a
+      user can list and revoke their own phones. No create right — device
+      rows are only ever minted by the /auth/start controller through sudo,
+      never by a client that could pick its own token.
+      The admin zone does NOT extend here: bf.email.mobile.device stores live
+      bearer tokens, so a read-all rule would hand every user's mailbox to
+      whoever holds group_email_admin, exactly the reasoning that kept
+      bf.email.account out of it in 18.0.6.0.0. The token fields carry
+      groups="group_email_admin" only to keep them off ordinary RPC reads.
+    -->
+    <record id="bf_email_mobile_device_rule_owner" model="ir.rule">
+        <field name="name">Appareil mobile : visible uniquement au propriétaire</field>
+        <field name="model_id" ref="model_bf_email_mobile_device"/>
+        <field name="domain_force">[('user_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
     <record id="bf_email_rule_rule_owner" model="ir.rule">
         <field name="name">Règle courriel : visible uniquement au propriétaire</field>
         <field name="model_id" ref="model_bf_email_rule"/>

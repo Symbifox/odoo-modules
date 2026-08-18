@@ -4,6 +4,43 @@ All notable changes to `bf_email_management` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This module follows Odoo's `MAJOR.MINOR.PATCH` convention prefixed with the Odoo series (`18.0.X.Y.Z`).
 
+## [18.0.8.2.0] — 2026-08-17
+
+Consolidated entry. This release catches the public repository up from
+18.0.6.7.2; the intermediate versions (6.8.0 → 8.1.0, developed and deployed
+between 2026-08-15 and 2026-08-17) are grouped here by theme rather than
+replayed one by one, because the tree they were built in is not itself
+version-controlled.
+
+### Added
+
+- **Unified chatter-target picker (8.2.0).** The re-route wizard, the *Guess & import* preview rows and the IMAP browser's quick-route now designate their destination through the new `bf_chatter_target` module: one search box over every chatter-bearing model, results grouped by model with an icon and a context line, no model to pick first. A pasted Odoo URL, a bare id, a shorthand (`task:22299`), a technical reference (`bf.email:17`) or an invoice name resolves in the same box and surfaces as an *Exact reference*. This module's own copy of the model list, its copy of the resolver and the separate "quick link" field are gone.
+- **Mobile REST/JSON API under `/bf_email_management/mobile/v1/` (6.8.0),** consumed by the Odoo Inbox Android app. Login is captured from the real web flow (`auth/start` is `auth="user"`, so password, SSO and TOTP all apply) and swapped for a bearer token; conversations are folded on `thread_root_id` rather than served row by row; remote content is blocked by default; attachments are indexed by position, never by `ir.attachment` id. Push runs over UnifiedPush (ntfy), with no Google dependency. Full contract in [MOBILE_API.md](MOBILE_API.md).
+- **Outgoing attachments (6.9.0).** `POST /attachment/upload` (multipart, one file per call, 25 MB) parks a file and returns an id that `/reply` and `/compose` consume. `_mobile_claim_uploads` is a security boundary, not a lookup: without it `/reply` would accept any `ir.attachment` id.
+- **Offline compose with a send ledger (7.0.0).** `bf.email.mobile.send` de-duplicates replays, so the app can write without a network and reconcile on reconnect.
+- **Assertive test suite for the mobile API (7.0.1, 73 tests)** plus `tools/smoke_mobile_api.py`, which checks the contract's *shape* against a live instance and exits with a status code.
+- **Address-book completion (`/contacts`) and rich-text bodies (8.0.0).** Plain text is escaped — what you type is text — while HTML mode is sanitised.
+- **The instance advertises its branding to the app (7.3.0)**: company name, primary and dark colours, public URL, through `/ping` and `/config`.
+- **Thread view can be turned off (8.1.0)** via `grouped` on `/threads`: each message becomes its own row, like an ordinary IMAP client.
+
+### Security
+
+- **A device token outlived the deactivation of its user (6.8.1).** Tokens never expire and `_resolve` only checked `device.active`, so archiving an account revoked the web session but said nothing about a bearer token issued months earlier. Deactivating the user is the one gesture everybody performs on departure, so it now closes this door too.
+- **`/route` and `/compose` only checked half of the access rules (6.8.1)** — `check_access_rule` without `check_access_rights`.
+- **A redirect could bypass the push SSRF guard (6.8.1).** `requests.post` follows redirects by default, so an endpoint verified as public could bounce to a private address. Redirects are now disabled and the host re-checked at send time.
+- **Recipient, bulk and send caps (7.1.0).** 50 recipients across To + Cc, 100 rows per bulk action, 100 sends per device per hour on a sliding window. A bearer token lives on a phone and does not expire; the point is to bound the damage window, not to police normal use.
+- **The attachment size cap fired too late (6.8.1)** — the controller materialised the bytes *before* comparing them to 25 MB.
+- **Abandoned logins left a live device row forever (6.8.1).** `/auth/start` mints the device, token included, before the app has proved anything.
+
+### Fixed
+
+- **"Back to inbox" did not put anything back in the real inbox (7.2.0).** Archiving is bilateral — the message moves to `Archives/{YYYY}` on the IMAP server — but the reverse action only flipped the Odoo flag.
+- **Opening a thread did not mark it read (6.8.1)**, so the notification badge disagreed with what the reader had plainly seen.
+- **A sent attachment stayed parked under the upload marker (6.9.0)**, so the 24-hour garbage collector would have deleted a file out of an already-sent email.
+- **Desktop snooze presets fired at the wrong hour (6.9.0).** `fields.Datetime.now().replace(hour=18)` is naive, therefore UTC.
+- **Batched notifications arrived in reverse (6.8.1)** — the notification shade stacks by publication order.
+- **"Compose" was broken for any user who is not a contacts manager (7.0.1).**
+
 ## [18.0.6.7.2] — 2026-07-24
 
 ### Fixed

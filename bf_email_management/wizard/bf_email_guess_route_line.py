@@ -6,7 +6,7 @@ Transient: the wizard is repopulated from ``active_ids`` each time it
 opens.
 """
 
-from odoo import fields, models
+from odoo import api, fields, models
 
 
 class BfEmailGuessRouteLine(models.TransientModel):
@@ -41,18 +41,17 @@ class BfEmailGuessRouteLine(models.TransientModel):
         string="Expéditeur",
         readonly=True,
     )
+    # Même sélection que partout ailleurs depuis la 18.0.8.2.0 : cette liste de
+    # sept modèles codée en dur empêchait de corriger une suggestion vers un
+    # ordre du jour, une rencontre ou un transfert sécurisé.
     guessed_target = fields.Reference(
         string="Cible",
-        selection=[
-            ("project.task", "Tâche"),
-            ("helpdesk.ticket", "Ticket"),
-            ("res.partner", "Contact"),
-            ("account.move", "Facture"),
-            ("crm.lead", "Lead"),
-            ("sale.order", "Commande"),
-            ("calendar.event", "Évènement"),
-        ],
+        selection="_selection_guessed_target",
     )
+
+    @api.model
+    def _selection_guessed_target(self):
+        return self.env["bf.chatter.target"]._thread_model_selection()
     confidence = fields.Selection(
         [
             ("high", "Élevée"),

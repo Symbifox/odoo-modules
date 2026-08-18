@@ -39,7 +39,7 @@
                                decoration-success="confidence == 'high'"
                                decoration-warning="confidence == 'low'"
                                decoration-muted="confidence == 'none'"/>
-                        <field name="guessed_target"/>
+                        <field name="guessed_target" widget="bf_chatter_target"/>
                     </list>
                 </field>
                 <group invisible="state != 'done'">
