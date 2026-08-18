@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     "name": "Cartographie de processus",
-    "version": "18.0.4.1.1",
+    "version": "18.0.4.1.2",
     "category": "Services/Project",
     "summary": "Cartographies BPMN vivantes : le modèle est la vérité, le PDF et"
                " les deux XML n'en sont que des rendus",
@@ -68,6 +68,8 @@ Limites assumées
         "views/bf_process_views.xml",
         "views/bf_process_diagram_views.xml",
         "views/bf_process_node_views.xml",
+        "views/bf_process_resource_views.xml",
+        "views/bf_process_portal_templates.xml",
         "views/bf_process_wizard_views.xml",
         "views/menu_views.xml",
     ],
