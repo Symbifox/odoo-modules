@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_document_version_form_approbation" model="ir.ui.view">
+        <field name="name">project.document.version.form.approbation</field>
+        <field name="model">project.document.version</field>
+        <field name="inherit_id"
+               ref="project_knowledge_matrix.view_document_version_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <notebook>
+                    <page string="Approbation" name="approbation">
+                        <div class="alert alert-warning" role="alert"
+                             invisible="approbation_attendue_count == 0">
+                            <field name="approbation_attendue_count"
+                                   class="oe_inline" readonly="1"/>
+                            avis requis manquent : cette version ne peut être ni
+                            approuvée ni publiée.
+                        </div>
+                        <div class="alert alert-danger" role="alert"
+                             invisible="not approbation_refusee">
+                            Cette version a été refusée.
+                        </div>
+                        <field name="approbation_complete" invisible="1"/>
+                        <field name="approver_ids">
+                            <list editable="bottom">
+                                <field name="sequence" widget="handle"/>
+                                <field name="user_id"/>
+                                <field name="requis"/>
+                                <field name="avis" widget="badge"
+                                       decoration-success="avis == 'approuve'"
+                                       decoration-danger="avis == 'refuse'"
+                                       decoration-warning="avis == 'attente'"/>
+                                <field name="commentaire"/>
+                                <field name="date_avis" readonly="1"/>
+                                <button name="action_approuver" type="object"
+                                        icon="fa-check" title="Approuver"
+                                        invisible="avis == 'approuve'"/>
+                                <button name="action_refuser" type="object"
+                                        icon="fa-times" title="Refuser"
+                                        invisible="avis == 'refuse'"/>
+                            </list>
+                        </field>
+                        <button name="action_diffuser_aux_informes"
+                                type="object" class="btn-primary mt-3"
+                                string="Diffuser aux parties prenantes informées"
+                                invisible="not approbation_complete"/>
+                    </page>
+                </notebook>
+            </xpath>
+        </field>
+    </record>
+</odoo>
