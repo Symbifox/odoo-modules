@@ -1,6 +1,6 @@
 {
     "name": "BF Chatter Chronological View",
-    "version": "18.0.4.0.0",
+    "version": "18.0.4.1.0",
     "summary": "Order the chatter feed by the email's original Date header",
     "description": """
 Sort the Odoo chatter by the original email Date header (mail.message.date)
@@ -22,6 +22,11 @@ body content when the import lost it.
     'website': 'https://symbifox.com',
     "category": "Productivity",
     'license': 'LGPL-3',
+    # ⚠️ `bf_meeting` reste volontairement ABSENT malgré les deux actions
+    # « Réordonner ce chatter par date » qu'il sert : ce module est LGPL-3 et
+    # `bf_meeting` est BUSL-1.1, donc une dépendance dure ferait promettre à la
+    # licence permissive ce qu'elle ne peut pas tenir. Les deux actions sont
+    # posées à l'installation par `hooks.py` quand le modèle existe.
     "depends": [
         "mail",
         "project",
@@ -29,8 +34,8 @@ body content when the import lost it.
         "account",
         "hr_expense",
         "helpdesk_mgmt",
-        "bf_meeting",
     ],
+    "post_init_hook": "post_init_hook",
     "data": [
         "data/actions.xml",
     ],
