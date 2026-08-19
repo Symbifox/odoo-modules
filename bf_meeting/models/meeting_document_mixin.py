@@ -1,10 +1,11 @@
-from odoo import _, fields, models
+from odoo import Command, _, api, fields, models
 
 
-# Champs qu'une ligne de document peut porter avant d'exister comme
-# `ir.attachment` réel. Tout le reste est ignoré : la ligne est un
-# enregistrement NewId qui transporte ce que le client web a envoyé.
-_NEW_DOCUMENT_FIELDS = (
+# Champs qu'une ligne de document peut porter. Tout le reste des valeurs
+# envoyées par le client est ignoré — en particulier `res_model` / `res_id`,
+# qui sont posés depuis l'enregistrement parent : une commande forgée ne peut
+# pas rattacher une pièce jointe ailleurs.
+_DOCUMENT_FIELDS = (
     'name',
     'description',
     'type',
@@ -23,12 +24,15 @@ class BfMeetingDocumentMixin(models.AbstractModel):
     ``ir.attachment`` n'a pas de clé étrangère vers les modèles de rencontre —
     le lien est la paire ``res_model`` / ``res_id`` —, donc l'onglet est un
     One2many **calculé**. Un x2many calculé s'écrit par la branche non stockée
-    de ``_RelationalMulti.write_real`` : la commande 0 s'y résume à
-    ``comodel.new(vals)``, c'est-à-dire une ligne qui vit en cache et meurt
-    avec la requête, et la commande 2/3 à un retrait du cache. Matérialiser
-    l'une et exécuter l'autre est le travail de l'``inverse``, qui était un
-    ``pass`` jusqu'à la 18.0.3.47.0 : tout document ajouté depuis l'onglet
-    disparaissait à l'enregistrement, sans un mot.
+    de ``_RelationalMulti.write_real``, où la commande 0 se résume à
+    ``comodel.new(vals)`` : une ligne qui vit en cache et meurt avec la
+    requête, et la commande 2/3 à un simple retrait du cache. Rien n'atteint
+    jamais la base tout seul.
+
+    Les commandes sont donc interceptées dans ``create`` et ``write`` et
+    appliquées directement à ``ir.attachment``. L'``inverse`` du champ n'est
+    conservé que pour ce qu'il implique — un champ calculé sans inverse est
+    ``readonly``, et le client web n'enverrait alors aucune commande.
     """
 
     _name = 'bf.meeting.document.mixin'
@@ -45,13 +49,23 @@ class BfMeetingDocumentMixin(models.AbstractModel):
         for rec in self:
             rec.meeting_attachment_ids = rec._bf_linked_attachments()
 
+    def _inverse_meeting_attachment_ids(self):
+        """Volontairement vide — voir la docstring de la classe.
+
+        Tout ce qui persiste passe par ``_bf_apply_document_commands``, appelé
+        depuis ``create`` / ``write``. Un inverse ne reçoit que la valeur du
+        champ, donc des lignes ``NewId`` dont les valeurs ne survivent pas à
+        une invalidation du cache ; s'y fier perdait le contenu des documents
+        et supprimait ceux d'une écriture précédente dans la même transaction.
+        """
+
     def _bf_linked_attachments(self):
         """Pièces jointes rattachées à cet enregistrement, **telles que
         l'utilisateur les voit**.
 
         Volontairement sans ``sudo`` : ``ir.attachment._search`` restreint le
         résultat à la fenêtre de visibilité (voir ``models/ir_attachment.py``),
-        et l'inverse ci-dessous ne supprime jamais que ce que cette même
+        et le retrait ci-dessous ne porte jamais que sur ce que cette même
         recherche a rendu. Un participant qui ne voit pas un pre-read hors
         fenêtre ne peut donc pas l'effacer sans le savoir.
         """
@@ -64,52 +78,88 @@ class BfMeetingDocumentMixin(models.AbstractModel):
             ('res_id', '=', record_id),
         ])
 
-    def _inverse_meeting_attachment_ids(self):
-        Attachment = self.env['ir.attachment']
-        for rec in self:
-            if not rec.id or isinstance(rec.id, models.NewId):
-                # Rien à rattacher tant que la rencontre n'a pas d'id : le
-                # `res_id` n'existerait pas. Les lignes seront rejouées au
-                # premier enregistrement.
-                continue
+    @api.model_create_multi
+    def create(self, vals_list):
+        # Copie avant de retirer la clé : `create` ne doit pas modifier le
+        # dictionnaire de l'appelant, qui le relit parfois après coup.
+        vals_list = [dict(vals) for vals in vals_list]
+        differes = [vals.pop('meeting_attachment_ids', None) for vals in vals_list]
+        records = super().create(vals_list)
+        for rec, commandes in zip(records, differes):
+            if commandes:
+                rec._bf_apply_document_commands(commandes)
+        return records
 
-            lines = rec.meeting_attachment_ids
-            # Les lignes déjà en base (id entier) par opposition aux lignes
-            # que le client vient de créer en cache (id NewId).
-            kept = lines.browse([lid for lid in lines._ids if isinstance(lid, int)])
+    def write(self, vals):
+        commandes = None
+        if vals and 'meeting_attachment_ids' in vals:
+            vals = dict(vals)
+            commandes = vals.pop('meeting_attachment_ids')
+        result = super().write(vals)
+        if commandes:
+            for rec in self:
+                rec._bf_apply_document_commands(commandes)
+        return result
 
-            # Retraits — calculés AVANT les créations, sinon les pièces
-            # jointes qu'on vient de créer passeraient pour des lignes
-            # retirées et seraient supprimées dans la foulée.
-            dropped = rec._bf_linked_attachments() - kept
-            if dropped:
-                dropped.unlink()
-
-            created = Attachment.browse()
-            for line in lines - kept:
-                created |= Attachment.create(rec._bf_document_vals(line))
-            if created:
-                # La fenêtre de visibilité se calcule à partir de la date de la
-                # rencontre, que l'onchange ne pouvait pas atteindre depuis une
-                # ligne encore dépourvue de `res_model` / `res_id`.
-                created._bf_apply_visibility_window()
-
-    def _bf_document_vals(self, line):
-        """Valeurs d'``ir.attachment`` tirées d'une ligne encore en cache."""
+    def _bf_apply_document_commands(self, commandes):
+        """Appliquer les commandes x2many du client aux pièces jointes."""
         self.ensure_one()
-        cache = self.env.cache
-        vals = {}
-        for fname in _NEW_DOCUMENT_FIELDS:
-            field = line._fields.get(fname)
-            if field is not None and cache.contains(line, field):
-                vals[fname] = field.convert_to_write(line[fname], line)
+        Attachment = self.env['ir.attachment']
+        visibles = self._bf_linked_attachments()
+        gardees = set(visibles.ids)
+        creees = Attachment.browse()
 
-        vals['name'] = (vals.get('name') or '').strip() or _('Document sans nom')
+        for commande in commandes or ():
+            if not commande:
+                continue
+            code = commande[0]
+            if code == Command.CREATE:
+                creees |= Attachment.create(self._bf_document_vals(commande[2]))
+            elif code == Command.UPDATE:
+                cible = Attachment.browse(commande[1])
+                changements = self._bf_document_vals(commande[2], update=True)
+                if changements:
+                    cible.write(changements)
+                    # Parité avec l'onchange de l'interface : changer la
+                    # fenêtre sans donner de bornes les redérive de la date
+                    # de la rencontre.
+                    if 'bf_visibility_window' in changements and not (
+                            'bf_visible_from' in changements
+                            or 'bf_visible_until' in changements):
+                        cible._bf_apply_visibility_window()
+            elif code in (Command.DELETE, Command.UNLINK):
+                gardees.discard(commande[1])
+            elif code == Command.LINK:
+                gardees.add(commande[1])
+            elif code == Command.CLEAR:
+                gardees.clear()
+            elif code == Command.SET:
+                gardees = set(commande[2] or ())
+
+        # Une ligne retirée de la liste veut dire que le document disparaît :
+        # la pièce jointe n'a pas d'autre ancrage que cet enregistrement.
+        retirees = visibles.filtered(lambda a: a.id not in gardees)
+        if retirees:
+            retirees.unlink()
+
+        if creees:
+            # La fenêtre de visibilité se calcule à partir de la date de la
+            # rencontre, que l'onchange ne pouvait pas atteindre depuis une
+            # ligne encore dépourvue de `res_model` / `res_id`.
+            creees._bf_apply_visibility_window()
+
+    def _bf_document_vals(self, valeurs, update=False):
+        """Valeurs d'``ir.attachment`` tirées d'une commande du client."""
+        self.ensure_one()
+        vals = {k: v for k, v in (valeurs or {}).items() if k in _DOCUMENT_FIELDS}
         if vals.get('url'):
             vals['type'] = 'url'
             vals.pop('datas', None)
         elif vals.get('datas'):
             vals['type'] = 'binary'
+        if update:
+            return vals
+        vals['name'] = (vals.get('name') or '').strip() or _('Document sans nom')
         vals['res_model'] = self._name
         vals['res_id'] = self.id
         return vals
