@@ -20,9 +20,17 @@ Bundle meta-module for everyday Odoo CE productivity: command palette, multi-pan
 |---|---|
 | [`bf_lexend`](../bf_lexend) | Lexend typeface across UI + PDF reports |
 | [`bf_dark_mode`](../bf_dark_mode) | Dark mode using the Symbifox palette |
-| [`bluefox_branding`](../bluefox_branding) | Per-company brand color + email layout overrides |
 
 Installing `bf_productivity_pack` installs all of the above. Uninstalling it does **not** cascade.
+
+### Optional companion
+
+[`bluefox_branding`](../bluefox_branding) (per-company brand colour and email
+layout overrides) pairs well with this pack but is **not** installed by it. It
+is BUSL-1.1, while this pack and everything it installs are LGPL-3. Pulling it
+in would have meant you could not install a permissively licensed pack without
+accepting restrictive terms on one of its parts. Install it alongside if you
+want it.
 
 ## License
 
