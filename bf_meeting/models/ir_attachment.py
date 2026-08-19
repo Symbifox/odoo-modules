@@ -49,6 +49,16 @@ class IrAttachment(models.Model):
 
     @api.onchange('bf_visibility_window')
     def _onchange_bf_visibility_window(self):
+        self._bf_apply_visibility_window()
+
+    def _bf_apply_visibility_window(self):
+        """Dériver ``bf_visible_from`` / ``bf_visible_until`` de la fenêtre.
+
+        Appelé par l'onchange, et aussi après coup sur une pièce jointe créée
+        depuis l'onglet « Documents » d'une rencontre : la ligne n'avait alors
+        ni ``res_model`` ni ``res_id``, donc ``_bf_meeting_date()`` n'avait
+        aucune date de rencontre à lire et l'onchange ne pouvait rien poser.
+        """
         for att in self:
             if att.bf_visibility_window in (False, 'always'):
                 att.bf_visible_from = False
