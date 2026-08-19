@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     "name": "Daily To-Do Digest",
-    "version": "18.0.2.0.0",
+    "version": "18.0.2.1.0",
     "category": "Productivity",
     "summary": "Daily email digest with overdue and today's activities, tasks, and subtasks",
     "description": """
@@ -30,11 +30,19 @@ Uses Symbifox branding.
     'author': 'Les services de consultation Blue Fox, Inc.',
     'website': 'https://symbifox.com',
     'license': 'LGPL-3',
+    # ⚠️ `bf_meeting` n'est PAS une dépendance de manifeste, volontairement.
+    # Ce module est sous LGPL-3 alors que `bf_meeting` est sous BUSL-1.1 : une
+    # dépendance dure ferait promettre à la licence permissive quelque chose
+    # qu'elle ne peut pas tenir, puisqu'on ne pourrait pas installer ce module
+    # sans accepter des conditions restrictives. Le bloc « rencontres » du
+    # sommaire détecte donc le modèle à l'exécution
+    # (`_get_meetings_buckets` → `env.get("meeting.dashboard")`, qui rend un
+    # dictionnaire vide quand le modèle est absent). Rien n'est perdu quand
+    # `bf_meeting` est installé, et le module s'installe seul sinon.
     "depends": [
         "base",
         "mail",
         "project",
-        "bf_meeting",
     ],
     "data": [
         "security/ir.model.access.csv",
