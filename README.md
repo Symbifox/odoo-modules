@@ -198,12 +198,21 @@ file inside each module governs and carries its exact parameters.
   and donation-receipt modules; `bf_helpdesk` is a fork-style extension of
   OCA `helpdesk_mgmt`.
 
-A few permissively licensed modules list a BUSL-1.1 module among their
-dependencies. Where that dependency was a convenience it has been made
-optional and detected at runtime, so the module installs on its own. Where it
-is structural — a typed relation or an inherited view — it is stated in that
-module's own README, because the permissive licence cannot be exercised
-without the BUSL one.
+Five permissively licensed modules list a BUSL-1.1 module among their
+dependencies, and each says so in its own README with the reason.
+
+Where the dependency was a convenience it has already been made optional and
+resolved at runtime, so the module installs on its own: `daily_todo_digest`,
+`bf_bureau` and `bf_chatter_chronological` no longer require one. Where it is
+structural — an inherited model, an extended view, a typed relation —
+`bf_helpdesk`, `bf_cx_fundraising` and `bf_document_nextcloud_sync` cannot be
+detached without removing the feature. And `bf_email_systray` and
+`bf_nextcloud_browser` could technically drop theirs, but the BUSL module *is*
+what they are for, so a detached build would install cleanly and do nothing;
+the dependency is kept on purpose.
+
+In all five cases the permissive licence covers that module's own source, and
+a working install still needs terms for the BUSL one.
 
 ## Credits
 
