@@ -2,7 +2,9 @@
 <templates xml:space="preserve">
 
     <t t-name="bf_email_management.Inbox">
-        <div class="o_bf_email_browser o_bf_email_inbox d-flex flex-grow-1" style="height: 100%;">
+        <div class="o_bf_email_browser o_bf_email_inbox d-flex flex-grow-1"
+             t-att-class="state.dragging ? 'o_bf_email_dragging' : ''"
+             style="height: 100%;">
 
             <!-- GAUCHE : dossiers virtuels (états, pas des boîtes IMAP) -->
             <div class="o_bf_email_folders border-end bg-light" style="width: 260px; min-width: 260px; overflow-y: auto;">
@@ -60,11 +62,16 @@
                 </div>
             </div>
 
-            <!-- DROITE : liste en haut, aperçu en bas -->
-            <div class="d-flex flex-column flex-grow-1" style="min-width: 0;">
+            <!-- DROITE : liste et aperçu, empilés ou côte à côte selon la
+                 préférence de disposition. -->
+            <div class="d-flex flex-grow-1"
+                 t-att-class="pane.wrapClass"
+                 style="min-width: 0; min-height: 0;">
 
-                <!-- Haut : liste -->
-                <div class="border-bottom d-flex flex-column" style="flex: 1 1 50%; min-height: 0;">
+                <!-- Liste -->
+                <div class="d-flex flex-column"
+                     t-att-class="pane.layout === 'right' ? 'border-end' : 'border-bottom'"
+                     t-att-style="pane.listStyle">
                     <div class="px-3 py-2 d-flex justify-content-between align-items-center bg-white border-bottom gap-2 position-relative">
                         <div class="flex-shrink-0">
                             <strong t-esc="currentFolderLabel"/>
@@ -84,6 +91,58 @@
                                    placeholder="Rechercher (sujet, expéditeur, extrait)… touche /"
                                    t-att-value="state.searchQuery"
                                    t-on-input="(ev) => this.onSearchInput(ev)"/>
+                        </div>
+                        <div class="position-relative flex-shrink-0">
+                            <button class="btn btn-sm btn-light"
+                                    t-att-class="{ 'active text-primary': state.columnsOpen }"
+                                    t-on-click="toggleColumnsMenu"
+                                    title="Choisir les colonnes de la liste">
+                                <i class="fa fa-table"/>
+                            </button>
+                            <div t-if="state.columnsOpen"
+                                 class="card shadow position-absolute end-0 mt-1"
+                                 style="top: 100%; width: 240px; z-index: 11;">
+                                <div class="card-header d-flex justify-content-between align-items-center py-2">
+                                    <strong>Colonnes</strong>
+                                    <button class="btn-close" t-on-click="() => this.toggleColumnsMenu()"/>
+                                </div>
+                                <div class="card-body py-2">
+                                    <div class="form-check" t-foreach="columnDefs" t-as="col" t-key="col.key">
+                                        <input class="form-check-input"
+                                               type="checkbox"
+                                               t-att-id="'bf_email_col_' + col.key"
+                                               t-att-checked="cols[col.key]"
+                                               t-on-change="() => this.toggleColumn(col.key)"/>
+                                        <label class="form-check-label small"
+                                               t-att-for="'bf_email_col_' + col.key"
+                                               t-esc="col.label"/>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox"
+                                               id="bf_email_col_subject" checked="checked" disabled="disabled"/>
+                                        <label class="form-check-label small text-muted"
+                                               for="bf_email_col_subject">Sujet (toujours affiché)</label>
+                                    </div>
+                                </div>
+                                <div class="card-footer small text-muted py-1">
+                                    Gardé dans ce navigateur, comme les autres préférences.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="btn-group btn-group-sm flex-shrink-0" role="group"
+                             aria-label="Disposition de l'aperçu">
+                            <button class="btn btn-light"
+                                    t-att-class="{ 'active text-primary': pane.layout === 'bottom' }"
+                                    title="Aperçu sous la liste"
+                                    t-on-click="() => this.setPaneLayout('bottom')">
+                                <i class="fa fa-columns fa-rotate-270"/>
+                            </button>
+                            <button class="btn btn-light"
+                                    t-att-class="{ 'active text-primary': pane.layout === 'right' }"
+                                    title="Aperçu à droite de la liste"
+                                    t-on-click="() => this.setPaneLayout('right')">
+                                <i class="fa fa-columns"/>
+                            </button>
                         </div>
                         <button class="btn btn-sm btn-light"
                                 t-on-click="toggleSettings"
@@ -135,7 +194,16 @@
                                             t-att-value="state.settings.density"
                                             t-on-change="(ev) => this.onSettingChange('density', ev)">
                                         <option value="comfortable">Confortable</option>
-                                        <option value="compact">Compacte</option>
+                                        <option value="compact">Compacte (une ligne par courriel)</option>
+                                    </select>
+                                </div>
+                                <div class="mb-2">
+                                    <label class="form-label small mb-1">Position de l'aperçu</label>
+                                    <select class="form-select form-select-sm"
+                                            t-att-value="state.settings.paneLayout"
+                                            t-on-change="(ev) => this.onSettingChange('paneLayout', ev)">
+                                        <option value="bottom">Sous la liste</option>
+                                        <option value="right">À droite de la liste</option>
                                     </select>
                                 </div>
                                 <div class="form-check">
@@ -155,15 +223,43 @@
                         </div>
                     </div>
 
-                    <!-- Barre d'actions groupées -->
-                    <div t-if="selectedCount > 0"
+                    <!-- Barre d'actions groupées — brouillons -->
+                    <div t-if="selectedCount > 0 and isDraftFolder"
                          class="px-3 py-2 bg-info-subtle border-bottom d-flex align-items-center gap-2 flex-wrap">
                         <strong><t t-esc="selectedCount"/> sélectionné(s)</strong>
+                        <span t-if="hasMoreThanLoaded" class="small text-muted">
+                            sur <t t-esc="state.messages.length"/> chargée(s) —
+                            <t t-esc="state.total"/> dans ce dossier
+                        </span>
+                        <button class="btn btn-sm btn-primary"
+                                t-att-disabled="state.acting"
+                                t-on-click="() => this.runDraftAction('send_now')">
+                            <i class="fa fa-paper-plane me-1"/> Envoyer maintenant
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger"
+                                t-att-disabled="state.acting"
+                                t-on-click="() => this.runDraftAction('cancel')">
+                            <i class="fa fa-trash me-1"/> Annuler l'envoi
+                        </button>
+                        <button class="btn btn-sm btn-link ms-auto" t-on-click="clearSelection">
+                            Effacer la sélection
+                        </button>
+                    </div>
+
+                    <!-- Barre d'actions groupées — courriels -->
+                    <div t-if="selectedCount > 0 and !isDraftFolder"
+                         class="px-3 py-2 bg-info-subtle border-bottom d-flex align-items-center gap-2 flex-wrap">
+                        <strong><t t-esc="selectedCount"/> sélectionné(s)</strong>
+                        <span t-if="hasMoreThanLoaded" class="small text-muted">
+                            sur <t t-esc="state.messages.length"/> chargée(s) —
+                            <t t-esc="state.total"/> dans ce dossier
+                        </span>
                         <div class="btn-group btn-group-sm">
                             <button class="btn btn-primary dropdown-toggle"
                                     data-bs-toggle="dropdown"
                                     t-att-disabled="state.acting">
-                                <i class="fa fa-share me-1"/> Router…
+                                <i t-att-class="isRouted ? 'fa fa-exchange me-1' : 'fa fa-share me-1'"/>
+                                <t t-esc="rerouteLabel"/>
                             </button>
                             <ul class="dropdown-menu">
                                 <li><button class="dropdown-item" type="button" t-on-click="() => this.quickReroute('project.task')"><i class="fa fa-tasks me-2"/>Vers une tâche</button></li>
@@ -195,19 +291,102 @@
                     </div>
 
                     <div class="flex-grow-1" style="overflow-y: auto;">
-                        <table t-att-class="'table table-hover mb-0 ' + (state.settings.density === 'compact' ? 'table-sm' : '')">
+                        <table t-att-class="'table table-hover mb-0 ' + (state.settings.density === 'compact' ? 'table-sm o_bf_email_compact ' : '')">
                             <thead class="bg-light" style="position: sticky; top: 0; z-index: 1;">
-                                <tr>
-                                    <th class="ps-3" style="width: 32px;"></th>
-                                    <th style="width: 130px;">Date</th>
-                                    <th style="width: 250px;">Correspondant</th>
+                                <tr t-if="isDraftFolder">
+                                    <th class="ps-3" t-att-style="'width: ' + colWidths.check + 'px;'">
+                                        <input type="checkbox"
+                                               class="form-check-input"
+                                               t-ref="selectAll"
+                                               t-att-checked="allLoadedSelected"
+                                               t-att-disabled="!visibleMessages.length"
+                                               t-att-title="selectAllTitle"
+                                               t-on-click="toggleSelectAll"/>
+                                    </th>
+                                    <th t-if="cols.date" t-att-style="'width: ' + colWidths.date + 'px;'">Envoi prévu</th>
+                                    <th t-if="cols.correspondent" t-att-style="'width: ' + colWidths.correspondent + 'px;'">Destinataires</th>
                                     <th>Sujet</th>
-                                    <th style="width: 200px;">Dossier</th>
-                                    <th style="width: 72px;" title="Statut">État</th>
-                                    <th class="pe-3" style="width: 60px;"></th>
+                                    <th t-if="cols.folder" t-att-style="'width: ' + colWidths.folder + 'px;'">Dossier</th>
+                                    <th t-if="cols.state" t-att-style="'width: ' + colWidths.state + 'px;'" title="Statut">État</th>
+                                    <th class="pe-3" t-att-style="'width: ' + colWidths.act + 'px;'"></th>
+                                </tr>
+                                <tr t-else="">
+                                    <th class="ps-3" t-att-style="'width: ' + colWidths.check + 'px;'">
+                                        <input type="checkbox"
+                                               class="form-check-input"
+                                               t-ref="selectAll"
+                                               t-att-checked="allLoadedSelected"
+                                               t-att-disabled="!visibleMessages.length"
+                                               t-att-title="selectAllTitle"
+                                               t-on-click="toggleSelectAll"/>
+                                    </th>
+                                    <th t-if="cols.date" t-att-style="'width: ' + colWidths.date + 'px;'">Date</th>
+                                    <th t-if="cols.correspondent" t-att-style="'width: ' + colWidths.correspondent + 'px;'">Correspondant</th>
+                                    <th>Sujet</th>
+                                    <th t-if="cols.preview">Extrait</th>
+                                    <th t-if="cols.folder" t-att-style="'width: ' + colWidths.folder + 'px;'">Dossier</th>
+                                    <th t-if="cols.category" t-att-style="'width: ' + colWidths.folder + 'px;'">Catégorie</th>
+                                    <th t-if="cols.state" t-att-style="'width: ' + colWidths.state + 'px;'" title="Statut">État</th>
+                                    <th class="pe-3" t-att-style="'width: ' + colWidths.act + 'px;'"></th>
                                 </tr>
                             </thead>
-                            <tbody>
+
+                            <!-- Brouillons : la source est mail.scheduled.message, pas
+                                 bf.email. Colonnes et actions diffèrent donc, mais la
+                                 pagination, la recherche et le défilement infini sont
+                                 les mêmes — le contrat de sortie du serveur est commun.
+                                 Catégorie et Extrait n'existent pas pour un brouillon :
+                                 le sélecteur ne les rend simplement pas ici. -->
+                            <tbody t-if="isDraftFolder">
+                                <tr t-foreach="visibleMessages" t-as="m" t-key="m.id"
+                                    t-att-class="(m.id === state.selectedId ? 'table-primary ' : '') + 'o_bf_email_msg_row'"
+                                    style="cursor: pointer;"
+                                    t-on-click="() => this.selectMessage(m.id)">
+                                    <td class="ps-3" t-on-click.stop="">
+                                        <input type="checkbox"
+                                               class="form-check-input"
+                                               t-att-checked="state.selectedIds[m.id]"
+                                               t-on-click="(ev) => this.toggleSelection(m.id, ev)"/>
+                                    </td>
+                                    <td t-if="cols.date" class="small"
+                                        t-att-class="m.is_late ? 'text-danger fw-bold' : ''"
+                                        t-att-title="m.is_late ? 'Date d\'envoi dépassée — le message part au prochain passage du planificateur.' : ''">
+                                        <t t-esc="formatDate(m.date)"/>
+                                    </td>
+                                    <td t-if="cols.correspondent" class="text-truncate" t-att-title="m.to">
+                                        <i class="fa fa-clock-o text-warning me-1" title="Envoi programmé"/>
+                                        <t t-esc="m.correspondent or '(aucun destinataire)'"/>
+                                    </td>
+                                    <td class="text-truncate" t-att-title="m.subject">
+                                        <t t-esc="m.subject or '(sans objet)'"/>
+                                    </td>
+                                    <td t-if="cols.folder" class="text-truncate small" t-att-title="m.record_name">
+                                        <span t-if="m.record_name" class="badge bg-light text-dark border">
+                                            <t t-esc="m.record_name"/>
+                                        </span>
+                                    </td>
+                                    <td t-if="cols.state" class="text-nowrap">
+                                        <i t-if="m.is_note" class="fa fa-sticky-note-o text-muted" title="Note interne"/>
+                                        <i t-if="m.has_attachments" class="fa fa-paperclip text-muted ms-1" title="Pièces jointes"/>
+                                    </td>
+                                    <td class="pe-3 text-end">
+                                        <button class="btn btn-sm btn-light"
+                                                t-att-disabled="state.acting"
+                                                t-on-click.stop="() => this.selectMessage(m.id)"
+                                                title="Ouvrir l'aperçu du brouillon">
+                                            <i class="fa fa-eye"/>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr t-if="!state.loadingMessages and visibleMessages.length === 0">
+                                    <td t-att-colspan="visibleDraftColumnCount" class="text-center text-muted p-4">
+                                        <t t-if="state.searchQuery">Aucun brouillon pour « <t t-esc="state.searchQuery"/> ».</t>
+                                        <t t-else="">Aucun envoi programmé en attente.</t>
+                                    </td>
+                                </tr>
+                            </tbody>
+
+                            <tbody t-else="">
                                 <tr t-foreach="visibleMessages" t-as="m" t-key="m.id"
                                     t-att-class="(m.id === state.selectedId ? 'table-primary ' : '') + (state.settings.boldUnread and !m.seen ? 'fw-bold ' : '') + (m.is_handled ? 'text-muted ' : '') + 'o_bf_email_msg_row'"
                                     style="cursor: pointer;"
@@ -221,8 +400,8 @@
                                                t-att-checked="state.selectedIds[m.id]"
                                                t-on-click="(ev) => this.toggleSelection(m.id, ev)"/>
                                     </td>
-                                    <td class="small"><t t-esc="formatDate(m.date)"/></td>
-                                    <td class="text-truncate" style="max-width: 250px;"
+                                    <td t-if="cols.date" class="small"><t t-esc="formatDate(m.date)"/></td>
+                                    <td t-if="cols.correspondent" class="text-truncate"
                                         t-att-title="m.direction === 'out' ? m.to : m.from">
                                         <i t-att-class="m.direction === 'out' ? 'fa fa-arrow-right text-success me-1' : 'fa fa-arrow-left text-info me-1'"
                                            t-att-title="m.direction === 'out' ? 'Sortant' : 'Entrant'"/>
@@ -231,16 +410,23 @@
                                     <td class="text-truncate" t-att-title="m.preview or m.subject">
                                         <t t-esc="m.subject or '(sans objet)'"/>
                                     </td>
-                                    <td class="text-truncate small" style="max-width: 200px;"
-                                        t-att-title="m.record_name">
-                                        <span t-if="m.record_name" class="badge bg-light text-dark border text-truncate mw-100">
+                                    <td t-if="cols.preview" class="text-truncate small text-muted"
+                                        t-att-title="m.preview">
+                                        <t t-esc="m.preview"/>
+                                    </td>
+                                    <td t-if="cols.folder" class="text-truncate small" t-att-title="m.record_name">
+                                        <span t-if="m.record_name" class="badge bg-light text-dark border">
                                             <t t-esc="m.record_name"/>
                                         </span>
                                         <span t-else="" class="badge bg-warning-subtle text-dark border">
                                             sans dossier
                                         </span>
                                     </td>
-                                    <td class="text-nowrap">
+                                    <td t-if="cols.category" class="text-truncate small">
+                                        <span t-if="m.category" class="badge bg-light text-dark border"
+                                              t-esc="categoryLabel(m.category)"/>
+                                    </td>
+                                    <td t-if="cols.state" class="text-nowrap">
                                         <i t-if="m.is_handled" class="fa fa-check-circle text-success" title="Traité"/>
                                         <i t-if="m.is_snoozed" class="fa fa-moon-o text-info ms-1" title="Reporté"/>
                                         <i t-if="m.is_replied" class="fa fa-reply text-muted ms-1" title="Répondu"/>
@@ -257,7 +443,7 @@
                                     </td>
                                 </tr>
                                 <tr t-if="!state.loadingMessages and visibleMessages.length === 0">
-                                    <td colspan="7" class="text-center text-muted p-4">
+                                    <td t-att-colspan="visibleColumnCount" class="text-center text-muted p-4">
                                         <t t-if="state.searchQuery">Aucun résultat pour « <t t-esc="state.searchQuery"/> ».</t>
                                         <t t-else="">Rien ici. Inbox Zero atteint.</t>
                                     </td>
@@ -275,12 +461,85 @@
                     </div>
                 </div>
 
-                <!-- Bas : aperçu -->
-                <div class="d-flex flex-column" style="flex: 1 1 50%; min-height: 0;">
+                <!-- Séparateur redimensionnable. Sa taille est gardée par
+                     disposition : la hauteur qu'on donne à un corps de courriel
+                     n'est pas la largeur qu'on lui donnerait. -->
+                <div class="o_bf_email_splitter"
+                     t-att-style="pane.splitterStyle"
+                     title="Glisser pour redimensionner"
+                     t-on-mousedown="onSplitterMouseDown"/>
+
+                <!-- Aperçu -->
+                <div class="d-flex flex-column" t-att-style="pane.paneStyle">
                     <t t-if="state.loadingPreview">
                         <div class="p-4 text-center text-muted">
                             <i class="fa fa-spinner fa-spin fa-2x"/>
                         </div>
+                    </t>
+                    <!-- Un envoi programmé : ni expéditeur à afficher (c'est
+                         nous), ni statut de lecture, et des actions qui lui sont
+                         propres — partir maintenant, se faire modifier, ou être
+                         annulé avant de partir. -->
+                    <t t-elif="state.preview and isDraftFolder">
+                        <div class="px-3 py-2 border-bottom bg-light">
+                            <div class="fw-bold">
+                                <i class="fa fa-clock-o text-warning me-1"/>
+                                <t t-esc="state.preview.subject or '(sans objet)'"/>
+                                <span t-if="state.preview.is_note" class="badge bg-secondary ms-2">Note interne</span>
+                            </div>
+                            <div class="small text-muted">
+                                <span class="me-2"><strong>À :</strong>
+                                    <t t-esc="state.preview.to or '(aucun destinataire)'"/></span>
+                                <span t-att-class="state.preview.is_late ? 'text-danger fw-bold' : ''">
+                                    <strong>Envoi prévu :</strong>
+                                    <t t-esc="formatDate(state.preview.date)"/>
+                                </span>
+                            </div>
+                            <div t-if="state.preview.record_name" class="small text-muted">
+                                <strong>Dossier :</strong>
+                                <a href="#" t-on-click.prevent="openSourceRecord" t-esc="state.preview.record_name"/>
+                            </div>
+                            <div t-if="state.preview.attachments.length" class="d-flex flex-wrap gap-1 mt-1">
+                                <a t-foreach="state.preview.attachments" t-as="att" t-key="att.id"
+                                   class="badge bg-light text-dark border text-decoration-none"
+                                   t-att-href="attachmentUrl(att)"
+                                   t-att-title="att.name"
+                                   target="_blank" rel="noopener">
+                                    <i class="fa fa-paperclip me-1"/><t t-esc="att.name"/>
+                                </a>
+                            </div>
+                            <div class="mt-2 d-flex flex-wrap gap-1">
+                                <button class="btn btn-sm btn-primary"
+                                        t-att-disabled="state.acting"
+                                        t-on-click="() => this.runDraftAction('send_now')"
+                                        title="Poster ce message tout de suite, sans attendre la date prévue">
+                                    <i class="fa fa-paper-plane me-1"/> Envoyer maintenant
+                                </button>
+                                <button class="btn btn-sm btn-light"
+                                        t-att-disabled="state.acting"
+                                        t-on-click="() => this.runDraftAction('edit')"
+                                        title="Modifier le contenu ou la date d'envoi">
+                                    <i class="fa fa-pencil me-1"/> Modifier
+                                </button>
+                                <button t-if="state.preview.res_model"
+                                        class="btn btn-sm btn-light"
+                                        t-on-click="openSourceRecord"
+                                        title="Ouvrir la fiche sur laquelle ce message sera posté">
+                                    <i class="fa fa-external-link me-1"/> Dossier
+                                </button>
+                                <button class="btn btn-sm btn-outline-danger ms-auto"
+                                        t-att-disabled="state.acting"
+                                        t-on-click="() => this.runDraftAction('cancel')"
+                                        title="Supprimer l'envoi programmé — le message ne partira pas">
+                                    <i class="fa fa-trash me-1"/> Annuler l'envoi
+                                </button>
+                            </div>
+                        </div>
+                        <iframe class="flex-grow-1 border-0 w-100"
+                                style="background: white;"
+                                title="Aperçu du brouillon"
+                                sandbox="allow-same-origin allow-popups allow-popups-to-escape-sandbox"
+                                t-att-srcdoc="previewSrcdoc"/>
                     </t>
                     <t t-elif="state.preview">
                         <div class="px-3 py-2 border-bottom bg-light">
@@ -348,12 +607,17 @@
                                         title="Créer une activité (raccourci T)">
                                     <i class="fa fa-bell me-1"/> Activité
                                 </button>
+                                <!-- « Router… » tant que le courriel n'est classé
+                                     nulle part, « Re-router… » dès qu'il l'est : le
+                                     second DÉPLACE le message et le retire du chatter
+                                     où il se trouve, ce que le premier ne fait pas. -->
                                 <div class="btn-group btn-group-sm">
                                     <button class="btn btn-secondary"
                                             t-att-disabled="state.acting"
                                             t-on-click="() => this.quickReroute(null)"
-                                            title="Router vers une tâche, un ticket, un contact… (raccourci Y)">
-                                        <i class="fa fa-share me-1"/> Router…
+                                            t-att-title="rerouteTitle">
+                                        <i t-att-class="isRouted ? 'fa fa-exchange me-1' : 'fa fa-share me-1'"/>
+                                        <t t-esc="rerouteLabel"/>
                                     </button>
                                     <button class="btn btn-secondary dropdown-toggle dropdown-toggle-split"
                                             data-bs-toggle="dropdown"
@@ -361,11 +625,35 @@
                                         <span class="visually-hidden">Cibles rapides</span>
                                     </button>
                                     <ul class="dropdown-menu">
+                                        <li t-if="isRouted" class="dropdown-header small text-truncate">
+                                            Actuellement dans : <t t-esc="state.preview.record_name or state.preview.res_model"/>
+                                        </li>
+                                        <li t-if="isRouted"><hr class="dropdown-divider"/></li>
                                         <li><button class="dropdown-item" type="button" t-on-click="() => this.quickReroute('project.task')"><i class="fa fa-tasks me-2"/>Vers une tâche</button></li>
                                         <li><button class="dropdown-item" type="button" t-on-click="() => this.quickReroute('helpdesk.ticket')"><i class="fa fa-life-ring me-2"/>Vers un ticket</button></li>
                                         <li><button class="dropdown-item" type="button" t-on-click="() => this.quickReroute('res.partner')"><i class="fa fa-user me-2"/>Vers un contact</button></li>
                                         <li><hr class="dropdown-divider"/></li>
                                         <li><button class="dropdown-item" type="button" t-on-click="() => this.quickReroute(null)"><i class="fa fa-folder-open-o me-2"/>Autre cible…</button></li>
+                                    </ul>
+                                </div>
+                                <!-- « Ajouter » — créer une fiche À PARTIR du courriel,
+                                     comme le « Nouveau ▾ » de la fiche complète. Les
+                                     entrées absentes de cette base ne sont pas offertes. -->
+                                <div class="btn-group btn-group-sm">
+                                    <button class="btn btn-light dropdown-toggle"
+                                            data-bs-toggle="dropdown"
+                                            t-att-disabled="state.acting"
+                                            title="Créer une fiche à partir de ce courriel et l'y importer">
+                                        <i class="fa fa-plus me-1"/> Ajouter
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><button class="dropdown-item" type="button" t-on-click="() => this.createRecord('create_task')"><i class="fa fa-tasks me-2"/>Tâche</button></li>
+                                        <li t-if="canCreate.lead"><button class="dropdown-item" type="button" t-on-click="() => this.createRecord('create_lead')"><i class="fa fa-star-o me-2"/>Piste</button></li>
+                                        <li t-if="canCreate.ticket"><button class="dropdown-item" type="button" t-on-click="() => this.createRecord('create_ticket')"><i class="fa fa-life-ring me-2"/>Ticket</button></li>
+                                        <li t-if="canCreate.expense"><button class="dropdown-item" type="button" t-on-click="() => this.createRecord('create_expense')"><i class="fa fa-money me-2"/>Dépense</button></li>
+                                        <li><hr class="dropdown-divider"/></li>
+                                        <li><button class="dropdown-item" type="button" t-on-click="() => this.createRecord('create_vendor_bill')"><i class="fa fa-file-text-o me-2"/>Facture fournisseur</button></li>
+                                        <li><button class="dropdown-item" type="button" t-on-click="() => this.createRecord('create_customer_invoice')"><i class="fa fa-file-text me-2"/>Facture client</button></li>
                                     </ul>
                                 </div>
                                 <button t-if="state.preview.thread_count > 1"

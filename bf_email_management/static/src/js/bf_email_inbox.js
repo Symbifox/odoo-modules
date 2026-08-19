@@ -22,6 +22,7 @@ import {
     useState,
     onWillStart,
     onMounted,
+    onPatched,
     onWillUnmount,
     useRef,
 } from "@odoo/owl";
@@ -35,6 +36,9 @@ import {
     senderCell,
     buildPreviewSrcdoc,
     flattenTree,
+    paneStyles,
+    startPaneDrag,
+    columnWidths,
 } from "./bf_email_ui_common";
 
 // Dossiers acceptant un dépôt de ligne, et l'action que ça déclenche.
@@ -43,6 +47,10 @@ const DROP_ACTIONS = {
     inbox: "unhandle",
     snoozed: "snooze",
 };
+
+// Dossier des envois programmés. Sa source n'est pas ``bf.email`` : la liste
+// et l'aperçu changent d'appel serveur quand il est ouvert.
+const DRAFTS_FOLDER = "drafts";
 
 export class BfEmailInbox extends Component {
     static template = "bf_email_management.Inbox";
@@ -55,6 +63,7 @@ export class BfEmailInbox extends Component {
 
         this.searchInputRef = useRef("searchInput");
         this.listBottomRef = useRef("listBottom");
+        this.selectAllRef = useRef("selectAll");
 
         const initialSettings = loadSettings();
         this.state = useState({
@@ -80,6 +89,9 @@ export class BfEmailInbox extends Component {
             dropTarget: null,
             settings: initialSettings,
             settingsOpen: false,
+            columnsOpen: false,
+            // Glisser du séparateur liste / aperçu.
+            dragging: false,
         });
 
         onWillStart(async () => {
@@ -100,6 +112,15 @@ export class BfEmailInbox extends Component {
                 this._observer.observe(this.listBottomRef.el);
             }
             document.addEventListener("keydown", this._onSlashKey);
+        });
+
+        // `indeterminate` ne s'exprime pas en attribut : sans ce crochet, une
+        // sélection partielle s'afficherait comme « rien de coché », ce qui
+        // est le contraire de ce qu'elle est.
+        onPatched(() => {
+            if (this.selectAllRef.el) {
+                this.selectAllRef.el.indeterminate = this.someLoadedSelected;
+            }
         });
 
         onWillUnmount(() => {
@@ -250,6 +271,11 @@ export class BfEmailInbox extends Component {
     // ------------------------------------------------------------------
     // Liste
     // ------------------------------------------------------------------
+    /** Le dossier ouvert est-il celui des envois programmés ? */
+    get isDraftFolder() {
+        return this.state.currentFolder === DRAFTS_FOLDER;
+    }
+
     async loadMessages(folder, offset = 0) {
         this.state.loadingMessages = true;
         this.state.currentFolder = folder;
@@ -258,15 +284,7 @@ export class BfEmailInbox extends Component {
         this.state.preview = null;
         this.state.selectedIds = {};
         try {
-            const result = await this.orm.call(
-                "bf.email", "inbox_get_messages", [],
-                {
-                    folder,
-                    offset,
-                    limit: this.state.pageSize,
-                    search: this.state.searchQuery || null,
-                }
-            );
+            const result = await this._fetchPage(folder, offset);
             this.state.messages = result.messages || [];
             this.state.total = result.total || 0;
         } catch (err) {
@@ -281,19 +299,34 @@ export class BfEmailInbox extends Component {
         }
     }
 
+    /**
+     * Une page, quelle qu'en soit la source. Les deux dossiers ont le même
+     * contrat de sortie ({messages, total}), donc pagination, recherche et
+     * défilement infini n'ont pas à savoir lequel est ouvert.
+     */
+    async _fetchPage(folder, offset) {
+        if (folder === DRAFTS_FOLDER) {
+            return this.orm.call("bf.email", "inbox_get_drafts", [], {
+                offset,
+                limit: this.state.pageSize,
+                search: this.state.searchQuery || null,
+            });
+        }
+        return this.orm.call("bf.email", "inbox_get_messages", [], {
+            folder,
+            offset,
+            limit: this.state.pageSize,
+            search: this.state.searchQuery || null,
+        });
+    }
+
     async loadMoreMessages() {
         if (this.state.loadingMoreMessages || !this.canLoadMore) return;
         this.state.loadingMoreMessages = true;
         const nextOffset = this.state.offset + this.state.messages.length;
         try {
-            const result = await this.orm.call(
-                "bf.email", "inbox_get_messages", [],
-                {
-                    folder: this.state.currentFolder,
-                    offset: nextOffset,
-                    limit: this.state.pageSize,
-                    search: this.state.searchQuery || null,
-                }
+            const result = await this._fetchPage(
+                this.state.currentFolder, nextOffset
             );
             this.state.messages.push(...(result.messages || []));
         } catch (err) {
@@ -325,6 +358,12 @@ export class BfEmailInbox extends Component {
         this.state.loadingPreview = true;
         this.state.preview = null;
         try {
+            if (this.isDraftFolder) {
+                this.state.preview = await this.orm.call(
+                    "bf.email", "inbox_get_draft_body", [], { draft_id: id }
+                );
+                return;
+            }
             const preview = await this.orm.call(
                 "bf.email", "inbox_get_body", [], { email_id: id }
             );
@@ -404,7 +443,9 @@ export class BfEmailInbox extends Component {
     }
 
     onEscape() {
-        if (this.state.settingsOpen) {
+        if (this.state.columnsOpen) {
+            this.state.columnsOpen = false;
+        } else if (this.state.settingsOpen) {
             this.closeSettings();
         } else if (this.selectedCount > 0) {
             this.clearSelection();
@@ -427,6 +468,45 @@ export class BfEmailInbox extends Component {
 
     clearSelection() {
         this.state.selectedIds = {};
+    }
+
+    /**
+     * « Tout sélectionner » porte sur les lignes CHARGÉES, pas sur le dossier :
+     * la liste se remplit au défilement, et prétendre sélectionner trois mille
+     * courriels dont cent sont en mémoire serait un mensonge qui se paierait au
+     * premier clic sur « Traité ». Le compteur de la barre d'actions le dit.
+     */
+    get allLoadedSelected() {
+        const rows = this.visibleMessages;
+        return rows.length > 0 && rows.every((m) => this.state.selectedIds[m.id]);
+    }
+
+    get someLoadedSelected() {
+        return this.selectedCount > 0 && !this.allLoadedSelected;
+    }
+
+    toggleSelectAll() {
+        if (this.allLoadedSelected) {
+            this.clearSelection();
+            return;
+        }
+        const next = {};
+        for (const m of this.visibleMessages) {
+            next[m.id] = true;
+        }
+        this.state.selectedIds = next;
+    }
+
+    get selectAllTitle() {
+        if (this.allLoadedSelected) {
+            return _t("Tout désélectionner");
+        }
+        return _t("Sélectionner les %s ligne(s) chargée(s)", this.visibleMessages.length);
+    }
+
+    /** Vrai quand le dossier contient plus que ce qui est chargé. */
+    get hasMoreThanLoaded() {
+        return this.state.total > this.state.messages.length;
     }
 
     get selectedCount() {
@@ -531,6 +611,16 @@ export class BfEmailInbox extends Component {
 
     /** Action sur la cible courante (sélection, sinon aperçu). */
     async runAction(action) {
+        // Un envoi programmé n'est pas une ligne bf.email : ses identifiants
+        // appartiennent à un autre modèle et les passer à `inbox_run_action`
+        // agirait sur le courriel qui porte le même numéro par hasard.
+        if (this.isDraftFolder) {
+            this.notification.add(
+                _t("Cette action ne s'applique pas à un brouillon."),
+                { type: "warning" }
+            );
+            return;
+        }
         const ids = this.actionTargets;
         if (!ids.length) {
             this.notification.add(
@@ -550,6 +640,7 @@ export class BfEmailInbox extends Component {
     }
 
     async markHandled() {
+        if (this.isDraftFolder) return;
         const ids = this.actionTargets;
         if (!ids.length) return;
         // Sortir de la boîte ne retire la ligne de la liste que dans les
@@ -567,6 +658,7 @@ export class BfEmailInbox extends Component {
     }
 
     async markUnhandled() {
+        if (this.isDraftFolder) return;
         const ids = this.actionTargets;
         if (!ids.length) return;
         const removes = ["handled", "snoozed"].includes(this.state.currentFolder)
@@ -581,6 +673,7 @@ export class BfEmailInbox extends Component {
 
     async markHandledForRow(id, ev) {
         if (ev) ev.stopPropagation();
+        if (this.isDraftFolder) return;
         const removes = ["inbox", "unread", "to_reply", "unrouted"]
             .includes(this.state.currentFolder) ? [id] : [];
         await this._dispatch("handle", [id], {
@@ -610,6 +703,7 @@ export class BfEmailInbox extends Component {
     }
 
     async quickReroute(targetModel) {
+        if (this.isDraftFolder) return;
         const ids = this.actionTargets;
         if (!ids.length) {
             this.notification.add(
@@ -679,6 +773,218 @@ export class BfEmailInbox extends Component {
     }
 
     // ------------------------------------------------------------------
+    // Brouillons (envois programmés)
+    // ------------------------------------------------------------------
+    /**
+     * Envoyer / modifier / ouvrir la fiche / annuler un envoi programmé.
+     * ``cancel`` demande confirmation : c'est la seule action de cet écran
+     * qui détruit quelque chose qu'on ne peut pas reconstituer.
+     */
+    async runDraftAction(action) {
+        if (!this.isDraftFolder || this.state.acting) return;
+        const ids = this.actionTargets;
+        if (!ids.length) {
+            this.notification.add(
+                _t("Sélectionne d'abord un brouillon."), { type: "warning" }
+            );
+            return;
+        }
+        const single = ["edit", "open_record"];
+        const targets = single.includes(action) && ids.length > 1
+            ? [this.state.selectedId || ids[0]]
+            : ids;
+        if (action === "cancel") {
+            const msg = _t("Annuler définitivement %s envoi(s) programmé(s) ?", targets.length);
+            if (!window.confirm(msg)) {
+                return;
+            }
+        }
+        this.state.acting = true;
+        try {
+            const result = await this.orm.call(
+                "bf.email", "inbox_draft_action", [],
+                { action, draft_ids: targets }
+            );
+            if (result && result.notification) {
+                this.notification.add(result.notification.message || "", {
+                    title: result.notification.title,
+                    type: result.notification.type || "success",
+                });
+                this.clearSelection();
+                await this.refreshCurrent();
+                return;
+            }
+            if (result) {
+                this.action.doAction(result, {
+                    onClose: () => this.refreshCurrent(),
+                });
+            }
+        } catch (err) {
+            this.notification.add(
+                _t("Action impossible : ") + (err.message || err),
+                { type: "danger" }
+            );
+        } finally {
+            this.state.acting = false;
+        }
+    }
+
+    // ------------------------------------------------------------------
+    // « Ajouter » — créer une fiche à partir du courriel
+    // ------------------------------------------------------------------
+    /**
+     * Même menu que « Nouveau ▾ » de la fiche complète du courriel : la fiche
+     * est créée et le courriel importé dans son chatter. Une seule ligne à la
+     * fois — créer six tâches d'un coup n'est pas un geste qu'on fait par
+     * accident, c'en est un qu'on regrette.
+     */
+    async createRecord(action) {
+        if (this.isDraftFolder) return;
+        const id = this.state.selectedId;
+        if (!id) {
+            this.notification.add(
+                _t("Ouvre d'abord un courriel."), { type: "warning" }
+            );
+            return;
+        }
+        await this._dispatch(action, [id], { clearSelection: false });
+    }
+
+    /** Le menu n'offre que ce qui est installé sur cette base. */
+    get canCreate() {
+        const p = this.state.preview || {};
+        return {
+            lead: Boolean(p.has_crm),
+            ticket: Boolean(p.has_helpdesk),
+            expense: Boolean(p.has_expense),
+        };
+    }
+
+    // ------------------------------------------------------------------
+    // Router / Re-router
+    // ------------------------------------------------------------------
+    /**
+     * « Router… » quand le courriel n'est classé nulle part, « Re-router… »
+     * quand il l'est déjà. Le geste diffère : le premier ajoute le courriel à
+     * un chatter, le second le DÉPLACE et le retire de là où il était. Un seul
+     * libellé pour les deux laissait croire au second qu'il faisait le
+     * premier.
+     */
+    get isRouted() {
+        const ids = this.actionTargets;
+        if (!ids.length) return false;
+        if (this.selectedCount > 0) {
+            const rows = this.state.messages.filter(
+                (m) => this.state.selectedIds[m.id]
+            );
+            return rows.length > 0 && rows.every((m) => m.res_model);
+        }
+        return Boolean(this.state.preview && this.state.preview.res_model);
+    }
+
+    get rerouteLabel() {
+        return this.isRouted ? _t("Re-router…") : _t("Router…");
+    }
+
+    get rerouteTitle() {
+        if (!this.isRouted) {
+            return _t("Classer ce courriel dans une tâche, un ticket, un contact… (raccourci Y)");
+        }
+        const current = this.state.preview && this.state.preview.record_name;
+        return current
+            ? _t("Déplacer ce courriel hors de « %s » vers un autre dossier (raccourci Y)", current)
+            : _t("Déplacer ce courriel vers un autre dossier (raccourci Y)");
+    }
+
+    // ------------------------------------------------------------------
+    // Colonnes de la liste
+    // ------------------------------------------------------------------
+    /**
+     * Colonnes offertes au sélecteur. « Sujet » n'y est pas : c'est la seule
+     * qu'on ne peut pas retirer — une liste de courriels sans objet n'est plus
+     * une liste de courriels, et permettre de tout décocher fabriquerait un
+     * écran vide dont on ne saurait plus sortir.
+     *
+     * Construit dans un getter et non en constante de module : `_t` traduit à
+     * l'appel, et au chargement du fichier les traductions ne sont pas encore
+     * en place.
+     */
+    get columnDefs() {
+        return [
+            { key: "date", label: _t("Date") },
+            { key: "correspondent", label: _t("Correspondant") },
+            { key: "folder", label: _t("Dossier") },
+            { key: "category", label: _t("Catégorie") },
+            { key: "preview", label: _t("Extrait") },
+            { key: "state", label: _t("État") },
+        ];
+    }
+
+    get cols() {
+        return this.state.settings.columnsInbox;
+    }
+
+    /** Sert au `colspan` de la ligne « rien ici » : deux gouttières + le sujet. */
+    get visibleColumnCount() {
+        return this.columnDefs.filter((c) => this.cols[c.key]).length + 3;
+    }
+
+    /** Idem pour les brouillons, qui n'ont ni catégorie ni extrait. */
+    get visibleDraftColumnCount() {
+        const shown = ["date", "correspondent", "folder", "state"]
+            .filter((k) => this.cols[k]).length;
+        return shown + 3;
+    }
+
+    toggleColumnsMenu() {
+        this.state.columnsOpen = !this.state.columnsOpen;
+        if (this.state.columnsOpen) this.state.settingsOpen = false;
+    }
+
+    toggleColumn(key) {
+        const next = {
+            ...this.state.settings,
+            columnsInbox: { ...this.cols, [key]: !this.cols[key] },
+        };
+        this.state.settings = next;
+        persistSettings(next);
+    }
+
+    /**
+     * Libellé lisible d'une catégorie. Les libellés traduits sont déjà calculés
+     * par `inbox_get_folders` pour l'arbre de gauche (clés `category:<valeur>`) :
+     * les relire ici évite un aller-retour serveur par ligne, et garantit que
+     * la colonne et le dossier disent le même mot.
+     */
+    categoryLabel(value) {
+        if (!value) return "";
+        const folder = this.state.folders.find((f) => f.key === `category:${value}`);
+        return folder ? folder.label : value;
+    }
+
+    // ------------------------------------------------------------------
+    // Disposition liste / aperçu
+    // ------------------------------------------------------------------
+    get pane() {
+        return paneStyles(this.state.settings);
+    }
+
+    get colWidths() {
+        return columnWidths(this.state.settings);
+    }
+
+    setPaneLayout(layout) {
+        if (this.state.settings.paneLayout === layout) return;
+        const next = { ...this.state.settings, paneLayout: layout };
+        this.state.settings = next;
+        persistSettings(next);
+    }
+
+    onSplitterMouseDown(ev) {
+        startPaneDrag(ev, this);
+    }
+
+    // ------------------------------------------------------------------
     // Affichage
     // ------------------------------------------------------------------
     formatDate(iso) {
@@ -703,6 +1009,9 @@ export class BfEmailInbox extends Component {
     // ------------------------------------------------------------------
     toggleSettings() {
         this.state.settingsOpen = !this.state.settingsOpen;
+        // Les deux panneaux occupent le même coin : les laisser ouverts
+        // ensemble en superpose un sur l'autre.
+        if (this.state.settingsOpen) this.state.columnsOpen = false;
     }
 
     closeSettings() {

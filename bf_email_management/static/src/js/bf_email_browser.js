@@ -36,6 +36,9 @@ import {
     formatRelativeDate,
     senderCell,
     buildPreviewSrcdoc,
+    paneStyles,
+    startPaneDrag,
+    columnWidths,
 } from "./bf_email_ui_common";
 
 export class BfEmailBrowser extends Component {
@@ -73,6 +76,8 @@ export class BfEmailBrowser extends Component {
             dragUid: null,
             settings: initialSettings,
             settingsOpen: false,
+            columnsOpen: false,
+            dragging: false,
         });
 
         onWillStart(async () => {
@@ -494,7 +499,9 @@ export class BfEmailBrowser extends Component {
     }
 
     onEscape() {
-        if (this.selectedCount > 0) {
+        if (this.state.columnsOpen) {
+            this.state.columnsOpen = false;
+        } else if (this.selectedCount > 0) {
             this.clearSelection();
         } else {
             this.clearSearch();
@@ -663,6 +670,9 @@ export class BfEmailBrowser extends Component {
     // ------------------------------------------------------------------
     toggleSettings() {
         this.state.settingsOpen = !this.state.settingsOpen;
+        // Les deux panneaux occupent le même coin : les laisser ouverts
+        // ensemble en superpose un sur l'autre.
+        if (this.state.settingsOpen) this.state.columnsOpen = false;
     }
 
     closeSettings() {
@@ -692,6 +702,62 @@ export class BfEmailBrowser extends Component {
      * Enveloppe le corps du courriel pour l'iframe d'aperçu. Gabarit partagé
      * avec la boîte de réception Odoo.
      */
+    // ------------------------------------------------------------------
+    // Colonnes de la liste
+    // ------------------------------------------------------------------
+    /** « Sujet » n'est pas offert : c'est la colonne qu'on ne peut pas retirer. */
+    get columnDefs() {
+        return [
+            { key: "date", label: _t("Date") },
+            { key: "sender", label: _t("Expéditeur") },
+            { key: "state", label: _t("État") },
+        ];
+    }
+
+    get cols() {
+        return this.state.settings.columnsBrowser;
+    }
+
+    get visibleColumnCount() {
+        return this.columnDefs.filter((c) => this.cols[c.key]).length + 3;
+    }
+
+    toggleColumnsMenu() {
+        this.state.columnsOpen = !this.state.columnsOpen;
+        if (this.state.columnsOpen) this.state.settingsOpen = false;
+    }
+
+    toggleColumn(key) {
+        const next = {
+            ...this.state.settings,
+            columnsBrowser: { ...this.cols, [key]: !this.cols[key] },
+        };
+        this.state.settings = next;
+        persistSettings(next);
+    }
+
+    // ------------------------------------------------------------------
+    // Disposition liste / aperçu — partagée avec la boîte de réception
+    // ------------------------------------------------------------------
+    get pane() {
+        return paneStyles(this.state.settings);
+    }
+
+    get colWidths() {
+        return columnWidths(this.state.settings);
+    }
+
+    setPaneLayout(layout) {
+        if (this.state.settings.paneLayout === layout) return;
+        const next = { ...this.state.settings, paneLayout: layout };
+        this.state.settings = next;
+        persistSettings(next);
+    }
+
+    onSplitterMouseDown(ev) {
+        startPaneDrag(ev, this);
+    }
+
     get previewSrcdoc() {
         return buildPreviewSrcdoc(this.state.preview && this.state.preview.body_html);
     }

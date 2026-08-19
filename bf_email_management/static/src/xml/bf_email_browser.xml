@@ -2,7 +2,9 @@
 <templates xml:space="preserve">
 
     <t t-name="bf_email_management.Browser">
-        <div class="o_bf_email_browser d-flex flex-grow-1" style="height: 100%;">
+        <div class="o_bf_email_browser d-flex flex-grow-1"
+             t-att-class="state.dragging ? 'o_bf_email_dragging' : ''"
+             style="height: 100%;">
 
             <!-- LEFT: Folder tree sidebar -->
             <div class="o_bf_email_folders border-end bg-light" style="width: 260px; min-width: 260px; overflow-y: auto;">
@@ -46,11 +48,16 @@
                 </ul>
             </div>
 
-            <!-- RIGHT: top message list + bottom preview, stacked -->
-            <div class="d-flex flex-column flex-grow-1" style="min-width: 0;">
+            <!-- RIGHT: message list + preview, stacked or side-by-side
+                 depending on the shared layout preference. -->
+            <div class="d-flex flex-grow-1"
+                 t-att-class="pane.wrapClass"
+                 style="min-width: 0; min-height: 0;">
 
-                <!-- Top: message list -->
-                <div class="border-bottom d-flex flex-column" style="flex: 1 1 50%; min-height: 0;">
+                <!-- Message list -->
+                <div class="d-flex flex-column"
+                     t-att-class="pane.layout === 'right' ? 'border-end' : 'border-bottom'"
+                     t-att-style="pane.listStyle">
                     <div class="px-3 py-2 d-flex justify-content-between align-items-center bg-white border-bottom gap-2 position-relative">
                         <div class="flex-shrink-0">
                             <strong><t t-esc="state.currentFolder"/></strong>
@@ -70,6 +77,55 @@
                                    placeholder="Rechercher (sujet, expéditeur)… touche /"
                                    t-att-value="state.searchQuery"
                                    t-on-input="(ev) => this.onSearchInput(ev)"/>
+                        </div>
+                        <div class="position-relative flex-shrink-0">
+                            <button class="btn btn-sm btn-light"
+                                    t-att-class="{ 'active text-primary': state.columnsOpen }"
+                                    t-on-click="toggleColumnsMenu"
+                                    title="Choisir les colonnes de la liste">
+                                <i class="fa fa-table"/>
+                            </button>
+                            <div t-if="state.columnsOpen"
+                                 class="card shadow position-absolute end-0 mt-1"
+                                 style="top: 100%; width: 240px; z-index: 11;">
+                                <div class="card-header d-flex justify-content-between align-items-center py-2">
+                                    <strong>Colonnes</strong>
+                                    <button class="btn-close" t-on-click="() => this.toggleColumnsMenu()"/>
+                                </div>
+                                <div class="card-body py-2">
+                                    <div class="form-check" t-foreach="columnDefs" t-as="col" t-key="col.key">
+                                        <input class="form-check-input"
+                                               type="checkbox"
+                                               t-att-id="'bf_browser_col_' + col.key"
+                                               t-att-checked="cols[col.key]"
+                                               t-on-change="() => this.toggleColumn(col.key)"/>
+                                        <label class="form-check-label small"
+                                               t-att-for="'bf_browser_col_' + col.key"
+                                               t-esc="col.label"/>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox"
+                                               id="bf_browser_col_subject" checked="checked" disabled="disabled"/>
+                                        <label class="form-check-label small text-muted"
+                                               for="bf_browser_col_subject">Sujet (toujours affiché)</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="btn-group btn-group-sm flex-shrink-0" role="group"
+                             aria-label="Disposition de l'aperçu">
+                            <button class="btn btn-light"
+                                    t-att-class="{ 'active text-primary': pane.layout === 'bottom' }"
+                                    title="Aperçu sous la liste"
+                                    t-on-click="() => this.setPaneLayout('bottom')">
+                                <i class="fa fa-columns fa-rotate-270"/>
+                            </button>
+                            <button class="btn btn-light"
+                                    t-att-class="{ 'active text-primary': pane.layout === 'right' }"
+                                    title="Aperçu à droite de la liste"
+                                    t-on-click="() => this.setPaneLayout('right')">
+                                <i class="fa fa-columns"/>
+                            </button>
                         </div>
                         <button class="btn btn-sm btn-light"
                                 t-on-click="toggleSettings"
@@ -121,7 +177,16 @@
                                             t-att-value="state.settings.density"
                                             t-on-change="(ev) => this.onSettingChange('density', ev)">
                                         <option value="comfortable">Confortable</option>
-                                        <option value="compact">Compacte</option>
+                                        <option value="compact">Compacte (une ligne par courriel)</option>
+                                    </select>
+                                </div>
+                                <div class="mb-2">
+                                    <label class="form-label small mb-1">Position de l'aperçu</label>
+                                    <select class="form-select form-select-sm"
+                                            t-att-value="state.settings.paneLayout"
+                                            t-on-change="(ev) => this.onSettingChange('paneLayout', ev)">
+                                        <option value="bottom">Sous la liste</option>
+                                        <option value="right">À droite de la liste</option>
                                     </select>
                                 </div>
                                 <div class="form-check">
@@ -170,15 +235,15 @@
                         </button>
                     </div>
                     <div class="flex-grow-1" style="overflow-y: auto;">
-                        <table t-att-class="'table table-hover mb-0 ' + (state.settings.density === 'compact' ? 'table-sm' : '')">
+                        <table t-att-class="'table table-hover mb-0 ' + (state.settings.density === 'compact' ? 'table-sm o_bf_email_compact ' : '')">
                             <thead class="bg-light" style="position: sticky; top: 0; z-index: 1;">
                                 <tr>
-                                    <th class="ps-3" style="width: 32px;"></th>
-                                    <th style="width: 130px;">Date</th>
-                                    <th style="width: 250px;">Expéditeur</th>
+                                    <th class="ps-3" t-att-style="'width: ' + colWidths.check + 'px;'"></th>
+                                    <th t-if="cols.date" t-att-style="'width: ' + colWidths.date + 'px;'">Date</th>
+                                    <th t-if="cols.sender" t-att-style="'width: ' + colWidths.correspondent + 'px;'">Expéditeur</th>
                                     <th>Sujet</th>
-                                    <th style="width: 72px;" title="Statut">État</th>
-                                    <th class="pe-3" style="width: 60px;"></th>
+                                    <th t-if="cols.state" t-att-style="'width: ' + colWidths.state + 'px;'" title="Statut">État</th>
+                                    <th class="pe-3" t-att-style="'width: ' + colWidths.act + 'px;'"></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -195,15 +260,16 @@
                                                t-att-checked="state.selectedUids[m.uid]"
                                                t-on-click="(ev) => this.toggleSelection(m.uid, ev)"/>
                                     </td>
-                                    <td class="small"><t t-esc="formatRelativeDate(m.date)"/></td>
-                                    <td class="text-truncate" style="max-width: 250px;"
+                                    <td t-if="cols.date" class="small"><t t-esc="formatRelativeDate(m.date)"/></td>
+                                    <td t-if="cols.sender" class="text-truncate"
+                                        t-att-style="'max-width: ' + colWidths.correspondent + 'px;'"
                                         t-att-title="m.from">
                                         <t t-esc="senderCell(m)"/>
                                     </td>
                                     <td class="text-truncate" t-att-title="m.subject">
                                         <t t-esc="m.subject"/>
                                     </td>
-                                    <td class="text-nowrap">
+                                    <td t-if="cols.state" class="text-nowrap">
                                         <i t-if="m.already_in_bf_email" class="fa fa-check-circle text-success" title="Déjà routé dans bf.email"/>
                                         <i t-if="m.is_snoozed" class="fa fa-moon-o text-info ms-1" title="Reporté (snooze actif)"/>
                                         <i t-if="m.is_replied" class="fa fa-reply text-muted ms-1" title="Répondu"/>
@@ -218,7 +284,7 @@
                                     </td>
                                 </tr>
                                 <tr t-if="!state.loadingMessages and visibleMessages.length === 0">
-                                    <td colspan="6" class="text-center text-muted p-4">
+                                    <td t-att-colspan="visibleColumnCount" class="text-center text-muted p-4">
                                         <t t-if="state.searchQuery">Aucun résultat pour « <t t-esc="state.searchQuery"/> » dans la page chargée.</t>
                                         <t t-else="">Aucun message dans ce dossier.</t>
                                     </td>
@@ -237,8 +303,13 @@
                     </div>
                 </div>
 
-                <!-- Bottom: preview -->
-                <div class="d-flex flex-column" style="flex: 1 1 50%; min-height: 0;">
+                <div class="o_bf_email_splitter"
+                     t-att-style="pane.splitterStyle"
+                     title="Glisser pour redimensionner"
+                     t-on-mousedown="onSplitterMouseDown"/>
+
+                <!-- Preview -->
+                <div class="d-flex flex-column" t-att-style="pane.paneStyle">
                     <t t-if="state.loadingPreview">
                         <div class="p-4 text-center text-muted">
                             <i class="fa fa-spinner fa-spin fa-2x"/>

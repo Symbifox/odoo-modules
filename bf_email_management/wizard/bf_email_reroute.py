@@ -117,6 +117,53 @@ class BfEmailReroute(models.TransientModel):
         return vals
 
     @api.model
+    def _suggest_from_thread(self, bf_emails, model_hint=None):
+        """Dossier d'un AUTRE courriel du même fil RFC 2822, ou None.
+
+        Ne répond que si les lignes sélectionnées partagent une seule racine
+        de fil : sur un lot hétérogène, « le dossier du fil » ne veut rien
+        dire. Le dossier déjà porté par les lignes en cours est écarté —
+        proposer à un re-routage l'endroit d'où il cherche justement à sortir
+        serait le contraire d'une suggestion.
+        """
+        # TOUTES les lignes doivent partager le même fil, pas seulement
+        # certaines : sur un lot où l'une est orpheline, classer l'orpheline
+        # d'après le dossier de sa voisine est une supposition tirée d'une
+        # ligne qui n'est pas dans le fil.
+        roots = set(bf_emails.mapped("thread_root_id"))
+        if len(roots) != 1:
+            return None
+        root = next(iter(roots))
+        if not root:
+            return None
+        current = {
+            (b.res_model, b.res_id)
+            for b in bf_emails if b.res_model and b.res_id
+        }
+        siblings = self.env["bf.email"].with_context(active_test=False).search(
+            [
+                ("thread_root_id", "=", root),
+                ("user_id", "in", bf_emails.mapped("user_id").ids),
+                ("res_model", "!=", False),
+                ("id", "not in", bf_emails.ids),
+            ],
+            order="date desc, id desc", limit=20,
+        )
+        for sib in siblings:
+            if not sib.res_id or (sib.res_model, sib.res_id) in current:
+                continue
+            if model_hint and sib.res_model != model_hint:
+                continue
+            if sib.res_model not in self.env:
+                continue
+            rec = self.env[sib.res_model].browse(sib.res_id).exists()
+            # Proposer une fiche que l'usager ne peut pas écrire lui ferait
+            # découvrir le refus au moment de confirmer, pas avant.
+            if rec and rec.has_access("write"):
+                return rec
+        return None
+
+    @api.model
     def _suggest_target_reference(self, bf_emails, model_hint=None):
         """Return a single record to pre-fill target_reference, or None.
 
@@ -131,12 +178,22 @@ class BfEmailReroute(models.TransientModel):
         """
         if not bf_emails:
             return None
+        # Un indice explicite « vers un contact » ne se discute pas : l'usager
+        # vient de cliquer dessus.
+        if model_hint == "res.partner":
+            partners = bf_emails.mapped("partner_id")
+            return partners if len(partners) == 1 and partners else None
+        # Le fil passe avant le contact. Une réponse appartient là où vit le
+        # reste de sa conversation, et c'est un signal bien plus sûr que
+        # « ce contact n'a qu'une tâche ouverte » : le contact peut en avoir
+        # trois demain, le fil ne change pas de dossier.
+        threaded = self._suggest_from_thread(bf_emails, model_hint=model_hint)
+        if threaded:
+            return threaded
         partners = bf_emails.mapped("partner_id")
         if len(partners) != 1 or not partners:
             return None
         partner = partners
-        if model_hint == "res.partner":
-            return partner
         if model_hint in (None, "project.task"):
             Task = self.env["project.task"]
             tasks = Task.search([
@@ -231,17 +288,27 @@ class BfEmailReroute(models.TransientModel):
         Returns the new ``mail.message.id`` posted on the target record.
         Raises if the row has neither a stored RFC822 nor a linked mail.message.
         """
+        target = self.env[target_model].browse(target_id)
+
         if bf.mail_message_id:
-            # Already a chatter row; simply re-link to the target chatter.
-            # We post a copy on the target (preserving Message-ID is unsafe
-            # for an already-routed message, so we use a fresh internal note
-            # with the same content). For now, raise: the user wanted to
-            # reroute IMAP-only rows, not duplicate chatter rows.
-            raise exceptions.UserError(_(
-                "Le courriel #%s est déjà attaché à un chatter (%s #%s). "
-                "Le re-routage des courriels déjà en chatter n'est pas supporté.",
-                bf.id, bf.res_model, bf.res_id,
-            ))
+            # Courriel DÉJÀ posé sur un chatter : on DÉPLACE son message au
+            # lieu d'en poster un second. Poster une copie laisserait
+            # l'original sur la fiche fautive — or c'est de l'y enlever qu'il
+            # s'agit — et deux chatters porteraient le même Message-ID.
+            # Auparavant ce cas levait « le re-routage des courriels déjà en
+            # chatter n'est pas supporté », ce qui rendait la seule erreur de
+            # classement qu'on fait vraiment — s'apercevoir après coup que le
+            # courriel est dans la mauvaise tâche — impossible à corriger
+            # autrement qu'à la main en base.
+            moved = bf._move_chatter_message(target)
+            extra_vals = {}
+            if self.mark_replied and bf.direction == "in" and bf.status in ("new", "read"):
+                extra_vals["status"] = "replied"
+            if extra_vals:
+                bf.write(extra_vals)
+            if self.archive_after:
+                bf.action_archive()
+            return moved.id if moved else False
 
         if not bf.raw_rfc822:
             raise exceptions.UserError(_(
@@ -253,7 +320,6 @@ class BfEmailReroute(models.TransientModel):
         # bf.email._import_into_chatter posts the body + original attachments
         # + the full .eml and files the (orphan) row under the target.
         # force_file=True keeps reroute's contract of always re-homing the row.
-        target = self.env[target_model].browse(target_id)
         new_msg = bf._import_into_chatter(target, force_file=True)
 
         # Reroute-specific bookkeeping layered on top of the shared import.
