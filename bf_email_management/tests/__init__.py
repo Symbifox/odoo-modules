@@ -7,3 +7,4 @@ from . import test_mobile_http
 from . import test_mobile_blast_radius
 from . import test_inbox_action
 from . import test_writeback_sync
+from . import test_inbox_drafts_and_reroute

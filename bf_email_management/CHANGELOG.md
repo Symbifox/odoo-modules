@@ -4,6 +4,36 @@ All notable changes to `bf_email_management` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This module follows Odoo's `MAJOR.MINOR.PATCH` convention prefixed with the Odoo series (`18.0.X.Y.Z`).
 
+## [18.0.9.5.0] — 2026-08-18
+
+Consolidated entry covering 9.3.0 → 9.5.0, all released on 2026-08-18.
+
+### Added
+
+- **Re-routing a mail that is already filed (9.3.0).** The wizard used to refuse outright — *re-routing mails already in a chatter is not supported* — which left the one filing mistake people actually make, noticing after the fact that a mail sits on the wrong record, with no remedy short of editing the database. `bf.email._move_chatter_message` now **moves** the existing `mail.message` instead of posting a second one: posting a copy would leave the original on the wrong record, which is the very thing being undone, and two chatters would carry the same Message-ID — which the ingestion cron's dedup reads as a duplicate to drop at random. Attachments follow, and the source record gets a note; a message vanishing without a trace is what costs an hour to understand six months later.
+- **Pulling a message out of a record is a write on that record**, so the move now requires write access on both the old and the new one. Without that check, being able to read a mail would be enough to take it out of a colleague's record, and the trace would disappear from where someone else looks for it.
+- **The button says what it does.** *Route…* while the mail is filed nowhere, *Re-route…* once it is, with the current record recalled at the top of the menu. One label for both read as the first.
+- **Target suggestion follows the thread.** `_suggest_from_thread` proposes the record another mail of the same RFC 2822 thread is filed under — a far steadier signal than "this contact has exactly one open task", since the contact may have three tomorrow while the thread does not change records. Three guards: every selected row must share the **same** root (on a batch where one is an orphan, filing it after its neighbour is a guess drawn from a row that is not in the thread); the record already held is **excluded**, or a re-route would be offered the very place it is trying to leave; and a record the user cannot write is never proposed.
+- **Add ▾ menu in the preview** — Task, Lead, Ticket, Expense, Vendor bill, Customer invoice, created *from* the mail and importing it into the new record's chatter. Same methods as the form view's *New ▾*, so the two cannot drift; entries for apps that are not installed are not offered, and a batch is refused with a readable message rather than a bare `ensure_one`.
+- **Drafts folder** — the current user's `mail.scheduled.message` rows, soonest first (the reverse of mail: on sends still to come, what matters is the next one out). Preview, *Send now*, *Edit*, *Open record*, *Cancel*, and an overdue date shown in red. It is the only folder in the rail whose source is not `bf.email`: a scheduled send has neither Message-ID nor IMAP counterpart, and minting a `bf.email` row so it could appear here would make it a fake mail in every count — so the list swaps source per folder while keeping one output contract, and pagination, search and infinite scroll never learn which folder is open. Scope is *mine*, not *what I can see*: the model's own access already spans records the user can post on, which would surface a colleague's draft on a shared task.
+- **Preview pane right, not only bottom** (`paneLayout`), with a draggable splitter and a size remembered **per layout** — the height you would give a mail body is not the width you would give it. Two toolbar buttons plus a preferences entry; applies to the IMAP browser too.
+- **Column selector (9.4.0)** — a table button picks which columns the list shows: Date, Correspondent, Record, **Category**, **Snippet**, State (IMAP browser: Date, Sender, State). Kept with the other preferences and stored **per screen**, the two column sets genuinely differing. **Subject cannot be unticked** (shown ticked and disabled): without that floor, unticking everything builds an empty list with nothing left to say how to get out of it. *Category* reuses the labels the folder rail already computes rather than querying per row, so the column and the folder necessarily say the same word; *Snippet* surfaces `body_preview`, until now only a tooltip.
+- **Select-all checkbox (9.5.0)**, three-state, at the head of the checkbox column. The partial state rides on the DOM `indeterminate` *property*, which no `t-att-` can set, hence the after-render hook; without it a partial selection would render as "nothing ticked", the opposite of what it is. It covers the **loaded** rows, not the folder — the list fills on scroll, and claiming to select three thousand mails when a hundred are in memory is a lie that comes due on the first click of *Handled*. The bulk bar spells it out as soon as the folder holds more than the current page.
+
+### Changed
+
+- **Compact density finally means one line.** It only added `table-sm`, which tightens padding without stopping a cell from wrapping — and wrapping is exactly what happens once the preview moves to the right and the list narrows, halving how many mails fit on screen. Compact now forces `table-layout: fixed` (without it the browser widens the column to fit and the ellipsis never triggers), `nowrap` and ellipsis on every cell, badges included. Column widths tighten with a right-hand pane as well, or the Subject column — the one you actually read — gets crushed.
+- New shared stylesheet `static/src/scss/bf_email_ui.scss` for both client actions, and `paneStyles()` centralises their layout: while each carried its own `flex: 1 1 50%` inline, changing one did not change the other.
+
+### Fixed
+
+- `loadSettings` merged preferences flat except for `paneSize`. Any object-valued key added later would have been replaced wholesale by the stored value, so a new column would have been born **missing** for anyone who already had preferences — invisible in development, where local storage is empty. Deep merge now covers a declared list of keys.
+- `_inbox_folder_domain("drafts")` **raises** instead of returning an empty domain: without that refusal, reaching *Drafts* by the wrong path would render the whole mailbox while claiming to render the drafts.
+
+### Tests
+
+- `tests/test_inbox_drafts_and_reroute.py` — 31 tests over the three new surfaces, **mutation-proven**: restoring the re-route refusal, dropping the "my drafts" scope, dropping the write check on the source record and lifting the single-row guard each fail exactly the matching tests and no others. Full module suite: 182 tests, 0 failures.
+
 ## [18.0.9.2.0] — 2026-08-18
 
 Consolidated entry covering 9.0.0 → 9.2.0, all released on 2026-08-17/18.

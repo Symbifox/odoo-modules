@@ -1,0 +1,52 @@
+// Habillage commun aux deux actions clientes courriel (boîte de réception
+// OWL et navigateur IMAP).
+//
+// Le mode compact existe parce qu'une rangée qui retombe sur deux lignes
+// divise par deux le nombre de courriels visibles — et c'est exactement ce
+// qui arrive dès que l'aperçu passe à droite et que la liste se rétrécit.
+// Une ligne, toujours, quitte à couper au bout.
+
+.o_bf_email_browser {
+
+    .o_bf_email_splitter {
+        // Le pointeur et l'orientation viennent de `paneStyles()` : ce qui
+        // reste ici est ce qui ne dépend pas de la disposition.
+        flex-shrink: 0;
+
+        &:hover {
+            background: #29ABE1 !important;
+        }
+    }
+
+    // Pendant le glisser, l'iframe de l'aperçu avalerait les mouvements de
+    // souris dès que le curseur la survole, et le séparateur resterait collé.
+    &.o_bf_email_dragging iframe {
+        pointer-events: none;
+    }
+
+    table.o_bf_email_compact {
+        // Sans `fixed`, le navigateur élargit la colonne au contenu et
+        // l'ellipse ne se déclenche jamais : la rangée déborde ou passe à la
+        // ligne, ce qu'on cherchait précisément à empêcher.
+        table-layout: fixed;
+
+        th,
+        td {
+            padding-top: .2rem;
+            padding-bottom: .2rem;
+            line-height: 1.25;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        // Une pastille est un élément en ligne : elle ne rétrécit pas toute
+        // seule et pousserait la cellule au-delà de sa largeur.
+        td .badge {
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            vertical-align: bottom;
+        }
+    }
+}

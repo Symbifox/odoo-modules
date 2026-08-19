@@ -21,6 +21,14 @@ _logger = logging.getLogger(__name__)
 # 50/100/200/500 dans ses préférences ; on borne quand même côté serveur.
 MAX_PAGE = 500
 
+# Clé du dossier « Brouillons ». C'est le seul dossier de la colonne de gauche
+# dont la source n'est pas ``bf.email`` mais ``mail.scheduled.message`` : un
+# envoi programmé n'est pas encore un courriel, il n'a ni Message-ID ni
+# contrepartie IMAP, et lui fabriquer une ligne bf.email juste pour qu'il
+# s'affiche ici en ferait un faux courriel dans tous les comptages. La liste
+# bascule donc de source selon le dossier ouvert.
+DRAFTS_FOLDER = "drafts"
+
 
 class BfEmail(models.Model):
     _inherit = "bf.email"
@@ -137,8 +145,27 @@ class BfEmail(models.Model):
         return defs
 
     @api.model
+    def _inbox_drafts_domain(self):
+        """Mes envois programmés — ceux dont je suis l'auteur.
+
+        ``mail.scheduled.message._search`` borne déjà le résultat aux fiches
+        sur lesquelles l'usager peut poster ; ce filtre-ci ajoute la seule
+        chose que ça ne dit pas : que le brouillon est le mien. Sans lui, la
+        colonne de gauche annoncerait dans MA boîte les brouillons d'un
+        collègue sur une tâche que nous suivons tous les deux.
+        """
+        return [("author_id", "=", self.env.user.partner_id.id)]
+
+    @api.model
     def _inbox_folder_domain(self, folder):
         """Domaine complet (portée usager incluse) pour une clé de dossier."""
+        if folder == DRAFTS_FOLDER:
+            # Une erreur explicite plutôt qu'un domaine bf.email vide, qui
+            # rendrait toute la boîte en croyant rendre les brouillons.
+            raise UserError(_(
+                "« Brouillons » ne se lit pas comme un dossier de courriels : "
+                "utiliser inbox_get_drafts."
+            ))
         for d in self._inbox_folder_defs():
             if d["key"] == folder:
                 if d["domain"] is None:
@@ -187,6 +214,21 @@ class BfEmail(models.Model):
             if parent and not parent["selectable"]:
                 parent["count"] += f["count"]
                 parent["unread_count"] += f["unread_count"]
+        # « Brouillons » se glisse juste après « Envoyés » : c'est du courrier
+        # qui n'est pas encore parti, sa place est du côté sortant et non à la
+        # fin, après les catégories.
+        drafts = {
+            "key": DRAFTS_FOLDER, "label": _("Brouillons"),
+            "icon": "fa-pencil-square-o", "parent": False, "selectable": True,
+            "count": self.env["mail.scheduled.message"].search_count(
+                self._inbox_drafts_domain()
+            ),
+            "unread_count": 0,
+        }
+        insert_at = next(
+            (i + 1 for i, f in enumerate(out) if f["key"] == "sent"), len(out)
+        )
+        out.insert(insert_at, drafts)
         return out
 
     # ------------------------------------------------------------------
@@ -300,6 +342,12 @@ class BfEmail(models.Model):
                 and fields.Datetime.to_string(rec.snoozed_until) or False
             ),
             "attachments": rec.get_preview_attachments(),
+            # Alimente le menu « Ajouter » : une entrée « Ticket » sur une
+            # base sans module d'assistance ouvrirait une fenêtre sur un
+            # modèle inexistant.
+            "has_helpdesk": rec.has_helpdesk,
+            "has_expense": rec.has_expense,
+            "has_crm": rec.has_crm,
         })
         # Même règle que ``web_read`` : on ne marque lu que ce que l'usager
         # peut écrire, sinon ouvrir la boîte d'un collègue la marquerait lue
@@ -311,6 +359,155 @@ class BfEmail(models.Model):
                 data["status"] = "read"
                 data["seen"] = True
         return data
+
+    # ------------------------------------------------------------------
+    # Dossier « Brouillons » — les envois programmés
+    # ------------------------------------------------------------------
+    def _inbox_draft_row(self, draft):
+        """Un envoi programmé, au format de ligne de la liste.
+
+        Les clés reprennent celles d'un courriel là où elles ont un sens, pour
+        que le gabarit n'ait pas deux vocabulaires à connaître : ``date`` porte
+        la date d'envoi PRÉVUE — c'est elle qui compte pour un brouillon —
+        et ``correspondent`` les destinataires.
+        """
+        recipients = [p.display_name for p in draft.partner_ids]
+        return {
+            "id": draft.id,
+            "kind": "draft",
+            "date": (
+                draft.scheduled_date
+                and fields.Datetime.to_string(draft.scheduled_date) or False
+            ),
+            "subject": draft.subject or "",
+            "correspondent": ", ".join(recipients),
+            "to": ", ".join(recipients),
+            "recipient_count": len(recipients),
+            "is_note": draft.is_note,
+            "res_model": draft.model or False,
+            "res_id": draft.res_id or False,
+            "record_name": draft.record_name or "",
+            "attachment_count": len(draft.attachment_ids),
+            "has_attachments": bool(draft.attachment_ids),
+            "is_late": bool(
+                draft.scheduled_date
+                and draft.scheduled_date < fields.Datetime.now()
+            ),
+            # La liste met en gras ce qui n'est pas vu ; un brouillon est
+            # toujours de nous, rien n'y est « non lu ».
+            "seen": True,
+        }
+
+    @api.model
+    def inbox_get_drafts(self, offset=0, limit=100, search=None):
+        """Une page du dossier « Brouillons », du plus proche au plus lointain.
+
+        L'ordre est l'inverse de celui des courriels : sur du courrier reçu on
+        veut le plus récent en haut, sur des envois programmés on veut le
+        prochain à partir.
+        """
+        Scheduled = self.env["mail.scheduled.message"]
+        domain = self._inbox_drafts_domain()
+        term = (search or "").strip()
+        if term:
+            domain += ["|", ("subject", "ilike", term),
+                       ("record_name", "ilike", term)]
+        offset = max(0, int(offset or 0))
+        limit = max(1, min(int(limit or 100), MAX_PAGE))
+        total = Scheduled.search_count(domain)
+        drafts = Scheduled.search(
+            domain, offset=offset, limit=limit,
+            order="scheduled_date asc, id asc",
+        )
+        return {
+            "folder": DRAFTS_FOLDER,
+            "messages": [self._inbox_draft_row(d) for d in drafts],
+            "total": total,
+            "offset": offset,
+            "limit": limit,
+        }
+
+    @api.model
+    def inbox_get_draft_body(self, draft_id):
+        """Corps et pièces jointes d'un envoi programmé."""
+        draft = self.env["mail.scheduled.message"].browse(
+            int(draft_id)
+        ).exists()
+        # ``_search`` de mail.scheduled.message porte le contrôle d'accès ;
+        # un ``browse`` direct le contourne, d'où la relecture par search.
+        if not draft or not self.env["mail.scheduled.message"].search_count(
+            [("id", "=", draft.id)] + self._inbox_drafts_domain()
+        ):
+            raise UserError(_("Brouillon introuvable (#%s).", draft_id))
+        data = self._inbox_draft_row(draft)
+        data.update({
+            "body_html": draft.body or "",
+            "from": draft.author_id.display_name or "",
+            "cc": "",
+            "author_id": draft.author_id.id,
+            "attachments": [
+                {"id": a.id, "name": a.name or _("(sans nom)")}
+                for a in draft.attachment_ids
+            ],
+        })
+        return data
+
+    # Même principe que ``_INBOX_ACTIONS`` : le composant nomme, le serveur
+    # décide de ce qui est nommable.
+    _INBOX_DRAFT_ACTIONS = ("send_now", "edit", "open_record", "cancel")
+
+    @api.model
+    def inbox_draft_action(self, action, draft_ids):
+        """Envoyer, modifier, ouvrir la fiche liée ou annuler un brouillon.
+
+        Retourne soit un ``ir.actions.*`` à exécuter, soit un dictionnaire de
+        notification — jamais le ``next: {tag: reload}`` d'``action_send_now``,
+        qui rechargerait le client web au complet et jetterait l'aperçu
+        ouvert, comme pour ``inbox_sync_now``.
+        """
+        if action not in self._INBOX_DRAFT_ACTIONS:
+            raise UserError(_("Action inconnue : %s", action))
+        if isinstance(draft_ids, int):
+            draft_ids = [draft_ids]
+        ids = [int(i) for i in draft_ids or []]
+        Scheduled = self.env["mail.scheduled.message"]
+        # Relecture par ``search`` : c'est elle qui applique le contrôle
+        # d'accès du modèle, et elle écarte au passage les identifiants d'un
+        # brouillon qui n'est pas le mien.
+        drafts = Scheduled.search([("id", "in", ids)] + self._inbox_drafts_domain())
+        if not drafts:
+            raise UserError(_("Aucun brouillon sélectionné."))
+
+        if action == "edit":
+            drafts.ensure_one()
+            return drafts.open_edit_form()
+        if action == "open_record":
+            drafts.ensure_one()
+            result = drafts.action_open_record()
+            return result or False
+        if action == "cancel":
+            count = len(drafts)
+            drafts.unlink()
+            return {
+                "notification": {
+                    "title": _("Brouillon annulé"),
+                    "message": _("%s envoi(s) programmé(s) supprimé(s).", count),
+                    "type": "success",
+                },
+            }
+        # send_now — ``post_message`` est unitaire et refuse ce qui n'a pas été
+        # créé par l'usager ; on boucle et on laisse remonter le refus.
+        count = 0
+        for draft in drafts:
+            draft.post_message()
+            count += 1
+        return {
+            "notification": {
+                "title": _("Brouillons envoyés"),
+                "message": _("%s message(s) posté(s).", count),
+                "type": "success",
+            },
+        }
 
     # ------------------------------------------------------------------
     # Composer un courriel neuf
@@ -460,7 +657,29 @@ class BfEmail(models.Model):
         "download_eml": "action_download_eml",
         "mark_read": "action_mark_read",
         "mark_replied": "action_mark_replied",
+        # « Ajouter » — créer une fiche À PARTIR du courriel, celui-ci étant
+        # importé dans le chatter de la fiche neuve. Mêmes méthodes que le
+        # menu « Nouveau ▾ » de la fiche complète du courriel : la boîte de
+        # réception n'a pas sa propre notion de « créer une tâche », sinon les
+        # deux dériveraient. Toutes unitaires (``ensure_one``).
+        "create_task": "action_create_task",
+        "create_lead": "action_create_crm_lead",
+        "create_ticket": "action_create_helpdesk_ticket",
+        "create_expense": "action_create_expense",
+        "create_vendor_bill": "action_create_vendor_bill",
+        "create_customer_invoice": "action_create_customer_invoice",
     }
+
+    # Actions qui ne valent que sur une ligne. Le composant OWL le sait déjà et
+    # n'en envoie qu'une, mais un appel direct passerait outre, et
+    # ``action_create_task`` sur un lot lèverait une erreur d'``ensure_one``
+    # illisible plutôt que de dire ce qui ne va pas.
+    _INBOX_SINGLE_ACTIONS = (
+        "reply", "reply_all", "forward", "activity", "open_record",
+        "open_form", "conversation", "download_eml",
+        "create_task", "create_lead", "create_ticket", "create_expense",
+        "create_vendor_bill", "create_customer_invoice",
+    )
 
     @api.model
     def inbox_run_action(self, action, email_ids):
@@ -488,6 +707,11 @@ class BfEmail(models.Model):
                 "target": "current",
             }
 
+        if action in self._INBOX_SINGLE_ACTIONS and len(records) > 1:
+            raise UserError(_(
+                "« %s » agit sur un seul courriel à la fois ; %s ont été "
+                "envoyés.", action, len(records),
+            ))
         method = getattr(records, self._INBOX_ACTIONS[action])
         # Les actions à cible unique refusent un lot : on garde le message
         # d'erreur d'Odoo plutôt que de deviner laquelle appliquer.

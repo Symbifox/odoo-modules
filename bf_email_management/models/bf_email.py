@@ -11,6 +11,8 @@ import unicodedata
 from datetime import datetime, timedelta, timezone
 from email.utils import parseaddr
 
+from markupsafe import Markup
+
 from odoo import _, api, fields, models, tools
 from odoo.exceptions import UserError
 
@@ -2003,6 +2005,87 @@ class BfEmail(models.Model):
                 "source": "gateway" if self.source == "imap" else self.source,
             })
         return new_msg
+
+    def _move_chatter_message(self, target):
+        """Re-router un courriel DÉJÀ posé sur un chatter : déplacer le
+        ``mail.message`` existant vers ``target``.
+
+        Ce n'est pas un second import. Reposter le corps sur la nouvelle fiche
+        laisserait la copie fautive sur l'ancienne — or c'est précisément de
+        s'en débarrasser qu'il s'agit — et deux chatters porteraient le même
+        Message-ID, ce que la déduplication du cron de relève lit comme un
+        doublon à écarter au hasard. On déplace donc le message : c'est le même
+        courriel qui change de dossier, pas un nouveau.
+
+        Retourne le ``mail.message`` déplacé.
+        """
+        self.ensure_one()
+        target.ensure_one()
+        msg = self.mail_message_id
+        if not msg:
+            raise UserError(_(
+                "Le courriel #%s n'a pas de message de chatter à déplacer.",
+                self.id,
+            ))
+        target_model, target_id = target._name, target.id
+        if msg.model == target_model and msg.res_id == target_id:
+            raise UserError(_(
+                "Le courriel est déjà classé dans « %s ».",
+                target.display_name or target_model,
+            ))
+
+        # Sortir un message d'une fiche est une écriture SUR CETTE FICHE. Sans
+        # ce contrôle, quiconque peut lire le courriel pourrait le retirer du
+        # chatter d'un dossier auquel il n'a pas droit en écriture — et la
+        # trace disparaîtrait de là où quelqu'un d'autre la cherche.
+        source = False
+        if msg.model and msg.res_id and msg.model in self.env:
+            source = self.env[msg.model].browse(msg.res_id).exists()
+            if source:
+                source.check_access("write")
+
+        # Le déplacement lui-même est en sudo : ``mail.message`` n'accorde pas
+        # l'écriture à un interne ordinaire, et les deux fiches concernées
+        # viennent d'être vérifiées à son nom.
+        msg.sudo().write({
+            "model": target_model,
+            "res_id": target_id,
+            "record_name": (target.display_name or "")[:200],
+        })
+        # Les pièces jointes suivent le message. Seules celles qui pointaient
+        # vers l'ancienne fiche : une pièce partagée avec un autre
+        # enregistrement n'a pas à être ré-attribuée au passage.
+        if source and msg.attachment_ids:
+            moving = msg.attachment_ids.filtered(
+                lambda a: a.res_model == source._name and a.res_id == source.id
+            )
+            if moving:
+                moving.sudo().write({
+                    "res_model": target_model,
+                    "res_id": target_id,
+                })
+
+        if source:
+            # L'ancienne fiche perd un message ; sans note, elle le perd sans
+            # trace, et c'est le genre de disparition qu'on passe une heure à
+            # comprendre six mois plus tard.
+            try:
+                source.sudo()._message_log(body=Markup(
+                    "<p>Courriel « %s » re-routé vers <b>%s</b>.</p>"
+                ) % (self.subject or _("(sans objet)"),
+                     target.display_name or f"{target_model} #{target_id}"))
+            except Exception:  # pragma: no cover (défensif)
+                _logger.warning(
+                    "bf.email #%s: note de re-routage impossible sur %s #%s",
+                    self.id, source._name, source.id, exc_info=True,
+                )
+
+        self.write({
+            "res_model": target_model,
+            "res_id": target_id,
+            "record_name": (target.display_name or "")[:200],
+        })
+        return msg
 
     def _spawn_from_email(self, model, create_vals, name, legacy_ctx):
         """Create ``model`` from this email, import the email into the new
