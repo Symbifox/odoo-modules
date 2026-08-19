@@ -30,11 +30,4 @@
         <field name="view_type">kanban</field>
     </record>
 
-    <record id="default_pane_admin_bottom" model="bf.bureau.pane">
-        <field name="desk_id" ref="default_desk_admin"/>
-        <field name="slot">bottom_full</field>
-        <field name="action_id" ref="bf_email_management.bf_email_action"/>
-        <field name="view_type">kanban</field>
-    </record>
-
 </odoo>
