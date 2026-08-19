@@ -1,6 +1,6 @@
 {
     "name": "Suivi des consentements (Loi 25)",
-    "version": '18.0.4.3.1',
+    "version": "18.0.4.3.2",
     "category": "Privacy/Compliance",
     "summary": "Vie privée, consentements et destruction documentaire (Loi 25)",
     "description": """

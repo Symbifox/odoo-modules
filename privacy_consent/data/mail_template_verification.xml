@@ -8,7 +8,7 @@
         <field name="email_to">{{ object.consent_id.subject_partner_id.email }}</field>
         <field name="body_html"><![CDATA[
 
-<t t-set="company" t-value="(getattr(object, 'company_id', False)) or user.company_id"/>
+<t t-set="company" t-value="('company_id' in object._fields and object.company_id) or user.company_id"/>
 <t t-set="brand_primary" t-value="(company and company.report_brand_primary) or '#714B67'"/>
 <t t-set="brand_dark" t-value="(company and company.report_brand_dark) or '#212529'"/>
 <div style="max-width:600px; margin:0 auto; font-family:Arial, Helvetica, sans-serif;">
