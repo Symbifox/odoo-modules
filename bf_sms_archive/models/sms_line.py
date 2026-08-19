@@ -3,6 +3,11 @@
 Générique : aucun numéro codé en dur. Chaque ligne rattache un DID VOIP.ms à un
 propriétaire Odoo (``owner_id``), porte le jeton secret du webhook entrant et les
 indicateurs SMS/MMS. Peuplable automatiquement via ``getDIDsInfo`` ou manuellement.
+
+Une ligne peut être *partagée* : ``user_ids`` liste les collègues qui peuvent
+l'employer et lire les conversations tenues dessus, en plus du propriétaire. Le
+partage se lit dans les règles d'accès (``security/sms_security.xml``) et dans
+``_users_for_line`` ; un fil marqué « Confidentiel » reste au seul propriétaire.
 """
 import logging
 import re
@@ -47,6 +52,21 @@ class SmsArchiveLine(models.Model):
         index=True,
         help="Les messages envoyés/reçus sur cette ligne seront imputés à cet utilisateur.",
     )
+    user_ids = fields.Many2many(
+        comodel_name="res.users",
+        relation="sms_archive_line_user_rel",
+        column1="line_id",
+        column2="user_id",
+        string="Utilisateurs partagés",
+        help="Collègues autorisés à envoyer depuis cette ligne et à lire les "
+             "conversations qui s'y tiennent, au même titre que le propriétaire. "
+             "Les fils marqués « Confidentiel » restent invisibles pour eux.",
+    )
+    is_shared = fields.Boolean(
+        string="Partagée",
+        compute="_compute_is_shared",
+        help="Vrai dès qu'au moins un collègue a accès à cette ligne.",
+    )
     is_default = fields.Boolean(
         string="Ligne par défaut",
         help="Ligne d'envoi par défaut pour ce propriétaire.",
@@ -77,6 +97,43 @@ class SmsArchiveLine(models.Model):
         ("did_uniq", "UNIQUE(did)", "Cette ligne (DID) existe déjà."),
         ("token_uniq", "UNIQUE(webhook_token)", "Jeton webhook déjà utilisé."),
     ]
+
+    @api.depends("user_ids")
+    def _compute_is_shared(self):
+        for line in self:
+            line.is_shared = bool(line.user_ids)
+
+    def _users_for_line(self):
+        """Propriétaire + collègues partagés, dédoublonnés (utilisateurs actifs)."""
+        users = self.env["res.users"].browse()
+        for line in self.sudo():
+            users |= line.owner_id | line.user_ids
+        return users.filtered(lambda u: u.active)
+
+    @api.model
+    def _lines_for_user(self, user=None):
+        """Lignes utilisables par ``user`` : les siennes d'abord, puis les partagées.
+
+        Lecture en ``sudo`` volontaire — le tri « les miennes d'abord » doit voir
+        les deux familles, et la règle d'accès sur ``sms.archive.line`` rendrait
+        déjà le même ensemble."""
+        user = user or self.env.user
+        lines = self.sudo().search([
+            "|", ("owner_id", "=", user.id), ("user_ids", "in", [user.id]),
+        ])
+        return lines.sorted(key=lambda ln: (ln.owner_id.id != user.id, ln.label or "", ln.did or ""))
+
+    def _is_usable_by(self, user=None):
+        """Vrai si ``user`` peut envoyer depuis cette ligne (propriétaire, partagé
+        ou gestionnaire)."""
+        self.ensure_one()
+        user = user or self.env.user
+        line = self.sudo()
+        return (
+            line.owner_id.id == user.id
+            or user.id in line.user_ids.ids
+            or user.has_group("bf_sms_archive.group_sms_manager")
+        )
 
     @api.depends("did")
     def _compute_did_normalized(self):

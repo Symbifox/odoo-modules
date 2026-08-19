@@ -10,6 +10,8 @@
                 <field name="label"/>
                 <field name="did"/>
                 <field name="owner_id"/>
+                <field name="user_ids" widget="many2many_tags" string="Partagée avec"
+                       optional="show"/>
                 <field name="is_default" widget="boolean_toggle"/>
                 <field name="sms_enabled" widget="boolean_toggle"/>
                 <field name="mms_enabled" widget="boolean_toggle"/>
@@ -45,6 +47,9 @@
                             <field name="did" placeholder="5145551234"/>
                             <field name="did_normalized" readonly="1"/>
                             <field name="owner_id" options="{'no_create': True}"/>
+                            <field name="user_ids" widget="many2many_tags"
+                                   options="{'no_create': True}"
+                                   placeholder="Collègues autorisés sur cette ligne…"/>
                             <field name="voipms_subaccount" readonly="1"/>
                         </group>
                         <group string="Capacités">
@@ -61,6 +66,13 @@
                         <field name="note" nolabel="1"
                                placeholder="Particularités de la ligne…"/>
                     </group>
+                    <div class="alert alert-warning" role="alert" invisible="not user_ids">
+                        Ligne partagée : les personnes listées dans
+                        <strong>Utilisateurs partagés</strong> envoient depuis ce numéro et
+                        lisent les conversations qui s'y tiennent, y compris celles
+                        ouvertes avant le partage. Un fil marqué
+                        <em>Confidentiel</em> reste au seul propriétaire.
+                    </div>
                     <div class="alert alert-info" role="alert">
                         Réglez « URL publique » dans
                         <strong>Configuration ▸ Paramètres SMS</strong>, puis cliquez
@@ -80,7 +92,8 @@
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">Aucune ligne configurée</p>
             <p>
-                Une ligne rattache un DID VOIP.ms à un propriétaire Odoo. Utilisez
+                Une ligne rattache un DID VOIP.ms à un propriétaire Odoo, et peut être
+                partagée avec des collègues. Utilisez
                 <em>Synchroniser depuis VOIP.ms</em> ou créez-en une manuellement.
             </p>
         </field>

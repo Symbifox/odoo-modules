@@ -113,13 +113,14 @@ class SmsPushSubscription(models.Model):
     # ── Envoi ─────────────────────────────────────────────────────────
     @api.model
     def _notify_new_message(self, msg):
-        """Envoie un Web Push aux abonnements du propriétaire pour un message
-        ENTRANT. Totalement défensif : ne lève jamais (l'ingestion prime)."""
-        owner = msg.owner_id or msg.thread_id.owner_id
-        if not owner:
+        """Envoie un Web Push aux abonnements des ayants droit (propriétaire du
+        fil et utilisateurs de la ligne partagée) pour un message ENTRANT.
+        Totalement défensif : ne lève jamais (l'ingestion prime)."""
+        recipients = msg._notify_users()
+        if not recipients:
             return
         subs = self.sudo().search(
-            [("user_id", "=", owner.id), ("active", "=", True)]
+            [("user_id", "in", recipients.ids), ("active", "=", True)]
         )
         if not subs:
             return

@@ -49,9 +49,23 @@ A two-way SMS/MMS messaging and archiving module for Odoo 18. Send and receive l
 - **CSV export** -- Download conversation as CSV (Date, Direction, Contact, Body, MMS)
 - **XML export** -- Re-export in SMS Backup & Restore format for portability
 
+### Shared lines (5.9+)
+- **Per-user numbers** -- Every line (DID) has an owner; conversations held on it are that owner's data by default
+- **Line sharing** -- Add colleagues to a line's `user_ids` and they can send from that number and read the messages held on it, without gaining access to the owner's other lines
+- **Scoped to the line, not the thread** -- A thread is keyed by (phone, owner) and can mix lines: an imported history and a business exchange on a shared number may share one thread. A shared colleague reads only what actually travelled on the shared number; the messenger says how many messages are out of reach rather than pretending the conversation is complete
+- **Read-only for guests** -- A shared colleague uses the line but cannot rename it, retarget its owner or regenerate its webhook token, and cannot take ownership of a thread, move it to another line or flip its confidentiality
+- **Call log never shared** -- Calls carry no line (they come from the Android journal), so sharing a number gives no access to the owner's call history
+- **Dashboard stays personal** -- Statistics are the owner's; a shared reader gets no volumes on messages they cannot read
+- **Notifications follow the share** -- Bus, Web Push and mobile push reach every user of the line, not just the owner
+
+### Message origin (5.9+)
+- **Per-message line badge** -- As soon as the instance has more than one number, each bubble names the line the message travelled on, in small grey type next to the timestamp
+- **Sender name on shared lines** -- An outgoing message written by a colleague shows who wrote it
+- **Reply-line guard** -- When the selected send number differs from the one the last exchange used, the composer says so and offers a one-click switch
+
 ### Confidentiality
-- **Hidden threads** -- Mark any conversation as "Confidentiel" to exclude it from MCP searches and default list views
-- **Owner-only security** -- Record rules ensure users only see their own SMS and call data
+- **Hidden threads** -- Mark any conversation as "Confidentiel" to exclude it from MCP searches, default list views and line sharing
+- **Owner-first security** -- Record rules scope data to its owner, widened only by an explicit line share
 - **Manager override** -- `group_sms_manager` can access all data for administration
 
 ### Posting onto a record
@@ -176,6 +190,7 @@ When `HAS_SMS_ARCHIVE=true` is set in the org `.env`, 9 tools are available:
 | `contact_name` | Char | Last known name from backup |
 | `partner_id` | Many2one (`res.partner`) | Linked Odoo contact |
 | `owner_id` | Many2one (`res.users`) | Data owner (current user) |
+| `line_id` | Many2one (`sms.archive.line`, indexed) | Line the conversation opened on -- drives sharing |
 | `is_hidden` | Boolean | Exclude from MCP searches |
 | `task_ids` | Many2many (`project.task`) | Linked project tasks |
 | `message_count` | Integer (computed, stored) | Number of messages |
@@ -197,6 +212,8 @@ When `HAS_SMS_ARCHIVE=true` is set in the org `.env`, 9 tools are available:
 | `is_mms` | Boolean | Whether this was an MMS |
 | `contact_name` | Char | Contact name from backup |
 | `owner_id` | Many2one (related, stored) | Owner via thread |
+| `line_id` | Many2one (`sms.archive.line`) | Line the message travelled on (live messages) |
+| `sent_by_id` | Many2one (`res.users`) | Who actually wrote an outgoing message (shared lines) |
 | `import_batch_id` | Char | Backup set identifier |
 | `mms_part_ids` | One2many (`sms.archive.mms.part`) | MMS attachments |
 
@@ -249,11 +266,23 @@ These fields are provided by the `bf_lexend` module. If `bf_lexend` is not insta
 
 ### Record Rules
 
-All models (threads, messages, MMS parts, calls) use `owner_id = user.id` filtering for the user group. Manager group has `[(1, '=', 1)]` (unrestricted).
+For the user group:
+
+| Model | User rule |
+|-------|-----------|
+| `sms.archive.thread` | `owner_id = user.id`, or the thread's `line_id` is shared with the reader and the thread is not confidential |
+| `sms.archive.message` | `owner_id = user.id`, or **the message's own `line_id`** is shared with the reader and its thread is not confidential |
+| `sms.archive.mms.part` | Follows its message's line |
+| `call.archive.call` | `owner_id = user.id` only -- calls carry no line |
+| `sms.archive.line` | Readable by owner and shared users; writable, creatable and deletable by the owner alone (two rules split by permission) |
+
+Message access is deliberately scoped by the **message's** line rather than the thread's. Scoping by thread would hand a colleague the owner's whole imported history the moment an archived contact texted the shared number. `sms.archive.thread.write()` additionally refuses `owner_id`, `line_id` and `is_hidden` changes from anyone but the owner (or a manager), so a shared reader cannot promote themselves. Manager group has `[(1, '=', 1)]` (unrestricted).
 
 ### Privacy Considerations
 
-- All data is scoped per-user via `owner_id` -- no cross-user visibility
+- All data is scoped per-user via `owner_id`; the only cross-user path is a line share, which is deliberate, visible on the line form and limited to non-confidential threads
+- Sharing a line shares the messages held **on that line**, including those that predate the share -- the line form says so before you save. It does not share the rest of the thread, the call log, or the dashboard
+- Residual boundary: on a mixed thread, the backend thread list still shows owner-scoped aggregates (`message_count`, `last_message_date`) to a shared reader. The messenger recomputes preview and unread counts per reader; the backend list does not. No message body is exposed there
 - Phone numbers are PII -- acceptable risk for self-hosted personal instance
 - No SMS or call content is written to Odoo logs (only IDs and counts)
 - VOIP.ms API credentials are read from `ir.config_parameter` (never hardcoded) and
@@ -439,6 +468,17 @@ curl -X POST https://odoo.example.com/bf_sms_archive/api/ingest \
 `bf-sms-relay` (LGPL-3, F-Droid-friendly): foreground service when charging (30s tick), WorkManager when on battery (15 min tick), BroadcastReceiver for incoming SMS (real-time). Distribution: signed APK direct, not Play Store (READ_SMS / READ_CALL_LOG are blocked by Play policy).
 
 ## Changelog
+
+### Version 18.0.5.9.0
+
+- **NEW:** Shared lines -- `sms.archive.line.user_ids` lets several staff work one number. Shared users send from it and read the messages held on it; record rules on threads, messages and MMS parts were widened accordingly, and line write access stays with the owner.
+- **NEW:** `sms.archive.thread.line_id` records the line a conversation opened on. It decides who the thread is shared with, and never switches on its own when a reply goes out on another line.
+- **NEW:** Message origin in the messenger -- each bubble names its line (and, on a shared line, the colleague who wrote it) as soon as the instance has more than one number. New `sms.archive.message.sent_by_id` records who composed an outgoing message.
+- **NEW:** Reply-line guard in the composer -- warns when the selected send number is not the one the last exchange used, with a one-click switch.
+- **SEC:** Message access is scoped by the message's own line, not by its thread. A thread mixes lines, so thread-level scoping would have handed a colleague the owner's whole imported history the first time an archived contact texted the shared number. The call log stays owner-only for the same reason, and the dashboard remains the owner's view.
+- **SEC:** `sms.archive.thread.write()` refuses `owner_id`, `line_id` and `is_hidden` from a shared reader -- write access on a shared thread is for marking read, pinning and archiving, not for taking it over.
+- **CHANGE:** The messenger recomputes preview and unread counts under the reader's own rules, and tells a shared reader how many messages of the thread are held elsewhere. A shared line never becomes someone else's default send number.
+- **MIGRATION:** `post-migrate` backfills `thread.line_id` from the most recent message carrying a line. Threads with no live message (imported archives) stay unlinked and owner-only.
 
 ### Version 18.0.5.5.5 (catch-up entry covering 18.0.5.5.3 – 18.0.5.5.5)
 

@@ -68,17 +68,18 @@ class SmsFcm(models.AbstractModel):
 
     @api.model
     def _notify_new_message(self, msg):
-        """Envoie un push FCM aux appareils du propriétaire pour un entrant.
+        """Envoie un push FCM aux appareils des ayants droit (propriétaire du fil
+        et utilisateurs de la ligne partagée) pour un entrant.
         Défensif : ne lève jamais. No-op si Firebase pas configuré."""
         sa = self._sa_info()
         if not sa:
             return
-        owner = msg.owner_id or msg.thread_id.owner_id
-        if not owner:
+        recipients = msg._notify_users()
+        if not recipients:
             return
         Device = self.env["sms.archive.mobile.device"].sudo()
         devices = Device.search([
-            ("user_id", "=", owner.id), ("active", "=", True),
+            ("user_id", "in", recipients.ids), ("active", "=", True),
             ("fcm_token", "!=", False),
         ])
         if not devices:

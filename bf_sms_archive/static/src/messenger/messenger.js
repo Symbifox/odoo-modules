@@ -1045,6 +1045,87 @@ class SmsMessenger extends Component {
         return new Date(prev.date_ms).toDateString() !== new Date(cur.date_ms).toDateString();
     }
 
+    // ── Origine du message (numéro d'envoi) ────────────────────
+    //
+    // Dès que l'instance compte plus d'un numéro, chaque bulle rappelle
+    // discrètement sur quelle ligne l'échange a eu lieu : c'est ce qui évite de
+    // répondre depuis le mauvais numéro. Un seul numéro → aucun bruit.
+
+    get multiLine() {
+        if (this.state.lines.length > 1) {
+            return true;
+        }
+        const seen = new Set();
+        for (const m of this.state.conversation) {
+            if (m.line_id) {
+                seen.add(m.line_id);
+            }
+        }
+        return seen.size > 1;
+    }
+
+    // Un fil partagé peut contenir des messages tenus sur d'autres lignes, que
+    // ce lecteur n'a pas le droit de voir. Le dire vaut mieux que de laisser
+    // croire à une conversation complète.
+    get hiddenHistoryCount() {
+        const t = this.state.activeThread;
+        return (t && t.hidden_count) || 0;
+    }
+
+    msgOrigin(msg) {
+        if (!this.multiLine) {
+            return "";
+        }
+        const parts = [];
+        if (msg.line_label) {
+            parts.push(msg.line_label);
+        } else if (msg.line_did) {
+            parts.push(this.formatPhone(msg.line_did));
+        }
+        if (msg.sent_by) {
+            parts.push(msg.sent_by);
+        }
+        return parts.join(" · ");
+    }
+
+    // Ligne du dernier message de la conversation ouverte : sert à prévenir
+    // quand on s'apprête à répondre depuis un autre numéro que celui employé.
+    get lastConvLineId() {
+        for (let i = this.state.conversation.length - 1; i >= 0; i--) {
+            if (this.state.conversation[i].line_id) {
+                return this.state.conversation[i].line_id;
+            }
+        }
+        return false;
+    }
+
+    get lineMismatch() {
+        const last = this.lastConvLineId;
+        if (!last || !this.state.selectedLineId || this.state.newConvMode) {
+            return null;
+        }
+        if (last === this.state.selectedLineId) {
+            return null;
+        }
+        return this.state.lines.find((l) => l.id === last) || null;
+    }
+
+    useConversationLine() {
+        const line = this.lineMismatch;
+        if (line) {
+            this.state.selectedLineId = line.id;
+        }
+    }
+
+    formatPhone(e164) {
+        const d = (e164 || "").replace(/\D/g, "");
+        const ten = d.length === 11 && d.startsWith("1") ? d.slice(1) : d;
+        if (ten.length !== 10) {
+            return e164 || "";
+        }
+        return `${ten.slice(0, 3)} ${ten.slice(3, 6)}-${ten.slice(6)}`;
+    }
+
     deliveryIcon(msg) {
         if (msg.direction !== "out") {
             return "";

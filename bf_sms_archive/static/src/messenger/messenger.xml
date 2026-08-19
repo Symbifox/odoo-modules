@@ -160,7 +160,11 @@
                                 <div class="d-flex align-items-center">
                                     <small class="text-muted text-truncate flex-grow-1" t-esc="t.last_preview"/>
                                     <span t-if="t.line_label and state.lines.length > 1"
-                                          class="o_sms_line_badge badge ms-1" t-esc="t.line_label"/>
+                                          class="o_sms_line_badge badge ms-1"
+                                          t-att-title="t.owner_name ? 'Propriétaire : ' + t.owner_name : ''"
+                                          t-esc="t.line_label"/>
+                                    <i t-if="t.is_shared" class="fa fa-users ms-1 text-muted small"
+                                       t-att-title="'Ligne partagée — propriétaire : ' + t.owner_name"/>
                                     <span t-if="t.unread_count > 0" class="badge bg-primary rounded-pill ms-1"
                                           t-esc="t.unread_count"/>
                                 </div>
@@ -385,6 +389,12 @@
 
                     <!-- Messages -->
                     <div class="o_sms_messages flex-grow-1" t-ref="messages">
+                        <div t-if="hiddenHistoryCount" class="o_sms_scopednote">
+                            <i class="fa fa-lock me-1"/>
+                            <t t-esc="hiddenHistoryCount"/> message(s) de cette conversation
+                            se sont tenus sur d'autres lignes et restent chez
+                            <t t-esc="state.activeThread.owner_name"/>.
+                        </div>
                         <div t-if="state.loadingConv" class="text-center text-muted p-3">
                             <i class="fa fa-spin fa-circle-o-notch"/>
                         </div>
@@ -418,6 +428,10 @@
                                     <div class="o_sms_meta">
                                         <span t-esc="formatTime(msg.date_ms)"/>
                                         <i t-if="deliveryIcon(msg)" class="fa ms-1" t-att-class="deliveryIcon(msg)"/>
+                                        <span t-if="msgOrigin(msg)" class="o_sms_origin"
+                                              t-att-title="msg.line_did ? 'Numéro : ' + formatPhone(msg.line_did) : ''">
+                                            · <t t-esc="msgOrigin(msg)"/>
+                                        </span>
                                     </div>
                                     <div t-if="msg.error" class="o_sms_errmsg small" t-esc="msg.error"/>
                                 </div>
@@ -430,6 +444,15 @@
 
                     <!-- Composer -->
                     <div class="o_sms_composer">
+                        <div t-if="lineMismatch" class="o_sms_linewarn">
+                            <i class="fa fa-exchange me-1"/>
+                            Le dernier échange s'est fait sur
+                            « <t t-esc="lineMismatch.label"/> ».
+                            <button class="btn btn-link btn-sm p-0 align-baseline"
+                                    t-on-click="useConversationLine">
+                                Répondre depuis ce numéro
+                            </button>
+                        </div>
                         <div t-if="state.attachments.length" class="o_sms_attachments d-flex flex-wrap mb-1">
                             <div t-foreach="state.attachments" t-as="a" t-key="a_index"
                                  class="o_sms_chip d-flex align-items-center">
@@ -448,7 +471,8 @@
                                 <option t-foreach="state.lines" t-as="line" t-key="line.id"
                                         t-att-value="line.id"
                                         t-att-selected="line.id === state.selectedLineId">
-                                    <t t-esc="line.label"/> (<t t-esc="line.did"/>)
+                                    <t t-esc="line.label"/> (<t t-esc="line.did"/>)<t
+                                        t-if="line.is_shared"> — <t t-esc="line.owner_name"/></t>
                                 </option>
                             </select>
                             <button class="btn btn-sm btn-light ms-1" t-on-click="triggerFilePicker"

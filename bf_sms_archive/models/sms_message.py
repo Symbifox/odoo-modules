@@ -118,6 +118,13 @@ class SmsArchiveMessage(models.Model):
         index=True,
         string="Propriétaire",
     )
+    sent_by_id = fields.Many2one(
+        comodel_name="res.users",
+        string="Envoyé par",
+        ondelete="set null",
+        help="Utilisateur qui a réellement composé ce message sortant. Diffère du "
+             "propriétaire quand la ligne est partagée entre plusieurs personnes.",
+    )
     import_batch_id = fields.Char(
         string="Lot d'import",
         help="Identifiant backup_set du fichier XML",
@@ -331,7 +338,9 @@ class SmsArchiveMessage(models.Model):
                 existing.sudo().write({"voipms_id": str(voipms_id)})
             return existing, False
 
-        thread = Thread._get_or_create(phone_norm, owner_id, phone_raw, contact_name)
+        thread = Thread._get_or_create(
+            phone_norm, owner_id, phone_raw, contact_name, line_id=line_id,
+        )
         vals = {
             "thread_id": thread.id,
             "message_hash": msg_hash,
@@ -581,17 +590,17 @@ class SmsArchiveMessage(models.Model):
         line = Line.browse(int(line_id))
         if not line.exists():
             raise UserError("Ligne d'envoi introuvable.")
-        if line.owner_id.id != self.env.uid and not self.env.user.has_group(
-            "bf_sms_archive.group_sms_manager"
-        ):
-            raise UserError("Cette ligne ne vous appartient pas.")
+        if not line._is_usable_by():
+            raise UserError("Cette ligne ne vous est pas accessible.")
 
         Thread = self.env["sms.archive.thread"].sudo()
         Voipms = self.env["sms.archive.voipms"]
         dst_norm = Thread.normalize_phone(dst)
         if not dst_norm:
             raise UserError("Numéro destinataire invalide.")
-        thread = Thread._get_or_create(dst_norm, line.owner_id.id, dst, None)
+        thread = Thread._get_or_create(
+            dst_norm, line.owner_id.id, dst, None, line_id=line.id,
+        )
 
         now = fields.Datetime.now()
         date_ms = int(now.replace(tzinfo=timezone.utc).timestamp() * 1000)
@@ -674,6 +683,7 @@ class SmsArchiveMessage(models.Model):
             "is_mms": is_mms,
             "is_read": True,
             "line_id": line.id,
+            "sent_by_id": self.env.uid,
             "voipms_id": voipms_id or False,
             "delivery_state": delivery_state,
             "error": error or False,
@@ -714,10 +724,22 @@ class SmsArchiveMessage(models.Model):
                         "is_image": False,
                         "text": part.text_content,
                     })
+        line = self.line_id.sudo()
+        # Origine du message : c'est ce qui empêche de répondre depuis le mauvais
+        # numéro quand l'instance en compte plusieurs. Le nom de l'expéditeur ne
+        # sort que s'il diffère du propriétaire du fil (ligne partagée).
+        sent_by = ""
+        if self.direction == "out" and self.sent_by_id \
+                and self.sent_by_id != self.thread_id.owner_id:
+            sent_by = self.sent_by_id.name or ""
         return {
             "id": self.id,
             "direction": self.direction,
             "body": self.body or "",
+            "line_id": line.id or False,
+            "line_label": line.label or "",
+            "line_did": (line.did_normalized or line.did or ""),
+            "sent_by": sent_by,
             "date_ms": int(self.date_sent_ms) if (self.date_sent_ms or "").isdigit()
             else self.thread_id._dt_to_ms(self.date_sent),
             "is_mms": self.is_mms,
@@ -726,15 +748,24 @@ class SmsArchiveMessage(models.Model):
             "media": media,
         }
 
-    def _notify_bus(self, kind="new"):
-        """Pousse une notification temps réel au propriétaire (systray + SPA).
+    def _notify_users(self):
+        """Destinataires des notifications pour ce message : le propriétaire du
+        fil et, si la ligne est partagée, ses utilisateurs."""
+        self.ensure_one()
+        thread = self.thread_id
+        users = thread._notify_users() if thread else self.env["res.users"].browse()
+        return users or (self.owner_id or thread.owner_id)
 
-        Cible le canal du *partenaire* propriétaire (ACL par utilisateur côté bus),
-        jamais un canal-chaîne devinable : aucune fuite inter-utilisateurs.
+    def _notify_bus(self, kind="new"):
+        """Pousse une notification temps réel aux ayants droit (systray + SPA).
+
+        Cible le canal du *partenaire* de chaque destinataire (ACL par utilisateur
+        côté bus), jamais un canal-chaîne devinable : aucune fuite inter-utilisateurs.
+        Sur une ligne partagée, chaque collègue reçoit la même poussée.
         """
         for msg in self:
-            owner = msg.owner_id or msg.thread_id.owner_id
-            if not owner or not owner.partner_id:
+            recipients = msg._notify_users()
+            if not recipients:
                 continue
             thread = msg.thread_id
             payload = {
@@ -747,9 +778,11 @@ class SmsArchiveMessage(models.Model):
                 "preview": (msg.body or "")[:120],
                 "date_ms": msg.date_sent_ms or "",
             }
-            self.env["bus.bus"]._sendone(
-                owner.partner_id, "sms.archive/new", payload,
-            )
+            for user in recipients:
+                if user.partner_id:
+                    self.env["bus.bus"]._sendone(
+                        user.partner_id, "sms.archive/new", payload,
+                    )
             # Web Push hors bus : réveille le téléphone même navigateur fermé.
             # Uniquement pour un entrant non lu ; jamais bloquant pour l'ingestion.
             if kind == "new" and msg.direction == "in":

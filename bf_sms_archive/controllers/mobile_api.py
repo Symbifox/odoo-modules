@@ -375,8 +375,8 @@ class BfSmsMobileApi(http.Controller):
                 # ligne par défaut du dernier message du fil, sinon 1re ligne
                 last = thread.message_ids.filtered(lambda m: m.line_id)[:1]
                 line_id = last.line_id.id if last else (
-                    request.env["sms.archive.line"].search(
-                        [("owner_id", "=", device.user_id.id)], limit=1).id)
+                    request.env["sms.archive.line"]._lines_for_user(
+                        device.user_id)[:1].id)
         else:
             dst = data.get("phone")
         if not (dst and line_id):
