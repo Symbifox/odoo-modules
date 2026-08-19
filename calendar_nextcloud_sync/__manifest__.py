@@ -1,8 +1,8 @@
 # License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl).
 {
     "name": "Calendar Nextcloud Sync",
-    "summary": "Bidirectional calendar synchronization between Odoo and Nextcloud (CalDAV/n8n) and Google Calendar (API v3/OAuth2)",
-    "version": "18.0.2.8.1",
+    "summary": "Bidirectional calendar synchronization between Odoo and Nextcloud (CalDAV) and Google Calendar (API v3/OAuth2)",
+    "version": "18.0.2.11.0",
     "category": "Calendar",
     "website": "https://symbifox.com",
     "author": "Les services de consultation Blue Fox, Inc.",

@@ -27,6 +27,7 @@ from dateutil import parser as dt_parser
 
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
+from odoo.tools import html2plaintext
 
 _logger = logging.getLogger(__name__)
 
@@ -383,8 +384,14 @@ class GoogleCalendarBackend(models.AbstractModel):
         """
         body = {
             "summary": odoo_event.name or "(Sans titre)",
-            "description": odoo_event.description or "",
-            "location": odoo_event.location or "",
+            # Même raison que côté CalDAV : le champ Odoo est du Html, Google
+            # affiche des `<p>` littéraux si on le pousse tel quel.
+            "description": html2plaintext(odoo_event.description or "").strip(),
+            # Même repli que le payload CalDAV : les rendez-vous laissent
+            # `location` vide et rangent le lien de la salle dans
+            # `videocall_location`. Sans ce repli, l'événement arrive dans
+            # Google sans aucun moyen de rejoindre la rencontre.
+            "location": odoo_event.location or odoo_event.videocall_location or "",
         }
 
         if odoo_event.allday:

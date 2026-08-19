@@ -934,6 +934,15 @@ class NextcloudCalendarSyncConfig(models.Model):
                     ev = existing_by_uid.get(uid)
                     if ev and ev_data.get("rrule") and not ev.recurrency:
                         pass  # fall through to create_from_nextcloud
+                    elif ev and ev_data.get("alarms") and not ev.alarm_ids:
+                        # Rattrapage des rappels. L'import des VALARM est arrivé
+                        # après coup : sans cette échappatoire, un événement déjà
+                        # synchronisé garderait à jamais un ETag inchangé, serait
+                        # sauté à chaque pull, et n'obtiendrait donc JAMAIS son
+                        # alarme. La chaîne de rappel resterait muette sur tout
+                        # l'agenda existant. La condition s'éteint d'elle-même
+                        # dès que l'alarme est posée.
+                        pass  # fall through to create_from_nextcloud
                     else:
                         # Fix color if it doesn't match the config
                         if ev and ev.color != target_color:
@@ -974,6 +983,15 @@ class NextcloudCalendarSyncConfig(models.Model):
                 ("x_nc_uid", "!=", False),
                 ("x_nc_uid", "not in", list(nc_uids_seen)),
                 ("recurrence_id", "=", False),
+                # An event with no CalDAV href has NEVER been seen in
+                # Nextcloud. It was created in Odoo and its push either was
+                # skipped (sync_direction == "nc_to_odoo") or failed, yet
+                # create() stamps an x_nc_uid regardless of direction. Without
+                # this clause the sweep deletes local data no remote ever held
+                # -- and it contradicts _retry_failed_pushes(), which claims
+                # exactly that set as its own recovery queue. Only sweep events
+                # that really round-tripped.
+                ("x_caldav_href", "!=", False),
             ])
             for orphan in orphans:
                 # Guard: orphan may have been deleted as part of a
@@ -1447,6 +1465,8 @@ class NextcloudCalendarSyncConfig(models.Model):
         in_nested = 0  # depth counter for VALARM, VTIMEZONE, etc.
         props = {}
         attendees = []
+        alarm_blocks = []
+        current_alarm = None
 
         for line in lines:
             stripped = line.strip()
@@ -1455,6 +1475,8 @@ class NextcloudCalendarSyncConfig(models.Model):
                 in_nested = 0
                 props = {}
                 attendees = []
+                alarm_blocks = []
+                current_alarm = None
                 continue
             if stripped == "END:VEVENT":
                 break
@@ -1462,13 +1484,24 @@ class NextcloudCalendarSyncConfig(models.Model):
                 continue
             # Skip nested components (VALARM, etc.) whose properties
             # (SUMMARY, DESCRIPTION, ATTENDEE) would overwrite VEVENT ones.
+            # Les VALARM sont tout de même COLLECTÉS au passage : ce sont eux
+            # qui portent les rappels de l'usager, et sans eux Odoo ignore que
+            # la rencontre en a un.
             if stripped.startswith("BEGIN:"):
                 in_nested += 1
+                if stripped.upper() == "BEGIN:VALARM" and in_nested == 1:
+                    current_alarm = []
                 continue
             if stripped.startswith("END:"):
+                if stripped.upper() == "END:VALARM" and in_nested == 1 \
+                        and current_alarm is not None:
+                    alarm_blocks.append(current_alarm)
+                    current_alarm = None
                 in_nested = max(0, in_nested - 1)
                 continue
             if in_nested:
+                if current_alarm is not None:
+                    current_alarm.append(stripped)
                 continue
 
             # Parse property;params:value
@@ -1572,7 +1605,65 @@ class NextcloudCalendarSyncConfig(models.Model):
             "rrule": props.get("rrule"),
             "exdates": exdates,
             "event_tz": event_tz,
+            "alarms": self._parse_valarms(alarm_blocks),
         }
+
+    def _parse_valarms(self, alarm_blocks):
+        """Minutes AVANT le début, pour chaque VALARM d'affichage.
+
+        Rend une liste d'entiers, dédoublonnée et triée, prête à être
+        rapprochée des ``calendar.alarm`` d'Odoo.
+
+        Trois exclusions volontaires :
+
+        * ⚠️ les VALARM de report RFC 9074 (``RELATED-TO;RELTYPE=SNOOZE``).
+          C'est de l'état transitoire, pas la définition d'un rappel : les
+          importer ferait apparaître une alarme fantôme à chaque fois que
+          quelqu'un reporte, et elle survivrait au report ;
+        * les déclenchements ABSOLUS (``TRIGGER;VALUE=DATE-TIME``), qu'Odoo ne
+          sait pas représenter — il ne connaît que « X minutes avant » ;
+        * les déclenchements POSITIFS (après le début), pour la même raison.
+
+        Seul ``ACTION:DISPLAY`` est retenu. Un ``ACTION:EMAIL`` deviendrait une
+        alarme courriel d'Odoo, qui enverrait alors ses propres avis pour un
+        rappel que l'usager avait posé dans son client : un courriel de plus,
+        jamais demandé. C'est la même règle qu'à la poussée, où l'on omet les
+        alarmes courriel d'Odoo pour ne pas les faire doubler par Nextcloud.
+        """
+        minutes = set()
+        for block in alarm_blocks:
+            action = ""
+            trigger = None
+            trigger_params = ""
+            is_snooze = False
+            for line in block:
+                name, _, value = line.partition(":")
+                key = name.split(";")[0].upper()
+                if key == "ACTION":
+                    action = value.strip().upper()
+                elif key == "TRIGGER":
+                    trigger = value.strip()
+                    trigger_params = name[len(key):].upper()
+                elif key == "RELATED-TO" and "RELTYPE=SNOOZE" in name.upper():
+                    is_snooze = True
+            if is_snooze or action != "DISPLAY" or not trigger:
+                continue
+            if "VALUE=DATE-TIME" in trigger_params:
+                continue
+            if not trigger.startswith("-"):
+                continue
+            raw = trigger[1:]
+            # ⚠️ Le motif de _parse_ics_duration a tous ses groupes optionnels,
+            # donc re.match réussit sur à peu près n'importe quoi et rend
+            # timedelta(0). Sans ce garde-fou, un TRIGGER malformé se
+            # transformerait en une alarme « 0 min avant » sortie de nulle part.
+            if not raw.startswith("P"):
+                continue
+            delta = self._parse_ics_duration(raw)
+            if not delta:
+                continue
+            minutes.add(int(delta.total_seconds() // 60))
+        return sorted(m for m in minutes if m >= 0)
 
     def _parse_ics_datetime(self, value, params_str):
         """Parse an ICS date/datetime value.
