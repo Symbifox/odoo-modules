@@ -139,7 +139,7 @@ Brand colours come from `bf_lexend`.
 - `image` mode: full-page background (known limitation — it covers the first
   page; prefer `pdf_overlay` for multi-page letters).
 - Optional modules are detected through `ir.module.module` (`installed` state).
-- LGPL-3 licence.
+- BUSL-1.1 licence; converts to LGPL-3.0-or-later on 2030-08-12.
 
 ## Tests
 

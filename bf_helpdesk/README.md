@@ -82,6 +82,21 @@ Behaviour when something is off:
 - **Transient/model error** → persisted as a soft error on the ticket
   (`triage_state=error`) without raising a popup, so the user can retry.
 
+## License
+
+AGPL-3, inherited rather than chosen: this module is a fork-style extension of
+OCA `helpdesk_mgmt`, which is itself AGPL-3.
+
+**Practical limitation on redistribution.** Five of its dependencies —
+`bf_hour_bank`, `bf_persona`, `project_knowledge_matrix`, `bf_meeting` and
+`bf_dashboard` — are BUSL-1.1. They are structural, not conveniences: the
+ticket model carries typed relations into the first three and inherits models
+from the last two, so they cannot be detected at runtime and made optional.
+
+The AGPL-3 text therefore applies to this module's own source, but you cannot
+exercise the redistribution it grants without also obtaining terms for those
+five modules. If that is what you need, [talk to us](https://symbifox.com).
+
 ## Changelog
 
 | Version | Change |

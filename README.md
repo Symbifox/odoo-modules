@@ -183,16 +183,27 @@ All modules target **Odoo 18.0 Community Edition**.
 
 ## License
 
-Two regimes — see [Licensing](#licensing) above for the details, and the
-`License` column of the table for the module you care about.
+Three regimes — see [Licensing](#licensing) above for the details, and the
+`License` column of the table for the module you care about. The `LICENSE`
+file inside each module governs and carries its exact parameters.
 
-- **Most modules: LGPL-3** (a few AGPL-3). The repository-root [`LICENSE`](LICENSE)
-  carries the LGPL-3 text that applies to them.
-- **Twelve modules: BUSL-1.1.** Production use for your own internal business
+- **62 modules: BUSL-1.1.** Production use for your own internal business
   operations is permitted; providing them as a product or service to third
-  parties requires an agreement. Each converts to **LGPL-3.0-or-later on
-  2029-07-20**. The `LICENSE` file inside each of those modules governs and
-  carries the exact parameters.
+  parties requires an agreement. Each version converts to
+  **LGPL-3.0-or-later four years after its release**.
+- **35 modules: LGPL-3.** Use, modify and redistribute them freely. The
+  repository-root [`LICENSE`](LICENSE) carries the LGPL-3 text.
+- **5 modules: AGPL-3**, inherited rather than chosen: they extend Odoo
+  Community Association code that is itself AGPL-3. Four are the fundraising
+  and donation-receipt modules; `bf_helpdesk` is a fork-style extension of
+  OCA `helpdesk_mgmt`.
+
+A few permissively licensed modules list a BUSL-1.1 module among their
+dependencies. Where that dependency was a convenience it has been made
+optional and detected at runtime, so the module installs on its own. Where it
+is structural — a typed relation or an inherited view — it is stated in that
+module's own README, because the permissive licence cannot be exercised
+without the BUSL one.
 
 ## Credits
 

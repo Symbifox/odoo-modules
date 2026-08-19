@@ -1,7 +1,7 @@
 {
     "name": "Symbifox — Productivity Pack",
     "summary": "UI polish, dashboards, command palette, notes, timer, and brand pack for Odoo CE",
-    "version": "18.0.1.0.0",
+    "version": "18.0.1.1.0",
     "category": "Productivity",
     "license": "LGPL-3",
     "author": "Les services de consultation Blue Fox, Inc.",
@@ -16,7 +16,6 @@
         "daily_todo_digest",
         "bf_lexend",
         "bf_dark_mode",
-        "bluefox_branding",
     ],
     "data": [],
     "installable": True,
