@@ -7,6 +7,7 @@ import uuid
 import requests
 
 from odoo import api, fields, models
+from odoo.tools import html2plaintext
 
 _logger = logging.getLogger(__name__)
 
@@ -134,8 +135,17 @@ class CalendarEvent(models.Model):
                 "start": self.start.isoformat() if self.start else None,
                 "stop": self.stop.isoformat() if self.stop else None,
                 "allday": self.allday,
-                "location": self.location or "",
-                "description": self.description or "",
+                # CalDAV n'a pas de champ « lien de visioconférence » : le
+                # VEVENT ne porte que LOCATION. Les rendez-vous pris via
+                # bf_appointment laissent `location` vide et rangent le lien
+                # de la salle dans `videocall_location`, qui n'était jamais
+                # poussé — l'événement arrivait donc dans Nextcloud sans
+                # aucun moyen de rejoindre la rencontre.
+                "location": self.location or self.videocall_location or "",
+                # DESCRIPTION est du texte brut en RFC 5545 : pousser le champ
+                # Html tel quel envoyait des `<p>…</p>` littéraux dans tous les
+                # clients d'agenda.
+                "description": html2plaintext(self.description or "").strip(),
                 "privacy": self.privacy,
                 "show_as": self.show_as,
                 "attendees": attendees,
@@ -160,8 +170,55 @@ class CalendarEvent(models.Model):
             ),
         }
 
+    def _push_via_caldav_enabled(self):
+        """Interrupteur du transport de poussée Nextcloud.
+
+        Vrai (défaut) = ``PUT``/``DELETE`` CalDAV depuis Odoo. Faux = ancien
+        webhook n8n. C'est un ``ir.config_parameter`` et non un champ pour que
+        le repli soit immédiat, sans mise à jour de module ni interruption.
+        """
+        return (
+            self.env["ir.config_parameter"]
+            .sudo()
+            .get_param("calendar_nextcloud_sync.push_via_caldav", "1")
+            .strip()
+            not in ("0", "false", "False", "")
+        )
+
+    def _push_caldav(self, action, event, config):
+        """Poussée directe d'UN événement. Rend True si elle a abouti.
+
+        Contrairement au webhook, ``href`` et ``ETag`` sont posés ICI, à la
+        seconde de la poussée, au lieu d'attendre le pull suivant. C'est ce qui
+        referme la fenêtre pendant laquelle un événement neuf n'avait pas de
+        ``x_caldav_href`` et se faisait prendre pour un orphelin.
+        """
+        backend = self.env["calendar.caldav.backend"]
+        if action == "delete":
+            url, _href = backend._resource_url(config, event)
+            backend.push_delete(config, url=url)
+            _logger.info("CalDAV delete for event %s", event.id)
+            return True
+
+        href, etag = backend.push(config, event)
+        vals = {"x_last_sync": fields.Datetime.now()}
+        if href and href != event.x_caldav_href:
+            vals["x_caldav_href"] = href
+        if etag and etag != event.x_caldav_etag:
+            vals["x_caldav_etag"] = etag
+        event.with_context(
+            skip_nc_sync=True, no_mail_to_attendees=True
+        ).write(vals)
+        _logger.info("CalDAV %s for event %s (%s)", action, event.id, href)
+        return True
+
     def _trigger_sync_webhook(self, action):
-        """Send event data to n8n webhook for sync to Nextcloud.
+        """Push an event change to Nextcloud.
+
+        Historiquement un POST vers n8n, d'où le nom conservé : six appelants
+        pointent dessus. Le transport réel se choisit maintenant dans
+        ``_push_via_caldav_enabled`` — CalDAV direct par défaut, webhook en
+        repli. Voir ``models/caldav_backend.py`` pour le pourquoi.
 
         Only fires for configs with backend_type='nextcloud'. Google-backend
         configs use direct API calls via calendar.google.backend (see
@@ -170,6 +227,7 @@ class CalendarEvent(models.Model):
         Args:
             action: 'create', 'update', or 'delete'
         """
+        use_caldav = self._push_via_caldav_enabled()
         for event in self:
             # Skip if no calendar config or sync direction doesn't allow it
             if not event.x_nc_calendar_id:
@@ -179,11 +237,6 @@ class CalendarEvent(models.Model):
                 continue
             if config.sync_direction == "nc_to_odoo":
                 continue
-            if not config.webhook_url:
-                _logger.warning(
-                    "No webhook URL configured for calendar %s", config.name
-                )
-                continue
 
             # Skip create/update for events already sourced from remote
             # (anti-loop). Deletes always propagate — context prevents loops.
@@ -191,6 +244,26 @@ class CalendarEvent(models.Model):
                 _logger.debug(
                     "Skipping NC sync for event %s (source=%s)",
                     event.id, event.x_sync_source,
+                )
+                continue
+
+            if use_caldav and config.nextcloud_app_password_encrypted:
+                try:
+                    self._push_caldav(action, event, config)
+                    config.update_sync_status(
+                        "success", f"CalDAV {action}: {event.name}"
+                    )
+                except Exception as e:
+                    _logger.error(
+                        "CalDAV push %s failed for event %s: %s",
+                        action, event.id, e,
+                    )
+                    config.update_sync_status("error", f"CalDAV {action}: {e}")
+                continue
+
+            if not config.webhook_url:
+                _logger.warning(
+                    "No webhook URL configured for calendar %s", config.name
                 )
                 continue
 
@@ -421,6 +494,10 @@ class CalendarEvent(models.Model):
             "stop",
             "allday",
             "location",
+            # Le lien de visioconférence voyage dans LOCATION (voir
+            # _get_sync_payload). Sans ce champ ici, un RDV dont la salle est
+            # créée juste après l'événement ne repousse jamais son lien.
+            "videocall_location",
             "description",
             "privacy",
             "show_as",
@@ -508,6 +585,67 @@ class CalendarEvent(models.Model):
             to_delete.with_context(**ctx).unlink()
 
     @api.model
+    @api.model
+    def _bf_pull_fallback_alarm_minutes(self):
+        """Rappel posé d'office sur une rencontre tirée SANS aucun VALARM.
+
+        Le cas visé est étroit et précis : quelqu'un d'autre m'invite, et
+        personne n'a posé de rappel pour moi. C'est silencieux par nature, un
+        rappel absent ne se remarque jamais.
+
+        ⚠️ Trois bornes, et elles comptent :
+
+        * seulement à la CRÉATION. Sinon, retirer le rappel dans Odoo serait
+          défait au pull suivant et on ne pourrait plus jamais s'en défaire ;
+        * seulement au-delà d'un participant, donc les vraies rencontres. Sur
+          un agenda réel, l'appliquer sans ce filtre a armé des milliers de
+          rappels pour des vols, des webinaires et des blocs personnels contre
+          une poignée de vraies rencontres ;
+        * jamais de réécriture vers Nextcloud. Repousser ce VALARM inventé,
+          ce serait une écriture CalDAV par événement, c'est-à-dire un iMIP
+          « Invitation updated » à chaque participant.
+
+        ⚠️ Défaut à 0, donc INACTIF tant qu'un locataire n'a pas choisi une
+        valeur, alors que le même réglage vaut 15 pour les événements créés
+        dans Odoo. L'écart est voulu : poser un défaut sur ce qu'un usager crée
+        lui-même est un confort d'interface, inventer un rappel qui n'existe
+        dans aucune source pendant une synchronisation doit être un choix
+        explicite.
+        """
+        raw = self.env["ir.config_parameter"].sudo().get_param(
+            "bf_email_management.default_alarm_minutes", "0",
+        )
+        try:
+            return [max(0, int(str(raw).strip() or 0))] if int(str(raw).strip() or 0) > 0 else []
+        except ValueError:
+            return []
+
+    @api.model
+    def _bf_alarm_ids_for_minutes(self, minutes_list):
+        """Ids des ``calendar.alarm`` de notification pour ces délais.
+
+        Réutilise une alarme existante quand le délai correspond déjà, et n'en
+        crée une que pour un délai inédit. Sans ce rapprochement, chaque pull
+        fabriquerait des doublons et la liste des alarmes deviendrait
+        illisible dans l'interface.
+        """
+        Alarm = self.env["calendar.alarm"]
+        ids = []
+        for minutes in minutes_list:
+            alarm = Alarm.search([
+                ("alarm_type", "=", "notification"),
+                ("duration_minutes", "=", minutes),
+            ], limit=1)
+            if not alarm:
+                alarm = Alarm.create({
+                    "name": "%s min avant" % minutes,
+                    "alarm_type": "notification",
+                    "duration": minutes,
+                    "interval": "minutes",
+                })
+            ids.append(alarm.id)
+        return ids
+
     def create_from_nextcloud(self, data, config_id):
         """Create or update event from Nextcloud webhook data.
 
@@ -585,6 +723,17 @@ class CalendarEvent(models.Model):
                 )
         if partner_ids:
             vals["partner_ids"] = [(6, 0, list(partner_ids))]
+
+        # Rappels. Le .ics est la source de vérité : ce que l'usager a posé
+        # dans son client d'agenda doit exister dans Odoo, sinon la chaîne de
+        # rappel d'Odoo (ntfy) n'a rien sur quoi se déclencher.
+        alarm_minutes = data.get("alarms")
+        if alarm_minutes is not None:
+            if not alarm_minutes and not existing and len(partner_ids) > 1:
+                alarm_minutes = self._bf_pull_fallback_alarm_minutes()
+            vals["alarm_ids"] = [
+                (6, 0, self._bf_alarm_ids_for_minutes(alarm_minutes))
+            ]
 
         # Use context to suppress all email/notification side-effects
         ctx = {
