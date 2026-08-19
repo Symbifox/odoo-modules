@@ -264,6 +264,14 @@
             color: #888;
         }
 
+        // Origine du message (ligne d'envoi) : présente mais jamais bruyante —
+        // elle ne doit pas concurrencer le texte du message.
+        .o_sms_origin {
+            font-style: italic;
+            opacity: 0.85;
+            white-space: nowrap;
+        }
+
         .o_sms_img {
             max-width: 100%;
             max-height: 240px;
@@ -281,10 +289,35 @@
     }
 
     // ── Composer ─────────────────────────────────────────────
+    .o_sms_scopednote {
+        font-size: 11px;
+        color: #6c757d;
+        background: #f1f3f5;
+        border-radius: 6px;
+        padding: 4px 10px;
+        margin: 6px auto;
+        max-width: 90%;
+        text-align: center;
+    }
+
     .o_sms_composer {
         padding: 10px 12px;
         border-top: 1px solid #e0e0e0;
         background: #ffffff;
+
+        .o_sms_linewarn {
+            font-size: 11px;
+            color: #8a6d3b;
+            background: #fcf8e3;
+            border: 1px solid #faebcc;
+            border-radius: 6px;
+            padding: 3px 8px;
+            margin-bottom: 6px;
+
+            .btn-link {
+                font-size: 11px;
+            }
+        }
 
         .o_sms_line_select {
             max-width: 200px;
@@ -435,9 +468,20 @@ body.bf_dark_mode .o_sms_messenger {
         &.o_in .o_sms_meta { color: $sms-dk-text-muted; }
     }
 
+    .o_sms_scopednote {
+        color: $sms-dk-text-muted;
+        background: rgba(255, 255, 255, 0.06);
+    }
+
     .o_sms_composer {
         background: $sms-dk-surface;
         border-top-color: $sms-dk-border;
+
+        .o_sms_linewarn {
+            color: #f0d38a;
+            background: rgba(240, 211, 138, 0.12);
+            border-color: rgba(240, 211, 138, 0.35);
+        }
     }
 
     .o_sms_chip {

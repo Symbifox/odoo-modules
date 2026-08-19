@@ -8,6 +8,11 @@ class SmsDashboard(models.Model):
 
     @api.model
     def get_dashboard_data(self, date_from=False, date_to=False):
+        """Statistiques du propriétaire uniquement.
+
+        Volontairement aveugle aux lignes partagées : le trafic d'un numéro
+        appartient à son propriétaire, et un lecteur partagé n'a pas à en
+        déduire des volumes sur des messages qu'il ne peut pas lire."""
         uid = self.env.uid
 
         return {

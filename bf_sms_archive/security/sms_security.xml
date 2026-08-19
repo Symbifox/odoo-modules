@@ -25,9 +25,9 @@
 
     <!-- Record Rules: Thread -->
     <record id="sms_thread_rule_user" model="ir.rule">
-        <field name="name">Fil SMS : propriétaire seulement</field>
+        <field name="name">Fil SMS : propriétaire ou ligne partagée</field>
         <field name="model_id" ref="model_sms_archive_thread"/>
-        <field name="domain_force">[('owner_id', '=', user.id)]</field>
+        <field name="domain_force">['|', ('owner_id', '=', user.id), '&amp;', ('line_id.user_ids', 'in', [user.id]), ('is_hidden', '=', False)]</field>
         <field name="groups" eval="[(4, ref('group_sms_user'))]"/>
         <field name="perm_read" eval="True"/>
         <field name="perm_write" eval="True"/>
@@ -44,9 +44,9 @@
 
     <!-- Record Rules: Message -->
     <record id="sms_message_rule_user" model="ir.rule">
-        <field name="name">Message SMS : propriétaire seulement</field>
+        <field name="name">Message SMS : propriétaire ou ligne partagée</field>
         <field name="model_id" ref="model_sms_archive_message"/>
-        <field name="domain_force">[('owner_id', '=', user.id)]</field>
+        <field name="domain_force">['|', ('owner_id', '=', user.id), '&amp;', ('line_id.user_ids', 'in', [user.id]), ('thread_id.is_hidden', '=', False)]</field>
         <field name="groups" eval="[(4, ref('group_sms_user'))]"/>
         <field name="perm_read" eval="True"/>
         <field name="perm_write" eval="True"/>
@@ -63,9 +63,9 @@
 
     <!-- Record Rules: MMS Part -->
     <record id="sms_mms_part_rule_user" model="ir.rule">
-        <field name="name">MMS Part : propriétaire seulement</field>
+        <field name="name">MMS Part : propriétaire ou ligne partagée</field>
         <field name="model_id" ref="model_sms_archive_mms_part"/>
-        <field name="domain_force">[('owner_id', '=', user.id)]</field>
+        <field name="domain_force">['|', ('owner_id', '=', user.id), '&amp;', ('message_id.line_id.user_ids', 'in', [user.id]), ('message_id.thread_id.is_hidden', '=', False)]</field>
         <field name="groups" eval="[(4, ref('group_sms_user'))]"/>
         <field name="perm_read" eval="True"/>
         <field name="perm_write" eval="True"/>
@@ -81,6 +81,8 @@
     </record>
 
     <!-- Record Rules: Call -->
+    <!-- Un appel archivé ne porte pas de ligne (il vient du journal Android) :
+         partager un numéro ne donne donc aucun accès au journal d'appels. -->
     <record id="call_archive_rule_user" model="ir.rule">
         <field name="name">Appel archivé : propriétaire seulement</field>
         <field name="model_id" ref="model_call_archive_call"/>
@@ -107,12 +109,29 @@
         <field name="groups" eval="[(4, ref('group_sms_manager'))]"/>
     </record>
 
-    <!-- Record Rule: Line (owner sees own; superuser sees all) -->
+    <!-- Record Rule: Line (propriétaire + utilisateurs partagés ; superuser voit tout).
+         L'écriture reste au propriétaire : un collègue partagé consulte la ligne
+         (libellé, DID, indicateurs) mais ne la reconfigure pas. -->
     <record id="sms_line_rule_user" model="ir.rule">
-        <field name="name">Ligne SMS : propriétaire seulement</field>
+        <field name="name">Ligne SMS : propriétaire ou partage</field>
+        <field name="model_id" ref="model_sms_archive_line"/>
+        <field name="domain_force">['|', ('owner_id', '=', user.id), ('user_ids', 'in', [user.id])]</field>
+        <field name="groups" eval="[(4, ref('group_sms_user'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <record id="sms_line_rule_owner_write" model="ir.rule">
+        <field name="name">Ligne SMS : le propriétaire seul modifie</field>
         <field name="model_id" ref="model_sms_archive_line"/>
         <field name="domain_force">[('owner_id', '=', user.id)]</field>
         <field name="groups" eval="[(4, ref('group_sms_user'))]"/>
+        <field name="perm_read" eval="False"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
     </record>
 
     <record id="sms_line_rule_manager" model="ir.rule">

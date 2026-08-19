@@ -62,17 +62,17 @@ class SmsUnifiedPush(models.AbstractModel):
 
     @api.model
     def _notify_new_message(self, msg):
-        owner = msg.owner_id or msg.thread_id.owner_id
-        if not owner or not self._devices(owner):
-            return
         thread = msg.thread_id
-        self._send(owner, {
+        payload = {
             "type": "sms",
             "title": thread.contact_name or thread.phone_normalized or "Nouveau SMS",
             "body": (msg.body or "")[:180] or "📎 Pièce jointe",
             "thread_id": thread.id,
             "message_id": msg.id,
-        })
+        }
+        for user in msg._notify_users():
+            if self._devices(user):
+                self._send(user, dict(payload))
 
     @api.model
     def _notify_clear(self, owner, thread_id):

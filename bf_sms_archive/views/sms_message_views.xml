@@ -17,6 +17,8 @@
                 <field name="body" string="Contenu"/>
                 <field name="date_sent" string="Date"/>
                 <field name="contact_name" string="Contact" optional="show"/>
+                <field name="line_id" string="Ligne" optional="show"/>
+                <field name="sent_by_id" string="Envoyé par" optional="hide"/>
                 <field name="is_mms" string="MMS" optional="hide"/>
             </list>
         </field>
@@ -39,6 +41,9 @@
                             <field name="direction" string="Direction"/>
                             <field name="date_sent" string="Date" readonly="1"/>
                             <field name="contact_name" string="Contact"/>
+                            <field name="line_id" string="Ligne" readonly="1"/>
+                            <field name="sent_by_id" string="Envoyé par" readonly="1"
+                                   invisible="direction != 'out'"/>
                         </group>
                         <group string="Technique">
                             <field name="message_hash" string="Hash" readonly="1"/>

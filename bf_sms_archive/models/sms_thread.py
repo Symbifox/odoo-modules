@@ -45,6 +45,15 @@ class SmsArchiveThread(models.Model):
         default=lambda self: self.env.uid,
         index=True,
     )
+    line_id = fields.Many2one(
+        comodel_name="sms.archive.line",
+        string="Ligne d'origine",
+        index=True,
+        ondelete="set null",
+        help="Ligne (DID) sur laquelle cette conversation s'est ouverte. C'est elle "
+             "qui décide du partage : les utilisateurs de cette ligne voient le fil, "
+             "sauf s'il est marqué « Confidentiel ».",
+    )
     active = fields.Boolean(
         string="Actif",
         default=True,
@@ -52,7 +61,8 @@ class SmsArchiveThread(models.Model):
     is_hidden = fields.Boolean(
         string="Confidentiel",
         default=False,
-        help="Masquer ce fil des recherches et listes MCP",
+        help="Masquer ce fil des recherches et listes MCP, et le réserver à son "
+             "propriétaire même quand la ligne est partagée.",
     )
     is_pinned = fields.Boolean(
         string="Épinglé",
@@ -166,8 +176,24 @@ class SmsArchiveThread(models.Model):
             else:
                 thread.display_name = thread.phone_normalized or "?"
 
+    # Champs qu'un lecteur partagé ne doit pas pouvoir toucher : ils décident de
+    # QUI voit le fil. Sans ce garde-fou, un collègue ayant accès en écriture au
+    # fil (pour marquer lu, archiver, épingler) pourrait s'en déclarer
+    # propriétaire et hériter de tout l'historique.
+    _OWNER_ONLY_FIELDS = ("owner_id", "line_id", "is_hidden")
+
     def write(self, vals):
         """Auto-update contact_name when partner_id is set."""
+        locked = [f for f in self._OWNER_ONLY_FIELDS if f in vals]
+        if locked and not self.env.su:
+            uid = self.env.uid
+            if not self.env.user.has_group("bf_sms_archive.group_sms_manager"):
+                foreign = self.sudo().filtered(lambda t: t.owner_id.id != uid)
+                if foreign:
+                    raise UserError(
+                        "Seul le propriétaire d'une conversation peut en changer "
+                        "le propriétaire, la ligne ou la confidentialité."
+                    )
         res = super().write(vals)
         if "partner_id" in vals and vals["partner_id"]:
             for thread in self:
@@ -610,8 +636,14 @@ class SmsArchiveThread(models.Model):
         return f"+{digits}" if digits else ""
 
     @api.model
-    def _get_or_create(self, phone_normalized, owner_id, phone_raw=None, contact_name=None):
-        """Idempotent thread upsert by (phone_normalized, owner_id)."""
+    def _get_or_create(self, phone_normalized, owner_id, phone_raw=None,
+                       contact_name=None, line_id=None):
+        """Idempotent thread upsert by (phone_normalized, owner_id).
+
+        ``line_id`` marque la ligne d'origine du fil (partage). Il n'est posé qu'à
+        la création ou pour compléter un fil qui n'en portait pas : la ligne
+        d'origine ne bascule jamais d'elle-même, sinon le partage d'un fil
+        changerait au gré des réponses."""
         # active_test=False : retrouver aussi les fils archivés (sinon la contrainte
         # d'unicité (phone, owner) bloquerait la recréation).
         thread = self.sudo().with_context(active_test=False).search([
@@ -624,6 +656,8 @@ class SmsArchiveThread(models.Model):
                 vals["contact_name"] = contact_name
             if not thread.active:
                 vals["active"] = True  # un nouveau message désarchive le fil
+            if line_id and not thread.line_id:
+                vals["line_id"] = line_id
             if vals:
                 thread.sudo().write(vals)
             return thread
@@ -632,6 +666,7 @@ class SmsArchiveThread(models.Model):
             "phone_raw": phone_raw or phone_normalized,
             "contact_name": contact_name or "",
             "owner_id": owner_id,
+            "line_id": line_id or False,
         })
         # Best-effort: auto-match an Odoo contact by phone so names/avatars populate.
         if not thread.partner_id and phone_normalized:
@@ -665,11 +700,72 @@ class SmsArchiveThread(models.Model):
         return int(dt.replace(tzinfo=timezone.utc).timestamp() * 1000)
 
     def _check_messenger_access(self):
-        """Limite l'accès aux fils du propriétaire courant (sauf gestionnaire)."""
+        """Limite l'accès au propriétaire, aux utilisateurs de la ligne partagée
+        (hors fils confidentiels) et aux gestionnaires."""
         is_manager = self.env.user.has_group("bf_sms_archive.group_sms_manager")
+        if is_manager:
+            return
+        uid = self.env.uid
         for thread in self:
-            if not is_manager and thread.owner_id.id != self.env.uid:
-                raise UserError("Accès refusé à cette conversation.")
+            if thread.owner_id.id == uid:
+                continue
+            line = thread.sudo().line_id
+            if line and uid in line.user_ids.ids and not thread.is_hidden:
+                continue
+            raise UserError("Accès refusé à cette conversation.")
+
+    def _notify_users(self):
+        """Utilisateurs à prévenir pour ce fil : propriétaire + partagés de la
+        ligne. Un fil confidentiel ne sort jamais de chez son propriétaire."""
+        users = self.env["res.users"].browse()
+        for thread in self.sudo():
+            users |= thread.owner_id
+            if thread.line_id and not thread.is_hidden:
+                users |= thread.line_id.user_ids
+        return users.filtered(lambda u: u.active)
+
+    @api.model
+    def _shared_line_ids(self, user=None):
+        """Lignes partagées AVEC ``user`` par quelqu'un d'autre."""
+        user = user or self.env.user
+        return self.env["sms.archive.line"].sudo().search([
+            ("user_ids", "in", [user.id]), ("owner_id", "!=", user.id),
+        ]).ids
+
+    @api.model
+    def _accessible_thread_domain(self, user=None):
+        """Domaine « fils lisibles » pour la Messagerie : les miens, plus ceux
+        tenus sur une ligne qui m'est partagée (fils confidentiels exclus).
+
+        Volontairement explicite plutôt que de s'en remettre à la règle d'accès :
+        un gestionnaire verrait sinon les conversations de toute l'entreprise
+        dans sa propre messagerie."""
+        user = user or self.env.user
+        shared_ids = self._shared_line_ids(user)
+        if not shared_ids:
+            return [("owner_id", "=", user.id)]
+        return [
+            "|", ("owner_id", "=", user.id),
+            "&", ("line_id", "in", shared_ids), ("is_hidden", "=", False),
+        ]
+
+    @api.model
+    def _accessible_message_domain(self, user=None):
+        """Messages lisibles : les miens, plus ceux qui ont VOYAGÉ sur une ligne
+        qui m'est partagée. Miroir exact de ``sms_message_rule_user``.
+
+        La portée se prend sur la ligne du message et non sur celle du fil : un
+        fil peut mêler plusieurs lignes, et l'historique tenu ailleurs (archive
+        Android importée, autre numéro du propriétaire) n'a pas à suivre le
+        partage d'un numéro."""
+        user = user or self.env.user
+        shared_ids = self._shared_line_ids(user)
+        if not shared_ids:
+            return [("owner_id", "=", user.id)]
+        return [
+            "|", ("owner_id", "=", user.id),
+            "&", ("line_id", "in", shared_ids), ("thread_id.is_hidden", "=", False),
+        ]
 
     def _ping_unread(self, users):
         """Ping temps réel « lu » (sans bip) → rafraîchit le compteur systray et
@@ -679,7 +775,40 @@ class SmsArchiveThread(models.Model):
             if usr and usr.partner_id:
                 Bus._sendone(usr.partner_id, "sms.archive/read", {"kind": "read"})
 
-    def _messenger_thread_dict(self, line_label=None):
+    def _scoped_thread_stats(self, threads):
+        """Aperçu, non-lus et volume RÉELLEMENT lisibles par l'utilisateur courant.
+
+        Les agrégats stockés sur le fil (``last_message_preview``,
+        ``unread_count``) comptent tout l'historique du propriétaire. Pour un
+        lecteur partagé, ils diraient donc quelque chose des messages qu'il n'a
+        pas le droit de lire. On les recalcule ici sous ses propres règles."""
+        stats = {t.id: {"preview": "", "unread": 0, "hidden": 0} for t in threads}
+        if not threads:
+            return stats
+        Msg = self.env["sms.archive.message"]
+        rows = Msg.search_read(
+            [("thread_id", "in", threads.ids)],
+            ["thread_id", "body", "direction", "is_read"],
+            order="id desc",
+        )
+        for row in rows:
+            tid = row["thread_id"][0]
+            entry = stats[tid]
+            if not entry["preview"] and row.get("body"):
+                entry["preview"] = (row["body"] or "")[:100]
+            if row["direction"] == "in" and not row["is_read"]:
+                entry["unread"] += 1
+        visible = {}
+        for row in rows:
+            tid = row["thread_id"][0]
+            visible[tid] = visible.get(tid, 0) + 1
+        for thread in threads.sudo():
+            stats[thread.id]["hidden"] = max(
+                0, thread.message_count - visible.get(thread.id, 0),
+            )
+        return stats
+
+    def _messenger_thread_dict(self, line_label=None, scoped=None):
         self.ensure_one()
         if line_label is None:
             last = self.env["sms.archive.message"].search(
@@ -695,12 +824,21 @@ class SmsArchiveThread(models.Model):
             "partner_id": self.partner_id.id or False,
             "partner_name": self.partner_id.name or "",
             "last_message_date": self._dt_to_ms(self.last_message_date),
-            "last_preview": self.last_message_preview or "",
-            "unread_count": self.unread_count,
+            "last_preview": (scoped["preview"] if scoped
+                             else self.last_message_preview or ""),
+            "unread_count": (scoped["unread"] if scoped else self.unread_count),
+            # Messages du fil que ce lecteur ne peut pas voir (historique tenu
+            # sur une autre ligne, ou archive importée) : la Messagerie le dit
+            # plutôt que de laisser croire à une conversation complète.
+            "hidden_count": (scoped["hidden"] if scoped else 0),
             "active": self.active,
             "is_hidden": self.is_hidden,
             "is_pinned": self.is_pinned,
             "line_label": line_label or "",
+            "line_id": self.line_id.id or False,
+            "owner_name": self.owner_id.name or "",
+            "is_shared": bool(self.line_id.sudo().user_ids)
+                         or self.owner_id.id != self.env.uid,
         }
 
     @api.model
@@ -741,24 +879,31 @@ class SmsArchiveThread(models.Model):
 
     @api.model
     def get_lines(self):
-        """Lignes (DID) disponibles pour l'utilisateur courant."""
+        """Lignes (DID) disponibles : les siennes d'abord, puis les partagées.
+
+        ``is_default`` n'est rendu vrai que pour une ligne dont on est
+        propriétaire — une ligne partagée ne doit jamais devenir le numéro
+        d'envoi par défaut de quelqu'un d'autre sans un geste explicite."""
         Line = self.env["sms.archive.line"]
-        lines = Line.search([("owner_id", "=", self.env.uid)])
-        if not lines and self.env.user.has_group("bf_sms_archive.group_sms_manager"):
-            lines = Line.search([])
+        user = self.env.user
+        lines = Line._lines_for_user(user)
+        if not lines and user.has_group("bf_sms_archive.group_sms_manager"):
+            lines = Line.sudo().search([])
         return [{
             "id": line.id,
             "label": line.label,
             "did": line.did_normalized or line.did,
             "sms_enabled": line.sms_enabled,
             "mms_enabled": line.mms_enabled,
-            "is_default": line.is_default,
+            "is_default": line.is_default and line.owner_id.id == user.id,
+            "is_shared": line.owner_id.id != user.id,
+            "owner_name": line.owner_id.name or "",
         } for line in lines]
 
     @api.model
     def get_messenger_threads(self, archived=False, search=None, line_id=None, limit=200):
         """Liste des fils (volet gauche) : épinglés d'abord, puis par dernier message."""
-        domain = [("owner_id", "=", self.env.uid), ("active", "=", not archived)]
+        domain = self._accessible_thread_domain() + [("active", "=", not archived)]
         if search:
             term = search.strip()
             domain += [
@@ -784,7 +929,14 @@ class SmsArchiveThread(models.Model):
                 tid = r["thread_id"][0]
                 if tid not in label_map:
                     label_map[tid] = r["line_id"][1]
-        return [t._messenger_thread_dict(line_label=label_map.get(t.id, "")) for t in threads]
+        foreign = threads.filtered(lambda t: t.owner_id.id != self.env.uid)
+        scoped_map = self._scoped_thread_stats(foreign) if foreign else {}
+        return [
+            t._messenger_thread_dict(
+                line_label=label_map.get(t.id, ""), scoped=scoped_map.get(t.id),
+            )
+            for t in threads
+        ]
 
     @api.model
     def get_conversation(self, thread_id, before_id=None, limit=50):
@@ -803,10 +955,13 @@ class SmsArchiveThread(models.Model):
         unread = found.filtered(lambda m: m.direction == "in" and not m.is_read)
         if unread:
             unread.write({"is_read": True})
-            self._ping_unread(thread.owner_id)
+            self._ping_unread(thread._notify_users())
             self._up_clear(thread.owner_id, thread.id)
+        scoped = None
+        if thread.owner_id.id != self.env.uid:
+            scoped = self._scoped_thread_stats(thread).get(thread.id)
         return {
-            "thread": thread._messenger_thread_dict(),
+            "thread": thread._messenger_thread_dict(scoped=scoped),
             "messages": messages,
             "has_more": len(found) == limit,
         }
@@ -830,7 +985,7 @@ class SmsArchiveThread(models.Model):
         thread.message_ids.filtered(
             lambda m: m.direction == "in" and not m.is_read
         ).write({"is_read": True})
-        self._ping_unread(thread.owner_id)
+        self._ping_unread(thread._notify_users())
         self._up_clear(thread.owner_id, thread.id)
         return self.get_unread_summary()
 
@@ -968,12 +1123,17 @@ class SmsArchiveThread(models.Model):
     @api.model
     def mark_all_read(self):
         """Marque tous les SMS entrants non lus de l'utilisateur comme lus."""
-        self.env["sms.archive.message"].sudo().search([
-            ("owner_id", "=", self.env.uid),
-            ("direction", "=", "in"),
-            ("is_read", "=", False),
-        ]).write({"is_read": True})
-        self._ping_unread(self.env.user)
+        unread = self.env["sms.archive.message"].sudo().search(
+            self._accessible_message_domain() + [
+                ("direction", "=", "in"),
+                ("is_read", "=", False),
+            ]
+        )
+        touched = unread.thread_id
+        unread.write({"is_read": True})
+        # « Lu » est un état de fil, pas de personne : sur une ligne partagée, le
+        # compteur des collègues doit retomber avec le nôtre.
+        self._ping_unread(self.env.user | touched._notify_users())
         self._up_clear(self.env.user)
         return self.get_unread_summary()
 
@@ -990,29 +1150,30 @@ class SmsArchiveThread(models.Model):
             inbound = thread.message_ids.filtered(lambda m: m.direction == "in").sorted("id")
             if inbound:
                 inbound[-1].is_read = False
-        self._ping_unread(thread.owner_id)
+        self._ping_unread(thread._notify_users())
         return self.get_unread_summary()
 
     @api.model
     def start_conversation(self, line_id, phone, contact_name=None):
         """Ouvre (ou crée) un fil pour composer un nouveau message."""
-        line = self.env["sms.archive.line"].browse(int(line_id))
-        is_manager = self.env.user.has_group("bf_sms_archive.group_sms_manager")
-        if line.exists() and line.owner_id.id != self.env.uid and not is_manager:
-            raise UserError("Cette ligne ne vous appartient pas.")
+        line = self.env["sms.archive.line"].sudo().browse(int(line_id))
+        if line.exists() and not line._is_usable_by():
+            raise UserError("Cette ligne ne vous est pas accessible.")
         owner = line.owner_id.id if line.exists() else self.env.uid
         phone_norm = self.normalize_phone(phone)
         if not phone_norm:
             raise UserError("Numéro invalide.")
-        thread = self._get_or_create(phone_norm, owner, phone, contact_name)
+        thread = self._get_or_create(
+            phone_norm, owner, phone, contact_name,
+            line_id=line.id if line.exists() else None,
+        )
         return thread.id
 
     @api.model
     def get_unread_summary(self):
         """Total + ventilation par fil des entrants non lus (compteur systray)."""
         Msg = self.env["sms.archive.message"]
-        domain = [
-            ("owner_id", "=", self.env.uid),
+        domain = self._accessible_message_domain() + [
             ("direction", "=", "in"),
             ("is_read", "=", False),
         ]
