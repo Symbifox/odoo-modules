@@ -115,7 +115,7 @@ class MeetingRecord(models.Model):
     """Compte rendu structuré d'une réunion."""
     _name = 'meeting.record'
     _description = 'Compte rendu de réunion'
-    _inherit = ['mail.thread', 'mail.activity.mixin']
+    _inherit = ['mail.thread', 'mail.activity.mixin', 'bf.meeting.document.mixin']
     _order = 'date desc, id desc'
 
     name = fields.Char(
@@ -556,26 +556,6 @@ class MeetingRecord(models.Model):
         for rec in self:
             rec.knowledge_item_count = len(rec.knowledge_item_ids)
 
-    meeting_attachment_ids = fields.One2many(
-        'ir.attachment',
-        compute='_compute_meeting_attachment_ids',
-        inverse='_inverse_meeting_attachment_ids',
-        string='Documents',
-    )
-
-    def _compute_meeting_attachment_ids(self):
-        for rec in self:
-            rec.meeting_attachment_ids = self.env['ir.attachment'].search([
-                ('res_model', '=', 'meeting.record'),
-                ('res_id', '=', rec.id),
-            ])
-
-    def _inverse_meeting_attachment_ids(self):
-        # Make sure inline edits to bf_visibility_window/from/until persist.
-        # The One2many is computed (no real FK to inverse) — Odoo writes back
-        # to ir.attachment directly via the inline list.
-        pass
-
     @api.onchange('calendar_event_id')
     def _onchange_calendar_event_id_fill_attendance(self):
         """Seed Présences from the linked calendar event's invitees.
@@ -748,11 +728,11 @@ class MeetingRecord(models.Model):
     def _bridge_tenant(self):
         """Locataire annoncé au pont Claude.
 
-        Le module tourne sur plusieurs bases (BF, PME Conforme) et le pont
-        n'accepte qu'une liste fermée de locataires ; l'ancien littéral « bf »
-        faisait donc passer les demandes de PME Conforme pour des demandes BF
-        dans les journaux du pont. Le paramètre système
-        `bf_meeting.bridge_tenant` porte la valeur réelle par base.
+        Le module tourne sur plusieurs bases et le pont n'accepte qu'une
+        liste fermée de locataires ; l'ancien littéral « bf » faisait donc
+        passer les demandes d'un autre locataire pour des demandes BF dans les
+        journaux du pont. Le paramètre système `bf_meeting.bridge_tenant`
+        porte la valeur réelle par base.
         """
         return (self.env['ir.config_parameter'].sudo()
                 .get_param('bf_meeting.bridge_tenant', 'bf') or 'bf').strip()

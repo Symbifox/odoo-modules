@@ -358,13 +358,21 @@
                         </page>
                         <page string="Documents" name="documents">
                             <p class="text-muted">
-                                Pièces jointes liées à l'OdJ. La colonne <strong>Fenêtre</strong> permet
+                                Pièces jointes liées à l'OdJ. Choisissez <strong>Fichier</strong> pour
+                                téléverser un document, ou <strong>URL</strong> pour pointer vers un
+                                document externe. La colonne <strong>Fenêtre</strong> permet
                                 de masquer un document hors d'une plage temporelle relative à la date
                                 de la rencontre — utile pour les pre-reads ou les decks éphémères.
                             </p>
                             <field name="meeting_attachment_ids" nolabel="1">
                                 <list editable="bottom">
-                                    <field name="name"/>
+                                    <field name="name" required="1"/>
+                                    <field name="type"/>
+                                    <field name="datas" widget="binary" filename="name"
+                                           invisible="type != 'binary'"/>
+                                    <field name="url" widget="url"
+                                           placeholder="https://..."
+                                           invisible="type != 'url'"/>
                                     <field name="bf_visibility_window"/>
                                     <field name="bf_visible_from" optional="hide"/>
                                     <field name="bf_visible_until" optional="hide"/>

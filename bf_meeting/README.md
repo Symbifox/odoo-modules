@@ -57,6 +57,7 @@ tracking decisions as knowledge matrix lines.
 | `res.company` (inherited) | `meeting_logo` — logo shown on the dark banner of PDFs and emails (falls back to the company's standard logo) |
 | `res.partner` (inherited) | `bf_skip_dashboard` — excludes this contact's meetings from the dashboard |
 | `res.users` (inherited) | Personal dashboard horizons (`bf_meeting_dashboard_lookahead_days`, `bf_meeting_dashboard_lookback_days`) |
+| `bf.meeting.document.mixin` | Shared **Documents** tab: computed One2many over `ir.attachment` (`res_model`/`res_id`), with the inverse that materialises new lines and deletes removed ones |
 | `meeting.dashboard` / `meeting.dashboard.line` | Meeting dashboard (OWL view aggregating agendas/reports to follow up) |
 
 ### Dependencies

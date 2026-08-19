@@ -148,7 +148,7 @@ class MeetingAgenda(models.Model):
     """Ordre du jour d'une réunion."""
     _name = 'meeting.agenda'
     _description = 'Ordre du jour'
-    _inherit = ['mail.thread', 'mail.activity.mixin']
+    _inherit = ['mail.thread', 'mail.activity.mixin', 'bf.meeting.document.mixin']
     _order = 'date desc, id desc'
 
     name = fields.Char(
@@ -669,23 +669,6 @@ class MeetingAgenda(models.Model):
             )
             rec.agenda_task_ids = collected
             rec.agenda_task_count = len(collected)
-
-    meeting_attachment_ids = fields.One2many(
-        'ir.attachment',
-        compute='_compute_meeting_attachment_ids',
-        inverse='_inverse_meeting_attachment_ids',
-        string='Documents',
-    )
-
-    def _compute_meeting_attachment_ids(self):
-        for rec in self:
-            rec.meeting_attachment_ids = self.env['ir.attachment'].search([
-                ('res_model', '=', 'meeting.agenda'),
-                ('res_id', '=', rec.id),
-            ])
-
-    def _inverse_meeting_attachment_ids(self):
-        pass
 
     @api.onchange('calendar_event_id')
     def _onchange_calendar_event_id_fill_participants(self):
