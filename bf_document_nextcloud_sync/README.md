@@ -431,6 +431,17 @@ LGPL-3 - Copyright (c) 2026 [Les services de consultation Blue Fox, Inc.](https:
 
 See [LICENSE](LICENSE) for full text.
 
+**Licence note.** The dependency on `project_knowledge_matrix` is BUSL-1.1
+while this module is LGPL-3, and the coupling is structural: the sync model
+inherits `project.document`, a model only that module defines, and four of its
+views are extended by xpath (the document form, tree and search views, plus the
+knowledge-matrix settings page). A model you inherit must exist before your
+module loads, so this cannot be detected at runtime and made optional.
+
+The LGPL-3 text applies to this module's own source, but you cannot install it
+without accepting the BUSL-1.1 terms on `project_knowledge_matrix`. If you need
+more than those terms allow, [talk to us](https://symbifox.com).
+
 ## Disclaimer
 
 This module is provided as-is, without warranty of any kind. Use at your own risk. Les services de consultation Blue Fox, Inc. assumes no liability for any damages arising from the use of this software.
