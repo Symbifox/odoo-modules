@@ -2,40 +2,25 @@
 <odoo>
     <data noupdate="1">
 
-        <!-- Daily cron job to check pending acknowledgments -->
-        <record id="ir_cron_document_pending_acknowledgments" model="ir.cron">
-            <field name="name">Documents: Vérifier accusés en attente</field>
-            <field name="model_id" ref="model_project_document_distribution"/>
-            <field name="state">code</field>
-            <field name="code">model._cron_check_pending_acknowledgments()</field>
-            <field name="interval_number">1</field>
-            <field name="interval_type">days</field>
-            <field name="active">True</field>
-        </record>
-
-        <!-- Daily cron job to check document reviews and expirations -->
-        <record id="ir_cron_document_review_expiration" model="ir.cron">
-            <field name="name">Documents: Vérifier révisions et expirations</field>
+        <!-- Entretien quotidien : les trois passes qui créent des activités.
+             Elles avaient chacune leur tâche planifiée, dont deux partaient à
+             la même minute. Un seul réveil, trois points de reprise.
+             Les tâches qui ENVOIENT DU COURRIEL restent séparées : leur rythme
+             et leur risque n'ont rien à voir avec ceux-ci. -->
+        <record id="ir_cron_document_daily_maintenance" model="ir.cron">
+            <field name="name">Documents : entretien quotidien</field>
             <field name="model_id" ref="model_project_document"/>
             <field name="state">code</field>
-            <field name="code">model._cron_check_document_reviews()</field>
+            <field name="code">model._cron_document_maintenance()</field>
             <field name="interval_number">1</field>
             <field name="interval_type">days</field>
+            <field name="nextcall" eval="(DateTime.now().replace(hour=5, minute=30, second=0))"/>
             <field name="active">True</field>
         </record>
 
-        <!-- Daily cron job to check for clients with outdated documentation -->
-        <record id="ir_cron_document_outdated_client_docs" model="ir.cron">
-            <field name="name">Documents: Vérifier documentation obsolète clients</field>
-            <field name="model_id" ref="model_project_document"/>
-            <field name="state">code</field>
-            <field name="code">model._cron_check_outdated_client_docs()</field>
-            <field name="interval_number">1</field>
-            <field name="interval_type">days</field>
-            <field name="active">True</field>
-        </record>
-
-        <!-- Biweekly dashboard report -->
+        <!-- Rapport par courriel, bimensuel. Garde sa propre tâche : il sort du
+             courriel, donc son échec ne doit pas se confondre avec celui d'une
+             passe d'activités, et sa reprise n'a pas le même sens. -->
         <record id="ir_cron_document_dashboard_report" model="ir.cron">
             <field name="name">Documents: Rapport tableau de bord (bimensuel)</field>
             <field name="model_id" ref="model_project_document"/>

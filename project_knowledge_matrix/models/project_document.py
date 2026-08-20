@@ -1,6 +1,9 @@
+import logging
 from datetime import timedelta
 
 from odoo import api, fields, models
+
+_logger = logging.getLogger(__name__)
 
 
 class ProjectDocument(models.Model):
@@ -143,6 +146,32 @@ class ProjectDocument(models.Model):
     )
     review_reminder_sent_7 = fields.Boolean(
         string='Rappel 7 jours envoyé',
+        default=False,
+        copy=False,
+    )
+
+    # Les alertes d'expiration ont leurs propres drapeaux. Tant qu'elles
+    # partageaient ceux des révisions, un document portant les deux dates ne
+    # recevait jamais que le rappel de révision : la passe le marquait, et la
+    # recherche d'expiration l'excluait aussitôt. Porter les deux dates est le
+    # cas courant, pas l'exception.
+    expiration_reminder_sent_90 = fields.Boolean(
+        string="Alerte d'expiration 90 jours envoyée",
+        default=False,
+        copy=False,
+    )
+    expiration_reminder_sent_60 = fields.Boolean(
+        string="Alerte d'expiration 60 jours envoyée",
+        default=False,
+        copy=False,
+    )
+    expiration_reminder_sent_30 = fields.Boolean(
+        string="Alerte d'expiration 30 jours envoyée",
+        default=False,
+        copy=False,
+    )
+    expiration_reminder_sent_7 = fields.Boolean(
+        string="Alerte d'expiration 7 jours envoyée",
         default=False,
         copy=False,
     )
@@ -413,6 +442,8 @@ class ProjectDocument(models.Model):
                 'review_reminder_sent_30': False,
                 'review_reminder_sent_7': False,
             })
+            # Les drapeaux d'expiration ne bougent pas : réviser un document ne
+            # repousse pas sa date d'expiration.
 
     def action_view_outdated_distributions(self):
         """Open outdated distributions for this document."""
@@ -429,72 +460,105 @@ class ProjectDocument(models.Model):
             ],
         }
 
+    # Paliers de rappel : (jours avant, drapeau de révision, drapeau
+    # d'expiration, libellé). Chaque échéance a son propre drapeau — les deux
+    # colonnes ne peuvent pas se marcher dessus.
+    _REMINDER_INTERVALS = (
+        (90, 'review_reminder_sent_90', 'expiration_reminder_sent_90', '90 jours'),
+        (60, 'review_reminder_sent_60', 'expiration_reminder_sent_60', '60 jours'),
+        (30, 'review_reminder_sent_30', 'expiration_reminder_sent_30', '30 jours'),
+        (7, 'review_reminder_sent_7', 'expiration_reminder_sent_7', '7 jours'),
+    )
+
+    @api.model
+    def _cron_document_maintenance(self):
+        """Entretien quotidien des documents, en un seul réveil.
+
+        Trois passes indépendantes qui avaient chacune leur tâche planifiée :
+        les accusés en attente, les rappels de révision et d'expiration, et la
+        documentation obsolète chez les clients. Deux d'entre elles partaient à
+        la même minute.
+
+        Chaque passe tourne dans son propre point de reprise. Sans ça, la fusion
+        rendrait le module plus fragile qu'avant : trois crons, c'est trois
+        transactions, et l'échec de l'une laissait les deux autres faire leur
+        travail. Une passe qui lève est journalisée et les suivantes continuent.
+        """
+        passes = (
+            ('accusés en attente',
+             self.env['project.document.distribution']._cron_check_pending_acknowledgments),
+            ('révisions et expirations', self._cron_check_document_reviews),
+            ('documentation obsolète', self._cron_check_outdated_client_docs),
+        )
+        for libelle, passe in passes:
+            try:
+                with self.env.cr.savepoint():
+                    passe()
+            except Exception:
+                # Le point de reprise a déjà défait les écritures de la passe ;
+                # le cache de l'ORM, lui, garde ce qu'elle y avait mis.
+                self.env.invalidate_all()
+                _logger.exception(
+                    "project_knowledge_matrix : la passe « %s » de l'entretien "
+                    "quotidien a échoué. Les passes suivantes continuent.",
+                    libelle,
+                )
+
     @api.model
     def _cron_check_document_reviews(self):
-        """Cron job to check for documents needing review and create activities.
+        """Rappels de révision et alertes d'expiration, à quatre paliers.
 
-        Creates activities at multiple intervals before review/expiration dates:
-        - 90 days before: First reminder (low priority)
-        - 60 days before: Second reminder (normal priority)
-        - 30 days before: Third reminder (high priority)
-        - 7 days before: Urgent reminder (urgent priority)
+        90, 60, 30 et 7 jours avant l'échéance, une activité par document et par
+        palier. Un drapeau par palier empêche la répétition ; ``action_mark_reviewed``
+        les remet à faux pour le cycle suivant.
+
+        Les deux échéances sont indépendantes. Elles ont partagé un drapeau
+        unique, et ça se voyait à l'usage : la passe traitait les révisions
+        d'abord et marquait le document, puis la recherche d'expiration
+        l'excluait sur ce même drapeau. Un document portant les deux dates ne
+        recevait donc jamais son alerte d'expiration — soit la majorité du parc.
         """
         today = fields.Date.today()
 
-        # Reminder intervals: (days_before, flag_field, priority, summary_prefix)
-        intervals = [
-            (90, 'review_reminder_sent_90', '0', '90 jours'),
-            (60, 'review_reminder_sent_60', '1', '60 jours'),
-            (30, 'review_reminder_sent_30', '2', '30 jours'),
-            (7, 'review_reminder_sent_7', '3', '7 jours'),
-        ]
-
-        activity_type = self.env.ref('mail.mail_activity_data_todo', raise_if_not_found=False)
-        if not activity_type:
+        if not self.env.ref('mail.mail_activity_data_todo', raise_if_not_found=False):
             return
 
-        for days, flag_field, priority, summary_prefix in intervals:
-            target_date = today + timedelta(days=days)
+        # (champ de date, drapeau, titre, gabarit de phrase)
+        echeances = (
+            ('review_date', 1, 'Rappel de révision',
+             'doit être révisé avant le'),
+            ('expiration_date', 2, "Alerte d'expiration",
+             'expire le'),
+        )
 
-            # Check review dates
-            documents_review = self.search([
-                ('state', '=', 'active'),
-                ('review_date', '<=', target_date),
-                ('review_date', '>', today),
-                (flag_field, '=', False),
-            ])
+        for jours, drapeau_revision, drapeau_expiration, libelle in self._REMINDER_INTERVALS:
+            date_cible = today + timedelta(days=jours)
+            drapeaux = {1: drapeau_revision, 2: drapeau_expiration}
 
-            for doc in documents_review:
-                user = doc.owner_id or doc.author_id or self.env.user
-                doc.activity_schedule(
-                    'mail.mail_activity_data_todo',
-                    date_deadline=doc.review_date,
-                    user_id=user.id,
-                    note=f"<p><strong>Rappel de révision ({summary_prefix})</strong></p>"
-                         f"<p>Le document <em>{doc.name}</em> ({doc.code}) "
-                         f"doit être révisé avant le {doc.review_date}.</p>",
-                )
-                doc.write({flag_field: True})
+            for champ_date, rang, titre, phrase in echeances:
+                drapeau = drapeaux[rang]
+                documents = self.search([
+                    ('state', '=', 'active'),
+                    (champ_date, '<=', date_cible),
+                    (champ_date, '>', today),
+                    (drapeau, '=', False),
+                ])
+                if not documents:
+                    continue
 
-            # Check expiration dates
-            documents_expiring = self.search([
-                ('state', '=', 'active'),
-                ('expiration_date', '<=', target_date),
-                ('expiration_date', '>', today),
-                (flag_field, '=', False),
-            ])
-
-            for doc in documents_expiring:
-                user = doc.owner_id or doc.author_id or self.env.user
-                doc.activity_schedule(
-                    'mail.mail_activity_data_todo',
-                    date_deadline=doc.expiration_date,
-                    user_id=user.id,
-                    note=f"<p><strong>Alerte d'expiration ({summary_prefix})</strong></p>"
-                         f"<p>Le document <em>{doc.name}</em> ({doc.code}) "
-                         f"expire le {doc.expiration_date}.</p>",
-                )
-                doc.write({flag_field: True})
+                for doc in documents:
+                    user = doc.owner_id or doc.author_id or self.env.user
+                    echeance = doc[champ_date]
+                    doc.activity_schedule(
+                        'mail.mail_activity_data_todo',
+                        date_deadline=echeance,
+                        user_id=user.id,
+                        note=f"<p><strong>{titre} ({libelle})</strong></p>"
+                             f"<p>Le document <em>{doc.name}</em> ({doc.code}) "
+                             f"{phrase} {echeance}.</p>",
+                    )
+                # Un seul write pour tout le palier plutôt qu'un par document.
+                documents.write({drapeau: True})
 
     @api.model
     def _cron_check_outdated_client_docs(self):

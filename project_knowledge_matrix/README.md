@@ -593,6 +593,13 @@ This module follows Odoo 18 best practices:
 
 ## Changelog
 
+### 18.0.11.2.0
+
+- **Eight scheduled jobs become six**: the three passes that create activities on documents (pending acknowledgments, review and expiration reminders, outdated client documentation) had one cron each, two of which fired on the same minute. They now run under a single daily job, "Documents : entretien quotidien". Each pass keeps its own savepoint: three crons meant three transactions, so one failing pass left the other two to do their work, and a naive merge would have lost that quietly. The biweekly email report keeps its own job — its cadence and its failure mode have nothing to do with an activity pass. A post-migration removes the three merged jobs, which `noupdate="1"` would otherwise leave running alongside the new one, duplicating every activity.
+- **Fixed expiration alerts that never fired**: review reminders and expiration alerts shared one flag per threshold. The pass handled reviews first and flagged the document; the expiration search then excluded it on that same flag. A document carrying both a review date and an expiration date therefore never got its expiration alert — and carrying both is the common case, not the exception. Expiration alerts now have their own four flags, and marking a document reviewed no longer re-arms them: its expiration date has not moved.
+- **One flag write per threshold** instead of one per document.
+- **Scheduled-job inventory test**: every cron the module declares must point at a method that exists. A cron whose method was renamed fails silently, once a day, and nothing surfaces it.
+
 ### 18.0.11.1.0
 
 - **Test suite**: the module ships 60 tests covering the distribution counters, the credential vault, corporate governance and the matrices, plus boundary checks that every model of the module has access rights, that no relational field points at `hr.*`, and that the manifest names no missing file. Two of them count the SQL calls behind the document counters, so a return to a per-record `search()` fails the suite even though the values stay correct.
