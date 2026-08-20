@@ -15,13 +15,17 @@ import { browser } from "@web/core/browser/browser";
 import { ConnectionLostError, rpc } from "@web/core/network/rpc";
 import { registry } from "@web/core/registry";
 
-// Labels use non-breaking spaces ( ) so Odoo's notification toast
-// doesn't wrap them mid-word (e.g. "1 h" -> "1\nh"). Keep them short
-// because the toast renders 7+ buttons in a narrow strip.
+// Le toast ne fait que 400 px de large pour sept boutons : sans mise en
+// forme, le gabarit standard les comprime sous la largeur de leur
+// libellé, que son `overflow-wrap` coupe alors en plein mot (« 5 min »
+// s'affichait sur trois lignes). C'est `bf_calendar_reminder.scss` qui
+// garde chaque libellé d'un seul tenant et fait passer la rangée à la
+// ligne ; les espaces insécables essayés ici avant lui n'y changeaient
+// rien. Garder les libellés courts quand même.
 const SNOOZE_PRESETS = [
-    { label: _t("5 min"), minutes: 5 },
-    { label: _t("15 min"), minutes: 15 },
-    { label: _t("1 h"), minutes: 60 },
+    { label: _t("5 min"), minutes: 5 },
+    { label: _t("15 min"), minutes: 15 },
+    { label: _t("1 h"), minutes: 60 },
     { label: _t("Demain"), minutes: null, kind: "tomorrow_8" },
 ];
 
@@ -43,10 +47,32 @@ export const bfCalendarNotificationService = {
     start(env, { action, bus_service, notification, orm }) {
         let calendarNotifTimeouts = {};
         let nextCalendarNotifTimeout = null;
-        const displayedNotifications = new Set();
+        // Clé "<event_id>,<alarm_id>" -> fonction qui retire le toast. Une
+        // Map plutôt qu'un Set : il faut pouvoir fermer un rappel décidé
+        // ailleurs, pas seulement savoir qu'il est affiché.
+        const displayedNotifications = new Map();
 
         bus_service.subscribe("calendar.alarm", (payload) => {
             displayCalendarNotification(payload);
+        });
+
+        // Un rappel reporté ou marqué vu dans une autre fenêtre doit
+        // disparaître ici aussi : sans ça, chaque onglet garde son toast et
+        // réclame un geste déjà posé. Le serveur diffuse sur le canal du
+        // participant (voir `_bf_broadcast_reminder_closed`), donc l'onglet
+        // d'origine reçoit son propre message — retirer un toast déjà retiré
+        // ne fait rien.
+        bus_service.subscribe("bf_calendar_reminder/close", (payload) => {
+            const eventId = payload && payload.event_id;
+            if (!eventId) {
+                return;
+            }
+            const prefix = `${eventId},`;
+            for (const [key, remove] of [...displayedNotifications]) {
+                if (key.startsWith(prefix)) {
+                    remove();
+                }
+            }
         });
         bus_service.start();
 
@@ -100,7 +126,13 @@ export const bfCalendarNotificationService = {
                 },
             });
             buttons.push({
-                name: _t("Ignorer"),
+                // `primary` est le seul levier d'apparence que le gabarit
+                // standard expose par bouton ; il porte le bleu de la marque
+                // sur le geste le plus fréquent. Les reports passent en
+                // contour par la feuille de style, qui les reconnaît à leur
+                // classe grise (voir bf_calendar_reminder.scss).
+                name: _t("Vu"),
+                primary: true,
                 onClick: async () => {
                     await orm.call("calendar.attendee", "bf_dismiss", [notif.event_id]);
                     await rpc("/calendar/notify_ack");
@@ -140,12 +172,15 @@ export const bfCalendarNotificationService = {
                         title: notif.title,
                         type: "warning",
                         sticky: true,
+                        // Cible de `bf_calendar_reminder.scss` ; sans elle,
+                        // la mise en forme toucherait tous les toasts.
+                        className: "o_bf_calendar_reminder",
                         onClose: () => {
                             displayedNotifications.delete(key);
                         },
                         buttons: buildSnoozeButtons(notif, () => notificationRemove()),
                     });
-                    displayedNotifications.add(key);
+                    displayedNotifications.set(key, () => notificationRemove());
                 }, notif.timer * 1000);
                 lastNotifTimer = Math.max(lastNotifTimer, notif.timer);
             });
