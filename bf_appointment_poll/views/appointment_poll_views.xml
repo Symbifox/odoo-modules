@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="appointment_poll_view_form" model="ir.ui.view">
+        <field name="name">appointment.poll.form</field>
+        <field name="model">appointment.poll</field>
+        <field name="arch" type="xml">
+            <form string="Sondage de disponibilités">
+                <header>
+                    <button name="action_propose_slots" type="object"
+                            string="Proposer des créneaux libres" class="btn-primary"
+                            invisible="state not in ('draft', 'open') or slot_source != 'organizer'"/>
+                    <button name="action_hold_shortlist" type="object"
+                            string="Retenir dans mon agenda"
+                            invisible="slot_source != 'open' or hold_mode == 'none' or state != 'open'"/>
+                    <button name="action_open" type="object"
+                            string="Ouvrir le vote" class="btn-primary"
+                            invisible="state != 'draft'"/>
+                    <button name="action_close" type="object"
+                            string="Clore le vote"
+                            invisible="state != 'open'"/>
+                    <button name="action_schedule_and_open" type="object"
+                            string="Fixer la rencontre" class="btn-primary"
+                            invisible="state != 'closed' or booking_id"/>
+                    <button name="action_back_to_draft" type="object"
+                            string="Remettre en brouillon"
+                            invisible="state in ('draft', 'scheduled')"/>
+                    <button name="action_cancel" type="object" string="Annuler"
+                            invisible="state in ('cancelled', 'scheduled')"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,open,closed,scheduled"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_booking" type="object"
+                                class="oe_stat_button" icon="fa-calendar-check-o"
+                                invisible="not booking_id">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Rendez-vous</span>
+                            </div>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="Objet de la rencontre"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="user_id"/>
+                            <field name="type_id"/>
+                            <field name="slot_source"/>
+                            <field name="seeder_participant_id"
+                                   invisible="slot_source != 'seeder'"
+                                   readonly="seeded_by_id != False"
+                                   options="{'no_create': True}"/>
+                            <field name="seeded_by_id" invisible="not seeded_by_id"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                        <group>
+                            <field name="close_date"/>
+                            <field name="max_slots"/>
+                            <field name="max_picks_per_participant"
+                                   invisible="slot_source == 'organizer'"/>
+                            <field name="hold_mode"/>
+                            <field name="show_votes"/>
+                        </group>
+                    </group>
+                    <group string="Où en est-on">
+                        <group>
+                            <field name="participant_count"/>
+                            <field name="responded_count"/>
+                        </group>
+                        <group>
+                            <field name="pending_required_count"/>
+                            <field name="viable_slot_count"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Créneaux proposés" name="slots">
+                            <field name="slot_ids">
+                                <list editable="bottom" decoration-muted="not is_viable"
+                                      decoration-success="is_complete and is_viable">
+                                    <field name="start"/>
+                                    <field name="stop"/>
+                                    <field name="proposed_by_id" optional="show"/>
+                                    <field name="is_shortlisted" widget="boolean_toggle"/>
+                                    <field name="yes_count"/>
+                                    <field name="ifneedbe_count"/>
+                                    <field name="no_count"/>
+                                    <field name="is_viable"/>
+                                    <field name="is_complete"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Participants" name="participants">
+                            <field name="participant_ids">
+                                <list editable="bottom">
+                                    <field name="name"/>
+                                    <field name="email"/>
+                                    <field name="required"/>
+                                    <field name="proposed_count" optional="show"/>
+                                    <field name="responded_at"/>
+                                    <field name="reminder_count"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Message aux participants" name="description">
+                            <field name="description"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="appointment_poll_view_list" model="ir.ui.view">
+        <field name="name">appointment.poll.list</field>
+        <field name="model">appointment.poll</field>
+        <field name="arch" type="xml">
+            <list string="Sondages">
+                <field name="name"/>
+                <field name="user_id"/>
+                <field name="type_id"/>
+                <field name="participant_count"/>
+                <field name="responded_count"/>
+                <field name="viable_slot_count"/>
+                <field name="close_date"/>
+                <field name="state" widget="badge"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="appointment_poll_action" model="ir.actions.act_window">
+        <field name="name">Sondages de disponibilités</field>
+        <field name="res_model">appointment.poll</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Créer un sondage</p>
+            <p>Proposez plusieurs créneaux déjà libres dans votre calendrier,
+               laissez chacun répondre, puis fixez la rencontre.</p>
+        </field>
+    </record>
+</odoo>

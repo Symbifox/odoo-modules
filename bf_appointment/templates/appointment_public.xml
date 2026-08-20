@@ -281,6 +281,18 @@
                                             </t>
                                         </div>
                                     </t>
+                                    <!-- Optional organization name: collected so the organizer
+                                         knows which organization the invitee represents. -->
+                                    <t t-if="booking_type.collect_company">
+                                        <div class="mb-3">
+                                            <label for="company" class="form-label fw-medium">
+                                                <t t-out="'Organization' if _en else 'Société'"/>
+                                            </label>
+                                            <input type="text" class="form-control"
+                                                   id="company" name="company"
+                                                   t-att-placeholder="'Your organization (optional)' if _en else 'Votre organisation (facultatif)'"/>
+                                        </div>
+                                    </t>
                                     <t t-set="_brand_co" t-value="booking_type.company_id or env.company"/>
                                     <t t-set="_privacy_url" t-value="(_brand_co and _brand_co.appointment_brand_privacy_url) or env['ir.config_parameter'].sudo().get_param('bf_appointment.privacy_url', '/r/politique-de-confidentialite')"/>
                                     <t t-set="_company_name" t-value="(_brand_co and (_brand_co.appointment_brand_name or _brand_co.name)) or (_en and 'the organization' or 'l’organisation')"/>

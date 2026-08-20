@@ -17,6 +17,10 @@ from odoo.http import Controller, request, route
 
 _logger = logging.getLogger(__name__)
 
+# Cap distinct tracked IPs so a flood of source IPs cannot grow the per-process
+# limiter dicts without bound (same guard as bf_meeting).
+_MAX_TRACKED_IPS = 10000
+
 # Rate limiting for token validation (anti brute-force)
 _token_fail_lock = threading.Lock()
 _token_fail_data = defaultdict(list)  # IP -> [timestamps of failed attempts]
@@ -75,6 +79,11 @@ def bf_rate_limit(bucket, max_hits, window, key=None, consume=True):
     ident = (bucket, key or _client_ip())
     now = time.monotonic()
     with _bucket_lock:
+        # Same bound as the three named limiters, and it matters more here:
+        # the key is (bucket, IP), so a distinct-IP flood grows this dict
+        # once per bucket it touches.
+        if len(_bucket_data) > _MAX_TRACKED_IPS:
+            _bucket_data.clear()
         cutoff = now - window
         hits = [t for t in _bucket_data[ident] if t > cutoff]
         if len(hits) >= max_hits:
@@ -82,7 +91,10 @@ def bf_rate_limit(bucket, max_hits, window, key=None, consume=True):
             return False
         if consume:
             hits.append(now)
-        _bucket_data[ident] = hits
+        if hits:
+            _bucket_data[ident] = hits
+        else:
+            _bucket_data.pop(ident, None)  # bound memory: drop idle keys
         return True
 
 
@@ -122,10 +134,13 @@ def _check_token_rate_limit():
     ip = _client_ip()
     now = time.monotonic()
     with _token_fail_lock:
-        attempts = _token_fail_data[ip]
         cutoff = now - _TOKEN_FAIL_WINDOW
-        _token_fail_data[ip] = [t for t in attempts if t > cutoff]
-        return len(_token_fail_data[ip]) < _TOKEN_FAIL_MAX
+        kept = [t for t in _token_fail_data[ip] if t > cutoff]
+        if kept:
+            _token_fail_data[ip] = kept
+        else:
+            _token_fail_data.pop(ip, None)  # bound memory: drop idle IPs
+        return len(kept) < _TOKEN_FAIL_MAX
 
 
 def _record_token_failure():
@@ -133,6 +148,8 @@ def _record_token_failure():
     ip = _client_ip()
     now = time.monotonic()
     with _token_fail_lock:
+        if len(_token_fail_data) > _MAX_TRACKED_IPS:
+            _token_fail_data.clear()  # bound memory under a distinct-IP flood
         _token_fail_data[ip].append(now)
 
 
@@ -146,6 +163,8 @@ def _check_book_rate_limit():
     ip = _client_ip()
     now = time.monotonic()
     with _book_lock:
+        if len(_book_data) > _MAX_TRACKED_IPS:
+            _book_data.clear()  # bound memory under a distinct-IP flood
         cutoff = now - _BOOK_WINDOW
         _book_data[ip] = [t for t in _book_data[ip] if t > cutoff]
         if len(_book_data[ip]) >= _BOOK_MAX:
@@ -275,6 +294,8 @@ def _check_consent_lookup_rate_limit():
     ip = _client_ip()
     now = time.monotonic()
     with _consent_lookup_lock:
+        if len(_consent_lookup_data) > _MAX_TRACKED_IPS:
+            _consent_lookup_data.clear()  # bound memory under a distinct-IP flood
         cutoff = now - _CONSENT_LOOKUP_WINDOW
         _consent_lookup_data[ip] = [t for t in _consent_lookup_data[ip] if t > cutoff]
         if len(_consent_lookup_data[ip]) >= _CONSENT_LOOKUP_MAX:
@@ -424,6 +445,7 @@ class AppointmentController(Controller):
         name = (kwargs.get("name") or "").strip()
         email = (kwargs.get("email") or "").strip()
         phone = (kwargs.get("phone") or "").strip()
+        company = (kwargs.get("company") or "").strip()
         tz = (kwargs.get("tz") or "").strip()
         duration_str = (kwargs.get("duration") or "").strip()
         location_input = (kwargs.get("location") or "").strip()
@@ -482,6 +504,11 @@ class AppointmentController(Controller):
                 "email": email,
                 "phone": phone or False,
             }
+            # Optional organization captured on the form: stored as the
+            # individual contact's company name so the organizer can see
+            # which organization the invitee represents.
+            if company and booking_type.collect_company:
+                partner_vals["company_name"] = company
             if tz:
                 partner_vals["tz"] = tz
             partner = Partner.create(partner_vals)
@@ -491,6 +518,10 @@ class AppointmentController(Controller):
                 partner.name = name
             if phone and not partner.phone:
                 partner.phone = phone
+            # Fill the company name only when the contact has none on file,
+            # to avoid clobbering a value an internal user may have curated.
+            if company and booking_type.collect_company and not partner.company_name:
+                partner.company_name = company
             # Capture the browser-detected TZ on the partner if missing.
             # We never overwrite an existing tz: a user who manually picked
             # a different TZ in their res.users profile (e.g. a colleague

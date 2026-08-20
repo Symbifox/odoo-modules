@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- noupdate : un gabarit retouché dans l'interface ne doit pas être
+             écrasé au prochain `-u`. Même convention que le module parent.
+             Le rafraîchissement volontaire passe par migrations/. -->
+        <record id="mail_template_poll_invitation" model="mail.template">
+            <field name="name">Sondage de disponibilités — invitation</field>
+            <field name="model_id" ref="model_appointment_poll_participant"/>
+            <field name="subject">{{ object.poll_id.name }} : vos disponibilités</field>
+            <field name="email_from">{{ (object.poll_id.type_id.company_id.email_formatted or '') }}</field>
+            <field name="email_to">{{ object.email }}</field>
+            <field name="lang">{{ object.partner_id.lang or object.poll_id.user_id.lang }}</field>
+            <field name="auto_delete" eval="False"/>
+            <field name="body_html"><![CDATA[
+
+<t t-set="company" t-value="(object.poll_id.type_id.company_id) or user.company_id"/>
+<t t-set="brand_primary" t-value="(company and company.report_brand_primary) or '#714B67'"/>
+<t t-set="brand_dark" t-value="(company and company.report_brand_dark) or '#212529'"/>
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" t-attf-style="background-color:{{ (object.poll_id.type_id.company_id and object.poll_id.type_id.company_id.appointment_brand_dark) or brand_dark }};">
+ <tbody><tr><td align="center" style="padding:24px;">
+  <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px; max-width:600px; margin:0 auto; background-color:#ffffff; border-radius:12px; border:1px solid #e5e7eb; border-collapse:collapse;">
+   <tbody>
+    <tr><td t-attf-style="background-color:{{ (object.poll_id.type_id.company_id and object.poll_id.type_id.company_id.appointment_brand_dark) or brand_dark }}; padding:16px 24px; border-radius:12px 12px 0 0;">
+     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tbody><tr>
+      <td align="left"><a t-attf-href="{{ (object.poll_id.type_id.company_id and object.poll_id.type_id.company_id.appointment_brand_website_url) or 'https://www.bluefoxconsultant.com' }}" style="text-decoration:none;"><img t-attf-src="{{ (object.poll_id.type_id.company_id and object.poll_id.type_id.company_id.appointment_brand_logo_url) or 'https://www.bluefoxconsultant.com/web/image/website/1/logo/Blue%20Fox?unique=803cc14' }}" t-attf-alt="{{ (object.poll_id.type_id.company_id and object.poll_id.type_id.company_id.appointment_brand_name) or 'Blue Fox' }}" style="height:48px; width:auto; display:block; border:0;"/></a></td>
+      <td align="right" style="color:#E6EDF3; font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:20px; font-weight:800;">Vos disponibilit&#233;s</td>
+     </tr></tbody></table>
+    </td></tr>
+    <tr><td t-attf-style="height:4px; line-height:4px; background-color:{{ (object.poll_id.type_id.company_id and object.poll_id.type_id.company_id.appointment_brand_primary) or brand_primary }};">&#160;</td></tr>
+    <tr><td style="padding:24px; font-family:'Lexend','Segoe UI',Arial,sans-serif;">
+        <p style="font-size:16px; line-height:26px; color:#374151; margin:0 0 16px 0;">Bonjour <t t-out="object.name or ''"/>,</p>
+        <p style="font-size:16px; line-height:26px; color:#374151; margin:0 0 8px 0;"><t t-out="object.poll_id.user_id.name or ''"/> cherche un moment qui convienne &#224; tout le monde pour la rencontre &#171;&#160;<strong><t t-out="object.poll_id.name or ''"/></strong>&#160;&#187;.</p>
+        <p style="font-size:16px; line-height:26px; color:#374151; margin:0 0 8px 0;">Quelques plages vous sont propos&#233;es. Pour chacune, indiquez si elle vous convient, si elle vous conviendrait au besoin, ou pas du tout. &#199;a prend une minute.</p>
+        <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:16px 0 4px 0; border:1px solid #e5e7eb; border-radius:8px; border-collapse:separate;"><tbody>
+         <tr><td style="padding:12px 16px; background-color:#f9fafb; border-bottom:1px solid #e5e7eb; color:#6B7280; font-size:14px; width:38%;">Objet</td><td style="padding:12px 16px; background-color:#f9fafb; border-bottom:1px solid #e5e7eb; font-size:14px; font-weight:600; color:#374151;"><t t-out="object.poll_id.name or ''"/></td></tr>
+         <tr><td style="padding:12px 16px; border-bottom:1px solid #e5e7eb; color:#6B7280; font-size:14px;">Dur&#233;e pr&#233;vue</td><td style="padding:12px 16px; border-bottom:1px solid #e5e7eb; font-size:14px; color:#374151;"><t t-out="object.poll_id.duration_display()"/></td></tr>
+         <tr><td style="padding:12px 16px; border-bottom:1px solid #e5e7eb; color:#6B7280; font-size:14px;">Cr&#233;neaux propos&#233;s</td><td style="padding:12px 16px; border-bottom:1px solid #e5e7eb; font-size:14px; color:#374151;"><t t-out="len(object.poll_id.slot_ids)"/></td></tr>
+         <t t-if="object.poll_id.close_date"><tr><td style="padding:12px 16px; border-bottom:1px solid #e5e7eb; color:#6B7280; font-size:14px;">R&#233;pondre avant le</td><td style="padding:12px 16px; border-bottom:1px solid #e5e7eb; font-size:14px; font-weight:600; color:#374151;"><t t-out="object.poll_id.close_display()"/></td></tr></t>
+         <t t-if="object.required"><tr><td style="padding:12px 16px; color:#6B7280; font-size:14px;">Votre pr&#233;sence</td><td style="padding:12px 16px; font-size:14px; font-weight:600; color:#374151;">Requise</td></tr></t>
+        </tbody></table>
+        <p style="text-align:center; margin:24px 0 8px 0;">
+         <a t-att-href="object._vote_url()" t-attf-style="background-color:{{ (object.poll_id.type_id.company_id and object.poll_id.type_id.company_id.appointment_brand_primary) or brand_primary }}; color:#ffffff; padding:14px 34px; text-decoration:none; border-radius:6px; font-weight:600; font-size:15px; display:inline-block;">Indiquer mes disponibilit&#233;s</a>
+        </p>
+        <p style="text-align:center; font-size:12px; color:#9CA3AF; margin:0 0 4px 0;">Ce lien vous est personnel.</p>
+    </td></tr>
+    <tr><td style="height:1px; line-height:1px; background-color:#E5E7EB;">&#160;</td></tr>
+    <tr><td style="padding:16px 24px 24px 24px; background-color:#FFFFFF; border-radius:0 0 12px 12px;">
+     <p style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:12px; color:#6B7280; margin:0;">
+      Ce sondage vous a &#233;t&#233; transmis par <strong t-attf-style="color:{{ (object.poll_id.type_id.company_id and object.poll_id.type_id.company_id.appointment_brand_dark) or brand_dark }};"><t t-out="object.poll_id.user_id.name or ''"/></strong>
+      via <t t-out="(object.poll_id.type_id.company_id and object.poll_id.type_id.company_id.appointment_brand_name) or 'Blue Fox'"/>. Vos r&#233;ponses ne servent qu&#8217;&#224; fixer cette rencontre.
+     </p>
+    </td></tr>
+   </tbody>
+  </table>
+ </td></tr></tbody>
+</table>
+
+]]></field>
+        </record>
+
+        <record id="mail_template_poll_reminder" model="mail.template">
+            <field name="name">Sondage de disponibilités — relance</field>
+            <field name="model_id" ref="model_appointment_poll_participant"/>
+            <field name="subject">Rappel — {{ object.poll_id.name }}</field>
+            <field name="email_from">{{ (object.poll_id.type_id.company_id.email_formatted or '') }}</field>
+            <field name="email_to">{{ object.email }}</field>
+            <field name="lang">{{ object.partner_id.lang or object.poll_id.user_id.lang }}</field>
+            <field name="auto_delete" eval="False"/>
+            <field name="body_html"><![CDATA[
+
+<t t-set="company" t-value="(object.poll_id.type_id.company_id) or user.company_id"/>
+<t t-set="brand_primary" t-value="(company and company.report_brand_primary) or '#714B67'"/>
+<t t-set="brand_dark" t-value="(company and company.report_brand_dark) or '#212529'"/>
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" t-attf-style="background-color:{{ (object.poll_id.type_id.company_id and object.poll_id.type_id.company_id.appointment_brand_dark) or brand_dark }};">
+ <tbody><tr><td align="center" style="padding:24px;">
+  <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px; max-width:600px; margin:0 auto; background-color:#ffffff; border-radius:12px; border:1px solid #e5e7eb; border-collapse:collapse;">
+   <tbody>
+    <tr><td t-attf-style="background-color:{{ (object.poll_id.type_id.company_id and object.poll_id.type_id.company_id.appointment_brand_dark) or brand_dark }}; padding:16px 24px; border-radius:12px 12px 0 0;">
+     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tbody><tr>
+      <td align="left"><a t-attf-href="{{ (object.poll_id.type_id.company_id and object.poll_id.type_id.company_id.appointment_brand_website_url) or 'https://www.bluefoxconsultant.com' }}" style="text-decoration:none;"><img t-attf-src="{{ (object.poll_id.type_id.company_id and object.poll_id.type_id.company_id.appointment_brand_logo_url) or 'https://www.bluefoxconsultant.com/web/image/website/1/logo/Blue%20Fox?unique=803cc14' }}" t-attf-alt="{{ (object.poll_id.type_id.company_id and object.poll_id.type_id.company_id.appointment_brand_name) or 'Blue Fox' }}" style="height:48px; width:auto; display:block; border:0;"/></a></td>
+      <td align="right" style="color:#E6EDF3; font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:20px; font-weight:800;">Petit rappel</td>
+     </tr></tbody></table>
+    </td></tr>
+    <tr><td t-attf-style="height:4px; line-height:4px; background-color:{{ (object.poll_id.type_id.company_id and object.poll_id.type_id.company_id.appointment_brand_primary) or brand_primary }};">&#160;</td></tr>
+    <tr><td style="padding:24px; font-family:'Lexend','Segoe UI',Arial,sans-serif;">
+        <p style="font-size:16px; line-height:26px; color:#374151; margin:0 0 16px 0;">Bonjour <t t-out="object.name or ''"/>,</p>
+        <p style="font-size:16px; line-height:26px; color:#374151; margin:0 0 8px 0;">Un rappel sans pression : vos disponibilit&#233;s manquent encore pour fixer la rencontre &#171;&#160;<strong><t t-out="object.poll_id.name or ''"/></strong>&#160;&#187;.</p>
+        <t t-if="object.required"><p style="font-size:16px; line-height:26px; color:#374151; margin:0 0 8px 0;">Votre pr&#233;sence &#233;tant requise, la rencontre attend votre r&#233;ponse pour se fixer.</p></t>
+        <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:16px 0 4px 0; border:1px solid #e5e7eb; border-radius:8px; border-collapse:separate;"><tbody>
+         <tr><td style="padding:12px 16px; background-color:#f9fafb; border-bottom:1px solid #e5e7eb; color:#6B7280; font-size:14px; width:38%;">Objet</td><td style="padding:12px 16px; background-color:#f9fafb; border-bottom:1px solid #e5e7eb; font-size:14px; font-weight:600; color:#374151;"><t t-out="object.poll_id.name or ''"/></td></tr>
+         <tr><td style="padding:12px 16px; border-bottom:1px solid #e5e7eb; color:#6B7280; font-size:14px;">Dur&#233;e pr&#233;vue</td><td style="padding:12px 16px; border-bottom:1px solid #e5e7eb; font-size:14px; color:#374151;"><t t-out="object.poll_id.duration_display()"/></td></tr>
+         <tr><td style="padding:12px 16px; border-bottom:1px solid #e5e7eb; color:#6B7280; font-size:14px;">Cr&#233;neaux propos&#233;s</td><td style="padding:12px 16px; border-bottom:1px solid #e5e7eb; font-size:14px; color:#374151;"><t t-out="len(object.poll_id.slot_ids)"/></td></tr>
+         <t t-if="object.poll_id.close_date"><tr><td style="padding:12px 16px; border-bottom:1px solid #e5e7eb; color:#6B7280; font-size:14px;">R&#233;pondre avant le</td><td style="padding:12px 16px; border-bottom:1px solid #e5e7eb; font-size:14px; font-weight:600; color:#374151;"><t t-out="object.poll_id.close_display()"/></td></tr></t>
+         <t t-if="object.required"><tr><td style="padding:12px 16px; color:#6B7280; font-size:14px;">Votre pr&#233;sence</td><td style="padding:12px 16px; font-size:14px; font-weight:600; color:#374151;">Requise</td></tr></t>
+        </tbody></table>
+        <p style="text-align:center; margin:24px 0 8px 0;">
+         <a t-att-href="object._vote_url()" t-attf-style="background-color:{{ (object.poll_id.type_id.company_id and object.poll_id.type_id.company_id.appointment_brand_primary) or brand_primary }}; color:#ffffff; padding:14px 34px; text-decoration:none; border-radius:6px; font-weight:600; font-size:15px; display:inline-block;">R&#233;pondre maintenant</a>
+        </p>
+        <p style="text-align:center; font-size:12px; color:#9CA3AF; margin:0 0 4px 0;">Ce lien vous est personnel.</p>
+    </td></tr>
+    <tr><td style="height:1px; line-height:1px; background-color:#E5E7EB;">&#160;</td></tr>
+    <tr><td style="padding:16px 24px 24px 24px; background-color:#FFFFFF; border-radius:0 0 12px 12px;">
+     <p style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:12px; color:#6B7280; margin:0;">
+      Ce sondage vous a &#233;t&#233; transmis par <strong t-attf-style="color:{{ (object.poll_id.type_id.company_id and object.poll_id.type_id.company_id.appointment_brand_dark) or brand_dark }};"><t t-out="object.poll_id.user_id.name or ''"/></strong>
+      via <t t-out="(object.poll_id.type_id.company_id and object.poll_id.type_id.company_id.appointment_brand_name) or 'Blue Fox'"/>. Vos r&#233;ponses ne servent qu&#8217;&#224; fixer cette rencontre.
+     </p>
+    </td></tr>
+   </tbody>
+  </table>
+ </td></tr></tbody>
+</table>
+
+]]></field>
+        </record>
+    </data>
+</odoo>

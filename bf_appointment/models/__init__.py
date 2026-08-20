@@ -1,3 +1,4 @@
+from . import _sms_text
 from . import appointment_email_schedule
 from . import appointment_intake
 from . import calendar_event
