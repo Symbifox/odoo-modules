@@ -43,6 +43,7 @@
                 </group>
                 <group string="Consentements (Loi 25 / LCAP)">
                     <group>
+                        <field name="collect_company"/>
                         <field name="allow_guests"/>
                         <field name="max_guests" invisible="not allow_guests"/>
                         <field name="guests_see_intake" invisible="not allow_guests"/>
@@ -82,7 +83,11 @@
                             <list editable="bottom">
                                 <field name="trigger"/>
                                 <field name="hours" widget="float_time"/>
+                                <field name="channel"/>
                                 <field name="template_id"/>
+                                <field name="sms_body"
+                                       invisible="channel == 'email'"
+                                       placeholder="Rappel : votre rendez-vous est le {{ object.start }}."/>
                                 <field name="active"/>
                             </list>
                         </field>

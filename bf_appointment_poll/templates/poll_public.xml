@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="poll_vote_page" name="Appointment Poll Vote">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="False"/>
+            <t t-call="bf_appointment.appointment_brand_style"/>
+            <t t-set="_en"
+               t-value="(env.context.get('lang') or 'fr_CA').lower().startswith('en')"/>
+            <t t-set="additional_title" t-value="poll.name"/>
+
+            <div class="bf-poll">
+                <div class="bf-section-header mb-4">
+                    <h2 t-esc="poll.name"/>
+                    <p class="mb-0">
+                        <t t-out="'invites you to indicate your availability.' if _en
+                                  else 'vous consulte pour fixer une rencontre.'"
+                           t-options="{'widget': 'text'}"/>
+                    </p>
+                    <p class="bf-poll-organizer mb-0">
+                        <t t-out="poll.user_id.name or ''"/>
+                    </p>
+                </div>
+
+                <div t-if="request.params.get('merci')" class="alert alert-success">
+                    <t t-out="'Thank you, your answers are saved. You can change them while the poll is open.' if _en
+                              else 'Merci, vos réponses sont enregistrées. Vous pouvez les modifier tant que le sondage est ouvert.'"/>
+                </div>
+
+                <div t-if="request.params.get('propose')" class="alert alert-success">
+                    <t t-out="'Your slots are added. Others can now answer them.' if _en
+                              else 'Vos plages sont ajoutées. Les autres peuvent maintenant y répondre.'"/>
+                </div>
+
+                <div t-if="attend_amorce" class="alert alert-secondary">
+                    <t t-out="'The grid is not set yet. The person leading this will propose the slots, and you will get a new notice.' if _en
+                              else 'La grille n\'est pas encore posée. La personne qui mène le dossier proposera les plages, et vous recevrez un nouvel avis.'"/>
+                </div>
+
+                <div t-if="poll.state != 'open'" class="alert alert-secondary">
+                    <t t-out="'This poll is no longer accepting answers.' if _en
+                              else 'Ce sondage n\'accepte plus de réponses.'"/>
+                </div>
+
+                <div t-if="poll.description" class="bf-poll-intro mb-4"
+                     t-out="poll.description"/>
+
+                <div class="bf-poll-meta mb-3">
+                    <span class="bf-badge bf-badge-light">
+                        <i class="fa fa-clock-o me-1"/>
+                        <t t-out="poll.duration_display()"/>
+                    </span>
+                    <span class="bf-badge bf-badge-light" t-if="tz_label">
+                        <i class="fa fa-globe me-1"/>
+                        <t t-out="tz_label"/>
+                    </span>
+                    <span class="bf-badge bf-badge-light" t-if="participant.required">
+                        <t t-out="'Your presence is required' if _en
+                                  else 'Votre présence est requise'"/>
+                    </span>
+                </div>
+
+                <t t-if="peut_proposer and pool">
+                    <div class="bf-poll-propose">
+                        <h3>
+                            <t t-out="'Add the times that work for you' if _en
+                                      else 'Ajoutez les moments qui vous conviennent'"/>
+                        </h3>
+                        <p class="bf-poll-propose-hint">
+                            <t t-if="restant">
+                                <t t-out="'You can add up to ' if _en else 'Vous pouvez en ajouter jusqu\'à '"/>
+                                <strong t-out="restant"/>.
+                            </t>
+                            <t t-out="'These are the times the organiser is free.' if _en
+                                      else 'Ce sont les moments où l\'organisateur est libre.'"/>
+                        </p>
+                        <form t-attf-action="/appointment/poll/#{participant.access_token}/propose"
+                              method="post">
+                            <input type="hidden" name="csrf_token"
+                                   t-att-value="request.csrf_token()"/>
+                            <div class="bf-poll-pool">
+                                <t t-foreach="pool_by_day" t-as="jour">
+                                    <div class="bf-poll-pool-day">
+                                        <div class="bf-poll-pool-day-name" t-out="jour"/>
+                                        <div class="bf-poll-pool-chips">
+                                            <t t-foreach="pool_by_day[jour]" t-as="creneau">
+                                                <label class="bf-poll-chip">
+                                                    <input type="checkbox" name="pool"
+                                                           t-att-value="creneau[0]"/>
+                                                    <span t-out="creneau[1]"/>
+                                                </label>
+                                            </t>
+                                        </div>
+                                    </div>
+                                </t>
+                            </div>
+                            <button type="submit" class="btn bf-btn-accent bf-poll-submit">
+                                <t t-out="'Add these times' if _en else 'Ajouter ces moments'"/>
+                            </button>
+                        </form>
+                    </div>
+                </t>
+
+                <form t-if="poll.state == 'open' and slots"
+                      t-attf-action="/appointment/poll/#{participant.access_token}/vote"
+                      method="post" class="bf-poll-form">
+                    <input type="hidden" name="csrf_token"
+                           t-att-value="request.csrf_token()"/>
+
+                    <t t-foreach="slots" t-as="slot">
+                        <div class="bf-poll-slot">
+                            <div class="bf-poll-slot-when">
+                                <span class="bf-poll-slot-day"
+                                      t-out="slot.display_day(_en)"/>
+                                <span class="bf-poll-slot-time"
+                                      t-out="slot.display_time()"/>
+                            </div>
+
+                            <div class="bf-poll-choices" role="radiogroup">
+                                <t t-set="current" t-value="votes.get(slot.id)"/>
+                                <t t-foreach="[('yes', 'Yes' if _en else 'Oui'),
+                                               ('ifneedbe', 'If need be' if _en else 'Si nécessaire'),
+                                               ('no', 'No' if _en else 'Non')]"
+                                   t-as="choice">
+                                    <label t-attf-class="bf-poll-choice bf-poll-choice-#{choice[0]}#{' is-picked' if current == choice[0] else ''}">
+                                        <input type="radio"
+                                               t-attf-name="slot_#{slot.id}"
+                                               t-att-value="choice[0]"
+                                               t-att-checked="current == choice[0] or None"/>
+                                        <span t-out="choice[1]"/>
+                                    </label>
+                                </t>
+                            </div>
+
+                            <t t-if="show_votes">
+                                <t t-set="lignes" t-value="others.get(slot.id) or []"/>
+                                <div class="bf-poll-others" t-if="lignes">
+                                    <t t-foreach="lignes" t-as="ligne">
+                                        <span t-attf-class="bf-poll-who bf-poll-who-#{ligne[1]}">
+                                            <t t-out="ligne[0]"/>
+                                            <t t-if="ligne[2]">*</t>
+                                        </span>
+                                    </t>
+                                </div>
+                                <div class="bf-poll-others bf-poll-others-empty" t-else="">
+                                    <t t-out="'No answer yet.' if _en else 'Aucune réponse pour le moment.'"/>
+                                </div>
+                            </t>
+                        </div>
+                    </t>
+
+                    <p class="bf-poll-legend" t-if="show_votes">
+                        <t t-out="'* required attendee' if _en else '* participant obligatoire'"/>
+                    </p>
+
+                    <button type="submit" class="btn bf-btn-accent bf-poll-submit">
+                        <t t-out="'Send my availability' if _en
+                                  else 'Envoyer mes disponibilités'"/>
+                    </button>
+                </form>
+            </div>
+        </t>
+    </template>
+</odoo>

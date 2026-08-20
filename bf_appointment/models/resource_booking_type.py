@@ -60,6 +60,18 @@ class ResourceBookingType(models.Model):
         default=False,
         help="Indique que ce type de rendez-vous peut avoir lieu en personne.",
     )
+    collect_company = fields.Boolean(
+        string="Demander le nom de l'organisation",
+        # Faux par défaut À DESSEIN. Les locataires qui collectaient déjà
+        # l'organisation portent la colonne et gardent leurs valeurs : un
+        # déploiement n'y touche pas. Un défaut à vrai ferait, lui,
+        # apparaître un champ sur des formulaires publics en service.
+        default=False,
+        help="Affiche un champ « Société » facultatif sur le formulaire public "
+             "et le conserve sur la fiche du demandeur (nom de l'organisation). "
+             "Utile quand l'organisateur doit savoir quelle organisation la "
+             "personne représente, et pas seulement son nom.",
+    )
     reminder_hours = fields.Float(
         string="Rappel avant le rendez-vous (heures)",
         default=24.0,

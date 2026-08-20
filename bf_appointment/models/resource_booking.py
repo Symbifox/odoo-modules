@@ -12,6 +12,18 @@ from markupsafe import Markup
 
 from odoo import _, api, fields, models
 
+# bf_securetransfer owns the VoIP.ms transport. This module deliberately does
+# not depend on it: the tenants carry different addon sets, and a booking page
+# has no business being uninstallable because an unrelated module is missing.
+# Without it the SMS channel simply never fires and every reminder leaves by
+# e-mail, which is the same fallback every other failure takes.
+try:
+    from odoo.addons.bf_securetransfer.models import sms as sms_api
+except ImportError:  # pragma: no cover — depends on the tenant's addon set
+    sms_api = None
+
+from . import _sms_text
+
 _logger = logging.getLogger(__name__)
 
 
@@ -107,7 +119,7 @@ class ResourceBooking(models.Model):
             ("confirmed", "Confirmés"),
             ("declined", "Écartés"),
         ],
-        string="Invités additionnels",
+        string="État des invités",
         compute="_compute_guest_state",
         help="Tant que c'est « en attente », aucune invitation n'est partie.",
     )
@@ -428,9 +440,8 @@ class ResourceBooking(models.Model):
         passer par une méthode du modèle, jamais par ``t-field`` sur un
         Datetime.
 
-        Signalé par Justine Simard (Écolaction) le 2026-08-19 : elle a repris
-        trois fois la même réservation de 16:00 parce que la page lui répondait
-        20:00.
+        Rapporté le 2026-08-19 : une personne a repris trois fois la même
+        réservation de 16:00 parce que la page lui répondait 20:00.
         """
         self.ensure_one()
         if not self.start:
@@ -854,7 +865,7 @@ class ResourceBooking(models.Model):
 
         L'organisation prime sur la personne quand on la connaît (contact
         rattaché à une société, ou société saisie au formulaire) : « Rencontre
-        flexible - LivingSafe x Blue Fox » se lit mieux que le nom du signataire.
+        flexible - Acme x Notre marque » se lit mieux que le nom du signataire.
         La marque vient de `appointment_brand_name` pour rester juste sur les
         locataires qui n'affichent pas leur raison sociale.
 
@@ -1272,6 +1283,78 @@ class ResourceBooking(models.Model):
             mail.write({"attachment_ids": [(4, attachment.id)]})
         mail.send()
 
+    # ---- SMS ----
+
+    def _appointment_sms_phone(self):
+        """The booker's number for SMS, normalized to 10 NANP digits, or None.
+
+        The public form leaves the phone optional and stores whatever was
+        typed on ``partner.phone`` — which may well be a landline, something
+        no API can tell us. So this is best-effort by design: a None here, or
+        a number that turns out not to receive texts, must never cost the
+        booker their reminder. The caller falls back to e-mail either way.
+        """
+        self.ensure_one()
+        partner = self.partner_id
+        if not partner:
+            return None
+        for candidate in (partner.mobile, partner.phone):
+            if not candidate:
+                continue
+            number = sms_api and sms_api.normalize_na(candidate)
+            if number:
+                return number
+        return None
+
+    def _render_appointment_sms(self, schedule):
+        """Render ``schedule.sms_body`` for this booking, or None if unusable.
+
+        Returns None (rather than a truncated message) when the rendered text
+        breaks the GSM-7 budget: ``bf_securetransfer.sms.send()`` would cut it
+        at 160 septets and VoIP.ms would likely refuse the result, so falling
+        back to the e-mail template is both safer and more honest.
+        """
+        self.ensure_one()
+        booker_tz = self._get_booker_display_tz()
+        lang = (self.partner_id.lang if self.partner_id else False) \
+            or self.env.lang or "fr_CA"
+        rendered = self.env["mail.render.mixin"].with_context(
+            lang=lang, tz=booker_tz or False,
+        )._render_template(
+            schedule.sms_body,
+            "resource.booking",
+            [self.id],
+            engine="inline_template",
+        )[self.id]
+        rendered = (rendered or "").strip()
+        if not rendered:
+            return None
+        error = _sms_text.check(rendered)
+        if error:
+            _logger.warning(
+                "bf_appointment: SMS non envoyable pour la réservation %d "
+                "(planification %d) — %s",
+                self.id, schedule.id, error,
+            )
+            return None
+        return rendered
+
+    def _send_appointment_sms(self, schedule):
+        """Try to deliver ``schedule``'s SMS to the booker. True when sent.
+
+        Never raises: a False simply routes the caller to the e-mail template.
+        """
+        self.ensure_one()
+        if sms_api is None or not sms_api.configured(self.env):
+            return False
+        phone = self._appointment_sms_phone()
+        if not phone:
+            return False
+        body = self._render_appointment_sms(schedule)
+        if not body:
+            return False
+        return sms_api.send(self.env, phone, body)
+
     # ---- Cron ----
 
     @api.model
@@ -1303,6 +1386,16 @@ class ResourceBooking(models.Model):
             )
             return
         now = fields.Datetime.now()
+        # VoIP.ms stops accepting after roughly 27 messages and does not drain
+        # until midnight — it is a daily quota, not a rate, so pacing inside
+        # the run would buy nothing and would stall every other cron on the
+        # tenant (max_cron_threads = 1). A per-run ceiling keeps a backlog from
+        # burning the day's quota in one tick instead; the overflow leaves by
+        # e-mail. Raise it once the limit is lifted with VoIP.ms (ticket + A2P
+        # registration).
+        sms_budget = int(self.env["ir.config_parameter"].sudo().get_param(
+            "bf_appointment.sms_max_per_run", "25"
+        ) or 0)
         bookings = self.search([
             ("state", "in", ("confirmed", "scheduled")),
             ("start", "!=", False),
@@ -1332,18 +1425,51 @@ class ResourceBooking(models.Model):
                 # Skip ICS on "after" follow-ups, the meeting already
                 # happened, so re-sending the calendar invite is noise.
                 attach_ics = schedule.trigger != "after"
-                try:
-                    booking._send_appointment_email(
-                        schedule.template_id, attach_ics=attach_ics
-                    )
-                except Exception as e:
-                    _logger.error(
-                        "Failed to send scheduled email for booking %d "
-                        "(schedule %d): %s",
-                        booking.id,
-                        schedule.id,
-                        e,
-                    )
+                sms_sent = False
+                if schedule.channel in ("sms", "both") and sms_budget > 0:
+                    try:
+                        sms_sent = booking._send_appointment_sms(schedule)
+                    except Exception as e:  # never let SMS sink the run
+                        _logger.error(
+                            "bf_appointment: SMS en erreur pour la "
+                            "réservation %d (planification %d): %s",
+                            booking.id, schedule.id, e,
+                        )
+                        sms_sent = False
+                    if sms_sent:
+                        sms_budget -= 1
+                    elif booking._appointment_sms_phone():
+                        # A booker with a number on file whose send still
+                        # failed means the refusal came from VoIP.ms, not
+                        # from our data — most likely the ~27/day quota,
+                        # which does not drain until midnight. Retrying the
+                        # rest of the batch would only hammer the account
+                        # (suspension risk), so stand down for this run and
+                        # let e-mail carry the remainder. The next tick
+                        # tries again from scratch.
+                        sms_budget = 0
+                        _logger.warning(
+                            "bf_appointment: SMS refusé pour la réservation "
+                            "%d — bascule du reste de l'exécution sur le "
+                            "courriel.", booking.id,
+                        )
+                # E-mail goes out unless the SMS alone was asked for and it
+                # actually left: it is the fallback for every failure path
+                # (no number, refused message, quota), so a reminder is never
+                # silently dropped.
+                if not (schedule.channel == "sms" and sms_sent):
+                    try:
+                        booking._send_appointment_email(
+                            schedule.template_id, attach_ics=attach_ics
+                        )
+                    except Exception as e:
+                        _logger.error(
+                            "Failed to send scheduled email for booking %d "
+                            "(schedule %d): %s",
+                            booking.id,
+                            schedule.id,
+                            e,
+                        )
 
     # ------------------------------------------------------------------
     # Lot d'ouverture (2.40.0) — résolution de la provenance

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Se greffe sous le menu de rendez-vous du module parent. -->
+    <menuitem id="menu_appointment_poll"
+              name="Sondages de disponibilités"
+              parent="resource_booking.resource_booking_main_menu"
+              action="appointment_poll_action"
+              sequence="15"/>
+</odoo>
