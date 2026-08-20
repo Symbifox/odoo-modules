@@ -36,7 +36,7 @@ The module opens with a comprehensive dashboard showing:
 - **Review & Expiration Tracking**: Overdue reviews, expired documents, and upcoming expirations (0-30, 30-60, 60-90 days)
 - **Client Documentation Health**: Distribution counts, acknowledgment rates, outdated documents
 - **Internal Compliance**: Employee acknowledgment rates, overdue procedures
-- **Content Quality**: Documents without versions, stale content, software documentation coverage
+- **Content Quality**: Documents without versions, stale content
 - **Knowledge Matrices**: Completion rates, blocked items, in-progress items
 - **Credentials**: Active, expiring, expired, and revoked credentials
 - **Distribution Activity**: Monthly trends and overdue acknowledgments
@@ -52,7 +52,6 @@ All dashboard metrics are clickable, navigating directly to filtered views.
 - **Internal vs Client Documents**: Separate workflows for policies/procedures and client-facing documentation
 - **Expiration Tracking**: Set expiration dates with automatic status updates and reminders at 90, 60, 30, and 7 days
 - **Review Scheduling**: Periodic review dates with overdue tracking
-- **Software Catalog**: Link documents to software products (Odoo, Nextcloud, etc.) and their versions
 
 ### Distribution & Acknowledgment
 
@@ -148,7 +147,7 @@ Full corporate governance module for Quebec LSAQ-compliant companies:
 Generate professional branded PDF reports directly from any knowledge matrix:
 
 - **One-click printing**: Blue "Imprimer PDF" button in the matrix form header (not buried in the gear menu)
-- **Symbifox branding**: Dark banner with company logo, accent blue bar, and Lexend typography via `bluefox_branding`
+- **Symbifox branding**: Dark banner with company logo, accent blue bar, and Lexend typography via `bf_lexend` (optional: the stylesheet link degrades gracefully when the module is absent)
 - **KPI summary**: Four metric cards (Total, Completed, In Progress, Overdue) with a visual progress bar
 - **Section grouping**: Items organized by section (sorted by sequence), each with a compact 6-column table (ID, Element, Status, Priority, Deadline, Assigned)
 - **Color-coded badges**: Green for done/accepted, blue for in_progress, grey for pending, red for overdue; priority badges for urgent (red) and high (orange)
@@ -229,8 +228,7 @@ Server actions for efficient multi-select operations:
 
 - `project` (Odoo Project Management)
 - `mail` (Discuss/Chatter)
-- `hr` (Human Resources - for employee distribution tracking)
-- `bluefox_branding` (branded PDF reports and email templates)
+- `bf_onboarding_base` (brand fields on `res.company` for PDF reports and email templates)
 - `cryptography` (Python package for credential encryption)
 
 ## Configuration
@@ -261,7 +259,7 @@ Sections can be customized at: **Knowledge Matrix** → **Configuration** → **
 | Knowledge Matrix User | Read/write matrices and items for accessible projects |
 | Knowledge Matrix Manager | Full access to all matrices, items, and sections |
 | Document User | Read/write documents and distributions for accessible projects/partners |
-| Document Manager | Full access to documents, types, software catalog, delete permissions |
+| Document Manager | Full access to documents, types, delete permissions |
 | Credential User | Read/write credentials for accessible projects |
 | Credential Manager | Full access to credentials, view encrypted passwords, manage types |
 | Corporate Governance Manager | Full access to resolutions, directors, officers, compliance events |
@@ -356,7 +354,6 @@ DIS1;Discovery;Top 3 Objectives;Q1;S1;Sponsor;3 objectives + KPIs;Project Charte
 | state | Selection | draft / active / archived |
 | expiration_date | Date | When document expires |
 | review_date | Date | When document needs review |
-| software_id | Many2one | Related software product |
 | version_ids | One2many | Document versions |
 | distribution_ids | One2many | Distribution records |
 
@@ -385,17 +382,6 @@ DIS1;Discovery;Top 3 Objectives;Q1;S1;Sponsor;3 objectives + KPIs;Project Charte
 | distribution_date | Date | When distributed |
 | acknowledged_date | Datetime | When acknowledged |
 | is_outdated | Boolean | Newer version exists (computed) |
-
-#### document.software
-
-| Field | Type | Description |
-|-------|------|-------------|
-| name | Char | Software name |
-| code | Char | Short code |
-| vendor | Char | Software vendor |
-| website | Char | Product website |
-| version_ids | One2many | Software versions |
-| document_count | Integer | Related documents (computed) |
 
 ### Knowledge Models
 
@@ -606,6 +592,22 @@ This module follows Odoo 18 best practices:
 - Efficient SQL constraints for uniqueness
 
 ## Changelog
+
+### 18.0.11.1.0
+
+- **Test suite**: the module ships 60 tests covering the distribution counters, the credential vault, corporate governance and the matrices, plus boundary checks that every model of the module has access rights, that no relational field points at `hr.*`, and that the manifest names no missing file. Two of them count the SQL calls behind the document counters, so a return to a per-record `search()` fails the suite even though the values stay correct.
+- **Fixed "Supersede" on a knowledge item**: `action_supersede` copied the record without changing `decision_id`, which is unique per matrix, so the button raised a database error on every call. The successor now takes the first free number of the same prefix (superseding `A1` in a matrix that runs to `A3` yields `A4`).
+- **Fixed a stale recipient name**: `recipient_name` on a distribution is a stored computed field whose dependencies ignored the linked record's name, so a contact renamed after the fact kept its old name on screen, in reports and in acknowledgment reminders. A post-migration replays the existing rows.
+- **Fixed a cached credential secret**: the "Restricted" mask is decided from the current user's groups, but neither decrypted field declared it. Within a single transaction, a secret read by a manager came back in clear for the next read, whoever made it. `depends_context` now set on `password` and `api_key`.
+- **Dashboard model declaration**: `knowledge.dashboard` was a `Model` with `_auto = False`, which made Odoo log "has no table" at ERROR level on every registry load and then try to recreate the table. It is now an `AbstractModel`, which says the same thing without misleading the registry.
+
+### 18.0.11.0.0
+
+Slimming release. 298 net lines removed, two dead models dropped.
+
+- **Software catalogue removed**: `document.software` and `document.software.version` are gone. They carried no records and no attached documents; version tracking belongs to a dedicated hosting module.
+- **`hr` dependency removed**: two typed `Many2one` fields to `hr.department` made `hr` a hard dependency for a field almost never filled. A fresh install now pulls six fewer modules. The pre-migration logs any value it is about to drop.
+- **Two N+1 computations rewritten**: `_compute_distribution_count` and `_compute_distribution_stats` ran one `search()` per record, on fields shown in the default list and kanban views. They are now a single `_read_group`, with the `@api.depends` that were missing. On a two-hundred-document list, the counters go from adding roughly 300 ms to adding about 10.
 
 ### 18.0.10.3.0
 

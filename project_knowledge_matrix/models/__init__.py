@@ -5,7 +5,6 @@ from . import project_project
 from . import credential_type
 from . import project_credential
 from . import document_type
-from . import document_software
 from . import project_document
 from . import document_version
 from . import document_distribution

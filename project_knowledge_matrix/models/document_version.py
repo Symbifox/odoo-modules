@@ -117,6 +117,12 @@ class ProjectDocumentVersion(models.Model):
         ('withdrawn', 'Retiré'),
     ], string='État', default='draft', tracking=True, required=True)
 
+    distribution_ids = fields.One2many(
+        'project.document.distribution',
+        'version_id',
+        string='Distributions',
+    )
+
     # Computed fields
     is_current = fields.Boolean(
         string='Version actuelle',
@@ -170,14 +176,35 @@ class ProjectDocumentVersion(models.Model):
                 if version.document_id.latest_version_id else False
             )
 
+    @api.depends('distribution_ids.state')
     def _compute_distribution_stats(self):
-        Distribution = self.env['project.document.distribution']
+        """Compteurs agrégés en une requête pour tout le lot.
+
+        L'ancienne version faisait un ``search()`` par version : afficher une
+        liste de N versions coûtait N requêtes.
+        """
+        self.distribution_count = 0
+        self.pending_acknowledgment_count = 0
+        ids_reels = [v.id for v in self if v.id]
+        if not ids_reels:
+            return
+
+        totaux = {}
+        for version, etat, nombre in self.env['project.document.distribution']._read_group(
+            [('version_id', 'in', ids_reels)],
+            groupby=['version_id', 'state'],
+            aggregates=['__count'],
+        ):
+            entree = totaux.setdefault(version.id, {'total': 0, 'attente': 0})
+            entree['total'] += nombre
+            if etat == 'pending':
+                entree['attente'] += nombre
+
         for version in self:
-            distributions = Distribution.search([('version_id', '=', version.id)])
-            version.distribution_count = len(distributions)
-            version.pending_acknowledgment_count = len(
-                distributions.filtered(lambda d: d.state == 'pending')
-            )
+            entree = totaux.get(version.id)
+            if entree:
+                version.distribution_count = entree['total']
+                version.pending_acknowledgment_count = entree['attente']
 
     def action_submit_review(self):
         """Submit version for review."""

@@ -85,6 +85,11 @@ class ProjectCredential(models.Model):
         compute='_compute_password',
         inverse='_inverse_password',
         store=False,
+        # Le calcul masque le secret selon les groupes de l'utilisateur courant.
+        # Sans cette clé, la valeur reste en cache d'une lecture à l'autre dans
+        # une même transaction : un secret lu par un gestionnaire ressort en
+        # clair à la lecture suivante, quel que soit l'utilisateur.
+        depends_context=('uid',),
     )
     password_encrypted = fields.Char(
         string='Mot de passe (chiffré)',
@@ -95,6 +100,7 @@ class ProjectCredential(models.Model):
         compute='_compute_api_key',
         inverse='_inverse_api_key',
         store=False,
+        depends_context=('uid',),
     )
     api_key_encrypted = fields.Char(
         string='Clé API (chiffrée)',

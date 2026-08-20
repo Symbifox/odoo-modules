@@ -243,15 +243,17 @@
                                         <td class="ml">Date de la résolution</td>
                                         <td class="mv"><span t-field="doc.meeting_date" t-options='{"format": "d MMMM yyyy"}'/></td>
                                     </tr>
-                                    <tr>
-                                        <td class="ml">Administrateur(s)</td>
-                                        <td class="mv">
-                                            <t t-foreach="directors" t-as="director">
-                                                <t t-if="not director_first">, </t>
-                                                <t t-out="director.partner_id.name"/>
-                                            </t>
-                                        </td>
-                                    </tr>
+                                    <t t-if="doc.resolution_type in ('board', 'written_board')">
+                                        <tr>
+                                            <td class="ml">Administrateur(s)</td>
+                                            <td class="mv">
+                                                <t t-foreach="directors" t-as="director">
+                                                    <t t-if="not director_first">, </t>
+                                                    <t t-out="director.partner_id.name"/>
+                                                </t>
+                                            </td>
+                                        </tr>
+                                    </t>
                                     <t t-if="doc.status == 'adopted' and doc.unanimously_adopted">
                                         <tr>
                                             <td class="ml">Adoption</td>
@@ -293,7 +295,13 @@
                                     <div class="res-sig-entry">
                                         <div class="res-sig-line"/>
                                         <div class="res-sig-name" t-out="director.partner_id.name"/>
-                                        <div class="res-sig-role">Administrateur</div>
+                                        <!-- La qualité n'est affirmée que pour une résolution du
+                                             conseil. Sur une résolution d'actionnaires, le gabarit
+                                             ne peut pas la déduire : elle est énoncée au dispositif,
+                                             signataire par signataire. -->
+                                        <t t-if="doc.resolution_type in ('board', 'written_board')">
+                                            <div class="res-sig-role">Administrateur</div>
+                                        </t>
                                     </div>
                                 </t>
                             </div>

@@ -3,11 +3,18 @@ from datetime import timedelta
 from odoo import api, fields, models
 
 
-class KnowledgeDashboard(models.Model):
-    """Dashboard model for Knowledge Management KPIs."""
+class KnowledgeDashboard(models.AbstractModel):
+    """Service de calcul des indicateurs du tableau de bord.
+
+    Modèle sans table : il n'existe que pour porter les méthodes que le client
+    OWL appelle. Déclaré ``models.Model`` avec ``_auto = False``, il faisait
+    écrire à Odoo « Model knowledge.dashboard has no table » en ERREUR à chaque
+    chargement du registre, puis tenter de recréer la table — trois lignes de
+    bruit permanent au journal, dans lesquelles une vraie erreur se noie.
+    ``AbstractModel`` dit la même chose sans mentir au registre.
+    """
     _name = 'knowledge.dashboard'
     _description = 'Tableau de bord des connaissances'
-    _auto = False  # No database table - computed model
 
     # ==========================================
     # HELPERS
@@ -276,7 +283,6 @@ class KnowledgeDashboard(models.Model):
         """Get content quality and coverage metrics."""
         Document = self.env['project.document']
         Version = self.env['project.document.version']
-        Software = self.env['document.software']
         pd = self._get_project_domain(project_id, 'project.document')
         today = fields.Date.today()
         six_months_ago = today - timedelta(days=180)
@@ -292,16 +298,6 @@ class KnowledgeDashboard(models.Model):
             elif not latest:
                 stale_count += 1
 
-        # Software catalog — not project-specific
-        total_software = Software.search_count([('active', '=', True)])
-        software_with_docs = Software.search_count([
-            ('active', '=', True),
-            ('document_count', '>', 0),
-        ])
-        coverage_rate = 0
-        if total_software > 0:
-            coverage_rate = round((software_with_docs / total_software) * 100, 1)
-
         vd = self._get_project_domain(project_id, 'project.document.version')
         year_start = today.replace(month=1, day=1)
         versions_this_year = Version.search_count(vd + [
@@ -312,9 +308,6 @@ class KnowledgeDashboard(models.Model):
         return {
             'docs_without_versions': docs_without_versions,
             'stale_documents': stale_count,
-            'total_software': total_software,
-            'software_with_docs': software_with_docs,
-            'software_coverage': coverage_rate,
             'versions_this_year': versions_this_year,
         }
 

@@ -97,32 +97,11 @@ class ProjectDocument(models.Model):
         tracking=True,
         help='Laisser vide pour les documents à l\'échelle de l\'entreprise',
     )
-    department_id = fields.Many2one(
-        'hr.department',
-        string='Département',
-        tracking=True,
-        help='Département responsable de ce document (pour les documents internes)',
-    )
     company_id = fields.Many2one(
         'res.company',
         string='Société',
         required=True,
         default=lambda self: self.env.company,
-    )
-
-    # Software tracking
-    software_id = fields.Many2one(
-        'document.software',
-        string='Logiciel',
-        tracking=True,
-        help='Logiciel documenté (ex: Nextcloud, Odoo)',
-    )
-    software_version_id = fields.Many2one(
-        'document.software.version',
-        string='Version du logiciel',
-        tracking=True,
-        domain="[('software_id', '=', software_id)]",
-        help='Version spécifique du logiciel documentée',
     )
 
     # Expiration and review tracking
@@ -285,22 +264,55 @@ class ProjectDocument(models.Model):
         for doc in self:
             doc.version_count = len(doc.version_ids)
 
+    @api.depends('version_ids.distribution_ids.state',
+                 'version_ids.distribution_ids.is_outdated')
     def _compute_distribution_count(self):
-        Distribution = self.env['project.document.distribution']
+        """Compteurs de distribution agrégés en une requête pour tout le lot.
+
+        L'ancienne version faisait un ``search()`` par document. Comme
+        ``distribution_count`` figure dans la liste et le kanban par défaut,
+        afficher 205 documents coûtait 205 requêtes.
+        """
+        self.distribution_count = 0
+        self.acknowledgment_count = 0
+        self.pending_acknowledgment_count = 0
+        self.outdated_distribution_count = 0
+
+        doc_par_version = {
+            version.id: doc.id
+            for doc in self if doc.id
+            for version in doc.version_ids if version.id
+        }
+        if not doc_par_version:
+            return
+
+        totaux = {}
+        for version, etat, obsolete, nombre in self.env[
+            'project.document.distribution'
+        ]._read_group(
+            [('version_id', 'in', list(doc_par_version))],
+            groupby=['version_id', 'state', 'is_outdated'],
+            aggregates=['__count'],
+        ):
+            entree = totaux.setdefault(
+                doc_par_version[version.id],
+                {'total': 0, 'accuses': 0, 'attente': 0, 'obsoletes': 0},
+            )
+            entree['total'] += nombre
+            if etat == 'acknowledged':
+                entree['accuses'] += nombre
+            elif etat == 'pending':
+                entree['attente'] += nombre
+            if obsolete and etat in ('pending', 'acknowledged'):
+                entree['obsoletes'] += nombre
+
         for doc in self:
-            distributions = Distribution.search([
-                ('version_id.document_id', '=', doc.id)
-            ])
-            doc.distribution_count = len(distributions)
-            doc.acknowledgment_count = len(distributions.filtered(
-                lambda d: d.state == 'acknowledged'
-            ))
-            doc.pending_acknowledgment_count = len(distributions.filtered(
-                lambda d: d.state == 'pending'
-            ))
-            doc.outdated_distribution_count = len(distributions.filtered(
-                lambda d: d.is_outdated and d.state in ['pending', 'acknowledged']
-            ))
+            entree = totaux.get(doc.id)
+            if entree:
+                doc.distribution_count = entree['total']
+                doc.acknowledgment_count = entree['accuses']
+                doc.pending_acknowledgment_count = entree['attente']
+                doc.outdated_distribution_count = entree['obsoletes']
 
     @api.depends('review_date', 'expiration_date')
     def _compute_expiration_status(self):
@@ -325,12 +337,6 @@ class ProjectDocument(models.Model):
                 doc.days_until_expiration = 999
                 doc.is_expired = False
                 doc.is_expiring_soon = False
-
-    @api.onchange('software_id')
-    def _onchange_software_id(self):
-        """Clear software version when software changes."""
-        if self.software_version_id and self.software_version_id.software_id != self.software_id:
-            self.software_version_id = False
 
     def action_export_matrix_pdf(self):
         """Export the linked knowledge matrix as a branded PDF report."""

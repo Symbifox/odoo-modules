@@ -276,45 +276,5 @@
             <field name="groups" eval="[(4, ref('group_document_manager'))]"/>
         </record>
 
-        <!-- Logiciels documentés : Tous les utilisateurs peuvent lire -->
-        <record id="rule_document_software_read" model="ir.rule">
-            <field name="name">Logiciels documentés : Accès en lecture</field>
-            <field name="model_id" ref="model_document_software"/>
-            <field name="domain_force">[(1, '=', 1)]</field>
-            <field name="groups" eval="[(4, ref('group_document_user'))]"/>
-            <field name="perm_read" eval="True"/>
-            <field name="perm_write" eval="False"/>
-            <field name="perm_create" eval="False"/>
-            <field name="perm_unlink" eval="False"/>
-        </record>
-
-        <!-- Logiciels documentés : Les gestionnaires ont un accès complet -->
-        <record id="rule_document_software_manager" model="ir.rule">
-            <field name="name">Logiciels documentés : Accès complet gestionnaire</field>
-            <field name="model_id" ref="model_document_software"/>
-            <field name="domain_force">[(1, '=', 1)]</field>
-            <field name="groups" eval="[(4, ref('group_document_manager'))]"/>
-        </record>
-
-        <!-- Versions de logiciels : Tous les utilisateurs peuvent lire -->
-        <record id="rule_document_software_version_read" model="ir.rule">
-            <field name="name">Versions de logiciels : Accès en lecture</field>
-            <field name="model_id" ref="model_document_software_version"/>
-            <field name="domain_force">[(1, '=', 1)]</field>
-            <field name="groups" eval="[(4, ref('group_document_user'))]"/>
-            <field name="perm_read" eval="True"/>
-            <field name="perm_write" eval="False"/>
-            <field name="perm_create" eval="False"/>
-            <field name="perm_unlink" eval="False"/>
-        </record>
-
-        <!-- Versions de logiciels : Les gestionnaires ont un accès complet -->
-        <record id="rule_document_software_version_manager" model="ir.rule">
-            <field name="name">Versions de logiciels : Accès complet gestionnaire</field>
-            <field name="model_id" ref="model_document_software_version"/>
-            <field name="domain_force">[(1, '=', 1)]</field>
-            <field name="groups" eval="[(4, ref('group_document_manager'))]"/>
-        </record>
-
     </data>
 </odoo>
