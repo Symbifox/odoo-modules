@@ -28,9 +28,9 @@ $bf-anthracite-themed: var(--bf-appt-dark, #{$bf-anthracite});
 
     // The band is ALWAYS dark, so its text must ALWAYS be light. Some website
     // themes color headings with the brand primary at a higher specificity
-    // than our class selector — on some tenants that primary is a dark blue,
+    // than our class selector — on Client B that primary is a dark blue,
     // which left the booking-type title nearly invisible on the anthracite
-    // band. Force light text on every heading
+    // band (HT00287, Charles 2026-06-22). Force light text on every heading
     // and link inside the band; !important to win over the theme cascade.
     h1, h2, h3, h4, h5, h6, a {
         color: #fff !important;
@@ -218,7 +218,7 @@ $bf-anthracite-themed: var(--bf-appt-dark, #{$bf-anthracite});
 
 // Inside-type description (`/appointment/<slug>`). The BF site body is
 // dark (`--body-bg: #212529`), so the legacy `#495057` gray was barely
-// visible. White + slightly larger.
+// visible. White + slightly larger per Olivier 2026-05-04.
 .bf-description {
     color: rgba(255, 255, 255, 0.92);
     font-size: 1.05rem;

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="bf_appointment_onetime_wizard_form" model="ir.ui.view">
+        <field name="name">bf.appointment.onetime.wizard.form</field>
+        <field name="model">bf.appointment.onetime.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Lien de réservation personnel">
+                <field name="state" invisible="1"/>
+
+                <!-- Écran 1 : réglage -->
+                <group invisible="state != 'config'">
+                    <group>
+                        <field name="type_id"
+                               options="{'no_create': True}"
+                               domain="[('is_public', '=', True)]"/>
+                        <field name="partner_id" options="{'no_create_edit': True}"/>
+                        <field name="guest_partner_ids" widget="many2many_tags"
+                               options="{'no_create_edit': True}"/>
+                    </group>
+                    <group>
+                        <field name="duration"/>
+                        <field name="location" placeholder="Laisser vide pour le lieu du type"/>
+                        <field name="expires_in_days"/>
+                        <field name="single_use"/>
+                    </group>
+                </group>
+                <div class="alert alert-info" role="status" invisible="state != 'config'">
+                    Le lien vaut jeton d'accès&#160;: qui l'a peut réserver. Transmettez-le
+                    à la personne, pas à une liste.
+                </div>
+
+                <!-- Écran 2 : le lien -->
+                <div invisible="state != 'done'">
+                    <div class="alert alert-success" role="status">
+                        Lien prêt. Copiez-le et transmettez-le à votre destinataire.
+                    </div>
+                    <group>
+                        <field name="url" widget="CopyClipboardURL" nolabel="1"
+                               class="oe_inline"/>
+                    </group>
+                    <group>
+                        <field name="expires_display" string="Expiration"/>
+                        <field name="booking_id" string="Réservation créée"/>
+                    </group>
+                </div>
+
+                <footer>
+                    <button name="action_create_link" type="object" class="btn-primary"
+                            string="Créer le lien" invisible="state != 'config'"/>
+                    <button string="Annuler" class="btn-secondary" special="cancel"
+                            invisible="state != 'config'"/>
+                    <button name="action_new_link" type="object" class="btn-primary"
+                            string="Créer un autre lien" invisible="state != 'done'"/>
+                    <button name="action_open_booking" type="object" class="btn-secondary"
+                            string="Ouvrir la réservation" invisible="state != 'done'"/>
+                    <button string="Fermer" class="btn-secondary" special="cancel"
+                            invisible="state != 'done'"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="bf_appointment_onetime_wizard_action" model="ir.actions.act_window">
+        <field name="name">Créer un lien de réservation</field>
+        <field name="res_model">bf.appointment.onetime.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="menu_appointment_onetime"
+              name="Créer un lien de réservation"
+              parent="resource_booking.resource_booking_main_menu"
+              action="bf_appointment_onetime_wizard_action"
+              sequence="12"/>
+</odoo>

@@ -43,6 +43,9 @@
                 </group>
                 <group string="Consentements (Loi 25 / LCAP)">
                     <group>
+                        <field name="allow_guests"/>
+                        <field name="max_guests" invisible="not allow_guests"/>
+                        <field name="guests_see_intake" invisible="not allow_guests"/>
                         <field name="requires_recording_consent"/>
                         <field name="recording_notice_id"
                                invisible="not requires_recording_consent"

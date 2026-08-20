@@ -6,6 +6,13 @@ from odoo.exceptions import UserError
 
 _logger = logging.getLogger(__name__)
 
+# Valeur d'affichage du mot de passe déjà enregistré. `get_values` la pousse
+# dans le champ pour ne jamais renvoyer le secret au navigateur ; `set_values`
+# doit donc l'ignorer, sinon un simple « Enregistrer » dans Paramètres
+# ré-encrypte les astérisques par-dessus le vrai jeton applicatif et toutes les
+# créations de salle Talk tombent en 401 (vécu sur BF le 2026-07-24).
+MASKED_PASSWORD = "********"
+
 try:
     from cryptography.fernet import Fernet
 except ImportError:
@@ -40,6 +47,11 @@ class ResConfigSettings(models.TransientModel):
         help="Mot de passe d'application Nextcloud pour l'API Talk. Stocké chiffré.",
     )
 
+    appointment_quick_link_type_id = fields.Many2one(
+        "resource.booking.type",
+        related="company_id.appointment_quick_link_type_id", readonly=False,
+        string="Type pour les liens rapides",
+    )
     appointment_brand_name = fields.Char(
         related="company_id.appointment_brand_name", readonly=False,
     )
@@ -77,8 +89,9 @@ class ResConfigSettings(models.TransientModel):
 
     def set_values(self):
         res = super().set_values()
-        if self.bf_appointment_nc_talk_password:
-            encrypted = self._encrypt_value(self.bf_appointment_nc_talk_password)
+        password = self.bf_appointment_nc_talk_password
+        if password and set(password) != {"*"}:
+            encrypted = self._encrypt_value(password)
             self.env["ir.config_parameter"].sudo().set_param(
                 "bf_appointment.nc_talk_password_encrypted", encrypted
             )
@@ -92,7 +105,7 @@ class ResConfigSettings(models.TransientModel):
             .get_param("bf_appointment.nc_talk_password_encrypted", "")
         )
         if encrypted:
-            res["bf_appointment_nc_talk_password"] = "********"
+            res["bf_appointment_nc_talk_password"] = MASKED_PASSWORD
         return res
 
     def _get_encryption_key(self):

@@ -1,7 +1,9 @@
 import logging
 import re
+from datetime import timedelta
 
-from odoo import api, fields, models
+from odoo import _, api, fields, models
+from odoo.exceptions import UserError
 
 _logger = logging.getLogger(__name__)
 
@@ -104,6 +106,30 @@ class ResourceBookingType(models.Model):
                 label = f"{minutes} min"
             choices.append((hours, label))
         return choices
+    allow_guests = fields.Boolean(
+        string="Permettre d'inviter d'autres personnes",
+        default=False,
+        help="Ajoute un champ « Autres invités » au formulaire public. Rien "
+             "n'est envoyé à ces personnes tant que le demandeur ne l'a pas "
+             "confirmé depuis sa boîte de réception.",
+    )
+    max_guests = fields.Integer(
+        string="Invités additionnels au maximum",
+        default=5,
+        help="Plafond de ce qu'un demandeur peut saisir. Sans plafond, le "
+             "formulaire devient un moyen d'écrire à beaucoup de monde d'un "
+             "coup — même avec la confirmation, on ne veut pas de ça.",
+    )
+    guests_see_intake = fields.Boolean(
+        string="Les invités voient les réponses du formulaire",
+        default=False,
+        help="La description de l'événement d'agenda reprend les réponses du "
+             "demandeur, et cette description part dans l'invitation reçue par "
+             "TOUS les participants. Décoché, les réponses sont retirées de la "
+             "description dès qu'un invité additionnel est confirmé : ce que "
+             "le demandeur a écrit ne regarde pas forcément les autres.",
+    )
+
     intake_field_ids = fields.One2many(
         "appointment.intake.field",
         "type_id",
@@ -286,3 +312,183 @@ class ResourceBookingType(models.Model):
             "url": f"/appointment/{self.slug}",
             "target": "new",
         }
+
+    # ------------------------------------------------------------------
+    # Lot d'ouverture (2.40.0) — surface stable pour les modules satellites
+    #
+    # `bf_appointment` ne connaît AUCUN de ses satellites : rien dans cette
+    # section ne référence un modèle enfant, ni par un champ typé, ni par un
+    # import. Un champ relationnel vers un modèle d'un autre module est une
+    # dépendance DURE, résolue au chargement du registre, et le défaut ne se
+    # voit que sur une installation neuve. Voir la note du même nom dans
+    # `resource_booking.py` (bf_source_ref).
+    # ------------------------------------------------------------------
+
+    def _bf_candidate_slots(self, start_dt, end_dt, tz=None, limit=0):
+        """Grille des créneaux libres de CE TYPE, sans réservation persistée.
+
+        `resource.booking._get_available_slots` est une méthode d'instance :
+        elle a besoin d'une réservation portant le type, la durée et la
+        combinaison de ressources. Un appelant qui veut seulement *proposer*
+        des créneaux (un sondage de disponibilités, un courriel de démarchage)
+        n'a pas de réservation à créer, et n'en veut surtout pas : elle
+        occuperait le créneau et déclencherait les courriels.
+
+        On passe donc par un enregistrement EN MÉMOIRE (`new()`), jamais écrit
+        en base. `_get_intervals` gère déjà ce cas : `self.id` d'un `NewId` est
+        faux, la méthode retombe sur `booking_id = -1` et aucune réservation
+        n'est exclue du calcul.
+
+        :param start_dt: datetime aware, début de la fenêtre
+        :param end_dt: datetime aware, fin de la fenêtre
+        :param tz: nom de fuseau pour le regroupement par jour local. À
+            défaut, le fuseau d'affichage habituel du demandeur.
+        :param limit: nombre maximal de créneaux rendus (0 = tous). Les
+            créneaux sont rendus en ordre chronologique, donc une limite
+            garde les plus proches.
+        :return: liste de datetimes aware, triée.
+        """
+        self.ensure_one()
+        booking = self.env["resource.booking"].new({
+            "type_id": self.id,
+            "duration": self.duration,
+        })
+        if tz:
+            booking = booking.with_context(tz=tz)
+        grid = booking._get_available_slots(start_dt, end_dt)
+        slots = sorted(slot for day_slots in grid.values() for slot in day_slots)
+        return slots[:limit] if limit else slots
+
+    def _bf_create_booking(self, start, partners=None, vals=None, confirm=True):
+        """Crée une réservation pour ce type depuis une source externe.
+
+        Point d'entrée unique pour tout module qui aboutit à un rendez-vous
+        sans passer par le formulaire public : le sondage de disponibilités à
+        sa clôture, un lien unique, une reprise depuis le CRM. L'appelant
+        obtient une réservation qui a suivi exactement le même chemin qu'une
+        réservation publique — événement d'agenda, jeton d'accès, salle visio,
+        rappels programmés — sans avoir à réimplémenter la séquence.
+
+        Les notifications de création sont supprimées comme dans le
+        contrôleur public : ce sont les gabarits du module qui écrivent aux
+        participants, pas le fil de discussion d'Odoo.
+
+        :param start: datetime naïf UTC, début du rendez-vous
+        :param partners: recordset res.partner des demandeurs
+        :param vals: valeurs additionnelles (name, location, duration, user_id…)
+        :param confirm: confirmer immédiatement (défaut) ou laisser en attente
+        :return: la réservation créée
+        """
+        self.ensure_one()
+        Booking = self.env["resource.booking"].sudo().with_context(
+            no_mail_to_attendees=True,
+            mail_create_nolog=True,
+            mail_create_nosubscribe=True,
+            tracking_disable=True,
+            mail_notrack=True,
+        )
+        partners = partners or self.env["res.partner"]
+        organizer = (vals or {}).get("user_id")
+        booking_vals = {
+            "type_id": self.id,
+            "partner_ids": [(6, 0, partners.ids)],
+            "start": start,
+        }
+        if not organizer:
+            booking_vals["user_id"] = self.env.user.id
+        if partners and "name" not in (vals or {}):
+            booking_vals["name"] = Booking._bf_build_title(
+                self,
+                partner=partners[0],
+                booker_name=partners[0].name,
+                lang=partners[0].lang or self.env.user.lang,
+            )
+        booking_vals.update(vals or {})
+        if start:
+            self._bf_assert_slot_available(start, booking_vals.get("duration"))
+        booking = Booking.create(booking_vals)
+        booking._portal_ensure_token()
+        if confirm:
+            booking.action_confirm()
+        return booking
+
+    def _bf_assert_slot_available(self, start, duration=None):
+        """Refuse une heure qui n'est pas réellement réservable.
+
+        ⚠️ Le contrôle doit avoir lieu AVANT la création, et pas après.
+
+        OCA affecte la combinaison de ressources par un calcul sur `start`.
+        Hors des disponibilités, ce calcul ne trouve rien et la réservation
+        naît sans ressource. Vérifier après coup ne marche pas : lire
+        `combination_id` déclenche le recalcul, donc la validation OCA, qui
+        lève une `ValidationError` avant qu'on ait pu dire quoi que ce soit —
+        et l'enregistrement corrompu reste dans la transaction pour exploser
+        plus loin, sur une opération sans rapport. Constaté au QA du
+        2026-08-19 : le message pointait une création de calendrier, à des
+        centaines de lignes de l'appel fautif.
+        """
+        self.ensure_one()
+        import pytz
+        heures = duration or self.duration or 1.0
+        debut = start if start.tzinfo else pytz.utc.localize(start)
+        fin = debut + timedelta(hours=heures + 1)
+        offerts = {
+            c.astimezone(pytz.utc).replace(tzinfo=None)
+            for c in self._bf_candidate_slots(debut, fin)
+        }
+        nu = start.replace(tzinfo=None) if start.tzinfo else start
+        if nu not in offerts:
+            raise UserError(_(
+                "Aucune ressource n'est disponible le %(quand)s pour "
+                "« %(type)s ». Passer par _bf_candidate_slots() pour obtenir "
+                "une heure réellement réservable.",
+                quand=nu, type=self.display_name,
+            ))
+
+    def _bf_create_onetime_link(self, partner, guests=None, expires_in_days=14,
+                                single_use=True, vals=None):
+        """Fabrique un lien de réservation personnel et rend la réservation.
+
+        Point d'entrée unique : l'assistant, le compositeur de courriel et la
+        fiche de contact passent tous par ici. Sans ça, trois copies de la même
+        séquence divergeraient au premier ajustement.
+
+        Pas de `start` : c'est tout l'objet du lien, la personne choisit son
+        créneau. On ne passe donc pas par `_bf_create_booking`, dont le
+        garde-fou porte justement sur l'heure demandée.
+        """
+        self.ensure_one()
+        if not self.is_public:
+            raise UserError(_(
+                "Le type « %s » n'est pas accessible publiquement : la page de "
+                "choix de créneau refuserait le lien. Cochez « Page publique "
+                "accessible » sur le type, et laissez « Lister sur la page "
+                "d'accueil » décoché pour qu'il reste réservé à ce lien.",
+                self.display_name,
+            ))
+        Booking = self.env["resource.booking"].with_context(
+            no_mail_to_attendees=True,
+            mail_create_nolog=True,
+            mail_create_nosubscribe=True,
+            tracking_disable=True,
+            mail_notrack=True,
+        )
+        participants = partner | (guests or self.env["res.partner"])
+        booking_vals = {
+            "type_id": self.id,
+            "partner_ids": [(6, 0, participants.ids)],
+            "user_id": self.env.user.id,
+            "name": Booking._bf_build_title(
+                self, partner=partner, booker_name=partner.name,
+                lang=partner.lang or self.env.user.lang,
+            ),
+            "bf_source": "onetime",
+            "link_single_use": single_use,
+        }
+        if expires_in_days:
+            booking_vals["link_expires_at"] = (
+                fields.Datetime.now() + timedelta(days=expires_in_days))
+        booking_vals.update(vals or {})
+        booking = Booking.create(booking_vals)
+        booking._portal_ensure_token()
+        return booking

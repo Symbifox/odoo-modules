@@ -288,6 +288,27 @@
 
                                     <!-- C1 - Loi 25 baseline: explicit consent for collecting the form data
                                          (name, email, phone, intake answers). Required to submit. -->
+                                    <t t-if="booking_type.allow_guests">
+                                        <div class="mb-3 bf-guests-field">
+                                            <label class="form-label" for="bf_guests">
+                                                <t t-out="'Other guests' if _en else 'Autres invités'"/>
+                                                <span class="text-muted small">
+                                                    <t t-out="'(optional)' if _en else '(facultatif)'"/>
+                                                </span>
+                                            </label>
+                                            <textarea class="form-control" rows="2"
+                                                      id="bf_guests" name="bf_guests"
+                                                      t-attf-placeholder="#{'one email per line' if _en else 'un courriel par ligne'}"/>
+                                            <div class="form-text">
+                                                <t t-out="'Nothing is sent to them until you confirm from the email you are about to receive.' if _en
+                                                          else 'Rien ne leur est envoyé tant que vous ne l\'avez pas confirmé depuis le courriel que vous allez recevoir.'"/>
+                                                <t t-if="booking_type.max_guests">
+                                                    <t t-out="' Jusqu\'à ' if not _en else ' Up to '"/>
+                                                    <t t-out="booking_type.max_guests"/><t t-out="'.'"/>
+                                                </t>
+                                            </div>
+                                        </div>
+                                    </t>
                                     <div class="form-check mt-3 mb-2">
                                         <input type="checkbox"
                                                class="form-check-input"
@@ -626,6 +647,241 @@
                    t-attf-style="background-color: #{(env.company and env.company.appointment_brand_primary) or brand_primary};">
                     <t t-out="'Book another meeting' if _en else 'Prendre un nouveau rendez-vous'"/>
                 </a>
+            </div>
+        </t>
+    </template>
+
+    <!-- Lien de réservation personnel devenu inutilisable : expiré, ou déjà
+         servi. On l'ANNONCE. Rediriger en silence vers la page d'accueil rend
+         200 et laisse la personne convaincue d'avoir mal cliqué : elle
+         réessaie, puis écrit pour demander ce qui se passe. -->
+    <template id="appointment_link_closed" name="Booking Link Closed">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="False"/>
+            <t t-call="bf_appointment.appointment_brand_style"/>
+            <t t-set="_en"
+               t-value="(env.context.get('lang') or 'fr_CA').lower().startswith('en')"/>
+            <t t-set="additional_title"
+               t-value="'Link no longer valid' if _en else 'Lien expiré'"/>
+            <div class="bf-appointment-confirmation">
+                <div class="bf-confirmation-card">
+                    <div class="bf-section-header mb-3">
+                        <h2>
+                            <t t-if="booking_sudo.link_state == 'used'">
+                                <t t-out="'This link has already been used' if _en
+                                          else 'Ce lien a déjà servi'"/>
+                            </t>
+                            <t t-else="">
+                                <t t-out="'This link has expired' if _en
+                                          else 'Ce lien a expiré'"/>
+                            </t>
+                        </h2>
+                    </div>
+
+                    <t t-if="booking_sudo.link_state == 'used'">
+                        <p>
+                            <t t-out="'A meeting has already been booked with this link. You can still view or cancel it below.' if _en
+                                      else 'Un rendez-vous a déjà été pris avec ce lien. Vous pouvez encore le consulter ou l\'annuler ci-dessous.'"/>
+                        </p>
+                        <p class="mt-3">
+                            <a t-attf-href="/appointment/b/#{booking_sudo.id}/#{access_token}"
+                               class="btn bf-btn-accent">
+                                <t t-out="'View my appointment' if _en
+                                          else 'Voir mon rendez-vous'"/>
+                            </a>
+                        </p>
+                    </t>
+                    <t t-else="">
+                        <p>
+                            <t t-out="'This booking link is no longer valid. Contact your host and they will send you a new one.' if _en
+                                      else 'Ce lien de réservation n\'est plus valide. Écrivez à votre interlocuteur, qui vous en transmettra un nouveau.'"/>
+                        </p>
+                        <p t-if="booking_sudo.user_id.email" class="mt-3">
+                            <a t-attf-href="mailto:#{booking_sudo.user_id.email}"
+                               class="btn bf-btn-accent">
+                                <t t-out="'Contact ' if _en else 'Écrire à '"/>
+                                <t t-out="booking_sudo.user_id.name"/>
+                            </a>
+                        </p>
+                    </t>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- Demande de confirmation avant annulation, servie sur un GET.
+         Le lien « Annuler » de l'ICS se clique depuis l'agenda : il DOIT
+         aboutir quelque part de lisible. Et il ne doit rien annuler au
+         passage — les antivirus de messagerie suivent les liens. -->
+    <template id="appointment_cancel_confirm" name="Confirm Cancellation">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="False"/>
+            <t t-call="bf_appointment.appointment_brand_style"/>
+            <t t-set="_en"
+               t-value="(env.context.get('lang') or 'fr_CA').lower().startswith('en')"/>
+            <t t-set="additional_title"
+               t-value="'Cancel this appointment?' if _en else 'Annuler ce rendez-vous ?'"/>
+            <div class="bf-appointment-confirmation">
+                <div class="bf-confirmation-card">
+                    <div class="bf-section-header mb-3">
+                        <h2>
+                            <t t-out="'Cancel this appointment?' if _en
+                                      else 'Annuler ce rendez-vous ?'"/>
+                        </h2>
+                    </div>
+
+                    <table class="table bf-cancel-summary">
+                        <tbody>
+                            <tr>
+                                <td><t t-out="'Meeting' if _en else 'Rencontre'"/></td>
+                                <td><strong t-out="booking_sudo.type_id.name"/></td>
+                            </tr>
+                            <tr t-if="booking_sudo.start">
+                                <td><t t-out="'Date' if _en else 'Date'"/></td>
+                                <td>
+                                    <strong t-out="booking_sudo.start_date_local"/>
+                                    <span t-out="booking_sudo.start_time_local"/>
+                                    <t t-if="booking_sudo.get_timezone_label()">
+                                        <span class="text-muted">
+                                            (<t t-out="booking_sudo.get_timezone_label()"/>)
+                                        </span>
+                                    </t>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><t t-out="'Duration' if _en else 'Durée'"/></td>
+                                <td t-out="booking_sudo.get_duration_display()"/>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <p class="text-muted">
+                        <t t-out="'This cannot be undone. Your host will be notified.' if _en
+                                  else 'Cette annulation est définitive. Votre interlocuteur en sera avisé.'"/>
+                    </p>
+
+                    <form method="post"
+                          t-attf-action="/appointment/b/#{booking_sudo.id}/#{access_token}/cancel">
+                        <input type="hidden" name="csrf_token"
+                               t-att-value="request.csrf_token()"/>
+                        <div class="mb-3">
+                            <label for="cancellation_reason" class="form-label">
+                                <t t-out="'Reason (optional)' if _en
+                                          else 'Raison (facultatif)'"/>
+                            </label>
+                            <textarea class="form-control" rows="2"
+                                      id="cancellation_reason"
+                                      name="cancellation_reason"/>
+                        </div>
+                        <button type="submit" class="btn btn-danger">
+                            <t t-out="'Yes, cancel it' if _en
+                                      else 'Oui, annuler'"/>
+                        </button>
+                        <a t-attf-href="/appointment/b/#{booking_sudo.id}/#{access_token}"
+                           class="btn btn-link">
+                            <t t-out="'No, keep it' if _en else 'Non, conserver'"/>
+                        </a>
+                    </form>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- Confirmation des invités additionnels, servie sur un GET qui ne décide
+         rien. Les antivirus de messagerie suivent les liens : si le GET
+         confirmait, les invitations partiraient sans qu'un humain ait cliqué. -->
+    <template id="appointment_guests_confirm" name="Confirm Additional Guests">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="False"/>
+            <t t-call="bf_appointment.appointment_brand_style"/>
+            <t t-set="_en"
+               t-value="(env.context.get('lang') or 'fr_CA').lower().startswith('en')"/>
+            <t t-set="additional_title"
+               t-value="'Your guests' if _en else 'Vos invités'"/>
+            <div class="bf-appointment-confirmation">
+                <div class="bf-confirmation-card">
+                    <t t-if="done">
+                        <div class="bf-section-header mb-3">
+                            <h2>
+                                <t t-if="decline">
+                                    <t t-out="'No invitation was sent' if _en
+                                              else 'Aucune invitation n\'a été envoyée'"/>
+                                </t>
+                                <t t-else="">
+                                    <t t-out="'Invitations sent' if _en
+                                              else 'Invitations envoyées'"/>
+                                </t>
+                            </h2>
+                        </div>
+                        <p>
+                            <t t-if="decline">
+                                <t t-out="'Nobody was contacted. Your appointment is unchanged.' if _en
+                                          else 'Personne n\'a été contacté. Votre rendez-vous est inchangé.'"/>
+                            </t>
+                            <t t-else="">
+                                <t t-out="'They have received the meeting invitation.' if _en
+                                          else 'Ces personnes ont reçu l\'invitation à la rencontre.'"/>
+                            </t>
+                        </p>
+                        <ul t-if="guests" class="bf-guest-list">
+                            <li t-foreach="guests" t-as="g">
+                                <t t-out="g.email"/>
+                                <span class="text-muted small">
+                                    <t t-if="g.state == 'confirmed'">
+                                        <t t-out="'invited' if _en else 'invité'"/>
+                                    </t>
+                                    <t t-if="g.state == 'declined'">
+                                        <t t-out="'not contacted' if _en else 'non contacté'"/>
+                                    </t>
+                                </span>
+                            </li>
+                        </ul>
+                        <p class="mt-3">
+                            <a t-attf-href="/appointment/b/#{booking_sudo.id}/#{access_token}"
+                               class="btn bf-btn-accent">
+                                <t t-out="'View my appointment' if _en
+                                          else 'Voir mon rendez-vous'"/>
+                            </a>
+                        </p>
+                    </t>
+
+                    <t t-else="">
+                        <div class="bf-section-header mb-3">
+                            <h2>
+                                <t t-out="'Invite these people?' if _en
+                                          else 'Inviter ces personnes ?'"/>
+                            </h2>
+                        </div>
+                        <p>
+                            <t t-out="'You asked to invite them to ' if _en
+                                      else 'Vous avez demandé à les convier à '"/>
+                            <strong t-out="booking_sudo.type_id.name"/>.
+                            <t t-out="' Nothing has been sent yet.' if _en
+                                      else ' Rien ne leur a encore été envoyé.'"/>
+                        </p>
+                        <ul class="bf-guest-list">
+                            <li t-foreach="guests" t-as="g" t-out="g.email"/>
+                        </ul>
+                        <form method="post"
+                              t-attf-action="/appointment/b/#{booking_sudo.id}/#{access_token}/guests/confirm">
+                            <input type="hidden" name="csrf_token"
+                                   t-att-value="request.csrf_token()"/>
+                            <button type="submit" class="btn bf-btn-accent">
+                                <t t-out="'Yes, invite them' if _en
+                                          else 'Oui, les inviter'"/>
+                            </button>
+                        </form>
+                        <form method="post" class="mt-2"
+                              t-attf-action="/appointment/b/#{booking_sudo.id}/#{access_token}/guests/decline">
+                            <input type="hidden" name="csrf_token"
+                                   t-att-value="request.csrf_token()"/>
+                            <button type="submit" class="btn btn-link ps-0">
+                                <t t-out="'No, do not contact them' if _en
+                                          else 'Non, ne pas les contacter'"/>
+                            </button>
+                        </form>
+                    </t>
+                </div>
             </div>
         </t>
     </template>

@@ -25,5 +25,18 @@
             <field name="interval_type">days</field>
             <field name="active" eval="True"/>
         </record>
+
+        <!-- Retry a dedicated Nextcloud Talk room for bookings that fell back
+             to a per-booking shlink (NC unreachable at booking time), then
+             repoint that shlink to the real room once NC is reachable. -->
+        <record id="ir_cron_appointment_repair_video" model="ir.cron">
+            <field name="name">Rendez-vous : R&#233;paration des salles visio en secours</field>
+            <field name="model_id" ref="resource_booking.model_resource_booking"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_repair_video_rooms()</field>
+            <field name="interval_number">15</field>
+            <field name="interval_type">minutes</field>
+            <field name="active" eval="True"/>
+        </record>
     </data>
 </odoo>

@@ -63,6 +63,13 @@
                         </h5>
                         <div class="d-flex flex-column gap-3">
                             <t t-if="booking_sudo.start">
+                                <!-- Jamais t-field sur un Datetime ici : le
+                                     convertisseur QWeb ignore le contexte du
+                                     record et rend dans le fuseau du VISITEUR
+                                     (aucun pour l'usager public, donc UTC).
+                                     Voir resource_booking.get_start_display. -->
+                                <t t-set="start_display"
+                                   t-value="booking_sudo.get_start_display()"/>
                                 <div class="d-flex align-items-center">
                                     <div class="bf-info-icon">
                                         <i class="fa fa-calendar"/>
@@ -70,8 +77,8 @@
                                     <div>
                                         <div class="small text-muted"
                                              t-out="'Date' if _en else 'Date'"/>
-                                        <strong t-field="booking_sudo.start"
-                                                t-options='{"format": "EEEE d MMMM yyyy"}'/>
+                                        <strong class="text-capitalize"
+                                                t-out="start_display[0]"/>
                                     </div>
                                 </div>
                                 <div class="d-flex align-items-center">
@@ -81,8 +88,7 @@
                                     <div>
                                         <div class="small text-muted"
                                              t-out="'Time' if _en else 'Heure'"/>
-                                        <strong t-field="booking_sudo.start"
-                                                t-options='{"format": "HH:mm"}'/>
+                                        <strong t-out="start_display[1]"/>
                                     </div>
                                 </div>
                             </t>
