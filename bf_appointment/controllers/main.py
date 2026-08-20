@@ -23,23 +23,93 @@ _token_fail_data = defaultdict(list)  # IP -> [timestamps of failed attempts]
 _TOKEN_FAIL_MAX = 10  # max failed attempts
 _TOKEN_FAIL_WINDOW = 300  # per 5 minutes
 
-# Cap distinct tracked IPs so a flood of source IPs cannot grow the per-process
-# limiter dicts without bound (same guard as bf_meeting).
-_MAX_TRACKED_IPS = 10000
+# Rate limiting for booking creation (anti unauthenticated spam / intake-ack
+# mail-bomb). Keyed on the ProxyFix-corrected client IP.
+_book_lock = threading.Lock()
+_book_data = defaultdict(list)  # IP -> [timestamps of accepted bookings]
+_BOOK_MAX = 5        # max bookings
+_BOOK_WINDOW = 600   # per 10 minutes / IP
+
+# --- Lot d'ouverture (2.40.0) : seau de limitation nommé, partageable -------
+#
+# Les trois limiteurs ci-dessus (jetons, réservations, consultation de
+# consentement) répètent le même motif verrou + liste d'horodatages. Ils sont
+# laissés EN PLACE tels quels : ce sont des chemins publics vivants, et les
+# refactoriser pour la seule élégance échangerait un risque réel contre un
+# gain nul.
+#
+# Un satellite qui ouvre ses propres routes publiques a pourtant besoin du même
+# service. Plutôt que de le laisser copier-coller le motif (et se tromper sur le
+# verrou, ou faire confiance à X-Forwarded-For), on expose un seau nommé.
+# `proxy_mode` est actif dans ce déploiement : `_client_ip()` lit le pair de
+# socket déjà réécrit par ProxyFix et ne parse JAMAIS les en-têtes lui-même,
+# sinon un client ferait tourner son propre seau à chaque requête.
+_bucket_lock = threading.Lock()
+_bucket_data = defaultdict(list)  # (seau, IP) -> [horodatages]
+
+
+def bf_rate_limit(bucket, max_hits, window, key=None, consume=True):
+    """Rend True si la requête passe. Consomme un jeton quand `consume`.
+
+    ⚠️ Les deux sémantiques du module sont bien distinctes, et les confondre
+    est un défaut fonctionnel, pas un détail :
+
+    * **Consommer** (`consume=True`, défaut) convient quand chaque appel EST
+      l'action à plafonner : créer une réservation, enregistrer un vote.
+      C'est le comportement de `_check_book_rate_limit`.
+    * **Vérifier seulement** (`consume=False`) convient au contrôle d'un jeton,
+      où seuls les ÉCHECS doivent compter. Consommer à chaque lecture de page
+      enfermerait dehors la personne légitime qui recharge son propre lien,
+      alors qu'elle n'a rien fait de mal. C'est la raison d'être du couple
+      `_check_token_rate_limit` / `_record_token_failure` du module, repris ici.
+
+    :param bucket: nom du seau, propre à l'appelant (« poll_vote »…)
+    :param max_hits: nombre de requêtes autorisées dans la fenêtre
+    :param window: largeur de la fenêtre, en secondes
+    :param key: clé de regroupement. Par défaut l'IP cliente ; passer un jeton
+        de participant regroupe par personne plutôt que par adresse, ce qui
+        vaut mieux quand plusieurs personnes partagent une sortie réseau.
+    :param consume: compter cet appel, ou se contenter de vérifier
+    :return: True si la requête est acceptée, False sinon
+    """
+    ident = (bucket, key or _client_ip())
+    now = time.monotonic()
+    with _bucket_lock:
+        cutoff = now - window
+        hits = [t for t in _bucket_data[ident] if t > cutoff]
+        if len(hits) >= max_hits:
+            _bucket_data[ident] = hits
+            return False
+        if consume:
+            hits.append(now)
+        _bucket_data[ident] = hits
+        return True
+
+
+def bf_rate_limit_record(bucket, window, key=None):
+    """Compte un ÉCHEC dans un seau nommé, sans rien décider.
+
+    Pendant de `bf_rate_limit(..., consume=False)` : on vérifie avant, on
+    n'inscrit qu'après un échec avéré.
+    """
+    ident = (bucket, key or _client_ip())
+    now = time.monotonic()
+    with _bucket_lock:
+        cutoff = now - window
+        hits = [t for t in _bucket_data[ident] if t > cutoff]
+        hits.append(now)
+        _bucket_data[ident] = hits
 
 
 def _client_ip():
     """Best-effort client IP for rate limiting — socket peer only.
 
-    ⚠ Do NOT read X-Forwarded-For / X-Real-IP here. This deployment runs Odoo
-    with ``proxy_mode = True``, so werkzeug's ProxyFix has already rewritten
-    ``remote_addr`` to the real client from a *trusted* number of proxy hops.
-    Parsing the headers ourselves trusts a value the caller controls whenever
-    the endpoint is reachable directly, which hands every client a fresh
-    rate-limit bucket on every request and defeats the limiter outright — most
-    visibly on ``/appointment/_consent_check``, whose 30/5 min ceiling is the
-    stated anti-enumeration control. Mirrors bf_meeting / bf_sign /
-    bf_securetransfer, which all refuse the headers for the same reason.
+    proxy_mode = True is set in this deployment, so werkzeug's ProxyFix has
+    already rewritten ``remote_addr`` to the real client from a trusted number of
+    proxy hops. We must NOT parse X-Forwarded-For / X-Real-IP ourselves: they are
+    attacker-controlled when the endpoint is reached directly, which would let a
+    client rotate its rate-limit / consent-lookup bucket per request. Mirrors
+    bf_meeting.
     """
     try:
         return request.httprequest.remote_addr or "unknown"
@@ -52,13 +122,10 @@ def _check_token_rate_limit():
     ip = _client_ip()
     now = time.monotonic()
     with _token_fail_lock:
+        attempts = _token_fail_data[ip]
         cutoff = now - _TOKEN_FAIL_WINDOW
-        kept = [t for t in _token_fail_data[ip] if t > cutoff]
-        if kept:
-            _token_fail_data[ip] = kept
-        else:
-            _token_fail_data.pop(ip, None)  # bound memory: drop idle IPs
-        return len(kept) < _TOKEN_FAIL_MAX
+        _token_fail_data[ip] = [t for t in attempts if t > cutoff]
+        return len(_token_fail_data[ip]) < _TOKEN_FAIL_MAX
 
 
 def _record_token_failure():
@@ -66,9 +133,25 @@ def _record_token_failure():
     ip = _client_ip()
     now = time.monotonic()
     with _token_fail_lock:
-        if len(_token_fail_data) > _MAX_TRACKED_IPS:
-            _token_fail_data.clear()  # bound memory under a distinct-IP flood
         _token_fail_data[ip].append(now)
+
+
+def _check_book_rate_limit():
+    """Return True and record the hit if this IP may create another booking.
+
+    Caps unauthenticated booking creation (and the intake-ack email it triggers)
+    to _BOOK_MAX per _BOOK_WINDOW so the form can't be looped into a partner/
+    booking spam or a mail-bomb aimed at an attacker-chosen address.
+    """
+    ip = _client_ip()
+    now = time.monotonic()
+    with _book_lock:
+        cutoff = now - _BOOK_WINDOW
+        _book_data[ip] = [t for t in _book_data[ip] if t > cutoff]
+        if len(_book_data[ip]) >= _BOOK_MAX:
+            return False
+        _book_data[ip].append(now)
+        return True
 
 
 # BF only ships fr_CA and en_CA. Anything en* maps to en_CA, everything else
@@ -111,7 +194,7 @@ def _apply_locale_from_request():
     Accept-Language to choose en_CA vs fr_CA.
 
     Falls back to fr_CA if the resolved lang is not installed on this tenant
-    (e.g. a mono-lingual tenant ships fr_CA only - setting en_CA would 400).
+    (e.g. a mono-lingual tenant shipping fr_CA only - setting en_CA would 400).
     """
     # Public pages: the URL prefix is authoritative. Leave the context lang
     # exactly as the website middleware resolved it from the URL.
@@ -164,7 +247,7 @@ def _apply_security_headers(response):
 
 # Pragmatic location validation: refuse strings that are too short, lack any
 # letters, or are a single short token. Rejects "abc", "123", "x", "..." while
-# accepting "123 Main St", "Office", "Café du Coin".
+# accepting "12, rue Exemple", "Bureau du fond", "Café du Coin".
 _LOCATION_MIN_LEN = 5
 _LOCATION_RE = re.compile(r"[A-Za-zÀ-ÖØ-öø-ÿ]")
 
@@ -192,41 +275,11 @@ def _check_consent_lookup_rate_limit():
     ip = _client_ip()
     now = time.monotonic()
     with _consent_lookup_lock:
-        if len(_consent_lookup_data) > _MAX_TRACKED_IPS:
-            _consent_lookup_data.clear()  # bound memory under a distinct-IP flood
         cutoff = now - _CONSENT_LOOKUP_WINDOW
         _consent_lookup_data[ip] = [t for t in _consent_lookup_data[ip] if t > cutoff]
         if len(_consent_lookup_data[ip]) >= _CONSENT_LOOKUP_MAX:
             return False
         _consent_lookup_data[ip].append(now)
-        return True
-
-
-# Booking creation: a POST on /appointment/<slug>/book is anonymous and, beyond
-# the honeypot, was unbounded — it creates a res.partner, a resource.booking,
-# privacy.consent + evidence rows, and (when the type sends one) mails a branded
-# acknowledgement to whatever address the caller typed. That last part is a mail
-# relay: capped here per IP. Mirrors bf_securetransfer's create ceiling.
-_book_lock = threading.Lock()
-_book_data = defaultdict(list)
-_BOOK_MAX = 10
-_BOOK_WINDOW = 3600  # per hour, per IP
-
-
-def _check_book_rate_limit():
-    """Atomic check-and-record on the anonymous booking-creation path."""
-    ip = _client_ip()
-    now = time.monotonic()
-    with _book_lock:
-        if len(_book_data) > _MAX_TRACKED_IPS:
-            _book_data.clear()
-        cutoff = now - _BOOK_WINDOW
-        kept = [t for t in _book_data[ip] if t > cutoff]
-        if len(kept) >= _BOOK_MAX:
-            _book_data[ip] = kept
-            return False
-        kept.append(now)
-        _book_data[ip] = kept
         return True
 
 
@@ -289,7 +342,7 @@ class AppointmentController(Controller):
         purposes (recording, marketing) on the given booking type's notices.
 
         Lets the public intake form silently hide consent checkboxes when
-        the booker has already granted (per the maintainer's UX rule). Always
+        the booker has already granted (product UX rule). Always
         returns 200 + a uniform shape to avoid email enumeration via
         timing or status code differences.
         """
@@ -362,15 +415,11 @@ class AppointmentController(Controller):
         if kwargs.get("website_url"):
             _logger.info("Honeypot triggered on appointment form")
             return request.redirect("/appointment")
-        # Anti-abuse: bound the anonymous creation path before it writes a
-        # single row or sends a single mail.
+        # Per-IP throttle: cap booking creation / intake-ack emails.
         if not _check_book_rate_limit():
-            _logger.warning(
-                "Booking rate limit hit for IP %s on /appointment/%s/book",
-                _client_ip(), slug,
-            )
             return request.redirect(
-                f"/appointment/{slug}?error={quote_plus('Trop de demandes envoyées récemment. Réessayez dans une heure.')}"
+                f"/appointment/{slug}?error="
+                + quote_plus("Trop de demandes. Veuillez réessayer dans quelques minutes.")
             )
         name = (kwargs.get("name") or "").strip()
         email = (kwargs.get("email") or "").strip()
@@ -498,7 +547,12 @@ class AppointmentController(Controller):
         booking_vals = {
             "type_id": booking_type.id,
             "partner_ids": [(6, 0, [partner.id])],
-            "name": f"RDV - {name}",
+            "name": Booking._bf_build_title(
+                booking_type,
+                partner=partner,
+                booker_name=name,
+                lang=partner.lang or organizer_user.lang,
+            ),
             "user_id": organizer_user.id,
         }
         # Booker-provided location overrides type's blank location for in-person types
@@ -518,6 +572,10 @@ class AppointmentController(Controller):
         booking = Booking.create(booking_vals)
         # Save custom field answers
         self._save_intake_answers(booking, booking_type, kwargs)
+        # Invités additionnels : enregistrés EN ATTENTE, rien ne leur est
+        # envoyé. Seule la confirmation du demandeur, depuis sa boîte,
+        # déclenchera le moindre courriel.
+        self._bf_save_guests(booking, booking_type, kwargs, partner)
         # Generate access token
         booking._portal_ensure_token()
 
@@ -640,7 +698,7 @@ class AppointmentController(Controller):
 
         # Recording consent: only create a fresh record when the type
         # requires it AND there's no active record on file. Otherwise we
-        # leave the existing consent alone (a "do not re-ask" rule).
+        # leave the existing consent alone (the "do not re-ask" rule).
         if booking_type.requires_recording_consent and not recording_already_active:
             checked = bool(kwargs.get("bf_consent_recording"))
             _record(
@@ -706,6 +764,14 @@ class AppointmentController(Controller):
             return request.redirect(
                 f"/appointment/b/{booking_id}/{token}"
             )
+        # ⚠️ Un lien mort doit DIRE pourquoi. Rediriger en silence vers la page
+        # d'accueil rend 200, laisse la personne convaincue d'avoir mal cliqué,
+        # et elle réessaie — c'est le défaut déjà connu sur les slugs inconnus.
+        if not booking_sudo._link_is_usable():
+            return _apply_security_headers(request.render(
+                "bf_appointment.appointment_link_closed",
+                {"booking_sudo": booking_sudo, "access_token": token},
+            ))
         tz = kwargs.get("tz") or ""
         if tz and tz in pytz.all_timezones_set:
             booking_sudo = booking_sudo.with_context(tz=tz)
@@ -743,6 +809,13 @@ class AppointmentController(Controller):
         booking_sudo = self._get_booking_sudo(booking_id, token)
         if not booking_sudo:
             return request.redirect("/appointment")
+        # Revérifié ICI et pas seulement à l'affichage : une page ouverte avant
+        # l'expiration reste postable après, et c'est le POST qui engage.
+        if not booking_sudo._link_is_usable():
+            return _apply_security_headers(request.render(
+                "bf_appointment.appointment_link_closed",
+                {"booking_sudo": booking_sudo, "access_token": token},
+            ))
         if booking_sudo.state == "canceled":
             return request.redirect(
                 f"/appointment/b/{booking_id}/{token}"
@@ -776,6 +849,23 @@ class AppointmentController(Controller):
                 f"?error={quote_plus(str(error.args[0]))}{tz_param}"
             )
         booking_sudo.action_confirm()
+        # Le créneau est fixé : c'est maintenant qu'on peut demander au
+        # demandeur s'il confirme ses invités. Plus tôt, l'invitation qu'ils
+        # recevraient n'aurait pas de date.
+        if booking_sudo._bf_pending_guests():
+            gabarit = request.env.ref(
+                "bf_appointment.mail_template_guest_confirmation_request",
+                raise_if_not_found=False)
+            if gabarit:
+                try:
+                    gabarit.sudo().send_mail(booking_sudo.id, force_send=False)
+                except Exception:  # noqa: BLE001
+                    _logger.exception(
+                        "Envoi de la demande de confirmation d'invités (réservation %s)",
+                        booking_sudo.id)
+        # Le lien a servi. Marqué APRÈS la confirmation : un échec de créneau
+        # renvoie l'usager au calendrier, et son lien doit encore marcher.
+        booking_sudo._mark_link_used()
         # Send our branded confirmation email with ICS attachment
         try:
             template = request.env.ref(
@@ -862,14 +952,39 @@ class AppointmentController(Controller):
         type="http",
         auth="public",
         website=True,
-        methods=["POST"],
+        methods=["GET", "POST"],
     )
     def appointment_cancel(self, booking_id, token, **kwargs):
-        """Cancel a booking."""
+        """Annuler un rendez-vous. En GET, on DEMANDE d'abord.
+
+        ⚠️ Le GET ne doit jamais annuler, et il ne doit pas non plus rendre un
+        405. Les deux se sont vérifiés :
+
+        * Un lien d'annulation part dans la description de l'ICS
+          (« Annuler : … »), donc il se clique depuis l'agenda, en GET. La
+          route n'acceptait que POST : le client recevait la page brute
+          « 405 Method Not Allowed » de Werkzeug. Signalé en production le
+          2026-08-20, en éprouvant les liens uniques.
+        * Faire annuler le GET serait pire. Les antivirus de messagerie et les
+          aperçus de lien suivent les URL des courriels : un rendez-vous se
+          serait annulé tout seul, sans que personne ne clique. C'est
+          précisément pourquoi la mutation reste en POST.
+
+        Le GET rend donc une page qui demande confirmation, avec un formulaire
+        qui poste. La mutation n'a pas bougé d'un pouce.
+        """
         _apply_locale_from_request()
         booking_sudo = self._get_booking_sudo(booking_id, token)
         if not booking_sudo:
             return request.redirect("/appointment")
+        if request.httprequest.method == "GET":
+            if booking_sudo.state == "canceled":
+                return request.redirect(f"/appointment/b/{booking_id}/{token}")
+            response = request.render(
+                "bf_appointment.appointment_cancel_confirm",
+                {"booking_sudo": booking_sudo, "access_token": token},
+            )
+            return _apply_security_headers(response)
         # Skip if already cancelled (idempotent + avoid duplicate emails)
         already_cancelled = booking_sudo.state == "canceled"
         # Capture cancellation reason before action_cancel (it may flip
@@ -1002,3 +1117,83 @@ class AppointmentController(Controller):
                     "field_id": field.id,
                     "value": value,
                 })
+
+    def _bf_save_guests(self, booking, booking_type, kwargs, partner):
+        """Enregistre les invités saisis, en attente de confirmation."""
+        if not booking_type.allow_guests:
+            return False
+        brut = (kwargs.get("bf_guests") or "").strip()
+        if not brut:
+            return False
+        Guest = request.env["resource.booking.guest"].sudo()
+        adresses, ecartees = Guest._bf_parse_emails(
+            brut,
+            exclure=[partner.email, booking.user_id.partner_id.email],
+            maximum=booking_type.max_guests or 0,
+        )
+        for adresse in adresses:
+            Guest.create({"booking_id": booking.id, "email": adresse})
+        if ecartees:
+            _logger.info(
+                "Réservation %s : %d saisie(s) d'invité écartée(s) (format, "
+                "doublon ou demandeur lui-même)", booking.id, ecartees)
+        return bool(adresses)
+
+    @route(
+        [
+            "/appointment/b/<int:booking_id>/<string:token>/guests/confirm",
+            "/appointment/b/<int:booking_id>/<string:token>/guests/decline",
+        ],
+        type="http",
+        auth="public",
+        website=True,
+        methods=["GET", "POST"],
+    )
+    def appointment_guests(self, booking_id, token, **kwargs):
+        """Confirme ou écarte les invités saisis par le demandeur.
+
+        🔴 Le GET ne décide RIEN, et c'est le cœur du dispositif. Ce lien part
+        dans un courriel : les antivirus de messagerie et les aperçus de lien
+        suivent les URL. Si le GET confirmait, les invitations partiraient
+        toutes seules, sans qu'un humain ait cliqué — c'est-à-dire exactement le
+        pourriel que cette confirmation existe pour empêcher. Le GET montre donc
+        la liste et demande; seul le POST agit.
+        """
+        _apply_locale_from_request()
+        booking_sudo = self._get_booking_sudo(booking_id, token)
+        if not booking_sudo:
+            return request.redirect("/appointment")
+        ecarter = request.httprequest.path.endswith("/decline")
+        en_attente = booking_sudo._bf_pending_guests()
+
+        if request.httprequest.method == "GET":
+            response = request.render(
+                "bf_appointment.appointment_guests_confirm",
+                {
+                    "booking_sudo": booking_sudo,
+                    "access_token": token,
+                    "guests": en_attente,
+                    "decline": ecarter,
+                    "done": not en_attente,
+                },
+            )
+            return _apply_security_headers(response)
+
+        if not bf_rate_limit("guests_confirm", 10, 600, key=token):
+            return request.redirect(f"/appointment/b/{booking_id}/{token}")
+        if en_attente:
+            if ecarter:
+                en_attente._bf_decline()
+            else:
+                en_attente._bf_confirm()
+        response = request.render(
+            "bf_appointment.appointment_guests_confirm",
+            {
+                "booking_sudo": booking_sudo,
+                "access_token": token,
+                "guests": booking_sudo.guest_ids,
+                "decline": ecarter,
+                "done": True,
+            },
+        )
+        return _apply_security_headers(response)

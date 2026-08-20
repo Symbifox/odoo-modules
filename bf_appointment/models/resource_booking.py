@@ -8,6 +8,8 @@ try:
 except ImportError:
     from backports.zoneinfo import ZoneInfo
 
+from markupsafe import Markup
+
 from odoo import _, api, fields, models
 
 _logger = logging.getLogger(__name__)
@@ -30,21 +32,20 @@ def _escape_ics(value):
 
 
 def _escape_ics_param(value):
-    """Sanitise a string for use inside a QUOTED ICS parameter value (CN="…").
+    """Assainit une chaîne destinée à un paramètre ICS ENTRE GUILLEMETS (CN="…").
 
-    Different rules from _escape_ics: inside a quoted param, ``;`` and ``,`` are
-    literal, but the double quote terminates the value. Passing a name straight
-    through let a booker whose name contains ``"`` close CN= and append their own
-    parameters (SENT-BY, DIR, a second CN) on the ATTENDEE line — the name comes
-    from the public intake form, where only .strip() is applied. CR/LF are folded
-    to a space so no property can be started either.
+    Règles différentes de _escape_ics : dans un paramètre entre guillemets, « ; »
+    et « , » sont littéraux, mais le guillemet double termine la valeur. Laisser
+    passer un nom contenant un guillemet permettait de fermer CN= et d'ajouter
+    ses propres paramètres (SENT-BY, DIR, un second CN) sur la ligne ATTENDEE —
+    le nom vient du formulaire public, où seul .strip() est appliqué. Les
+    retours de ligne sont repliés en espace pour qu'aucune propriété ne puisse
+    être ouverte non plus.
     """
     if not value:
         return ""
     value = value.replace("\r\n", " ").replace("\r", " ").replace("\n", " ")
     value = "".join(c for c in value if c.isprintable())
-    # RFC 6868 caret escaping is the standards-blessed encoding, but client
-    # support is uneven; dropping the quote is lossless enough for a display name.
     return value.replace('"', "'")
 
 
@@ -96,11 +97,103 @@ class ResourceBooking(models.Model):
         "booking_id",
         string="Réponses du formulaire d'accueil",
     )
+    guest_ids = fields.One2many(
+        "resource.booking.guest", "booking_id", string="Invités additionnels",
+    )
+    guest_state = fields.Selection(
+        [
+            ("none", "Aucun"),
+            ("pending", "En attente de votre confirmation"),
+            ("confirmed", "Confirmés"),
+            ("declined", "Écartés"),
+        ],
+        string="Invités additionnels",
+        compute="_compute_guest_state",
+        help="Tant que c'est « en attente », aucune invitation n'est partie.",
+    )
+
     cancellation_reason = fields.Text(
         string="Raison de l'annulation",
         copy=False,
         help="Raison saisie par le client (ou l'organisateur) lors de "
              "l'annulation du rendez-vous. Optionnel.",
+    )
+    cancelled_start = fields.Datetime(
+        string="Début avant annulation",
+        copy=False,
+        help="Date et heure prévues au moment de l'annulation. `action_cancel` "
+             "déprogramme la réservation et vide `start` : sans cette copie, le "
+             "courriel d'annulation ne peut plus dire QUEL rendez-vous vient "
+             "d'être annulé.",
+    )
+
+    # --- Provenance (lot d'ouverture 2.40.0) -------------------------------
+    # ⚠️ Volontairement NON typé. Un Many2one vers `appointment.poll` (ou vers
+    # tout autre modèle satellite) ferait de ce module une dépendance DURE de
+    # `bf_appointment` : Odoo résout `comodel_name` au chargement du registre,
+    # bien avant qu'une garde dans un calcul ait voix au chapitre. Le défaut ne
+    # se verrait QUE sur une installation neuve, chez le premier locataire qui
+    # installe le module de rendez-vous sans le satellite.
+    #
+    # On stocke donc une référence textuelle « modele,id » et on la résout au
+    # clic : une action `res_model` est une chaîne, elle ne crée pas de lien.
+    bf_source = fields.Char(
+        string="Origine",
+        copy=False,
+        index=True,
+        help="Module ou mécanisme à l'origine de cette réservation "
+             "(« poll », « onetime », « outreach »…). Vide pour une "
+             "réservation prise sur le formulaire public.",
+    )
+    bf_source_ref = fields.Char(
+        string="Référence d'origine",
+        copy=False,
+        help="Enregistrement d'origine, au format « modele,id ». Résolu à la "
+             "demande — ce n'est PAS un champ relationnel, pour que "
+             "bf_appointment reste installable sans ses satellites.",
+    )
+
+    # --- Lien unique (2.42.0) ----------------------------------------------
+    # Une réservation « en attente » porte déjà un jeton et une page de choix de
+    # créneau : c'est, tel quel, un lien de réservation personnel. Ce qui
+    # manquait n'était pas le mécanisme, c'était une durée de vie, un usage
+    # unique, et de quoi le fabriquer sans passer par le shell.
+    link_expires_at = fields.Datetime(
+        string="Le lien expire le",
+        copy=False,
+        help="Passé ce moment, le lien n'ouvre plus le choix de créneau. Vide "
+             "= pas d'expiration. Un lien personnel qui traîne des mois dans "
+             "une boîte de réception finit par être suivi au mauvais moment.",
+    )
+    link_single_use = fields.Boolean(
+        string="Lien à usage unique",
+        default=False,
+        copy=False,
+        help="Une fois le rendez-vous pris, le lien ne permet plus d'en "
+             "choisir un autre. La personne garde l'accès à sa page de "
+             "confirmation, donc elle peut toujours voir ou annuler.",
+    )
+    link_used_at = fields.Datetime(
+        string="Lien utilisé le",
+        readonly=True,
+        copy=False,
+    )
+    link_state = fields.Selection(
+        [
+            ("none", "Pas un lien unique"),
+            ("active", "Actif"),
+            ("used", "Déjà utilisé"),
+            ("expired", "Expiré"),
+        ],
+        string="État du lien",
+        compute="_compute_link_state",
+        help="Ce que verra la personne qui suit le lien.",
+    )
+    one_time_url = fields.Char(
+        string="Lien de réservation",
+        compute="_compute_one_time_url",
+        help="Adresse personnelle à transmettre. Elle vaut jeton d'accès : "
+             "qui l'a peut réserver.",
     )
 
     # --- Libellés français des champs de base OCA (resource.booking) ---
@@ -223,40 +316,154 @@ class ResourceBooking(models.Model):
         organizer (Auckland) must never leak into it. The organizer path
         supplies its tz explicitly through the context.
         """
-        import pytz
-        ctx_tz = self.env.context.get("tz")
-        tz_helper = self.env["bf.timezone"]
         for rec in self:
-            if not rec.start:
-                rec.start_date_local = ""
-                rec.start_time_local = ""
-                continue
-            # A booker partner.tz of "UTC" is a spurious browser-detection
-            # fallback (see _get_booker_display_tz); it would render the raw
-            # UTC instant, so drop it and fall through to the display calendar.
-            booker_tz = rec.partner_id.tz if rec.partner_id else None
-            if booker_tz == "UTC":
-                booker_tz = None
-            tz_name = tz_helper.resolve([
-                ctx_tz,
-                booker_tz,
-                rec.type_id.resource_calendar_id.tz if rec.type_id else None,
-            ])
-            try:
-                start_dt = rec.start
-                if isinstance(start_dt, str):
-                    start_dt = fields.Datetime.from_string(start_dt)
-                aware_utc = pytz.utc.localize(start_dt) if start_dt.tzinfo is None else start_dt.astimezone(pytz.utc)
-                local_dt = aware_utc.astimezone(pytz.timezone(tz_name))
-                rec.start_date_local = local_dt.strftime("%Y-%m-%d")
-                rec.start_time_local = local_dt.strftime("%H:%M")
-            except Exception as e:
-                _logger.warning("start_local compute failed for booking %s: %s", rec.id, e)
-                rec.start_date_local = rec.start.strftime("%Y-%m-%d") if rec.start else ""
-                rec.start_time_local = rec.start.strftime("%H:%M") if rec.start else ""
+            rec.start_date_local, rec.start_time_local = rec._bf_local_strings(rec.start)
+
+    def _bf_reader_tzname(self):
+        """Fuseau du lecteur courant, selon la priorité décrite ci-dessus."""
+        self.ensure_one()
+        # A booker partner.tz of "UTC" is a spurious browser-detection
+        # fallback (see _get_booker_display_tz); it would render the raw
+        # UTC instant, so drop it and fall through to the display calendar.
+        booker_tz = self.partner_id.tz if self.partner_id else None
+        if booker_tz == "UTC":
+            booker_tz = None
+        return self.env["bf.timezone"].resolve([
+            self.env.context.get("tz"),
+            booker_tz,
+            self.type_id.resource_calendar_id.tz if self.type_id else None,
+        ])
+
+    def _bf_local_strings(self, value):
+        """(date, heure) locales d'un datetime naïf-UTC pour le lecteur courant.
+
+        Factorisé pour que le créneau annulé (`cancelled_start`) se rende
+        exactement comme le créneau actif, sans dupliquer la résolution de
+        fuseau.
+        """
+        self.ensure_one()
+        if not value:
+            return "", ""
+        import pytz
+        try:
+            if isinstance(value, str):
+                value = fields.Datetime.from_string(value)
+            aware_utc = (
+                pytz.utc.localize(value) if value.tzinfo is None
+                else value.astimezone(pytz.utc)
+            )
+            local_dt = aware_utc.astimezone(pytz.timezone(self._bf_reader_tzname()))
+            return local_dt.strftime("%Y-%m-%d"), local_dt.strftime("%H:%M")
+        except Exception as e:
+            _logger.warning("start_local compute failed for booking %s: %s", self.id, e)
+            return value.strftime("%Y-%m-%d"), value.strftime("%H:%M")
+
+    def get_timezone_label(self):
+        """Étiquette du fuseau dans lequel l'heure vient d'être rendue.
+
+        Le MÊME rendez-vous part au client en heure de Montréal et à
+        l'organisateur en heure d'Auckland — `_send_appointment_email` pose le
+        fuseau par destinataire, c'est voulu. Mais sans étiquette, les deux
+        courriels annoncent deux heures (et parfois deux dates) différentes
+        pour une seule rencontre, et rien ne permet de trancher. Constaté au
+        QA du 2026-07-30 : « 2026-08-31 18:30 » au client, « 2026-09-01 10:30 »
+        à l'organisateur.
+
+        Abréviation quand la locale en a une (« HAE » en fr_CA), nom de ville
+        sinon (« Auckland ») : Babel rend « +1200 » pour la Nouvelle-Zélande,
+        ce qui n'aide personne.
+        """
+        self.ensure_one()
+        when = self.start or self.cancelled_start
+        if not when:
+            return ""
+        import pytz
+        try:
+            from babel.dates import format_datetime
+            if isinstance(when, str):
+                when = fields.Datetime.from_string(when)
+            aware_utc = pytz.utc.localize(when) if when.tzinfo is None else when
+            tz = pytz.timezone(self._bf_reader_tzname())
+            locale = self._appt_locale()
+            local_dt = aware_utc.astimezone(tz)
+            short = format_datetime(local_dt, "zzz", tzinfo=tz, locale=locale)
+            if short and not short[0].isdigit() and short[0] not in "+-":
+                return short
+            return format_datetime(local_dt, "VVV", tzinfo=tz, locale=locale)
+        except Exception as e:
+            _logger.warning("tz label unavailable for booking %s: %s", self.id, e)
+            return ""
+
+    def get_cancelled_start_display(self):
+        """(date, heure) du créneau perdu, pour les courriels d'annulation.
+
+        `action_cancel` déprogramme la réservation, donc `start` est déjà vide
+        quand le courriel se rend : on retombe sur la copie prise à
+        l'annulation.
+        """
+        self.ensure_one()
+        return self._bf_local_strings(self.start or self.cancelled_start)
+
+    def get_start_display(self):
+        """(date longue, heure) du créneau, dans le fuseau du LECTEUR.
+
+        La page publique de confirmation rendait ces deux valeurs avec
+        ``t-field="booking_sudo.start"``. Ça ne pouvait pas fonctionner : le
+        convertisseur QWeb (``ir_qweb_fields.record_to_html``) fait
+        ``record.with_context(**self.env.context)`` — il ÉCRASE le contexte du
+        record par celui du rendu. Le ``with_context(tz=...)`` posé par le
+        contrôleur est donc lettre morte, et ``context_timestamp`` retombe sur
+        ``env.user.tz`` : l'usager ``public`` n'en a aucun, donc UTC. Un
+        rendez-vous de 14:30 à Montréal s'affichait « 18:30 » juste au-dessus
+        de l'étiquette « Montréal ». Invisible en interne : un employé connecté
+        a un fuseau, donc la page lui semble correcte.
+
+        ⚠️ C'est la raison de fond pour laquelle le fuseau « revenait » :
+        le module a DEUX régies de rendu et une seule est sûre. Tout le reste
+        (courriels, .ics, sélecteur de créneaux) passe par le modèle —
+        ``start_date_local``, ``get_cancelled_start_display``,
+        ``appt_format_*`` — qui résolvent le fuseau du lecteur eux-mêmes. Les
+        correctifs de juin 2026 ont durci cette régie-là ; la page, elle,
+        lisait encore le champ brut. Toute nouvelle surface publique doit
+        passer par une méthode du modèle, jamais par ``t-field`` sur un
+        Datetime.
+
+        Signalé par Justine Simard (Écolaction) le 2026-08-19 : elle a repris
+        trois fois la même réservation de 16:00 parce que la page lui répondait
+        20:00.
+        """
+        self.ensure_one()
+        if not self.start:
+            return "", ""
+        import pytz
+        from babel.dates import format_datetime
+        value = self.start
+        if isinstance(value, str):
+            value = fields.Datetime.from_string(value)
+        # Même priorité que _send_appointment_email : le fuseau explicite du
+        # contexte quand le contrôleur en pose un, sinon celui du réservant.
+        tz_name = self.env.context.get("tz") or self._get_booker_display_tz()
+        try:
+            local_dt = pytz.utc.localize(value).astimezone(pytz.timezone(tz_name))
+        except Exception as e:  # pragma: no cover - fuseau invalide
+            _logger.warning(
+                "get_start_display: fuseau %s inutilisable sur la réservation "
+                "%s (%s), rendu en UTC", tz_name, self.id, e,
+            )
+            local_dt = pytz.utc.localize(value)
+        # Naïf volontairement : babel ne reconvertit pas, il imprime l'horloge
+        # murale telle quelle. Passer le datetime averti ferait dépendre le
+        # résultat du paramètre tzinfo de babel.
+        naive_local = local_dt.replace(tzinfo=None)
+        locale = self._appt_locale()
+        return (
+            format_datetime(naive_local, "EEEE d MMMM yyyy", locale=locale),
+            format_datetime(naive_local, "HH:mm", locale=locale),
+        )
 
     def _sync_meeting(self):
-        """Suppress calendar.event invite/update notifications.
+        """Suppress calendar.event invite/update notifications, then guarantee
+        the expected attendees are on the event.
 
         OCA's resource_booking._sync_meeting creates and writes the linked
         calendar.event with mail_notify_author=True (set in OCA's
@@ -265,8 +472,19 @@ class ResourceBooking(models.Model):
         the booker, on top of our own branded confirmation/reminder
         emails. Inject suppression context before delegating so attendees
         do not get the duplicate calendar invite.
+
+        Puis on ré-affirme les participants. `_prepare_meeting_vals` construit
+        la bonne liste, mais elle n'atterrit que si l'événement la reçoit au
+        moment où il est créé : les commandes `(4, id)` sont additives, donc un
+        événement né sans ses participants ne se répare jamais tout seul. Vécu
+        sur le RDV « Partageons l'Espoir » (booking 387 / event 6548,
+        2026-07-15), sorti avec le seul partenaire de l'organisateur — ajouté 13
+        minutes plus tard par le recalcul de `partner_ids` — sans jamais voir ni
+        le client ni la ressource. La fenêtre exacte nous a échappé : la même
+        méthode rejoue aujourd'hui la bonne liste. On arrête donc d'en dépendre
+        et on vérifie à chaque synchro.
         """
-        return super(
+        result = super(
             ResourceBooking,
             self.with_context(
                 no_mail_to_attendees=True,
@@ -278,6 +496,30 @@ class ResourceBooking(models.Model):
                 dont_notify=True,
             ),
         )._sync_meeting()
+        self._bf_ensure_meeting_attendees()
+        return result
+
+    def _bf_ensure_meeting_attendees(self):
+        """Ajoute au calendar.event les participants attendus qui manquent.
+
+        Purement additif : ce que quelqu'un a ajouté à la main sur l'événement
+        reste en place. Le retrait des ressources non retenues d'un K-of-N reste
+        la responsabilité d'`action_confirm`.
+        """
+        # Même garde de récursion que l'implémentation OCA.
+        already_syncing = self.env.context.get("syncing_booking_ids") or []
+        for one in self - self.browse(already_syncing):
+            meeting = one.meeting_id
+            if not (meeting and one.start):
+                continue
+            missing = (
+                one.partner_ids | one._bf_assigned_partners()
+            ) - meeting.partner_ids
+            if missing:
+                meeting.with_context(
+                    no_mail_to_attendees=True,
+                    dont_notify=True,
+                ).partner_ids = [(4, partner.id, 0) for partner in missing]
 
     def action_confirm(self):
         """Override to generate video URL + strip non-attendee resource partners
@@ -310,10 +552,53 @@ class ResourceBooking(models.Model):
                     booking.videocall_location = url
         return result
 
+    def _bf_assigned_resources(self):
+        """Les ressources qui prennent réellement le RDV.
+
+        `attendee_resource_ids` (sous-ensemble K-of-N) quand il est calculé,
+        sinon toute la combinaison.
+        """
+        self.ensure_one()
+        return self.attendee_resource_ids or self.combination_id.resource_ids
+
+    def _bf_assigned_partners(self):
+        """Partenaires des ressources humaines réellement assignées."""
+        self.ensure_one()
+        return self._bf_assigned_resources().filtered(
+            lambda res: res.resource_type == "user"
+        ).mapped("user_id.partner_id")
+
+    def _bf_assigned_user(self):
+        """L'utilisateur interne unique derrière les ressources assignées.
+
+        Vide si la combinaison n'en désigne pas exactement un (K-of-N à
+        plusieurs personnes, ressources matérielles, utilisateur portail) :
+        dans ce cas on laisse l'organisateur tel quel.
+        """
+        self.ensure_one()
+        users = self._bf_assigned_resources().filtered(
+            lambda res: res.resource_type == "user"
+        ).mapped("user_id").filtered(lambda u: u.active and not u.share)
+        return users if len(users) == 1 else self.env["res.users"].browse()
+
     def _prepare_meeting_vals(self):
         """Override to use attendee_resource_ids (K-of-N aware) instead of
-        combination_id.resource_ids when populating calendar.event partners."""
+        combination_id.resource_ids when populating calendar.event partners,
+        and to pin the organizer on the resource actually assigned.
+
+        Le contrôleur d'intake ne peut que *deviner* l'organisateur (il prend
+        la 1re combinaison du type) : au moment du formulaire, le créneau n'est
+        pas encore choisi. Sur un type qui offre plusieurs personnes, le RDV
+        atterrissait donc toujours au nom de la 1re, même quand c'est une autre
+        qui prend le créneau. Une fois la combinaison assignée, on connaît la
+        réponse : on recale l'organisateur dessus.
+        """
         vals = super()._prepare_meeting_vals()
+        # Le sujet réel du rendez-vous, pas la consigne du formulaire.
+        vals["description"] = self._bf_meeting_description()
+        assigned_user = self._bf_assigned_user()
+        if assigned_user:
+            vals["user_id"] = assigned_user.id
         if not self.attendee_resource_ids:
             return vals
         # Replace resource_partners with K-of-N subset
@@ -357,12 +642,19 @@ class ResourceBooking(models.Model):
            tracking notifications on these events, so the unlink is silent.
         """
         tokens = {b.id: b.access_token for b in self}
+        # `action_cancel` déprogramme la réservation (start vidé) AVANT que le
+        # contrôleur n'envoie les courriels d'annulation : sans cette copie,
+        # ceux-ci ne peuvent plus nommer le créneau perdu.
+        starts = {b.id: b.start for b in self if b.start}
         meeting_ids = [b.meeting_id.id for b in self if b.meeting_id]
         result = super().action_cancel()
         for booking in self:
             token = tokens.get(booking.id)
             if token and not booking.access_token:
                 booking.sudo().access_token = token
+            start = starts.get(booking.id)
+            if start and not booking.cancelled_start:
+                booking.sudo().cancelled_start = start
         if meeting_ids:
             # Belt + suspenders. Current OCA action_unschedule unlinks the
             # meeting before we get here, so .exists() filters those out and
@@ -394,7 +686,7 @@ class ResourceBooking(models.Model):
         if provider == "jitsi":
             return self._generate_jitsi_url()
         if provider == "nextcloud_talk":
-            return self._generate_nc_talk_url()
+            return self._nc_talk_url_with_fallback()
         return False
 
     def _generate_jitsi_url(self):
@@ -416,10 +708,10 @@ class ResourceBooking(models.Model):
             _logger.warning(
                 "Nextcloud Talk not configured, falling back to type videocall_location"
             )
-            return self.type_id.videocall_location or False
+            return False
         password = self._decrypt_nc_talk_password(password_enc)
         if not password:
-            return self.type_id.videocall_location or False
+            return False
         try:
             import pytz
             import requests
@@ -457,7 +749,7 @@ class ResourceBooking(models.Model):
             return f"{base_url.rstrip('/')}/index.php/call/{room_token}"
         except Exception as e:
             _logger.error("Failed to create Nextcloud Talk room: %s", e)
-            return self.type_id.videocall_location or False
+            return False
 
     def _decrypt_nc_talk_password(self, encrypted_value):
         """Decrypt Nextcloud Talk password using Fernet.
@@ -549,6 +841,142 @@ class ResourceBooking(models.Model):
         from babel.dates import format_date
         return format_date(day, "MMMM yyyy", locale=self._appt_locale())
 
+    # ---- Titre ----
+
+    @api.model
+    def _bf_build_title(self, booking_type, partner=None, booker_name=None, lang=None):
+        """Titre lisible d'un rendez-vous : « Type - Organisation x Marque ».
+
+        Sert au nom de la réservation, au titre de l'événement d'agenda et au
+        SUMMARY du .ics — un seul endroit à changer. L'ancien « RDV - Prénom
+        Nom » ne disait ni de quel type de rencontre il s'agissait ni avec qui,
+        ce qui rend l'agenda illisible dès qu'on a plus d'un RDV par jour.
+
+        L'organisation prime sur la personne quand on la connaît (contact
+        rattaché à une société, ou société saisie au formulaire) : « Rencontre
+        flexible - LivingSafe x Blue Fox » se lit mieux que le nom du signataire.
+        La marque vient de `appointment_brand_name` pour rester juste sur les
+        locataires qui n'affichent pas leur raison sociale.
+
+        ⚠️ `name` est un Char NON traduit : la langue utilisée ici est figée
+        pour toujours. Le formulaire public, lui, peut tourner en anglais sur
+        un simple `Accept-Language` de navigateur — sans `lang` explicite, un
+        RDV francophone ressortait « Flexible meeting - … » dans l'agenda.
+        L'appelant passe donc la langue du réservant (à défaut celle de
+        l'organisateur), jamais celle de la requête HTTP.
+        """
+        lang = lang or (partner.lang if partner else None) or self.env.lang
+        if lang:
+            booking_type = booking_type.with_context(lang=lang)
+            self = self.with_context(lang=lang)
+        who = ""
+        if partner:
+            who = (
+                partner.parent_id.name or partner.company_name or partner.name or ""
+            ).strip()
+        who = who or (booker_name or "").strip()
+        company = booking_type.company_id or self.env.company
+        brand = (company.appointment_brand_name or company.name or "").strip()
+        type_name = (booking_type.name or _("Rendez-vous")).strip()
+        if who and brand:
+            return f"{type_name} - {who} x {brand}"
+        if who:
+            return f"{type_name} - {who}"
+        return type_name
+
+    # ---- Description de l'événement d'agenda ----
+
+    def _bf_meeting_description(self):
+        """Corps de l'événement d'agenda : ce que le demandeur a écrit.
+
+        L'OCA pose ``description = type_id.requester_advice``, c'est-à-dire le
+        texte d'accompagnement du formulaire public (« Décrivez brièvement le
+        sujet pour qu'on prépare la rencontre… »). C'est une consigne adressée
+        au demandeur AVANT qu'il réserve : recopiée dans l'agenda, elle occupe
+        exactement la place de sa réponse et n'apprend rien à personne. Et
+        comme `calendar_nextcloud_sync` repousse ce champ tel quel
+        (html2plaintext) vers le calendrier, l'invitation .ics reçue affiche la
+        consigne au lieu du sujet du rendez-vous — constaté sur le RDV #377
+        (un rendez-vous client, 2026-08-03), où « De quoi s'agit-il ? » ressortait en texte
+        indicatif alors que la réponse était bien enregistrée.
+
+        On rend donc les réponses du formulaire d'accueil. Le conseil au
+        demandeur ne sert plus que de repli quand il n'y a aucune réponse (type
+        sans formulaire, réservation créée au backend).
+
+        ⚠️ Le libellé des questions (`appointment.intake.field.name`) et le
+        conseil au demandeur sont des champs TRADUITS, et le formulaire public
+        suit l'`Accept-Language` du navigateur. Lus dans la langue de la
+        requête, ils ressortent « What is this about? » dans l'agenda d'un RDV
+        par ailleurs francophone. On fige donc la langue du demandeur, à défaut
+        celle de l'organisateur — même règle que `_bf_build_title`.
+        """
+        self.ensure_one()
+        booker = self.partner_id or self.partner_ids[:1]
+        lang = booker.lang or self.user_id.lang
+        record = self.with_context(lang=lang) if lang else self
+        # ⚠️ Confidentialité. Cette description part dans l'invitation .ics
+        # reçue par TOUS les participants, et l'agenda n'en porte qu'une : on ne
+        # peut pas la personnaliser par destinataire. Dès qu'un invité
+        # additionnel est confirmé, les réponses du formulaire sont donc
+        # retirées, sauf si le type dit explicitement de les partager. Ce que le
+        # demandeur a écrit ne regarde pas forcément les gens qu'il convie.
+        partage = record.type_id.guests_see_intake
+        invites = record.guest_ids.filtered(lambda g: g.state == "confirmed")
+        if invites and not partage:
+            return record.type_id.requester_advice or ""
+
+        parts = []
+        for answer in record.intake_answer_ids:
+            value = (answer.value or "").strip()
+            if not value:
+                continue
+            parts.append(
+                Markup("<p><strong>%s</strong><br/>%s</p>")
+                % (
+                    answer.field_name or "",
+                    Markup("<br/>").join(value.splitlines()),
+                )
+            )
+        if not parts:
+            return record.type_id.requester_advice or ""
+        if booker:
+            who = (booker.name or "").strip()
+            if booker.email:
+                # Parenthèses et non chevrons : la description repasse par
+                # Nextcloud, qui la renvoie en texte brut, et un `<courriel>`
+                # se fait alors avaler comme une balise au retour en HTML.
+                who = ("%s (%s)" % (who, booker.email)).strip()
+            if who:
+                parts.append(
+                    Markup("<p><strong>%s</strong> : %s</p>")
+                    % (record.env._("Demandeur"), who)
+                )
+        return Markup("").join(parts)
+
+    def _bf_sync_meeting_description(self):
+        """Ré-aligne la description de l'événement sur les réponses courantes.
+
+        `_prepare_meeting_vals` ne tourne qu'à la synchro de l'événement. Une
+        réponse ajoutée ou corrigée après coup — au backend, ou par tout flux
+        qui pose `start` avant d'écrire les réponses — laisserait sinon l'agenda
+        sur l'ancien texte. Écriture sans notification : le rendez-vous n'a pas
+        bougé, seule sa description est rafraîchie.
+        """
+        for booking in self:
+            meeting = booking.meeting_id
+            if not meeting:
+                continue
+            description = booking._bf_meeting_description()
+            if (meeting.description or "") == (description or ""):
+                continue
+            meeting.with_context(
+                no_mail_to_attendees=True,
+                dont_notify=True,
+                tracking_disable=True,
+                mail_notrack=True,
+            ).description = description
+
     # ---- ICS Generation ----
 
     def _generate_ics_data(self):
@@ -561,7 +989,7 @@ class ResourceBooking(models.Model):
         # Localize once, in the booker display tz, and reuse for BOTH the
         # human-readable DESCRIPTION and DTSTART/DTEND below — otherwise the
         # notes text renders in naive UTC and contradicts the grid time
-        # (the same bug class, just in the .ics body instead of the email).
+        # (the RDV #344 bug class, just in the .ics body instead of the email).
         tzname = self._get_ics_tzname()
         tz = ZoneInfo(tzname)
         start_local = self.start.replace(tzinfo=ZoneInfo("UTC")).astimezone(tz)
@@ -575,8 +1003,16 @@ class ResourceBooking(models.Model):
         # Build description with all pertinent info
         desc_parts = [self.type_id.name or _("Rendez-vous")]
         desc_parts.append("")
+        # `strftime("%A %d %B %Y")` suit la locale du PROCESSUS, pas celle du
+        # destinataire : un .ics par ailleurs francophone sortait « Thursday 30
+        # July 2026 ». Babel, déjà utilisé par le calendrier public, rend la
+        # date dans la langue du lecteur.
+        from babel.dates import format_date as _babel_format_date
         desc_parts.append(
-            _("Date : %s") % start_local.strftime("%A %d %B %Y")
+            _("Date : %s")
+            % _babel_format_date(
+                start_local.date(), "EEEE d MMMM yyyy", locale=self._appt_locale()
+            )
         )
         desc_parts.append(
             _("Heure : %s") % start_local.strftime("%H:%M")
@@ -628,7 +1064,7 @@ class ResourceBooking(models.Model):
             dtstart_line = f"DTSTART:{self.start.strftime('%Y%m%dT%H%M%S')}Z\r\n"
             dtend_line = f"DTEND:{stop.strftime('%Y%m%dT%H%M%S')}Z\r\n"
         summary = _escape_ics(
-            self.name or (_("RDV - %s") % self.type_id.name)
+            self.name or self._bf_build_title(self.type_id, partner=self.partner_id)
         )
         # Organizer/Attendee: METHOD:REQUEST requires an ORGANIZER (RFC 5546);
         # ATTENDEE makes the invite RSVP-able in Outlook / Google / Apple Mail.
@@ -683,9 +1119,9 @@ class ResourceBooking(models.Model):
         default.
 
         Deliberately EXCLUDES the organizer's ``user_id.tz``. The organizer
-        the organizer may sit in another timezone; letting that leak into booker-facing
+        (the organizer) sits in Auckland; letting that leak into booker-facing
         content is exactly what made a Montréal client's confirmation and ICS
-        show the organizer's local time. Organizer-facing comms receive
+        show NZ time (RDV #344, 2026-06-17). Organizer-facing comms receive
         the organizer tz explicitly via _send_appointment_email.
         """
         self.ensure_one()
@@ -695,7 +1131,7 @@ class ResourceBooking(models.Model):
         # detection fallback from the public widget, not a real location.
         # Bookings are stored naive-UTC, so honouring it renders the raw UTC
         # instant to the booker -- a 13:00 Montréal slot shows as 17:00, the
-        # +4h offset seen in testing. No booker of a Québec-based practice
+        # +4h offset reported on RDV #357. No client of a Québec-based practice
         # is legitimately in UTC, so treat it as unset and fall through to the
         # type's Montréal display calendar.
         booker_tz = self.partner_id.tz if self.partner_id else None
@@ -716,7 +1152,7 @@ class ResourceBooking(models.Model):
         availability calendar (Pacific/Auckland) contribute slots in DIFFERENT
         offsets, grouped by ``.date()``. A Québec booker then sees Auckland-time
         bubbles mislabelled under the wrong day -- they pick "19 juin 8h" and it
-        lands on the 18th (observed in testing).
+        lands on the 18th (booking #343, 2026-06-17).
 
         We convert every slot to ``_get_booker_display_tz()`` (or the explicit
         context tz the picker passes) and regroup by the LOCAL date, deduping
@@ -908,3 +1344,161 @@ class ResourceBooking(models.Model):
                         schedule.id,
                         e,
                     )
+
+    # ------------------------------------------------------------------
+    # Lot d'ouverture (2.40.0) — résolution de la provenance
+    # ------------------------------------------------------------------
+
+    def _bf_source_record(self):
+        """Résout `bf_source_ref` en enregistrement, ou rend un recordset vide.
+
+        Tolère tout : référence vide, modèle désinstallé, identifiant supprimé.
+        Un satellite retiré ne doit jamais faire planter la fiche d'une
+        réservation qu'il a créée de son vivant.
+        """
+        self.ensure_one()
+        ref = (self.bf_source_ref or "").strip()
+        if "," not in ref:
+            return self.env["resource.booking"].browse()
+        model_name, _, res_id = ref.partition(",")
+        model_name = model_name.strip()
+        if model_name not in self.env:
+            return self.env["resource.booking"].browse()
+        try:
+            record = self.env[model_name].browse(int(res_id))
+        except (TypeError, ValueError):
+            return self.env["resource.booking"].browse()
+        return record if record.exists() else self.env[model_name].browse()
+
+    def action_bf_source(self):
+        """Ouvre l'enregistrement d'origine. `res_model` est une CHAÎNE.
+
+        Nom PUBLIC volontairement : Odoo 18 refuse qu'un bouton de vue appelle
+        une méthode préfixée d'un souligné. Le résolveur `_bf_source_record`,
+        lui, n'est appelé que depuis du code et reste privé.
+
+        C'est ce qui permet au bouton « Voir l'origine » d'exister dans le
+        parent sans qu'il connaisse le modèle visé : la chaîne n'est résolue
+        qu'au clic, donc aucune dépendance au chargement du registre.
+        """
+        self.ensure_one()
+        record = self._bf_source_record()
+        if not record:
+            return False
+        return {
+            "type": "ir.actions.act_window",
+            "res_model": record._name,
+            "res_id": record.id,
+            "view_mode": "form",
+            "target": "current",
+        }
+
+    # ------------------------------------------------------------------
+    # Lien unique (2.42.0)
+    # ------------------------------------------------------------------
+
+    @api.depends("bf_source", "link_expires_at", "link_single_use",
+                 "link_used_at", "state")
+    def _compute_link_state(self):
+        maintenant = fields.Datetime.now()
+        for booking in self:
+            if booking.bf_source != "onetime":
+                booking.link_state = "none"
+            elif booking.link_expires_at and booking.link_expires_at <= maintenant:
+                booking.link_state = "expired"
+            elif booking.link_single_use and booking.link_used_at:
+                booking.link_state = "used"
+            else:
+                booking.link_state = "active"
+
+    @api.depends("access_token")
+    def _compute_one_time_url(self):
+        base = self.env["ir.config_parameter"].sudo().get_param("web.base.url", "")
+        for booking in self:
+            if booking.access_token and booking.id:
+                booking.one_time_url = "%s/appointment/b/%d/%s/schedule" % (
+                    base, booking.id, booking.access_token)
+            else:
+                booking.one_time_url = ""
+
+    def _link_is_usable(self):
+        """Le lien ouvre-t-il encore le choix d'un créneau ?
+
+        Rendu au contrôleur, qui doit DIRE pourquoi il refuse plutôt que de
+        rediriger en silence. Un lien mort qui renvoie sur la page d'accueil
+        laisse la personne convaincue d'avoir mal cliqué, et elle réessaie.
+        """
+        self.ensure_one()
+        return self.link_state in ("none", "active")
+
+    def _mark_link_used(self):
+        for booking in self:
+            if booking.bf_source == "onetime" and not booking.link_used_at:
+                booking.sudo().link_used_at = fields.Datetime.now()
+        return True
+
+    def action_copy_one_time_url(self):
+        """Ouvre la fenêtre de copie du lien."""
+        self.ensure_one()
+        return self._bf_action_show_link()
+
+    def _bf_action_show_link(self):
+        """Fenêtre minimale : le lien, avec le bouton copier natif d'Odoo.
+
+        Une notification affichait bien l'adresse, mais il fallait la
+        sélectionner à la souris — sur une URL de 90 caractères, c'est raté une
+        fois sur deux. Le widget `CopyClipboardURL` d'Odoo fait le travail, et
+        la copie part d'un clic de l'usager, ce que les navigateurs exigent.
+        """
+        self.ensure_one()
+        assistant = self.env["bf.appointment.onetime.wizard"].create({
+            "type_id": self.type_id.id,
+            "partner_id": self.partner_ids[:1].id or False,
+            "state": "done",
+            "booking_id": self.id,
+            "url": self.one_time_url,
+            "expires_display": (
+                fields.Datetime.to_string(self.link_expires_at)
+                if self.link_expires_at else _("aucune expiration")
+            ),
+        })
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Lien de réservation"),
+            "res_model": "bf.appointment.onetime.wizard",
+            "res_id": assistant.id,
+            "view_mode": "form",
+            "target": "new",
+        }
+
+    # ------------------------------------------------------------------
+    # Invités additionnels (2.45.0)
+    # ------------------------------------------------------------------
+
+    @api.depends("guest_ids.state")
+    def _compute_guest_state(self):
+        for booking in self:
+            etats = set(booking.guest_ids.mapped("state"))
+            if not etats:
+                booking.guest_state = "none"
+            elif "pending" in etats:
+                booking.guest_state = "pending"
+            elif "confirmed" in etats:
+                booking.guest_state = "confirmed"
+            else:
+                booking.guest_state = "declined"
+
+    def _bf_pending_guests(self):
+        self.ensure_one()
+        return self.guest_ids.filtered(lambda g: g.state == "pending")
+
+    def action_bf_confirm_guests(self):
+        """Confirme les invités depuis le back-office (même effet que le lien)."""
+        for booking in self:
+            booking._bf_pending_guests()._bf_confirm()
+        return True
+
+    def action_bf_decline_guests(self):
+        for booking in self:
+            booking._bf_pending_guests()._bf_decline()
+        return True

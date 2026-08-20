@@ -5,7 +5,7 @@ their partner attends a calendar event (state != declined), regardless of the
 event's ``show_as`` flag. Google-synced all-day events ("Bureau", working
 location, "Occupé(e)") arrive with show_as='free' and the synced user as
 attendee, stored 08:00→18:00 UTC = 4h→14h Montréal — so every workday morning
-was silently removed from the public slot picker (observed in testing,
+was silently removed from the public slot picker (reported by a tenant,
 2026-07-03: the "Questionnaire d'audit initial" type only ever offered
 14h/14h30/15h starts Mon-Thu and nothing on Fridays).
 

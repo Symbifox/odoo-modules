@@ -53,3 +53,26 @@ class AppointmentIntakeAnswer(models.Model):
     )
     value = fields.Text(string="Réponse")
     field_name = fields.Char(related="field_id.name", string="Question")
+
+    # La description de l'événement d'agenda est construite à partir de ces
+    # réponses (`resource.booking._bf_meeting_description`). Elle est posée à la
+    # synchro de l'événement ; une réponse écrite ou corrigée après coup doit
+    # donc la rafraîchir elle-même, sinon l'agenda garde l'ancien texte.
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        answers = super().create(vals_list)
+        answers.booking_id._bf_sync_meeting_description()
+        return answers
+
+    def write(self, vals):
+        bookings = self.booking_id
+        result = super().write(vals)
+        (bookings | self.booking_id)._bf_sync_meeting_description()
+        return result
+
+    def unlink(self):
+        bookings = self.booking_id
+        result = super().unlink()
+        bookings.exists()._bf_sync_meeting_description()
+        return result

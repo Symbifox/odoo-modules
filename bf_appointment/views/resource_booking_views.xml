@@ -14,4 +14,41 @@
             </xpath>
         </field>
     </record>
+
+    <!-- Provenance : visible seulement quand la réservation vient d'ailleurs
+         que du formulaire public. Le bouton résout `bf_source_ref` au clic,
+         donc la vue ne référence aucun modèle satellite. -->
+    <record id="resource_booking_form_inherit_bf_source" model="ir.ui.view">
+        <field name="name">resource.booking.form.inherit.bf_appointment.source</field>
+        <field name="model">resource.booking</field>
+        <field name="inherit_id" ref="resource_booking.resource_booking_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='videocall_location']" position="after">
+                <field name="guest_state" invisible="guest_state == 'none'" readonly="1"/>
+                <field name="guest_ids" invisible="not guest_ids" readonly="1">
+                    <list>
+                        <field name="email"/>
+                        <field name="name"/>
+                        <field name="state" widget="badge"
+                               decoration-warning="state == 'pending'"
+                               decoration-success="state == 'confirmed'"/>
+                        <field name="confirmed_at" optional="hide"/>
+                    </list>
+                </field>
+                <field name="bf_source" invisible="not bf_source" readonly="1"/>
+                <field name="link_state" invisible="bf_source != 'onetime'" readonly="1"/>
+                <field name="link_expires_at" invisible="bf_source != 'onetime'"/>
+                <field name="link_single_use" invisible="bf_source != 'onetime'"/>
+                <field name="link_used_at" invisible="not link_used_at" readonly="1"/>
+                <field name="one_time_url" widget="CopyClipboardChar"
+                       invisible="bf_source != 'onetime'" readonly="1"/>
+                <field name="bf_source_ref" invisible="1"/>
+                <button name="action_bf_source"
+                        type="object"
+                        string="Voir l'origine"
+                        class="btn-link"
+                        invisible="not bf_source_ref"/>
+            </xpath>
+        </field>
+    </record>
 </odoo>

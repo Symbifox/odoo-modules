@@ -2,7 +2,7 @@
     "name": "Symbifox Appointment",
     # 18.0.2.32.0: availability fix — attended events marked show_as='free' no longer block the slot picker (all-day/working-location sync events could blank a morning)
     # 18.0.2.33.0: localisation FR — (1) picker: jours/mois via babel au lieu de strftime %A/%B (locale C = anglais); (2) tous les libellés backend francisés à la source (le fr.po ne se chargeait jamais — mauvais format de référence), incl. champs de base OCA relabellés via override incrémental; (3) ventilation du « Modifications Deadline » OCA en 2 réglages : modifications_deadline = « Préavis minimum avant réservation » (plancher dispo, inchangé) + nouveau modification_lock_hours = « Délai limite de modification/annulation » (verrou, via _compute_is_overdue).
-    "version": "18.0.2.34.0",
+    "version": "18.0.2.45.1",
     "category": "Appointments",
     "summary": "Public self-service booking pages extending Resource Booking",
     'author': 'Les services de consultation Blue Fox, Inc.',
@@ -21,6 +21,8 @@
         "views/resource_booking_type_views.xml",
         "views/resource_booking_views.xml",
         "views/res_config_settings_views.xml",
+        "views/appointment_onetime_wizard_views.xml",
+        "views/mail_compose_message_views.xml",
     ],
     "assets": {
         "web.assets_frontend": [

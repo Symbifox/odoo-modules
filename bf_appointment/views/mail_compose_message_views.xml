@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Bouton d'insertion d'un lien de rendez-vous dans le compositeur.
+         Placé juste au-dessus du corps : c'est là qu'on écrit, et le lien
+         s'ajoute à la fin de ce qui est déjà rédigé. -->
+    <record id="mail_compose_message_bf_booking_link" model="ir.ui.view">
+        <field name="name">mail.compose.message.form.bf.booking.link</field>
+        <field name="model">mail.compose.message</field>
+        <field name="inherit_id" ref="mail.email_compose_message_wizard_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='body']" position="before">
+                <div class="mb-2">
+                    <button name="action_bf_insert_booking_link"
+                            type="object"
+                            class="btn btn-link ps-0"
+                            icon="fa-calendar-plus-o"
+                            string="Insérer un lien de rendez-vous"
+                            help="Crée un lien de réservation personnel pour le
+                                  destinataire et l'insère avant votre signature."/>
+                    <button name="action_bf_copy_booking_link"
+                            type="object"
+                            class="btn btn-link"
+                            icon="fa-clipboard"
+                            string="Copier un lien de rendez-vous"
+                            help="Crée le lien et l'offre à la copie, sans toucher
+                                  au message. À vous de le placer où vous voulez."/>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Même geste depuis une fiche de contact. -->
+    <record id="res_partner_bf_booking_link" model="ir.ui.view">
+        <field name="name">res.partner.form.bf.booking.link</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <div name="button_box" position="inside">
+                <button name="action_bf_booking_link"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="fa-calendar-plus-o"
+                        invisible="not email">
+                    <div class="o_stat_info">
+                        <span class="o_stat_text">Lien de</span>
+                        <span class="o_stat_text">rendez-vous</span>
+                    </div>
+                </button>
+            </div>
+        </field>
+    </record>
+</odoo>

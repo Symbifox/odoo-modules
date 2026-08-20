@@ -28,6 +28,16 @@ _BF_DEFAULT_TAGLINE = "Solutions éthiques et souveraines pour vos données."
 class ResCompany(models.Model):
     _inherit = "res.company"
 
+    appointment_quick_link_type_id = fields.Many2one(
+        "resource.booking.type",
+        string="Type pour les liens rapides",
+        domain="[('is_public', '=', True)]",
+        help="Type employé par le bouton « Lien de rendez-vous » du "
+             "compositeur de courriel et de la fiche de contact. Sans ce "
+             "réglage, le bouton prend le premier type public listé — ce qui "
+             "marche, mais choisir explicitement évite les surprises.",
+    )
+
     appointment_brand_name = fields.Char(
         string="Nom de marque (rendez-vous)",
         default=_BF_DEFAULT_BRAND_NAME,
