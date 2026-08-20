@@ -1,7 +1,7 @@
 {
     "name": "SMS & Calls",
     "summary": "Messagerie SMS/MMS live via VOIP.ms + archivage de SMS et journaux d'appels Android",
-    "version": "18.0.5.9.0",
+    "version": "18.0.5.10.0",
     "category": "Tools",
     'author': 'Les services de consultation Blue Fox, Inc.',
     'website': 'https://symbifox.com',
@@ -35,6 +35,7 @@
         "views/sms_line_views.xml",
         "views/res_config_settings_views.xml",
         "views/sms_messenger_views.xml",
+        "views/project_task_views.xml",
         # Data
         "data/sms_nc_watch_cron.xml",
         "data/voipms_poll_cron.xml",

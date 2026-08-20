@@ -517,6 +517,14 @@ class SmsMessenger extends Component {
         this.state.linkMode = false;
         this.state.linkResults = [];
         this.state.linkSearch = "";
+        // Le rattachement inscrit le numéro dans la fiche : on le dit, une
+        // écriture chez le contact ne doit pas se faire en silence.
+        if (updated.mobile_added) {
+            this.notification.add(
+                `${updated.phone} ajouté au mobile de ${updated.partner_name || "ce contact"}`,
+                { type: "success" }
+            );
+        }
         await this.loadThreads();
     }
 

@@ -22,6 +22,7 @@ A two-way SMS/MMS messaging and archiving module for Odoo 18. Send and receive l
 - **Direction filtering** -- Filter by received, sent, or draft messages
 - **Chronological view** -- Messages displayed in conversation order within threads
 - **Contact linking** -- Manual or automatic linking to `res.partner` records
+- **Number write-back (v18.0.5.10.0+)** -- Linking a thread to a contact writes the thread's number into that contact's **Mobile** field, so the number is reachable from the contact record and not just from the messenger. Never overwrites: a number already on file (in `mobile` **or** `phone`, in any format) is left alone, and a *different* mobile on file is kept, with a chatter note on the contact recording the SMS number instead. Creating a contact from an unknown number fills `mobile` (not `phone`) for the same reason.
 
 ### Call Log
 - **Call type badges** -- Colour-coded badges: green (incoming), blue (outgoing), salmon (missed), yellow (voicemail), grey (rejected/blocked)
@@ -468,6 +469,16 @@ curl -X POST https://odoo.example.com/bf_sms_archive/api/ingest \
 `bf-sms-relay` (LGPL-3, F-Droid-friendly): foreground service when charging (30s tick), WorkManager when on battery (15 min tick), BroadcastReceiver for incoming SMS (real-time). Distribution: signed APK direct, not Play Store (READ_SMS / READ_CALL_LOG are blocked by Play policy).
 
 ## Changelog
+
+### Version 18.0.5.10.0
+
+- **NEW:** Linking a conversation to a contact now writes the thread's number into that contact's **Mobile** field. Until now the link only taught the messenger a name: the number itself stayed unknown to the contact record, so it could not be found from anywhere else in Odoo and the next thread opened on it did not match on its own.
+- **NEW:** A number already on file is recognised whatever its formatting -- `(514) 555-0101`, `514-555-0101` and `+15145550101` compare equal on their last ten digits, in `mobile` and in `phone` alike -- so an existing number is never duplicated.
+- **NEW:** A contact whose Mobile already holds a *different* number keeps it. The thread's number goes to the contact's chatter as a note instead, for a human to arbitrate.
+- **NEW:** Every write-back leaves a note in the contact's chatter, and the messenger raises a toast when it happens -- writing into someone's contact record should not be silent.
+- **CHANGE:** Creating a contact from an unknown number fills `mobile` instead of `phone`: a number that exchanges text messages is a mobile.
+- **CHANGE:** The write-back is a service, never a condition. It runs inside a savepoint and is skipped -- link intact, one log line -- when the user lacks write access to contacts or another module refuses the write.
+- **FIX:** `views/project_task_views.xml` is declared in the manifest. The file shipped from 18.0.5.8.0 but was never loaded, so the **Conversations** stat button was missing from the task form.
 
 ### Version 18.0.5.9.0
 
