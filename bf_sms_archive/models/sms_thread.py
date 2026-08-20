@@ -9,7 +9,7 @@ from xml.etree.ElementTree import Element, SubElement, tostring
 from markupsafe import Markup
 
 from odoo import api, fields, models
-from odoo.exceptions import UserError
+from odoo.exceptions import AccessError, UserError
 
 _logger = logging.getLogger(__name__)
 
@@ -201,7 +201,84 @@ class SmsArchiveThread(models.Model):
                     super(SmsArchiveThread, thread).write(
                         {"contact_name": thread.partner_id.name}
                     )
+            self._push_phone_to_partner()
         return res
+
+    # ── Report du numéro vers la fiche contact ─────────────────────
+
+    #: Champs de res.partner qui peuvent déjà porter le numéro du fil.
+    _PARTNER_PHONE_FIELDS = ("mobile", "phone")
+
+    @staticmethod
+    def _phone_key(raw):
+        """Clé de comparaison de deux numéros : les 10 derniers chiffres.
+
+        Même règle que l'appariement automatique du module — elle rapproche
+        « +1 514 555-0101 », « (514) 555-0101 » et « 5145550101 ».
+        """
+        digits = re.sub(r"\D", "", raw or "")
+        return digits[-10:] if len(digits) >= 10 else digits
+
+    def _push_phone_to_partner(self):
+        """Inscrit le numéro du fil dans la fiche du contact rattaché (Mobile).
+
+        Rattacher un fil à un contact, c'est affirmer « ce numéro, c'est lui ».
+        L'information doit donc vivre dans la fiche : autrement le numéro reste
+        introuvable depuis le CRM, et le prochain fil ouvert sur ce numéro ne se
+        rattache pas tout seul. Un numéro qui échange des SMS est un mobile,
+        d'où le champ.
+
+        Trois cas, un seul écrit :
+        - le contact ne porte pas le numéro et son Mobile est libre → on l'inscrit ;
+        - il le porte déjà (Mobile ou Téléphone, quel que soit le formatage) → rien ;
+        - son Mobile porte un AUTRE numéro → on n'écrase jamais, on laisse une
+          note au chatter pour qu'un humain tranche.
+
+        Le report est un service rendu, pas une condition du rattachement : un
+        utilisateur sans droit d'écriture sur les contacts lie quand même son
+        fil, le report est simplement sauté.
+        """
+        for thread in self:
+            partner = thread.partner_id
+            key = self._phone_key(thread.phone_normalized)
+            if not partner or not key:
+                continue
+            if any(self._phone_key(partner[f]) == key for f in self._PARTNER_PHONE_FIELDS):
+                continue
+            # Point de reprise : ni un refus de droits ni une contrainte posée par
+            # un autre module sur res.partner ne doit faire échouer le
+            # rattachement lui-même, ni laisser la transaction en plan.
+            try:
+                with self.env.cr.savepoint():
+                    if partner.mobile:
+                        partner.message_post(
+                            body=Markup(
+                                "<p>Conversation SMS rattachée depuis le numéro "
+                                "<strong>%s</strong>, qui ne figure pas sur cette fiche "
+                                "(le mobile inscrit est <strong>%s</strong>). Numéro non "
+                                "reporté pour ne rien écraser.</p>"
+                            ) % (thread.phone_normalized, partner.mobile),
+                            subtype_xmlid="mail.mt_note",
+                        )
+                    else:
+                        partner.write({"mobile": thread.phone_normalized})
+                        partner.message_post(
+                            body=Markup(
+                                "<p>Mobile <strong>%s</strong> inscrit depuis la "
+                                "Messagerie SMS.</p>"
+                            ) % thread.phone_normalized,
+                            subtype_xmlid="mail.mt_note",
+                        )
+            except AccessError:
+                _logger.info(
+                    "Report du numéro %s vers le contact %s sauté : droits insuffisants.",
+                    thread.phone_normalized, partner.id,
+                )
+            except Exception:  # noqa: BLE001 — voir le commentaire ci-dessus
+                _logger.warning(
+                    "Report du numéro %s vers le contact %s échoué.",
+                    thread.phone_normalized, partner.id, exc_info=True,
+                )
 
     def action_view_messages(self):
         """Open messages for this thread."""
@@ -1011,8 +1088,14 @@ class SmsArchiveThread(models.Model):
         """Rattache un fil (numéro inconnu) à un contact Odoo existant."""
         thread = self.with_context(active_test=False).browse(int(thread_id))
         thread._check_messenger_access()
-        thread.write({"partner_id": int(partner_id)})  # write() reporte le nom du contact
-        return thread._messenger_thread_dict()
+        partner = self.env["res.partner"].browse(int(partner_id))
+        mobile_before = partner.mobile
+        thread.write({"partner_id": partner.id})  # write() reporte le nom ET le numéro
+        data = thread._messenger_thread_dict()
+        # La Messagerie annonce le report : une écriture dans la fiche d'un contact
+        # ne doit pas se faire dans le dos de qui clique.
+        data["mobile_added"] = bool(partner.mobile) and partner.mobile != mobile_before
+        return data
 
     @api.model
     def messenger_create_partner(self, thread_id, name=None):
@@ -1021,7 +1104,8 @@ class SmsArchiveThread(models.Model):
         thread._check_messenger_access()
         partner = self.env["res.partner"].create({
             "name": (name or "").strip() or thread.contact_name or thread.phone_normalized,
-            "phone": thread.phone_normalized,
+            # Mobile et non Téléphone : le numéro vient d'une conversation SMS.
+            "mobile": thread.phone_normalized,
         })
         thread.write({"partner_id": partner.id})
         return thread._messenger_thread_dict()
