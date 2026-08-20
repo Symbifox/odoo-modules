@@ -1,0 +1,49 @@
+// Habillage du rappel d'agenda (voir `bf_calendar_reminder.js`).
+//
+// Le toast standard d'Odoo fait 400 px (`$o-notification-max-width-sm`), dont
+// ~330 px utiles une fois la barre de couleur et les marges retirées, et il
+// range ses boutons dans un simple `d-flex` sans retour à la ligne. Nos sept
+// boutons y étaient donc comprimés sous la largeur de leur libellé, et la
+// classe `text-break` du gabarit (`overflow-wrap: break-word`) les coupait
+// alors en plein mot : « 5 min » s'affichait sur trois lignes, « 5 / m / in ».
+//
+// On garde chaque libellé d'un seul tenant et on laisse la rangée passer à la
+// ligne : les cinq reports tiennent sur la première, « Vu » et « Ouvrir » sur
+// la seconde.
+
+.o_notification.o_bf_calendar_reminder {
+
+    .o_notification_buttons {
+        flex-wrap: wrap;
+
+        > .btn {
+            // Sans cette base, un bouton reste rétrécissable et le texte
+            // recommence à se casser au lieu de passer à la ligne suivante.
+            flex: 0 0 auto;
+            white-space: nowrap;
+        }
+
+        // Trois niveaux de lecture : « Vu » en bleu de marque (le gabarit lui
+        // pose `.btn-primary` parce que le bouton est déclaré `primary`),
+        // « Ouvrir » en gris plein, et les reports en contour.
+        //
+        // Le gabarit standard ne laisse pas nommer une classe par bouton —
+        // ses props n'acceptent que `primary` —, alors on reconnaît les
+        // reports autrement : ce sont les boutons gris qui ne sont pas le
+        // dernier, « Ouvrir » fermant toujours la rangée. Si l'ordre des
+        // boutons change dans le JS, c'est l'apparence qui bouge, rien ne
+        // casse.
+        > .btn-secondary:not(:last-child) {
+            // Gris neutre en transparence plutôt que les teintes fixes de
+            // `.btn-outline-secondary` : le rappel s'affiche aussi en thème
+            // sombre, où un gris clair codé en dur jurerait. `inherit` laisse
+            // le texte prendre la couleur du toast qui l'entoure.
+            --btn-bg: transparent;
+            --btn-color: inherit;
+            --btn-border-color: rgba(128, 128, 128, 0.45);
+            --btn-hover-bg: rgba(128, 128, 128, 0.18);
+            --btn-hover-color: inherit;
+            --btn-hover-border-color: rgba(128, 128, 128, 0.65);
+        }
+    }
+}

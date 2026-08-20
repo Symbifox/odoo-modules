@@ -4,6 +4,52 @@ All notable changes to `bf_email_management` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This module follows Odoo's `MAJOR.MINOR.PATCH` convention prefixed with the Odoo series (`18.0.X.Y.Z`).
 
+## [18.0.9.7.0] — 2026-08-20
+
+Consolidated entry covering 9.6.1 → 9.7.0, both released on 2026-08-20. All three
+changes are in the calendar reminder toast served by `bf_calendar_reminder.js`.
+
+### Fixed
+
+- **Reminder buttons no longer break mid-word (9.6.1).** Odoo's notification toast
+  is 400 px wide and lays its buttons out in a plain `d-flex` with no wrapping, so
+  the seven buttons were squeezed below the width of their own labels, which the
+  template's `text-break` class then split inside the word: *5 min* rendered on
+  three lines, as *5 / m / in*. A new `static/src/scss/bf_calendar_reminder.scss`,
+  scoped to the reminder toast alone through the notification's `className` prop so
+  no other notification is touched, keeps each label whole and lets the row wrap:
+  the four presets first, the remaining actions after. The non-breaking spaces the
+  labels carried against the same defect were powerless — `overflow-wrap:
+  break-word` breaks precisely inside a word, and making *5 min* a single unbreakable
+  word only made it a longer thing to break — and are back to ordinary spaces.
+
+### Changed
+
+- **The dismiss button reads *Vu*, not *Ignorer*.** It ignores nothing: it records
+  that the reminder was read and keeps it from firing again for that event. The
+  label now says so.
+- **Three levels of emphasis in the toast.** The dismiss button carries the brand
+  colour (declared `primary`, the only per-button appearance lever the stock
+  template exposes), *Ouvrir* stays a solid grey, and the five deferral buttons
+  become outline buttons. The outline is expressed in transparent neutral grey
+  rather than `.btn-outline-secondary`'s fixed tints, so the toast still reads in a
+  dark theme. Since the template accepts no per-button class, the stylesheet
+  recognises the deferrals as *the grey buttons that are not the last one*; if the
+  button order changes, appearance shifts and nothing breaks.
+
+### Added
+
+- **A reminder settled in one window closes in the others.** The toast only ever
+  existed in the browser that received it, so deferring or dismissing somewhere left
+  the same reminder standing in every other tab, each asking for a decision already
+  made. `bf_snooze` and `bf_dismiss` now broadcast `bf_calendar_reminder/close` on
+  the attendee's own `bus.bus` channel — every session of theirs is already
+  subscribed to it — and the client removes the toast for that event. The originating
+  tab receives its own message; removing an already-removed toast does nothing. The
+  broadcast leaves at transaction commit, hence after the state is written, so a
+  window replaying `/calendar/notify` right afterwards reads a reminder that is
+  already extinguished.
+
 ## [18.0.9.5.0] — 2026-08-18
 
 Consolidated entry covering 9.3.0 → 9.5.0, all released on 2026-08-18.

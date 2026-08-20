@@ -75,6 +75,25 @@ class CalendarAttendee(models.Model):
             ))
         return attendee
 
+    def _bf_broadcast_reminder_closed(self, event_id, reason):
+        """Dire aux AUTRES onglets de retirer le rappel de cet événement.
+
+        Le toast n'existe que dans le navigateur qui l'a reçu : reporter ou
+        marquer vu dans une fenêtre laissait le même rappel affiché dans
+        toutes les autres, chacune attendant un geste déjà posé. On passe
+        donc par le bus, sur le canal du participant — toutes ses sessions y
+        sont abonnées — et le client ferme le toast correspondant.
+
+        L'envoi part au commit de la transaction, donc après l'écriture de
+        l'état : une fenêtre qui rejouerait `/calendar/notify` juste après
+        lirait de toute façon un rappel déjà éteint.
+        """
+        self.env["bus.bus"]._sendone(
+            self.partner_id,
+            "bf_calendar_reminder/close",
+            {"event_id": int(event_id), "reason": reason},
+        )
+
     @api.model
     def bf_snooze(self, event_id, minutes=None, until=None):
         """Snooze the reminder for ``event_id`` for the current user.
@@ -98,6 +117,7 @@ class CalendarAttendee(models.Model):
         attendee.partner_id.write({
             "calendar_last_notif_ack": fields.Datetime.now(),
         })
+        attendee._bf_broadcast_reminder_closed(event_id, "snooze")
         return {"snoozed_until": fields.Datetime.to_string(target)}
 
     @api.model
@@ -112,6 +132,7 @@ class CalendarAttendee(models.Model):
         attendee.partner_id.write({
             "calendar_last_notif_ack": now,
         })
+        attendee._bf_broadcast_reminder_closed(event_id, "dismiss")
         return {"dismissed_at": fields.Datetime.to_string(now)}
 
     # ------------------------------------------------------------------
