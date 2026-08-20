@@ -36,12 +36,6 @@ class ProjectDocumentDistribution(models.Model):
         tracking=True,
         help='Employé devant accuser réception du document',
     )
-    department_id = fields.Many2one(
-        'hr.department',
-        string='Département',
-        tracking=True,
-        help='Département concerné (pour distributions internes)',
-    )
     project_id = fields.Many2one(
         'project.project',
         string='Projet',
@@ -176,8 +170,16 @@ class ProjectDocumentDistribution(models.Model):
         string='Version actuelle',
     )
 
-    @api.depends('recipient_type', 'partner_id', 'user_id')
+    @api.depends('recipient_type', 'partner_id', 'partner_id.name',
+                 'user_id', 'user_id.name')
     def _compute_recipient_name(self):
+        """Nom du destinataire, tenu à jour avec la fiche liée.
+
+        Le champ est stocké. Sans ``partner_id.name`` et ``user_id.name`` dans
+        les dépendances, il fige le nom du jour de la distribution et ne le
+        rejoue jamais : une fiche renommée depuis garde son ancien nom à
+        l'écran, dans les rapports et dans les rappels d'accusé.
+        """
         for dist in self:
             if dist.recipient_type == 'employee' and dist.user_id:
                 dist.recipient_name = dist.user_id.name

@@ -299,10 +299,6 @@
                                         <span>Contenu périmé (6+ mois)</span>
                                         <span class="badge text-bg-secondary" t-esc="data.content_quality.stale_documents"/>
                                     </div>
-                                    <div class="d-flex justify-content-between">
-                                        <span>Couverture logiciels</span>
-                                        <span class="badge text-bg-success"><t t-esc="data.content_quality.software_coverage"/>%</span>
-                                    </div>
                                 </div>
                             </div>
                         </div>

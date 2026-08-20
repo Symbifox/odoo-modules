@@ -416,17 +416,6 @@ export class KnowledgeDashboard extends Component {
         });
     }
 
-    openSoftwareCatalog() {
-        this.action.doAction({
-            type: "ir.actions.act_window",
-            name: "Catalogue logiciels",
-            res_model: "document.software",
-            views: [[false, "list"], [false, "form"]],
-            domain: [["active", "=", true]],
-            context: {},
-        });
-    }
-
     openInProgressItems() {
         this.action.doAction({
             type: "ir.actions.act_window",

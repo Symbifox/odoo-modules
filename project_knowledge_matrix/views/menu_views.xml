@@ -212,20 +212,4 @@
               groups="group_document_manager"
               sequence="40"/>
 
-    <!-- Software catalog configuration -->
-    <menuitem id="menu_document_software"
-              name="Logiciels"
-              parent="menu_knowledge_config"
-              action="document_software_action"
-              groups="group_document_manager"
-              sequence="50"/>
-
-    <!-- Software versions configuration -->
-    <menuitem id="menu_document_software_versions"
-              name="Versions de logiciels"
-              parent="menu_knowledge_config"
-              action="document_software_version_action"
-              groups="group_document_manager"
-              sequence="60"/>
-
 </odoo>

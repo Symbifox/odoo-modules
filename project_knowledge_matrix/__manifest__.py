@@ -1,6 +1,6 @@
 {
     'name': 'Project Knowledge Matrix',
-    'version': '18.0.10.3.0',
+    'version': '18.0.11.1.0',
     'category': 'Services/Project',
     'summary': 'Base de connaissances projets, politiques et documentation',
     'description': """
@@ -24,8 +24,6 @@ Fonctionnalités:
 * Distribution et accusé de réception des documents
 * Gestion des politiques et procédures internes
 * Suivi de conformité pour les employés
-* Catalogage des logiciels documentés (Nextcloud, Odoo, etc.)
-* Suivi des versions de logiciels et leur statut de support
 * Dates d'expiration et de révision avec rappels automatiques
 * Alertes pour documentation obsolète chez les clients
 * Courriels de notification stylisés Symbifox
@@ -48,7 +46,7 @@ Fonctionnalités:
     # res.company. bluefox_branding n'est PAS requis: c'est le panneau de
     # marque blanche, optionnel. Sans lui, les documents sortent aux couleurs
     # par défaut de l'instance.
-    'depends': ['project', 'mail', 'hr', 'bf_onboarding_base'],
+    'depends': ['project', 'mail', 'bf_onboarding_base'],
     'external_dependencies': {
         'python': ['cryptography'],
     },
@@ -87,7 +85,6 @@ Fonctionnalités:
         'views/credential_type_views.xml',
         'views/credential_views.xml',
         'views/document_type_views.xml',
-        'views/document_software_views.xml',
         'views/document_views.xml',
         'views/raci_stakeholder_views.xml',
         'views/project_views.xml',

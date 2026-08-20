@@ -14,11 +14,9 @@
                 <field name="code"/>
                 <field name="name"/>
                 <field name="type_id"/>
-                <field name="software_id" optional="show"/>
                 <field name="is_internal" widget="boolean" optional="show"/>
                 <field name="current_version"/>
                 <field name="project_id" optional="show"/>
-                <field name="department_id" optional="hide"/>
                 <field name="review_date" optional="show"/>
                 <field name="expiration_date" optional="show"/>
                 <field name="owner_id" widget="many2one_avatar_user"/>
@@ -56,7 +54,6 @@
                 <field name="is_expired"/>
                 <field name="is_expiring_soon"/>
                 <field name="is_review_due"/>
-                <field name="software_id"/>
                 <templates>
                     <t t-name="card">
                         <div class="oe_kanban_content">
@@ -86,9 +83,6 @@
                             <div class="o_kanban_record_body">
                                 <div t-if="record.current_version.value">
                                     <span class="badge text-bg-primary">v<field name="current_version"/></span>
-                                    <span t-if="record.software_id.raw_value" class="badge text-bg-secondary ms-1">
-                                        <field name="software_id"/>
-                                    </span>
                                 </div>
                                 <div class="text-muted mt-1">
                                     <span t-if="record.version_count.raw_value" title="Versions">
@@ -178,7 +172,6 @@
                             <field name="type_id" options="{'no_create': True}"/>
                             <field name="is_internal" readonly="1"/>
                             <field name="project_id" invisible="is_internal"/>
-                            <field name="department_id" invisible="not is_internal"/>
                             <field name="matrix_id" options="{'no_create': True}"/>
                             <field name="company_id" groups="base.group_multi_company"/>
                         </group>
@@ -187,12 +180,6 @@
                             <field name="owner_id" widget="many2one_avatar_user"/>
                             <field name="external_url" widget="url" placeholder="https://nextcloud.example.com/..."/>
                             <field name="latest_version_id" invisible="1"/>
-                        </group>
-                    </group>
-                    <group string="Logiciel documenté" invisible="is_internal">
-                        <group>
-                            <field name="software_id" options="{'no_create': True}"/>
-                            <field name="software_version_id" options="{'no_create': True}"/>
                         </group>
                     </group>
                     <group string="Révision et expiration">
@@ -253,9 +240,7 @@
                 <field name="code"/>
                 <field name="type_id"/>
                 <field name="project_id"/>
-                <field name="department_id"/>
                 <field name="owner_id"/>
-                <field name="software_id"/>
                 <separator/>
                 <filter name="filter_draft" string="Brouillon" domain="[('state', '=', 'draft')]"/>
                 <filter name="filter_active" string="Actif" domain="[('state', '=', 'active')]"/>
@@ -277,8 +262,6 @@
                     <filter name="groupby_type" string="Type" context="{'group_by': 'type_id'}"/>
                     <filter name="groupby_internal" string="Interne/Client" context="{'group_by': 'is_internal'}"/>
                     <filter name="groupby_project" string="Projet" context="{'group_by': 'project_id'}"/>
-                    <filter name="groupby_department" string="Département" context="{'group_by': 'department_id'}"/>
-                    <filter name="groupby_software" string="Logiciel" context="{'group_by': 'software_id'}"/>
                     <filter name="groupby_state" string="État" context="{'group_by': 'state'}"/>
                     <filter name="groupby_owner" string="Responsable" context="{'group_by': 'owner_id'}"/>
                 </group>
@@ -640,7 +623,6 @@
                             <field name="version_id" options="{'no_create': True}"/>
                             <field name="is_internal" invisible="1"/>
                             <field name="project_id" invisible="is_internal"/>
-                            <field name="department_id" invisible="not is_internal"/>
                         </group>
                         <group string="Destinataire">
                             <field name="recipient_type" widget="radio"/>

@@ -1,4 +1,5 @@
 import logging
+import re
 
 from datetime import timedelta
 
@@ -427,11 +428,46 @@ class KnowledgeItem(models.Model):
         self.ensure_one()
         self.write({'state': 'rejected'})
 
+    def _next_free_decision_id(self):
+        """Prochain identifiant libre du même préfixe, dans la même matrice.
+
+        ``decision_id`` est unique par matrice et doit rester au format
+        « lettres puis chiffres ». Un successeur ne peut donc pas reprendre
+        l'identifiant de son prédécesseur ni lui accoler un suffixe : on garde
+        le préfixe de section et on prend le premier numéro encore libre.
+        """
+        self.ensure_one()
+        correspondance = re.match(r'^([A-Za-z]+)(\d+)$', self.decision_id or '')
+        if not correspondance:
+            return self.decision_id
+        prefixe = correspondance.group(1).upper()
+
+        voisins = self.search([
+            ('matrix_id', '=', self.matrix_id.id),
+            ('decision_id', '=like', f'{prefixe}%'),
+        ])
+        pris = set()
+        for voisin in voisins:
+            autre = re.match(r'^([A-Za-z]+)(\d+)$', voisin.decision_id or '')
+            if autre and autre.group(1).upper() == prefixe:
+                pris.add(int(autre.group(2)))
+
+        numero = max(pris) + 1 if pris else 1
+        while f'{prefixe}{numero}' in {v.decision_id for v in voisins}:
+            numero += 1
+        return f'{prefixe}{numero}'
+
     def action_supersede(self):
-        """Marquer la décision actuelle comme remplacée et créer un successeur."""
+        """Marquer la décision actuelle comme remplacée et créer un successeur.
+
+        Le successeur reçoit un identifiant libre : la copie telle quelle
+        violait la contrainte d'unicité ``decision_id`` + ``matrix_id`` et le
+        bouton levait une erreur de base de données à chaque appel.
+        """
         self.ensure_one()
         new_item = self.copy({
             'name': f"[RÉV] {self.name}",
+            'decision_id': self._next_free_decision_id(),
             'state': 'pending',
             'supersedes_id': self.id,
             'decision_date': False,
@@ -537,7 +573,6 @@ class KnowledgeItem(models.Model):
     @api.constrains('decision_id')
     def _check_decision_id_format(self):
         """Valider le format de l'ID de décision (lettres + chiffres)."""
-        import re
         pattern = re.compile(r'^[A-Z]+\d+$', re.IGNORECASE)
         for item in self:
             if item.decision_id and not pattern.match(item.decision_id):
