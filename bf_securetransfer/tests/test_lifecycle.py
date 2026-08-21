@@ -129,8 +129,8 @@ class TestSecureTransferLifecycle(TransactionCase):
     # ------------------------------------------------------------ drop page
     def _drop_brand(self, **overrides):
         # The slug is UNIQUE across brands, so it must not collide with one a
-        # tenant actually publishes — a personal page did, and every drop-page
-        # test errored out on a real database instead of running.
+        # tenant actually publishes — a personal slug did, and every drop-page test
+        # errored out on the BF database instead of running.
         vals = {
             "name": "Dépôt test",
             "slug": "depot-test-unitaire",
@@ -647,7 +647,7 @@ class TestSecureTransferLifecycle(TransactionCase):
         # Le bureau d'abus est un réglage du locataire : on le pose ici plutôt
         # que d'attendre une adresse en dur (il n'y en a plus depuis 1.17.2).
         icp = self.env["ir.config_parameter"].sudo()
-        icp.set_param("bf_securetransfer.abuse_email", "abuse@example.com")
+        icp.set_param("bf_securetransfer.abuse_email", "abus@exemple.invalid")
         self.addCleanup(icp.set_param, "bf_securetransfer.abuse_email", "")
         Mail = self.env["mail.mail"].sudo()
         before = Mail.search_count([])
@@ -662,7 +662,7 @@ class TestSecureTransferLifecycle(TransactionCase):
         self.assertEqual(t._is_available()[1], "suspended")
         # two emails: abuse desk + recipients
         self.assertGreaterEqual(Mail.search_count([]) - before, 2)
-        self.assertTrue(Mail.search_count([("email_to", "=", "abuse@example.com")]))
+        self.assertTrue(Mail.search_count([("email_to", "=", "abus@exemple.invalid")]))
         # 'suspended' is in the log
         self.assertIn("suspended", t.access_log_ids.mapped("action"))
 

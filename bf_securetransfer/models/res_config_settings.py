@@ -179,6 +179,20 @@ class ResConfigSettings(models.TransientModel):
         config_parameter="bf_securetransfer.default_max_files",
         default=25,
     )
+    # ⚠ Not a brand limit — a MEMORY limit. Files composed in the backend pass
+    # through the worker (the public page never does: browser → S3 direct), so
+    # this bounds what one operator can make a worker hold at once. The model
+    # clamps it to 100 Mo whatever is set here; bigger sends belong on the
+    # public page.
+    st_backend_max_upload_mb = fields.Integer(
+        string="Pièces jointes max. depuis le backend (Mo)",
+        config_parameter="bf_securetransfer.backend_max_upload_mb",
+        default=25,
+        help="Taille totale acceptée par l'assistant « Nouvel envoi sécurisé » "
+             "du backend, tous fichiers confondus. Ces octets transitent par "
+             "Odoo (contrairement à la page publique, qui téléverse "
+             "directement vers le stockage) : plafonné à 100 Mo en dur.",
+    )
     st_default_free_max_retention_days = fields.Integer(
         string="Rétention max. — palier gratuit (jours)",
         config_parameter="bf_securetransfer.default_free_max_retention_days",

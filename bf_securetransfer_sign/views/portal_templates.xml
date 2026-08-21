@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============================================================= -->
+    <!-- La page d'entente : entre le code confirmé et le contenu.      -->
+    <!-- Même habillage que les autres barrières du transfert (mot de   -->
+    <!-- passe, code) : pour le visiteur, c'est la même porte, une      -->
+    <!-- marche plus loin.                                              -->
+    <!-- ============================================================= -->
+    <template id="page_nda" name="Transfert sécurisé — entente de confidentialité">
+        <t t-out="doctype"/>
+        <html t-att-lang="(locale or 'fr_CA')[:2]">
+            <head>
+                <meta charset="utf-8"/>
+                <meta name="viewport" content="width=device-width, initial-scale=1"/>
+                <meta name="robots" content="noindex, nofollow"/>
+                <!-- Le titre ne dit rien du contenu : il s'affiche dans l'onglet
+                     et dans l'historique du navigateur, bien avant que quoi que
+                     ce soit ait été accordé. -->
+                <title>Entente de confidentialité — <t t-esc="visuals['name']"/></title>
+                <link t-if="visuals['favicon_url']" rel="icon" t-att-href="visuals['favicon_url']"/>
+                <link rel="stylesheet" href="/bf_securetransfer/static/src/css/st_public.css"/>
+                <t t-call="bf_securetransfer.brand_style"/>
+            </head>
+            <body>
+                <main class="st-wrap">
+                    <header class="st-header">
+                        <img t-if="visuals['logo_url']" class="st-logo"
+                             t-att-src="visuals['logo_url']" t-att-alt="visuals['name']"/>
+                        <span class="st-brand-name"><t t-esc="visuals['name']"/></span>
+                    </header>
+
+                    <section class="st-card st-gate">
+                        <span class="st-gate-icon" aria-hidden="true">&#128220;</span>
+                        <h1 class="st-title">Entente de confidentialité</h1>
+
+                        <t t-if="nda_state == 'no_identity'">
+                            <p>Votre session ne porte plus d'identité confirmée —
+                                elle a peut-être expiré, ou vous avez changé de
+                                navigateur.</p>
+                            <p class="st-field-hint">Reprenez à l'étape du code :
+                                votre identité doit être confirmée avant que
+                                l'entente puisse être établie à votre nom.</p>
+                            <a class="st-btn st-btn-primary" t-attf-href="/s/#{token}">
+                                Recommencer</a>
+                        </t>
+                        <t t-elif="nda_state == 'refused'">
+                            <p>Vous avez décliné cette entente. L'accès au contenu
+                                reste fermé.</p>
+                            <p class="st-field-hint">Si c'était une erreur,
+                                communiquez avec la personne qui vous a transmis ce
+                                lien : elle peut vous en préparer un nouveau.</p>
+                        </t>
+                        <t t-else="">
+                            <p>Le contenu de ce transfert est confidentiel. Avant d'y
+                                accéder, vous devez signer l'entente ci-dessous.</p>
+                            <p t-if="identity_label" class="st-field-hint">
+                                Elle sera signée au nom de
+                                <strong t-esc="identity_label"/> — l'identité que vous
+                                venez de confirmer par code.
+                            </p>
+                            <div t-if="nda_error" class="st-error">
+                                L'entente n'a pas pu être préparée. Réessayez dans un
+                                instant ; si le problème persiste, prévenez l'expéditeur.
+                            </div>
+                            <form method="post" t-attf-action="/s/#{token}/nda/sign">
+                                <button type="submit" class="st-btn st-btn-primary">
+                                    Lire et signer l'entente
+                                </button>
+                            </form>
+                            <p class="st-field-hint">La signature est électronique et
+                                horodatée. Vous recevrez le document signé et son
+                                certificat.</p>
+                        </t>
+                    </section>
+
+                    <footer class="st-footer">
+                        <span t-if="visuals['tagline']" class="st-tagline" t-esc="visuals['tagline']"/>
+                        <span t-if="visuals['powered_by']" class="st-powered">
+                            Propulsé par <t t-esc="visuals['powered_by_name']"/></span>
+                    </footer>
+                </main>
+            </body>
+        </html>
+    </template>
+
+    <!-- ============================================================= -->
+    <!-- Retour au transfert depuis la confirmation de bf_sign.         -->
+    <!-- Sans ce lien, le visiteur qui vient de signer se retrouve dans -->
+    <!-- une impasse : bf_sign ignore d'où il venait.                   -->
+    <!-- ============================================================= -->
+    <template id="sign_done_return" inherit_id="bf_sign.sign_done"
+              name="BF Sign — retour au transfert sécurisé">
+        <xpath expr="//div[hasclass('bf-card')]" position="inside">
+            <t t-set="st_return" t-value="req._st_return_url()"/>
+            <t t-if="st_return">
+                <p style="margin-top:22px; color:#555;">
+                    L'entente est signée : vous pouvez maintenant accéder au contenu
+                    qui vous a été transmis.
+                </p>
+                <a class="bf-btn" t-att-href="st_return">Accéder au contenu</a>
+            </t>
+        </xpath>
+    </template>
+
+</odoo>

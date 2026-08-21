@@ -15,7 +15,8 @@ Render context passed to the QWeb templates:
 
 - page_upload:      brand, visuals, limits, locale, st_config_json (Markup)
 - page_download:    brand, visuals, transfer, files, token, locked (bool),
-                    pw_error, reported
+                    pw_error, reported, otp_stage, audience_open,
+                    audience_sms, identity_label, downloads_left
 - page_unavailable: brand, visuals, message (optional str)
 """
 
@@ -31,6 +32,7 @@ from urllib.parse import quote, urlparse
 from markupsafe import Markup
 
 from odoo import _, fields
+from odoo.exceptions import UserError
 from odoo.http import Controller, request, route
 from odoo.tools import html_escape
 from odoo.tools.misc import format_date
@@ -207,6 +209,21 @@ def _resolve_transfer_by_token(token):
         _token_fail_limiter.hit(ip)
         return None
     return transfer
+
+
+def _session_member(transfer):
+    """La ligne d'audience confirmée dans CETTE session, ou un recordset vide.
+
+    L'identité est relue en base à chaque requête plutôt que crue sur parole :
+    la session ne porte que la clé. Un visiteur bloqué par l'opérateur pendant
+    sa visite perd donc l'accès au téléchargement suivant, sans qu'il faille
+    invalider quoi que ce soit côté navigateur."""
+    Audience = transfer.env["secure.transfer.audience"]
+    identity = request.session.get("st_identity_%d" % transfer.id) or {}
+    if not identity.get("value"):
+        return Audience
+    return transfer._audience_for(identity.get("kind") or "email",
+                                  identity["value"])
 
 
 # ── Security headers ──────────────────────────────────────────────────────────
@@ -464,13 +481,23 @@ def _st_config(env, limits, locale):
         except (TypeError, ValueError):
             return default
 
+    # ⚠ `limits` sert AUSSI le backend (assistant d'envoi, contrôles serveur) et
+    # porte donc des réglages qui ne regardent pas un visiteur anonyme. Le bloc
+    # est rendu en clair dans la page publique : tout ce qui y entre est public.
+    # Les clés d'audience ouverte disent si le locataire fait des salles de
+    # données, si le SMS est câblé et combien de visiteurs un lien accepte —
+    # c'est-à-dire exactement ce qu'on voudrait savoir avant de sonder les
+    # plafonds. Le mode n'existant pas sur cette page, la JS n'en a aucun usage.
+    public_limits = {k: v for k, v in (limits or {}).items()
+                     if not k.startswith("audience_")
+                     and k not in ("allow_open_audience", "allow_audience_sms")}
     return {
         "locale": locale,
         "api": {
             "create": "/secrets/api/create",
             "transfer_base": "/secrets/api/",
         },
-        "limits": limits,
+        "limits": public_limits,
         "multipart": {
             "threshold_bytes": _int_param("multipart_threshold_mb", 64) * 1024 * 1024,
             "sign_batch_max": max(1, _int_param("mpu_sign_batch_max", 20)),
@@ -625,6 +652,9 @@ class SecureTransferController(Controller):
                 "locked": True, "pw_error": kw.get("pw_error"),
                 "reported": kw.get("reported"), "locale": locale,
                 "expiry_display": expiry_display, "otp_stage": False,
+                "audience_open": transfer.audience_mode == "open",
+                "audience_sms": False, "identity_label": "",
+                "downloads_left": None,
             })
             return _apply_security_headers(response, img_host=visuals.get("logo_host"))
         # Recipient OTP gate (per-transfer force OR tenant setting): after the
@@ -640,9 +670,45 @@ class SecureTransferController(Controller):
                 "otp_stage": request.session.get("st_otp_sent_%d" % transfer.id)
                 and "verify" or "request",
                 "otp_error": kw.get("otp_error"),
+                "audience_open": transfer.audience_mode == "open",
+                "audience_sms": transfer._audience_limits()["allow_sms"],
+                "identity_label": (
+                    request.session.get("st_otp_chal_%d" % transfer.id) or {}
+                ).get("label", ""),
             })
             return _apply_security_headers(response, img_host=visuals.get("logo_host"))
-        transfer._log("view", ip=ip, ua=ua)
+        member = _session_member(transfer)
+        # ⚠ Session incohérente : le drapeau « code validé » est posé, mais
+        # aucune identité ne lui répond en base. Deux façons d'y arriver — une
+        # session ouverte AVANT la version qui ancre les identités, et un
+        # destinataire retiré de la liste entre sa demande de code et sa
+        # validation. Dans les deux cas, laisser passer une session anonyme
+        # serait faux, et la confier à `_extra_access_gate` produirait une
+        # BOUCLE de redirection : la barrière renverrait vers cette page, qui
+        # rappellerait la barrière (mesuré le 2026-08-21). On répare : le
+        # drapeau tombe, le visiteur refait la seule étape qui prouve quelque
+        # chose. Une redirection, pas une boucle.
+        if transfer._recipient_otp_required() and not member:
+            request.session.pop("st_otp_ok_%d" % transfer.id, None)
+            request.session.pop("st_identity_%d" % transfer.id, None)
+            return request.redirect("/s/%s" % token, code=303)
+        # Un visiteur bloqué garde son cookie de session : c'est ici qu'on le
+        # renvoie à la porte, pas à la première requête suivante.
+        if transfer.audience_mode == "open" and member.state == "blocked":
+            transfer._log("expired_hit", ip=ip, ua=ua,
+                          actor=member.display_identity, note="blocked")
+            response = _render_page("bf_securetransfer.page_unavailable", {
+                "brand": brand, "visuals": visuals, "locale": locale,
+                "message": False,
+            })
+            return _apply_security_headers(response, img_host=visuals.get("logo_host"))
+        # Barrière d'extension (entente de confidentialité, cf. le module pont)
+        # — après le code, avant que quoi que ce soit du contenu soit rendu.
+        gate_url = transfer._extra_access_gate(member, token)
+        if gate_url:
+            return request.redirect(gate_url, code=303)
+        transfer._log("view", ip=ip, ua=ua,
+                      actor=member.display_identity if member else None)
         files = transfer._downloadable_files()
         response = _render_page("bf_securetransfer.page_download", {
             "brand": brand, "visuals": visuals, "transfer": transfer,
@@ -650,6 +716,10 @@ class SecureTransferController(Controller):
             "pw_error": False, "reported": kw.get("reported"),
             "locale": locale, "expiry_display": expiry_display,
             "otp_stage": False,
+            "audience_open": transfer.audience_mode == "open",
+            "audience_sms": False,
+            "identity_label": member.display_identity if member else "",
+            "downloads_left": member._download_budget_left() if member else None,
         })
         return _apply_security_headers(response, img_host=visuals.get("logo_host"))
 
@@ -669,26 +739,45 @@ class SecureTransferController(Controller):
             return request.redirect("/s/%s?otp_error=2" % token, code=303)
         # Throttle successful sends: a per-transfer cooldown (30s) and a total
         # cap (10 / 15 min) so a valid link can't be looped into a mail/SMS bomb.
+        # ⚠ Ces seaux vivent dans la mémoire du processus, et la prod tourne à
+        # plusieurs workers : ils bornent le martèlement, pas le coût. Le vrai
+        # plafond par identité est en base (secure.transfer.audience).
         if not _otp_cooldown_limiter.check(key, 1) \
                 or not _otp_send_limiter.check(key, _OTP_SEND_MAX):
             return request.redirect("/s/%s?otp_error=2" % token, code=303)
-        # A blank email is a "resend" from the verify stage — reuse the address
-        # already confirmed as a recipient in this session.
-        email = (post.get("email") or "").strip()
-        if not email:
-            email = (request.session.get("st_otp_chal_%d" % transfer.id) or {}).get("email", "")
-        otp_hash, expiry = transfer._send_recipient_otp(email, ip=ip, ua=ua)
+        prev = request.session.get("st_otp_chal_%d" % transfer.id) or {}
+        if transfer.audience_mode == "open":
+            # Audience ouverte : le visiteur choisit SON canal, et le code part
+            # sur ce canal-là. « mobile » n'est offert que si la marque et le
+            # transfert l'ouvrent (le modèle revérifie, la page ne fait foi de
+            # rien).
+            kind = "sms" if (post.get("kind") or "").strip() == "sms" else "email"
+            value = (post.get("identity") or post.get("email") or "").strip()
+            if not value:
+                # Renvoi depuis l'étape de saisie du code : on reprend
+                # l'identité déjà déclarée dans CETTE session.
+                kind = prev.get("kind") or kind
+                value = prev.get("value") or ""
+            otp_hash, expiry, member = transfer._send_audience_otp(
+                kind, value, ip=ip, ua=ua)
+            chal_extra = {"kind": kind, "value": value,
+                          "label": member.display_identity if member else ""}
+        else:
+            # A blank email is a "resend" from the verify stage — reuse the
+            # address already confirmed as a recipient in this session.
+            email = (post.get("email") or "").strip() or prev.get("email", "")
+            otp_hash, expiry = transfer._send_recipient_otp(email, ip=ip, ua=ua)
+            chal_extra = {"email": email}
         if not otp_hash:
             _otp_fail_limiter.hit(key)
             return request.redirect("/s/%s?otp_error=1" % token, code=303)
         # Count this successful send against the cooldown + total-send caps.
         _otp_cooldown_limiter.hit(key)
         _otp_send_limiter.hit(key)
-        request.session["st_otp_chal_%d" % transfer.id] = {
+        request.session["st_otp_chal_%d" % transfer.id] = dict(chal_extra, **{
             "hash": otp_hash,
             "expiry": fields.Datetime.to_string(expiry),
-            "email": email,
-        }
+        })
         request.session["st_otp_sent_%d" % transfer.id] = True
         return request.redirect("/s/%s" % token, code=303)
 
@@ -713,11 +802,32 @@ class SecureTransferController(Controller):
             request.session["st_otp_ok_%d" % transfer.id] = True
             request.session.pop("st_otp_chal_%d" % transfer.id, None)
             request.session.pop("st_otp_sent_%d" % transfer.id, None)
-            transfer._log("otp_ok", actor=chal.get("email"), ip=ip, ua=ua,
-                          note=_("Destinataire confirmé par code"))
+            # L'identité confirmée survit à la validation du code : c'est elle
+            # qu'on estampe sur les PDF, qui porte le budget de téléchargement
+            # de la personne, et sur laquelle le module pont accroche la NDA.
+            # Sans cela, le reste de la visite serait de nouveau anonyme.
+            # Vrai dans les DEUX modes : en destinataires nommés, la ligne
+            # n'admet personne (la liste l'a fait), elle ancre.
+            kind = chal.get("kind") or "email"
+            value = chal.get("value") or chal.get("email") or ""
+            member = transfer._audience_join(kind, value, ip=ip, ua=ua)
+            transfer._audience_confirm(member, ip=ip, ua=ua)
+            if member:
+                request.session["st_identity_%d" % transfer.id] = {
+                    "kind": member.identity_kind,
+                    "value": member._identity_value(),
+                    "label": member.display_identity,
+                }
+            transfer._log(
+                "otp_ok", actor=member.display_identity if member else value,
+                ip=ip, ua=ua,
+                note=_("Visiteur confirmé par code (audience ouverte)")
+                if transfer.audience_mode == "open"
+                else _("Destinataire confirmé par code"))
             return request.redirect("/s/%s" % token, code=303)
         _otp_fail_limiter.hit(key)
-        transfer._log("otp_fail", actor=chal.get("email"), ip=ip, ua=ua)
+        transfer._log("otp_fail", actor=chal.get("label") or chal.get("email"),
+                      ip=ip, ua=ua)
         return request.redirect("/s/%s?otp_error=1" % token, code=303)
 
     # ── Password gate ─────────────────────────────────────────────────────────
@@ -783,6 +893,29 @@ class SecureTransferController(Controller):
         if transfer._recipient_otp_required() \
                 and not request.session.get("st_otp_ok_%d" % transfer.id):
             return request.redirect("/s/%s" % token, code=303)
+        # Le visiteur confirmé de cette session : il porte son propre budget de
+        # téléchargements et c'est son identité qui sera estampée sur le PDF.
+        member = _session_member(transfer)
+        # ⚠ Session incohérente : le drapeau « code validé » est posé, mais
+        # aucune identité ne lui répond en base. Deux façons d'y arriver — une
+        # session ouverte AVANT la version qui ancre les identités, et un
+        # destinataire retiré de la liste entre sa demande de code et sa
+        # validation. Dans les deux cas, laisser passer une session anonyme
+        # serait faux, et la confier à `_extra_access_gate` produirait une
+        # BOUCLE de redirection : la barrière renverrait vers cette page, qui
+        # rappellerait la barrière (mesuré le 2026-08-21). On répare : le
+        # drapeau tombe, le visiteur refait la seule étape qui prouve quelque
+        # chose. Une redirection, pas une boucle.
+        if transfer._recipient_otp_required() and not member:
+            request.session.pop("st_otp_ok_%d" % transfer.id, None)
+            request.session.pop("st_identity_%d" % transfer.id, None)
+            return request.redirect("/s/%s" % token, code=303)
+        # ⚠ La barrière d'extension DOIT être ici aussi. Ne la poser que sur la
+        # page laisserait le lien direct d'un fichier la contourner entièrement
+        # — et c'est précisément ce lien-là qui circule.
+        gate_url = transfer._extra_access_gate(member, token)
+        if gate_url:
+            return request.redirect(gate_url, code=303)
         rec_file = transfer._downloadable_files().filtered(
             lambda f: f.id == file_id)[:1]
         if not rec_file:
@@ -829,12 +962,25 @@ class SecureTransferController(Controller):
             })
             return _apply_security_headers(response, img_host=visuals.get("logo_host"))
         # _register_download logs the download event itself (choke-point).
-        transfer._register_download(rec_file, ip, ua)
+        try:
+            transfer._register_download(rec_file, ip, ua, member=member or None)
+        except UserError as exc:
+            # Budget personnel épuisé (ou visiteur bloqué) : le transfert, lui,
+            # reste vivant pour les autres — on ne rend donc pas la page
+            # « indisponible » générique, qui laisserait croire à une
+            # expiration.
+            visuals = _v()
+            response = _render_page("bf_securetransfer.page_unavailable", {
+                "brand": brand, "visuals": visuals, "locale": locale,
+                "message": exc.args[0] if exc.args else False,
+            })
+            return _apply_security_headers(response, img_host=visuals.get("logo_host"))
         # Watermarked brands: Odoo fetches the object and serves the stamped
         # bytes itself. Everything else keeps the direct-to-S3 redirect, so the
         # bytes never touch Odoo. Returns None whenever stamping does not apply
         # or fails — the download still goes through, unstamped.
-        stamped = transfer._stamped_download_bytes(rec_file, ip)
+        stamped = transfer._stamped_download_bytes(
+            rec_file, ip, actor=member.display_identity if member else None)
         if stamped is not None:
             return request.make_response(stamped, headers=[
                 ("Content-Type", "application/pdf"),

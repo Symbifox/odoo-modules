@@ -22,6 +22,7 @@ from odoo.addons.bf_securetransfer.controllers.main import HONEYPOT_FIELD
 
 S3_MOD = "odoo.addons.bf_securetransfer.models.s3"
 API_MOD = "odoo.addons.bf_securetransfer.controllers.upload_api"
+MAIL_SEND = "odoo.addons.mail.models.mail_mail.MailMail.send"
 MB = 1024 * 1024
 
 # Every module-level sliding-window limiter. They live in the worker process,
@@ -309,6 +310,52 @@ class TestSecureTransferHttpRoutes(HttpCase):
         self.assertIn("st-otp-email", page.text)  # request stage rendered
         self.assertNotIn("4417", page.text)
         self.assertNotIn("contrat-secret.pdf", page.text)
+
+    # ------------------------------------------------------- abuse reporting
+    def test_the_report_link_is_offered_on_every_view_of_the_page(self):
+        """⚠ The form used to live INSIDE the content branch of the template,
+        so it only appeared once every gate was through. That made it useless
+        exactly where it matters: an unsolicited transfer is reported BEFORE it
+        is opened. Worse for a recipient-code transfer — which is every send
+        composed from the backend — the content page is only reachable by
+        requesting a code, so its recipient never saw the link at all and had
+        to play along with the sender to be able to complain about him."""
+        gated = self._create(message="non sollicité")
+        gated.force_recipient_otp = True
+        gated._register_file("piece.pdf", 4096)
+        with patch(S3_MOD + ".head_object", side_effect=self._head_for(gated)):
+            gated.action_finalize()
+        page = self._open("/s/%s" % gated.sudo().token)
+        self.assertIn("st-otp-email", page.text, "the OTP gate must be rendered")
+        self.assertIn("st-report-form", page.text)
+
+        locked = self._active_transfer(password="hunter2")
+        page = self._open("/s/%s" % locked.sudo().token)
+        self.assertIn("st-password-input", page.text,
+                      "the password gate must be rendered")
+        self.assertIn("st-report-form", page.text)
+
+        # …and it is still there once the content is visible.
+        open_one = self._active_transfer()
+        page = self._open("/s/%s" % open_one.sudo().token)
+        self.assertIn("st-report-form", page.text)
+
+    def test_a_gated_transfer_can_actually_be_reported(self):
+        """Rendering the button is half of it: the route must accept the post
+        without the visitor ever holding a code, and suspend the transfer."""
+        transfer = self._create(message="non sollicité")
+        transfer.force_recipient_otp = True
+        transfer._register_file("piece.pdf", 4096)
+        with patch(S3_MOD + ".head_object", side_effect=self._head_for(transfer)):
+            transfer.action_finalize()
+        token = transfer.sudo().token
+        with patch(MAIL_SEND, lambda self, *a, **k: True):
+            response = self._open("/s/%s/report" % token,
+                                  data={"reason": "je ne connais pas"})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(transfer.sudo().state, "suspended")
+        self.assertIn("abuse_report",
+                      transfer.sudo().access_log_ids.mapped("action"))
 
     def test_recipient_otp_gate_never_serves_the_bytes(self):
         """Without a verified session the download route must redirect and

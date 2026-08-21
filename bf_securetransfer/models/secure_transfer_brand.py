@@ -216,6 +216,39 @@ class SecureTransferBrand(models.Model):
              "envois : la case est alors montrée cochée et verrouillée.",
     )
 
+    # -- Audience ouverte (salle de données) ---------------------------------
+    # Éteint par défaut, et sur les DEUX plans : la marque doit l'offrir, et
+    # l'expéditeur doit le choisir. Un lien d'audience ouverte accepte une
+    # adresse que personne n'a validée en amont — c'est un pouvoir qu'on
+    # accorde, pas un défaut qu'on subit.
+    allow_open_audience = fields.Boolean(
+        string="Audience ouverte offerte", default=False,
+        help="Autorise les envois dont le lien ne nomme aucun destinataire : "
+             "le visiteur déclare son adresse et confirme par code à usage "
+             "unique. Utile pour une salle de données ou une diffusion à un "
+             "groupe dont on ne connaît pas toutes les adresses.",
+    )
+    audience_domains = fields.Text(
+        string="Domaines admis (audience ouverte)",
+        help="Liste blanche appliquée aux adresses auto-déclarées : adresse "
+             "complète, ou domaine (« @client.com »), une par ligne ou "
+             "séparées par des virgules. Vide = toute adresse est admise, "
+             "dans la limite du nombre de visiteurs.",
+    )
+    audience_max_default = fields.Integer(
+        string="Visiteurs max. (défaut)", default=50,
+        help="Nombre maximal d'adresses distinctes admises sur un transfert "
+             "en audience ouverte, quand l'envoi n'en fixe pas d'autre. "
+             "0 = illimité (déconseillé : c'est le plafond qui empêche un "
+             "lien fuité de servir de relais de courriel).",
+    )
+    allow_audience_sms = fields.Boolean(
+        string="Code par SMS en audience ouverte", default=False,
+        help="Laisse un visiteur d'audience ouverte demander son code sur son "
+             "mobile. Éteint par défaut : chaque SMS a un coût réel et le "
+             "numéro est fourni par le visiteur lui-même.",
+    )
+
     watermark_downloads = fields.Boolean(
         string="Filigrane au téléchargement",
         default=False,
@@ -421,7 +454,31 @@ class SecureTransferBrand(models.Model):
                 env["secure.transfer"].sudo()._needs_recipient_otp_param()),
             "max_download_budget": MAX_DOWNLOAD_BUDGET,
             "expiry_choices": choices,
+            # Audience ouverte : ce que la marque offre. Le formulaire public
+            # ne s'en sert pas (le mode s'ouvre depuis le backend seulement,
+            # cf. secure.transfer.audience_mode) mais l'assistant d'envoi et
+            # les contrôles serveur lisent la même source.
+            "allow_open_audience": bool(self.allow_open_audience),
+            "allow_audience_sms": bool(self.allow_audience_sms),
+            "audience_max_default": int(self.audience_max_default or 0),
         }
+
+    # ------------------------------------------------------------------ audience
+    def _audience_allowlist(self):
+        """Liste blanche des adresses auto-déclarées pour cette marque.
+
+        Repli sur la liste des destinataires : une instance qui restreint déjà
+        à qui elle peut écrire n'a aucune raison d'être plus ouverte quand
+        l'adresse vient du visiteur. L'inverse serait un contournement de la
+        politique anti-rebond par le simple choix du mode."""
+        self.ensure_one()
+        return (self.audience_domains or "").strip() \
+            or self._effective_recipient_allowlist()
+
+    def _audience_allowed(self, email):
+        """Whether ``email`` may join an open audience served by this brand."""
+        self.ensure_one()
+        return self._email_matches_list(email, self._audience_allowlist())
 
     def _visuals(self):
         """Resolved visual identity, shared by the public QWeb pages and the

@@ -375,7 +375,10 @@
                             <div t-elif="otp_error" class="st-error">
                                 Code ou adresse invalide.</div>
                             <t t-if="otp_stage == 'verify'">
-                                <p>Un code à 6 chiffres vient de vous être envoyé.
+                                <p t-if="identity_label">Un code à 6 chiffres vient d'être
+                                    envoyé à <strong t-esc="identity_label"/>.
+                                    Saisissez-le pour accéder à ce contenu.</p>
+                                <p t-else="">Un code à 6 chiffres vient de vous être envoyé.
                                     Saisissez-le pour accéder à ce contenu.</p>
                                 <!-- Le défi vit dans la session (st_otp_chal_*),
                                      pas sur le transfert : un code demandé ici
@@ -398,6 +401,42 @@
                                     <input type="hidden" name="email"/>
                                     <button type="submit" class="st-btn-link">Renvoyer un code</button>
                                 </form>
+                            </t>
+                            <!-- Audience ouverte : le lien ne nomme personne, donc
+                                 la question n'est plus « prouvez que vous êtes
+                                 l'un des destinataires » mais « dites-nous qui
+                                 vous êtes ». Le code part sur le moyen choisi
+                                 ICI : c'est la seule forme qui atteste quelque
+                                 chose. Deux formulaires distincts plutôt qu'un
+                                 sélecteur — la page de téléchargement doit
+                                 fonctionner sans JavaScript. -->
+                            <t t-elif="audience_open">
+                                <p>Ce lien n'est adressé à personne en particulier.
+                                    Pour accéder au contenu, identifiez-vous : un code à
+                                    usage unique vous sera transmis, et c'est sa
+                                    confirmation qui ouvre l'accès.</p>
+                                <form method="post" t-attf-action="/s/#{token}/otp-request">
+                                    <input type="hidden" name="kind" value="email"/>
+                                    <input type="email" id="st-otp-email" name="identity"
+                                           required="required" autocomplete="email"
+                                           placeholder="vous@exemple.com"
+                                           aria-label="Votre adresse courriel"/>
+                                    <button type="submit" class="st-btn st-btn-primary">Recevoir un code par courriel</button>
+                                </form>
+                                <t t-if="audience_sms">
+                                    <p class="st-field-hint" style="margin:14px 0 6px;">ou</p>
+                                    <form method="post" t-attf-action="/s/#{token}/otp-request">
+                                        <input type="hidden" name="kind" value="sms"/>
+                                        <input type="tel" id="st-otp-phone" name="identity"
+                                               required="required" autocomplete="tel"
+                                               placeholder="514 555-1234"
+                                               aria-label="Votre numéro de mobile"/>
+                                        <button type="submit" class="st-btn st-btn-primary">Recevoir un code par SMS</button>
+                                    </form>
+                                </t>
+                                <p class="st-field-hint">Le code est envoyé sur le moyen
+                                    que vous indiquez ici. Votre identité est inscrite au
+                                    journal d'accès de ce transfert.</p>
                             </t>
                             <t t-else="">
                                 <p>Pour accéder à ce contenu, confirmez votre
@@ -438,6 +477,17 @@
                             </p>
                             <p t-if="transfer.message" class="st-download-message"
                                t-esc="transfer.message"/>
+                            <!-- Audience ouverte : le visiteur doit voir sous quelle
+                                 identité il est entré (c'est elle qui sera estampée
+                                 sur les PDF) et ce qu'il lui reste. Rien de tout cela
+                                 n'a de sens en mode destinataires nommés. -->
+                            <p t-if="audience_open and identity_label" class="st-field-hint">
+                                Accès confirmé pour <strong t-esc="identity_label"/>.
+                                <t t-if="downloads_left is not None">
+                                    Téléchargements restants pour vous :
+                                    <strong t-esc="downloads_left"/>.
+                                </t>
+                            </p>
                             <div t-foreach="files" t-as="f" class="st-download-file">
                                 <div class="st-file-info">
                                     <span class="st-file-name" t-esc="f.filename"/>
@@ -452,13 +502,26 @@
                                 Disponible jusqu'au <strong t-esc="expiry_display"/>.
                                 Les fichiers seront ensuite supprimés définitivement.</p>
                         </section>
-
-                        <form method="post" t-attf-action="/s/#{token}/report"
-                              id="st-report-form" class="st-report"
-                              data-confirm="Signaler ce transfert comme abusif ?">
-                            <button type="submit" class="st-btn-link">Signaler un abus</button>
-                        </form>
                     </t>
+
+                    <!-- ⚠ Le signalement vit HORS des branches ci-dessus, et
+                         c'est le point : il était imbriqué dans la branche
+                         « contenu », donc il n'apparaissait qu'une fois les
+                         portes franchies. Or un envoi non sollicité se signale
+                         AVANT de l'ouvrir — et un transfert protégé par un code
+                         destinataire (tout envoi composé depuis le backend l'est)
+                         ne montrait jamais le lien, puisqu'on n'atteint la page
+                         de contenu qu'en réclamant un code. Le destinataire d'un
+                         message indésirable n'avait donc aucun recours, sauf à
+                         jouer le jeu de l'expéditeur.
+                         La route /report ne dépend d'aucune de ces portes : elle
+                         exige le jeton du lien, est limitée à 5 par jour et par
+                         IP, et suspend le transfert en attente de revue. -->
+                    <form method="post" t-attf-action="/s/#{token}/report"
+                          id="st-report-form" class="st-report"
+                          data-confirm="Signaler ce transfert comme abusif ?">
+                        <button type="submit" class="st-btn-link">Signaler un abus</button>
+                    </form>
 
                     <footer class="st-footer">
                         <span t-if="visuals['tagline']" class="st-tagline" t-esc="visuals['tagline']"/>

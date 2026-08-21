@@ -4,6 +4,7 @@ from . import pdf_watermark
 from . import secure_transfer_brand
 from . import secure_transfer_access_log
 from . import secure_transfer_file
+from . import secure_transfer_audience
 from . import secure_transfer
 from . import res_config_settings
 from . import res_users

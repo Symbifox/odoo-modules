@@ -12,7 +12,7 @@ nothing on its own and is left alone — and the predicate is re-read on every
 sweep, so turning the instance-wide setting off later blots the old messages.
 
 The companion feature is the retroactive gate: arming the recipient code on a
-transfer that is already out (task #24216), which is what makes the rule
+transfer that is already out, which is what makes the rule
 actionable instead of merely diagnostic.
 
 Nothing here touches SMTP: the queue is driven by hand and the post-send hook is
@@ -184,7 +184,7 @@ class TestChatterLinkRetention(TransactionCase):
 
     # -------------------------------------------------------- retroactive gate
     def test_requiring_a_code_after_the_fact_arms_the_gate(self):
-        """Task #24216: a transfer already out must be closable. The download
+        """A transfer already out must be closable. The download
         controller reads _recipient_otp_required(), so arming the per-transfer
         flag is what actually holds the content."""
         transfer = self._sent_transfer()

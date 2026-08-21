@@ -8,7 +8,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-08-05 04:09+0000\n"
 "PO-Revision-Date: 2026-08-05 04:09+0000\n"
-"Last-Translator: Les services de consultation Blue Fox, Inc. <info@bluefoxconsultant.com>\n"
+"Last-Translator: Blue Fox Inc. <info@bluefoxconsultant.com>\n"
 "Language-Team: \n"
 "Language: en_CA\n"
 "MIME-Version: 1.0\n"
@@ -1870,6 +1870,7 @@ msgstr "File not found."
 
 #. module: bf_securetransfer
 #: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer__file_ids
+#: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer_send_wizard__attachment_ids
 #: model_terms:ir.ui.view,arch_db:bf_securetransfer.page_upload
 #: model_terms:ir.ui.view,arch_db:bf_securetransfer.secure_transfer_view_form
 #: model_terms:ir.ui.view,arch_db:bf_securetransfer.secure_transfer_view_pivot
@@ -4369,10 +4370,6 @@ msgstr ""
 msgid "[Abus] Transfert signalé et suspendu — %s"
 msgstr "[Abuse] Transfer reported and suspended — %s"
 
-#. module: bf_securetransfer
-#: model_terms:ir.ui.view,arch_db:bf_securetransfer.res_config_settings_view_form
-msgid "abuse@example.com"
-msgstr ""
 
 #. module: bf_securetransfer
 #: model_terms:ir.ui.view,arch_db:bf_securetransfer.page_upload
@@ -4739,23 +4736,6 @@ msgid "1 jour"
 msgstr "1 day"
 
 #. module: bf_securetransfer
-#: model:ir.model.fields,help:bf_securetransfer.field_res_config_settings__st_abuse_email
-msgid ""
-"Adresse alertée (avec détails) lors d'un signalement d'abus. Le transfert "
-"est suspendu automatiquement et un avis neutre part aussi aux destinataires."
-" Laissé vide : le courriel de la société prend le relais."
-msgstr "Address alerted (with full detail) when abuse is reported. The transfer is suspended automatically and a neutral notice also goes to the recipients. Left empty: the company e-mail takes over."
-
-#. module: bf_securetransfer
-#: model_terms:ir.ui.view,arch_db:bf_securetransfer.res_config_settings_view_form
-msgid ""
-"Adresse alertée lors d'un signalement d'abus. Le transfert est alors "
-"suspendu automatiquement et les destinataires reçoivent un avis neutre. "
-"Laissée vide, c'est le courriel de la société qui reçoit l'avis — jamais une"
-" adresse extérieure."
-msgstr "Address alerted when abuse is reported. The transfer is then suspended automatically and the recipients receive a neutral notice. Left empty, the company e-mail receives the notice — never an outside address."
-
-#. module: bf_securetransfer
 #: model_terms:ir.ui.view,arch_db:bf_securetransfer.page_upload
 msgid ""
 "Ce que le destinataire verra\n"
@@ -4958,15 +4938,6 @@ msgid "Renvoyer le lien aux destinataires"
 msgstr "Re-send the link to the recipients"
 
 #. module: bf_securetransfer
-#: model_terms:ir.ui.view,arch_db:bf_securetransfer.page_download
-msgid ""
-"Saisissez-le dans\n"
-"                                    <strong>ce navigateur</strong> : le code ne vaut que pour\n"
-"                                    la demande faite ici. Si vous ouvrez le lien ailleurs,\n"
-"                                    demandez-en simplement un nouveau."
-msgstr "Enter it in <strong>this browser</strong>: the code is only valid for the request made here. If you open the link elsewhere, simply ask for a new one."
-
-#. module: bf_securetransfer
 #. odoo-python
 #: code:addons/_qa/bf_securetransfer/models/secure_transfer.py:0
 #: code:addons/bf_securetransfer/models/secure_transfer.py:0
@@ -5018,3 +4989,261 @@ msgstr "Deadline extended"
 #: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer_extend_wizard__transfer_state
 msgid "État actuel"
 msgstr "Current state"
+
+#. module: bf_securetransfer
+#. odoo-python
+#: code:addons/bf_securetransfer/models/secure_transfer.py:0
+msgid "(non renvoyé)"
+msgstr "(not re-sent)"
+
+#. module: bf_securetransfer
+#: model:ir.model.fields,help:bf_securetransfer.field_res_config_settings__st_abuse_email
+msgid ""
+"Adresse alertée (avec détails) lors d'un signalement d'abus. Le transfert "
+"est suspendu automatiquement et un avis neutre part aussi aux destinataires."
+" Laissé vide : le courriel de la société prend le relais."
+msgstr "Address alerted (with full detail) when abuse is reported. The transfer is suspended automatically and a neutral notice also goes to the recipients. Left empty: the company e-mail takes over."
+
+#. module: bf_securetransfer
+#: model_terms:ir.ui.view,arch_db:bf_securetransfer.res_config_settings_view_form
+msgid ""
+"Adresse alertée lors d'un signalement d'abus. Le transfert est alors "
+"suspendu automatiquement et les destinataires reçoivent un avis neutre. "
+"Laissée vide, c'est le courriel de la société qui reçoit l'avis — jamais une"
+" adresse extérieure."
+msgstr "Address alerted when abuse is reported. The transfer is then suspended automatically and the recipients receive a neutral notice. Left empty, the company e-mail receives the notice — never an outside address."
+
+#. module: bf_securetransfer
+#: model_terms:ir.ui.view,arch_db:bf_securetransfer.res_config_settings_view_form
+msgid "abus@votre-domaine.com"
+msgstr "abuse@your-domain.com"
+
+#. module: bf_securetransfer
+#: model_terms:ir.ui.view,arch_db:bf_securetransfer.page_download
+msgid ""
+"Saisissez-le dans\n"
+"                                    <strong>ce navigateur</strong> : le code ne vaut que pour\n"
+"                                    la demande faite ici. Si vous ouvrez le lien ailleurs,\n"
+"                                    demandez-en simplement un nouveau."
+msgstr "Enter it in <strong>this browser</strong>: the code is only valid for the request made here. If you open the link elsewhere, simply ask for a new one."
+
+#. module: bf_securetransfer
+#: model_terms:ir.ui.view,arch_db:bf_securetransfer.res_config_settings_view_form
+msgid "<span class=\"ms-1\">Mo par envoi</span>"
+msgstr "<span class=\"ms-1\">MB per send</span>"
+
+#. module: bf_securetransfer
+#: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer_send_wizard__brand_warning
+msgid "Avertissement de marque"
+msgstr "Brand warning"
+
+#. module: bf_securetransfer
+#. odoo-python
+#: code:addons/bf_securetransfer/wizards/secure_send_wizard.py:0
+msgid ""
+"Durée de mise à disposition non offerte par « %(brand)s » : %(asked)s "
+"jour(s) demandé(s), alors que cette marque offre %(choices)s."
+msgstr ""
+"Availability period not offered by “%(brand)s”: %(asked)s day(s) "
+"requested, while this brand offers %(choices)s."
+
+#. module: bf_securetransfer
+#: model:ir.model,name:bf_securetransfer.model_secure_transfer_send_wizard
+msgid "Envoyer un message ou des fichiers sécurisés (code destinataire)"
+msgstr "Send a secure message or files (recipient code)"
+
+#. module: bf_securetransfer
+#: model:ir.actions.act_window,name:bf_securetransfer.action_secure_send_from_partner
+msgid "Envoyer un transfert sécurisé"
+msgstr "Send a secure transfer"
+
+#. module: bf_securetransfer
+#: model:ir.model.fields,help:bf_securetransfer.field_secure_transfer_send_wizard__attachment_ids
+msgid ""
+"Fichiers joints au transfert. Ils sont déposés sur le stockage chiffré puis "
+"RETIRÉS d'Odoo : seul le lien sécurisé y donne accès, et le destinataire "
+"doit saisir son code."
+msgstr ""
+"Files attached to the transfer. They are uploaded to encrypted storage "
+"and then REMOVED from Odoo: only the secure link gives access, and the "
+"recipient must enter their code."
+
+#. module: bf_securetransfer
+#: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer_send_wizard__sender_locked
+msgid "Identité verrouillée"
+msgstr "Identity locked"
+
+#. module: bf_securetransfer
+#. odoo-python
+#: code:addons/bf_securetransfer/wizards/secure_send_wizard.py:0
+msgid ""
+"Jusqu'à %s Mo au total depuis cet écran. Au-delà, passez par la page "
+"publique d'envoi : elle téléverse directement vers le stockage, sans limite "
+"pratique."
+msgstr ""
+"Up to %s MB in total from this screen. Beyond that, use the public send "
+"page: it uploads straight to storage, with no practical limit."
+
+#. module: bf_securetransfer
+#: model_terms:ir.ui.view,arch_db:bf_securetransfer.secure_send_wizard_view_form
+msgid ""
+"Le contenu est <strong>retenu</strong> : le destinataire reçoit un\n"
+"                    lien, et le message comme les fichiers ne s'affichent qu'après\n"
+"                    avoir saisi un <strong>code de vérification à usage unique</strong>\n"
+"                    (courriel ou SMS). Chaque accès est journalisé (Loi 25)."
+msgstr ""
+"The content is <strong>held back</strong>: the recipient gets a\n"
+"                    link, and neither the message nor the files appear until\n"
+"                    they enter a <strong>one-time verification code</strong>\n"
+"                    (e-mail or SMS). Every access is journaled (Law 25)."
+
+#. module: bf_securetransfer
+#. odoo-python
+#: code:addons/bf_securetransfer/wizards/secure_send_wizard.py:0
+msgid "Le fichier « %s » est vide ou illisible."
+msgstr "The file “%s” is empty or unreadable."
+
+#. module: bf_securetransfer
+#. odoo-python
+#: code:addons/bf_securetransfer/models/secure_transfer.py:0
+msgid ""
+"Le fichier « %s » n'a pas pu être vérifié sur le stockage après "
+"téléversement."
+msgstr "The file “%s” could not be verified on storage after upload."
+
+#. module: bf_securetransfer
+#. odoo-python
+#: code:addons/bf_securetransfer/wizards/secure_send_wizard.py:0
+msgid "Le mot de passe supplémentaire n'est pas offert pour « %s »."
+msgstr "The additional password is not offered for “%s”."
+
+#. module: bf_securetransfer
+#. odoo-python
+#: code:addons/bf_securetransfer/wizards/secure_send_wizard.py:0
+msgid "Les fichiers joints dépassent la limite de %s Mo de cet écran."
+msgstr "The attached files exceed this screen’s %s MB limit."
+
+#. module: bf_securetransfer
+#. odoo-python
+#: code:addons/bf_securetransfer/wizards/secure_send_wizard.py:0
+msgid ""
+"Les fichiers joints totalisent %(total).1f Mo ; cet écran en accepte %(max)s"
+" au maximum. Pour un envoi plus gros, utilisez la page publique d'envoi "
+"(téléversement direct vers le stockage)."
+msgstr ""
+"The attached files total %(total).1f MB; this screen accepts %(max)s at "
+"most. For a larger send, use the public send page (direct upload to "
+"storage)."
+
+#. module: bf_securetransfer
+#: model:ir.model.fields,field_description:bf_securetransfer.field_secure_transfer_send_wizard__upload_hint
+msgid "Limite de téléversement"
+msgstr "Upload limit"
+
+#. module: bf_securetransfer
+#: model:ir.actions.act_window,name:bf_securetransfer.action_secure_send_wizard
+#: model:ir.ui.menu,name:bf_securetransfer.menu_secure_send
+msgid "Nouvel envoi sécurisé"
+msgstr "New secure send"
+
+#. module: bf_securetransfer
+#: model_terms:ir.ui.view,arch_db:bf_securetransfer.res_config_settings_view_form
+msgid "Pièces jointes depuis le backend"
+msgstr "Attachments from the backend"
+
+#. module: bf_securetransfer
+#: model:ir.model.fields,field_description:bf_securetransfer.field_res_config_settings__st_backend_max_upload_mb
+msgid "Pièces jointes max. depuis le backend (Mo)"
+msgstr "Max. attachments from the backend (MB)"
+
+#. module: bf_securetransfer
+#: model:ir.model.fields,help:bf_securetransfer.field_secure_transfer_send_wizard__sender_email
+msgid ""
+"Reçoit l'accusé d'envoi. Seul un gestionnaire du transfert sécurisé peut "
+"envoyer sous une autre identité que la sienne."
+msgstr ""
+"Receives the send receipt. Only a secure transfer manager may send under "
+"an identity other than their own."
+
+#. module: bf_securetransfer
+#: model:ir.model.fields,help:bf_securetransfer.field_res_config_settings__st_backend_max_upload_mb
+msgid ""
+"Taille totale acceptée par l'assistant « Nouvel envoi sécurisé » du backend,"
+" tous fichiers confondus. Ces octets transitent par Odoo (contrairement à la"
+" page publique, qui téléverse directement vers le stockage) : plafonné à 100"
+" Mo en dur."
+msgstr ""
+"Total size accepted by the backend “New secure send” wizard, all files "
+"combined. These bytes travel through Odoo (unlike the public page, which "
+"uploads straight to storage): hard-capped at 100 MB."
+
+#. module: bf_securetransfer
+#: model_terms:ir.ui.view,arch_db:bf_securetransfer.res_config_settings_view_form
+msgid ""
+"Taille totale acceptée par l'assistant « Nouvel envoi sécurisé ». Ces octets"
+" transitent par Odoo (la page publique, elle, téléverse directement vers le "
+"stockage) : plafonné à 100 Mo en dur, quelle que soit la valeur saisie."
+msgstr ""
+"Total size accepted by the “New secure send” wizard. These bytes travel "
+"through Odoo (the public page uploads straight to storage instead): "
+"hard-capped at 100 MB, whatever value is entered."
+
+#. module: bf_securetransfer
+#: model:ir.actions.server,name:bf_securetransfer.cron_st_gc_wizard_attachments_ir_actions_server
+msgid "Transfert sécurisé : purge des pièces jointes de composition"
+msgstr "Secure transfer: purge composer attachments"
+
+#. module: bf_securetransfer
+#. odoo-python
+#: code:addons/bf_securetransfer/wizards/secure_send_wizard.py:0
+msgid ""
+"Transfert sécurisé créé depuis le backend par %(login)s (canal %(channel)s, "
+"%(recipients)s destinataire(s), %(files)s fichier(s))"
+msgstr ""
+"Secure transfer created from the backend by %(login)s (%(channel)s "
+"channel, %(recipients)s recipient(s), %(files)s file(s))"
+
+#. module: bf_securetransfer
+#. odoo-python
+#: code:addons/bf_securetransfer/wizards/secure_send_wizard.py:0
+msgid ""
+"Votre compte n'a pas d'adresse courriel : impossible d'envoyer un transfert "
+"sécurisé en votre nom. Demandez à un administrateur de renseigner votre "
+"adresse."
+msgstr ""
+"Your account has no e-mail address, so a secure transfer cannot be sent "
+"in your name. Ask an administrator to fill in your address."
+
+#. module: bf_securetransfer
+#. odoo-python
+#: code:addons/bf_securetransfer/wizards/secure_send_wizard.py:0
+msgid ""
+"« %(brand)s » n'accepte pas d'envoi depuis %(email)s (liste d'expéditeurs "
+"autorisés). Choisissez une autre marque."
+msgstr ""
+"“%(brand)s” does not accept sends from %(email)s (allowed-sender list). "
+"Choose another brand."
+
+#. module: bf_securetransfer
+#. odoo-python
+#: code:addons/bf_securetransfer/wizards/secure_send_wizard.py:0
+msgid ""
+"« %(brand)s » n'autorise l'envoi qu'à certaines adresses. Destinataire(s) "
+"non autorisé(s) : %(bad)s"
+msgstr ""
+"“%(brand)s” only allows sending to certain addresses. Unauthorised "
+"recipient(s): %(bad)s"
+
+#. module: bf_securetransfer
+#. odoo-python
+#: code:addons/bf_securetransfer/wizards/secure_send_wizard.py:0
+msgid "« %(brand)s » n'autorise pas les envois depuis %(email)s."
+msgstr "“%(brand)s” does not allow sends from %(email)s."
+
+#. module: bf_securetransfer
+#. odoo-python
+#: code:addons/bf_securetransfer/wizards/secure_send_wizard.py:0
+msgid ""
+"« %s » est une page de dépôt : elle ne peut servir qu'à recevoir, jamais à "
+"envoyer."
+msgstr "“%s” is a drop page: it can only receive, never send."

@@ -15,3 +15,5 @@ from . import test_wizards
 from . import test_sms
 from . import test_chatter_link_retention
 from . import test_subject_reply_extend
+from . import test_backend_upload
+from . import test_open_audience

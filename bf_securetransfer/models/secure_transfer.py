@@ -212,6 +212,7 @@ class SecureTransfer(models.Model):
             ("off", "Aucun — le lien seul ouvre le contenu"),
             ("transfer", "Exigé pour ce transfert"),
             ("instance", "Exigé par le réglage d'instance"),
+            ("audience", "Exigé — audience ouverte"),
         ],
         string="Code du destinataire",
         compute="_compute_recipient_otp_status",
@@ -229,6 +230,62 @@ class SecureTransfer(models.Model):
     # seulement par l'envoi sécurisé backend (le formulaire public ne collecte
     # pas de téléphone) — sinon vide.
     recipient_sms_map = fields.Text(copy=False)
+    # -- Audience ouverte ------------------------------------------------------
+    # « declared » = le mode historique : les destinataires sont nommés à
+    # l'envoi et le code ne fait que prouver qu'on est l'un d'eux.
+    # « open » = le lien ne nomme personne : le visiteur déclare son adresse,
+    # reçoit un code, et sa confirmation l'inscrit dans `audience_ids`.
+    audience_mode = fields.Selection(
+        selection=[
+            ("declared", "Destinataires nommés"),
+            ("open", "Audience ouverte (le visiteur se déclare)"),
+        ],
+        string="Mode de transmission",
+        default="declared",
+        required=True,
+        tracking=True,
+        help="« Audience ouverte » : le lien ne vise personne en particulier. "
+             "Toute personne qui l'ouvre saisit son adresse, reçoit un code à "
+             "usage unique et n'accède au contenu qu'après l'avoir confirmé.",
+    )
+    audience_domains = fields.Text(
+        string="Domaines admis",
+        help="Liste blanche des adresses auto-déclarées (adresse complète ou "
+             "domaine « @client.com », une par ligne ou séparées par des "
+             "virgules). Vide = celle de la marque.",
+    )
+    audience_max = fields.Integer(
+        string="Visiteurs max.",
+        default=0,
+        help="Nombre maximal d'adresses distinctes admises. 0 = valeur de la "
+             "marque. C'est ce plafond qui empêche un lien fuité de servir de "
+             "relais de courriel vers des tiers.",
+    )
+    audience_max_downloads = fields.Integer(
+        string="Téléchargements par visiteur",
+        default=0,
+        help="0 = illimité. Budget appliqué à CHAQUE visiteur séparément — "
+             "« Téléchargements max. » reste le plafond global du transfert.",
+    )
+    audience_allow_sms = fields.Boolean(
+        string="Code par SMS offert",
+        default=False,
+        help="Laisse le visiteur demander son code sur son mobile. Sans effet "
+             "si la marque ne l'offre pas ou si le canal SMS n'est pas câblé.",
+    )
+    notify_on_join = fields.Boolean(
+        string="Notifier à chaque nouveau visiteur",
+        default=True,
+        help="Avertit l'expéditeur dès qu'une nouvelle adresse est confirmée. "
+             "Sur une audience ouverte, c'est la seule façon de savoir qui "
+             "entre : l'avis de téléchargement, lui, ne part qu'une fois.",
+    )
+    audience_ids = fields.One2many(
+        "secure.transfer.audience", "transfer_id", string="Audience",
+    )
+    audience_count = fields.Integer(
+        string="Visiteurs confirmés", compute="_compute_audience_count",
+    )
     # Float on purpose: Integer maps to int4 and overflows at 2.1 GB.
     total_size = fields.Float(
         string="Taille totale (octets)",
@@ -325,17 +382,48 @@ class SecureTransfer(models.Model):
         for rec in self:
             rec.file_count = len(rec.file_ids)
 
-    @api.depends("force_recipient_otp")
+    @api.depends("force_recipient_otp", "audience_mode")
     def _compute_recipient_otp_status(self):
         # The instance setting is read once per batch: it is the same answer
         # for every record and it costs a config-parameter query.
         instance = self._needs_recipient_otp_param()
         for rec in self:
             rec.recipient_otp_status = (
-                "transfer" if rec.force_recipient_otp
+                # L'audience ouverte passe en premier : c'est le motif le plus
+                # fort (le code n'y est pas une option, il EST le contrôle
+                # d'accès) et celui que l'opérateur doit lire.
+                "audience" if rec.audience_mode == "open"
+                else "transfer" if rec.force_recipient_otp
                 else "instance" if instance
                 else "off"
             )
+
+    @api.depends("audience_ids.state")
+    def _compute_audience_count(self):
+        # Les visiteurs seulement « en attente » (code envoyé, jamais validé)
+        # ne comptent pas : le chiffre lu par l'opérateur doit être celui des
+        # gens qui ont réellement franchi la porte.
+        for rec in self:
+            rec.audience_count = len(
+                rec.audience_ids.filtered(lambda a: a.state == "confirmed"))
+
+    @api.constrains("audience_mode", "brand_id")
+    def _check_audience_mode_offered(self):
+        """L'audience ouverte n'existe que si la marque l'offre.
+
+        Posé en contrainte et pas seulement dans l'assistant : le mode
+        s'écrit aussi par ORM et par XML-RPC, et il ouvre un lien à des
+        adresses que personne n'a validées en amont. La marque est le seul
+        endroit où l'opérateur a dit oui."""
+        for rec in self:
+            if rec.audience_mode != "open" or not rec.brand_id:
+                continue
+            if not rec.brand_id.allow_open_audience:
+                raise ValidationError(_(
+                    "La marque « %s » n'offre pas l'audience ouverte. "
+                    "Activez-la sur la marque avant de l'utiliser.",
+                    rec.brand_id.display_name,
+                ))
 
     @api.depends("password_hash")
     def _compute_has_password(self):
@@ -682,6 +770,50 @@ class SecureTransfer(models.Model):
             "state": "pending",
         })
 
+    # ------------------------------------------------------------------ backend origination
+    # The backend composer (secure.transfer.send.wizard) is the ONE path where
+    # file content goes through Odoo. The public page never does: the browser
+    # PUTs straight to S3 and the worker only ever sees metadata. A backend
+    # form has no such option, so the whole file sits in worker memory for the
+    # duration of the send — hence two ceilings, a tunable one and one that no
+    # setting can lift. Past them the honest answer is "use /secrets", which
+    # streams multi-Go without loading a byte here.
+    _BACKEND_UPLOAD_HARD_MAX_MB = 100
+
+    @api.model
+    def _backend_max_upload_bytes(self):
+        """Ceiling for ONE backend-composed transfer, all files together."""
+        mb = s3._int_param(self.env, "backend_max_upload_mb", 25)
+        return max(1, min(int(mb), self._BACKEND_UPLOAD_HARD_MAX_MB)) * 1024 * 1024
+
+    def _backend_add_file(self, filename, data):
+        """Register and upload ONE file on this draft, server-side.
+
+        Deliberately routed through ``_register_file``: that is where the deny
+        list, the per-transfer file and byte limits, the sanitized display
+        name, the server-derived mimetype and the opaque S3 key live. Creating
+        a ``secure.transfer.file`` row directly here would have handed the
+        backend a upload path with none of them.
+        """
+        self.ensure_one()
+        rec_file = self._register_file(filename, len(data))
+        # _register_file wrote the plan the BROWSER would have followed (simple
+        # PUT below the threshold, MPU above). We just did one server-side PUT,
+        # so the row has to say so — otherwise the operator reads "multipart"
+        # on a file that never had an upload id, and the resume machinery would
+        # be consulted for a file that has nothing to resume.
+        rec_file.write({"upload_mode": "simple", "state": "uploading"})
+        s3.put_bytes(self.env, rec_file.s3_key, data)
+        # Same verification the public flow runs at finalize: HEAD the object,
+        # confirm the exact size, pin the ETag. The bytes came from us, but the
+        # evidence has to be built the same way or the access certificate would
+        # rest on a weaker check for backend transfers.
+        if not rec_file._verify_on_s3():
+            raise UserError(_(
+                "Le fichier « %s » n'a pas pu être vérifié sur le stockage "
+                "après téléversement.", rec_file.filename))
+        return rec_file
+
     # ------------------------------------------------------------------ finalize
     def action_finalize(self, password=None):
         """Verify every file on S3 (HEAD: exists + exact size, ETag pinned),
@@ -809,11 +941,18 @@ class SecureTransfer(models.Model):
 
     def _recipient_otp_required(self):
         """Whether THIS transfer holds its content behind a recipient code:
-        the per-transfer force flag OR the instance-wide setting. The public
-        controller consults this at the download page, the code request and
-        every file download."""
+        le mode audience ouverte, le drapeau par transfert, OU le réglage
+        d'instance. Le contrôleur public consulte ce prédicat sur la page de
+        téléchargement, à la demande de code et à chaque téléchargement.
+
+        ⚠ L'audience ouverte n'est pas une option ici, c'est le contrôle
+        d'accès lui-même : un lien qui ne nomme personne et ne demande pas de
+        code est un lien public. Le prédicat le force donc, quoi qu'en disent
+        les deux autres sources."""
         self.ensure_one()
-        return self.force_recipient_otp or self._needs_recipient_otp_param()
+        return (self.audience_mode == "open"
+                or self.force_recipient_otp
+                or self._needs_recipient_otp_param())
 
     def _brand_email_shell(self, heading, inner_html):
         """Wrap ``inner_html`` in the branded email skeleton (dark header band
@@ -1034,14 +1173,263 @@ class SecureTransfer(models.Model):
     #    session by the controller (per-browser, no cross-recipient clobber);
     #    the model only validates the target and sends the code.
     def _is_recipient_email(self, email):
+        """L'adresse a-t-elle le droit de demander un code sur ce transfert ?
+
+        En mode « destinataires nommés », la réponse est l'appartenance à la
+        liste — le code PROUVE une identité déjà connue. En audience ouverte,
+        il n'y a pas de liste : la question devient « cette adresse est-elle
+        admissible », et c'est `_audience_admissible` qui tranche."""
         self.ensure_one()
         email = email_normalize(email or "") or ""
         if not email:
             return False
+        if self.audience_mode == "open":
+            return self._audience_admissible("email", email)[0]
         return email in [
             email_normalize(e) for e in (self.recipient_emails or "").split(",")
             if e.strip()
         ]
+
+    # ------------------------------------------------------------------ audience ouverte
+    def _audience_limits(self):
+        """Plafonds effectifs de l'audience : ceux du transfert, sinon ceux de
+        la marque."""
+        self.ensure_one()
+        brand = self.brand_id
+        return {
+            "max_visitors": int(self.audience_max or brand.audience_max_default or 0),
+            "allowlist": (self.audience_domains or "").strip()
+            or brand._audience_allowlist(),
+            "allow_sms": bool(self.audience_allow_sms
+                              and brand.allow_audience_sms
+                              and sms.configured(self.env)),
+        }
+
+    def _audience_admissible(self, kind, value):
+        """(admissible, motif) pour une identité auto-déclarée.
+
+        Quatre barrières, dans cet ordre :
+
+        1. **le canal** — une identité mobile n'est recevable que si le
+           transfert ET la marque offrent le SMS et que le canal est câblé ;
+        2. **la liste blanche** — celle du transfert, sinon celle de la marque,
+           qui retombe elle-même sur la liste des destinataires autorisés. Une
+           instance qui restreint déjà ses destinataires ne s'ouvre pas par le
+           seul choix du mode.
+           ⚠ Une liste de domaines ne sait rien dire d'un numéro : dès qu'elle
+           est posée, les identités mobiles sont refusées plutôt que laissées
+           passer sans contrôle. Restreindre par domaine, c'est exiger le
+           courriel ;
+        3. **le plafond de visiteurs distincts** — une identité DÉJÀ inscrite
+           repasse toujours (sinon le 51ᵉ visiteur fermerait la porte aux
+           cinquante premiers) ; seule une identité NOUVELLE s'y heurte ;
+        4. **le blocage individuel** posé par l'opérateur.
+
+        ⚠ C'est le plafond (3) qui empêche un lien fuité de servir de relais :
+        sans lui, quiconque tient le lien ferait partir un courriel signé DKIM
+        — ou un SMS facturé — vers autant de tiers qu'il le souhaite.
+        """
+        self.ensure_one()
+        identity = self.env["secure.transfer.audience"]._identity_values(kind, value)
+        if not identity:
+            return False, "invalid"
+        kind, email, phone = identity
+        existing_row = self._audience_for(kind, value)
+        if existing_row.state == "blocked":
+            return False, "blocked"
+        if self.audience_mode != "open":
+            # Mode « destinataires nommés ». La ligne d'audience n'y sert pas à
+            # ADMETTRE quelqu'un — la liste l'a déjà fait à l'envoi — mais à
+            # ancrer un destinataire une fois qu'il a prouvé son identité :
+            # c'est ce à quoi s'accrochent le filigrane nominatif, le budget
+            # par personne et la NDA du module pont. Ni plafond ni liste
+            # blanche ici : ils appartiennent au mode ouvert.
+            if kind != "email":
+                return False, "channel"
+            declared = email in [
+                email_normalize(e) for e in (self.recipient_emails or "").split(",")
+                if e.strip()
+            ]
+            return (True, "") if declared else (False, "not_a_recipient")
+        limits = self._audience_limits()
+        if kind == "sms" and not limits["allow_sms"]:
+            return False, "channel"
+        allowlist = (limits["allowlist"] or "").strip()
+        if kind == "sms":
+            if allowlist:
+                return False, "domain"
+        elif not self.brand_id._email_matches_list(email, allowlist):
+            return False, "domain"
+        if existing_row:
+            # Déjà inscrit (et non bloqué : contrôlé plus haut) — il repasse.
+            return True, ""
+        if limits["max_visitors"] and len(self.audience_ids) >= limits["max_visitors"]:
+            # Les visiteurs en attente comptent : sans cela le plafond ne
+            # limiterait que les confirmations, et l'envoi de codes — le coût
+            # et le risque réels — resterait sans borne.
+            return False, "full"
+        return True, ""
+
+    def _audience_for(self, kind, value):
+        """La ligne d'audience de cette identité, ou un recordset vide."""
+        self.ensure_one()
+        identity = self.env["secure.transfer.audience"]._identity_values(kind, value)
+        if not identity:
+            return self.env["secure.transfer.audience"]
+        kind, email, phone = identity
+        if kind == "sms":
+            return self.audience_ids.filtered(
+                lambda a: a.identity_kind == "sms" and a.phone == phone)[:1]
+        return self.audience_ids.filtered(
+            lambda a: a.identity_kind == "email" and a.email == email)[:1]
+
+    def _audience_join(self, kind, value, ip=None, ua=None):
+        """Créer (ou retrouver) la ligne d'audience d'une identité admissible.
+
+        Sous le verrou de ligne : deux navigateurs qui demandent un code au
+        même instant pour la même identité doivent aboutir à UNE ligne, et le
+        plafond de visiteurs doit être compté une seule fois. La contrainte SQL
+        d'unicité est la ceinture ; le verrou évite qu'elle se traduise en
+        page d'erreur pour le visiteur."""
+        self.ensure_one()
+        Audience = self.env["secure.transfer.audience"]
+        identity = Audience._identity_values(kind, value)
+        if not identity:
+            return Audience
+        kind, email, phone = identity
+        self._lock_row()
+        existing = self._audience_for(kind, value)
+        if existing:
+            return existing
+        admissible, _reason = self._audience_admissible(kind, value)
+        if not admissible:
+            return Audience
+        rec = Audience.sudo().create({
+            "transfer_id": self.id,
+            "identity_kind": kind,
+            "email": email or False,
+            "phone": phone or False,
+            "ip": ip or "",
+            "user_agent": (ua or "")[:512],
+        })
+        self._log("audience_requested", actor=rec.display_identity, ip=ip, ua=ua,
+                  note=_("Identité auto-déclarée sur une audience ouverte (%s)")
+                  % (_("SMS") if kind == "sms" else _("courriel")))
+        return rec
+
+    def _audience_confirm(self, member, ip=None, ua=None):
+        """Le code a été validé : inscrire le visiteur et prévenir l'expéditeur.
+
+        Rendue distincte de `_audience_join` parce que les deux moments n'ont
+        pas la même valeur de preuve : la demande dit qu'une identité a été
+        TAPÉE, la confirmation dit qu'elle a été LUE."""
+        self.ensure_one()
+        if not member:
+            return member
+        was_confirmed = member.state == "confirmed"
+        member._confirm()
+        if not was_confirmed:
+            self._log("audience_joined", actor=member.display_identity, ip=ip, ua=ua,
+                      note=_("Visiteur confirmé (%s)")
+                      % (_("audience ouverte") if self.audience_mode == "open"
+                         else _("destinataire nommé")))
+            # L'avis ne vaut que pour l'audience ouverte : sur un envoi à des
+            # destinataires nommés, l'expéditeur SAIT déjà à qui il a écrit —
+            # lui poster un courriel par destinataire serait du bruit.
+            if self.audience_mode == "open" and self.notify_on_join \
+                    and self.sender_email:
+                self._notify_audience_join(member)
+        return member
+
+    def _notify_audience_join(self, member):
+        """Avertir l'expéditeur qu'une nouvelle identité est entrée.
+
+        ⚠ C'est le seul avis qui parte à CHAQUE visiteur. `notify_on_download`
+        ne se déclenche qu'au PREMIER téléchargement du transfert (une fois,
+        pas une fois par personne) : sur une salle de données, il ne dirait
+        jamais qui d'autre est entré."""
+        self.ensure_one()
+        lang = self._lang_for_email(self.sender_email)
+        this = self.with_context(lang=lang)
+        inner = (
+            '<p>%s</p>'
+            '<p style="text-align:center;margin:20px 0;font-size:18px;'
+            'font-weight:700;">%s</p>'
+            '<p style="color:#777;font-size:12px;">%s</p>'
+            % (html_escape(_("Une nouvelle personne a confirmé son identité "
+                             "pour accéder à « %s » :")
+                           % (self.subject or self.name)),
+               html_escape(member.display_identity),
+               html_escape(_("Vous recevez cet avis parce que ce transfert est "
+                             "en audience ouverte. Vous pouvez bloquer un "
+                             "visiteur depuis la fiche du transfert."))))
+        self.env["mail.mail"].sudo().create({
+            "subject": _("Nouveau visiteur — %s") % self.name,
+            "email_from": self._brand_email_from(),
+            "email_to": self.sender_email,
+            "body_html": this._brand_email_shell(_("Nouveau visiteur"), inner),
+            "auto_delete": True,
+        }).send()
+        self._log("notified", actor=member.display_identity,
+                  note=_("Avis de nouveau visiteur envoyé à %s")
+                  % self.sender_email)
+
+    def _extra_access_gate(self, member, token):
+        """Une barrière SUPPLÉMENTAIRE entre le code confirmé et le contenu.
+
+        Rend l'URL vers laquelle envoyer le visiteur, ou ``False`` pour le
+        laisser passer. Le socle n'en pose aucune : la méthode existe pour que
+        le module pont ``bf_securetransfer_sign`` y branche la signature d'une
+        entente de confidentialité sans que le socle ait à connaître bf_sign —
+        un champ typé vers ``bf.sign.request`` d'ici en ferait une dépendance
+        dure, et cela ne se verrait que sur une installation neuve.
+
+        Appelée aux DEUX endroits qui donnent accès au contenu : la page de
+        téléchargement et la route de téléchargement d'un fichier. Ne la
+        brancher qu'à la page laisserait les liens directs ouverts.
+        """
+        self.ensure_one()
+        return False
+
+    def _send_audience_otp(self, kind, value, ip=None, ua=None):
+        """Envoyer un code à une identité auto-déclarée (mode audience ouverte).
+
+        Rend ``(hash, expiry, member)`` pour que le contrôleur range le défi
+        dans la session, ou ``(None, None, vide)`` sur tout refus. Comme
+        `_send_recipient_otp`, la méthode est privée à dessein : elle rend un
+        condensé dérivé du code et déclenche un envoi sortant, donc elle ne
+        doit pas être joignable par RPC.
+
+        ⚠ Le code part sur le canal de l'identité déclarée, jamais sur un
+        autre : c'est ce qui fait qu'une confirmation prouve quelque chose.
+        """
+        self.ensure_one()
+        member = self._audience_join(kind, value, ip=ip, ua=ua)
+        if not member:
+            return None, None, member
+        allowed, reason = member._may_receive_otp()
+        if not allowed:
+            self._log("otp_fail", actor=member.display_identity, ip=ip, ua=ua,
+                      note=_("Demande de code refusée (%s)") % reason)
+            return None, None, member
+        code = "%06d" % secrets.randbelow(1_000_000)
+        expiry = fields.Datetime.now() + timedelta(minutes=15)
+        if member.identity_kind == "sms":
+            if not self._otp_sms(member.phone, code):
+                # Le SMS a échoué : PAS de repli vers le courriel ici. En
+                # audience ouverte, l'identité EST le numéro — livrer ailleurs
+                # donnerait l'accès à quelqu'un d'autre. Le visiteur réessaie.
+                self._log("otp_fail", actor=member.display_identity, ip=ip, ua=ua,
+                          note=_("Échec de livraison du code par SMS"))
+                return None, None, member
+        else:
+            self.with_context(lang=self._lang_for_email(member.email))._otp_email(
+                member.email, code, "recipient")
+        member._record_otp_sent()
+        self._log("otp_sent", actor=member.display_identity, ip=ip, ua=ua,
+                  note=_("Code envoyé à un visiteur d'audience ouverte (%s)")
+                  % (_("SMS") if member.identity_kind == "sms" else _("courriel")))
+        return self._otp_hash(code), expiry, member
 
     def _phone_for_recipient(self, email):
         """The mobile number to text a recipient's code to, or ''. First the
@@ -1158,18 +1546,34 @@ class SecureTransfer(models.Model):
         return self.file_ids.filtered(
             lambda f: f.state == "verified" and f.scanned in ("none", "clean"))
 
-    def _register_download(self, file, ip, ua):
+    def _register_download(self, file, ip, ua, member=None):
         """Account one download under the row lock: re-check availability
         (two racing downloads must not both pass a budget of 1), bump the
-        counters, expire when the budget is spent."""
+        counters, expire when the budget is spent.
+
+        ``member`` est la ligne d'audience du visiteur, en mode ouvert : son
+        budget personnel est vérifié SOUS LE MÊME VERROU que le budget global,
+        sans quoi deux téléchargements concurrents passeraient tous les deux
+        un budget de 1."""
         self.ensure_one()
         self._lock_row()
         available, _reason = self._is_available()
         if not available:
             raise UserError(_("Ce transfert n'est plus disponible."))
+        if member:
+            if member.state == "blocked":
+                raise UserError(_("Ce transfert n'est plus disponible."))
+            left = member._download_budget_left()
+            if left is not None and left <= 0:
+                raise UserError(_(
+                    "Vous avez atteint le nombre de téléchargements prévu "
+                    "pour ce lien."))
+            member._register_download()
         self.download_count += 1
         file.download_count += 1
-        self._log("download", file=file, ip=ip, ua=ua, note=file.filename)
+        self._log("download", file=file, ip=ip, ua=ua,
+                  actor=member.display_identity if member else None,
+                  note=file.filename)
         # Notify the sender on the FIRST download (once per transfer, not per
         # file — avoids a burst of notices on a multi-file transfer).
         if self.notify_on_download and self.download_count == 1 and self.sender_email:
@@ -1202,24 +1606,33 @@ class SecureTransfer(models.Model):
     # is worth an OOM on a shared worker.
     _WATERMARK_MAX_BYTES = 30 * 1024 * 1024
 
-    def _watermark_lines(self, file, ip=None):
+    def _watermark_lines(self, file, ip=None, actor=None):
         """The three lines stamped on the page: who, when, whose brand.
 
-        "Who" is the recipient when the transfer names exactly one — with
-        several, no single name is true, so the requesting IP is stamped
-        instead. It is the only identifying trace we hold at download time.
+        "Who" is, in order of how much it proves:
+
+        * ``actor`` — l'identité que le visiteur a CONFIRMÉE par code dans
+          cette session. C'est le cas nominal en audience ouverte, et le
+          meilleur des trois : elle est prouvée, et elle est individuelle ;
+        * le destinataire, quand le transfert n'en nomme qu'un ;
+        * l'IP demandeuse — le repli, quand plusieurs destinataires se
+          partagent le lien et qu'aucun nom n'est vrai.
+
+        ⚠ Avant l'audience ouverte, un transfert à plusieurs destinataires ne
+        pouvait estamper qu'une IP : le filigrane ne désignait donc personne.
+        Le passage par le code change cela sans rien coûter.
         """
         self.ensure_one()
         recipients = self._recipient_list()
-        who = recipients[0] if len(recipients) == 1 else (
-            ("IP " + ip) if ip else _("destinataire"))
+        who = actor or (recipients[0] if len(recipients) == 1 else (
+            ("IP " + ip) if ip else _("destinataire")))
         return [
             _("Téléchargé par %s") % who,
             datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC"),
             _("%s — confidentiel") % (self.brand_id.name or ""),
         ]
 
-    def _stamped_download_bytes(self, file, ip=None):
+    def _stamped_download_bytes(self, file, ip=None, actor=None):
         """Stamped PDF bytes for this download, or None to serve the plain S3
         redirect (watermark off for the brand, not a PDF, too large, or the
         stamping failed). A stamping failure must never cost the recipient the
@@ -1234,7 +1647,8 @@ class SecureTransfer(models.Model):
             src = s3.client(self.env).get_object(
                 Bucket=s3.params(self.env)["bucket"], Key=file.s3_key,
             )["Body"].read()
-            return pdf_watermark.stamp_pdf_bytes(src, self._watermark_lines(file, ip))
+            return pdf_watermark.stamp_pdf_bytes(
+                src, self._watermark_lines(file, ip, actor=actor))
         except Exception:  # noqa: BLE001 — S3/PDF: log and fall back, never fail
             _logger.exception(
                 "bf_securetransfer: watermarking failed for %s / file #%s; "
@@ -1395,7 +1809,7 @@ class SecureTransfer(models.Model):
         « Reply » button.
 
         ⚠ On a brand that accepts ANY sender — the open public tier, which is
-        what an open public tier actually is — the form already lets a
+        what a real deployment actually runs — the form already lets a
         stranger have a branded, DKIM-signed mail delivered to ten addresses of
         their choosing. Adding their address as Reply-To would finish the job:
         the answer would reach them instead of coming back to the brand

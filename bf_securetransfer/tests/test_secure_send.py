@@ -22,9 +22,15 @@ class TestSecureSend(TransactionCase):
     def setUpClass(cls):
         super().setUpClass()
         cls.brand = cls.env.ref("bf_securetransfer.brand_default")
-        # The wizard guards on the securetransfer user group.
+        # The wizard guards on the securetransfer user group. The MANAGER group
+        # is needed too: since 18.0.1.18.0 only a manager may compose under an
+        # identity other than his own, and these tests do exactly that.
         cls.env.user.groups_id = [
-            (4, cls.env.ref("bf_securetransfer.group_securetransfer_user").id)]
+            (4, cls.env.ref("bf_securetransfer.group_securetransfer_user").id),
+            (4, cls.env.ref("bf_securetransfer.group_securetransfer_manager").id)]
+        icp = cls.env["ir.config_parameter"].sudo()
+        icp.set_param("bf_securetransfer.quota_daily_transfers_per_sender", "500")
+        icp.set_param("bf_securetransfer.quota_daily_transfers_per_ip", "500")
 
     _n = 0
 

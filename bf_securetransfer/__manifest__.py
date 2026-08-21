@@ -1,6 +1,6 @@
 {
     'name': 'Transfert sécurisé (Secure Transfer)',
-    'version': '18.0.1.17.4',
+    'version': '18.0.1.20.0',
     'category': 'Website',
     'summary': "Transfert de fichiers sécurisé : téléversement direct navigateur → S3, "
                "liens tokenisés avec expiration et mot de passe, journal d'accès "
@@ -13,7 +13,13 @@ Transfert de fichiers « WeTransfer maison » propulsé par Odoo :
 
 * **Téléversement direct navigateur → S3** (IDrive E2, résidence Canada) par
   URL présignées — PUT simple sous le seuil, multipart au-delà (fichiers
-  multi-Go, reprise sur erreur). Les octets ne transitent jamais par Odoo.
+  multi-Go, reprise sur erreur). Depuis la page publique, les octets ne
+  transitent jamais par Odoo.
+* **Envoi sécurisé depuis le backend** : un utilisateur interne compose un
+  message et/ou joint des fichiers depuis Odoo (ou depuis la fiche d'un
+  contact). Le contenu est retenu derrière un code à usage unique. Ce chemin-là
+  fait passer les octets par Odoo — il est donc plafonné (25 Mo par défaut,
+  100 Mo en dur), et les pièces jointes sont retirées du filestore après dépôt.
 * **Liens tokenisés** avec expiration (1 / 7 / 30 jours), mot de passe
   optionnel (pbkdf2_sha512) et budget de téléchargements.
 * **Journal d'accès append-only chaîné** (hash-chain SHA-256) : chaque
@@ -32,6 +38,14 @@ Transfert de fichiers « WeTransfer maison » propulsé par Odoo :
 * **Certificat d'accès (PDF)** : le journal chaîné rendu opposable — verdict
   d'intégrité recalculé à l'impression, tailles confirmées par le serveur,
   horodatages UTC explicites et la recette pour recalculer la chaîne soi-même.
+
+* **Audience ouverte (salle de données)** : un lien qui ne nomme aucun
+  destinataire. Le visiteur déclare son courriel — ou son mobile — reçoit un
+  code à usage unique sur ce même canal, et n'accède au contenu qu'après
+  l'avoir confirmé. Chaque identité admise est inscrite, porte son propre
+  budget de téléchargements, s'estampe sur les PDF qu'elle télécharge et peut
+  être bloquée individuellement sans toucher au lien. Le mode s'ouvre depuis
+  le backend seulement, sous plafond de visiteurs et liste blanche de domaines.
 
 Les clés d'accès S3 vivent dans ``odoo.conf`` (ou l'environnement), jamais
 en base de données.
@@ -64,6 +78,7 @@ en base de données.
         'views/secure_transfer_views.xml',
         'views/secure_transfer_brand_views.xml',
         'views/secure_transfer_access_log_views.xml',
+        'views/secure_transfer_audience_views.xml',
         'views/res_config_settings_views.xml',
         'views/res_users_views.xml',
         'views/secure_transfer_portal_templates.xml',
