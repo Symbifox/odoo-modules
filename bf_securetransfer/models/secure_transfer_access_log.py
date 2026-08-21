@@ -59,6 +59,22 @@ class SecureTransferAccessLog(models.Model):
             ("link_revealed", "Lien révélé (gestionnaire)"),
             ("link_redacted", "Lien masqué dans le suivi"),
             ("otp_forced", "Code destinataire exigé après coup"),
+            ("audience_requested", "Identité déclarée (audience ouverte)"),
+            ("audience_joined", "Visiteur confirmé (audience ouverte)"),
+            ("audience_blocked", "Visiteur bloqué"),
+            ("audience_unblocked", "Visiteur débloqué"),
+            # ⚠ Écrites par le module pont `bf_securetransfer_sign`, jamais
+            # par le socle — qui ne connaît pas bf_sign et ne doit pas le
+            # connaître. Elles sont déclarées ICI quand même, et c'est
+            # délibéré : `selection_add` depuis le pont exigerait une politique
+            # `ondelete` pour ces valeurs, or ce journal est en ajout seul
+            # (`write` et `unlink` sont bloqués). Désinstaller le pont
+            # échouerait alors sur des entrées qu'on a justement promis de ne
+            # jamais réécrire. Le vocabulaire du journal est le vocabulaire de
+            # la preuve : il vit d'un seul tenant, ici.
+            ("nda_requested", "Entente de confidentialité à signer"),
+            ("nda_signed", "Entente de confidentialité signée"),
+            ("nda_refused", "Entente de confidentialité refusée"),
             ("extended", "Échéance prolongée"),
             ("expired", "Expiré"),
             ("purged", "Objets purgés du stockage"),

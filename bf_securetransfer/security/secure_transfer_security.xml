@@ -86,5 +86,15 @@
             <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
         </record>
 
+        <!-- L'audience porte des renseignements personnels de tiers (adresse,
+             mobile, IP) : même isolement que le journal, et pour la même
+             raison. Elle hérite la société du transfert plutôt que de porter
+             sa propre colonne, qui pourrait dériver. -->
+        <record id="rule_secure_transfer_audience_company" model="ir.rule">
+            <field name="name">Audience : multi-société</field>
+            <field name="model_id" ref="model_secure_transfer_audience"/>
+            <field name="domain_force">['|', ('transfer_id.company_id', '=', False), ('transfer_id.company_id', 'in', company_ids)]</field>
+        </record>
+
     </data>
 </odoo>

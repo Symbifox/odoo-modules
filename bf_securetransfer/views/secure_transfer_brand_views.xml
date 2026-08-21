@@ -96,6 +96,23 @@
                                invisible="not owner_user_id"
                                help="Page auto-provisionnée pour cet employé (synchro et archivage automatiques)."/>
                     </group>
+                    <group name="group_audience" string="Audience ouverte (salle de données)">
+                        <field name="allow_open_audience"/>
+                        <div class="alert alert-warning" role="alert"
+                             colspan="2" invisible="not allow_open_audience">
+                            Un lien d'audience ouverte accepte une adresse que
+                            personne n'a validée en amont. Le plafond de visiteurs
+                            ci-dessous est ce qui l'empêche de servir de relais de
+                            courriel vers des tiers : ne le mettez pas à 0.
+                        </div>
+                        <field name="audience_max_default"
+                               invisible="not allow_open_audience"/>
+                        <field name="allow_audience_sms"
+                               invisible="not allow_open_audience"/>
+                        <field name="audience_domains"
+                               invisible="not allow_open_audience"
+                               placeholder="Vide = liste des destinataires ci-dessous.&#10;Ex. : @client.com&#10;⚠ Une liste posée ici interdit l'identification par mobile (un numéro n'a pas de domaine)."/>
+                    </group>
                     <group string="Listes d'autorisation (anti-piggyback)">
                         <field name="sender_allowlist"
                                placeholder="Expéditeurs — vide = ouvert à tous.&#10;Une entrée par ligne : jean@client.com  ou  @client.com  ou  client.com"/>

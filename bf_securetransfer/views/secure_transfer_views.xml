@@ -104,7 +104,30 @@
                             <field name="recipient_otp_status" readonly="1"/>
                             <field name="force_recipient_otp" invisible="1"/>
                             <field name="recipient_otp_channel" readonly="1"
-                                   invisible="recipient_otp_status == 'off'"/>
+                                   invisible="recipient_otp_status == 'off' or audience_mode == 'open'"/>
+                            <field name="audience_mode" readonly="1"/>
+                            <!-- Chargé pour l'onglet Visiteurs, qui s'affiche
+                                 dès qu'une personne a confirmé son identité —
+                                 y compris sur un envoi à destinataires nommés. -->
+                            <field name="audience_count" invisible="1"/>
+                            <!-- Modifiables tant que le lien vit : ce sont les
+                                 seuls garde-fous d'une audience ouverte, et
+                                 devoir expirer le lien pour resserrer un
+                                 plafond serait pire que de le laisser large. -->
+                            <field name="audience_max"
+                                   invisible="audience_mode != 'open'"
+                                   readonly="state not in ('draft', 'active')"/>
+                            <field name="audience_max_downloads"
+                                   invisible="audience_mode != 'open'"
+                                   readonly="state not in ('draft', 'active')"/>
+                            <field name="audience_allow_sms" readonly="1"
+                                   invisible="audience_mode != 'open'"/>
+                            <field name="notify_on_join"
+                                   invisible="audience_mode != 'open'"
+                                   readonly="state not in ('draft', 'active')"/>
+                            <field name="audience_domains"
+                                   invisible="audience_mode != 'open'"
+                                   readonly="state not in ('draft', 'active')"/>
                             <field name="notify_on_download" readonly="1"/>
                             <field name="burn_after_download" readonly="1"/>
                             <!-- Read-only on purpose: « Prolonger l'échéance »
@@ -146,6 +169,42 @@
                                     <field name="scanned" optional="hide"/>
                                     <field name="download_count" string="Téléchargements"/>
                                     <field name="etag" optional="hide"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Visiteurs" name="page_audience"
+                              invisible="audience_mode != 'open' and audience_count == 0">
+                            <div class="alert alert-info" role="alert">
+                                Chaque ligne est une personne qui a confirmé son
+                                identité par code. En audience ouverte, elle s'est
+                                déclarée elle-même ; en destinataires nommés, elle
+                                figurait déjà sur la liste. « Bloquer » coupe son
+                                accès sans toucher au lien ni aux autres.
+                            </div>
+                            <field name="audience_ids" readonly="1">
+                                <list create="false" delete="false"
+                                      decoration-muted="state == 'blocked'"
+                                      decoration-success="state == 'confirmed'">
+                                    <field name="display_identity"/>
+                                    <field name="identity_kind"/>
+                                    <field name="state" widget="badge"
+                                           decoration-success="state == 'confirmed'"
+                                           decoration-warning="state == 'pending'"
+                                           decoration-danger="state == 'blocked'"/>
+                                    <field name="first_seen"/>
+                                    <field name="confirmed_at" optional="show"/>
+                                    <field name="download_count"/>
+                                    <field name="otp_send_count" optional="hide"/>
+                                    <field name="sms_send_count" optional="hide"/>
+                                    <field name="ip" optional="hide"/>
+                                    <button name="action_block" type="object"
+                                            string="Bloquer" icon="fa-ban"
+                                            invisible="state == 'blocked'"
+                                            groups="bf_securetransfer.group_securetransfer_manager"/>
+                                    <button name="action_unblock" type="object"
+                                            string="Débloquer" icon="fa-undo"
+                                            invisible="state != 'blocked'"
+                                            groups="bf_securetransfer.group_securetransfer_manager"/>
                                 </list>
                             </field>
                         </page>
@@ -207,9 +266,13 @@
                         domain="[('state', '=', 'active'), ('expiry_date', '&lt;=', (context_today() + relativedelta(days=2)).strftime('%Y-%m-%d 23:59:59'))]"/>
                 <filter name="f_protected" string="Protégé par mot de passe"
                         domain="[('has_password', '=', True)]"/>
+                <filter name="f_open_audience" string="Audience ouverte"
+                        domain="[('audience_mode', '=', 'open')]"/>
                 <separator/>
                 <filter name="g_state" string="État" context="{'group_by': 'state'}"/>
                 <filter name="g_brand" string="Marque" context="{'group_by': 'brand_id'}"/>
+                <filter name="g_audience" string="Mode de transmission"
+                        context="{'group_by': 'audience_mode'}"/>
                 <filter name="g_created" string="Date de création" context="{'group_by': 'create_date:day'}"/>
             </search>
         </field>

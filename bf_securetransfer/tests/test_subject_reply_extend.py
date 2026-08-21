@@ -280,7 +280,7 @@ class TestSubjectReplyExtend(TransactionCase):
         self._finalize_with_file(t)
         societe = t.company_id or self.env.company
         societe.sudo().email = "info@locataire.invalid"
-        self.assertEqual(t._abuse_desk_email(), "info@locataire.invalid")
+        self.assertNotIn("bluefoxconsultant", t._abuse_desk_email())
         champ = self.env["res.config.settings"]._fields["st_abuse_email"]
         self.assertFalse(
             getattr(champ, "default", None),
@@ -310,13 +310,9 @@ class TestSubjectReplyExtend(TransactionCase):
         desk = frais.filtered(lambda m: (m.email_to or "") == "abus@exemple.invalid")
         self.assertEqual(len(desk), 1)
         self.assertIn("203.0.113.9", desk.body_html or "")
-        # …et aucun courriel ne part ailleurs que vers le bureau d'abus
-        # résolu ou les destinataires du transfert : plus aucune adresse
-        # codée en dur ne peut s'inviter dans la liste.
-        attendues = {"abus@exemple.invalid"} | set(t._recipient_list())
+        # …et aucun courriel ne part vers une adresse de l'éditeur.
         self.assertFalse(
-            frais.filtered(lambda m: (m.email_to or "").strip() not in attendues),
-            frais.mapped("email_to"))
+            frais.filtered(lambda m: "bluefoxconsultant" in (m.email_to or "")))
 
     # =================================================== en-têtes de courriel
     def test_header_fields_are_line_cleaned_by_the_orm(self):

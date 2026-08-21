@@ -47,6 +47,23 @@
             <field name="active" eval="True"/>
         </record>
 
+        <!-- Hourly: drop the operator's own copies left behind by an abandoned
+             backend composition. The attachment widget commits each upload in
+             its OWN request, so a cancelled (or failed) « Nouvel envoi
+             sécurisé » leaves confidential bytes in the filestore — and in the
+             nightly backups — attached to a transient record the vacuum drops
+             without touching the file. :20 to stay clear of the other crons. -->
+        <record id="cron_st_gc_wizard_attachments" model="ir.cron">
+            <field name="name">Transfert sécurisé : purge des pièces jointes de composition</field>
+            <field name="model_id" ref="model_secure_transfer_send_wizard"/>
+            <field name="state">code</field>
+            <field name="code">model._gc_orphan_attachments()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">hours</field>
+            <field name="nextcall" eval="(DateTime.now() + timedelta(hours=1)).strftime('%Y-%m-%d %H:20:00')"/>
+            <field name="active" eval="True"/>
+        </record>
+
         <!-- Weekly hard GC: the ONLY code path that deletes purged transfers
              and their access-log entries, once log_retention_days is past. -->
         <record id="cron_st_gc_logs" model="ir.cron">

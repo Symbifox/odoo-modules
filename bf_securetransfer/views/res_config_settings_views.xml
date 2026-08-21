@@ -80,7 +80,7 @@
                         <setting string="Bureau d'abus"
                                  help="Adresse alertée lors d'un signalement d'abus. Le transfert est alors suspendu automatiquement et les destinataires reçoivent un avis neutre. Laissée vide, c'est le courriel de la société qui reçoit l'avis — jamais une adresse extérieure.">
                             <field name="st_abuse_email"
-                                   placeholder="abuse@example.com"/>
+                                   placeholder="abus@votre-domaine.com"/>
                         </setting>
                         <setting string="OTP expéditeur"
                                  help="Exige que l'expéditeur confirme un code envoyé à son courriel avant l'envoi (anti-usurpation / anti-piggyback).">
@@ -153,6 +153,13 @@
                                     <field name="st_default_paid_max_retention_days" class="o_light_label"/>
                                     <span class="ms-1">jours (palier payant)</span>
                                 </div>
+                            </div>
+                        </setting>
+                        <setting string="Pièces jointes depuis le backend"
+                                 help="Taille totale acceptée par l'assistant « Nouvel envoi sécurisé ». Ces octets transitent par Odoo (la page publique, elle, téléverse directement vers le stockage) : plafonné à 100 Mo en dur, quelle que soit la valeur saisie.">
+                            <div class="content-group">
+                                <field name="st_backend_max_upload_mb" class="o_light_label"/>
+                                <span class="ms-1">Mo par envoi</span>
                             </div>
                         </setting>
                     </block>

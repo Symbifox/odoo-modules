@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="secure_transfer_audience_view_tree" model="ir.ui.view">
+        <field name="name">secure.transfer.audience.list</field>
+        <field name="model">secure.transfer.audience</field>
+        <field name="arch" type="xml">
+            <list create="false" delete="false"
+                  decoration-muted="state == 'blocked'"
+                  decoration-success="state == 'confirmed'">
+                <field name="transfer_id"/>
+                <field name="display_identity"/>
+                <field name="identity_kind"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'confirmed'"
+                       decoration-warning="state == 'pending'"
+                       decoration-danger="state == 'blocked'"/>
+                <field name="first_seen"/>
+                <field name="confirmed_at" optional="show"/>
+                <field name="download_count"/>
+                <field name="otp_send_count" optional="hide"/>
+                <field name="sms_send_count" optional="hide"/>
+                <field name="ip" optional="hide"/>
+                <button name="action_block" type="object"
+                        string="Bloquer" icon="fa-ban"
+                        invisible="state == 'blocked'"
+                        groups="bf_securetransfer.group_securetransfer_manager"/>
+                <button name="action_unblock" type="object"
+                        string="Débloquer" icon="fa-undo"
+                        invisible="state != 'blocked'"
+                        groups="bf_securetransfer.group_securetransfer_manager"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="secure_transfer_audience_view_search" model="ir.ui.view">
+        <field name="name">secure.transfer.audience.search</field>
+        <field name="model">secure.transfer.audience</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="display_identity"/>
+                <field name="email"/>
+                <field name="phone"/>
+                <field name="transfer_id"/>
+                <filter name="filter_confirmed" string="Confirmés"
+                        domain="[('state', '=', 'confirmed')]"/>
+                <filter name="filter_pending" string="Jamais confirmés"
+                        domain="[('state', '=', 'pending')]"/>
+                <filter name="filter_blocked" string="Bloqués"
+                        domain="[('state', '=', 'blocked')]"/>
+                <separator/>
+                <filter name="filter_sms" string="Identité mobile"
+                        domain="[('identity_kind', '=', 'sms')]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="group_transfer" string="Transfert"
+                            context="{'group_by': 'transfer_id'}"/>
+                    <filter name="group_state" string="État"
+                            context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_secure_transfer_audience" model="ir.actions.act_window">
+        <field name="name">Visiteurs (audiences ouvertes)</field>
+        <field name="res_model">secure.transfer.audience</field>
+        <field name="view_mode">list</field>
+        <field name="context">{'search_default_filter_confirmed': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Aucun visiteur pour l'instant</p>
+            <p>
+                Chaque ligne est une personne qui a déclaré son identité sur un
+                lien en audience ouverte, puis l'a confirmée par un code à usage
+                unique. Bloquer une ligne coupe son accès sans toucher au lien
+                ni aux autres visiteurs.
+            </p>
+        </field>
+    </record>
+
+</odoo>

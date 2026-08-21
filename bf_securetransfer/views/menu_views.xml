@@ -10,11 +10,22 @@
     <menuitem id="menu_dashboard" name="Tableau de bord"
               parent="menu_securetransfer_root" action="action_secure_transfer_dashboard" sequence="5"/>
 
-    <menuitem id="menu_secure_send" name="Nouveau message sécurisé"
+    <menuitem id="menu_secure_send" name="Nouvel envoi sécurisé"
               parent="menu_securetransfer_root" action="action_secure_send_wizard" sequence="8"/>
+
+    <!-- Le mode audience ouverte se choisissait uniquement en dépliant un
+         radio de l'assistant, après avoir deviné qu'il fallait d'abord choisir
+         la bonne marque. Une entrée propre le rend trouvable. -->
+    <menuitem id="menu_secure_send_open_audience"
+              name="Nouveau lien à audience ouverte"
+              parent="menu_securetransfer_root"
+              action="action_secure_send_open_audience" sequence="9"/>
 
     <menuitem id="menu_transfers" name="Transferts"
               parent="menu_securetransfer_root" action="action_secure_transfer" sequence="10"/>
+
+    <menuitem id="menu_audience" name="Visiteurs"
+              parent="menu_securetransfer_root" action="action_secure_transfer_audience" sequence="15"/>
 
     <menuitem id="menu_access_log" name="Journal d'accès"
               parent="menu_securetransfer_root" action="action_access_log" sequence="20"/>

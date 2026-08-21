@@ -220,7 +220,7 @@ class TestEmailsI18n(TransactionCase):
 
     # --------------------------------------------------------- 5. lien = domaine de marque
     def test_share_link_uses_brand_domain_not_base_url(self):
-        """Si ça casse : le lien pointe vers le domaine du back-office (p. ex.
+        """Si ça casse : le lien pointe vers le domaine du back-office (sur
         projets.example.com) — page inaccessible au destinataire et
         fuite du domaine interne."""
         brand = self.env["secure.transfer.brand"].create({

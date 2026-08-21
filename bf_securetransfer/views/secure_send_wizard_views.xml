@@ -5,21 +5,33 @@
         <field name="name">secure.transfer.send.wizard.form</field>
         <field name="model">secure.transfer.send.wizard</field>
         <field name="arch" type="xml">
-            <form string="Message sécurisé">
+            <form string="Transfert sécurisé">
                 <div class="alert alert-info" role="alert">
                     Le contenu est <strong>retenu</strong> : le destinataire reçoit un
-                    lien, et le message ne s'affiche qu'après avoir saisi un
-                    <strong>code de vérification à usage unique</strong> (courriel ou SMS).
-                    Chaque accès est journalisé (Loi 25).
+                    lien, et le message comme les fichiers ne s'affichent qu'après
+                    avoir saisi un <strong>code de vérification à usage unique</strong>
+                    (courriel ou SMS). Chaque accès est journalisé (Loi 25).
+                </div>
+                <div class="alert alert-warning" role="alert"
+                     invisible="not brand_warning">
+                    <field name="brand_warning" nolabel="1" readonly="1"/>
                 </div>
                 <group>
                     <group>
+                        <field name="brand_allows_audience" invisible="1"/>
+                        <field name="brand_allows_audience_sms" invisible="1"/>
+                        <field name="audience_mode" widget="radio"
+                               invisible="not brand_allows_audience"/>
                         <field name="partner_ids" widget="many2many_tags"
-                               options="{'no_create_edit': True}"/>
-                        <field name="extra_emails" placeholder="autre@exemple.com, ..."/>
-                        <field name="otp_channel" widget="radio"/>
+                               options="{'no_create_edit': True}"
+                               invisible="audience_mode == 'open'"/>
+                        <field name="extra_emails" placeholder="autre@exemple.com, ..."
+                               invisible="audience_mode == 'open'"/>
+                        <field name="otp_channel" widget="radio"
+                               invisible="audience_mode == 'open'"/>
                         <field name="sms_configured" invisible="1"/>
-                        <field name="sms_hint" invisible="otp_channel != 'sms'"
+                        <field name="sms_hint"
+                               invisible="otp_channel != 'sms' or audience_mode == 'open'"
                                readonly="1" nolabel="1"
                                decoration-warning="not sms_configured"/>
                     </group>
@@ -29,14 +41,44 @@
                         <field name="password" password="True"/>
                     </group>
                 </group>
+                <group string="Audience ouverte" invisible="audience_mode != 'open'">
+                    <div class="alert alert-warning" role="alert" colspan="2">
+                        Le lien ne sera envoyé <strong>à personne</strong> : vous le
+                        recevez dans votre accusé et c'est vous qui le diffusez.
+                        Chaque personne qui l'ouvre saisit son courriel (ou son
+                        mobile), reçoit un code, et n'accède au contenu qu'après
+                        l'avoir confirmé. Son identité est inscrite au journal et
+                        estampée sur les PDF téléchargés.
+                    </div>
+                    <field name="audience_max"
+                           placeholder="0 = valeur de la marque"/>
+                    <field name="audience_max_downloads"/>
+                    <field name="notify_on_join"/>
+                    <field name="audience_allow_sms"
+                           invisible="not brand_allows_audience_sms"/>
+                    <field name="audience_domains" colspan="2"
+                           placeholder="Vide = liste de la marque.&#10;Ex. : @client.com&#10;⚠ Une liste posée ici interdit l'identification par mobile."/>
+                </group>
                 <group>
                     <field name="subject" placeholder="P. ex. Accès au portail — identifiants"/>
                 </group>
                 <field name="message" placeholder="Votre message sécurisé…"
                        nolabel="1"/>
+                <group string="Fichiers">
+                    <field name="attachment_ids" widget="many2many_binary"
+                           nolabel="1" colspan="2"/>
+                    <div colspan="2" class="text-muted">
+                        <field name="upload_hint" nolabel="1" readonly="1"/>
+                    </div>
+                </group>
                 <group string="Expéditeur" col="2">
-                    <field name="sender_name"/>
-                    <field name="sender_email"/>
+                    <!-- readonly for anyone but a securetransfer manager: a
+                         plain user sends as themselves. The form only mirrors
+                         the rule — action_send re-forces the values, since a
+                         transient record is writable over RPC. -->
+                    <field name="sender_locked" invisible="1"/>
+                    <field name="sender_name" readonly="sender_locked"/>
+                    <field name="sender_email" readonly="sender_locked"/>
                 </group>
                 <footer>
                     <button string="Envoyer" name="action_send" type="object"
@@ -48,17 +90,34 @@
     </record>
 
     <record id="action_secure_send_wizard" model="ir.actions.act_window">
-        <field name="name">Nouveau message sécurisé</field>
+        <field name="name">Nouvel envoi sécurisé</field>
         <field name="res_model">secure.transfer.send.wizard</field>
         <field name="view_mode">form</field>
         <field name="view_id" ref="secure_send_wizard_view_form"/>
         <field name="target">new</field>
     </record>
 
+    <!-- Dedicated entry point for the open-audience ("dataroom") link.
+
+         It cannot just carry `default_audience_mode: 'open'` in its context:
+         `_onchange_brand_audience` fires at form load, finds no brand yet, and
+         a brand that offers nothing pulls the mode back to « destinataires
+         nommés ». The context flag is read by `default_get`, which picks a
+         brand that actually offers the mode — that is what makes the default
+         survive the onchange. -->
+    <record id="action_secure_send_open_audience" model="ir.actions.act_window">
+        <field name="name">Nouveau lien à audience ouverte</field>
+        <field name="res_model">secure.transfer.send.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="secure_send_wizard_view_form"/>
+        <field name="target">new</field>
+        <field name="context">{'st_open_audience': True}</field>
+    </record>
+
     <!-- Also reachable from a contact's Action menu (« partout où on transmet
          des courriels »): pre-fills the picked contact as recipient. -->
     <record id="action_secure_send_from_partner" model="ir.actions.act_window">
-        <field name="name">Envoyer un message sécurisé</field>
+        <field name="name">Envoyer un transfert sécurisé</field>
         <field name="res_model">secure.transfer.send.wizard</field>
         <field name="view_mode">form</field>
         <field name="view_id" ref="secure_send_wizard_view_form"/>

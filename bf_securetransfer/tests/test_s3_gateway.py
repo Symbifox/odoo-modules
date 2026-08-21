@@ -583,7 +583,7 @@ class TestS3Gateway(TransactionCase):
         self.assertEqual(s3._orphan_expiry_days(self.env), 60)
 
     def test_orphan_expiry_follows_the_longest_brand_retention(self):
-        """A tenant granting 45 days: a flat rule would expire those files on
+        """Client A grants 45 days: a flat rule would expire those files on
         their last day. The net is the longest retention + 15 days of slack."""
         self._isolate_brands()
         for key in ("default_free_max_retention_days",
@@ -803,10 +803,38 @@ class TestS3Gateway(TransactionCase):
         c = self._mock_client()
         report = self._setup_bucket_report(c)
         for name in ("location", "object_lock", "cors", "lifecycle",
-                     "roundtrip", "content_length_enforced", "batch_delete",
-                     "multipart"):
+                     "roundtrip", "server_side_put", "content_length_enforced",
+                     "batch_delete", "multipart"):
             self.assertIn(name, report)
             self.assertIn("ok", report[name])
+
+    # ------------------------------------------------- server-side PUT (backend)
+    def test_put_bytes_pins_the_type_and_disposition_on_the_object(self):
+        """The backend composer is the only upload that does NOT go through a
+        presigned URL, so the download-time response overrides do not protect
+        it on their own. Pinning octet-stream + attachment on the object means
+        a bucket ever mis-set to public still cannot render an uploaded .svg or
+        .html inline."""
+        c = self._mock_client()
+        c.put_object.return_value = {"ETag": '"abc123"'}
+        etag = s3.put_bytes(self.env, "transfers/x/f", b"hello")
+        self.assertEqual(etag, "abc123", "the quoted ETag must be unwrapped")
+        kwargs = c.put_object.call_args.kwargs
+        self.assertEqual(kwargs["Key"], "transfers/x/f")
+        self.assertEqual(kwargs["Body"], b"hello")
+        self.assertEqual(kwargs["ContentType"], "application/octet-stream")
+        self.assertEqual(kwargs["ContentDisposition"], "attachment")
+
+    def test_server_side_put_probe_reports_a_refusing_endpoint(self):
+        """An S3-compatible endpoint may refuse PutObject (a read-only key, a
+        bucket policy). The operator has to learn that from « Configurer le
+        bucket S3 » — not from the first colleague who tries to attach a file
+        to a secure send."""
+        self._isolate_brands()
+        c = self._mock_client()
+        c.put_object.side_effect = Exception("Access Denied")
+        report = self._setup_bucket_report(c)
+        self.assertFalse(report["server_side_put"]["ok"])
 
     # -------------------------------------------------------- 16. presign_put
     def test_presign_put_signs_content_length_but_not_content_type(self):

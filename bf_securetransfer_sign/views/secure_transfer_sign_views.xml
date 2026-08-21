@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Marque : l'entente par défaut -->
+    <record id="brand_form_nda" model="ir.ui.view">
+        <field name="name">secure.transfer.brand.form.nda</field>
+        <field name="model">secure.transfer.brand</field>
+        <field name="inherit_id" ref="bf_securetransfer.brand_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group[@name='group_audience']" position="after">
+                <group string="Entente de confidentialité (NDA)">
+                    <div class="alert alert-info" role="alert" colspan="2">
+                        Chaque visiteur signe SA propre entente, à l'identité qu'il
+                        vient de confirmer par code. Le document signé et son
+                        certificat sont versés au fil du transfert.
+                        <br/>
+                        <strong>À noter :</strong> une entente retire l'identification
+                        par mobile — un signataire sans adresse courriel n'existe pas.
+                    </div>
+                    <field name="nda_required"/>
+                    <field name="nda_document" filename="nda_filename"/>
+                    <field name="nda_filename" invisible="1"/>
+                    <field name="nda_field_template_id"
+                           invisible="not nda_document"
+                           help="Sans gabarit, la signature reste valide et certifiée, mais elle n'est pas dessinée sur les pages du document."/>
+                    <field name="nda_consent_text" invisible="not nda_document"
+                           placeholder="Vide = texte de consentement par défaut de bf_sign."/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Transfert : l'entente de CE dossier + le suivi -->
+    <record id="secure_transfer_form_nda" model="ir.ui.view">
+        <field name="name">secure.transfer.form.nda</field>
+        <field name="model">secure.transfer</field>
+        <field name="inherit_id" ref="bf_securetransfer.secure_transfer_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='audience_domains']" position="after">
+                <field name="nda_required"
+                       readonly="state not in ('draft', 'active')"/>
+                <field name="nda_signed_count" readonly="1"
+                       invisible="not nda_required"/>
+                <field name="nda_document" filename="nda_filename"
+                       invisible="not nda_required"
+                       readonly="state not in ('draft', 'active')"
+                       help="Vide = l'entente de la marque."/>
+                <field name="nda_filename" invisible="1"/>
+                <field name="nda_field_template_id"
+                       invisible="not nda_required or not nda_document"
+                       readonly="state not in ('draft', 'active')"/>
+            </xpath>
+            <xpath expr="//field[@name='audience_ids']/list/field[@name='download_count']"
+                   position="before">
+                <field name="nda_state" widget="badge"
+                       decoration-success="nda_state == 'signed'"
+                       decoration-warning="nda_state == 'pending'"
+                       decoration-danger="nda_state == 'refused'"
+                       invisible="nda_state == 'none'"/>
+                <field name="nda_signed_on" optional="hide"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Liste globale des visiteurs -->
+    <record id="secure_transfer_audience_tree_nda" model="ir.ui.view">
+        <field name="name">secure.transfer.audience.list.nda</field>
+        <field name="model">secure.transfer.audience</field>
+        <field name="inherit_id" ref="bf_securetransfer.secure_transfer_audience_view_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='download_count']" position="before">
+                <field name="nda_state" widget="badge"
+                       decoration-success="nda_state == 'signed'"
+                       decoration-warning="nda_state == 'pending'"
+                       decoration-danger="nda_state == 'refused'"/>
+                <field name="nda_request_id" optional="hide"/>
+                <field name="nda_signed_on" optional="hide"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="secure_transfer_audience_search_nda" model="ir.ui.view">
+        <field name="name">secure.transfer.audience.search.nda</field>
+        <field name="model">secure.transfer.audience</field>
+        <field name="inherit_id" ref="bf_securetransfer.secure_transfer_audience_view_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='filter_sms']" position="after">
+                <separator/>
+                <filter name="filter_nda_pending" string="Entente non signée"
+                        domain="[('nda_state', '=', 'pending')]"/>
+                <filter name="filter_nda_signed" string="Entente signée"
+                        domain="[('nda_state', '=', 'signed')]"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Assistant d'envoi : exiger l'entente sur cet envoi -->
+    <record id="secure_send_wizard_form_nda" model="ir.ui.view">
+        <field name="name">secure.transfer.send.wizard.form.nda</field>
+        <field name="model">secure.transfer.send.wizard</field>
+        <field name="inherit_id" ref="bf_securetransfer.secure_send_wizard_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='password']" position="after">
+                <field name="nda_available" invisible="1"/>
+                <field name="nda_required" invisible="not nda_available"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

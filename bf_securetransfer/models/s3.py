@@ -127,8 +127,8 @@ def _orphan_expiry_days(env):
 
     It is a LAST RESORT behind ``_cron_purge_expired``, so it must stay above
     the longest legitimate retention — otherwise the net races the module's own
-    purge and deletes a transfer that is still alive. (A tenant on a 45-day
-    policy would see a flat 45-day rule here expire its files on their last
+    purge and deletes a transfer that is still alive. (Client A ships a 45-day
+    policy; a flat 45-day rule here would expire those files on their last
     day.) Hence: the longest retention any brand can grant, plus two weeks of
     slack, and never under 60 days.
     """
@@ -253,6 +253,31 @@ def presign_get(env, key, filename, mimetype, ttl=None):
 
 
 # ------------------------------------------------------------------ objects
+def put_bytes(env, key, data):
+    """Server-side PUT of ``data`` at ``key``. Returns the S3 ETag.
+
+    ⚠ The public flow NEVER comes here: the browser PUTs straight to the bucket
+    through a presigned URL, which is what keeps file content out of Odoo. This
+    exists for the BACKEND composer only, where the operator's file necessarily
+    arrives inside the Odoo request. Everything is held in memory, so the caller
+    MUST cap the size first (see ``secure.transfer._backend_max_upload_bytes``).
+
+    ``ContentType``/``ContentDisposition`` are pinned on the object itself, one
+    notch stricter than the presigned path (which only forces them at download
+    time via response overrides). If a bucket is ever mis-set to public, an
+    object stored this way still cannot render inline in a browser.
+    """
+    p = params(env)
+    resp = client(env, long_timeout=True).put_object(
+        Bucket=p["bucket"],
+        Key=key,
+        Body=data,
+        ContentType="application/octet-stream",
+        ContentDisposition="attachment",
+    )
+    return (resp.get("ETag") or "").strip('"')
+
+
 def head_object(env, key):
     """HEAD one key → ``{"size": int, "etag": str}`` or None when absent.
 
@@ -658,6 +683,34 @@ def setup_bucket(env):
             return False, "DELETE en échec pour %s" % left
         return True, "PUT/HEAD/GET/DELETE présignés OK, disposition attachment honorée"
 
+    # -- server-side PUT: the backend composer's own path (put_bytes). It is
+    #    the ONE upload that does not go through a presigned URL, so the
+    #    presigned round-trip above says nothing about it — and it pins
+    #    Content-Type/Content-Disposition ON THE OBJECT, which an S3-compatible
+    #    endpoint is free not to honour. Probed here rather than assumed:
+    #    "Configurer le bucket S3" is where a tenant finds out, not the first
+    #    operator who tries to attach a file.
+    def probe_server_side_put():
+        key = probe_base + "/ssp-%s" % uuid.uuid4().hex
+        body = b"bf_securetransfer server-side put probe"
+        etag = put_bytes(env, key, body)
+        if not etag:
+            return False, "PutObject sans ETag en réponse"
+        head = head_object(env, key)
+        if not head or head["size"] != len(body):
+            return False, "HEAD après PutObject incohérent : %r" % (head,)
+        if head["etag"] != etag:
+            return False, "ETag PutObject ≠ ETag HEAD (%s / %s)" % (etag, head["etag"])
+        url = presign_get(env, key, "probe.txt", "text/plain")
+        status, got, _hdrs = _http(url)
+        if status != 200 or got != body:
+            return False, "relecture du PUT serveur incohérente (HTTP %s)" % status
+        left = delete_keys(env, [key])
+        if left:
+            return False, "DELETE en échec pour %s" % left
+        return True, ("PutObject serveur OK (envoi backend), ETag épinglable, "
+                      "relecture conforme")
+
     # -- is the signed Content-Length actually enforced by the endpoint?
     def probe_content_length():
         key = probe_base + "/cl-%s" % uuid.uuid4().hex
@@ -717,6 +770,7 @@ def setup_bucket(env):
     run("cors", probe_cors)
     run("lifecycle", probe_lifecycle)
     run("roundtrip", probe_roundtrip)
+    run("server_side_put", probe_server_side_put)
     run("content_length_enforced", probe_content_length)
     run("batch_delete", probe_batch_delete)
     run("multipart", probe_multipart)
