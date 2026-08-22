@@ -2565,6 +2565,57 @@ class BfEmail(models.Model):
         return "in"
 
     # ------------------------------------------------------------------
+    # Real-time wake-up (IMAP IDLE watcher)
+    # ------------------------------------------------------------------
+    @api.model
+    def imap_wake(self, reason=False):
+        """Run the IMAP ingestion now instead of waiting for the 5-minute cron.
+
+        Meant to be called over XML-RPC by an external IMAP IDLE watcher: one
+        process holding an IDLE connection per active account, firing this the
+        moment the mail server announces an arrival. All it does is ask the
+        scheduler to run ``ir_cron_sync_imap`` immediately — ``_trigger``
+        writes an ``ir.cron.trigger`` row and NOTIFYs the cron worker, which is
+        parked in ``select()`` on ``LISTEN cron_trigger`` and wakes within a
+        second.
+
+        Deliberately *not* a direct call to ``_cron_sync_imap``. Going through
+        the scheduler keeps ingestion inside the single cron worker, so a wake
+        can never run alongside the five-minute pass — ``_acquire_one_job``
+        takes the row ``FOR NO KEY UPDATE SKIP LOCKED``. The watcher is an
+        accelerator and never a second ingestion path: if it dies, the cron
+        keeps its own schedule and nothing is lost but latency.
+
+        Public (no leading underscore) because Odoo refuses RPC on private
+        methods, and open to any internal user: the only thing it can do is
+        make a cron that was going to run anyway run sooner. It returns no
+        data. Repeated calls cannot pile up work — the scheduler runs the job
+        one at a time — they can only keep it busy, which is bounded by how
+        long one ingestion pass takes.
+
+        No dedup guard on purpose. Skipping a wake because a trigger is
+        already pending looks safe and is not: ``_reschedule_later`` deletes
+        pending triggers *after* the job completes, so a message arriving
+        while the pass is running would be skipped and then wait for the next
+        scheduled pass.
+        """
+        cron = self.env.ref(
+            "bf_email_management.ir_cron_sync_imap", raise_if_not_found=False
+        )
+        if not cron:
+            _logger.warning("bf.email: réveil IMAP demandé, cron introuvable")
+            return False
+        cron = cron.sudo()
+        if not cron.active:
+            return False
+        cron._trigger()
+        # ``reason`` vient de l'appelant : un saut de ligne y forgerait des
+        # lignes de journal, et une chaîne longue noierait le fichier.
+        label = re.sub(r"\s+", " ", str(reason))[:120] if reason else "sans motif"
+        _logger.info("bf.email: réveil IMAP déclenché (%s)", label)
+        return True
+
+    # ------------------------------------------------------------------
     # Cron: incremental sync from IMAP (Inbox + Sent live)
     # ------------------------------------------------------------------
     @api.model

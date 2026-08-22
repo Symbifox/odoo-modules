@@ -4,6 +4,43 @@ All notable changes to `bf_email_management` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This module follows Odoo's `MAJOR.MINOR.PATCH` convention prefixed with the Odoo series (`18.0.X.Y.Z`).
 
+## [18.0.9.8.0] — 2026-08-21
+
+### Added
+
+- **`bf.email.imap_wake()` — the entry point for real-time ingestion.** A public
+  method whose entire body is a `_trigger()` on the IMAP ingestion cron. An
+  external IMAP IDLE watcher — one process holding an IDLE connection per active
+  account — calls it over XML-RPC the moment the mail server announces an
+  arrival; the cron worker, parked in `select()` on `LISTEN cron_trigger`, wakes
+  within a second. Ingestion latency, and with it the mobile push that fires from
+  `_sync_account`, drops from five minutes to seconds.
+
+  It is deliberately a `_trigger()` rather than a direct call to
+  `_cron_sync_imap`: ingestion stays inside the single cron worker, so a wake can
+  never run alongside the scheduled pass — `_acquire_one_job` takes the row
+  `FOR NO KEY UPDATE SKIP LOCKED`. The watcher is an accelerator, never a second
+  ingestion path. If it dies, the cron keeps its own schedule and nothing is lost
+  but latency.
+
+  The method is safe for an ordinary internal user: the only thing it can do is
+  make a cron that was going to run anyway run sooner. No administrator rights
+  are needed, and there is nothing to configure in Odoo.
+
+  Measured: **138 ms** from the wake to the start of ingestion when the scheduler
+  thread is free. Any latency beyond that comes from `max_cron_threads = 1` plus
+  the ordering in `_get_all_ready_jobs` (`failure_count, priority, id`) — a long
+  job with a lower `id` systematically goes first when both are due. Setting
+  `priority = 1` on the ingestion cron took a 10 s median down to 3.6 s.
+
+  ⚠️ **A measurement trap worth knowing before concluding a server lacks IDLE.**
+  Many servers advertise only a minimal capability set in the greeting and send
+  the full list — `IDLE` included — in the `LOGIN` response. Python 3.14's
+  `imaplib` does **not** refresh `conn.capabilities` from that response (3.13
+  does), so reading capabilities after `login()` can hand back the greeting list
+  and make a perfectly capable server look unsupported. Issue the command and
+  look for `+ idling`; do not trust the list your client happens to hold.
+
 ## [18.0.9.7.0] — 2026-08-20
 
 Consolidated entry covering 9.6.1 → 9.7.0, both released on 2026-08-20. All three
