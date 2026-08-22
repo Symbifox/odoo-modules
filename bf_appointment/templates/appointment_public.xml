@@ -596,7 +596,7 @@
                         <input type="hidden" name="tz"
                                t-att-value="visitor_tz"/>
                     </t>
-                    <div class="modal-dialog modal-dialog-centered">
+                    <div t-attf-class="modal-dialog modal-dialog-centered#{' modal-dialog-scrollable' if consent_asks else ''}">
                         <div class="modal-content bf-modal">
                             <div class="modal-header bf-modal-header"
                                  t-attf-id="modal-title-#{int(slot.timestamp())}">
@@ -620,6 +620,52 @@
                                         <strong><t t-esc="booking.get_duration_display()"/></strong>
                                     </div>
                                 </div>
+
+                                <!-- Consentements demandés SUR PLACE (2.49.0).
+                                     Un lien personnel ne passe par aucun formulaire d'accueil :
+                                     sans ce bloc, le créneau se confirmait sans que rien n'ait été
+                                     ni vérifié ni demandé. Le contrôleur ne met ici que ce qui
+                                     manque VRAIMENT à cette personne — un client qui a déjà
+                                     consenti ne revoit jamais la question.
+
+                                     ⚠️ Pas de `required`, contrairement au formulaire d'accueil.
+                                     Là-bas, refuser l'enregistrement laisse le choix d'un autre
+                                     type de rendez-vous; ici, la personne n'a qu'un lien et
+                                     aucune porte de sortie. Un consentement manquant empêche
+                                     l'ENREGISTREMENT, pas le rendez-vous. La case décochée est
+                                     consignée comme un refus, et la réservation le porte.
+
+                                     Le champ caché dit au POST que la question a bien été POSÉE :
+                                     sans lui, une case absente et une case décochée arrivent
+                                     identiques au serveur, et on consignerait des refus que
+                                     personne n'a exprimés. -->
+                                <t t-if="'recording' in consent_asks">
+                                    <t t-set="_brand_co" t-value="booking.type_id.company_id or env.company"/>
+                                    <t t-set="_privacy_url" t-value="(_brand_co and _brand_co.appointment_brand_privacy_url) or env['ir.config_parameter'].sudo().get_param('bf_appointment.privacy_url', '/r/politique-de-confidentialite')"/>
+                                    <t t-set="_company_name" t-value="(_brand_co and (_brand_co.appointment_brand_name or _brand_co.name)) or (_en and 'the organization' or 'l’organisation')"/>
+                                    <t t-set="_slot_key" t-value="int(slot.timestamp())"/>
+                                    <input type="hidden" name="bf_consent_shown_recording" value="1"/>
+                                    <div class="form-check mt-4 pt-3 border-top bf-consent-recording">
+                                        <input type="checkbox"
+                                               class="form-check-input"
+                                               t-attf-id="bf_consent_recording_#{_slot_key}"
+                                               name="bf_consent_recording"
+                                               value="1"/>
+                                        <label class="form-check-label small"
+                                               t-attf-for="bf_consent_recording_#{_slot_key}">
+                                            <t t-if="_en">
+                                                I agree the meeting may be <strong>recorded (audio and video)</strong> and <strong>transcribed locally</strong> on <t t-out="_company_name"/>'s servers in Montreal (your voice never leaves our infrastructure). The transcript is then analyzed by AI to produce the meeting report, with no use of your data for training. Retention: 24 months after the end of the engagement.
+                                                <a t-att-href="_privacy_url" target="_blank" rel="noopener">Details</a>.
+                                                <span class="text-muted d-block mt-1">Leaving this unticked does not cancel the meeting. It simply will not be recorded.</span>
+                                            </t>
+                                            <t t-else="">
+                                                J’accepte que la rencontre soit <strong>enregistrée (audio et vidéo)</strong> et <strong>transcrite localement</strong> sur les serveurs de <t t-out="_company_name"/> à Montréal (votre voix ne quitte pas notre infrastructure). Le texte transcrit est ensuite analysé par IA pour produire le compte rendu, sans utilisation de vos données pour entraînement. Conservation : 24 mois après la fin du mandat.
+                                                <a t-att-href="_privacy_url" target="_blank" rel="noopener">Détails</a>.
+                                                <span class="text-muted d-block mt-1">Laisser la case décochée n’annule pas la rencontre. Elle ne sera simplement pas enregistrée.</span>
+                                            </t>
+                                        </label>
+                                    </div>
+                                </t>
                             </div>
                             <div class="modal-footer border-0">
                                 <button type="button" class="btn btn-outline-secondary"

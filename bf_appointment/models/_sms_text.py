@@ -1,8 +1,7 @@
 """GSM-7 helpers for appointment reminder SMS.
 
 VoIP.ms bills and validates by septet, not by character. Two facts drive this
-module, both measured in production (see the SMS bulk notes from the OVI
-go-live, 2026-07-06):
+module, both measured against a live carrier account:
 
 * the effective ceiling is ~150, not the nominal 160 — 155 was refused with
   ``sms_toolong`` while 151 went through;

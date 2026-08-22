@@ -27,7 +27,31 @@ Public self-service booking pages, extending *Resource Booking* (OCA).
   import is soft, so the channel simply never fires without one.
 - **Optional organization field** on the public form, per booking type (off
   by default), stored as the booker's company name.
-- **Privacy consent** built into the booking flow (`privacy_consent`).
+- **Consent checked on every path that creates a booking**, not only on the
+  public intake form (`privacy_consent`). A booking can also be created from a
+  personal link, from another module, or by hand in the back office, and none
+  of those goes through the intake form. Where there is a page to ask on, the
+  question is asked in place: the slot-confirmation dialog carries the consent
+  the booking type requires, and carries nothing at all when it is already on
+  file. Where there is no page — a poll closing itself, a back-office entry —
+  the request goes out by email instead, with its own public reply link.
+  Consent and its evidence are written by a single writer, so the record made
+  from a personal link is the record made from the public form.
+  - A missing consent never blocks the appointment. It blocks the recording.
+    A refusal is an answer: it is stored, it is never asked again, and it does
+    not cancel the meeting.
+  - The consent state of each booking (on file, requested, refused, missing)
+    is shown on the record, in the list and in the search filters, so bookings
+    that are not covered can be found rather than discovered.
+  - **Automatic consent request emails are off by default.** That path writes
+    to a client with no human in the loop, on a plain confirmation, so it is
+    opened deliberately per database with the `bf_appointment.consent_auto_request`
+    system parameter. Asking in place and the consent state do not depend on
+    it; neither sends anything.
+- **Visitor language.** A booker without an explicit language choice is sent
+  once to their own language on the public pages, and the contact record is
+  stamped with it at creation, so later correspondence keeps that language. An
+  explicit choice always wins over a browser header.
 - **Automatic task/project creation** at booking time.
 - **Branded emails** with per-company header, brand colours and footer.
 - **Onboarding wizard** (`bf_onboarding_base`) to configure booking types.

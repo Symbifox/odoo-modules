@@ -16,6 +16,9 @@
                         <field name="partner_id" options="{'no_create_edit': True}"/>
                         <field name="guest_partner_ids" widget="many2many_tags"
                                options="{'no_create_edit': True}"/>
+                        <field name="suggested_name" invisible="1"/>
+                        <field name="custom_name"
+                               placeholder="Titre affiché dans les agendas"/>
                     </group>
                     <group>
                         <field name="duration"/>

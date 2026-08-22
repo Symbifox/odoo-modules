@@ -1,7 +1,14 @@
 # -*- coding: utf-8 -*-
-"""Un lien de rendez-vous depuis la fiche d'un contact."""
+"""Un lien de rendez-vous depuis la fiche d'un contact, et la recherche du
+consentement actif d'une personne.
 
-from odoo import _, models
+La recherche vivait dans le contrôleur, en fonction de module. Elle est
+partner-scoped : c'est le CONTACT qui porte ses consentements, pas la page qui
+les lit. Remontée ici, elle sert aussi le modèle `resource.booking`, qui ne
+peut décemment pas importer un contrôleur pour savoir ce qu'il a au dossier.
+"""
+
+from odoo import _, fields, models
 from odoo.exceptions import UserError
 
 
@@ -26,3 +33,28 @@ class ResPartner(models.Model):
                 "un dans Configuration, sous « Type pour les liens rapides »."))
         booking = booking_type._bf_create_onetime_link(self)
         return booking._bf_action_show_link()
+
+    def _bf_active_consent(self, purpose_code, notice_id=False):
+        """Le `privacy.consent` actif pour (ce contact, cet objet), ou rien.
+
+        « Actif » = accordé, non archivé, non révoqué, non expiré, ET rattaché
+        à l'avis courant : une révision majeure de l'avis force donc une
+        nouvelle demande.
+        """
+        self.ensure_one()
+        if not purpose_code:
+            return False
+        domain = [
+            ("subject_partner_id", "=", self.id),
+            ("status", "=", "granted"),
+            ("active", "=", True),
+            ("withdrawn_at", "=", False),
+            ("purpose_id.code", "=", purpose_code),
+            "|", ("expires_at", "=", False),
+            ("expires_at", ">", fields.Datetime.now()),
+        ]
+        if notice_id:
+            domain.append(("notice_id", "=", notice_id))
+        consent = self.env["privacy.consent"].sudo().search(
+            domain, order="granted_at desc", limit=1)
+        return consent or False
