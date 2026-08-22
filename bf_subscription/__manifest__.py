@@ -1,6 +1,6 @@
 {
     'name': "Abonnements",
-    'version': '18.0.1.3.1',
+    'version': '18.0.1.4.0',
     'category': 'Accounting/Accounting',
     'summary': "Gestion des abonnements payants et corrélation avec la facturation fournisseur",
     'description': """

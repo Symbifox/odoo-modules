@@ -508,6 +508,15 @@ class Subscription(models.Model):
         ])
         created = 0
         for sub in subs:
+            # A renewal alert is only worth raising if it can go quiet for part of
+            # the cycle. Once the notice period plus the alert horizon cover the
+            # whole cycle, the deadline is permanently in range: the activity comes
+            # back at every run, usually already overdue, with nothing left to
+            # decide. A monthly subscription with 30 days' notice is the textbook
+            # case -- it renews inside the horizon no matter what day it is.
+            cycle_days = int((CYCLE_MONTHS.get(sub.cycle) or 0) * 30)
+            if cycle_days and (sub.notice_period_days or 0) + horizon_days >= cycle_days:
+                continue
             cutoff = sub.next_billing_date - relativedelta(days=sub.notice_period_days or 0)
             if cutoff > today + relativedelta(days=horizon_days):
                 continue
