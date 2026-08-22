@@ -48,6 +48,54 @@
                         string="Voir l'origine"
                         class="btn-link"
                         invisible="not bf_source_ref"/>
+                <field name="bf_consent_state" widget="badge"
+                       invisible="bf_consent_state == 'none'"
+                       readonly="1"
+                       decoration-success="bf_consent_state == 'granted'"
+                       decoration-info="bf_consent_state == 'requested'"
+                       decoration-danger="bf_consent_state in ('missing', 'refused')"/>
+                <button name="action_bf_request_consents"
+                        type="object"
+                        string="Demander le consentement"
+                        class="btn-link"
+                        invisible="bf_consent_state != 'missing'"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Une réservation « à découvert » ne se voit que si on peut la chercher.
+         Sans ce filtre, l'état calculé n'est qu'une décoration sur la fiche de
+         quelqu'un qui savait déjà où regarder. -->
+    <record id="resource_booking_list_inherit_bf_consent" model="ir.ui.view">
+        <field name="name">resource.booking.list.inherit.bf_appointment.consent</field>
+        <field name="model">resource.booking</field>
+        <field name="inherit_id" ref="resource_booking.resource_booking_view_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='state']" position="after">
+                <field name="bf_consent_state" widget="badge" optional="show"
+                       decoration-success="bf_consent_state == 'granted'"
+                       decoration-info="bf_consent_state == 'requested'"
+                       decoration-danger="bf_consent_state in ('missing', 'refused')"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="resource_booking_search_inherit_bf_consent" model="ir.ui.view">
+        <field name="name">resource.booking.search.inherit.bf_appointment.consent</field>
+        <field name="model">resource.booking</field>
+        <field name="inherit_id" ref="resource_booking.resource_booking_view_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='is_scheduled']" position="after">
+                <separator/>
+                <filter name="bf_consent_missing"
+                        string="Consentement manquant"
+                        domain="[('bf_consent_state', '=', 'missing')]"/>
+                <filter name="bf_consent_refused"
+                        string="Consentement refusé"
+                        domain="[('bf_consent_state', '=', 'refused')]"/>
+                <filter name="bf_consent_not_granted"
+                        string="Non enregistrable"
+                        domain="[('bf_consent_state', 'in', ['missing', 'refused', 'requested'])]"/>
             </xpath>
         </field>
     </record>

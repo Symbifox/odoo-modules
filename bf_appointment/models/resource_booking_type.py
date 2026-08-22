@@ -421,6 +421,10 @@ class ResourceBookingType(models.Model):
         booking = Booking.create(booking_vals)
         booking._portal_ensure_token()
         if confirm:
+            # Ce chemin n'a AUCUNE page à montrer : le sondage se clôt tout
+            # seul, le satellite tourne dans un cron. Les consentements
+            # manquants partent en demande par courriel depuis
+            # `action_confirm`, accroche unique des quatre chemins.
             booking.action_confirm()
         return booking
 

@@ -11,6 +11,7 @@ except ImportError:
 from markupsafe import Markup
 
 from odoo import _, api, fields, models
+from odoo.exceptions import UserError
 
 # bf_securetransfer owns the VoIP.ms transport. This module deliberately does
 # not depend on it: the tenants carry different addon sets, and a booking page
@@ -206,6 +207,36 @@ class ResourceBooking(models.Model):
         compute="_compute_one_time_url",
         help="Adresse personnelle à transmettre. Elle vaut jeton d'accès : "
              "qui l'a peut réserver.",
+    )
+
+    # --- Consentements (2.49.0) --------------------------------------------
+    # La validation des consentements vivait ENTIÈREMENT dans le POST du
+    # formulaire d'accueil public. Les trois autres chemins de création — lien
+    # personnel, `_bf_create_booking()` d'un satellite, saisie au back-office —
+    # n'y passent jamais : une réservation pouvait donc naître, se confirmer et
+    # produire une rencontre enregistrée sans qu'aucun consentement ait été ni
+    # vérifié ni demandé. L'état ci-dessous rend ce trou VISIBLE, et
+    # `_bf_ensure_consents()` le rebouche depuis n'importe quel chemin.
+    #
+    # ⚠️ Non stocké, et c'est délibéré : la vérité est portée par le CONTACT,
+    # pas par la réservation. Un consentement accordé ailleurs (autre
+    # réservation, portail, retrait) change l'état de toutes les réservations
+    # de la personne d'un coup, et aucune chaîne de `depends` ne voit ça. Un
+    # champ stocké afficherait « manquant » sur une rencontre déjà couverte.
+    bf_consent_state = fields.Selection(
+        [
+            ("none", "Sans objet"),
+            ("granted", "Au dossier"),
+            ("requested", "Demandé"),
+            ("refused", "Refusé"),
+            ("missing", "Manquant"),
+        ],
+        string="Consentement à l'enregistrement",
+        compute="_compute_bf_consent_state",
+        search="_search_bf_consent_state",
+        help="État du consentement à l'enregistrement et à la transcription "
+             "pour le demandeur. « Manquant » ne bloque pas le rendez-vous : "
+             "il dit que la rencontre ne doit pas être enregistrée.",
     )
 
     # --- Libellés français des champs de base OCA (resource.booking) ---
@@ -911,9 +942,13 @@ class ResourceBooking(models.Model):
         (un rendez-vous client, 2026-08-03), où « De quoi s'agit-il ? » ressortait en texte
         indicatif alors que la réponse était bien enregistrée.
 
-        On rend donc les réponses du formulaire d'accueil. Le conseil au
-        demandeur ne sert plus que de repli quand il n'y a aucune réponse (type
-        sans formulaire, réservation créée au backend).
+        On rend donc les réponses du formulaire d'accueil — et RIEN quand il
+        n'y en a pas. ⚠️ Le conseil au demandeur ne sert plus de repli : un
+        lien de réservation personnel ne passe par aucun formulaire, donc la
+        consigne y sortait SYSTÉMATIQUEMENT, et une description vide se lit
+        mieux qu'une consigne adressée à quelqu'un d'autre, à un moment déjà
+        passé. Constaté en production sur un lien personnel, où l'agenda affichait
+        « Briefly describe the topic so we can prep… » à la place du sujet.
 
         ⚠️ Le libellé des questions (`appointment.intake.field.name`) et le
         conseil au demandeur sont des champs TRADUITS, et le formulaire public
@@ -935,7 +970,7 @@ class ResourceBooking(models.Model):
         partage = record.type_id.guests_see_intake
         invites = record.guest_ids.filtered(lambda g: g.state == "confirmed")
         if invites and not partage:
-            return record.type_id.requester_advice or ""
+            return ""
 
         parts = []
         for answer in record.intake_answer_ids:
@@ -950,7 +985,7 @@ class ResourceBooking(models.Model):
                 )
             )
         if not parts:
-            return record.type_id.requester_advice or ""
+            return ""
         if booker:
             who = (booker.name or "").strip()
             if booker.email:
@@ -1627,4 +1662,391 @@ class ResourceBooking(models.Model):
     def action_bf_decline_guests(self):
         for booking in self:
             booking._bf_pending_guests()._bf_decline()
+        return True
+
+    # ------------------------------------------------------------------
+    # Consentements (2.49.0)
+    # ------------------------------------------------------------------
+
+    def action_confirm(self):
+        """Confirmer, puis s'assurer que les consentements exigés existent.
+
+        C'est LE point d'accroche : les quatre chemins de création finissent
+        ici, y compris la saisie au back-office, qui n'a ni page ni satellite
+        pour la représenter. Une réservation confirmée sans consentement au
+        dossier déclenche donc une demande par courriel, avec son lien public
+        de réponse.
+
+        Le drapeau `bf_consents_handled` est posé par la page de choix de
+        créneau, qui pose les questions SUR PLACE : sans lui, la demande
+        partirait avant que la réponse donnée à l'écran soit consignée, et la
+        personne recevrait un courriel lui redemandant ce qu'elle vient
+        d'accorder.
+        """
+        res = super().action_confirm()
+        if not self.env.context.get("bf_consents_handled"):
+            for booking in self:
+                try:
+                    booking._bf_ensure_consents(source_note="action_confirm")
+                except Exception:  # noqa: BLE001
+                    _logger.exception(
+                        "Consentements à la confirmation (réservation %s)", booking.id)
+        return res
+
+    def _bf_consent_subject(self):
+        """La personne dont le consentement est en jeu.
+
+        Le premier demandeur, comme partout ailleurs dans le module
+        (`_bf_action_show_link` prend la même). Les invités additionnels ne
+        sont PAS inclus : ils n'ont pas choisi le créneau, ils ne voient pas
+        la page, et leur poser la question suppose un canal qui n'existe pas
+        encore ici.
+        """
+        self.ensure_one()
+        return self.partner_ids[:1]
+
+    def _bf_required_consents(self):
+        """Les consentements que ce type de rendez-vous exige, en une liste.
+
+        Une liste et non un booléen : le jour où un type exigera autre chose
+        que l'enregistrement, les quatre chemins de création suivent sans
+        retouche.
+
+        Volontairement PAS l'infolettre : c'est un opt-in offert sur le
+        formulaire d'accueil, pas une exigence du type. Et pas le
+        consentement de collecte non plus — voir `_bf_ensure_consents`.
+        """
+        self.ensure_one()
+        asks = []
+        if self.type_id.requires_recording_consent:
+            asks.append({
+                "code": "recording",
+                "notice": self.type_id.recording_notice_id,
+            })
+        return asks
+
+    def _bf_consent_status(self, code, notice):
+        """État d'un consentement pour le demandeur : au dossier, demandé,
+        refusé, ou manquant.
+
+        « Au dossier » réutilise `res.partner._bf_active_consent`, donc
+        exactement la même définition d'actif que le formulaire public : ni
+        expiré, ni révoqué, et rattaché à l'avis courant.
+        """
+        self.ensure_one()
+        partner = self._bf_consent_subject()
+        if not partner:
+            return "missing"
+        notice_id = notice.id if notice else False
+        if partner._bf_active_consent(code, notice_id):
+            return "granted"
+        Consent = self.env["privacy.consent"].sudo()
+        base = [
+            ("subject_partner_id", "=", partner.id),
+            ("purpose_id.code", "=", code),
+            ("active", "=", True),
+        ]
+        if notice_id:
+            base.append(("notice_id", "=", notice_id))
+        if Consent.search_count(base + [("status", "in", ("draft", "pending"))]):
+            return "requested"
+        if Consent.search_count(base + [("status", "=", "refused")]):
+            return "refused"
+        return "missing"
+
+    def _bf_missing_consents(self):
+        """Ce qui reste à obtenir : ni au dossier, ni déjà demandé, ni refusé.
+
+        Un refus est une réponse. Le redemander à chaque réservation est
+        exactement le harcèlement que le consentement est censé empêcher.
+        """
+        self.ensure_one()
+        return [
+            ask for ask in self._bf_required_consents()
+            if self._bf_consent_status(ask["code"], ask["notice"]) == "missing"
+        ]
+
+    @api.depends("type_id.requires_recording_consent",
+                 "type_id.recording_notice_id", "partner_ids")
+    def _compute_bf_consent_state(self):
+        """Le pire état parmi les consentements exigés.
+
+        « Pire » au sens de ce qui appelle une action : manquant d'abord,
+        puis refusé, puis demandé. Une rencontre à deux consentements dont un
+        seul manque doit se lire « manquant ».
+        """
+        # ⚠️ Ces dépendances sont INCOMPLÈTES, et volontairement : le reste de
+        # la vérité vit dans `privacy.consent`, qui ne pointe pas vers la
+        # réservation. Aucune chaîne de `depends` ne peut voir un consentement
+        # accordé ailleurs. Le calcul est donc juste à la LECTURE, et les deux
+        # écrivains du module invalident explicitement après écriture — sans
+        # quoi la valeur reste en cache dans la même transaction, et l'on
+        # relit « manquant » sur un consentement qu'on vient de consigner.
+        ordre = ("missing", "refused", "requested", "granted")
+        for booking in self:
+            asks = booking._bf_required_consents()
+            if not asks:
+                booking.bf_consent_state = "none"
+                continue
+            etats = {
+                booking._bf_consent_status(ask["code"], ask["notice"])
+                for ask in asks
+            }
+            booking.bf_consent_state = next(e for e in ordre if e in etats)
+
+    def _search_bf_consent_state(self, operator, value):
+        """Filtrable, au prix d'un calcul en Python.
+
+        Les réservations se comptent en centaines, pas en millions, et l'état
+        n'est pas exprimable en domaine : il croise le type, le contact, et
+        des consentements qui ne pointent pas vers la réservation.
+        """
+        if operator not in ("=", "!=", "in", "not in"):
+            raise NotImplementedError(
+                "Filtre non pris en charge sur bf_consent_state : %s" % operator
+            )
+        cibles = set(value if isinstance(value, (list, tuple)) else [value])
+        negatif = operator in ("!=", "not in")
+        # Seuls les types qui exigent quelque chose peuvent sortir de « none ».
+        domaine = [] if "none" in cibles or negatif else [
+            ("type_id.requires_recording_consent", "=", True)
+        ]
+        ids = [
+            booking.id
+            for booking in self.sudo().search(domaine)
+            if (booking.bf_consent_state in cibles) != negatif
+        ]
+        return [("id", "in", ids)]
+
+    def action_bf_request_consents(self):
+        """Envoyer la demande de consentement depuis le back-office.
+
+        Doublon volontaire de ce que fait `action_confirm` : une réservation
+        peut avoir été confirmée avant ce lot, ou la personne peut avoir changé
+        d'adresse depuis. Le bouton n'apparaît que sur l'état « manquant », et
+        la demande reste idempotente — un consentement déjà en attente ne
+        repart pas.
+        """
+        for booking in self:
+            # Le bouton est un geste humain, délibéré, sur une fiche ouverte :
+            # il n'a pas à attendre l'interrupteur des envois automatiques.
+            crees = booking.with_context(
+                bf_force_consent_request=True)._bf_request_missing_consents()
+            if not crees:
+                raise UserError(_(
+                    "Rien à demander pour « %s » : soit le consentement est "
+                    "déjà au dossier ou en attente, soit le demandeur n'a pas "
+                    "d'adresse courriel, soit le type n'a aucun modèle d'avis "
+                    "rattaché.", booking.display_name))
+        return True
+
+    def _bf_consent_evidence_from_request(self):
+        """Contexte de preuve tiré de la requête HTTP courante, ou vide.
+
+        Rendu séparément pour que le modèle reste appelable hors requête (cron,
+        shell, satellite) sans que la preuve devienne un mensonge : pas de
+        requête, pas d'IP inventée.
+        """
+        try:
+            from odoo.http import request
+        except ImportError:  # pragma: no cover
+            return {}
+        if not request or not getattr(request, "httprequest", None):
+            return {}
+        env_meta = request.httprequest.environ
+        return {
+            # ⚠️ `remote_addr` et RIEN d'autre. `proxy_mode` est actif dans ce
+            # déploiement : werkzeug a déjà réécrit l'adresse depuis le nombre
+            # de sauts de confiance configuré. Lire soi-même
+            # X-Forwarded-For / X-Real-IP rendrait la preuve FALSIFIABLE par
+            # celui-là même qu'elle est censée engager — un en-tête est
+            # attaquant-contrôlé dès que le point d'entrée est joignable
+            # directement. Même règle que `_client_ip()` du contrôleur, dont
+            # ceci est le pendant côté modèle.
+            "ip_address": request.httprequest.remote_addr or "unknown",
+            "user_agent": env_meta.get("HTTP_USER_AGENT", "")[:512],
+            "accept_language": env_meta.get("HTTP_ACCEPT_LANGUAGE", "")[:128],
+            "referer_url": env_meta.get("HTTP_REFERER", "")[:512],
+            "request_method": request.httprequest.method,
+            "session_id": (
+                request.session.sid if hasattr(request, "session") else False
+            ),
+        }
+
+    def _bf_record_consent(self, code, notice, granted, evidence=None,
+                           collection_method="portal", source_note=""):
+        """Écrit le `privacy.consent` et sa preuve. Écrivain UNIQUE.
+
+        Le formulaire d'accueil, la page de choix de créneau et le back-office
+        passent tous par ici. Trois copies de cette séquence divergeraient au
+        premier ajustement, et une preuve qui diverge ne prouve plus rien.
+
+        `context_ref` reste ancré sur le CONTACT : la sélection de
+        `privacy.consent` n'accepte que projet ou contact. La réservation
+        d'origine est tracée dans `notes`, sous un préfixe cherchable.
+        """
+        self.ensure_one()
+        partner = self._bf_consent_subject()
+        if not partner:
+            return False
+        Consent = self.env["privacy.consent"].sudo()
+        Purpose = self.env["privacy.purpose"].sudo()
+        purpose = Purpose.search([("code", "=", code)], limit=1)
+        if not purpose:
+            _logger.warning("privacy.purpose code=%s absent, consentement non écrit", code)
+            return False
+        version = self._bf_notice_version(notice)
+        marqueur = "resource.booking=%d" % self.id
+        maintenant = fields.Datetime.now()
+        consent = Consent.create({
+            "subject_partner_id": partner.id,
+            "purpose_id": purpose.id,
+            "notice_id": notice.id if notice else False,
+            "notice_version_id": version.id if version else False,
+            "status": "granted" if granted else "refused",
+            "collection_method": collection_method,
+            "context_ref": "res.partner,%d" % partner.id,
+            "active": True,
+            "granted_at": maintenant if granted else False,
+            "refused_at": False if granted else maintenant,
+            "notes": "Source: %s (type=%s)\n%s" % (
+                marqueur, self.type_id.slug or self.type_id.id, source_note,
+            ),
+        })
+        preuve = dict(evidence or {})
+        preuve.update({
+            "consent_id": consent.id,
+            "evidence_type": "portal_log",
+            "consent_action": "grant" if granted else "refuse",
+            "timestamp_utc": maintenant,
+            "consent_snapshot": (version.body if version else "")
+            + "\n<!-- %s granted=%s -->" % (marqueur, granted),
+            "note": preuve.pop("note", "") or "Collecté via %s (%s)" % (
+                source_note or "réservation", marqueur,
+            ),
+        })
+        self.env["privacy.consent.evidence"].sudo().create(preuve)
+        self.invalidate_recordset(["bf_consent_state"])
+        return consent
+
+    def _bf_notice_version(self, notice):
+        """Version courante d'un avis, ou rien."""
+        if not notice:
+            return False
+        return self.env["privacy.notice.version"].sudo().search(
+            [("notice_id", "=", notice.id)],
+            order="effective_date desc, version desc",
+            limit=1,
+        )
+
+    def _bf_request_missing_consents(self):
+        """Repli hors bande : demander par courriel ce qu'on n'a pas pu
+        demander sur place.
+
+        Sert les chemins qui n'ont AUCUNE page à afficher — sondage, saisie au
+        back-office, satellite. Le mécanisme est celui de `privacy_consent`
+        (consentement en attente + courriel avec lien public de réponse), pas
+        une deuxième implémentation.
+
+        ⚠️ Jamais bloquant. Un envoi qui échoue ne doit pas empêcher une
+        réservation d'exister : la trace de ce qui manque vit dans
+        `bf_consent_state`, pas dans la réussite de cet appel.
+        """
+        self.ensure_one()
+        # ⚠️ Interrupteur, par défaut FERMÉ. Ce chemin écrit à un CLIENT sans
+        # que personne ne relise le courriel, et il se déclenche sur une
+        # simple confirmation. Un envoi sortant automatique se gouverne : le
+        # paramètre système `bf_appointment.consent_auto_request` l'ouvre,
+        # locataire par locataire, quand la personne responsable l'a décidé.
+        # La collecte SUR PLACE et l'état `bf_consent_state`, eux, ne
+        # dépendent pas de ce réglage — ils ne sortent rien.
+        if not self.env.context.get("bf_force_consent_request"):
+            actif = self.env["ir.config_parameter"].sudo().get_param(
+                "bf_appointment.consent_auto_request", "")
+            if str(actif).strip().lower() not in ("1", "true", "yes", "on"):
+                return self.env["privacy.consent"]
+        partner = self._bf_consent_subject()
+        if not partner or not partner.email:
+            return self.env["privacy.consent"]
+        Consent = self.env["privacy.consent"].sudo()
+        Purpose = self.env["privacy.purpose"].sudo()
+        crees = Consent
+        for ask in self._bf_missing_consents():
+            notice = ask["notice"]
+            if not notice:
+                _logger.info(
+                    "Réservation %s : consentement « %s » exigé par le type mais "
+                    "aucun modèle d'avis n'y est rattaché, demande impossible.",
+                    self.id, ask["code"],
+                )
+                continue
+            purpose = Purpose.search([("code", "=", ask["code"])], limit=1)
+            if not purpose:
+                continue
+            version = self._bf_notice_version(notice)
+            consent = Consent.create({
+                "subject_partner_id": partner.id,
+                "purpose_id": purpose.id,
+                "notice_id": notice.id,
+                "notice_version_id": version.id if version else False,
+                "status": "pending",
+                "collection_method": "email",
+                "context_ref": "res.partner,%d" % partner.id,
+                "requested_at": fields.Datetime.now(),
+                "notes": "Demande déclenchée par resource.booking=%d" % self.id,
+            })
+            crees |= consent
+            try:
+                consent._send_consent_request_email()
+            except Exception:  # noqa: BLE001
+                _logger.exception(
+                    "Envoi de la demande de consentement « %s » (réservation %s)",
+                    ask["code"], self.id,
+                )
+        if crees:
+            self.invalidate_recordset(["bf_consent_state"])
+        return crees
+
+    def _bf_ensure_consents(self, collected=None, evidence=None,
+                            source_note="", allow_request=True):
+        """Point d'entrée UNIQUE. Les quatre chemins de création s'y branchent.
+
+        `collected` : ce que la personne vient de répondre sur place, par code
+        d'objet (`{"recording": True}`). Une valeur présente est une RÉPONSE,
+        y compris `False` : une case vue et laissée décochée est un refus, pas
+        une absence. C'est déjà la règle du formulaire d'accueil.
+
+        Ce qui n'a pas été demandé sur place part en demande par courriel,
+        sauf `allow_request=False` (le formulaire d'accueil, qui a déjà tout
+        demandé, et les essais qui ne veulent pas d'envoi).
+
+        ⚠️ Le consentement de COLLECTE (C1) n'est pas traité ici. Il porte sur
+        les renseignements saisis dans le formulaire d'accueil; un lien
+        personnel ne collecte rien de neuf, le contact et les invités ayant
+        été saisis à la création du lien.
+        """
+        self.ensure_one()
+        collected = collected or {}
+        evidence = evidence if evidence is not None else self._bf_consent_evidence_from_request()
+        for ask in self._bf_required_consents():
+            code = ask["code"]
+            if code not in collected:
+                continue
+            if self._bf_consent_status(code, ask["notice"]) == "granted":
+                # Déjà au dossier : on n'en fabrique pas un doublon. Tous les
+                # autres états cèdent devant une réponse donnée à l'instant —
+                # une demande en attente à qui la personne vient de répondre
+                # sur place doit être RÉPONDUE, pas ignorée.
+                continue
+            self._bf_record_consent(
+                code, ask["notice"], bool(collected[code]),
+                evidence=evidence, source_note=source_note,
+            )
+        if allow_request and not self.env.context.get("bf_no_consent_request"):
+            try:
+                self._bf_request_missing_consents()
+            except Exception:  # noqa: BLE001
+                _logger.exception(
+                    "Demande de consentement hors bande (réservation %s)", self.id,
+                )
         return True

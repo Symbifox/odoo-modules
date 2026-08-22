@@ -13,128 +13,97 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #. module: bf_appointment
-#: model:resource.booking.type,field:is_public
-msgid "Public Booking Page"
-msgstr "Public Booking Page"
-
-#. module: bf_appointment
-#: model:resource.booking.type,field:slug
-msgid "URL Slug"
-msgstr "URL Slug"
-
-#. module: bf_appointment
-#: model:resource.booking.type,field:public_description
-msgid "Public Description"
-msgstr "Public Description"
-
-#. module: bf_appointment
-#: model:resource.booking.type,field:public_image
-msgid "Public Image"
-msgstr "Public Image"
-
-#. module: bf_appointment
-#: model:resource.booking.type,field:video_provider
-msgid "Video Provider"
-msgstr "Video Provider"
-
-#. module: bf_appointment
-#: model:resource.booking.type,field:reminder_hours
-msgid "Reminder Before (hours)"
-msgstr "Reminder Before (hours)"
-
-#. module: bf_appointment
-#: model:resource.booking.type,field:color_hex
-msgid "Accent Color"
-msgstr "Accent Color"
-
-#. module: bf_appointment
-#: model:resource.booking,field:video_room_token
-msgid "Video Room Token"
-msgstr "Video Room Token"
-
-#. module: bf_appointment
-#: model:resource.booking,field:reminder_sent
-msgid "Reminder Sent"
-msgstr "Reminder Sent"
-
-#. module: bf_appointment
-msgid "None"
-msgstr "None"
-
-#. module: bf_appointment
-msgid "Jitsi Meet"
-msgstr "Jitsi Meet"
-
-#. module: bf_appointment
-msgid "Nextcloud Talk"
-msgstr "Nextcloud Talk"
-
-#. module: bf_appointment
-#: model:resource.booking,field:sent_schedule_ids
-msgid "Sent Email Schedules"
-msgstr "Sent Email Schedules"
-
-#. module: bf_appointment
-#: model:resource.booking,field:intake_answer_ids
-msgid "Intake Answers"
-msgstr "Intake Answers"
-
-#. module: bf_appointment
-#: code:addons/bf_appointment/models/resource_booking.py
+#. odoo-python
+#: code:addons/bf_appointment/models/resource_booking.py:0
 msgid "Rendez-vous"
 msgstr "Appointment"
 
 #. module: bf_appointment
-#: code:addons/bf_appointment/models/resource_booking.py
+#. odoo-python
+#: code:addons/bf_appointment/models/resource_booking.py:0
 msgid "Date : %s"
 msgstr "Date: %s"
 
 #. module: bf_appointment
-#: code:addons/bf_appointment/models/resource_booking.py
+#. odoo-python
+#: code:addons/bf_appointment/models/resource_booking.py:0
 msgid "Heure : %s"
 msgstr "Time: %s"
 
 #. module: bf_appointment
-#: code:addons/bf_appointment/models/resource_booking.py
-msgid "Dur\u00e9e : %s"
-msgstr "Duration: %s"
-
-#. module: bf_appointment
-#: code:addons/bf_appointment/models/resource_booking.py
+#. odoo-python
+#: code:addons/bf_appointment/models/resource_booking.py:0
 msgid "Participant : %s"
 msgstr "Participant: %s"
 
 #. module: bf_appointment
-#: code:addons/bf_appointment/models/resource_booking.py
-msgid "Vid\u00e9oconf\u00e9rence : %s"
-msgstr "Video conference: %s"
-
-#. module: bf_appointment
-#: code:addons/bf_appointment/models/resource_booking.py
+#. odoo-python
+#: code:addons/bf_appointment/models/resource_booking.py:0
 msgid "Lieu : %s"
 msgstr "Location: %s"
 
 #. module: bf_appointment
-#: code:addons/bf_appointment/models/resource_booking.py
+#. odoo-python
+#: code:addons/bf_appointment/models/resource_booking.py:0
 msgid "Voir mon rendez-vous : %s"
 msgstr "View my appointment: %s"
 
 #. module: bf_appointment
-#: code:addons/bf_appointment/models/resource_booking.py
+#. odoo-python
+#: code:addons/bf_appointment/models/resource_booking.py:0
 msgid "Modifier l'horaire : %s"
 msgstr "Reschedule: %s"
 
 #. module: bf_appointment
-#: code:addons/bf_appointment/models/resource_booking.py
+#. odoo-python
+#: code:addons/bf_appointment/models/resource_booking.py:0
 msgid "Annuler : %s"
 msgstr "Cancel: %s"
 
 #. module: bf_appointment
-#: code:addons/bf_appointment/models/resource_booking.py
+#. odoo-python
+#: code:addons/bf_appointment/models/resource_booking.py:0
 msgid "rendez-vous.ics"
 msgstr "appointment.ics"
 
 #. module: bf_appointment
-#: code:addons/bf_appointment/models/resource_booking.py
+#. odoo-python
+#: code:addons/bf_appointment/models/resource_booking.py:0
 msgid "RDV - %s"
 msgstr "Appointment - %s"
+
+#. module: bf_appointment
+#. odoo-python
+#: code:addons/bf_appointment/models/resource_booking.py:0
+msgid "Durée : %s"
+msgstr "Duration: %s"
+
+#. module: bf_appointment
+#. odoo-python
+#: code:addons/bf_appointment/models/resource_booking.py:0
+msgid "Vidéoconférence : %s"
+msgstr "Video call: %s"
+
+#. module: bf_appointment
+#. odoo-python
+#: code:addons/bf_appointment/models/resource_booking.py:0
+msgid "Demandeur"
+msgstr "Requested by"
+
+#. module: bf_appointment
+#. odoo-python
+#: code:addons/bf_appointment/models/resource_booking.py:0
+msgid "Choisir un moment qui vous convient"
+msgstr "Choose a time that suits you"
+
+#. module: bf_appointment
+#. odoo-python
+#: code:addons/bf_appointment/models/resource_booking.py:0
+msgid "Lien de réservation"
+msgstr "Booking link"
+
+#. module: bf_appointment
+#. odoo-python
+#: code:addons/bf_appointment/models/resource_booking.py:0
+msgid "aucune expiration"
+msgstr "no expiry"

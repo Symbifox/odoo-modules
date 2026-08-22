@@ -50,6 +50,18 @@ class AppointmentOnetimeWizard(models.TransientModel):
              "choisissent pas la date.",
     )
 
+    custom_name = fields.Char(
+        string="Titre de la rencontre",
+        help="Ce qui s'affichera dans les deux agendas et dans l'invitation. "
+             "Pré-rempli avec le titre calculé (« Type - Organisation x "
+             "Marque ») : on peut le remplacer par le vrai sujet quand la "
+             "rencontre ne se résume pas à son type.",
+    )
+    # Mémoire de la dernière suggestion, pour distinguer « l'usager n'a rien
+    # écrit » de « l'usager a écrit exactement ça ». Sans elle, changer le
+    # destinataire écraserait un titre saisi à la main.
+    suggested_name = fields.Char(readonly=True)
+
     duration = fields.Float(
         string="Durée (heures)",
         help="Vide = la durée du type.",
@@ -79,6 +91,32 @@ class AppointmentOnetimeWizard(models.TransientModel):
     def _onchange_type_id(self):
         if self.type_id and not self.duration:
             self.duration = self.type_id.duration
+        self._bf_suggest_name()
+
+    @api.onchange("partner_id")
+    def _onchange_partner_id(self):
+        self._bf_suggest_name()
+
+    def _bf_suggest_name(self):
+        """Pré-remplit le titre avec celui que la fabrique calculerait.
+
+        Un champ vide n'apprend rien : on ne sait pas ce qu'on remplace, ni
+        même qu'il existe un titre par défaut. On montre donc le titre
+        calculé, et on le laisse modifiable. Tant que l'usager n'y a pas
+        touché, il suit le type et le destinataire; dès qu'il l'a réécrit, on
+        n'y retouche plus.
+        """
+        for wizard in self:
+            if not wizard.type_id or not wizard.partner_id:
+                continue
+            suggestion = self.env["resource.booking"]._bf_build_title(
+                wizard.type_id,
+                partner=wizard.partner_id,
+                lang=wizard.partner_id.lang or self.env.user.lang,
+            )
+            if not wizard.custom_name or wizard.custom_name == wizard.suggested_name:
+                wizard.custom_name = suggestion
+            wizard.suggested_name = suggestion
 
     def action_create_link(self):
         """Crée la réservation en attente et rend le lien.
@@ -93,6 +131,8 @@ class AppointmentOnetimeWizard(models.TransientModel):
             vals["duration"] = self.duration
         if self.location:
             vals["location"] = self.location
+        if self.custom_name and self.custom_name.strip():
+            vals["name"] = self.custom_name.strip()
         booking = self.type_id._bf_create_onetime_link(
             self.partner_id,
             guests=self.guest_partner_ids,

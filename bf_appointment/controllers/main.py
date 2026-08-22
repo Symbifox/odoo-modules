@@ -234,6 +234,113 @@ def _apply_locale_from_request():
         request.update_context(lang=lang)
 
 
+def _installed_lang(code):
+    """Return the active res.lang for `code`, or an empty recordset."""
+    if not code:
+        return request.env["res.lang"].sudo().browse()
+    return request.env["res.lang"].sudo().search(
+        [("code", "=", code), ("active", "=", True)], limit=1
+    )
+
+
+def _lang_cookie():
+    """The `frontend_lang` cookie, if it names a lang installed here."""
+    try:
+        cookie = request.httprequest.cookies.get("frontend_lang")
+    except Exception:
+        return None
+    return cookie if cookie and _installed_lang(cookie) else None
+
+
+def _url_carries_lang():
+    """True when the URL named a language other than the tenant default.
+
+    ⚠️ Not readable from the path: Odoo strips the `/en/` prefix before
+    routing, so `request.httprequest.path` is already `/appointment/...` on an
+    English URL. What survives is the resolved context lang - a prefix-less URL
+    always resolves to the default, so anything else means the URL said so.
+    """
+    return (request.env.context.get("lang") or _BF_DEFAULT_LANG) != _BF_DEFAULT_LANG
+
+
+def _visitor_lang():
+    """Best guess at the visitor's own language, for stamping a new contact.
+
+    In order of trust: a language named by the URL, then the `frontend_lang`
+    cookie the toggle sets, then Accept-Language.
+
+    This exists because the booking form used to create contacts with no `lang`
+    at all, so they silently inherited the request context - fr_CA on the
+    prefix-less URL. That single omission then decided the language of every
+    appointment email, since all of them render with
+    `lang = {{ object.partner_id.lang }}`, and it outlived the booking: the
+    contact stayed French for good.
+
+    The intake form posts to a hardcoded prefix-less action, so on that request
+    the URL says nothing and the cookie carries the truth - Odoo sets
+    `frontend_lang` on the very page the form was served from.
+
+    Returns a lang code that is installed and active, or the tenant default.
+    """
+    if _url_carries_lang():
+        return request.env.context["lang"]
+    cookie = _lang_cookie()
+    if cookie:
+        return cookie
+    lang = _resolve_lang_from_accept_header()
+    return lang if _installed_lang(lang) else _BF_DEFAULT_LANG
+
+
+def _msg(fr, en):
+    """Pick the visitor's language for a message the controller writes itself.
+
+    The public templates carry their own `'EN' if _en else 'FR'` ternaries, but
+    the validation errors the booking POST redirects with were French strings,
+    full stop. An English booker who left a field empty was answered in French
+    on an otherwise English page.
+    """
+    return en if _visitor_lang().startswith("en") else fr
+
+
+def _maybe_redirect_to_visitor_lang():
+    """Send a first-time visitor to their own language, once, or return None.
+
+    Only for GET, and only on a URL that named no language of its own. An
+    explicit choice always wins - that is what the 2026-05-20 regression was
+    about, where an English `Accept-Language` header overrode a deliberate
+    switch to Français and made the toggle unusable. So a URL with a language
+    is left alone, and on a prefix-less one the `frontend_lang` cookie outranks
+    the header: a visitor who toggled to Français keeps Français, while one who
+    toggled to English is sent back to English instead of being stranded on the
+    default page every time they return.
+
+    Redirecting rather than merely swapping the context lang is what makes the
+    choice stick: the language then lives in the URL, so every link on the page
+    carries it and the next request needs no negotiation.
+
+    ⚠️ The anti-loop guard cannot read the path - Odoo strips the `/en/` prefix
+    before routing, so `request.httprequest.path` is already `/appointment/...`
+    on an English URL, and matching on it sent `/en/appointment` to itself,
+    forever. The resolved context lang is what survives, hence
+    `_url_carries_lang()`.
+    """
+    if request.httprequest.method != "GET":
+        return None
+    if _url_carries_lang():
+        return None
+    wanted = _lang_cookie() or _resolve_lang_from_accept_header()
+    if wanted == _BF_DEFAULT_LANG:
+        return None
+    lang = _installed_lang(wanted)
+    if not lang or not lang.url_code:
+        return None
+    query = request.httprequest.query_string.decode()
+    target = "/%s%s" % (lang.url_code, request.httprequest.path or "/")
+    if query:
+        target = "%s?%s" % (target, query)
+    return request.redirect(target)
+
+
 # Security headers applied to every public /appointment* response. CSP is
 # permissive on inline styles because Odoo emits inline t-att-style on widgets;
 # scripts and frames are locked down. frame-ancestors 'none' + X-Frame-Options
@@ -307,25 +414,13 @@ def _check_consent_lookup_rate_limit():
 def _lookup_active_consent(env, partner, purpose_code, current_notice_id):
     """Return the active privacy.consent record for (partner, purpose) or False.
 
-    "Active" = status='granted', record active=True, not withdrawn, not
-    expired, AND attached to a notice version whose notice matches the
-    current type's notice (so a major notice rev forces re-consent).
+    Kept as a module-level helper because several routes read like this, but
+    the logic itself now lives on ``res.partner._bf_active_consent`` so the
+    booking model can consult it without importing a controller.
     """
     if not partner or not purpose_code:
         return False
-    Consent = env["privacy.consent"].sudo()
-    domain = [
-        ("subject_partner_id", "=", partner.id),
-        ("status", "=", "granted"),
-        ("active", "=", True),
-        ("withdrawn_at", "=", False),
-        ("purpose_id.code", "=", purpose_code),
-        "|", ("expires_at", "=", False), ("expires_at", ">", fields.Datetime.now()),
-    ]
-    if current_notice_id:
-        domain.append(("notice_id", "=", current_notice_id))
-    consent = Consent.search(domain, order="granted_at desc", limit=1)
-    return consent or False
+    return partner._bf_active_consent(purpose_code, current_notice_id)
 
 
 class AppointmentController(Controller):
@@ -340,6 +435,9 @@ class AppointmentController(Controller):
     def appointment_landing(self, **kwargs):
         """Public landing page listing all public booking types."""
         _apply_locale_from_request()
+        redirect = _maybe_redirect_to_visitor_lang()
+        if redirect:
+            return redirect
         BookingType = request.env["resource.booking.type"].sudo()
         types = BookingType.search(
             [("is_public", "=", True), ("listed_on_landing", "=", True)],
@@ -410,6 +508,9 @@ class AppointmentController(Controller):
     def appointment_type_page(self, slug, **kwargs):
         """Detail page for a specific booking type with intake form."""
         _apply_locale_from_request()
+        redirect = _maybe_redirect_to_visitor_lang()
+        if redirect:
+            return redirect
         booking_type = self._get_type_by_slug(slug)
         if not booking_type:
             return request.redirect("/appointment")
@@ -440,7 +541,10 @@ class AppointmentController(Controller):
         if not _check_book_rate_limit():
             return request.redirect(
                 f"/appointment/{slug}?error="
-                + quote_plus("Trop de demandes. Veuillez réessayer dans quelques minutes.")
+                + quote_plus(_msg(
+                    "Trop de demandes. Veuillez réessayer dans quelques minutes.",
+                    "Too many requests. Please try again in a few minutes.",
+                ))
             )
         name = (kwargs.get("name") or "").strip()
         email = (kwargs.get("email") or "").strip()
@@ -452,31 +556,31 @@ class AppointmentController(Controller):
         # Validate required fields
         if not name or not email:
             return request.redirect(
-                f"/appointment/{slug}?error={quote_plus('Veuillez remplir tous les champs obligatoires.')}"
+                f"/appointment/{slug}?error={quote_plus(_msg('Veuillez remplir tous les champs obligatoires.', 'Please fill in every required field.'))}"
             )
         # Loi 25, explicit consent required for personal information collection.
         # The form has client-side `required`, but a tampered submission could
         # bypass that, so we enforce server-side too.
         if not kwargs.get("bf_consent"):
             return request.redirect(
-                f"/appointment/{slug}?error={quote_plus('Veuillez accepter la politique de confidentialité pour soumettre votre demande.')}"
+                f"/appointment/{slug}?error={quote_plus(_msg('Veuillez accepter la politique de confidentialité pour soumettre votre demande.', 'Please accept the privacy policy to submit your request.'))}"
             )
         # If in-person without fixed location, the booker must provide one
         if booking_type.is_in_person and not booking_type.location and not location_input:
             return request.redirect(
-                f"/appointment/{slug}?error={quote_plus('Veuillez indiquer un lieu de rencontre.')}"
+                f"/appointment/{slug}?error={quote_plus(_msg('Veuillez indiquer un lieu de rencontre.', 'Please give a meeting location.'))}"
             )
         # Validate the format of a booker-provided location: short or
         # letter-less strings ("abc", "123", "...") slip past the empty check
         # but are useless for the organizer.
         if location_input and not _validate_location_format(location_input):
             return request.redirect(
-                f"/appointment/{slug}?error={quote_plus('Veuillez fournir une adresse ou un lieu reconnaissable.')}"
+                f"/appointment/{slug}?error={quote_plus(_msg('Veuillez fournir une adresse ou un lieu reconnaissable.', 'Please give a recognisable address or place.'))}"
             )
         # Basic email validation
         if not re.match(r"^[^@\s]+@[^@\s]+\.[^@\s]+$", email):
             return request.redirect(
-                f"/appointment/{slug}?error={quote_plus('Adresse courriel invalide.')}"
+                f"/appointment/{slug}?error={quote_plus(_msg('Adresse courriel invalide.', 'Invalid email address.'))}"
             )
         # Validate timezone. Reject "UTC" alongside invalid zones: the browser
         # tz field can fall back to "UTC" when detection fails, and persisting
@@ -493,7 +597,7 @@ class AppointmentController(Controller):
             raw = (kwargs.get(key) or "").strip()
             if not raw or not self._validate_intake_value(field, raw):
                 return request.redirect(
-                    f"/appointment/{slug}?error={quote_plus(f'Le champ « {field.name} » est obligatoire.')}"
+                    f"/appointment/{slug}?error={quote_plus(_msg(f'Le champ « {field.name} » est obligatoire.', f'The field "{field.name}" is required.'))}"
                 )
         # Find or create partner
         Partner = request.env["res.partner"].sudo()
@@ -511,6 +615,12 @@ class AppointmentController(Controller):
                 partner_vals["company_name"] = company
             if tz:
                 partner_vals["tz"] = tz
+            # Stamp the visitor's own language on the contact. Left unset, the
+            # contact inherits the request context - fr_CA on the prefix-less
+            # URL - and since every appointment template renders with
+            # `lang = {{ object.partner_id.lang }}`, an English-speaking booker
+            # gets French mail for this booking and every one after it.
+            partner_vals["lang"] = _visitor_lang()
             partner = Partner.create(partner_vals)
         else:
             # Update name if currently set to the email (auto-created contacts)
@@ -549,11 +659,15 @@ class AppointmentController(Controller):
                     or request.env.company.email
                     or "service@example.com"
                 )
-                msg = (
+                msg = _msg(
                     "Le compte rendu fait partie du service pour ce type de "
                     "rencontre. Veuillez accepter l'enregistrement et la "
                     f"transcription, ou nous écrire à {fallback_email} "
-                    "pour un format alternatif."
+                    "pour un format alternatif.",
+                    "The written record is part of the service for this "
+                    "meeting type. Please accept the recording and "
+                    f"transcription, or write to us at {fallback_email} "
+                    "for an alternative format.",
                 )
                 return request.redirect(
                     f"/appointment/{slug}?error={quote_plus(msg)}"
@@ -654,110 +768,54 @@ class AppointmentController(Controller):
         return request.redirect(schedule_url)
 
     def _record_booking_consents(self, booking_type, booking, partner, kwargs, recording_already_active):
-        """Write privacy.consent + privacy.consent.evidence records for the
-        recording and newsletter consents collected on the intake form.
+        """Consigne les consentements cochés sur le formulaire d'accueil.
 
-        Skips writing a duplicate when an active consent for the same
-        (partner, purpose, notice) is already on file. A short-lived
-        booking is logged in `context_ref` so the consent can be linked
-        back to the originating intake submission.
+        L'écriture elle-même est déléguée à `resource.booking._bf_record_consent`,
+        écrivain unique partagé avec la page de choix de créneau et le
+        back-office : trois copies de la séquence consentement + preuve
+        divergeraient au premier ajustement, et une preuve qui diverge ne
+        prouve plus rien.
+
+        `allow_request=False` : ce chemin vient DE poser les questions. Faire
+        partir en plus une demande par courriel pour une case que la personne
+        a sous les yeux serait absurde.
         """
-        Consent = request.env["privacy.consent"].sudo()
-        Evidence = request.env["privacy.consent.evidence"].sudo()
-        NoticeVersion = request.env["privacy.notice.version"].sudo()
-        Purpose = request.env["privacy.purpose"].sudo()
+        evidence = booking._bf_consent_evidence_from_request()
+        collected = {}
 
-        env_meta = request.httprequest.environ
-        ip = _client_ip()
-        ua = env_meta.get("HTTP_USER_AGENT", "")[:512]
-        accept_lang = env_meta.get("HTTP_ACCEPT_LANGUAGE", "")[:128]
-        referer = env_meta.get("HTTP_REFERER", "")[:512]
-        # context_ref Selection only allows project.project / res.partner per
-        # privacy_consent module. Anchor on the partner; trace the originating
-        # booking via a structured prefix in `notes` so it's queryable.
-        ctx_ref = f"res.partner,{partner.id}"
-        booking_marker = f"resource.booking={booking.id}"
-
-        def _resolve_notice_version(notice):
-            if not notice:
-                return False
-            return NoticeVersion.search(
-                [("notice_id", "=", notice.id)],
-                order="effective_date desc, version desc",
-                limit=1,
-            )
-
-        def _record(purpose_code, granted, notice, checkbox_value):
-            """Create privacy.consent + evidence rows. Returns the consent record."""
-            purpose = Purpose.search([("code", "=", purpose_code)], limit=1)
-            if not purpose:
-                _logger.warning("privacy.purpose code=%s missing, skipping", purpose_code)
-                return False
-            version = _resolve_notice_version(notice)
-            consent_vals = {
-                "subject_partner_id": partner.id,
-                "purpose_id": purpose.id,
-                "notice_id": notice.id if notice else False,
-                "notice_version_id": version.id if version else False,
-                "status": "granted" if granted else "refused",
-                "collection_method": "portal",
-                "context_ref": ctx_ref,
-                "active": True,
-                "granted_at": fields.Datetime.now() if granted else False,
-                "refused_at": fields.Datetime.now() if not granted else False,
-                "notes": (
-                    f"Source: {booking_marker} (slug={booking_type.slug})\n"
-                    f"Checkbox value at submission: {checkbox_value}"
-                ),
-            }
-            consent = Consent.create(consent_vals)
-            Evidence.create({
-                "consent_id": consent.id,
-                "evidence_type": "portal_log",
-                "consent_action": "grant" if granted else "refuse",
-                "ip_address": ip,
-                "user_agent": ua,
-                "accept_language": accept_lang,
-                "referer_url": referer,
-                "request_method": "POST",
-                "session_id": request.session.sid if hasattr(request, "session") else False,
-                "timestamp_utc": fields.Datetime.now(),
-                "consent_snapshot": (version.body if version else "") + f"\n<!-- {booking_marker} checkbox={checkbox_value} -->",
-                "note": f"Collected via /appointment/{booking_type.slug}/book ({booking_marker})",
-            })
-            return consent
-
-        # Recording consent: only create a fresh record when the type
-        # requires it AND there's no active record on file. Otherwise we
-        # leave the existing consent alone (the "do not re-ask" rule).
+        # Enregistrement : on n'écrit que si le type l'exige ET qu'il n'y a
+        # rien d'actif au dossier. Sinon on laisse le consentement existant
+        # tranquille (la règle « on ne redemande pas »).
         if booking_type.requires_recording_consent and not recording_already_active:
-            checked = bool(kwargs.get("bf_consent_recording"))
-            _record(
-                "recording",
-                granted=checked,
-                notice=booking_type.recording_notice_id,
-                checkbox_value=checked,
-            )
+            collected["recording"] = bool(kwargs.get("bf_consent_recording"))
 
-        # Newsletter consent: only when offered, only when checked, and
-        # only when not already on file. Refusing the newsletter on the
-        # booking form is NOT a refusal record (the booker simply did not
-        # opt in). LCAP only logs explicit grants.
+        booking._bf_ensure_consents(
+            collected=collected,
+            evidence=evidence,
+            source_note="/appointment/%s/book" % booking_type.slug,
+            allow_request=False,
+        )
+
+        # Infolettre : offerte, cochée, et pas déjà au dossier. Refuser
+        # l'infolettre sur un formulaire de rendez-vous n'est PAS un refus à
+        # consigner — la personne n'a simplement pas adhéré. La LCAP ne
+        # journalise que les consentements explicites.
         if booking_type.offers_newsletter_signup and kwargs.get("bf_consent_newsletter"):
             existing_mkt = _lookup_active_consent(
                 request.env, partner, "marketing",
                 booking_type.newsletter_notice_id.id if booking_type.newsletter_notice_id else False,
             )
             if not existing_mkt:
-                _record(
+                booking._bf_record_consent(
                     "marketing",
-                    granted=True,
-                    notice=booking_type.newsletter_notice_id,
-                    checkbox_value=True,
+                    booking_type.newsletter_notice_id,
+                    True,
+                    evidence=evidence,
+                    source_note="/appointment/%s/book" % booking_type.slug,
                 )
-                # Best-effort: subscribe to a "BF Newsletter" mailing.list if
-                # the mass_mailing module is installed and a list named
-                # "Infolettre Blue Fox" exists. Failure is non-fatal.
+                # Au mieux : inscrire à la liste « Infolettre » si mass_mailing
+                # est installé et qu'une telle liste existe. Un échec n'est pas
+                # fatal — le consentement, lui, est écrit.
                 try:
                     MailingList = request.env["mailing.list"].sudo()
                     bf_list = MailingList.search([("name", "ilike", "infolettre")], limit=1)
@@ -811,11 +869,18 @@ class AppointmentController(Controller):
         # type's resource calendar tz so we never show an empty TZ next to
         # the slots.
         effective_tz = tz or booking_sudo._get_booker_display_tz()
+        # Consentements encore à obtenir pour CETTE personne. Calculé au
+        # rendu, jamais mis en cache : un consentement accordé ailleurs entre
+        # deux chargements doit faire disparaître la case, pas la répéter.
+        # Rien à afficher quand tout est au dossier, ce qui est le cas le plus
+        # fréquent sur un lien envoyé à un client existant.
+        consent_asks = [a["code"] for a in booking_sudo._bf_missing_consents()]
         values = {
             "booking_sudo": booking_sudo,
             "access_token": token,
             "error": kwargs.get("error"),
             "visitor_tz": tz,
+            "consent_asks": consent_asks,
             "effective_tz": effective_tz,
             "effective_tz_city": request.env["bf.timezone"].sudo().tz_city(
                 effective_tz
@@ -868,6 +933,10 @@ class AppointmentController(Controller):
             tracking_disable=True,
             mail_notrack=True,
             mail_create_nosubscribe=True,
+            # Les consentements sont demandés SUR CETTE PAGE. Sans ce drapeau,
+            # `action_confirm` enverrait la demande par courriel avant que la
+            # réponse à l'écran soit consignée.
+            bf_consents_handled=True,
         )
         try:
             booking_sudo.start = when_naive
@@ -880,6 +949,27 @@ class AppointmentController(Controller):
                 f"?error={quote_plus(str(error.args[0]))}{tz_param}"
             )
         booking_sudo.action_confirm()
+        # Consentements. C'est ICI que se refermait le trou : un lien personnel
+        # ne passe par aucun formulaire d'accueil, donc rien n'était ni vérifié
+        # ni demandé, et la rencontre pouvait naître enregistrable sans qu'on
+        # ait rien à montrer. Une case vue et laissée décochée est une réponse
+        # (un refus), pas une absence : on ne transmet que ce qui a réellement
+        # été affiché. Jamais bloquant — un consentement manquant empêche
+        # l'ENREGISTREMENT, pas le rendez-vous.
+        try:
+            demandes = [a["code"] for a in booking_sudo._bf_missing_consents()]
+            collected = {
+                code: bool(kwargs.get("bf_consent_%s" % code))
+                for code in demandes
+                if kwargs.get("bf_consent_shown_%s" % code)
+            }
+            booking_sudo._bf_ensure_consents(
+                collected=collected,
+                source_note="/appointment/b/%d/.../confirm" % booking_sudo.id,
+            )
+        except Exception:  # noqa: BLE001
+            _logger.exception(
+                "Consentements à la confirmation (réservation %s)", booking_sudo.id)
         # Le créneau est fixé : c'est maintenant qu'on peut demander au
         # demandeur s'il confirme ses invités. Plus tôt, l'invitation qu'ils
         # recevraient n'aurait pas de date.
