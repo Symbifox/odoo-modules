@@ -591,6 +591,7 @@ class MeetingAgenda(models.Model):
         # Resolve winners: earliest upcoming draft/confirmed agenda per
         # partner_id and per project_id across the whole database (not just self).
         partner_ids = active.mapped('partner_id').ids
+        partner_commercial_ids = active.mapped('partner_id').commercial_partner_id.ids
         project_ids = active.mapped('project_id').ids
         partner_winner = {}
         if partner_ids:
@@ -615,12 +616,17 @@ class MeetingAgenda(models.Model):
         # Partition by tag in Python. Per-agenda filtering afterwards.
         client_tagged = Task
         if partner_ids:
+            # commercial_partner_id is stored, so a task filed against a child
+            # contact is reachable here. Keep this domain at least as wide as
+            # _match_partner below: anything the filter would accept has to be
+            # in the candidate set first, or the rollup never gets a say.
             client_tagged = Task.search([
                 ('bf_discuss_tag', 'in', ('next_client', 'all_client')),
                 ('bf_meeting_agenda_id', '=', False),
                 ('state', 'not in', CLOSED_TASK_STATES),
-                '|',
+                '|', '|',
                 ('partner_id', 'in', partner_ids),
+                ('partner_id.commercial_partner_id', 'in', partner_commercial_ids),
                 ('project_id.partner_id', 'in', partner_ids),
             ])
         project_tagged = Task
@@ -632,10 +638,21 @@ class MeetingAgenda(models.Model):
                 ('project_id', 'in', project_ids),
             ])
 
+        # Company behind each agenda contact, resolved once for the loop below.
+        agenda_commercial = {
+            p.id: p.commercial_partner_id.id for p in active.mapped('partner_id')
+        }
+
         def _match_partner(t, pid):
-            return t.partner_id.id == pid or (
-                not t.partner_id and t.project_id.partner_id.id == pid
-            )
+            # Both sides roll up to the company. A task filed against a child
+            # contact ("LivingSafe, David Landry") belongs on the agenda held
+            # with the company ("LivingSafe"). The search above already accepts
+            # that task through project_id.partner_id; without the same rollup
+            # here it is dropped again, so it reaches neither agenda_task_ids
+            # nor the "Éléments d'action à discuter" section of the PDF.
+            target = agenda_commercial.get(pid, pid)
+            partner = t.partner_id or t.project_id.partner_id
+            return bool(partner) and target == partner.commercial_partner_id.id
 
         # Constant — avoid recomputing each task during the sort.
         # date_deadline is Datetime in Odoo 18; keep types aligned.
