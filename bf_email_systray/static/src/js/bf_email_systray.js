@@ -26,13 +26,22 @@ export class BfEmailSystray extends Component {
     setup() {
         this.actionService = useService("action");
         this.orm = useService("orm");
+        this.busService = useService("bus_service");
         this.state = useState({ count: 0 });
         this._pollInterval = null;
+        this._debounce = null;
+        this._unsubscribe = null;
 
         onMounted(async () => {
             try {
                 await this._refresh();
-                this._pollInterval = setInterval(() => this._refresh(), 120_000);
+                // Le serveur pousse un tick dès qu'une ligne bouge. Le sondage
+                // reste en filet — il rattrape un websocket tombé, et il est
+                // maintenant assez rare pour ne rien coûter.
+                this._pollInterval = setInterval(() => this._refresh(), 300_000);
+                this._onBusTick = () => this._refreshSoon();
+                this.busService.subscribe("bf_email/changed", this._onBusTick);
+                this.busService.start();
             } catch (e) {
                 console.error("bf_email_systray: mount error", e);
             }
@@ -42,7 +51,27 @@ export class BfEmailSystray extends Component {
             if (this._pollInterval) {
                 clearInterval(this._pollInterval);
             }
+            if (this._onBusTick) {
+                this.busService.unsubscribe("bf_email/changed", this._onBusTick);
+            }
+            if (this._debounce) {
+                clearTimeout(this._debounce);
+            }
         });
+    }
+
+    /**
+     * Une passe d'ingestion appelle create() par message : cinquante courriels
+     * livrés ensemble produisent cinquante ticks. On n'en compte qu'un.
+     */
+    _refreshSoon() {
+        if (this._debounce) {
+            clearTimeout(this._debounce);
+        }
+        this._debounce = setTimeout(() => {
+            this._debounce = null;
+            this._refresh();
+        }, 400);
     }
 
     async _refresh() {
