@@ -31,8 +31,8 @@ the tab, don't fail the login.
 
 The app collects **no password**. It opens the Odoo web login in a Chrome
 Custom Tab and captures a one-time code, then trades it for the durable token.
-This inherits everything `/web/login` offers: password, Authentik SSO
-("Blue Fox Sessions"), MFA.
+This inherits everything `/web/login` offers: password, SSO (Authentik,
+SAML, OAuth…), MFA.
 
 There is no `/login` route. Deliberately — see `models/bf_email_mobile_device.py`.
 

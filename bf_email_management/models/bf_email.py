@@ -7,6 +7,7 @@ import logging
 import mimetypes
 import html
 import re
+import time
 import unicodedata
 from datetime import datetime, timedelta, timezone
 from email.utils import parseaddr
@@ -2406,7 +2407,29 @@ class BfEmail(models.Model):
                     msg.model, msg.res_id, exc_info=True,
                 )
 
-        return users or self.env.user
+        return users or self._projection_fallback_user()
+
+    @api.model
+    def _projection_fallback_user(self):
+        """Owner for a message no internal user can be attributed to.
+
+        Must never be ``env.user``. ``action_sync_now`` exposes this
+        projection to any internal user through the inbox Sync button, so an
+        ``env.user`` fallback files every unattributable message — customer
+        replies on invoices, bounces, service-account mail — under whoever
+        happened to click, carrying its subject, addresses and a
+        sudo()-resolved record name.
+
+        Resolved from the projection cron's own configured user, so the answer
+        is the same whoever triggers the projection.
+        """
+        cron = self.env.ref(
+            "bf_email_management.ir_cron_sync_emails", raise_if_not_found=False
+        )
+        user = cron.sudo().user_id if cron else False
+        return user or self.env.ref(
+            "base.user_admin", raise_if_not_found=False
+        ) or self.env.user
 
     @api.model
     def _should_sync(self, msg):
@@ -2567,6 +2590,12 @@ class BfEmail(models.Model):
     # ------------------------------------------------------------------
     # Real-time wake-up (IMAP IDLE watcher)
     # ------------------------------------------------------------------
+    # Dernier réveil accepté par usager, pour borner le débit. Par processus,
+    # volontairement : une table servirait un compteur à écrire à chaque
+    # arrivée de courriel, ce qui coûterait plus cher que ce qu'on protège.
+    _imap_wake_seen = {}
+    _IMAP_WAKE_MIN_INTERVAL = 2.0
+
     @api.model
     def imap_wake(self, reason=False):
         """Run the IMAP ingestion now instead of waiting for the 5-minute cron.
@@ -2608,6 +2637,20 @@ class BfEmail(models.Model):
         cron = cron.sudo()
         if not cron.active:
             return False
+        # Débit borné par usager. Sans ça, une boucle sur cette méthode
+        # occupe l'unique fil de cron (max_cron_threads = 1) et retarde les
+        # crons de TOUS les modules, pas seulement celui-ci. Fenêtre courte :
+        # le guetteur temporise déjà ses réveils, et deux réveils rapprochés
+        # déclencheraient de toute façon la même passe, qui lit tous les
+        # comptes. L'état est par processus, donc la borne vaut par worker —
+        # ça ramène un débit non borné à quelques appels par seconde, ce qui
+        # suffit à retirer le levier.
+        now = time.monotonic()
+        last = self._imap_wake_seen.get(self.env.uid, 0.0)
+        if now - last < self._IMAP_WAKE_MIN_INTERVAL:
+            return True
+        self._imap_wake_seen[self.env.uid] = now
+
         cron._trigger()
         # ``reason`` vient de l'appelant : un saut de ligne y forgerait des
         # lignes de journal, et une chaîne longue noierait le fichier.
@@ -2618,6 +2661,33 @@ class BfEmail(models.Model):
     # ------------------------------------------------------------------
     # Cron: incremental sync from IMAP (Inbox + Sent live)
     # ------------------------------------------------------------------
+    @api.model
+    def _sync_own_accounts(self):
+        """IMAP pull limited to the calling user's own accounts.
+
+        The cron path deliberately walks every active account; the manual
+        « Synchroniser » button must not, because it is reachable by any
+        internal user. Opening somebody else's mailbox with their stored
+        credentials, synchronously, inside the caller's HTTP worker, is not
+        something a Sync button should do.
+
+        Goes through ``_sync_account`` like the cron, so the mobile push that
+        hangs off it still fires for the owner.
+        """
+        Account = self.env["bf.email.account"].sudo()
+        accounts = Account.search([
+            ("active", "=", True), ("user_id", "=", self.env.uid),
+        ])
+        for account in accounts:
+            try:
+                self._sync_account(account)
+            except Exception as exc:  # noqa: BLE001
+                account.write({"state": "error", "last_error": str(exc)})
+                _logger.warning(
+                    "bf.email manual sync, account %s failed: %s",
+                    account.display_name, exc, exc_info=True,
+                )
+
     @api.model
     def _cron_sync_imap(self):
         """Pull new messages from IMAP for every active bf.email.account.
@@ -3219,6 +3289,10 @@ class BfEmail(models.Model):
                 return
 
             self_addrs = self._get_self_addresses(owner)
+
+            # Qui envoie ? Rien en aval ne le regardait, et tout ce qui suit
+            # tourne sous sudo() sur l'agenda du propriétaire.
+            sender = parseaddr(str(msg.get("From", "")))[1].strip().lower()
             CalendarEvent = self.env["calendar.event"].sudo().with_context(
                 no_mail_to_attendees=True,
                 mail_create_nosubscribe=True,
@@ -3226,7 +3300,6 @@ class BfEmail(models.Model):
                 tracking_disable=True,
                 dont_notify=True,
             )
-            has_nc_uid = "x_nc_uid" in CalendarEvent._fields
 
             for ev in events:
                 if ev["method"] not in imip.ACTIONABLE_METHODS:
@@ -3236,24 +3309,60 @@ class BfEmail(models.Model):
                 if ev["organizer"] and ev["organizer"] in self_addrs:
                     continue
 
-                uid = ev["uid"]
-                domain = [("x_imip_uid", "=", uid)]
-                if has_nc_uid:
-                    domain = ["|", ("x_imip_uid", "=", uid),
-                              ("x_nc_uid", "=", uid)]
-                domain.append(("user_id", "=", owner.id))
-                existing = CalendarEvent.with_context(
-                    active_test=False
-                ).search(domain, limit=1)
-
-                if ev["method"] == "CANCEL":
-                    if existing:
-                        existing.unlink()
+                # The sender must BE the organizer. Without this the whole
+                # method is a remote control over the owner's calendar: the
+                # check above only skips a message that *claims* to come from
+                # the owner, which an attacker simply does not claim.
+                if not ev["organizer"] or ev["organizer"] != sender:
+                    _logger.info(
+                        "bf_email iMIP: %s ignoré — expéditeur %r != "
+                        "organisateur %r", ev["method"], sender,
+                        ev["organizer"],
+                    )
                     continue
 
-                # REQUEST: only materialize when the owner is actually invited
-                # (skip broadcasts / forwards where we are not an attendee).
-                if ev["attendees"] and not (set(ev["attendees"]) & self_addrs):
+                # The owner must actually be invited — for CANCEL too. An
+                # empty attendee list is not consent: it used to pass, which
+                # let any sender inject events.
+                if not (set(ev["attendees"]) & self_addrs):
+                    _logger.info(
+                        "bf_email iMIP: %s ignoré — le propriétaire ne figure "
+                        "pas parmi les invités", ev["method"],
+                    )
+                    continue
+
+                # Only events this path created. Matching x_nc_uid reached
+                # every Nextcloud-synced event in the calendar, which is far
+                # more than an inbound message has any business touching.
+                uid = ev["uid"]
+                existing = CalendarEvent.with_context(active_test=False).search(
+                    [("x_imip_uid", "=", uid), ("user_id", "=", owner.id)],
+                    limit=1,
+                )
+
+                # Sender == organizer of the INCOMING invitation is not
+                # enough: anyone can declare themselves organizer of a UID
+                # they merely know. Touching an existing event additionally
+                # requires being the organizer who created it. Events from
+                # before this field existed carry nothing to compare against,
+                # so they are left alone rather than trusted.
+                if existing and (
+                    not existing.x_imip_organizer
+                    or existing.x_imip_organizer != ev["organizer"]
+                ):
+                    _logger.info(
+                        "bf_email iMIP: %s ignoré — %r n'est pas "
+                        "l'organisateur de l'événement %s",
+                        ev["method"], sender, existing.id,
+                    )
+                    continue
+
+                if ev["method"] == "CANCEL":
+                    # Archive, never unlink: a cancellation that turns out to
+                    # be forged must be recoverable, and the owner keeps the
+                    # trace of what was on the calendar.
+                    if existing and existing.active:
+                        existing.write({"active": False})
                     continue
 
                 if existing:
@@ -3285,6 +3394,7 @@ class BfEmail(models.Model):
             # Tentative == non-blocking until the owner confirms.
             "show_as": "free",
             "x_imip_uid": ev["uid"],
+            "x_imip_organizer": ev["organizer"],
         }
 
     def _imip_update_vals(self, ev):
@@ -3344,7 +3454,7 @@ class BfEmail(models.Model):
                 break
 
         try:
-            self._cron_sync_imap()
+            self._sync_own_accounts()
         except Exception:
             _logger.exception("bf.email action_sync_now: IMAP pull failed")
 
