@@ -72,7 +72,19 @@ export class BfEmailPreviewListController extends ListController {
         // "Ouvrir" can delegate to the stock openRecord.
         this._previewDatapoint = null;
         this._previewResizeObserver = null;
-        onWillUnmount(() => this._previewResizeObserver?.disconnect());
+        this.busService = useService("bus_service");
+        this._busRefreshTimer = null;
+        // La référence est gardée : sans elle on ne peut pas se
+        // désabonner, et chaque ouverture de la liste laisserait un abonné
+        // derrière qui rappelle `load()` sur un modèle détaché.
+        this._onBusTick = () => this._busRefreshSoon();
+        this.busService.subscribe("bf_email/changed", this._onBusTick);
+        this.busService.start();
+        onWillUnmount(() => {
+            this._previewResizeObserver?.disconnect();
+            this.busService.unsubscribe("bf_email/changed", this._onBusTick);
+            if (this._busRefreshTimer) clearTimeout(this._busRefreshTimer);
+        });
         // Let the renderer highlight the row currently in the pane.
         useSubEnv({ bfEmailPreview: this.previewState });
         // Same vocabulary as the IMAP browser (useHotkey ignores editable
@@ -286,6 +298,47 @@ export class BfEmailPreviewListController extends ListController {
         await this.orm.call("bf.email", "action_archive", [[rec.id]]);
         await this.model.load();
         await this._previewAdvance(prevOrder, prevIdx);
+    }
+
+    /**
+     * Un tick du serveur : la liste a bougé ailleurs (ingestion, ou une
+     * action faite depuis le téléphone).
+     *
+     * Une passe d'ingestion appelle create() par message, donc une livraison
+     * groupée produit autant de ticks que de courriels. On n'en garde qu'un.
+     */
+    _busRefreshSoon() {
+        if (this._busRefreshTimer) {
+            clearTimeout(this._busRefreshTimer);
+        }
+        this._busRefreshTimer = setTimeout(() => {
+            this._busRefreshTimer = null;
+            this._busRefresh();
+        }, 500);
+    }
+
+    async _busRefresh() {
+        // Ne pas recharger sous une sélection en cours d'édition ni pendant
+        // qu'on redimensionne le panneau : `load()` reconstruit les
+        // datapoints, ce qui ferait sauter la ligne active sous le curseur.
+        if (this.previewState.dragging || this.previewState.loading
+                || this.model.root.isDirty || this.model.root.editedRecord) {
+            this._busRefreshSoon();
+            return;
+        }
+        const keptId = this.previewState.record?.id;
+        try {
+            await this.model.load();
+        } catch (err) {
+            console.warn("bf_email_preview_list: refresh failed", err);
+            return;
+        }
+        // Si la ligne affichée a quitté la liste, l'aperçu ne pointe plus sur
+        // rien : le fermer vaut mieux que de montrer un courriel fantôme.
+        if (keptId && !this.model.root.records.some((r) => r.resId === keptId)) {
+            this.previewState.record = null;
+            this._previewDatapoint = null;
+        }
     }
 
     async previewUnhandle() {

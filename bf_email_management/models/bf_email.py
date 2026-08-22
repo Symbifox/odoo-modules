@@ -23,6 +23,15 @@ from .subject_utils import dedup_subject_prefix
 
 _logger = logging.getLogger(__name__)
 
+# Canal de rafraîchissement de la boîte. Un tick, jamais de contenu — voir
+# ``_notify_inbox_changed``.
+BUS_CHANNEL = "bf_email/changed"
+# Les champs qui déplacent une ligne d'un dossier à l'autre. Ticker sur le
+# reste réveillerait chaque fenêtre ouverte pour rien.
+BUS_TICK_FIELDS = frozenset(
+    {"is_handled", "status", "snoozed_until", "active", "category", "user_id"}
+)
+
 _DIRECTION_LABELS = {
     "in": "\u2190",
     "out": "\u2192",
@@ -912,7 +921,46 @@ class BfEmail(models.Model):
             _logger.warning(
                 "bf.email: rule engine failed during create()", exc_info=True,
             )
+        records._notify_inbox_changed("new")
         return records
+
+    def write(self, vals):
+        res = super().write(vals)
+        # Only the fields that move a row between folders are worth a tick.
+        # Everything else (body recompute, imap_uid bookkeeping) would wake
+        # every open window for nothing.
+        if BUS_TICK_FIELDS & set(vals):
+            self._notify_inbox_changed("state")
+        return res
+
+    def _notify_inbox_changed(self, reason):
+        """Tell each owner's open windows that their inbox moved.
+
+        ⚠️ Sends a tick, never the mail. The payload rides a per-partner
+        broadcast channel; who may read a ``bf.email`` row is decided by
+        record rules the bus never consults. The client re-queries through the
+        ORM, which does. Putting a subject or a sender in here would hand a
+        second, unguarded read path to anyone sharing a partner.
+
+        Grouped by owner so one ``create`` of fifty rows costs one message per
+        owner rather than fifty. A cron pass calls ``create`` per message
+        though, so the client still debounces.
+
+        Sent inside the transaction, like the calendar reminder does: a pass
+        that rolls back must not have announced anything.
+        """
+        partners = self.mapped("user_id.partner_id")
+        if not partners:
+            return
+        Bus = self.env["bus.bus"].sudo()
+        for partner in partners:
+            try:
+                Bus._sendone(partner, BUS_CHANNEL, {"reason": reason})
+            except Exception:  # noqa: BLE001 - never break ingestion
+                _logger.warning(
+                    "bf.email: bus tick failed for partner %s", partner.id,
+                    exc_info=True,
+                )
 
     def _apply_rules(self):
         """Run active bf.email.rule definitions over each record.

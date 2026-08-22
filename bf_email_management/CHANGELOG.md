@@ -4,6 +4,34 @@ All notable changes to `bf_email_management` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This module follows Odoo's `MAJOR.MINOR.PATCH` convention prefixed with the Odoo series (`18.0.X.Y.Z`).
 
+## [18.0.9.10.0] — 2026-08-22
+
+### Added
+
+- **The inbox refreshes itself.** A message that lands now appears in the list
+  and bumps the systray badge without a reload: `bf.email` pushes a tick on
+  `bus.bus` (channel `bf_email/changed`) from `create()`, and from a `write()`
+  that moves a row between folders. Three surfaces subscribe — the inbox client
+  action, the reading-pane list view, and the systray badge, whose poll drops
+  from 120 s to 300 s and now only serves as a net if the websocket is down.
+
+  ⚠️ **The tick carries nothing.** The payload is `{"reason": …}` — no subject,
+  no sender, no body. The channel is keyed by partner, while who may read a
+  `bf.email` row is decided by record rules the bus never consults; putting
+  content on it would open a second read path with no guard. The client
+  re-queries through the ORM, which does apply them. The test asserts the
+  absence explicitly rather than trusting the payload to stay small.
+
+  The refresh does not pull the rug: it reloads the span already on screen —
+  infinite scroll included — instead of jumping back to page one, keeps the
+  selection and the open preview, and drops them only when the row has really
+  left the folder. It defers while an action, a drag or a sync is in flight.
+  An ingestion pass calls `create()` per message, so ticks are debounced client
+  side: a delivery of fifty messages costs one refresh.
+
+  Useful side effect: a message handled **on the phone** now updates the list
+  open on the desktop, which it did not before.
+
 ## [18.0.9.9.0] — 2026-08-22
 
 ### Security
