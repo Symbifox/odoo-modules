@@ -144,7 +144,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_sms_archive` | SMS & Calls | 18.0.5.10.0 | BUSL-1.1 | Two-way live SMS/MMS messaging via VOIP.ms (chat workspace + systray) plus Android SMS/call-log archiving, search, PDF/CSV export and task linking |
 | `bf_stepbystep_clients` | Step-by-Step — Suivi d'accompagnement client | 18.0.2.0.1 | BUSL-1.1 | Internal dashboard tracking each client mandate's linear step-by-step progression: current step, hours budget, timeline. |
 | `bf_studio_light` | Symbifox — Studio Light | 18.0.6.1.0 | LGPL-3 | Field builder for Odoo Community: add custom fields (incl. polymorphic reference with model whitelist), smart buttons (count via JSON controller, no compute Python), and inject them in views without writing a module — survives `-u all` upgrades |
-| `bf_subscription` | Abonnements | 18.0.1.3.1 | BUSL-1.1 | Paid subscription management with correlation to vendor bills |
+| `bf_subscription` | Abonnements | 18.0.1.4.0 | BUSL-1.1 | Paid subscription management with correlation to vendor bills |
 | `bf_subscription_daily_digest` | Abonnements — section du digest quotidien | 18.0.1.0.0 | BUSL-1.1 | Adds an 'Upcoming renewals' section to the daily digest |
 | `bf_subscription_dashboard` | Abonnements — carte du tableau de bord | 18.0.1.0.0 | BUSL-1.1 | Ajoute une carte Abonnements au tableau de bord Symbifox |
 | `bf_subscription_hosting` | Hébergement — pont vers les abonnements | 18.0.1.0.0 | BUSL-1.1 | Create a subscription from a hosting domain (avoids double-entering recurring costs). |
