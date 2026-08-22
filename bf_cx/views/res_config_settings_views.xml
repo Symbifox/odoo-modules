@@ -34,6 +34,12 @@
                             <field name="bf_cx_nps_window_days"/>
                         </setting>
                     </block>
+                    <block title="Essais" name="bf_cx_test_block">
+                        <setting string="Contact de test"
+                                 help="Destinataire du bouton « Envoyer un essai » sur une vague. L'essai part pour vrai, avec un vrai lien de réponse : utiliser une adresse à soi. Il ne compte dans aucune statistique et n'alimente pas le registre, donc il n'éprouve ni l'écriture au registre ni la boucle détracteur.">
+                            <field name="bf_cx_test_partner_id"/>
+                        </setting>
+                    </block>
                     <block title="Plaintes" name="bf_cx_complaint_block">
                         <setting string="Délai d'accusé de réception"
                                  help="Nombre de jours pour accuser réception d'une plainte. Sert à calculer l'échéance affichée sur chaque plainte.">

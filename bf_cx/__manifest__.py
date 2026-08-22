@@ -1,7 +1,7 @@
 {
     "name": "Expérience client",
     "summary": "Mesure de l'expérience client : NPS, feedback continu, plaintes et témoignages",
-    "version": "18.0.1.4.0",
+    "version": "18.0.1.6.2",
     "post_init_hook": "post_init_hook",
     "category": "Marketing/Customer Experience",
     "author": "Les services de consultation Blue Fox, Inc.",
@@ -75,6 +75,9 @@ Programme d'écoute client intégré à Odoo, sans licence externe :
             "bf_cx/static/src/js/cx_dashboard.js",
             "bf_cx/static/src/xml/cx_dashboard.xml",
             "bf_cx/static/src/scss/cx_dashboard.scss",
+        ],
+        "web.assets_frontend": [
+            "bf_cx/static/src/scss/survey_frontend.scss",
         ],
     },
 }

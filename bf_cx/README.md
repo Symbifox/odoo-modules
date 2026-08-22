@@ -100,6 +100,20 @@ score (% promoters − % detractors) is computed per program and per wave.
 Campaign attribution (`utm.campaign`) is carried by the wave, since the
 survey ↔ campaign link does not exist in core.
 
+**Send a test.** Every wave carries a *Send a test* button that mails the real
+invitation to a single test contact and to nobody else (Settings → Customer
+experience → Tests). It is deliberately outside every outbound guardrail, since
+a test you can only run once is not a test: the cooldown, the blacklist and the
+do-not-contact list are not consulted, and the contact is never stamped as
+solicited. The answer is created as a survey **test entry**, which is what keeps
+it out of the wave counters and out of the feedback register, and the wave
+itself does not move — no state change, no send date, no recipient added.
+
+What a test proves, and what it does not: the email leaves for real, in the
+recipient's own language, with a live answer link that opens and submits exactly
+like a client's. It does **not** exercise the register write or the closed loop,
+since suppressing those is the whole point. Proving those needs a real send.
+
 ### Closed loop
 A detractor (NPS ≤ 6) or a dissatisfied rating (< 3/5) automatically creates a
 follow-up activity assigned to the account owner (can be switched off in the

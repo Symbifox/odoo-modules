@@ -308,7 +308,9 @@ class BfCxWave(models.Model):
             if not template:
                 continue
             pending = wave.user_input_ids.filtered(
-                lambda i: i.state != "done" and i.partner_id.email
+                lambda i: not i.test_entry
+                and i.state != "done"
+                and i.partner_id.email
             )
             for answer in pending:
                 template.send_mail(answer.id, force_send=False)
@@ -322,6 +324,118 @@ class BfCxWave(models.Model):
                 body=_("Rappel envoyé à %d non-répondant(s).") % len(pending)
             )
         return True
+
+    # ── Envoi de test ────────────────────────────────────────────────────────
+
+    @api.model
+    def _bf_cx_test_partner(self):
+        """Contact servant aux envois de test (`bf_cx.test_partner_id`).
+
+        Volontairement un paramètre et non une donnée du module : l'adresse
+        de test appartient à l'installation, pas au code. Absent, on le dit
+        au lieu d'inventer un destinataire.
+        """
+        raw = (
+            self.env["ir.config_parameter"]
+            .sudo()
+            .get_param("bf_cx.test_partner_id")
+        )
+        try:
+            partner_id = int(raw)
+        except (TypeError, ValueError):
+            partner_id = 0
+        partner = (
+            self.env["res.partner"].browse(partner_id).exists()
+            if partner_id > 0
+            else self.env["res.partner"]
+        )
+        if not partner:
+            raise UserError(
+                _("Aucun contact de test n'est configuré. Le régler dans "
+                  "Paramètres > Expérience client > Contact de test, puis "
+                  "relancer l'essai.")
+            )
+        if not partner.email:
+            raise UserError(
+                _("Le contact de test « %s » n'a pas d'adresse courriel.")
+                % partner.display_name
+            )
+        return partner
+
+    def action_send_test(self):
+        """Envoyer l'invitation au seul contact de test, et à personne d'autre.
+
+        Délibérément hors de TOUS les garde-fous : un essai doit pouvoir se
+        rejouer, donc ni la quarantaine anti-sursollicitation, ni la liste
+        noire, ni le « ne pas contacter » ne sont consultés, et le contact
+        n'est jamais marqué comme sollicité. La réponse porte
+        ``test_entry=True``, ce qui suffit à la tenir hors des compteurs de
+        la vague (``_compute_input_stats`` filtre dessus) et hors du
+        registre (``_bf_cx_ingest`` sort immédiatement dessus). La vague
+        elle-même ne bouge pas : pas de changement d'état, pas de date
+        d'envoi, aucun destinataire ajouté à la liste.
+
+        Ce que l'essai prouve, et ce qu'il ne prouve pas : le courriel part
+        pour vrai, dans la langue du destinataire, avec un lien de réponse
+        valide qui s'ouvre et se soumet comme celui d'un client. Il ne
+        prouve PAS l'écriture au registre ni la boucle détracteur, puisque
+        c'est exactement ce qu'on neutralise. Éprouver celles-là demande un
+        envoi réel.
+        """
+        partner = self._bf_cx_test_partner()
+        for wave in self:
+            program = wave.program_id
+            if not program.survey_id:
+                raise UserError(
+                    _("Le programme « %s » n'a pas de sondage.") % program.name
+                )
+            template = program.invite_template_id
+            if not template:
+                raise UserError(
+                    _("Le programme « %s » n'a pas de gabarit d'invitation.")
+                    % program.name
+                )
+            # test_entry est posé APRÈS la création et non pendant. Le
+            # garde-fou de survey (_check_answer_creation) valide les droits
+            # du DESTINATAIRE, pas ceux de l'appelant : dès que le contact
+            # d'essai porte un compte portail - le cas courant, puisqu'on
+            # teste avec une adresse à soi - il refuse net avec « création
+            # d'un jeton de test non autorisée ». Le droit de lancer un
+            # essai est déjà établi par l'accès en écriture à la vague.
+            answer = program.survey_id._create_answer(
+                partner=partner,
+                check_attempts=False,
+                deadline=wave.deadline,
+                bf_cx_wave_id=wave.id,
+            )
+            answer.sudo().write({"test_entry": True})
+            # force_send : sur un essai, on veut l'échec SMTP tout de suite
+            # et non un courriel qui dort dans la file jusqu'au prochain cron.
+            template.send_mail(answer.id, force_send=True)
+            wave.message_post(
+                body=_(
+                    "Courriel de test envoyé à %(contact)s (%(email)s). "
+                    "Entrée de test : elle ne compte ni dans les invitations, "
+                    "ni dans le taux de réponse, ni dans le score, et une "
+                    "réponse n'ira pas au registre.",
+                    contact=partner.display_name,
+                    email=partner.email,
+                )
+            )
+        return {
+            "type": "ir.actions.client",
+            "tag": "display_notification",
+            "params": {
+                "type": "success",
+                "title": _("Essai envoyé"),
+                "message": _(
+                    "%(count)d courriel(s) de test envoyé(s) à %(email)s.",
+                    count=len(self),
+                    email=partner.email,
+                ),
+                "next": {"type": "ir.actions.act_window_close"},
+            },
+        }
 
     def action_close(self):
         self.write({"state": "closed"})
