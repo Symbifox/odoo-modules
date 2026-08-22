@@ -69,6 +69,11 @@ class TestCxFlow(TransactionCase):
         self.assertEqual(self.program.nps_score, -100)
 
     def test_cooldown_blocks_second_wave(self):
+        # Ce test porte sur le garde-fou GLOBAL. Le programme de référence
+        # peut porter sa propre cadence selon l'installation (90 j sur une
+        # base réelle), et elle l'emporte : sans cette remise à zéro, le test
+        # mesure la cadence du programme et le dernier envoi reste bloqué.
+        self.program.cooldown_days = 0
         self.env["ir.config_parameter"].sudo().set_param(
             "bf_cx.solicitation_cooldown_days", "30"
         )
@@ -84,6 +89,26 @@ class TestCxFlow(TransactionCase):
         )
         wave2.action_send()
         self.assertEqual(wave2.state, "sent")
+
+    def test_blocked_wave_names_the_cadence_that_actually_blocked(self):
+        """Un message qui nomme le mauvais réglage coûte une heure à qui débogue.
+
+        Le garde-fou applique `program.cooldown_days or None` : quand le
+        programme porte sa cadence, le paramètre global n'est jamais consulté.
+        Le message doit donc annoncer la cadence du programme, sinon on part
+        corriger un réglage qui n'y est pour rien.
+        """
+        self.program.cooldown_days = 90
+        self.env["ir.config_parameter"].sudo().set_param(
+            "bf_cx.solicitation_cooldown_days", "30"
+        )
+        self._make_wave(self.partner).action_send()
+        with self.assertRaises(UserError) as err:
+            self._make_wave(self.partner).action_send()
+        message = str(err.exception)
+        self.assertIn("90", message, "la cadence appliquée doit être nommée")
+        self.assertNotIn("30", message, "le paramètre global n'a pas bloqué")
+        self.assertIn(self.program.name, message)
 
     def test_rating_ingestion_and_correction(self):
         task = self.env["project.task"].create(

@@ -229,19 +229,24 @@ class BfCxWave(models.Model):
             if not to_invite:
                 if wave.state == "draft":
                     if cooled:
+                        # Annoncer la cadence RÉELLEMENT appliquée, pas le
+                        # paramètre global : quand le programme porte la
+                        # sienne, c'est elle qui a bloqué, et nommer l'autre
+                        # envoie corriger un réglage qui n'y est pour rien.
                         raise UserError(
-                            _("Aucun destinataire à inviter : %s sollicité(s) "
-                              "il y a moins de %s jours (garde-fou "
-                              "anti-sursollicitation, réglable dans les "
-                              "paramètres).")
-                            % (
-                                ", ".join(cooled.mapped("display_name")),
-                                self.env["ir.config_parameter"]
-                                .sudo()
-                                .get_param(
-                                    "bf_cx.solicitation_cooldown_days", "30"
-                                ),
-                            )
+                            # `source` est le nom du 1er paramètre de `_()` :
+                            # l'utiliser comme marqueur lève un TypeError.
+                            _("Aucun destinataire à inviter : %(contacts)s "
+                              "sollicité(s) il y a moins de %(days)s jours "
+                              "(garde-fou anti-sursollicitation, %(origine)s).",
+                              contacts=", ".join(cooled.mapped("display_name")),
+                              days=program._bf_cx_effective_cooldown(),
+                              origine=(
+                                  _("cadence propre au programme « %s »")
+                                  % program.name
+                                  if program.cooldown_days
+                                  else _("réglable dans les paramètres")
+                              ))
                         )
                     raise UserError(
                         _("Aucun destinataire avec adresse courriel à inviter.")

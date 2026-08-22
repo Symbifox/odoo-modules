@@ -335,6 +335,29 @@ class BfCxProgram(models.Model):
 
     # ── Helpers ──────────────────────────────────────────────────────────────
 
+    def _bf_cx_effective_cooldown(self):
+        """Cadence réellement appliquée à ce programme, en jours.
+
+        La cadence propre au programme l'emporte sur le paramètre global, et
+        seul un zéro fait retomber sur ce dernier - c'est la lecture que fait
+        `action_send` via `program.cooldown_days or None`. Le calcul vit ici
+        pour qu'il n'existe qu'à un seul endroit : un message d'erreur qui
+        recalcule la règle de son côté finit toujours par annoncer un chiffre
+        que le garde-fou n'a pas utilisé.
+        """
+        self.ensure_one()
+        if self.cooldown_days:
+            return self.cooldown_days
+        raw = (
+            self.env["ir.config_parameter"]
+            .sudo()
+            .get_param("bf_cx.solicitation_cooldown_days", "30")
+        )
+        try:
+            return int(raw)
+        except (TypeError, ValueError):
+            return 30
+
     def _feedback_kind(self):
         """Map the program type to the unified feedback kind."""
         self.ensure_one()
