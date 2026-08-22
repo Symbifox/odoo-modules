@@ -144,3 +144,6 @@ class SurveyUserInput(models.Model):
         feedback = Feedback.create(vals)
         feedback._run_closed_loop()
         feedback._run_testimonial_candidate_loop()
+        # Après la boucle fermée, pour que l'avis puisse dire qu'une activité
+        # a été créée. Fermé par défaut : voir _notify_new_response.
+        feedback._notify_new_response()

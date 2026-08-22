@@ -9,6 +9,7 @@ import logging
 from datetime import timedelta
 
 import pytz
+from markupsafe import Markup
 
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
@@ -349,6 +350,86 @@ class BfCxFeedback(models.Model):
                     "bf_cx: closed-loop activity failed for feedback %s",
                     rec.id,
                 )
+
+    def _notify_new_response(self):
+        """Prévenir le responsable de CHAQUE réponse, pas seulement des mauvaises.
+
+        Le reste du module ne parle que de ce qui appelle une action : la
+        boucle fermée ne se déclenche que sur un détracteur, et la section du
+        digest quotidien se tait quand il n'y a rien à faire. Un promoteur
+        enthousiaste n'apparaît donc nulle part. Ce crochet comble ce silence,
+        au prix d'un message par réponse.
+
+        Fermé par défaut, et c'est délibéré : une notification qu'on reçoit
+        pour tout finit par ne plus être lue, y compris le jour où elle
+        annonce un détracteur. L'ouvrir est un choix d'exploitation assumé,
+        pas une valeur par défaut raisonnable.
+
+        On poste au fil du feedback en nommant le destinataire plutôt que de
+        créer une activité : une réponse de promoteur n'appelle aucune tâche,
+        et une liste d'activités qu'on ne peut pas vider cesse d'être lue.
+        Le destinataire reçoit un courriel ou une notification selon SA
+        préférence Odoo, ce qui laisse le réglage là où il appartient.
+        """
+        if not param_is_true(
+            self.env, "bf_cx.notify_every_response", default=False
+        ):
+            return
+        for rec in self:
+            user = rec._closed_loop_user()
+            if not user or not user.partner_id:
+                continue
+            try:
+                rec.message_post(
+                    body=rec._new_response_body(),
+                    partner_ids=[user.partner_id.id],
+                    subtype_xmlid="mail.mt_note",
+                )
+            except Exception:  # noqa: BLE001 - never break the public flow
+                _logger.exception(
+                    "bf_cx: new-response notice failed for feedback %s", rec.id
+                )
+
+    def _new_response_body(self):
+        """Corps de l'avis de nouvelle réponse.
+
+        Assez complet pour se lire sans ouvrir la fiche : qui, quel compte,
+        quelle note, et le verbatim, qui est le seul contenu qui vaut vraiment
+        la peine d'être lu. Construit en Markup avec échappement explicite des
+        données saisies par le client.
+        """
+        self.ensure_one()
+        partner = self.partner_id
+        compte = partner.commercial_partner_id if partner else False
+        qui = partner.display_name if partner else _("Répondant anonyme")
+        if compte and partner and compte != partner:
+            qui = "%s (%s)" % (qui, compte.display_name)
+
+        buckets = {
+            "promoter": _("promoteur"),
+            "passive": _("passif"),
+            "detractor": _("détracteur"),
+        }
+        lignes = [
+            Markup("<p><b>%s</b></p>") % _("Nouvelle réponse au registre"),
+            Markup("<p>%s</p>") % qui,
+        ]
+        if self.score:
+            note = "%s/%s" % (
+                int(self.score) if float(self.score).is_integer() else self.score,
+                int(self.score_max or 10),
+            )
+            if self.nps_bucket:
+                note = "%s (%s)" % (note, buckets.get(self.nps_bucket, ""))
+            lignes.append(Markup("<p>%s</p>") % note)
+        if (self.comment or "").strip():
+            lignes.append(Markup("<blockquote>%s</blockquote>") % self.comment)
+        if self._needs_followup():
+            lignes.append(
+                Markup("<p><i>%s</i></p>")
+                % _("Une activité de rappel a été créée.")
+            )
+        return Markup("").join(lignes)
 
     def _run_testimonial_candidate_loop(self):
         """A testimonial opt-in is perishable: act on it within days."""

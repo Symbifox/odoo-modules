@@ -71,6 +71,17 @@ class ResConfigSettings(models.TransientModel):
         help="Créer une activité (échéance 5 j) quand un répondant accepte "
              "d'être cité - un opt-in est périssable.",
     )
+    bf_cx_notify_every_response = fields.Boolean(
+        string="Avertir de chaque réponse",
+        config_parameter="bf_cx.notify_every_response",
+        default=False,
+        help="Envoyer un avis au responsable à CHAQUE réponse, y compris les "
+             "promoteurs. Sans cela, seuls les détracteurs se signalent (par "
+             "l'activité de rappel) et une réponse enthousiaste passe "
+             "inaperçue. À ouvrir en connaissance de cause : une "
+             "notification qu'on reçoit pour tout finit par ne plus être lue, "
+             "y compris le jour où elle annonce un détracteur.",
+    )
     bf_cx_test_partner_id = fields.Many2one(
         "res.partner",
         string="Contact de test",
