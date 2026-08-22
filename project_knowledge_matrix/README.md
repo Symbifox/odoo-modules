@@ -55,6 +55,19 @@ All dashboard metrics are clickable, navigating directly to filtered views.
 
 ### Distribution & Acknowledgment
 
+**Optional, and off by default.** Turn it on under Settings > Knowledge Base >
+"Distribution et accusés de réception". While off, the three distribution menus,
+the two distribution passes of the daily maintenance job, three dashboard blocks
+and two blocks of the biweekly report are hidden. Existing distributions and
+their acknowledgments stay in the database untouched: an acknowledgment is
+evidence that a document was made known to someone on a given date, so the
+switch hides the feature, it never deletes anything.
+
+The switch governs visibility and computation, not access rights: the access
+rules on distributions are unchanged, so a user who already had them keeps them
+and can still reach a record by direct URL. Use the Document groups if you need
+to restrict who may read distributions.
+
 - **Client Distribution**: Track which document versions each client has received
 - **Internal Distribution**: Distribute policies to employees and track compliance
 - **Acknowledgment Tracking**: Record when recipients confirm receipt
@@ -140,6 +153,7 @@ Full corporate governance module for Quebec LSAQ-compliant companies:
 - **Officer Register**: Track corporate officers (President, VP, Secretary, Treasurer, DG) with appointment history
 - **Compliance Calendar**: Annual compliance events (REQ annual declaration, AGM, director elections, auditor appointment, financial approval) with automatic deadline reminders
 - **Minute Book**: Filtered document view for minute book sections, integrated with the document management system
+- **Signatories**: Name who signs a resolution and in what capacity, per resolution. Without them the PDF falls back to the board in office on the meeting date, so a reprinted document names the directors of the day rather than today's
 - **PDF Generation**: Branded resolution PDFs with dark banner header, Symbifox corporate styling, signature blocks, and "Livre des minutes" footer — ready for printing and signing
 
 ### Knowledge Matrix PDF Report
@@ -260,6 +274,7 @@ Sections can be customized at: **Knowledge Matrix** → **Configuration** → **
 | Knowledge Matrix Manager | Full access to all matrices, items, and sections |
 | Document User | Read/write documents and distributions for accessible projects/partners |
 | Document Manager | Full access to documents, types, delete permissions |
+| Distribution & Acknowledgment | Feature switch, granted by the settings checkbox. Grants nothing on its own: it carries the three distribution menus and answers "is the subsystem on?" for the crons, the dashboard and the report |
 | Credential User | Read/write credentials for accessible projects |
 | Credential Manager | Full access to credentials, view encrypted passwords, manage types |
 | Corporate Governance Manager | Full access to resolutions, directors, officers, compliance events |
@@ -462,6 +477,18 @@ DIS1;Discovery;Top 3 Objectives;Q1;S1;Sponsor;3 objectives + KPIs;Project Charte
 | effective_date | Date | When resolution takes effect |
 | company_id | Many2one | Company |
 
+#### corporate.resolution.signatory
+
+| Field | Type | Description |
+|-------|------|-------------|
+| resolution_id | Many2one | Parent resolution |
+| sequence | Integer | Print order in the signature block |
+| partner_id | Many2one | Signatory (res.partner) |
+| capacity | Selection | Capacity in which the person signs, or `other` |
+| capacity_custom | Char | Free-text capacity, required when `capacity` is `other` |
+| capacity_label | Char | Computed label actually printed under the name |
+| purpose | Char | Why this person signs (attestation, disclosure of interest, …) |
+
 #### corporate.director
 
 | Field | Type | Description |
@@ -592,6 +619,26 @@ This module follows Odoo 18 best practices:
 - Efficient SQL constraints for uniqueness
 
 ## Changelog
+
+### 18.0.11.5.0
+
+- **Distribution is now optional and ships off**: a feature switch under Settings > Knowledge Base hides the three distribution menus, skips the two distribution passes of the daily maintenance job, and drops three dashboard blocks and two blocks of the biweekly email report. Nothing is deleted: distributions and acknowledgments keep their rows, and one checkbox brings the whole subsystem back. The review-and-expiration pass is deliberately not tied to the switch, since it reads no distribution.
+- **The switch is a group, not a system parameter**: the group is what hides the menus, so the crons, the dashboard and the report all read that same group rather than a parameter that could drift away from it. One source of truth, tested from both sides.
+- **Dashboard blocks are absent, not zeroed**: a block rendered as zero reads as a fact ("no overdue acknowledgment"). A missing key says what is true, which is that nothing is being counted, and the template uses it as its display condition.
+- **Migration detaches the three menus**: a `<menuitem groups="...">` compiles to `Command.link` only, so changing the attribute adds the new group and never removes the old one. On an existing database the menus would have kept "Document User" and stayed visible with the feature off. A fresh install carries no such residue, which is why the unit tests alone could not have caught it.
+- **Biweekly report template refreshed**: it lives in a `noupdate="1"` file, so a pre-migration deletes it and lets the data load recreate it with its new display guards; the post-migration puts the language slots back in step.
+
+### 18.0.11.4.0
+
+- **Fixed credential counters that always read zero**: the dashboard advertised "Expiring soon: 0, Expired: 0" whatever the dates in the database. The counters looked for credentials in the `active` state whose expiry had passed or was near, but it is the daily job that moves those credentials OUT of `active`, into `expiring` and `expired`. The dashboard contradicted the module's own bookkeeping, and the only population it could count was the one the cron had not processed yet. The defect lived in four places, not one: the dashboard counter, its two client-side drill-downs, the three figures of the biweekly email report, and that report's two drill-downs. All four now read the status.
+- **Dashboard folded into grouped queries**: `get_dashboard_data` goes from 47 `search_count` calls to 28. Counters that partition one table by a key are a single `_read_group`, and the total becomes the sum of the cells rather than one more question. Anything that reads a date keeps its own query, since a date range is not a grouping key.
+- **Drill-down tests**: one test executes each drill-down domain and compares the count it returns to the figure of the counter it accompanies. A drill-down domain is written by hand, far from its counter, and nothing stopped the two from diverging. Another checks that a document drill-down filters only on states `project.document` actually defines.
+
+### 18.0.11.3.1
+
+- **Resolution signatories**: a resolution can now name who signs it and in what capacity. The PDF template used to print "Administrateur" under every name and to pull those names from the director register whatever the resolution type, so a shareholders' resolution whose operative part expressly excludes any director vote contradicted itself on paper.
+- **Date-bounded fallback**: with no signatories, the block falls back to the board in office **on the meeting date** rather than today, so a resolution reprinted years later does not name a director elected after the fact.
+- **The mover fallback names without asserting**: when only a mover is known, the block prints the name and no capacity rather than guessing one.
 
 ### 18.0.11.2.0
 

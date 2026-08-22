@@ -101,12 +101,16 @@
               groups="group_document_user"
               sequence="35"/>
 
+    <!-- Les trois menus de distribution portent le groupe interrupteur plutôt
+         que « Documents / Utilisateur ». Décocher la case dans les paramètres
+         retire l'implication et les fait disparaître, sans toucher aux données. -->
+
     <!-- Distributions submenu -->
     <menuitem id="menu_distributions"
               name="Distributions"
               parent="menu_documents_parent"
               action="document_distribution_action"
-              groups="group_document_user"
+              groups="group_document_distribution"
               sequence="40"/>
 
     <!-- Internal Acknowledgments -->
@@ -114,7 +118,7 @@
               name="Accusés internes"
               parent="menu_documents_parent"
               action="document_distribution_action_internal"
-              groups="group_document_user"
+              groups="group_document_distribution"
               sequence="50"/>
 
     <!-- Outdated Distributions -->
@@ -122,7 +126,7 @@
               name="Documentation obsolète"
               parent="menu_documents_parent"
               action="document_distribution_action_outdated"
-              groups="group_document_user"
+              groups="group_document_distribution"
               sequence="60"/>
 
     <!-- ==================== -->

@@ -247,7 +247,9 @@
                 </div>
 
                 <!-- Client and Internal Compliance Row -->
-                <div class="row mb-4">
+                <!-- Absente quand la distribution est éteinte : get_dashboard_data
+                     ne renvoie alors pas la clé. -->
+                <div class="row mb-4" t-if="state.data.client_metrics">
                     <!-- Client Documentation -->
                     <div class="col-md-6 mb-3">
                         <div class="card h-100">
@@ -506,7 +508,7 @@
 
                 <!-- Activity Row -->
                 <div class="row">
-                    <div class="col-md-6 mb-3">
+                    <div class="col-md-6 mb-3" t-if="state.data.distribution_activity">
                         <div class="card h-100">
                             <div class="card-header bg-light">
                                 <h6 class="mb-0"><i class="fa fa-line-chart me-2"/>Activité de distribution</h6>
@@ -548,7 +550,7 @@
                                     <button class="btn btn-outline-danger" t-on-click="openDocumentsNeedingAttention">
                                         <i class="fa fa-exclamation-circle me-2"/>Documents à traiter
                                     </button>
-                                    <button class="btn btn-outline-warning" t-on-click="openOutdatedDistributions">
+                                    <button class="btn btn-outline-warning" t-if="state.data.distribution_activity" t-on-click="openOutdatedDistributions">
                                         <i class="fa fa-refresh me-2"/>Documentation obsolète
                                     </button>
                                     <button class="btn btn-outline-primary" t-on-click="openAllDocuments">

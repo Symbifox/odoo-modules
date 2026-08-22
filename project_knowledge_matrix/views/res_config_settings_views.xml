@@ -9,6 +9,11 @@
         <field name="arch" type="xml">
             <xpath expr="//form" position="inside">
                 <app data-string="Base de connaissances" string="Base de connaissances" name="project_knowledge_matrix" groups="project_knowledge_matrix.group_document_manager">
+                    <block title="Fonctions" name="knowledge_features">
+                        <setting id="group_document_distribution" string="Distribution et accusés de réception" help="Distribuer les documents à des clients ou à des employés et suivre leurs accusés de réception. Éteint, les distributions existantes et leurs accusés restent en base : le module cesse de les afficher, de créer leurs activités et de les compter.">
+                            <field name="group_document_distribution"/>
+                        </setting>
+                    </block>
                     <block title="Rapport du tableau de bord" name="dashboard_report_settings">
                         <setting id="dashboard_report_enabled" string="Rapport automatique bimensuel" help="Envoyer automatiquement un rapport du tableau de bord par courriel toutes les 2 semaines">
                             <field name="dashboard_report_enabled"/>

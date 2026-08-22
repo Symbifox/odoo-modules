@@ -71,6 +71,28 @@
             <field name="users" eval="[(4, ref('base.user_admin'))]"/>
         </record>
 
+        <!-- Interrupteur du sous-système de distribution.
+
+             Ce groupe n'accorde rien : il sert d'interrupteur. Les menus de
+             distribution le portent, et la case « Distribution et accusés de
+             réception » des paramètres l'ajoute ou le retire des groupes
+             implicites de « Documents / Utilisateur ».
+
+             Il n'est PAS implicite par défaut : une installation neuve n'affiche
+             pas la fonction. L'implication ajoutée par la case survit à une mise
+             à niveau : les `implied_ids` du fichier sont en (4, …), donc en
+             ajout, jamais en remplacement.
+
+             Catégorie masquée à dessein : la catégorie « Documents » porte déjà
+             une échelle Utilisateur / Gestionnaire, et un troisième groupe y
+             transformerait la liste déroulante en une échelle à trois barreaux
+             qui ne veut rien dire. -->
+        <record id="group_document_distribution" model="res.groups">
+            <field name="name">Distribution et accusés de réception</field>
+            <field name="comment">Interrupteur du sous-système de distribution de documents (menus, passes d'entretien, blocs du tableau de bord et du rapport bimensuel). N'accorde aucun droit par lui-même.</field>
+            <field name="category_id" ref="base.module_category_hidden"/>
+        </record>
+
         <!-- Groupes de sécurité — Gouvernance corporative -->
         <record id="group_corporate_manager" model="res.groups">
             <field name="name">Gestionnaire</field>
