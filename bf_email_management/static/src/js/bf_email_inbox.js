@@ -99,7 +99,15 @@ export class BfEmailInbox extends Component {
             await this.loadMessages("inbox", 0);
         });
 
+        this.busService = useService("bus_service");
+        this._refreshTimer = null;
+
         onMounted(() => {
+            // Référence gardée pour pouvoir se désabonner : sinon chaque
+            // ouverture de la boîte laisse un abonné derrière elle.
+            this._onBusTick = () => this._refreshSoon();
+            this.busService.subscribe("bf_email/changed", this._onBusTick);
+            this.busService.start();
             this._observer = new IntersectionObserver((entries) => {
                 if (entries.some((e) => e.isIntersecting)
                         && this.canLoadMore
@@ -124,6 +132,12 @@ export class BfEmailInbox extends Component {
         });
 
         onWillUnmount(() => {
+            // Sans ça, un tick reçu juste avant le démontage rappellerait
+            // refreshInPlace sur un composant détruit.
+            if (this._onBusTick) {
+                this.busService.unsubscribe("bf_email/changed", this._onBusTick);
+            }
+            if (this._refreshTimer) clearTimeout(this._refreshTimer);
             if (this._observer) this._observer.disconnect();
             if (this._searchTimer) clearTimeout(this._searchTimer);
             document.removeEventListener("keydown", this._onSlashKey);
@@ -304,20 +318,78 @@ export class BfEmailInbox extends Component {
      * contrat de sortie ({messages, total}), donc pagination, recherche et
      * défilement infini n'ont pas à savoir lequel est ouvert.
      */
-    async _fetchPage(folder, offset) {
+    async _fetchPage(folder, offset, limit = null) {
+        const size = limit || this.state.pageSize;
         if (folder === DRAFTS_FOLDER) {
             return this.orm.call("bf.email", "inbox_get_drafts", [], {
                 offset,
-                limit: this.state.pageSize,
+                limit: size,
                 search: this.state.searchQuery || null,
             });
         }
         return this.orm.call("bf.email", "inbox_get_messages", [], {
             folder,
             offset,
-            limit: this.state.pageSize,
+            limit: size,
             search: this.state.searchQuery || null,
         });
+    }
+
+    /**
+     * Rafraîchissement de fond, déclenché par le bus.
+     *
+     * Volontairement PAS `loadMessages` : celle-ci remet l'offset à zéro et
+     * efface la sélection, l'aperçu et les cases cochées. Un courriel qui
+     * arrive pendant qu'on lit ne doit pas fermer ce qu'on lit ni faire
+     * remonter la liste sous le curseur.
+     *
+     * Recharge la tranche déjà affichée — défilement infini compris — et ne
+     * lâche la sélection que si la ligne a réellement quitté le dossier.
+     */
+    async refreshInPlace() {
+        if (this.state.loadingMessages || this.state.loadingMoreMessages
+                || this.state.acting || this.state.dragId
+                || this.state.syncing) {
+            // Une action est en vol : réessayer plus tard plutôt que de
+            // recharger par-dessus.
+            this._refreshSoon();
+            return;
+        }
+        const folder = this.state.currentFolder;
+        const span = Math.max(this.state.messages.length, this.state.pageSize);
+        const keptId = this.state.selectedId;
+        try {
+            const result = await this._fetchPage(folder, this.state.offset, span);
+            if (folder !== this.state.currentFolder) {
+                return;  // l'usager a changé de dossier entre-temps
+            }
+            this.state.messages = result.messages || [];
+            this.state.total = result.total || 0;
+            if (keptId && !this.state.messages.some((m) => m.id === keptId)) {
+                // La ligne a quitté le dossier : garder l'aperçu ouvert
+                // pointerait sur quelque chose qui n'est plus là.
+                this.state.selectedId = null;
+                this.state.preview = null;
+            }
+            await this.loadFolders();
+        } catch (err) {
+            // Un rafraîchissement de fond ne dérange personne avec un toast.
+            console.warn("bf_email_inbox: refresh failed", err);
+        }
+    }
+
+    /**
+     * Une passe d'ingestion appelle create() par message : une livraison de
+     * cinquante courriels produit cinquante ticks. On n'en garde qu'un.
+     */
+    _refreshSoon() {
+        if (this._refreshTimer) {
+            clearTimeout(this._refreshTimer);
+        }
+        this._refreshTimer = setTimeout(() => {
+            this._refreshTimer = null;
+            this.refreshInPlace();
+        }, 500);
     }
 
     async loadMoreMessages() {
