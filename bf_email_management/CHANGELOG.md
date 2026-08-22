@@ -4,6 +4,75 @@ All notable changes to `bf_email_management` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This module follows Odoo's `MAJOR.MINOR.PATCH` convention prefixed with the Odoo series (`18.0.X.Y.Z`).
 
+## [18.0.9.9.0] — 2026-08-22
+
+### Security
+
+- 🔴 **An inbound calendar invitation could delete an event from the owner's
+  calendar, with nobody authenticated.** `_maybe_ingest_calendar_invite` runs
+  on every inbound message and acts under `sudo()` — and nothing, anywhere in
+  that path, looked at the `From` header. The one organizer check was
+  **inverted**: it skipped a message that *claimed* to come from the owner,
+  which an attacker simply does not claim. And the "is the owner actually
+  invited" guard sat on the REQUEST branch, **after** CANCEL had already
+  returned. So an email carrying `METHOD:CANCEL` and a known `UID` was enough
+  to `unlink()` the matching event — and a UID appears verbatim in any `.ics`
+  the owner has ever sent or shared. Varying the `Message-ID` defeated the
+  dedup, so it was repeatable. The lookup also matched `x_nc_uid`, so the
+  reach was the whole CalDAV-synced calendar rather than just the events this
+  path had created. The trailing `except Exception` made every success
+  silent.
+
+  Now: the `From` address must **be** the VEVENT's `ORGANIZER`; the owner must
+  appear among the `ATTENDEE`s, for CANCEL as well as REQUEST, and an empty
+  attendee list no longer passes (it allowed injecting arbitrary events);
+  touching an existing event additionally requires being the organizer that
+  created it, recorded in a new `x_imip_organizer` field, since declaring
+  yourself organizer of a UID you merely know proves nothing; a cancellation
+  **archives** instead of deleting, so a forged one stays recoverable; and the
+  lookup is restricted to `x_imip_uid`. Every refusal is logged. Covered by
+  `tests/test_imip_authentication.py`.
+
+  ⚠️ Deliberate narrowing: an invitation whose sender differs from its
+  organizer — some scheduling systems post from a service address — is no
+  longer ingested automatically. The email stays in the inbox and the event is
+  added by hand.
+
+- 🔴 **The "Sync now" button opened everybody's mailbox.** `action_sync_now`
+  is reachable by any internal user (it backs the unified inbox button) and
+  called `_cron_sync_imap`, which walks **every** active account, all owners,
+  with their stored credentials, synchronously, inside the caller's HTTP
+  worker. It now goes through `_sync_own_accounts`, bounded to the caller's
+  own accounts. The cron path stays global. The mobile push still fires —
+  both go through `_sync_account`.
+
+- 🔴 **Unattributable mail was filed under whoever clicked.**
+  `_route_target_users` ended with `return users or self.env.user`. Under the
+  cron that is the cron user, as intended; called from the button it is the
+  current user, so every message with no internal author, no notified internal
+  recipient and no internal follower on its record — customer replies on
+  invoices, bounces, service-account mail — became a `bf.email` row **owned by
+  them**, carrying its subject, addresses and a `sudo()`-resolved record name.
+  The fallback now resolves from the projection cron's own configured user, so
+  it is the same answer whoever triggers it.
+
+- **`imap_wake` is rate-limited** (once per 2 s per user). Unbounded, a loop
+  on it kept the single cron worker busy — `max_cron_threads = 1` on a typical
+  deployment — delaying scheduled actions across **every** module, not just
+  this one. State is per process, so the bound is per worker: it turns an
+  unbounded rate into a few calls per second, which is enough to remove the
+  lever. A watcher is unaffected: it debounces already, and two close wakes
+  would trigger the same pass anyway.
+
+### Changed
+
+- The IMAP ingestion cron now ships with `priority = 1`. `_get_all_ready_jobs`
+  orders by `failure_count, priority, id`, so a long job with a lower `id`
+  systematically went first when both were due — on a reference deployment a
+  ~7 s health check every minute, turning a sub-second wake into a ten-second
+  one. ⚠️ The data file is `noupdate="1"`, so only FRESH installs pick this
+  up; set the priority by hand on an existing one.
+
 ## [18.0.9.8.0] — 2026-08-21
 
 ### Added
@@ -30,8 +99,10 @@ This module follows Odoo's `MAJOR.MINOR.PATCH` convention prefixed with the Odoo
   Measured: **138 ms** from the wake to the start of ingestion when the scheduler
   thread is free. Any latency beyond that comes from `max_cron_threads = 1` plus
   the ordering in `_get_all_ready_jobs` (`failure_count, priority, id`) — a long
-  job with a lower `id` systematically goes first when both are due. Setting
-  `priority = 1` on the ingestion cron took a 10 s median down to 3.6 s.
+  job with a lower `id` systematically goes first when both are due. The ingestion
+  cron therefore now ships with `priority = 1`, which took a 10 s median down
+  to 3.6 s. ⚠️ Its data file is `noupdate="1"`, so only FRESH installs pick
+  that up — set the priority by hand on an existing one.
 
   ⚠️ **A measurement trap worth knowing before concluding a server lacks IDLE.**
   Many servers advertise only a minimal capability set in the greeting and send
@@ -454,7 +525,7 @@ The 18.0.4.0.0 migration:
 
 ### Changed
 - **The IMAP browser rebuilt as two panes, Apple Mail / Thunderbird style** — the action moves from a `bf.email.browser` form view to an OWL client action (`bf_email_browser`). Layout: a left sidebar (240 px) with the IMAP folder list, and a right panel split vertically (50/50) between the message list at the top and the body at the bottom. Clicking a folder loads the first page (newest first, 100 messages). Clicking a message loads the body through FETCH RFC822 and shows it in the bottom panel with *Ingest* / *Ingest and route* buttons. All IMAP I/O goes through 5 new `imap_browser_*` RPC methods on `bf.email`; the `bf.email.browser` TransientModel remains as a diagnostic action not tied to a menu.
-- Real pagination (Previous / Next 100 messages) with a "1–100 / 7219" counter in the list header.
+- Real pagination (Previous / Next 100 messages) with a "1–100 / N" counter in the list header.
 
 ### Notes
 - The `action_bf_email_browser` action is now an `ir.actions.client` (tag `bf_email_browser`) — the menu points at the same place, but opens the OWL view instead of the transient form.

@@ -142,7 +142,7 @@ The 8 heuristic signals are based on empirical email-overload research:
 - `mail` module (included in Odoo) — provides `mail.message`, `mail.thread`, `mail.scheduled.message`.
 - Additional Odoo module dependencies (manifest `depends`): `base`, `mail_composer_cc_bcc`, `calendar`, `project`, `account`, `bf_onboarding_base`, `bf_chatter_target`.
 - Python 3.10+ (uses standard library `imaplib`, `email.policy.default`, no extra pip deps).
-- Optional: `mail_quoted_reply` for quoted-reply composer body.
+- `mail_quoted_reply` (OCA) — required: the reply and forward composer bodies are built through its context contract, so without it the composer opens empty.
 
 ## Installation
 

@@ -1,4 +1,4 @@
-"""Ce que la ajoute à la boîte de réception OWL.
+"""Ce que la boîte de réception OWL ajoute : brouillons et re-routage.
 
 Trois choses s'y jouent, et chacune a un mode de panne bien à elle :
 

@@ -25,6 +25,16 @@ class CalendarEvent(models.Model):
         "reschedules and to honour cancellations.",
     )
 
+    x_imip_organizer = fields.Char(
+        string="iMIP organizer",
+        index=True,
+        copy=False,
+        help="Bare address of the ORGANIZER that created this event through "
+        "an email invitation. A later cancellation or reschedule is only "
+        "honoured when it arrives from this same address: the UID alone "
+        "identifies an event but proves nothing about who may change it.",
+    )
+
     # ------------------------------------------------------------------
     # Rappel par défaut sur les événements créés dans Odoo
     # ------------------------------------------------------------------
