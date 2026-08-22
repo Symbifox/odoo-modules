@@ -1,0 +1,71 @@
+// Lisibilité des pages de sondage quand le site tourne sur un thème sombre.
+//
+// Le problème n'est la faute de personne pris isolément, c'est une collision
+// entre deux hypothèses raisonnables. La feuille de style de `survey` code en
+// dur les tuiles de l'écran de réponse en `color: #333738` sur
+// `rgba(51,55,56,.1)` avec un contour `#333738` : du gris foncé sur une surface
+// à peine teintée. Elle s'en tire parce qu'elle suppose que le sondage repose
+// sur une page CLAIRE, et elle se le garantit elle-même avec le voile blanc de
+// `.o_survey_background_shadow` - qui ne s'applique QUE si le sondage porte une
+// image de fond. Sans image et avec un `--body-bg` sombre, les tuiles
+// atterrissent sombre-sur-sombre : mesuré à 1,25:1 là où WCAG demande 4,5:1, et
+// le survol empire les choses au lieu de les arranger (1,20:1).
+//
+// Plutôt que de repeindre chaque tuile, on rétablit l'hypothèse que le coeur
+// fait : le formulaire repose sur une carte claire. Les tuiles se rendent alors
+// exactement comme prévu en amont, et on hérite des correctifs futurs d'Odoo au
+// lieu de les combattre.
+//
+// Le parcours a DEUX conteneurs, pas un : `.o_survey_form` porte le départ,
+// les questions et le remerciement (`survey.survey_fill`), tandis que
+// `.o_survey_print` porte la revue des réponses et l'impression. Poser la
+// couleur du texte sur le wrapper commun plutôt que sur la carte casse donc
+// l'écran qui n'a pas reçu de carte : le texte clair du coeur, parfaitement
+// lisible sur le fond sombre, y devient anthracite sur anthracite.
+//
+// D'où la règle : on ne touche jamais la couleur au niveau du wrapper. Elle ne
+// bascule qu'à l'INTÉRIEUR d'une carte qu'on vient de poser soi-même, pour
+// qu'un écran de sondage non couvert garde le rendu clair-sur-sombre du coeur,
+// qui reste lisible. Le défaut par défaut doit tomber du bon côté.
+
+#wrapwrap.o_survey_background {
+
+    // Les deux conteneurs de contenu du parcours :
+    //   .o_survey_form  -> départ, questions, remerciement (survey.survey_fill)
+    //   .o_survey_print -> revue des réponses et impression
+    .o_survey_form,
+    .o_survey_print {
+        background-color: #FFFFFF;
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-top: 1.5rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+
+        // Pas de `!important` nécessaire : la règle du coeur vise le wrapper,
+        // pas cet élément-ci. Une déclaration normale sur l'enfant l'emporte
+        // sur une valeur héritée, fût-elle `!important` chez le parent.
+        color: #2D3031;
+
+        // Celle-ci, en revanche, vise bien les descendants
+        // (`.o_survey_background .text-muted { color: #F8F9FA !important }`) :
+        // il faut donc `!important` et une spécificité supérieure.
+        .text-muted {
+            color: #6C757D !important;
+            opacity: 1;
+        }
+    }
+
+    // La tuile choisie mérite d'être vue de loin.
+    //
+    // L'anneau est une frontière de composant : WCAG demande 3:1 contre le
+    // fond. L'accent #29ABE1 sur blanc ne donne que 2,62:1, donc on prend la
+    // variante assombrie que la marque utilise déjà au survol (#1F8FBF,
+    // 3,66:1). Volontairement une valeur fixe et non `var(--o-color-1)` : une
+    // couleur primaire de thème inconnue pourrait repasser sous le seuil sans
+    // que personne ne le voie. Le fond teinté, lui, n'est soumis à aucun seuil
+    // et garde l'accent clair.
+    .o_survey_form .o_survey_choice_btn.o_survey_selected {
+        box-shadow: #1F8FBF 0 0 0 2px;
+        background-color: rgba(41, 171, 225, 0.12);
+    }
+}

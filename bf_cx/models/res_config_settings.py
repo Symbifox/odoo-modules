@@ -1,7 +1,8 @@
 """Settings panel.
 
 Only scalar field types here (Boolean/Integer/Char/…): Text/Html fields on
-res.config.settings crash the whole Settings page.
+res.config.settings crash the whole Settings page. Many2one is fine: the
+config parameter stores the id.
 """
 from odoo import fields, models
 
@@ -69,6 +70,15 @@ class ResConfigSettings(models.TransientModel):
         default=True,
         help="Créer une activité (échéance 5 j) quand un répondant accepte "
              "d'être cité - un opt-in est périssable.",
+    )
+    bf_cx_test_partner_id = fields.Many2one(
+        "res.partner",
+        string="Contact de test",
+        config_parameter="bf_cx.test_partner_id",
+        help="Contact qui reçoit les courriels du bouton « Envoyer un "
+             "essai » d'une vague. Utiliser une adresse à soi : l'essai "
+             "part pour vrai. Il ne compte dans aucune statistique et "
+             "n'alimente pas le registre.",
     )
     bf_cx_complaint_ack_days = fields.Integer(
         string="Délai d'accusé de réception (jours)",

@@ -38,6 +38,8 @@
                     <button name="action_remind" type="object" string="Envoyer un rappel"
                             invisible="state != 'sent'"
                             confirm="Renvoyer l'invitation à tous les non-répondants ?"/>
+                    <button name="action_send_test" type="object" string="Envoyer un essai"
+                            confirm="Envoyer une invitation au seul contact de test ? Elle ne compte dans aucune statistique et n'alimente pas le registre."/>
                     <button name="action_close" type="object" string="Fermer"
                             invisible="state != 'sent'"/>
                     <button name="action_reopen" type="object" string="Rouvrir"
@@ -96,9 +98,10 @@
                         </page>
                         <page string="Invitations" name="answers">
                             <field name="user_input_ids" readonly="1">
-                                <list>
+                                <list decoration-muted="test_entry">
                                     <field name="partner_id"/>
                                     <field name="email"/>
+                                    <field name="test_entry" string="Essai" optional="show"/>
                                     <field name="state"/>
                                     <field name="create_date" string="Invité le"/>
                                     <field name="end_datetime" string="Répondu le"/>
