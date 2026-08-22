@@ -25,6 +25,10 @@
                                  help="Échéance de l'activité créée pour un détracteur ou une note insatisfaite (pratique : 24-72 h).">
                             <field name="bf_cx_followup_days"/>
                         </setting>
+                        <setting string="Avertir de chaque réponse"
+                                 help="Un avis au responsable à chaque réponse versée au registre, promoteurs compris. Fermé, seuls les détracteurs se signalent par l'activité de rappel, et une réponse enthousiaste passe inaperçue. L'avis suit la préférence Odoo du destinataire (courriel ou boîte de réception).">
+                            <field name="bf_cx_notify_every_response"/>
+                        </setting>
                         <setting string="Candidats témoignage"
                                  help="Créer une activité (échéance 5 jours) quand un répondant accepte d'être cité.">
                             <field name="bf_cx_testimonial_activity"/>
