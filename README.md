@@ -166,7 +166,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `privacy_framework_nz` | Cadre de confidentialité — Privacy Act 2020 (Nouvelle-Zélande) | 18.0.1.0.1 | BUSL-1.1 | New Zealand Privacy Act 2020 regulatory-framework pack for the Privacy module |
 | `privacy_framework_pipeda` | Cadre de confidentialité — LPRPDE / PIPEDA (Canada) | 18.0.1.0.1 | BUSL-1.1 | PIPEDA (Canada federal) regulatory-framework pack for the Privacy module |
 | `privacy_framework_uk` | Cadre de confidentialité — UK GDPR (Royaume-Uni) | 18.0.1.0.1 | BUSL-1.1 | UK GDPR / DPA 2018 regulatory-framework pack for the Privacy module |
-| `project_knowledge_matrix` | Project Knowledge Matrix | 18.0.11.2.0 | BUSL-1.1 | Project knowledge base, policies, and documentation |
+| `project_knowledge_matrix` | Project Knowledge Matrix | 18.0.11.5.0 | BUSL-1.1 | Project knowledge base, policies, and documentation |
 <!-- MODULES_TABLE:END -->
 
 ## Installation

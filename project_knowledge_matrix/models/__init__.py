@@ -12,6 +12,7 @@ from . import res_partner
 from . import knowledge_dashboard
 from . import res_config_settings
 from . import corporate_resolution
+from . import corporate_resolution_signatory
 from . import corporate_director
 from . import corporate_officer
 from . import corporate_compliance

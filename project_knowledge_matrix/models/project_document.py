@@ -153,8 +153,8 @@ class ProjectDocument(models.Model):
     # Les alertes d'expiration ont leurs propres drapeaux. Tant qu'elles
     # partageaient ceux des révisions, un document portant les deux dates ne
     # recevait jamais que le rappel de révision : la passe le marquait, et la
-    # recherche d'expiration l'excluait aussitôt. Porter les deux dates est le
-    # cas courant, pas l'exception.
+    # recherche d'expiration l'excluait aussitôt, ce qui touche tout document
+    # portant les deux dates.
     expiration_reminder_sent_90 = fields.Boolean(
         string="Alerte d'expiration 90 jours envoyée",
         default=False,
@@ -300,7 +300,7 @@ class ProjectDocument(models.Model):
 
         L'ancienne version faisait un ``search()`` par document. Comme
         ``distribution_count`` figure dans la liste et le kanban par défaut,
-        afficher 205 documents coûtait 205 requêtes.
+        afficher une liste de documents coûtait une requête par document.
         """
         self.distribution_count = 0
         self.acknowledgment_count = 0
@@ -479,17 +479,32 @@ class ProjectDocument(models.Model):
         documentation obsolète chez les clients. Deux d'entre elles partaient à
         la même minute.
 
+        Deux de ces passes appartiennent au sous-système de distribution et ne
+        tournent que s'il est allumé. La passe des révisions, elle, tourne
+        toujours : elle ne lit aucune distribution.
+
         Chaque passe tourne dans son propre point de reprise. Sans ça, la fusion
         rendrait le module plus fragile qu'avant : trois crons, c'est trois
         transactions, et l'échec de l'une laissait les deux autres faire leur
         travail. Une passe qui lève est journalisée et les suivantes continuent.
         """
-        passes = (
-            ('accusés en attente',
-             self.env['project.document.distribution']._cron_check_pending_acknowledgments),
-            ('révisions et expirations', self._cron_check_document_reviews),
-            ('documentation obsolète', self._cron_check_outdated_client_docs),
-        )
+        Distribution = self.env['project.document.distribution']
+        distribution_active = Distribution._est_active()
+
+        passes = [('révisions et expirations', self._cron_check_document_reviews)]
+        if distribution_active:
+            # Les deux passes de distribution n'ont rien à faire quand la
+            # fonction est éteinte : elles poseraient des activités sur des
+            # enregistrements que plus personne ne peut ouvrir.
+            passes.insert(0, ('accusés en attente',
+                              Distribution._cron_check_pending_acknowledgments))
+            passes.append(('documentation obsolète',
+                           self._cron_check_outdated_client_docs))
+        else:
+            _logger.info(
+                'project_knowledge_matrix : distribution éteinte, les passes '
+                '« accusés en attente » et « documentation obsolète » sont '
+                'sautées.')
         for libelle, passe in passes:
             try:
                 with self.env.cr.savepoint():
@@ -646,22 +661,30 @@ class ProjectDocument(models.Model):
             ('review_date', '<=', today + timedelta(days=90)),
         ])
 
+        # Sous-système de distribution : éteint, on ne pose AUCUNE de ses
+        # questions. Les compteurs restent à zéro, ce qui suffit à faire
+        # disparaître la ligne « Accusés en retard » du bloc d'alerte, dont la
+        # condition est déjà « > 0 ». Les deux encadrés, eux, se cachent sur
+        # `distribution_enabled` : sans ça ils sortiraient remplis de zéros
+        # tous les quinze jours.
+        distribution_enabled = Distribution._est_active()
+
         # Client distribution metrics
         client_distributions = Distribution.search_count([
             ('recipient_type', '=', 'partner'),
-        ])
+        ]) if distribution_enabled else 0
         client_pending = Distribution.search_count([
             ('recipient_type', '=', 'partner'),
             ('state', '=', 'pending'),
-        ])
+        ]) if distribution_enabled else 0
         client_acknowledged = Distribution.search_count([
             ('recipient_type', '=', 'partner'),
             ('state', '=', 'acknowledged'),
-        ])
+        ]) if distribution_enabled else 0
         client_outdated = Distribution.search_count([
             ('recipient_type', '=', 'partner'),
             ('is_outdated', '=', True),
-        ])
+        ]) if distribution_enabled else 0
         client_ack_rate = round(
             (client_acknowledged / client_distributions * 100)
             if client_distributions > 0 else 0
@@ -670,32 +693,34 @@ class ProjectDocument(models.Model):
         # Internal compliance metrics
         internal_distributions = Distribution.search_count([
             ('recipient_type', '=', 'employee'),
-        ])
+        ]) if distribution_enabled else 0
         internal_pending = Distribution.search_count([
             ('recipient_type', '=', 'employee'),
             ('state', '=', 'pending'),
-        ])
+        ]) if distribution_enabled else 0
         internal_acknowledged = Distribution.search_count([
             ('recipient_type', '=', 'employee'),
             ('state', '=', 'acknowledged'),
-        ])
+        ]) if distribution_enabled else 0
         internal_compliance_rate = round(
             (internal_acknowledged / internal_distributions * 100)
             if internal_distributions > 0 else 0
         )
 
-        # Credential metrics
-        Credential = self.env['project.credential']
-        credentials_total = Credential.search_count([('state', '=', 'active')])
-        credentials_expiring = Credential.search_count([
-            ('state', '=', 'active'),
-            ('expiration_date', '>=', today),
-            ('expiration_date', '<=', today + timedelta(days=30)),
-        ])
-        credentials_expired = Credential.search_count([
-            ('state', '=', 'active'),
-            ('expiration_date', '<', today),
-        ])
+        # Identifiants — répartition par statut, en une requête.
+        # Ces trois chiffres portaient le même défaut que le tableau de bord :
+        # ils cherchaient des identifiants « actifs » dont la date d'expiration
+        # était passée ou proche, alors que c'est la tâche quotidienne qui les
+        # fait sortir de l'état actif. Le courriel annonçait donc « 0 expiré »
+        # tous les quinze jours, quoi qu'il y ait en base.
+        comptes_identifiants = {
+            etat: nombre
+            for etat, nombre in self.env['project.credential']._read_group(
+                [], groupby=['state'], aggregates=['__count'])
+        }
+        credentials_total = comptes_identifiants.get('active', 0)
+        credentials_expiring = comptes_identifiants.get('expiring', 0)
+        credentials_expired = comptes_identifiants.get('expired', 0)
 
         # Distribution activity
         first_of_month = today.replace(day=1)
@@ -706,18 +731,18 @@ class ProjectDocument(models.Model):
 
         distributions_this_month = Distribution.search_count([
             ('distribution_date', '>=', first_of_month),
-        ])
+        ]) if distribution_enabled else 0
         distributions_last_month = Distribution.search_count([
             ('distribution_date', '>=', first_of_last_month),
             ('distribution_date', '<', first_of_month),
-        ])
+        ]) if distribution_enabled else 0
 
         # Overdue acknowledgments (7+ days)
         seven_days_ago = today - timedelta(days=7)
         overdue_acknowledgments = Distribution.search_count([
             ('state', '=', 'pending'),
             ('distribution_date', '<', seven_days_ago),
-        ])
+        ]) if distribution_enabled else 0
 
         # Content quality
         # NE PAS filtrer sur `version_count` : c'est un calculé NON STOCKÉ, et
@@ -791,6 +816,7 @@ class ProjectDocument(models.Model):
         return {
             'links': self._get_report_links(base_url, dashboard_url),
             'report_date': today.strftime('%d/%m/%Y'),
+            'distribution_enabled': distribution_enabled,
             'total_documents': total_documents,
             'active_documents': active_documents,
             'archived_documents': archived_documents,

@@ -1,4 +1,4 @@
-from odoo import api, fields, models
+from odoo import _, api, fields, models
 
 
 class CorporateResolution(models.Model):
@@ -131,6 +131,21 @@ class CorporateResolution(models.Model):
         required=True,
         default=lambda self: self.env.company,
     )
+    signatory_ids = fields.One2many(
+        'corporate.resolution.signatory',
+        'resolution_id',
+        string='Signataires',
+        # Un One2many ne se copie PAS par défaut, mais le texte de la
+        # résolution et son proposeur, eux, se copient. Une résolution
+        # dupliquée repartirait donc avec son dispositif intact et un bloc de
+        # signature vide, qui se rabattrait en silence sur le seul proposeur :
+        # exactement le document faux que cette fiche corrige.
+        copy=True,
+        help="Les personnes qui signent la résolution, avec la qualité en "
+             "laquelle elles la signent. Laissé vide, seule une résolution du "
+             "conseil se déduit — de ses administrateurs en poste à la date "
+             "de la séance.",
+    )
     notes = fields.Text(string='Notes')
 
     @api.model_create_multi
@@ -164,6 +179,61 @@ class CorporateResolution(models.Model):
             ('company_id', '=', self.company_id.id),
             ('is_active', '=', True),
         ])
+
+    def _get_directors_at_date(self, date=None):
+        """Administrateurs en poste à une date donnée, la séance par défaut.
+
+        ``is_active`` répond « aujourd'hui ». Une résolution s'imprime des mois
+        ou des années après sa séance : sans borne de date, le document nomme
+        des administrateurs qui n'étaient pas encore élus. Même convention de
+        bornes que ``_compute_is_active`` — un mandat qui se termine le jour J
+        n'est plus en cours le jour J.
+        """
+        self.ensure_one()
+        date = date or self.meeting_date or fields.Date.today()
+        return self.env['corporate.director'].search([
+            ('company_id', '=', self.company_id.id),
+            ('appointment_date', '<=', date),
+            '|', ('end_date', '=', False), ('end_date', '>', date),
+        ])
+
+    def _get_signatories(self):
+        """Bloc de signature du rapport : qui signe, en quelle qualité, à quelle fin.
+
+        Trois cas, dans l'ordre :
+
+        1. des signataires sont saisis — ils font foi, avec leur qualité;
+        2. sinon, résolution du CONSEIL — les administrateurs en poste à la
+           date de la séance, en qualité d'administrateur;
+        3. sinon — résolution des actionnaires — le proposeur et le secondeur,
+           NOMMÉS SANS QUALITÉ. Le module ne tient pas de registre des
+           actionnaires : il sait qui a porté la résolution, pas en quelle
+           qualité cette personne l'a signée. Le gabarit le nomme donc sans
+           rien affirmer, et une ligne vide reste s'il n'y a personne.
+
+        Le cas 2 est un repli, pas la règle : le conseil signe bien par ses
+        administrateurs, mais dès qu'un signataire s'écarte de cette liste
+        (dénonciation d'intérêt contresignée, fondé de pouvoir), il faut le
+        saisir.
+        """
+        self.ensure_one()
+        if self.signatory_ids:
+            return [{
+                'name': ligne.partner_id.name,
+                'capacity': ligne.capacity_label,
+                'purpose': ligne.purpose,
+            } for ligne in self.signatory_ids]
+        if self.resolution_type in ('board', 'written_board'):
+            return [{
+                'name': administrateur.partner_id.name,
+                'capacity': _('Administrateur'),
+                'purpose': False,
+            } for administrateur in self._get_directors_at_date()]
+        return [{
+            'name': partenaire.name,
+            'capacity': False,
+            'purpose': False,
+        } for partenaire in (self.mover_id | self.seconder_id)]
 
     def _get_resolution_type_label(self):
         """Retourner le titre d'en-tête français selon le type de résolution."""

@@ -36,6 +36,27 @@ class KnowledgeDashboard(models.AbstractModel):
         return mapping.get(model_name, [])
 
     @api.model
+    def _grouper_comptes(self, nom_modele, domaine, groupby):
+        """Nombre d'enregistrements par combinaison de clés, en UNE requête.
+
+        Rend ``{clé: nombre}`` pour un seul ``groupby``, ``{(clé1, clé2): nombre}``
+        pour plusieurs. Les valeurs de sélection et les booléens ressortent tels
+        quels ; un ``Many2one`` ressort en enregistrement.
+
+        Les blocs du tableau de bord posaient une question par case — jusqu'à six
+        ``search_count`` pour six cases lisant la même table. Une seule requête
+        groupée répond à toutes, et le total devient la somme des cases plutôt
+        qu'une septième question.
+        """
+        comptes = {}
+        for ligne in self.env[nom_modele]._read_group(
+            domaine, groupby=groupby, aggregates=['__count'],
+        ):
+            cles = tuple(ligne[:-1])
+            comptes[cles if len(cles) > 1 else cles[0]] = ligne[-1]
+        return comptes
+
+    @api.model
     def get_available_projects(self):
         """Return list of projects that have knowledge matrices."""
         projects = self.env['project.project'].search([
@@ -49,24 +70,22 @@ class KnowledgeDashboard(models.AbstractModel):
 
     @api.model
     def get_document_overview(self, project_id=False):
-        """Get overall document statistics."""
-        Document = self.env['project.document']
+        """Répartition des documents par état, et par nature pour les actifs."""
         pd = self._get_project_domain(project_id, 'project.document')
+        comptes = self._grouper_comptes(
+            'project.document', pd, ['state', 'is_internal'])
 
-        total = Document.search_count(pd)
-        active = Document.search_count(pd + [('state', '=', 'active')])
-        draft = Document.search_count(pd + [('state', '=', 'draft')])
-        archived = Document.search_count(pd + [('state', '=', 'archived')])
-        internal = Document.search_count(pd + [('is_internal', '=', True), ('state', '=', 'active')])
-        client = Document.search_count(pd + [('is_internal', '=', False), ('state', '=', 'active')])
+        par_etat = {}
+        for (etat, _interne), nombre in comptes.items():
+            par_etat[etat] = par_etat.get(etat, 0) + nombre
 
         return {
-            'total': total,
-            'active': active,
-            'draft': draft,
-            'archived': archived,
-            'internal': internal,
-            'client': client,
+            'total': sum(comptes.values()),
+            'active': par_etat.get('active', 0),
+            'draft': par_etat.get('draft', 0),
+            'archived': par_etat.get('archived', 0),
+            'internal': comptes.get(('active', True), 0),
+            'client': comptes.get(('active', False), 0),
         }
 
     # ==========================================
@@ -327,15 +346,31 @@ class KnowledgeDashboard(models.AbstractModel):
 
         base_item = pi + [('matrix_id.is_template', '=', False)]
         active_item = base_item + [('state', '!=', 'na')]
-        total_items = Item.search_count(active_item)
-        completed_items = Item.search_count(active_item + [('state', 'in', ('done', 'accepted'))])
-        in_progress_items = Item.search_count(active_item + [('state', '=', 'in_progress')])
-        blocked_items = Item.search_count(base_item + [('is_blocked', '=', True)])
+
+        # Une seule requête pour les quatre compteurs : les états et le drapeau
+        # « bloqué » sont deux clés de regroupement sur la même table.
+        comptes = self._grouper_comptes(
+            'project.knowledge.item', base_item, ['state', 'is_blocked'])
+
+        total_items = sum(
+            nombre for (etat, _bloque), nombre in comptes.items() if etat != 'na')
+        completed_items = sum(
+            nombre for (etat, _bloque), nombre in comptes.items()
+            if etat in ('done', 'accepted'))
+        in_progress_items = sum(
+            nombre for (etat, _bloque), nombre in comptes.items()
+            if etat == 'in_progress')
+        # « Bloqué » se compte sur TOUS les éléments, S/O compris : c'est le
+        # périmètre qu'avait la version précédente, on ne le change pas ici.
+        blocked_items = sum(
+            nombre for (_etat, bloque), nombre in comptes.items() if bloque)
 
         completion_rate = 0
         if total_items > 0:
             completion_rate = round((completed_items / total_items) * 100, 1)
 
+        # Le retard se lit sur une DATE, pas sur une clé de regroupement : il
+        # garde sa propre requête.
         overdue_items = Item.search_count(active_item + [
             ('state', 'not in', ('done', 'accepted')),
             ('deadline', '<', fields.Date.today()),
@@ -370,30 +405,27 @@ class KnowledgeDashboard(models.AbstractModel):
 
     @api.model
     def get_credential_metrics(self, project_id=False):
-        """Get credential management metrics."""
-        Credential = self.env['project.credential']
-        pd = self._get_project_domain(project_id, 'project.credential')
-        today = fields.Date.today()
-        days_30 = today + timedelta(days=30)
+        """Répartition des identifiants par statut.
 
-        total = Credential.search_count(pd + [('state', '=', 'active')])
-        expiring = Credential.search_count(pd + [
-            ('state', '=', 'active'),
-            ('expiration_date', '<=', days_30),
-            ('expiration_date', '>=', today),
-        ])
-        expired = Credential.search_count(pd + [
-            ('state', '=', 'active'),
-            ('expiration_date', '<', today),
-            ('expiration_date', '!=', False),
-        ])
-        revoked = Credential.search_count(pd + [('state', '=', 'revoked')])
+        Les deux compteurs « expirant » et « expiré » annonçaient zéro en
+        permanence, quelles que soient les dates en base. Ils cherchaient des
+        identifiants ``state = 'active'`` dont la date d'expiration était passée
+        ou proche — or c'est précisément la tâche planifiée quotidienne qui fait
+        SORTIR ces identifiants de l'état actif, vers ``expiring`` et ``expired``.
+        Le tableau de bord contredisait donc la comptabilité du module, et la
+        seule population qu'il pouvait compter était celle que le cron n'avait
+        pas encore traitée.
+
+        Le statut est la comptabilité du module : on le lit tel quel.
+        """
+        pd = self._get_project_domain(project_id, 'project.credential')
+        comptes = self._grouper_comptes('project.credential', pd, ['state'])
 
         return {
-            'total': total,
-            'expiring_soon': expiring,
-            'expired': expired,
-            'revoked': revoked,
+            'total': comptes.get('active', 0),
+            'expiring_soon': comptes.get('expiring', 0),
+            'expired': comptes.get('expired', 0),
+            'revoked': comptes.get('revoked', 0),
         }
 
     # ==========================================
@@ -407,14 +439,21 @@ class KnowledgeDashboard(models.AbstractModel):
         pd = self._get_project_domain(project_id, 'project.knowledge.item')
 
         base = pd + [('item_type', '=', 'decision')]
-        total_decisions = Item.search_count(base)
-        accepted = Item.search_count(base + [('state', '=', 'accepted')])
-        proposed = Item.search_count(base + [('state', '=', 'proposed')])
-        rejected = Item.search_count(base + [('state', '=', 'rejected')])
-        high_impact_pending = Item.search_count(base + [
-            ('impact_level', '=', 'high'),
-            ('state', 'in', ['pending', 'proposed']),
-        ])
+        comptes = self._grouper_comptes(
+            'project.knowledge.item', base, ['state', 'impact_level'])
+
+        par_etat = {}
+        for (etat, _impact), nombre in comptes.items():
+            par_etat[etat] = par_etat.get(etat, 0) + nombre
+
+        total_decisions = sum(comptes.values())
+        accepted = par_etat.get('accepted', 0)
+        proposed = par_etat.get('proposed', 0)
+        rejected = par_etat.get('rejected', 0)
+        high_impact_pending = sum(
+            nombre for (etat, impact), nombre in comptes.items()
+            if impact == 'high' and etat in ('pending', 'proposed')
+        )
 
         return {
             'total': total_decisions,
@@ -471,19 +510,26 @@ class KnowledgeDashboard(models.AbstractModel):
 
     @api.model
     def get_dashboard_data(self, project_id=False):
-        """Get all dashboard data in a single call, optionally filtered by project."""
+        """Get all dashboard data in a single call, optionally filtered by project.
+
+        Les trois blocs de distribution ne sont calculés QUE si la fonction est
+        allumée. Leur clé est alors absente du résultat, et le gabarit s'en sert
+        comme condition d'affichage, à la même mécanique que les indicateurs
+        corporatifs, absents dès qu'un projet est sélectionné.
+        """
         result = {
             'document_overview': self.get_document_overview(project_id=project_id),
             'review_metrics': self.get_review_metrics(project_id=project_id),
-            'client_metrics': self.get_client_doc_metrics(project_id=project_id),
-            'internal_metrics': self.get_internal_compliance_metrics(project_id=project_id),
-            'distribution_activity': self.get_distribution_activity(project_id=project_id),
             'content_quality': self.get_content_quality_metrics(project_id=project_id),
             'matrix_metrics': self.get_matrix_metrics(project_id=project_id),
             'credential_metrics': self.get_credential_metrics(project_id=project_id),
             'decision_metrics': self.get_decision_metrics(project_id=project_id),
             'project_id': project_id,
         }
+        if self.env['project.document.distribution']._est_active():
+            result['client_metrics'] = self.get_client_doc_metrics(project_id=project_id)
+            result['internal_metrics'] = self.get_internal_compliance_metrics(project_id=project_id)
+            result['distribution_activity'] = self.get_distribution_activity(project_id=project_id)
         # Corporate metrics are not project-specific — only include when unfiltered
         if not project_id:
             result['corporate_metrics'] = self.get_corporate_metrics()

@@ -162,7 +162,9 @@
                                                 </table>
 
                                                 <!-- CLIENT & INTERNAL - Side by side -->
-                                                <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;margin-bottom:16px">
+                                                <!-- Les deux encadrés ne lisent que des distributions : ils
+                                                     disparaissent en bloc quand la fonction est éteinte. -->
+                                                <table t-if="ctx.get('distribution_enabled')" role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;margin-bottom:16px">
                                                     <tbody>
                                                         <tr>
                                                             <!-- Clients -->
@@ -281,14 +283,18 @@
                                                                                 </p>
                                                                                 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse">
                                                                                     <tbody>
+                                                                                        <t t-if="ctx.get('distribution_enabled')">
                                                                                         <tr>
                                                                                             <td style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:13px;color:#374151;padding:3px 0"><a t-att-href="ctx.get('links', {}).get('distributions_this_month', ctx.get('dashboard_url', '#'))" style="color:#374151;text-decoration:none">Distributions ce mois</a></td>
                                                                                             <td align="right" style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:13px;font-weight:600;color:#1d4ed8;padding:3px 0"><a t-att-href="ctx.get('links', {}).get('distributions_this_month', ctx.get('dashboard_url', '#'))" style="color:#1d4ed8;text-decoration:none"><t t-out="ctx.get('distributions_this_month', 0)"/></a></td>
                                                                                         </tr>
+                                                                                        </t>
+                                                                                        <t t-if="ctx.get('distribution_enabled')">
                                                                                         <tr>
                                                                                             <td style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:13px;color:#374151;padding:3px 0"><a t-att-href="ctx.get('links', {}).get('distributions_last_month', ctx.get('dashboard_url', '#'))" style="color:#374151;text-decoration:none">Mois dernier</a></td>
                                                                                             <td align="right" style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:13px;font-weight:600;color:#6B7280;padding:3px 0"><a t-att-href="ctx.get('links', {}).get('distributions_last_month', ctx.get('dashboard_url', '#'))" style="color:#6B7280;text-decoration:none"><t t-out="ctx.get('distributions_last_month', 0)"/></a></td>
                                                                                         </tr>
+                                                                                        </t>
                                                                                         <tr>
                                                                                             <td style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:13px;color:#374151;padding:3px 0"><a t-att-href="ctx.get('links', {}).get('docs_without_versions', ctx.get('dashboard_url', '#'))" style="color:#374151;text-decoration:none">Docs sans version</a></td>
                                                                                             <td align="right" style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:13px;font-weight:600;color:#6B7280;padding:3px 0"><a t-att-href="ctx.get('links', {}).get('docs_without_versions', ctx.get('dashboard_url', '#'))" style="color:#6B7280;text-decoration:none"><t t-out="ctx.get('docs_without_versions', 0)"/></a></td>

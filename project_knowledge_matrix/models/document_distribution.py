@@ -370,6 +370,29 @@ class ProjectDocumentDistribution(models.Model):
         }
 
     @api.model
+    def _est_active(self):
+        """Le sous-système de distribution est-il allumé sur cette instance ?
+
+        L'interrupteur est le groupe ``group_document_distribution``, implicite
+        ou non dans « Documents / Utilisateur ». C'est lui qui décide de
+        l'affichage des menus ; le reste du module lit donc la MÊME chose plutôt
+        qu'un paramètre système parallèle, qui aurait fini par le contredire.
+
+        ``sudo()`` parce que la question se pose aussi pendant une tâche
+        planifiée et depuis le tableau de bord d'un utilisateur qui n'a pas le
+        droit de lire ``res.groups``.
+        """
+        interrupteur = self.env.ref(
+            'project_knowledge_matrix.group_document_distribution',
+            raise_if_not_found=False)
+        porteur = self.env.ref(
+            'project_knowledge_matrix.group_document_user',
+            raise_if_not_found=False)
+        if not interrupteur or not porteur:
+            return False
+        return interrupteur in porteur.sudo().implied_ids
+
+    @api.model
     def _cron_check_pending_acknowledgments(self):
         """Cron job to check for pending acknowledgments and send notifications."""
         # Find distributions pending acknowledgment for more than 7 days

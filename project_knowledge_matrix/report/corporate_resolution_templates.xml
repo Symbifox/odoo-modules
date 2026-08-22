@@ -31,7 +31,8 @@
     <template id="report_corporate_resolution">
         <t t-call="web.html_container">
             <t t-foreach="docs" t-as="doc">
-                <t t-set="directors" t-value="doc._get_active_directors()"/>
+                <t t-set="directors" t-value="doc._get_directors_at_date()"/>
+                <t t-set="signatories" t-value="doc._get_signatories()"/>
                 <div class="article" style="padding: 0 !important; margin: 0 !important;">
                     <link rel="stylesheet" href="/bf_lexend/static/src/scss/lexend_report.css"/>
                     <style>
@@ -193,6 +194,11 @@
                             font-size: 10pt;
                             color: #888;
                         }
+                        .res-sig-purpose {
+                            font-size: 9.5pt;
+                            font-style: italic;
+                            color: #888;
+                        }
 
                         /* ── Footer ── */
                         .res-footer {
@@ -284,24 +290,43 @@
                             <!-- Signatures -->
                             <div class="res-signatures">
                                 <div class="res-sig-heading">
-                                    <t t-if="doc.resolution_type in ('board', 'written_board')">
+                                    <!-- Dès que les signataires sont saisis, le titre ne les qualifie
+                                         plus : ils peuvent ne pas avoir tous la même qualité (un
+                                         actionnaire qui adopte, un dirigeant qui contresigne une
+                                         dénonciation d'intérêt). Chacun porte la sienne sous son nom. -->
+                                    <t t-if="signatories and doc.signatory_ids">
+                                        Signatures
+                                    </t>
+                                    <t t-elif="doc.resolution_type in ('board', 'written_board')">
                                         Signatures des administrateurs
                                     </t>
                                     <t t-else="">
                                         Signatures des actionnaires
                                     </t>
                                 </div>
-                                <t t-foreach="directors" t-as="director">
+                                <!-- Les signataires viennent de la résolution elle-même, avec
+                                     la qualité en laquelle chacun signe. Le registre des
+                                     administrateurs ne sert que de repli, et seulement pour une
+                                     résolution du conseil : voir _get_signatories(). -->
+                                <t t-if="signatories">
+                                    <t t-foreach="signatories" t-as="signatory">
+                                        <div class="res-sig-entry">
+                                            <div class="res-sig-line"/>
+                                            <div class="res-sig-name" t-out="signatory['name']"/>
+                                            <t t-if="signatory['capacity']">
+                                                <div class="res-sig-role" t-out="signatory['capacity']"/>
+                                            </t>
+                                            <t t-if="signatory['purpose']">
+                                                <div class="res-sig-purpose" t-out="signatory['purpose']"/>
+                                            </t>
+                                        </div>
+                                    </t>
+                                </t>
+                                <t t-else="">
+                                    <!-- Rien de saisi et rien à déduire : une ligne à remplir vaut
+                                         mieux qu'un nom ou une qualité que le gabarit inventerait. -->
                                     <div class="res-sig-entry">
                                         <div class="res-sig-line"/>
-                                        <div class="res-sig-name" t-out="director.partner_id.name"/>
-                                        <!-- La qualité n'est affirmée que pour une résolution du
-                                             conseil. Sur une résolution d'actionnaires, le gabarit
-                                             ne peut pas la déduire : elle est énoncée au dispositif,
-                                             signataire par signataire. -->
-                                        <t t-if="doc.resolution_type in ('board', 'written_board')">
-                                            <div class="res-sig-role">Administrateur</div>
-                                        </t>
                                     </div>
                                 </t>
                             </div>

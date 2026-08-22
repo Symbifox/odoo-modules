@@ -67,6 +67,27 @@
                                 <field name="resolved_text" nolabel="1"/>
                             </group>
                         </page>
+                        <page string="Signataires" name="signatories">
+                            <field name="signatory_ids" nolabel="1">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="partner_id"/>
+                                    <field name="capacity"/>
+                                    <field name="capacity_custom"
+                                           required="capacity == 'other'"
+                                           placeholder="Vice-président, secrétaire et trésorier"/>
+                                    <field name="purpose"
+                                           placeholder="aux seules fins d'attester la dénonciation d'intérêt"
+                                           optional="show"/>
+                                </list>
+                            </field>
+                            <div class="text-muted mt-2">
+                                Laissé vide, le PDF d'une résolution du conseil reprend les
+                                administrateurs en poste à la date de la séance. Une résolution
+                                des actionnaires, elle, n'a rien à déduire : sans signataire
+                                saisi, elle s'imprime avec une ligne à remplir.
+                            </div>
+                        </page>
                         <page string="Documents" name="documents">
                             <group>
                                 <field name="document_ids" nolabel="1"/>

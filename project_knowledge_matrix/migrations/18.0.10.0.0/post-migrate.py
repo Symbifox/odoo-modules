@@ -9,8 +9,8 @@ exploitable par les nouvelles fonctions:
    mélangent « 2.1 » et « 2025.11 », un tri lexicographique sur un Char donne
    déjà 2.10 avant 2.9. Le rang entier est la seule clé d'ordre fiable.
 3. `previous_version_id` rempli quand il manque: le champ existait depuis
-   l'origine mais aucun code ne l'écrivait (7 versions sur 199). C'est
-   l'ancre de la comparaison entre versions.
+   l'origine mais aucun code ne l'écrivait. C'est l'ancre de la comparaison
+   entre versions.
 """
 
 import logging

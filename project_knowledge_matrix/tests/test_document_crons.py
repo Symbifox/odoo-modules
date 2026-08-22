@@ -25,6 +25,20 @@ class DocumentCronCase(TransactionCase):
         })
         cls.aujourdhui = fields.Date.today()
 
+    def _allumer_distribution(self, allume=True):
+        """Poser l'interrupteur du sous-système de distribution.
+
+        Il est ÉTEINT sur une installation neuve, donc éteint dans les tests.
+        Les scénarios qui éprouvent les trois passes doivent l'allumer eux-mêmes
+        C'est ce qui rend le test de la version éteinte lisible en regard.
+        """
+        porteur = self.env.ref('project_knowledge_matrix.group_document_user')
+        interrupteur = self.env.ref(
+            'project_knowledge_matrix.group_document_distribution')
+        porteur.write({
+            'implied_ids': [(4 if allume else 3, interrupteur.id)],
+        })
+
     def _document(self, code, **kwargs):
         valeurs = {
             'name': f'Document {code}',
@@ -142,6 +156,7 @@ class TestReviewAndExpirationReminders(DocumentCronCase):
 class TestDailyMaintenance(DocumentCronCase):
 
     def test_the_single_cron_runs_the_three_passes(self):
+        self._allumer_distribution()
         appelees = []
         Document = self.env['project.document']
         Distribution = self.env['project.document.distribution']
@@ -163,6 +178,7 @@ class TestDailyMaintenance(DocumentCronCase):
         laissait les deux autres travailler. Une seule tâche sans point de
         reprise perdrait cette propriété en silence.
         """
+        self._allumer_distribution()
         appelees = []
         Document = self.env['project.document']
         Distribution = self.env['project.document.distribution']

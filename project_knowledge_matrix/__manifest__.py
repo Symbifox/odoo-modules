@@ -1,6 +1,6 @@
 {
     'name': 'Project Knowledge Matrix',
-    'version': '18.0.11.2.0',
+    'version': '18.0.11.5.0',
     'category': 'Services/Project',
     'summary': 'Base de connaissances projets, politiques et documentation',
     'description': """
@@ -21,7 +21,7 @@ Fonctionnalités:
 * Stockage sécurisé des identifiants avec chiffrement
 * Rotation des mots de passe avec audit
 * Suivi des versions de documents clients et internes
-* Distribution et accusé de réception des documents
+* Distribution et accusé de réception des documents (optionnel, éteint par défaut)
 * Gestion des politiques et procédures internes
 * Suivi de conformité pour les employés
 * Dates d'expiration et de révision avec rappels automatiques

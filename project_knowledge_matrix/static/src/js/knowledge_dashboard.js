@@ -428,12 +428,16 @@ export class KnowledgeDashboard extends Component {
     }
 
     openExpiringCredentials() {
+        // Le domaine doit refléter get_credential_metrics à l'identique. Il a
+        // porté le même défaut que le compteur : il cherchait des identifiants
+        // « actifs » alors que la tâche quotidienne les fait passer à
+        // « expiring ». Compteur et liste annonçaient zéro de concert.
         this.action.doAction({
             type: "ir.actions.act_window",
             name: "Identifiants expirant sous 30 jours",
             res_model: "project.credential",
             views: [[false, "list"], [false, "form"]],
-            domain: [...this._getProjectDomain("project.credential"), ["state", "=", "active"], ["expiration_date", ">=", this._dateStr(0)], ["expiration_date", "<=", this._dateStr(30)]],
+            domain: [...this._getProjectDomain("project.credential"), ["state", "=", "expiring"]],
             context: {},
         });
     }
@@ -444,7 +448,7 @@ export class KnowledgeDashboard extends Component {
             name: "Identifiants expirés",
             res_model: "project.credential",
             views: [[false, "list"], [false, "form"]],
-            domain: [...this._getProjectDomain("project.credential"), ["state", "=", "active"], ["expiration_date", "<", this._dateStr(0)]],
+            domain: [...this._getProjectDomain("project.credential"), ["state", "=", "expired"]],
             context: {},
         });
     }
