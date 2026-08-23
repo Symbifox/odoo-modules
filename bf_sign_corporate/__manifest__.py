@@ -1,6 +1,6 @@
 {
     'name': "Symbifox — Signature des résolutions corporatives",
-    'version': '18.0.1.1.1',
+    'version': '18.0.1.2.1',
     'category': 'Productivity/Sign',
     'summary': "Envoyer une résolution corporative pour signature électronique (bf_sign).",
     'description': """

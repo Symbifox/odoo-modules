@@ -22,13 +22,21 @@ class CorporateResolution(models.Model):
         """The partners expected to sign this resolution.
 
         Single source of truth for both the default-signer list and the
-        pre-send email check. Board resolutions are signed by the active
-        directors; for shareholder resolutions there is no shareholder registry
-        model, so we seed with the mover (and seconder, if any).
+        pre-send email check.
+
+        The signatory lines carried by the resolution win: they are the same
+        list the printed PDF signs off, and they are the only place that knows
+        about a signer who is neither a director nor the mover — an officer
+        countersigning an interest disclosure, say. Absent those, board
+        resolutions fall back to the directors in office on the meeting date,
+        and shareholder resolutions to the mover (and seconder, if any), there
+        being no shareholder registry model.
         """
         self.ensure_one()
+        if self.signatory_ids:
+            return self.signatory_ids.mapped("partner_id")
         if self.resolution_type in ("board", "written_board"):
-            return self._get_active_directors().mapped("partner_id")
+            return self._get_directors_at_date().mapped("partner_id")
         return self.mover_id | self.seconder_id
 
     def _sign_default_signers(self):
