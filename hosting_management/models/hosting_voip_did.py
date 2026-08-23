@@ -4,7 +4,7 @@
 Le DID est un actif d'hébergement facturable au même titre qu'un domaine ou
 une licence : il a un client, un coût mensuel, un état, et des statistiques
 d'usage (CDR). Alimenté en LECTURE SEULE depuis l'API VOIP.ms (getDIDsInfo).
-Aucune écriture vers VOIP.ms (cf. tâche #23192).
+Aucune écriture vers VOIP.ms.
 """
 import json
 import logging
@@ -171,7 +171,7 @@ class HostingVoipDid(models.Model):
     @api.model
     def _sync_dids(self, now):
         """Upsert des DID depuis getDIDsInfo. Jamais d'unlink : un DID disparu
-        passe à l'état ``inactive`` (cf. numéros Jace/NZ déjà relâchés)."""
+        passe à l'état ``inactive`` (cas d'un numéro déjà relâché)."""
         dids = self._voipms_fetch_dids()
         seen = set()
         count = 0

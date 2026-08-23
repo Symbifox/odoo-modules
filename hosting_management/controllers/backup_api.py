@@ -67,7 +67,19 @@ class BackupAPIController(http.Controller):
         csrf=False,
     )
     def receive_backup_report(self, **kwargs):
-        """Backup report endpoint, api_key auth."""
+        """Backup report endpoint, api_key auth.
+
+        api_key auth only proves *who* the caller is — any internal user can mint
+        an API key for themselves. Backup telemetry is created as sudo, so without
+        an authorization check any user could forge success/failure runs and
+        trigger report emails/ntfy. Require the hosting-manager group. (Real
+        backup agents use /report/public with the X-Backup-Token instead.)"""
+        if not request.env.user.has_group(
+            "hosting_management.group_hosting_manager"
+        ):
+            return request.make_json_response(
+                {"success": False, "error": "Forbidden"}, status=403,
+            )
         return self._dispatch_backup_report()
 
     @http.route(
