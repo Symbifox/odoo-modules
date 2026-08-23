@@ -584,7 +584,7 @@ class ContactPersona(models.Model):
         """True when a token can plausibly be used as "Bonjour <token>".
 
         Guards the mirroring fallback below: a shared mailbox is named "Info"
-        or "ventes@koumbit.org", and greeting it by that is worse than saying
+        or "ventes@exemple.coop", and greeting it by that is worse than saying
         nothing at all.
         """
         token = (value or "").strip()
