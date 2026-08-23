@@ -77,7 +77,6 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_chatter_timesheet` | Symbifox — Feuille de temps depuis le chatter | 18.0.1.2.0 | LGPL-3 | Checkbox in the chatter composer to log a timesheet entry alongside an internal note. |
 | `bf_claude_chat` | GenFox | 18.0.1.13.2 | BUSL-1.1 | Chat with GenFox, the AI assistant, directly inside Odoo |
 | `bf_claude_chat_cockpit` | GenFox — Cockpit | 18.0.1.0.0 | BUSL-1.1 | Vue d'administration des sessions GenFox : pannes de flux et consommation |
-| `bf_client_onboarding` | BF Client Onboarding | 18.0.1.0.0 | LGPL-3 | Onglet Progression sur project.project : NDA, intake, kickoff, activation |
 | `bf_contact_enrichment` | Enrichissement de contacts | 18.0.1.2.1 | BUSL-1.1 | Business cards (OCR) from the desktop or an installable mobile page, email signatures, vCard import, duplicate detection and completeness scoring, powered by GenFox |
 | `bf_cx` | Expérience client | 18.0.1.8.0 | BUSL-1.1 | Customer experience measurement: NPS programs, continuous feedback, complaints and consent-tracked testimonials |
 | `bf_cx_appointment` | Expérience client : feedback post-rendez-vous | 18.0.1.1.0 | BUSL-1.1 | Three-smiley feedback request when an appointment is completed (opt-in) |
@@ -99,7 +98,6 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_cx_website` | Expérience client : témoignages sur le site web | 18.0.1.1.0 | BUSL-1.1 | Public /temoignages page rendered dynamically from published testimonials |
 | `bf_dark_mode` | Symbifox Dark Mode | 18.0.1.1.0 | LGPL-3 | Dark mode for Odoo using the Symbifox palette |
 | `bf_dashboard` | Tableau de bord Symbifox | 18.0.1.0.0 | BUSL-1.1 | Unified dashboard aggregating billing, hosting, knowledge and privacy |
-| `bf_dashboard_split` | Tableau de bord — vue 3 panneaux | 18.0.1.4.0 | LGPL-3 | Vue client Odoo affichant 3 actions Odoo en iframe (haut-gauche, haut-droite, bas) avec séparateurs redimensionnables |
 | `bf_default_all_companies` | BF Default All Companies | 18.0.1.0.0 | LGPL-3 | Pre-selects every allowed company in the multi-company switcher on first login |
 | `bf_document_approval` | Documents — Approbation à plusieurs | 18.0.1.0.0 | BUSL-1.1 | A policy is published only once everyone who had to weigh in has done so, and its distribution follows the RACI recorded in the knowledge matrix |
 | `bf_document_nextcloud_sync` | Document Nextcloud Sync | 18.0.1.3.0 | LGPL-3 | Document sync between Odoo and Nextcloud via WebDAV |
@@ -110,7 +108,6 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_fundraising_web` | Levée de fonds — Web & Portail donateur | 18.0.1.0.2 | AGPL-3 | Public website donation form + donor portal (giving history and official receipt download) |
 | `bf_gamification` | Fox Quest | 18.0.2.3.0 | BUSL-1.1 | Gamification system with XP, levels, badges, and rewards |
 | `bf_helpdesk` | Symbifox — Helpdesk | 18.0.4.3.2 | AGPL-3 | Branded helpdesk extension: per-team public form, hour-bank ribbon, waiting states, ntfy critical hook, persona panel, knowledge-matrix link, ticket→meeting, IA triage via GenFox, CSAT on close, branded portal, dashboard tile, IMAP gateway hardening, SLA + macros + auto-tag + auto-ack, ticket timesheets (hour-bank deduction), branded client updates |
-| `bf_helpdesk_website_form` | Blue Fox — Helpdesk Website Form opt-in | 18.0.1.0.0 | LGPL-3 | Opt fields of helpdesk.ticket into website form builder |
 | `bf_home` | Accueil Symbifox | 18.0.1.1.1 | BUSL-1.1 | Home screen replacing the app grid, ordered by who is blocked: your day, what waits on others, money, risk — every figure opens its filtered list |
 | `bf_hour_bank` | Banque d'heures | 18.0.1.15.0 | BUSL-1.1 | Automated tracking of client hour banks with threshold-based proactive notifications (unbilled hours, % of allocated budget, balance floor) |
 | `bf_invoice_ocr` | Symbifox — Invoice OCR Scanner | 18.0.1.0.1 | BUSL-1.1 | Extract vendor bill data from PDF attachments via the bf_llm gateway |
@@ -133,7 +130,6 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_outreach_email` | Démarchage — réponses courriel | 18.0.1.0.0 | BUSL-1.1 | Recognises replies from outreach targets in the received-email archive |
 | `bf_persona` | Persona des contacts | 18.0.2.2.0 | BUSL-1.1 | Active relationship intelligence: composer hint with auto-cc, monthly auto-seed from email signals, weekly degradation detector with optional ntfy alert, kanban dashboard |
 | `bf_process` | Cartographie de processus | 18.0.4.2.0 | BUSL-1.1 | Living AS-IS process maps stored as records, not files: BPMN 2.0 and diagrams.net export, an in-app SVG viewer, per-activity validation sign-off, versioning with freeze and diff, and BPMN re-import |
-| `bf_progression_gantt` | Progression — Échéancier Gantt | 18.0.1.0.0 | LGPL-3 | Visualisation Gantt (niveau tâche, regroupée par étape de progression) des mandats d'accompagnement, en complément de Step-by-Step. |
 | `bf_project_merge` | Symbifox — Regroupement de tâches | 18.0.1.0.0 | LGPL-3 | Merge tasks by reassigning their content (messages, activities, hours, dependencies) to the kept task, then archive the rest. |
 | `bf_receipt_ca` | Reçus de dons — Canada (ARC + Revenu Québec) | 18.0.1.0.4 | AGPL-3 | CRA + Revenu Québec compliant official donation receipts, in French — eligible amount, advantage, in-kind gifts, void/reissue |
 | `bf_recurrence` | Symbifox — Ancrage de la récurrence | 18.0.1.0.0 | LGPL-3 | Choose, per recurring series, whether the next deadline is measured from the old deadline or from the actual completion date |
@@ -162,7 +158,6 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_timesheet_timer` | BF Timer - Feuilles de temps | 18.0.1.10.0 | LGPL-3 | Global timesheet timer with multi-timer support and an OWL UI |
 | `bf_timezone` | Symbifox Timezone Utilities | 18.0.1.0.0 | LGPL-3 | Shared timezone helpers and a configurable default timezone for Symbifox modules |
 | `bf_universal_search` | BF Recherche universelle | 18.0.2.0.1 | LGPL-3 | Cross-module search through the command palette |
-| `bf_webmail` | Courriel Blue Fox | 18.0.1.2.0 | LGPL-3 | Accès au courriel SnappyMail depuis la barre Odoo |
 | `bluefox_branding` | Symbifox Branding | 18.0.3.4.1 | BUSL-1.1 | Per-company brand color + email layout overrides driven by `bf_lexend` company fields (CSS variables injected via QWeb layout — no SCSS recompile) |
 | `calendar_nextcloud_sync` | Calendar Nextcloud Sync | 18.0.2.12.0 | LGPL-3 | Bidirectional calendar synchronization between Odoo and Nextcloud over CalDAV, and Google Calendar (API v3/OAuth2) |
 | `contacts_nextcloud_sync` | Contacts Nextcloud Sync | 18.0.1.2.0 | LGPL-3 | Sync Odoo contacts with a Nextcloud address book via CardDAV |
