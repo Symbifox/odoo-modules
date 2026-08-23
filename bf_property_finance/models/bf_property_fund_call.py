@@ -273,6 +273,23 @@ class BfPropertyFundCall(models.Model):
         return True
 
     def action_close(self):
+        """Clore un appel, mais pas un appel jamais transmis.
+
+        Un appel en brouillon n'a été porté à la connaissance de personne. Le
+        clore laisserait au dossier une contribution que nul n'a été appelé à
+        payer, et qui compterait pourtant dans l'appelé de l'exercice. Un appel
+        en brouillon se supprime ; il ne se clôt pas.
+        """
+        for call in self:
+            if call.state == "draft":
+                raise UserError(
+                    _(
+                        "L'appel « %(name)s » n'a jamais été transmis. "
+                        "Transmettez-le, ou supprimez-le : un appel en "
+                        "brouillon ne se clôt pas."
+                    )
+                    % {"name": call.name}
+                )
         self.write({"state": "closed"})
         return True
 

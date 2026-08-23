@@ -312,13 +312,26 @@ class BfPropertyAttestation(models.Model):
         ).sorted(lambda i: i.major_work_year)
         if not rows:
             return False
+        # ⚠️ Le `_()` se hisse HORS de l'expression génératrice. Odoo remonte la
+        # frame appelante pour retrouver le module et la langue ; dans une
+        # genexpr il n'y arrive pas, journalise « no translation language
+        # detected, skipping translation » avec la pile complète, et rend la
+        # chaîne NON TRADUITE. Le défaut ne se voit qu'au journal.
+        template = _("%(year)d : %(work)s (%(item)s), coût estimé %(cost)s")
         return "\n".join(
-            _("%(year)d : %(work)s (%(item)s), coût estimé %(cost).2f")
+            template
             % {
                 "year": row.major_work_year,
                 "work": row.major_work or row.name,
                 "item": row.name,
-                "cost": row.major_work_cost,
+                # ⚠️ Jamais de flottant brut dans une phrase destinée à être
+                # lue : ce texte s'imprime sur l'attestation remise à un
+                # acquéreur, où « 45000.00 » ne se lit pas.
+                "cost": formatLang(
+                    self.env,
+                    row.major_work_cost or 0.0,
+                    currency_obj=self.currency_id,
+                ),
             }
             for row in rows
         )

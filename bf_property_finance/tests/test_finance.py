@@ -1865,3 +1865,70 @@ class TestFinance(TransactionCase):
         flipped = self.env["bf.property.fund.call.line"]._cron_refresh_overdue()
         self.assertEqual(flipped, 4)
         self.assertTrue(all(call.line_ids.mapped("is_overdue")))
+
+    # ── Gardes des transitions d'état (QA du 2026-08-22) ──
+    #
+    # Ces trois méthodes écrivaient l'état sans rien vérifier, et aucun test ne
+    # les appelait : le QA statique les a trouvées, une sonde a montré ce
+    # qu'elles laissaient passer.
+
+    def test_an_unfixed_exercise_does_not_close(self):
+        """Art. 1072 : le cycle commence quand le conseil FIXE la contribution.
+
+        Clore un exercice resté en brouillon affirme qu'un exercice s'est
+        déroulé alors que rien n'a été décidé.
+        """
+        budget = self._budget(lines=[{"name": "Entretien", "amount": 1000.0}])
+        self.assertEqual(budget.state, "draft")
+        with self.assertRaises(UserError):
+            budget.action_close()
+        budget.consultation_assembly_id = self._assembly()
+        budget.action_consult()
+        with self.assertRaises(UserError):
+            budget.action_close()
+        self.assertEqual(budget.state, "consulted")
+
+    def test_a_fixed_exercise_closes_and_reclosing_changes_nothing(self):
+        budget = self._consulted_budget([{"name": "Entretien", "amount": 1000.0}])
+        budget.action_fix()
+        budget.action_close()
+        self.assertEqual(budget.state, "closed")
+        budget.action_close()
+        self.assertEqual(budget.state, "closed")
+
+    def test_an_exercise_with_a_sent_call_does_not_reopen(self):
+        """Art. 1072 al. 3 : les copropriétaires ont été avisés du montant.
+
+        Rouvrir le budget rouvrirait à la modification l'assiette de ce qui a
+        déjà été réclamé, sans que l'appel bouge. Même principe que l'état des
+        charges de l'art. 1069, qui ne se recalcule pas une fois fourni.
+        """
+        budget = self._consulted_budget([{"name": "Entretien", "amount": 1000.0}])
+        budget.action_fix()
+        call = self._issued_call(budget)
+        self.assertEqual(call.state, "issued")
+        with self.assertRaises(UserError):
+            budget.action_reset_to_draft()
+        self.assertNotEqual(budget.state, "draft")
+
+    def test_an_exercise_whose_calls_are_all_draft_reopens(self):
+        budget = self._consulted_budget([{"name": "Entretien", "amount": 1000.0}])
+        call = self._call(budget)
+        self.assertEqual(call.state, "draft")
+        budget.action_reset_to_draft()
+        self.assertEqual(budget.state, "draft")
+
+    def test_a_call_never_sent_does_not_close(self):
+        """Un appel en brouillon n'a été porté à la connaissance de personne."""
+        budget = self._consulted_budget([{"name": "Entretien", "amount": 1000.0}])
+        call = self._call(budget)
+        with self.assertRaises(UserError):
+            call.action_close()
+        self.assertEqual(call.state, "draft")
+
+    def test_a_sent_call_closes(self):
+        budget = self._consulted_budget([{"name": "Entretien", "amount": 1000.0}])
+        budget.action_fix()
+        call = self._issued_call(budget)
+        call.action_close()
+        self.assertEqual(call.state, "closed")

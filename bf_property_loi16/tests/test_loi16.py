@@ -594,6 +594,36 @@ class TestLoi16(TransactionCase):
         # Le travail prévu dans vingt ans est hors de la fenêtre du par. 8°, d).
         self.assertNotIn("cabine", attestation.works_planned_10y)
 
+    def test_the_planned_works_print_a_readable_amount(self):
+        """Le coût s'imprime en monnaie, jamais en flottant brut.
+
+        Ce texte est repris tel quel sur l'attestation remise à un acquéreur.
+        « 45000.00 » n'y a pas sa place. Même famille de défaut que les règles
+        du budget, corrigée là aussi par formatLang.
+        """
+        log = self._established_log()
+        log.item_ids[0].major_work_cost = 45000.0
+        text = self._attestation().works_planned_10y
+        self.assertNotIn("45000.0", text)
+        self.assertNotIn("45000.00", text)
+        # Un montant formaté porte un séparateur de milliers et un symbole.
+        self.assertIn("45", text)
+        self.assertIn("$", text)
+
+    def test_the_planned_works_do_not_lose_their_translation(self):
+        """Le `_()` doit rester hors de l'expression génératrice.
+
+        Odoo remonte la frame appelante pour retrouver le module et la langue.
+        Dans une genexpr il n'y arrive pas : il journalise « no translation
+        language detected, skipping translation » et rend la chaîne non
+        traduite. Rien ne casse, rien n'échoue, et le défaut ne se voit qu'au
+        journal. D'où ce test, qui écoute le journal.
+        """
+        self._established_log()
+        attestation = self._attestation()
+        with self.assertNoLogs("odoo.tools.translate", level="WARNING"):
+            self.assertTrue(attestation._planned_works_text())
+
     def test_the_study_recommendation_reaches_the_attestation(self):
         study = self._study()
         study.action_obtain()

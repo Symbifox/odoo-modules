@@ -479,10 +479,63 @@ class BfPropertyBudget(models.Model):
         return True
 
     def action_close(self):
+        """Clore un exercice, mais pas un exercice qui n'a jamais été fixé.
+
+        Art. 1072 C.c.Q. : le cycle commence quand le conseil FIXE la
+        contribution, après consultation de l'assemblée. Clore un budget resté
+        en brouillon ou tout juste consulté affirme qu'un exercice s'est
+        déroulé alors que rien n'a été décidé. Reclore un exercice déjà clos ne
+        change rien et ne lève rien.
+        """
+        for budget in self:
+            if budget.state in ("draft", "consulted"):
+                raise UserError(
+                    _(
+                        "L'exercice « %(name)s » n'a pas été fixé par le "
+                        "conseil : il est %(state)s. Art. 1072 C.c.Q. : la "
+                        "contribution se fixe après consultation de "
+                        "l'assemblée. Un exercice qui n'a jamais été fixé ne "
+                        "se clôt pas."
+                    )
+                    % {
+                        "name": budget.name,
+                        "state": dict(
+                            self._fields["state"].selection
+                        )[budget.state].lower(),
+                    }
+                )
         self.write({"state": "closed"})
         return True
 
     def action_reset_to_draft(self):
+        """Rouvrir un exercice, sauf si des contributions sont déjà transmises.
+
+        ⚠️ C'est la garde qui compte ici. Un appel de fonds à l'état
+        « transmis » a été porté à la connaissance des copropriétaires
+        (art. 1072 al. 3), et il fixe le montant que chacun doit. Ramener le
+        budget au brouillon rouvrirait à la modification l'assiette de ce qui a
+        déjà été réclamé, sans que l'appel bouge : le module afficherait alors
+        un exercice et des appels qui ne se répondent plus. Même principe que
+        l'état des charges de l'art. 1069, qui ne se recalcule pas une fois
+        fourni.
+        """
+        for budget in self:
+            sent = budget.call_ids.filtered(lambda c: c.state != "draft")
+            if sent:
+                raise UserError(
+                    _(
+                        "L'exercice « %(name)s » porte %(count)d appel(s) déjà "
+                        "transmis : %(calls)s. Art. 1072 al. 3 C.c.Q. : les "
+                        "copropriétaires ont été avisés du montant de leurs "
+                        "contributions. Reprenez l'appel avant de rouvrir "
+                        "l'exercice."
+                    )
+                    % {
+                        "name": budget.name,
+                        "count": len(sent),
+                        "calls": ", ".join(sent.mapped("name")),
+                    }
+                )
         self.write({"state": "draft"})
         return True
 
