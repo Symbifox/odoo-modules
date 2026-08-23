@@ -1,0 +1,100 @@
+.bf-dash-split {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    background: #f4f5f7;
+}
+
+.bf-dash-top {
+    display: flex;
+    flex-direction: row;
+    height: 50%;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.bf-dash-bottom {
+    display: flex;
+    height: 50%;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.bf-dash-pane {
+    position: relative;
+    overflow: hidden;
+    background: white;
+    border: 1px solid #dee2e6;
+    box-sizing: border-box;
+    min-width: 0;
+    min-height: 0;
+
+    > .o_view_controller,
+    > .o_action_manager {
+        position: absolute;
+        inset: 28px 0 0 0;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .o_content {
+        overflow: auto;
+        min-height: 0;
+        flex: 1 1 auto;
+    }
+}
+
+.bf-dash-tl, .bf-dash-tr {
+    width: 50%;
+    flex: 0 0 50%;
+    height: 100%;
+}
+
+.bf-dash-bottom > .bf-dash-pane {
+    width: 100%;
+    flex: 1 1 auto;
+    height: 100%;
+}
+
+.bf-dash-switcher {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 5;
+    height: 28px;
+    background: #ffffff;
+    border-bottom: 1px solid #dee2e6;
+    border-left: 1px solid #dee2e6;
+    border-bottom-left-radius: 4px;
+    padding: 2px 4px;
+    display: flex;
+
+    .btn {
+        border: 0;
+        background: transparent;
+        padding: 0 8px;
+        height: 24px;
+        line-height: 24px;
+        color: #6c757d;
+        border-radius: 3px;
+        margin: 0 1px;
+        font-size: 12px;
+
+        &:hover {
+            color: #29ABE1;
+            background: rgba(41, 171, 225, 0.1);
+        }
+    }
+
+    .bf-dash-switch-active {
+        background: #2D3031;
+        color: #ffffff;
+
+        &:hover {
+            background: #2D3031;
+            color: #ffffff;
+        }
+    }
+}

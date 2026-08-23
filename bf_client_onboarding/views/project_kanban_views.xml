@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Cockpit kanban: project.project grouped by onboarding_state -->
+    <record id="view_project_kanban_onboarding" model="ir.ui.view">
+        <field name="name">project.project.kanban.onboarding</field>
+        <field name="model">project.project</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="onboarding_state" class="o_kanban_small_column"
+                    sample="1" js_class="project_kanban">
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="onboarding_state"/>
+                <field name="onboarding_progress"/>
+                <field name="onboarding_responsible_id"/>
+                <field name="onboarding_state_last_change"/>
+                <field name="last_meeting_date"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_global_click">
+                            <div class="o_kanban_record_top">
+                                <div class="o_kanban_record_headings">
+                                    <strong class="o_kanban_record_title">
+                                        <field name="name"/>
+                                    </strong>
+                                    <div class="o_kanban_record_subtitle text-muted">
+                                        <field name="partner_id"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="o_kanban_record_body">
+                                <field name="onboarding_progress" widget="progressbar"/>
+                                <div t-if="record.last_meeting_date.raw_value">
+                                    <small class="text-muted">
+                                        Dernière rencontre : <field name="last_meeting_date"/>
+                                    </small>
+                                </div>
+                            </div>
+                            <div class="o_kanban_record_bottom">
+                                <div class="oe_kanban_bottom_left"/>
+                                <div class="oe_kanban_bottom_right">
+                                    <field name="onboarding_responsible_id" widget="many2one_avatar_user"/>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="action_project_onboarding_cockpit" model="ir.actions.act_window">
+        <field name="name">Onboarding clients</field>
+        <field name="res_model">project.project</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="view_id" ref="view_project_kanban_onboarding"/>
+        <field name="domain">[('onboarding_state', '!=', False), ('onboarding_state', '!=', 'active')]</field>
+        <field name="context">{'search_default_group_by_onboarding_state': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Aucun projet en cours d'onboarding.
+            </p>
+            <p>
+                Quand un nouveau client arrive, ouvrez le projet et utilisez
+                l'onglet « Progression » pour déclencher la NDA, l'intake puis
+                confirmer le kickoff.
+            </p>
+        </field>
+    </record>
+
+</odoo>

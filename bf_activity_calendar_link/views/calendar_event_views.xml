@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_calendar_event_form_activity_link" model="ir.ui.view">
+        <field name="name">calendar.event.form.activity.link</field>
+        <field name="model">calendar.event</field>
+        <field name="inherit_id" ref="calendar.view_calendar_event_form"/>
+        <field name="arch" type="xml">
+            <!-- Stat button in button box -->
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_create_linked_activity"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="fa-clock-o">
+                    <field name="activity_ids" widget="statinfo"
+                           string="Activités"/>
+                </button>
+            </xpath>
+            <!-- Activities tab in notebook -->
+            <xpath expr="//notebook" position="inside">
+                <page name="page_linked_activities" string="Activités liées">
+                    <field name="activity_ids" readonly="1"
+                           context="{'default_calendar_event_id': id}">
+                        <list create="false" delete="false">
+                            <field name="summary"/>
+                            <field name="activity_type_id"/>
+                            <field name="date_deadline"/>
+                            <field name="user_id" widget="many2one_avatar_user"/>
+                            <field name="state"/>
+                            <field name="res_name" string="Document"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

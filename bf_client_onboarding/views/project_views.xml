@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Onboarding tab on project.project form -->
+    <record id="view_project_form_onboarding" model="ir.ui.view">
+        <field name="name">project.project.form.onboarding</field>
+        <field name="model">project.project</field>
+        <field name="inherit_id" ref="project.edit_project"/>
+        <field name="priority">30</field>
+        <field name="arch" type="xml">
+
+            <xpath expr="//notebook" position="inside">
+                <page string="Progression" name="onboarding">
+
+                    <header>
+                        <field name="onboarding_state" widget="statusbar"
+                               statusbar_visible="not_started,nda_pending,nda_signed,intake_pending,intake_completed,kickoff_done,active"
+                               options="{'clickable': '1'}"/>
+                        <button name="action_send_nda" type="object"
+                                string="Envoyer NDA" class="btn-primary"
+                                invisible="onboarding_state not in ('not_started', 'on_hold')"/>
+                        <button name="action_mark_nda_signed" type="object"
+                                string="NDA signée" class="btn-primary"
+                                invisible="onboarding_state != 'nda_pending'"/>
+                        <button name="action_send_intake" type="object"
+                                string="Envoyer intake" class="btn-primary"
+                                invisible="onboarding_state != 'nda_signed'"/>
+                        <button name="action_mark_intake_completed" type="object"
+                                string="Intake reçue"
+                                invisible="onboarding_state != 'intake_pending'"/>
+                        <button name="action_mark_kickoff_done" type="object"
+                                string="Confirmer kickoff" class="btn-primary"
+                                invisible="onboarding_state != 'intake_completed'"/>
+                        <button name="action_activate" type="object"
+                                string="Activer" class="btn-primary"
+                                invisible="onboarding_state not in ('kickoff_done', 'on_hold')"/>
+                        <button name="action_block" type="object"
+                                string="Mettre en attente"
+                                invisible="onboarding_state in ('on_hold', 'active', 'not_started')"/>
+                        <button name="action_unblock" type="object"
+                                string="Débloquer" class="btn-secondary"
+                                invisible="onboarding_state != 'on_hold'"/>
+                    </header>
+
+                    <group>
+                        <group>
+                            <field name="onboarding_progress" widget="progressbar"/>
+                            <field name="onboarding_responsible_id"/>
+                        </group>
+                        <group>
+                            <field name="onboarding_state_last_change" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <group invisible="onboarding_state != 'on_hold'"
+                           string="Blocage">
+                        <field name="onboarding_blocked_reason" nolabel="1"
+                               placeholder="Pourquoi le projet est-il en attente ?"/>
+                    </group>
+
+                    <separator string="Étapes"/>
+                    <group>
+                        <group string="NDA">
+                            <field name="nda_letter_document_id" readonly="1"/>
+                            <field name="nda_libresign_file_uuid"
+                                   invisible="not nda_libresign_file_uuid"
+                                   readonly="1"/>
+                            <field name="nda_signed_date" readonly="1"/>
+                        </group>
+                        <group string="Intake">
+                            <field name="intake_survey_id"/>
+                            <field name="intake_survey_response_id" readonly="1"/>
+                            <field name="intake_completed_date" readonly="1"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Kickoff">
+                            <field name="kickoff_meeting_id"
+                                   options="{'no_create': True}"/>
+                            <field name="kickoff_completed_date" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <separator string="Signaux en cours"/>
+                    <group>
+                        <group>
+                            <field name="knowledge_progress" widget="progressbar" readonly="1"/>
+                            <field name="consent_status" widget="badge" readonly="1"
+                                   decoration-success="consent_status == 'complete'"
+                                   decoration-warning="consent_status == 'partial'"
+                                   decoration-info="consent_status == 'pending'"
+                                   decoration-muted="consent_status == 'none'"/>
+                        </group>
+                        <group>
+                            <field name="last_meeting_date" readonly="1"/>
+                            <field name="hour_bank_balance" readonly="1"/>
+                        </group>
+                    </group>
+
+                </page>
+            </xpath>
+
+        </field>
+    </record>
+
+    <!-- Add onboarding_state to project list view (optional column) -->
+    <record id="view_project_list_onboarding" model="ir.ui.view">
+        <field name="name">project.project.list.onboarding</field>
+        <field name="model">project.project</field>
+        <field name="inherit_id" ref="project.view_project"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="onboarding_state" widget="badge" optional="show"
+                       decoration-success="onboarding_state == 'active'"
+                       decoration-info="onboarding_state in ('nda_signed', 'intake_completed', 'kickoff_done')"
+                       decoration-warning="onboarding_state in ('nda_pending', 'intake_pending')"
+                       decoration-danger="onboarding_state == 'on_hold'"
+                       decoration-muted="onboarding_state == 'not_started'"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

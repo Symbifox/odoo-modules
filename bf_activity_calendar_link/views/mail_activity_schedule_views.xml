@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="mail_activity_schedule_view_form_calendar_link" model="ir.ui.view">
+        <field name="name">mail.activity.schedule.form.calendar.link</field>
+        <field name="model">mail.activity.schedule</field>
+        <field name="inherit_id" ref="mail.mail_activity_schedule_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='summary']" position="after">
+                <field name="calendar_event_id"
+                       options="{'no_create': True, 'no_open': True, 'no_quick_create': True}"
+                       domain="[('partner_ids.user_ids', 'in', uid)]"
+                       invisible="plan_id"
+                       placeholder="Lier à un événement calendrier..."/>
+            </xpath>
+            <xpath expr="//field[@name='note']" position="before">
+                <div class="alert alert-info mb-2" role="status"
+                     invisible="not calendar_event_id">
+                    <field name="calendar_event_start" invisible="1"/>
+                    <field name="calendar_event_stop" invisible="1"/>
+                    <field name="calendar_event_location" invisible="1"/>
+                    <field name="calendar_event_sync_source" invisible="1"/>
+                    <div class="d-flex flex-wrap gap-3">
+                        <span>
+                            <strong>Quand : </strong>
+                            <field name="calendar_event_start" widget="daterange"
+                                   options="{'end_date_field': 'calendar_event_stop'}"
+                                   readonly="1" class="d-inline"/>
+                        </span>
+                        <span invisible="not calendar_event_location">
+                            <strong>Lieu : </strong>
+                            <field name="calendar_event_location" readonly="1" class="d-inline"/>
+                        </span>
+                        <span class="badge text-bg-info"
+                              invisible="calendar_event_sync_source != 'nextcloud'">
+                            Nextcloud
+                        </span>
+                    </div>
+                </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>
