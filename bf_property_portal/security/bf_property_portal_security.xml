@@ -166,6 +166,37 @@
             ])]</field>
         </record>
 
+        <!--
+            Demandes d'entretien : la sienne, et rien d'autre.
+
+            ⚠️ Un copropriétaire pourrait plaider qu'il a intérêt à voir les
+            billets ouverts sur les parties communes. On ne le lui donne pas :
+            un billet décrit souvent un problème chez quelqu'un, avec son
+            numéro de porte et ses mots à lui. L'art. 1070 al. 1 C.c.Q. ne met
+            au registre les renseignements personnels d'un tiers qu'avec son
+            consentement exprès ; publier le fil des voisins ferait exactement
+            l'inverse. Le syndicat, lui, voit tout depuis le bureau.
+
+            La création est ouverte au portail, mais elle est gardée par
+            `create()` côté serveur : un `unit_id` posté n'est pas une preuve.
+        -->
+        <record id="rule_request_portal" model="ir.rule">
+            <field name="name">Demandes d'entretien : la sienne seulement</field>
+            <field name="model_id" ref="model_bf_property_request"/>
+            <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+            <field name="domain_force">[('requester_partner_id', '=', user.partner_id.id)]</field>
+        </record>
+
+        <record id="rule_request_company" model="ir.rule">
+            <field name="name">Demandes d'entretien : multi-société</field>
+            <field name="model_id" ref="model_bf_property_request"/>
+            <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        </record>
+
         <!-- Cloisonnement multi-société, comme partout ailleurs dans la suite. -->
         <record id="rule_announcement_company" model="ir.rule">
             <field name="name">Annonces : multi-société</field>

@@ -9,3 +9,6 @@ access_property_syndicat_portal,bf.property.syndicat.portal,bf_property_core.mod
 access_property_building_portal,bf.property.building.portal,bf_property_core.model_bf_property_building,base.group_portal,1,0,0,0
 access_property_unit_portal,bf.property.unit.portal,bf_property_core.model_bf_property_unit,base.group_portal,1,0,0,0
 access_property_ownership_portal,bf.property.ownership.portal,bf_property_core.model_bf_property_ownership,base.group_portal,1,0,0,0
+access_property_request_user,bf.property.request.user,model_bf_property_request,bf_property_core.group_bf_property_user,1,0,0,0
+access_property_request_manager,bf.property.request.manager,model_bf_property_request,bf_property_core.group_bf_property_manager,1,1,1,1
+access_property_request_portal,bf.property.request.portal,model_bf_property_request,base.group_portal,1,0,1,0

@@ -13,6 +13,13 @@
                     <t t-set="url" t-value="'/my/property'"/>
                     <t t-set="placeholder_count" t-value="'property_unit_count'"/>
                 </t>
+                <t t-call="portal.portal_docs_entry">
+                    <t t-set="icon" t-value="'/bf_property_portal/static/description/icon.png'"/>
+                    <t t-set="title">Mes demandes d'entretien</t>
+                    <t t-set="text">Signaler un problème et suivre ce qu'il devient</t>
+                    <t t-set="url" t-value="'/my/property/requests'"/>
+                    <t t-set="placeholder_count" t-value="'property_request_count'"/>
+                </t>
             </xpath>
         </template>
 
@@ -90,6 +97,7 @@
                 <div class="d-flex gap-2">
                     <a class="btn btn-secondary" href="/my/property/announcements">Toutes les annonces</a>
                     <a class="btn btn-secondary" href="/my/property/documents">Les documents</a>
+                    <a class="btn btn-secondary" href="/my/property/requests">Mes demandes d'entretien</a>
                 </div>
             </t>
         </template>
@@ -169,6 +177,118 @@
                         </tr>
                     </tbody>
                 </table>
+            </t>
+        </template>
+
+
+        <!-- Demandes d'entretien. -->
+        <template id="portal_property_requests" name="Mes demandes d'entretien">
+            <t t-call="portal.portal_layout">
+                <t t-call="portal.portal_searchbar">
+                    <t t-set="title">Mes demandes d'entretien</t>
+                </t>
+
+                <div t-if="request.params.get('error') == 'unit'" class="alert alert-warning">
+                    Indiquez la fraction visée : votre compte en touche plus d'une.
+                </div>
+                <div t-if="request.params.get('error') == 'description'" class="alert alert-warning">
+                    Décrivez ce que vous constatez : c'est le corps de la demande.
+                </div>
+
+                <t t-if="not form_values['units']">
+                    <div class="alert alert-info" role="status">
+                        Aucune fraction n'est rattachée à votre compte, alors il n'y
+                        a personne à qui adresser une demande. Le syndicat inscrit
+                        les copropriétaires au registre de l'article 1070 du Code
+                        civil, et les locataires y figurent par leur nom et leur
+                        adresse.
+                    </div>
+                </t>
+
+                <t t-if="form_values['units']">
+                    <div class="card mb-4">
+                        <div class="card-header">Signaler quelque chose</div>
+                        <div class="card-body">
+                            <form action="/my/property/requests/new" method="post">
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label" for="unit_id">Fraction visée</label>
+                                        <select class="form-select" name="unit_id" id="unit_id">
+                                            <option value="">Aucune en particulier (hall, ascenseur, terrain)</option>
+                                            <option t-foreach="form_values['units']" t-as="unit"
+                                                    t-att-value="unit.id"
+                                                    t-esc="unit.display_name"/>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label" for="category">Catégorie</label>
+                                        <select class="form-select" name="category" id="category">
+                                            <option t-foreach="form_values['categories']" t-as="item"
+                                                    t-att-value="item[0]" t-esc="item[1]"/>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label" for="portion_type">Partie visée</label>
+                                    <select class="form-select" name="portion_type" id="portion_type">
+                                        <option t-foreach="form_values['portions']" t-as="item"
+                                                t-att-value="item[0]" t-esc="item[1]"/>
+                                    </select>
+                                    <div class="form-text">
+                                        Si vous hésitez, laissez « À déterminer » : c'est au
+                                        syndicat de qualifier la partie, et cela décide qui
+                                        porte la dépense (article 1064 du Code civil).
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label" for="description">Ce que vous constatez</label>
+                                    <textarea class="form-control" name="description" id="description"
+                                              rows="4" required="required"
+                                              placeholder="Où, depuis quand, ce que vous voyez ou entendez."/>
+                                </div>
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input" type="checkbox"
+                                           name="is_safety" id="is_safety" value="1"/>
+                                    <label class="form-check-label" for="is_safety">
+                                        Cela touche la sécurité des personnes ou la conservation
+                                        de l'immeuble
+                                    </label>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Envoyer la demande</button>
+                            </form>
+                        </div>
+                    </div>
+                </t>
+
+                <t t-if="not requests">
+                    <div class="alert alert-info" role="status">Aucune demande de votre part.</div>
+                </t>
+                <div t-foreach="requests" t-as="req" class="card mb-3">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <span>
+                            <span t-field="req.name"/>
+                            <span t-if="req.is_safety" class="badge text-bg-danger ms-2">Sécurité</span>
+                        </span>
+                        <span>
+                            <span class="badge text-bg-secondary" t-field="req.state"/>
+                            <small class="text-muted ms-2"><span t-field="req.date_submitted"/></small>
+                        </span>
+                    </div>
+                    <div class="card-body">
+                        <p class="mb-2" style="white-space: pre-line;" t-field="req.description"/>
+                        <p class="text-muted small mb-1">
+                            <span t-field="req.category"/>
+                            <span t-if="req.unit_id"> · <span t-field="req.unit_id.name"/></span>
+                            · <span t-field="req.cost_bearer"/>
+                        </p>
+                        <t t-if="req.resolution">
+                            <hr/>
+                            <p class="mb-0"><strong>Ce qui a été fait : </strong>
+                                <span t-field="req.resolution"/></p>
+                        </t>
+                    </div>
+                </div>
             </t>
         </template>
 

@@ -447,6 +447,7 @@ class TestPropertyPortalPages(HttpCase):
         )
         cls.announcement.action_publish()
 
+
     def test_the_three_pages_render_for_a_co_owner(self):
         self.authenticate("page_owner", "page_owner_pwd")
         for url, needle in [
@@ -502,3 +503,369 @@ class TestPropertyPortalPages(HttpCase):
         response = self.url_open("/my/home")
         self.assertEqual(response.status_code, 200)
         self.assertIn("Ma copropriété", response.text)
+
+
+@tagged("post_install", "-at_install")
+class TestPropertyRequest(TransactionCase):
+    """Le billet d'entretien : qui peut l'ouvrir, et qui porte la dépense.
+
+    ⚠️ Le billet n'est PAS le carnet d'entretien de l'art. 1070.2 : celui-là est
+    un document réglementaire établi par un professionnel indépendant, celui-ci
+    est un occupant qui signale une porte qui grince.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.syndicat = cls.env["bf.property.syndicat"].create(
+            {"name": "Syndicat des billets", "fraction_base": 1000,
+             "request_acknowledge_days": 3}
+        )
+        cls.other = cls.env["bf.property.syndicat"].create(
+            {"name": "Syndicat d'à côté", "fraction_base": 1000}
+        )
+        cls.building = cls.env["bf.property.building"].create(
+            {"name": "Immeuble des billets", "syndicat_id": cls.syndicat.id}
+        )
+        cls.other_building = cls.env["bf.property.building"].create(
+            {"name": "Immeuble d'à côté", "syndicat_id": cls.other.id}
+        )
+        cls.unit = cls.env["bf.property.unit"].create(
+            {"name": "401", "building_id": cls.building.id, "quote_part": 1000.0}
+        )
+        cls.other_unit = cls.env["bf.property.unit"].create(
+            {"name": "501", "building_id": cls.other_building.id, "quote_part": 1000.0}
+        )
+        cls.resident = cls.env["res.partner"].create(
+            {"name": "Résidente", "email": "residente@example.invalid"}
+        )
+        cls.env["bf.property.ownership"].create(
+            {"unit_id": cls.unit.id, "partner_id": cls.resident.id}
+        )
+        cls.outsider = cls.env["res.partner"].create(
+            {"name": "Étrangère", "email": "etrangere@example.invalid"}
+        )
+        portal_group = cls.env.ref("base.group_portal")
+        cls.resident_user = cls.env["res.users"].create(
+            {
+                "name": "Résidente",
+                "login": "request_resident@example.invalid",
+                "partner_id": cls.resident.id,
+                "groups_id": [(6, 0, [portal_group.id])],
+            }
+        )
+        cls.outsider_user = cls.env["res.users"].create(
+            {
+                "name": "Étrangère",
+                "login": "request_outsider@example.invalid",
+                "partner_id": cls.outsider.id,
+                "groups_id": [(6, 0, [portal_group.id])],
+            }
+        )
+
+    def _request(self, **kw):
+        vals = {
+            "syndicat_id": self.syndicat.id,
+            "building_id": self.building.id,
+            "unit_id": self.unit.id,
+            "requester_partner_id": self.resident.id,
+            "category": "plumbing",
+            "description": "Fuite sous l'évier depuis mardi.",
+        }
+        vals.update(kw)
+        return self.env["bf.property.request"].create(vals)
+
+    # ── Art. 1064 : trois régimes, pas deux ──
+
+    def test_a_general_common_portion_is_borne_by_every_fraction(self):
+        req = self._request(portion_type="common", work_type="maintenance")
+        self.assertIn("1064 al. 1", req.cost_bearer)
+        self.assertIn("Toutes les fractions", req.cost_bearer)
+
+    def test_current_repairs_on_a_restricted_portion_fall_on_its_users(self):
+        req = self._request(portion_type="restricted", work_type="maintenance")
+        self.assertIn("seuls copropriétaires", req.cost_bearer)
+
+    def test_major_repairs_on_a_restricted_portion_fall_on_everyone(self):
+        """⚠️ Le régime que la doctrine escamote.
+
+        Refaire l'étanchéité d'une terrasse privative n'est pas à la charge de
+        ses seuls bénéficiaires : l'al. 2 dit que la déclaration « peut
+        prévoir » autre chose, donc à défaut de clause, tout l'immeuble paie.
+        """
+        req = self._request(portion_type="restricted", work_type="major")
+        self.assertIn("Toutes les fractions", req.cost_bearer)
+        self.assertIn("1064 al. 2", req.cost_bearer)
+
+    def test_an_undetermined_work_type_on_a_restricted_portion_says_so(self):
+        req = self._request(portion_type="restricted", work_type="unknown")
+        self.assertIn("À déterminer", req.cost_bearer)
+
+    def test_a_private_portion_points_at_the_object_of_the_syndicat(self):
+        req = self._request(portion_type="private")
+        self.assertIn("1039", req.cost_bearer)
+
+    # ── La garde de création ──
+
+    def test_a_portal_user_cannot_open_a_request_next_door(self):
+        """🔴 Un `unit_id` posté par un navigateur n'est pas une preuve."""
+        with self.assertRaises(UserError):
+            self.env["bf.property.request"].with_user(self.resident_user).create(
+                {
+                    "syndicat_id": self.other.id,
+                    "building_id": self.other_building.id,
+                    "requester_partner_id": self.resident.id,
+                    "category": "other",
+                    "description": "Chez le voisin.",
+                }
+            )
+
+    def test_a_portal_user_without_any_fraction_cannot_open_anything(self):
+        with self.assertRaises(UserError):
+            self.env["bf.property.request"].with_user(self.outsider_user).create(
+                {
+                    "syndicat_id": self.syndicat.id,
+                    "requester_partner_id": self.outsider.id,
+                    "category": "other",
+                    "description": "Je passais par là.",
+                }
+            )
+
+    def test_a_portal_user_opens_a_request_where_they_live(self):
+        req = self.env["bf.property.request"].with_user(self.resident_user).create(
+            {
+                "syndicat_id": self.syndicat.id,
+                "building_id": self.building.id,
+                "unit_id": self.unit.id,
+                "requester_partner_id": self.resident.id,
+                "category": "plumbing",
+                "description": "Fuite sous l'évier.",
+            }
+        )
+        self.assertTrue(req.name.startswith("DE/"))
+        self.assertEqual(req.state, "submitted")
+
+    def test_a_request_never_mixes_two_syndicats(self):
+        with self.assertRaises(ValidationError):
+            self._request(unit_id=self.other_unit.id)
+
+    # ── Le fil ──
+
+    def test_a_request_does_not_close_on_nothing(self):
+        """Un fil fermé sans un mot ne vaut pas mieux qu'un fil laissé ouvert."""
+        req = self._request()
+        with self.assertRaises(UserError):
+            req.action_done()
+        req.resolution = "Joint remplacé."
+        req.action_done()
+        self.assertEqual(req.state, "done")
+        self.assertTrue(req.date_done)
+
+    def test_a_refusal_says_why(self):
+        req = self._request(portion_type="private")
+        with self.assertRaises(UserError):
+            req.action_refuse()
+        req.resolution = "Robinet intérieur, à la charge du copropriétaire."
+        req.action_refuse()
+        self.assertEqual(req.state, "refused")
+
+    def test_taking_charge_twice_is_refused(self):
+        req = self._request()
+        req.action_acknowledge()
+        self.assertEqual(req.state, "acknowledged")
+        with self.assertRaises(UserError):
+            req.action_acknowledge()
+
+    def test_starting_the_work_stamps_the_acknowledgement_it_skipped(self):
+        req = self._request()
+        req.action_start()
+        self.assertEqual(req.state, "in_progress")
+        self.assertTrue(req.date_acknowledged)
+
+    def test_reopening_clears_the_dates_it_had_set(self):
+        req = self._request(resolution="Réglé")
+        req.action_done()
+        req.action_reopen()
+        self.assertEqual(req.state, "submitted")
+        self.assertFalse(req.date_done)
+        self.assertFalse(req.date_acknowledged)
+
+    # ── L'engagement de prise en charge ──
+
+    def test_the_commitment_is_not_a_legal_deadline_and_defaults_to_none(self):
+        """Aucune disposition n'oblige le syndicat à répondre en N jours."""
+        plain = self.env["bf.property.syndicat"].create(
+            {"name": "Sans engagement", "fraction_base": 1000}
+        )
+        self.assertEqual(plain.request_acknowledge_days, 0)
+        building = self.env["bf.property.building"].create(
+            {"name": "Immeuble sans engagement", "syndicat_id": plain.id}
+        )
+        unit = self.env["bf.property.unit"].create(
+            {"name": "601", "building_id": building.id, "quote_part": 1000.0}
+        )
+        self.env["bf.property.ownership"].create(
+            {"unit_id": unit.id, "partner_id": self.resident.id}
+        )
+        req = self._request(syndicat_id=plain.id, building_id=building.id,
+                            unit_id=unit.id)
+        self.assertFalse(req.acknowledge_deadline)
+        self.assertFalse(req.is_overdue)
+
+    def test_a_commitment_that_has_lapsed_shows_and_searches(self):
+        req = self._request()
+        req.date_submitted = fields.Datetime.now() - timedelta(days=10)
+        req.invalidate_recordset(["acknowledge_deadline"])
+        self.assertTrue(req.is_overdue)
+        found = self.env["bf.property.request"].search([("is_overdue", "=", True)])
+        self.assertIn(req, found)
+        self.assertNotIn(
+            req, self.env["bf.property.request"].search([("is_overdue", "=", False)])
+        )
+
+    def test_a_request_taken_in_charge_is_no_longer_overdue(self):
+        req = self._request()
+        req.date_submitted = fields.Datetime.now() - timedelta(days=10)
+        req.invalidate_recordset(["acknowledge_deadline"])
+        self.assertTrue(req.is_overdue)
+        req.action_acknowledge()
+        self.assertFalse(req.is_overdue)
+
+    # ── Cloisonnement ──
+
+    def test_a_portal_user_reads_only_their_own_requests(self):
+        mine = self._request()
+        theirs = self._request(requester_partner_id=self.outsider.id)
+        seen = self.env["bf.property.request"].with_user(self.resident_user).search([])
+        self.assertIn(mine, seen)
+        self.assertNotIn(theirs, seen)
+
+
+@tagged("post_install", "-at_install")
+class TestPropertyRequestPortal(HttpCase):
+    """Déposer une demande depuis le portail, pour de vrai.
+
+    C'est l'essai qui traverse tout : le formulaire, le jeton CSRF, le
+    contrôleur, la garde du modèle et la séquence. Chacun de ces maillons a
+    déjà cassé.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.syndicat = cls.env["bf.property.syndicat"].create(
+            {"name": "Syndicat du dépôt", "fraction_base": 1000,
+             "request_acknowledge_days": 2}
+        )
+        cls.building = cls.env["bf.property.building"].create(
+            {"name": "Immeuble du dépôt", "syndicat_id": cls.syndicat.id}
+        )
+        cls.unit = cls.env["bf.property.unit"].create(
+            {"name": "701", "building_id": cls.building.id, "quote_part": 500.0}
+        )
+        cls.neighbour_unit = cls.env["bf.property.unit"].create(
+            {"name": "702", "building_id": cls.building.id, "quote_part": 500.0}
+        )
+        cls.partner = cls.env["res.partner"].create(
+            {"name": "Déposante", "email": "deposante@example.invalid"}
+        )
+        cls.neighbour = cls.env["res.partner"].create(
+            {"name": "Voisin", "email": "voisin@example.invalid"}
+        )
+        cls.env["bf.property.ownership"].create(
+            {"unit_id": cls.unit.id, "partner_id": cls.partner.id}
+        )
+        cls.env["bf.property.ownership"].create(
+            {"unit_id": cls.neighbour_unit.id, "partner_id": cls.neighbour.id}
+        )
+        cls.user = cls.env["res.users"].create(
+            {
+                "name": "Déposante",
+                "login": "depot_user",
+                "password": "depot_user_pwd",
+                "partner_id": cls.partner.id,
+                "groups_id": [(6, 0, [cls.env.ref("base.group_portal").id])],
+            }
+        )
+
+
+    def _csrf(self, html):
+        import re as _re
+
+        match = _re.search(r'name="csrf_token"[^>]*value="([^"]+)"', html)
+        self.assertTrue(match, "le formulaire doit porter un jeton CSRF")
+        return match.group(1)
+
+    def test_an_occupant_files_a_request_through_the_portal(self):
+        self.authenticate("depot_user", "depot_user_pwd")
+        page = self.url_open("/my/property/requests")
+        self.assertEqual(page.status_code, 200)
+        self.assertIn("Signaler quelque chose", page.text)
+
+        response = self.url_open(
+            "/my/property/requests/new",
+            data={
+                "csrf_token": self._csrf(page.text),
+                "unit_id": str(self.unit.id),
+                "category": "plumbing",
+                "portion_type": "common",
+                "description": "Le robinet du hall coule sans arrêt.",
+                "is_safety": "1",
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+
+        filed = self.env["bf.property.request"].search(
+            [("requester_partner_id", "=", self.partner.id)]
+        )
+        self.assertEqual(len(filed), 1)
+        self.assertEqual(filed.syndicat_id, self.syndicat)
+        self.assertEqual(filed.unit_id, self.unit)
+        self.assertEqual(filed.building_id, self.building)
+        self.assertTrue(filed.is_safety)
+        self.assertTrue(filed.name.startswith("DE/"))
+        self.assertTrue(filed.acknowledge_deadline)
+        # Elle se relit sur sa propre page.
+        listing = self.url_open("/my/property/requests")
+        self.assertIn("Le robinet du hall coule sans arrêt.", listing.text)
+
+    def test_posting_a_neighbours_unit_does_not_attach_it(self):
+        """🔴 Un `unit_id` posté par un navigateur n'est pas une preuve de lien.
+
+        Le contrôleur ne retient que les fractions de la personne, et la garde
+        du modèle repasse derrière.
+        """
+        self.authenticate("depot_user", "depot_user_pwd")
+        page = self.url_open("/my/property/requests")
+        self.url_open(
+            "/my/property/requests/new",
+            data={
+                "csrf_token": self._csrf(page.text),
+                "unit_id": str(self.neighbour_unit.id),
+                "category": "other",
+                "portion_type": "unknown",
+                "description": "Tentative sur la fraction du voisin.",
+            },
+        )
+        filed = self.env["bf.property.request"].search(
+            [("description", "=", "Tentative sur la fraction du voisin.")]
+        )
+        self.assertTrue(filed, "la demande est acceptée, mais rattachée autrement")
+        self.assertNotEqual(filed.unit_id, self.neighbour_unit)
+        self.assertEqual(filed.requester_partner_id, self.partner)
+
+    def test_a_request_without_a_description_is_sent_back(self):
+        self.authenticate("depot_user", "depot_user_pwd")
+        page = self.url_open("/my/property/requests")
+        before = self.env["bf.property.request"].search_count([])
+        self.url_open(
+            "/my/property/requests/new",
+            data={
+                "csrf_token": self._csrf(page.text),
+                "unit_id": str(self.unit.id),
+                "category": "other",
+                "portion_type": "unknown",
+                "description": "   ",
+            },
+        )
+        self.assertEqual(self.env["bf.property.request"].search_count([]), before)

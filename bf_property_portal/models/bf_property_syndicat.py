@@ -31,6 +31,18 @@ class BfPropertySyndicat(models.Model):
              "modalités de consultation du registre prévues au règlement de "
              "l'immeuble (art. 1070.1 C.c.Q.).",
     )
+    request_acknowledge_days = fields.Integer(
+        string="Engagement de prise en charge (jours)",
+        default=0,
+        help="⚠️ Aucune disposition n'oblige le syndicat à répondre dans un "
+             "nombre de jours : ce n'est pas un délai légal, c'est "
+             "l'engagement que le syndicat se donne. À zéro, le module ne "
+             "compte rien et n'affiche aucun retard.",
+    )
+    request_ids = fields.One2many(
+        "bf.property.request", "syndicat_id", string="Demandes d'entretien"
+    )
+
     announcement_ids = fields.One2many(
         "bf.property.announcement", "syndicat_id", string="Annonces"
     )

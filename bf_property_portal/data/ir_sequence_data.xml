@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="seq_property_request" model="ir.sequence">
+            <field name="name">Demandes d'entretien</field>
+            <field name="code">bf.property.request</field>
+            <field name="prefix">DE/%(year)s/</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
+    </data>
+</odoo>

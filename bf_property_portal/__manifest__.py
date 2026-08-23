@@ -1,7 +1,7 @@
 {
     "name": "Copropriété — Portail de l'occupant",
-    "summary": "Annonces, documents et coordonnées du syndicat, pour le copropriétaire et pour le locataire",
-    "version": "18.0.1.0.0",
+    "summary": "Annonces, documents, coordonnées et demandes d'entretien, pour le copropriétaire et pour le locataire",
+    "version": "18.0.2.0.0",
     "category": "Services/Property",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",
@@ -38,7 +38,9 @@ il est appliqué par les règles d'accès, pas seulement par l'affichage.
     "data": [
         "security/ir.model.access.csv",
         "security/bf_property_portal_security.xml",
+        "data/ir_sequence_data.xml",
         "views/bf_property_announcement_views.xml",
+        "views/bf_property_request_views.xml",
         "views/bf_property_document_views.xml",
         "views/bf_property_syndicat_views.xml",
         "views/bf_property_portal_menus.xml",
