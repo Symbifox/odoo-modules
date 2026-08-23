@@ -1,14 +1,15 @@
 # Calendar Nextcloud Sync
 
-Bidirectional calendar synchronization between Odoo 18 and both Nextcloud (CalDAV + n8n webhooks) and Google Calendar (OAuth2, API v3).
+Bidirectional calendar synchronization between Odoo 18 and both Nextcloud (CalDAV, with an optional n8n webhook relay inbound) and Google Calendar (OAuth2, API v3).
 
 ## Features
 
 - **Bidirectional sync**: Events flow Nextcloud &rarr; Odoo and Odoo &rarr; Nextcloud
 - **CalDAV pull sync**: "Pull from Nextcloud" button performs a CalDAV REPORT to fetch all events directly from Nextcloud
 - **Incremental sync**: RFC 6578 sync-token support — after the first full pull, the cron only fetches changes (creates/updates/deletes) since the last sync
-- **Push pending events**: "Push to Nextcloud" button sends locally-created events to Nextcloud via n8n webhook
-- **Webhook push sync**: Real-time event propagation via n8n webhooks on create/update/delete
+- **Direct CalDAV push**: Odoo &rarr; Nextcloud writes go straight to CalDAV (`PUT`/`DELETE`) using the same credentials the pull already uses. The `href` and `ETag` are stored at push time, so a freshly pushed event is never mistaken for an orphan by the deletion sweep, and a delete cannot be acknowledged without having been applied. Transport is selectable through the `calendar_nextcloud_sync.push_via_caldav` system parameter: CalDAV by default, the n8n webhook as fallback.
+- **Push pending events**: "Push to Nextcloud" button sends locally-created events that are still awaiting their first push
+- **Inbound webhook sync**: Real-time NC &rarr; Odoo propagation via n8n webhooks on create/update/delete
 - **Catch-up cron**: Configurable scheduled sync (default 15 min) as safety net for missed webhooks
 - **Full resync cron**: Periodic consistency safety net (every 6 hours) clears sync tokens and re-pulls all events
 - **Multi-calendar support**: Configure multiple Nextcloud calendars with independent sync settings
@@ -20,7 +21,8 @@ Bidirectional calendar synchronization between Odoo 18 and both Nextcloud (CalDA
 - **Instance-level defaults**: Webhook URL and secret configured once in Settings, auto-applied to new calendars
 - **Attendee mapping**: Maps ICS `ATTENDEE` mailto: addresses to Odoo partners
 - **Recurring events (RRULE)**: NC → Odoo: parses RRULE/EXDATE from ICS, creates Odoo `calendar.recurrence` with occurrence instances
-- **VALARM filtering**: Skips nested VALARM/VTIMEZONE blocks in ICS to prevent property collisions
+- **VALARM sync**: Alarms travel both ways. On push they are serialised into the ICS, because a `PUT` replaces the whole object and an event pushed without its alarms loses them server-side. On pull they are parsed into `calendar.alarm`, skipping RFC 9074 snooze blocks, absolute and positive triggers, and `EMAIL` actions. Nested `VTIMEZONE` blocks are still skipped during parsing to prevent property collisions.
+- **Pushed events carry their own timezone**: events go out as `DTSTART;TZID=<zone>` with the matching `VTIMEZONE`, serialised through vobject and memoised per process, so a CalDAV client shows the local hour rather than titling the entry in UTC. The zone comes from the booking when there is one (the zone the person actually chose their slot in), otherwise from the organiser, otherwise from the instance default. A `TZID` without its `VTIMEZONE` would mean a floating time (RFC 5545 &sect;3.2.19) and would move the appointment, so the UTC fallback stays wherever the `VTIMEZONE` cannot be produced.
 - **Calendar owner**: Explicit `calendar_owner_id` on config ensures synced events appear in the correct user's calendar
 - **Windows timezone normalization**: Maps Windows-style TZ names (e.g., "Eastern Standard Time") to IANA
 - **RFC 5545 ICS parsing**: Line folding, timezone handling (TZID + pytz), all-day events (exclusive DTEND → inclusive stop_date), DURATION fallback
@@ -43,13 +45,15 @@ Bidirectional calendar synchronization between Odoo 18 and both Nextcloud (CalDA
                  |  webhook_listeners    |--- push ----->|                       |
                  |  CalendarObject*Event |               | calendar.event        |
                  |                       |               | create_from_nextcloud |
-                 |                       |<-- push ------| _trigger_sync_webhook |
-                 |  CalDAV PUT           |               | (via n8n)             |
+                 |                       |               |                       |
+  CalDAV PUT     |  /remote.php/dav/     |<-- push ------| calendar.caldav.backend|
+  CalDAV DELETE  |  calendars/user/cal/  |               | (href + ETag stored)  |
                  +-----------------------+               +-----------------------+
                               ^                                    |
                               |          +-------------------+     |
-                              +----------| n8n.example.com  |<----+
-                                         | (2 workflows)     |
+                              +----------| n8n.example.com   |<----+
+                                         | inbound relay,    |
+                                         | outbound fallback |
                                          +-------------------+
 ```
 
@@ -60,8 +64,8 @@ Bidirectional calendar synchronization between Odoo 18 and both Nextcloud (CalDA
 | NC &rarr; Odoo (full pull) | CalDAV REPORT (calendar-query) + ICS parsing | Manual "Pull from Nextcloud" button, or cron when no sync-token |
 | NC &rarr; Odoo (incremental) | sync-collection REPORT with sync-token (RFC 6578) | Cron every 15 min (when sync-token available) |
 | NC &rarr; Odoo (push) | Nextcloud webhook &rarr; n8n &rarr; Odoo JSON-RPC | Automatic on NC event change |
-| Odoo &rarr; NC (push) | Odoo model override &rarr; n8n webhook &rarr; CalDAV PUT | Automatic on Odoo event change |
-| Odoo &rarr; NC (manual) | "Push to Nextcloud" button &rarr; n8n webhook | Manual, for events pending push |
+| Odoo &rarr; NC (push) | Odoo model override &rarr; CalDAV `PUT`/`DELETE` (n8n webhook when `push_via_caldav` is off) | Automatic on Odoo event change |
+| Odoo &rarr; NC (manual) | "Push to Nextcloud" button &rarr; same transport | Manual, for events pending push |
 
 ## File Structure
 
@@ -73,8 +77,11 @@ calendar_nextcloud_sync/
 +-- models/
 |   +-- __init__.py
 |   +-- nextcloud_sync_config.py    # Config model, CalDAV operations, ICS parser
+|   +-- caldav_backend.py           # calendar.caldav.backend: PUT/DELETE, href + ETag
+|   +-- google_calendar_backend.py  # Google Calendar backend (OAuth2, API v3)
 |   +-- calendar_event.py           # calendar.event sync extensions
 |   +-- res_config_settings.py      # Calendar Settings integration
+|   +-- res_users.py                # Per-user sync preferences
 +-- views/
 |   +-- menu.xml                    # Settings > Technical menu
 |   +-- calendar_event_views.xml    # Inherited form/list/search + color calendar view
@@ -183,7 +190,7 @@ Configuration for each Nextcloud calendar connection.
 | Method | Description |
 |--------|-------------|
 | `action_pull_from_nextcloud()` | Full CalDAV REPORT pull of all VEVENTs with ETag skip + orphan deletion; stores sync-token after success |
-| `action_push_to_nextcloud()` | Push pending Odoo events to Nextcloud via n8n webhook |
+| `action_push_to_nextcloud()` | Push pending Odoo events to Nextcloud (CalDAV `PUT` by default, n8n webhook when `push_via_caldav` is off) |
 | `action_force_full_sync()` | Clear sync-token and perform a full pull (manual "Force Full Resync" button) |
 | `action_test_connection()` | PROPFIND to verify CalDAV endpoint is reachable |
 | `action_view_events()` | Opens calendar events (colored by `odoo_color`) |
@@ -374,7 +381,8 @@ Falls back to matching `nextcloud_user` against Odoo login if `calendar_owner_id
 | Attendees not mapped | Verify emails exist in `res.partner`; check case sensitivity |
 | Sync shows 0 events | Verify CalDAV path points to a calendar (not the user root) |
 | Encryption errors | `cryptography` library installed? Check `ir.config_parameter` for encryption key |
-| Push sync not working | n8n running? Webhook secrets match? Check n8n execution logs |
+| Push sync not working | With CalDAV push (the default): same checks as the connection test, plus write rights on the calendar. With the webhook fallback: n8n running? Webhook secrets match? Check n8n execution logs |
+| Pushed event shows the wrong hour | The `VTIMEZONE` could not be produced, so the event fell back to UTC. Check that the booking, the organiser or the instance carries a resolvable timezone |
 | Cron not running | Check Settings > Calendar > catch-up toggle is enabled |
 | Webhook defaults not applied | Set URL/secret in Settings > Calendar before creating new configs |
 | Events all same color | Set `Odoo Color` on each sync config via the color picker |
@@ -383,6 +391,10 @@ Falls back to matching `nextcloud_user` against Odoo login if `calendar_owner_id
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 18.0.2.12.0 | 2026-08-22 | Pushed events carry their own timezone: `DTSTART;TZID=<zone>` with the matching `VTIMEZONE` (vobject, memoised per process) instead of `DTSTART:…Z`. Zone resolution: booking, then organiser, then instance default; UTC fallback wherever the `VTIMEZONE` cannot be produced. Soft link to the scheduling module (`hasattr`, no import) |
+| 18.0.2.11.0 | 2026-08-19 | Direct CalDAV push: new `calendar.caldav.backend` doing `PUT`/`DELETE` with the pull credentials, storing `href` and `ETag` at push time. VALARM serialised on push and parsed on pull into `calendar.alarm` (skipping RFC 9074 snooze blocks, absolute and positive triggers, `EMAIL` actions). The deletion sweep now requires `x_caldav_href`, so an event never seen on the server goes to the push-retry path, not the delete path. Google backend: flattened Html description, video-call link as `LOCATION` fallback. Transport selectable via `calendar_nextcloud_sync.push_via_caldav` |
+| 18.0.2.8.1 | 2026-08-11 | Security: reflected XSS on the Google OAuth callback. The `?error=` query parameter was interpolated into the HTML error page unescaped, on an `auth="public"` route served from the Odoo origin. Both parts are escaped now and the page carries a `default-src 'none'` CSP |
+| 18.0.2.8.0 | 2026-07-25 | Robust event matching and pull quarantine: match against archived events so a hand-removed duplicate is updated in place instead of recreated, fall back to matching the uid across configs before creating, quarantine an event after 3 consecutive upsert failures (stored in `ir.config_parameter`, so no schema migration) |
 | 18.0.2.7.0 | 2026-07-06 | Latest 2.x line: Google Calendar backend (OAuth2, API v3) alongside Nextcloud, per-config backend selection, self-alias attendee stripping, organizer-based calendar routing (new events route to the sync calendar owned by the organizer, falling back to the instance default), shared timezone normalization via `bf_timezone` |
 | 18.0.1.23.0 | 2026-03-16 | Fix cron crash (savepoint isolation for resource_booking ValidationError), fix all-day events spanning 2 days (RFC 5545 exclusive DTEND), fix cron vs button inconsistency (scope UID search per calendar config), add full resync cron (6h safety net), fix cron intervals (15 min catch-up, 6h full resync) |
 | 18.0.1.18.0 | 2026-02-15 | Fix VALARM property collision: skip nested ICS components (VALARM, VTIMEZONE) during parsing |
