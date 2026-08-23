@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_attestation_list" model="ir.ui.view">
+        <field name="name">bf.property.attestation.list</field>
+        <field name="model">bf.property.attestation</field>
+        <field name="arch" type="xml">
+            <list decoration-muted="state == 'cancelled'"
+                  decoration-danger="state == 'late'"
+                  decoration-success="state == 'issued'">
+                <field name="name"/>
+                <field name="syndicat_id" optional="show"/>
+                <field name="unit_id"/>
+                <field name="requester_partner_id"/>
+                <field name="request_date"/>
+                <field name="deadline_date"/>
+                <field name="issued_date" optional="show"/>
+                <field name="state" widget="badge"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_attestation_form" model="ir.ui.view">
+        <field name="name">bf.property.attestation.form</field>
+        <field name="model">bf.property.attestation</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_issue" type="object" string="Remettre"
+                            class="btn-primary"
+                            invisible="issued_date or cancelled"/>
+                    <button name="action_print" type="object" string="Imprimer"/>
+                    <button name="action_cancel" type="object" string="Annuler"
+                            invisible="cancelled"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="requested,issued"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+
+                    <div class="alert alert-danger" role="alert"
+                         invisible="state != 'late'">
+                        Le délai de 15 jours de l'art. 1068.1 al. 2 C.c.Q. est dépassé.
+                    </div>
+                    <div class="alert alert-warning" role="alert"
+                         invisible="not missing_items or issued_date">
+                        L'attestation n'est pas encore conforme à l'art. 10 du règlement.
+                        Il y manque :
+                        <field name="missing_items" readonly="1" nolabel="1"/>
+                    </div>
+
+                    <group>
+                        <group string="Demande">
+                            <field name="syndicat_id"/>
+                            <field name="unit_id"/>
+                            <field name="requester_partner_id"/>
+                            <field name="request_date"/>
+                            <field name="deadline_date"/>
+                            <field name="issued_date"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="cancelled" invisible="1"/>
+                        </group>
+                        <group string="Signature (art. 10 al. 2)">
+                            <field name="signatory_name"/>
+                            <field name="signatory_title"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Contenu minimal" name="content">
+                            <group string="1 à 5 : la situation financière">
+                                <group>
+                                    <field name="contingency_balance"/>
+                                    <field name="contingency_recommended"/>
+                                    <field name="operating_cash"/>
+                                </group>
+                                <group>
+                                    <field name="contributions_called"/>
+                                    <field name="contributions_paid"/>
+                                    <field name="current_budget"/>
+                                </group>
+                                <field name="financial_results" colspan="2"/>
+                            </group>
+                            <group string="6 et 7 : les assurances">
+                                <group>
+                                    <field name="insurance_held"/>
+                                    <field name="self_insurance_balance"/>
+                                </group>
+                                <group>
+                                    <field name="highest_deductible"/>
+                                </group>
+                            </group>
+                            <group string="8 : l'état de l'immeuble">
+                                <field name="inspections_5y"/>
+                                <field name="claims_5y"/>
+                                <field name="works_done_5y"/>
+                                <field name="works_planned_10y"/>
+                                <field name="litigation"/>
+                                <field name="declaration_changes_3y"/>
+                            </group>
+                            <div class="text-muted mt-2">
+                                Trois fenêtres distinctes : 3 ans pour les contributions,
+                                les états financiers et les modifications à la
+                                déclaration ; 5 ans pour les inspections, les sinistres et
+                                les travaux faits ; 10 ans pour les travaux prévus.
+                            </div>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_attestation_search" model="ir.ui.view">
+        <field name="name">bf.property.attestation.search</field>
+        <field name="model">bf.property.attestation</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="unit_id"/>
+                <field name="requester_partner_id"/>
+                <filter name="open" string="À remettre"
+                        domain="[('state', 'in', ('requested', 'late'))]"/>
+                <filter name="late" string="En retard"
+                        domain="[('state', '=', 'late')]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="group_syndicat" string="Syndicat"
+                            context="{'group_by': 'syndicat_id'}"/>
+                    <filter name="group_state" string="État"
+                            context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_attestation" model="ir.actions.act_window">
+        <field name="name">Attestations du syndicat</field>
+        <field name="res_model">bf.property.attestation</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_open': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Enregistrer une demande d'attestation</p>
+            <p>
+                Art. 1068.1 C.c.Q. La demande vient du copropriétaire qui vend, non de
+                l'acquéreur, et le syndicat a 15 jours pour y répondre. L'état des
+                charges de l'art. 1069 al. 2 et les documents de l'art. 1068.2 forment
+                deux autres régimes.
+            </p>
+        </field>
+    </record>
+
+</odoo>

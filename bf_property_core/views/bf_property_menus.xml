@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <menuitem id="menu_property_root"
+              name="Copropriété"
+              sequence="88"
+              groups="group_bf_property_user"/>
+
+    <menuitem id="menu_property_structure"
+              name="Structure"
+              parent="menu_property_root"
+              sequence="10"/>
+
+    <menuitem id="menu_property_syndicat"
+              name="Syndicats"
+              parent="menu_property_structure"
+              action="action_property_syndicat"
+              sequence="10"/>
+
+    <menuitem id="menu_property_building"
+              name="Immeubles"
+              parent="menu_property_structure"
+              action="action_property_building"
+              sequence="20"/>
+
+    <menuitem id="menu_property_unit"
+              name="Fractions"
+              parent="menu_property_structure"
+              action="action_property_unit"
+              sequence="30"/>
+
+    <menuitem id="menu_property_common_area"
+              name="Parties communes"
+              parent="menu_property_structure"
+              action="action_property_common_area"
+              sequence="40"/>
+
+    <menuitem id="menu_property_people"
+              name="Personnes"
+              parent="menu_property_root"
+              sequence="20"/>
+
+    <menuitem id="menu_property_ownership"
+              name="Copropriétaires"
+              parent="menu_property_people"
+              action="action_property_ownership"
+              sequence="10"/>
+
+</odoo>

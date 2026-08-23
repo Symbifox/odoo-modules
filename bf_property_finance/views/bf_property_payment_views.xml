@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_payment_list" model="ir.ui.view">
+        <field name="name">bf.property.payment.list</field>
+        <field name="model">bf.property.payment</field>
+        <field name="arch" type="xml">
+            <list decoration-muted="state == 'cancelled'"
+                  decoration-warning="amount_unallocated &gt; 0 and state != 'cancelled'">
+                <field name="name"/>
+                <field name="date"/>
+                <field name="syndicat_id" optional="show"/>
+                <field name="payer_partner_id"/>
+                <field name="unit_id" optional="show"/>
+                <field name="method" optional="hide"/>
+                <field name="reference" optional="hide"/>
+                <field name="amount" sum="Encaissé"/>
+                <field name="amount_allocated" sum="Imputé" optional="show"/>
+                <field name="amount_unallocated" sum="Reste à imputer"/>
+                <field name="imputation_mode" optional="hide"/>
+                <field name="state" widget="badge"/>
+                <field name="currency_id" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_payment_form" model="ir.ui.view">
+        <field name="name">bf.property.payment.form</field>
+        <field name="model">bf.property.payment</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_allocate" type="object"
+                            string="Imputer (art. 1572)" class="btn-primary"
+                            invisible="state == 'cancelled' or amount_unallocated &lt;= 0 or imputation_mode == 'debtor'"/>
+                    <button name="action_apply" type="object" string="Porter au registre"
+                            class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_reset" type="object" string="Retirer les imputations"
+                            invisible="state != 'draft' or not allocation_ids"/>
+                    <button name="action_cancel" type="object" string="Annuler"
+                            invisible="state == 'cancelled'"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,applied"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+
+                    <div class="alert alert-info" role="alert"
+                         invisible="imputation_mode != 'debtor'">
+                        Art. 1569 C.c.Q. : le copropriétaire a indiqué quelle dette il
+                        entend acquitter. Saisissez ses imputations à la main.
+                        L'ordre supplétif de l'art. 1572 ne s'applique qu'à défaut
+                        d'indication.
+                    </div>
+                    <div class="alert alert-warning" role="alert"
+                         invisible="amount_unallocated &lt;= 0 or state == 'cancelled'">
+                        Il reste
+                        <field name="amount_unallocated" readonly="1" nolabel="1" class="oe_inline"/>
+                        à imputer.
+                    </div>
+
+                    <group>
+                        <group string="Encaissement">
+                            <field name="syndicat_id"/>
+                            <field name="payer_partner_id"/>
+                            <field name="unit_id"/>
+                            <field name="date"/>
+                            <field name="amount"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                        <group string="Imputation">
+                            <field name="method"/>
+                            <field name="reference"/>
+                            <field name="imputation_mode"/>
+                            <field name="creditor_consent"/>
+                            <field name="amount_allocated"/>
+                            <field name="amount_unallocated"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Imputations" name="allocations">
+                            <field name="allocation_ids">
+                                <list editable="bottom">
+                                    <field name="line_id"/>
+                                    <field name="unit_id" readonly="1"/>
+                                    <field name="amount_interest"/>
+                                    <field name="amount_capital"/>
+                                    <field name="amount_total" sum="Imputé"/>
+                                    <field name="currency_id" column_invisible="1"/>
+                                </list>
+                            </field>
+                            <div class="text-muted mt-2">
+                                Art. 1570 C.c.Q. : un paiement partiel sur capital et
+                                intérêts s'impute d'abord sur les intérêts.
+                            </div>
+                        </page>
+                        <page string="Règle appliquée" name="rule"
+                              invisible="not imputation_rule">
+                            <field name="imputation_rule" readonly="1" nolabel="1"/>
+                        </page>
+                    </notebook>
+                    <group>
+                        <field name="note"/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_payment_search" model="ir.ui.view">
+        <field name="name">bf.property.payment.search</field>
+        <field name="model">bf.property.payment</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="payer_partner_id"/>
+                <field name="unit_id"/>
+                <field name="reference"/>
+                <filter name="unallocated" string="Reste à imputer"
+                        domain="[('amount_unallocated', '&gt;', 0), ('state', '!=', 'cancelled')]"/>
+                <filter name="applied" string="Portés au registre"
+                        domain="[('state', '=', 'applied')]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="group_syndicat" string="Syndicat"
+                            context="{'group_by': 'syndicat_id'}"/>
+                    <filter name="group_payer" string="Payeur"
+                            context="{'group_by': 'payer_partner_id'}"/>
+                    <filter name="group_date" string="Mois"
+                            context="{'group_by': 'date:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_payment" model="ir.actions.act_window">
+        <field name="name">Encaissements</field>
+        <field name="res_model">bf.property.payment</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_unallocated': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Saisir un encaissement</p>
+            <p>
+                L'imputation d'un paiement suit les art. 1569 à 1572 C.c.Q. : le
+                copropriétaire indique la dette qu'il acquitte, et à défaut, le
+                paiement va d'abord aux contributions échues, de la plus ancienne à
+                la plus récente, proportionnellement entre celles échues le même jour.
+            </p>
+        </field>
+    </record>
+
+    <record id="view_unit_overdue_list" model="ir.ui.view">
+        <field name="name">bf.property.unit.overdue.list</field>
+        <field name="model">bf.property.unit</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="overdue_days &gt; 90"
+                  decoration-warning="overdue_days &gt; 30 and overdue_days &lt;= 90">
+                <field name="display_name" string="Fraction"/>
+                <field name="syndicat_id"/>
+                <field name="owner_display" string="Copropriétaires"/>
+                <field name="quote_part" optional="hide"/>
+                <field name="overdue_since"/>
+                <field name="overdue_days"/>
+                <field name="overdue_amount" sum="Capital"/>
+                <field name="overdue_interest" sum="Intérêts" optional="show"/>
+                <field name="overdue_total" sum="Total dû"/>
+                <field name="currency_id" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_unit_overdue" model="ir.actions.act_window">
+        <field name="name">Fractions en défaut</field>
+        <field name="res_model">bf.property.unit</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="view_unit_overdue_list"/>
+        <field name="domain">[('overdue_total', '&gt;', 0)]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Aucune fraction en défaut</p>
+            <p>
+                L'état se compte par fraction, et non par personne : art. 1069 C.c.Q.,
+                l'acquéreur est tenu des charges dues relativement à la fraction au
+                moment de l'acquisition. Trois mois de retard ouvrent la privation du
+                droit de vote de l'art. 1094 ; 30 jours, l'hypothèque légale de
+                l'art. 2729, hors de portée du module.
+            </p>
+        </field>
+    </record>
+
+</odoo>

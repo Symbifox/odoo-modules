@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_syndicat_form_loi16" model="ir.ui.view">
+        <field name="name">bf.property.syndicat.form.loi16</field>
+        <field name="model">bf.property.syndicat</field>
+        <field name="inherit_id" ref="bf_property_core.view_property_syndicat_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet/group[last()]" position="after">
+                <group string="Échéances légales">
+                    <group>
+                        <field name="loi16_regime"/>
+                        <field name="loi16_deadline"/>
+                        <field name="loi16_days_left"
+                               invisible="loi16_state != 'pending'"/>
+                    </group>
+                    <group>
+                        <field name="loi16_state"/>
+                    </group>
+                    <div class="alert alert-info" role="alert" colspan="2"
+                         invisible="not loi16_rule">
+                        <field name="loi16_rule" readonly="1" nolabel="1"/>
+                    </div>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

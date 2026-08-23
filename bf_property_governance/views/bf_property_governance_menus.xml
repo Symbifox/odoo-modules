@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <menuitem id="menu_governance"
+              name="Gouvernance"
+              parent="bf_property_core.menu_property_root"
+              sequence="15"/>
+
+    <menuitem id="menu_assembly"
+              name="Assemblées"
+              parent="menu_governance"
+              action="action_assembly"
+              sequence="10"/>
+
+    <menuitem id="menu_resolution"
+              name="Résolutions"
+              parent="menu_governance"
+              action="action_resolution"
+              sequence="20"/>
+
+</odoo>

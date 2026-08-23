@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_property_unit_list" model="ir.ui.view">
+        <field name="name">bf.property.unit.list</field>
+        <field name="model">bf.property.unit</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="building_id"/>
+                <field name="name"/>
+                <field name="unit_type"/>
+                <field name="floor" optional="show"/>
+                <field name="area" optional="hide"/>
+                <field name="quote_part" sum="Total"/>
+                <field name="quote_part_pct" optional="hide"/>
+                <field name="owner_display"/>
+                <field name="is_rented" optional="show"/>
+                <field name="syndicat_id" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_property_unit_form" model="ir.ui.view">
+        <field name="name">bf.property.unit.form</field>
+        <field name="model">bf.property.unit</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <widget name="web_ribbon" title="Archivée" bg_color="text-bg-danger"
+                            invisible="active"/>
+                    <div class="oe_title">
+                        <label for="name" string="Fraction"/>
+                        <h1><field name="name" placeholder="301"/></h1>
+                    </div>
+                    <group>
+                        <group string="Situation">
+                            <field name="building_id"/>
+                            <field name="syndicat_id" readonly="1"/>
+                            <field name="unit_type"/>
+                            <field name="floor"/>
+                            <field name="area"/>
+                            <field name="active" invisible="1"/>
+                        </group>
+                        <group string="Quote-part">
+                            <field name="quote_part"/>
+                            <field name="quote_part_pct"/>
+                        </group>
+                        <group string="Occupation">
+                            <field name="owner_display" readonly="1"/>
+                            <field name="is_rented"/>
+                            <field name="occupant_id" invisible="not is_rented"
+                                   required="is_rented"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Historique de propriété" name="ownership">
+                            <field name="ownership_ids"
+                                   context="{'default_unit_id': id}">
+                                <list editable="bottom" decoration-muted="not is_current">
+                                    <field name="partner_id"/>
+                                    <field name="share"/>
+                                    <field name="date_start"/>
+                                    <field name="date_end"/>
+                                    <field name="is_current" readonly="1"/>
+                                    <field name="note" optional="hide"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_property_unit_search" model="ir.ui.view">
+        <field name="name">bf.property.unit.search</field>
+        <field name="model">bf.property.unit</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="building_id"/>
+                <field name="syndicat_id"/>
+                <field name="owner_ids" string="Copropriétaire"/>
+                <filter name="rented" string="Louées" domain="[('is_rented', '=', True)]"/>
+                <filter name="no_owner" string="Sans propriétaire"
+                        domain="[('owner_ids', '=', False)]"/>
+                <filter name="no_quote_part" string="Sans quote-part"
+                        domain="[('quote_part', '=', 0)]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="group_building" string="Immeuble"
+                            context="{'group_by': 'building_id'}"/>
+                    <filter name="group_syndicat" string="Syndicat"
+                            context="{'group_by': 'syndicat_id'}"/>
+                    <filter name="group_type" string="Type"
+                            context="{'group_by': 'unit_type'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_property_unit" model="ir.actions.act_window">
+        <field name="name">Fractions</field>
+        <field name="res_model">bf.property.unit</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+</odoo>

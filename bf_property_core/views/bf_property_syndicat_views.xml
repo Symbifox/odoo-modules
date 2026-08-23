@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_property_syndicat_list" model="ir.ui.view">
+        <field name="name">bf.property.syndicat.list</field>
+        <field name="model">bf.property.syndicat</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="neq" optional="hide"/>
+                <field name="building_count" string="Immeubles"/>
+                <field name="unit_count" string="Fractions"/>
+                <field name="fraction_base"/>
+                <field name="quote_part_total"/>
+                <field name="quote_part_state"
+                       decoration-success="quote_part_state == 'balanced'"
+                       decoration-warning="quote_part_state in ('under', 'empty')"
+                       decoration-danger="quote_part_state == 'over'"
+                       widget="badge"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_property_syndicat_form" model="ir.ui.view">
+        <field name="name">bf.property.syndicat.form</field>
+        <field name="model">bf.property.syndicat</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_buildings" type="object"
+                                class="oe_stat_button" icon="fa-building-o">
+                            <field name="building_count" widget="statinfo" string="Immeubles"/>
+                        </button>
+                        <button name="action_view_units" type="object"
+                                class="oe_stat_button" icon="fa-th">
+                            <field name="unit_count" widget="statinfo" string="Fractions"/>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Archivé" bg_color="text-bg-danger"
+                            invisible="active"/>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="Syndicat de copropriété du…"/></h1>
+                    </div>
+
+                    <div class="alert alert-warning" role="alert"
+                         invisible="quote_part_state in ('balanced', 'empty')">
+                        Les quotes-parts saisies totalisent
+                        <field name="quote_part_total" readonly="1" nolabel="1" class="oe_inline"/>
+                        pour une base de
+                        <field name="fraction_base" readonly="1" nolabel="1" class="oe_inline"/>,
+                        soit un écart de
+                        <field name="quote_part_gap" readonly="1" nolabel="1" class="oe_inline"/>.
+                        Normal tant que la saisie des fractions n'est pas terminée.
+                    </div>
+                    <div class="alert alert-success" role="alert"
+                         invisible="quote_part_state != 'balanced'">
+                        Répartition complète : les quotes-parts atteignent exactement la base déclarée.
+                    </div>
+
+                    <group>
+                        <group string="Identification">
+                            <field name="partner_id"/>
+                            <field name="neq"/>
+                            <field name="declaration_date"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="active" invisible="1"/>
+                        </group>
+                        <group string="Quotes-parts">
+                            <field name="fraction_base"/>
+                            <field name="quote_part_total"/>
+                            <field name="quote_part_gap"/>
+                            <field name="quote_part_state"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Immeubles" name="buildings">
+                            <field name="building_ids">
+                                <list editable="bottom">
+                                    <field name="name"/>
+                                    <field name="street"/>
+                                    <field name="city"/>
+                                    <field name="unit_count" string="Fractions"/>
+                                    <field name="quote_part_total"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Fractions" name="units">
+                            <field name="unit_ids" readonly="1">
+                                <list>
+                                    <field name="building_id"/>
+                                    <field name="name"/>
+                                    <field name="unit_type"/>
+                                    <field name="quote_part"/>
+                                    <field name="quote_part_pct"/>
+                                    <field name="owner_display"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_property_syndicat_search" model="ir.ui.view">
+        <field name="name">bf.property.syndicat.search</field>
+        <field name="model">bf.property.syndicat</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="neq"/>
+                <filter name="unbalanced" string="Quotes-parts à compléter"
+                        domain="[('quote_part_state', 'in', ('under', 'over'))]"/>
+                <filter name="archived" string="Archivés" domain="[('active', '=', False)]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="group_state" string="État des quotes-parts"
+                            context="{'group_by': 'quote_part_state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_property_syndicat" model="ir.actions.act_window">
+        <field name="name">Syndicats</field>
+        <field name="res_model">bf.property.syndicat</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Créez votre premier syndicat</p>
+            <p>Un syndicat porte sa déclaration de copropriété, ses immeubles et
+               la base contre laquelle les quotes-parts sont vérifiées.</p>
+        </field>
+    </record>
+
+</odoo>

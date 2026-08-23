@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_budget_list" model="ir.ui.view">
+        <field name="name">bf.property.budget.list</field>
+        <field name="model">bf.property.budget</field>
+        <field name="arch" type="xml">
+            <list decoration-muted="state == 'closed'"
+                  decoration-warning="notice_pending">
+                <field name="name"/>
+                <field name="syndicat_id"/>
+                <field name="date_start"/>
+                <field name="date_end"/>
+                <field name="amount_common" optional="show"/>
+                <field name="amount_contingency" optional="show"/>
+                <field name="amount_total" sum="Contribution totale"/>
+                <field name="notice_pending" optional="hide"/>
+                <field name="state" widget="badge"/>
+                <field name="currency_id" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_budget_form" model="ir.ui.view">
+        <field name="name">bf.property.budget.form</field>
+        <field name="model">bf.property.budget</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_consult" type="object" class="btn-primary"
+                            string="Consigner la consultation"
+                            invisible="state != 'draft'"/>
+                    <button name="action_fix" type="object" class="btn-primary"
+                            string="Fixer par le conseil"
+                            invisible="state != 'consulted'"/>
+                    <button name="action_notify" type="object" class="btn-primary"
+                            string="Aviser les copropriétaires"
+                            invisible="state != 'fixed'"/>
+                    <button name="action_close" type="object" string="Clôturer"
+                            invisible="state != 'notified'"/>
+                    <button name="action_reset_to_draft" type="object"
+                            string="Remettre en brouillon"
+                            invisible="state in ('draft', 'closed')"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,consulted,fixed,notified"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_calls" type="object"
+                                class="oe_stat_button" icon="fa-money">
+                            <field name="call_count" widget="statinfo" string="Appels"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="Exercice 2027"/></h1>
+                    </div>
+
+                    <div class="alert alert-info" role="alert" invisible="state != 'draft'">
+                        Art. 1072 C.c.Q. : le conseil d'administration fixe la contribution
+                        après consultation de l'assemblée des copropriétaires. L'assemblée
+                        n'adopte pas le budget, elle est consultée.
+                    </div>
+                    <div class="alert alert-warning" role="alert" invisible="not notice_pending">
+                        Le budget est fixé mais aucun avis n'a été transmis. Art. 1072 al. 3 :
+                        le syndicat avise sans délai chaque copropriétaire du montant de ses
+                        contributions et de la date où elles sont exigibles.
+                    </div>
+                    <div class="alert alert-warning" role="alert" invisible="not contingency_warning">
+                        <field name="contingency_warning" readonly="1" nolabel="1"/>
+                    </div>
+
+                    <group>
+                        <group string="Exercice">
+                            <field name="syndicat_id"/>
+                            <field name="date_start"/>
+                            <field name="date_end"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                        <group string="Consultation et fixation">
+                            <field name="consultation_assembly_id"/>
+                            <field name="consultation_date"/>
+                            <field name="fixed_date"/>
+                            <field name="notice_date"/>
+                        </group>
+                        <group string="Contribution (art. 1072)">
+                            <field name="amount_common"/>
+                            <field name="amount_restricted"/>
+                            <field name="amount_contingency"/>
+                            <field name="amount_self_insurance"/>
+                            <field name="amount_total"/>
+                        </group>
+                        <group string="Suivi des appels">
+                            <field name="amount_called"/>
+                            <field name="amount_collected"/>
+                            <field name="amount_outstanding"/>
+                            <field name="amount_uncalled"/>
+                            <field name="contingency_reference"/>
+                            <field name="contingency_gap"
+                                   string="Écart au repère du fonds de prévoyance"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Postes budgétaires" name="lines">
+                            <field name="line_ids">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="name"/>
+                                    <field name="charge_type"/>
+                                    <field name="common_area_id"
+                                           readonly="charge_type not in ('restricted_maintenance', 'restricted_major')"
+                                           required="charge_type in ('restricted_maintenance', 'restricted_major')"/>
+                                    <field name="declaration_derogation"
+                                           readonly="charge_type != 'restricted_major'"/>
+                                    <field name="derogation_reference" optional="hide"
+                                           readonly="not declaration_derogation"/>
+                                    <field name="allocation_unit_count" optional="show"/>
+                                    <field name="allocation_rule" optional="hide"/>
+                                    <field name="amount" sum="Total"/>
+                                    <field name="note" optional="hide"/>
+                                    <field name="syndicat_id" column_invisible="1"/>
+                                    <field name="currency_id" column_invisible="1"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_budget_search" model="ir.ui.view">
+        <field name="name">bf.property.budget.search</field>
+        <field name="model">bf.property.budget</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="syndicat_id"/>
+                <filter name="notice_pending" string="Avis à transmettre"
+                        domain="[('notice_pending', '=', True)]"/>
+                <filter name="open" string="En cours"
+                        domain="[('state', 'not in', ('closed',))]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="group_syndicat" string="Syndicat"
+                            context="{'group_by': 'syndicat_id'}"/>
+                    <filter name="group_state" string="État"
+                            context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_budget" model="ir.actions.act_window">
+        <field name="name">Budgets</field>
+        <field name="res_model">bf.property.budget</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+</odoo>

@@ -1,0 +1,13 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_log_user,bf.property.maintenance.log.user,model_bf_property_maintenance_log,bf_property_core.group_bf_property_user,1,0,0,0
+access_log_manager,bf.property.maintenance.log.manager,model_bf_property_maintenance_log,bf_property_core.group_bf_property_manager,1,1,1,1
+access_item_user,bf.property.maintenance.item.user,model_bf_property_maintenance_item,bf_property_core.group_bf_property_user,1,0,0,0
+access_item_manager,bf.property.maintenance.item.manager,model_bf_property_maintenance_item,bf_property_core.group_bf_property_manager,1,1,1,1
+access_study_user,bf.property.contingency.study.user,model_bf_property_contingency_study,bf_property_core.group_bf_property_user,1,0,0,0
+access_study_manager,bf.property.contingency.study.manager,model_bf_property_contingency_study,bf_property_core.group_bf_property_manager,1,1,1,1
+access_attestation_user,bf.property.attestation.user,model_bf_property_attestation,bf_property_core.group_bf_property_user,1,0,0,0
+access_attestation_manager,bf.property.attestation.manager,model_bf_property_attestation,bf_property_core.group_bf_property_manager,1,1,1,1
+access_disclosure_user,bf.property.disclosure.user,model_bf_property_disclosure,bf_property_core.group_bf_property_user,1,0,0,0
+access_disclosure_manager,bf.property.disclosure.manager,model_bf_property_disclosure,bf_property_core.group_bf_property_manager,1,1,1,1
+access_disclosure_line_user,bf.property.disclosure.line.user,model_bf_property_disclosure_line,bf_property_core.group_bf_property_user,1,0,0,0
+access_disclosure_line_manager,bf.property.disclosure.line.manager,model_bf_property_disclosure_line,bf_property_core.group_bf_property_manager,1,1,1,1

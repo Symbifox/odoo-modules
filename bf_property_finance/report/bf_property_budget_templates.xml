@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ⚠️ Document du syndicat, sans marque d'éditeur, comme l'attestation :
+         c'est le conseil qui le présente à l'assemblée. -->
+    <template id="report_budget">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-set="rows" t-value="doc._report_lines()"/>
+                <div class="article">
+                    <style>
+                        .fin { font-family: Helvetica, Arial, sans-serif; font-size: 10pt; color: #1a1a1a; line-height: 1.45; }
+                        .fin h1 { font-size: 15pt; margin: 0 0 2pt 0; text-transform: uppercase; letter-spacing: 0.5pt; }
+                        .fin .legal { font-size: 9pt; color: #555; margin: 0 0 14pt 0; }
+                        .fin .rule { border-bottom: 1.5pt solid #1a1a1a; margin: 0 0 14pt 0; }
+                        .fin h2 { font-size: 10.5pt; margin: 14pt 0 4pt 0; padding: 0 0 2pt 0;
+                                  border-bottom: 0.5pt solid #bbb; page-break-after: avoid; }
+                        .fin table { width: 100%; border-collapse: collapse; }
+                        .fin table.ident td { padding: 2pt 0; vertical-align: top; }
+                        .fin table.ident td.k { width: 38%; color: #555; }
+                        .fin table.grid th { text-align: right; font-size: 8.5pt; color: #555;
+                                             border-bottom: 0.75pt solid #1a1a1a; padding: 3pt 4pt; }
+                        .fin table.grid th.l { text-align: left; }
+                        .fin table.grid td { text-align: right; padding: 3pt 4pt;
+                                             border-bottom: 0.25pt solid #eee; white-space: nowrap; }
+                        .fin table.grid td.l { text-align: left; white-space: normal; }
+                        .fin table.grid tr.tot td { font-weight: bold; border-top: 0.75pt solid #1a1a1a;
+                                                    border-bottom: none; }
+                        .fin .warn { border: 1pt solid #8a6d3b; background: #fcf8e3; color: #8a6d3b;
+                                     padding: 6pt 8pt; margin: 10pt 0; font-size: 9pt; }
+                        .fin .foot { margin-top: 16pt; font-size: 8pt; color: #666;
+                                     border-top: 0.25pt solid #ccc; padding-top: 6pt;
+                                     page-break-inside: avoid; }
+                    </style>
+
+                    <div class="fin">
+                        <h1>État financier de l'exercice</h1>
+                        <p class="legal">
+                            Contribution aux charges communes, article 1072 du Code civil
+                            du Québec. Le conseil d'administration fixe la contribution
+                            après consultation de l'assemblée des copropriétaires.
+                        </p>
+                        <div class="rule"/>
+
+                        <table class="ident">
+                            <tr>
+                                <td class="k">Syndicat</td>
+                                <td><span t-field="doc.syndicat_id.name"/></td>
+                            </tr>
+                            <tr>
+                                <td class="k">Exercice</td>
+                                <td>
+                                    <span t-field="doc.name"/>, du
+                                    <span t-field="doc.date_start"/> au
+                                    <span t-field="doc.date_end"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="k">État</td>
+                                <td><span t-field="doc.state"/></td>
+                            </tr>
+                            <tr t-if="doc.consultation_date">
+                                <td class="k">Assemblée consultée le</td>
+                                <td><span t-field="doc.consultation_date"/></td>
+                            </tr>
+                            <tr t-if="doc.fixed_date">
+                                <td class="k">Contribution fixée le</td>
+                                <td><span t-field="doc.fixed_date"/></td>
+                            </tr>
+                        </table>
+
+                        <h2>La contribution, poste par poste</h2>
+                        <table class="grid">
+                            <tr>
+                                <th class="l">Poste</th>
+                                <th>Prévu</th>
+                                <th>Appelé</th>
+                                <th>Encaissé</th>
+                                <th>Reste à appeler</th>
+                            </tr>
+                            <tr t-foreach="rows" t-as="row">
+                                <td class="l" t-esc="row['label']"/>
+                                <td t-esc="doc._report_amount(row['planned'])"/>
+                                <td t-esc="doc._report_amount(row['called'])"/>
+                                <td t-esc="doc._report_amount(row['collected'])"/>
+                                <td t-esc="doc._report_amount(row['uncalled'])"/>
+                            </tr>
+                            <tr class="tot">
+                                <td class="l">Total</td>
+                                <td t-esc="doc._report_amount(doc.amount_total)"/>
+                                <td t-esc="doc._report_amount(doc.amount_called)"/>
+                                <td t-esc="doc._report_amount(doc.amount_collected)"/>
+                                <td t-esc="doc._report_amount(doc.amount_uncalled)"/>
+                            </tr>
+                        </table>
+
+                        <div class="warn">
+                            <strong>Ce que ce tableau dit, et ce qu'il ne dit pas.</strong>
+                            Il suit la contribution : ce qui a été fixé, ce qui a été
+                            appelé aux copropriétaires, ce qui est rentré. Il ne compare
+                            pas le prévu au <em>dépensé</em> : le module ne tient aucune
+                            dépense, ni facture ni comptabilité. L'encaissé est réparti
+                            entre les postes au prorata de l'appelé, parce qu'un paiement
+                            s'impute sur la contribution d'une fraction et non sur un
+                            poste (articles 1569 à 1572 du Code civil).
+                        </div>
+
+                        <h2>Les deux fonds</h2>
+                        <table class="grid">
+                            <tr>
+                                <th class="l">Fonds</th>
+                                <th>Budgété</th>
+                                <th>Repère</th>
+                                <th>Écart</th>
+                            </tr>
+                            <tr>
+                                <td class="l">Fonds de prévoyance (art. 1071)</td>
+                                <td t-esc="doc._report_amount(doc.amount_contingency)"/>
+                                <td t-esc="doc._report_amount(doc.contingency_reference)"/>
+                                <td t-esc="doc._report_amount(doc.contingency_gap)"/>
+                            </tr>
+                            <tr>
+                                <td class="l">Fonds d'auto-assurance (art. 1071.1)</td>
+                                <td t-esc="doc._report_amount(doc.amount_self_insurance)"/>
+                                <td t-esc="doc._report_amount(doc.syndicat_id.self_insurance_contribution)"/>
+                                <td t-esc="doc._report_amount(doc.amount_self_insurance - doc.syndicat_id.self_insurance_contribution)"/>
+                            </tr>
+                        </table>
+                        <p class="legal" style="margin-top:4pt;">
+                            L'écart se lit du budget vers le repère : négatif, le budget
+                            verse moins que le repère ; positif, il verse davantage.
+                        </p>
+                        <div class="warn" t-if="doc.contingency_warning">
+                            <span t-esc="doc.contingency_warning"/>
+                        </div>
+                        <div class="warn" t-if="doc.syndicat_id.contingency_catchup_rule">
+                            <span t-esc="doc.syndicat_id.contingency_catchup_rule"/>
+                        </div>
+
+                        <h2>Les impayés au jour de l'état</h2>
+                        <table class="grid">
+                            <tr>
+                                <th class="l">Créances du syndicat</th>
+                                <th>Montant</th>
+                            </tr>
+                            <tr>
+                                <td class="l">Fractions en défaut</td>
+                                <td t-esc="doc.syndicat_id.overdue_unit_count"/>
+                            </tr>
+                            <tr>
+                                <td class="l">Capital en souffrance</td>
+                                <td t-esc="doc._report_amount(doc.syndicat_id.overdue_amount)"/>
+                            </tr>
+                            <tr>
+                                <td class="l">Intérêts en souffrance</td>
+                                <td t-esc="doc._report_amount(doc.syndicat_id.overdue_interest)"/>
+                            </tr>
+                            <tr class="tot">
+                                <td class="l">Total dû au syndicat</td>
+                                <td t-esc="doc._report_amount(doc.syndicat_id.overdue_total)"/>
+                            </tr>
+                        </table>
+
+                        <div class="foot">
+                            Ces créances forment la moitié de l'état des dettes et créances
+                            que l'article 1087 du Code civil du Québec veut voir accompagner
+                            l'avis de convocation de l'assemblée annuelle. Ce que le
+                            syndicat doit à ses fournisseurs n'y figure pas, non plus que le
+                            bilan et l'état des résultats, qui relèvent de la comptabilité
+                            du syndicat.
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+
+</odoo>

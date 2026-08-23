@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+
+        <record id="rule_maintenance_log_company" model="ir.rule">
+            <field name="name">Carnets d'entretien : multi-société</field>
+            <field name="model_id" ref="model_bf_property_maintenance_log"/>
+            <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        </record>
+
+        <record id="rule_contingency_study_company" model="ir.rule">
+            <field name="name">Études du fonds : multi-société</field>
+            <field name="model_id" ref="model_bf_property_contingency_study"/>
+            <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        </record>
+
+        <!-- L'attestation nomme le copropriétaire vendeur et la fraction
+             vendue : elle contient des renseignements personnels, et le
+             cloisonnement n'est pas optionnel. -->
+        <record id="rule_attestation_company" model="ir.rule">
+            <field name="name">Attestations : multi-société</field>
+            <field name="model_id" ref="model_bf_property_attestation"/>
+            <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        </record>
+
+        <!-- La demande nomme le promettant acheteur et le propriétaire, et
+             la note de vie privée dit ce qui a été retranché : cloisonnement
+             non optionnel. -->
+        <record id="rule_disclosure_company" model="ir.rule">
+            <field name="name">Demandes de documents : multi-société</field>
+            <field name="model_id" ref="model_bf_property_disclosure"/>
+            <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        </record>
+
+    </data>
+</odoo>

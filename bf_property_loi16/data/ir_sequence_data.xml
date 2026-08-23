@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <record id="seq_property_attestation" model="ir.sequence">
+            <field name="name">Copropriété : attestations du syndicat</field>
+            <field name="code">bf.property.attestation</field>
+            <field name="prefix">ATT/%(year)s/</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <record id="seq_property_disclosure" model="ir.sequence">
+            <field name="name">Copropriété : demandes de documents (art. 1068.2)</field>
+            <field name="code">bf.property.disclosure</field>
+            <field name="prefix">DOC/%(year)s/</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+    </data>
+</odoo>

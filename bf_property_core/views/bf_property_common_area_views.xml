@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_property_common_area_list" model="ir.ui.view">
+        <field name="name">bf.property.common.area.list</field>
+        <field name="model">bf.property.common.area</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="building_id"/>
+                <field name="area_type"/>
+                <field name="bookable"/>
+                <field name="area" optional="hide"/>
+                <field name="syndicat_id" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_property_common_area_form" model="ir.ui.view">
+        <field name="name">bf.property.common.area.form</field>
+        <field name="model">bf.property.common.area</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="Salle communautaire"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="building_id"/>
+                            <field name="area_type"/>
+                            <field name="area"/>
+                            <field name="active" invisible="1"/>
+                        </group>
+                        <group>
+                            <field name="bookable"/>
+                        </group>
+                    </group>
+                    <group string="Fractions bénéficiaires"
+                           invisible="area_type != 'restricted'">
+                        <field name="restricted_unit_ids" widget="many2many_tags" nolabel="1"/>
+                    </group>
+                    <group string="Description">
+                        <field name="description" nolabel="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_property_common_area" model="ir.actions.act_window">
+        <field name="name">Parties communes</field>
+        <field name="res_model">bf.property.common.area</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+</odoo>

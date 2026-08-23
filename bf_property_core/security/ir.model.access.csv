@@ -1,0 +1,11 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_property_syndicat_user,bf.property.syndicat.user,model_bf_property_syndicat,group_bf_property_user,1,0,0,0
+access_property_syndicat_manager,bf.property.syndicat.manager,model_bf_property_syndicat,group_bf_property_manager,1,1,1,1
+access_property_building_user,bf.property.building.user,model_bf_property_building,group_bf_property_user,1,0,0,0
+access_property_building_manager,bf.property.building.manager,model_bf_property_building,group_bf_property_manager,1,1,1,1
+access_property_unit_user,bf.property.unit.user,model_bf_property_unit,group_bf_property_user,1,0,0,0
+access_property_unit_manager,bf.property.unit.manager,model_bf_property_unit,group_bf_property_manager,1,1,1,1
+access_property_ownership_user,bf.property.ownership.user,model_bf_property_ownership,group_bf_property_user,1,0,0,0
+access_property_ownership_manager,bf.property.ownership.manager,model_bf_property_ownership,group_bf_property_manager,1,1,1,1
+access_property_common_area_user,bf.property.common.area.user,model_bf_property_common_area,group_bf_property_user,1,0,0,0
+access_property_common_area_manager,bf.property.common.area.manager,model_bf_property_common_area,group_bf_property_manager,1,1,1,1
