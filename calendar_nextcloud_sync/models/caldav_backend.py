@@ -41,6 +41,12 @@ _logger = logging.getLogger(__name__)
 # l'appelant journalise et le cron de reprise repassera.
 CALDAV_TIMEOUT = 30
 
+# VTIMEZONE sérialisés, par nom IANA. Les règles d'un fuseau ne changent qu'à
+# la mise à jour de la base tzdata, donc au redémarrage du processus : un cache
+# de processus n'a pas besoin d'invalidation. `None` mémorise un fuseau dont la
+# sérialisation a échoué, pour ne pas la retenter à chaque poussée.
+_VTIMEZONE_CACHE = {}
+
 
 class CalDavBackend(models.AbstractModel):
     """Poussée directe d'un calendar.event vers une collection CalDAV."""
@@ -134,6 +140,80 @@ class CalDavBackend(models.AbstractModel):
         """Datetime naïf-UTC d'Odoo -> forme UTC de l'ICS."""
         return fields.Datetime.to_datetime(value).strftime("%Y%m%dT%H%M%SZ")
 
+    # ------------------------------------------------------------------
+    # Fuseau de l'événement
+    # ------------------------------------------------------------------
+
+    @api.model
+    def _ics_tzname(self, event):
+        """Nom IANA dans lequel écrire DTSTART/DTEND, ou ``None`` pour l'UTC.
+
+        Un ``DTSTART:…Z`` est JUSTE — l'instant est le bon, et tout client
+        l'affiche à l'heure locale du lecteur. Mais il ne porte aucun fuseau,
+        et Nextcloud titre alors la fiche « 21:00 UTC » en reléguant l'heure
+        réelle sur une seconde ligne en gris. Personne ne raisonne en UTC :
+        l'agenda annonce une heure à laquelle la rencontre n'a pas lieu.
+
+        Le fuseau qui a du sens est celui dans lequel la rencontre a été
+        convenue. Sur une réservation, c'est celui où la personne a CHOISI son
+        créneau (``resource.booking`` sait le calculer); sinon celui de
+        l'organisateur, puis le défaut de l'instance.
+
+        ⚠️ Lien MOU vers ``bf_appointment`` : on interroge la réservation par
+        ``hasattr`` plutôt que par un import. Ce module se déploie sur des
+        locataires qui n'ont pas la prise de rendez-vous, et un import dur y
+        casserait la synchro d'agenda entière.
+        """
+        candidates = []
+        if "resource_booking_ids" in event._fields:
+            booking = event.sudo().resource_booking_ids[:1]
+            if booking and hasattr(booking, "_get_booker_display_tz"):
+                try:
+                    candidates.append(booking._get_booker_display_tz())
+                except Exception:  # pragma: no cover - fuseau illisible
+                    _logger.warning(
+                        "Fuseau du demandeur illisible sur la réservation %s",
+                        booking.id, exc_info=True,
+                    )
+        candidates.append(event.user_id.tz)
+        candidates.append(self.env.user.tz)
+        tzname = self.env["bf.timezone"].resolve(candidates)
+        # UTC n'a pas de VTIMEZONE utile : on retombe alors sur la forme
+        # `…Z`, qui dit exactement la même chose en plus court.
+        return tzname if tzname and tzname != "UTC" else None
+
+    @api.model
+    def _vtimezone_lines(self, tzname):
+        """Lignes du VTIMEZONE d'un fuseau, ou ``[]`` si on ne sait pas le faire.
+
+        ⚠️ Un ``TZID`` sans VTIMEZONE correspondant vaut, au sens de la RFC 5545
+        §3.2.19, une heure FLOTTANTE : le rendez-vous se met alors à l'heure du
+        lecteur au lieu de rester au même instant. Les deux vont donc ensemble,
+        et l'absence de l'un annule l'autre — d'où le repli en UTC chez
+        l'appelant plutôt qu'un TZID orphelin.
+        """
+        if tzname in _VTIMEZONE_CACHE:
+            return list(_VTIMEZONE_CACHE[tzname] or [])
+        lines = None
+        try:
+            import pytz
+            import vobject
+
+            block = vobject.icalendar.TimezoneComponent(
+                tzinfo=pytz.timezone(tzname)
+            ).serialize()
+            lines = [ln for ln in block.replace("\r\n", "\n").split("\n") if ln]
+            if not lines or not lines[0].startswith("BEGIN:VTIMEZONE"):
+                lines = None
+        except Exception:  # pragma: no cover - fuseau inconnu / lib absente
+            _logger.warning(
+                "VTIMEZONE non sérialisable pour %s, repli en UTC",
+                tzname, exc_info=True,
+            )
+            lines = None
+        _VTIMEZONE_CACHE[tzname] = lines
+        return list(lines or [])
+
     @api.model
     def build_ics(self, event, payload=None):
         """VEVENT complet d'un événement non récurrent.
@@ -146,15 +226,34 @@ class CalDavBackend(models.AbstractModel):
         client), le lien de visioconférence retombe dans ``LOCATION``, et la
         description Html est aplatie en texte brut. Une seule source de vérité,
         que le transport soit CalDAV ou le webhook.
+
+        L'heure part avec son fuseau (``DTSTART;TZID=…`` + VTIMEZONE) plutôt
+        qu'en UTC : voir ``_ics_tzname``. Le repli UTC subsiste dès qu'on ne
+        sait pas produire le VTIMEZONE correspondant.
         """
         event.ensure_one()
         data = (payload or event._get_sync_payload("update"))["event"]
+
+        # Le fuseau se résout AVANT l'en-tête : son VTIMEZONE se place entre
+        # les propriétés du VCALENDAR et le VEVENT qui s'y réfère (RFC 5545
+        # §3.6 — un composant ne peut pas citer un TZID déclaré après lui).
+        tzname = None
+        tzlines = []
+        if not data.get("allday"):
+            tzname = self._ics_tzname(event)
+            if tzname:
+                tzlines = self._vtimezone_lines(tzname)
+                if not tzlines:
+                    tzname = None
 
         lines = [
             "BEGIN:VCALENDAR",
             "VERSION:2.0",
             "PRODID:-//Blue Fox Inc//Odoo Calendar Sync//FR",
             "CALSCALE:GREGORIAN",
+        ]
+        lines += tzlines
+        lines += [
             "BEGIN:VEVENT",
             "UID:%s" % event.x_nc_uid,
             "DTSTAMP:%s" % fields.Datetime.now().strftime("%Y%m%dT%H%M%SZ"),
@@ -172,6 +271,18 @@ class CalDavBackend(models.AbstractModel):
                 "DTEND;VALUE=DATE:%s"
                 % (stop_date + timedelta(days=1)).strftime("%Y%m%d")
             )
+        elif tzname:
+            import pytz
+
+            tz = pytz.timezone(tzname)
+            for prop, value in (("DTSTART", event.start), ("DTEND", event.stop)):
+                local = pytz.utc.localize(
+                    fields.Datetime.to_datetime(value)
+                ).astimezone(tz)
+                lines.append(
+                    "%s;TZID=%s:%s"
+                    % (prop, tzname, local.strftime("%Y%m%dT%H%M%S"))
+                )
         else:
             lines.append("DTSTART:%s" % self._ics_datetime(event.start))
             lines.append("DTEND:%s" % self._ics_datetime(event.stop))
