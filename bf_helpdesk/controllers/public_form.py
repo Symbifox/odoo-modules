@@ -1,4 +1,7 @@
 import base64
+import threading
+import time
+from collections import defaultdict
 import logging
 import re
 
@@ -30,9 +33,37 @@ ATTACHMENT_TOTAL_MB_PARAM = "bf_helpdesk.public_form_max_total_attachment_mb"
 # here from an anonymous POST on /support/<slug>, and ir.attachment derives the
 # mimetype from the name, so an .html arrived as text/html. Any addition below
 # belongs in all three lists.
+# Per-IP throttle on unauthenticated ticket creation (anti spam + auto-ack
+# mail-bomb). Keyed on the ProxyFix-corrected client IP (proxy_mode = True).
+_submit_lock = threading.Lock()
+_submit_data = defaultdict(list)  # IP -> [timestamps of accepted submissions]
+_SUBMIT_MAX = 5        # max submissions
+_SUBMIT_WINDOW = 600   # per 10 minutes / IP
+
+
+def _client_ip():
+    try:
+        return request.httprequest.remote_addr or "unknown"
+    except Exception:
+        return "unknown"
+
+
+def _check_submit_rate_limit():
+    """Return True and record the hit if this IP may submit another ticket."""
+    ip = _client_ip()
+    now = time.monotonic()
+    with _submit_lock:
+        cutoff = now - _SUBMIT_WINDOW
+        _submit_data[ip] = [t for t in _submit_data[ip] if t > cutoff]
+        if len(_submit_data[ip]) >= _SUBMIT_MAX:
+            return False
+        _submit_data[ip].append(now)
+        return True
+
 BLOCKED_EXTENSIONS = {
     # Browser-renderable / XSS vectors
     ".html", ".htm", ".xhtml", ".svg", ".svgz", ".mhtml", ".mht",
+    ".shtml", ".xml", ".xsl", ".xslt",
     ".js", ".mjs", ".wasm",
     # Server-side execution
     ".php", ".php3", ".php4", ".php5", ".php7", ".phps", ".phtml", ".pht",
@@ -123,6 +154,18 @@ class BFHelpdeskPublicForm(http.Controller):
             _logger.info(
                 "bf_helpdesk: honeypot triggered on /support/%s, dropping submission",
                 slug,
+            )
+            return request.render("bf_helpdesk.public_form_thanks", {
+                "team": team, "ticket": False,
+            })
+
+        # Per-IP throttle: cap ticket creation / auto-ack emails. Renders the
+        # same thanks page so a real over-eager user isn't shown an error and a
+        # bot gets no signal.
+        if not _check_submit_rate_limit():
+            _logger.info(
+                "bf_helpdesk: rate limit hit on /support/%s from %s",
+                slug, _client_ip(),
             )
             return request.render("bf_helpdesk.public_form_thanks", {
                 "team": team, "ticket": False,

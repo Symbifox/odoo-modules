@@ -142,3 +142,30 @@ class TestPublicFormSecurity(HttpCase):
             self.Ticket.search_count([("team_id", "=", self.team.id)]),
             before + 1,
         )
+
+    def test_submit_is_rate_limited_per_ip(self):
+        # After _SUBMIT_MAX accepted submissions from one IP within the window,
+        # further submissions must not create tickets (anti spam / mail-bomb).
+        from odoo.addons.bf_helpdesk.controllers import public_form
+        public_form._submit_data.clear()
+        before = self.Ticket.search_count([("team_id", "=", self.team.id)])
+        created = 0
+        for i in range(public_form._SUBMIT_MAX + 3):
+            token = self._csrf()
+            self.url_open(
+                "/support/security-test/submit",
+                data={
+                    "csrf_token": token,
+                    "name": "U%d" % i,
+                    "email": "u%d@example.com" % i,
+                    "subject": "s%d" % i,
+                    "description": "d%d" % i,
+                },
+            )
+        after = self.Ticket.search_count([("team_id", "=", self.team.id)])
+        created = after - before
+        self.assertEqual(
+            created, public_form._SUBMIT_MAX,
+            "only the first _SUBMIT_MAX submissions per IP should create tickets",
+        )
+        public_form._submit_data.clear()

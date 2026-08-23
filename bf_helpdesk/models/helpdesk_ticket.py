@@ -343,15 +343,23 @@ class HelpdeskTicket(models.Model):
 
     @api.model
     def _cron_sla_breach_activity(self):
-        """Daily cron — drop a follow-up activity on tickets newly in breach."""
-        breached = self.search([
+        """Daily cron — drop a follow-up activity on tickets newly in breach.
+
+        Searches on the *stored* deadline datetime fields (not the non-stored
+        breach booleans, which Odoo silently drops from the domain) and then
+        re-validates the breach in Python to apply the staff-message check.
+        """
+        now = fields.Datetime.now()
+        candidates = self.search([
             ("active", "=", True),
             ("stage_id.closed", "=", False),
             "|",
-            ("sla_response_breach", "=", True),
-            ("sla_resolve_breach", "=", True),
+            ("sla_response_deadline", "<", now),
+            ("sla_resolve_deadline", "<", now),
         ])
-        for ticket in breached:
+        for ticket in candidates:
+            if not (ticket.sla_response_breach or ticket.sla_resolve_breach):
+                continue
             existing = self.env["mail.activity"].search([
                 ("res_model", "=", self._name),
                 ("res_id", "=", ticket.id),
