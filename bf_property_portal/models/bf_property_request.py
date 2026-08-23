@@ -43,7 +43,7 @@ donne, et le module compte les jours de cet engagement-là.
 from datetime import timedelta
 
 from odoo import _, api, fields, models
-from odoo.exceptions import UserError, ValidationError
+from odoo.exceptions import AccessError, UserError, ValidationError
 from odoo.osv import expression
 
 PORTIONS = [
@@ -355,7 +355,38 @@ class BfPropertyRequest(models.Model):
 
     # ── Le fil ──
 
+    def _ensure_syndicat_decides(self, what):
+        """🔴 Une règle d'enregistrement borne QUI voit quoi, pas CE QU'ON PEUT FAIRE.
+
+        Toute méthode sans souligné initial est appelable par RPC dès qu'on a
+        l'accès au modèle : la vue n'est pas une barrière, et un résident n'a
+        pas besoin d'un bouton à l'écran pour appeler la méthode. Les
+        `UserError` de ces transitions sont des gardes d'ÉTAT (« n'est plus
+        active »), pas des gardes de DROIT.
+
+        Constat rapporté le 2026-08-22 par une autre session, vérifié par sonde
+        avant correction : un résident pouvait appeler `action_confirm` sur SA
+        réservation et s'auto-approuver. Ici l'ACL du portail est en lecture et
+        création seulement, donc ces transitions lèvent déjà un `AccessError`
+        avant d'écrire — mais le jour où quelqu'un ouvrira l'écriture pour une
+        bonne raison, le trou s'ouvrirait sans bruit. L'art. 1070 C.c.Q. impose au syndicat de tenir un registre
+        fidèle ; un flux d'approbation que le demandeur clôt lui-même ne l'est
+        pas.
+        """
+        if self.env.su or self.env.user.has_group(
+            "bf_property_core.group_bf_property_manager"
+        ):
+            return
+        raise AccessError(
+            _(
+                "%s relève du syndicat, pas du demandeur. Vous pouvez déposer "
+                "et annuler ce qui vous appartient."
+            )
+            % what
+        )
+
     def action_acknowledge(self):
+        self._ensure_syndicat_decides(_("Prendre en charge une demande"))
         for request in self:
             if request.state != "submitted":
                 raise UserError(
@@ -368,6 +399,7 @@ class BfPropertyRequest(models.Model):
         return True
 
     def action_start(self):
+        self._ensure_syndicat_decides(_("Démarrer les travaux"))
         for request in self:
             if request.state not in ("submitted", "acknowledged"):
                 raise UserError(
@@ -387,6 +419,7 @@ class BfPropertyRequest(models.Model):
         c'est ce qu'on relira dans deux ans en cherchant quand la fuite a été
         réparée.
         """
+        self._ensure_syndicat_decides(_("Régler une demande"))
         for request in self:
             if not request.resolution:
                 raise UserError(
@@ -403,6 +436,7 @@ class BfPropertyRequest(models.Model):
         return True
 
     def action_refuse(self):
+        self._ensure_syndicat_decides(_("Refuser une demande"))
         for request in self:
             if not request.resolution:
                 raise UserError(
@@ -419,6 +453,7 @@ class BfPropertyRequest(models.Model):
         return True
 
     def action_reopen(self):
+        self._ensure_syndicat_decides(_("Rouvrir une demande"))
         for request in self:
             request.write(
                 {"state": "submitted", "date_done": False, "date_acknowledged": False}

@@ -48,7 +48,7 @@ contrôleur pour couvrir aussi les écritures qui ne passent pas par le portail.
 from datetime import timedelta
 
 from odoo import _, api, fields, models
-from odoo.exceptions import UserError, ValidationError
+from odoo.exceptions import AccessError, UserError, ValidationError
 
 STATES = [
     ("requested", "Demandée"),
@@ -273,7 +273,37 @@ class BfPropertyBooking(models.Model):
 
     # ── Décisions ──
 
+    def _ensure_syndicat_decides(self, what):
+        """🔴 Une règle d'enregistrement borne QUI voit quoi, pas CE QU'ON PEUT FAIRE.
+
+        Toute méthode sans souligné initial est appelable par RPC dès qu'on a
+        l'accès au modèle : la vue n'est pas une barrière, et un résident n'a
+        pas besoin d'un bouton à l'écran pour appeler la méthode. Les
+        `UserError` de ces transitions sont des gardes d'ÉTAT (« n'est plus
+        active »), pas des gardes de DROIT.
+
+        Constat rapporté le 2026-08-22 par une autre session, vérifié par sonde
+        avant correction : un résident pouvait appeler `action_confirm` sur SA
+        réservation et s'auto-approuver, en restant dans son périmètre de
+        lecture, tout en court-circuitant le réglage « confirmation du syndicat
+        requise ». L'art. 1070 C.c.Q. impose au syndicat de tenir un registre
+        fidèle ; un flux d'approbation que le demandeur clôt lui-même ne l'est
+        pas.
+        """
+        if self.env.su or self.env.user.has_group(
+            "bf_property_core.group_bf_property_manager"
+        ):
+            return
+        raise AccessError(
+            _(
+                "%s relève du syndicat, pas du demandeur. Vous pouvez déposer "
+                "et annuler ce qui vous appartient."
+            )
+            % what
+        )
+
     def action_confirm(self):
+        self._ensure_syndicat_decides(_("Confirmer une réservation"))
         for booking in self:
             if booking.state not in ("requested",):
                 raise UserError(
@@ -284,6 +314,7 @@ class BfPropertyBooking(models.Model):
         return True
 
     def action_refuse(self):
+        self._ensure_syndicat_decides(_("Refuser une réservation"))
         for booking in self:
             if not booking.decision_reason:
                 raise UserError(
@@ -296,6 +327,8 @@ class BfPropertyBooking(models.Model):
         return True
 
     def action_cancel(self):
+        """Annuler reste ouvert : la règle borne déjà chacun à ses réservations,
+        et renoncer à son propre créneau n'est pas une décision du syndicat."""
         for booking in self:
             if booking.state in ("refused", "cancelled"):
                 raise UserError(_("« %s » n'est plus active.") % booking.name)

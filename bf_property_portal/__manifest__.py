@@ -1,7 +1,7 @@
 {
     "name": "Copropriété — Portail de l'occupant",
     "summary": "Annonces, documents, coordonnées, demandes d'entretien et réservation des espaces communs",
-    "version": "18.0.3.0.0",
+    "version": "18.0.3.1.0",
     "category": "Services/Property",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",

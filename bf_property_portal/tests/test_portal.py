@@ -1218,3 +1218,115 @@ class TestPropertyBookingPortal(HttpCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(self.env["bf.property.booking"].search_count([]), before)
+
+
+@tagged("post_install", "-at_install")
+class TestPropertyPortalAuthority(TransactionCase):
+    """🔴 Une règle borne QUI voit quoi, pas CE QU'ON PEUT FAIRE.
+
+    Toute méthode sans souligné initial est appelable par RPC dès qu'on a
+    l'accès au modèle : la vue n'est pas une barrière. Les `UserError` des
+    transitions sont des gardes d'état, pas de droit.
+
+    Constat rapporté par une autre session le 2026-08-22, vérifié par sonde,
+    corrigé, et gardé ici.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.syndicat = cls.env["bf.property.syndicat"].create(
+            {"name": "Syndicat des droits", "fraction_base": 1000}
+        )
+        cls.building = cls.env["bf.property.building"].create(
+            {"name": "Immeuble des droits", "syndicat_id": cls.syndicat.id}
+        )
+        cls.unit = cls.env["bf.property.unit"].create(
+            {"name": "1001", "building_id": cls.building.id, "quote_part": 1000.0}
+        )
+        cls.resident = cls.env["res.partner"].create(
+            {"name": "Résident", "email": "droits@example.invalid"}
+        )
+        cls.env["bf.property.ownership"].create(
+            {"unit_id": cls.unit.id, "partner_id": cls.resident.id}
+        )
+        cls.resident_user = cls.env["res.users"].create(
+            {
+                "name": "Résident",
+                "login": "authority_resident@example.invalid",
+                "partner_id": cls.resident.id,
+                "groups_id": [(6, 0, [cls.env.ref("base.group_portal").id])],
+            }
+        )
+        cls.hall = cls.env["bf.property.common.area"].create(
+            {
+                "name": "Salle des droits",
+                "building_id": cls.building.id,
+                "bookable": True,
+                "booking_requires_approval": True,
+            }
+        )
+
+    def _booking(self):
+        start = (fields.Datetime.now() + timedelta(days=3)).replace(
+            hour=14, minute=0, second=0, microsecond=0
+        )
+        return self.env["bf.property.booking"].with_user(self.resident_user).create(
+            {
+                "common_area_id": self.hall.id,
+                "partner_id": self.resident.id,
+                "date_start": start,
+                "date_stop": start + timedelta(hours=2),
+            }
+        )
+
+    def test_a_resident_cannot_approve_their_own_booking(self):
+        """Le défaut exact : s'auto-approuver en restant dans son périmètre."""
+        booking = self._booking()
+        self.assertEqual(booking.state, "requested")
+        with self.assertRaises(AccessError):
+            booking.with_user(self.resident_user).action_confirm()
+        self.assertEqual(booking.state, "requested")
+
+    def test_a_resident_cannot_refuse_their_own_booking(self):
+        booking = self._booking()
+        booking.decision_reason = "Je change d'idée"
+        with self.assertRaises(AccessError):
+            booking.with_user(self.resident_user).action_refuse()
+
+    def test_a_resident_may_still_cancel_their_own_booking(self):
+        """Renoncer à son créneau n'est pas une décision du syndicat."""
+        booking = self._booking()
+        booking.with_user(self.resident_user).action_cancel()
+        self.assertEqual(booking.state, "cancelled")
+
+    def test_the_syndicat_confirms(self):
+        # ⚠️ `_booking()` rend un recordset lié à l'environnement du RÉSIDENT :
+        # l'appeler tel quel confirmerait sous son identité, et le test
+        # mesurerait le contraire de ce qu'il croit.
+        booking = self._booking().with_env(self.env)
+        booking.action_confirm()
+        self.assertEqual(booking.state, "confirmed")
+
+    def test_the_request_transitions_are_closed_to_a_resident(self):
+        """Ici l'ACL du portail bloque déjà, la garde vient derrière.
+
+        Elle existe pour le jour où quelqu'un ouvrira l'écriture pour une bonne
+        raison : le trou se rouvrirait alors sans bruit.
+        """
+        request = self.env["bf.property.request"].create(
+            {
+                "syndicat_id": self.syndicat.id,
+                "building_id": self.building.id,
+                "unit_id": self.unit.id,
+                "requester_partner_id": self.resident.id,
+                "category": "other",
+                "description": "Quelque chose.",
+                "resolution": "Rien",
+            }
+        )
+        for method in ("action_acknowledge", "action_start", "action_done",
+                       "action_refuse", "action_reopen"):
+            with self.assertRaises(AccessError, msg=method):
+                getattr(request.with_user(self.resident_user), method)()
+        self.assertEqual(request.state, "submitted")
