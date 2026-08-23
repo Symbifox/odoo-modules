@@ -20,6 +20,13 @@
                     <t t-set="url" t-value="'/my/property/requests'"/>
                     <t t-set="placeholder_count" t-value="'property_request_count'"/>
                 </t>
+                <t t-call="portal.portal_docs_entry">
+                    <t t-set="icon" t-value="'/bf_property_portal/static/description/icon.png'"/>
+                    <t t-set="title">Réserver un espace commun</t>
+                    <t t-set="text">Salle communautaire, gym, monte-charge</t>
+                    <t t-set="url" t-value="'/my/property/bookings'"/>
+                    <t t-set="placeholder_count" t-value="'property_booking_count'"/>
+                </t>
             </xpath>
         </template>
 
@@ -98,6 +105,7 @@
                     <a class="btn btn-secondary" href="/my/property/announcements">Toutes les annonces</a>
                     <a class="btn btn-secondary" href="/my/property/documents">Les documents</a>
                     <a class="btn btn-secondary" href="/my/property/requests">Mes demandes d'entretien</a>
+                    <a class="btn btn-secondary" href="/my/property/bookings">Réserver un espace</a>
                 </div>
             </t>
         </template>
@@ -289,6 +297,131 @@
                         </t>
                     </div>
                 </div>
+            </t>
+        </template>
+
+
+        <!-- Réservation des espaces communs. -->
+        <template id="portal_property_bookings" name="Réserver un espace commun">
+            <t t-call="portal.portal_layout">
+                <t t-call="portal.portal_searchbar">
+                    <t t-set="title">Espaces communs</t>
+                </t>
+
+                <div t-if="request.params.get('error') == 'area'" class="alert alert-warning">
+                    Cet espace ne se réserve pas, ou il n'est pas dans votre immeuble.
+                </div>
+                <div t-if="request.params.get('error') == 'window'" class="alert alert-warning">
+                    Indiquez un début et une fin.
+                </div>
+                <div t-if="request.params.get('error') == 'refused'" class="alert alert-warning">
+                    Le créneau demandé n'a pas été retenu : il chevauche une autre
+                    réservation, il dépasse la durée permise pour cet espace, il va
+                    trop loin dans le temps, ou l'espace est à usage restreint et
+                    votre fraction n'en a pas la jouissance.
+                </div>
+
+                <t t-if="not areas">
+                    <div class="alert alert-info" role="status">
+                        Aucun espace réservable dans votre immeuble.
+                    </div>
+                </t>
+
+                <t t-if="areas">
+                    <div class="card mb-4">
+                        <div class="card-header">Réserver</div>
+                        <div class="card-body">
+                            <form action="/my/property/bookings/new" method="post">
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label" for="common_area_id">Espace</label>
+                                        <select class="form-select" name="common_area_id" id="common_area_id">
+                                            <option t-foreach="areas" t-as="area"
+                                                    t-att-value="area.id" t-esc="area.display_name"/>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label" for="unit_id">Au titre de la fraction</label>
+                                        <select class="form-select" name="unit_id" id="unit_id">
+                                            <option value="">Aucune en particulier</option>
+                                            <option t-foreach="units" t-as="unit"
+                                                    t-att-value="unit.id" t-esc="unit.display_name"/>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label" for="date_start">Début</label>
+                                        <input class="form-control" type="datetime-local"
+                                               name="date_start" id="date_start" required="required"/>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label" for="date_stop">Fin</label>
+                                        <input class="form-control" type="datetime-local"
+                                               name="date_stop" id="date_stop" required="required"/>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label" for="note">Précisions</label>
+                                    <input class="form-control" type="text" name="note" id="note"
+                                           placeholder="Facultatif."/>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Demander le créneau</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <h5>Ce qui est déjà pris, dans les trente prochains jours</h5>
+                    <div t-foreach="availability" t-as="slot" class="card mb-3">
+                        <div class="card-header"><span t-field="slot['area'].name"/></div>
+                        <div class="card-body">
+                            <p t-if="slot['area'].booking_rules" class="text-muted small"
+                               style="white-space: pre-line;"
+                               t-field="slot['area'].booking_rules"/>
+                            <t t-if="not slot['busy']">
+                                <p class="mb-0 text-muted">Rien de retenu.</p>
+                            </t>
+                            <ul t-if="slot['busy']" class="mb-0">
+                                <li t-foreach="slot['busy']" t-as="busy">
+                                    <span t-esc="busy['date_start']"/> à <span t-esc="busy['date_stop']"/>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </t>
+
+                <h5 class="mt-4">Mes réservations</h5>
+                <t t-if="not bookings">
+                    <div class="alert alert-info" role="status">Aucune réservation de votre part.</div>
+                </t>
+                <table t-if="bookings" class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th>Espace</th>
+                            <th>Début</th>
+                            <th>Fin</th>
+                            <th>État</th>
+                            <th/>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr t-foreach="bookings" t-as="booking">
+                            <td><span t-field="booking.common_area_id.name"/></td>
+                            <td><span t-field="booking.date_start"/></td>
+                            <td><span t-field="booking.date_stop"/></td>
+                            <td><span t-field="booking.state"/></td>
+                            <td class="text-end">
+                                <form t-if="booking.state in ('requested', 'confirmed')"
+                                      t-attf-action="/my/property/bookings/{{ booking.id }}/cancel"
+                                      method="post">
+                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                    <button type="submit" class="btn btn-sm btn-secondary">Annuler</button>
+                                </form>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </t>
         </template>
 

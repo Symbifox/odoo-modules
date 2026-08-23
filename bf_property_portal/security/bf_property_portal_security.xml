@@ -197,6 +197,64 @@
             <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
         </record>
 
+        <!--
+            Réservations : la sienne, et rien d'autre.
+
+            ⚠️ L'écriture est ouverte au portail, mais uniquement pour ANNULER
+            sa propre réservation : la règle borne à `partner_id`, et le
+            formulaire du portail n'expose que l'annulation. Confirmer ou
+            refuser reste au syndicat.
+
+            ⚠️ La disponibilité d'un espace ne passe PAS par cette règle : le
+            contrôleur appelle `_busy_slots()`, qui rend des créneaux sans nom.
+            Un occupant doit voir que le samedi est pris sans apprendre qui le
+            prend. Art. 1070 al. 1 C.c.Q. pour le consentement exprès aux
+            renseignements personnels.
+        -->
+        <!--
+            🔴 Sans cette lecture, réserver échoue sur un AccessError.
+
+            La garde du modèle traverse `common_area_id` pour vérifier
+            l'art. 1043, et une contrainte s'évalue avec les droits de la
+            personne. Même famille que l'oubli trouvé à P4.1 sur l'immeuble.
+
+            La personne VOIT les espaces communs de ses immeubles, y compris
+            ceux à usage restreint dont elle n'a pas la jouissance : savoir que
+            la terrasse du 802 existe n'est pas la réserver, et c'est la garde
+            de réservation qui refuse, en nommant les fractions bénéficiaires.
+        -->
+        <record id="rule_common_area_portal" model="ir.rule">
+            <field name="name">Parties communes : celles de ses immeubles</field>
+            <field name="model_id" ref="bf_property_core.model_bf_property_common_area"/>
+            <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+            <field name="domain_force">[('building_id', 'any', [('unit_ids', 'any', ['|',
+                ('ownership_ids', 'any',
+                    [('partner_id', '=', user.partner_id.id), ('is_current', '=', True)]),
+                '&amp;', ('occupant_id', '=', user.partner_id.id), ('is_rented', '=', True)
+            ])])]</field>
+        </record>
+
+        <record id="rule_booking_portal" model="ir.rule">
+            <field name="name">Réservations : la sienne seulement</field>
+            <field name="model_id" ref="model_bf_property_booking"/>
+            <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+            <field name="domain_force">[('partner_id', '=', user.partner_id.id)]</field>
+        </record>
+
+        <record id="rule_booking_company" model="ir.rule">
+            <field name="name">Réservations : multi-société</field>
+            <field name="model_id" ref="model_bf_property_booking"/>
+            <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        </record>
+
         <!-- Cloisonnement multi-société, comme partout ailleurs dans la suite. -->
         <record id="rule_announcement_company" model="ir.rule">
             <field name="name">Annonces : multi-société</field>

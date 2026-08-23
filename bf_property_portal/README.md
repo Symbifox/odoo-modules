@@ -2,7 +2,8 @@
 
 What the syndicat makes available to the people in the building, and to whom.
 Announcements, documents, the contact details of the syndicat itself, and
-maintenance requests, on the standard Odoo portal.
+maintenance requests and bookings of the common spaces, on the standard Odoo
+portal.
 
 ## Why it is not a generic notice board
 
@@ -143,6 +144,67 @@ very first request filed by an occupant fails on an ACL) and the opening chatter
 message (a portal user cannot create a `mail.message` on their own authority) —
 whose author stays the requester, so the thread carries their name.
 
+## Booking a common space
+
+The community room, the gym, the moving lift. Built natively, **not** on
+`bf_appointment`.
+
+🔴 **`bf_appointment` depends on `resource_booking`, which is AGPL-3.** This
+suite is BUSL-1.1, and the project already settled that exact case when it set
+OCA `contract` aside: a declared dependency is no safer than a copy, because a
+module that `depends` on an AGPL-3 module and imports its models forms a whole
+whose distribution triggers the copyleft. `resource_booking` is also absent from
+the public repository, so the dependency would be unsatisfiable there. And the
+shape does not match: `resource.booking` models an appointment with a person on
+a resource calendar, not the room from 14:00 to 17:00 on Saturday.
+
+**Article 1043** distinguishes the restricted-use common portion, whose
+enjoyment is reserved to certain fractions. The terrace attached to other
+fractions is therefore not bookable by anyone: the module refuses, and names the
+fractions that hold it.
+
+**The conditions of use come from the by-laws of the immovable.** The module
+invents none: it carries the text the syndicat writes there, and recalls that
+amending the by-laws falls under the majority of **article 1096**, which names
+that case expressly. The caps (maximum duration, how far ahead) are settings,
+not law, and the module says so.
+
+⚠️ **Nobody's name on the availability view.** An occupant sees that Saturday is
+taken, never by whom. Article 1070 al. 1 puts a third party's personal
+information in the register only with their express consent; publishing the
+building's social calendar would do the opposite. The syndicat sees everything
+from the back office.
+
+### Three traps this feature paid for
+
+🔴 **A guard that reads with the guarded user's rights disarms itself.** Twice in
+one file. The restricted-use check read `restricted_unit_ids` as the requester,
+and the record rule on fractions hides the neighbour's fraction, so the list came
+back empty and the space looked unrestricted. The overlap check searched as the
+requester, and the rule on bookings hides other people's, so no clash was ever
+found — the guard was inert for precisely the case it exists for, two different
+people on the same room. Both now read under `sudo`.
+
+🔴 **A constraint fires at flush, not at create.** A `try` wrapped around the
+`create` alone misses it: the page redirects as if all were well and the clash
+surfaces later. The portal writes therefore run inside `cr.savepoint()`, which
+flushes on entry and on exit, so the constraint fires where it can be caught and
+the rollback leaves nothing behind.
+
+🔴 **A `datetime-local` input posts the browser's local time**, and Odoo stores
+UTC. Read as-is, every booking would shift by the person's offset: four hours in
+Montreal in summer, which turns a Saturday evening into a Sunday morning. The
+controller converts from the user's timezone, and falls back to UTC rather than
+guessing.
+
+**Double booking is closed with a row lock, not with hope.** A Python overlap
+check alone leaves a race: two concurrent transactions each read a free slot and
+both write, and Odoo runs in `REPEATABLE READ` so neither sees the other's
+insert. The guard takes `SELECT … FOR UPDATE` on the common area first, which
+serialises bookings of one space and leaves other spaces alone. A *requested*
+slot holds the space just as a confirmed one does, otherwise two people would be
+waiting on the same Saturday.
+
 ## Pages
 
 | Route | What it shows |
@@ -153,6 +215,9 @@ whose author stays the requester, so the thread carries their name.
 | `/my/property/document/<id>` | The file itself, after the record rules have answered |
 | `/my/property/requests` | Their own requests, and the form to file a new one |
 | `/my/property/requests/new` | The submission itself (POST) |
+| `/my/property/bookings` | Bookable spaces, what is taken, and their own bookings |
+| `/my/property/bookings/new` | The booking itself (POST) |
+| `/my/property/bookings/<id>/cancel` | Cancelling their own (POST) |
 
 ## Dependencies
 
@@ -162,14 +227,17 @@ board without opening its books.
 
 ## Tested
 
-55 tests on staging: the co-owner / tenant partition on both the ORM and the
+80 tests on staging: the co-owner / tenant partition on both the ORM and the
 HTTP route, the refusal to publish a register item unacknowledged, the
 recategorisation that unpublishes, the visibility window including the search
 on the unstored computed field, roles counted syndicat by syndicat, the pages
 actually rendering, the three regimes of article 1064 on a request, the create
 guard against a neighbour's fraction, the thread that will not close on
 nothing, and a request filed end to end through the portal form, CSRF token
-included.
+included, plus the booking guards: overlap including the
+regression where it had disarmed itself for a portal user, the restricted-use
+refusal under article 1043, the caps, and an availability view that yields slots
+and never a name.
 
 ## Licence
 

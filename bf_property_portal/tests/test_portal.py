@@ -869,3 +869,352 @@ class TestPropertyRequestPortal(HttpCase):
             },
         )
         self.assertEqual(self.env["bf.property.request"].search_count([]), before)
+
+
+@tagged("post_install", "-at_install")
+class TestPropertyBooking(TransactionCase):
+    """Réserver un espace commun, et ce que le module refuse.
+
+    ⚠️ Monté nativement, pas sur `bf_appointment` : celui-là dépend de
+    `resource_booking`, AGPL-3, ce qui ne se met pas sous une BUSL, et il
+    n'existe pas au dépôt public.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.syndicat = cls.env["bf.property.syndicat"].create(
+            {"name": "Syndicat des réservations", "fraction_base": 1000}
+        )
+        cls.building = cls.env["bf.property.building"].create(
+            {"name": "Immeuble des réservations", "syndicat_id": cls.syndicat.id}
+        )
+        cls.unit = cls.env["bf.property.unit"].create(
+            {"name": "801", "building_id": cls.building.id, "quote_part": 500.0}
+        )
+        cls.other_unit = cls.env["bf.property.unit"].create(
+            {"name": "802", "building_id": cls.building.id, "quote_part": 500.0}
+        )
+        cls.resident = cls.env["res.partner"].create(
+            {"name": "Réservante", "email": "reservante@example.invalid"}
+        )
+        cls.neighbour = cls.env["res.partner"].create(
+            {"name": "Voisine", "email": "voisine@example.invalid"}
+        )
+        cls.env["bf.property.ownership"].create(
+            {"unit_id": cls.unit.id, "partner_id": cls.resident.id}
+        )
+        cls.env["bf.property.ownership"].create(
+            {"unit_id": cls.other_unit.id, "partner_id": cls.neighbour.id}
+        )
+        cls.hall = cls.env["bf.property.common.area"].create(
+            {
+                "name": "Salle communautaire",
+                "building_id": cls.building.id,
+                "area_type": "general",
+                "bookable": True,
+                "booking_rules": "Remettre les tables en place avant de partir.",
+            }
+        )
+        # Terrasse dont seule la fraction 802 a la jouissance.
+        cls.terrace = cls.env["bf.property.common.area"].create(
+            {
+                "name": "Terrasse du 802",
+                "building_id": cls.building.id,
+                "area_type": "restricted",
+                "restricted_unit_ids": [(6, 0, [cls.other_unit.id])],
+                "bookable": True,
+            }
+        )
+        portal_group = cls.env.ref("base.group_portal")
+        cls.resident_user = cls.env["res.users"].create(
+            {
+                "name": "Réservante",
+                "login": "booking_resident@example.invalid",
+                "partner_id": cls.resident.id,
+                "groups_id": [(6, 0, [portal_group.id])],
+            }
+        )
+
+    def _slot(self, days=3, hour=14, hours=2, area=None):
+        start = (fields.Datetime.now() + timedelta(days=days)).replace(
+            hour=hour, minute=0, second=0, microsecond=0
+        )
+        return {
+            "common_area_id": (area or self.hall).id,
+            "partner_id": self.resident.id,
+            "date_start": start,
+            "date_stop": start + timedelta(hours=hours),
+        }
+
+    def _book(self, days=3, hour=14, hours=2, area=None, **kw):
+        """Les paramètres du CRÉNEAU se distinguent des champs du modèle.
+
+        Les confondre passait `days=200` à `create()`, qui n'a évidemment pas
+        ce champ.
+        """
+        vals = self._slot(days=days, hour=hour, hours=hours, area=area)
+        vals.update(kw)
+        return self.env["bf.property.booking"].create(vals)
+
+    # ── Le double créneau ──
+
+    def test_two_bookings_never_overlap_on_the_same_space(self):
+        first = self._book()
+        self.assertEqual(first.state, "confirmed")
+        with self.assertRaises(ValidationError):
+            self._book(partner_id=self.neighbour.id)
+
+    def test_a_requested_slot_holds_the_space_like_a_confirmed_one(self):
+        """Sinon deux personnes attendraient une confirmation sur le même samedi."""
+        self.hall.booking_requires_approval = True
+        first = self._book()
+        self.assertEqual(first.state, "requested")
+        with self.assertRaises(ValidationError):
+            self._book(partner_id=self.neighbour.id)
+
+    def test_the_overlap_guard_stays_armed_for_a_portal_user(self):
+        """🔴 La régression qui compte, et qui est passée inaperçue une fois.
+
+        La garde cherchait les chevauchements avec les droits du demandeur. La
+        règle d'accès du portail borne les réservations aux siennes : celle du
+        VOISIN était invisible, la recherche ne rendait rien, et la garde
+        concluait au créneau libre. Elle était donc inerte pour le cas exact
+        qui la justifie, deux personnes différentes sur la même salle.
+        """
+        taken = self._book(partner_id=self.neighbour.id)
+        self.assertEqual(taken.state, "confirmed")
+        with self.assertRaises(ValidationError):
+            self.env["bf.property.booking"].with_user(self.resident_user).create(
+                self._slot()
+            )
+
+    def test_a_cancelled_booking_frees_the_slot(self):
+        first = self._book()
+        first.action_cancel()
+        second = self._book(partner_id=self.neighbour.id)
+        self.assertEqual(second.state, "confirmed")
+
+    def test_slots_that_merely_touch_do_not_overlap(self):
+        """14 h à 16 h et 16 h à 18 h se suivent, elles ne se chevauchent pas."""
+        first = self._book(days=4, hour=14, hours=2)
+        second_vals = self._slot(days=4, hour=16, hours=2)
+        second_vals["partner_id"] = self.neighbour.id
+        second = self.env["bf.property.booking"].create(second_vals)
+        self.assertTrue(first and second)
+
+    def test_a_booking_on_another_space_is_untouched(self):
+        self._book()
+        other = self._book(common_area_id=self.terrace.id,
+                           partner_id=self.neighbour.id)
+        self.assertTrue(other)
+
+    # ── Art. 1043 : l'usage restreint n'est pas à tous ──
+
+    def test_a_restricted_space_refuses_someone_without_the_enjoyment(self):
+        with self.assertRaises(ValidationError):
+            self.env["bf.property.booking"].with_user(self.resident_user).create(
+                self._slot(area=self.terrace)
+            )
+
+    def test_a_restricted_space_accepts_its_beneficiary(self):
+        vals = self._slot(area=self.terrace)
+        vals["partner_id"] = self.neighbour.id
+        booking = self.env["bf.property.booking"].create(vals)
+        self.assertTrue(booking)
+
+    # ── Les bornes que le syndicat se donne ──
+
+    def test_a_space_not_declared_bookable_refuses(self):
+        stairs = self.env["bf.property.common.area"].create(
+            {"name": "Cage d'escalier", "building_id": self.building.id}
+        )
+        with self.assertRaises(ValidationError):
+            self._book(common_area_id=stairs.id)
+
+    def test_a_duration_beyond_the_cap_is_refused(self):
+        self.hall.booking_max_minutes = 60
+        with self.assertRaises(ValidationError):
+            self._book(hours=3)
+
+    def test_a_date_beyond_the_horizon_is_refused(self):
+        self.hall.booking_horizon_days = 7
+        with self.assertRaises(ValidationError):
+            self._book(days=30)
+
+    def test_a_window_that_ends_before_it_starts_is_refused(self):
+        vals = self._slot()
+        vals["date_stop"] = vals["date_start"] - timedelta(hours=1)
+        with self.assertRaises(ValidationError):
+            self.env["bf.property.booking"].create(vals)
+
+    def test_no_cap_means_no_cap(self):
+        self.assertEqual(self.hall.booking_max_minutes, 0)
+        self.assertEqual(self.hall.booking_horizon_days, 0)
+        booking = self._book(days=200, hours=9)
+        self.assertTrue(booking)
+
+    # ── Approbation ──
+
+    def test_without_approval_a_booking_is_confirmed_on_arrival(self):
+        self.assertFalse(self.hall.booking_requires_approval)
+        self.assertEqual(self._book().state, "confirmed")
+
+    def test_with_approval_it_waits_and_a_refusal_says_why(self):
+        self.hall.booking_requires_approval = True
+        booking = self._book()
+        self.assertEqual(booking.state, "requested")
+        with self.assertRaises(UserError):
+            booking.action_refuse()
+        booking.decision_reason = "Salle déjà promise au conseil."
+        booking.action_refuse()
+        self.assertEqual(booking.state, "refused")
+
+    def test_confirming_something_already_confirmed_is_refused(self):
+        booking = self._book()
+        with self.assertRaises(UserError):
+            booking.action_confirm()
+
+    # ── Disponibilité sans nommer personne ──
+
+    def test_availability_gives_slots_and_never_a_name(self):
+        """⚠️ C'est tout l'intérêt : le samedi est pris, on ne dit pas par qui."""
+        booking = self._book()
+        slots = self.env["bf.property.booking"]._busy_slots(
+            self.hall,
+            fields.Datetime.now(),
+            fields.Datetime.now() + timedelta(days=30),
+        )
+        self.assertEqual(len(slots), 1)
+        self.assertEqual(set(slots[0]), {"date_start", "date_stop"})
+        self.assertNotIn("partner_id", slots[0])
+        self.assertEqual(slots[0]["date_start"], booking.date_start)
+
+    def test_a_portal_user_reads_only_their_own_bookings(self):
+        mine = self._book()
+        theirs = self._book(days=9, partner_id=self.neighbour.id)
+        seen = self.env["bf.property.booking"].with_user(self.resident_user).search([])
+        self.assertIn(mine, seen)
+        self.assertNotIn(theirs, seen)
+
+
+@tagged("post_install", "-at_install")
+class TestPropertyBookingPortal(HttpCase):
+    """Réserver depuis le portail, et ce que la page ne dit pas."""
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.syndicat = cls.env["bf.property.syndicat"].create(
+            {"name": "Syndicat des créneaux", "fraction_base": 1000}
+        )
+        cls.building = cls.env["bf.property.building"].create(
+            {"name": "Immeuble des créneaux", "syndicat_id": cls.syndicat.id}
+        )
+        cls.unit = cls.env["bf.property.unit"].create(
+            {"name": "901", "building_id": cls.building.id, "quote_part": 1000.0}
+        )
+        cls.partner = cls.env["res.partner"].create(
+            {"name": "Créneau", "email": "creneau@example.invalid"}
+        )
+        cls.env["bf.property.ownership"].create(
+            {"unit_id": cls.unit.id, "partner_id": cls.partner.id}
+        )
+        cls.hall = cls.env["bf.property.common.area"].create(
+            {
+                "name": "Salle du sous-sol",
+                "building_id": cls.building.id,
+                "bookable": True,
+                "booking_rules": "Remettre les tables en place.",
+            }
+        )
+        cls.user = cls.env["res.users"].create(
+            {
+                "name": "Créneau",
+                "login": "booking_page_user",
+                "password": "booking_page_pwd",
+                "partner_id": cls.partner.id,
+                "groups_id": [(6, 0, [cls.env.ref("base.group_portal").id])],
+            }
+        )
+        # Une réservation de quelqu'un d'autre, pour éprouver l'anonymat.
+        cls.stranger = cls.env["res.partner"].create(
+            {"name": "Marie Tremblay", "email": "marie@example.invalid"}
+        )
+        cls.other_unit = cls.env["bf.property.unit"].create(
+            {"name": "902", "building_id": cls.building.id, "quote_part": 0.0}
+        )
+        cls.env["bf.property.ownership"].create(
+            {"unit_id": cls.other_unit.id, "partner_id": cls.stranger.id}
+        )
+        start = (fields.Datetime.now() + timedelta(days=2)).replace(
+            hour=10, minute=0, second=0, microsecond=0
+        )
+        cls.foreign_booking = cls.env["bf.property.booking"].create(
+            {
+                "common_area_id": cls.hall.id,
+                "partner_id": cls.stranger.id,
+                "date_start": start,
+                "date_stop": start + timedelta(hours=2),
+            }
+        )
+
+    def _csrf(self, html):
+        import re as _re
+
+        match = _re.search(r'name="csrf_token"[^>]*value="([^"]+)"', html)
+        self.assertTrue(match, "le formulaire doit porter un jeton CSRF")
+        return match.group(1)
+
+    def test_the_page_shows_the_slot_as_busy_without_naming_anyone(self):
+        """⚠️ Le samedi est pris ; on n'apprend pas par qui.
+
+        Art. 1070 al. 1 : les renseignements personnels d'un tiers ne se
+        diffusent pas sans son consentement exprès.
+        """
+        self.authenticate("booking_page_user", "booking_page_pwd")
+        page = self.url_open("/my/property/bookings")
+        self.assertEqual(page.status_code, 200)
+        self.assertIn("Salle du sous-sol", page.text)
+        self.assertIn("Remettre les tables en place.", page.text)
+        self.assertNotIn("Marie Tremblay", page.text)
+
+    def test_an_occupant_books_a_free_slot_through_the_page(self):
+        self.authenticate("booking_page_user", "booking_page_pwd")
+        page = self.url_open("/my/property/bookings")
+        start = (fields.Datetime.now() + timedelta(days=5)).replace(
+            hour=18, minute=0, second=0, microsecond=0
+        )
+        self.url_open(
+            "/my/property/bookings/new",
+            data={
+                "csrf_token": self._csrf(page.text),
+                "common_area_id": str(self.hall.id),
+                "unit_id": str(self.unit.id),
+                "date_start": start.strftime("%Y-%m-%dT%H:%M"),
+                "date_stop": (start + timedelta(hours=2)).strftime("%Y-%m-%dT%H:%M"),
+                "note": "Fête d'anniversaire.",
+            },
+        )
+        booked = self.env["bf.property.booking"].search(
+            [("partner_id", "=", self.partner.id)]
+        )
+        self.assertEqual(len(booked), 1)
+        self.assertEqual(booked.common_area_id, self.hall)
+        self.assertEqual(booked.state, "confirmed")
+
+    def test_a_clashing_slot_comes_back_as_a_message_not_a_500(self):
+        self.authenticate("booking_page_user", "booking_page_pwd")
+        page = self.url_open("/my/property/bookings")
+        before = self.env["bf.property.booking"].search_count([])
+        response = self.url_open(
+            "/my/property/bookings/new",
+            data={
+                "csrf_token": self._csrf(page.text),
+                "common_area_id": str(self.hall.id),
+                "date_start": self.foreign_booking.date_start.strftime("%Y-%m-%dT%H:%M"),
+                "date_stop": self.foreign_booking.date_stop.strftime("%Y-%m-%dT%H:%M"),
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(self.env["bf.property.booking"].search_count([]), before)
