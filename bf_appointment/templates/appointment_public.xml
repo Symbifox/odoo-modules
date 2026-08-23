@@ -537,11 +537,17 @@
                                   t-out="day.strftime(date_format)"/>
                         </div>
                         <div class="bf-slot-bubbles">
+                            <!-- La bulle PORTE son créneau, au lieu d'avoir son
+                                 propre formulaire. Un seul modal les sert toutes :
+                                 voir la note devant `bf-modal-confirm`. -->
                             <t t-foreach="slots[day]" t-as="slot">
                                 <button class="bf-slot-bubble"
                                         type="button"
                                         data-bs-toggle="modal"
-                                        t-attf-data-bs-target="#modal-confirm-#{int(slot.timestamp())}"
+                                        data-bs-target="#bf-modal-confirm"
+                                        t-att-data-bf-when="slot.isoformat()"
+                                        t-att-data-bf-date="slot.strftime(date_format)"
+                                        t-att-data-bf-time="slot.strftime(time_format)"
                                         t-out="slot.strftime(time_format)"/>
                             </t>
                         </div>
@@ -578,20 +584,32 @@
                 })();
             </script>
 
-            <!-- Confirmation modals -->
-            <t t-foreach="sorted_days" t-as="day">
-                <form t-foreach="slots[day]" t-as="slot"
-                      method="post"
+            <!-- UN SEUL formulaire de confirmation, pour tous les créneaux.
+                 
+                 Il y en avait un par créneau, chacun avec son modal complet —
+                 texte de consentement, jeton CSRF et tout le reste. Un mois
+                 chargé produisait donc des centaines de formulaires dans une
+                 page publique, pour n'en soumettre jamais qu'un. La bulle
+                 cliquée porte son propre créneau en attributs `data-bf-*`, et
+                 `timezone_detect.js` les recopie ici à l'ouverture.
+
+                 Le repli sans JavaScript ne perd rien : `data-bs-toggle` est
+                 déjà du Bootstrap, donc sans JS aucun modal ne s'ouvrait et
+                 aucune confirmation n'était possible de toute façon. -->
+            <t t-if="sorted_days">
+                <form method="post"
                       t-att-action="confirm_url"
-                      t-attf-id="modal-confirm-#{int(slot.timestamp())}"
-                      t-attf-aria-labelledby="modal-title-#{int(slot.timestamp())}"
+                      id="bf-modal-confirm"
+                      aria-labelledby="bf-modal-confirm-title"
                       class="modal fade">
                     <input type="hidden" name="csrf_token"
                            t-att-value="request.csrf_token()"/>
                     <input type="hidden" name="access_token"
                            t-att-value="access_token"/>
-                    <input type="hidden" name="when"
-                           t-att-value="slot.isoformat()"/>
+                    <!-- Rempli au clic, depuis la bulle. Vide, le POST est
+                         refusé par le contrôleur et renvoie au calendrier :
+                         une panne de JS ne peut pas réserver au hasard. -->
+                    <input type="hidden" name="when" value="" data-bf-when-field="1"/>
                     <t t-if="visitor_tz">
                         <input type="hidden" name="tz"
                                t-att-value="visitor_tz"/>
@@ -599,7 +617,7 @@
                     <div t-attf-class="modal-dialog modal-dialog-centered#{' modal-dialog-scrollable' if consent_asks else ''}">
                         <div class="modal-content bf-modal">
                             <div class="modal-header bf-modal-header"
-                                 t-attf-id="modal-title-#{int(slot.timestamp())}">
+                                 id="bf-modal-confirm-title">
                                 <h5 class="mb-0 fw-semibold"
                                     t-out="'Confirm the meeting' if _en else 'Confirmer le rendez-vous'"/>
                             </div>
@@ -609,15 +627,15 @@
                                 <div class="d-flex flex-column gap-2">
                                     <div class="d-flex align-items-center">
                                         <i class="fa fa-calendar text-muted me-3" style="width:16px;"/>
-                                        <strong><t t-out="slot.strftime(date_format)"/></strong>
+                                        <strong data-bf-date-out="1"/>
                                     </div>
                                     <div class="d-flex align-items-center">
                                         <i class="fa fa-clock-o text-muted me-3" style="width:16px;"/>
-                                        <strong><t t-out="slot.strftime(time_format)"/></strong>
+                                        <strong data-bf-time-out="1"/>
                                     </div>
                                     <div class="d-flex align-items-center">
                                         <i class="fa fa-hourglass-half text-muted me-3" style="width:16px;"/>
-                                        <strong><t t-esc="booking.get_duration_display()"/></strong>
+                                        <strong t-esc="booking.get_duration_display()"/>
                                     </div>
                                 </div>
 
@@ -643,16 +661,15 @@
                                     <t t-set="_brand_co" t-value="booking.type_id.company_id or env.company"/>
                                     <t t-set="_privacy_url" t-value="(_brand_co and _brand_co.appointment_brand_privacy_url) or env['ir.config_parameter'].sudo().get_param('bf_appointment.privacy_url', '/r/politique-de-confidentialite')"/>
                                     <t t-set="_company_name" t-value="(_brand_co and (_brand_co.appointment_brand_name or _brand_co.name)) or (_en and 'the organization' or 'l’organisation')"/>
-                                    <t t-set="_slot_key" t-value="int(slot.timestamp())"/>
                                     <input type="hidden" name="bf_consent_shown_recording" value="1"/>
                                     <div class="form-check mt-4 pt-3 border-top bf-consent-recording">
                                         <input type="checkbox"
                                                class="form-check-input"
-                                               t-attf-id="bf_consent_recording_#{_slot_key}"
+                                               id="bf_consent_recording_slot"
                                                name="bf_consent_recording"
                                                value="1"/>
                                         <label class="form-check-label small"
-                                               t-attf-for="bf_consent_recording_#{_slot_key}">
+                                               for="bf_consent_recording_slot">
                                             <t t-if="_en">
                                                 I agree the meeting may be <strong>recorded (audio and video)</strong> and <strong>transcribed locally</strong> on <t t-out="_company_name"/>'s servers in Montreal (your voice never leaves our infrastructure). The transcript is then analyzed by AI to produce the meeting report, with no use of your data for training. Retention: 24 months after the end of the engagement.
                                                 <a t-att-href="_privacy_url" target="_blank" rel="noopener">Details</a>.

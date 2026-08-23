@@ -5,3 +5,5 @@ from . import test_onetime_link
 from . import test_guests
 from . import test_meeting_description
 from . import test_consent_gating
+from . import test_video_room
+from . import test_courriels_et_limiteurs

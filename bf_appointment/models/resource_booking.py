@@ -290,6 +290,22 @@ class ResourceBooking(models.Model):
     @api.depends("start", "stop", "combination_id", "combination_id.resource_ids",
                  "combination_id.min_required")
     def _compute_attendee_resources(self):
+        """Le sous-ensemble K-of-N qui prend réellement le créneau.
+
+        ⚠️ Deux détails alignent ce calcul sur celui qui a PROPOSÉ le créneau
+        (`resource.booking.combination._get_intervals`) — sans eux, les deux
+        peuvent ne pas désigner les mêmes personnes :
+
+        * `exclude_public_holidays=True`. La grille de disponibilité l'emploie ;
+          ici il manquait. Un jour férié rendait donc une ressource « occupée »
+          au moment d'attribuer alors qu'elle comptait comme libre au moment de
+          proposer, et l'on retombait sur le repli arbitraire `[:k]`.
+        * les disponibilités sont lues UNE FOIS par ressource, hors de la boucle
+          des sous-ensembles. Elles ne dépendent pas du sous-ensemble : les
+          relire dedans refaisait le même calcul de calendrier jusqu'à C(N-1,K-1)
+          fois par ressource, sur un compute stocké déclenché à chaque écriture
+          de `start`.
+        """
         import pytz
         from itertools import combinations as _icombs
         from odoo.addons.resource.models.utils import Intervals
@@ -307,18 +323,21 @@ class ResourceBooking(models.Model):
             stop_aware = pytz.utc.localize(rec.stop) if rec.stop.tzinfo is None else rec.stop
             base = Intervals([(start_aware, stop_aware, combo)])
             sorted_resources = combo.resource_ids.sorted(lambda r: r.id)
+            combo_ctx = combo.with_context(exclude_public_holidays=True)
+            res_free = {}
+            for res in sorted_resources:
+                calendar = combo_ctx.forced_calendar_id or res.calendar_id
+                res_free[res.id] = calendar.with_context(
+                    exclude_public_holidays=True
+                )._work_intervals_batch(start_aware, stop_aware, res)[res.id]
             picked = None
             for subset in _icombs(sorted_resources, k):
                 subset_intervals = base
-                ok = True
                 for res in subset:
-                    calendar = combo.forced_calendar_id or res.calendar_id
-                    free = calendar._work_intervals_batch(start_aware, stop_aware, res)[res.id]
-                    subset_intervals &= free
+                    subset_intervals &= res_free[res.id]
                     if not subset_intervals:
-                        ok = False
                         break
-                if ok and subset_intervals:
+                if subset_intervals:
                     picked = subset
                     break
             ids_picked = [r.id for r in picked] if picked else combo.resource_ids[:k].ids
@@ -564,8 +583,29 @@ class ResourceBooking(models.Model):
                 ).partner_ids = [(4, partner.id, 0) for partner in missing]
 
     def action_confirm(self):
-        """Override to generate video URL + strip non-attendee resource partners
-        for K-of-N bookings.
+        """Confirmer : salle visio, participants K-of-N, puis consentements.
+
+        ⚠️ UNE SEULE définition d'`action_confirm` dans cette classe, et ça
+        n'est pas une préférence de style. Le lot 2.49.0 a ajouté l'accroche
+        des consentements dans un SECOND `def action_confirm` plus bas dans le
+        même corps de classe : Python garde le dernier, sans un mot. La
+        génération de l'URL de vidéoconférence — dont ce corps-ci est le seul
+        appelant — a donc cessé d'exister le jour du déploiement, et les
+        rendez-vous confirmés ensuite sont sortis avec le lien de la salle
+        GÉNÉRIQUE partagée au lieu de leur salle dédiée. Aucun test ne
+        touchait la visio, d'où le silence (voir `test_video_room.py`, écrit
+        pour ça, et le contrôle statique qui refuse une méthode définie deux
+        fois).
+
+        Ordre volontaire : tout ce qui peut lever ou être annulé passe AVANT
+        la demande de consentement, qui peut écrire à un client. Un rollback
+        ne rappelle pas un courriel.
+
+        Le drapeau `bf_consents_handled` est posé par la page de choix de
+        créneau, qui pose les questions SUR PLACE : sans lui, la demande
+        partirait avant que la réponse donnée à l'écran soit consignée, et la
+        personne recevrait un courriel lui redemandant ce qu'elle vient
+        d'accorder.
 
         OCA's action_confirm unions in `combination_id.resource_ids.user_id.partner_id`
         on the meeting (re-adding ALL combination resources, including non-attendees
@@ -592,6 +632,17 @@ class ResourceBooking(models.Model):
                 url = booking._generate_video_url()
                 if url:
                     booking.videocall_location = url
+        # Consentements en dernier : c'est le seul geste de cette méthode qui
+        # sorte du système. Les quatre chemins de création finissent ici, y
+        # compris la saisie au back-office, qui n'a ni page ni satellite pour
+        # la représenter.
+        if not self.env.context.get("bf_consents_handled"):
+            for booking in self:
+                try:
+                    booking._bf_ensure_consents(source_note="action_confirm")
+                except Exception:  # noqa: BLE001
+                    _logger.exception(
+                        "Consentements à la confirmation (réservation %s)", booking.id)
         return result
 
     def _bf_assigned_resources(self):
@@ -1255,17 +1306,27 @@ class ResourceBooking(models.Model):
         })
         return attachment
 
-    def _send_appointment_email(self, template, attach_ics=True):
+    def _send_appointment_email(self, template, attach_ics=True, recipient=None):
         """Send an appointment email with optional ICS attachment.
 
         Respects the partner's language AND timezone for both the email
-        template rendering and the ICS attachment content. The recipient's
-        timezone is auto-detected from the template's ``email_to`` jinja:
-        when the template addresses ``object.user_id…`` we render in the
-        organizer's tz; otherwise we render in the booker's tz. This keeps
-        a Montréal booker reading « 14:00 » while the same booking shows
-        « 06:00 » to an organizer in Auckland, without storing two copies
-        of start_*_local.
+        template rendering and the ICS attachment content. This keeps a
+        Montréal booker reading « 14:00 » while the same booking shows
+        « 06:00 » to an organizer in Auckland, without storing two copies of
+        start_*_local.
+
+        ``recipient`` dit QUI lit : ``"organizer"`` ou ``"booker"``.
+
+        ⚠️ À défaut, on retombe sur une inspection de l'expression
+        ``email_to`` du gabarit — la présence de la chaîne « user_id ». Ça a
+        marché jusqu'ici parce que les gabarits destinés à l'organisateur sont
+        les seuls à nommer ``object.user_id``, mais c'est une heuristique, pas
+        une règle : un gabarit qui mentionnerait ``object.user_id`` pour toute
+        autre raison ferait basculer en silence le courriel d'un CLIENT dans le
+        fuseau et la langue de l'organisateur, c'est-à-dire la famille de
+        défauts que tout ce module passe son temps à corriger. Les appels du
+        module sont donc explicites; le repli ne sert plus qu'aux appelants
+        externes.
 
         Pass ``attach_ics=False`` for follow-up templates (suivi immédiat /
         1h / 2h après) where the booking has already happened, re-sending
@@ -1280,22 +1341,7 @@ class ResourceBooking(models.Model):
         # without a token.
         if not self.access_token:
             self._portal_ensure_token()
-        # Auto-detect recipient TZ from the template's email_to expression.
-        # Organizer-bound templates address object.user_id…; everything else
-        # is booker-bound.
-        email_to_expr = (template.email_to or "")
-        if "user_id" in email_to_expr:
-            recipient_tz = self.user_id.tz if self.user_id else False
-            recipient_lang = self.user_id.lang if self.user_id else False
-        else:
-            # Booker-bound: render in the booker display tz. Never inherit the
-            # organizer's (Auckland) tz, and never leave it empty — an empty tz
-            # would let _compute_start_local_strings / the ICS fall through to
-            # the organizer's tz again.
-            recipient_tz = self._get_booker_display_tz()
-            recipient_lang = self.partner_id.lang if self.partner_id else False
-        # Final fallbacks
-        partner_lang = recipient_lang or self.env.lang or "fr_CA"
+        partner_lang, recipient_tz = self._bf_render_locale(template, recipient)
         booking_ctx = self.with_context(
             lang=partner_lang,
             tz=recipient_tz or False,
@@ -1317,6 +1363,55 @@ class ResourceBooking(models.Model):
         if attachment:
             mail.write({"attachment_ids": [(4, attachment.id)]})
         mail.send()
+        # La pièce .ics a fini son travail : elle est dans le message REMIS.
+        # La garder attachée à la réservation en accumulait une par courriel
+        # envoyé — confirmation, rappels, copie à l'organisateur — soit des
+        # copies quasi identiques d'un fichier que personne ne rouvre depuis
+        # Odoo (aucun gabarit ni aucune page ne la référence). On ne la retire
+        # QUE sur un envoi réussi : un message resté en file a encore besoin
+        # d'elle.
+        if attachment and mail.exists() and mail.state == "sent":
+            attachment.unlink()
+        elif attachment and not mail.exists():
+            # `auto_delete` a supprimé le mail après remise : c'est aussi un
+            # succès, et la pièce n'a plus de porteur.
+            attachment.unlink()
+
+    def _bf_render_locale(self, template, recipient=None):
+        """(langue, fuseau) dans lesquels rendre un courriel de rendez-vous.
+
+        Extrait de `_send_appointment_email` pour être éprouvable seul : la
+        propriété qui compte — une consigne explicite l'emporte sur
+        l'heuristique — se vérifiait sinon en fouillant le corps d'un
+        `mail.mail` déjà remis et parfois déjà effacé par `auto_delete`.
+
+        ``recipient`` vaut ``"organizer"``, ``"booker"``, ou rien.
+
+        ⚠️ À défaut, on inspecte l'expression ``email_to`` du gabarit et on
+        cherche la chaîne « user_id ». Ça marche parce que les gabarits
+        destinés à l'organisateur sont les seuls à nommer ``object.user_id``,
+        mais c'est une heuristique : un gabarit qui le mentionnerait pour
+        toute autre raison ferait basculer en silence le courriel d'un CLIENT
+        dans le fuseau et la langue de l'organisateur — la famille de défauts
+        que tout ce module passe son temps à corriger.
+        """
+        self.ensure_one()
+        if recipient not in ("organizer", "booker"):
+            recipient = (
+                "organizer" if "user_id" in (template.email_to or "")
+                else "booker"
+            )
+        if recipient == "organizer":
+            tz = self.user_id.tz if self.user_id else False
+            lang = self.user_id.lang if self.user_id else False
+        else:
+            # Booker-bound: render in the booker display tz. Never inherit the
+            # organizer's (Auckland) tz, and never leave it empty — an empty tz
+            # would let _compute_start_local_strings / the ICS fall through to
+            # the organizer's tz again.
+            tz = self._get_booker_display_tz()
+            lang = self.partner_id.lang if self.partner_id else False
+        return (lang or self.env.lang or "fr_CA"), tz
 
     # ---- SMS ----
 
@@ -1431,9 +1526,35 @@ class ResourceBooking(models.Model):
         sms_budget = int(self.env["ir.config_parameter"].sudo().get_param(
             "bf_appointment.sms_max_per_run", "25"
         ) or 0)
+        # ⚠️ La recherche est BORNÉE, et pas seulement pour la charge.
+        #
+        # Le déclencheur « avant » porte son propre plafond (`now <
+        # booking.start`). Le déclencheur « après », lui, n'en a aucun :
+        # `now >= send_at` est vrai pour toujours. Une planification « après »
+        # activée aujourd'hui sur un type — ou un vieux type repassé en public,
+        # ce qui appelle `_create_default_email_schedules` — ne figure dans le
+        # `sent_schedule_ids` d'AUCUNE réservation : au tick suivant, le suivi
+        # serait parti d'un coup à toutes les réservations passées de ce type,
+        # des années comprises. Sans cette borne, rien dans le code ne s'y
+        # oppose.
+        #
+        # L'horizon est DÉDUIT des planifications, pas choisi au doigt mouillé :
+        # une valeur en dur ferait taire en silence un suivi légitimement réglé
+        # au-delà. On garde tout ce qui peut encore être dû, plus une marge qui
+        # absorbe une instance arrêtée une fin de semaine.
+        horizon_heures = max([
+            planification["hours"]
+            for planification in self.env["appointment.email.schedule"].sudo()
+            .search_read([("active", "=", True), ("trigger", "=", "after")],
+                         ["hours"])
+        ] or [0.0])
+        marge_jours = float(self.env["ir.config_parameter"].sudo().get_param(
+            "bf_appointment.cron_lookback_grace_days", "2") or 2)
+        plancher = now - timedelta(hours=horizon_heures) - timedelta(days=marge_jours)
         bookings = self.search([
             ("state", "in", ("confirmed", "scheduled")),
             ("start", "!=", False),
+            ("start", ">", plancher),
             ("type_id.email_schedule_ids", "!=", False),
         ])
         for booking in bookings:
@@ -1494,6 +1615,11 @@ class ResourceBooking(models.Model):
                 # silently dropped.
                 if not (schedule.channel == "sms" and sms_sent):
                     try:
+                        # Pas de `recipient=` explicite ici, et c'est voulu :
+                        # le gabarit d'une planification est choisi par un
+                        # administrateur, donc lui seul sait à qui il écrit.
+                        # C'est le cas où l'inspection d'`email_to` reste le
+                        # seul signal disponible.
                         booking._send_appointment_email(
                             schedule.template_id, attach_ics=attach_ics
                         )
@@ -1612,16 +1738,13 @@ class ResourceBooking(models.Model):
         la copie part d'un clic de l'usager, ce que les navigateurs exigent.
         """
         self.ensure_one()
+        # `url` et `expires_display` se déduisent de `booking_id` : ils ne sont
+        # plus recopiés dans la table de l'assistant (le lien vaut jeton).
         assistant = self.env["bf.appointment.onetime.wizard"].create({
             "type_id": self.type_id.id,
             "partner_id": self.partner_ids[:1].id or False,
             "state": "done",
             "booking_id": self.id,
-            "url": self.one_time_url,
-            "expires_display": (
-                fields.Datetime.to_string(self.link_expires_at)
-                if self.link_expires_at else _("aucune expiration")
-            ),
         })
         return {
             "type": "ir.actions.act_window",
@@ -1668,30 +1791,13 @@ class ResourceBooking(models.Model):
     # Consentements (2.49.0)
     # ------------------------------------------------------------------
 
-    def action_confirm(self):
-        """Confirmer, puis s'assurer que les consentements exigés existent.
-
-        C'est LE point d'accroche : les quatre chemins de création finissent
-        ici, y compris la saisie au back-office, qui n'a ni page ni satellite
-        pour la représenter. Une réservation confirmée sans consentement au
-        dossier déclenche donc une demande par courriel, avec son lien public
-        de réponse.
-
-        Le drapeau `bf_consents_handled` est posé par la page de choix de
-        créneau, qui pose les questions SUR PLACE : sans lui, la demande
-        partirait avant que la réponse donnée à l'écran soit consignée, et la
-        personne recevrait un courriel lui redemandant ce qu'elle vient
-        d'accorder.
-        """
-        res = super().action_confirm()
-        if not self.env.context.get("bf_consents_handled"):
-            for booking in self:
-                try:
-                    booking._bf_ensure_consents(source_note="action_confirm")
-                except Exception:  # noqa: BLE001
-                    _logger.exception(
-                        "Consentements à la confirmation (réservation %s)", booking.id)
-        return res
+    # ⚠️ L'accroche des consentements à la confirmation vit dans
+    # `action_confirm` (plus haut, avec le reste de la confirmation) et NON
+    # ici. Elle y a d'abord été écrite en second `def action_confirm` dans ce
+    # même corps de classe : Python garde le dernier, silencieusement, et la
+    # méthode d'origine — génération de la salle visio, retrait des ressources
+    # non retenues d'un K-of-N — a cessé d'exister sans qu'aucun test ni
+    # aucun avertissement ne le dise. Une seule définition, désormais.
 
     def _bf_consent_subject(self):
         """La personne dont le consentement est en jeu.
@@ -1797,9 +1903,17 @@ class ResourceBooking(models.Model):
     def _search_bf_consent_state(self, operator, value):
         """Filtrable, au prix d'un calcul en Python.
 
-        Les réservations se comptent en centaines, pas en millions, et l'état
-        n'est pas exprimable en domaine : il croise le type, le contact, et
-        des consentements qui ne pointent pas vers la réservation.
+        L'état n'est pas exprimable en domaine : il croise le type, le
+        contact, et des consentements qui ne pointent pas vers la réservation.
+
+        ⚠️ Le calcul est fait une fois par COUPLE (demandeur, type), pas une
+        fois par réservation. `bf_consent_state` est une fonction pure de ces
+        deux-là — `_bf_required_consents` ne lit que le type,
+        `_bf_consent_status` que le contact et l'avis — donc deux réservations
+        du même client sur le même type donnent forcément le même état.
+        Réservation par réservation, c'était deux `search_count` chacune : un
+        client fidèle avec vingt rendez-vous en payait vingt fois le prix pour
+        vingt fois la même réponse.
         """
         if operator not in ("=", "!=", "in", "not in"):
             raise NotImplementedError(
@@ -1811,11 +1925,14 @@ class ResourceBooking(models.Model):
         domaine = [] if "none" in cibles or negatif else [
             ("type_id.requires_recording_consent", "=", True)
         ]
-        ids = [
-            booking.id
-            for booking in self.sudo().search(domaine)
-            if (booking.bf_consent_state in cibles) != negatif
-        ]
+        connus = {}
+        ids = []
+        for booking in self.sudo().search(domaine):
+            cle = (booking.partner_ids[:1].id, booking.type_id.id)
+            if cle not in connus:
+                connus[cle] = booking.bf_consent_state
+            if (connus[cle] in cibles) != negatif:
+                ids.append(booking.id)
         return [("id", "in", ids)]
 
     def action_bf_request_consents(self):

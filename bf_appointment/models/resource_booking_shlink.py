@@ -143,9 +143,39 @@ class ResourceBooking(models.Model):
         # If Shlink itself is unavailable, degrade to the type static fallback.
         return short or self.type_id.videocall_location or target or False
 
+    def _shlink_is_ours(self):
+        """Le lien courant est-il LE shlink de cette réservation ?
+
+        C'est la question que la réparation doit poser avant de repointer.
+        Répondue depuis l'adresse elle-même plutôt que par un champ : l'état
+        est déjà lisible, un booléen de plus serait une seconde vérité à tenir
+        en phase.
+        """
+        self.ensure_one()
+        return (self.videocall_location or "").rstrip("/").endswith(
+            "/%s" % self._booking_shlink_slug()
+        )
+
     def _cron_repair_video_rooms(self):
         """Retry dedicated Talk rooms for fallback bookings and repoint their
-        short URL to the real room once Nextcloud is reachable again."""
+        short URL to the real room once Nextcloud is reachable again.
+
+        ⚠️ Deux cas, et un seul était traité.
+
+        Quand Shlink a bien créé le lien court, on le repointe : l'adresse que
+        la personne a reçue ne change pas, seule sa cible change. C'est le cas
+        prévu.
+
+        Mais `_fallback_booking_shlink` pose `video_fallback_active` même quand
+        Shlink n'a RIEN créé — la réservation part alors avec l'adresse
+        statique de la salle générique, partagée par tout le monde. La
+        réparation tentait quand même un repointage, sur un slug qui n'existe
+        pas : échec, et la réservation restait sur la salle commune
+        indéfiniment. On écrit désormais la vraie salle sur la réservation et
+        sur son événement d'agenda. Le courriel déjà parti garde l'ancienne
+        adresse — rien ne peut le rattraper — mais l'agenda, l'invitation .ics
+        et la page de confirmation cessent de pointer sur une salle partagée.
+        """
         bookings = self.search(
             [
                 ("video_fallback_active", "=", True),
@@ -157,9 +187,24 @@ class ResourceBooking(models.Model):
             room = b._generate_nc_talk_url()  # retry dedicated room
             if not room:
                 continue
-            if b._shlink_repoint(b._booking_shlink_slug(), room):
+            if b._shlink_is_ours():
+                repare = b._shlink_repoint(b._booking_shlink_slug(), room)
+                comment = "shlink repointé"
+            else:
+                b.videocall_location = room
+                if b.meeting_id:
+                    b.meeting_id.with_context(
+                        no_mail_to_attendees=True,
+                        dont_notify=True,
+                        tracking_disable=True,
+                        mail_notrack=True,
+                    ).videocall_location = room
+                repare = True
+                comment = "lien réécrit (aucun shlink à repointer)"
+            if repare:
                 b.video_fallback_active = False
                 _logger.info(
-                    "bf_appointment: repaired video room for booking %s", b.id
+                    "bf_appointment: repaired video room for booking %s (%s)",
+                    b.id, comment,
                 )
             self.env.cr.commit()

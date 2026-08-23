@@ -42,8 +42,21 @@ class ResConfigSettings(models.TransientModel):
         config_parameter="bf_appointment.nc_talk_user",
         help="Utilisateur Nextcloud pour l'authentification à l'API Talk.",
     )
+    # ⚠️ NON STOCKÉ, délibérément. `res.config.settings` est un modèle
+    # transitoire, c'est-à-dire une VRAIE table : un Char ordinaire y aurait
+    # déposé le mot de passe d'application Nextcloud EN CLAIR, où il serait
+    # resté jusqu'au passage du ramasse-miettes (une heure par défaut) et
+    # serait parti dans toute sauvegarde prise entre-temps — alors même que
+    # tout le travail de ce fichier consiste à ne le garder que chiffré.
+    # Avec `compute` + `inverse` et `store=False`, la valeur ne vit que dans
+    # le cache de la transaction : elle est chiffrée puis écrite dans l'ICP,
+    # et il n'existe aucune colonne pour la retenir.
     bf_appointment_nc_talk_password = fields.Char(
         string="Mot de passe Nextcloud Talk",
+        compute="_compute_nc_talk_password",
+        inverse="_inverse_nc_talk_password",
+        store=False,
+        readonly=False,
         help="Mot de passe d'application Nextcloud pour l'API Talk. Stocké chiffré.",
     )
 
@@ -87,26 +100,36 @@ class ResConfigSettings(models.TransientModel):
         related="company_id.appointment_brand_tagline", readonly=False,
     )
 
-    def set_values(self):
-        res = super().set_values()
-        password = self.bf_appointment_nc_talk_password
-        if password and set(password) != {"*"}:
-            encrypted = self._encrypt_value(password)
-            self.env["ir.config_parameter"].sudo().set_param(
-                "bf_appointment.nc_talk_password_encrypted", encrypted
-            )
-        return res
-
-    def get_values(self):
-        res = super().get_values()
-        encrypted = (
+    def _compute_nc_talk_password(self):
+        """Ne rend JAMAIS le secret au navigateur : un masque, ou rien."""
+        chiffre = (
             self.env["ir.config_parameter"]
             .sudo()
             .get_param("bf_appointment.nc_talk_password_encrypted", "")
         )
-        if encrypted:
-            res["bf_appointment_nc_talk_password"] = MASKED_PASSWORD
-        return res
+        for reglage in self:
+            reglage.bf_appointment_nc_talk_password = (
+                MASKED_PASSWORD if chiffre else False
+            )
+
+    def _inverse_nc_talk_password(self):
+        """Chiffre et range dans l'ICP. Ignore le masque.
+
+        ⚠️ Le test sur les astérisques n'est pas cosmétique : `_compute_…`
+        pousse `********` dans le champ pour ne pas renvoyer le secret, donc
+        un simple « Enregistrer » dans Paramètres re-chiffrerait ces
+        astérisques par-dessus le vrai jeton applicatif, et toutes les
+        créations de salle Talk tomberaient en 401 (vécu sur BF le
+        2026-07-24).
+        """
+        for reglage in self:
+            saisi = reglage.bf_appointment_nc_talk_password
+            if not saisi or set(saisi) == {"*"}:
+                continue
+            self.env["ir.config_parameter"].sudo().set_param(
+                "bf_appointment.nc_talk_password_encrypted",
+                reglage._encrypt_value(saisi),
+            )
 
     def _get_encryption_key(self):
         from ._crypto import get_encryption_key

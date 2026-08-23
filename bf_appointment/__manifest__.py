@@ -2,18 +2,18 @@
     "name": "Symbifox Appointment",
     # 18.0.2.32.0: availability fix — attended events marked show_as='free' no longer block the slot picker (Google all-day "Bureau"/working-location sync events blanked every morning; signalé par un locataire)
     # 18.0.2.33.0: localisation FR — (1) picker: jours/mois via babel au lieu de strftime %A/%B (locale C = anglais); (2) tous les libellés backend francisés à la source (le fr.po ne se chargeait jamais — mauvais format de référence), incl. champs de base OCA relabellés via override incrémental; (3) ventilation du « Modifications Deadline » OCA en 2 réglages : modifications_deadline = « Préavis minimum avant réservation » (plancher dispo, inchangé) + nouveau modification_lock_hours = « Délai limite de modification/annulation » (verrou, via _compute_is_overdue). Demandé par un locataire.
-    # 18.0.2.40.0: lot d'ouverture — surface stable pour les modules satellites.
+    # 18.0.2.40.0: lot d'ouverture — surface stable pour les modules satellites (tâche #24672).
     #   (1) resource.booking.type._bf_candidate_slots() : grille de créneaux d'un TYPE sans réservation persistée;
     #   (2) resource.booking.type._bf_create_booking() : fabrique de réservation depuis une source externe;
     #   (3) bf_source / bf_source_ref sur resource.booking : provenance NON typée (une chaîne « modele,id »
     #       résolue au clic) — un m2o vers un modèle satellite rendrait celui-ci obligatoire, défaut visible
     #       uniquement en installation neuve; (4) bf_rate_limit() : seau de limitation nommé, réutilisable par
     #       un satellite qui ouvre ses propres routes publiques. Les 3 limiteurs existants restent intacts.
-        # 18.0.2.41.0: _bf_create_booking refuse une heure hors disponibilités AVANT de créer (QA).
+        # 18.0.2.41.0: _bf_create_booking refuse une heure hors disponibilités AVANT de créer (QA #24672).
     #   Sans ce contrôle, OCA n'affecte aucune ressource, la réservation naît corrompue en silence, et
     #   l'erreur surgit plus tard sur une opération sans rapport. Vérifier après création est impossible :
     #   lire combination_id déclenche la validation OCA, qui lève avant qu'on puisse intervenir.
-    # 18.0.2.42.0: liens de réservation personnels (« one-time booking ». Assistant
+    # 18.0.2.42.0: liens de réservation personnels (« one-time booking », tâche #24672). Assistant
     #   « Créer un lien de réservation » (2 écrans : réglage, puis lien copiable), expiration, usage
     #   unique, invités additionnels. Le mécanisme existait déjà — une réservation en attente porte un
     #   jeton et sa page de choix de créneau; ce lot ajoute la durée de vie, le verrou d'usage, et
@@ -41,7 +41,7 @@
     #   activation récente par l'usager, et une copie après aller-retour serveur est bloquée en silence
     #   par Safari et certaines versions de Chrome. Le clic sur le bouton natif garde le geste.
     # 18.0.2.45.0: champ « autres invités » sur le formulaire public, avec DOUBLE CONFIRMATION du
-    #   demandeur, 1re puce). Les adresses saisies restent en attente; un courriel dédié
+    #   demandeur (tâche #24672, 1re puce). Les adresses saisies restent en attente; un courriel dédié
     #   part au demandeur une fois son créneau choisi, et seul un POST depuis cette page envoie les
     #   invitations. 🔴 Le GET ne décide rien : les antivirus de messagerie suivent les liens, un GET
     #   qui confirmerait produirait exactement le pourriel que ce dispositif existe pour empêcher.
@@ -69,7 +69,7 @@
     #   (« Invités additionnels »). Odoo ne le signale qu'au chargement d'un
     #   registre NEUF, donc jamais sur un locataire déjà monté.
     # 18.0.2.47.0: trois défauts du lien de réservation personnel, signalés en
-    #   production le 2026-08-20.
+    #   production le 2026-08-20 (tâche #24695).
     #   (1) ⚠️ La description de l'événement d'agenda ne retombe PLUS sur le
     #       conseil au demandeur. Un lien personnel ne passe par aucun
     #       formulaire d'accueil : le repli se déclenchait donc à tous les
@@ -123,7 +123,7 @@
     #       aussi — trouve par le harnais de QA « visiteur externe virtuel »
     #       (scripts/_qa_bf_appointment_visitor_lang_20260821.py), pas a l'oeil.
     # 18.0.2.49.0: les consentements cessent d'etre l'affaire du seul
-    #   formulaire d'accueil.
+    #   formulaire d'accueil (tache #24737).
     #   ⚠️ Le constat : TOUTE la validation vivait dans le POST de
     #   `/appointment/<slug>/book`. Les trois autres chemins de creation —
     #   lien personnel, `_bf_create_booking()` d'un satellite, saisie au
@@ -162,7 +162,86 @@
     #   n'empeche encore techniquement l'enregistrement d'une rencontre non
     #   consentie. Ce lot rend l'etat lisible et cherchable; le brancher au
     #   traitement des rencontres reste a faire.
-    "version": "18.0.2.49.0",
+    # 18.0.2.50.0: 🔴 `action_confirm` etait defini DEUX FOIS dans le meme corps
+    #   de classe (`resource_booking.py`). Python garde le dernier, en silence :
+    #   le lot 2.49.0, en ajoutant l'accroche des consentements sous ce nom, a
+    #   efface la methode d'origine et avec elle la generation de l'URL visio,
+    #   dont elle etait le SEUL appelant — ainsi que le retrait des ressources
+    #   non retenues d'un K-of-N sur l'evenement d'agenda. Constate en prod : la
+    #   seule reservation confirmee apres la mise a jour porte un
+    #   `video_room_token` vide et le lien de la salle GENERIQUE partagee, la ou
+    #   les precedentes ont chacune leur salle dediee. Les deux corps sont
+    #   fusionnes en une seule methode, les consentements EN DERNIER (c'est le
+    #   seul geste qui sorte du systeme, et un rollback ne rappelle pas un
+    #   courriel). Deux tests neufs : la salle apres confirmation, et un controle
+    #   STRUCTUREL qui refuse tout nom defini deux fois dans une classe — le
+    #   defaut n'etait pas metier, il etait dans le silence de Python.
+    #   Sept correctifs portes dans la meme passe :
+    #   (1) `_compute_attendee_resources` relisait les disponibilites d'une
+    #       ressource A L'INTERIEUR de la boucle des sous-ensembles (jusqu'a
+    #       C(N-1,K-1) fois chacune) et ignorait `exclude_public_holidays`, que
+    #       la grille qui a PROPOSE le creneau emploie : un jour ferie pouvait
+    #       faire diverger l'attribution de l'offre.
+    #   (2) ⚠️ Le cron des courriels cherchait SANS borne de date. Le declencheur
+    #       « avant » a son plafond (`now < start`), « apres » n'en avait aucun :
+    #       activer une planification « apres » — ou repasser un vieux type en
+    #       public, ce qui seme les planifications par defaut — aurait envoye le
+    #       suivi a TOUTES les reservations passees du type d'un coup. L'horizon
+    #       est deduit des planifications actives, pas choisi en dur.
+    #   (3) La reparation des salles visio ne traitait qu'un cas sur deux :
+    #       `_fallback_booking_shlink` marque la reservation en secours meme
+    #       quand Shlink n'a rien cree, et le cron tentait alors de repointer un
+    #       slug inexistant — la reservation restait sur la salle commune
+    #       indefiniment. Elle reecrit desormais le lien sur la reservation et
+    #       son evenement.
+    #   (4) 🔴 Deux secrets transitaient par des tables REELLES. Le lien de
+    #       reservation (qui vaut jeton d'acces) etait recopie dans
+    #       `bf.appointment.onetime.wizard.url`, et le mot de passe applicatif
+    #       Nextcloud arrivait EN CLAIR dans `res_config_settings` : un modele
+    #       transitoire est une vraie table, l'enregistrement y survit une heure
+    #       par defaut et part dans les sauvegardes prises entre-temps. Les deux
+    #       champs deviennent calcules non stockes.
+    #   (5) `_generate_slug` gardait les accents (`\w` est unicode en Python 3)
+    #       et verifiait l'unicite sans `active_test=False` : adresses publiques
+    #       accentuees, et collision possible avec un type ARCHIVE, qui ressortait
+    #       en violation de contrainte SQL.
+    #   (6) La protection contre le double envoi etait ecrite deux fois, sur les
+    #       memes formulaires, et les deux versions se contredisaient. Celle de
+    #       `timezone_detect.js` desactivait le bouton de facon synchrone (ce que
+    #       `processing_buttons.js` evite explicitement) et ecrivait son libelle
+    #       en francais en dur, sur une page qui peut etre anglaise.
+    # 18.0.2.51.0: second lot de menage — aucune fonctionnalite neuve, que du
+    #   poids en moins et des proprietes qui n'avaient aucun filet.
+    #   (1) UN SEUL formulaire de confirmation sur la page de choix de creneau.
+    #       Il y en avait un PAR CRENEAU, chacun avec son modal complet — texte
+    #       de consentement et jeton CSRF compris — soit des centaines par page
+    #       sur un mois charge, pour n'en soumettre jamais qu'un. La bulle
+    #       cliquee porte son creneau en `data-bf-*`. Aucun repli perdu :
+    #       `data-bs-toggle` est deja du Bootstrap, donc sans JavaScript aucun
+    #       modal ne s'ouvrait et aucune confirmation n'etait possible.
+    #   (2) Les trois limiteurs de debit ecrits a la main repassent par le seau
+    #       nomme du lot d'ouverture. Ils avaient DIVERGE : seul celui des
+    #       jetons abandonnait les IP inactives, les deux autres attendaient le
+    #       seuil de 10 000 pour tout vider — ce qui remet a zero le compteur de
+    #       tout le monde, y compris celui qu'on est en train de plafonner.
+    #       Sémantique inchangee, verrouillee par des tests.
+    #   (3) `_send_appointment_email` prend un `recipient` EXPLICITE. La
+    #       detection par presence de la chaine « user_id » dans `email_to`
+    #       reste en repli pour les appelants externes (et pour le gabarit d'une
+    #       planification, choisi par un administrateur), mais un gabarit qui
+    #       nommerait `user_id` pour toute autre raison faisait basculer en
+    #       silence le courriel d'un CLIENT dans le fuseau et la langue de
+    #       l'organisateur.
+    #   (4) La piece .ics ne survit plus a l'envoi : elle est dans le message
+    #       remis, aucun gabarit ni aucune page ne la reference, et il s'en
+    #       accumulait une par courriel (530 en prod BF). Retiree seulement sur
+    #       envoi reussi — un message reste en file en a encore besoin. Une
+    #       migration balaie les residus non rattaches a un message.
+    #   (5) `_search_bf_consent_state` calcule une fois par couple
+    #       (demandeur, type) au lieu d'une fois par reservation : l'etat est
+    #       une fonction pure de ces deux-la, et un client fidele payait vingt
+    #       fois le prix pour vingt fois la meme reponse.
+    "version": "18.0.2.51.0",
     "category": "Appointments",
     "summary": "Public self-service booking pages extending Resource Booking",
     'author': 'Les services de consultation Blue Fox, Inc.',

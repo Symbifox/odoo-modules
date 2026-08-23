@@ -1,5 +1,6 @@
 import logging
 import re
+import unicodedata
 from datetime import timedelta
 
 from odoo import _, api, fields, models
@@ -303,15 +304,35 @@ class ResourceBookingType(models.Model):
 
     @api.model
     def _generate_slug(self, name):
-        """Generate a URL-friendly slug from name."""
-        slug = name.lower().strip()
-        slug = re.sub(r"[^\w\s-]", "", slug)
+        r"""Generate a URL-friendly slug from name.
+
+        ⚠️ Les accents sont REPLIÉS, pas conservés. `\w` est unicode en
+        Python 3 : « Rencontre découverte » sortait `rencontre-découverte`,
+        donc une adresse publique accentuée, qui se recopie mal, se cite mal
+        dans un courriel et se pourcent-encode dès qu'elle passe par un client
+        de messagerie. Les slugs déjà en service ne bougent pas — cette
+        méthode ne sert qu'à en fabriquer de nouveaux.
+
+        ⚠️ L'unicité se vérifie avec `active_test=False`. La contrainte SQL
+        `UNIQUE(slug)`, elle, ne connaît pas l'archivage : chercher sans ce
+        contexte laissait choisir un slug déjà porté par un type ARCHIVÉ, et
+        l'erreur ressortait en violation de contrainte au moment d'enregistrer,
+        au lieu d'un suffixe silencieux.
+        """
+        slug = unicodedata.normalize("NFKD", name or "")
+        slug = "".join(c for c in slug if not unicodedata.combining(c))
+        slug = slug.lower().strip()
+        slug = re.sub(r"[^a-z0-9\s-]", "", slug)
         slug = re.sub(r"[-\s]+", "-", slug)
         slug = slug.strip("-")
+        # Un nom entièrement hors alphabet latin ne doit pas rendre une adresse
+        # vide : la contrainte d'unicité s'en chargerait, mais en levant.
+        slug = slug or "rendez-vous"
         # Ensure uniqueness
         base_slug = slug
         counter = 1
-        while self.search_count([("slug", "=", slug)]):
+        Type = self.with_context(active_test=False)
+        while Type.search_count([("slug", "=", slug)]):
             slug = f"{base_slug}-{counter}"
             counter += 1
         return slug

@@ -12,14 +12,39 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    // Prevent double-submit on confirm buttons
-    document.querySelectorAll(".bf-btn-confirm").forEach(function (btn) {
-        btn.closest("form").addEventListener("submit", function () {
-            btn.disabled = true;
-            btn.style.opacity = "0.5";
-            btn.innerHTML = '<i class="fa fa-spinner fa-spin me-1"></i> Confirmation\u2026';
+    // La protection contre le double envoi vit dans processing_buttons.js, et
+    // dans ce seul fichier. Elle etait ecrite deux fois, sur les memes
+    // formulaires, et les deux versions se contredisaient : celle qui vivait
+    // ici desactivait le bouton de facon SYNCHRONE dans le gestionnaire de
+    // soumission - ce que l'autre evite explicitement par un setTimeout(..., 0),
+    // parce qu'un bouton desactive trop tot peut faire perdre son nom et sa
+    // valeur a la soumission. Elle ecrivait aussi son libelle en francais en
+    // dur, donc un anglophone lisait « Confirmation... » sur une page anglaise.
+
+    // Le modal de confirmation est UNIQUE pour tous les créneaux : la bulle
+    // cliquée porte le sien en data-bf-*, on le recopie a l'ouverture. Avant,
+    // chaque créneau avait son propre formulaire complet, texte de
+    // consentement et jeton CSRF compris — des centaines par page sur un mois
+    // charge, pour n'en soumettre jamais qu'un.
+    const confirmModal = document.getElementById("bf-modal-confirm");
+    if (confirmModal) {
+        confirmModal.addEventListener("show.bs.modal", function (event) {
+            const bubble = event.relatedTarget;
+            if (!bubble) return;
+            const whenField = confirmModal.querySelector("[data-bf-when-field]");
+            const dateOut = confirmModal.querySelector("[data-bf-date-out]");
+            const timeOut = confirmModal.querySelector("[data-bf-time-out]");
+            if (whenField) whenField.value = bubble.dataset.bfWhen || "";
+            if (dateOut) dateOut.textContent = bubble.dataset.bfDate || "";
+            if (timeOut) timeOut.textContent = bubble.dataset.bfTime || "";
         });
-    });
+        // Referme proprement : un modal laisse sinon le dernier creneau choisi
+        // dans son champ cache, et un retour arriere du navigateur le reposte.
+        confirmModal.addEventListener("hidden.bs.modal", function () {
+            const whenField = confirmModal.querySelector("[data-bf-when-field]");
+            if (whenField) whenField.value = "";
+        });
+    }
 
     // Consent smart-skip: when the booker types an email that already has
     // active consents on file, hide the corresponding checkbox row and show

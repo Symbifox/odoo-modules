@@ -84,8 +84,31 @@ class AppointmentOnetimeWizard(models.TransientModel):
     )
 
     booking_id = fields.Many2one("resource.booking", readonly=True)
-    url = fields.Char(string="Lien à transmettre", readonly=True)
-    expires_display = fields.Char(readonly=True)
+    # ⚠️ CALCULÉS, non stockés, et ce n'est pas une économie de colonne.
+    #
+    # `url` vaut jeton d'accès : qui l'a peut réserver. Un modèle transitoire
+    # écrit dans une VRAIE table — l'enregistrement y survit jusqu'au passage
+    # du ramasse-miettes (une heure par défaut) et part dans toute sauvegarde
+    # prise entre-temps. Le jeton vit déjà sur la réservation, qui est ici en
+    # `booking_id` : le recopier ailleurs, c'était s'en donner une seconde
+    # copie à surveiller pour rien.
+    #
+    # `expires_display` suit, pour la même raison de bon sens : un seul
+    # écrivain. Au passage il se rend maintenant dans la langue de qui lit,
+    # au lieu d'être figé dans celle de qui a créé le lien.
+    url = fields.Char(
+        string="Lien à transmettre", compute="_compute_link_display", readonly=True)
+    expires_display = fields.Char(compute="_compute_link_display", readonly=True)
+
+    @api.depends("booking_id")
+    def _compute_link_display(self):
+        for assistant in self:
+            reservation = assistant.booking_id
+            assistant.url = reservation.one_time_url or ""
+            assistant.expires_display = (
+                fields.Datetime.to_string(reservation.link_expires_at)
+                if reservation.link_expires_at else _("aucune expiration")
+            ) if reservation else ""
 
     @api.onchange("type_id")
     def _onchange_type_id(self):
@@ -140,15 +163,7 @@ class AppointmentOnetimeWizard(models.TransientModel):
             single_use=self.single_use,
             vals=vals,
         )
-        self.write({
-            "state": "done",
-            "booking_id": booking.id,
-            "url": booking.one_time_url,
-            "expires_display": (
-                fields.Datetime.to_string(booking.link_expires_at)
-                if booking.link_expires_at else _("aucune expiration")
-            ),
-        })
+        self.write({"state": "done", "booking_id": booking.id})
         return {
             "type": "ir.actions.act_window",
             "res_model": self._name,

@@ -21,33 +21,28 @@ _logger = logging.getLogger(__name__)
 # limiter dicts without bound (same guard as bf_meeting).
 _MAX_TRACKED_IPS = 10000
 
-# Rate limiting for token validation (anti brute-force)
-_token_fail_lock = threading.Lock()
-_token_fail_data = defaultdict(list)  # IP -> [timestamps of failed attempts]
+# --- Limitation de débit : UN seul mécanisme -------------------------------
+#
+# Il y en avait quatre : trois limiteurs écrits à la main (jetons,
+# réservations, consultation de consentement) plus le seau nommé du lot
+# d'ouverture, tous répétant le même motif verrou + liste d'horodatages. Le
+# commentaire d'alors disait de laisser les trois en place — refactoriser des
+# chemins publics vivants pour la seule élégance échange un risque réel contre
+# un gain nul. C'était juste, mais ils avaient DIVERGÉ : seul le limiteur de
+# jetons abandonnait les IP inactives, les deux autres attendaient le seuil de
+# 10 000 pour tout vider d'un coup, ce qui remet à zéro le compteur de tout le
+# monde — y compris celui qu'on est en train de plafonner.
+#
+# Les trois fonctions gardent leur nom et leur sémantique exacte; seul le
+# stockage est mis en commun. `proxy_mode` est actif dans ce déploiement :
+# `_client_ip()` lit le pair de socket déjà réécrit par ProxyFix et ne parse
+# JAMAIS les en-têtes lui-même, sinon un client ferait tourner son propre seau
+# à chaque requête.
 _TOKEN_FAIL_MAX = 10  # max failed attempts
 _TOKEN_FAIL_WINDOW = 300  # per 5 minutes
-
-# Rate limiting for booking creation (anti unauthenticated spam / intake-ack
-# mail-bomb). Keyed on the ProxyFix-corrected client IP.
-_book_lock = threading.Lock()
-_book_data = defaultdict(list)  # IP -> [timestamps of accepted bookings]
 _BOOK_MAX = 5        # max bookings
 _BOOK_WINDOW = 600   # per 10 minutes / IP
 
-# --- Lot d'ouverture (2.40.0) : seau de limitation nommé, partageable -------
-#
-# Les trois limiteurs ci-dessus (jetons, réservations, consultation de
-# consentement) répètent le même motif verrou + liste d'horodatages. Ils sont
-# laissés EN PLACE tels quels : ce sont des chemins publics vivants, et les
-# refactoriser pour la seule élégance échangerait un risque réel contre un
-# gain nul.
-#
-# Un satellite qui ouvre ses propres routes publiques a pourtant besoin du même
-# service. Plutôt que de le laisser copier-coller le motif (et se tromper sur le
-# verrou, ou faire confiance à X-Forwarded-For), on expose un seau nommé.
-# `proxy_mode` est actif dans ce déploiement : `_client_ip()` lit le pair de
-# socket déjà réécrit par ProxyFix et ne parse JAMAIS les en-têtes lui-même,
-# sinon un client ferait tourner son propre seau à chaque requête.
 _bucket_lock = threading.Lock()
 _bucket_data = defaultdict(list)  # (seau, IP) -> [horodatages]
 
@@ -130,27 +125,19 @@ def _client_ip():
 
 
 def _check_token_rate_limit():
-    """Return True if IP is within rate limits for token validation."""
-    ip = _client_ip()
-    now = time.monotonic()
-    with _token_fail_lock:
-        cutoff = now - _TOKEN_FAIL_WINDOW
-        kept = [t for t in _token_fail_data[ip] if t > cutoff]
-        if kept:
-            _token_fail_data[ip] = kept
-        else:
-            _token_fail_data.pop(ip, None)  # bound memory: drop idle IPs
-        return len(kept) < _TOKEN_FAIL_MAX
+    """Return True if IP is within rate limits for token validation.
+
+    ⚠️ Vérifie SANS consommer : seuls les échecs comptent
+    (`_record_token_failure`). Compter chaque lecture de page enfermerait
+    dehors la personne légitime qui recharge son propre lien.
+    """
+    return bf_rate_limit(
+        "token_fail", _TOKEN_FAIL_MAX, _TOKEN_FAIL_WINDOW, consume=False)
 
 
 def _record_token_failure():
     """Record a failed token validation attempt for rate limiting."""
-    ip = _client_ip()
-    now = time.monotonic()
-    with _token_fail_lock:
-        if len(_token_fail_data) > _MAX_TRACKED_IPS:
-            _token_fail_data.clear()  # bound memory under a distinct-IP flood
-        _token_fail_data[ip].append(now)
+    bf_rate_limit_record("token_fail", _TOKEN_FAIL_WINDOW)
 
 
 def _check_book_rate_limit():
@@ -160,17 +147,7 @@ def _check_book_rate_limit():
     to _BOOK_MAX per _BOOK_WINDOW so the form can't be looped into a partner/
     booking spam or a mail-bomb aimed at an attacker-chosen address.
     """
-    ip = _client_ip()
-    now = time.monotonic()
-    with _book_lock:
-        if len(_book_data) > _MAX_TRACKED_IPS:
-            _book_data.clear()  # bound memory under a distinct-IP flood
-        cutoff = now - _BOOK_WINDOW
-        _book_data[ip] = [t for t in _book_data[ip] if t > cutoff]
-        if len(_book_data[ip]) >= _BOOK_MAX:
-            return False
-        _book_data[ip].append(now)
-        return True
+    return bf_rate_limit("book", _BOOK_MAX, _BOOK_WINDOW)
 
 
 # BF only ships fr_CA and en_CA. Anything en* maps to en_CA, everything else
@@ -391,24 +368,15 @@ def _validate_location_format(value):
 # never reveal whether an email is in our DB unless rate-limited; this caps
 # enumeration to ~30 lookups / 5 min per IP. Same data store as token rate
 # limit, but a separate counter so a slow-typing booker is not penalized.
-_consent_lookup_lock = threading.Lock()
-_consent_lookup_data = defaultdict(list)
 _CONSENT_LOOKUP_MAX = 30
 _CONSENT_LOOKUP_WINDOW = 300
 
 
 def _check_consent_lookup_rate_limit():
-    ip = _client_ip()
-    now = time.monotonic()
-    with _consent_lookup_lock:
-        if len(_consent_lookup_data) > _MAX_TRACKED_IPS:
-            _consent_lookup_data.clear()  # bound memory under a distinct-IP flood
-        cutoff = now - _CONSENT_LOOKUP_WINDOW
-        _consent_lookup_data[ip] = [t for t in _consent_lookup_data[ip] if t > cutoff]
-        if len(_consent_lookup_data[ip]) >= _CONSENT_LOOKUP_MAX:
-            return False
-        _consent_lookup_data[ip].append(now)
-        return True
+    """Seau distinct de celui des réservations : un réservant qui tape
+    lentement ne doit pas se faire plafonner sa réservation."""
+    return bf_rate_limit(
+        "consent_lookup", _CONSENT_LOOKUP_MAX, _CONSENT_LOOKUP_WINDOW)
 
 
 def _lookup_active_consent(env, partner, purpose_code, current_notice_id):
@@ -752,7 +720,8 @@ class AppointmentController(Controller):
                     raise_if_not_found=False,
                 )
                 if ack_template:
-                    booking._send_appointment_email(ack_template.sudo(), attach_ics=False)
+                    booking._send_appointment_email(
+                        ack_template.sudo(), attach_ics=False, recipient="booker")
             except Exception as e:
                 _logger.warning(
                     "Failed to send intake acknowledgement for booking %d: %s",
@@ -992,7 +961,7 @@ class AppointmentController(Controller):
             template = request.env.ref(
                 "bf_appointment.mail_template_appointment_confirmation"
             ).sudo()
-            booking_sudo._send_appointment_email(template)
+            booking_sudo._send_appointment_email(template, recipient="booker")
         except Exception as e:
             _logger.error(
                 "Failed to send confirmation email for booking %d: %s",
@@ -1017,7 +986,7 @@ class AppointmentController(Controller):
                     "bf_appointment.mail_template_organizer_new_booking"
                 ).sudo()
                 booking_sudo._send_appointment_email(
-                    org_template, attach_ics=True
+                    org_template, attach_ics=True, recipient="organizer"
                 )
         except Exception as e:
             _logger.error(
@@ -1125,7 +1094,7 @@ class AppointmentController(Controller):
                     "bf_appointment.mail_template_appointment_cancellation"
                 ).sudo()
                 booking_sudo._send_appointment_email(
-                    client_template, attach_ics=False
+                    client_template, attach_ics=False, recipient="booker"
                 )
             except Exception as e:
                 _logger.error(
@@ -1144,7 +1113,7 @@ class AppointmentController(Controller):
                         "bf_appointment.mail_template_organizer_cancellation"
                     ).sudo()
                     booking_sudo._send_appointment_email(
-                        org_template, attach_ics=False
+                        org_template, attach_ics=False, recipient="organizer"
                     )
             except Exception as e:
                 _logger.error(
