@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="view_property_document_list" model="ir.ui.view">
+            <field name="name">bf.property.document.list</field>
+            <field name="model">bf.property.document</field>
+            <field name="arch" type="xml">
+                <list decoration-muted="not published">
+                    <field name="name"/>
+                    <field name="syndicat_id"/>
+                    <field name="category"/>
+                    <field name="is_register_item" string="Registre"/>
+                    <field name="audience"/>
+                    <field name="date"/>
+                    <field name="published" widget="boolean_toggle"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="view_property_document_form" model="ir.ui.view">
+            <field name="name">bf.property.document.form</field>
+            <field name="model">bf.property.document</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <button name="action_publish" type="object" string="Publier au portail"
+                                class="btn-primary" invisible="published"/>
+                        <button name="action_unpublish" type="object" string="Retirer du portail"
+                                invisible="not published"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <label for="name"/>
+                            <h1><field name="name" placeholder="Procès-verbal de l'assemblée annuelle"/></h1>
+                        </div>
+                        <div class="alert alert-warning" role="alert"
+                             invisible="not is_register_item">
+                            Pièce du registre du syndicat, article 1070 du Code civil.
+                            L'article 1070.1 veut que le registre se consulte en présence
+                            d'un administrateur ou d'une personne désignée, à des heures
+                            raisonnables et selon le règlement de l'immeuble, et que la
+                            copie s'obtienne moyennant des frais raisonnables. La déposer
+                            au portail donne davantage : c'est une décision du syndicat.
+                        </div>
+                        <group>
+                            <group>
+                                <field name="syndicat_id"/>
+                                <field name="building_id"/>
+                                <field name="category"/>
+                                <field name="is_register_item" invisible="1"/>
+                                <field name="audience"/>
+                            </group>
+                            <group>
+                                <field name="date"/>
+                                <field name="attachment_id"/>
+                                <field name="published" readonly="1"/>
+                                <field name="register_ack" invisible="not is_register_item"/>
+                            </group>
+                        </group>
+                        <field name="note" placeholder="Note interne, jamais affichée au portail."/>
+                    </sheet>
+                    <chatter/>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_property_document_search" model="ir.ui.view">
+            <field name="name">bf.property.document.search</field>
+            <field name="model">bf.property.document</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"/>
+                    <field name="syndicat_id"/>
+                    <filter name="published" string="Publiés" domain="[('published', '=', True)]"/>
+                    <filter name="register" string="Pièces du registre"
+                            domain="[('is_register_item', '=', True)]"/>
+                    <filter name="register_published" string="Registre publié au portail"
+                            domain="[('is_register_item', '=', True), ('published', '=', True)]"/>
+                    <separator/>
+                    <filter name="owners" string="Copropriétaires"
+                            domain="[('audience', 'in', ['all', 'owners'])]"/>
+                    <group expand="0" string="Regrouper par">
+                        <filter name="group_syndicat" string="Syndicat" context="{'group_by': 'syndicat_id'}"/>
+                        <filter name="group_category" string="Nature" context="{'group_by': 'category'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="action_property_document" model="ir.actions.act_window">
+            <field name="name">Documents du portail</field>
+            <field name="res_model">bf.property.document</field>
+            <field name="view_mode">list,form</field>
+        </record>
+
+    </data>
+</odoo>

@@ -1,0 +1,11 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_property_announcement_user,bf.property.announcement.user,model_bf_property_announcement,bf_property_core.group_bf_property_user,1,0,0,0
+access_property_announcement_manager,bf.property.announcement.manager,model_bf_property_announcement,bf_property_core.group_bf_property_manager,1,1,1,1
+access_property_announcement_portal,bf.property.announcement.portal,model_bf_property_announcement,base.group_portal,1,0,0,0
+access_property_document_user,bf.property.document.user,model_bf_property_document,bf_property_core.group_bf_property_user,1,0,0,0
+access_property_document_manager,bf.property.document.manager,model_bf_property_document,bf_property_core.group_bf_property_manager,1,1,1,1
+access_property_document_portal,bf.property.document.portal,model_bf_property_document,base.group_portal,1,0,0,0
+access_property_syndicat_portal,bf.property.syndicat.portal,bf_property_core.model_bf_property_syndicat,base.group_portal,1,0,0,0
+access_property_building_portal,bf.property.building.portal,bf_property_core.model_bf_property_building,base.group_portal,1,0,0,0
+access_property_unit_portal,bf.property.unit.portal,bf_property_core.model_bf_property_unit,base.group_portal,1,0,0,0
+access_property_ownership_portal,bf.property.ownership.portal,bf_property_core.model_bf_property_ownership,base.group_portal,1,0,0,0

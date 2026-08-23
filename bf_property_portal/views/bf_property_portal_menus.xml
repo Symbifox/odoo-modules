@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <menuitem id="menu_property_portal"
+                  name="Portail"
+                  parent="bf_property_core.menu_property_root"
+                  sequence="60"/>
+
+        <menuitem id="menu_property_announcement"
+                  name="Annonces"
+                  parent="menu_property_portal"
+                  action="action_property_announcement"
+                  sequence="10"/>
+
+        <menuitem id="menu_property_document"
+                  name="Documents"
+                  parent="menu_property_portal"
+                  action="action_property_document"
+                  sequence="20"/>
+
+    </data>
+</odoo>
