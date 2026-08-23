@@ -12,6 +12,8 @@ OLD_COLORS list live in exactly one place.
 
 import re
 
+from markupsafe import Markup
+
 # Old Odoo default colors to replace with the active company's brand primary.
 # NB: '#714B67' is both listed here AND the default value of
 # res.company.report_brand_primary — for a company left on the default the
@@ -42,11 +44,19 @@ def get_brand_button_color_rgb(env):
 
 
 def replace_button_colors(env, html_content):
-    """Replace old Odoo button colors with the active company's brand colors."""
+    """Replace old Odoo button colors with the active company's brand colors.
+
+    Markup in, Markup out: ``re.sub()`` and ``Markup.replace()`` both return a
+    plain ``str``, which would silently strip the safe-HTML marking. A caller
+    like the mass-mailing layout then feeds that ``str`` to ``<t t-out="body"/>``,
+    and QWeb escapes the whole body — the recipient sees ``&lt;table&gt;`` instead
+    of the email. Work on a plain str internally, restore the type on the way out.
+    """
     if not html_content:
         return html_content
 
-    result = html_content
+    was_markup = isinstance(html_content, Markup)
+    result = str(html_content)
     brand_color = get_brand_button_color(env)
     brand_color_rgb = get_brand_button_color_rgb(env)
     for old_color in OLD_COLORS:
@@ -55,4 +65,4 @@ def replace_button_colors(env, html_content):
             result = pattern.sub(brand_color, result)
         else:
             result = result.replace(old_color, brand_color_rgb)
-    return result
+    return Markup(result) if was_markup else result

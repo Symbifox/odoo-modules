@@ -1,6 +1,6 @@
 {
     "name": "Symbifox Branding",
-    "version": "18.0.3.4.0",
+    "version": "18.0.3.4.1",
     "category": "Tools",
     "summary": "White-label branding panel + branded email templates",
     "description": """
