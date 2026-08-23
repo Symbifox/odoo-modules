@@ -1,5 +1,6 @@
 import logging
 import re
+import unicodedata
 from collections import Counter
 from datetime import date, timedelta
 
@@ -26,9 +27,77 @@ NEGATIVE_MARKERS = re.compile(
     re.IGNORECASE,
 )
 SALUTATION_RX = re.compile(
-    r"^\s*(salut|bonjour|all[ôo]|hey|cher\w*)[\s,]+([\w\-éèêàâîôûç']+)",
+    r"^\s*(salut|bonjour|bonsoir|all[ôo]|hey|cher\w*)[\s,]+"
+    r"((?:m\.|mme\.?|me|dr\.?|ma[îi]tre)\s+)?([\w\-'’À-ÿ]+)",
     re.IGNORECASE | re.MULTILINE,
 )
+
+# Boundaries of the quoted history in a reply. Everything from the first match
+# onward was written by someone else (or by us, earlier in the thread) and must
+# not feed the inference: it is where "Bonjour Marie" came from.
+QUOTED_HISTORY_RX = re.compile(
+    r"^\s*(?:"
+    r">|"
+    r"-{2,}\s*(?:message d'origine|original message|forwarded message)|"
+    r"_{5,}\s*$|"
+    r"le\s.{0,120}?\sa\s[ée]crit\s*:|"
+    r"on\s.{0,120}?\swrote\s*:|"
+    r"(?:de|from|exp[ée]diteur)\s*:\s*.{0,120}$"
+    r")",
+    re.IGNORECASE | re.MULTILINE,
+)
+
+# Container elements mail clients use to wrap the quoted history.
+QUOTE_XPATH = (
+    "//blockquote"
+    " | //*[@data-o-mail-quote]"
+    " | //*[contains(@class,'gmail_quote')]"
+    " | //*[contains(@class,'moz-cite-prefix')]"
+    " | //*[contains(@class,'OutlookMessageHeader')]"
+    " | //*[@id='divRplyFwdMsg']"
+    " | //*[contains(@class,'o_mail_notification')]"
+)
+
+
+def _deaccent(value):
+    """Lowercase + strip diacritics, for tolerant name matching."""
+    return "".join(
+        c for c in unicodedata.normalize("NFD", value or "")
+        if unicodedata.category(c) != "Mn"
+    ).lower()
+
+
+def _visible_text(html_body):
+    """Plain text of the part of an email that was actually newly written.
+
+    Drops the quoted history at the HTML level (blockquotes and the wrappers
+    Gmail/Outlook/Thunderbird use) and then at the text level, so salutations,
+    tu/vous tokens and negative markers are counted once, on this message only.
+    """
+    from odoo.tools import html2plaintext
+    if not html_body:
+        return ""
+    try:
+        from lxml import html as lxml_html
+        frag = lxml_html.fromstring(html_body)
+        for el in frag.xpath(QUOTE_XPATH):
+            parent = el.getparent()
+            if parent is not None:
+                # Keep the tail text: it belongs to the parent, not the quote.
+                if el.tail:
+                    previous = el.getprevious()
+                    if previous is not None:
+                        previous.tail = (previous.tail or "") + el.tail
+                    else:
+                        parent.text = (parent.text or "") + el.tail
+                parent.remove(el)
+        html_body = lxml_html.tostring(frag, encoding="unicode")
+    except Exception:
+        # Malformed HTML: fall through to the text-level cut below.
+        pass
+    text = html2plaintext(html_body)
+    match = QUOTED_HISTORY_RX.search(text)
+    return text[:match.start()] if match else text
 CLOSING_RX = re.compile(
     r"\b(merci(?:[\s\w]{0,30})?|cordialement|bien (?:cordialement|à vous)|"
     r"à bient[ôo]t|bonne (?:journée|fin de semaine|continuation)|au plaisir)\b",
@@ -341,6 +410,12 @@ class ContactPersona(models.Model):
             {p.id: (p.relationship_health, p.tone_summary) for p in self}
             if watch else {}
         )
+        # Any real tone assessment dates itself, so cron_flag_stale_tones has
+        # something to work with. Without this, tone_last_assessed stayed empty
+        # and every persona carried "[ton à rafraîchir]" forever.
+        if ({"tone_summary", "our_tone_summary", "tone_notes", "our_tone_notes"} & set(vals)
+                and "tone_last_assessed" not in vals):
+            vals = dict(vals, tone_last_assessed=fields.Date.context_today(self))
         res = super().write(vals)
         if "partner_id" in vals or "active" in vals:
             partners = self.mapped("partner_id")
@@ -449,7 +524,7 @@ class ContactPersona(models.Model):
         }
 
     @api.model
-    def _cron_recompute_payment_delay(self):
+    def cron_recompute_payment_delay(self):
         # Recompute the stored field for all personas, in batches to keep the
         # cron memory-bounded.
         personas = self.search([])
@@ -458,7 +533,7 @@ class ContactPersona(models.Model):
             self.env.cr.commit()
 
     @api.model
-    def _cron_flag_stale_tones(self, threshold_days=180):
+    def cron_flag_stale_tones(self, threshold_days=180):
         cutoff = date.today() - timedelta(days=threshold_days)
         stale = self.search([
             "|",
@@ -476,12 +551,78 @@ class ContactPersona(models.Model):
     # ------------------------------------------------------------------
 
     @api.model
+    def _partner_name_tokens(self, partner):
+        """Deaccented name tokens of a contact, used to validate a salutation."""
+        raw = " ".join(filter(None, [partner.name or "", partner.display_name or ""]))
+        # Drop the "Company, " prefix carried by display_name.
+        raw = raw.replace(",", " ")
+        return {t for t in (_deaccent(raw)).split() if len(t) >= 2}
+
+    @api.model
+    def _salutation_addresses_partner(self, name, title, partner):
+        """True when a captured salutation really names this contact.
+
+        Accepts exact tokens, diminutives ("Alex" for Alexandre) and the
+        "M. Tremblay" form. This is the guard that stops us from storing the
+        salutation the contact addressed to *us*, or one aimed at a third party
+        quoted in the thread.
+        """
+        candidate = _deaccent(name)
+        if len(candidate) < 2:
+            return False
+        tokens = self._partner_name_tokens(partner)
+        if candidate in tokens:
+            return True
+        # Diminutive: a prefix of at least 3 chars of a real name token.
+        if len(candidate) >= 3 and any(t.startswith(candidate) for t in tokens):
+            return True
+        # "M. Sénéchal": a title makes the surname alone acceptable.
+        return bool(title) and candidate in tokens
+
+    @api.model
+    def _looks_like_given_name(self, value):
+        """True when a token can plausibly be used as "Bonjour <token>".
+
+        Guards the mirroring fallback below: a shared mailbox is named "Info"
+        or "ventes@koumbit.org", and greeting it by that is worse than saying
+        nothing at all.
+        """
+        token = (value or "").strip()
+        if len(token) < 2 or "@" in token:
+            return False
+        if not all(c.isalpha() or c in "-'’" for c in token):
+            return False
+        return _deaccent(token) not in self.ROLE_LOCALPARTS
+
+    @api.model
+    def _extract_salutations(self, text):
+        """Yield (greeting, title, name) triples found in a body."""
+        out = []
+        for m in SALUTATION_RX.finditer(text or ""):
+            out.append((m.group(1), (m.group(2) or "").strip(), m.group(3)))
+        return out
+
+    @api.model
+    def _extract_closing(self, text):
+        """Closing formula in the last lines of a body, if any."""
+        tail = "\n".join((text or "").strip().splitlines()[-6:])
+        m = CLOSING_RX.search(tail)
+        return m.group(1).strip().capitalize() if m else None
+
+    @api.model
     def _infer_persona_from_emails(self, partner_id, window_days=90):
-        """Scan recent inbound emails from a partner and infer addressing/salutation/closing.
+        """Infer addressing/salutation/closing for a contact from recent emails.
+
+        Direction matters. ``preferred_salutation`` and ``closing_formula``
+        describe how *we* write *to* this contact, so they are learned from our
+        outbound mail and validated against the contact's own name. Their
+        inbound mail only tells us their register (tu/vous) and, as a fallback,
+        which greeting word they favour, which we then transpose onto their
+        name. Quoted history is stripped everywhere, otherwise every reply
+        teaches us the salutation the contact wrote to us.
 
         Returns a dict ready to merge into ``contact.persona`` create vals.
         """
-        from odoo.tools import html2plaintext
         cutoff = fields.Datetime.to_datetime(
             fields.Date.context_today(self) - timedelta(days=window_days)
         )
@@ -489,56 +630,116 @@ class ContactPersona(models.Model):
         if not partner:
             return {}
         commercial_id = partner.commercial_partner_id.id or partner.id
-        # Inbound: messages where author belongs to the same commercial entity.
         Message = self.env["mail.message"].sudo()
-        msgs = Message.search([
+        inbound = Message.search([
             ("message_type", "=", "email"),
             ("date", ">=", cutoff),
             ("author_id.commercial_partner_id", "=", commercial_id),
         ], limit=30, order="date desc")
-        if not msgs:
+        # Outbound: addressed to the contact, written by someone who is not
+        # part of their organisation.
+        outbound = Message.search([
+            ("message_type", "=", "email"),
+            ("date", ">=", cutoff),
+            ("partner_ids", "in", [partner.id]),
+        ], limit=30, order="date desc").filtered(
+            lambda m: m.author_id
+            and m.author_id.commercial_partner_id.id != commercial_id
+        )
+        if not inbound and not outbound:
             return {"last_interaction_date": False}
 
-        bodies = [html2plaintext(m.body or "") for m in msgs]
-        joined = "\n".join(bodies)
-        tu_count = len(TU_TOKENS.findall(joined))
-        vous_count = len(VOUS_TOKENS.findall(joined))
+        vals = {}
+        inbound_texts = [_visible_text(m.body) for m in inbound]
 
-        if tu_count - vous_count >= 3:
-            addressing = "tu"
-        elif vous_count - tu_count >= 3:
-            addressing = "vous"
-        else:
-            addressing = "auto"
+        # --- Register: only their own prose counts. -----------------------
+        if inbound_texts:
+            joined = "\n".join(inbound_texts)
+            tu_count = len(TU_TOKENS.findall(joined))
+            vous_count = len(VOUS_TOKENS.findall(joined))
+            if tu_count - vous_count >= 3:
+                vals["addressing_style"] = "tu"
+            elif vous_count - tu_count >= 3:
+                vals["addressing_style"] = "vous"
+            else:
+                vals["addressing_style"] = "auto"
 
+        # --- Salutation: what we habitually write to them. ----------------
         salut_counter = Counter()
-        for body in bodies:
-            m = SALUTATION_RX.search(body)
-            if m:
-                salut_counter[f"{m.group(1).capitalize()} {m.group(2).capitalize()}"] += 1
-        preferred_salutation = (
-            salut_counter.most_common(1)[0][0] if salut_counter else False
-        )
+        for msg in outbound:
+            for greeting, title, name in self._extract_salutations(_visible_text(msg.body)):
+                if self._salutation_addresses_partner(name, title, partner):
+                    label = " ".join(filter(None, [
+                        greeting.capitalize(), title.title() or None, name.capitalize(),
+                    ]))
+                    salut_counter[label] += 1
+        if salut_counter:
+            vals["preferred_salutation"] = salut_counter.most_common(1)[0][0]
+        else:
+            # Never written first: mirror the greeting word they use, applied
+            # to their own name rather than ours.
+            greeting_counter = Counter(
+                greeting.capitalize()
+                for text in inbound_texts
+                for greeting, _title, _name in self._extract_salutations(text)
+            )
+            first_name = (partner.name or "").split(" ")[0].strip()
+            if greeting_counter and self._looks_like_given_name(first_name):
+                vals["preferred_salutation"] = (
+                    f"{greeting_counter.most_common(1)[0][0]} {first_name}"
+                )
 
+        # --- Closing: ours to them, else mirror theirs. -------------------
         close_counter = Counter()
-        for body in bodies:
-            tail = "\n".join(body.strip().splitlines()[-6:])
-            m = CLOSING_RX.search(tail)
-            if m:
-                close_counter[m.group(1).capitalize()] += 1
-        closing_formula = (
-            close_counter.most_common(1)[0][0] if close_counter else False
-        )
+        for msg in outbound:
+            closing = self._extract_closing(_visible_text(msg.body))
+            if closing:
+                close_counter[closing] += 1
+        if not close_counter:
+            for text in inbound_texts:
+                closing = self._extract_closing(text)
+                if closing:
+                    close_counter[closing] += 1
+        if close_counter:
+            vals["closing_formula"] = close_counter.most_common(1)[0][0]
 
-        return {
-            "addressing_style": addressing,
-            "preferred_salutation": preferred_salutation,
-            "closing_formula": closing_formula,
-            "last_interaction_date": msgs[0].date.date() if msgs[0].date else False,
-        }
+        dates = [m.date for m in (inbound | outbound) if m.date]
+        vals["last_interaction_date"] = max(dates).date() if dates else False
+        return vals
+
+    # Mailbox local-parts that belong to a role, not to a person. A shared
+    # inbox has no tone and no salutation preference, so auto-seeding one only
+    # adds noise. Creating such a persona by hand stays possible.
+    ROLE_LOCALPARTS = frozenset({
+        "info", "contact", "support", "service", "admin", "administration",
+        "sales", "ventes", "billing", "facturation", "compta", "comptabilite",
+        "accounting", "coordination", "noreply", "no-reply", "donotreply",
+        "postmaster", "abuse", "webmaster", "hello", "bonjour", "test",
+        "notifications", "notification", "mailer-daemon", "help", "helpdesk",
+    })
 
     @api.model
-    def _cron_seed_personas(self, min_emails=3, window_days=90, batch=50):
+    def _is_seed_eligible(self, partner):
+        """Exclude ourselves and role mailboxes from automatic seeding.
+
+        A persona describes how to write to someone else. Seeding one on an
+        internal user's own contact, on the company's own partner, or on a
+        shared role mailbox produces a record that can only ever be wrong.
+        """
+        if not partner.email:
+            return False
+        # Anyone with an internal (non-portal) user is us, not a correspondent.
+        if any(not u.share for u in partner.user_ids):
+            return False
+        companies = self.env["res.company"].sudo().search([])
+        own_partner_ids = set(companies.mapped("partner_id").ids)
+        if partner.id in own_partner_ids or partner.commercial_partner_id.id in own_partner_ids:
+            return False
+        localpart = partner.email.split("@")[0].strip().lower()
+        return _deaccent(localpart) not in self.ROLE_LOCALPARTS
+
+    @api.model
+    def cron_seed_personas(self, min_emails=3, window_days=90, batch=50):
         """Auto-create persona stubs for active contacts that don't have one yet.
 
         Selection: individual contacts (is_company=False), active, with either
@@ -576,7 +777,7 @@ class ContactPersona(models.Model):
             ("id", "in", list(candidate_ids)),
             ("is_company", "=", False),
             ("active", "=", True),
-        ])
+        ]).filtered(self._is_seed_eligible)
         seeded = 0
         # Avoid auto-subscribing the partner and emitting chatter mails for
         # background-created personas. Otherwise the related contact gets
@@ -607,7 +808,7 @@ class ContactPersona(models.Model):
     # ------------------------------------------------------------------
 
     @api.model
-    def _cron_create_persona_refresh_activities(self, active_window_days=30):
+    def cron_create_persona_refresh_activities(self, active_window_days=30):
         """Create a 'Réévaluer le persona' activity on stale + recently active personas.
 
         Off by default — opt-in via the cron record `bf_persona.cron_create_persona_refresh_activities`.
@@ -621,7 +822,7 @@ class ContactPersona(models.Model):
         ])
         # Wrap every IO with full silence: prevent activity-induced auto-subscribe,
         # tracking messages on the persona record, post-create chatter and outbound
-        # mail. The activity still appears in the user's systray.
+        # mail. The activity still appears in the owner's systray.
         silence_ctx = dict(
             tracking_disable=True,
             mail_create_nosubscribe=True,
@@ -636,7 +837,7 @@ class ContactPersona(models.Model):
             type_id = Activity.search([], limit=1).id
         model_id = self.env["ir.model"]._get_id("contact.persona")
         # The admin/owner user is uid=2 in this deployment.
-        olivier_user = self.env["res.users"].browse(2).exists() or self.env.user
+        owner_user = self.env["res.users"].browse(2).exists() or self.env.user
         created = 0
         for persona in targets:
             existing = Activity.search([
@@ -656,7 +857,7 @@ class ContactPersona(models.Model):
                     "et le contact reste actif (interaction <%dj)."
                 ) % (persona.partner_id.display_name or "?", active_window_days),
                 "date_deadline": fields.Date.context_today(self) + timedelta(days=7),
-                "user_id": olivier_user.id,
+                "user_id": owner_user.id,
             })
             created += 1
         # Also strip any followers re-added by the activity hook, just in case.
@@ -672,23 +873,45 @@ class ContactPersona(models.Model):
     # Relationship degradation detector (Block D, part 2)
     # ------------------------------------------------------------------
 
+    # Signals actually implemented below. The score divides by this, not by the
+    # number of signals we would like to have: dividing by 4 while computing 3
+    # made a single signal read as "watch" and put 75% of the base there.
+    DRIFT_SIGNAL_COUNT = 3
+    # Below this many baseline messages there is nothing to compare against.
+    # Two or three emails a quarter is not a trend, and treating it as one is
+    # what produced the wall of false "à surveiller".
+    DRIFT_MIN_BASELINE = 5
+
     @api.model
-    def _cron_detect_relationship_degradation(self):
+    def cron_detect_relationship_degradation(self):
         """Score each active persona for tone drift on 30j vs 31-90j.
 
-        A drift signal counts when:
-          - inbound email count drops > 50%
-          - average response time more than doubles
-          - average inbound message length drops > 40%
+        A drift signal counts when, against a baseline of at least
+        ``DRIFT_MIN_BASELINE`` messages:
+          - inbound email rate per day drops > 50%
+          - median inbound message length drops > 40%
           - negative-marker rate uptick > 1.5x
-        Score = signals / 4. ≥0.5 → degraded; 0.25-0.5 → watch; <0.25 + recent → healthy.
+        Score = signals / 3. ≥2/3 → degraded; ≥1/3 → watch; otherwise healthy
+        when the contact is still active, else n/d.
+
+        Every branch is reversible: a persona that recovers, or that simply
+        goes quiet, must be able to leave "degraded"/"watch" again.
         """
-        from odoo.tools import html2plaintext
         today = fields.Date.context_today(self)
         recent_cutoff = fields.Datetime.to_datetime(today - timedelta(days=30))
         baseline_start = fields.Datetime.to_datetime(today - timedelta(days=90))
         baseline_end = recent_cutoff
         active_cutoff = today - timedelta(days=90)
+        # Windows are of different lengths, so counts are only comparable once
+        # divided by their span.
+        recent_days, baseline_days = 30.0, 60.0
+
+        silence = dict(
+            tracking_disable=True,
+            mail_create_nosubscribe=True,
+            mail_post_autofollow=False,
+            mail_notify_force_send=False,
+        )
 
         targets = self.search([("last_interaction_date", ">=", active_cutoff)])
         Message = self.env["mail.message"].sudo()
@@ -707,51 +930,68 @@ class ContactPersona(models.Model):
             ])
 
             signals = 0
-            # Volume drop
-            if base and len(recent) < 0.5 * len(base):
-                signals += 1
-            # Length drop
-            recent_lens = [len(html2plaintext(m.body or "")) for m in recent]
-            base_lens = [len(html2plaintext(m.body or "")) for m in base]
-            if base_lens and recent_lens:
-                med_recent = sorted(recent_lens)[len(recent_lens) // 2]
-                med_base = sorted(base_lens)[len(base_lens) // 2]
-                if med_base and med_recent < 0.6 * med_base:
+            scored = len(base) >= self.DRIFT_MIN_BASELINE
+            if scored:
+                # Volume drop, compared as rates per day.
+                if len(recent) / recent_days < 0.5 * (len(base) / baseline_days):
                     signals += 1
-            # Negative marker uptick
-            recent_neg = sum(len(NEGATIVE_MARKERS.findall(html2plaintext(m.body or ""))) for m in recent)
-            base_neg = sum(len(NEGATIVE_MARKERS.findall(html2plaintext(m.body or ""))) for m in base)
-            recent_rate = recent_neg / max(len(recent), 1)
-            base_rate = base_neg / max(len(base), 1)
-            if base_rate >= 0.05 and recent_rate > 1.5 * base_rate:
-                signals += 1
-            elif base_rate < 0.05 and recent_rate >= 0.15:
-                # Cold baseline but suddenly noisy → still a signal.
-                signals += 1
+                # Length drop, on the newly written text only.
+                recent_lens = [len(_visible_text(m.body)) for m in recent]
+                base_lens = [len(_visible_text(m.body)) for m in base]
+                if base_lens and recent_lens:
+                    med_recent = sorted(recent_lens)[len(recent_lens) // 2]
+                    med_base = sorted(base_lens)[len(base_lens) // 2]
+                    if med_base and med_recent < 0.6 * med_base:
+                        signals += 1
+                # Negative marker uptick, against a real baseline. Without one
+                # there is no "uptick" to speak of, so no signal is raised.
+                recent_neg = sum(len(NEGATIVE_MARKERS.findall(_visible_text(m.body))) for m in recent)
+                base_neg = sum(len(NEGATIVE_MARKERS.findall(_visible_text(m.body))) for m in base)
+                recent_rate = recent_neg / max(len(recent), 1)
+                base_rate = base_neg / max(len(base), 1)
+                if base_rate and recent_rate > 1.5 * base_rate:
+                    signals += 1
             # Response delay would require a proper email-thread join; skip for now.
-            score = signals / 4.0
-            new_health = persona.relationship_health
-            if score >= 0.5:
+            score = signals / float(self.DRIFT_SIGNAL_COUNT) if scored else 0.0
+            recently_active = (
+                persona.last_interaction_date
+                and persona.last_interaction_date >= today - timedelta(days=30)
+            )
+            if scored and score >= 2 / 3.0:
                 new_health = "degraded"
-            elif score >= 0.25:
+            elif scored and score >= 1 / 3.0:
                 new_health = "watch"
-            elif persona.last_interaction_date and persona.last_interaction_date >= today - timedelta(days=30):
+            elif recently_active:
                 new_health = "healthy"
+            else:
+                # Too little traffic to judge. Say so instead of freezing the
+                # previous verdict in place.
+                new_health = "na"
             vals = {"tone_drift_score": score}
             if new_health != persona.relationship_health:
                 vals["relationship_health"] = new_health
                 if new_health == "degraded":
-                    vals["tone_summary"] = "tense"
                     _logger.info(
                         "persona %s (%s) degraded: score %.2f",
                         persona.id, persona.partner_id.display_name or "?", score,
                     )
-            # Full silence: no field tracking message, no auto-subscribe,
-            # no chatter post, no immediate SMTP. Internal observation only.
-            persona.with_context(
-                tracking_disable=True,
-                mail_create_nosubscribe=True,
-                mail_post_autofollow=False,
-                mail_notify_force_send=False,
-            ).write(vals)
+            # Deliberately does not touch tone_summary: this detector measures
+            # traffic, not tone. Writing "tense" here left personas permanently
+            # tense long after the relationship recovered.
+            persona.with_context(**silence).write(vals)
+
+        # Personas that fell out of the active window keep whatever verdict
+        # they had when they went quiet. Retire it rather than let a stale
+        # "dégradée" outlive the situation that produced it.
+        stale = self.search([
+            "&",
+            ("relationship_health", "in", ("degraded", "watch")),
+            "|",
+            ("last_interaction_date", "=", False),
+            ("last_interaction_date", "<", active_cutoff),
+        ])
+        if stale:
+            stale.with_context(**silence).write({
+                "relationship_health": "na", "tone_drift_score": 0.0,
+            })
         return len(targets)

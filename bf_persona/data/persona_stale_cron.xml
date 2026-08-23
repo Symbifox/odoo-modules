@@ -5,7 +5,7 @@
         <field name="name">Persona : marquer les tons à rafraîchir</field>
         <field name="model_id" ref="model_contact_persona"/>
         <field name="state">code</field>
-        <field name="code">model._cron_flag_stale_tones()</field>
+        <field name="code">model.cron_flag_stale_tones()</field>
         <field name="interval_number">1</field>
         <field name="interval_type">days</field>
         <field name="active">True</field>

@@ -11,7 +11,7 @@ Failure modes are silent (logged): the composer never blocks chatter posting.
 import logging
 import re
 
-from markupsafe import Markup
+from markupsafe import Markup, escape
 
 from odoo import _, api, fields, models
 from odoo.tools import html2plaintext
@@ -81,9 +81,9 @@ class MailComposeMessage(models.TransientModel):
         if addressing != "auto":
             bits.append(f"<b>Style:</b> {'tu' if addressing == 'tu' else 'vous'}")
         if persona.preferred_salutation:
-            bits.append(f"<b>Salutation:</b> « {persona.preferred_salutation} »")
+            bits.append(Markup("<b>Salutation:</b> « %s »") % persona.preferred_salutation)
         if persona.closing_formula:
-            bits.append(f"<b>Clôture:</b> « {persona.closing_formula} »")
+            bits.append(Markup("<b>Clôture:</b> « %s »") % persona.closing_formula)
         if persona.relationship_health == "degraded":
             bits.append('<b style="color:#b30000;">⚠ Relation dégradée</b>')
         elif persona.relationship_health == "watch":
@@ -99,8 +99,8 @@ class MailComposeMessage(models.TransientModel):
                     )
         if missing_mandatory:
             bits.append(
-                "<b style='color:#b30000;'>C.c. obligatoires manquants:</b> "
-                + ", ".join(missing_mandatory[:5])
+                Markup("<b style='color:#b30000;'>C.c. obligatoires manquants:</b> %s")
+                % ", ".join(missing_mandatory[:5])
             )
         # tu/vous mismatch in current body
         if addressing in ("tu", "vous") and self.body:
@@ -113,7 +113,12 @@ class MailComposeMessage(models.TransientModel):
                 bits.append("<b style='color:#b06b00;'>⚠ Le brouillon utilise « tu » alors que ce contact préfère le vouvoiement.</b>")
         if not bits:
             return False
-        return Markup("<div>Persona — " + " · ".join(bits) + "</div>")
+        # escape() leaves the Markup fragments above untouched and neutralises
+        # any plain string that reached the list, so contact-supplied text can
+        # never inject markup into the composer.
+        return (Markup("<div>Persona — ")
+                + Markup(" · ").join(escape(b) for b in bits)
+                + Markup("</div>"))
 
     def _resolve_target_persona(self):
         """Persona record for the current composer (or empty recordset)."""

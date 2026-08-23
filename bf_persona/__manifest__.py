@@ -1,7 +1,7 @@
 {
     "name": "Persona des contacts",
     "summary": "Préférences relationnelles, ton, payeur, KPIs et règles c.c. par contact",
-    "version": "18.0.2.1.0",
+    "version": "18.0.2.2.0",
     "category": "Sales/CRM",
     'website': 'https://symbifox.com',
     "author": "Les services de consultation Blue Fox, Inc.",
