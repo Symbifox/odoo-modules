@@ -25,7 +25,6 @@
         to the ``session_id`` key. Other cookies, other domains, and scripted
         access (XML-RPC, webhooks) are untouched.
     """,
-    "author"
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",
     "license": "LGPL-3",
