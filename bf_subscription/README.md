@@ -44,6 +44,18 @@ Distributed under the **Business Source License 1.1** (BUSL-1.1). See the
 
 ## Changelog
 
+### 18.0.1.4.0
+
+- Fixed: renewal alerts that could never go quiet. The cron raised an activity
+  whenever `next_billing_date` minus the notice period fell inside the 30-day
+  horizon, and re-armed every 14 days. On a monthly subscription that condition
+  is always true, so the activity came back at every run, generally already
+  overdue, with no decision left to make; with 30 days' notice a monthly
+  subscription never left the window at all. The cron now skips a subscription
+  when the notice period plus the alert horizon cover the whole cycle.
+  Quarterly and longer cycles are untouched: their window still closes for most
+  of the year, which is what makes the alert worth reading when it opens.
+
 ### 18.0.1.3.1
 
 - Removed client names from the help and onboarding texts (public-release

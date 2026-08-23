@@ -140,6 +140,9 @@ docker compose exec odoo odoo -d <database> -u bf_mail_import --stop-after-init
 
 ## Changelog
 
+### 18.0.1.4.0
+- Changed: the import target is now chosen through the shared **`bf_chatter_target`** picker rather than this module's own resolver, which had forked from the copy in the other importers. The model list is no longer recopied here, and one resolver handles the 18.0 `/odoo/<action>/<id>` scheme, the legacy `/web#model=…`, a bare id, a shorthand (`task:22299`), a technical reference and an invoice name.
+
 ### 18.0.1.3.1
 - **`.eml` only**: removed `.msg` from the accepted extension whitelist. Outlook `.msg` files use the OLE compound-document format, which `email.message_from_bytes()` (RFC 2822) cannot parse — they previously passed the extension gate and then failed during parsing. README and validation now consistently state `.eml` only.
 

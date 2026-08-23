@@ -98,6 +98,9 @@ odoo -d <db> -u bf_bloc_notes --test-enable --test-tags /bf_bloc_notes --stop-af
 
 ## Changelog
 
+### 18.0.2.9.0 (2026-08-17)
+- Changed: the reroute wizard, the note links and the primary link now use the shared **`bf_chatter_target`** picker instead of this module's own copy of the target list and URL resolver. One search box for any chatter-bearing record: results grouped by model, no model to pick first, and a pasted Odoo URL, bare id, shorthand (`task:22299`) or technical reference surfaces as an "Exact reference" at the top of the list.
+
 ### 18.0.2.8.0 (2026-08-07)
 - Added: the **`bf.note.reroute`** wizard — reroute a note (or a selection) to any compatible record, replacing or adding links. Header button + bulk action on the list and kanban views.
 - Added: a "Quick link" field resolving an Odoo URL (v18 scheme via `ir.actions.act_window.path`, and the legacy `/web#model=…&id=…`), a bare id, an invoice name, a shorthand (`task:22299`) or a technical reference (`sale.order:17`).

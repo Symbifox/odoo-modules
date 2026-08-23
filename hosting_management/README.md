@@ -657,6 +657,12 @@ Hosting
 
 ## Changelog
 
+### Version 18.0.2.50.1
+- Security: `/backup/report` authenticated with an `api_key`, which only proves *who* the caller is, and any internal user can mint one for themselves. Backup telemetry is written as sudo, so any user could forge successful or failed runs and trigger the report emails and ntfy notifications. The route now requires `hosting_management.group_hosting_manager`; backup agents keep using `/report/public` with the `X-Backup-Token`.
+
+### Version 18.0.2.50.0
+- VOIP.ms telephony (DID, CDR, transactions), DMARC report ingestion, and a reworked maintenance window. Catch-up release covering everything between 2.46.0 and 2.50.0.
+
 ### Version 18.0.2.46.0
 - Documentation and metadata sync (license/LICENSE; manifest license comment corrected to LGPL-3; README dependency list completed). See git history for intermediate changes.
 
