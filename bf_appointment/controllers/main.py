@@ -1067,7 +1067,15 @@ class AppointmentController(Controller):
         booking_sudo = self._get_booking_sudo(booking_id, token)
         if not booking_sudo:
             return request.redirect("/appointment")
-        if request.httprequest.method == "GET":
+        # ⚠️ `!= "POST"`, PAS `== "GET"`. Werkzeug ajoute HEAD d'office à toute
+        # règle qui accepte GET, mais `httprequest.method` vaut alors "HEAD" :
+        # la garde écrite en `== "GET"` était donc FAUSSE sur un HEAD, et la
+        # requête tombait dans la branche qui MUTE. 🔴 Vécu en production le
+        # 2026-08-24 : un rendez-vous client confirmé cinq minutes plus tôt a été
+        # annulé par le HEAD d'un antivirus de messagerie suivant le lien
+        # « Annuler » de l'ICS. Reproduit avec un seul `curl -I`, sans aucun clic.
+        # On énumère ce qui MUTE (POST), jamais ce qui ne mute pas.
+        if request.httprequest.method != "POST":
             if booking_sudo.state == "canceled":
                 return request.redirect(f"/appointment/b/{booking_id}/{token}")
             response = request.render(
@@ -1256,7 +1264,15 @@ class AppointmentController(Controller):
         ecarter = request.httprequest.path.endswith("/decline")
         en_attente = booking_sudo._bf_pending_guests()
 
-        if request.httprequest.method == "GET":
+        # ⚠️ `!= "POST"`, PAS `== "GET"`. Werkzeug ajoute HEAD d'office à toute
+        # règle qui accepte GET, mais `httprequest.method` vaut alors "HEAD" :
+        # la garde écrite en `== "GET"` était donc FAUSSE sur un HEAD, et la
+        # requête tombait dans la branche qui MUTE. 🔴 Vécu en production le
+        # 2026-08-24 : un rendez-vous client confirmé cinq minutes plus tôt a été
+        # annulé par le HEAD d'un antivirus de messagerie suivant le lien
+        # « Annuler » de l'ICS. Reproduit avec un seul `curl -I`, sans aucun clic.
+        # On énumère ce qui MUTE (POST), jamais ce qui ne mute pas.
+        if request.httprequest.method != "POST":
             response = request.render(
                 "bf_appointment.appointment_guests_confirm",
                 {

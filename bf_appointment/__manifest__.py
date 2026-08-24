@@ -256,7 +256,21 @@
     #   ⚠️ Deux autres fonctions du même fichier étaient mortes depuis toujours pour cette
     #   raison : la détection du fuseau horaire du visiteur et le masquage des consentements
     #   déjà au dossier.
-    "version": "18.0.2.51.1",
+    # 18.0.2.51.2: 🔴 un rendez-vous confirmé s'annulait TOUT SEUL. Les routes `/cancel`
+    #   et `/guests` gardent leur mutation derrière la méthode HTTP, et la garde était
+    #   écrite `if method == "GET": <demander>` — donc « tout le reste MUTE ». Or Werkzeug
+    #   ajoute HEAD d'office à toute règle qui accepte GET, et `httprequest.method` vaut
+    #   alors « HEAD » : la garde était fausse, et la requête tombait dans la branche qui
+    #   mute. Les antivirus de messagerie et les aperçus de lien sondent en HEAD, justement
+    #   parce que c'est censé ne rien changer. Le lien « Annuler » part dans la description
+    #   de l'ICS : un rendez-vous client confirmé cinq minutes plus tôt a donc été annulé
+    #   sans que personne ne clique. Reproduit avec un seul `curl -I`. Sur `/guests`, le
+    #   même trou faisait partir les invitations aux invités, c'est-à-dire exactement le
+    #   pourriel que la double confirmation existe pour empêcher.
+    #   ⚠️ Le commentaire de 2.42.1 disait déjà « la mutation reste en POST » : l'intention
+    #   était juste, la condition ne l'exprimait pas. Une garde se teste par la méthode
+    #   qu'elle laisse passer, pas par celle qu'elle nomme.
+    "version": "18.0.2.51.2",
     "category": "Appointments",
     "summary": "Public self-service booking pages extending Resource Booking",
     'author': 'Les services de consultation Blue Fox, Inc.',
