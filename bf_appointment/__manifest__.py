@@ -241,7 +241,22 @@
     #       (demandeur, type) au lieu d'une fois par reservation : l'etat est
     #       une fonction pure de ces deux-la, et un client fidele payait vingt
     #       fois le prix pour vingt fois la meme reponse.
-    "version": "18.0.2.51.0",
+    # 18.0.2.51.1: 🔴 régression du sélecteur de créneaux, corrigée le jour même.
+    #   Depuis le modal de confirmation partagé (2.51.0), le créneau ne vit plus dans le
+    #   HTML de chaque bulle : `timezone_detect.js` le recopie de la bulle cliquée vers le
+    #   champ caché `when`. Or ce fichier accrochait son init à `DOMContentLoaded`, et
+    #   `web.assets_frontend` est servi en bundle PARESSEUX (`<script data-src=…>`) qu'Odoo
+    #   n'injecte que sur l'événement `load`. L'événement était donc déjà passé : l'init
+    #   n'a jamais tourné, `when` partait vide, et le serveur répondait « Format de date
+    #   invalide » à chaque essai — plus aucune réservation n'était possible. Aucune erreur
+    #   en console : Bootstrap vit dans le MÊME bundle et fonctionne, donc le modal
+    #   s'ouvrait normalement et la page paraissait saine. Garde `document.readyState` +
+    #   recopie du créneau au clic par délégation sur `document`, hors de l'init, pour que
+    #   la réservation survive à une init en panne.
+    #   ⚠️ Deux autres fonctions du même fichier étaient mortes depuis toujours pour cette
+    #   raison : la détection du fuseau horaire du visiteur et le masquage des consentements
+    #   déjà au dossier.
+    "version": "18.0.2.51.1",
     "category": "Appointments",
     "summary": "Public self-service booking pages extending Resource Booking",
     'author': 'Les services de consultation Blue Fox, Inc.',

@@ -1,7 +1,20 @@
 /**
  * Timezone detection, form helpers, and consent smart-skip for bf_appointment.
  */
-document.addEventListener("DOMContentLoaded", function () {
+// ⚠️ NE PAS revenir à `document.addEventListener("DOMContentLoaded", ...)`.
+// Ce fichier vit dans `web.assets_frontend`, qui est servi en bundle PARESSEUX
+// (`<script data-src=...>`). Le chargeur d'Odoo ne l'injecte que sur
+// l'événement `load` :
+//     if (document.readyState === 'complete') { setTimeout(_loadScripts, 0); }
+//     else { window.addEventListener('load', ...); }
+// Quand ce code s'exécute, `DOMContentLoaded` est donc DÉJÀ passé et le
+// gestionnaire n'est JAMAIS appelé — en silence, sans erreur en console.
+// 🔴 Vécu en production le 2026-08-24 : plus AUCUNE réservation n'était
+// possible. Le champ caché `when` restait vide, et le serveur renvoyait
+// « Format de date invalide » à chaque créneau cliqué, pour tout le monde.
+// Bootstrap, lui, vit dans le même bundle et fonctionne : le modal s'ouvrait
+// normalement, ce qui rendait la panne invisible à la lecture du code.
+function bfAppointmentInit() {
     // Timezone auto-detection
     const tzField = document.getElementById("bf_appointment_tz");
     if (tzField && !tzField.value) {
@@ -118,4 +131,24 @@ document.addEventListener("DOMContentLoaded", function () {
         emailField.addEventListener("blur", checkConsent);
         emailField.addEventListener("change", checkConsent);
     }
+}
+
+if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", bfAppointmentInit);
+} else {
+    bfAppointmentInit();
+}
+
+// Ceinture, en plus du gestionnaire `show.bs.modal` ci-dessus : le créneau est
+// recopié DÈS LE CLIC sur la bulle, par délégation sur `document`. Volontairement
+// HORS de l'init — c'est ce qui doit survivre à une panne de l'init, puisque
+// c'est la seule chose sans laquelle on ne peut plus réserver du tout. Les deux
+// écrivent la même valeur, dans cet ordre, donc se recouvrir est sans effet.
+document.addEventListener("click", function (event) {
+    const bubble = event.target.closest && event.target.closest(".bf-slot-bubble");
+    if (!bubble) return;
+    const modal = document.getElementById("bf-modal-confirm");
+    if (!modal) return;
+    const whenField = modal.querySelector("[data-bf-when-field]");
+    if (whenField) whenField.value = bubble.dataset.bfWhen || "";
 });
