@@ -6,8 +6,15 @@ class PrivacyConsent(models.Model):
     _inherit = ["privacy.consent", "bf.sign.mixin"]
 
     def _sign_report_ref(self):
-        # Consent certificate PDF (the consent artifact to be signed).
-        return "privacy_consent.action_report_consent_certificate"
+        # The consent notice, rendered by this module.
+        #
+        # NOT ``privacy_consent.action_report_consent_certificate``: that report
+        # is bound to the ``privacy.consent.evidence`` model, not to
+        # ``privacy.consent``. Handing it a consent id makes it look for an
+        # evidence record carrying the same id, and the render raises
+        # MissingError. On the substance, a certificate attests to something
+        # already done, which is not what a person is asked to sign.
+        return "bf_sign_privacy.action_report_consent_form"
 
     def _sign_default_signers(self):
         # privacy.consent tracks the subject under ``subject_partner_id`` rather

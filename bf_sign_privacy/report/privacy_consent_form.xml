@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!--
+        ⚠️ Ce rapport existe parce que `privacy_consent` n'en a AUCUN sur
+        `privacy.consent`. Son `action_report_consent_certificate` porte le
+        modèle `privacy.consent.evidence` : c'est le certificat d'un geste
+        DÉJÀ posé, pas le document qu'on fait signer. Lui passer des
+        identifiants de consentement lève un MissingError au rendu.
+
+        Ce qu'on fait signer, c'est l'avis : la finalité, ce qu'on recueille,
+        et pour combien de temps. Le certificat vient après.
+    -->
+    <template id="report_consent_form_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2 style="margin-bottom:4px;">Consentement à la collecte et à l'utilisation
+                            de renseignements personnels</h2>
+                        <p style="color:#666;margin-top:0;">
+                            Référence : CONS-<t t-esc="o.id"/>
+                        </p>
+
+                        <table class="table table-sm" style="margin-top:18px;">
+                            <tr>
+                                <td style="width:32%;"><strong>Personne concernée</strong></td>
+                                <td><t t-esc="o.subject_partner_id.display_name"/></td>
+                            </tr>
+                            <tr t-if="o.given_by_partner_ids">
+                                <td><strong>Consentement donné par</strong></td>
+                                <td><t t-esc="', '.join(o.given_by_partner_ids.mapped('display_name'))"/></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Finalité</strong></td>
+                                <td><t t-esc="o.purpose_id.name"/></td>
+                            </tr>
+                            <tr t-if="o.notice_version_id">
+                                <td><strong>Version de l'avis</strong></td>
+                                <td>
+                                    <t t-esc="o.notice_version_id.version"/>
+                                    <t t-if="o.notice_version_id.effective_date">
+                                        (en vigueur le
+                                        <t t-esc="o.notice_version_id.effective_date"
+                                           t-options="{'widget': 'date'}"/>)
+                                    </t>
+                                </td>
+                            </tr>
+                            <tr t-if="o.expires_at">
+                                <td><strong>Échéance</strong></td>
+                                <td><t t-esc="o.expires_at" t-options="{'widget': 'date'}"/></td>
+                            </tr>
+                        </table>
+
+                        <div style="margin-top:20px;"
+                             t-if="o.notice_version_id and o.notice_version_id.body">
+                            <h4>Avis</h4>
+                            <div t-field="o.notice_version_id.body"/>
+                        </div>
+                        <div style="margin-top:20px;"
+                             t-elif="o.purpose_id.plain_language_summary">
+                            <h4>Ce à quoi vous consentez</h4>
+                            <div t-field="o.purpose_id.plain_language_summary"/>
+                        </div>
+
+                        <div style="margin-top:24px;padding:12px;border:1px solid #ddd;">
+                            <p style="margin:0;">
+                                En signant, je consens à la collecte et à l'utilisation de mes
+                                renseignements personnels pour la finalité décrite ci-dessus.
+                                Je comprends que je peux retirer ce consentement en tout temps,
+                                et que le retrait n'a pas d'effet rétroactif sur ce qui a déjà
+                                été fait légitimement.
+                            </p>
+                        </div>
+
+                        <div style="margin-top:36px;">
+                            <p style="margin-bottom:40px;">Signature :</p>
+                            <div style="border-top:1px solid #333;width:60%;"/>
+                            <p style="color:#666;font-size:11px;">
+                                <t t-esc="o.subject_partner_id.display_name"/>
+                            </p>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <record id="action_report_consent_form" model="ir.actions.report">
+        <field name="name">Consentement à signer</field>
+        <field name="model">privacy.consent</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">bf_sign_privacy.report_consent_form_document</field>
+        <field name="report_file">bf_sign_privacy.report_consent_form_document</field>
+        <field name="print_report_name">'Consentement-CONS-%s' % (object.id)</field>
+    </record>
+
+</odoo>

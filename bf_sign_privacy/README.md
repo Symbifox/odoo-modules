@@ -8,11 +8,21 @@ platforms (DocuSeal, LibreSign). This bridge adds a third, **internal** route:
 "Send for signature" on the consent (`privacy.consent`) through the
 `bf.sign.mixin` mixin.
 
-The consent certificate is rendered as a PDF (the
-`privacy_consent.action_report_consent_certificate` report), a linked `bf_sign`
-signature request is created, and the signed document is posted back into the
-consent's thread once signed. The consent subject (`subject_partner_id`) is
-prefilled as the default signer.
+The **consent notice** is rendered as a PDF by this module
+(`bf_sign_privacy.action_report_consent_form`) — the subject, the purpose and its
+plain-language summary, the notice text with its version and effective date, and
+the date the consent expires. A linked `bf_sign` signature request is created,
+and the signed document is posted back into the consent's thread once signed.
+The consent subject (`subject_partner_id`) is prefilled as the default signer,
+since the mixin's own fallback looks for a `partner_id` that `privacy.consent`
+does not have.
+
+The notice is deliberately *not*
+`privacy_consent.action_report_consent_certificate`: that report is bound to the
+`privacy.consent.evidence` model, not to `privacy.consent`, so handing it a
+consent id makes the render raise `MissingError`. On the substance, a
+certificate attests to something already done, which is not what a person is
+asked to sign.
 
 Consent artefacts can therefore be signed with the in-house simple electronic
 signature (SES) engine, which holds up under Quebec law (see
