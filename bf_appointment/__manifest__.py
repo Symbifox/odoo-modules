@@ -270,7 +270,17 @@
     #   ⚠️ Le commentaire de 2.42.1 disait déjà « la mutation reste en POST » : l'intention
     #   était juste, la condition ne l'exprimait pas. Une garde se teste par la méthode
     #   qu'elle laisse passer, pas par celle qu'elle nomme.
-    "version": "18.0.2.51.2",
+    # 18.0.2.51.3: 🔴 « Copier un lien de rendez-vous » FERMAIT le courriel en cours de
+    #   rédaction. Le bouton rendait une action `target: "new"` (la fenêtre du lien), et le
+    #   client ne l'empile pas sur le compositeur : il RETIRE le dialogue courant avant
+    #   d'ouvrir le suivant (`action_service.js`, `_updateUI`). Le brouillon survivait en
+    #   base — un bouton `type="object"` enregistre l'assistant avant d'appeler la méthode —
+    #   mais plus rien à l'écran n'y ramenait. Le lien s'affiche désormais DANS le
+    #   compositeur (widget de copie natif : le geste et la copie restent collés), et les
+    #   deux boutons partagent `_bf_reopen_composer()`. Un second clic réutilise le lien
+    #   tant qu'il tient et que le destinataire n'a pas changé : le lien restant à l'écran,
+    #   recliquer est naturel, et sans garde chaque clic laissait une réservation en attente.
+    "version": "18.0.2.51.3",
     "category": "Appointments",
     "summary": "Public self-service booking pages extending Resource Booking",
     'author': 'Les services de consultation Blue Fox, Inc.',

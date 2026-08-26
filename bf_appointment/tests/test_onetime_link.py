@@ -348,12 +348,83 @@ class TestQuickBookingLink(TransactionCase):
         """Copier n'écrit rien dans le message : c'est tout son intérêt."""
         c = self._composer(body="<p>Mon texte</p>")
         avant = str(c.body)
-        action = c.action_bf_copy_booking_link()
+        c.action_bf_copy_booking_link()
         self.assertEqual(str(c.body), avant, "le corps a été modifié")
-        self.assertEqual(action["res_model"], "bf.appointment.onetime.wizard")
-        assistant = self.env["bf.appointment.onetime.wizard"].browse(action["res_id"])
-        self.assertIn("/appointment/b/", assistant.url)
-        self.assertEqual(assistant.state, "done")
+        self.assertIn("/appointment/b/", c.bf_booking_link_url)
+        self.assertIn(c.bf_booking_id.access_token, c.bf_booking_link_url)
+
+    def test_copy_button_keeps_the_composer_open(self):
+        """🔴 Le courriel en cours ne doit PAS se fermer.
+
+        Le bouton rendait la fenêtre du lien, et le client retire le dialogue
+        courant avant d'ouvrir le suivant : le brouillon disparaissait de
+        l'écran, la personne le tenait pour perdu. Signalé le 2026-08-25.
+        """
+        c = self._composer(body="<p>Mon texte</p>")
+        action = c.action_bf_copy_booking_link()
+        self.assertEqual(action["res_model"], "mail.compose.message",
+                         "l'action doit ramener au courriel, pas ailleurs")
+        self.assertEqual(action["res_id"], c.id, "un AUTRE brouillon a été ouvert")
+        self.assertEqual(action["target"], "new")
+
+    def test_insert_button_keeps_the_composer_open(self):
+        c = self._composer(body="<p>Mon texte</p>")
+        action = c.action_bf_insert_booking_link()
+        self.assertEqual(action["res_model"], "mail.compose.message")
+        self.assertEqual(action["res_id"], c.id)
+
+    def test_copy_button_reuses_its_link_on_a_second_click(self):
+        """Deux clics ne doivent pas laisser deux réservations en attente.
+
+        Le lien reste maintenant à l'écran : recliquer est naturel, et sans
+        garde chaque clic fabriquait une réservation de plus.
+        """
+        c = self._composer()
+        c.action_bf_copy_booking_link()
+        premier = c.bf_booking_id
+        avant = self.env["resource.booking"].search_count(
+            [("bf_source", "=", "onetime")])
+        c.action_bf_copy_booking_link()
+        self.assertEqual(c.bf_booking_id, premier, "le lien a changé sans raison")
+        self.assertEqual(
+            self.env["resource.booking"].search_count(
+                [("bf_source", "=", "onetime")]),
+            avant, "un deuxième clic a créé une réservation de plus")
+
+    def test_copy_button_refreshes_the_link_for_a_new_recipient(self):
+        """Le lien est PERSONNEL : changer de destinataire doit en refaire un."""
+        c = self._composer()
+        c.action_bf_copy_booking_link()
+        premier = c.bf_booking_id
+        autre = self.env["res.partner"].create(
+            {"name": "Autre client", "email": "autre@test.invalid"})
+        c.partner_ids = [Command.set([autre.id])]
+        c.action_bf_copy_booking_link()
+        self.assertNotEqual(c.bf_booking_id, premier,
+                            "le lien du premier destinataire a été recyclé")
+        self.assertIn(autre, c.bf_booking_id.partner_ids)
+
+    def test_composer_form_carries_the_link_zone(self):
+        """🔴 Deux harnais valent mieux qu'un : le modèle PUIS l'écran.
+
+        Le modèle peut être juste et l'écran rester muet — un xpath qui ne
+        s'applique plus, et le lien se fabrique sans que personne le voie.
+        """
+        arch = self.env["mail.compose.message"].get_view(
+            self.env.ref("mail.email_compose_message_wizard_form").id, "form")["arch"]
+        self.assertIn("bf_booking_link_url", arch,
+                      "la zone du lien a disparu du compositeur")
+        self.assertIn("CopyClipboardURL", arch,
+                      "sans le widget natif, il n'y a plus de bouton copier")
+        self.assertIn("action_bf_copy_booking_link", arch)
+
+    def test_copy_button_announces_the_expiry(self):
+        c = self._composer()
+        c.action_bf_copy_booking_link()
+        self.assertTrue(c.bf_booking_link_expires,
+                        "l'expiration doit être annoncée dans le courriel")
+        self.assertEqual(c.bf_booking_link_expires,
+                         c.bf_booking_id.link_expires_at)
 
     def test_both_buttons_share_the_same_sequence(self):
         """🔴 Insérer et copier doivent produire le MÊME lien.
@@ -366,20 +437,18 @@ class TestQuickBookingLink(TransactionCase):
             [("bf_source", "=", "onetime")], order="id desc", limit=1)
         c2 = self._composer()
         c2.action_bf_copy_booking_link()
-        par_copie = self.env["resource.booking"].search(
-            [("bf_source", "=", "onetime")], order="id desc", limit=1)
+        par_copie = c2.bf_booking_id
         self.assertNotEqual(par_insertion, par_copie, "deux liens distincts attendus")
         for champ in ("type_id", "bf_source", "link_single_use"):
             self.assertEqual(par_insertion[champ], par_copie[champ], champ)
         self.assertEqual(par_insertion.partner_ids, par_copie.partner_ids)
 
-    def test_copy_dialog_shows_the_expiry(self):
-        c = self._composer()
-        action = c.action_bf_copy_booking_link()
+    def test_partner_dialog_shows_the_expiry(self):
+        """Depuis une fiche de contact, la fenêtre reste le bon véhicule :
+        il n'y a pas de brouillon à préserver derrière."""
+        action = self.client.action_bf_booking_link()
         assistant = self.env["bf.appointment.onetime.wizard"].browse(action["res_id"])
         self.assertTrue(assistant.expires_display)
-        self.assertNotEqual(assistant.expires_display, "",
-                            "la date d'expiration doit être annoncée")
 
     def test_shared_factory_is_the_single_source(self):
         """🔴 L'assistant, le compositeur et le contact doivent produire la

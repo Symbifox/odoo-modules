@@ -22,8 +22,23 @@
                             class="btn btn-link"
                             icon="fa-clipboard"
                             string="Copier un lien de rendez-vous"
-                            help="Crée le lien et l'offre à la copie, sans toucher
-                                  au message. À vous de le placer où vous voulez."/>
+                            help="Crée le lien et l'affiche juste en dessous, prêt
+                                  à être copié, sans toucher au message."/>
+                </div>
+                <!-- Le lien s'affiche ICI, dans le courriel. Ouvrir une fenêtre
+                     pour le montrer refermait le brouillon : une action
+                     `target: "new"` remplace le dialogue courant au lieu de s'y
+                     empiler. Voir `_bf_reopen_composer`. -->
+                <div class="alert alert-success py-2 mb-2" role="status"
+                     invisible="not bf_booking_link_url">
+                    <field name="bf_booking_link_url" widget="CopyClipboardURL"
+                           nolabel="1" readonly="1" class="oe_inline"/>
+                    <div class="text-muted small mt-1"
+                         invisible="not bf_booking_link_expires">
+                        Personnel au destinataire, valable une fois, jusqu'au
+                        <field name="bf_booking_link_expires" nolabel="1"
+                               readonly="1" class="oe_inline"/>.
+                    </div>
                 </div>
             </xpath>
         </field>

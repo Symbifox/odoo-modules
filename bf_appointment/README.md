@@ -16,7 +16,10 @@ Public self-service booking pages, extending *Resource Booking* (OCA).
   requester confirms from their own inbox, so the form cannot be used as a
   relay. No contact record is created before that confirmation.
 - **Quick link creation** from the email composer (insert into the message, or
-  copy to the clipboard) and from a contact form.
+  show it below the body ready to copy) and from a contact form. Both buttons
+  reopen the composer on the draft you were writing: an action opened with
+  `target: "new"` from inside a dialog *replaces* it rather than stacking on
+  top, so anything else closes the email you are composing.
 - **SMS reminders.** Each scheduled email can carry a channel — e-mail, SMS,
   or both — with its own short body. The body is screened against the GSM-7
   alphabet and a 150-septet budget when it is written, not when it is sent,

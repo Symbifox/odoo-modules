@@ -9,7 +9,7 @@ le bouton s'en sert.
 
 import logging
 
-from odoo import _, models
+from odoo import _, api, fields, models
 from odoo.exceptions import UserError
 
 _logger = logging.getLogger(__name__)
@@ -17,6 +17,34 @@ _logger = logging.getLogger(__name__)
 
 class MailComposeMessage(models.TransientModel):
     _inherit = "mail.compose.message"
+
+    # ------------------------------------------------------------------
+    # Le lien, montré DANS le courriel plutôt que dans une autre fenêtre
+    # ------------------------------------------------------------------
+
+    bf_booking_id = fields.Many2one(
+        "resource.booking", string="Lien de rendez-vous créé",
+        readonly=True, copy=False,
+        help="La réservation fabriquée par le bouton « Copier », gardée le "
+             "temps de la rédaction pour ne pas en créer une par clic.")
+    # ⚠️ CALCULÉ, non stocké, et ce n'est pas une économie de colonne : le lien
+    # vaut jeton d'accès, et un modèle transitoire écrit dans une VRAIE table
+    # qui survit jusqu'au ramasse-miettes et part dans toute sauvegarde prise
+    # entre-temps. Le jeton vit déjà sur la réservation. Même raisonnement que
+    # `bf.appointment.onetime.wizard`, et un seul écrivain.
+    bf_booking_link_url = fields.Char(
+        string="Lien à transmettre", compute="_compute_bf_booking_link")
+    # Datetime plutôt qu'un texte fabriqué à la main : Odoo l'affiche dans le
+    # fuseau de qui lit. Un `to_string` aurait sorti de l'UTC à l'écran.
+    bf_booking_link_expires = fields.Datetime(
+        related="bf_booking_id.link_expires_at", string="Expiration",
+        readonly=True)
+
+    @api.depends("bf_booking_id")
+    def _compute_bf_booking_link(self):
+        for composer in self:
+            composer.bf_booking_link_url = (
+                composer.bf_booking_id.one_time_url or "")
 
     def _bf_quick_link_partner(self):
         """Le destinataire du lien : d'abord celui du courriel, sinon celui du
@@ -95,6 +123,58 @@ class MailComposeMessage(models.TransientModel):
         _logger.info(
             "Lien de rendez-vous %s inséré au courriel pour %s",
             booking.id, booking.partner_ids[:1].display_name)
+        return self._bf_reopen_composer()
+
+    def action_bf_copy_booking_link(self):
+        """Crée le lien et l'affiche dans le courriel, prêt à être copié.
+
+        ⚠️ La copie n'est PAS faite par le serveur, et ce n'est pas un défaut :
+        écrire dans le presse-papiers exige une activation récente par
+        l'usager. Une copie déclenchée après un aller-retour serveur se fait
+        bloquer en silence par Safari et certaines versions de Chrome. Le
+        widget natif d'Odoo garde le geste et la copie collés — ça marche
+        partout, sans une ligne de JavaScript maison.
+
+        🔴 Ce bouton ouvrait une FENÊTRE portant ce widget, et le courriel en
+        cours de rédaction disparaissait de l'écran (signalé le 2026-08-25).
+        Ce n'est pas un accident d'implémentation, c'est le fonctionnement du
+        client : une action `target: "new"` rendue depuis un dialogue ne s'y
+        empile pas, elle le REMPLACE — voir `_bf_reopen_composer`. Le lien
+        s'affiche donc maintenant dans le compositeur lui-même.
+
+        Un deuxième clic ne refabrique rien tant que le lien tient toujours et
+        que le destinataire n'a pas changé : sans cette garde, chaque clic
+        laissait une réservation en attente derrière lui.
+        """
+        self.ensure_one()
+        booking = self.bf_booking_id
+        destinataire = self._bf_quick_link_partner()
+        if not (booking and booking.exists() and destinataire
+                and destinataire in booking.partner_ids
+                and booking._link_is_usable()):
+            booking = self._bf_prepare_booking_link()
+            self.bf_booking_id = booking
+            _logger.info(
+                "Lien de rendez-vous %s offert à la copie pour %s",
+                booking.id, booking.partner_ids[:1].display_name)
+        return self._bf_reopen_composer()
+
+    def _bf_reopen_composer(self):
+        """Rouvre le compositeur sur le brouillon en cours.
+
+        🔴 Sans ça, le courriel se ferme. Une action `target: "new"` rendue
+        depuis un bouton du compositeur ne s'AJOUTE pas par-dessus lui : le
+        client retire le dialogue courant avant d'ouvrir le suivant
+        (`web/.../action_service.js`, `_updateUI` : `if (nextDialog) {
+        nextDialog.remove(); }`). Le brouillon, lui, survit — le clic sur un
+        bouton `type="object"` enregistre l'assistant avant d'appeler la
+        méthode — mais plus rien à l'écran n'y ramène, et la personne le
+        tient pour perdu.
+
+        Rendre le compositeur sur son propre `res_id` le rouvre avec tout ce
+        qui était rédigé : corps, destinataires, pièces jointes.
+        """
+        self.ensure_one()
         return {
             "type": "ir.actions.act_window",
             "res_model": "mail.compose.message",
@@ -103,21 +183,6 @@ class MailComposeMessage(models.TransientModel):
             "target": "new",
             "context": self.env.context,
         }
-
-    def action_bf_copy_booking_link(self):
-        """Crée le lien et l'offre à la copie, sans toucher au corps.
-
-        ⚠️ La copie n'est PAS faite par le serveur, et ce n'est pas un défaut :
-        écrire dans le presse-papiers exige une activation récente par
-        l'usager. Une copie déclenchée après un aller-retour serveur se fait
-        bloquer en silence par Safari et certaines versions de Chrome. En
-        ouvrant une fenêtre où la personne clique elle-même sur « copier »
-        (widget natif d'Odoo), le geste et la copie restent collés — ça marche
-        partout, et sans une ligne de JavaScript maison.
-        """
-        self.ensure_one()
-        booking = self._bf_prepare_booking_link()
-        return booking._bf_action_show_link()
 
     # ------------------------------------------------------------------
     # Où glisser le lien
