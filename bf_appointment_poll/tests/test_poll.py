@@ -609,27 +609,66 @@ class TestAppointmentPoll(TransactionCase):
         slots._create_hold()
         self.assertEqual(slots[0].hold_event_id.show_as, "busy")
 
-    def test_open_mode_holds_only_the_shortlist(self):
-        """Bloquer tout le bassin le viderait au fur et à mesure, et aucun
-        recoupement ne pourrait se former."""
-        from odoo.exceptions import UserError
+    def test_open_mode_holds_at_selection(self):
+        """🔴 En « chacun propose », la plage CHOISIE prend sa retenue tout de suite.
 
+        C'est ce que promet le libellé du réglage. Avant ce correctif, une
+        plage choisie ne tenait rien tant que l'organisateur n'avait pas
+        présélectionné à la main, et « réserver réellement » ne réservait rien.
+        """
         self.poll.slot_source = "open"
         self.poll.hold_mode = "blocking"
         self.poll.state = "open"
         pool = self.poll._slot_pool(self.optional_participant)
         for quand in pool[:3]:
             self.poll._add_slot_from_pool(self.optional_participant, quand)
-        self.assertFalse(
-            self.poll.slot_ids.mapped("hold_event_id"),
-            "proposer ne bloque rien : le bassin doit rester ouvert",
+        self.assertEqual(
+            len(self.poll.slot_ids.mapped("hold_event_id")), 3,
+            "chaque plage choisie doit tenir sa place dans l'agenda",
         )
+        self.assertEqual(
+            set(self.poll.slot_ids.mapped("hold_event_id.show_as")), {"busy"})
+
+    def test_shortlist_button_is_now_a_catch_up(self):
+        """Le bouton reste utile : il repose une retenue libérée entre-temps."""
+        from odoo.exceptions import UserError
+
+        self.poll.slot_source = "open"
+        self.poll.hold_mode = "blocking"
+        self.poll.state = "open"
+        quand = self.poll._slot_pool(self.optional_participant)[0]
+        creneau = self.poll._add_slot_from_pool(self.optional_participant, quand)
+        creneau._release_hold()
+        self.assertFalse(creneau.hold_event_id)
         with self.assertRaises(UserError):
-            self.poll.action_hold_shortlist()  # rien de retenu encore
-        self.poll.slot_ids[0].is_shortlisted = True
+            self.poll.action_hold_shortlist()  # rien de présélectionné
+        creneau.is_shortlisted = True
         self.poll.action_hold_shortlist()
-        self.assertTrue(self.poll.slot_ids[0].hold_event_id)
-        self.assertFalse(self.poll.slot_ids[1].hold_event_id)
+        self.assertTrue(creneau.hold_event_id)
+
+    def test_the_overlap_still_forms_under_blocking_holds(self):
+        """🔴 La crainte qui justifiait l'ancien comportement ne tient pas.
+
+        On lisait : « bloquer viderait le bassin au fur et à mesure, et aucun
+        recoupement ne pourrait se former ». Le recoupement ne se forme pas
+        dans le bassin, il se forme dans la GRILLE — et une plage déjà
+        proposée sort du bassin de toute façon (`_slot_pool` écarte les plages
+        existantes), retenue ou pas.
+        """
+        self.poll.slot_source = "open"
+        self.poll.hold_mode = "blocking"
+        self.poll.state = "open"
+        quand = self.poll._slot_pool(self.optional_participant)[0]
+        creneau = self.poll._add_slot_from_pool(self.optional_participant, quand)
+        self.assertTrue(creneau.hold_event_id)
+        self.assertNotIn(quand, self.poll._slot_pool(self.required_participant),
+                         "une plage déjà proposée ne repasse pas par le bassin")
+        self.assertIn(creneau, self.poll.slot_ids)
+        self.env["appointment.poll.vote"].create({
+            "participant_id": self.required_participant.id,
+            "slot_id": creneau.id, "answer": "yes"})
+        creneau.invalidate_recordset(["yes_count"])
+        self.assertEqual(creneau.yes_count, 2, "la grille, elle, reste votable")
 
     def test_blocking_hold_actually_closes_the_slot(self):
         """🔴 « Réserver réellement » doit réellement fermer la plage.

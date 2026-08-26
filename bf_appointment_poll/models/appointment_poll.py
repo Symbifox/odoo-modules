@@ -162,9 +162,12 @@ class AppointmentPoll(models.Model):
              "« Réserver réellement » ferme les plages à toute autre "
              "réservation le temps du sondage. À garder pour les rencontres "
              "qu'on ne peut pas se permettre de perdre.\n\n"
-             "⚠️ En mode « chacun propose », la retenue ne porte que sur les "
-             "plages que vous retenez : bloquer tout le bassin le viderait au "
-             "fur et à mesure, et aucun recoupement ne pourrait se former.",
+             "La retenue se pose plage par plage, à mesure que quelqu'un la "
+             "choisit, et se libère dès qu'une personne obligatoire y répond "
+             "Non. En mode « réserver réellement », comptez donc que chaque "
+             "plage choisie sort de votre page publique de rendez-vous le "
+             "temps du sondage : c'est le plafond de plages qui borne "
+             "l'effet.",
     )
 
     date_opened = fields.Datetime(
@@ -299,10 +302,10 @@ class AppointmentPoll(models.Model):
                 raise UserError(_("L'invité qui amorce doit appartenir à ce sondage."))
             poll.state = "open"
             poll.date_opened = fields.Datetime.now()
-            # La retenue ne se pose ici que si la grille est déjà connue. En
-            # « chacun propose », elle attend la présélection : voir
-            # `action_hold_shortlist`.
-            if poll.hold_mode != "none" and poll.slot_source != "open":
+            # Tient la grille déjà connue. En « chacun propose », elle est
+            # normalement vide à l'ouverture et chaque plage prendra sa
+            # retenue au moment où quelqu'un la choisit.
+            if poll.hold_mode != "none":
                 poll.slot_ids._create_hold()
             poll.participant_ids._send_invitation()
         return True
@@ -573,9 +576,13 @@ class AppointmentPoll(models.Model):
         self._register_yes(participant, creneau)
         if self.slot_source == "seeder" and not self.seeded_by_id:
             self.seeded_by_id = participant
-        # La retenue suit tout de suite en mode « un invité amorce » : la
-        # grille y est définitive dès qu'elle est posée.
-        if self.hold_mode != "none" and self.slot_source == "seeder":
+        # 🔴 La retenue suit la proposition dans les DEUX modes où la plage
+        # naît d'un participant. En « chacun propose », elle n'était posée
+        # nulle part avant la présélection : « réserver réellement » ne
+        # réservait donc rien. Le recoupement ne s'en trouve pas empêché — il
+        # se forme dans la GRILLE, que tout le monde continue de voter, et non
+        # dans le bassin, d'où une plage retenue sort de toute façon.
+        if self.hold_mode != "none" and self.slot_source in ("seeder", "open"):
             creneau._create_hold()
         return creneau
 

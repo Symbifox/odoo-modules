@@ -17,9 +17,13 @@ click.
 - **Required vs optional participants.** A slot stops being viable as soon as a
   required participant answers No, and its calendar hold is released
   immediately.
-- **Holds that do not block the agenda.** When enabled, each candidate slot
-  places an event marked `show_as='free'`: the organizer sees the poll in
-  progress, while public bookings keep flowing over those hours.
+- **Holds that do not block the agenda**, unless you ask for it. When enabled,
+  each candidate slot places an event marked `show_as='free'`: the organizer
+  sees the poll in progress, while public bookings keep flowing over those
+  hours. The `blocking` level really does close the slot, and is never the
+  default. A hold is placed slot by slot, as each one is picked; in `blocking`
+  mode, expect every picked slot to leave your public booking page for the
+  duration of the poll, bounded by the per-poll slot ceiling.
 - **A public voting page** built for a phone, rendered in the respondent's own
   time zone, one tap per slot.
 - **Invitation and reminder emails** under the tenant's brand.
@@ -62,6 +66,26 @@ here, and two tests lock that down — one on each side. A relational field
 pointing at a satellite model would make the satellite a *hard* dependency,
 resolved at registry load, and the defect would only ever show up on a fresh
 install.
+
+## Fixed in 18.0.1.2.3
+
+- The public page mixes a **dark page body** (white text) with **white cards**.
+  Neither card declared its own text colour, so everything inside them was
+  rendered white on white: the pool hours and the three vote choices were
+  invisible. The colour is now declared on the surfaces.
+- The organizer's name was painted in `var(--bf-appt-dark)` *inside* the header
+  block, whose background is that very variable — a 1:1 contrast. It now
+  inherits the header's white.
+- `bf-btn-accent` sets the text colour and not the background (the parent's own
+  templates apply it inline). The submit button was therefore white on the
+  white card, and the propose form could not be submitted by sight.
+- **"Really reserve the slots" reserved nothing** in *everyone proposes* mode:
+  the hold waited for a manual shortlist. It now follows each pick.
+- Slots picked beyond `max_picks_per_participant` were **discarded in silence**
+  and followed by a green "Your slots are added". What is refused is now
+  counted per reason and said. ⚠️ `request.params.get()` returns the *string*
+  `"0"`, which is truthy — the success banner used to fire even when nothing
+  had been added.
 
 ## Licence
 

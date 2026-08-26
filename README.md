@@ -68,7 +68,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `audit_ti` | Audit TI - Loi 25 | 18.0.1.17.1 | BUSL-1.1 | IT security audit management for Quebec's Loi 25 compliance |
 | `bf_activity_calendar_link` | BF Activités - Lien Calendrier | 18.0.1.1.0 | LGPL-3 | Lier des événements calendrier existants aux activités |
 | `bf_appointment` | Symbifox Appointment | 18.0.2.51.2 | BUSL-1.1 | Self-service public booking pages (extends `resource_booking`) |
-| `bf_appointment_poll` | Symbifox Appointment Polls | 18.0.1.2.2 | BUSL-1.1 | Availability polling: propose slots, collect answers, book the meeting |
+| `bf_appointment_poll` | Symbifox Appointment Polls | 18.0.1.2.3 | BUSL-1.1 | Availability polling: propose slots, collect answers, book the meeting |
 | `bf_apps_menu` | Menu des applications cherchable | 18.0.1.0.0 | LGPL-3 | Le menu des applications devient une grille d'icônes cherchable au clavier |
 | `bf_bloc_notes` | BF Bloc-notes | 18.0.2.9.0 | LGPL-3 | Rich quick notes with multi-record links, one-click activity conversion, keyboard shortcuts, and systray icon (Alt+N) |
 | `bf_bureau` | BF Bureau — vues multi-panneaux | 18.0.3.2.0 | LGPL-3 | User-configurable dashboards ("desks") with multi-pane Odoo actions, six layouts, keyboard shortcuts, time slots, and a sidebar |
@@ -164,7 +164,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `calendar_nextcloud_sync` | Calendar Nextcloud Sync | 18.0.2.12.0 | LGPL-3 | Bidirectional calendar synchronization between Odoo and Nextcloud over CalDAV, and Google Calendar (API v3/OAuth2) |
 | `contacts_nextcloud_sync` | Contacts Nextcloud Sync | 18.0.1.2.0 | LGPL-3 | Sync Odoo contacts with a Nextcloud address book via CardDAV |
 | `daily_todo_digest` | Daily To-Do Digest | 18.0.2.1.0 | LGPL-3 | Daily email digest with activities, overdue tasks, and a week-ahead view |
-| `hosting_management` | Gestion d'hébergement | 18.0.2.50.1 | BUSL-1.1 | Manage hosting services, client computer parks (endpoints, BitLocker, Action1 sync) and software license pools |
+| `hosting_management` | Gestion d'hébergement | 18.0.2.51.0 | BUSL-1.1 | Manage hosting services, client computer parks (endpoints, BitLocker, Action1 sync) and software license pools |
 | `privacy_consent` | Suivi des consentements (Loi 25) | 18.0.4.3.2 | BUSL-1.1 | Privacy suite: consents with purposes, SHA-256 versioned notices, minors and legal guardians, forensic evidence capture, renewal chains; self-service portal plus no-login token pages to view, grant, refuse, withdraw and renew; contact preference centre with `mail.blacklist` sync; retention calendar and document classification; destruction requests, bulk campaigns, anonymisation assessments and a hash-chained immutable destruction register with integrity cron; consent and destruction certificates (PDF); 20-KPI dashboard with drill-downs; configurable email sequences and 8 crons; DocuSeal and LibreSign e-signature integrations with webhooks; ships 18 purposes and 19 bilingual notices; framework engine with Loi 25 built in (GDPR, UK GDPR, PIPEDA, NZ via companion modules) |
 | `privacy_framework_gdpr` | Cadre de confidentialité — GDPR (UE) | 18.0.1.0.1 | BUSL-1.1 | GDPR (EU) regulatory-framework pack for the Privacy module |
 | `privacy_framework_nz` | Cadre de confidentialité — Privacy Act 2020 (Nouvelle-Zélande) | 18.0.1.0.1 | BUSL-1.1 | New Zealand Privacy Act 2020 regulatory-framework pack for the Privacy module |

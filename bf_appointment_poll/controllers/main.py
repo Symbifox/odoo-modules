@@ -92,11 +92,28 @@ class AppointmentPollController(Controller):
             return request.redirect("/appointment")
         poll = participant.poll_id
         peut_proposer = poll._participant_can_add_slots(participant)
+
+        def _compte(nom):
+            """Compteur de retour, lu ICI plutôt que dans le gabarit.
+
+            ⚠️ `request.params.get('propose')` rend la CHAÎNE « 0 », qui est
+            vraie : un `t-if` dessus affichait « Vos plages sont ajoutées »
+            alors que rien n'avait été ajouté. On rend donc des entiers.
+            """
+            try:
+                return int(kwargs.get(nom) or 0)
+            except (TypeError, ValueError):
+                return 0
+
         response = request.render(
             "bf_appointment_poll.poll_vote_page",
             {
                 "participant": participant,
                 "poll": poll,
+                "poses": _compte("propose"),
+                "refuses_plafond": _compte("plafond"),
+                "refuses_perimes": _compte("perimees"),
+                "envoi_perime": bool(kwargs.get("perime")),
                 "slots": poll.slot_ids,
                 "peut_proposer": peut_proposer,
                 "attend_amorce": poll._waiting_for_seeder() and not peut_proposer,
@@ -182,10 +199,14 @@ class AppointmentPollController(Controller):
         if not bf_rate_limit("poll_propose", _PROPOSE_MAX, _PROPOSE_WINDOW, key=token):
             return request.redirect(f"/appointment/poll/{token}")
         poll = participant.poll_id
+        # ⚠️ Ce refus-ci était MUET : la personne revenait sur sa page sans
+        # savoir que son envoi avait été jeté. Le cas arrive avec un onglet
+        # resté ouvert. On ne nomme pas le motif : cette garde en couvre
+        # plusieurs, et en désigner un seul serait faux.
         if not poll._participant_can_add_slots(participant):
-            return request.redirect(f"/appointment/poll/{token}")
+            return request.redirect(f"/appointment/poll/{token}?perime=1")
         choisis = request.httprequest.form.getlist("pool")
-        poses = 0
+        poses = plafond = perimees = 0
         for brut in choisis:
             try:
                 quand = fields.Datetime.from_string(brut)
@@ -200,6 +221,19 @@ class AppointmentPollController(Controller):
             # quand la personne a épuisé son quota de propositions.
             if poll.sudo()._add_slot_from_pool(participant, quand):
                 poses += 1
+            # 🔴 Ce qui est refusé se COMPTE, et se compte par motif. Avant, la
+            # boucle ne retenait que les réussites et la page annonçait ensuite
+            # un franc succès : quelqu'un qui cochait huit plages pour un
+            # plafond de trois repartait en croyant en avoir donné huit. Le
+            # classement se fait APRÈS l'appel, jamais avant : une garde posée
+            # en amont couperait aussi le cas « rejoindre », qui ne consomme
+            # pas de quota.
+            elif not poll.sudo()._participant_can_add_slots(participant):
+                plafond += 1
+            else:
+                perimees += 1
         if poses:
             participant.sudo()._record_response()
-        return request.redirect(f"/appointment/poll/{token}?propose={poses}")
+        return request.redirect(
+            f"/appointment/poll/{token}"
+            f"?propose={poses}&plafond={plafond}&perimees={perimees}")

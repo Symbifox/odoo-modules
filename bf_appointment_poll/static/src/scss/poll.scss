@@ -9,9 +9,13 @@
     max-width: 720px;
     margin: 0 auto;
 
+    // 🔴 Ce nom vit DANS `.bf-section-header`, dont le fond est justement
+    // `var(--bf-appt-dark)`. Le peindre de cette même variable l'écrivait
+    // exactement dans la couleur de son fond : contraste 1:1, le participant
+    // ne voyait pas qui lui demandait ses disponibilités.
     .bf-poll-organizer {
         font-weight: 600;
-        color: var(--bf-appt-dark, #212529);
+        color: inherit;
     }
 
     .bf-poll-meta {
@@ -20,12 +24,17 @@
         gap: .5rem;
     }
 
+    // ⚠️ Le corps du site public est SOMBRE et son texte est blanc. Une carte
+    // blanche qui ne déclare pas sa propre couleur hérite donc du blanc, et
+    // tout ce qu'elle contient disparaît : les trois choix de vote étaient
+    // invisibles. La couleur se pose sur la SURFACE, pas sur chaque enfant.
     .bf-poll-slot {
         border: 1px solid #e5e7eb;
         border-radius: 10px;
         padding: 1rem;
         margin-bottom: .75rem;
         background: #fff;
+        color: var(--bf-appt-dark, #212529);
     }
 
     .bf-poll-slot-when {
@@ -108,9 +117,14 @@
         margin: .25rem 0 1rem 0;
     }
 
+    // 🔴 `bf-btn-accent` pose la couleur du TEXTE (blanc) et pas le fond : les
+    // gabarits du module parent l'appliquent en style inline. Le sondage ne le
+    // faisait pas, donc « Ajouter ces moments » était blanc sur la carte
+    // BLANCHE, invisible, et le formulaire inutilisable.
     .bf-poll-submit {
         width: 100%;
         min-height: 48px;
+        background-color: var(--bf-appt-primary, #714B67);
     }
 }
 
@@ -134,6 +148,8 @@
 // Regroupé par journée : soixante heures d'affilée en colonne, c'est le
 // premier endroit où un sondage perd ses répondants.
 .bf-poll {
+    // Même règle que `.bf-poll-slot` : surface blanche, donc couleur déclarée.
+    // Sans elle, les HEURES du bassin étaient invisibles.
     .bf-poll-propose {
         border: 1px solid #e5e7eb;
         border-left: 3px solid var(--bf-appt-primary, #714B67);
@@ -141,6 +157,7 @@
         padding: 1rem 1.15rem;
         margin-bottom: 1.5rem;
         background: #fff;
+        color: var(--bf-appt-dark, #212529);
 
         h3 {
             font-size: 1.05rem;

@@ -26,9 +26,31 @@
                               else 'Merci, vos réponses sont enregistrées. Vous pouvez les modifier tant que le sondage est ouvert.'"/>
                 </div>
 
-                <div t-if="request.params.get('propose')" class="alert alert-success">
+                <div t-if="poses and not (refuses_plafond or refuses_perimes)"
+                     class="alert alert-success">
                     <t t-out="'Your slots are added. Others can now answer them.' if _en
                               else 'Vos plages sont ajoutées. Les autres peuvent maintenant y répondre.'"/>
+                </div>
+
+                <div t-if="refuses_plafond" class="alert alert-warning">
+                    <t t-if="poses">
+                        <strong t-out="poses"/>
+                        <t t-out="' added. ' if _en else ' ajoutée(s). '"/>
+                    </t>
+                    <strong t-out="refuses_plafond"/>
+                    <t t-out="' were not kept: you have reached the number of slots you may propose. You can still answer the ones other people propose.' if _en
+                              else ' n\'ont pas été retenue(s) : vous avez atteint le nombre de plages que vous pouvez proposer. Vous pouvez toujours répondre à celles que les autres proposent.'"/>
+                </div>
+
+                <div t-if="refuses_perimes" class="alert alert-warning">
+                    <strong t-out="refuses_perimes"/>
+                    <t t-out="' were no longer free when you sent them. The list below is up to date.' if _en
+                              else ' n\'étaient plus libres au moment de l\'envoi. La liste ci-dessous est à jour.'"/>
+                </div>
+
+                <div t-if="envoi_perime" class="alert alert-warning">
+                    <t t-out="'Your choices were not saved: this page was out of date. What follows is the current state.' if _en
+                              else 'Vos choix n\'ont pas été enregistrés : cette page n\'était plus à jour. Ce qui suit est l\'état actuel.'"/>
                 </div>
 
                 <div t-if="attend_amorce" class="alert alert-secondary">
