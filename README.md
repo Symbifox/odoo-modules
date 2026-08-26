@@ -7,21 +7,23 @@ Custom Odoo 18 Community Edition modules developed by [Les services de consultat
 Every module in this repository ships its full source. What differs is what you
 may do with it, and there are three regimes.
 
-**38 modules are LGPL-3.** Use them, modify them, redistribute them, build a
+**37 modules are LGPL-3.** Use them, modify them, redistribute them, build a
 product on them. Nothing is asked in return. These are the single-purpose
 modules — the UI fixes, the shared helpers, the Nextcloud integrations, the
 productivity pack. They are free because they are more useful to us being
 widely used than being held.
 
-**66 modules are BUSL-1.1.** The source is published and auditable, and **you
+**67 modules are BUSL-1.1.** The source is published and auditable, and **you
 may run them in production for your own internal business operations** — as a
 company, as a freelancer, as one person on a laptop. What needs an agreement is
 using them to provide a product or service to someone else: hosting them for a
 client, reselling them, running them as a managed service. Each version converts
 to **LGPL-3.0-or-later four years after its release**, after which every
-restriction falls away. The modules flipped in this release convert on
-**2030-08-12**; the ones that were already BUSL keep their own earlier date. The
-`LICENSE` file inside each module states its exact parameters.
+restriction falls away. Each cohort therefore carries its own date: most of the
+modules flipped in August 2026 convert on **2030-08-12**, the ones that were
+already BUSL keep their earlier date, and anything flipped since converts four
+years from its own release. The `LICENSE` file inside each module states its
+exact parameters, and it governs.
 
 **5 modules are AGPL-3**, and not by choice: the fundraising and donation-receipt
 modules extend Odoo Community Association code that is itself AGPL-3, so they
@@ -145,7 +147,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_sign_sale` | Symbifox — Signature pour les ventes | 18.0.1.0.1 | BUSL-1.1 | Send a quotation / sales order for electronic signature (bf_sign). |
 | `bf_sms_archive` | SMS & Calls | 18.0.5.10.0 | BUSL-1.1 | Two-way live SMS/MMS messaging via VOIP.ms (chat workspace + systray) plus Android SMS/call-log archiving, search, PDF/CSV export and task linking |
 | `bf_stepbystep_clients` | Step-by-Step — Suivi d'accompagnement client | 18.0.2.0.1 | BUSL-1.1 | Internal dashboard tracking each client mandate's linear step-by-step progression: current step, hours budget, timeline. |
-| `bf_studio_light` | Symbifox — Studio Light | 18.0.6.1.0 | LGPL-3 | Field builder for Odoo Community: add custom fields (incl. polymorphic reference with model whitelist), smart buttons (count via JSON controller, no compute Python), and inject them in views without writing a module — survives `-u all` upgrades |
+| `bf_studio_light` | Symbifox — Studio Light | 18.0.7.0.0 | BUSL-1.1 | Field builder for Odoo Community: add custom fields (incl. polymorphic reference with model whitelist), smart buttons (count via JSON controller, no compute Python), and inject them in views without writing a module — survives `-u all` upgrades |
 | `bf_subscription` | Abonnements | 18.0.1.4.0 | BUSL-1.1 | Paid subscription management with correlation to vendor bills |
 | `bf_subscription_daily_digest` | Abonnements — section du digest quotidien | 18.0.1.0.0 | BUSL-1.1 | Adds an 'Upcoming renewals' section to the daily digest |
 | `bf_subscription_dashboard` | Abonnements — carte du tableau de bord | 18.0.1.0.0 | BUSL-1.1 | Ajoute une carte Abonnements au tableau de bord Symbifox |
