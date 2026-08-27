@@ -4,6 +4,293 @@ All notable changes to `bf_email_management` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This module follows Odoo's `MAJOR.MINOR.PATCH` convention prefixed with the Odoo series (`18.0.X.Y.Z`).
 
+## [18.0.11.3.0] — 2026-08-26
+
+What a folder renamed or deleted on the server does to the emails held here.
+Short answer: **nothing to the content**, everything to the pointer.
+`imap_folder` is written on ingestion, on archive and on restore, and is
+**never** reconciled against what the server actually holds.
+
+### Fixed
+
+- 🔴 **A restore that could not happen left the mail in no list at all.** With
+  the source folder renamed or emptied in the webmail,
+  `_imap_writeback_restore` found nothing to bring back, logged an `INFO` and
+  returned. The row left *Handled* (`is_handled` went false) but did not enter
+  the inbox, whose filter requires `imap_in_inbox` for an IMAP-born row. It
+  landed in *To reply* and *Unfiled* only. Nothing on screen.
+
+  `_imap_forget_location()` now says plainly what is known: `imap_uid` and
+  `imap_folder` cleared — the server copy's whereabouts are unknown — and
+  `imap_in_inbox` left false, because claiming otherwise would be the same
+  database lie the 11.1 guard exists to catch. ⚠️ A refused `COPY` while the
+  message **is** where the row says clears nothing: the pointer is still right.
+
+- 🔴 **Rows of a vanished folder had no node in the folder rail.** The rail knew
+  only what the server lists. After a rename the new folder showed at zero and
+  the rows citing the old one appeared under no node — not lost (*All emails*,
+  the category folders and search still hold them), but invisible on that axis
+  and without a word. The rail is now built from the **union** of the server's
+  folders and the folder names the rows still cite; the latter carry a
+  broken-chain icon and an "absent from the server" tooltip.
+
+### Changed
+
+- **"Inbox" finally has one definition.** It lived in **six** copies — the
+  folder rail, the mobile SQL filter, the dashboard action, the list-view search
+  filter, the window action domain, and the systray badge (in JavaScript, in
+  `bf_email_systray`) — each carrying a comment asking the other five to stay in
+  step. `bf.email._inbox_domain()` is now the source; the Python copies derive
+  from it, and the two that cannot are pinned by tests — the mobile SQL is
+  compared to the domain **over the same rows** (never over its text), and the
+  badge's JavaScript is read off disk and checked leaf by leaf.
+
+  Third leaf added: `imap_folder = False`, the unknown server location. Counted
+  before release — zero rows affected, so no first-day influx; the leaf serves
+  only rows a failed restore will mark from now on.
+
+### Notes
+
+- Archiving toward a **deleted** archive folder recreates it (`ensure_folder`).
+  Deleting the archive folder in the webmail does not stop the write-back.
+- `_cron_imap_mirror` only walks rows with `imap_folder ilike 'INBOX'`, so a row
+  pointing at a renamed folder is outside its reach by construction.
+
+## [18.0.11.2.1] — 2026-08-26
+
+### Security
+
+- 🔴 **`store_imap_folders` was an RPC door onto another user's account.**
+  Introduced in 11.1.0 so the mirror cron could store the folder-tree cache, it
+  was **public** — therefore callable through `call_kw` from any internal user's
+  browser console, on any account id. `ensure_one()` checks no right, no field
+  was read before, and the `sudo().write()` walked past the record rule: one
+  could write into a colleague's cache and poison the folder tree shown in their
+  mailbox.
+
+  Real reach: nuisance, not disclosure. It is a **write**, never a read; labels
+  render through `t-esc`, so no injection; and nothing in that cache touches how
+  mail is filed. But it was a gratuitous `sudo` on a record the caller cannot
+  read.
+
+  Two locks rather than one: the method becomes `_store_imap_folders`
+  (`call_kw` refuses any leading-underscore name) **and** takes an explicit
+  `check_access("write")` before the `sudo` — the underscore closes the network
+  door, not the method. `get_imap_folders` becomes `_get_imap_folders` for the
+  same reason; no client called it.
+
+### Added
+
+- **"Refresh folders"** button on the IMAP account form, beside "Test
+  connection". `action_refresh_folders` had existed since 11.1.0 with no way to
+  reach it from the interface.
+
+- **19 isolation tests** (`tests/test_isolation_boites.py`) writing the contract
+  down: an email is visible to its owner only; the "Email administrator — all
+  emails" box opens **reading and nothing else** (no write, no delete); the IMAP
+  account, which carries the password, stays shut even to that administrator;
+  an administrator's folder rail and badge count only **their own** mail, not
+  everything the rule lets them read; and a hand-forged folder key reopens none
+  of these doors.
+
+## [18.0.11.2.0] — 2026-08-26
+
+### Fixed
+
+- 🔴 **Two mailboxes, one person: the repair knocked at the wrong door.**
+  `_cron_imap_writeback_sweep` resolves rows by `user_id`. One person can own
+  two `bf.email.account` rows pointing at two different mailboxes, and an
+  address delivered to both leaves **two physical copies** while a single
+  `bf.email` row accounts for one of them. The sweep therefore saw, in account
+  A's INBOX, a copy whose row follows account B — then handed the repair to
+  `_imap_writeback_move`, which reconnects to the *row's* mailbox, finds nothing
+  there, and returns. The message stayed in A's INBOX **for ever**, replayed
+  hourly with no effect and no log line.
+
+  `_imap_writeback_move(folder_template, account=…)` now acts in the mailbox
+  **where the copy was observed**, with that mailbox's archive folder. ⚠️ The
+  row is **not** rewritten in that case: its `imap_uid` and `imap_folder`
+  describe its own copy, in its own mailbox, and overwriting them with a UID
+  from elsewhere would mint exactly the stale UID the 11.1.0 guard catches.
+
+## [18.0.11.1.0] — 2026-08-26
+
+### Added
+
+- **Shift-click range selection.** Tick one box, hold Shift, tick another:
+  everything between them is selected, in the inbox and in the IMAP browser
+  alike. The range walks the **displayed** order, so a live search filters it
+  like everything else, and a second Shift-click extends the range instead of
+  restarting from the first box.
+
+- **The server's real IMAP folders under the inbox.** A collapsible "IMAP
+  folders" group, second in the rail, mirroring the tree the mail server
+  actually reports, subfolders included. What it lists is still `bf.email` rows:
+  opening *Archives/2026* shows the mails filed there with their full toolbar
+  and their link to the record they belong to. Reading the folder live off IMAP
+  would produce messages with no row, hence nothing to file them to — that is
+  what the separate IMAP browser is for, and it is still there.
+
+  The tree is cached on `bf.email.account` (`folder_cache`,
+  `folder_cache_date`, TTL `bf_email.folder_cache_minutes`, default 60 min) and
+  never opens a connection on render. Counts come from two `_read_group` calls
+  rather than one `search_count` per folder: `imap_folder` is not indexed and
+  the rail reloads on every action.
+
+- **Administrator switch.** Settings → Email management → Inbox. Unticking
+  removes the group base-wide, for an organisation that judges server-folder
+  browsing a distraction from filing mail onto records. The block also carries
+  the cache freshness and a button to read the folders right now.
+
+- **Collapsible action ribbon.** A chevron in the preview header shrinks the
+  button row to a single line of icons. The header itself — subject, From, To,
+  date, record, attachments — never collapses: that is the message's context,
+  not an option. No action disappears; tooltips and keyboard shortcuts carry the
+  meaning. Kept with the other display preferences, shared by both screens.
+
+### Fixed
+
+- 🔴 **"Handled here, still in the INBOX."** `_imap_writeback_archive` trusted
+  the row's `imap_uid` without ever verifying it. A UID only means something
+  **inside its own mailbox**: `UID COPY` aimed at an absent UID answers **`OK`**
+  while copying nothing (RFC 3501 — UID commands silently ignore unknown UIDs),
+  the `STORE \Deleted` that follows marks nothing, and the row records an
+  archive that never happened. The COPY-status guard added in 6.7.0 cannot catch
+  it, because the server genuinely answers `OK`.
+
+  The fast path now verifies the UID (`UID FETCH … BODY.PEEK[HEADER.FIELDS
+  (MESSAGE-ID)]`) before using it, and falls back to the header search when it
+  does not match, leaving an `INFO` line behind — there was no signal at all
+  before.
+
+- 🔴 **The source of those stale UIDs, dried up.** `_imap_writeback_restore`
+  kept the archive folder's UID when it could not locate the message back in
+  INBOX, while writing `imap_folder = INBOX`. The row then carried an archive
+  UID presented as an INBOX UID, and the next "Handled" fell straight into the
+  trap above. The field is cleared instead.
+
+### Implementation notes
+
+- `preventDefault()` on the checkbox click is not cosmetic. The browser flips
+  the box **before** OWL repaints; when the computed state happens to match the
+  previous one (re-ticking an already-ticked box caught in a range), the
+  attribute does not change, OWL skips that node, and the box renders unticked
+  while still counting as selected. State is now the checkbox's only source of
+  truth.
+
+- ⚠️ The administrator switch does **not** use `config_parameter` on the
+  boolean. `res.config.settings.set_values` calls `set_param(key, False)` when
+  the box is unticked, and `ir.config_parameter.set_param` **deletes** the row
+  on a falsy value; the absent parameter would fall back to the code default
+  ("1") and the box would come back ticked on every save. `get_values` /
+  `set_values` are overridden to write "0" explicitly.
+
+- `bf_email_imap.list_folders` replaces the `LIST`-response parsing done in two
+  places with `rsplit(None, 1)`, which cut at the first space: a folder named
+  "Former clients" lost half its name.
+
+- The folder cache is kept warm by `_cron_imap_mirror`, which already runs every
+  five minutes with the connection open, so the rail never opens an IMAP session
+  of its own. The lazy path — first render after install — uses an 8-second
+  timeout rather than the default 30.
+
+## [18.0.11.0.0] — 2026-08-25
+
+### Added
+
+- **Writing under another of your own addresses.** A person had a single
+  `res.users.email` and a single `res.users.signature`: everything they sent
+  left under the one identity their Odoo account knows. An invoice prepared for
+  one company went out signed by the other.
+
+  The new `bf.email.identity` model carries one row per address a person may
+  legitimately hold, with its own signature and, where needed, its own outgoing
+  server. The composer gains a "Send as" field, which appears only from two
+  verified identities on — with one, there is nothing to choose.
+
+  The `From` changes; the **author does not**. `_message_compute_author` returns
+  `author_id` and `email_from` untouched as soon as both are supplied, which
+  lets the visible address move without touching internal traceability.
+
+- **An identity must be verified to serve.** Otherwise any internal user would
+  write in anyone's name, in a message the recipient would read as authentic.
+  Identities inferred from demonstrated possession — the user record's address,
+  an IMAP account's login — are born verified; typed ones wait for an email
+  administrator. Double guard: a Python constraint refuses self-verification,
+  and sending refuses an unverified, archived or foreign identity. The guard is
+  **before** the send: past it the `mail.mail` exists and a rollback does not
+  recall an email.
+
+- **The signature follows the identity**, and changing identity mid-draft
+  replaces the block — but **only** while the body still carries the one the
+  composer put there. Once the person has touched it, nothing is rewritten.
+
+- **Reply from the mailbox that received.** A reply proposes the identity of the
+  IMAP account the message arrived through, as the absence responder already did.
+
+- **`delivery_warning` names what is missing.** Declaring an identity creates
+  neither the outgoing server nor the DNS records. The field names both possible
+  failures: the one where Odoo would replace the `From`, and the more frequent
+  one where it lets it through on a server the domain does not authorise, SPF
+  and DKIM then failing at the recipient.
+
+### Implementation notes
+
+- ⚠️ **The hook cannot be `_prepare_mail_values_static`.** `_prepare_mail_values`
+  builds `dict(base_values, **additional)`, and in comment mode `additional`
+  comes from `_prepare_mail_values_rendered`, which sets its own `email_from`.
+  An `email_from` placed on the static side is therefore **overwritten without a
+  word**. The override sits on `_prepare_mail_values`, after the merge.
+
+## [18.0.10.2.0] — 2026-08-25
+
+### Fixed
+
+- 🔴 **A `mail.mail` created directly leaves `mail.message.body` empty.** The
+  text lived only on `body_html`, which is transient: the record went mute with
+  no error at all. Messages posted through that path carried a body on the way
+  out and nothing in the chatter afterwards.
+
+### Migration
+
+- Existing rows are repaired where the outgoing copy still holds the text.
+
+## [18.0.10.1.0] — 2026-08-23
+
+### Added
+
+- **An Outlook-shaped rule engine.** `bf.email.rule` grows AND/OR condition
+  groups with exceptions over 21 attributes, "move to folder", "mark unread",
+  internal and external forwarding with a log, organisation-wide rules, and a
+  gallery of twelve recipes.
+
+- **Destination folders are created.** `set_folder` names an IMAP folder in a
+  text field, and nothing guarantees it exists. A refused `COPY` was correctly
+  guarded — the message is never destroyed — but the row was already marked
+  handled, so Odoo announced a filing that had not happened. The folder is now
+  created and **subscribed** (most servers hide an unsubscribed folder from most
+  clients) and the `COPY` retried once.
+
+- **"Apply this rule now"**, the "Apply my rules" mass action, an action summary
+  in the list, an alert for a rule that matches nothing, and a checkbox in the
+  recipe picker.
+
+### Fixed
+
+- The `noreply` pattern matched nothing at all.
+- The recovery sweep contradicted the rule that filed a message in the first
+  place: it now honours `set_folder` instead of defaulting every stray to the
+  archive.
+
+## [18.0.9.11.0] — 2026-08-23
+
+### Added
+
+- **A log of automatic sends** (`bf.email.auto.log`), so a forward or an absence
+  reply leaves a trace that can be read after the fact, with a pruning cron.
+- **Absence replies** (`bf.email.absence`): answer once, per correspondent, over
+  a period, with conditions of their own.
+
 ## [18.0.9.10.0] — 2026-08-22
 
 ### Added

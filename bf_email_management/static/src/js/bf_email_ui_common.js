@@ -43,6 +43,10 @@ export const DEFAULT_SETTINGS = {
         category: false, preview: false, state: true,
     },
     columnsBrowser: { date: true, sender: true, state: true },
+    // Ruban d'actions de l'aperçu replié en une ligne d'icônes. L'en-tête
+    // (objet, De, À, date, dossier, pièces jointes) reste visible dans les
+    // deux états : c'est le contexte, pas une option.
+    ribbonCollapsed: false,
 };
 
 // Clés dont la valeur par défaut est un objet : elles se fusionnent en
@@ -177,6 +181,45 @@ export function buildPreviewSrcdoc(bodyHtml) {
  * Aplatit une liste parent/enfant en respectant les nœuds repliés.
  * ``items`` porte ``key`` et ``parent`` (clé du parent, ou faux).
  */
+/**
+ * Sélection d'une plage au shift+clic, comme un gestionnaire de fichiers.
+ *
+ * ``selectedMap`` est l'objet réactif { id: true } des deux écrans ; ``ids``
+ * l'ordre RÉELLEMENT affiché (donc filtré par la recherche, pas la page
+ * brute). Retourne false si l'ancre ou la cible ne sont plus à l'écran —
+ * l'appelant retombe alors sur la bascule d'une seule case.
+ */
+export function selectRange(selectedMap, ids, anchorId, targetId) {
+    const from = ids.indexOf(anchorId);
+    const to = ids.indexOf(targetId);
+    if (from === -1 || to === -1) {
+        return false;
+    }
+    const lo = Math.min(from, to);
+    const hi = Math.max(from, to);
+    for (let i = lo; i <= hi; i++) {
+        selectedMap[ids[i]] = true;
+    }
+    clearNativeTextSelection();
+    return true;
+}
+
+/**
+ * Un shift+clic surligne au passage tout le texte parcouru depuis le clic
+ * précédent : la liste devient bleue et illisible. Le surlignage n'a aucun
+ * sens ici, on l'annule.
+ */
+export function clearNativeTextSelection() {
+    try {
+        const sel = window.getSelection();
+        if (sel && !sel.isCollapsed) {
+            sel.removeAllRanges();
+        }
+    } catch (e) {
+        // Rien à rattraper : l'API manque ou refuse, le surlignage reste.
+    }
+}
+
 export function flattenTree(items, expanded = {}) {
     const children = {};
     const roots = [];

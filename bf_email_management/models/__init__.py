@@ -1,6 +1,11 @@
 from . import bf_email_account
+# Identités d'expédition — _inherit bf.email.account, donc après lui.
+from . import bf_email_identity
 from . import bf_email
 from . import bf_email_dashboard
+from . import bf_email_rule_condition
+from . import bf_email_auto_log
+from . import bf_email_absence
 from . import bf_email_rule
 # Surface RPC de l'action cliente « Boîte de réception » — _inherit bf.email.
 from . import bf_email_inbox
@@ -24,3 +29,4 @@ from . import mail_scheduled_message
 from . import onboarding_onboarding
 from . import res_config_settings
 from . import res_partner
+from . import res_users

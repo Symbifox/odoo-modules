@@ -10,9 +10,11 @@ account owner's environment so that newly ingested ``bf.email`` rows
 inherit ``user_id`` from the account.
 """
 
+import json
 import logging
 import socket
 import ssl
+from datetime import timedelta
 
 from odoo import _, api, exceptions, fields, models
 
@@ -113,6 +115,24 @@ class BfEmailAccount(models.Model):
     last_sync_date = fields.Datetime(string="Dernière synchro", readonly=True)
 
     # ------------------------------------------------------------------
+    # Cache de l'arborescence IMAP ()
+    # ------------------------------------------------------------------
+    # L'arbre de gauche de la boîte de réception se recharge à chaque
+    # ouverture et après chaque action. Un `LIST` par affichage ferait payer
+    # un aller-retour IMAP à chaque clic — et rendrait l'écran tributaire de
+    # la disponibilité du serveur de courriel. La liste des dossiers change
+    # une fois par mois : on la garde ici.
+    folder_cache = fields.Text(
+        string="Dossiers IMAP (cache)",
+        readonly=True,
+        help="Dernière réponse LIST du serveur, en JSON. Rafraîchie à la "
+             "demande selon bf_email.folder_cache_minutes.",
+    )
+    folder_cache_date = fields.Datetime(
+        string="Dossiers relevés le", readonly=True,
+    )
+
+    # ------------------------------------------------------------------
     # Diagnostic
     # ------------------------------------------------------------------
     state = fields.Selection(
@@ -178,17 +198,9 @@ class BfEmailAccount(models.Model):
             status, count_data = conn.select("INBOX", readonly=True)
             inbox_count = int(count_data[0]) if status == "OK" and count_data else 0
 
-            list_status, folders_raw = conn.list()
-            folders = []
-            if list_status == "OK" and folders_raw:
-                for raw in folders_raw:
-                    if not raw:
-                        continue
-                    line = raw.decode("utf-8", errors="replace") if isinstance(raw, bytes) else raw
-                    tokens = line.rsplit(None, 1)
-                    name = tokens[-1].strip().strip('"') if tokens else line
-                    if name:
-                        folders.append(name)
+            # Même analyseur que le reste du module ; l'ancien coupait le nom
+            # au premier espace.
+            folders = [f["name"] for f in bf_email_imap.list_folders(conn)]
         finally:
             try:
                 conn.logout()
@@ -239,6 +251,129 @@ class BfEmailAccount(models.Model):
     # ------------------------------------------------------------------
     # Helpers
     # ------------------------------------------------------------------
+    def _get_imap_folders(self, force=False):
+        """Arborescence IMAP du compte : ``[{name, delimiter, noselect}]``.
+
+        ⚠️ Privée à dessein. Une méthode sans tiret bas est appelable par
+        ``call_kw`` depuis la console du navigateur de n'importe quel usager
+        interne, sur n'importe quel id : la lecture de champ ci-dessous
+        déclencherait bien la règle d'enregistrement, mais aucun client
+        n'appelle celle-ci — autant ne pas laisser la porte.
+
+        Sert le cache tant qu'il est plus jeune que
+        ``bf_email.folder_cache_minutes`` (60 par défaut, 0 = jamais de
+        cache). ``force=True`` relit le serveur quoi qu'il arrive.
+
+        Ne lève jamais : un serveur injoignable rend le dernier cache connu,
+        ou une liste vide. L'arbre des dossiers est un confort de navigation ;
+        il n'a pas à faire tomber la boîte de réception avec lui.
+        """
+        self.ensure_one()
+        ICP = self.env["ir.config_parameter"].sudo()
+        try:
+            ttl = int(ICP.get_param("bf_email.folder_cache_minutes", 60))
+        except (TypeError, ValueError):
+            ttl = 60
+
+        cached = []
+        if self.folder_cache:
+            try:
+                cached = json.loads(self.folder_cache) or []
+            except (TypeError, ValueError):
+                cached = []
+
+        fresh_enough = (
+            cached and self.folder_cache_date and ttl > 0
+            and (fields.Datetime.now() - self.folder_cache_date)
+            < timedelta(minutes=ttl)
+        )
+        if fresh_enough and not force:
+            return cached
+
+        if not (self.host and self.login and self.password):
+            return cached
+
+        try:
+            # Délai court : ce chemin est emprunté au rendu de la colonne de
+            # gauche. Les 30 s par défaut y feraient un écran figé une demi-
+            # minute le jour où le serveur de courriel tousse. En régime
+            # normal le cron miroir tient le cache au chaud (voir
+            # `_cron_imap_mirror`) et on ne passe jamais ici.
+            conn = bf_email_imap.open_connection(
+                self.host, self.port, self.login, self.password, timeout=8,
+            )
+        except Exception:
+            _logger.debug(
+                "bf.email.account %s : LIST impossible, cache conservé",
+                self.id, exc_info=True,
+            )
+            return cached
+        try:
+            folders = bf_email_imap.list_folders(conn)
+        except Exception:
+            _logger.debug(
+                "bf.email.account %s : LIST illisible", self.id, exc_info=True,
+            )
+            return cached
+        finally:
+            try:
+                conn.logout()
+            except Exception:
+                pass
+
+        if not folders:
+            # Un LIST vide est presque toujours un incident, pas une boîte
+            # sans dossier : ne pas écraser un cache utile avec ça.
+            return cached
+
+        self._store_imap_folders(folders)
+        return folders
+
+    def _store_imap_folders(self, folders):
+        """Poser l'arborescence relevée ailleurs (le cron miroir, p. ex.).
+
+        Un ``LIST`` vide est presque toujours un incident, pas une boîte sans
+        dossier : il ne doit pas écraser un cache utile.
+
+        🔴 Privée, et ce n'est pas cosmétique. Publique, elle offrait à tout
+        usager interne un ``call_kw`` sur l'id du compte d'un collègue :
+        ``ensure_one()`` ne vérifie aucun droit, aucun champ n'est lu avant,
+        et le ``sudo().write()`` passe outre la règle d'enregistrement. On
+        pouvait donc empoisonner l'arborescence affichée à quelqu'un d'autre.
+        Éprouvé par un test qui échouait avant ce renommage.
+
+        Le tiret bas ferme la porte RPC, pas la méthode : appelée depuis du
+        code Python elle écrirait toujours n'importe où. D'où le contrôle de
+        droit explicite ci-dessous — le ``sudo()`` qui suit ne sert qu'à
+        écrire un champ en lecture seule, il n'a jamais eu à servir à écrire
+        chez quelqu'un d'autre. Le cron miroir travaille déjà en sudo, le
+        contrôle y passe sans effet.
+        """
+        self.ensure_one()
+        if not folders:
+            return
+        self.check_access("write")
+        self.sudo().write({
+            "folder_cache": json.dumps(folders),
+            "folder_cache_date": fields.Datetime.now(),
+        })
+
+    def action_refresh_folders(self):
+        """Relire les dossiers du serveur maintenant, cache ignoré."""
+        total = 0
+        for account in self:
+            total += len(account._get_imap_folders(force=True))
+        return {
+            "type": "ir.actions.client",
+            "tag": "display_notification",
+            "params": {
+                "type": "success",
+                "title": _("Dossiers relevés"),
+                "message": _("%(n)s dossier(s) IMAP au total.", n=total),
+                "sticky": False,
+            },
+        }
+
     def watermark_field(self, folder):
         """Return the field name storing the UID watermark for a folder."""
         return f"last_uid_{folder.lower().replace('/', '_')}"

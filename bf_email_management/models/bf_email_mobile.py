@@ -388,8 +388,11 @@ class BfEmailMobile(models.Model):
         """
         now = fields.Datetime.now()
         clauses = {
+            # ⚠️ Transcription SQL de `bf.email._inbox_domain` : un test
+            # compare les deux sur un jeu de lignes, pas sur leur texte.
             "inbox": ("is_handled = false AND (imap_in_inbox = true "
-                      "OR source IN ('chatter','gateway'))", []),
+                      "OR source IN ('chatter','gateway') "
+                      "OR imap_folder IS NULL)", []),
             "unread": ("status = 'new' AND is_handled = false", []),
             "snoozed": ("is_handled = true AND snoozed_until IS NOT NULL "
                         "AND snoozed_until > %s", [now]),

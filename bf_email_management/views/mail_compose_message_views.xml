@@ -22,4 +22,25 @@
         </field>
     </record>
 
+    <!-- « Envoyer en tant que » : l'adresse qui portera le « De ». Le champ
+         ne s'affiche que si la personne a plus d'une identité vérifiée —
+         avec une seule, il n'y a rien à choisir et la ligne serait du bruit
+         sur chaque composeur de l'instance. -->
+    <record id="mail_compose_message_bf_identity_form" model="ir.ui.view">
+        <field name="name">mail.compose.message.form.bf.identity</field>
+        <field name="model">mail.compose.message</field>
+        <field name="inherit_id" ref="mail.email_compose_message_wizard_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='subject']" position="before">
+                <field name="bf_identity_allowed_ids" invisible="1"/>
+                <field name="bf_identity_count" invisible="1"/>
+                <field name="bf_signature_snapshot" invisible="1"/>
+                <field name="bf_identity_id"
+                       options="{'no_create': True, 'no_open': True}"
+                       invisible="bf_identity_count &lt; 2"
+                       placeholder="Depuis quelle adresse ?"/>
+            </xpath>
+        </field>
+    </record>
+
 </odoo>

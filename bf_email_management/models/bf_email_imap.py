@@ -102,6 +102,35 @@ def select_folder(conn, folder, readonly=True):
         return False
 
 
+def ensure_folder(conn, folder):
+    """Best-effort CREATE (and SUBSCRIBE) of a destination mailbox.
+
+    A rule names a folder in a text field; nothing guarantees the folder
+    exists on the server. Without this, the COPY is refused, the message stays
+    in the INBOX, and the only trace is a warning in the log.
+
+    Deliberately returns nothing to act on: an « already exists » is reported
+    as NO by some servers and as OK by others, and a CREATE that fails for a
+    real reason (quota, permissions) is indistinguishable here. The caller
+    retries the COPY, and *that* is the verdict — we do not guess.
+
+    SUBSCRIBE matters more than it looks: most servers hide
+    an unsubscribed folder from most clients, so a message would land
+    somewhere the owner cannot see.
+    """
+    try:
+        quoted = imap_quote_mailbox(folder)
+    except ImapInjectionError:
+        return
+    for verb in ("create", "subscribe"):
+        try:
+            getattr(conn, verb)(quoted)
+        except (imaplib.IMAP4.error, OSError):
+            _logger.debug(
+                "bf.email IMAP: %s %r sans effet", verb, folder, exc_info=True,
+            )
+
+
 def search_uids_above(conn, last_uid):
     """Return list of UIDs strictly greater than ``last_uid`` (sorted asc)."""
     next_uid = (int(last_uid) if last_uid else 0) + 1
@@ -320,3 +349,120 @@ def unwrap_double_encoded_html(stored_body):
             fixed = fixed[3:-4]
         return fixed
     return stored_body
+
+
+# ----------------------------------------------------------------------
+# Vérification d'UID et découverte des dossiers ()
+# ----------------------------------------------------------------------
+
+def normalize_message_id(value):
+    """Message-ID comparable : espaces retirés, chevrons retirés.
+
+    Les serveurs restituent l'en-tête tantôt avec ses chevrons, tantôt sans,
+    et parfois replié sur deux lignes. Comparer les chaînes brutes fait donc
+    échouer des correspondances pourtant exactes.
+    """
+    text = "" if value is None else str(value)
+    text = " ".join(text.split())
+    return text.strip().lstrip("<").rstrip(">")
+
+
+def uid_carries_message_id(conn, uid, message_id):
+    """Ce ``uid`` porte-t-il bien ce Message-ID dans la boîte SELECTionnée ?
+
+    Retourne ``True``, ``False``, ou ``None`` quand la question n'a pas pu
+    être posée (erreur réseau, réponse illisible) — l'appelant décide alors
+    s'il se rabat sur une recherche par en-tête.
+
+    ⚠️ Un UID n'a de sens que dans SA boîte. Un ``UID COPY`` visant un UID
+    absent reçoit ``OK`` sans rien copier (RFC 3501 : les commandes UID
+    ignorent silencieusement les UID inconnus), donc aucune garde placée sur
+    le statut de la réponse ne peut rattraper un UID périmé. Il faut le
+    vérifier avant de s'en servir.
+    """
+    if not uid or not message_id:
+        return None
+    try:
+        status, data = conn.uid(
+            "FETCH", imap_uid_token(uid),
+            "(BODY.PEEK[HEADER.FIELDS (MESSAGE-ID)])",
+        )
+    except (imaplib.IMAP4.error, ImapInjectionError, OSError):
+        _logger.debug("uid_carries_message_id: FETCH %s échoué", uid, exc_info=True)
+        return None
+    if status != "OK":
+        return None
+    if not data or all(not isinstance(x, tuple) for x in data):
+        # Réponse vide = l'UID n'existe pas dans cette boîte. C'est une
+        # réponse, pas une panne : le rappeler comme un franc « non ».
+        return False
+    for item in data:
+        if not isinstance(item, tuple) or len(item) < 2 or not item[1]:
+            continue
+        try:
+            msg = parse_rfc822(item[1])
+        except Exception:
+            continue
+        found = normalize_message_id(msg.get("Message-ID", ""))
+        if found and found == normalize_message_id(message_id):
+            return True
+    return False
+
+
+# `(\HasNoChildren) "/" "INBOX"` — drapeaux, délimiteur, nom. Le nom peut
+# être cité ou nu ; `rsplit` sur l'espace le coupait dès qu'il en contenait un.
+_LIST_LINE_RE = re.compile(
+    r'^\((?P<flags>[^)]*)\)\s+(?P<delim>"(?:[^"\\]|\\.)*"|NIL)\s+(?P<name>.+)$'
+)
+
+
+def _unquote_mailbox(raw):
+    text = (raw or "").strip()
+    if len(text) >= 2 and text[0] == '"' and text[-1] == '"':
+        text = text[1:-1].replace('\\"', '"').replace("\\\\", "\\")
+    return text
+
+
+def list_folders(conn):
+    """``LIST`` décodé : ``[{name, delimiter, has_children, noselect}]``.
+
+    Sans ``STATUS`` — compter les messages du serveur coûte un aller-retour
+    par dossier, et l'arbre de la boîte de réception compte les lignes
+    ``bf.email``, pas les messages du serveur.
+    """
+    try:
+        status, raw = conn.list()
+    except (imaplib.IMAP4.error, OSError):
+        _logger.debug("list_folders: LIST échoué", exc_info=True)
+        return []
+    if status != "OK" or not raw:
+        return []
+    out = []
+    for line in raw:
+        if not line:
+            continue
+        # Un nom de boîte non ASCII revient en littéral : (flags, nom_bytes).
+        if isinstance(line, tuple):
+            head = line[0].decode("utf-8", errors="replace") if isinstance(line[0], bytes) else str(line[0])
+            tail = line[1].decode("utf-8", errors="replace") if isinstance(line[1], bytes) else str(line[1])
+            decoded = "%s%s" % (head.split("{", 1)[0], tail)
+        elif isinstance(line, bytes):
+            decoded = line.decode("utf-8", errors="replace")
+        else:
+            decoded = str(line)
+        match = _LIST_LINE_RE.match(decoded.strip())
+        if not match:
+            continue
+        name = _unquote_mailbox(match.group("name"))
+        if not name:
+            continue
+        delim = match.group("delim")
+        delimiter = "" if delim == "NIL" else _unquote_mailbox(delim)
+        flags = match.group("flags") or ""
+        out.append({
+            "name": name,
+            "delimiter": delimiter,
+            "has_children": "\\HasChildren" in flags,
+            "noselect": "\\Noselect" in flags or "\\NonExistent" in flags,
+        })
+    return out

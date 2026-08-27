@@ -379,7 +379,7 @@
                 <separator/>
                 <filter name="filter_inbox"
                         string="Bo&#238;te de r&#233;ception"
-                        domain="[('user_id', '=', uid), ('is_handled', '=', False), '|', ('imap_in_inbox', '=', True), ('source', 'in', ('chatter', 'gateway'))]"
+                        domain="[('user_id', '=', uid), ('is_handled', '=', False), '|', '|', ('imap_in_inbox', '=', True), ('source', 'in', ('chatter', 'gateway')), ('imap_folder', '=', False)]"
                         help="Mime l'INBOX IMAP : courriels actifs en IMAP plus tous les chatters non trait&#233;s. Exclut les trait&#233;s."/>
                 <filter name="filter_to_reply"
                         string="&#192; r&#233;pondre"
@@ -591,6 +591,18 @@
         <field name="code">records.action_unhandle()</field>
     </record>
 
+    <!-- Les r&#232;gles ne se d&#233;clenchent qu'&#224; l'arriv&#233;e d'un courriel. Celle-ci
+         est la sortie de secours : choisir des lignes et les repasser dans le
+         moteur, sans toucher au reste de la bo&#238;te. -->
+    <record id="action_bf_email_apply_rules" model="ir.actions.server">
+        <field name="name">Appliquer mes r&#232;gles</field>
+        <field name="model_id" ref="model_bf_email"/>
+        <field name="binding_model_id" ref="model_bf_email"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">action = records.action_apply_rules_now()</field>
+    </record>
+
     <!-- ============================================================ -->
     <!-- ACTIONS                                                      -->
     <!-- ============================================================ -->
@@ -599,7 +611,8 @@
          que le navigateur IMAP (dossiers &#224; gauche, liste en haut, aper&#231;u en
          bas). La vue liste ci-dessous reste accessible sous
          &#171;&#160;Bo&#238;te de r&#233;ception (liste)&#160;&#187; pour les filtres, le regroupement,
-         l'export et les actions serveur, qu'une action cliente n'offre pas. -->
+         l'export et les actions serveur, qu'une action cliente n'offre pas.
+         T&#226;che #24628. -->
     <record id="action_bf_email_inbox_owl" model="ir.actions.client">
         <field name="name">Bo&#238;te de r&#233;ception</field>
         <field name="tag">bf_email_inbox</field>
@@ -610,7 +623,7 @@
         <field name="res_model">bf.email</field>
         <field name="view_mode">list,kanban,form,graph,pivot</field>
         <field name="search_view_id" ref="bf_email_view_search"/>
-        <field name="domain">[('user_id', '=', uid), ('is_handled', '=', False), '|', ('imap_in_inbox', '=', True), ('source', 'in', ('chatter', 'gateway'))]</field>
+        <field name="domain">[('user_id', '=', uid), ('is_handled', '=', False), '|', '|', ('imap_in_inbox', '=', True), ('source', 'in', ('chatter', 'gateway')), ('imap_folder', '=', False)]</field>
         <field name="context">{'search_default_filter_inbox': 1}</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">

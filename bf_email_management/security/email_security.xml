@@ -61,6 +61,55 @@
         <field name="perm_unlink" eval="False"/>
     </record>
 
+    <!--
+      Absences : mêmes règles que le reste du module. Chacun gère les siennes ;
+      l'administrateur courriel les lit toutes, parce qu'une réponse qui part
+      au nom de l'organisation doit être auditable par quelqu'un.
+    -->
+    <record id="bf_email_absence_rule_owner" model="ir.rule">
+        <field name="name">Absence : la mienne</field>
+        <field name="model_id" ref="model_bf_email_absence"/>
+        <field name="domain_force">[('user_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <record id="bf_email_absence_rule_admin" model="ir.rule">
+        <field name="name">Absence : admin voit tout (lecture seule)</field>
+        <field name="model_id" ref="model_bf_email_absence"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('group_email_admin'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <record id="bf_email_absence_reply_rule_owner" model="ir.rule">
+        <field name="name">Message d'absence : le mien</field>
+        <field name="model_id" ref="model_bf_email_absence_reply"/>
+        <field name="domain_force">[('absence_id.user_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <record id="bf_email_absence_reply_rule_admin" model="ir.rule">
+        <field name="name">Message d'absence : admin voit tout (lecture seule)</field>
+        <field name="model_id" ref="model_bf_email_absence_reply"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('group_email_admin'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
     <record id="bf_email_rule_owner" model="ir.rule">
         <field name="name">Courriel : visible uniquement au propriétaire</field>
         <field name="model_id" ref="model_bf_email"/>
@@ -105,6 +154,121 @@
         <field name="perm_unlink" eval="True"/>
     </record>
 
+    <!--
+      Company-wide rules (18.0.9.11.0): a bf.email.rule with no user_id applies
+      to everybody in its company. Everyone must READ them — otherwise the
+      engine, which runs unsudoed for nothing here but whose UI must explain
+      what is acting on your mail, would show a mailbox governed by invisible
+      rules. Only base.group_system may write one; that gate is doubled by
+      _check_company_scope_is_admin, because an owner flipping their own rule
+      from « user » to « company » would still satisfy the owner domain at the
+      moment the write is checked.
+    -->
+    <record id="bf_email_rule_rule_company_read" model="ir.rule">
+        <field name="name">R&#232;gle courriel : les r&#232;gles d'organisation sont visibles de tous</field>
+        <field name="model_id" ref="model_bf_email_rule"/>
+        <field name="domain_force">[('user_id', '=', False)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <record id="bf_email_rule_rule_company_manage" model="ir.rule">
+        <field name="name">R&#232;gle courriel : l'administrateur g&#232;re les r&#232;gles d'organisation</field>
+        <field name="model_id" ref="model_bf_email_rule"/>
+        <field name="domain_force">[('user_id', '=', False)]</field>
+        <field name="groups" eval="[(4, ref('base.group_system'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <!--
+      The admin zone reaches the conditions too. Without this, somebody holding
+      group_email_admin sees every user's RULES but none of their conditions —
+      the owner rule below is keyed on `rule_id.user_id` — so every foreign
+      rule renders as « no condition », which reads as broken. Read-only, like
+      the rule itself.
+    -->
+    <record id="bf_email_rule_condition_rule_admin_all" model="ir.rule">
+        <field name="name">Condition : admin voit tout (lecture seule)</field>
+        <field name="model_id" ref="model_bf_email_rule_condition"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('group_email_admin'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <!--
+      Conditions inherit their parent's scope. Three rules, same shape as the
+      rule itself: own rules are fully editable, company rules are readable by
+      all and writable by settings administrators.
+    -->
+    <record id="bf_email_rule_condition_rule_owner" model="ir.rule">
+        <field name="name">Condition : visible au propri&#233;taire de la r&#232;gle</field>
+        <field name="model_id" ref="model_bf_email_rule_condition"/>
+        <field name="domain_force">['|', ('rule_id.user_id', '=', user.id), ('absence_reply_id.absence_id.user_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <record id="bf_email_rule_condition_rule_company_read" model="ir.rule">
+        <field name="name">Condition : les r&#232;gles d'organisation sont lisibles</field>
+        <field name="model_id" ref="model_bf_email_rule_condition"/>
+        <field name="domain_force">[('rule_id.user_id', '=', False)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <record id="bf_email_rule_condition_rule_company_manage" model="ir.rule">
+        <field name="name">Condition : l'administrateur g&#232;re celles d'organisation</field>
+        <field name="model_id" ref="model_bf_email_rule_condition"/>
+        <field name="domain_force">[('rule_id.user_id', '=', False)]</field>
+        <field name="groups" eval="[(4, ref('base.group_system'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <!--
+      Forward journal: read-only for its owner. The ACL already withholds
+      create/write/unlink from base.group_user, so nobody edits their own audit
+      trail; _log() writes through sudo.
+    -->
+    <record id="bf_email_forward_log_rule_owner" model="ir.rule">
+        <field name="name">Journal de r&#233;acheminement : visible au propri&#233;taire</field>
+        <field name="model_id" ref="model_bf_email_auto_log"/>
+        <field name="domain_force">[('user_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <record id="bf_email_forward_log_rule_admin" model="ir.rule">
+        <field name="name">Journal de r&#233;acheminement : admin voit tout</field>
+        <field name="model_id" ref="model_bf_email_auto_log"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('group_email_admin')), (4, ref('base.group_system'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
     <record id="bf_email_rule_rule_owner" model="ir.rule">
         <field name="name">Règle courriel : visible uniquement au propriétaire</field>
         <field name="model_id" ref="model_bf_email_rule"/>
@@ -114,6 +278,37 @@
         <field name="perm_write" eval="True"/>
         <field name="perm_create" eval="True"/>
         <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <!-- Chacun déclare ses propres identités d'expédition et n'en voit pas
+         d'autres. La règle laisse volontairement écrire : on déclare ses
+         adresses soi-même. Ce qui n'est PAS laissé à cette main, c'est la
+         case « vérifiée » — celle qui autorise réellement à écrire sous ce
+         nom — gardée en Python par _check_verified_is_admin_granted. Une
+         règle d'enregistrement ne saurait pas faire la différence entre les
+         deux écritures. -->
+    <record id="bf_email_identity_rule_owner" model="ir.rule">
+        <field name="name">Identité d'expédition : visible uniquement au propriétaire</field>
+        <field name="model_id" ref="model_bf_email_identity"/>
+        <field name="domain_force">[('user_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <!-- L'administrateur courriel voit toutes les identités : c'est lui qui
+         les vérifie, il ne peut pas vérifier ce qu'il ne voit pas. -->
+    <record id="bf_email_identity_rule_admin" model="ir.rule">
+        <field name="name">Identité d'expédition : lecture globale pour l'administrateur courriel</field>
+        <field name="model_id" ref="model_bf_email_identity"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('group_email_admin'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
     </record>
 
 </odoo>

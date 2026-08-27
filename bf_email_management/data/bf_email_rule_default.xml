@@ -1,43 +1,97 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo noupdate="1">
+    <!--
+      The four rules the installing user starts with. Every OTHER user gets the
+      same set from ``bf.email.rule._seed_defaults_for_user`` when they create
+      their first IMAP account, out of the ``RULE_RECIPES`` catalogue — this
+      file and that catalogue must stay in step.
+
+      ``noupdate="1"`` on the whole file: an upgrade must not overwrite a rule
+      somebody has since tuned. Odoo never auto-deletes a noupdate record
+      either, so the rules survive being dropped from this file (rule 3,
+      « Domaine bluefoxconsultant.com → Interne », is exactly that case on the
+      Blue Fox tenant).
+
+      Since 18.0.9.11.0 the condition lives in its own record. The condition
+      records below carry fresh xmlids, so an upgrade CREATES them against the
+      existing rules — and ``migrations/18.0.9.11.0/post-migrate.py`` skips any
+      rule that already has a condition, so nothing is converted twice.
+    -->
 
     <record id="rule_noreply_notification" model="bf.email.rule">
         <field name="name">Expéditeurs noreply → Notification + Traité</field>
+        <field name="recipe_key">noreply</field>
         <field name="sequence">10</field>
-        <field name="condition_type">regex_from</field>
-        <field name="condition_value">^(noreply|no-reply|notification|mailer-daemon|postmaster|bounce|do-not-reply)@</field>
+        <field name="match_type">all</field>
         <field name="set_category">notification</field>
         <field name="set_handled" eval="True"/>
         <field name="description">Sortie immédiate de la boîte. Les notifications automatiques ne demandent pas d'action.</field>
     </record>
 
+    <record id="rule_noreply_notification_cond" model="bf.email.rule.condition">
+        <field name="rule_id" ref="rule_noreply_notification"/>
+        <field name="kind">condition</field>
+        <field name="field_name">email_from</field>
+        <field name="operator">regex</field>
+        <!--
+          Anchored on an address boundary, not on the start of the string:
+          email_from holds the raw From header, so it is usually
+          « "Acme" <noreply@acme.com> » and a leading ^ never matched.
+        -->
+        <field name="value">(?:^|[&lt;\s:,;])(noreply|no-reply|notification|mailer-daemon|postmaster|bounce|do-not-reply)@</field>
+    </record>
+
     <record id="rule_list_unsubscribe_marketing" model="bf.email.rule">
         <field name="name">List-Unsubscribe présent → Marketing + Traité</field>
+        <field name="recipe_key">list_unsubscribe</field>
         <field name="sequence">20</field>
-        <field name="condition_type">header_present</field>
-        <field name="condition_value">List-Unsubscribe</field>
+        <field name="match_type">all</field>
         <field name="set_category">marketing</field>
         <field name="set_handled" eval="True"/>
         <field name="description">Grbovic et al. 2014 — l'en-tête List-Unsubscribe est le signal le plus fort pour le bulk marketing.</field>
     </record>
 
+    <record id="rule_list_unsubscribe_marketing_cond" model="bf.email.rule.condition">
+        <field name="rule_id" ref="rule_list_unsubscribe_marketing"/>
+        <field name="kind">condition</field>
+        <field name="field_name">header</field>
+        <field name="header_name">List-Unsubscribe</field>
+        <field name="operator">is_set</field>
+    </record>
+
     <record id="rule_client_partner" model="bf.email.rule">
         <field name="name">Partenaire client_rank > 0 → Client (priorité Élevée)</field>
+        <field name="recipe_key">client_partner</field>
         <field name="sequence">40</field>
-        <field name="condition_type">partner_tag</field>
-        <field name="condition_value">(p.customer_rank or 0) > 0</field>
+        <field name="match_type">all</field>
         <field name="set_category">client</field>
         <field name="set_priority">2</field>
         <field name="description">Tout courriel d'un client connu (customer_rank) passe en priorité Élevée.</field>
     </record>
 
+    <record id="rule_client_partner_cond" model="bf.email.rule.condition">
+        <field name="rule_id" ref="rule_client_partner"/>
+        <field name="kind">condition</field>
+        <field name="field_name">partner_field</field>
+        <field name="operator">expr</field>
+        <field name="value">(p.customer_rank or 0) > 0</field>
+    </record>
+
     <record id="rule_vendor_partner" model="bf.email.rule">
         <field name="name">Partenaire supplier_rank > 0 → Fournisseur</field>
+        <field name="recipe_key">vendor_partner</field>
         <field name="sequence">50</field>
-        <field name="condition_type">partner_tag</field>
-        <field name="condition_value">(p.supplier_rank or 0) > 0</field>
+        <field name="match_type">all</field>
         <field name="set_category">vendor</field>
         <field name="description">Fournisseurs connus.</field>
+    </record>
+
+    <record id="rule_vendor_partner_cond" model="bf.email.rule.condition">
+        <field name="rule_id" ref="rule_vendor_partner"/>
+        <field name="kind">condition</field>
+        <field name="field_name">partner_field</field>
+        <field name="operator">expr</field>
+        <field name="value">(p.supplier_rank or 0) > 0</field>
     </record>
 
 </odoo>

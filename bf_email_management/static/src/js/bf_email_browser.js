@@ -39,6 +39,7 @@ import {
     paneStyles,
     startPaneDrag,
     columnWidths,
+    selectRange,
 } from "./bf_email_ui_common";
 
 export class BfEmailBrowser extends Component {
@@ -49,6 +50,10 @@ export class BfEmailBrowser extends Component {
         this.orm = useService("orm");
         this.action = useService("action");
         this.notification = useService("notification");
+
+        // Point de départ d'un shift+clic. Voir bf_email_inbox.js — même
+        // comportement des deux côtés, c'est la même liste pour l'usager.
+        this._selectionAnchor = null;
 
         this.searchInputRef = useRef("searchInput");
         this.listBottomRef = useRef("listBottom");
@@ -223,6 +228,7 @@ export class BfEmailBrowser extends Component {
         this.state.selectedUid = null;
         this.state.preview = null;
         this.state.selectedUids = {};
+        this._selectionAnchor = null;
         try {
             const result = await this.orm.call(
                 "bf.email", "imap_browser_get_messages", [],
@@ -477,17 +483,35 @@ export class BfEmailBrowser extends Component {
     // ------------------------------------------------------------------
     // Multi-selection (checkboxes in the message list)
     // ------------------------------------------------------------------
+    /**
+     * Une case, ou toute une plage au shift+clic. ``preventDefault`` laisse
+     * l'état piloter seul la case cochée — sans lui, une case déjà cochée
+     * reprise dans une plage se décoche à l'écran sans quitter la sélection.
+     */
     toggleSelection(uid, ev) {
-        if (ev) ev.stopPropagation();
+        if (ev) {
+            ev.stopPropagation();
+            ev.preventDefault();
+        }
+        const uids = this.visibleMessages.map((m) => m.uid);
+        if (ev && ev.shiftKey && this._selectionAnchor !== null
+                && this._selectionAnchor !== uid
+                && selectRange(this.state.selectedUids, uids,
+                               this._selectionAnchor, uid)) {
+            this._selectionAnchor = uid;
+            return;
+        }
         if (this.state.selectedUids[uid]) {
             delete this.state.selectedUids[uid];
         } else {
             this.state.selectedUids[uid] = true;
         }
+        this._selectionAnchor = uid;
     }
 
     clearSelection() {
         this.state.selectedUids = {};
+        this._selectionAnchor = null;
     }
 
     get selectedCount() {
@@ -757,6 +781,44 @@ export class BfEmailBrowser extends Component {
     onSplitterMouseDown(ev) {
         startPaneDrag(ev, this);
     }
+
+    // ------------------------------------------------------------------
+    // Ruban d'actions de l'aperçu ()
+    // ------------------------------------------------------------------
+    /**
+     * Replié, le ruban devient une seule ligne d'icônes : sur un aperçu placé
+     * sous la liste, les douze boutons libellés retombent sur deux ou trois
+     * rangées et mangent une bonne part de la hauteur qui devrait servir à
+     * lire le courriel. L'en-tête (objet, De, À, date, dossier, pièces
+     * jointes) ne se replie pas — c'est le contexte du message, pas une
+     * option — et aucune action ne disparaît : les infobulles et les
+     * raccourcis clavier restent.
+     */
+    get ribbonCollapsed() {
+        return !!this.state.settings.ribbonCollapsed;
+    }
+
+    get ribbonClass() {
+        return this.ribbonCollapsed
+            ? "mt-2 d-flex gap-1 align-items-center o_bf_email_ribbon o_bf_email_ribbon_compact"
+            : "mt-2 d-flex flex-wrap gap-1 o_bf_email_ribbon";
+    }
+
+    get ribbonToggleTitle() {
+        return this.ribbonCollapsed
+            ? _t("Déplier le ruban d'actions")
+            : _t("Replier le ruban d'actions en icônes");
+    }
+
+    toggleRibbon() {
+        const next = {
+            ...this.state.settings,
+            ribbonCollapsed: !this.ribbonCollapsed,
+        };
+        this.state.settings = next;
+        persistSettings(next);
+    }
+
 
     get previewSrcdoc() {
         return buildPreviewSrcdoc(this.state.preview && this.state.preview.body_html);

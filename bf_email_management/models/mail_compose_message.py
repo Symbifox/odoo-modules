@@ -12,7 +12,50 @@ recompute when they are present, so the bf.email Reply-All flow can pre-fill
 Cc with the other thread participants.
 """
 
-from odoo import _, api, fields, models
+import re
+
+from odoo import _, api, exceptions, fields, models
+
+_WS = re.compile(r"\s+")
+_SELF_CLOSING = re.compile(r"\s*/>")
+
+
+def _canon(html):
+    """Forme comparable de deux fragments HTML équivalents.
+
+    ⚠️ ``body`` est un champ Html **assaini** par Odoo ; l'empreinte qu'on a
+    posée à l'ouverture ne l'est pas. Un même bloc de signature en ressort donc
+    différent — ``<br/>`` contre ``<br>``, une espace en plus — et une
+    comparaison littérale échoue toujours. Mesuré sur banc : la substitution ne
+    partait jamais, la signature de l'ancienne identité restait dans le corps.
+    """
+    return _WS.sub(" ", _SELF_CLOSING.sub(">", html or "")).strip()
+
+
+def _replace_signature(body, old, new):
+    """Remplacer ``old`` par ``new`` dans ``body``, ou rendre None.
+
+    None veut dire « je n'ai pas retrouvé exactement ce que j'avais posé » :
+    la personne y a touché, et on ne réécrit pas un texte qu'on ne reconnaît
+    plus. Perdre une phrase tapée pour ajuster une signature serait un mauvais
+    marché.
+    """
+    if not old:
+        return None
+    if old in body:
+        return body.replace(old, new, 1)
+
+    # Repli sur la forme canonique : on localise le bloc dans le corps assaini
+    # en comparant fenêtre à fenêtre, ce qui évite de reconstruire un parseur.
+    canon_old = _canon(old)
+    if not canon_old:
+        return None
+    canon_body = _canon(body)
+    if canon_old not in canon_body:
+        return None
+    # Le corps assaini porte bien la signature : on la remplace sur la forme
+    # canonique, qui est celle que l'éditeur relira de toute façon.
+    return canon_body.replace(canon_old, _canon(new), 1)
 
 
 class MailComposeMessage(models.TransientModel):
@@ -62,9 +105,126 @@ class MailComposeMessage(models.TransientModel):
             })
             wizard.write(keep)
 
+    # ------------------------------------------------------------------
+    # Identité d'expédition
+    # ------------------------------------------------------------------
+    bf_identity_id = fields.Many2one(
+        "bf.email.identity",
+        string="Envoyer en tant que",
+        domain="[('id', 'in', bf_identity_allowed_ids)]",
+        help="L'adresse qui apparaîtra dans le « De ». Seules vos identités "
+             "vérifiées sont proposées.",
+    )
+    bf_identity_allowed_ids = fields.Many2many(
+        "bf.email.identity",
+        compute="_compute_bf_identity_allowed_ids",
+        string="Identités disponibles",
+    )
+    # ⚠️ L'évaluateur Python du client web ne connaît pas ``len``. Une vue qui
+    # écrit ``len(bf_identity_allowed_ids) < 2`` lève un EvalError et le
+    # composeur ne s'affiche plus du tout — la boîte de dialogue meurt au
+    # rendu, sur toute l'instance. Le compte doit donc arriver côté client
+    # comme un entier déjà calculé, qu'une simple comparaison suffit à lire.
+    bf_identity_count = fields.Integer(
+        compute="_compute_bf_identity_allowed_ids",
+        string="Nombre d'identités disponibles",
+    )
+    # Ce que le composeur a inséré comme signature la dernière fois. C'est le
+    # seul moyen de la remplacer sans toucher au texte : on ne substitue que
+    # si on retrouve EXACTEMENT ce qu'on avait posé.
+    bf_signature_snapshot = fields.Html(
+        string="Signature posée", sanitize=False)
+
+    @api.depends_context("uid")
+    def _compute_bf_identity_allowed_ids(self):
+        usable = self.env["bf.email.identity"]._usable_for(self.env.user)
+        count = len(usable)
+        for composer in self:
+            composer.bf_identity_allowed_ids = usable
+            composer.bf_identity_count = count
+
+    @api.onchange("bf_identity_id")
+    def _onchange_bf_identity_id(self):
+        """Suivre l'identité choisie : le « De », puis la signature.
+
+        La signature n'est remplacée que si le corps porte encore, mot pour
+        mot, celle que le composeur avait posée. Dès que la personne y a
+        touché, on ne réécrit rien : perdre une phrase déjà tapée pour ajuster
+        une signature serait un mauvais marché.
+        """
+        identity = self.bf_identity_id
+        if not identity:
+            return
+        self.email_from = identity.email_formatted
+
+        new_signature = identity._signature_for()
+        old_signature = self.bf_signature_snapshot or ""
+        body = self.body or ""
+        if not old_signature:
+            self.bf_signature_snapshot = new_signature
+            return
+
+        replaced = _replace_signature(body, old_signature, new_signature)
+        if replaced is not None:
+            self.body = replaced
+            self.bf_signature_snapshot = new_signature
+
+    def _prepare_mail_values(self, res_ids):
+        """Faire descendre l'identité jusqu'au message, après la fusion.
+
+        ⚠️ Le raccord ne peut PAS être ``_prepare_mail_values_static``.
+        ``_prepare_mail_values`` construit ``dict(base_values, **additional)``,
+        et pour le mode « commentaire » ``additional`` vient de
+        ``_prepare_mail_values_rendered``, qui pose son propre ``email_from``
+        (le champ du composeur). Un ``email_from`` déposé côté statique est
+        donc **écrasé sans un mot** : le courriel repart sous l'adresse du
+        compte Odoo et rien ne le signale. Mesuré sur banc avant de le
+        corriger.
+
+        On stampe donc après la fusion, ce qui couvre du même geste le chemin
+        commentaire, le rendu et le publipostage.
+
+        Uniquement si une identité a été **explicitement** choisie : imposer un
+        ``email_from`` partout changerait le « De » de tous les composeurs de
+        l'instance, y compris ceux qui postent au nom d'un autre auteur.
+        ``_message_compute_author`` retourne ``author_id`` et ``email_from``
+        inchangés dès que les deux sont fournis, donc un défaut mal calculé
+        s'imposerait en silence.
+        """
+        values_all = super()._prepare_mail_values(res_ids)
+        identity = self.bf_identity_id
+        if not identity:
+            return values_all
+        for values in values_all.values():
+            values["email_from"] = identity.email_formatted
+            if identity.mail_server_id:
+                values["mail_server_id"] = identity.mail_server_id.id
+        return values_all
+
     def _action_send_mail(self, auto_commit=False):
+        self._bf_check_identity()
         self._bf_retarget_to_chatter()
         return super()._action_send_mail(auto_commit=auto_commit)
+
+    def _bf_check_identity(self):
+        """Une identité qu'on n'a pas le droit de porter ne part pas.
+
+        Le domaine du champ borne déjà la liste dans l'écran, mais un appel
+        RPC ne passe pas par l'écran. La garde est ici, sous l'envoi mais
+        avant lui — au-delà, le ``mail.mail`` existe et un rollback ne
+        rappelle pas un courriel.
+        """
+        for composer in self.filtered("bf_identity_id"):
+            identity = composer.bf_identity_id.sudo()
+            if identity.user_id != self.env.user:
+                raise exceptions.UserError(_(
+                    "« %s » n'est pas une de vos identités d'expédition.",
+                    identity.display_name))
+            if not identity.verified or not identity.active:
+                raise exceptions.UserError(_(
+                    "« %s » n'est pas vérifiée : un administrateur courriel "
+                    "doit l'autoriser avant qu'elle puisse servir.",
+                    identity.display_name))
 
     def action_schedule_message(self, scheduled_date=False):
         # Le report lit lui aussi `model` / `res_ids` pour bâtir la

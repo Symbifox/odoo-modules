@@ -58,11 +58,10 @@ class BfEmailDashboard(models.Model):
             "name": "Boîte de réception active",
             "res_model": "bf.email",
             "views": [[False, "list"], [False, "kanban"], [False, "form"]],
-            "domain": [
-                ("user_id", "=", self.env.uid),
-                ("is_handled", "=", False),
-                "|", ("imap_in_inbox", "=", True), ("source", "in", ("chatter", "gateway")),
-            ],
+            # Même définition que l'arbre et le mobile : voir
+            # `bf.email._inbox_domain`.
+            "domain": [("user_id", "=", self.env.uid)]
+            + self.env["bf.email"]._inbox_domain(),
         }
 
     @api.model

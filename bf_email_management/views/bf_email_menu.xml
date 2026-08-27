@@ -114,6 +114,12 @@
               action="bf_email_account_action"
               sequence="1"/>
 
+    <menuitem id="menu_bf_email_identities"
+              name="Mes identit&#233;s d'exp&#233;dition"
+              parent="menu_bf_email_config"
+              action="bf_email_identity_action"
+              sequence="2"/>
+
     <menuitem id="menu_bf_email_sync_now"
               name="Synchroniser maintenant"
               parent="menu_bf_email_config"
@@ -125,6 +131,24 @@
               parent="menu_bf_email_config"
               action="action_bf_email_rule"
               sequence="7"/>
+
+    <menuitem id="menu_bf_email_rules_quick"
+              name="R&#232;gles courantes"
+              parent="menu_bf_email_config"
+              action="action_bf_email_rule_quick_window"
+              sequence="8"/>
+
+    <menuitem id="menu_bf_email_absence"
+              name="R&#233;ponses d'absence"
+              parent="menu_bf_email_config"
+              action="action_bf_email_absence"
+              sequence="6"/>
+
+    <menuitem id="menu_bf_email_forward_log"
+              name="Journal des envois automatiques"
+              parent="menu_bf_email_config"
+              action="action_bf_email_auto_log"
+              sequence="9"/>
 
     <!-- Group-gated: the wizard sudo-reads every mail.message in the DB
          (subjects + record names across record rules) to build the import.

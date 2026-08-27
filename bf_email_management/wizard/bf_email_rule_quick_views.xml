@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="bf_email_rule_quick_view_form" model="ir.ui.view">
+        <field name="name">bf.email.rule.quick.form</field>
+        <field name="model">bf.email.rule.quick</field>
+        <field name="arch" type="xml">
+            <form string="Ajouter des règles courantes">
+                <field name="can_create_company_rules" invisible="1"/>
+                <div class="oe_title">
+                    <h2>Règles courantes</h2>
+                    <p class="text-muted">
+                        Des recettes éprouvées, prêtes à l'emploi. Cochez ce
+                        qui vous parle&#160;; chaque règle reste modifiable
+                        après coup, et une règle déjà en place n'est pas
+                        reproposée.
+                    </p>
+                </div>
+                <group>
+                    <group>
+                        <field name="scope" widget="radio"
+                               readonly="not can_create_company_rules"/>
+                    </group>
+                    <group>
+                        <field name="company_id"
+                               groups="base.group_multi_company"/>
+                    </group>
+                </group>
+                <div class="mb-2">
+                    <button name="action_select_all" type="object"
+                            string="Tout cocher" class="btn-link"/>
+                    <button name="action_select_none" type="object"
+                            string="Tout décocher" class="btn-link"/>
+                </div>
+                <field name="line_ids" nolabel="1">
+                    <list editable="bottom" create="false" delete="false">
+                        <field name="already_installed" column_invisible="1"/>
+                        <field name="recipe_key" column_invisible="1"/>
+                        <field name="selected" string=""
+                               widget="boolean_toggle"
+                               readonly="already_installed"/>
+                        <field name="name" readonly="1"
+                               decoration-muted="already_installed"/>
+                        <field name="description" readonly="1"
+                               decoration-muted="already_installed"/>
+                        <field name="already_installed" string="Déjà en place"
+                               readonly="1" widget="boolean_toggle"/>
+                    </list>
+                </field>
+                <group class="mt-2">
+                    <field name="apply_now"/>
+                </group>
+                <footer>
+                    <button name="action_create_rules" type="object"
+                            string="Ajouter les règles cochées"
+                            class="btn-primary"/>
+                    <button string="Annuler" class="btn-secondary"
+                            special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_bf_email_rule_quick_window" model="ir.actions.act_window">
+        <field name="name">Règles courantes</field>
+        <field name="res_model">bf.email.rule.quick</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+</odoo>

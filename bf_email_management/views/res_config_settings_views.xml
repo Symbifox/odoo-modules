@@ -11,4 +11,46 @@
         <field name="context">{'default_user_id': uid}</field>
     </record>
 
+    <!-- Réglages d'organisation (#24976). Le reste de la configuration du
+         module est par usager et vit sous Courriels → Configuration ; ce qui
+         est ici engage toute la base, donc `base.group_system`. -->
+    <record id="res_config_settings_view_form_bf_email" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.bf_email_management</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app data-string="Gestion des courriels"
+                     string="Gestion des courriels"
+                     name="bf_email_management"
+                     groups="base.group_system">
+                    <block title="Bo&#238;te de r&#233;ception"
+                           name="bf_email_inbox_setting_container">
+                        <setting id="bf_email_show_imap_folders_setting"
+                                 string="Dossiers IMAP dans la bo&#238;te de r&#233;ception"
+                                 help="Les vrais dossiers du serveur apparaissent sous la bo&#238;te de r&#233;ception. Le contenu affich&#233; reste les courriels de cette base, avec leurs actions et leur lien vers la fiche o&#249; ils sont class&#233;s.">
+                            <field name="bf_email_show_imap_folders"/>
+                            <div class="content-group"
+                                 invisible="not bf_email_show_imap_folders">
+                                <div class="row mt16">
+                                    <label for="bf_email_folder_cache_minutes"
+                                           class="col-lg-4 o_light_label"/>
+                                    <field name="bf_email_folder_cache_minutes"
+                                           class="col-lg-2"/>
+                                </div>
+                                <div class="mt8">
+                                    <button type="object"
+                                            name="action_bf_email_refresh_imap_folders"
+                                            string="Relever mes dossiers maintenant"
+                                            icon="fa-refresh"
+                                            class="btn-link"/>
+                                </div>
+                            </div>
+                        </setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+
 </odoo>

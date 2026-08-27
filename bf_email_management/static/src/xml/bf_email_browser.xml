@@ -317,55 +317,62 @@
                     </t>
                     <t t-elif="state.preview">
                         <div class="px-3 py-2 border-bottom bg-light">
-                            <div class="fw-bold"><t t-esc="state.preview.subject"/></div>
+                            <div class="fw-bold d-flex align-items-start gap-2">
+                                <span class="flex-grow-1"><t t-esc="state.preview.subject"/></span>
+                                <button class="btn btn-sm btn-light py-0 px-1 flex-shrink-0"
+                                        t-on-click="toggleRibbon"
+                                        t-att-title="ribbonToggleTitle">
+                                    <i t-att-class="ribbonCollapsed ? 'fa fa-angle-double-down' : 'fa fa-angle-double-up'"/>
+                                </button>
+                            </div>
                             <div class="small text-muted">
                                 <span class="me-2"><strong>De :</strong> <t t-esc="state.preview.from"/></span>
                                 <span class="me-2"><strong>À :</strong> <t t-esc="state.preview.to"/></span>
                                 <span><strong>Date :</strong> <t t-esc="formatRelativeDate(state.preview.date)"/></span>
                             </div>
-                            <div class="mt-2 d-flex flex-wrap gap-1">
+                            <div t-att-class="ribbonClass">
                                 <button class="btn btn-sm btn-primary"
                                         t-att-disabled="state.acting"
                                         t-on-click="reply"
                                         title="Raccourci R">
-                                    <i class="fa fa-reply me-1"/> Répondre
+                                    <i class="fa fa-reply me-1"/><span class="o_bf_ribbon_label"> Répondre</span>
                                 </button>
                                 <button class="btn btn-sm btn-light"
                                         t-att-disabled="state.acting"
                                         t-on-click="replyAll"
                                         title="Raccourci Shift+R">
-                                    <i class="fa fa-reply-all me-1"/> Répondre à tous
+                                    <i class="fa fa-reply-all me-1"/><span class="o_bf_ribbon_label"> Répondre à tous</span>
                                 </button>
                                 <button class="btn btn-sm btn-light"
                                         t-att-disabled="state.acting"
                                         t-on-click="forward"
                                         title="Raccourci F">
-                                    <i class="fa fa-share me-1"/> Transférer
+                                    <i class="fa fa-share me-1"/><span class="o_bf_ribbon_label"> Transférer</span>
                                 </button>
                                 <button class="btn btn-sm btn-success"
                                         t-att-disabled="state.acting"
                                         t-on-click="markHandled"
                                         title="Marquer Traité + archiver (raccourci E)">
-                                    <i class="fa fa-check me-1"/> Traité
+                                    <i class="fa fa-check me-1"/><span class="o_bf_ribbon_label"> Traité</span>
                                 </button>
                                 <button class="btn btn-sm btn-light"
                                         t-att-disabled="state.acting"
                                         t-on-click="snooze"
                                         title="Reporter (raccourci H)">
-                                    <i class="fa fa-moon-o me-1"/> Reporter
+                                    <i class="fa fa-moon-o me-1"/><span class="o_bf_ribbon_label"> Reporter</span>
                                 </button>
                                 <button class="btn btn-sm btn-light"
                                         t-att-disabled="state.acting"
                                         t-on-click="createActivity"
                                         title="Créer une activité depuis ce courriel (raccourci T)">
-                                    <i class="fa fa-bell me-1"/> Activité
+                                    <i class="fa fa-bell me-1"/><span class="o_bf_ribbon_label"> Activité</span>
                                 </button>
                                 <div class="btn-group btn-group-sm">
                                     <button class="btn btn-secondary"
                                             t-att-disabled="state.acting"
                                             t-on-click="() => this.quickReroute(null)"
                                             title="Router vers une tâche, ticket, contact, etc. (raccourci Y)">
-                                        <i class="fa fa-share me-1"/> Router…
+                                        <i class="fa fa-share me-1"/><span class="o_bf_ribbon_label"> Router…</span>
                                     </button>
                                     <button class="btn btn-secondary dropdown-toggle dropdown-toggle-split"
                                             data-bs-toggle="dropdown"
@@ -384,10 +391,10 @@
                                         t-att-disabled="state.acting"
                                         t-on-click="moveToTrash"
                                         title="Supprimer / Trash (raccourci Suppr)">
-                                    <i class="fa fa-trash me-1"/> Supprimer
+                                    <i class="fa fa-trash me-1"/><span class="o_bf_ribbon_label"> Supprimer</span>
                                 </button>
                                 <span t-if="state.preview.already_in_bf_email" class="badge bg-success align-self-center ms-2">
-                                    <i class="fa fa-check me-1"/> Déjà dans bf.email
+                                    <i class="fa fa-check me-1"/><span class="o_bf_ribbon_label"> Déjà dans bf.email</span>
                                 </span>
                             </div>
                         </div>

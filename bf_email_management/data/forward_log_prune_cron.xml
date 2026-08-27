@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!--
+          The forward journal grows one line per recipient per forward, plus a
+          line for every refusal. Useful for months, not forever. Retention is
+          ``bf_email.forward_log_retention_days`` (180 by default).
+        -->
+        <record id="ir_cron_forward_log_prune" model="ir.cron">
+            <field name="name">Courriels : purger le journal des réacheminements</field>
+            <field name="model_id" ref="model_bf_email_auto_log"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_prune()</field>
+            <field name="user_id" ref="base.user_root"/>
+            <field name="interval_number">1</field>
+            <field name="interval_type">weeks</field>
+            <field name="active" eval="True"/>
+        </record>
+    </data>
+</odoo>

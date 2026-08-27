@@ -6,3 +6,5 @@ from . import bf_email_browser_line
 from . import bf_email_browser
 from . import bf_email_guess_route_line
 from . import bf_email_guess_route
+from . import bf_email_rule_quick
+from . import bf_email_absence_preview

@@ -49,4 +49,36 @@
             vertical-align: bottom;
         }
     }
+
+    // Ruban d'actions de l'aperçu, replié en une ligne d'icônes (#24976).
+    // Rien n'est retiré : les libellés cèdent la place, les infobulles et les
+    // raccourcis clavier portent le sens. Douze boutons libellés retombent
+    // sur deux ou trois rangées dès que la liste rétrécit ; une seule rangée
+    // rend cette hauteur au corps du courriel.
+    .o_bf_email_ribbon_compact {
+        overflow-x: auto;
+        // La barre de défilement horizontale mangerait le gain de hauteur
+        // qu'on vient de faire ; le ruban se contente d'un filet.
+        scrollbar-width: thin;
+
+        .o_bf_ribbon_label {
+            display: none;
+        }
+
+        // Marge de l'icône seulement sur les boutons DU ruban : les entrées
+        // de menu déroulant vivent dans le même conteneur et gardent, elles,
+        // l'espace entre leur icône et leur libellé.
+        > button > .fa,
+        > .btn-group > button > .fa,
+        > .badge > .fa {
+            margin-right: 0 !important;
+        }
+
+        // `ms-auto` pousse les derniers boutons à droite. Sur une rangée qui
+        // défile, cette poussée fabrique un vide au milieu et déporte les
+        // boutons hors du champ visible.
+        .ms-auto {
+            margin-left: .25rem !important;
+        }
+    }
 }

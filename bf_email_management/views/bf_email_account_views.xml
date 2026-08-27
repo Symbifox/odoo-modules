@@ -31,6 +31,11 @@
                             type="object"
                             string="Synchroniser maintenant"
                             class="btn-secondary"/>
+                    <button name="action_refresh_folders"
+                            type="object"
+                            string="Relever les dossiers"
+                            class="btn-secondary"
+                            help="Relire l'arborescence du serveur maintenant. Un dossier cr&#233;&#233; dans le webmail n'appara&#238;t sinon dans la bo&#238;te de r&#233;ception qu'&#224; l'expiration du cache."/>
                     <field name="state" widget="statusbar"
                            statusbar_visible="draft,connected,error"/>
                 </header>

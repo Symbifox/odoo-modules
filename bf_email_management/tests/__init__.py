@@ -9,3 +9,10 @@ from . import test_inbox_action
 from . import test_writeback_sync
 from . import test_inbox_drafts_and_reroute
 from . import test_imip_authentication
+from . import test_rule_engine
+from . import test_absence
+from . import test_body_fallback
+from . import test_send_as
+from . import test_imap_folders_and_uid_guard
+from . import test_isolation_boites
+from . import test_dossier_disparu

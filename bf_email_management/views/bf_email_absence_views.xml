@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="bf_email_absence_reply_view_list" model="ir.ui.view">
+        <field name="name">bf.email.absence.reply.list</field>
+        <field name="model">bf.email.absence.reply</field>
+        <field name="arch" type="xml">
+            <list default_order="sequence,id">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="is_catch_all" string="Par défaut"
+                       widget="boolean_toggle" readonly="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_email_absence_reply_view_form" model="ir.ui.view">
+        <field name="name">bf.email.absence.reply.form</field>
+        <field name="model">bf.email.absence.reply</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="name" placeholder="Clients, Interne, Tout le monde…"/>
+                    <field name="sequence"/>
+                    <field name="is_catch_all"/>
+                </group>
+                <separator string="S'applique quand"/>
+                <field name="condition_ids"
+                       context="{'default_kind': 'condition'}"/>
+                <p class="text-muted">
+                    Sans condition, ce message est celui que reçoit tout le
+                    monde que les autres lignes n'ont pas attrapé. Il ne peut
+                    y en avoir qu'un.
+                </p>
+                <separator string="Message"/>
+                <field name="body_html" widget="html"/>
+                <p class="text-muted">
+                    Marqueurs&#160;: <code>{nom}</code>, <code>{retour}</code>,
+                    <code>{releve}</code>, <code>{releve_courriel}</code>,
+                    <code>{motif}</code>. Le champ est traduisible&#160;: chaque
+                    correspondant reçoit la version de la langue enregistrée
+                    sur sa fiche.
+                </p>
+            </form>
+        </field>
+    </record>
+
+    <record id="bf_email_absence_view_list" model="ir.ui.view">
+        <field name="name">bf.email.absence.list</field>
+        <field name="model">bf.email.absence</field>
+        <field name="arch" type="xml">
+            <list decoration-success="state == 'running'"
+                  decoration-muted="state in ('over', 'off')"
+                  decoration-info="state == 'template'">
+                <field name="name"/>
+                <field name="user_id" optional="show"/>
+                <field name="date_from" optional="show"/>
+                <field name="date_to" optional="show"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'running'"
+                       decoration-info="state == 'template'"
+                       decoration-muted="state in ('over', 'off')"/>
+                <field name="source" optional="show"/>
+                <field name="delegate_user_id" optional="show"/>
+                <field name="log_count" string="Réponses" optional="show"/>
+                <field name="active" widget="boolean_toggle" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_email_absence_view_form" model="ir.ui.view">
+        <field name="name">bf.email.absence.form</field>
+        <field name="model">bf.email.absence</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_open_preview" type="object"
+                            string="Voir ce que recevrait quelqu'un"
+                            class="btn-primary"/>
+                    <button name="action_end_now" type="object"
+                            string="Terminer maintenant"
+                            class="btn-secondary"
+                            invisible="state != 'running'"
+                            confirm="Arrêter le répondeur tout de suite ?"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="planned,running,over"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_logs" type="object"
+                                class="oe_stat_button" icon="fa-reply"
+                                invisible="log_count == 0">
+                            <field name="log_count" widget="statinfo"
+                                   string="Réponses"/>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Désactivée"
+                            bg_color="text-bg-danger" invisible="active"/>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="Vacances d'été"/></h1>
+                    </div>
+                    <div class="alert alert-info" role="alert"
+                         invisible="not is_template">
+                        Un message type n'envoie rien. Il sert de patron&#160;:
+                        chaque absence détectée à l'agenda copie ses messages,
+                        sa relève et ses réglages.
+                    </div>
+                    <group>
+                        <group string="Période">
+                            <field name="is_template"/>
+                            <field name="date_from" invisible="is_template"
+                                   required="not is_template"/>
+                            <field name="date_to" invisible="is_template"
+                                   required="not is_template"/>
+                            <field name="source"/>
+                            <field name="calendar_event_id"
+                                   invisible="source != 'calendar'"/>
+                        </group>
+                        <group string="Réglages">
+                            <field name="user_id"/>
+                            <field name="company_id"
+                                   groups="base.group_multi_company"/>
+                            <field name="cooldown_days"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Relève">
+                            <field name="delegate_user_id"
+                                   options="{'no_create': True}"/>
+                            <field name="route_to_delegate"
+                                   invisible="not delegate_user_id"/>
+                        </group>
+                        <group string="Extras">
+                            <field name="include_booking_links"/>
+                            <field name="decline_meetings"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Messages" name="messages">
+                            <field name="reply_ids"/>
+                            <p class="text-muted">
+                                Le premier message dont l'audience correspond
+                                l'emporte. Celui qui n'a aucune condition
+                                sert de filet.
+                            </p>
+                        </page>
+                        <page string="Ce qui ne partira pas" name="guards">
+                            <div class="text-muted">
+                                <p>Le répondeur se tait&#160;:</p>
+                                <ul>
+                                    <li>sur un message portant
+                                        <code>Auto-Submitted</code> autre que
+                                        <code>no</code> — c'est ce qui empêche
+                                        deux répondeurs de se répondre&#160;;</li>
+                                    <li>sur une liste de diffusion
+                                        (<code>List-*</code>,
+                                        <code>Precedence: bulk</code>)&#160;;</li>
+                                    <li>sur un retour nul, un rebond, une
+                                        adresse de service&#160;;</li>
+                                    <li>si votre adresse n'est ni dans
+                                        «&#160;À&#160;» ni dans
+                                        «&#160;Cc&#160;»&#160;: un message reçu
+                                        en copie cachée ne vous vise pas&#160;;</li>
+                                    <li>si cette personne a déjà eu une
+                                        réponse dans la fenêtre ci-dessus.</li>
+                                </ul>
+                                <p>
+                                    Chaque refus est inscrit au journal avec
+                                    son motif. Une garde qui refuse en silence
+                                    est une garde que personne ne croit.
+                                </p>
+                            </div>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="bf_email_absence_view_search" model="ir.ui.view">
+        <field name="name">bf.email.absence.search</field>
+        <field name="model">bf.email.absence</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="user_id"/>
+                <filter name="mine" string="Les miennes"
+                        domain="[('user_id', '=', uid)]"/>
+                <filter name="running" string="En cours"
+                        domain="[('state', '=', 'running')]"/>
+                <filter name="planned" string="À venir"
+                        domain="[('state', '=', 'planned')]"/>
+                <filter name="templates" string="Messages types"
+                        domain="[('is_template', '=', True)]"/>
+                <separator/>
+                <filter name="from_calendar" string="Détectées à l'agenda"
+                        domain="[('source', '=', 'calendar')]"/>
+                <group expand="0" string="Grouper par">
+                    <filter name="group_user" string="Personne"
+                            context="{'group_by': 'user_id'}"/>
+                    <filter name="group_source" string="Origine"
+                            context="{'group_by': 'source'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_bf_email_absence" model="ir.actions.act_window">
+        <field name="name">Réponses d'absence</field>
+        <field name="res_model">bf.email.absence</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="bf_email_absence_view_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Aucune absence enregistrée
+            </p>
+            <p>
+                Déclarez une période, écrivez ce que recevront les gens qui
+                vous écrivent, et le module répond une fois par personne —
+                jamais aux listes, jamais aux rebonds, jamais deux fois.
+            </p>
+            <p>
+                Un «&#160;message type&#160;» plus la détection à l'agenda, et
+                vous n'avez plus rien à allumer ni à éteindre.
+            </p>
+        </field>
+    </record>
+
+    <record id="bf_email_absence_preview_view_form" model="ir.ui.view">
+        <field name="name">bf.email.absence.preview.form</field>
+        <field name="model">bf.email.absence.preview</field>
+        <field name="arch" type="xml">
+            <form string="Aperçu">
+                <field name="absence_id" invisible="1"/>
+                <group>
+                    <group>
+                        <field name="sender"/>
+                        <field name="partner_id" options="{'no_create': True}"/>
+                    </group>
+                    <group>
+                        <field name="subject"/>
+                        <field name="reply_name"/>
+                        <field name="lang"/>
+                    </group>
+                </group>
+                <div class="alert alert-warning" role="alert"
+                     invisible="not blocked_reason">
+                    Aucune réponse ne partirait&#160;:
+                    <field name="blocked_reason" readonly="1" nolabel="1"/>
+                </div>
+                <separator string="Ce que cette personne recevrait"/>
+                <field name="body" widget="html" readonly="1" nolabel="1"/>
+                <footer>
+                    <button string="Fermer" class="btn-primary"
+                            special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>

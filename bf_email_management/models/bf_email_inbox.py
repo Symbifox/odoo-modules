@@ -29,6 +29,51 @@ MAX_PAGE = 500
 # bascule donc de source selon le dossier ouvert.
 DRAFTS_FOLDER = "drafts"
 
+# Dossiers IMAP réels dans l'arbre de gauche (). L'arborescence
+# vient du serveur (cache `bf.email.account.folder_cache`) mais le CONTENU
+# reste des lignes `bf.email` : ouvrir « Archives/2026 » montre les lignes
+# Odoo classées là, avec Traité / Router / Ajouter et le lien vers le
+# chatter. Lire le dossier en direct sur IMAP donnerait des messages sans
+# fiche, donc sans association possible — c'est précisément ce que le
+# réglage d'arrêt ci-dessous permet à une organisation de refuser.
+IMAP_GROUP = "imapfolders"
+IMAP_ACCOUNT_PREFIX = "imapacct:"
+IMAP_FOLDER_PREFIX = "imapf:"
+
+# Réglage administrateur : `bf_email.show_imap_folders` à « 0 » retire le
+# groupe pour tout le monde.
+IMAP_FOLDERS_PARAM = "bf_email.show_imap_folders"
+
+_IMAP_FOLDER_ICONS = (
+    ("INBOX", "fa-inbox"),
+    ("SENT", "fa-paper-plane-o"),
+    ("DRAFT", "fa-pencil-square-o"),
+    ("TRASH", "fa-trash-o"),
+    ("DELETED", "fa-trash-o"),
+    ("JUNK", "fa-ban"),
+    ("SPAM", "fa-ban"),
+    ("ARCHIVE", "fa-archive"),
+)
+
+
+def _imap_folder_icon(name):
+    upper = (name or "").upper()
+    for token, icon in _IMAP_FOLDER_ICONS:
+        if upper == token or upper.startswith(token):
+            return icon
+    return "fa-folder-o"
+
+
+def _imap_folder_sort_key(folder):
+    """INBOX, puis Sent, puis alphabétique — l'ordre d'un client courriel."""
+    name = folder.get("name") or ""
+    upper = name.upper()
+    if upper == "INBOX":
+        return (0, "")
+    if upper.startswith("SENT"):
+        return (1, name)
+    return (2, name)
+
 
 class BfEmail(models.Model):
     _inherit = "bf.email"
@@ -45,11 +90,7 @@ class BfEmail(models.Model):
         « boîte de réception », sinon les trois comptent trois choses.
         """
         now = fields.Datetime.now()
-        inbox_domain = [
-            ("is_handled", "=", False),
-            "|", ("imap_in_inbox", "=", True),
-            ("source", "in", ("chatter", "gateway")),
-        ]
+        inbox_domain = self._inbox_domain()
         defs = [
             {
                 "key": "inbox", "label": _("Boîte de réception"),
@@ -110,6 +151,17 @@ class BfEmail(models.Model):
                 "icon": "fa-tags", "parent": False, "domain": None,
             },
         ]
+        # Les vrais dossiers du serveur, juste sous la boîte de réception.
+        # Repliés par défaut : la colonne de gauche ne change pour personne
+        # tant que le groupe n'est pas ouvert.
+        imap_defs = self._inbox_imap_folder_defs()
+        if imap_defs:
+            at = next(
+                (i + 1 for i, d in enumerate(defs) if d["key"] == "inbox"),
+                len(defs),
+            )
+            defs[at:at] = imap_defs
+
         # Les catégories portent TOUT le courrier, traité compris. Les borner
         # au non-traité paraissait logique — une catégorie sert à trier ce qui
         # reste à faire — mais sur une boîte tenue à l'Inbox Zero elles sont
@@ -145,6 +197,201 @@ class BfEmail(models.Model):
         return defs
 
     @api.model
+    def _inbox_domain(self):
+        """Ce que « boîte de réception » veut dire, en un seul endroit.
+
+        Cette définition existait en **six** exemplaires — l'arbre, le filtre
+        mobile, le tableau de bord, le filtre de la vue liste, le domaine de
+        l'action, et le badge du systray (en JavaScript) — avec un commentaire
+        dans chacun demandant aux autres de rester d'accord. C'était une
+        promesse, pas un mécanisme. Les quatre exemplaires Python en dérivent
+        désormais ; les deux autres sont épinglés par un test.
+
+        Trois façons d'être « dans la boîte » :
+
+        1. le message est physiquement dans l'INBOX du serveur ;
+        2. la ligne vient d'un chatter ou de la passerelle, elle n'a pas de
+           contrepartie IMAP à consulter ;
+        3. ⚠️ on ne sait plus **où** est la copie serveur (`imap_folder` vide).
+           Ce troisième cas naît quand une remise en boîte échoue parce que le
+           dossier a été renommé ou vidé au webmail. Sans lui, la ligne
+           quittait « Traités » sans jamais réapparaître dans la boîte : elle
+           tombait hors de toute liste de travail, en silence.
+        """
+        return [
+            ("is_handled", "=", False),
+            "|", "|", ("imap_in_inbox", "=", True),
+            ("source", "in", ("chatter", "gateway")),
+            ("imap_folder", "=", False),
+        ]
+
+    @api.model
+    def _inbox_imap_folders_enabled(self):
+        """Le groupe « Dossiers IMAP » est-il offert dans cette base ?
+
+        Une organisation peut le refuser : naviguer par dossier de serveur
+        invite à traiter le courriel comme un classeur personnel, alors que
+        la valeur de cette boîte est de rattacher chaque message à une tâche,
+        un ticket ou un contact. Le réglage vit dans les paramètres système,
+        pas dans les préférences de l'usager, parce que c'est une décision
+        d'organisation et non un goût d'affichage.
+        """
+        raw = self.env["ir.config_parameter"].sudo().get_param(
+            IMAP_FOLDERS_PARAM, "1",
+        )
+        return str(raw).strip().lower() not in ("0", "false", "no", "")
+
+    @api.model
+    def _inbox_imap_accounts(self):
+        """Mes comptes IMAP actifs, dans l'ordre d'affichage."""
+        return self.env["bf.email.account"].search([
+            ("user_id", "=", self.env.uid), ("active", "=", True),
+        ], order="id")
+
+    @api.model
+    def _inbox_imap_folder_defs(self):
+        """Sous-arbre des dossiers IMAP réels, ou ``[]`` s'il n'y a rien.
+
+        Ne lève jamais et n'ouvre jamais de connexion de son propre chef :
+        ``get_imap_folders`` sert son cache. Un serveur injoignable rend le
+        dernier arbre connu ; à défaut, le groupe disparaît simplement.
+        """
+        if not self._inbox_imap_folders_enabled():
+            return []
+        accounts = self._inbox_imap_accounts()
+        if not accounts:
+            return []
+
+        out = [{
+            "key": IMAP_GROUP, "label": _("Dossiers IMAP"),
+            "icon": "fa-server", "parent": False, "domain": None,
+        }]
+        multi = len(accounts) > 1
+        for account in accounts:
+            try:
+                folders = account._get_imap_folders()
+            except Exception:  # pragma: no cover - défensif
+                _logger.debug(
+                    "bf.email: dossiers IMAP illisibles pour le compte %s",
+                    account.id, exc_info=True,
+                )
+                folders = []
+            if not folders:
+                continue
+            account_key = "%s%s" % (IMAP_ACCOUNT_PREFIX, account.id)
+            if multi:
+                out.append({
+                    "key": account_key,
+                    "label": account.name or account.login,
+                    "icon": "fa-at", "parent": IMAP_GROUP,
+                    "domain": [("account_id", "=", account.id)],
+                    "unread": False,
+                })
+            known = {f.get("name") for f in folders}
+            # Les dossiers que les lignes citent encore et que le serveur ne
+            # liste plus : renommés ou supprimés au webmail. Sans eux, les
+            # lignes concernées n'ont plus aucun nœud dans l'arbre — elles ne
+            # sont pas perdues (« Tous les courriels », catégories, recherche
+            # les gardent) mais elles disparaissent de cet axe de navigation
+            # sans un mot. Les montrer rend la dérive visible au lieu de la
+            # cacher.
+            orphans = [
+                {"name": name, "delimiter": "", "has_children": False,
+                 "noselect": False, "stale": True}
+                for name in sorted(self._inbox_imap_orphan_folders(account))
+                if name not in known
+            ]
+            for folder in sorted(folders, key=_imap_folder_sort_key) + orphans:
+                name = folder.get("name")
+                if not name:
+                    continue
+                delim = folder.get("delimiter") or ""
+                parent = account_key if multi else IMAP_GROUP
+                label = name
+                if delim and delim in name:
+                    head, _sep, tail = name.rpartition(delim)
+                    label = tail or name
+                    if head and head in known:
+                        parent = "%s%s:%s" % (
+                            IMAP_FOLDER_PREFIX, account.id, head,
+                        )
+                selectable = not folder.get("noselect")
+                stale = folder.get("stale")
+                out.append({
+                    "key": "%s%s:%s" % (IMAP_FOLDER_PREFIX, account.id, name),
+                    "label": label,
+                    "title": _(
+                        "%(nom)s — absent du serveur. Le dossier a sans doute "
+                        "été renommé ou supprimé ; les courriels restent ici.",
+                        nom=name,
+                    ) if stale else name,
+                    "icon": "fa-chain-broken" if stale else _imap_folder_icon(name),
+                    "parent": parent,
+                    "domain": [
+                        ("account_id", "=", account.id),
+                        ("imap_folder", "=", name),
+                    ] if selectable else None,
+                    "imap_counts": (account.id, name) if selectable else None,
+                })
+        # Un groupe sans un seul dossier ne mérite pas sa ligne.
+        return out if len(out) > 1 else []
+
+    @api.model
+    def _inbox_imap_orphan_folders(self, account):
+        """Dossiers cités par MES lignes de ce compte, quels qu'ils soient.
+
+        L'appelant retire ceux que le serveur liste ; il reste les orphelins.
+        Un regroupement, pas une boucle : le champ n'est pas indexé.
+        """
+        return {
+            folder
+            for _acc, folder, _count in self._read_group(
+                [("user_id", "=", self.env.uid),
+                 ("account_id", "=", account.id),
+                 ("imap_folder", "!=", False)],
+                ["account_id", "imap_folder"], ["__count"],
+            )
+            if folder
+        }
+
+    @api.model
+    def _inbox_imap_key_domain(self, folder):
+        """Domaine d'une clé ``imapacct:``/``imapf:`` sans relire le serveur.
+
+        ``_inbox_folder_domain`` est appelé à chaque ouverture de dossier et
+        à chaque page ; passer par ``_inbox_folder_defs`` y ferait porter le
+        coût d'un rafraîchissement de cache — et donc, un jour sur deux, un
+        aller-retour IMAP au moment du clic. Retourne ``None`` quand la clé
+        n'est pas une clé IMAP.
+        """
+        if folder.startswith(IMAP_ACCOUNT_PREFIX):
+            raw_id, name = folder[len(IMAP_ACCOUNT_PREFIX):], None
+        elif folder.startswith(IMAP_FOLDER_PREFIX):
+            raw_id, _sep, name = folder[len(IMAP_FOLDER_PREFIX):].partition(":")
+        else:
+            return None
+        if not self._inbox_imap_folders_enabled():
+            raise UserError(_(
+                "Les dossiers IMAP sont désactivés dans cette base."
+            ))
+        try:
+            account_id = int(raw_id)
+        except (TypeError, ValueError):
+            raise UserError(_("Dossier inconnu : %s", folder)) from None
+        # La propriété du compte est vérifiée ici et non déduite de la clé :
+        # celle-ci arrive du navigateur.
+        account = self._inbox_imap_accounts().filtered(
+            lambda a: a.id == account_id
+        )
+        if not account:
+            raise UserError(_("Dossier inconnu : %s", folder))
+        domain = [("user_id", "=", self.env.uid),
+                  ("account_id", "=", account.id)]
+        if name:
+            domain.append(("imap_folder", "=", name))
+        return domain
+
+    @api.model
     def _inbox_drafts_domain(self):
         """Mes envois programmés — ceux dont je suis l'auteur.
 
@@ -166,6 +413,9 @@ class BfEmail(models.Model):
                 "« Brouillons » ne se lit pas comme un dossier de courriels : "
                 "utiliser inbox_get_drafts."
             ))
+        imap_domain = self._inbox_imap_key_domain(folder)
+        if imap_domain is not None:
+            return imap_domain
         for d in self._inbox_folder_defs():
             if d["key"] == folder:
                 if d["domain"] is None:
@@ -178,6 +428,33 @@ class BfEmail(models.Model):
         raise UserError(_("Dossier inconnu : %s", folder))
 
     @api.model
+    def _inbox_imap_counts(self, defs):
+        """``({(compte, dossier): total}, {…: non lus})`` pour les defs IMAP."""
+        keys = [d["imap_counts"] for d in defs if d.get("imap_counts")]
+        if not keys:
+            return {}, {}
+        account_ids = list({k[0] for k in keys})
+        domain = [
+            ("user_id", "=", self.env.uid),
+            ("account_id", "in", account_ids),
+            ("imap_folder", "!=", False),
+        ]
+        totals = {
+            (account.id, folder): count
+            for account, folder, count in self._read_group(
+                domain, ["account_id", "imap_folder"], ["__count"],
+            )
+        }
+        unread = {
+            (account.id, folder): count
+            for account, folder, count in self._read_group(
+                domain + [("status", "=", "new")],
+                ["account_id", "imap_folder"], ["__count"],
+            )
+        }
+        return totals, unread
+
+    @api.model
     def inbox_get_folders(self):
         """Arborescence de gauche avec ses compteurs.
 
@@ -186,13 +463,29 @@ class BfEmail(models.Model):
         """
         base = [("user_id", "=", self.env.uid)]
         defs = self._inbox_folder_defs()
+        # Un `search_count` par dossier IMAP ferait grimper la colonne de
+        # gauche d'une douzaine de requêtes à chaque ouverture, sur un champ
+        # qui n'est pas indexé. Deux regroupements suffisent.
+        imap_total, imap_unread = self._inbox_imap_counts(defs)
         out = []
         for d in defs:
             if d["domain"] is None:
                 out.append({
                     "key": d["key"], "label": d["label"], "icon": d["icon"],
+                    "title": d.get("title") or d["label"],
                     "parent": d["parent"], "selectable": False,
                     "count": 0, "unread_count": 0,
+                })
+                continue
+            imap_key = d.get("imap_counts")
+            if imap_key:
+                count = imap_total.get(imap_key, 0)
+                out.append({
+                    "key": d["key"], "label": d["label"], "icon": d["icon"],
+                    "title": d.get("title") or d["label"],
+                    "parent": d["parent"], "selectable": True,
+                    "count": count,
+                    "unread_count": imap_unread.get(imap_key, 0),
                 })
                 continue
             count = self.search_count(base + d["domain"])
@@ -205,6 +498,7 @@ class BfEmail(models.Model):
                 unread = self.search_count(base + unread_domain)
             out.append({
                 "key": d["key"], "label": d["label"], "icon": d["icon"],
+                "title": d.get("title") or d["label"],
                 "parent": d["parent"], "selectable": True,
                 "count": count, "unread_count": unread,
             })
@@ -529,6 +823,7 @@ class BfEmail(models.Model):
         rejoint la boîte au moment de l'envoi, quand il y a quelque chose à
         suivre (voir ``inbox_close_compose``).
         """
+        identity = self.env["bf.email.identity"]._default_for(self.env.user)
         shell = self.create({
             "subject": "",
             "direction": "out",
@@ -538,8 +833,10 @@ class BfEmail(models.Model):
             "handled_at": fields.Datetime.now(),
             "user_id": self.env.uid,
             "date": fields.Datetime.now(),
-            "email_from": self.env.user.email or "",
+            "email_from": identity.email_formatted if identity
+                          else (self.env.user.email or ""),
         })
+        signature = identity._signature_for()
         action = self.env["ir.actions.actions"]._for_xml_id(
             "mail.action_email_compose_message_wizard"
         )
@@ -551,7 +848,7 @@ class BfEmail(models.Model):
             "default_partner_cc_ids": [(6, 0, [])],
             "default_partner_bcc_ids": [(6, 0, [])],
             "default_subject": "",
-            "default_body": shell._compose_signature_block(),
+            "default_body": shell._compose_signature_block(identity),
             "default_notify": True,
             "force_email": True,
             "mail_create_nosubscribe": True,
@@ -559,6 +856,9 @@ class BfEmail(models.Model):
             # ramener dans la boîte une fois le composeur refermé.
             "bf_email_compose_shell_id": shell.id,
         }
+        if identity:
+            action["context"]["default_bf_identity_id"] = identity.id
+            action["context"]["default_bf_signature_snapshot"] = signature
         action["name"] = _("Nouveau courriel")
         return action
 

@@ -39,6 +39,7 @@ import {
     paneStyles,
     startPaneDrag,
     columnWidths,
+    selectRange,
 } from "./bf_email_ui_common";
 
 // Dossiers acceptant un dépôt de ligne, et l'action que ça déclenche.
@@ -60,6 +61,11 @@ export class BfEmailInbox extends Component {
         this.orm = useService("orm");
         this.action = useService("action");
         this.notification = useService("notification");
+
+        // Dernière case cochée : point de départ d'un shift+clic. Hors du
+        // `useState` volontairement — personne ne l'affiche, et la rendre
+        // réactive redessinerait la liste à chaque clic pour rien.
+        this._selectionAnchor = null;
 
         this.searchInputRef = useRef("searchInput");
         this.listBottomRef = useRef("listBottom");
@@ -297,6 +303,7 @@ export class BfEmailInbox extends Component {
         this.state.selectedId = null;
         this.state.preview = null;
         this.state.selectedIds = {};
+        this._selectionAnchor = null;
         try {
             const result = await this._fetchPage(folder, offset);
             this.state.messages = result.messages || [];
@@ -529,17 +536,42 @@ export class BfEmailInbox extends Component {
     // ------------------------------------------------------------------
     // Sélection multiple
     // ------------------------------------------------------------------
+    /**
+     * Une case, ou toute une plage au shift+clic.
+     *
+     * ``preventDefault`` n'est pas décoratif : sans lui, le navigateur bascule
+     * la case AVANT que le composant ne redessine. Quand l'état calculé se
+     * trouve être celui d'avant (cocher une case déjà cochée dans la plage),
+     * OWL ne repeint pas ce nœud — l'attribut n'a pas bougé — et la case
+     * reste décochée à l'écran tout en comptant dans la sélection. On laisse
+     * donc l'état être la seule source de vérité de la case.
+     */
     toggleSelection(id, ev) {
-        if (ev) ev.stopPropagation();
+        if (ev) {
+            ev.stopPropagation();
+            ev.preventDefault();
+        }
+        const ids = this.visibleMessages.map((m) => m.id);
+        if (ev && ev.shiftKey && this._selectionAnchor !== null
+                && this._selectionAnchor !== id
+                && selectRange(this.state.selectedIds, ids,
+                               this._selectionAnchor, id)) {
+            // L'ancre suit la dernière extrémité : un second shift+clic
+            // prolonge la plage au lieu de repartir du tout début.
+            this._selectionAnchor = id;
+            return;
+        }
         if (this.state.selectedIds[id]) {
             delete this.state.selectedIds[id];
         } else {
             this.state.selectedIds[id] = true;
         }
+        this._selectionAnchor = id;
     }
 
     clearSelection() {
         this.state.selectedIds = {};
+        this._selectionAnchor = null;
     }
 
     /**
@@ -567,6 +599,7 @@ export class BfEmailInbox extends Component {
             next[m.id] = true;
         }
         this.state.selectedIds = next;
+        this._selectionAnchor = null;
     }
 
     get selectAllTitle() {
@@ -1055,6 +1088,44 @@ export class BfEmailInbox extends Component {
     onSplitterMouseDown(ev) {
         startPaneDrag(ev, this);
     }
+
+    // ------------------------------------------------------------------
+    // Ruban d'actions de l'aperçu ()
+    // ------------------------------------------------------------------
+    /**
+     * Replié, le ruban devient une seule ligne d'icônes : sur un aperçu placé
+     * sous la liste, les douze boutons libellés retombent sur deux ou trois
+     * rangées et mangent une bonne part de la hauteur qui devrait servir à
+     * lire le courriel. L'en-tête (objet, De, À, date, dossier, pièces
+     * jointes) ne se replie pas — c'est le contexte du message, pas une
+     * option — et aucune action ne disparaît : les infobulles et les
+     * raccourcis clavier restent.
+     */
+    get ribbonCollapsed() {
+        return !!this.state.settings.ribbonCollapsed;
+    }
+
+    get ribbonClass() {
+        return this.ribbonCollapsed
+            ? "mt-2 d-flex gap-1 align-items-center o_bf_email_ribbon o_bf_email_ribbon_compact"
+            : "mt-2 d-flex flex-wrap gap-1 o_bf_email_ribbon";
+    }
+
+    get ribbonToggleTitle() {
+        return this.ribbonCollapsed
+            ? _t("Déplier le ruban d'actions")
+            : _t("Replier le ruban d'actions en icônes");
+    }
+
+    toggleRibbon() {
+        const next = {
+            ...this.state.settings,
+            ribbonCollapsed: !this.ribbonCollapsed,
+        };
+        this.state.settings = next;
+        persistSettings(next);
+    }
+
 
     // ------------------------------------------------------------------
     // Affichage

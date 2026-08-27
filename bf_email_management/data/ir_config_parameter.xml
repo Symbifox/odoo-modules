@@ -34,6 +34,24 @@
     </record>
 
     <!--
+      18.0.11.1.0 — Dossiers IMAP dans la colonne de gauche de la boîte de
+      réception. « 0 » retire le groupe pour tout le monde : une organisation
+      peut juger que naviguer par dossier de serveur détourne de
+      l'association au chatter, qui est la raison d'être de cette boîte.
+      folder_cache_minutes borne la fraîcheur de l'arborescence relevée sur
+      le serveur (0 = relire à chaque affichage, déconseillé).
+    -->
+    <record id="bf_email_show_imap_folders" model="ir.config_parameter">
+        <field name="key">bf_email.show_imap_folders</field>
+        <field name="value">1</field>
+    </record>
+
+    <record id="bf_email_folder_cache_minutes" model="ir.config_parameter">
+        <field name="key">bf_email.folder_cache_minutes</field>
+        <field name="value">60</field>
+    </record>
+
+    <!--
       Mobile API (18.0.6.8.0).
 
       mobile_redirect_schemes: comma-separated deep-link prefixes /auth/start

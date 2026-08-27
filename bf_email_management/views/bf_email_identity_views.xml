@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="bf_email_identity_view_list" model="ir.ui.view">
+        <field name="name">bf.email.identity.list</field>
+        <field name="model">bf.email.identity</field>
+        <field name="arch" type="xml">
+            <list string="Identités d'expédition">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="email"/>
+                <field name="is_default" widget="boolean_toggle"/>
+                <field name="verified" widget="boolean_toggle"
+                       readonly="not context.get('bf_email_is_admin')"/>
+                <field name="account_id" optional="hide"/>
+                <field name="mail_server_id" optional="hide"/>
+                <field name="delivery_warning" string="Délivrabilité"
+                       optional="show"/>
+                <field name="active" widget="boolean_toggle" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_email_identity_view_form" model="ir.ui.view">
+        <field name="name">bf.email.identity.form</field>
+        <field name="model">bf.email.identity</field>
+        <field name="arch" type="xml">
+            <form string="Identité d'expédition">
+                <sheet>
+                    <widget name="web_ribbon" title="Archivée"
+                            bg_color="bg-danger"
+                            invisible="active"/>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="Jane Doe"/></h1>
+                        <h2><field name="email"
+                                   placeholder="jane@exemple.com"/></h2>
+                    </div>
+
+                    <div class="alert alert-warning" role="alert"
+                         invisible="verified">
+                        Cette identité n'est pas encore vérifiée : elle
+                        n'apparaîtra pas dans le composeur. Un administrateur
+                        courriel doit la vérifier — c'est cette case qui
+                        autorise à écrire sous ce nom.
+                    </div>
+
+                    <div class="alert alert-info" role="alert"
+                         invisible="not delivery_warning">
+                        <field name="delivery_warning" readonly="1" nolabel="1"/>
+                    </div>
+
+                    <group>
+                        <group string="Portée">
+                            <field name="user_id"
+                                   options="{'no_create': True}"/>
+                            <field name="is_default"/>
+                            <field name="verified"/>
+                            <field name="active"/>
+                        </group>
+                        <group string="Acheminement">
+                            <field name="mail_server_id"
+                                   options="{'no_create': True}"/>
+                            <field name="account_id"
+                                   options="{'no_create': True}"/>
+                            <field name="email_formatted" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Signature" name="signature">
+                            <p class="text-muted">
+                                Laissée vide, c'est la signature de la fiche
+                                utilisateur qui sert.
+                            </p>
+                            <field name="signature_html"
+                                   options="{'style-inline': true}"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="bf_email_identity_view_search" model="ir.ui.view">
+        <field name="name">bf.email.identity.search</field>
+        <field name="model">bf.email.identity</field>
+        <field name="arch" type="xml">
+            <search string="Identités d'expédition">
+                <field name="name"/>
+                <field name="email"/>
+                <field name="user_id"/>
+                <filter name="verified" string="Vérifiées"
+                        domain="[('verified', '=', True)]"/>
+                <filter name="pending" string="En attente de vérification"
+                        domain="[('verified', '=', False)]"/>
+                <separator/>
+                <filter name="inactive" string="Archivées"
+                        domain="[('active', '=', False)]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="by_user" string="Propriétaire"
+                            context="{'group_by': 'user_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="bf_email_identity_action" model="ir.actions.act_window">
+        <field name="name">Mes identités d'expédition</field>
+        <field name="res_model">bf.email.identity</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'default_user_id': uid}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Aucune identité d'expédition.
+            </p>
+            <p>
+                Une identité, c'est une adresse au nom de laquelle vous pouvez
+                écrire, avec sa propre signature. Le module en fabrique une
+                pour l'adresse de votre fiche et une pour chacun de vos comptes
+                IMAP ; ajoutez ici celles qui ne correspondent à aucune boîte
+                que vous relevez.
+            </p>
+        </field>
+    </record>
+
+</odoo>

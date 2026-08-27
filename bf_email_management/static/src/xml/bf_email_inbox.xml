@@ -32,7 +32,7 @@
                     <li t-foreach="folderTree" t-as="f" t-key="f.key"
                         t-att-class="(f.key === state.currentFolder ? 'bg-primary text-white ' : '') + (state.dropTarget === f.key ? 'bg-info-subtle ' : '') + 'o_bf_email_folder_item d-flex align-items-center'"
                         t-att-style="'cursor: pointer; user-select: none; padding-left: ' + (8 + f.depth * 14) + 'px; padding-right: 12px; padding-top: 4px; padding-bottom: 4px;'"
-                        t-att-title="f.label"
+                        t-att-title="f.title or f.label"
                         t-on-click="() => this.onFolderClick(f)"
                         t-on-dragover="(ev) => this.onFolderDragOver(ev, f.key)"
                         t-on-dragleave="() => this.onFolderDragLeave(f.key)"
@@ -482,10 +482,17 @@
                          annulé avant de partir. -->
                     <t t-elif="state.preview and isDraftFolder">
                         <div class="px-3 py-2 border-bottom bg-light">
-                            <div class="fw-bold">
-                                <i class="fa fa-clock-o text-warning me-1"/>
-                                <t t-esc="state.preview.subject or '(sans objet)'"/>
-                                <span t-if="state.preview.is_note" class="badge bg-secondary ms-2">Note interne</span>
+                            <div class="fw-bold d-flex align-items-start gap-2">
+                                <span class="flex-grow-1">
+                                    <i class="fa fa-clock-o text-warning me-1"/>
+                                    <t t-esc="state.preview.subject or '(sans objet)'"/>
+                                    <span t-if="state.preview.is_note" class="badge bg-secondary ms-2">Note interne</span>
+                                </span>
+                                <button class="btn btn-sm btn-light py-0 px-1 flex-shrink-0"
+                                        t-on-click="toggleRibbon"
+                                        t-att-title="ribbonToggleTitle">
+                                    <i t-att-class="ribbonCollapsed ? 'fa fa-angle-double-down' : 'fa fa-angle-double-up'"/>
+                                </button>
                             </div>
                             <div class="small text-muted">
                                 <span class="me-2"><strong>À :</strong>
@@ -508,30 +515,30 @@
                                     <i class="fa fa-paperclip me-1"/><t t-esc="att.name"/>
                                 </a>
                             </div>
-                            <div class="mt-2 d-flex flex-wrap gap-1">
+                            <div t-att-class="ribbonClass">
                                 <button class="btn btn-sm btn-primary"
                                         t-att-disabled="state.acting"
                                         t-on-click="() => this.runDraftAction('send_now')"
                                         title="Poster ce message tout de suite, sans attendre la date prévue">
-                                    <i class="fa fa-paper-plane me-1"/> Envoyer maintenant
+                                    <i class="fa fa-paper-plane me-1"/><span class="o_bf_ribbon_label"> Envoyer maintenant</span>
                                 </button>
                                 <button class="btn btn-sm btn-light"
                                         t-att-disabled="state.acting"
                                         t-on-click="() => this.runDraftAction('edit')"
                                         title="Modifier le contenu ou la date d'envoi">
-                                    <i class="fa fa-pencil me-1"/> Modifier
+                                    <i class="fa fa-pencil me-1"/><span class="o_bf_ribbon_label"> Modifier</span>
                                 </button>
                                 <button t-if="state.preview.res_model"
                                         class="btn btn-sm btn-light"
                                         t-on-click="openSourceRecord"
                                         title="Ouvrir la fiche sur laquelle ce message sera posté">
-                                    <i class="fa fa-external-link me-1"/> Dossier
+                                    <i class="fa fa-external-link me-1"/><span class="o_bf_ribbon_label"> Dossier</span>
                                 </button>
                                 <button class="btn btn-sm btn-outline-danger ms-auto"
                                         t-att-disabled="state.acting"
                                         t-on-click="() => this.runDraftAction('cancel')"
                                         title="Supprimer l'envoi programmé — le message ne partira pas">
-                                    <i class="fa fa-trash me-1"/> Annuler l'envoi
+                                    <i class="fa fa-trash me-1"/><span class="o_bf_ribbon_label"> Annuler l'envoi</span>
                                 </button>
                             </div>
                         </div>
@@ -543,7 +550,14 @@
                     </t>
                     <t t-elif="state.preview">
                         <div class="px-3 py-2 border-bottom bg-light">
-                            <div class="fw-bold"><t t-esc="state.preview.subject or '(sans objet)'"/></div>
+                            <div class="fw-bold d-flex align-items-start gap-2">
+                                <span class="flex-grow-1"><t t-esc="state.preview.subject or '(sans objet)'"/></span>
+                                <button class="btn btn-sm btn-light py-0 px-1 flex-shrink-0"
+                                        t-on-click="toggleRibbon"
+                                        t-att-title="ribbonToggleTitle">
+                                    <i t-att-class="ribbonCollapsed ? 'fa fa-angle-double-down' : 'fa fa-angle-double-up'"/>
+                                </button>
+                            </div>
                             <div class="small text-muted">
                                 <span class="me-2"><strong>De :</strong> <t t-esc="state.preview.from"/></span>
                                 <span t-if="state.preview.to" class="me-2"><strong>À :</strong> <t t-esc="state.preview.to"/></span>
@@ -563,49 +577,49 @@
                                     <i class="fa fa-paperclip me-1"/><t t-esc="att.name"/>
                                 </a>
                             </div>
-                            <div class="mt-2 d-flex flex-wrap gap-1">
+                            <div t-att-class="ribbonClass">
                                 <button class="btn btn-sm btn-primary"
                                         t-att-disabled="state.acting"
                                         t-on-click="() => this.runAction('reply')"
                                         title="Raccourci R">
-                                    <i class="fa fa-reply me-1"/> Répondre
+                                    <i class="fa fa-reply me-1"/><span class="o_bf_ribbon_label"> Répondre</span>
                                 </button>
                                 <button class="btn btn-sm btn-light"
                                         t-att-disabled="state.acting"
                                         t-on-click="() => this.runAction('reply_all')"
                                         title="Raccourci Shift+R">
-                                    <i class="fa fa-reply-all me-1"/> Répondre à tous
+                                    <i class="fa fa-reply-all me-1"/><span class="o_bf_ribbon_label"> Répondre à tous</span>
                                 </button>
                                 <button class="btn btn-sm btn-light"
                                         t-att-disabled="state.acting"
                                         t-on-click="() => this.runAction('forward')"
                                         title="Raccourci F">
-                                    <i class="fa fa-share me-1"/> Transférer
+                                    <i class="fa fa-share me-1"/><span class="o_bf_ribbon_label"> Transférer</span>
                                 </button>
                                 <button t-if="!state.preview.is_handled"
                                         class="btn btn-sm btn-success"
                                         t-att-disabled="state.acting"
                                         t-on-click="markHandled"
                                         title="Traiter et archiver côté IMAP (raccourci E)">
-                                    <i class="fa fa-check me-1"/> Traité
+                                    <i class="fa fa-check me-1"/><span class="o_bf_ribbon_label"> Traité</span>
                                 </button>
                                 <button t-else=""
                                         class="btn btn-sm btn-secondary"
                                         t-att-disabled="state.acting"
                                         t-on-click="markUnhandled">
-                                    <i class="fa fa-inbox me-1"/> Remettre en boîte
+                                    <i class="fa fa-inbox me-1"/><span class="o_bf_ribbon_label"> Remettre en boîte</span>
                                 </button>
                                 <button class="btn btn-sm btn-light"
                                         t-att-disabled="state.acting"
                                         t-on-click="() => this.runAction('snooze')"
                                         title="Reporter (raccourci H)">
-                                    <i class="fa fa-moon-o me-1"/> Reporter
+                                    <i class="fa fa-moon-o me-1"/><span class="o_bf_ribbon_label"> Reporter</span>
                                 </button>
                                 <button class="btn btn-sm btn-light"
                                         t-att-disabled="state.acting"
                                         t-on-click="() => this.runAction('activity')"
                                         title="Créer une activité (raccourci T)">
-                                    <i class="fa fa-bell me-1"/> Activité
+                                    <i class="fa fa-bell me-1"/><span class="o_bf_ribbon_label"> Activité</span>
                                 </button>
                                 <!-- « Router… » tant que le courriel n'est classé
                                      nulle part, « Re-router… » dès qu'il l'est : le
@@ -617,7 +631,7 @@
                                             t-on-click="() => this.quickReroute(null)"
                                             t-att-title="rerouteTitle">
                                         <i t-att-class="isRouted ? 'fa fa-exchange me-1' : 'fa fa-share me-1'"/>
-                                        <t t-esc="rerouteLabel"/>
+                                        <span class="o_bf_ribbon_label"><t t-esc="rerouteLabel"/></span>
                                     </button>
                                     <button class="btn btn-secondary dropdown-toggle dropdown-toggle-split"
                                             data-bs-toggle="dropdown"
@@ -644,7 +658,7 @@
                                             data-bs-toggle="dropdown"
                                             t-att-disabled="state.acting"
                                             title="Créer une fiche à partir de ce courriel et l'y importer">
-                                        <i class="fa fa-plus me-1"/> Ajouter
+                                        <i class="fa fa-plus me-1"/><span class="o_bf_ribbon_label"> Ajouter</span>
                                     </button>
                                     <ul class="dropdown-menu">
                                         <li><button class="dropdown-item" type="button" t-on-click="() => this.createRecord('create_task')"><i class="fa fa-tasks me-2"/>Tâche</button></li>
@@ -661,7 +675,7 @@
                                         t-att-disabled="state.acting"
                                         t-on-click="() => this.runAction('conversation')"
                                         title="Voir le fil complet">
-                                    <i class="fa fa-comments-o me-1"/> Fil (<t t-esc="state.preview.thread_count"/>)
+                                    <i class="fa fa-comments-o me-1"/><span class="o_bf_ribbon_label"> Fil (<t t-esc="state.preview.thread_count"/>)</span>
                                 </button>
                                 <button class="btn btn-sm btn-light ms-auto"
                                         t-att-disabled="state.acting"
@@ -673,7 +687,7 @@
                                         class="btn btn-sm btn-light"
                                         t-on-click="openSourceRecord"
                                         title="Ouvrir le dossier lié (raccourci O)">
-                                    <i class="fa fa-external-link me-1"/> Dossier
+                                    <i class="fa fa-external-link me-1"/><span class="o_bf_ribbon_label"> Dossier</span>
                                 </button>
                                 <button class="btn btn-sm btn-light"
                                         t-att-disabled="state.acting"

@@ -93,9 +93,11 @@ class BfEmail(models.Model):
         store=True,
         readonly=True,
         sanitize=False,
-        help="Corps HTML du courriel. Pour une rangée chatter/gateway, "
-             "synchronisé depuis mail.message.body. Pour une rangée IMAP "
-             "orpheline, parsé depuis raw_rfc822.",
+        help="Corps HTML du courriel, dans cet ordre\u00a0: mail.message.body "
+             "quand la copie interne d'Odoo a un corps\u00a0; sinon "
+             "mail.mail.body_html (un envoi sans document laisse le message "
+             "vide)\u00a0; sinon raw_rfc822. Jamais effac\u00e9 par un "
+             "recalcul.",
     )
     body_html_display = fields.Html(
         string="Corps (affichage)",
@@ -164,7 +166,8 @@ class BfEmail(models.Model):
         string="RFC 2822 brut",
         attachment=True,
         help="Message RFC 2822 complet (brut). Conserv\u00e9 pour permettre "
-             "le re-routage vers un chatter Odoo.",
+             "le re-routage vers un chatter Odoo, et comme source du corps "
+             "quand la copie interne d'Odoo n'en a pas.",
     )
 
     # ------------------------------------------------------------------
@@ -494,36 +497,104 @@ class BfEmail(models.Model):
 
     @api.depends("mail_message_id.body", "raw_rfc822", "source")
     def _compute_body_html(self):
+        """Corps du courriel, par ordre de fidélité décroissante.
+
+        1. ``mail.message.body`` — la copie interne d'Odoo, quand elle a un corps.
+        2. ``mail.mail.body_html`` — un envoi créé en ``mail.mail`` DIRECT, sans
+           document (soumission du formulaire du site, digests internes), laisse
+           ``mail.message.body`` vide : le texte n'a jamais été recopié vers le
+           message, il ne vit que sur le ``mail.mail``.
+        3. ``raw_rfc822`` — la copie brute du message livré, quand on l'a gardée.
+           Le repli n'est plus réservé à ``source == "imap"`` : une rangée promue
+           au chatter garde sa copie brute (voir ``_ingest_rfc822``) et c'est
+           souvent la seule qui porte encore le texte.
+
+        Rien ne peut EFFACER un corps déjà stocké. Le ``mail.mail`` disparaît dès
+        l'envoi réussi quand ``auto_delete`` est vrai ; sans ce garde-fou, un
+        simple recalcul rendrait la rangée muette une deuxième fois, et pour de
+        bon.
+        """
+        # Liste, pas union de recordsets : un `|=` par tour serait quadratique
+        # sur un recalcul de masse.
+        pending = []
         for rec in self:
-            if rec.mail_message_id and rec.mail_message_id.body:
-                rec.body_html = self._scrub_body(rec.mail_message_id.body)
-                continue
-            if rec.source == "imap" and rec.raw_rfc822:
-                try:
-                    raw = base64.b64decode(rec.raw_rfc822)
-                    parsed = bf_email_imap.parse_rfc822(raw)
-                    body_html, body_plain = bf_email_imap.extract_body(parsed)
-                    if body_html:
-                        rec.body_html = self._scrub_body(body_html)
-                    elif body_plain:
-                        # Wrap plain text in <pre> for chatter-like rendering.
-                        escaped = (body_plain
-                                   .replace("&", "&amp;")
-                                   .replace("<", "&lt;")
-                                   .replace(">", "&gt;"))
-                        rec.body_html = self._scrub_body(
-                            f"<pre style=\"white-space:pre-wrap\">{escaped}</pre>"
-                        )
-                    else:
-                        rec.body_html = ""
-                except Exception:
-                    _logger.warning(
-                        "bf.email #%s: failed to parse raw_rfc822 for body",
-                        rec.id, exc_info=True,
-                    )
-                    rec.body_html = ""
+            body = rec.mail_message_id.body if rec.mail_message_id else ""
+            if body:
+                rec.body_html = self._scrub_body(body)
             else:
                 rec.body_html = ""
+                pending.append(rec)
+        if not pending:
+            return
+
+        missing = self.browse([rec.id for rec in pending])
+        mail_bodies = missing._mail_mail_bodies()
+        stored = missing._stored_body_html()
+        for rec in missing:
+            fallback = mail_bodies.get(rec.mail_message_id.id) or ""
+            if not fallback and rec.raw_rfc822:
+                fallback = rec._body_html_from_raw()
+            rec.body_html = self._scrub_body(fallback) or stored.get(rec.id, "")
+
+    def _mail_mail_bodies(self):
+        """``{mail_message_id: body_html}`` des ``mail.mail`` encore vivants.
+
+        Une requête pour tout le lot. ``sudo`` parce que l'ACL de ``mail.mail``
+        est réservée à ``base.group_system`` : sans ça le repli ne servirait
+        qu'à l'administrateur, c'est-à-dire à personne dans l'usage courant.
+        """
+        msg_ids = [rec.mail_message_id.id for rec in self if rec.mail_message_id]
+        if not msg_ids:
+            return {}
+        bodies = {}
+        for row in self.env["mail.mail"].sudo().search_read(
+            [("mail_message_id", "in", msg_ids)],
+            ["mail_message_id", "body_html"],
+            order="id",
+        ):
+            mid = row["mail_message_id"] and row["mail_message_id"][0]
+            body = row.get("body_html") or ""
+            if mid and body and mid not in bodies:
+                bodies[mid] = body
+        return bodies
+
+    def _stored_body_html(self):
+        """``{id: body_html}`` lu à même la colonne.
+
+        Volontairement en SQL brut : repasser par l'ORM pour lire le champ qu'on
+        est en train de calculer rappellerait le calcul. On veut exactement ce
+        qui est sur le disque, rien d'autre.
+        """
+        ids = [rec.id for rec in self if isinstance(rec.id, int)]
+        if not ids:
+            return {}
+        self.env.cr.execute(
+            "SELECT id, body_html FROM bf_email WHERE id IN %s", (tuple(ids),)
+        )
+        return {row[0]: row[1] or "" for row in self.env.cr.fetchall()}
+
+    def _body_html_from_raw(self):
+        """Corps HTML extrait de ``raw_rfc822``, ou "" si la copie est illisible."""
+        self.ensure_one()
+        try:
+            parsed = bf_email_imap.parse_rfc822(base64.b64decode(self.raw_rfc822))
+            body_html, body_plain = bf_email_imap.extract_body(parsed)
+        except Exception:
+            _logger.warning(
+                "bf.email #%s: failed to parse raw_rfc822 for body",
+                self.id, exc_info=True,
+            )
+            return ""
+        if body_html:
+            return body_html
+        if body_plain:
+            # Wrap plain text in <pre> for chatter-like rendering.
+            escaped = (body_plain
+                       .replace("&", "&amp;")
+                       .replace("<", "&lt;")
+                       .replace(">", "&gt;"))
+            return f"<pre style=\"white-space:pre-wrap\">{escaped}</pre>"
+        return ""
 
     @api.depends("body_html")
     def _compute_body_html_display(self):
@@ -962,62 +1033,189 @@ class BfEmail(models.Model):
                     exc_info=True,
                 )
 
-    def _apply_rules(self):
-        """Run active bf.email.rule definitions over each record.
+    def _rule_owner_context(self, owner):
+        """Resolve once per owner what several clauses would each re-query.
 
-        Rules are evaluated in (sequence, id) order. First matching rule per
-        target field wins; later rules can still set untouched fields unless
-        an earlier one set ``stop_processing=True``.
+        ``_get_self_addresses`` hits ``bf.email.account`` every call; without
+        this, a rule set with three address-aware clauses would run that search
+        three times per message.
+        """
+        addresses = self._get_self_addresses(user=owner)
+        return {
+            "self_addresses": addresses,
+            "self_domains": {a.split("@", 1)[1] for a in addresses if "@" in a},
+        }
+
+    def _apply_rules(self, allow_outbound=True, rules=None):
+        """Run the applicable bf.email.rule definitions over each record.
+
+        Rules are evaluated in (sequence, id) order, personal rules and
+        company-wide rules together. The first rule to claim a target wins;
+        later rules can still set untouched targets unless an earlier one set
+        ``stop_processing``.
+
+        ``allow_outbound=False`` keeps the classification and the filing but
+        holds back everything that leaves the building — the forwards AND the
+        absence replies. ``action_replay_rules`` passes it: re-running rules
+        over an archive must not put months of old mail back on the wire, and
+        must certainly not tell three months of correspondents that somebody
+        is away.
+
+        ``rules`` narrows the walk to a given recordset instead of everything
+        the owner owns. That is what « appliquer cette règle maintenant »
+        passes: applying one rule after the fact must not quietly re-file the
+        same message through the twelve others as a side effect.
         """
         if not self:
             return
         Rule = self.env["bf.email.rule"].sudo()
-        # Group records by owner so each user's rule set is fetched once.
+        # Group records by owner so each user's rule set and address set are
+        # resolved once.
         by_user = {}
         for rec in self:
-            by_user[rec.user_id.id] = by_user.get(rec.user_id.id, self.env["bf.email"]) | rec
+            by_user.setdefault(rec.user_id.id, self.env["bf.email"])
+            by_user[rec.user_id.id] |= rec
+
         auto_handled = self.browse()
+        # folder -> recordset, so one IMAP connection serves every move to the
+        # same destination instead of one connection per message.
+        moves = {}
+        forwards = []
+
         for uid, records in by_user.items():
-            rules = Rule.search([("user_id", "=", uid)])
-            if not rules:
+            if rules is not None:
+                # Keep the engine's own ordering even on a hand-picked set:
+                # « first rule to claim a target wins » is only meaningful if
+                # the walk is still in (sequence, id) order.
+                applicable = rules.sudo().filtered(
+                    lambda r: not r.user_id or r.user_id.id == uid
+                ).sorted(lambda r: (r.sequence, r.id))
+            else:
+                applicable = Rule.search([
+                    "|", ("user_id", "=", uid), ("user_id", "=", False),
+                ])
+            if not applicable:
                 continue
+            owner = self.env["res.users"].browse(uid) if uid else self.env.user
+            ctx = self._rule_owner_context(owner)
             for rec in records:
-                written_fields = set()
-                for rule in rules:
-                    if not rule._match(rec):
+                taken = set()
+                vals = {}
+                extras = {}
+                for rule in applicable:
+                    if not rule._match(rec, ctx):
                         continue
-                    vals = {}
-                    if rule.set_category and "category" not in written_fields:
-                        vals["category"] = rule.set_category
-                        written_fields.add("category")
-                    if rule.set_priority and "priority" not in written_fields:
-                        vals["priority"] = rule.set_priority
-                        written_fields.add("priority")
-                    if rule.set_partner_id and "partner_id" not in written_fields:
-                        vals["partner_id"] = rule.set_partner_id.id
-                        written_fields.add("partner_id")
-                    if rule.set_handled and not rec.is_handled:
-                        vals["is_handled"] = True
-                        vals["handled_at"] = fields.Datetime.now()
-                        written_fields.add("is_handled")
-                        auto_handled |= rec
-                    if vals:
-                        rec.write(vals)
+                    rule_vals, rule_extras = rule._plan_actions(rec, taken)
+                    vals.update(rule_vals)
+                    if "folder" in rule_extras:
+                        extras.setdefault("folder", rule_extras["folder"])
+                    for rule_id in rule_extras.get("forward_rules", []):
+                        extras.setdefault("forward_rules", []).append(rule_id)
                     if rule.stop_processing:
                         break
-        # Mirror action_archive's bilateral IMAP writeback for rule-driven
-        # auto-handles. Skip rows whose account has writeback disabled.
-        if auto_handled:
-            writeback_rows = auto_handled.filtered(
+                if vals:
+                    rec.write(vals)
+                    if vals.get("is_handled"):
+                        auto_handled |= rec
+                folder = extras.get("folder")
+                if folder:
+                    moves.setdefault(folder, self.browse())
+                    moves[folder] |= rec
+                if allow_outbound and extras.get("forward_rules"):
+                    forwards.append((rec, extras["forward_rules"]))
+
+        # An explicit destination folder supersedes the archive writeback: the
+        # message must land in one place, not be copied twice and expunged once.
+        moved = self.browse()
+        for folder, rows in moves.items():
+            targets = rows.filtered(
                 lambda r: r.account_id and r.account_id.writeback_archive
             )
-            if writeback_rows:
+            # Rows whose account has no writeback are NOT counted as moved:
+            # nothing happened to them, so they must still get the archive
+            # writeback below if a rule also marked them handled. Saying so
+            # out loud — a rule that quietly does nothing is worse than one
+            # that fails.
+            skipped = rows - targets
+            if skipped:
+                _logger.info(
+                    "bf.email : déplacement vers %r ignoré pour %s ligne(s) "
+                    "— compte sans réécriture IMAP (ids %s)",
+                    folder, len(skipped), skipped.ids[:20],
+                )
+            if not targets:
+                continue
+            moved |= targets
+            try:
+                targets._imap_writeback_move(folder)
+            except Exception:
+                _logger.warning(
+                    "bf.email: déplacement IMAP vers %r impossible "
+                    "(règle)", folder, exc_info=True,
+                )
+
+        # Mirror action_archive's bilateral IMAP writeback for rule-driven
+        # auto-handles. Skip rows whose account has writeback disabled, and
+        # rows a rule already filed somewhere explicit.
+        writeback_rows = (auto_handled - moved).filtered(
+            lambda r: r.account_id and r.account_id.writeback_archive
+        )
+        if writeback_rows:
+            try:
+                writeback_rows._imap_writeback_archive()
+            except Exception:
+                _logger.warning(
+                    "bf.email rule auto-handle IMAP writeback failed",
+                    exc_info=True,
+                )
+
+        # Forwarding last: everything the rules decided about this message is
+        # already written, so a failure here cannot leave the row half-filed.
+        for rec, rule_ids in forwards:
+            for rule in Rule.browse(rule_ids):
                 try:
-                    writeback_rows._imap_writeback_archive()
+                    rule._forward(rec)
                 except Exception:
                     _logger.warning(
-                        "bf.email rule auto-handle IMAP writeback failed",
-                        exc_info=True,
+                        "bf.email.rule %s: réacheminement de bf.email %s "
+                        "en échec", rule.id, rec.id, exc_info=True,
+                    )
+
+        if allow_outbound:
+            self._apply_absence()
+
+    def _apply_absence(self):
+        """Answer, once, whoever wrote while the owner is away.
+
+        Runs after the rules, deliberately: a rule may have handed the row to
+        somebody else or marked it handled, and the absence answer should see
+        the message as the rules left it. A rule that files a newsletter out
+        of the box also spares it an absence reply, which is the right
+        outcome and costs no extra guard.
+        """
+        if not self:
+            return
+        Absence = self.env["bf.email.absence"].sudo()
+        by_user = {}
+        for rec in self:
+            if rec.direction != "in" or not rec.user_id:
+                continue
+            by_user.setdefault(rec.user_id.id, self.browse())
+            by_user[rec.user_id.id] |= rec
+
+        for uid, records in by_user.items():
+            owner = self.env["res.users"].browse(uid)
+            absence = Absence._active_for(owner)
+            if not absence:
+                continue
+            ctx = self._rule_owner_context(owner)
+            for rec in records:
+                try:
+                    absence._send(rec, ctx)
+                except Exception:
+                    _logger.warning(
+                        "bf.email.absence %s: réponse à bf.email %s en échec",
+                        absence.id, rec.id, exc_info=True,
                     )
 
     # ------------------------------------------------------------------
@@ -1154,15 +1352,24 @@ class BfEmail(models.Model):
                     if not source or source.upper() == "INBOX":
                         continue
                     if not bf_email_imap.select_folder(conn, source, readonly=False):
+                        # Le dossier a été renommé ou supprimé au webmail. Il
+                        # n'y a rien à ramener, et la ligne ne doit pas rester
+                        # à désigner un endroit qui n'existe plus : sans ce
+                        # nettoyage elle quittait « Traités » sans jamais
+                        # reparaître dans la boîte — ni là, ni ailleurs.
                         _logger.info(
-                            "bf.email IMAP restore: dossier %r non sélectionnable "
-                            "pour #%s", source, rec.id)
+                            "bf.email IMAP restore: dossier %r introuvable "
+                            "pour #%s — lien IMAP marqué inconnu", source, rec.id)
+                        rec._imap_forget_location()
                         continue
                     uid = self._imap_find_uid(conn, rec.message_id_header)
                     if not uid:
+                        # Le dossier existe, le message n'y est plus (vidé,
+                        # déplacé à la main, purgé). Même conclusion.
                         _logger.info(
-                            "bf.email IMAP restore: #%s introuvable dans %r",
-                            rec.id, source)
+                            "bf.email IMAP restore: #%s introuvable dans %r "
+                            "— lien IMAP marqué inconnu", rec.id, source)
+                        rec._imap_forget_location()
                         continue
                     try:
                         uid_tok = bf_email_imap.imap_uid_token(uid)
@@ -1188,16 +1395,36 @@ class BfEmail(models.Model):
                     new_uid = None
                     if bf_email_imap.select_folder(conn, "INBOX", readonly=True):
                         new_uid = self._imap_find_uid(conn, rec.message_id_header)
+                    # UID introuvable = on efface plutôt que de garder celui
+                    # du dossier d'archive : conservé, il désignerait un autre
+                    # message (ou rien) dans l'INBOX, et le prochain
+                    # archivage s'en servirait pour ne rien déplacer du tout.
                     rec.write({
                         "imap_folder": "INBOX",
                         "imap_in_inbox": True,
-                        "imap_uid": str(new_uid) if new_uid else rec.imap_uid,
+                        "imap_uid": str(new_uid) if new_uid else False,
                     })
             finally:
                 try:
                     conn.logout()
                 except Exception:
                     pass
+
+    def _imap_forget_location(self):
+        """« On ne sait plus où est la copie serveur » — dit franchement.
+
+        Vider ``imap_folder`` n'est pas un détail cosmétique : c'est la
+        troisième branche de ``_inbox_domain``. Une ligne non traitée dont
+        l'emplacement serveur est inconnu revient dans la boîte de réception,
+        au lieu de tomber entre « Traités » qu'elle vient de quitter et
+        « Boîte de réception » où ``imap_in_inbox`` faux l'empêchait d'entrer.
+
+        On ne ment pas dans l'autre sens non plus : ``imap_in_inbox`` reste
+        faux, parce que le message n'est pas dans l'INBOX du serveur — il
+        n'est nulle part que nous sachions.
+        """
+        self.write({"imap_uid": False, "imap_folder": False,
+                    "imap_in_inbox": False})
 
     @api.model
     def _imap_find_uid(self, conn, message_id):
@@ -1234,20 +1461,56 @@ class BfEmail(models.Model):
         }
 
     def _imap_writeback_archive(self):
-        """Move corresponding IMAP messages from INBOX to Archives/{YYYY}.
+        """Move the IMAP copies out of INBOX into the account's archive folder.
 
-        Per-account: rows are grouped by ``account_id`` and one connection
-        is opened per account. Rows without an account_id (chatter/gateway
-        origin) are skipped — there's no IMAP server to write to.
+        Thin wrapper kept for its callers (``action_archive``, the rule engine's
+        auto-handle path): the destination is each account's own
+        ``archive_folder`` template.
         """
-        candidates = self.filtered(lambda r: r.message_id_header and r.account_id)
+        return self._imap_writeback_move(None)
+
+    def _imap_writeback_move(self, folder_template, account=None):
+        """Move the corresponding IMAP messages from INBOX to a folder.
+
+        ``folder_template`` may contain ``{YYYY}`` and ``{MM}``, expanded per
+        message from its own date. Passing ``None`` falls back to each
+        account's ``archive_folder`` (itself a template), which is what
+        archiving has always done.
+
+        Per-account: rows are grouped by ``account_id`` and one connection is
+        opened per account. Rows without an account_id (chatter/gateway origin)
+        are skipped — there's no IMAP server to write to.
+
+        ``account`` forces the mailbox to act in, whatever the rows carry.
+        The recovery sweep needs it: one person can own two mailboxes, and an
+        address delivered to both leaves a physical copy in each while a
+        single ``bf.email`` row tracks one of them. Grouping by
+        ``rec.account_id`` then connects to the wrong mailbox, finds nothing,
+        and leaves the observed copy in the INBOX **for ever** — silently,
+        once an hour. Measured on BF 2026-08-26: three mails handled since
+        the day before, still in the other mailbox's INBOX, replayed hourly
+        with no effect and no warning.
+
+        ⚠️ When acting on a foreign mailbox the row is **not** rewritten:
+        its ``imap_uid`` / ``imap_folder`` describe *its own* copy, in *its
+        own* mailbox. Overwriting them with a UID from another mailbox would
+        mint precisely the stale UID the guard below exists to catch.
+        """
+        if account is not None:
+            candidates = self.filtered(lambda r: r.message_id_header)
+        else:
+            candidates = self.filtered(
+                lambda r: r.message_id_header and r.account_id)
         if not candidates:
             return
 
         by_account = {}
-        for rec in candidates:
-            by_account.setdefault(rec.account_id, self.env["bf.email"])
-            by_account[rec.account_id] |= rec
+        if account is not None:
+            by_account[account] = candidates
+        else:
+            for rec in candidates:
+                by_account.setdefault(rec.account_id, self.env["bf.email"])
+                by_account[rec.account_id] |= rec
 
         for account, recs in by_account.items():
             if not (account.host and account.login and account.password):
@@ -1264,34 +1527,53 @@ class BfEmail(models.Model):
             try:
                 if not bf_email_imap.select_folder(conn, "INBOX", readonly=False):
                     continue
-                tpl = account.archive_folder or "Archives/{YYYY}"
+                tpl = folder_template or account.archive_folder \
+                    or "Archives/{YYYY}"
+                # Destinations this connection already tried to create, so a
+                # batch of fifty messages bound for one missing folder issues
+                # one CREATE and not fifty.
+                ensured = set()
                 for rec in recs:
                     uid = None
-                    if rec.imap_uid and (rec.imap_folder or "").upper() == "INBOX":
-                        uid = rec.imap_uid
-                    else:
-                        try:
-                            status, data = conn.uid(
-                                "SEARCH", None, "HEADER", "Message-ID",
-                                bf_email_imap.imap_reject_crlf(
-                                    rec.message_id_header, "Message-ID"),
-                            )
-                            if status == "OK" and data and data[0]:
-                                raw = data[0]
-                                if isinstance(raw, bytes):
-                                    raw = raw.decode("ascii", errors="ignore")
-                                found = [x for x in raw.split() if x.isdigit()]
-                                uid = found[0] if found else None
-                        except Exception:
-                            _logger.debug(
-                                "bf.email writeback HEADER search failed "
-                                "for #%s (%s)", rec.id, rec.message_id_header,
-                                exc_info=True,
+                    # Copie d'une AUTRE boîte : l'UID de la ligne n'y désigne
+                    # rien, on va droit à la recherche par en-tête.
+                    foreign = bool(rec.account_id) and rec.account_id != account
+                    if (not foreign and rec.imap_uid
+                            and (rec.imap_folder or "").upper() == "INBOX"):
+                        # ⚠️ Le chemin rapide vérifie l'UID stocké avant de
+                        # s'en servir. Un UID n'a de sens que dans SA boîte :
+                        # celui d'une ligne restaurée depuis l'archive, ou
+                        # relevé par le cron d'un autre compte, ne désigne
+                        # rien ici. `UID COPY` répond alors OK sans rien
+                        # copier (RFC 3501), `STORE \Deleted` ne marque rien,
+                        # et la ligne enregistre un archivage qui n'a pas eu
+                        # lieu : le message reste en INBOX pendant qu'Odoo le
+                        # dit traité. C'est la dérive rapportée en #24976.
+                        verdict = bf_email_imap.uid_carries_message_id(
+                            conn, rec.imap_uid, rec.message_id_header,
+                        )
+                        if verdict:
+                            uid = rec.imap_uid
+                        elif verdict is False:
+                            _logger.info(
+                                "bf.email writeback (%s): UID %s périmé pour "
+                                "#%s — il ne porte pas %s dans cette INBOX, "
+                                "repli sur la recherche par en-tête",
+                                account.display_name, rec.imap_uid, rec.id,
+                                rec.message_id_header,
                             )
                     if not uid:
+                        uid = self._imap_find_uid(conn, rec.message_id_header)
+                    if not uid:
                         continue
-                    year = (rec.date or fields.Datetime.now()).strftime("%Y")
-                    target = tpl.replace("{YYYY}", year)
+                    when = rec.date or fields.Datetime.now()
+                    target = tpl.replace(
+                        "{YYYY}", when.strftime("%Y")
+                    ).replace("{MM}", when.strftime("%m"))
+                    if target.upper() == "INBOX":
+                        # Nothing to do, and a COPY onto ourselves followed by
+                        # an EXPUNGE would destroy the message.
+                        continue
                     try:
                         uid_tok = bf_email_imap.imap_uid_token(uid)
                         status, resp = conn.uid(
@@ -1302,6 +1584,23 @@ class BfEmail(models.Model):
                         # guard a refused COPY (folder absent, quota, lock) is
                         # still followed by STORE \Deleted + EXPUNGE and the
                         # message is destroyed with no copy anywhere.
+                        if status != "OK" and target not in ensured:
+                            # By far the most common refusal is a destination
+                            # that does not exist: a rule names a folder the
+                            # owner never created. Create it and try once
+                            # more, rather than leaving the message in the
+                            # INBOX with a row that claims it was filed.
+                            ensured.add(target)
+                            bf_email_imap.ensure_folder(conn, target)
+                            status, resp = conn.uid(
+                                "COPY", uid_tok,
+                                bf_email_imap.imap_quote_mailbox(target),
+                            )
+                            if status == "OK":
+                                _logger.info(
+                                    "bf.email IMAP writeback: dossier %r créé "
+                                    "à la demande d'une règle", target,
+                                )
                         if status != "OK":
                             _logger.warning(
                                 "bf.email IMAP writeback: COPY vers %r refusé "
@@ -1310,11 +1609,20 @@ class BfEmail(models.Model):
                             )
                             continue
                         conn.uid("STORE", uid_tok, "+FLAGS", "(\\Deleted)")
-                        rec.write({
-                            "imap_uid": str(uid),
-                            "imap_folder": target,
-                            "imap_in_inbox": False,
-                        })
+                        if foreign:
+                            _logger.info(
+                                "bf.email writeback: copie de #%s trouvée "
+                                "dans l'INBOX de %s (la ligne suit %s) — "
+                                "classée dans %r, ligne inchangée",
+                                rec.id, account.display_name,
+                                rec.account_id.display_name, target,
+                            )
+                        else:
+                            rec.write({
+                                "imap_uid": str(uid),
+                                "imap_folder": target,
+                                "imap_in_inbox": False,
+                            })
                     except Exception:
                         _logger.warning(
                             "bf.email IMAP writeback failed for UID %s",
@@ -1329,6 +1637,79 @@ class BfEmail(models.Model):
                     conn.logout()
                 except Exception:
                     pass
+
+    def _imap_writeback_where_rules_asked(self, account=None):
+        """Re-file each row where its own rules wanted it, archive by default.
+
+        ``_imap_writeback_archive`` sends everything to the account's archive
+        folder. That is the right default and the wrong answer for a row a
+        rule meant for « Comptabilité »: the recovery sweep would quietly
+        contradict the rule that filed it in the first place, and the message
+        would end up somewhere nobody asked for with no trace of why.
+
+        The walk mirrors ``_plan_actions``: rules in (sequence, id) order, the
+        first one naming a folder wins, ``stop_processing`` cuts it short.
+        ``None`` as a destination means « nowhere in particular » — that group
+        goes to the account archive, exactly as before.
+        """
+        if not self:
+            return
+        Rule = self.env["bf.email.rule"].sudo()
+        rules_by_owner = {}
+        ctx_by_owner = {}
+        by_target = {}
+        for rec in self:
+            uid = rec.user_id.id
+            if uid not in rules_by_owner:
+                rules_by_owner[uid] = Rule.search([
+                    "|", ("user_id", "=", uid), ("user_id", "=", False),
+                ])
+                ctx_by_owner[uid] = self._rule_owner_context(
+                    rec.user_id or self.env.user)
+            target = None
+            for rule in rules_by_owner[uid]:
+                if not rule._match(rec, ctx_by_owner[uid]):
+                    continue
+                if rule.set_folder:
+                    target = rule._resolve_folder(rec)
+                    break
+                if rule.stop_processing:
+                    break
+            by_target.setdefault(target, self.browse())
+            by_target[target] |= rec
+        for target, rows in by_target.items():
+            rows._imap_writeback_move(target, account=account)
+
+    def action_apply_rules_now(self):
+        """Re-run the rules over the selected rows, on demand.
+
+        Bound as a list mass action. Rows belonging to somebody else are left
+        alone and counted out loud rather than skipped in silence: an
+        administrator reading another mailbox has write access to none of it,
+        and a mass action that half-worked without saying so is worse than one
+        that refuses.
+
+        Never forwards and never answers an absence — same reason as a replay.
+        """
+        mine = self.filtered(lambda r: r.user_id == self.env.user)
+        foreign = self - mine
+        if mine:
+            mine._apply_rules(allow_outbound=False)
+        message = _("%s courriel(s) ré-évalué(s).", len(mine))
+        if foreign:
+            message += " " + _(
+                "%s appartiennent à quelqu'un d'autre et n'ont pas été "
+                "touchés.", len(foreign))
+        return {
+            "type": "ir.actions.client",
+            "tag": "display_notification",
+            "params": {
+                "title": _("Règles appliquées"),
+                "message": message,
+                "type": "success" if mine else "warning",
+                "sticky": False,
+            },
+        }
 
     def action_open_source_record(self):
         self.ensure_one()
@@ -1403,10 +1784,15 @@ class BfEmail(models.Model):
         # "Re : " through).
         subject = dedup_subject_prefix(self.subject, force=prefix)
 
+        # Résolue une seule fois : elle mène la signature du corps ET le « De »
+        # que le composeur portera. Les laisser diverger, c'est réintroduire
+        # le défaut qu'on corrige — écrire d'une adresse et signer d'une autre.
+        identity = self._compose_identity()
+
         if is_forward:
-            quote_body = self._build_forward_body()
+            quote_body = self._build_forward_body(identity=identity)
         else:
-            quote_body = self._build_reply_quote_body()
+            quote_body = self._build_reply_quote_body(identity=identity)
 
         target_model, target_res_id = self._composer_target()
 
@@ -1432,6 +1818,12 @@ class BfEmail(models.Model):
             "quote_body": quote_body,
             "mail_create_nosubscribe": True,
         }
+
+        if identity:
+            ctx["default_bf_identity_id"] = identity.id
+            # Ce que le corps porte réellement, pour que changer d'identité
+            # dans le composeur sache quoi remplacer sans toucher au texte.
+            ctx["default_bf_signature_snapshot"] = identity._signature_for()
 
         # Forwards on orphans: ship the original attachments.
         if is_forward and not self.mail_message_id and self.raw_rfc822:
@@ -1577,24 +1969,50 @@ class BfEmail(models.Model):
                 ids.append(partner.id)
         return ids
 
-    def _compose_signature_block(self):
-        """Editable landing line + the current user's signature.
+    def _compose_signature_block(self, identity=None):
+        """Editable landing line + the signature of the identity writing.
 
         Mirrors the top of ``mail.message._prep_quoted_reply_body`` so the
         composer always opens with a cursor above the quote and the user's
         signature present \u2014 even for orphan IMAP rows that have no chatter
-        message to delegate to. ``signature`` is the same field the multi-company
-        signature module renders, so replies pick up the normalized signature.
+        message to delegate to.
+
+        ``identity`` m\u00e8ne la signature quand elle en porte une : \u00e9crire sous
+        une autre adresse et signer de l'autre soci\u00e9t\u00e9 est pr\u00e9cis\u00e9ment le
+        d\u00e9faut qu'on corrige. Sans identit\u00e9, ou sans signature dessus, on
+        retombe sur ``res.users.signature``, le m\u00eame champ que rend le module
+        de signature multi-soci\u00e9t\u00e9.
         """
         self.ensure_one()
+        if identity is None:
+            identity = self._compose_identity()
         return (
             '<p style="margin:0 0 12px 0;"><br/></p>'
-            f'{self.env.user.signature or ""}'
+            f'{identity._signature_for()}'
         )
 
-    def _build_reply_quote_body(self):
+    def _compose_identity(self):
+        """L'identit\u00e9 sous laquelle r\u00e9pondre \u00e0 cette rang\u00e9e.
+
+        R\u00e9pondre depuis la bo\u00eete qui a re\u00e7u est le seul d\u00e9faut qui ne surprend
+        personne, et c'est d\u00e9j\u00e0 ce que fait le r\u00e9pondeur d'absence. \u00c0 d\u00e9faut
+        de compte rattach\u00e9, l'identit\u00e9 par d\u00e9faut de la personne.
+        """
+        self.ensure_one()
+        Identity = self.env["bf.email.identity"]
+        by_account = Identity._for_account(self.account_id)
+        # Le compte d'une rangée peut appartenir à quelqu'un d'autre (un
+        # administrateur courriel lit toutes les boîtes). Proposer SON identité
+        # ne servirait à rien : la garde d'envoi la refuserait de toute façon.
+        if by_account and by_account.user_id == self.env.user:
+            return by_account
+        return Identity._default_for(self.env.user)
+
+    def _build_reply_quote_body(self, identity=None):
         """Build the quoted-reply HTML for the composer."""
         self.ensure_one()
+        if identity is None:
+            identity = self._compose_identity()
         if self.mail_message_id:
             try:
                 return self.mail_message_id._prep_quoted_reply_body() or ""
@@ -1610,7 +2028,7 @@ class BfEmail(models.Model):
         sender = self.email_from or ""
         return (
             '<div>'
-            f'{self._compose_signature_block()}'
+            f'{self._compose_signature_block(identity)}'
             '<br/><br/>'
             '<blockquote style="border-left:3px solid #ccc;padding-left:8px;'
             'margin:8px 0;color:#666;">'
@@ -1620,9 +2038,11 @@ class BfEmail(models.Model):
             '</div>'
         )
 
-    def _build_forward_body(self):
+    def _build_forward_body(self, identity=None):
         """Build the standard 'Forwarded message' wrapper for the composer."""
         self.ensure_one()
+        if identity is None:
+            identity = self._compose_identity()
         date = fields.Datetime.to_string(self.date) if self.date else ""
         # Sanitize raw IMAP HTML before it reaches the OWL editor (see
         # _build_reply_quote_body for why).
@@ -1633,7 +2053,7 @@ class BfEmail(models.Model):
         )
         return (
             '<div>'
-            f'{self._compose_signature_block()}'
+            f'{self._compose_signature_block(identity)}'
             '<br/><br/>'
             '<p>---------- Forwarded message ---------- </p>'
             f'<p><strong>De&nbsp;:</strong> {self.email_from or ""}<br/>'
@@ -2317,7 +2737,7 @@ class BfEmail(models.Model):
         # insert a whole thread at one identical timestamp; with strict ``>``,
         # once the watermark lands on that exact second every sibling message
         # is skipped *permanently* (never retried) — the cause of the missing
-        # task #6557 cluster. ``>=`` re-scans the boundary timestamp each run;
+        #cluster. ``>=`` re-scans the boundary timestamp each run;
         # _should_sync dedups by (message_id, user) so no duplicate is created,
         # and the cluster size is always far below batch_size in practice.
         messages = self.env["mail.message"].sudo().search(
@@ -2636,7 +3056,7 @@ class BfEmail(models.Model):
         return "in"
 
     # ------------------------------------------------------------------
-    # Real-time wake-up (IMAP IDLE watcher)
+    # Real-time wake-up (IMAP IDLE daemon)
     # ------------------------------------------------------------------
     # Dernier réveil accepté par usager, pour borner le débit. Par processus,
     # volontairement : une table servirait un compteur à écrire à chaque
@@ -2648,18 +3068,18 @@ class BfEmail(models.Model):
     def imap_wake(self, reason=False):
         """Run the IMAP ingestion now instead of waiting for the 5-minute cron.
 
-        Meant to be called over XML-RPC by an external IMAP IDLE watcher: one
-        process holding an IDLE connection per active account, firing this the
-        moment the mail server announces an arrival. All it does is ask the
-        scheduler to run ``ir_cron_sync_imap`` immediately — ``_trigger``
-        writes an ``ir.cron.trigger`` row and NOTIFYs the cron worker, which is
-        parked in ``select()`` on ``LISTEN cron_trigger`` and wakes within a
-        second.
+        Called over XML-RPC by the ``symbifox-imap-idle`` companion container,
+        which holds one IMAP IDLE connection per active account and fires this
+        the moment the server announces an arrival. All it does is ask the
+        scheduler to run
+        ``ir_cron_sync_imap`` immediately: ``_trigger`` writes an
+        ``ir.cron.trigger`` row and NOTIFYs the cron worker, which is parked in
+        ``select()`` on ``LISTEN cron_trigger`` and wakes within a second.
 
         Deliberately *not* a direct call to ``_cron_sync_imap``. Going through
         the scheduler keeps ingestion inside the single cron worker, so a wake
         can never run alongside the five-minute pass — ``_acquire_one_job``
-        takes the row ``FOR NO KEY UPDATE SKIP LOCKED``. The watcher is an
+        takes the row ``FOR NO KEY UPDATE SKIP LOCKED``. The daemon is an
         accelerator and never a second ingestion path: if it dies, the cron
         keeps its own schedule and nothing is lost but latency.
 
@@ -2945,7 +3365,18 @@ class BfEmail(models.Model):
                     "bf.email IMAP mirror (%s): %s", account.display_name, exc,
                 )
                 continue
+            folders = []
             try:
+                # L'arborescence pendant qu'on tient la connexion : la colonne
+                # de gauche de la boîte de réception la lit dans le cache et
+                # n'a alors jamais à ouvrir de session elle-même.
+                try:
+                    folders = bf_email_imap.list_folders(conn)
+                except Exception:
+                    _logger.debug(
+                        "bf.email IMAP mirror (%s) : LIST illisible",
+                        account.display_name, exc_info=True,
+                    )
                 if not bf_email_imap.select_folder(conn, "INBOX", readonly=True):
                     continue
                 status, data = conn.uid("SEARCH", None, "ALL")
@@ -2961,6 +3392,7 @@ class BfEmail(models.Model):
                     conn.logout()
                 except Exception:
                     pass
+                account._store_imap_folders(folders)
 
             rows = Rows.search([
                 ("account_id", "=", account.id),
@@ -3082,7 +3514,10 @@ class BfEmail(models.Model):
             if dry_run:
                 continue
             try:
-                stale._imap_writeback_archive()
+                # Dans la boîte OBSERVÉE, pas celle que porte la ligne : la
+                # copie qu'on vient de voir est ici, et c'est elle qu'il
+                # faut sortir de l'INBOX.
+                stale._imap_writeback_where_rules_asked(account=account)
             except Exception:
                 _logger.warning(
                     "bf.email writeback sweep (%s): recopie échouée",
@@ -3182,6 +3617,13 @@ class BfEmail(models.Model):
                 })
             if not existing.account_id:
                 backfill["account_id"] = account.id
+            if not existing.raw_rfc822 and not existing.mail_message_id.sudo().body:
+                # La copie interne d'Odoo n'a PAS de corps : envoi construit en
+                # ``mail.mail`` direct, sans document (formulaire du site,
+                # digest interne). Le texte ne vit que sur le ``mail.mail``, que
+                # ``auto_delete`` supprime dès l'envoi réussi. Le message livré
+                # est alors la seule copie durable — on la garde.
+                backfill["raw_rfc822"] = bf_email_imap.attachment_to_b64(raw_bytes)
             if backfill:
                 existing.write(backfill)
             return False
@@ -3203,6 +3645,18 @@ class BfEmail(models.Model):
                     "account_id": account.id,
                     "company_id": account.user_id.company_id.id,
                 })
+                if not existing_msg.body:
+                    # « L'interne gagne » suppose que la copie d'Odoo porte le
+                    # message. Elle ne le porte pas quand le ``mail.mail`` a été
+                    # créé sans document : ``mail.message.body`` reste vide.
+                    # Garder la copie brute plutôt que de jeter le seul
+                    # exemplaire du texte. Volontairement CONDITIONNEL : stocker
+                    # le RFC 2822 de toute rangée promue doublerait le stockage
+                    # et déplacerait le régime de rétention des rangées-pointeur
+                    # (voir bf_email_privacy, COR-BFMAIL-1 / COR-BFMAIL-2).
+                    chatter_vals["raw_rfc822"] = bf_email_imap.attachment_to_b64(
+                        raw_bytes
+                    )
                 self.with_context(
                     mail_create_nosubscribe=True,
                     tracking_disable=True,
@@ -3697,29 +4151,16 @@ class BfEmail(models.Model):
         except bf_email_imap.ImapConnectionError as exc:
             raise UserError(_("Connexion IMAP impossible : %s", exc)) from exc
         try:
-            status, raw = conn.list()
-            folders = []
-            if status == "OK" and raw:
-                for line in raw:
-                    if not line:
-                        continue
-                    decoded = (
-                        line.decode("utf-8", errors="replace")
-                        if isinstance(line, bytes) else line
-                    )
-                    tokens = decoded.rsplit(None, 1)
-                    name = (
-                        tokens[-1].strip().strip('"') if tokens else decoded
-                    )
-                    if not name:
-                        continue
-                    folders.append({
-                        "name": name,
-                        "has_children": "\\HasChildren" in decoded,
-                        "noselect": "\\Noselect" in decoded,
-                        "total_count": None,
-                        "unread_count": None,
-                    })
+            # Un seul analyseur de réponse LIST pour tout le module : celui
+            # d'ici coupait au premier espace (`rsplit(None, 1)`), donc un
+            # dossier « Anciens clients » y perdait la moitié de son nom.
+            folders = [{
+                "name": f["name"],
+                "has_children": f["has_children"],
+                "noselect": f["noselect"],
+                "total_count": None,
+                "unread_count": None,
+            } for f in bf_email_imap.list_folders(conn)]
             # STATUS for each selectable folder. One round-trip per folder.
             for f in folders:
                 if f.get("noselect"):

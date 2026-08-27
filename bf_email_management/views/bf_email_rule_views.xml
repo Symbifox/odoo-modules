@@ -1,19 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
+    <!--
+      Conditions are edited inline on the rule form. The operator selection
+      shows every operator: Odoo cannot narrow a Selection declaratively, so
+      the onchange snaps it to a valid one when the field changes and the
+      server constraint refuses the rest. The value widget, on the other hand,
+      does follow ``field_kind``.
+    -->
+    <record id="bf_email_rule_condition_view_list" model="ir.ui.view">
+        <field name="name">bf.email.rule.condition.list</field>
+        <field name="model">bf.email.rule.condition</field>
+        <field name="arch" type="xml">
+            <list editable="bottom" default_order="sequence,id">
+                <field name="sequence" widget="handle"/>
+                <field name="field_kind" column_invisible="1"/>
+                <field name="kind" column_invisible="1"/>
+                <field name="field_name"/>
+                <field name="header_name"
+                       placeholder="List-Unsubscribe"
+                       invisible="field_kind != 'header'"/>
+                <field name="operator"/>
+                <field name="value"
+                       placeholder="valeur recherchée"
+                       invisible="field_kind in ('direction', 'category', 'priority', 'bool') or operator in ('is_set', 'is_not_set', 'is_true', 'is_false')"/>
+                <field name="value_direction"
+                       invisible="field_kind != 'direction'"/>
+                <field name="value_category"
+                       invisible="field_kind != 'category'"/>
+                <field name="value_priority"
+                       invisible="field_kind != 'priority'"/>
+            </list>
+        </field>
+    </record>
+
     <record id="bf_email_rule_view_tree" model="ir.ui.view">
-        <field name="name">bf.email.rule.tree</field>
+        <field name="name">bf.email.rule.list</field>
         <field name="model">bf.email.rule</field>
         <field name="arch" type="xml">
-            <list default_order="sequence,id">
+            <list default_order="sequence,id"
+                  decoration-info="scope == 'company'"
+                  decoration-warning="forward_to != False"
+                  decoration-muted="is_noop">
                 <field name="sequence" widget="handle"/>
+                <field name="is_noop" column_invisible="1"/>
                 <field name="name"/>
-                <field name="condition_type"/>
-                <field name="condition_value"/>
-                <field name="set_category" optional="show"/>
+                <field name="condition_summary" optional="show"/>
+                <field name="action_summary" optional="show"/>
+                <field name="scope" optional="show"/>
+                <field name="user_id" optional="hide"/>
+                <field name="company_id" optional="hide" groups="base.group_multi_company"/>
+                <field name="set_category" optional="hide"/>
                 <field name="set_priority" optional="hide"/>
+                <field name="set_folder" optional="hide"/>
+                <field name="set_status" optional="hide"/>
                 <field name="set_partner_id" optional="hide"/>
-                <field name="set_handled" optional="show"/>
+                <field name="route_user_id" optional="hide"/>
+                <field name="forward_to" optional="show"/>
+                <field name="set_handled" optional="hide"/>
                 <field name="stop_processing" optional="hide"/>
                 <field name="active" widget="boolean_toggle"/>
             </list>
@@ -25,42 +69,173 @@
         <field name="model">bf.email.rule</field>
         <field name="arch" type="xml">
             <form>
+                <field name="is_noop" invisible="1"/>
+                <field name="folder_gap_accounts" invisible="1"/>
                 <header>
+                    <button name="action_test_rule"
+                            string="Essayer"
+                            type="object"
+                            class="btn-secondary"
+                            invisible="not id"
+                            help="Liste, sans rien modifier, les courriels que cette règle attraperait."/>
+                    <button name="action_apply_this_rule"
+                            string="Appliquer cette règle maintenant"
+                            type="object"
+                            class="btn-primary"
+                            invisible="not id"
+                            confirm="Appliquer cette règle aux courriels qu'elle attrape déjà ? Ce sont exactement ceux que « Essayer » vient de lister. Le réacheminement et la réponse d'absence restent inactifs."
+                            help="Applique cette règle — et elle seule — aux courriels déjà reçus."/>
                     <button name="action_replay_rules"
                             string="Rejouer toutes les règles"
                             type="object"
-                            class="btn-primary"
-                            confirm="Re-évaluer toutes les règles sur les courriels non traités ?"/>
+                            class="btn-secondary"
+                            confirm="Ré-évaluer toutes vos règles sur les courriels encore dans la boîte ? Le réacheminement reste inactif pendant un rejeu."/>
                 </header>
                 <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_forward_logs"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-share"
+                                invisible="forward_log_count == 0">
+                            <field name="forward_log_count" widget="statinfo"
+                                   string="Réacheminements"/>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Archivée" bg_color="text-bg-danger"
+                            invisible="active"/>
+                    <div class="alert alert-info" role="alert" invisible="not id">
+                        Une règle s'exécute <b>à l'arrivée</b> d'un courriel.
+                        Ce qui est déjà dans la boîte n'est pas touché tant
+                        que vous n'avez pas cliqué
+                        « Appliquer cette règle maintenant ».
+                    </div>
                     <div class="oe_title">
                         <h1>
                             <field name="name" placeholder="Nom de la règle"/>
                         </h1>
+                        <div class="text-muted">
+                            <field name="condition_summary" readonly="1"/>
+                        </div>
                     </div>
                     <group>
-                        <group>
+                        <group string="Portée">
+                            <field name="scope" widget="radio"/>
+                            <field name="user_id"
+                                   invisible="scope != 'user'"
+                                   readonly="scope != 'user'"/>
+                            <field name="company_id"
+                                   groups="base.group_multi_company"
+                                   help="Filtre effectif seulement pour une règle d'organisation."/>
                             <field name="sequence"/>
-                            <field name="active"/>
+                        </group>
+                        <group string="Exécution">
+                            <field name="match_type"/>
                             <field name="stop_processing"/>
-                        </group>
-                        <group string="Condition">
-                            <field name="condition_type"/>
-                            <field name="condition_value"
-                                   placeholder="@example.com"/>
-                        </group>
-                    </group>
-                    <group string="Actions à appliquer">
-                        <group>
-                            <field name="set_category"/>
-                            <field name="set_priority"/>
-                        </group>
-                        <group>
-                            <field name="set_partner_id"/>
-                            <field name="set_handled"/>
+                            <field name="active"/>
+                            <field name="recipe_key" invisible="not recipe_key"/>
                         </group>
                     </group>
                     <notebook>
+                        <page string="Conditions" name="conditions">
+                            <separator string="La règle s'applique quand"/>
+                            <field name="condition_ids"
+                                   context="{'default_kind': 'condition'}"/>
+                            <separator string="… sauf si"/>
+                            <field name="exception_ids"
+                                   context="{'default_kind': 'exception'}"/>
+                            <p class="text-muted">
+                                Une exception qui s'applique annule la règle,
+                                même si toutes les conditions sont satisfaites.
+                            </p>
+                        </page>
+                        <page string="Actions" name="actions">
+                            <div class="alert alert-warning" role="alert"
+                                 invisible="not is_noop">
+                                Cette règle se déclenchera et ne fera
+                                <b>rien</b> : aucune action n'est renseignée
+                                ci-dessous.
+                            </div>
+                            <div class="alert alert-warning" role="alert"
+                                 invisible="not folder_gap_accounts">
+                                « Déplacer vers le dossier » ne peut rien faire
+                                pour
+                                <field name="folder_gap_accounts" readonly="1"
+                                       class="fw-bold d-inline"/> :
+                                la « Réécriture des archives » n'est pas
+                                activée sur ce compte, donc rien ne bouge —
+                                ni sur le serveur, ni dans la fiche.
+                            </div>
+                            <group>
+                                <group string="Classer">
+                                    <field name="set_category"/>
+                                    <field name="set_priority"/>
+                                    <field name="set_partner_id"/>
+                                    <field name="set_status"/>
+                                </group>
+                                <group string="Ranger">
+                                    <field name="set_folder"
+                                           placeholder="Copie conforme, Archives/{YYYY}…"/>
+                                    <field name="set_handled"/>
+                                    <field name="snooze_hours"/>
+                                </group>
+                            </group>
+                            <group string="Confier">
+                                <field name="route_user_id"
+                                       options="{'no_create': True}"/>
+                            </group>
+                        </page>
+                        <page string="Réacheminement" name="forward">
+                            <div class="alert alert-warning" role="alert"
+                                 invisible="not forward_to">
+                                Cette règle envoie des courriels
+                                automatiquement, depuis votre adresse. Chaque
+                                envoi — et chaque envoi refusé — est inscrit au
+                                journal.
+                            </div>
+                            <group>
+                                <group>
+                                    <field name="forward_to"
+                                           placeholder="collegue@exemple.com, autre@exemple.com"/>
+                                    <field name="forward_allow_external"
+                                           groups="base.group_system"/>
+                                    <field name="forward_outgoing"/>
+                                </group>
+                                <group>
+                                    <div class="text-muted">
+                                        <p>Le réacheminement n'a jamais lieu si&#160;:</p>
+                                        <ul>
+                                            <li>le message porte déjà un
+                                                <code>Auto-Submitted</code>
+                                                (absence, rebond, autre
+                                                réacheminement)&#160;;</li>
+                                            <li>il est déjà passé par cette
+                                                instance — la boucle est
+                                                détectée par en-tête&#160;;</li>
+                                            <li>le plafond quotidien de la
+                                                règle est atteint&#160;;</li>
+                                            <li>le destinataire est une de vos
+                                                propres adresses.</li>
+                                        </ul>
+                                    </div>
+                                </group>
+                            </group>
+                            <field name="forward_log_ids" readonly="1"
+                                   invisible="forward_log_count == 0">
+                                <list default_order="create_date desc">
+                                    <field name="create_date" string="Quand"/>
+                                    <field name="subject"/>
+                                    <field name="recipient"/>
+                                    <field name="is_external"/>
+                                    <field name="state"
+                                           decoration-success="state == 'sent'"
+                                           decoration-muted="state == 'skipped'"
+                                           decoration-danger="state == 'error'"
+                                           widget="badge"/>
+                                    <field name="reason"/>
+                                </list>
+                            </field>
+                        </page>
                         <page string="Notes" name="notes">
                             <field name="description"
                                    placeholder="Pourquoi cette règle, quand l'éditer, etc."/>
@@ -77,24 +252,31 @@
         <field name="arch" type="xml">
             <search>
                 <field name="name"/>
-                <field name="condition_value"/>
-                <filter name="active"
-                        string="Actives"
+                <field name="condition_summary"/>
+                <field name="user_id"/>
+                <filter name="mine" string="Les miennes"
+                        domain="[('user_id', '=', uid)]"/>
+                <filter name="company_wide" string="Organisation"
+                        domain="[('scope', '=', 'company')]"/>
+                <separator/>
+                <filter name="active" string="Actives"
                         domain="[('active', '=', True)]"/>
-                <filter name="inactive"
-                        string="Inactives"
+                <filter name="inactive" string="Inactives"
                         domain="[('active', '=', False)]"/>
                 <separator/>
-                <filter name="set_handled"
-                        string="Auto-traité"
+                <filter name="set_handled" string="Sortent de la boîte"
                         domain="[('set_handled', '=', True)]"/>
+                <filter name="with_folder" string="Rangent dans un dossier"
+                        domain="[('set_folder', '!=', False)]"/>
+                <filter name="forwarding" string="Réacheminent"
+                        domain="[('forward_to', '!=', False)]"/>
                 <group expand="0" string="Grouper par">
-                    <filter name="group_category"
-                            string="Catégorie cible"
+                    <filter name="group_scope" string="Portée"
+                            context="{'group_by': 'scope'}"/>
+                    <filter name="group_owner" string="Propriétaire"
+                            context="{'group_by': 'user_id'}"/>
+                    <filter name="group_category" string="Catégorie cible"
                             context="{'group_by': 'set_category'}"/>
-                    <filter name="group_type"
-                            string="Type"
-                            context="{'group_by': 'condition_type'}"/>
                 </group>
             </search>
         </field>
@@ -110,9 +292,13 @@
                 Aucune règle définie
             </p>
             <p>
-                Les règles s'exécutent automatiquement à chaque nouveau courriel.
-                Utiles pour catégoriser, prioriser ou archiver des emails
-                récurrents (notifications, marketing, internes).
+                Les règles s'exécutent automatiquement à chaque nouveau
+                courriel : catégoriser, prioriser, ranger dans un dossier,
+                sortir de la boîte, confier à quelqu'un ou réacheminer.
+            </p>
+            <p>
+                Le bouton « Règles courantes » propose une dizaine de recettes
+                éprouvées — dont « je suis seulement en c.c. ».
             </p>
         </field>
     </record>
@@ -122,6 +308,120 @@
         <field name="model_id" ref="model_bf_email_rule"/>
         <field name="state">code</field>
         <field name="code">action = model.action_replay_rules()</field>
+    </record>
+
+    <record id="action_bf_email_rule_quick" model="ir.actions.server">
+        <field name="name">Règles courantes</field>
+        <field name="model_id" ref="model_bf_email_rule"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_open_quick_create()</field>
+    </record>
+
+    <!-- Journal des envois automatiques : réacheminements ET réponses d'absence. -->
+    <record id="bf_email_auto_log_view_list" model="ir.ui.view">
+        <field name="name">bf.email.auto.log.list</field>
+        <field name="model">bf.email.auto.log</field>
+        <field name="arch" type="xml">
+            <list default_order="create_date desc" create="false">
+                <field name="create_date" string="Quand"/>
+                <field name="kind" widget="badge"
+                       decoration-info="kind == 'absence'"/>
+                <field name="source_name"/>
+                <field name="user_id" optional="show"/>
+                <field name="subject"/>
+                <field name="recipient"/>
+                <field name="is_external" optional="show"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'sent'"
+                       decoration-muted="state == 'skipped'"
+                       decoration-danger="state == 'error'"/>
+                <field name="reason"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_email_auto_log_view_form" model="ir.ui.view">
+        <field name="name">bf.email.auto.log.form</field>
+        <field name="model">bf.email.auto.log</field>
+        <field name="arch" type="xml">
+            <form create="false" edit="false">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="create_date" string="Quand"/>
+                            <field name="rule_id"/>
+                            <field name="source_name"/>
+                            <field name="user_id"/>
+                        </group>
+                        <group>
+                            <field name="recipient"/>
+                            <field name="is_external"/>
+                            <field name="state"/>
+                            <field name="reason"/>
+                        </group>
+                    </group>
+                    <group string="Courriel d'origine">
+                        <field name="email_id"/>
+                        <field name="subject"/>
+                        <field name="message_id_header"/>
+                        <field name="mail_id"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="bf_email_auto_log_view_search" model="ir.ui.view">
+        <field name="name">bf.email.auto.log.search</field>
+        <field name="model">bf.email.auto.log</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="recipient"/>
+                <field name="subject"/>
+                <field name="source_name"/>
+                <filter name="sent" string="Envoyés"
+                        domain="[('state', '=', 'sent')]"/>
+                <filter name="skipped" string="Ignorés"
+                        domain="[('state', '=', 'skipped')]"/>
+                <filter name="error" string="En échec"
+                        domain="[('state', '=', 'error')]"/>
+                <separator/>
+                <filter name="external" string="Hors organisation"
+                        domain="[('is_external', '=', True)]"/>
+                <separator/>
+                <filter name="forwards" string="Réacheminements"
+                        domain="[('kind', '=', 'forward')]"/>
+                <filter name="absences" string="Réponses d'absence"
+                        domain="[('kind', '=', 'absence')]"/>
+                <group expand="0" string="Grouper par">
+                    <filter name="group_kind" string="Mécanisme"
+                            context="{'group_by': 'kind'}"/>
+                    <filter name="group_rule" string="Règle"
+                            context="{'group_by': 'rule_id'}"/>
+                    <filter name="group_state" string="Résultat"
+                            context="{'group_by': 'state'}"/>
+                    <filter name="group_day" string="Jour"
+                            context="{'group_by': 'create_date:day'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_bf_email_auto_log" model="ir.actions.act_window">
+        <field name="name">Journal des envois automatiques</field>
+        <field name="res_model">bf.email.auto.log</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="bf_email_auto_log_view_search"/>
+        <field name="context">{'create': False}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Aucun réacheminement
+            </p>
+            <p>
+                Chaque courriel qu'une règle renvoie — et chaque envoi qu'une
+                garde a refusé, avec son motif — s'inscrit ici.
+            </p>
+        </field>
     </record>
 
 </odoo>
