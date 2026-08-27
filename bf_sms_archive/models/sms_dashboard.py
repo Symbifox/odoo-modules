@@ -1,10 +1,15 @@
 from odoo import api, fields, models
 
 
-class SmsDashboard(models.Model):
+class SmsDashboard(models.AbstractModel):
     _name = "sms.archive.dashboard"
     _description = "Tableau de bord SMS & Appels"
-    _auto = False
+    # `AbstractModel` : ce modèle n'a ni champ ni table, il ne sert que de point
+    # d'entrée RPC pour le composant OWL. Déclaré `models.Model` + `_auto = False`,
+    # il entrait dans `Registry.check_tables_exist()`, qui ne dispense que
+    # `_abstract` et les modèles à `_table_query` — d'où un `ERROR
+    # odoo.modules.registry: Model <ce modèle> has no table.` journalisé à chaque
+    # passe du chargeur sur une base neuve (BF #24867).
 
     @api.model
     def get_dashboard_data(self, date_from=False, date_to=False):

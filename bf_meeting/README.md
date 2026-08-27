@@ -58,7 +58,8 @@ tracking decisions as knowledge matrix lines.
 | `res.partner` (inherited) | `bf_skip_dashboard` — excludes this contact's meetings from the dashboard |
 | `res.users` (inherited) | Personal dashboard horizons (`bf_meeting_dashboard_lookahead_days`, `bf_meeting_dashboard_lookback_days`) |
 | `bf.meeting.document.mixin` | Shared **Documents** tab: computed One2many over `ir.attachment` (`res_model`/`res_id`), with the inverse that materialises new lines and deletes removed ones |
-| `meeting.dashboard` / `meeting.dashboard.line` | Meeting dashboard (OWL view aggregating agendas/reports to follow up) |
+| `meeting.dashboard` | RPC entry point for the OWL dashboard — an `AbstractModel`: no field, no table, no SQL view, methods only |
+| `meeting.dashboard.line` | SQL view aggregating the agendas and reports to follow up; the source of every dashboard row |
 
 ### Dependencies
 
@@ -84,6 +85,7 @@ render with the company's palette, or with Odoo's default colours
 - `ir.rule` rules on `meeting.record`, `meeting.agenda`, `meeting.topic`, `meeting.decision`, `meeting.agenda.topic`, `meeting.attendance` (one user/manager pair per model)
 - **No `ir.rule` on `ir.attachment`** — the visibility window is enforced from Python (`ir_attachment._search` / `_check_access`) precisely because an `ir.rule` domain is frozen by `ormcache` and cannot depend on the current time (see above). The restriction targets only non-manager members of `group_meeting_user`, only on `meeting.record` / `meeting.agenda` attachments, and lifts entirely under `sudo()`
 - `ir.rule` rules on `meeting.dashboard.line` — one global multi-company rule, plus the user/manager pair modelled on `meeting.record`. ⚠️ The SQL view aggregates **every** meeting in the database: `get_dashboard_data()` reads in raw SQL, outside the ORM, so neither the ACLs nor these rules apply there and it **reimplements the same guardrails by hand**. Any change to one must be mirrored in the other
+- No ACL on `meeting.dashboard`: the model is abstract (no table), so `ir.model.access` is never consulted for it. Its RPC methods carry their own scoping, in SQL (see the previous bullet)
 - Standard ACLs declared in `security/ir.model.access.csv`
 
 ### Scheduled jobs

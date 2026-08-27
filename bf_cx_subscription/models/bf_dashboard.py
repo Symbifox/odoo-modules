@@ -16,8 +16,11 @@ from odoo import api, models
 _logger = logging.getLogger(__name__)
 
 
-class BfDashboard(models.Model):
+class BfDashboard(models.AbstractModel):
     _inherit = "bf.dashboard"
+    # `AbstractModel` obligatoire : `bf.dashboard` est abstrait (aucune table),
+    # et `BaseModel._build_model_check_base` lève `TypeError` dès qu'une classe
+    # concrète l'étend — le registre ne charge plus du tout (BF #24867).
 
     @api.model
     def _get_cx_summary(self):

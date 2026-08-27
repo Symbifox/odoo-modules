@@ -6,10 +6,15 @@ from odoo import api, fields, models
 _logger = logging.getLogger(__name__)
 
 
-class BfEmailDashboard(models.Model):
+class BfEmailDashboard(models.AbstractModel):
     _name = "bf.email.dashboard"
     _description = "Tableau de bord courriels"
-    _auto = False
+    # `AbstractModel` : ce modèle n'a ni champ ni table, il ne sert que de point
+    # d'entrée RPC pour le composant OWL. Déclaré `models.Model` + `_auto = False`,
+    # il entrait dans `Registry.check_tables_exist()`, qui ne dispense que
+    # `_abstract` et les modèles à `_table_query` — d'où un `ERROR
+    # odoo.modules.registry: Model <ce modèle> has no table.` journalisé à chaque
+    # passe du chargeur sur une base neuve (BF #24867).
 
     # ------------------------------------------------------------------
     # Public API

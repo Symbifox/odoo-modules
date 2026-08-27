@@ -1,6 +1,6 @@
 {
     'name': 'Rencontres',
-    'version': '18.0.3.48.0',
+    'version': '18.0.3.48.1',
     'category': 'Services/Meetings',
     'summary': 'Gestion des rencontres, ordres du jour et comptes rendus',
     'description': """

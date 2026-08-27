@@ -20,10 +20,15 @@ _MAX_LIMIT = 20
 _MAX_CONFIGS = 40
 
 
-class BfUniversalSearch(models.Model):
+class BfUniversalSearch(models.AbstractModel):
     _name = "bf.universal.search"
     _description = "Recherche universelle"
-    _auto = False
+    # `AbstractModel` : ce modèle n'a ni champ ni table, il ne sert que de point
+    # d'entrée RPC pour le composant OWL. Déclaré `models.Model` + `_auto = False`,
+    # il entrait dans `Registry.check_tables_exist()`, qui ne dispense que
+    # `_abstract` et les modèles à `_table_query` — d'où un `ERROR
+    # odoo.modules.registry: Model <ce modèle> has no table.` journalisé à chaque
+    # passe du chargeur sur une base neuve (BF #24867).
 
     # ------------------------------------------------------------------
     # Helpers

@@ -8,7 +8,7 @@ from odoo import api, fields, models, tools
 _logger = logging.getLogger(__name__)
 
 
-class MeetingDashboard(models.Model):
+class MeetingDashboard(models.AbstractModel):
     """Modèle d'agrégation pour le tableau de bord OWL des rencontres.
 
     Pas de table : sert d'entrée RPC pour le composant client `meeting_dashboard`
@@ -19,7 +19,12 @@ class MeetingDashboard(models.Model):
 
     _name = 'meeting.dashboard'
     _description = "Tableau de bord des rencontres"
-    _auto = False
+    # `AbstractModel` : ce modèle n'a ni champ ni table, il ne sert que de point
+    # d'entrée RPC pour le composant OWL. Déclaré `models.Model` + `_auto = False`,
+    # il entrait dans `Registry.check_tables_exist()`, qui ne dispense que
+    # `_abstract` et les modèles à `_table_query` — d'où un `ERROR
+    # odoo.modules.registry: Model <ce modèle> has no table.` journalisé à chaque
+    # passe du chargeur sur une base neuve (BF #24867).
 
     @api.model
     def get_dashboard_data(self, limit=60):

@@ -1,7 +1,7 @@
 {
     "name": "Expérience client : revenu récurrent à risque",
     "summary": "Revenu récurrent des clients à risque sur la tuile Expérience client",
-    "version": "18.0.1.0.0",
+    "version": "18.0.1.0.1",
     "category": "Marketing/Customer Experience",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",
