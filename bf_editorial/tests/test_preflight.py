@@ -35,6 +35,9 @@ class TestPreflight(TransactionCase):
         self.assertIn("QA", str(caught.exception))
 
     def test_reste_bloquant_retient(self):
+        # L'entrée naît avec les restes de ses gabarits : c'est voulu.
+        # Ce test porte sur autre chose, on part donc d'une liste vide.
+        self.entry.checklist_ids.unlink()
         self.entry.qa_state = "clean"
         self.env["bf.editorial.checklist"].create({
             "entry_id": self.entry.id,
@@ -47,6 +50,9 @@ class TestPreflight(TransactionCase):
         )
 
     def test_reste_non_bloquant_laisse_passer(self):
+        # L'entrée naît avec les restes de ses gabarits : c'est voulu.
+        # Ce test porte sur autre chose, on part donc d'une liste vide.
+        self.entry.checklist_ids.unlink()
         self.entry.qa_state = "clean"
         self.env["bf.editorial.checklist"].create({
             "entry_id": self.entry.id,
@@ -70,12 +76,18 @@ class TestPreflight(TransactionCase):
         self.assertIn("Doit sortir avant", self.entry.blocking_summary)
 
     def test_entree_prete_passe(self):
+        # L'entrée naît avec les restes de ses gabarits : c'est voulu.
+        # Ce test porte sur autre chose, on part donc d'une liste vide.
+        self.entry.checklist_ids.unlink()
         self.entry.qa_state = "clean"
         self.entry.invalidate_recordset()
         self.assertEqual(self.entry._preflight_problems(), [])
         self.assertTrue(self.entry.preflight_ok)
 
     def test_publication_pose_la_date_et_l_etape(self):
+        # L'entrée naît avec les restes de ses gabarits : c'est voulu.
+        # Ce test porte sur autre chose, on part donc d'une liste vide.
+        self.entry.checklist_ids.unlink()
         self.entry.qa_state = "clean"
         self.entry.invalidate_recordset()
         self.entry.action_publish()
@@ -85,14 +97,53 @@ class TestPreflight(TransactionCase):
     def test_cron_ne_publie_pas_une_entree_non_prete(self):
         """Le point le plus important du module : une date approuvée ne passe
         pas outre la garde. Sinon un article part sans sa traduction."""
+        # L'entrée naît avec les restes de ses gabarits : c'est voulu.
+        # Ce test porte sur autre chose, on part donc d'une liste vide.
+        self.entry.checklist_ids.unlink()
         self.entry.scheduled_publish_date = "2000-01-01 00:00:00"
         self.env["bf.editorial.entry"]._cron_publish_scheduled()
         self.assertFalse(self.entry.published_date)
         self.assertTrue(self.entry.activity_ids)
 
     def test_cron_publie_une_entree_prete(self):
+        # L'entrée naît avec les restes de ses gabarits : c'est voulu.
+        # Ce test porte sur autre chose, on part donc d'une liste vide.
+        self.entry.checklist_ids.unlink()
         self.entry.qa_state = "clean"
         self.entry.scheduled_publish_date = "2000-01-01 00:00:00"
         self.entry.invalidate_recordset()
         self.env["bf.editorial.entry"]._cron_publish_scheduled()
         self.assertTrue(self.entry.published_date)
+
+    def test_gabarits_poses_a_la_creation(self):
+        """Les gabarits étaient livrés morts : rien ne les appliquait, et la
+        méthode privée n'était pas joignable de l'extérieur."""
+        self.env["bf.editorial.checklist.template"].create({
+            "name": "Un reste d'essai", "is_blocking": True,
+        })
+        neuve = self.env["bf.editorial.entry"].create({
+            "name": "Entrée neuve", "calendar_id": self.calendar.id,
+        })
+        self.assertTrue(neuve.checklist_ids,
+                        "une entrée neuve doit naître avec sa liste de contrôle")
+        self.assertIn("Un reste d'essai", neuve.checklist_ids.mapped("name"))
+
+    def test_date_calendrier_retombe_sur_la_publication(self):
+        """Vécu : la vue calendrier était calée sur la seule date prévue,
+        vide pour 164 entrées sur 165. Elle n'affichait qu'un item."""
+        self.entry.checklist_ids.unlink()
+        self.entry.qa_state = "clean"
+        self.entry.invalidate_recordset()
+        self.assertFalse(self.entry.timeline_date,
+                         "sans date, rien à placer au calendrier")
+        self.entry.action_publish()
+        self.entry.invalidate_recordset()
+        self.assertTrue(self.entry.timeline_date,
+                        "une entrée publiée doit apparaître au calendrier")
+        self.assertEqual(self.entry.timeline_date,
+                         self.entry.published_date.date())
+
+    def test_date_prevue_prime_sur_la_publication(self):
+        self.entry.planned_date = "2026-09-15"
+        self.entry.invalidate_recordset()
+        self.assertEqual(str(self.entry.timeline_date), "2026-09-15")

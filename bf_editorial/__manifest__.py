@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     "name": "Atelier éditorial",
-    "version": "18.0.1.0.2",
+    "version": "18.0.1.4.0",
     "category": "Marketing",
     "summary": "Calendrier éditorial, cadence mesurée et contrôles de publication"
                " pour le blogue — l'état se calcule, seules les décisions se stockent",

@@ -41,6 +41,10 @@ pre-flight gate.
   word floor, structural consistency between language slots.
 - **Pre-flight gate**: publishing is refused, with reasons, whether the action
   is manual or scheduled.
+- **Checklist templates**, applied when an entry is created and re-appliable on
+  demand, so a new piece starts with the checks its kind always needs.
+- **A timeline date** computed from the entry, giving the editorial calendar one
+  field to sort and group on rather than several competing dates.
 - **Version drift**: an article documenting a module reports that the module has
   moved since the last fact-check.
 

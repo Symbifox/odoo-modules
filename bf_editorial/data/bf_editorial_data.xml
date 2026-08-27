@@ -13,15 +13,18 @@
             <field name="name">Retenu</field>
             <field name="sequence">20</field>
             <field name="description">Le sujet passe, l'angle se cherche.</field>
+            <field name="fold">True</field>
         </record>
         <record id="stage_brief" model="bf.editorial.stage">
             <field name="name">Brief</field>
             <field name="sequence">30</field>
             <field name="description">Angle, promesse et audience arrêtés.</field>
+            <field name="fold">True</field>
         </record>
         <record id="stage_writing" model="bf.editorial.stage">
             <field name="name">Rédaction</field>
             <field name="sequence">40</field>
+            <field name="fold">True</field>
         </record>
         <record id="stage_draft" model="bf.editorial.stage">
             <field name="name">Brouillon</field>
@@ -32,20 +35,24 @@
             <field name="name">Fact-check</field>
             <field name="sequence">60</field>
             <field name="description">Affirmations et sources en vérification.</field>
+            <field name="fold">True</field>
         </record>
         <record id="stage_qa" model="bf.editorial.stage">
             <field name="name">QA</field>
             <field name="sequence">70</field>
+            <field name="fold">True</field>
         </record>
         <record id="stage_ready" model="bf.editorial.stage">
             <field name="name">Prêt</field>
             <field name="sequence">80</field>
             <field name="description">Garde de pré-vol verte, en attente d'un créneau.</field>
+            <field name="fold">True</field>
         </record>
         <record id="stage_scheduled" model="bf.editorial.stage">
             <field name="name">Planifié</field>
             <field name="sequence">90</field>
             <field name="description">Date approuvée, le cron s'en charge.</field>
+            <field name="fold">True</field>
         </record>
         <record id="stage_published" model="bf.editorial.stage">
             <field name="name">Publié</field>

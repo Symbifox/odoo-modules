@@ -68,6 +68,12 @@ class EditorialEntry(models.Model):
     published_date = fields.Datetime(
         string="Publié le", tracking=True, readonly=True, copy=False,
     )
+    timeline_date = fields.Date(
+        string="Date au calendrier", compute="_compute_timeline_date", store=True,
+        help="Date prévue si elle existe, sinon date de publication. C'est"
+             " celle que la vue calendrier affiche : une vue calée sur la"
+             " seule date prévue laisse invisible tout ce qui est déjà sorti.",
+    )
     user_id = fields.Many2one(
         "res.users", string="Responsable", default=lambda self: self.env.user,
         tracking=True,
@@ -222,6 +228,25 @@ class EditorialEntry(models.Model):
              " un ordre de grandeur, pas comme un lectorat.",
     )
 
+    @api.model_create_multi
+    def create(self, vals_list):
+        """Poser d'emblée les restes humains prévus par les gabarits.
+
+        Sans ce crochet les gabarits ne servaient à rien : rien n'appelait
+        ``_apply_templates``, et la méthode étant privée elle n'était pas non
+        plus joignable depuis l'extérieur. Une entrée naissait sans liste.
+        """
+        entries = super().create(vals_list)
+        for entry in entries:
+            self.env["bf.editorial.checklist"]._apply_templates(entry)
+        return entries
+
+    def action_apply_checklist_templates(self):
+        """Reposer les gabarits, par exemple après un changement de pilier."""
+        for entry in self:
+            self.env["bf.editorial.checklist"]._apply_templates(entry)
+        return True
+
     # --- valeurs par défaut ----------------------------------------------
     @api.model
     def _default_stage(self):
@@ -266,6 +291,16 @@ class EditorialEntry(models.Model):
             entry.dead_source_count = len(
                 entry.source_ids.filtered(lambda s: s.is_dead)
             )
+
+    @api.depends("planned_date", "published_date")
+    def _compute_timeline_date(self):
+        for entry in self:
+            if entry.planned_date:
+                entry.timeline_date = entry.planned_date
+            elif entry.published_date:
+                entry.timeline_date = entry.published_date.date()
+            else:
+                entry.timeline_date = False
 
     @api.depends("subject_module_id", "source_version")
     def _compute_version_drift(self):

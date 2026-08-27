@@ -26,6 +26,7 @@ class TestSecurite(TransactionCase):
             "stage_id": self.env.ref("bf_editorial.stage_draft").id,
             "qa_state": "clean",
         })
+        self.entry.checklist_ids.unlink()
 
     def test_redaction_ne_peut_pas_publier(self):
         """Le groupe annonce « sans pouvoir publier ». Il faut que ce soit vrai."""

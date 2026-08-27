@@ -53,6 +53,7 @@ class TestAuditRecalcul(TransactionCase):
         self.assertTrue(c.confirmed, "confirmed doit suivre is_machine_proposed")
 
     def test_D_bascule_is_blocking_vue_par_la_garde(self):
+        self.e.checklist_ids.unlink()
         ck = self.env["bf.editorial.checklist"].create({
             "entry_id": self.e.id, "name": "R", "is_blocking": False,
         })
