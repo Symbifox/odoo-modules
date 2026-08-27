@@ -1,7 +1,7 @@
 {
     "name": "Expérience client - digest quotidien",
     "summary": "Section Expérience client (détracteurs, plaintes, NPS) dans le digest quotidien",
-    "version": "18.0.1.1.0",
+    "version": "18.0.1.1.1",
     "category": "Marketing/Customer Experience",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",
