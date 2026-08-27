@@ -583,7 +583,7 @@ class TestS3Gateway(TransactionCase):
         self.assertEqual(s3._orphan_expiry_days(self.env), 60)
 
     def test_orphan_expiry_follows_the_longest_brand_retention(self):
-        """Client A grants 45 days: a flat rule would expire those files on
+        """A brand granting 45 days: a flat rule would expire those files on
         their last day. The net is the longest retention + 15 days of slack."""
         self._isolate_brands()
         for key in ("default_free_max_retention_days",

@@ -645,8 +645,8 @@ class MeetingAgenda(models.Model):
 
         def _match_partner(t, pid):
             # Both sides roll up to the company. A task filed against a child
-            # contact ("Acme Ltd, Jane Doe") belongs on the agenda held
-            # with the company ("Acme Ltd"). The search above already accepts
+            # contact ("Acme Inc., a named person") belongs on the agenda held
+            # with the company ("Acme Inc."). The search above already accepts
             # that task through project_id.partner_id; without the same rollup
             # here it is dropped again, so it reaches neither agenda_task_ids
             # nor the "Éléments d'action à discuter" section of the PDF.

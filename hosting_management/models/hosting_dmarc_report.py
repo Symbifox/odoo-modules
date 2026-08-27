@@ -247,7 +247,7 @@ class HostingDmarcReport(models.Model):
     def _get_imap_config(self):
         """Resolve IMAP creds: encrypted credential vault first, ICP fallback."""
         ICP = self.env["ir.config_parameter"].sudo()
-        host = ICP.get_param(ICP_IMAP_HOST, "imap.migadu.com")
+        host = ICP.get_param(ICP_IMAP_HOST, "imap.example.com")
         port = int(ICP.get_param(ICP_IMAP_PORT, "993") or 993)
         mailbox = ICP.get_param(ICP_IMAP_MAILBOX, "INBOX")
         user = ICP.get_param(ICP_IMAP_USER)
