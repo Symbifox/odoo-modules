@@ -9,6 +9,16 @@
                 <app data-string="Rendez-vous" string="Rendez-vous"
                      name="bf_appointment"
                      groups="resource_booking.group_manager">
+                    <block title="Liens de rendez-vous" id="bf_appointment_quick_link">
+                        <setting string="Type par défaut"
+                                 help="Type employé par les boutons « Lien de rendez-vous » du compositeur de courriel et de la fiche de contact. Laissé vide, c’est le premier type public listé qui sert.">
+                            <div class="content-group mt16">
+                                <field name="appointment_quick_link_type_id"
+                                       options="{'no_create': True}"
+                                       placeholder="Premier type public listé"/>
+                            </div>
+                        </setting>
+                    </block>
                     <block title="Vid&#233;oconf&#233;rence">
                         <setting string="Jitsi Meet"
                                  help="Domaine du serveur Jitsi Meet pour les vid&#233;oconf&#233;rences.">

@@ -64,6 +64,12 @@ class ResConfigSettings(models.TransientModel):
         "resource.booking.type",
         related="company_id.appointment_quick_link_type_id", readonly=False,
         string="Type pour les liens rapides",
+        # ⚠️ Le domaine du champ de `res.company` n'est PAS repris par le champ
+        # related : `related_attrs` ne recopie que les domaines non textuels, et
+        # celui-là est une chaîne. Mesuré : `_fields[...].domain` rend None. Sans
+        # cette ligne, la page Paramètres offre AUSSI les types internes, dont un
+        # lien public ne peut rien faire.
+        domain="[('is_public', '=', True)]",
     )
     appointment_brand_name = fields.Char(
         related="company_id.appointment_brand_name", readonly=False,

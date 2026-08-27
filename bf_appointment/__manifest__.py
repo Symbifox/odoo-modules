@@ -2,7 +2,7 @@
     "name": "Symbifox Appointment",
     # 18.0.2.32.0: availability fix — attended events marked show_as='free' no longer block the slot picker (Google all-day "Bureau"/working-location sync events blanked every morning; signalé par un locataire)
     # 18.0.2.33.0: localisation FR — (1) picker: jours/mois via babel au lieu de strftime %A/%B (locale C = anglais); (2) tous les libellés backend francisés à la source (le fr.po ne se chargeait jamais — mauvais format de référence), incl. champs de base OCA relabellés via override incrémental; (3) ventilation du « Modifications Deadline » OCA en 2 réglages : modifications_deadline = « Préavis minimum avant réservation » (plancher dispo, inchangé) + nouveau modification_lock_hours = « Délai limite de modification/annulation » (verrou, via _compute_is_overdue). Demandé par un locataire.
-    # 18.0.2.40.0: lot d'ouverture — surface stable pour les modules satellites (tâche #24672).
+    # 18.0.2.40.0: lot d'ouverture — surface stable pour les modules satellites ().
     #   (1) resource.booking.type._bf_candidate_slots() : grille de créneaux d'un TYPE sans réservation persistée;
     #   (2) resource.booking.type._bf_create_booking() : fabrique de réservation depuis une source externe;
     #   (3) bf_source / bf_source_ref sur resource.booking : provenance NON typée (une chaîne « modele,id »
@@ -13,7 +13,7 @@
     #   Sans ce contrôle, OCA n'affecte aucune ressource, la réservation naît corrompue en silence, et
     #   l'erreur surgit plus tard sur une opération sans rapport. Vérifier après création est impossible :
     #   lire combination_id déclenche la validation OCA, qui lève avant qu'on puisse intervenir.
-    # 18.0.2.42.0: liens de réservation personnels (« one-time booking », tâche #24672). Assistant
+    # 18.0.2.42.0: liens de réservation personnels (« one-time booking »,). Assistant
     #   « Créer un lien de réservation » (2 écrans : réglage, puis lien copiable), expiration, usage
     #   unique, invités additionnels. Le mécanisme existait déjà — une réservation en attente porte un
     #   jeton et sa page de choix de créneau; ce lot ajoute la durée de vie, le verrou d'usage, et
@@ -41,7 +41,7 @@
     #   activation récente par l'usager, et une copie après aller-retour serveur est bloquée en silence
     #   par Safari et certaines versions de Chrome. Le clic sur le bouton natif garde le geste.
     # 18.0.2.45.0: champ « autres invités » sur le formulaire public, avec DOUBLE CONFIRMATION du
-    #   demandeur (tâche #24672, 1re puce). Les adresses saisies restent en attente; un courriel dédié
+    #   demandeur (, 1re puce). Les adresses saisies restent en attente; un courriel dédié
     #   part au demandeur une fois son créneau choisi, et seul un POST depuis cette page envoie les
     #   invitations. 🔴 Le GET ne décide rien : les antivirus de messagerie suivent les liens, un GET
     #   qui confirmerait produirait exactement le pourriel que ce dispositif existe pour empêcher.
@@ -69,7 +69,7 @@
     #   (« Invités additionnels »). Odoo ne le signale qu'au chargement d'un
     #   registre NEUF, donc jamais sur un locataire déjà monté.
     # 18.0.2.47.0: trois défauts du lien de réservation personnel, signalés en
-    #   production le 2026-08-20 (tâche #24695).
+    #   production le 2026-08-20 ().
     #   (1) ⚠️ La description de l'événement d'agenda ne retombe PLUS sur le
     #       conseil au demandeur. Un lien personnel ne passe par aucun
     #       formulaire d'accueil : le repli se déclenchait donc à tous les
@@ -241,46 +241,56 @@
     #       (demandeur, type) au lieu d'une fois par reservation : l'etat est
     #       une fonction pure de ces deux-la, et un client fidele payait vingt
     #       fois le prix pour vingt fois la meme reponse.
-    # 18.0.2.51.1: 🔴 régression du sélecteur de créneaux, corrigée le jour même.
-    #   Depuis le modal de confirmation partagé (2.51.0), le créneau ne vit plus dans le
+    # 18.0.2.52.0: le type par défaut des liens rapides devient réglable depuis l'interface.
+    #   `appointment_quick_link_type_id` existait sur res.company et sur res.config.settings
+    #   depuis 2.43.0, mais n'était posé dans AUCUNE vue — vérifié : zéro occurrence dans
+    #   ir_ui_view en prod BF. Le message d'erreur du module renvoyait pourtant à
+    #   « Configuration, sous Type pour les liens rapides ». Faute de place où le poser, les
+    #   deux boutons du compositeur et celui de la fiche de contact retombaient toujours sur
+    #   le repli (premier type public ET listé, trié par séquence), sans recours autre que
+    #   de réordonner les séquences — ce qui déplace aussi la page publique.
+    # 18.0.2.52.1: 🔴 PANNE DE PRODUCTION — plus aucune réservation n'était possible.
+    #   Depuis le modal de confirmation PARTAGÉ (2.51.0), le créneau ne vit plus dans le
     #   HTML de chaque bulle : `timezone_detect.js` le recopie de la bulle cliquée vers le
     #   champ caché `when`. Or ce fichier accrochait son init à `DOMContentLoaded`, et
     #   `web.assets_frontend` est servi en bundle PARESSEUX (`<script data-src=…>`) qu'Odoo
     #   n'injecte que sur l'événement `load`. L'événement était donc déjà passé : l'init
     #   n'a jamais tourné, `when` partait vide, et le serveur répondait « Format de date
-    #   invalide » à chaque essai — plus aucune réservation n'était possible. Aucune erreur
-    #   en console : Bootstrap vit dans le MÊME bundle et fonctionne, donc le modal
-    #   s'ouvrait normalement et la page paraissait saine. Garde `document.readyState` +
-    #   recopie du créneau au clic par délégation sur `document`, hors de l'init, pour que
-    #   la réservation survive à une init en panne.
-    #   ⚠️ Deux autres fonctions du même fichier étaient mortes depuis toujours pour cette
-    #   raison : la détection du fuseau horaire du visiteur et le masquage des consentements
-    #   déjà au dossier.
-    # 18.0.2.51.2: 🔴 un rendez-vous confirmé s'annulait TOUT SEUL. Les routes `/cancel`
-    #   et `/guests` gardent leur mutation derrière la méthode HTTP, et la garde était
-    #   écrite `if method == "GET": <demander>` — donc « tout le reste MUTE ». Or Werkzeug
-    #   ajoute HEAD d'office à toute règle qui accepte GET, et `httprequest.method` vaut
-    #   alors « HEAD » : la garde était fausse, et la requête tombait dans la branche qui
-    #   mute. Les antivirus de messagerie et les aperçus de lien sondent en HEAD, justement
-    #   parce que c'est censé ne rien changer. Le lien « Annuler » part dans la description
-    #   de l'ICS : un rendez-vous client confirmé cinq minutes plus tôt a donc été annulé
-    #   sans que personne ne clique. Reproduit avec un seul `curl -I`. Sur `/guests`, le
-    #   même trou faisait partir les invitations aux invités, c'est-à-dire exactement le
-    #   pourriel que la double confirmation existe pour empêcher.
+    #   invalide » à chaque essai. Aucune erreur en console, aucune trace côté serveur
+    #   autre qu'un 303 : Bootstrap vit dans le MÊME bundle et fonctionne, donc le modal
+    #   s'ouvrait normalement et la page paraissait saine. Signalé par un client après six
+    #   tentatives. Garde `document.readyState` + recopie du créneau au clic par délégation
+    #   sur `document`, hors de l'init, pour que la réservation survive à une init en panne.
+    #   ⚠️ Au passage, deux autres fonctions de ce fichier étaient mortes depuis toujours
+    #   pour la même raison : la détection du fuseau horaire du visiteur et le masquage des
+    #   consentements déjà au dossier.
+    # 18.0.2.52.2: 🔴 un rendez-vous confirmé s'annulait TOUT SEUL. Les routes `/cancel` et
+    #   `/guests` gardent leur mutation derrière la méthode HTTP, et la garde était écrite
+    #   `if method == "GET": <demander>` — donc « tout le reste MUTE ». Or Werkzeug ajoute
+    #   HEAD d'office à toute règle qui accepte GET, et `httprequest.method` vaut alors
+    #   « HEAD » : la garde était fausse, et la requête tombait dans la branche qui mute.
+    #   Les antivirus de messagerie et les aperçus de lien sondent en HEAD, justement parce
+    #   que c'est censé ne rien changer. Le lien « Annuler » part dans la description de
+    #   l'ICS : un rendez-vous client confirmé cinq minutes plus tôt a donc été annulé sans
+    #   que personne ne clique (production BF, 2026-08-24). Reproduit avec un seul
+    #   `curl -I`. Sur `/guests`, le même trou faisait partir les invitations aux invités,
+    #   c'est-à-dire exactement le pourriel que la double confirmation existe pour empêcher.
+    #   La garde énumère désormais ce qui MUTE (`!= "POST"`), jamais ce qui ne mute pas.
     #   ⚠️ Le commentaire de 2.42.1 disait déjà « la mutation reste en POST » : l'intention
     #   était juste, la condition ne l'exprimait pas. Une garde se teste par la méthode
     #   qu'elle laisse passer, pas par celle qu'elle nomme.
-    # 18.0.2.51.3: 🔴 « Copier un lien de rendez-vous » FERMAIT le courriel en cours de
+    # 18.0.2.52.3: 🔴 « Copier un lien de rendez-vous » FERMAIT le courriel en cours de
     #   rédaction. Le bouton rendait une action `target: "new"` (la fenêtre du lien), et le
     #   client ne l'empile pas sur le compositeur : il RETIRE le dialogue courant avant
     #   d'ouvrir le suivant (`action_service.js`, `_updateUI`). Le brouillon survivait en
     #   base — un bouton `type="object"` enregistre l'assistant avant d'appeler la méthode —
-    #   mais plus rien à l'écran n'y ramenait. Le lien s'affiche désormais DANS le
-    #   compositeur (widget de copie natif : le geste et la copie restent collés), et les
-    #   deux boutons partagent `_bf_reopen_composer()`. Un second clic réutilise le lien
-    #   tant qu'il tient et que le destinataire n'a pas changé : le lien restant à l'écran,
-    #   recliquer est naturel, et sans garde chaque clic laissait une réservation en attente.
-    "version": "18.0.2.51.3",
+    #   mais plus rien à l'écran n'y ramenait. Signalé en production le 2026-08-25.
+    #   Le lien s'affiche désormais DANS le compositeur (widget de copie natif, le geste et
+    #   la copie restent collés), et les deux boutons partagent `_bf_reopen_composer()`.
+    #   Un second clic réutilise le lien tant qu'il tient et que le destinataire n'a pas
+    #   changé : le lien restant à l'écran, recliquer est naturel, et sans garde chaque clic
+    #   laissait une réservation en attente derrière lui.
+    "version": "18.0.2.52.3",
     "category": "Appointments",
     "summary": "Public self-service booking pages extending Resource Booking",
     'author': 'Les services de consultation Blue Fox, Inc.',
