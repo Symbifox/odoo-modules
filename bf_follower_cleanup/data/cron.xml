@@ -13,5 +13,16 @@
             <field name="user_id" ref="base.user_admin"/>
         </record>
 
+        <record id="ir_cron_unfollow_leads_not_owned" model="ir.cron">
+            <field name="name">Abonn&#233;s : retirer des pistes dont on n'est pas vendeur</field>
+            <field name="model_id" ref="mail.model_mail_followers"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_unfollow_leads_not_owned()</field>
+            <field name="interval_number">5</field>
+            <field name="interval_type">minutes</field>
+            <field name="active">True</field>
+            <field name="user_id" ref="base.user_admin"/>
+        </record>
+
     </data>
 </odoo>

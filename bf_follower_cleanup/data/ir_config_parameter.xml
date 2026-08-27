@@ -4,14 +4,26 @@
 
         <record id="param_always_remove_partner_ids" model="ir.config_parameter">
             <field name="key">bf_follower_cleanup.always_remove_partner_ids</field>
-            <!-- Empty by default. Optional: comma-separated res.partner IDs
-                 (e.g. service accounts) to purge unconditionally. -->
-            <field name="value"></field>
+            <!-- 3261 = Meeting Processor API -->
+            <field name="value">3261</field>
         </record>
 
         <record id="param_batch_size" model="ir.config_parameter">
             <field name="key">bf_follower_cleanup.batch_size</field>
             <field name="value">5000</field>
+        </record>
+
+        <!-- Empty = the lead unfollow cron is a no-op. Opt in per tenant by
+             listing the uids that should only follow the leads they sell. -->
+        <record id="param_crm_lead_unfollow_user_ids" model="ir.config_parameter">
+            <field name="key">bf_follower_cleanup.crm_lead_unfollow_user_ids</field>
+            <field name="value"></field>
+        </record>
+
+        <!-- Lead ids the cron never touches, whoever the salesperson is. -->
+        <record id="param_crm_lead_keep_ids" model="ir.config_parameter">
+            <field name="key">bf_follower_cleanup.crm_lead_keep_ids</field>
+            <field name="value"></field>
         </record>
 
     </data>
