@@ -1,6 +1,6 @@
 {
     "name": "BF Timer - Feuilles de temps",
-    "version": "18.0.1.10.0",
+    "version": "18.0.1.11.0",
     "category": "Services/Timesheets",
     "summary": "Timer global de feuilles de temps avec multi-timer et interface OWL",
     'author': 'Les services de consultation Blue Fox, Inc.',
@@ -13,6 +13,7 @@
         "wizard/bf_timer_stop_wizard_views.xml",
         "data/bf_timer_preset_data.xml",
         "data/bf_onboarding.xml",
+        "views/bf_timer_page_views.xml",
         "views/bf_timer_description_preset_views.xml",
         "views/project_task_views.xml",
         "views/res_config_settings_views.xml",
@@ -20,13 +21,16 @@
     "assets": {
         "web.assets_backend": [
             "bf_timesheet_timer/static/src/scss/bf_timer.scss",
+            "bf_timesheet_timer/static/src/scss/bf_timer_page.scss",
             "bf_timesheet_timer/static/src/js/bf_timer_service.js",
             "bf_timesheet_timer/static/src/js/bf_timer_stop_dialog.js",
             "bf_timesheet_timer/static/src/js/bf_timer_systray.js",
+            "bf_timesheet_timer/static/src/js/bf_timer_page.js",
             "bf_timesheet_timer/static/src/xml/bf_timer_stop_dialog.xml",
             "bf_timesheet_timer/static/src/xml/bf_timer_systray.xml",
+            "bf_timesheet_timer/static/src/xml/bf_timer_page.xml",
         ],
     },
     "installable": True,
-    "application": False,
+    "application": True,
 }

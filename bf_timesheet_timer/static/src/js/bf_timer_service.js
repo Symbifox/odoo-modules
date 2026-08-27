@@ -70,6 +70,23 @@ export const bfTimerService = {
             await refresh();
         }
 
+        // ⚠️ Le dialogue d'arrêt est réclamé ICI, pas dans les composants.
+        // La barre système et la page plein écran vivent en même temps et
+        // détectent le même timer en attente : chacune avec son propre registre,
+        // elles ouvraient DEUX dialogues pour un seul arrêt. Le service est le
+        // seul endroit qu'elles partagent.
+        const claimedDialogs = new Set();
+
+        function claimPendingDialog(timerId) {
+            if (claimedDialogs.has(timerId)) return false;
+            claimedDialogs.add(timerId);
+            return true;
+        }
+
+        function releasePendingDialog(timerId) {
+            claimedDialogs.delete(timerId);
+        }
+
         async function getRecentTasks() {
             return orm.call("bf.timer", "get_recent_tasks", [10]);
         }
@@ -101,6 +118,8 @@ export const bfTimerService = {
             confirmTimesheet,
             discardTimer,
             reactivateTimer,
+            claimPendingDialog,
+            releasePendingDialog,
             getRecentTasks,
             getDescriptionPresets,
             pinTask,

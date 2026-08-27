@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!--
+        La minuterie en pleine page, et sa tuile sur l'écran d'accueil d'Odoo.
+
+        Pourquoi une tuile plutôt qu'une entrée sous « Feuilles de temps » : la
+        page existe pour être ouverte sur un téléphone qu'on pose sur le bureau.
+        Trois niveaux de menu à traverser au pouce, chaque fois, la condamnent —
+        une tuile est un geste.
+
+        ⚠️ `target` reste `current`, PAS `fullscreen`. Une action plein écran
+        retire la barre d'Odoo, donc tout moyen de revenir en arrière : sur un
+        téléphone il ne resterait que le bouton Retour du navigateur. Le plein
+        écran est offert DANS la page, par le navigateur, et la touche Échap ou
+        le geste du système en sortent toujours.
+    -->
+    <record id="action_bf_timer_page" model="ir.actions.client">
+        <field name="name">Minuterie</field>
+        <field name="tag">bf_timesheet_timer.page</field>
+        <field name="target">current</field>
+    </record>
+
+    <!--
+        ⚠️ `web_icon` pointe une image de 140 px, et pas davantage.
+        `ir.ui.menu.web_icon_data` est un Binary(attachment=True) matérialisé en
+        base64 dans `ir_attachment`, et il repart dans CHAQUE
+        /web/webclient/load_menus/. Les icônes BF surdimensionnées ont déjà
+        coûté 23,5 Mo sur cette route (incident du 2026-07-26) — une icône de
+        1100 px pèse 1,2 Mo à elle seule. Redimensionner le PNG sur disque ne
+        suffit PAS à corriger l'existant : il faut réécrire `web_icon`.
+    -->
+    <menuitem id="menu_bf_timer_root"
+              name="Minuterie"
+              web_icon="bf_timesheet_timer,static/description/icon.png"
+              action="action_bf_timer_page"
+              groups="hr_timesheet.group_hr_timesheet_user"
+              sequence="16"/>
+
+</odoo>

@@ -1,0 +1,166 @@
+// Le timer en pleine page — dimensionné pour un téléphone posé sur le bureau.
+//
+// Deux contraintes commandent tout : ça se lit à un bras de distance, et ça se
+// touche au pouce. D'où le chronomètre à 2,6 rem (lisible de biais) et les
+// boutons à 48 px de haut, qui est le minimum tactile d'Android.
+
+.bf-timer-page {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 12px 12px 32px;
+
+    .bf-timer-page-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 14px;
+    }
+
+    .bf-timer-page-totals {
+        display: flex;
+        gap: 20px;
+    }
+
+    .bf-timer-page-total {
+        display: flex;
+        flex-direction: column;
+        line-height: 1.1;
+    }
+
+    .bf-timer-page-total-value {
+        font-size: 1.5rem;
+        font-weight: 600;
+    }
+
+    .bf-timer-page-total-label {
+        font-size: 0.75rem;
+        color: var(--bs-secondary-color, #6c757d);
+    }
+
+    .bf-timer-page-screen {
+        display: flex;
+        gap: 6px;
+        flex-shrink: 0;
+    }
+
+    // ── Minuteries en cours ──────────────────────────────────────────────
+    .bf-timer-page-active {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-bottom: 18px;
+    }
+
+    .bf-timer-page-card {
+        border: 1px solid var(--bs-border-color, #dee2e6);
+        border-left-width: 5px;
+        border-radius: 10px;
+        padding: 12px 14px;
+
+        // Mêmes seuils que la barre système : au-delà d'une heure, puis de
+        // deux. Deux surfaces qui coloreraient le même timer différemment se
+        // contrediraient à l'écran.
+        border-left-color: #29abe2;
+
+        &.bf-timer-warning { border-left-color: #f57c00; }
+        &.bf-timer-danger { border-left-color: #d32f2f; }
+    }
+
+    .bf-timer-page-card-task {
+        cursor: pointer;
+    }
+
+    .bf-timer-page-card-name {
+        font-weight: 600;
+        font-size: 1rem;
+        overflow-wrap: anywhere;
+    }
+
+    .bf-timer-page-card-project {
+        font-size: 0.8rem;
+        color: var(--bs-secondary-color, #6c757d);
+        overflow-wrap: anywhere;
+    }
+
+    .bf-timer-page-card-clock {
+        // Le chiffre est ce qu'on vient lire : il domine la carte.
+        font-size: 2.6rem;
+        font-weight: 300;
+        font-variant-numeric: tabular-nums;
+        line-height: 1.15;
+        margin: 6px 0 10px;
+    }
+
+    .bf-timer-page-card-actions {
+        display: flex;
+        gap: 8px;
+    }
+
+    .bf-timer-page-btn {
+        flex: 1;
+        min-height: 48px;
+    }
+
+    .bf-timer-page-idle {
+        text-align: center;
+        color: var(--bs-secondary-color, #6c757d);
+        padding: 22px 0 26px;
+    }
+
+    // ── Choix d'une tâche ────────────────────────────────────────────────
+    .bf-timer-page-search {
+        min-height: 48px;
+        margin-bottom: 8px;
+    }
+
+    .bf-timer-page-empty {
+        color: var(--bs-secondary-color, #6c757d);
+        font-size: 0.85rem;
+        padding: 14px 4px;
+    }
+
+    .bf-timer-page-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 0;
+        border-bottom: 1px solid var(--bs-border-color, #dee2e6);
+
+        &.bf-timer-page-row-closed .bf-timer-page-row-name {
+            text-decoration: line-through;
+            opacity: 0.6;
+        }
+    }
+
+    .bf-timer-page-row-text {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .bf-timer-page-row-name {
+        font-weight: 500;
+        overflow-wrap: anywhere;
+    }
+
+    .bf-timer-page-row-meta {
+        font-size: 0.78rem;
+        color: var(--bs-secondary-color, #6c757d);
+        overflow-wrap: anywhere;
+    }
+
+    .bf-timer-page-pin {
+        padding: 8px;
+        min-width: 40px;
+
+        .bf-timer-page-pin-off {
+            opacity: 0.3;
+        }
+    }
+
+    .bf-timer-page-start {
+        min-width: 56px;
+        min-height: 48px;
+        flex-shrink: 0;
+    }
+}

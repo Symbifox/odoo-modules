@@ -26,8 +26,6 @@ export class BfTimerSystray extends Component {
         });
         this._tickInterval = null;
         this._boundKeyDown = this._onKeyDown.bind(this);
-        // Track which pending timers we already showed dialogs for
-        this._shownPendingDialogs = new Set();
         // Cache presets
         this._presets = null;
 
@@ -184,8 +182,10 @@ export class BfTimerSystray extends Component {
 
     _checkPendingTimers() {
         for (const pt of this.pendingTimers) {
-            if (!this._shownPendingDialogs.has(pt.timer_id)) {
-                this._shownPendingDialogs.add(pt.timer_id);
+            // ⚠️ La réservation vit dans le service, pas ici : la page plein
+            // écran détecte le MÊME timer en attente, et deux registres privés
+            // ouvraient deux dialogues pour un seul arrêt.
+            if (this.timerService.claimPendingDialog(pt.timer_id)) {
                 this._showStopDialog(pt);
             }
         }
@@ -204,15 +204,15 @@ export class BfTimerSystray extends Component {
             presets: this._presets,
             onConfirm: async (tid, hours, desc) => {
                 await this.timerService.confirmTimesheet(tid, hours, desc);
-                this._shownPendingDialogs.delete(tid);
+                this.timerService.releasePendingDialog(tid);
             },
             onDiscard: async (tid) => {
                 await this.timerService.discardTimer(tid);
-                this._shownPendingDialogs.delete(tid);
+                this.timerService.releasePendingDialog(tid);
             },
             onCancel: async (tid) => {
                 await this.timerService.reactivateTimer(tid);
-                this._shownPendingDialogs.delete(tid);
+                this.timerService.releasePendingDialog(tid);
             },
         });
     }
@@ -282,8 +282,11 @@ export class BfTimerSystray extends Component {
 
     async onStopTimer(timerId) {
         const data = await this.timerService.stopTimer(timerId);
-        this._shownPendingDialogs.add(data.timer_id);
-        await this._showStopDialog(data);
+        // Réservé tout de suite : sans ça, le prochain sondage — le sien ou
+        // celui de la page — rouvrirait un dialogue sur le même arrêt.
+        if (this.timerService.claimPendingDialog(data.timer_id)) {
+            await this._showStopDialog(data);
+        }
     }
 
     async onStopAllTimers() {

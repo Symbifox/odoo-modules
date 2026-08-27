@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates xml:space="preserve">
+
+    <t t-name="bf_timesheet_timer.Page">
+        <div class="bf-timer-page">
+
+            <!-- Totaux + commandes d'afficheur. Les totaux d'abord : c'est ce
+                 qu'on vient lire quand on jette un œil au téléphone. -->
+            <div class="bf-timer-page-head">
+                <div class="bf-timer-page-totals">
+                    <div class="bf-timer-page-total">
+                        <span class="bf-timer-page-total-value" t-esc="formattedTodayTotal"/>
+                        <span class="bf-timer-page-total-label">aujourd'hui</span>
+                    </div>
+                    <div class="bf-timer-page-total">
+                        <span class="bf-timer-page-total-value" t-esc="formattedWeekTotal"/>
+                        <span class="bf-timer-page-total-label">cette semaine</span>
+                    </div>
+                </div>
+                <div class="bf-timer-page-screen">
+                    <button class="btn btn-sm"
+                            t-att-class="state.awake ? 'btn-primary' : 'btn-outline-secondary'"
+                            t-on-click="onToggleAwake"
+                            t-att-title="awakeTitle">
+                        <i class="fa fa-lightbulb-o"/>
+                    </button>
+                    <button class="btn btn-sm btn-outline-secondary"
+                            t-on-click="onToggleFullscreen"
+                            t-att-title="fullscreenTitle">
+                        <i t-att-class="state.fullscreen ? 'fa fa-compress' : 'fa fa-expand'"/>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Ce qui tourne. Plusieurs à la fois est le cas normal : chacune
+                 sa carte, aucune n'est « la principale ». -->
+            <div t-if="hasActiveTimers" class="bf-timer-page-active">
+                <t t-foreach="timers" t-as="timer" t-key="timer.id">
+                    <div class="bf-timer-page-card" t-att-class="getTimerClass(timer)">
+                        <div class="bf-timer-page-card-task"
+                             t-on-click="() => this.onOpenTask(timer.task_id)">
+                            <div class="bf-timer-page-card-name" t-esc="timer.task_name"/>
+                            <div class="bf-timer-page-card-project">
+                                <t t-esc="timer.project_name"/>
+                            </div>
+                        </div>
+                        <div class="bf-timer-page-card-clock"
+                             t-esc="formatTime(getElapsed(timer))"/>
+                        <div class="bf-timer-page-card-actions">
+                            <button t-if="timer.is_paused"
+                                    class="btn btn-outline-secondary bf-timer-page-btn"
+                                    t-on-click="() => this.onResumeTimer(timer.id)">
+                                <i class="fa fa-play me-1"/>Reprendre
+                            </button>
+                            <button t-else=""
+                                    class="btn btn-outline-secondary bf-timer-page-btn"
+                                    t-on-click="() => this.onPauseTimer(timer.id)">
+                                <i class="fa fa-pause me-1"/>Pause
+                            </button>
+                            <button class="btn btn-primary bf-timer-page-btn"
+                                    t-on-click="() => this.onStopTimer(timer.id)">
+                                <i class="fa fa-stop me-1"/>Arrêter
+                            </button>
+                        </div>
+                    </div>
+                </t>
+            </div>
+            <div t-else="" class="bf-timer-page-idle">
+                Aucune minuterie en cours.
+            </div>
+
+            <!-- Épinglées puis récentes, dans l'ordre que rend le serveur. -->
+            <div class="bf-timer-page-picker">
+                <input type="text" class="form-control bf-timer-page-search"
+                       placeholder="Chercher une tâche…"
+                       t-att-value="state.searchQuery"
+                       t-on-input="onSearchInput"/>
+
+                <div t-if="!filteredTasks.length" class="bf-timer-page-empty">
+                    Aucune tâche à démarrer ici. Épinglez-en depuis la barre du
+                    haut d'Odoo, ou saisissez une feuille de temps : les tâches
+                    récentes apparaissent d'elles-mêmes.
+                </div>
+
+                <t t-foreach="filteredTasks" t-as="task" t-key="task.task_id">
+                    <div class="bf-timer-page-row" t-att-class="task.is_closed ? 'bf-timer-page-row-closed' : ''">
+                        <button class="btn btn-link bf-timer-page-pin"
+                                t-on-click="() => task.is_pinned ? this.onUnpinTask(task.task_id) : this.onPinTask(task.task_id)"
+                                t-att-title="task.is_pinned ? 'Désépingler' : 'Épingler'">
+                            <i class="fa" t-att-class="task.is_pinned ? 'fa-thumb-tack' : 'fa-thumb-tack bf-timer-page-pin-off'"/>
+                        </button>
+                        <div class="bf-timer-page-row-text">
+                            <div class="bf-timer-page-row-name" t-esc="task.task_name"/>
+                            <div class="bf-timer-page-row-meta">
+                                <t t-esc="task.project_name"/>
+                                <t t-if="task.date_label"> · <t t-esc="task.date_label"/></t>
+                            </div>
+                        </div>
+                        <button class="btn btn-success bf-timer-page-start"
+                                t-on-click="() => this.onStartTask(task.task_id)"
+                                title="Démarrer">
+                            <i class="fa fa-play"/>
+                        </button>
+                    </div>
+                </t>
+            </div>
+        </div>
+    </t>
+
+</templates>
