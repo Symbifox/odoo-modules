@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- Étapes de production. L'ordre suit le vrai parcours d'un billet :
+             on ne fact-checke pas un texte qui n'existe pas encore. -->
+        <record id="stage_idea" model="bf.editorial.stage">
+            <field name="name">Idée</field>
+            <field name="sequence">10</field>
+            <field name="description">Un sujet identifié, rien d'écrit.</field>
+        </record>
+        <record id="stage_selected" model="bf.editorial.stage">
+            <field name="name">Retenu</field>
+            <field name="sequence">20</field>
+            <field name="description">Le sujet passe, l'angle se cherche.</field>
+        </record>
+        <record id="stage_brief" model="bf.editorial.stage">
+            <field name="name">Brief</field>
+            <field name="sequence">30</field>
+            <field name="description">Angle, promesse et audience arrêtés.</field>
+        </record>
+        <record id="stage_writing" model="bf.editorial.stage">
+            <field name="name">Rédaction</field>
+            <field name="sequence">40</field>
+        </record>
+        <record id="stage_draft" model="bf.editorial.stage">
+            <field name="name">Brouillon</field>
+            <field name="sequence">50</field>
+            <field name="description">Le texte existe dans Odoo, non publié.</field>
+        </record>
+        <record id="stage_factcheck" model="bf.editorial.stage">
+            <field name="name">Fact-check</field>
+            <field name="sequence">60</field>
+            <field name="description">Affirmations et sources en vérification.</field>
+        </record>
+        <record id="stage_qa" model="bf.editorial.stage">
+            <field name="name">QA</field>
+            <field name="sequence">70</field>
+        </record>
+        <record id="stage_ready" model="bf.editorial.stage">
+            <field name="name">Prêt</field>
+            <field name="sequence">80</field>
+            <field name="description">Garde de pré-vol verte, en attente d'un créneau.</field>
+        </record>
+        <record id="stage_scheduled" model="bf.editorial.stage">
+            <field name="name">Planifié</field>
+            <field name="sequence">90</field>
+            <field name="description">Date approuvée, le cron s'en charge.</field>
+        </record>
+        <record id="stage_published" model="bf.editorial.stage">
+            <field name="name">Publié</field>
+            <field name="sequence">100</field>
+            <field name="is_closing">True</field>
+            <field name="fold">True</field>
+        </record>
+        <record id="stage_blocked" model="bf.editorial.stage">
+            <field name="name">Bloqué</field>
+            <field name="sequence">110</field>
+            <field name="fold">True</field>
+        </record>
+        <record id="stage_abandoned" model="bf.editorial.stage">
+            <field name="name">Abandonné</field>
+            <field name="sequence">120</field>
+            <field name="is_abandoned">True</field>
+            <field name="fold">True</field>
+        </record>
+
+        <!-- Gabarits de liste de contrôle : les restes humains qui reviennent
+             à chaque article. -->
+        <record id="checklist_tpl_images" model="bf.editorial.checklist.template">
+            <field name="name">Visuels produits et placés</field>
+            <field name="sequence">10</field>
+            <field name="kind">blog</field>
+        </record>
+        <record id="checklist_tpl_alt" model="bf.editorial.checklist.template">
+            <field name="name">Texte alternatif rédigé dans chaque langue</field>
+            <field name="sequence">20</field>
+            <field name="kind">blog</field>
+        </record>
+        <record id="checklist_tpl_og" model="bf.editorial.checklist.template">
+            <field name="name">Image Open Graph définie</field>
+            <field name="sequence">30</field>
+            <field name="kind">blog</field>
+        </record>
+        <record id="checklist_tpl_read" model="bf.editorial.checklist.template">
+            <field name="name">Relecture humaine faite</field>
+            <field name="sequence">40</field>
+        </record>
+        <record id="checklist_tpl_crosslink" model="bf.editorial.checklist.template">
+            <field name="name">Liens croisés posés dans les articles cités</field>
+            <field name="sequence">50</field>
+            <field name="kind">blog</field>
+        </record>
+        <record id="checklist_tpl_blurbs" model="bf.editorial.checklist.template">
+            <field name="name">Blurbs rédigés dans chaque langue</field>
+            <field name="sequence">60</field>
+            <field name="is_blocking">False</field>
+        </record>
+
+        <!-- Publication différée. Toutes les heures : une date approuvée à la
+             minute près n'apporte rien, et un cron bavard coûte. -->
+        <record id="cron_publish_scheduled" model="ir.cron">
+            <field name="name">Atelier éditorial : publications différées</field>
+            <field name="model_id" ref="model_bf_editorial_entry"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_publish_scheduled()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">hours</field>
+            <field name="nextcall" eval="(DateTime.now() + timedelta(hours=1)).strftime('%Y-%m-%d %H:%M:%S')"/>
+            <field name="user_id" ref="base.user_root"/>
+            <field name="active" eval="False"/>
+        </record>
+
+    </data>
+</odoo>

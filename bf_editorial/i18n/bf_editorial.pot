@@ -1,0 +1,2264 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_editorial
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260630\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-08-26 22:27+0000\n"
+"PO-Revision-Date: 2026-08-26 22:27+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: bf_editorial
+#. odoo-python
+#: code:addons/bf_editorial/models/entree.py:0
+msgid "%s : aucun créneau"
+msgstr ""
+
+#. module: bf_editorial
+#. odoo-python
+#: code:addons/bf_editorial/models/entree.py:0
+msgid "%s affirmation(s) sans verdict."
+msgstr ""
+
+#. module: bf_editorial
+#. odoo-python
+#: code:addons/bf_editorial/models/qa.py:0
+msgid "%s en-tête(s) de tableau sans attribut « scope »."
+msgstr ""
+
+#. module: bf_editorial
+#. odoo-python
+#: code:addons/bf_editorial/models/qa.py:0
+msgid "%s image(s) sans texte alternatif."
+msgstr ""
+
+#. module: bf_editorial
+#. odoo-python
+#: code:addons/bf_editorial/models/entree.py:0
+msgid "%s reste(s) bloquant(s) dans la liste de contrôle."
+msgstr ""
+
+#. module: bf_editorial
+#. odoo-python
+#: code:addons/bf_editorial/models/entree.py:0
+msgid "%s source(s) ne répondent plus."
+msgstr ""
+
+#. module: bf_editorial
+#. odoo-python
+#: code:addons/bf_editorial/models/qa.py:0
+msgid ""
+"%s tiret(s) cadratin. À remplacer par deux-points, virgule, parenthèses ou "
+"point."
+msgstr ""
+
+#. module: bf_editorial
+#. odoo-python
+#: code:addons/bf_editorial/models/qa.py:0
+msgid "%s titre(s) H2 vide(s)."
+msgstr ""
+
+#. module: bf_editorial
+#: model_terms:ir.ui.view,arch_db:bf_editorial.view_editorial_entry_form
+msgid "<strong>La publication est retenue.</strong>"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_stage__is_abandoned
+msgid "Abandon"
+msgstr ""
+
+#. module: bf_editorial
+#: model:bf.editorial.stage,name:bf_editorial.stage_abandoned
+msgid "Abandonné"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_entry__hook
+msgid "Accroche"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_calendar__active
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_checklist_template__active
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_entry__active
+msgid "Actif"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_calendar__message_needaction
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_entry__message_needaction
+msgid "Action Needed"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_entry__activity_ids
+msgid "Activities"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_entry__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_entry__activity_state
+msgid "Activity State"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_entry__activity_type_icon
+msgid "Activity Type Icon"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_claim__name
+msgid "Affirmation"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model,name:bf_editorial.model_bf_editorial_claim
+msgid "Affirmation vérifiable"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_entry__claim_ids
+#: model_terms:ir.ui.view,arch_db:bf_editorial.view_editorial_entry_form
+msgid "Affirmations"
+msgstr ""
+
+#. module: bf_editorial
+#: model:bf.editorial.stage,description:bf_editorial.stage_factcheck
+msgid "Affirmations et sources en vérification."
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_entry__unverified_claim_count
+msgid "Affirmations non vérifiées"
+msgstr ""
+
+#. module: bf_editorial
+#: model_terms:ir.actions.act_window,help:bf_editorial.action_editorial_checklist_template
+msgid "Ajouter une ligne de gabarit"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields.selection,name:bf_editorial.selection__bf_editorial_entry__pattern__alternative
+msgid "Alternative à"
+msgstr ""
+
+#. module: bf_editorial
+#: model_terms:ir.ui.view,arch_db:bf_editorial.view_editorial_entry_form
+msgid "Angle"
+msgstr ""
+
+#. module: bf_editorial
+#: model:bf.editorial.stage,description:bf_editorial.stage_brief
+msgid "Angle, promesse et audience arrêtés."
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_entry__cta
+msgid "Appel à l'action"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields.selection,name:bf_editorial.selection__bf_editorial_checklist_template__kind__blog
+#: model:ir.model.fields.selection,name:bf_editorial.selection__bf_editorial_entry__kind__blog
+msgid "Article de blogue"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.module.category,name:bf_editorial.module_category_editorial
+#: model:ir.ui.menu,name:bf_editorial.menu_editorial_root
+#: model_terms:ir.ui.view,arch_db:bf_editorial.res_config_settings_view_form_editorial
+#: model_terms:ir.ui.view,arch_db:bf_editorial.view_blog_post_form_editorial
+msgid "Atelier éditorial"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.actions.server,name:bf_editorial.cron_publish_scheduled_ir_actions_server
+msgid "Atelier éditorial : publications différées"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_calendar__message_attachment_count
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_entry__message_attachment_count
+msgid "Attachment Count"
+msgstr ""
+
+#. module: bf_editorial
+#: model_terms:ir.ui.view,arch_db:bf_editorial.res_config_settings_view_form_editorial
+msgid "Au-delà de ce délai, une source est considérée périmée."
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,help:bf_editorial.field_res_config_settings__bf_editorial_source_recheck_months
+msgid ""
+"Au-delà, une source est considérée périmée et remonte dans la garde de pré-"
+"vol."
+msgstr ""
+
+#. module: bf_editorial
+#. odoo-python
+#: code:addons/bf_editorial/models/proposition.py:0
+msgid ""
+"Aucun candidat publiable. Toutes les entrées ouvertes sont bloquées, ou le "
+"calendrier est vide. Il faut écrire du neuf."
+msgstr ""
+
+#. module: bf_editorial
+#: model_terms:ir.ui.view,arch_db:bf_editorial.view_editorial_entry_form
+msgid "Aucun constat. Passez la QA pour remplir cette zone."
+msgstr ""
+
+#. module: bf_editorial
+#. odoo-python
+#: code:addons/bf_editorial/models/qa.py:0
+msgid "Aucun créneau de langue à contrôler."
+msgstr ""
+
+#. module: bf_editorial
+#. odoo-python
+#: code:addons/bf_editorial/models/proposition.py:0
+msgid "Aucun signal particulier."
+msgstr ""
+
+#. module: bf_editorial
+#. odoo-python
+#: code:addons/bf_editorial/models/proposition.py:0
+msgid "Aucune cadence définie pour ce calendrier."
+msgstr ""
+
+#. module: bf_editorial
+#. odoo-python
+#: code:addons/bf_editorial/models/entree.py:0
+msgid "Aucune langue exigée."
+msgstr ""
+
+#. module: bf_editorial
+#. odoo-python
+#: code:addons/bf_editorial/models/proposition.py:0
+msgid "Aucune publication à ce jour : le créneau est ouvert."
+msgstr ""
+
+#. module: bf_editorial
+#. odoo-python
+#: code:addons/bf_editorial/models/calendrier.py:0
+msgid "Aucune publication à ce jour."
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_entry__post_id
+msgid "Billet"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model,name:bf_editorial.model_blog_post
+msgid "Blog Post"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model,name:bf_editorial.model_blog_tag
+msgid "Blog Tag"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model,name:bf_editorial.model_blog_tag_category
+msgid "Blog Tag Category"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_calendar__blog_id
+#: model:ir.model.fields.selection,name:bf_editorial.selection__bf_editorial_calendar__kind__blog
+msgid "Blogue"
+msgstr ""
+
+#. module: bf_editorial
+#: model_terms:ir.ui.view,arch_db:bf_editorial.view_editorial_calendar_form
+msgid "Blogue Blue Fox"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_checklist__is_blocking
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_checklist_template__is_blocking
+msgid "Bloquante"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,help:bf_editorial.field_bf_editorial_checklist_template__is_blocking
+msgid "Bloquante, elle empêche la publication tant qu'elle est ouverte."
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_entry__blocks_ids
+msgid "Bloque"
+msgstr ""
+
+#. module: bf_editorial
+#: model:bf.editorial.stage,name:bf_editorial.stage_blocked
+msgid "Bloqué"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_entry__is_blocked
+#: model_terms:ir.ui.view,arch_db:bf_editorial.view_editorial_entry_form
+#: model_terms:ir.ui.view,arch_db:bf_editorial.view_editorial_entry_kanban
+msgid "Bloquée"
+msgstr ""
+
+#. module: bf_editorial
+#: model_terms:ir.ui.view,arch_db:bf_editorial.view_editorial_calendar_form
+#: model_terms:ir.ui.view,arch_db:bf_editorial.view_editorial_entry_search
+msgid "Bloquées"
+msgstr ""
+
+#. module: bf_editorial
+#: model:bf.editorial.checklist.template,name:bf_editorial.checklist_tpl_blurbs
+msgid "Blurbs rédigés dans chaque langue"
+msgstr ""
+
+#. module: bf_editorial
+#: model:bf.editorial.stage,name:bf_editorial.stage_brief
+msgid "Brief"
+msgstr ""
+
+#. module: bf_editorial
+#: model:bf.editorial.stage,name:bf_editorial.stage_draft
+msgid "Brouillon"
+msgstr ""
+
+#. module: bf_editorial
+#. odoo-python
+#: code:addons/bf_editorial/models/proposition.py:0
+msgid "Brouillon en attente depuis %s jours."
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_proposal__cadence_note
+#: model_terms:ir.ui.view,arch_db:bf_editorial.view_editorial_proposal_form
+msgid "Cadence"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_calendar__cadence_days
+msgid "Cadence (jours)"
+msgstr ""
+
+#. module: bf_editorial
+#: model_terms:ir.ui.view,arch_db:bf_editorial.view_editorial_calendar_form
+msgid "Cadence mesurée"
+msgstr ""
+
+#. module: bf_editorial
+#: model_terms:ir.ui.view,arch_db:bf_editorial.view_editorial_entry_form
+msgid "Cadrage"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_entry__calendar_id
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_proposal__calendar_id
+#: model_terms:ir.ui.view,arch_db:bf_editorial.view_editorial_entry_search
+msgid "Calendrier"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model,name:bf_editorial.model_bf_editorial_calendar
+#: model_terms:ir.ui.view,arch_db:bf_editorial.view_editorial_calendar_form
+msgid "Calendrier éditorial"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.module.category,description:bf_editorial.module_category_editorial
+msgid "Calendrier éditorial et diffusion"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.actions.act_window,name:bf_editorial.action_editorial_calendar
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_stage__calendar_ids
+#: model:ir.ui.menu,name:bf_editorial.menu_editorial_calendar
+msgid "Calendriers"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_entry__campaign_id
+msgid "Campagne"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_calendar__campaign_id
+msgid "Campagne par défaut"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model,name:bf_editorial.model_bf_editorial_proposal_line
+msgid "Candidat à la publication"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_proposal__line_ids
+msgid "Candidats"
+msgstr ""
+
+#. module: bf_editorial
+#: model_terms:ir.ui.view,arch_db:bf_editorial.view_editorial_proposal_form
+msgid "Candidats, du plus indiqué au moins"
+msgstr ""
+
+#. module: bf_editorial
+#. odoo-python
+#: code:addons/bf_editorial/models/entree.py:0
+msgid "Ce critère ne se compare qu'avec « = » ou « != »."
+msgstr ""
+
+#. module: bf_editorial
+#: model_terms:ir.ui.view,arch_db:bf_editorial.view_editorial_entry_form
+msgid "Ce que l'article défend, en une phrase"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,help:bf_editorial.field_bf_editorial_entry__thesis
+msgid "Ce que l'article défend, en une phrase."
+msgstr ""
+
+#. module: bf_editorial
+#: model_terms:ir.ui.view,arch_db:bf_editorial.res_config_settings_view_form_editorial
+msgid ""
+"Ce que le module considère comme « publié » quand un article existe en "
+"plusieurs langues."
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_entry__blocking_summary
+msgid "Ce qui bloque"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields.selection,name:bf_editorial.selection__bf_editorial_entry__search_intent__transactional
+msgid "Choisir un fournisseur"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_blog_tag_category__target_share
+msgid "Cible (%)"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,help:bf_editorial.field_blog_tag_category__is_pillar
+msgid "Coché, cette catégorie compte dans le ratio d'un calendrier."
+msgstr ""
+
+#. module: bf_editorial
+#. odoo-python
+#: code:addons/bf_editorial/models/proposition.py:0
+msgid "Comble le pilier en retard (%s)."
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields.selection,name:bf_editorial.selection__bf_editorial_entry__pattern__howto
+msgid "Comment faire"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields.selection,name:bf_editorial.selection__bf_editorial_entry__pattern__comparison
+msgid "Comparatif"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields.selection,name:bf_editorial.selection__bf_editorial_entry__search_intent__comparison
+msgid "Comparer"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,help:bf_editorial.field_bf_editorial_entry__raw_visits
+msgid ""
+"Compteur natif d'Odoo. Il compte aussi les robots : à lire comme un ordre de"
+" grandeur, pas comme un lectorat."
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_entry__competitor
+msgid "Concurrent visé"
+msgstr ""
+
+#. module: bf_editorial
+#: model_terms:ir.ui.view,arch_db:bf_editorial.view_editorial_entry_form
+msgid "Conduite"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model,name:bf_editorial.model_res_config_settings
+msgid "Config Settings"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.ui.menu,name:bf_editorial.menu_editorial_config
+msgid "Configuration"
+msgstr ""
+
+#. module: bf_editorial
+#: model_terms:ir.ui.view,arch_db:bf_editorial.view_editorial_entry_form
+msgid "Confirmer le verdict proposé"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_claim__confirmed
+msgid "Confirmé"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_version__qa_findings
+#: model:ir.model.fields.selection,name:bf_editorial.selection__bf_editorial_entry__qa_state__findings
+#: model:ir.model.fields.selection,name:bf_editorial.selection__bf_editorial_version__qa_state__findings
+msgid "Constats"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_entry__qa_findings
+msgid "Constats QA"
+msgstr ""
+
+#. module: bf_editorial
+#: model_terms:ir.ui.view,arch_db:bf_editorial.view_editorial_entry_form
+msgid ""
+"Contrôles déterministes. Aucune intelligence artificielle n'intervient."
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model,name:bf_editorial.model_bf_editorial_qa
+msgid "Contrôles éditoriaux déterministes"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_source__archive_url
+msgid "Copie archivée"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_claim__correction
+msgid "Correction appliquée"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_entry__color
+#: model:ir.model.fields,field_description:bf_editorial.field_blog_tag_category__color
+msgid "Couleur"
+msgstr ""
+
+#. module: bf_editorial
+#. odoo-python
+#: code:addons/bf_editorial/models/qa.py:0
+msgid "Couleur en ligne à faible contraste : %s."
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_calendar__create_uid
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_checklist__create_uid
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_checklist_template__create_uid
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_claim__create_uid
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_entry__create_uid
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_proposal__create_uid
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_proposal_line__create_uid
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_source__create_uid
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_stage__create_uid
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_version__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_calendar__create_date
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_checklist__create_date
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_checklist_template__create_date
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_claim__create_date
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_entry__create_date
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_proposal__create_date
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_proposal_line__create_date
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_source__create_date
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_stage__create_date
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_version__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: bf_editorial
+#: model_terms:ir.actions.act_window,help:bf_editorial.action_editorial_calendar
+msgid "Créer un calendrier"
+msgstr ""
+
+#. module: bf_editorial
+#: model_terms:ir.actions.act_window,help:bf_editorial.action_editorial_entry
+msgid "Créer une première entrée"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model,name:bf_editorial.model_bf_editorial_version
+msgid "Créneau de langue"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_calendar__slot_due
+msgid "Créneau dû"
+msgstr ""
+
+#. module: bf_editorial
+#. odoo-python
+#: code:addons/bf_editorial/models/qa.py:0
+msgid "Créneau vide."
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_entry__version_ids
+msgid "Créneaux de langue"
+msgstr ""
+
+#. module: bf_editorial
+#: model:bf.editorial.stage,description:bf_editorial.stage_scheduled
+msgid "Date approuvée, le cron s'en charge."
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_entry__planned_date
+#: model_terms:ir.ui.view,arch_db:bf_editorial.view_editorial_entry_search
+msgid "Date prévue"
+msgstr ""
+
+#. module: bf_editorial
+#. odoo-python
+#: code:addons/bf_editorial/models/proposition.py:0
+msgid "Date prévue atteinte (%s)."
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_source__http_status
+msgid "Dernier code HTTP"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_calendar__last_published_date
+msgid "Dernière publication"
+msgstr ""
+
+#. module: bf_editorial
+#. odoo-python
+#: code:addons/bf_editorial/models/proposition.py:0
+msgid ""
+"Dernière publication il y a %(days)s jour(s), cadence visée %(cadence)s. "
+"Créneau %(state)s."
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_source__description
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_stage__description
+msgid "Description"
+msgstr ""
+
+#. module: bf_editorial
+#: model:res.groups,name:bf_editorial.group_editorial_manager
+msgid "Direction éditoriale"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_calendar__display_name
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_checklist__display_name
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_checklist_template__display_name
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_claim__display_name
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_entry__display_name
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_proposal__display_name
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_proposal_line__display_name
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_source__display_name
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_stage__display_name
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_version__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: bf_editorial
+#: model_terms:ir.ui.view,arch_db:bf_editorial.view_editorial_entry_form
+msgid "Doit sortir après"
+msgstr ""
+
+#. module: bf_editorial
+#. odoo-python
+#: code:addons/bf_editorial/models/proposition.py:0
+msgid "Débloque %s autre(s) entrée(s)."
+msgstr ""
+
+#. module: bf_editorial
+#: model_terms:ir.actions.act_window,help:bf_editorial.action_editorial_pillar
+msgid "Définir un pilier"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_entry__depends_on_ids
+msgid "Dépend de"
+msgstr ""
+
+#. module: bf_editorial
+#: model_terms:ir.ui.view,arch_db:bf_editorial.view_editorial_entry_form
+msgid "Dépendances"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_entry__version_drift
+#: model_terms:ir.ui.view,arch_db:bf_editorial.view_editorial_entry_search
+msgid "Dérive de version"
+msgstr ""
+
+#. module: bf_editorial
+#. odoo-python
+#: code:addons/bf_editorial/models/proposition.py:0
+msgid ""
+"Elle n'est pas prête telle quelle :\n"
+"%s"
+msgstr ""
+
+#. module: bf_editorial
+#: model_terms:ir.ui.view,arch_db:bf_editorial.view_editorial_entry_search
+msgid "En cours"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,help:bf_editorial.field_bf_editorial_calendar__word_floor
+#: model:ir.model.fields,help:bf_editorial.field_bf_editorial_entry__word_floor
+msgid "En deçà, une entrée ne peut pas passer la garde de pré-vol."
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_checklist__entry_id
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_claim__entry_id
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_proposal_line__entry_id
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_source__entry_id
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_version__entry_id
+msgid "Entrée"
+msgstr ""
+
+#. module: bf_editorial
+#. odoo-python
+#: code:addons/bf_editorial/models/entree.py:0
+msgid "Entrée bloquée : %s"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model,name:bf_editorial.model_bf_editorial_entry
+#: model_terms:ir.ui.view,arch_db:bf_editorial.view_editorial_entry_form
+msgid "Entrée éditoriale"
+msgstr ""
+
+#. module: bf_editorial
+#. odoo-python
+#: code:addons/bf_editorial/models/calendrier.py:0
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_calendar__entry_ids
+#: model:ir.model.fields,field_description:bf_editorial.field_blog_post__editorial_entry_count
+#: model:ir.model.fields,field_description:bf_editorial.field_blog_tag__entry_count
+#: model:ir.model.fields,field_description:bf_editorial.field_blog_tag_category__entry_count
+#: model:ir.ui.menu,name:bf_editorial.menu_editorial_entry
+#: model_terms:ir.ui.view,arch_db:bf_editorial.view_editorial_calendar_form
+msgid "Entrées"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_calendar__blocked_count
+msgid "Entrées bloquées"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,help:bf_editorial.field_bf_editorial_entry__depends_on_ids
+msgid ""
+"Entrées qui doivent être publiées avant celle-ci — un billet publié ne doit "
+"jamais pointer un brouillon."
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.actions.act_window,name:bf_editorial.action_editorial_entry
+#: model:ir.model.fields,field_description:bf_editorial.field_blog_post__editorial_entry_ids
+msgid "Entrées éditoriales"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields.selection,name:bf_editorial.selection__bf_editorial_claim__verdict__ok
+msgid "Exacte"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_calendar__require_all_langs
+msgid "Exiger toutes les langues"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_res_config_settings__bf_editorial_require_all_langs
+msgid "Exiger toutes les langues avant de considérer une entrée publiée"
+msgstr ""
+
+#. module: bf_editorial
+#. odoo-python
+#: code:addons/bf_editorial/models/calendrier.py:0
+msgid ""
+"Exiger toutes les langues n'a pas de sens sans langue publiée : ajoutez au "
+"moins une langue au calendrier « %s »."
+msgstr ""
+
+#. module: bf_editorial
+#: model:bf.editorial.stage,name:bf_editorial.stage_factcheck
+msgid "Fact-check"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_entry__fact_check_date
+msgid "Fact-check du"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_entry__fact_checked_by
+msgid "Fact-check par"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_checklist__done
+msgid "Fait"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_checklist__done_date
+msgid "Fait le"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_checklist__done_by
+msgid "Fait par"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields.selection,name:bf_editorial.selection__bf_editorial_claim__verdict__false
+msgid "Fausse"
+msgstr ""
+
+#. module: bf_editorial
+#: model_terms:ir.ui.view,arch_db:bf_editorial.view_editorial_proposal_form
+msgid "Fermer"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_calendar__message_follower_ids
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_entry__message_follower_ids
+msgid "Followers"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_calendar__message_partner_ids
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_entry__message_partner_ids
+msgid "Followers (Partners)"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,help:bf_editorial.field_bf_editorial_entry__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr ""
+
+#. module: bf_editorial
+#. odoo-python
+#: code:addons/bf_editorial/models/qa.py:0
+msgid "Formule bannie : « %s »."
+msgstr ""
+
+#. module: bf_editorial
+#: model_terms:ir.ui.view,arch_db:bf_editorial.res_config_settings_view_form_editorial
+msgid "Fraîcheur des références citées."
+msgstr ""
+
+#. module: bf_editorial
+#: model_terms:ir.ui.view,arch_db:bf_editorial.view_editorial_entry_form
+msgid "Fraîcheur du sujet"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model,name:bf_editorial.model_bf_editorial_checklist_template
+msgid "Gabarit de liste de contrôle"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.ui.menu,name:bf_editorial.menu_editorial_checklist_tpl
+msgid "Gabarits de contrôle"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.actions.act_window,name:bf_editorial.action_editorial_checklist_template
+msgid "Gabarits de liste de contrôle"
+msgstr ""
+
+#. module: bf_editorial
+#: model:bf.editorial.stage,description:bf_editorial.stage_ready
+msgid "Garde de pré-vol verte, en attente d'un créneau."
+msgstr ""
+
+#. module: bf_editorial
+#. odoo-python
+#: code:addons/bf_editorial/models/proposition.py:0
+msgid "Garde de pré-vol verte."
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_calendar__has_message
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_entry__has_message
+msgid "Has Message"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_calendar__id
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_checklist__id
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_checklist_template__id
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_claim__id
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_entry__id
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_proposal__id
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_proposal_line__id
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_source__id
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_stage__id
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_version__id
+msgid "ID"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_entry__activity_exception_icon
+msgid "Icon"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,help:bf_editorial.field_bf_editorial_entry__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr ""
+
+#. module: bf_editorial
+#: model:bf.editorial.stage,name:bf_editorial.stage_idea
+msgid "Idée"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,help:bf_editorial.field_bf_editorial_calendar__message_needaction
+#: model:ir.model.fields,help:bf_editorial.field_bf_editorial_entry__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,help:bf_editorial.field_bf_editorial_calendar__message_has_error
+#: model:ir.model.fields,help:bf_editorial.field_bf_editorial_calendar__message_has_sms_error
+#: model:ir.model.fields,help:bf_editorial.field_bf_editorial_entry__message_has_error
+#: model:ir.model.fields,help:bf_editorial.field_bf_editorial_entry__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,help:bf_editorial.field_bf_editorial_entry__name
+msgid ""
+"Il survit aux changements de titre publié, ce qui permet de suivre une "
+"entrée dont l'article a été renommé."
+msgstr ""
+
+#. module: bf_editorial
+#: model:bf.editorial.checklist.template,name:bf_editorial.checklist_tpl_og
+msgid "Image Open Graph définie"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields.selection,name:bf_editorial.selection__bf_editorial_claim__verdict__imprecise
+msgid "Imprécise"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields.selection,name:bf_editorial.selection__bf_editorial_checklist_template__kind__newsletter
+#: model:ir.model.fields.selection,name:bf_editorial.selection__bf_editorial_entry__kind__newsletter
+msgid "Infolettre"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,help:bf_editorial.field_bf_editorial_source__archive_url
+msgid "Instantané Wayback à citer quand l'original a disparu."
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_entry__search_intent
+msgid "Intention de recherche"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_checklist__name
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_checklist_template__name
+msgid "Intitulé"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_calendar__message_is_follower
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_entry__message_is_follower
+msgid "Is Follower"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_calendar__days_since_last
+msgid "Jours depuis"
+msgstr ""
+
+#. module: bf_editorial
+#. odoo-python
+#: code:addons/bf_editorial/models/entree.py:0
+msgid "La QA éditoriale a laissé des constats ouverts."
+msgstr ""
+
+#. module: bf_editorial
+#. odoo-python
+#: code:addons/bf_editorial/models/entree.py:0
+msgid "La QA éditoriale n'a pas été passée."
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.constraint,message:bf_editorial.constraint_bf_editorial_calendar_cadence_positive
+msgid "La cadence ne peut pas être négative."
+msgstr ""
+
+#. module: bf_editorial
+#. odoo-python
+#: code:addons/bf_editorial/models/entree.py:0
+msgid ""
+"La date approuvée est passée, mais la garde de pré-vol a refusé :<br/>%s"
+msgstr ""
+
+#. module: bf_editorial
+#: model_terms:ir.ui.view,arch_db:bf_editorial.view_editorial_entry_form
+msgid "La garde de pré-vol refusera et expliquera pourquoi."
+msgstr ""
+
+#. module: bf_editorial
+#: model_terms:ir.ui.view,arch_db:bf_editorial.view_editorial_entry_form
+msgid "La garde de pré-vol s'applique aussi à cette date."
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,help:bf_editorial.field_bf_editorial_version__is_source
+msgid ""
+"La langue dans laquelle l'article est écrit. Les autres en sont des "
+"traductions."
+msgstr ""
+
+#. module: bf_editorial
+#: model_terms:ir.ui.view,arch_db:bf_editorial.view_editorial_entry_form
+msgid "La phrase qui accroche"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,help:bf_editorial.field_bf_editorial_entry__hook
+msgid "La première phrase, ou l'idée qui doit accrocher."
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,help:bf_editorial.field_bf_editorial_entry__source_version
+msgid "La version du module documentée au moment de la vérification."
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_source__lang_id
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_version__lang_id
+msgid "Langue"
+msgstr ""
+
+#. module: bf_editorial
+#: model_terms:ir.ui.view,arch_db:bf_editorial.view_editorial_entry_search
+msgid "Langue manquante"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_version__is_source
+msgid "Langue source"
+msgstr ""
+
+#. module: bf_editorial
+#: model_terms:ir.ui.view,arch_db:bf_editorial.view_editorial_entry_form
+msgid "Langues"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_calendar__lang_ids
+msgid "Langues publiées"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_calendar__write_uid
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_checklist__write_uid
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_checklist_template__write_uid
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_claim__write_uid
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_entry__write_uid
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_proposal__write_uid
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_proposal_line__write_uid
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_source__write_uid
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_stage__write_uid
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_version__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_calendar__write_date
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_checklist__write_date
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_checklist_template__write_date
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_claim__write_date
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_entry__write_date
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_proposal__write_date
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_proposal_line__write_date
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_source__write_date
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_stage__write_date
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_version__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: bf_editorial
+#. odoo-python
+#: code:addons/bf_editorial/models/blog_post.py:0
+msgid "Le contenu du billet a changé : la QA éditoriale est à repasser."
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,help:bf_editorial.field_bf_editorial_source__lang_id
+msgid "Le créneau français cite la page française quand elle existe."
+msgstr ""
+
+#. module: bf_editorial
+#. odoo-python
+#: code:addons/bf_editorial/models/entree.py:0
+msgid "Le module documenté a bougé depuis le fact-check : %s → %s."
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,help:bf_editorial.field_bf_editorial_entry__pattern
+msgid "Le patron « alternative à » domine historiquement le palmarès."
+msgstr ""
+
+#. module: bf_editorial
+#: model_terms:ir.actions.act_window,help:bf_editorial.action_editorial_pillar
+msgid ""
+"Le pilier est la catégorie d'étiquette native du blogue : le\n"
+"               site public sait déjà l'afficher et la filtrer."
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.constraint,message:bf_editorial.constraint_bf_editorial_calendar_word_floor_positive
+msgid "Le plancher de mots ne peut pas être négatif."
+msgstr ""
+
+#. module: bf_editorial
+#. odoo-python
+#: code:addons/bf_editorial/models/proposition.py:0
+msgid "Le ratio réclame un billet « %s »."
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,help:bf_editorial.field_bf_editorial_calendar__website_id
+msgid ""
+"Le site dont ce calendrier alimente le blogue. Vide pour un flux qui ne "
+"publie pas d'article."
+msgstr ""
+
+#. module: bf_editorial
+#: model:bf.editorial.stage,description:bf_editorial.stage_selected
+msgid "Le sujet passe, l'angle se cherche."
+msgstr ""
+
+#. module: bf_editorial
+#: model:bf.editorial.stage,description:bf_editorial.stage_draft
+msgid "Le texte existe dans Odoo, non publié."
+msgstr ""
+
+#. module: bf_editorial
+#: model_terms:ir.ui.view,arch_db:bf_editorial.view_editorial_entry_form
+msgid "Le titre peut changer, celui-ci reste"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,help:bf_editorial.field_bf_editorial_calendar__lang_ids
+msgid ""
+"Les langues qu'une entrée de ce calendrier doit livrer. Vide, la langue du "
+"site fait foi."
+msgstr ""
+
+#. module: bf_editorial
+#: model_terms:ir.ui.view,arch_db:bf_editorial.view_editorial_entry_search
+msgid "Les miennes"
+msgstr ""
+
+#. module: bf_editorial
+#: model_terms:ir.actions.act_window,help:bf_editorial.action_editorial_checklist_template
+msgid ""
+"Les restes humains qui reviennent à chaque article : visuels,\n"
+"               relecture, liens croisés. Une ligne bloquante retient la\n"
+"               publication tant qu'elle est ouverte."
+msgstr ""
+
+#. module: bf_editorial
+#: model:bf.editorial.checklist.template,name:bf_editorial.checklist_tpl_crosslink
+msgid "Liens croisés posés dans les articles cités"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model,name:bf_editorial.model_bf_editorial_checklist
+msgid "Ligne de liste de contrôle"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_entry__checklist_ids
+msgid "Liste de contrôle"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_version__lang_code
+msgid "Locale Code"
+msgstr ""
+
+#. module: bf_editorial
+#. odoo-python
+#: code:addons/bf_editorial/models/qa.py:0
+msgid "Marqueur de rédaction resté : %s."
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_calendar__message_has_error
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_entry__message_has_error
+msgid "Message Delivery error"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_calendar__message_ids
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_entry__message_ids
+msgid "Messages"
+msgstr ""
+
+#. module: bf_editorial
+#: model_terms:ir.ui.view,arch_db:bf_editorial.view_editorial_entry_form
+msgid "Mesure brute"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields.selection,name:bf_editorial.selection__bf_editorial_calendar__kind__mixed
+msgid "Mixte"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_entry__subject_module_id
+msgid "Module documenté"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_source__is_dead
+msgid "Morte"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_entry__target_keyword
+msgid "Mot-clé visé"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_entry__blocked_reason
+msgid "Motif de blocage"
+msgstr ""
+
+#. module: bf_editorial
+#: model_terms:ir.ui.view,arch_db:bf_editorial.view_editorial_entry_form
+msgid "Motif de blocage saisi à la main"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_proposal_line__rationale
+msgid "Motifs"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_version__word_count
+#: model_terms:ir.ui.view,arch_db:bf_editorial.view_editorial_entry_list
+msgid "Mots"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_entry__word_count
+msgid "Mots (langue source)"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_entry__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_calendar__medium_id
+msgid "Médium par défaut"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_calendar__kind
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_checklist_template__kind
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_entry__kind
+#: model_terms:ir.ui.view,arch_db:bf_editorial.view_editorial_entry_search
+msgid "Nature"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_entry__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_entry__activity_summary
+msgid "Next Activity Summary"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_entry__activity_type_id
+msgid "Next Activity Type"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_calendar__name
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_source__name
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_stage__name
+msgid "Nom"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_calendar__entry_count
+msgid "Nombre d'entrées"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,help:bf_editorial.field_bf_editorial_calendar__cadence_days
+msgid ""
+"Nombre de jours visé entre deux publications. Zéro désactive le calcul de "
+"créneau."
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields.selection,name:bf_editorial.selection__bf_editorial_calendar__require_all_langs__no
+msgid "Non — la langue source suffit"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_checklist__note
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_proposal_line__score
+msgid "Note"
+msgstr ""
+
+#. module: bf_editorial
+#. odoo-python
+#: code:addons/bf_editorial/models/blog_post.py:0
+msgid "Nouvelle entrée éditoriale"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_calendar__message_needaction_counter
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_entry__message_needaction_counter
+msgid "Number of Actions"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_calendar__message_has_error_counter
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_entry__message_has_error_counter
+msgid "Number of errors"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,help:bf_editorial.field_bf_editorial_calendar__message_needaction_counter
+#: model:ir.model.fields,help:bf_editorial.field_bf_editorial_entry__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,help:bf_editorial.field_bf_editorial_calendar__message_has_error_counter
+#: model:ir.model.fields,help:bf_editorial.field_bf_editorial_entry__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields.selection,name:bf_editorial.selection__bf_editorial_calendar__require_all_langs__yes
+msgid "Oui — toutes les langues avant de compter comme publié"
+msgstr ""
+
+#. module: bf_editorial
+#: model_terms:ir.ui.view,arch_db:bf_editorial.view_editorial_proposal_form
+msgid "Ouvrir l'entrée"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,help:bf_editorial.field_blog_tag_category__target_share
+msgid ""
+"Part visée de la production, en pourcentage. La somme des cibles d'un "
+"calendrier devrait faire 100, sans quoi le ratio se lit mal."
+msgstr ""
+
+#. module: bf_editorial
+#: model_terms:ir.ui.view,arch_db:bf_editorial.view_editorial_entry_form
+msgid "Passer la QA"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_entry__pattern
+msgid "Patron"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_entry__pillar_id
+#: model_terms:ir.ui.view,arch_db:bf_editorial.view_editorial_entry_search
+msgid "Pilier"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_proposal__owed_pillar_id
+msgid "Pilier dû"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_blog_tag_category__is_pillar
+msgid "Pilier éditorial"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.actions.act_window,name:bf_editorial.action_editorial_pillar
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_calendar__pillar_ids
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_checklist_template__pillar_ids
+#: model:ir.ui.menu,name:bf_editorial.menu_editorial_pillar
+msgid "Piliers"
+msgstr ""
+
+#. module: bf_editorial
+#: model_terms:ir.ui.view,arch_db:bf_editorial.view_editorial_calendar_form
+msgid "Piliers et cibles"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_entry__word_floor
+msgid "Plancher"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_calendar__word_floor
+msgid "Plancher de mots"
+msgstr ""
+
+#. module: bf_editorial
+#. odoo-python
+#: code:addons/bf_editorial/models/proposition.py:0
+msgid "Plancher de mots atteint (%s), reste des points de contrôle."
+msgstr ""
+
+#. module: bf_editorial
+#. odoo-python
+#: code:addons/bf_editorial/models/entree.py:0
+msgid "Plancher de mots non atteint : %s contre %s."
+msgstr ""
+
+#. module: bf_editorial
+#: model:bf.editorial.stage,name:bf_editorial.stage_scheduled
+msgid "Planifié"
+msgstr ""
+
+#. module: bf_editorial
+#: model_terms:ir.ui.view,arch_db:bf_editorial.res_config_settings_view_form_editorial
+msgid "Politique multilingue"
+msgstr ""
+
+#. module: bf_editorial
+#. odoo-python
+#: code:addons/bf_editorial/models/qa.py:0
+msgid ""
+"Ponctuation française (espace avant deux-points) dans un créneau anglais."
+msgstr ""
+
+#. module: bf_editorial
+#: model_terms:ir.ui.view,arch_db:bf_editorial.view_editorial_calendar_form
+msgid "Portée"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields.selection,name:bf_editorial.selection__bf_editorial_entry__pattern__posture
+msgid "Prise de position"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_entry__reader_problem
+msgid "Problème du lecteur"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_entry__promise
+msgid "Promesse"
+msgstr ""
+
+#. module: bf_editorial
+#: model_terms:ir.ui.view,arch_db:bf_editorial.view_editorial_calendar_form
+msgid "Proposer le prochain article"
+msgstr ""
+
+#. module: bf_editorial
+#. odoo-python
+#: code:addons/bf_editorial/models/calendrier.py:0
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_proposal_line__proposal_id
+#: model_terms:ir.ui.view,arch_db:bf_editorial.view_editorial_proposal_form
+msgid "Proposition"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model,name:bf_editorial.model_bf_editorial_proposal
+msgid "Proposition du prochain article"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_claim__is_machine_proposed
+msgid "Proposé par la machine"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields.selection,name:bf_editorial.selection__bf_editorial_entry__qa_state__clean
+#: model:ir.model.fields.selection,name:bf_editorial.selection__bf_editorial_version__qa_state__clean
+msgid "Propre"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_entry__preflight_summary
+msgid "Pré-vol"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_entry__preflight_ok
+#: model_terms:ir.ui.view,arch_db:bf_editorial.view_editorial_entry_kanban
+#: model_terms:ir.ui.view,arch_db:bf_editorial.view_editorial_entry_search
+msgid "Pré-vol vert"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields.selection,name:bf_editorial.selection__bf_editorial_entry__pattern__product
+msgid "Présentation produit"
+msgstr ""
+
+#. module: bf_editorial
+#: model:bf.editorial.stage,name:bf_editorial.stage_ready
+msgid "Prêt"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_entry__scheduled_publish_date
+msgid "Publication différée"
+msgstr ""
+
+#. module: bf_editorial
+#. odoo-python
+#: code:addons/bf_editorial/models/entree.py:0
+msgid "Publication différée refusée"
+msgstr ""
+
+#. module: bf_editorial
+#. odoo-python
+#: code:addons/bf_editorial/models/entree.py:0
+msgid "Publication différée refusée, %s point(s) bloquant(s)."
+msgstr ""
+
+#. module: bf_editorial
+#. odoo-python
+#: code:addons/bf_editorial/models/entree.py:0
+msgid ""
+"Publication refusée pour « %(name)s » :\n"
+"\n"
+"%(list)s"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields.selection,name:bf_editorial.selection__bf_editorial_checklist_template__kind__social
+#: model:ir.model.fields.selection,name:bf_editorial.selection__bf_editorial_entry__kind__social
+msgid "Publication sociale"
+msgstr ""
+
+#. module: bf_editorial
+#: model_terms:ir.ui.view,arch_db:bf_editorial.view_editorial_entry_form
+msgid "Publier"
+msgstr ""
+
+#. module: bf_editorial
+#. odoo-python
+#: code:addons/bf_editorial/models/entree.py:0
+msgid "Publier demande le groupe « Direction éditoriale »."
+msgstr ""
+
+#. module: bf_editorial
+#: model:bf.editorial.stage,name:bf_editorial.stage_published
+msgid "Publié"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_entry__published_date
+msgid "Publié le"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields.selection,name:bf_editorial.selection__bf_editorial_version__state__published
+#: model_terms:ir.ui.view,arch_db:bf_editorial.view_editorial_entry_form
+msgid "Publiée"
+msgstr ""
+
+#. module: bf_editorial
+#. odoo-python
+#: code:addons/bf_editorial/models/entree.py:0
+msgid "Publiée, garde de pré-vol verte."
+msgstr ""
+
+#. module: bf_editorial
+#: model_terms:ir.ui.view,arch_db:bf_editorial.view_editorial_entry_search
+msgid "Publiées"
+msgstr ""
+
+#. module: bf_editorial
+#: model:bf.editorial.stage,name:bf_editorial.stage_qa
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_version__qa_state
+#: model_terms:ir.ui.view,arch_db:bf_editorial.view_editorial_entry_form
+msgid "QA"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_entry__qa_last_run
+msgid "QA passée le"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_entry__qa_run_by
+msgid "QA passée par"
+msgstr ""
+
+#. module: bf_editorial
+#. odoo-python
+#: code:addons/bf_editorial/models/entree.py:0
+msgid "QA éditoriale passée : %s constat(s)."
+msgstr ""
+
+#. module: bf_editorial
+#. odoo-python
+#: code:addons/bf_editorial/models/proposition.py:0
+msgid "Quasiment vide : %s mots. C'est un titre réservé, pas un brouillon."
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_proposal_line__sequence
+#: model_terms:ir.ui.view,arch_db:bf_editorial.view_editorial_proposal_form
+msgid "Rang"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_calendar__rating_ids
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_entry__rating_ids
+msgid "Ratings"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_proposal__ratio_note
+#: model_terms:ir.ui.view,arch_db:bf_editorial.view_editorial_calendar_form
+#: model_terms:ir.ui.view,arch_db:bf_editorial.view_editorial_proposal_form
+msgid "Ratio"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_calendar__ratio_summary
+msgid "Ratio récent"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_proposal__recommendation
+msgid "Recommandation"
+msgstr ""
+
+#. module: bf_editorial
+#. odoo-python
+#: code:addons/bf_editorial/models/proposition.py:0
+msgid "Recommandation : %s"
+msgstr ""
+
+#. module: bf_editorial
+#: model_terms:ir.ui.view,arch_db:bf_editorial.view_editorial_entry_search
+msgid "Regrouper par"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_entry__reviewer_id
+msgid "Relecteur"
+msgstr ""
+
+#. module: bf_editorial
+#: model:bf.editorial.checklist.template,name:bf_editorial.checklist_tpl_read
+msgid "Relecture humaine faite"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,help:bf_editorial.field_bf_editorial_version__slug
+msgid ""
+"Relevé à la publication. Un changement de titre casserait sinon le "
+"rattachement des visites à l'article."
+msgstr ""
+
+#. module: bf_editorial
+#: model_terms:ir.ui.view,arch_db:bf_editorial.view_editorial_entry_form
+msgid "Relire les créneaux de langue"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields.selection,name:bf_editorial.selection__bf_editorial_version__state__reviewed
+msgid "Relue"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,help:bf_editorial.field_bf_editorial_entry__subject_module_id
+msgid ""
+"Renseigné, le module signale de lui-même que la version a bougé depuis le "
+"fact-check."
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_stage__fold
+msgid "Repliée"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,help:bf_editorial.field_bf_editorial_stage__fold
+msgid "Repliée dans la vue kanban tant qu'aucune entrée ne s'y trouve."
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_calendar__user_id
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_entry__user_id
+#: model_terms:ir.ui.view,arch_db:bf_editorial.view_editorial_entry_search
+msgid "Responsable"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_entry__activity_user_id
+msgid "Responsible User"
+msgstr ""
+
+#. module: bf_editorial
+#: model_terms:ir.ui.view,arch_db:bf_editorial.view_editorial_entry_form
+msgid "Restes humains"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_entry__open_checklist_count
+msgid "Restes ouverts"
+msgstr ""
+
+#. module: bf_editorial
+#: model:bf.editorial.stage,name:bf_editorial.stage_selected
+msgid "Retenu"
+msgstr ""
+
+#. module: bf_editorial
+#: model_terms:ir.ui.view,arch_db:bf_editorial.view_editorial_entry_form
+msgid "Retient"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_res_config_settings__bf_editorial_source_recheck_months
+msgid "Revérifier les sources tous les (mois)"
+msgstr ""
+
+#. module: bf_editorial
+#. odoo-python
+#: code:addons/bf_editorial/models/entree.py:0
+msgid "Rien ne s'oppose à la publication."
+msgstr ""
+
+#. module: bf_editorial
+#: model:res.groups,comment:bf_editorial.group_editorial_manager
+msgid "Règle les calendriers, approuve les dates et publie."
+msgstr ""
+
+#. module: bf_editorial
+#: model_terms:ir.ui.view,arch_db:bf_editorial.view_editorial_calendar_form
+msgid "Règles"
+msgstr ""
+
+#. module: bf_editorial
+#: model:bf.editorial.stage,name:bf_editorial.stage_writing
+#: model:res.groups,name:bf_editorial.group_editorial_user
+msgid "Rédaction"
+msgstr ""
+
+#. module: bf_editorial
+#: model_terms:ir.ui.view,arch_db:bf_editorial.view_editorial_entry_form
+msgid "Référencement"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,help:bf_editorial.field_bf_editorial_calendar__ratio_summary
+msgid ""
+"Répartition par pilier sur les dernières publications, comparée aux cibles."
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields.selection,name:bf_editorial.selection__bf_editorial_calendar__kind__social
+msgid "Réseaux seulement"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields.selection,name:bf_editorial.selection__bf_editorial_entry__search_intent__informational
+msgid "S'informer"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_calendar__message_has_sms_error
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_entry__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr ""
+
+#. module: bf_editorial
+#. odoo-python
+#: code:addons/bf_editorial/models/calendrier.py:0
+msgid "Sans pilier"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_calendar__website_id
+msgid "Site web"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_version__slug
+msgid "Slug figé"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_calendar__company_id
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_entry__company_id
+msgid "Société"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_claim__source_id
+msgid "Source"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model,name:bf_editorial.model_bf_editorial_source
+msgid "Source citée"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_entry__source_ids
+#: model_terms:ir.ui.view,arch_db:bf_editorial.res_config_settings_view_form_editorial
+#: model_terms:ir.ui.view,arch_db:bf_editorial.view_editorial_entry_form
+msgid "Sources"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_entry__dead_source_count
+msgid "Sources mortes"
+msgstr ""
+
+#. module: bf_editorial
+#. odoo-python
+#: code:addons/bf_editorial/models/proposition.py:0
+msgid "Sous le plancher : %(a)s mots contre %(b)s."
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,help:bf_editorial.field_bf_editorial_entry__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields.selection,name:bf_editorial.selection__bf_editorial_calendar__require_all_langs__default
+msgid "Suivre le réglage général"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_entry__tag_ids
+msgid "Sujets"
+msgstr ""
+
+#. module: bf_editorial
+#. odoo-python
+#: code:addons/bf_editorial/models/calendrier.py:0
+msgid "Sur les %s dernières publications :"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,help:bf_editorial.field_bf_editorial_calendar__require_all_langs
+msgid ""
+"Surcharge, pour ce calendrier, la politique multilingue générale définie "
+"dans les paramètres."
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_calendar__sequence
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_checklist__sequence
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_checklist_template__sequence
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_claim__sequence
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_source__sequence
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_stage__sequence
+msgid "Séquence"
+msgstr ""
+
+#. module: bf_editorial
+#: model:bf.editorial.checklist.template,name:bf_editorial.checklist_tpl_alt
+msgid "Texte alternatif rédigé dans chaque langue"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,help:bf_editorial.field_bf_editorial_version__lang_code
+msgid "This field is used to set/get locales for user"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_entry__thesis
+msgid "Thèse"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_entry__name
+#: model_terms:ir.ui.view,arch_db:bf_editorial.view_editorial_entry_form
+msgid "Titre de travail"
+msgstr ""
+
+#. module: bf_editorial
+#. odoo-python
+#: code:addons/bf_editorial/models/entree.py:0
+msgid "Toutes les langues exigées ne sont pas publiées."
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_entry__langs_complete
+msgid "Toutes les langues livrées"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_version__translator_id
+msgid "Traducteur"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields.selection,name:bf_editorial.selection__bf_editorial_version__state__translated
+msgid "Traduite"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_version__translated_date
+msgid "Traduite le"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields.selection,name:bf_editorial.selection__bf_editorial_entry__search_intent__navigational
+msgid "Trouver une page précise"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,help:bf_editorial.field_bf_editorial_entry__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_entry__task_id
+msgid "Tâche liée"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_source__url
+msgid "URL"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,help:bf_editorial.field_res_config_settings__bf_editorial_require_all_langs
+msgid ""
+"Un article dont la traduction n'est pas sortie reste incomplet et n'est pas "
+"compté dans la cadence. Chaque calendrier peut surcharger ce réglage."
+msgstr ""
+
+#. module: bf_editorial
+#: model_terms:ir.ui.view,arch_db:bf_editorial.res_config_settings_view_form_editorial
+msgid ""
+"Un article dont la traduction n'est pas sortie reste incomplet et ne compte "
+"pas dans la cadence. Chaque calendrier peut surcharger ce réglage."
+msgstr ""
+
+#. module: bf_editorial
+#: model_terms:ir.actions.act_window,help:bf_editorial.action_editorial_calendar
+msgid ""
+"Un calendrier est un flux de publication avec ses règles : la\n"
+"               cadence visée, les langues exigées, les piliers et leurs cibles.\n"
+"               Plusieurs flux peuvent cohabiter."
+msgstr ""
+
+#. module: bf_editorial
+#: model:bf.editorial.stage,description:bf_editorial.stage_idea
+msgid "Un sujet identifié, rien d'écrit."
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,help:bf_editorial.field_bf_editorial_claim__is_machine_proposed
+msgid ""
+"Un verdict proposé automatiquement n'est pas un verdict rendu : il attend "
+"une confirmation humaine."
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,help:bf_editorial.field_bf_editorial_stage__is_closing
+msgid ""
+"Une entrée dans cette étape est considérée publiée et compte dans la "
+"cadence."
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,help:bf_editorial.field_bf_editorial_stage__is_abandoned
+msgid ""
+"Une entrée dans cette étape sort des statistiques sans compter comme une "
+"publication."
+msgstr ""
+
+#. module: bf_editorial
+#. odoo-python
+#: code:addons/bf_editorial/models/version.py:0
+msgid "Une entrée ne peut avoir qu'une seule langue source."
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.constraint,message:bf_editorial.constraint_bf_editorial_version_lang_unique_per_entry
+msgid "Une entrée ne peut porter qu'un seul créneau par langue."
+msgstr ""
+
+#. module: bf_editorial
+#: model_terms:ir.actions.act_window,help:bf_editorial.action_editorial_entry
+msgid ""
+"Une entrée porte un article, ou une publication qui ne passe pas\n"
+"               par le blogue. C'est elle qui tient l'angle, les sources, les\n"
+"               langues et ce qu'il reste à faire."
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,help:bf_editorial.field_bf_editorial_entry__scheduled_publish_date
+msgid ""
+"Une fois la date approuvée, la publication part toute seule — mais seulement"
+" si la garde de pré-vol est verte à ce moment-là."
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.constraint,message:bf_editorial.constraint_bf_editorial_source_url_not_empty
+msgid "Une source doit porter une URL."
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_claim__verdict
+msgid "Verdict"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_claim__verdict_date
+msgid "Verdict du"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_claim__verdict_by
+msgid "Verdict par"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_entry__current_version
+msgid "Version actuelle"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_entry__source_version
+msgid "Version au fact-check"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,help:bf_editorial.field_bf_editorial_entry__post_id
+msgid "Vide pour une publication qui ne passe pas par le blogue."
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,help:bf_editorial.field_bf_editorial_stage__calendar_ids
+msgid "Vide, l'étape est offerte à tous les calendriers."
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,help:bf_editorial.field_bf_editorial_checklist_template__pillar_ids
+msgid "Vide, la ligne s'applique à tous les piliers."
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,help:bf_editorial.field_bf_editorial_checklist_template__kind
+msgid "Vide, la ligne s'applique à toutes les natures."
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields.selection,name:bf_editorial.selection__bf_editorial_checklist_template__kind__video
+#: model:ir.model.fields.selection,name:bf_editorial.selection__bf_editorial_entry__kind__video
+msgid "Vidéo"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_entry__raw_visits
+#: model_terms:ir.ui.view,arch_db:bf_editorial.view_editorial_entry_list
+msgid "Visites (brut)"
+msgstr ""
+
+#. module: bf_editorial
+#: model:bf.editorial.checklist.template,name:bf_editorial.checklist_tpl_images
+msgid "Visuels produits et placés"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,help:bf_editorial.field_bf_editorial_calendar__slot_due
+msgid ""
+"Vrai quand le délai depuis la dernière publication atteint la cadence visée."
+msgstr ""
+
+#. module: bf_editorial
+#: model_terms:ir.ui.view,arch_db:bf_editorial.view_editorial_entry_form
+msgid "Véracité"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_source__checked_date
+msgid "Vérifiée le"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_calendar__website_message_ids
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_entry__website_message_ids
+msgid "Website Messages"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,help:bf_editorial.field_bf_editorial_calendar__website_message_ids
+#: model:ir.model.fields,help:bf_editorial.field_bf_editorial_entry__website_message_ids
+msgid "Website communication history"
+msgstr ""
+
+#. module: bf_editorial
+#. odoo-python
+#: code:addons/bf_editorial/models/qa.py:0
+msgid "[%(lang)s] %(a)s titres H2 contre %(b)s dans la source."
+msgstr ""
+
+#. module: bf_editorial
+#. odoo-python
+#: code:addons/bf_editorial/models/qa.py:0
+msgid "[%(lang)s] Lien interne vers un slug français : %(href)s"
+msgstr ""
+
+#. module: bf_editorial
+#. odoo-python
+#: code:addons/bf_editorial/models/qa.py:0
+msgid ""
+"[%(lang)s] Structure différente de la source : %(a)s éléments contre %(b)s. "
+"Traduction probablement partielle."
+msgstr ""
+
+#. module: bf_editorial
+#. odoo-python
+#: code:addons/bf_editorial/models/proposition.py:0
+msgid "dû"
+msgstr ""
+
+#. module: bf_editorial
+#. odoo-python
+#: code:addons/bf_editorial/models/proposition.py:0
+msgid "pas encore dû"
+msgstr ""
+
+#. module: bf_editorial
+#. odoo-python
+#: code:addons/bf_editorial/models/entree.py:0
+msgid "« %s » n'est pas publiée"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields.selection,name:bf_editorial.selection__bf_editorial_entry__qa_state__todo
+#: model:ir.model.fields.selection,name:bf_editorial.selection__bf_editorial_version__qa_state__todo
+msgid "À passer"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields.selection,name:bf_editorial.selection__bf_editorial_version__state__todo
+msgid "À traduire"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields.selection,name:bf_editorial.selection__bf_editorial_claim__verdict__todo
+msgid "À vérifier"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_proposal__blocked_note
+msgid "Écartées"
+msgstr ""
+
+#. module: bf_editorial
+#: model_terms:ir.ui.view,arch_db:bf_editorial.view_editorial_proposal_form
+msgid "Écartées faute d'être publiables"
+msgstr ""
+
+#. module: bf_editorial
+#: model:res.groups,comment:bf_editorial.group_editorial_user
+msgid "Écrit, prépare et fait avancer les entrées, sans pouvoir publier."
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_entry__stage_id
+#: model_terms:ir.ui.view,arch_db:bf_editorial.view_editorial_entry_search
+msgid "Étape"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_stage__is_closing
+msgid "Étape de sortie"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model,name:bf_editorial.model_bf_editorial_stage
+msgid "Étape éditoriale"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.actions.act_window,name:bf_editorial.action_editorial_stage
+#: model:ir.ui.menu,name:bf_editorial.menu_editorial_stage
+msgid "Étapes"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_version__state
+msgid "État"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_entry__qa_state
+msgid "État QA"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields,field_description:bf_editorial.field_bf_editorial_entry__language_summary
+msgid "État des langues"
+msgstr ""
+
+#. module: bf_editorial
+#: model:ir.model.fields.selection,name:bf_editorial.selection__bf_editorial_entry__pattern__case
+msgid "Étude de cas"
+msgstr ""
+
+#. module: bf_editorial
+#. odoo-python
+#: code:addons/bf_editorial/models/proposition.py:0
+msgid ""
+"⚠️ Le créneau n'est pas encore dû. Rien n'oblige à publier aujourd'hui."
+msgstr ""
+
+#. module: bf_editorial
+#. odoo-python
+#: code:addons/bf_editorial/models/proposition.py:0
+msgid ""
+"⚠️ Le module documenté a bougé (%(a)s → %(b)s) : à refact-checker avant de "
+"sortir."
+msgstr ""

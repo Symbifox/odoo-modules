@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_editorial_stage_list" model="ir.ui.view">
+        <field name="name">bf.editorial.stage.list</field>
+        <field name="model">bf.editorial.stage</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="description"/>
+                <field name="is_closing"/>
+                <field name="is_abandoned"/>
+                <field name="fold"/>
+                <field name="calendar_ids" widget="many2many_tags" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_editorial_stage" model="ir.actions.act_window">
+        <field name="name">Étapes</field>
+        <field name="res_model">bf.editorial.stage</field>
+        <field name="view_mode">list</field>
+    </record>
+
+    <record id="view_editorial_checklist_template_list" model="ir.ui.view">
+        <field name="name">bf.editorial.checklist.template.list</field>
+        <field name="model">bf.editorial.checklist.template</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="kind"/>
+                <field name="pillar_ids" widget="many2many_tags"/>
+                <field name="is_blocking"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_editorial_checklist_template" model="ir.actions.act_window">
+        <field name="name">Gabarits de liste de contrôle</field>
+        <field name="res_model">bf.editorial.checklist.template</field>
+        <field name="view_mode">list</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Ajouter une ligne de gabarit</p>
+            <p>Les restes humains qui reviennent à chaque article : visuels,
+               relecture, liens croisés. Une ligne bloquante retient la
+               publication tant qu'elle est ouverte.</p>
+        </field>
+    </record>
+
+    <record id="view_editorial_pillar_list" model="ir.ui.view">
+        <field name="name">blog.tag.category.editorial.list</field>
+        <field name="model">blog.tag.category</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="name"/>
+                <field name="is_pillar"/>
+                <field name="target_share"/>
+                <field name="color" widget="color_picker"/>
+                <field name="entry_count" readonly="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_editorial_pillar" model="ir.actions.act_window">
+        <field name="name">Piliers</field>
+        <field name="res_model">blog.tag.category</field>
+        <field name="view_mode">list</field>
+        <field name="view_id" ref="view_editorial_pillar_list"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Définir un pilier</p>
+            <p>Le pilier est la catégorie d'étiquette native du blogue : le
+               site public sait déjà l'afficher et la filtrer.</p>
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_editorial_calendar_form" model="ir.ui.view">
+        <field name="name">bf.editorial.calendar.form</field>
+        <field name="model">bf.editorial.calendar</field>
+        <field name="arch" type="xml">
+            <form string="Calendrier éditorial">
+                <header>
+                    <button name="action_propose_next" type="object"
+                            string="Proposer le prochain article" class="btn-primary"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_entries" type="object"
+                                class="oe_stat_button" icon="fa-pencil-square-o">
+                            <field name="entry_count" widget="statinfo" string="Entrées"/>
+                        </button>
+                        <button name="action_view_entries" type="object"
+                                class="oe_stat_button" icon="fa-ban">
+                            <field name="blocked_count" widget="statinfo" string="Bloquées"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="Blogue Blue Fox"/></h1>
+                    </div>
+                    <group>
+                        <group string="Portée">
+                            <field name="kind"/>
+                            <field name="website_id"/>
+                            <field name="blog_id" invisible="kind == 'social'"/>
+                            <field name="user_id"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="active" invisible="1"/>
+                        </group>
+                        <group string="Règles">
+                            <field name="cadence_days"/>
+                            <field name="word_floor"/>
+                            <field name="lang_ids" widget="many2many_tags"/>
+                            <field name="require_all_langs"/>
+                            <field name="campaign_id"/>
+                            <field name="medium_id"/>
+                        </group>
+                    </group>
+                    <group string="Piliers et cibles">
+                        <field name="pillar_ids" nolabel="1">
+                            <list editable="bottom">
+                                <field name="name"/>
+                                <field name="target_share"/>
+                                <field name="color" widget="color_picker"/>
+                                <field name="entry_count" readonly="1"/>
+                            </list>
+                        </field>
+                    </group>
+                    <group>
+                        <group string="Cadence mesurée">
+                            <field name="last_published_date" readonly="1"/>
+                            <field name="days_since_last" readonly="1"/>
+                            <field name="slot_due" readonly="1"/>
+                        </group>
+                        <group string="Ratio">
+                            <field name="ratio_summary" nolabel="1" readonly="1"/>
+                        </group>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_editorial_calendar_list" model="ir.ui.view">
+        <field name="name">bf.editorial.calendar.list</field>
+        <field name="model">bf.editorial.calendar</field>
+        <field name="arch" type="xml">
+            <list decoration-warning="slot_due">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="kind"/>
+                <field name="cadence_days"/>
+                <field name="days_since_last"/>
+                <field name="slot_due"/>
+                <field name="entry_count"/>
+                <field name="blocked_count"/>
+                <field name="user_id" widget="many2one_avatar_user"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_editorial_calendar" model="ir.actions.act_window">
+        <field name="name">Calendriers</field>
+        <field name="res_model">bf.editorial.calendar</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Créer un calendrier</p>
+            <p>Un calendrier est un flux de publication avec ses règles : la
+               cadence visée, les langues exigées, les piliers et leurs cibles.
+               Plusieurs flux peuvent cohabiter.</p>
+        </field>
+    </record>
+
+    <record id="view_editorial_proposal_form" model="ir.ui.view">
+        <field name="name">bf.editorial.proposal.form</field>
+        <field name="model">bf.editorial.proposal</field>
+        <field name="arch" type="xml">
+            <form string="Proposition">
+                <sheet>
+                    <div class="alert alert-info" role="alert">
+                        <field name="recommendation" nolabel="1" readonly="1"/>
+                    </div>
+                    <group>
+                        <group string="Cadence">
+                            <field name="cadence_note" nolabel="1" readonly="1"/>
+                        </group>
+                        <group string="Ratio">
+                            <field name="ratio_note" nolabel="1" readonly="1"/>
+                            <field name="owed_pillar_id" readonly="1"/>
+                        </group>
+                    </group>
+                    <separator string="Candidats, du plus indiqué au moins"/>
+                    <field name="line_ids" nolabel="1" readonly="1">
+                        <list>
+                            <field name="sequence" string="Rang"/>
+                            <field name="entry_id"/>
+                            <field name="score"/>
+                            <field name="rationale"/>
+                            <button name="action_open_entry" type="object"
+                                    icon="fa-arrow-right" title="Ouvrir l'entrée"/>
+                        </list>
+                    </field>
+                    <group string="Écartées faute d'être publiables"
+                           invisible="not blocked_note">
+                        <field name="blocked_note" nolabel="1" readonly="1"/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button string="Fermer" special="cancel" class="btn-secondary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>

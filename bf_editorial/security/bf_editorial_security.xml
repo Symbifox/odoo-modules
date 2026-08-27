@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <record id="module_category_editorial" model="ir.module.category">
+            <field name="name">Atelier éditorial</field>
+            <field name="description">Calendrier éditorial et diffusion</field>
+            <field name="sequence">22</field>
+        </record>
+
+        <record id="group_editorial_user" model="res.groups">
+            <field name="name">Rédaction</field>
+            <field name="category_id" ref="module_category_editorial"/>
+            <field name="comment">Écrit, prépare et fait avancer les entrées, sans pouvoir publier.</field>
+        </record>
+
+        <record id="group_editorial_manager" model="res.groups">
+            <field name="name">Direction éditoriale</field>
+            <field name="category_id" ref="module_category_editorial"/>
+            <field name="implied_ids" eval="[(4, ref('group_editorial_user'))]"/>
+            <field name="comment">Règle les calendriers, approuve les dates et publie.</field>
+            <field name="users" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]"/>
+        </record>
+
+        <!-- Cloisonnement multi-société. Le calendrier porte la société ;
+             l'entrée la reprend en champ stocké pour que la règle soit
+             indexable. -->
+        <record id="rule_calendar_company" model="ir.rule">
+            <field name="name">Calendrier éditorial : société</field>
+            <field name="model_id" ref="model_bf_editorial_calendar"/>
+            <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+            <field name="global" eval="True"/>
+        </record>
+
+        <record id="rule_entry_company" model="ir.rule">
+            <field name="name">Entrée éditoriale : société</field>
+            <field name="model_id" ref="model_bf_editorial_entry"/>
+            <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+            <field name="global" eval="True"/>
+        </record>
+
+
+        <!-- ⚠️ ir.rule ne se propage PAS à travers une relation : une règle
+             posée sur l'entrée ne protège aucun de ses enfants. Sans les
+             règles ci-dessous, un search() direct sur les créneaux de langue
+             ou les sources rendait ceux d'une autre société. Vérifié par
+             test_cloisonnement_societe_sur_les_enfants. -->
+        <record id="rule_version_company" model="ir.rule">
+            <field name="name">Créneau de langue : société</field>
+            <field name="model_id" ref="model_bf_editorial_version"/>
+            <field name="domain_force">['|', ('entry_id.company_id', '=', False), ('entry_id.company_id', 'in', company_ids)]</field>
+            <field name="global" eval="True"/>
+        </record>
+
+        <record id="rule_checklist_company" model="ir.rule">
+            <field name="name">Liste de contrôle : société</field>
+            <field name="model_id" ref="model_bf_editorial_checklist"/>
+            <field name="domain_force">['|', ('entry_id.company_id', '=', False), ('entry_id.company_id', 'in', company_ids)]</field>
+            <field name="global" eval="True"/>
+        </record>
+
+        <record id="rule_source_company" model="ir.rule">
+            <field name="name">Source : société</field>
+            <field name="model_id" ref="model_bf_editorial_source"/>
+            <field name="domain_force">['|', ('entry_id.company_id', '=', False), ('entry_id.company_id', 'in', company_ids)]</field>
+            <field name="global" eval="True"/>
+        </record>
+
+        <record id="rule_claim_company" model="ir.rule">
+            <field name="name">Affirmation : société</field>
+            <field name="model_id" ref="model_bf_editorial_claim"/>
+            <field name="domain_force">['|', ('entry_id.company_id', '=', False), ('entry_id.company_id', 'in', company_ids)]</field>
+            <field name="global" eval="True"/>
+        </record>
+
+    </data>
+</odoo>

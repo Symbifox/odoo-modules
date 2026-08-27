@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <menuitem id="menu_editorial_root" name="Atelier éditorial"
+              web_icon="bf_editorial,static/description/icon.png"
+              groups="bf_editorial.group_editorial_user" sequence="55"/>
+
+    <menuitem id="menu_editorial_entry" name="Entrées"
+              parent="menu_editorial_root" action="action_editorial_entry"
+              sequence="10"/>
+
+    <menuitem id="menu_editorial_calendar" name="Calendriers"
+              parent="menu_editorial_root" action="action_editorial_calendar"
+              sequence="20"/>
+
+    <menuitem id="menu_editorial_config" name="Configuration"
+              parent="menu_editorial_root"
+              groups="bf_editorial.group_editorial_manager" sequence="90"/>
+
+    <menuitem id="menu_editorial_pillar" name="Piliers"
+              parent="menu_editorial_config" action="action_editorial_pillar"
+              sequence="10"/>
+
+    <menuitem id="menu_editorial_stage" name="Étapes"
+              parent="menu_editorial_config" action="action_editorial_stage"
+              sequence="20"/>
+
+    <menuitem id="menu_editorial_checklist_tpl" name="Gabarits de contrôle"
+              parent="menu_editorial_config"
+              action="action_editorial_checklist_template" sequence="30"/>
+
+</odoo>
