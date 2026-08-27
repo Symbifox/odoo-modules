@@ -53,7 +53,7 @@ class DailyDigestConfig(models.Model):
             )
         return (
             f'<h3 style="font-family:\'Lexend\',\'Segoe UI\',Arial,sans-serif;font-size:16px;'
-            f'font-weight:600;color:{dark};margin:24px 0 8px 0;">'
+            f'font-weight:600;color:{dark};margin:0 0 8px 0;">'
             f'🔄 {_esc(_("Renouvellements d\'abonnements à venir"))}</h3>'
             f'<table role="presentation" width="100%" style="border:1px solid #e5e7eb;border-radius:8px;'
             f'border-collapse:separate;overflow:hidden;margin-bottom:8px;">'
@@ -70,5 +70,13 @@ class DailyDigestConfig(models.Model):
         html = super()._generate_html(data, user)
         section = self._render_subscription_renewals(user)
         if section and "<!-- Divider -->" in html:
-            html = html.replace("<!-- Divider -->", section + "<!-- Divider -->", 1)
+            # ⚠️ Le marqueur « <!-- Divider --> » se trouve ENTRE deux <tr>
+            # de la table d'enveloppe de _wrap_email. Une section nue insérée
+            # là est sortie de la table par tout analyseur HTML5 (foster
+            # parenting) et s'affiche au-dessus de la carte. Elle doit donc
+            # porter sa propre ligne. Vérifié avec html5lib sur un vrai courriel.
+            block = (
+                f'<tr><td style="padding:0 24px 24px 24px;">{section}</td></tr>'
+            )
+            html = html.replace("<!-- Divider -->", block + "<!-- Divider -->", 1)
         return html
