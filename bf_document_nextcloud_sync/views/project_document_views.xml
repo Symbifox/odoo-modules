@@ -8,24 +8,29 @@
         <field name="inherit_id" ref="project_knowledge_matrix.view_project_document_form"/>
         <field name="arch" type="xml">
 
-            <!-- Add NC action buttons in header -->
+            <!-- Add NC action buttons in header.
+                 Masqués quand le corps est rédigé dans Odoo (body_source =
+                 'internal'): le fichier Nextcloud n'est alors que la source
+                 historique de l'import, plus le document vivant, et ces boutons
+                 de fichier externe prêtent à confusion. -->
             <xpath expr="//header/button[@name='action_set_active']" position="before">
+                <field name="body_source" invisible="1"/>
                 <button name="action_copy_nc_internal_link" type="object"
                     string="Lien interne NC" class="btn-secondary"
                     icon="fa-link"
-                    invisible="not nc_synced and not external_url"/>
+                    invisible="body_source == 'internal' or (not nc_synced and not external_url)"/>
                 <button name="action_refresh_from_nextcloud" type="object"
                     string="Rafraichir NC" class="btn-secondary"
                     icon="fa-refresh"
-                    invisible="not nc_synced"/>
+                    invisible="body_source == 'internal' or not nc_synced"/>
                 <button name="action_create_share_link" type="object"
                     string="Lien de partage" class="btn-secondary"
                     icon="fa-share-alt"
-                    invisible="not nc_synced"/>
+                    invisible="body_source == 'internal' or not nc_synced"/>
                 <button name="action_upload_new_version" type="object"
                     string="Televerser version" class="btn-secondary"
                     icon="fa-upload"
-                    invisible="not nc_config_id"/>
+                    invisible="body_source == 'internal' or not nc_config_id"/>
             </xpath>
 
             <!-- Add NC stat button in button_box -->
@@ -33,7 +38,7 @@
                 <button class="oe_stat_button" type="object"
                     name="action_browse_nc_folder"
                     icon="fa-cloud"
-                    invisible="not nc_synced">
+                    invisible="body_source == 'internal' or not nc_synced">
                     <div class="o_stat_info">
                         <span class="o_stat_text">Nextcloud</span>
                     </div>
@@ -52,7 +57,7 @@
             <!-- Add Nextcloud notebook page -->
             <xpath expr="//notebook" position="inside">
                 <page string="Nextcloud" name="nextcloud_tab"
-                    invisible="not nc_synced">
+                    invisible="body_source == 'internal' or not nc_synced">
                     <group>
                         <group string="Fichier Nextcloud">
                             <field name="nc_file_path" readonly="1"/>
