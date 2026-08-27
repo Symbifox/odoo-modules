@@ -36,16 +36,22 @@ class ResConfigSettings(models.TransientModel):
     )
 
     def action_test_nc_talk_connection(self):
+        """Create a throwaway room so the settings can be checked before use.
+
+        `nc_user`, not `user`: see CalendarEvent._get_nc_talk_settings — `_()`
+        calls `int()` on a frame local named `user`, so naming it that turns
+        the "fill in the fields first" error into a ValueError.
+        """
         self.ensure_one()
         url = (self.bf_nc_talk_url or "").rstrip("/")
-        user = self.bf_nc_talk_user or ""
+        nc_user = self.bf_nc_talk_user or ""
         pwd = self.bf_nc_talk_password or ""
-        if not (url and user and pwd):
+        if not (url and nc_user and pwd):
             raise exceptions.UserError(_(
                 "Fill in URL, service account and app password before testing."
             ))
         token, room_url = create_talk_room(
-            url, user, pwd, room_name="Odoo — test connection",
+            url, nc_user, pwd, room_name="Odoo — test connection",
         )
         return {
             "type": "ir.actions.client",

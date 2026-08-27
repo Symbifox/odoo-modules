@@ -10,7 +10,7 @@
                 <button name="action_set_nc_talk_videocall_location"
                         type="object"
                         class="btn btn-link ps-0"
-                        invisible="videocall_location or not user_can_edit or not id"
+                        invisible="videocall_location or not user_can_edit"
                         context="{'recurrence_update': recurrence_update}">
                     <span class="fa fa-plus"/><span> Nextcloud Talk</span>
                 </button>
@@ -28,7 +28,7 @@
                 <button name="action_set_nc_talk_videocall_location"
                         type="object"
                         class="btn btn-link p-0"
-                        invisible="videocall_location or not id"
+                        invisible="videocall_location"
                         context="{'recurrence_update': recurrence_update}">
                     <span class="fa fa-plus"/><span> Nextcloud Talk</span>
                 </button>
