@@ -1,25 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <record id="privacy_consent_form_bf_sign" model="ir.ui.view">
+    <record id="privacy_consent_form_view_bf_sign" model="ir.ui.view">
         <field name="name">privacy.consent.form.bf.sign</field>
         <field name="model">privacy.consent</field>
         <field name="inherit_id" ref="privacy_consent.privacy_consent_form_view"/>
         <field name="arch" type="xml">
-            <xpath expr="//div[@name='button_box']" position="inside">
-                <button name="action_view_sign_requests" type="object"
-                        class="oe_stat_button" icon="fa-pencil-square-o"
-                        groups="bf_sign.group_sign_user"
+
+            <!--
+                Le bouton se pose à côté des deux voies externes, pas à leur
+                place : des consentements déjà signés portent un identifiant
+                DocuSeal ou LibreSign, et leur preuve doit rester lisible.
+            -->
+            <button name="action_send_libresign" position="after">
+                <button name="action_send_bf_sign"
+                        string="Signature maison"
+                        type="object"
+                        class="btn-primary"
+                        invisible="status in ('withdrawn', 'refused') or bf_sign_status == 'completed'"
+                        help="Envoyer l'avis de consentement en signature électronique par bf_sign, avec certificat de complétion et piste de vérification."/>
+            </button>
+
+            <div name="button_box" position="inside">
+                <button name="action_view_sign_requests"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="fa-pencil-square-o"
                         invisible="sign_request_count == 0">
                     <field name="sign_request_count" widget="statinfo" string="Signatures"/>
                 </button>
-            </xpath>
-            <xpath expr="//header" position="inside">
-                <button name="action_send_for_signature" type="object"
-                        string="Envoyer pour signature"
-                        groups="bf_sign.group_sign_user"
-                        invisible="status not in ('draft', 'pending')"/>
-            </xpath>
+            </div>
+
+            <field name="libresign_status" position="after">
+                <field name="bf_sign_status"/>
+                <field name="bf_sign_sent_at" invisible="not bf_sign_sent_at"/>
+                <field name="bf_sign_completed_at" invisible="not bf_sign_completed_at"/>
+            </field>
+
         </field>
     </record>
 

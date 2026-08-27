@@ -1,32 +1,50 @@
 {
-    'name': "Symbifox — Signature des consentements (Loi 25)",
-    'version': '18.0.1.0.2',
-    'category': 'Privacy/Compliance',
-    'summary': "Signer les consentements Loi 25 avec le moteur natif bf_sign (au lieu de DocuSeal / LibreSign externes).",
-    'description': """
-Module-pont entre bf_sign et privacy_consent.
+    "name": "Symbifox — Signature des consentements (Loi 25)",
+    "summary": "Faire signer un consentement Loi 25 avec la signature électronique "
+               "maison, plutôt que par DocuSeal ou LibreSign",
+    "version": "18.0.1.1.0",
+    "category": "Services/Privacy",
+    "author": "Les services de consultation Blue Fox, Inc.",
+    "website": "https://symbifox.com",
+    "license": "Other proprietary",
+    "application": False,
+    "installable": True,
+    "auto_install": True,
+    "description": """
+Vie privée — Signature native (bf_sign)
+=======================================
 
-Ajoute « Envoyer pour signature » sur les consentements (privacy.consent) via le
-mixin bf.sign.mixin : l'avis de consentement est rendu en PDF, une demande de
-signature bf_sign liée est créée, et le document signé est reversé dans le fil
-du consentement une fois signé.
+`privacy_consent` sait faire signer un consentement par DocuSeal et par
+LibreSign, deux services externes. `bf_sign` fait la même chose à l'interne,
+avec certificat de complétion et piste de vérification scellée — et le webhook
+LibreSign du module dit lui-même que « l'intégration native bf_sign reste le
+chemin recommandé ».
 
-Permet de faire signer les artefacts de consentement avec le moteur de signature
-électronique simple (SES) natif bf_sign, sans dépendre d'un signataire externe
-(DocuSeal ou LibreSign).
+Ce pont ouvre ce troisième chemin. Il branche `privacy.consent` sur
+`bf.sign.mixin`, si bien qu'un consentement s'envoie en signature comme un
+devis ou une résolution corporative, et que la preuve reste dans la même piste
+de vérification que le reste.
 
-S'installe automatiquement lorsque bf_sign ET privacy_consent sont tous deux
-présents.
+⚠️ **Les deux autres chemins restent en place.** Des consentements déjà signés
+portent un identifiant DocuSeal ou LibreSign, et la preuve historique doit
+rester lisible. Ce pont ajoute une voie, il n'en retire aucune.
+
+⚠️ **La signature accorde le consentement, comme les deux autres voies.**
+`_process_bf_sign_completion` fait exactement ce que fait
+`_process_libresign_completion` : preuve `pdf_signed`, méthode de collecte
+« signature », puis `action_grant()`. Diverger ici produirait deux définitions
+de « consentement signé ».
+
+⚠️ **Un consentement retiré ou refusé ne se fait pas signer.** La garde est au
+point d'envoi, pas dans le traitement de la réponse : une fois la demande
+partie, le signataire a le lien.
 """,
-    'author': "Les services de consultation Blue Fox, Inc.",
-    'website': "https://symbifox.com",
-    'license': 'Other proprietary',
-    'depends': ['bf_sign', 'privacy_consent'],
-    'data': [
-        'report/privacy_consent_form.xml',
-        'views/privacy_consent_views.xml',
+    "depends": [
+        "privacy_consent",
+        "bf_sign",
     ],
-    'installable': True,
-    'application': False,
-    'auto_install': True,
+    "data": [
+        "report/privacy_consent_form.xml",
+        "views/privacy_consent_views.xml",
+    ],
 }
