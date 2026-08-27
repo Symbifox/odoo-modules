@@ -71,6 +71,16 @@ class AppointmentPollSlot(models.Model):
         help="Un créneau viable mais incomplet reste en attente : il manque "
              "la réponse d'au moins une personne dont la présence est requise.",
     )
+    poll_state = fields.Selection(
+        related="poll_id.state", string="État du sondage", readonly=True)
+    vote_summary = fields.Char(
+        compute="_compute_vote_summary",
+        string="Qui a répondu quoi",
+        help="Le détail derrière les compteurs. Trois « oui » ne se valent "
+             "pas selon qui les a donnés, et l'écran ne montrait que le "
+             "nombre. L'astérisque marque une présence requise, comme sur la "
+             "page publique.",
+    )
 
     # ⚠️ Trois calculs distincts, et non un seul. Odoo avertit qu'un calcul
     # mêlant champs stockés et non stockés peut recalculer et RÉÉCRIRE le champ
@@ -95,6 +105,36 @@ class AppointmentPollSlot(models.Model):
                 lambda v: v.answer == "no" and v.participant_id.required
             )
 
+    @api.depends("vote_ids.answer",
+                 "vote_ids.participant_id.name",
+                 "vote_ids.participant_id.email",
+                 "vote_ids.participant_id.required")
+    def _compute_vote_summary(self):
+        """« Oui : Isabelle* , Mathieu · Non : Sophie ».
+
+        Encore un calcul SÉPARÉ, pour la raison inscrite plus haut : mêler ce
+        libellé au calcul de `is_viable`, qui est stocké, ferait réécrire ce
+        dernier à la simple lecture d'une colonne.
+        """
+        libelles = [
+            ("yes", _("Oui")),
+            ("ifneedbe", _("Si nécessaire")),
+            ("no", _("Non")),
+        ]
+        for slot in self:
+            morceaux = []
+            for cle, libelle in libelles:
+                noms = [
+                    "%s%s" % (
+                        v.participant_id.name or v.participant_id.email or "?",
+                        "*" if v.participant_id.required else "",
+                    )
+                    for v in slot.vote_ids.filtered(lambda v: v.answer == cle)
+                ]
+                if noms:
+                    morceaux.append("%s : %s" % (libelle, ", ".join(noms)))
+            slot.vote_summary = " · ".join(morceaux)
+
     @api.depends("vote_ids.participant_id.required",
                  "poll_id.participant_ids.required")
     def _compute_is_complete(self):
@@ -104,6 +144,18 @@ class AppointmentPollSlot(models.Model):
                 lambda v: v.participant_id.required
             ).mapped("participant_id")
             slot.is_complete = bool(requis) and repondus == requis
+
+    def action_schedule_here(self):
+        """Fixe la rencontre sur CE créneau, depuis sa ligne.
+
+        Le raccourci quand on sait déjà lequel on veut. Le chemin normal passe
+        par l'assistant, qui montre le classement avant de demander — mais
+        obliger à ouvrir une fenêtre pour un choix déjà fait serait une étape
+        de trop.
+        """
+        self.ensure_one()
+        self.poll_id.action_schedule(self)
+        return self.poll_id.action_view_booking()
 
     # -- Retenues dans l'agenda -------------------------------------------
 
@@ -216,9 +268,19 @@ class AppointmentPollSlot(models.Model):
         tzname = self._poll_tzname()
         return self.env["bf.timezone"].sudo().tz_city(tzname) or tzname
 
-    @api.depends("start")
+    @api.depends("start", "stop")
     def _compute_display_name(self):
-        """Odoo 18 a RETIRÉ `name_get` : une surcharge y est du code mort, et
-        le modèle retombe alors sur un libellé technique dans les widgets."""
+        """« jeudi 27 août · 15:30 – 16:00 », et pas un horodatage UTC.
+
+        Odoo 18 a RETIRÉ `name_get` : une surcharge y est du code mort, et le
+        modèle retombe alors sur un libellé technique dans les widgets. Ce nom
+        se lit maintenant dans la liste déroulante de l'assistant qui fixe la
+        rencontre : un horodatage brut y demandait un calcul mental, en UTC de
+        surcroît.
+        """
         for slot in self:
-            slot.display_name = fields.Datetime.to_string(slot.start) or _("Créneau")
+            if not slot.start:
+                slot.display_name = _("Créneau")
+                continue
+            slot.display_name = "%s · %s" % (
+                slot.display_day(), slot.display_time())

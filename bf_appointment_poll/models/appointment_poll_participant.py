@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
 """Les personnes consultées, et la distinction obligatoire / facultatif."""
 
+import hashlib
+import hmac
 import logging
 import secrets
+from datetime import timedelta
 
 from odoo import _, api, fields, models
 
@@ -10,6 +13,16 @@ _logger = logging.getLogger(__name__)
 
 # Rythme des relances, en jours après l'ouverture. Deux, puis on s'arrête.
 _REMINDER_DAYS = (2, 5)
+
+# Code à usage unique. Quinze minutes : assez pour aller chercher le courriel,
+# trop court pour qu'un code oublié dans une boîte serve trois jours plus tard.
+_OTP_TTL_MIN = 15
+# Cinq essais, puis le code est brûlé. Six chiffres tirés au sort donnent une
+# chance sur deux cent mille de tomber juste en cinq coups.
+_OTP_MAX_ATTEMPTS = 5
+# Une minute entre deux envois : de quoi renvoyer si le premier s'est perdu,
+# sans faire du bouton un robinet à courriels.
+_OTP_RESEND_SECONDS = 60
 
 
 class AppointmentPollParticipant(models.Model):
@@ -39,6 +52,47 @@ class AppointmentPollParticipant(models.Model):
         help="Un créneau cesse d'être viable dès qu'une personne obligatoire "
              "y répond Non. Les réponses des personnes facultatives comptent "
              "dans le décompte sans jamais écarter un créneau.",
+    )
+
+    self_signup = fields.Boolean(
+        string="Inscrit par le lien",
+        readonly=True,
+        copy=False,
+        help="La personne est entrée d'elle-même par le lien d'inscription, "
+             "elle n'a pas été invitée nommément. Elle est facultative, et "
+             "son identité ne tient qu'à l'adresse qu'elle a saisie : c'est "
+             "pourquoi modifier des réponses déjà données lui demande un code.",
+    )
+    otp_hash = fields.Char(
+        string="Empreinte du code",
+        readonly=True,
+        copy=False,
+        groups="base.group_system",
+        help="⚠️ Le code n'est jamais gardé en clair. On en stocke une "
+             "empreinte signée avec le secret de la base et l'identifiant du "
+             "participant : elle ne vaut rien ailleurs, et ne se remonte pas.",
+    )
+    otp_expires_at = fields.Datetime(
+        string="Code valable jusqu'à", readonly=True, copy=False)
+    otp_attempts = fields.Integer(
+        string="Essais sur le code", default=0, readonly=True, copy=False)
+    otp_sent_at = fields.Datetime(
+        string="Code envoyé le", readonly=True, copy=False)
+    invitation_sent_on = fields.Datetime(
+        string="Invitation envoyée le",
+        readonly=True,
+        copy=False,
+        help="Vide = cette personne n'a jamais reçu d'invitation du module. "
+             "C'est ce que regarde le bouton « Envoyer les invitations » pour "
+             "ne pas écrire deux fois à la même personne.",
+    )
+    vote_url = fields.Char(
+        string="Lien de vote",
+        compute="_compute_vote_url",
+        groups="base.group_user",
+        help="Le lien personnel de cette personne. Copiez-le pour l'inclure "
+             "dans votre propre courriel, ou pour relancer quelqu'un de la "
+             "main.",
     )
 
     access_token = fields.Char(
@@ -83,10 +137,129 @@ class AppointmentPollParticipant(models.Model):
                 vals["name"] = vals["email"].split("@")[0]
         return super().create(vals_list)
 
+    @api.depends("access_token")
+    def _compute_vote_url(self):
+        for participant in self:
+            participant.vote_url = (
+                participant._vote_url() if participant.access_token else False
+            )
+
     def _vote_url(self):
         self.ensure_one()
         base = self.env["ir.config_parameter"].sudo().get_param("web.base.url", "")
         return f"{base}/appointment/poll/{self.access_token}"
+
+    # ------------------------------------------------------------------
+    # Modifier ses réponses : prouver qu'on tient l'adresse
+    # ------------------------------------------------------------------
+
+    def _edit_needs_otp(self):
+        """Cette personne doit-elle prouver qu'elle tient l'adresse ?
+
+        🔴 Les inscrits libres SEULEMENT, et seulement une fois qu'ils ont
+        répondu. Leur identité ne tient qu'à une adresse saisie, et
+        `_self_signup_join` est idempotent dessus : sans ce verrou, connaître
+        le lien d'inscription et l'adresse de quelqu'un suffisait à voir ET à
+        modifier ses réponses. C'était écrit dans le README comme une
+        contrepartie assumée ; ça ne l'est plus.
+
+        Les personnes invitées nommément gardent leur lien tel quel : il leur
+        est parvenu par courriel, ce qui prouve déjà qu'elles contrôlent
+        l'adresse. Et rien n'est protégé tant qu'il n'y a pas de réponse : on
+        ne met pas un code devant une page vide.
+        """
+        self.ensure_one()
+        return bool(self.self_signup and self.responded_at)
+
+    def _otp_digest(self, code):
+        """Empreinte liée AU participant, signée avec le secret de la base.
+
+        L'identifiant entre dans l'empreinte : sans lui, une empreinte volée
+        sur un participant vaudrait sur un autre à code égal.
+        """
+        self.ensure_one()
+        cle = self.env["ir.config_parameter"].sudo().get_param("database.secret") or ""
+        message = "%s:%s" % (self.id, (code or "").strip())
+        return hmac.new(cle.encode(), message.encode(), hashlib.sha256).hexdigest()
+
+    def _otp_issue(self):
+        """Pose un code neuf et rend sa version EN CLAIR, pour le courriel seul.
+
+        ⚠️ Le clair ne retourne jamais en base. Une table de participants se
+        lit par bien des chemins, et un code en clair y vaudrait le droit de
+        modifier les réponses de quelqu'un.
+        """
+        self.ensure_one()
+        code = "%06d" % secrets.randbelow(1000000)
+        self.sudo().write({
+            "otp_hash": self._otp_digest(code),
+            "otp_expires_at": fields.Datetime.now() + timedelta(minutes=_OTP_TTL_MIN),
+            "otp_attempts": 0,
+            "otp_sent_at": fields.Datetime.now(),
+        })
+        return code
+
+    def _otp_can_resend(self):
+        self.ensure_one()
+        if not self.sudo().otp_sent_at:
+            return True
+        ecoule = fields.Datetime.now() - self.sudo().otp_sent_at
+        return ecoule.total_seconds() >= _OTP_RESEND_SECONDS
+
+    def _otp_check(self, code):
+        """(ok, motif). Compte les essais, et brûle le code au succès.
+
+        Les motifs sont nommés pour la page, pas pour l'attaquant : ils disent
+        « expiré » ou « épuisé », jamais si l'adresse existe — le participant
+        est déjà résolu par son jeton à ce stade, il n'y a rien à énumérer.
+        """
+        self.ensure_one()
+        moi = self.sudo()
+        if not moi.otp_hash or not moi.otp_expires_at:
+            return False, "absent"
+        if moi.otp_expires_at <= fields.Datetime.now():
+            return False, "expire"
+        if moi.otp_attempts >= _OTP_MAX_ATTEMPTS:
+            return False, "brule"
+        moi.otp_attempts += 1
+        # ⚠️ Comparaison à temps constant : un `==` sur une chaîne courte laisse
+        # fuir la position du premier caractère faux.
+        if not hmac.compare_digest(moi.otp_hash, moi._otp_digest(code)):
+            return False, "faux"
+        moi.write({"otp_hash": False, "otp_expires_at": False, "otp_attempts": 0})
+        return True, ""
+
+    def _otp_send(self):
+        """Expédie le code.
+
+        ⚠️ C'est le SEUL courriel que ce module envoie vers une adresse entrée
+        par le lien d'inscription, et le choix de n'en envoyer aucun était
+        délibéré : une confirmation expédiée à une adresse que personne n'a
+        validée ferait du lien un relais signé DKIM. Celui-ci ne part qu'à une
+        adresse DÉJÀ inscrite au sondage — l'ensemble atteignable est donc
+        borné par le sondage lui-même, pas par ce qu'un inconnu saisit.
+        """
+        self.ensure_one()
+        gabarit = self.env.ref(
+            "bf_appointment_poll.mail_template_poll_otp", raise_if_not_found=False)
+        if not gabarit:
+            _logger.warning("Sondage : gabarit de code introuvable, rien envoyé")
+            return False
+        code = self._otp_issue()
+        try:
+            # `force_send` parce qu'un code qui attend le cron de la file
+            # arriverait après son expiration. ⚠️ Et l'envoi est enveloppé :
+            # un SMTP qui hoquette ne doit ni renvoyer une page en erreur, ni
+            # laisser la page annoncer un code qui n'est jamais parti.
+            gabarit.sudo().with_context(bf_poll_otp=code).send_mail(
+                self.id, force_send=True)
+        except Exception as exc:  # noqa: BLE001
+            _logger.warning("Sondage %s : envoi du code refusé pour %s (%s)",
+                            self.poll_id.id, self.id, exc)
+            return False
+        _logger.info("Sondage %s : code envoyé au participant %s",
+                     self.poll_id.id, self.id)
+        return True
 
     def _ensure_partners(self):
         """Rend (en les créant au besoin) les contacts des participants.
@@ -128,8 +301,49 @@ class AppointmentPollParticipant(models.Model):
         if not template:
             _logger.warning("Gabarit d'invitation au sondage introuvable")
             return False
+        now = fields.Datetime.now()
         for participant in self:
             template.send_mail(participant.id, force_send=False)
+            participant.invitation_sent_on = now
+        return True
+
+    def _send_scheduled_notice(self):
+        """Annonce la rencontre fixée, sous la marque du locataire.
+
+        🔴 Le sondage n'écrivait à PERSONNE en fixant la rencontre. La
+        confirmation brandée du module parent existe, mais elle n'est envoyée
+        que par la page publique de réservation, et elle s'adresse à un seul
+        destinataire (`object.partner_id`). Faute de quoi il fallait attraper
+        le bouton « Partager » d'Odoo, qui expédie un texte générique parlant
+        d'« accéder au/à la resource booking » — à un client.
+
+        Chaque personne reçoit son propre courriel, avec le fichier d'agenda :
+        un `.ics` par envoi, pour que chacun garde le sien.
+        """
+        template = self.env.ref(
+            "bf_appointment_poll.mail_template_poll_scheduled",
+            raise_if_not_found=False,
+        )
+        if not template:
+            _logger.warning("Gabarit de confirmation du sondage introuvable")
+            return False
+        for participant in self:
+            booking = participant.poll_id.booking_id
+            valeurs = {}
+            if booking:
+                piece = booking._get_ics_attachment()
+                if piece:
+                    valeurs["attachment_ids"] = [(6, 0, piece.ids)]
+            try:
+                template.send_mail(participant.id, force_send=False,
+                                   email_values=valeurs or None)
+            except Exception as exc:  # noqa: BLE001
+                # ⚠️ Un envoi qui échoue ne doit pas défaire la rencontre : à
+                # ce stade elle est fixée, l'agenda est écrit, et un rollback
+                # la retirerait pour un courriel manqué.
+                _logger.warning(
+                    "Sondage %s : confirmation non partie pour %s (%s)",
+                    participant.poll_id.id, participant.id, exc)
         return True
 
     def _send_reminders(self):

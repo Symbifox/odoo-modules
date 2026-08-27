@@ -113,5 +113,96 @@
 
 ]]></field>
         </record>
+
+        <!-- ⚠️ Le SEUL courriel que ce module envoie vers une adresse entrée
+             par le lien d'inscription. Il ne part qu'à une adresse déjà
+             inscrite au sondage, jamais à une adresse arbitraire : c'est ce
+             qui l'empêche de faire du lien public un relais signé DKIM.
+             Le code arrive par le contexte (`ctx`) et n'existe nulle part
+             ailleurs : la base n'en garde qu'une empreinte. -->
+        <record id="mail_template_poll_otp" model="mail.template">
+            <field name="name">Sondage de disponibilités — code de modification</field>
+            <field name="model_id" ref="model_appointment_poll_participant"/>
+            <field name="subject">{{ object.poll_id.name }} : votre code pour modifier vos réponses</field>
+            <field name="email_from">{{ (object.poll_id.type_id.company_id.email_formatted or '') }}</field>
+            <field name="email_to">{{ object.email }}</field>
+            <field name="lang">{{ object.partner_id.lang or object.poll_id.user_id.lang }}</field>
+            <field name="auto_delete" eval="False"/>
+            <field name="body_html"><![CDATA[
+
+<t t-set="company" t-value="(object.poll_id.type_id.company_id) or user.company_id"/>
+<t t-set="brand_primary" t-value="(company and company.report_brand_primary) or '#714B67'"/>
+<t t-set="brand_dark" t-value="(company and company.report_brand_dark) or '#212529'"/>
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" t-attf-style="background-color:{{ (company and company.appointment_brand_dark) or brand_dark }};">
+ <tbody><tr><td align="center" style="padding:24px;">
+  <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px; max-width:600px; margin:0 auto; background-color:#ffffff; border-radius:12px; border:1px solid #e5e7eb; border-collapse:collapse;">
+   <tbody>
+    <tr><td t-attf-style="background-color:{{ (company and company.appointment_brand_dark) or brand_dark }}; padding:16px 24px; border-radius:12px 12px 0 0; color:#E6EDF3; font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:20px; font-weight:800;">Votre code</td></tr>
+    <tr><td t-attf-style="height:4px; line-height:4px; background-color:{{ (company and company.appointment_brand_primary) or brand_primary }};">&#160;</td></tr>
+    <tr><td style="padding:24px; font-family:'Lexend','Segoe UI',Arial,sans-serif;">
+     <p style="font-size:16px; line-height:26px; color:#374151; margin:0 0 16px 0;">Bonjour <t t-out="object.name or ''"/>,</p>
+     <p style="font-size:16px; line-height:26px; color:#374151; margin:0 0 16px 0;">Voici le code qui vous permet de modifier vos r&#233;ponses au sondage &#171;&#160;<strong><t t-out="object.poll_id.name or ''"/></strong>&#160;&#187;.</p>
+     <p style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:34px; font-weight:800; letter-spacing:8px; color:#111827; margin:0 0 8px 0; text-align:center;"><t t-out="ctx.get('bf_poll_otp') or ''"/></p>
+     <p style="font-size:14px; line-height:22px; color:#6B7280; margin:0 0 16px 0; text-align:center;">Valable 15&#160;minutes, pour cette modification seulement.</p>
+     <p style="font-size:14px; line-height:22px; color:#6B7280; margin:0;">Vous n&#8217;avez rien demand&#233;&#160;? Ne faites rien : sans ce code, personne ne peut toucher &#224; vos r&#233;ponses. Le code expire tout seul.</p>
+    </td></tr>
+   </tbody>
+  </table>
+ </td></tr></tbody>
+</table>
+
+]]></field>
+        </record>
+
+        <!-- 🔴 Le sondage n'écrivait à personne en fixant la rencontre. La
+             confirmation brandée du module parent existe, mais elle n'est
+             envoyée que par la page publique et ne s'adresse qu'à UN
+             destinataire (`object.partner_id`) : un sondage en a plusieurs.
+             Celle-ci s'adresse au participant, comme l'invitation et la
+             relance, donc chacun reçoit la sienne. -->
+        <record id="mail_template_poll_scheduled" model="mail.template">
+            <field name="name">Sondage de disponibilités — rencontre fixée</field>
+            <field name="model_id" ref="model_appointment_poll_participant"/>
+            <field name="subject">C'est fixé : {{ object.poll_id.name }}</field>
+            <field name="email_from">{{ (object.poll_id.type_id.company_id.email_formatted or '') }}</field>
+            <field name="email_to">{{ object.email }}</field>
+            <field name="lang">{{ object.partner_id.lang or object.poll_id.user_id.lang }}</field>
+            <field name="auto_delete" eval="False"/>
+            <field name="body_html"><![CDATA[
+
+<t t-set="company" t-value="(object.poll_id.type_id.company_id) or user.company_id"/>
+<t t-set="brand_primary" t-value="(company and company.report_brand_primary) or '#714B67'"/>
+<t t-set="brand_dark" t-value="(company and company.report_brand_dark) or '#212529'"/>
+<t t-set="booking" t-value="object.poll_id.booking_id"/>
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" t-attf-style="background-color:{{ (company and company.appointment_brand_dark) or brand_dark }};">
+ <tbody><tr><td align="center" style="padding:24px;">
+  <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px; max-width:600px; margin:0 auto; background-color:#ffffff; border-radius:12px; border:1px solid #e5e7eb; border-collapse:collapse;">
+   <tbody>
+    <tr><td t-attf-style="background-color:{{ (company and company.appointment_brand_dark) or brand_dark }}; padding:16px 24px; border-radius:12px 12px 0 0;">
+     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tbody><tr>
+      <td align="left"><a t-attf-href="{{ (company and company.appointment_brand_website_url) or 'https://www.bluefoxconsultant.com' }}" style="text-decoration:none;"><img t-attf-src="{{ (company and company.appointment_brand_logo_url) or 'https://www.bluefoxconsultant.com/web/image/website/1/logo/Blue%20Fox?unique=803cc14' }}" t-attf-alt="{{ (company and company.appointment_brand_name) or 'Blue Fox' }}" style="height:48px; width:auto; display:block; border:0;"/></a></td>
+      <td align="right" style="color:#E6EDF3; font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:20px; font-weight:800;">C&#8217;est fix&#233;</td>
+     </tr></tbody></table>
+    </td></tr>
+    <tr><td t-attf-style="height:4px; line-height:4px; background-color:{{ (company and company.appointment_brand_primary) or brand_primary }};">&#160;</td></tr>
+    <tr><td style="padding:24px; font-family:'Lexend','Segoe UI',Arial,sans-serif;">
+     <p style="font-size:16px; line-height:26px; color:#374151; margin:0 0 16px 0;">Bonjour <t t-out="object.name or ''"/>,</p>
+     <p style="font-size:16px; line-height:26px; color:#374151; margin:0 0 16px 0;">Merci d&#8217;avoir donn&#233; vos disponibilit&#233;s. La rencontre &#171;&#160;<strong><t t-out="object.poll_id.name or ''"/></strong>&#160;&#187; est fix&#233;e.</p>
+     <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:16px 0 4px 0; border:1px solid #e5e7eb; border-radius:8px; border-collapse:separate;"><tbody>
+      <tr><td style="padding:12px 16px; background-color:#f9fafb; border-bottom:1px solid #e5e7eb; color:#6B7280; font-size:14px; width:38%;">Quand</td><td style="padding:12px 16px; background-color:#f9fafb; border-bottom:1px solid #e5e7eb; font-size:14px; font-weight:600; color:#374151;"><t t-out="object.poll_id.scheduled_display()"/></td></tr>
+      <tr><td style="padding:12px 16px; border-bottom:1px solid #e5e7eb; color:#6B7280; font-size:14px;">Dur&#233;e</td><td style="padding:12px 16px; border-bottom:1px solid #e5e7eb; font-size:14px; color:#374151;"><t t-out="object.poll_id.duration_display()"/></td></tr>
+      <t t-if="booking and booking.videocall_location"><tr><td style="padding:12px 16px; border-bottom:1px solid #e5e7eb; color:#6B7280; font-size:14px;">O&#249;</td><td style="padding:12px 16px; border-bottom:1px solid #e5e7eb; font-size:14px; color:#374151;"><a t-attf-href="{{ booking.videocall_location }}" t-attf-style="color:{{ (company and company.appointment_brand_primary) or brand_primary }};"><t t-out="booking.videocall_location"/></a></td></tr></t>
+      <tr><td style="padding:12px 16px; color:#6B7280; font-size:14px;">Avec</td><td style="padding:12px 16px; font-size:14px; color:#374151;"><t t-out="object.poll_id.user_id.name or ''"/></td></tr>
+     </tbody></table>
+     <p style="font-size:14px; line-height:22px; color:#6B7280; margin:16px 0 0 0;">Le fichier joint ajoute la rencontre &#224; votre agenda en un clic.</p>
+     <p style="font-size:14px; line-height:22px; color:#6B7280; margin:8px 0 0 0;">Un emp&#234;chement&#160;? R&#233;pondez &#224; ce courriel, on trouvera autre chose.</p>
+    </td></tr>
+   </tbody>
+  </table>
+ </td></tr></tbody>
+</table>
+
+]]></field>
+        </record>
     </data>
 </odoo>

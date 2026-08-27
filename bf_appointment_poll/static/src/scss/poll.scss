@@ -12,7 +12,8 @@
     // 🔴 Ce nom vit DANS `.bf-section-header`, dont le fond est justement
     // `var(--bf-appt-dark)`. Le peindre de cette même variable l'écrivait
     // exactement dans la couleur de son fond : contraste 1:1, le participant
-    // ne voyait pas qui lui demandait ses disponibilités.
+    // ne voyait pas qui lui demandait ses disponibilités. Il hérite du blanc
+    // de l'en-tête, comme les deux lignes au-dessus de lui.
     .bf-poll-organizer {
         font-weight: 600;
         color: inherit;
@@ -24,10 +25,13 @@
         gap: .5rem;
     }
 
-    // ⚠️ Le corps du site public est SOMBRE et son texte est blanc. Une carte
-    // blanche qui ne déclare pas sa propre couleur hérite donc du blanc, et
-    // tout ce qu'elle contient disparaît : les trois choix de vote étaient
-    // invisibles. La couleur se pose sur la SURFACE, pas sur chaque enfant.
+    // ⚠️ Le corps du site public BF est SOMBRE et son texte est blanc (voir le
+    // commentaire du parent : `--body-bg: #212529`). Une carte blanche qui ne
+    // déclare pas sa propre couleur hérite donc du blanc, et tout ce qu'elle
+    // contient disparaît. C'est ce qui a rendu les HEURES du bassin invisibles
+    // jusqu'au 2026-08-25 : le balisage était juste, seule la couleur manquait.
+    // La couleur se pose sur la SURFACE, pas sur chaque enfant : un élément
+    // ajouté plus tard dans la carte hérite alors du bon ton tout seul.
     .bf-poll-slot {
         border: 1px solid #e5e7eb;
         border-radius: 10px;
@@ -88,6 +92,13 @@
         }
     }
 
+    // Réponses figées : la personne n'a pas encore prouvé qu'elle tient
+    // l'adresse. Elles restent LISIBLES — c'est le point du mode.
+    .bf-poll-choice:has(input:disabled) {
+        opacity: .55;
+        cursor: default;
+    }
+
     .bf-poll-others {
         margin-top: .75rem;
         padding-top: .6rem;
@@ -111,16 +122,56 @@
         &.bf-poll-who-no { background: #fee2e2; color: #991b1b; }
     }
 
+    // ⚠️ Cette légende est au niveau de la PAGE, donc sur le fond sombre, et
+    // non dans une carte blanche comme les autres gris du module. #6b7280 n'y
+    // donnait que 3,2:1, sous le seuil AA. #adb5bd donne 7,5:1.
     .bf-poll-legend {
         font-size: .8rem;
-        color: #6b7280;
+        color: #adb5bd;
         margin: .25rem 0 1rem 0;
     }
 
-    // 🔴 `bf-btn-accent` pose la couleur du TEXTE (blanc) et pas le fond : les
-    // gabarits du module parent l'appliquent en style inline. Le sondage ne le
-    // faisait pas, donc « Ajouter ces moments » était blanc sur la carte
-    // BLANCHE, invisible, et le formulaire inutilisable.
+    // 🔴 `bf-btn-accent` du parent pose la couleur du TEXTE (blanc) et pas le
+    // fond : ses propres gabarits l'appliquent en style inline, à la couleur du
+    // type de rendez-vous. Le sondage ne le faisait pas, donc « Ajouter ces
+    // moments » était blanc sur la carte BLANCHE, invisible. On prend la
+    // variable de marque plutôt qu'un style inline : le sondage n'a pas de
+    // couleur par type à porter.
+    // Le bloc du code vit au niveau de la PAGE, sur le fond sombre : il hérite
+    // sa couleur, il ne la repeint pas.
+    .bf-poll-verrou {
+        margin: 0 0 1.5rem;
+    }
+
+    .bf-poll-verrou-mot {
+        font-size: .9rem;
+        opacity: .85;
+        margin: 0 0 .75rem;
+    }
+
+    .bf-poll-code {
+        margin-top: .9rem;
+
+        label { display: block; margin-bottom: .35rem; font-size: .9rem; }
+    }
+
+    .bf-poll-code-ligne {
+        display: flex;
+        flex-wrap: wrap;
+        gap: .5rem;
+    }
+
+    // Six chiffres se lisent mieux espacés, et le champ n'a pas à faire toute
+    // la largeur : sa taille annonce ce qu'on attend.
+    .bf-poll-code-champ {
+        max-width: 11rem;
+        min-height: 44px;
+        text-align: center;
+        font-size: 1.15rem;
+        letter-spacing: .3em;
+        font-variant-numeric: tabular-nums;
+    }
+
     .bf-poll-submit {
         width: 100%;
         min-height: 48px;
@@ -149,7 +200,6 @@
 // premier endroit où un sondage perd ses répondants.
 .bf-poll {
     // Même règle que `.bf-poll-slot` : surface blanche, donc couleur déclarée.
-    // Sans elle, les HEURES du bassin étaient invisibles.
     .bf-poll-propose {
         border: 1px solid #e5e7eb;
         border-left: 3px solid var(--bf-appt-primary, #714B67);
@@ -210,5 +260,59 @@
             background: rgba(41, 171, 226, .08);
             font-weight: 600;
         }
+
+        // Plafond atteint : ce qui reste se lit encore, mais ne se coche plus.
+        // Griser sans estomper laisserait croire à une case cassée.
+        &:has(input:disabled) {
+            opacity: .4;
+            cursor: not-allowed;
+        }
+    }
+
+    // Le repli du bassin. ⚠️ Il vit au niveau de la PAGE, donc sur le fond
+    // sombre : la couleur s'hérite du corps, on ne la repeint pas (c'est
+    // l'erreur symétrique de celle des cartes blanches).
+    .bf-poll-propose-wrap {
+        margin-bottom: 1.5rem;
+
+        > summary {
+            display: inline-flex;
+            align-items: center;
+            gap: .5rem;
+            min-height: 44px;
+            padding: .5rem 1rem;
+            border: 1px solid rgba(255, 255, 255, .35);
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            // Sans ça, Safari et Firefox gardent leur triangle en plus du
+            // signe que l'on pose nous-mêmes.
+            list-style: none;
+
+            &::-webkit-details-marker { display: none; }
+            &::before { content: "+"; font-weight: 700; }
+            &:hover { border-color: var(--bf-appt-primary, #714B67); }
+        }
+
+        &[open] > summary::before { content: "\2212"; }
+        .bf-poll-propose { margin-top: .75rem; }
+    }
+
+    .bf-poll-reste {
+        font-size: .85rem;
+        font-weight: 400;
+        opacity: .75;
+        font-variant-numeric: tabular-nums;
+    }
+
+    .bf-poll-pool-count {
+        display: inline-block;
+        margin-left: .5rem;
+        padding: .05rem .45rem;
+        border-radius: 999px;
+        background: #f3f4f6;
+        font-variant-numeric: tabular-nums;
+        font-weight: 600;
+        color: var(--bf-appt-dark, #212529);
     }
 }

@@ -21,6 +21,11 @@
                     </p>
                 </div>
 
+                <div t-if="request.params.get('bienvenue')" class="alert alert-info">
+                    <t t-out="'You are in. This page is yours: bookmark it, or come back through the sign-up link with the same e-mail.' if _en
+                              else 'Vous êtes inscrit. Cette page est la vôtre : gardez-la en signet, ou revenez par le lien d\'inscription avec la même adresse.'"/>
+                </div>
+
                 <div t-if="request.params.get('merci')" class="alert alert-success">
                     <t t-out="'Thank you, your answers are saved. You can change them while the poll is open.' if _en
                               else 'Merci, vos réponses sont enregistrées. Vous pouvez les modifier tant que le sondage est ouvert.'"/>
@@ -42,15 +47,15 @@
                               else ' n\'ont pas été retenue(s) : vous avez atteint le nombre de plages que vous pouvez proposer. Vous pouvez toujours répondre à celles que les autres proposent.'"/>
                 </div>
 
+                <div t-if="envoi_perime" class="alert alert-warning">
+                    <t t-out="'Your choices were not saved: this page was out of date. What follows is the current state.' if _en
+                              else 'Vos choix n\'ont pas été enregistrés : cette page n\'était plus à jour. Ce qui suit est l\'état actuel.'"/>
+                </div>
+
                 <div t-if="refuses_perimes" class="alert alert-warning">
                     <strong t-out="refuses_perimes"/>
                     <t t-out="' were no longer free when you sent them. The list below is up to date.' if _en
                               else ' n\'étaient plus libres au moment de l\'envoi. La liste ci-dessous est à jour.'"/>
-                </div>
-
-                <div t-if="envoi_perime" class="alert alert-warning">
-                    <t t-out="'Your choices were not saved: this page was out of date. What follows is the current state.' if _en
-                              else 'Vos choix n\'ont pas été enregistrés : cette page n\'était plus à jour. Ce qui suit est l\'état actuel.'"/>
                 </div>
 
                 <div t-if="attend_amorce" class="alert alert-secondary">
@@ -81,47 +86,6 @@
                     </span>
                 </div>
 
-                <t t-if="peut_proposer and pool">
-                    <div class="bf-poll-propose">
-                        <h3>
-                            <t t-out="'Add the times that work for you' if _en
-                                      else 'Ajoutez les moments qui vous conviennent'"/>
-                        </h3>
-                        <p class="bf-poll-propose-hint">
-                            <t t-if="restant">
-                                <t t-out="'You can add up to ' if _en else 'Vous pouvez en ajouter jusqu\'à '"/>
-                                <strong t-out="restant"/>.
-                            </t>
-                            <t t-out="'These are the times the organiser is free.' if _en
-                                      else 'Ce sont les moments où l\'organisateur est libre.'"/>
-                        </p>
-                        <form t-attf-action="/appointment/poll/#{participant.access_token}/propose"
-                              method="post">
-                            <input type="hidden" name="csrf_token"
-                                   t-att-value="request.csrf_token()"/>
-                            <div class="bf-poll-pool">
-                                <t t-foreach="pool_by_day" t-as="jour">
-                                    <div class="bf-poll-pool-day">
-                                        <div class="bf-poll-pool-day-name" t-out="jour"/>
-                                        <div class="bf-poll-pool-chips">
-                                            <t t-foreach="pool_by_day[jour]" t-as="creneau">
-                                                <label class="bf-poll-chip">
-                                                    <input type="checkbox" name="pool"
-                                                           t-att-value="creneau[0]"/>
-                                                    <span t-out="creneau[1]"/>
-                                                </label>
-                                            </t>
-                                        </div>
-                                    </div>
-                                </t>
-                            </div>
-                            <button type="submit" class="btn bf-btn-accent bf-poll-submit">
-                                <t t-out="'Add these times' if _en else 'Ajouter ces moments'"/>
-                            </button>
-                        </form>
-                    </div>
-                </t>
-
                 <form t-if="poll.state == 'open' and slots"
                       t-attf-action="/appointment/poll/#{participant.access_token}/vote"
                       method="post" class="bf-poll-form">
@@ -147,7 +111,8 @@
                                         <input type="radio"
                                                t-attf-name="slot_#{slot.id}"
                                                t-att-value="choice[0]"
-                                               t-att-checked="current == choice[0] or None"/>
+                                               t-att-checked="current == choice[0] or None"
+                                               t-att-disabled="lecture_seule or None"/>
                                         <span t-out="choice[1]"/>
                                     </label>
                                 </t>
@@ -174,11 +139,299 @@
                         <t t-out="'* required attendee' if _en else '* participant obligatoire'"/>
                     </p>
 
-                    <button type="submit" class="btn bf-btn-accent bf-poll-submit">
+                    <button type="submit" class="btn bf-btn-accent bf-poll-submit"
+                            t-if="not lecture_seule">
                         <t t-out="'Send my availability' if _en
                                   else 'Envoyer mes disponibilités'"/>
                     </button>
                 </form>
+
+                <!-- 🔴 Ce qui suit remplace la modification pour un inscrit qui
+                     a déjà répondu. Son identité ne tient qu'à l'adresse qu'il
+                     a saisie, et l'inscription est idempotente dessus : sans
+                     ce code, connaître le lien et l'adresse de quelqu'un
+                     suffisait à changer ses réponses. La page reste LISIBLE —
+                     voir l'état à jour du sondage ne demande rien. -->
+                <t t-if="lecture_seule">
+                    <div class="bf-poll-verrou">
+                        <p class="bf-poll-verrou-mot">
+                            <t t-out="'Your answers are saved. To change them, we send a code to your address.' if _en
+                                      else 'Vos réponses sont enregistrées. Pour les modifier, nous envoyons un code à votre adresse.'"/>
+                        </p>
+
+                        <t t-if="motif_code == 'envoye'">
+                            <div class="alert alert-success">
+                                <t t-out="'Code sent. It is valid for 15 minutes.' if _en
+                                          else 'Code envoyé. Il est valable 15 minutes.'"/>
+                            </div>
+                        </t>
+                        <t t-if="motif_code == 'attendre'">
+                            <div class="alert alert-warning">
+                                <t t-out="'A code has just been sent. Give it a minute before asking for another.' if _en
+                                          else 'Un code vient de partir. Laissez-lui une minute avant d\'en demander un autre.'"/>
+                            </div>
+                        </t>
+                        <t t-if="motif_code == 'trop'">
+                            <div class="alert alert-warning">
+                                <t t-out="'Too many codes asked for from here. Try again later.' if _en
+                                          else 'Trop de codes demandés depuis cet endroit. Réessayez plus tard.'"/>
+                            </div>
+                        </t>
+                        <t t-if="motif_code == 'faux'">
+                            <div class="alert alert-warning">
+                                <t t-out="'That code does not match. Check the last e-mail you received.' if _en
+                                          else 'Ce code ne correspond pas. Vérifiez le dernier courriel reçu.'"/>
+                            </div>
+                        </t>
+                        <t t-if="motif_code == 'expire'">
+                            <div class="alert alert-warning">
+                                <t t-out="'That code has expired. Ask for a new one.' if _en
+                                          else 'Ce code a expiré. Demandez-en un nouveau.'"/>
+                            </div>
+                        </t>
+                        <t t-if="motif_code == 'brule'">
+                            <div class="alert alert-warning">
+                                <t t-out="'Too many wrong tries on this code. Ask for a new one.' if _en
+                                          else 'Trop d\'essais manqués sur ce code. Demandez-en un nouveau.'"/>
+                            </div>
+                        </t>
+                        <t t-if="motif_code == 'echec'">
+                            <div class="alert alert-warning">
+                                <t t-out="'The code could not be sent. Try again in a moment, or tell the organiser.' if _en
+                                          else 'Le code n\'a pas pu être envoyé. Réessayez dans un moment, ou dites-le à l\'organisateur.'"/>
+                            </div>
+                        </t>
+                        <t t-if="motif_code == 'absent'">
+                            <div class="alert alert-warning">
+                                <t t-out="'No code is pending. Ask for one.' if _en
+                                          else 'Aucun code en cours. Demandez-en un.'"/>
+                            </div>
+                        </t>
+
+                        <form method="post"
+                              t-attf-action="/appointment/poll/#{participant.access_token}/otp">
+                            <input type="hidden" name="csrf_token"
+                                   t-att-value="request.csrf_token()"/>
+                            <button type="submit" class="btn bf-btn-accent bf-poll-submit">
+                                <t t-out="('Send me a new code' if demande_code else 'Change my answers') if _en
+                                          else ('M\'envoyer un nouveau code' if demande_code else 'Modifier mes réponses')"/>
+                            </button>
+                        </form>
+
+                        <form t-if="demande_code" method="post" class="bf-poll-code"
+                              t-attf-action="/appointment/poll/#{participant.access_token}/otp/verify">
+                            <input type="hidden" name="csrf_token"
+                                   t-att-value="request.csrf_token()"/>
+                            <label for="code">
+                                <t t-out="'The six digits we sent to ' if _en
+                                          else 'Les six chiffres envoyés à '"/><strong t-out="participant.email"/>
+                            </label>
+                            <div class="bf-poll-code-ligne">
+                                <input type="text" id="code" name="code" required="required"
+                                       inputmode="numeric" autocomplete="one-time-code"
+                                       pattern="[0-9]{6}" maxlength="6"
+                                       class="form-control bf-poll-code-champ"/>
+                                <button type="submit" class="btn bf-btn-accent">
+                                    <t t-out="'Unlock' if _en else 'Déverrouiller'"/>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </t>
+
+                <div t-if="vient_de_deverrouiller" class="alert alert-success">
+                    <t t-out="'Unlocked. You can change your answers on this page.' if _en
+                              else 'C\'est déverrouillé. Vous pouvez modifier vos réponses sur cette page.'"/>
+                </div>
+
+                <!-- ⚠️ L'ORDRE comptait, et il était à l'envers : le bassin de
+                     soixante cases s'affichait AVANT ce que les autres avaient
+                     déjà proposé. On arrivait donc sur un formulaire de
+                     proposition alors que la bonne plage était peut-être déjà
+                     là, à rejoindre — et le recoupement, qui est tout l'objet
+                     du sondage, ne se forme que si on voit d'abord ce qu'il y
+                     a. La grille passe devant, le bassin se replie derrière un
+                     bouton. Le premier à répondre, lui, n'a rien à regarder
+                     avant : le bassin s'ouvre pour lui.
+
+                     `details` plutôt qu'un script : le repli marche sans
+                     JavaScript, se manipule au clavier, et n'ajoute rien à la
+                     surface exposée. -->
+                <t t-if="peut_proposer and pool">
+                    <details class="bf-poll-propose-wrap" t-att-open="not slots">
+                        <summary class="bf-poll-propose-toggle">
+                            <t t-out="(('Suggest other times' if _en else 'Suggérer d\'autres plages')
+                                       if slots else
+                                       ('Propose your times' if _en else 'Proposer vos plages'))"/>
+                            <span class="bf-poll-reste" t-if="restant">
+                                <t t-out="restant"/>/<t t-out="restant_total"/><t t-out="' left' if _en else ' restantes'"/>
+                            </span>
+                        </summary>
+                        <div class="bf-poll-propose">
+                            <h3>
+                                <t t-out="'Add the times that work for you' if _en
+                                          else 'Ajoutez les moments qui vous conviennent'"/>
+                            </h3>
+                            <p class="bf-poll-propose-hint">
+                                <t t-if="restant">
+                                    <t t-out="'You can add up to ' if _en else 'Vous pouvez en ajouter jusqu\'à '"/>
+                                    <strong t-out="restant"/>.
+                                </t>
+                                <t t-out="'These are the times the organiser is free.' if _en
+                                          else 'Ce sont les moments où l\'organisateur est libre.'"/>
+                            </p>
+                            <form t-attf-action="/appointment/poll/#{participant.access_token}/propose"
+                                  method="post">
+                                <input type="hidden" name="csrf_token"
+                                       t-att-value="request.csrf_token()"/>
+                                <div class="bf-poll-pool" t-att-data-restant="restant">
+                                    <t t-foreach="pool_by_day" t-as="jour">
+                                        <div class="bf-poll-pool-day">
+                                            <div class="bf-poll-pool-day-name" t-out="jour"/>
+                                            <div class="bf-poll-pool-chips">
+                                                <t t-foreach="pool_by_day[jour]" t-as="creneau">
+                                                    <label class="bf-poll-chip">
+                                                        <input type="checkbox" name="pool"
+                                                               t-att-value="creneau[0]"/>
+                                                        <span t-out="creneau[1]"/>
+                                                    </label>
+                                                </t>
+                                            </div>
+                                        </div>
+                                    </t>
+                                </div>
+                                <button type="submit" class="btn bf-btn-accent bf-poll-submit">
+                                    <t t-out="'Add these times' if _en else 'Ajouter ces moments'"/>
+                                </button>
+                            </form>
+                            <!--
+                                Le plafond était ANNONCÉ et pas tenu : on pouvait en
+                                cocher huit pour trois permises, et le serveur en
+                                gardait trois sans le dire. Il reste la seule
+                                autorité (ce script ne fait que rendre le refus
+                                visible AVANT l'envoi), mais laisser quelqu'un
+                                cocher ce qui sera jeté est un piège.
+
+                                Script en ligne, et non un paquet d'assets : la CSP
+                                du site autorise `script-src 'unsafe-inline'`, et un
+                                paquet paresseux qui ne s'exécute jamais est un
+                                précédent coûteux sur ce site. Sans JavaScript, la
+                                page se comporte comme avant, le serveur tranche et
+                                les messages de retour disent la vérité.
+                            -->
+                            <script type="text/javascript">
+                                (function () {
+                                    var pool = document.querySelector(".bf-poll-pool[data-restant]");
+                                    if (!pool) { return; }
+                                    var max = parseInt(pool.getAttribute("data-restant"), 10);
+                                    if (!max || max &lt; 1) { return; }
+                                    var cases = Array.prototype.slice.call(
+                                        pool.querySelectorAll("input[name=\'pool\']"));
+                                    // La jauge naît ICI, et non dans le gabarit :
+                                    // sans JavaScript elle resterait figée à
+                                    // « 0 / n » pendant qu'on coche, ce qui est un
+                                    // petit mensonge de plus. Pas de script, pas
+                                    // de jauge, et la phrase reste juste.
+                                    var jauge = document.createElement("span");
+                                    jauge.className = "bf-poll-pool-count";
+                                    var ligne = document.querySelector(".bf-poll-propose-hint");
+                                    if (ligne) { ligne.appendChild(jauge); }
+                                    function refaire() {
+                                        var coches = cases.filter(function (c) {
+                                            return c.checked;
+                                        }).length;
+                                        cases.forEach(function (c) {
+                                            c.disabled = !c.checked &amp;&amp; coches >= max;
+                                        });
+                                        jauge.textContent = coches + " / " + max;
+                                    }
+                                    cases.forEach(function (c) {
+                                        c.addEventListener("change", refaire);
+                                    });
+                                    refaire();
+                                })();
+                            </script>
+                        </div>
+                    </details>
+                </t>
+            </div>
+        </t>
+    </template>
+
+    <template id="poll_signup_page" name="Appointment Poll Sign-up">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="False"/>
+            <t t-call="bf_appointment.appointment_brand_style"/>
+            <t t-set="_en"
+               t-value="(env.context.get('lang') or 'fr_CA').lower().startswith('en')"/>
+            <t t-set="additional_title" t-value="poll.name"/>
+
+            <div class="bf-poll">
+                <div class="bf-section-header mb-4">
+                    <h2 t-esc="poll.name"/>
+                    <p class="mb-0">
+                        <t t-out="'invites you to indicate your availability.' if _en
+                                  else 'vous consulte pour fixer une rencontre.'"/>
+                    </p>
+                    <p class="bf-poll-organizer mb-0">
+                        <t t-out="poll.user_id.name or ''"/>
+                    </p>
+                </div>
+
+                <div t-if="poll.description" class="bf-poll-intro mb-4"
+                     t-out="poll.description"/>
+
+                <div t-if="motif == 'full'" class="alert alert-secondary">
+                    <t t-out="'This poll has reached the number of people it can take. Ask the organiser to let you in.' if _en
+                              else 'Ce sondage a atteint le nombre de personnes qu\'il peut accueillir. Demandez à l\'organisateur de vous y ajouter.'"/>
+                </div>
+                <div t-if="motif == 'closed'" class="alert alert-secondary">
+                    <t t-out="'This poll is no longer taking new people.' if _en
+                              else 'Ce sondage n\'accueille plus de nouvelles personnes.'"/>
+                </div>
+                <div t-if="motif == 'domain'" class="alert alert-warning">
+                    <t t-out="'This poll is limited to certain e-mail domains. Use your work address, or ask the organiser.' if _en
+                              else 'Ce sondage est réservé à certains domaines de courriel. Utilisez votre adresse professionnelle, ou écrivez à l\'organisateur.'"/>
+                </div>
+                <div t-if="motif == 'invalid'" class="alert alert-warning">
+                    <t t-out="'That e-mail address does not look valid.' if _en
+                              else 'Cette adresse courriel ne semble pas valide.'"/>
+                </div>
+                <div t-if="motif == 'throttled'" class="alert alert-warning">
+                    <t t-out="'Too many sign-ups from here for the moment. Try again in a few minutes.' if _en
+                              else 'Trop d\'inscriptions depuis cet endroit pour l\'instant. Réessayez dans quelques minutes.'"/>
+                </div>
+
+                <t t-if="ouvert">
+                    <form method="post"
+                          t-attf-action="/appointment/poll/join/#{token}/add"
+                          class="bf-poll-signup">
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        <div class="mb-3">
+                            <label for="nom" class="form-label">
+                                <t t-out="'Your name' if _en else 'Votre nom'"/>
+                            </label>
+                            <input type="text" id="nom" name="nom" class="form-control"
+                                   maxlength="120" required="required"
+                                   t-att-value="nom"/>
+                        </div>
+                        <div class="mb-3">
+                            <label for="courriel" class="form-label">
+                                <t t-out="'Your e-mail' if _en else 'Votre courriel'"/>
+                            </label>
+                            <input type="email" id="courriel" name="courriel"
+                                   class="form-control" maxlength="254"
+                                   required="required" t-att-value="courriel"/>
+                            <div class="form-text">
+                                <t t-out="'It identifies your answers, and it is the way back to them. Enter it again to find your answers later.' if _en
+                                          else 'Elle identifie vos réponses, et c\'est par elle qu\'on y revient. Ressaisissez-la plus tard pour retrouver vos réponses.'"/>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <t t-out="'Continue' if _en else 'Continuer'"/>
+                        </button>
+                    </form>
+                </t>
             </div>
         </t>
     </template>

@@ -2,6 +2,7 @@
 """Le sondage lui-même : un jeu de créneaux candidats soumis à un groupe."""
 
 import logging
+import re
 import secrets
 from datetime import timedelta
 
@@ -9,6 +10,7 @@ import pytz
 
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
+from odoo.tools import email_normalize
 
 _logger = logging.getLogger(__name__)
 
@@ -136,6 +138,53 @@ class AppointmentPoll(models.Model):
              "quelqu'un en coche trente et noie le recoupement.",
     )
 
+    send_invitations = fields.Boolean(
+        string="Envoyer les invitations à l'ouverture",
+        default=True,
+        help="Décoché, l'ouverture n'écrit à personne : le sondage devient "
+             "votre lien à coller dans votre propre courriel. Le lien de "
+             "chaque participant se copie depuis l'onglet Participants.",
+    )
+
+    # -- Inscription libre --------------------------------------------------
+    # Éteint par défaut, et pour la même raison que l'audience ouverte du
+    # transfert sécurisé : un lien où l'on s'inscrit soi-même accepte une
+    # adresse que personne n'a validée en amont. C'est un pouvoir qu'on
+    # accorde sondage par sondage, pas un défaut qu'on subit.
+    self_signup = fields.Boolean(
+        string="Lien d'inscription libre",
+        default=False,
+        tracking=True,
+        help="Publie un lien où chacun s'inscrit lui-même, puis répond. "
+             "Utile quand vous ne connaissez pas d'avance toutes les adresses "
+             "du groupe.\n\n"
+             "⚠️ En mode « chacun propose », une personne entrée par ce lien "
+             "choisit des plages dans VOTRE agenda, et pose donc la retenue "
+             "qui va avec. C'est à cela que servent les domaines admis et le "
+             "plafond d'inscriptions.",
+    )
+    self_signup_max = fields.Integer(
+        string="Inscriptions max.",
+        default=25,
+        help="Nombre maximal de personnes admises par le lien d'inscription. "
+             "0 = illimité (déconseillé : c'est le plafond qui empêche un lien "
+             "trop diffusé de remplir le sondage d'inconnus).",
+    )
+    self_signup_domains = fields.Text(
+        string="Domaines admis",
+        help="Liste blanche appliquée aux adresses saisies : adresse complète, "
+             "ou domaine (« @client.com »), une par ligne ou séparées par des "
+             "virgules. Vide = toute adresse est admise, dans la limite du "
+             "plafond.",
+    )
+    signup_url = fields.Char(
+        string="Lien d'inscription",
+        compute="_compute_signup_url",
+        groups="base.group_user",
+        help="Adresse publique où les gens s'inscrivent eux-mêmes. Vide tant "
+             "que l'inscription libre n'est pas activée.",
+    )
+
     show_votes = fields.Boolean(
         string="Montrer les réponses de chacun",
         default=True,
@@ -228,6 +277,21 @@ class AppointmentPoll(models.Model):
 
     # -- Cycle de vie ------------------------------------------------------
 
+    @api.depends("access_token", "self_signup")
+    def _compute_signup_url(self):
+        """Lien public d'inscription, reconstruit à la lecture.
+
+        Jamais stocké : il suit le jeton et l'adresse de base, donc
+        l'organisateur voit toujours le lien vivant plutôt qu'une copie prise
+        le jour où le sondage a été créé.
+        """
+        base = self.env["ir.config_parameter"].sudo().get_param("web.base.url", "")
+        for poll in self:
+            poll.signup_url = (
+                "%s/appointment/poll/join/%s" % (base, poll.access_token)
+                if poll.self_signup and poll.access_token else False
+            )
+
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:
@@ -287,8 +351,10 @@ class AppointmentPoll(models.Model):
     def action_open(self):
         """Ouvre le vote : pose les retenues, envoie les invitations."""
         for poll in self:
-            if not poll.participant_ids:
-                raise UserError(_("Ajoutez au moins un participant."))
+            if not poll.participant_ids and not poll.self_signup:
+                raise UserError(_(
+                    "Ajoutez au moins un participant, ou activez le lien "
+                    "d'inscription libre."))
             if poll.slot_source == "organizer" and not poll.slot_ids:
                 raise UserError(_("Proposez au moins un créneau avant d'ouvrir."))
             if poll.slot_source == "seeder" and poll.slot_ids:
@@ -304,10 +370,39 @@ class AppointmentPoll(models.Model):
             poll.date_opened = fields.Datetime.now()
             # Tient la grille déjà connue. En « chacun propose », elle est
             # normalement vide à l'ouverture et chaque plage prendra sa
-            # retenue au moment où quelqu'un la choisit.
+            # retenue au moment où quelqu'un la choisit — mais une grille
+            # pré-remplie doit être tenue comme les autres, sans quoi les
+            # plages de l'organisateur seraient les seules à ne pas l'être.
             if poll.hold_mode != "none":
                 poll.slot_ids._create_hold()
-            poll.participant_ids._send_invitation()
+            # ⚠ L'ouverture n'écrit pas toujours. Quand l'organisateur veut
+            # coller le lien dans son propre courriel, envoyer d'office ferait
+            # un doublon que personne n'a demandé — et il arriverait AVANT le
+            # sien, sans le contexte qu'il voulait donner.
+            if poll.send_invitations:
+                poll.participant_ids._send_invitation()
+        return True
+
+    def action_send_invitations(self):
+        """Envoie l'invitation à ceux qui ne l'ont pas encore reçue.
+
+        Le filtre porte sur `invitation_sent_on`, pas sur l'état du sondage :
+        c'est ce qui rend le bouton sûr à cliquer deux fois, et ce qui permet
+        d'inviter quelqu'un ajouté après l'ouverture sans réécrire à tout le
+        monde.
+        """
+        for poll in self:
+            if poll.state != "open":
+                raise UserError(_(
+                    "Ouvrez le vote avant d'inviter : le lien refuserait les "
+                    "réponses."))
+            cibles = poll.participant_ids.filtered(
+                lambda p: not p.invitation_sent_on)
+            if not cibles:
+                raise UserError(_(
+                    "Tout le monde a déjà reçu son invitation. Pour relancer "
+                    "une personne, copiez son lien dans l'onglet Participants."))
+            cibles._send_invitation()
         return True
 
     def action_close(self):
@@ -329,15 +424,29 @@ class AppointmentPoll(models.Model):
         return True
 
     def action_schedule_and_open(self):
-        """Version bouton : fixe la rencontre PUIS ouvre le rendez-vous créé.
+        """Demande SUR QUEL créneau fixer, puis laisse l'assistant conclure.
 
-        `action_schedule` rend un recordset, ce qu'un bouton de vue ne sait pas
-        exploiter (le client web l'ignore et l'utilisateur reste sur place,
-        sans savoir si quelque chose s'est passé).
+        🔴 Ce bouton fixait la rencontre sans rien demander, sur le premier
+        créneau non rejeté dans l'ordre chronologique. Un sondage sert à
+        décider ; le bouton qui conclut doit montrer ce que le sondage a dit et
+        laisser trancher.
+
+        L'assistant présélectionne le mieux classé : le geste normal reste un
+        clic, mais il est éclairé.
         """
         self.ensure_one()
-        self.action_schedule()
-        return self.action_view_booking()
+        if self.booking_id:
+            raise UserError(_("Ce sondage a déjà donné lieu à un rendez-vous."))
+        if not self.slot_ids.filtered("is_viable"):
+            raise UserError(_("Aucun créneau viable à retenir."))
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Sur quel créneau ?"),
+            "res_model": "appointment.poll.schedule.wizard",
+            "view_mode": "form",
+            "target": "new",
+            "context": {"default_poll_id": self.id},
+        }
 
     def action_schedule(self, slot=None):
         """Fixe la rencontre sur un créneau et laisse le parent faire le reste.
@@ -347,12 +456,32 @@ class AppointmentPoll(models.Model):
         aucune de ces mécaniques : il choisit une heure et des personnes.
         """
         self.ensure_one()
-        slot = slot or self.slot_ids.filtered("is_viable")[:1]
+        # 🔴 `slot_ids` est trié par HEURE. Prendre `[:1]` dessus fixait la
+        # rencontre sur le premier créneau que personne n'avait rejeté, même si
+        # personne ne l'avait choisi non plus — « viable » veut seulement dire
+        # qu'aucun obligatoire n'a dit Non, et un créneau que nul n'a regardé
+        # l'est. Mesuré le 2026-08-26 : deux « oui » sur 20 h 30, aucune
+        # réponse sur 19 h 30, et c'est 19 h 30 qui était réservé. Le
+        # classement écrit pour cette décision existait depuis l'origine et
+        # n'était appelé nulle part.
+        slot = slot or self._ranked_slots().filtered("is_viable")[:1]
         if not slot:
             raise UserError(_("Aucun créneau viable à retenir."))
         if self.booking_id:
             raise UserError(_("Ce sondage a déjà donné lieu à un rendez-vous."))
         partners = self.participant_ids._ensure_partners()
+        # 🔴 Libérer la retenue de CE créneau AVANT de réserver. En mode
+        # « réserver réellement », le sondage pose un événement `busy` sur la
+        # plage ; `_bf_create_booking` demande alors une heure réellement
+        # disponible et refuse la sienne : « Aucune ressource n'est disponible
+        # le … ». Le module se bloquait lui-même, et le mode le plus protecteur
+        # était le seul à ne pas pouvoir conclure.
+        #
+        # Seulement celle-ci : les autres plages restent tenues jusqu'à ce que
+        # la rencontre soit acquise, sans quoi une réservation publique
+        # pourrait s'y glisser pendant qu'on conclut. Si la création échoue, la
+        # transaction ramène la retenue avec elle.
+        slot._release_hold()
         booking = self.type_id._bf_create_booking(
             slot.start,
             partners=partners,
@@ -363,12 +492,16 @@ class AppointmentPoll(models.Model):
                 "bf_source_ref": "appointment.poll,%d" % self.id,
             },
         )
+        # Les autres, une fois la rencontre acquise.
         self.slot_ids._release_hold()
         self.booking_id = booking
         self.state = "scheduled"
         self.message_post(
             body=_("Rencontre fixée au créneau retenu à partir du sondage.")
         )
+        # Dernier geste, et le seul qui sorte du système : la rencontre est
+        # acquise, l'agenda est écrit, et c'est seulement là qu'on annonce.
+        self.participant_ids._send_scheduled_notice()
         return booking
 
     def action_view_booking(self):
@@ -488,6 +621,15 @@ class AppointmentPoll(models.Model):
         if self.slot_source == "organizer":
             return False
         if self.slot_source == "seeder":
+            # ⚠ Une personne entrée par le lien d'inscription n'amorce JAMAIS :
+            # la première grille posée devient celle de tout le groupe, et un
+            # inconnu arrivé le premier cadrerait la rencontre pour les autres.
+            # En mode « chacun propose », ce risque n'existe pas — chacun
+            # ajoute SES plages, personne ne fige rien — et le refus y vidait
+            # le lien d'inscription de son sens : l'inscrit tombait sur une
+            # page sans bassin, sans rien à cocher.
+            if participant.self_signup:
+                return False
             # Une fois la grille amorcée, elle est figée pour tout le monde,
             # y compris pour celui qui l'a posée : sinon le premier répondant
             # continue de bouger le cadre sous les suivants.
@@ -503,6 +645,149 @@ class AppointmentPoll(models.Model):
         if self.max_slots and len(self.slot_ids) >= self.max_slots:
             return False
         return True
+
+    def _picks_left(self, participant):
+        """(ce qu'il reste à cette personne, ce qu'elle pouvait poser en tout).
+
+        🔴 DEUX plafonds se disputent la réponse : celui de la personne
+        (`max_picks_per_participant`) et celui du sondage (`max_slots`).
+        `_participant_can_add_slots` les applique tous les deux, mais la page
+        n'affichait que le premier : sur un sondage plafonné à huit dont cinq
+        plages étaient déjà prises, le deuxième arrivant lisait « 5/5 » et
+        n'en aurait obtenu que trois. Un compteur qui promet plus que ce qui
+        sera accepté est pire que pas de compteur du tout.
+
+        La BASE rendue n'est pas le quota nominal, c'est ce que cette personne
+        pouvait poser en tout : sinon « 3/5 » laisserait croire qu'elle en a
+        déjà utilisé deux, alors que c'est le sondage qui est presque plein.
+
+        0 = illimité, des deux côtés. Rend (0, 0) quand rien ne borne, et la
+        page n'affiche alors aucun compteur.
+        """
+        self.ensure_one()
+        poses = participant.proposed_count
+        perso = (self.max_picks_per_participant - poses
+                 if self.max_picks_per_participant else None)
+        sondage = (self.max_slots - len(self.slot_ids)
+                   if self.max_slots else None)
+        bornes = [b for b in (perso, sondage) if b is not None]
+        if not bornes:
+            return 0, 0
+        bases = [b for b in (self.max_picks_per_participant,
+                             (sondage + poses) if sondage is not None else None)
+                 if b]
+        return max(min(bornes), 0), min(bases) if bases else 0
+
+    # -- Inscription libre --------------------------------------------------
+
+    def _self_signup_state(self):
+        """(ouvert, motif) de la page d'inscription. Le motif nomme le refus."""
+        self.ensure_one()
+        if not self.self_signup or self.state != "open":
+            return False, "closed"
+        if self.close_date and self.close_date <= fields.Datetime.now():
+            return False, "closed"
+        if self.self_signup_max and len(
+                self.participant_ids.filtered("self_signup")) >= self.self_signup_max:
+            return False, "full"
+        return True, ""
+
+    @api.model
+    def _email_matches_list(self, email, raw):
+        """L'adresse figure-t-elle dans la liste, ou relève-t-elle d'un de ses
+        domaines ? Liste vide = aucune restriction."""
+        raw = (raw or "").strip()
+        if not raw:
+            return True
+        email = (email or "").strip().lower()
+        if "@" not in email:
+            return False
+        domaine = email.rsplit("@", 1)[1]
+        for entree in re.split(r"[\s,;]+", raw.lower()):
+            if not entree:
+                continue
+            if entree.startswith("@"):
+                if domaine == entree[1:]:
+                    return True
+            elif "@" in entree:
+                if email == entree:
+                    return True
+            elif domaine == entree:
+                return True
+        return False
+
+    def _self_signup_join(self, name, email):
+        """Inscrit une personne par le lien, ou lui rend sa place si elle revient.
+
+        Rend (participant, motif) : le participant est vide quand le motif dit
+        pourquoi on refuse.
+
+        ⚠ Sous le verrou de la ligne du sondage. Deux onglets ouverts au même
+        instant produiraient sinon deux participants pour la même adresse,
+        chacun avec son jeton, et on ne saurait plus lequel porte les réponses.
+        """
+        self.ensure_one()
+        email = email_normalize(email) or ""
+        if not email:
+            return self.env["appointment.poll.participant"], "invalid"
+
+        # ⚠ Une personne DÉJÀ inscrite repasse toujours, plafond atteint ou
+        # non : sinon le 26e arrivant fermerait la porte aux 25 premiers qui
+        # reviennent corriger leurs réponses. C'est aussi ce qui rend le lien
+        # utilisable sans courriel de confirmation — on retrouve sa place en
+        # ressaisissant son adresse.
+        deja = self._self_signup_find(email)
+        if deja:
+            return deja, ""
+
+        ouvert, motif = self._self_signup_state()
+        if not ouvert:
+            return self.env["appointment.poll.participant"], motif
+        if not self._email_matches_list(email, self.self_signup_domains):
+            return self.env["appointment.poll.participant"], "domain"
+
+        self.env.cr.execute(
+            "SELECT id FROM appointment_poll WHERE id = %s FOR UPDATE", (self.id,))
+        self.invalidate_recordset(["participant_ids"])
+        deja = self._self_signup_find(email)
+        if deja:
+            return deja, ""
+        ouvert, motif = self._self_signup_state()
+        if not ouvert:
+            return self.env["appointment.poll.participant"], motif
+
+        participant = self.env["appointment.poll.participant"].sudo().create({
+            "poll_id": self.id,
+            "name": (name or "").strip()[:120] or email.split("@")[0],
+            "email": email,
+            # ⚠ Facultative, toujours. La viabilité d'un créneau se calcule sur
+            # les seules personnes obligatoires : un inconnu marqué obligatoire
+            # rendrait toutes les plages incomplètes tant qu'il n'a pas répondu,
+            # et un seul « Non » de sa part écarterait le créneau pour tous.
+            "required": False,
+            "self_signup": True,
+        })
+        # ⚠️ `partner_ids` n'est pas décoratif. Sans lui, le message se dépose
+        # au fil du sondage et ne notifie PERSONNE — vérifié le 2026-08-25 :
+        # `notified_partner_ids` restait vide alors même que l'organisateur est
+        # abonné au fil. Il fallait ouvrir le sondage pour apprendre que
+        # quelqu'un était arrivé, ce qui vide un lien d'inscription de son
+        # intérêt : on le diffuse justement pour ne pas avoir à surveiller.
+        self.message_post(
+            body=_("%(nom)s (%(courriel)s) s'est inscrit par le lien.",
+                   nom=participant.name, courriel=email),
+            partner_ids=self.user_id.partner_id.ids,
+        )
+        return participant, ""
+
+    def _self_signup_find(self, email):
+        """Le participant déjà inscrit à cette adresse, quel que soit son mode
+        d'entrée : une personne invitée nommément qui passe par le lien
+        retrouve SON inscription, elle n'en crée pas une seconde."""
+        self.ensure_one()
+        email = (email or "").strip().lower()
+        return self.participant_ids.filtered(
+            lambda p: (p.email or "").strip().lower() == email)[:1]
 
     def _waiting_for_seeder(self):
         """Vrai quand un répondant arrive avant que la grille existe."""
@@ -576,12 +861,14 @@ class AppointmentPoll(models.Model):
         self._register_yes(participant, creneau)
         if self.slot_source == "seeder" and not self.seeded_by_id:
             self.seeded_by_id = participant
-        # 🔴 La retenue suit la proposition dans les DEUX modes où la plage
-        # naît d'un participant. En « chacun propose », elle n'était posée
-        # nulle part avant la présélection : « réserver réellement » ne
-        # réservait donc rien. Le recoupement ne s'en trouve pas empêché — il
-        # se forme dans la GRILLE, que tout le monde continue de voter, et non
-        # dans le bassin, d'où une plage retenue sort de toute façon.
+        # La retenue suit la proposition, dans les deux modes où la plage naît
+        # d'un participant : en « un invité amorce » parce que la grille est
+        # définitive dès qu'elle est posée, en « chacun propose » parce que
+        # c'est la sélection elle-même que l'organisateur a demandé à voir
+        # tenue dans son agenda. Le recoupement ne s'en trouve pas empêché :
+        # il se forme dans la GRILLE, que tout le monde continue de voter, et
+        # non dans le bassin — d'où une plage retenue sort de toute façon,
+        # retenue ou pas (`_slot_pool` écarte déjà les plages existantes).
         if self.hold_mode != "none" and self.slot_source in ("seeder", "open"):
             creneau._create_hold()
         return creneau
@@ -609,11 +896,13 @@ class AppointmentPoll(models.Model):
         return self.slot_ids.sorted(key=cle, reverse=True)
 
     def action_hold_shortlist(self):
-        """Pose la retenue sur les créneaux retenus, en mode « chacun propose ».
+        """Repose la retenue sur les créneaux présélectionnés.
 
-        C'est le pendant du choix de conception : bloquer tout le bassin le
-        viderait au fur et à mesure des choix, et aucun recoupement ne pourrait
-        se former. On retient donc d'abord, on bloque ensuite.
+        Depuis 18.0.1.4.0, une plage choisie prend sa retenue toute seule : ce
+        bouton n'est plus le seul chemin, il est le rattrapage. Il sert quand
+        une retenue a été libérée par un « Non » qu'on est revenu corriger, et
+        pour les sondages ouverts avant ce changement, dont la grille n'a
+        jamais rien tenu.
         """
         self.ensure_one()
         if self.hold_mode == "none":
@@ -625,6 +914,31 @@ class AppointmentPoll(models.Model):
             ))
         retenus._create_hold()
         return True
+
+    def scheduled_display(self, en=False):
+        """« jeudi 3 septembre · 17:30 – 18:00 (Montréal) », pour la confirmation.
+
+        ⚠️ Rendu dans le fuseau du SONDAGE, celui que la page de vote affiche
+        et étiquette. C'est dans ce fuseau que les gens ont lu les créneaux et
+        coché : confirmer dans un autre les obligerait à refaire la conversion
+        à l'envers. Un participant n'a d'ailleurs pas de fuseau à lui — seul un
+        contact en a un, et un inscrit libre n'en est pas un.
+        """
+        self.ensure_one()
+        if not self.booking_id:
+            return ""
+        creneau = self.slot_ids.filtered(
+            lambda s: s.start == self.booking_id.start)[:1]
+        if not creneau:
+            # La rencontre a été déplacée depuis, ou le créneau retiré : on
+            # rend l'heure de la RÉSERVATION, qui fait foi.
+            creneau = self.env["appointment.poll.slot"].new({
+                "poll_id": self.id,
+                "start": self.booking_id.start,
+                "stop": self.booking_id.stop,
+            })
+        return "%s · %s (%s)" % (creneau.display_day(en), creneau.display_time(),
+                                 creneau.display_tz_label())
 
     def _pool_tzname(self):
         self.ensure_one()

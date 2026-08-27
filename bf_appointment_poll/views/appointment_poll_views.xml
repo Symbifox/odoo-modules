@@ -15,6 +15,9 @@
                     <button name="action_open" type="object"
                             string="Ouvrir le vote" class="btn-primary"
                             invisible="state != 'draft'"/>
+                    <button name="action_send_invitations" type="object"
+                            string="Envoyer les invitations"
+                            invisible="state != 'open'"/>
                     <button name="action_close" type="object"
                             string="Clore le vote"
                             invisible="state != 'open'"/>
@@ -61,6 +64,21 @@
                                    invisible="slot_source == 'organizer'"/>
                             <field name="hold_mode"/>
                             <field name="show_votes"/>
+                            <field name="send_invitations"/>
+                        </group>
+                    </group>
+                    <group string="Inscription libre">
+                        <group>
+                            <field name="self_signup"/>
+                            <field name="self_signup_max"
+                                   invisible="not self_signup"/>
+                        </group>
+                        <group>
+                            <field name="signup_url" widget="CopyClipboardURL"
+                                   readonly="1" invisible="not self_signup"/>
+                            <field name="self_signup_domains"
+                                   placeholder="@client.com, jean@autre.ca"
+                                   invisible="not self_signup"/>
                         </group>
                     </group>
                     <group string="Où en est-on">
@@ -85,6 +103,14 @@
                                     <field name="yes_count"/>
                                     <field name="ifneedbe_count"/>
                                     <field name="no_count"/>
+                                    <field name="vote_summary" optional="show"/>
+                                    <field name="poll_state" column_invisible="1"/>
+                                    <!-- Le raccourci : on fixe depuis la ligne
+                                         quand on sait déjà lequel on veut. -->
+                                    <button name="action_schedule_here" type="object"
+                                            icon="fa-calendar-check-o"
+                                            string="Fixer la rencontre ici"
+                                            invisible="not is_viable or poll_state in ('draft', 'scheduled', 'cancelled')"/>
                                     <field name="is_viable"/>
                                     <field name="is_complete"/>
                                 </list>
@@ -96,9 +122,13 @@
                                     <field name="name"/>
                                     <field name="email"/>
                                     <field name="required"/>
-                                    <field name="proposed_count" optional="show"/>
+                                    <field name="vote_url" widget="CopyClipboardURL"
+                                           readonly="1" optional="show"/>
+                                    <field name="self_signup" optional="show"/>
+                                    <field name="proposed_count" optional="hide"/>
+                                    <field name="invitation_sent_on" optional="hide"/>
                                     <field name="responded_at"/>
-                                    <field name="reminder_count"/>
+                                    <field name="reminder_count" optional="hide"/>
                                 </list>
                             </field>
                         </page>
@@ -108,6 +138,33 @@
                     </notebook>
                 </sheet>
                 <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- 🔴 Cet écran existe parce que « Fixer la rencontre » ne demandait rien
+         et retenait le premier créneau non rejeté dans l'ordre CHRONOLOGIQUE.
+         Il montre le classement avant de demander. -->
+    <record id="appointment_poll_schedule_wizard_form" model="ir.ui.view">
+        <field name="name">appointment.poll.schedule.wizard.form</field>
+        <field name="model">appointment.poll.schedule.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <field name="poll_id" invisible="1"/>
+                <group>
+                    <field name="slot_id" options="{'no_create': True, 'no_open': True}"/>
+                    <field name="slot_detail" readonly="1"
+                           invisible="not slot_detail"/>
+                </group>
+                <separator string="Ce que le sondage a dit"/>
+                <field name="apercu" readonly="1" nolabel="1"
+                       widget="text" class="text-muted"/>
+                <footer>
+                    <button name="action_confirm" type="object" string="Fixer la rencontre"
+                            class="btn-primary" data-hotkey="q"/>
+                    <button string="Annuler" class="btn-secondary" special="cancel"
+                            data-hotkey="x"/>
+                </footer>
             </form>
         </field>
     </record>
