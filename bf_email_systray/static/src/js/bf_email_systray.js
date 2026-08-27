@@ -8,14 +8,28 @@ import { user } from "@web/core/user";
 // Personal inbox: scoped to the current user's OWN emails (user_id). Without
 // this leaf, accounts in the "tous les courriels" admin group (record rule
 // (1=1)) would have their badge count every user's unhandled inbox, not their
-// own. Kept in sync with the bf_email_action domain and the filter_inbox filter.
+// own.
+//
+// ⚠️ This is a hand-written copy of `bf.email._inbox_domain()`, which is the
+// single source of truth on the server side. It cannot import it — the badge
+// counts before any action is opened, and a round-trip just to learn the
+// domain would double the cost of every refresh. A test in
+// bf_email_management asserts that this file still carries every leaf of the
+// Python domain, so the copy cannot drift unnoticed.
+//
+// Third leaf (`imap_folder = false`) = the server copy's whereabouts are
+// unknown, which happens when a restore fails because the folder was renamed
+// or emptied in the webmail. Without it the row leaves "Traités" and lands in
+// no working list at all.
 function inboxDomain() {
     return [
         ["user_id", "=", user.userId],
         ["is_handled", "=", false],
         "|",
+        "|",
         ["imap_in_inbox", "=", true],
         ["source", "in", ["chatter", "gateway"]],
+        ["imap_folder", "=", false],
     ];
 }
 
