@@ -45,9 +45,11 @@ class ClaudeChatSession(models.Model):
         string="Last Stream Error",
         help="Reason code of the last streamed failure (timeout, max_turns, ...).",
     )
-    # Where the conversation was held. Provenance only: since the mobile app
-    # moved to /chat-stream it shares the desktop's tools and session, so the
-    # web picker no longer filters on this.
+    # Où la conversation a été tenue. Provenance seulement : depuis la parité
+    # mobile (18.0.1.11.0, livrée le 2026-08-16), l'app passe par le MÊME
+    # /chat-stream que le bureau, avec les mêmes outils et le même fil de
+    # session — voir `controllers/mobile_api.py`. Le sélecteur du panneau web
+    # ne filtre donc plus là-dessus.
     origin = fields.Selection(
         [("web", "Web"), ("mobile", "Mobile")],
         string="Origin",
@@ -58,10 +60,9 @@ class ClaudeChatSession(models.Model):
     mobile_conversation_id = fields.Char(
         string="Mobile Conversation ID",
         copy=False,
-        help="Deprecated. Held the identifier returned by the bridge's /assist "
-             "endpoint, which the mobile app no longer uses: it now shares "
-             "claude_session_id with the web panel. Kept so existing rows are "
-             "not lost.",
+        help="Identifiant de fil rendu par le pont, pour reprendre la conversation au "
+             "tour suivant. Volontairement séparé de claude_session_id, que le "
+             "panneau web passe à /chat.",
     )
 
     @api.depends("message_ids")

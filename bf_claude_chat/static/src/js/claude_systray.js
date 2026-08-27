@@ -9,6 +9,50 @@ import { router } from "@web/core/browser/router";
 import { streamChat, prettyToolName } from "@bf_claude_chat/js/claude_stream";
 
 /**
+ * Étiquette de consommation d'un tour, dans le vocabulaire commun au Cockpit
+ * et à Comms.
+ *
+ * ⚠️ On affiche les jetons NEUFS (entrée + mise en cache + sortie), PAS le
+ * total : le total additionne le contexte relu, qui vaut ~93 % du volume et
+ * n'est pas du travail neuf. C'est ce qui faisait lire « 50 000 jetons » pour
+ * un bonjour — vrai, mais incompréhensible. Le contexte relu part dans
+ * l'infobulle, où il informe sans écraser.
+ */
+function usageLabel(u) {
+    if (!u) return "";
+    const parts = [];
+    // Calculé ici à défaut : un pont plus ancien n'envoie pas `net_tokens`,
+    // et l'étiquette doit rester juste plutôt que de disparaître.
+    const neufs = u.net_tokens
+        || (u.input_tokens || 0) + (u.cache_write_tokens || 0) + (u.output_tokens || 0);
+    if (neufs) {
+        parts.push(neufs >= 1000
+            ? `${(neufs / 1000).toFixed(1)} k jetons`
+            : `${neufs} jetons`);
+    }
+    if (u.cost_usd) parts.push(`${u.cost_usd.toFixed(3)} $`);
+    if (u.duration_ms) parts.push(`${(u.duration_ms / 1000).toFixed(1)} s`);
+    return parts.join(" · ");
+}
+
+function usageTitle(u) {
+    if (!u) return "";
+    const relu = u.cache_read_tokens || 0;
+    const lignes = [
+        `Jetons neufs : ${((u.net_tokens
+            || (u.input_tokens || 0) + (u.cache_write_tokens || 0)
+               + (u.output_tokens || 0))).toLocaleString("fr-CA")}`,
+        `Contexte relu : ${relu.toLocaleString("fr-CA")} (dix fois moins cher)`,
+        `Total traité : ${((u.total_tokens
+            || (u.input_tokens || 0) + (u.cache_write_tokens || 0)
+               + (u.output_tokens || 0) + relu)).toLocaleString("fr-CA")}`,
+        "Coût équivalent API — forfait Max, rien n'est facturé au jeton.",
+    ];
+    return lignes.join("\n");
+}
+
+
+/**
  * Strip dangerous HTML tags/attributes from rendered HTML.
  */
 function sanitizeHtml(html) {
@@ -299,8 +343,8 @@ export class ClaudeSystrayItem extends Component {
         // Only pull the overlay back into the component's DOM when the panel is
         // actually closing (so Owl can unmount it cleanly). During streaming the
         // panel stays open and only its content changes — restoring + re-portaling
-        // on every token made the whole panel flicker (the sidebar appearing to
-        // close and reopen on each new line). Content patches now leave it in
+        // on every token made the whole panel flicker ("ferme/rouvre le sidebar" à
+        // chaque nouvelle ligne). Content patches now leave the overlay put in
         // <body>; Owl still updates its contents in place, so no flicker.
         const _restoreIfClosing = () => {
             if (this._overlayPlaceholder && !this.state.open) {
@@ -554,6 +598,11 @@ export class ClaudeSystrayItem extends Component {
                         case "done":
                             if (data.response) assistant.content = data.response;
                             assistant.streaming = false;
+                            // Le pont envoie l'usage sur « done » et le
+                            // contrôleur relaie les octets bruts : il suffisait
+                            // de le lire.
+                            assistant.usageLabel = usageLabel(data.usage);
+                            assistant.usageTitle = usageTitle(data.usage);
                             break;
                         case "error":
                             if (data.reason === "disabled") { disabled = true; break; }

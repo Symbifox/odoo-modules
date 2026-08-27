@@ -63,9 +63,8 @@ class ResConfigSettings(models.TransientModel):
         string="Anthropic API Key",
         compute="_compute_api_key",
         inverse="_inverse_api_key",
-        help="Optional. If set, this tenant bills its own Anthropic key "
-             "(pay-per-use). Leave empty to use the credentials the bridge "
-             "already holds.",
+        help="Optional. If set, this tenant uses its own API key (pay-per-use) "
+             "instead of the shared Max plan. Leave empty to use the server's Max plan.",
     )
     claude_tenant = fields.Char(
         string="Tenant Slug",

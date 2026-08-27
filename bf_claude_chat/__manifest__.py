@@ -1,10 +1,10 @@
 {
     "name": "GenFox",
-    "version": "18.0.1.13.2",
+    "version": "18.0.1.15.3",
     "category": "Productivity",
     "summary": "Chat with GenFox, the AI assistant, directly inside Odoo",
-    "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",
+    "author": "Les services de consultation Blue Fox, Inc.",
     "license": "Other proprietary",
     "depends": ["web", "base", "project", "mail"],
     "external_dependencies": {

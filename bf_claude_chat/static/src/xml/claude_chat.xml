@@ -127,7 +127,14 @@
                                                    t-esc="msg.thinkingTokens + ' tokens'"/>
                                         </div>
                                         <div t-if="msg.interrupted" class="bf-stream-interrupted">
-                                            <i class="fa fa-exclamation-circle me-1"/>Answer interrupted - ask me to continue.
+                                            <i class="fa fa-exclamation-circle me-1"/>Réponse interrompue — demande-moi de continuer.
+                                        </div>
+                                        <!-- Même vocabulaire que le Cockpit et que Comms : jetons NEUFS
+                                             en tête, contexte relu à part. Le total additionne la
+                                             relecture et se lit très mal. -->
+                                        <div t-if="msg.usageLabel" class="bf-chat-usage"
+                                             t-att-title="msg.usageTitle">
+                                            <t t-esc="msg.usageLabel"/>
                                         </div>
                                     </t>
                                     <div t-else=""
@@ -166,7 +173,7 @@
                                       placeholder="Type your message..."/>
                             <button t-if="state.streamingActive"
                                     class="btn btn-outline-danger bf-chat-send-btn"
-                                    t-on-click="onStop" title="Stop">
+                                    t-on-click="onStop" title="Arrêter">
                                 <i class="fa fa-stop"/>
                             </button>
                             <button t-else=""
@@ -341,7 +348,14 @@
                                                                t-esc="msg.thinkingTokens + ' tokens'"/>
                                                     </div>
                                                     <div t-if="msg.interrupted" class="bf-stream-interrupted">
-                                                        <i class="fa fa-exclamation-circle me-1"/>Answer interrupted.
+                                                        <i class="fa fa-exclamation-circle me-1"/>Réponse interrompue.
+                                                    </div>
+                                                    <!-- Même vocabulaire que le Cockpit et que Comms : jetons NEUFS
+                                                         en tête, contexte relu à part. Le total additionne la
+                                                         relecture et se lit très mal. -->
+                                                    <div t-if="msg.usageLabel" class="bf-chat-usage"
+                                                         t-att-title="msg.usageTitle">
+                                                        <t t-esc="msg.usageLabel"/>
                                                     </div>
                                                 </t>
                                                 <div t-else="">
@@ -380,7 +394,7 @@
                                                   placeholder="Message GenFox..."/>
                                         <button t-if="state.streamingActive"
                                                 class="btn btn-outline-danger btn-sm bf-side-panel-send"
-                                                t-on-click.stop="onStop" title="Stop">
+                                                t-on-click.stop="onStop" title="Arrêter">
                                             <i class="fa fa-stop"/>
                                         </button>
                                         <button t-else=""

@@ -533,7 +533,7 @@ $bf-accent-badge: color-mix(in srgb, var(--brand-primary, #714bea) 10%, transpar
     50%      { opacity: 0; }
 }
 
-// Tool-activity chips ("odoo get task", "Read", ...) shown as GenFox works.
+// Tool-activity chips ("odoo get task", "Read", …) shown as Claude works.
 .bf-stream-tools {
     display: flex;
     flex-wrap: wrap;
@@ -563,6 +563,16 @@ $bf-accent-badge: color-mix(in srgb, var(--brand-primary, #714bea) 10%, transpar
     margin-left: 8px;
     color: #999;
     font-size: 0.7rem;
+}
+
+// Consommation du tour, sous la réponse. Discrète par choix : c'est une
+// information de contrôle, pas une information de lecture — et l'infobulle
+// porte le détail (contexte relu, total) pour qui la cherche.
+.bf-chat-usage {
+    margin-top: 6px;
+    font-size: 0.7rem;
+    color: #999;
+    cursor: help;
 }
 
 // "Response interrupted" banner (timeout / max-turns / Stop).

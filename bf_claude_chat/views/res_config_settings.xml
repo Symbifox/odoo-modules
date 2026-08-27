@@ -37,7 +37,7 @@
                     </block>
                     <block title="Authentication">
                         <setting string="API Key (optional)"
-                                 help="Leave empty to use the credentials the bridge already holds. Set an Anthropic API key to bill this tenant independently.">
+                                 help="Leave empty to use the server's Max plan. Set an Anthropic API key to bill this tenant independently.">
                             <field name="claude_api_key" password="True"/>
                         </setting>
                     </block>

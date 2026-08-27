@@ -92,7 +92,7 @@ class ClaudeChatInstruction(models.Model):
             if rec.scope == "model" and not rec.model_id:
                 raise ValidationError(
                     _("Pick a record type, or set the scope back to "
-                      "'Every conversation'.")
+                      "« Every conversation ».")
                 )
 
     @api.onchange("scope")
@@ -196,7 +196,7 @@ class ClaudeChatInstruction(models.Model):
                 positive, negative = clash
                 findings.append((
                     "conflict", first, second,
-                    _("One says '%(positive)s', the other '%(negative)s', "
+                    _("One says « %(positive)s », the other « %(negative)s », "
                       "about the same subject.",
                       positive=positive, negative=negative),
                 ))
@@ -224,7 +224,7 @@ class ClaudeChatInstruction(models.Model):
             for kind, first, second, detail in findings:
                 label = _("Duplicate") if kind == "duplicate" else _("Conflict")
                 chunks.append(
-                    f"{label} - '{first.name}' vs '{second.name}'\n  {detail}"
+                    f"{label} — « {first.name} » ↔ « {second.name} »\n  {detail}"
                 )
             body = "\n\n".join(chunks)
 

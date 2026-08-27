@@ -1,0 +1,957 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_claude_chat
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260630\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-08-09 09:17+0000\n"
+"PO-Revision-Date: 2026-08-09 09:17+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: bf_claude_chat
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.res_config_settings_view_form_claude
+msgid "API Key (optional)"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.view_claude_message_usage_tree
+msgid "API-equiv. $"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_message__cost_usd
+msgid "API-equivalent Cost"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_instruction__active
+#: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_session__active
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.view_claude_instruction_search
+msgid "Active"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.view_claude_session_cockpit_search
+msgid "Active This Week"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.ui.menu,name:bf_claude_chat.menu_claude_admin
+msgid "Administration"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.res_config_settings_view_form_claude
+msgid "Advanced"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.actions.act_window,name:bf_claude_chat.action_claude_session_admin
+#: model:ir.ui.menu,name:bf_claude_chat.menu_claude_session_admin
+msgid "All Sessions"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,field_description:bf_claude_chat.field_res_config_settings__claude_api_key
+msgid "Anthropic API Key"
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/_qa/bf_claude_chat/static/src/xml/claude_chat.xml:0
+#: code:addons/bf_claude_chat/static/src/xml/claude_chat.xml:0
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.view_claude_session_form
+msgid "Archive"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.view_claude_instruction_form
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.view_claude_instruction_search
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.view_claude_session_cockpit_search
+msgid "Archived"
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/_qa/bf_claude_chat/static/src/xml/claude_chat.xml:0
+#: code:addons/bf_claude_chat/static/src/xml/claude_chat.xml:0
+msgid "Arrêter"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields.selection,name:bf_claude_chat.selection__claude_chat_message__role__assistant
+msgid "Assistant"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.view_claude_session_cockpit_search
+msgid "Attached to a Record"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.res_config_settings_view_form_claude
+msgid "Authentication"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.res_config_settings_view_form_claude
+msgid "Bridge Socket"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,field_description:bf_claude_chat.field_res_config_settings__claude_bridge_socket
+msgid "Bridge Socket Path"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,field_description:bf_claude_chat.field_res_config_settings__claude_auto_brief
+msgid "Brief me when I open a record"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_message__cache_read_tokens
+msgid "Cache Read"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_message__cache_write_tokens
+msgid "Cache Written"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.actions.server,name:bf_claude_chat.action_claude_instruction_check
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.view_claude_instruction_form
+msgid "Check Coherence"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.res_config_settings_view_form_claude
+msgid "Choose the Claude model to use for responses."
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/_qa/bf_claude_chat/static/src/xml/claude_chat.xml:0
+#: code:addons/bf_claude_chat/static/src/xml/claude_chat.xml:0
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.view_claude_message_search
+msgid "Claude"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model,name:bf_claude_chat.model_claude_chat_message
+msgid "Claude Chat Message"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model,name:bf_claude_chat.model_claude_chat_session
+msgid "Claude Chat Session"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,field_description:bf_claude_chat.field_res_config_settings__claude_model
+msgid "Claude Model"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_session__claude_session_id
+msgid "Claude Session ID"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model,name:bf_claude_chat.model_claude_chat_coherence_report
+msgid "Claude Steering Coherence Report"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model,name:bf_claude_chat.model_claude_chat_instruction
+msgid "Claude Steering Instruction"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.view_claude_session_cockpit_tree
+msgid "Clear the failure counter on this session"
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/_qa/bf_claude_chat/static/src/xml/claude_chat.xml:0
+#: code:addons/bf_claude_chat/static/src/xml/claude_chat.xml:0
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.view_claude_coherence_report_form
+msgid "Close"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.actions.act_window,name:bf_claude_chat.action_claude_cockpit
+#: model:ir.ui.menu,name:bf_claude_chat.menu_claude_cockpit
+msgid "Cockpit"
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-python
+#: code:addons/_qa/bf_claude_chat/models/claude_chat_instruction.py:0
+#: code:addons/bf_claude_chat/models/claude_chat_instruction.py:0
+msgid "Coherence Check"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model,name:bf_claude_chat.model_res_config_settings
+msgid "Config Settings"
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-python
+#: code:addons/_qa/bf_claude_chat/models/claude_chat_instruction.py:0
+#: code:addons/bf_claude_chat/models/claude_chat_instruction.py:0
+msgid "Conflict"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_session__stream_fail_count
+msgid "Consecutive Stream Failures"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,help:bf_claude_chat.field_claude_chat_session__stream_fail_count
+msgid ""
+"Consecutive failed streamed responses on this session. When it reaches the "
+"threshold, the next message forks a fresh Claude thread instead of resuming "
+"a poisoned one."
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_message__content
+msgid "Content"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.view_claude_session_tree
+msgid "Created"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_coherence_report__create_uid
+#: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_instruction__create_uid
+#: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_message__create_uid
+#: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_session__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_coherence_report__create_date
+#: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_instruction__create_date
+#: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_message__create_date
+#: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_session__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,help:bf_claude_chat.field_claude_chat_message__internal
+msgid ""
+"Directive posted on the user's behalf (proactive brief). Kept so the "
+"conversation stays coherent for Claude, never rendered in the panel."
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_coherence_report__display_name
+#: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_instruction__display_name
+#: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_message__display_name
+#: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_session__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-python
+#: code:addons/_qa/bf_claude_chat/models/claude_chat_instruction.py:0
+#: code:addons/bf_claude_chat/models/claude_chat_instruction.py:0
+msgid "Duplicate"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_message__duration_ms
+msgid "Duration (ms)"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,field_description:bf_claude_chat.field_res_config_settings__claude_enabled
+msgid "Enable Claude AI"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.res_config_settings_view_form_claude
+msgid "Enable the GenFox chatbot for all users."
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields.selection,name:bf_claude_chat.selection__claude_chat_instruction__scope__global
+msgid "Every conversation"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.view_claude_instruction_form
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.view_claude_instruction_tree
+msgid "Everyone"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.view_claude_session_cockpit_search
+msgid "Failing"
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-python
+#: code:addons/_qa/bf_claude_chat/models/claude_chat_session.py:0
+#: code:addons/bf_claude_chat/models/claude_chat_session.py:0
+msgid "Failure counter cleared on %s session(s)."
+msgstr ""
+
+#. module: bf_claude_chat
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.view_claude_session_cockpit_tree
+msgid "Failures"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_coherence_report__body
+msgid "Findings"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.view_claude_session_cockpit_search
+msgid "Forking on next message"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.res_config_settings_view_form_claude
+msgid "General"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.view_claude_instruction_search
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.view_claude_message_search
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.view_claude_session_cockpit_search
+msgid "Group By"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields.selection,name:bf_claude_chat.selection__res_config_settings__claude_model__haiku
+msgid "Haiku (fastest, lightweight)"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_coherence_report__id
+#: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_instruction__id
+#: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_message__id
+#: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_session__id
+msgid "ID"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_message__input_tokens
+msgid "Input Tokens"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_instruction__body
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.view_claude_instruction_form
+msgid "Instruction"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_message__internal
+msgid "Internal"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.view_claude_session_cockpit_tree
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.view_claude_session_tree
+msgid "Last Activity"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.view_claude_session_cockpit_search
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.view_claude_session_cockpit_tree
+msgid "Last Error"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_session__last_stream_error
+msgid "Last Stream Error"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_coherence_report__write_uid
+#: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_instruction__write_uid
+#: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_message__write_uid
+#: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_session__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_coherence_report__write_date
+#: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_instruction__write_date
+#: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_message__write_date
+#: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_session__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,help:bf_claude_chat.field_claude_chat_instruction__user_id
+msgid ""
+"Leave empty to apply the instruction to everyone. Set it to keep the "
+"instruction private to that user."
+msgstr ""
+
+#. module: bf_claude_chat
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.res_config_settings_view_form_claude
+msgid ""
+"Leave empty to use the server's Max plan. Set an Anthropic API key to bill "
+"this tenant independently."
+msgstr ""
+
+#. module: bf_claude_chat
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.res_config_settings_view_form_claude
+msgid "Live streaming"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,help:bf_claude_chat.field_claude_chat_session__claude_session_id
+msgid ""
+"Maps to Claude Code's internal session identifier for multi-turn context."
+msgstr ""
+
+#. module: bf_claude_chat
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.res_config_settings_view_form_claude
+msgid "Max Turns"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,field_description:bf_claude_chat.field_res_config_settings__claude_max_turns
+msgid "Max Turns per Message"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,help:bf_claude_chat.field_res_config_settings__claude_max_turns
+msgid ""
+"Maximum number of tool-use cycles Claude can perform per message. Higher "
+"values allow more complex queries but take longer."
+msgstr ""
+
+#. module: bf_claude_chat
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.res_config_settings_view_form_claude
+msgid "Maximum seconds to wait for a response."
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,help:bf_claude_chat.field_res_config_settings__claude_timeout
+msgid "Maximum time to wait for a Claude response."
+msgstr ""
+
+#. module: bf_claude_chat
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.res_config_settings_view_form_claude
+msgid "Maximum tool-use cycles per message (e.g. 45)."
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/_qa/bf_claude_chat/static/src/xml/claude_chat.xml:0
+#: code:addons/bf_claude_chat/static/src/xml/claude_chat.xml:0
+msgid "Message GenFox..."
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_session__message_count
+#: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_session__message_ids
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.view_claude_session_cockpit_tree
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.view_claude_session_form
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.view_claude_session_tree
+msgid "Messages"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.view_claude_instruction_search
+msgid "Mine"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.res_config_settings_view_form_claude
+msgid "Model"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_instruction__res_model
+msgid "Model Name"
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-python
+#: code:addons/_qa/bf_claude_chat/models/claude_chat_instruction.py:0
+#: code:addons/bf_claude_chat/models/claude_chat_instruction.py:0
+msgid "Near-identical wording (%(pct)d%% match). Keep one."
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/_qa/bf_claude_chat/static/src/xml/claude_chat.xml:0
+#: code:addons/bf_claude_chat/static/src/xml/claude_chat.xml:0
+msgid "New Chat"
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/_qa/bf_claude_chat/static/src/xml/claude_chat.xml:0
+#: code:addons/bf_claude_chat/static/src/xml/claude_chat.xml:0
+msgid "No chats"
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/_qa/bf_claude_chat/static/src/xml/claude_chat.xml:0
+#: code:addons/bf_claude_chat/static/src/xml/claude_chat.xml:0
+msgid "No chats for this record"
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/_qa/bf_claude_chat/static/src/xml/claude_chat.xml:0
+#: code:addons/bf_claude_chat/static/src/xml/claude_chat.xml:0
+msgid "No conversations yet"
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-python
+#: code:addons/_qa/bf_claude_chat/models/claude_chat_instruction.py:0
+#: code:addons/bf_claude_chat/models/claude_chat_instruction.py:0
+msgid ""
+"No duplicate and no contradiction found across %s active instruction(s)."
+msgstr ""
+
+#. module: bf_claude_chat
+#: model_terms:ir.actions.act_window,help:bf_claude_chat.action_claude_cockpit
+msgid "Nothing to look at, which is good news"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields.selection,name:bf_claude_chat.selection__claude_chat_instruction__scope__model
+msgid "One record type"
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-python
+#: code:addons/_qa/bf_claude_chat/models/claude_chat_instruction.py:0
+#: code:addons/bf_claude_chat/models/claude_chat_instruction.py:0
+msgid ""
+"One says « %(positive)s », the other « %(negative)s », about the same "
+"subject."
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,help:bf_claude_chat.field_claude_chat_instruction__model_id
+msgid "Only applies when the user is working on this record type."
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/_qa/bf_claude_chat/static/src/xml/claude_chat.xml:0
+#: code:addons/bf_claude_chat/static/src/xml/claude_chat.xml:0
+msgid "Open full page"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,help:bf_claude_chat.field_res_config_settings__claude_api_key
+msgid ""
+"Optional. If set, this tenant uses its own API key (pay-per-use) instead of "
+"the shared Max plan. Leave empty to use the server's Max plan."
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields.selection,name:bf_claude_chat.selection__res_config_settings__claude_model__opus
+msgid "Opus (most capable)"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,help:bf_claude_chat.field_claude_chat_instruction__sequence
+msgid "Order in which instructions are composed into the prompt."
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_message__output_tokens
+msgid "Output Tokens"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_instruction__user_id
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.view_claude_instruction_form
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.view_claude_instruction_search
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.view_claude_instruction_tree
+msgid "Owner"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.view_claude_message_search
+msgid "People"
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-python
+#: code:addons/_qa/bf_claude_chat/models/claude_chat_instruction.py:0
+#: code:addons/bf_claude_chat/models/claude_chat_instruction.py:0
+msgid "Pick a record type, or set the scope back to « Every conversation »."
+msgstr ""
+
+#. module: bf_claude_chat
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.res_config_settings_view_form_claude
+msgid "Proactive brief"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,help:bf_claude_chat.field_claude_chat_session__last_stream_error
+msgid "Reason code of the last streamed failure (timeout, max_turns, ...)."
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_instruction__model_id
+#: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_message__res_model
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.view_claude_instruction_search
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.view_claude_message_search
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.view_claude_session_cockpit_search
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.view_claude_session_cockpit_tree
+msgid "Record Type"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_session__res_model
+msgid "Related Model"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_session__res_id
+msgid "Related Record ID"
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/_qa/bf_claude_chat/static/src/xml/claude_chat.xml:0
+#: code:addons/bf_claude_chat/static/src/xml/claude_chat.xml:0
+msgid "Rename"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.view_claude_session_cockpit_tree
+msgid "Reset"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.res_config_settings_view_form_claude
+msgid "Response Timeout"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,field_description:bf_claude_chat.field_res_config_settings__claude_timeout
+msgid "Response Timeout (seconds)"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_message__role
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.view_claude_message_search
+msgid "Role"
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/_qa/bf_claude_chat/static/src/xml/claude_chat.xml:0
+#: code:addons/bf_claude_chat/static/src/xml/claude_chat.xml:0
+msgid "Réponse interrompue — demande-moi de continuer."
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/_qa/bf_claude_chat/static/src/xml/claude_chat.xml:0
+#: code:addons/bf_claude_chat/static/src/xml/claude_chat.xml:0
+msgid "Réponse interrompue."
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_instruction__scope
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.view_claude_instruction_search
+msgid "Scope"
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/_qa/bf_claude_chat/static/src/xml/claude_chat.xml:0
+#: code:addons/bf_claude_chat/static/src/xml/claude_chat.xml:0
+msgid "Search tasks..."
+msgstr ""
+
+#. module: bf_claude_chat
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.view_claude_session_form
+msgid "Sent"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_instruction__sequence
+msgid "Sequence"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_message__session_id
+msgid "Session"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.view_claude_session_cockpit_tree
+msgid "Sessions"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model_terms:ir.actions.act_window,help:bf_claude_chat.action_claude_cockpit
+msgid ""
+"Sessions show up here with their failure counter. A session that reaches\n"
+"                three consecutive stream failures stops resuming its Claude thread and\n"
+"                forks a fresh one on the next message. Clear the counter once the cause\n"
+"                is understood."
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/_qa/bf_claude_chat/static/src/xml/claude_chat.xml:0
+#: code:addons/bf_claude_chat/static/src/xml/claude_chat.xml:0
+msgid "Share to task"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.view_claude_instruction_search
+msgid "Shared with everyone"
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/_qa/bf_claude_chat/static/src/xml/claude_chat.xml:0
+#: code:addons/bf_claude_chat/static/src/xml/claude_chat.xml:0
+msgid "Sharing..."
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,help:bf_claude_chat.field_claude_chat_instruction__name
+msgid "Short label shown in the list. Not sent to Claude."
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields.selection,name:bf_claude_chat.selection__res_config_settings__claude_model__sonnet
+msgid "Sonnet (fast, recommended)"
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/_qa/bf_claude_chat/static/src/xml/claude_chat.xml:0
+#: code:addons/bf_claude_chat/static/src/xml/claude_chat.xml:0
+msgid "Start a new chat"
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/_qa/bf_claude_chat/static/src/xml/claude_chat.xml:0
+#: code:addons/bf_claude_chat/static/src/xml/claude_chat.xml:0
+msgid "Start a new chat or select an existing one"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.actions.act_window,name:bf_claude_chat.action_claude_instruction
+#: model:ir.ui.menu,name:bf_claude_chat.menu_claude_instruction
+msgid "Steering Instructions"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model_terms:ir.actions.act_window,help:bf_claude_chat.action_claude_instruction
+msgid ""
+"Steering instructions are short directives Claude respects in every\n"
+"                conversation: tone, priorities, house rules. Keep one per idea, and\n"
+"                scope an instruction to a record type when it only applies there."
+msgstr ""
+
+#. module: bf_claude_chat
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.res_config_settings_view_form_claude
+msgid ""
+"Stream answers token by token with tool and thinking activity (console-"
+"like). When off, replies are buffered."
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,field_description:bf_claude_chat.field_res_config_settings__claude_streaming
+msgid "Stream responses (live tokens)"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,help:bf_claude_chat.field_res_config_settings__claude_streaming
+msgid ""
+"Stream the answer token by token with tool and thinking activity (console-"
+"like). When off, the chat falls back to a single buffered reply."
+msgstr ""
+
+#. module: bf_claude_chat
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.res_config_settings_view_form_claude
+msgid "Tenant"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,field_description:bf_claude_chat.field_res_config_settings__claude_tenant
+msgid "Tenant Slug"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,help:bf_claude_chat.field_res_config_settings__claude_tenant
+msgid ""
+"Tenant identifier sent to the bridge to select the correct MCP tools and "
+"system prompt (e.g. 'bf' or 'pme')."
+msgstr ""
+
+#. module: bf_claude_chat
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.res_config_settings_view_form_claude
+msgid ""
+"Tenant slug sent to the bridge (e.g. 'bf' or 'pme'). Controls which MCP "
+"tools and system prompt are used."
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.actions.client,name:bf_claude_chat.action_claude_chat
+#: model:ir.ui.menu,name:bf_claude_chat.menu_claude_chat_root
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.res_config_settings_view_form_claude
+msgid "GenFox"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.res_config_settings_view_form_claude
+msgid "GenFox Assistant"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,help:bf_claude_chat.field_claude_chat_instruction__body
+msgid ""
+"The directive itself, written as you would say it to a colleague. This text "
+"is composed into Claude's system prompt."
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,help:bf_claude_chat.field_res_config_settings__claude_auto_brief
+msgid ""
+"The first time the panel opens on a record with no conversation yet, Claude "
+"reads the record, its chatter and its latest activity and opens with a short"
+" situation report plus next actions, without waiting for a question."
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_instruction__name
+#: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_session__name
+msgid "Title"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.view_claude_message_usage_tree
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.view_claude_session_cockpit_tree
+msgid "Total"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_message__total_tokens
+msgid "Total Tokens"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.view_claude_message_usage_tree
+msgid "Turns"
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/_qa/bf_claude_chat/static/src/xml/claude_chat.xml:0
+#: code:addons/bf_claude_chat/static/src/xml/claude_chat.xml:0
+msgid "Type your message..."
+msgstr ""
+
+#. module: bf_claude_chat
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.view_claude_session_form
+msgid "Unarchive"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,help:bf_claude_chat.field_res_config_settings__claude_bridge_socket
+msgid "Unix socket path for the Claude bridge service."
+msgstr ""
+
+#. module: bf_claude_chat
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.res_config_settings_view_form_claude
+msgid "Unix socket path for the bridge service."
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.actions.act_window,name:bf_claude_chat.action_claude_usage
+#: model:ir.ui.menu,name:bf_claude_chat.menu_claude_usage
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.view_claude_message_graph
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.view_claude_message_pivot
+msgid "Usage"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_message__user_id
+#: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_session__user_id
+#: model:ir.model.fields.selection,name:bf_claude_chat.selection__claude_chat_message__role__user
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.view_claude_message_search
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.view_claude_session_cockpit_search
+msgid "User"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.view_claude_message_search
+msgid "Week"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,help:bf_claude_chat.field_claude_chat_message__cost_usd
+msgid ""
+"What this turn would have cost at public API rates. Blue Fox runs on a Max "
+"plan, so nothing is billed per token: this is a yardstick for comparing "
+"conversations, not an invoice."
+msgstr ""
+
+#. module: bf_claude_chat
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.view_claude_message_usage_tree
+msgid "When"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.res_config_settings_view_form_claude
+msgid ""
+"When you open the panel on a record you have not discussed yet, Claude opens"
+" with a situation report and next actions instead of waiting for a question."
+msgstr ""
+
+#. module: bf_claude_chat
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.view_claude_message_search
+msgid "With token counts"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.view_claude_instruction_form
+msgid "Write it the way you would say it to a colleague."
+msgstr ""
+
+#. module: bf_claude_chat
+#: model_terms:ir.actions.act_window,help:bf_claude_chat.action_claude_instruction
+msgid "Write your first instruction"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.view_claude_instruction_form
+msgid "e.g. Always quote the source"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.view_claude_message_usage_tree
+msgid "ms"
+msgstr ""

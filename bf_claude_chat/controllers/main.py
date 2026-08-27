@@ -160,7 +160,7 @@ _DEFAULT_TIMEOUT = 660
 
 
 def _get_settings():
-    """Read GenFox settings from ir.config_parameter."""
+    """Read Claude settings from ir.config_parameter."""
     ICP = request.env["ir.config_parameter"].sudo()
     # Decrypt API key via the settings model helper
     encrypted_key = ICP.get_param("bf_claude_chat.api_key_encrypted", "")
@@ -254,7 +254,7 @@ def _call_bridge(endpoint, payload, socket_path, timeout, headers=None):
 
 # After this many consecutive streamed failures, a session's Claude thread is
 # treated as poisoned: the next message forks a fresh thread instead of
-# resuming the broken one. This is what unsticks a context that kept failing.
+# resuming the broken one. This is what fixes "brisé pour ce contexte".
 _STREAM_FAIL_THRESHOLD = 2
 
 _SSE_HEADERS = [
@@ -482,11 +482,11 @@ def _attach_steering(env, bridge_payload, ctx_model=None):
 # record. It is stored as an internal message: Claude sees it, the panel does
 # not render it, so the conversation opens straight on the briefing.
 AUTO_BRIEF_PROMPT = (
-    "Bring me up to speed on the record I am looking at. Read it, go through "
-    "its chatter and its latest activity, then answer in two short blocks: "
-    "'Situation' (where this file stands, three bullets at most) then "
-    "'Next actions' (one to three concrete actions). Get straight to the "
-    "point, no preamble, no restating what I can already see on screen."
+    "Mets-moi en contexte sur la fiche que je regarde. Lis-la, parcours son fil "
+    "de discussion et sa derniere activite, puis reponds en deux blocs courts : "
+    "« Situation » (ou en est ce dossier, en trois puces au maximum) puis "
+    "« Prochaines actions » (une a trois actions concretes). Va droit au but, "
+    "pas de preambule, pas de rappel de ce que je vois deja a l'ecran."
 )
 
 
@@ -519,11 +519,11 @@ class ClaudeChatController(http.Controller):
 
     @http.route("/claude-chat/send", type="json", auth="user", methods=["POST"])
     def send_message(self, session_id=None, message="", context=None, internal=False):
-        """Send a message to GenFox via the bridge service."""
+        """Send a message to Claude via the bridge service."""
         settings = _get_settings()
 
         if not settings["enabled"]:
-            return {"error": "GenFox is disabled. An administrator can enable it in Settings."}
+            return {"error": "Claude AI is disabled. An administrator can enable it in Settings."}
 
         if not message.strip():
             return {"error": "Empty message"}
@@ -605,10 +605,10 @@ class ClaudeChatController(http.Controller):
             )
         except socket.timeout:
             _logger.error("Bridge service timed out")
-            return {"error": "GenFox is taking too long to respond. Please try again."}
+            return {"error": "Claude is taking too long to respond. Please try again."}
         except (ConnectionRefusedError, FileNotFoundError):
             _logger.error("Bridge service unreachable at %s", settings["socket"])
-            return {"error": "GenFox is unavailable. Please contact your administrator."}
+            return {"error": "Claude service is unavailable. Please contact your administrator."}
         except Exception:
             _logger.exception("Bridge service error")
             return {"error": "An unexpected error occurred."}
@@ -688,18 +688,18 @@ class ClaudeChatController(http.Controller):
 
         # When streaming is disabled the client falls back to /claude-chat/send.
         if not settings["enabled"] or not settings.get("streaming", True):
-            return _err("Streaming is turned off.", "disabled")
+            return _err("Le mode streaming est désactivé.", "disabled")
         if not message:
             return _err("Message vide.")
         if not _check_rate_limit(user.id):
-            return _err("Too many requests. Please wait before trying again.",
+            return _err("Trop de requêtes. Veuillez patienter avant de réessayer.",
                         "rate_limit")
 
         Session = request.env["claude.chat.session"]
         Message = request.env["claude.chat.message"]
 
-        # Page context resolved ONCE, access check included, for the session
-        # record AND the bridge payload below.
+        # Contexte de page résolu UNE fois, contrôle d'accès inclus, pour
+        # l'enregistrement de session ET la charge utile passerelle plus bas.
         ctx_model, ctx_res_id = _validated_context_ref(request.env, context)
 
         # Find or create the Odoo session (same policy as send_message).
@@ -721,7 +721,7 @@ class ClaudeChatController(http.Controller):
         })
 
         # Anti-poison: a Claude thread that keeps failing gets forked, not
-        # resumed, so a heavy record stops being stuck for that context.
+        # resumed, so a heavy record stops being "brisé pour ce contexte".
         claude_sid = session.claude_session_id or None
         forked = bool(claude_sid) and session.stream_fail_count >= _STREAM_FAIL_THRESHOLD
         if forked:
@@ -739,8 +739,8 @@ class ClaudeChatController(http.Controller):
         }
         if settings["api_key"]:
             bridge_payload["api_key"] = settings["api_key"]
-        # model/res_id travel ONLY when _validated_context_ref cleared them
-        # for this caller; the cosmetic fields are always safe to forward.
+        # model/res_id ne partent QUE si _validated_context_ref les a validés
+        # pour cet appelant ; les champs cosmétiques sont toujours sûrs.
         if context and isinstance(context, dict):
             bridge_payload["context"] = {
                 "display_name": str(context.get("display_name", ""))[:200],
@@ -776,7 +776,7 @@ class ClaudeChatController(http.Controller):
             yield _sse_line("session", {"odoo_session_id": odoo_session_id})
             if forked:
                 yield _sse_line("notice", {
-                    "text": "Started a new conversation: the previous thread stayed stuck.",
+                    "text": "Nouvelle conversation démarrée : le fil précédent restait bloqué.",
                 })
 
             final = {}
@@ -801,7 +801,7 @@ class ClaudeChatController(http.Controller):
             except Exception:
                 _logger.exception("Bridge stream error")
                 yield _sse_line("error", {
-                    "response": "GenFox is temporarily unavailable.",
+                    "response": "Le service Claude est momentanément indisponible.",
                     "reason": "cli_error", "interrupted": False,
                 })
 
@@ -955,7 +955,7 @@ class ClaudeChatController(http.Controller):
         title = _html.escape(_re.sub(r"<[^>]+>", "", session.name or "Chat"))
         body = (
             f'<div style="font-family:sans-serif;max-width:700px">'
-            f'<h3 style="margin:0 0 12px">GenFox: {title}</h3>'
+            f'<h3 style="margin:0 0 12px">Claude Chat: {title}</h3>'
         )
         for msg in messages:
             if msg.role == "user":

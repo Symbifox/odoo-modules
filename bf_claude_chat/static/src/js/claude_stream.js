@@ -1,6 +1,6 @@
 /** @odoo-module **/
 
-// Shared SSE streaming client for GenFox.
+// Shared SSE streaming client for TentaClaude.
 //
 // Instead of one blocking JSON-RPC round trip (a frozen spinner that returns
 // nothing on timeout), this streams the assistant answer token by token, plus
