@@ -99,4 +99,33 @@
             </xpath>
         </field>
     </record>
+
+    <!-- 🔴 Les deux boutons « Share » d'OCA ouvraient l'assistant de partage
+         d'Odoo, qui expédie « vous a invité à accéder au/à la resource
+         booking » : le nom technique du modèle, sans date ni fichier
+         d'agenda. Ils cèdent la place à un renvoi qui emprunte le chemin de
+         l'envoi automatique. -->
+    <record id="resource_booking_form_inherit_resend" model="ir.ui.view">
+        <field name="name">resource.booking.form.renvoi</field>
+        <field name="model">resource.booking</field>
+        <field name="inherit_id" ref="resource_booking.resource_booking_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header/button[@name='%(portal.portal_share_action)d'][1]" position="replace">
+                <button name="action_bf_resend_invitations"
+                        type="object"
+                        class="oe_highlight"
+                        string="Renvoyer les invitations"
+                        help="Renvoie la confirmation brandée, avec le fichier d'agenda, dans la langue et le fuseau de chaque destinataire."
+                        invisible="state != 'pending'"/>
+            </xpath>
+            <xpath expr="//header/button[@name='%(portal.portal_share_action)d'][1]" position="replace">
+                <button name="action_bf_resend_invitations"
+                        type="object"
+                        string="Renvoyer les invitations"
+                        help="Renvoie la confirmation brandée, avec le fichier d'agenda, dans la langue et le fuseau de chaque destinataire."
+                        invisible="state not in ('scheduled', 'confirmed')"/>
+            </xpath>
+        </field>
+    </record>
+
 </odoo>

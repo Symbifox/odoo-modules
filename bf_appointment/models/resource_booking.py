@@ -1306,6 +1306,53 @@ class ResourceBooking(models.Model):
         })
         return attachment
 
+    def action_bf_resend_invitations(self):
+        """Renvoie l'invitation, avec le gabarit de l'envoi automatique.
+
+        🔴 Ce bouton ouvrait l'assistant de partage d'Odoo
+        (`portal.portal_share_action`), qui expédie un texte générique :
+        « Cher(e) X, Untel vous a invité à accéder au/à la **resource
+        booking** ». Le nom technique du modèle, aucune date, aucune heure,
+        aucun fichier d'agenda — et c'est ce qu'un client recevait. Signalé en
+        production le 2026-08-26.
+
+        Le renvoi emprunte désormais exactement le chemin de l'envoi
+        automatique : même gabarit, même marque, même pièce .ics, même langue
+        et même fuseau que le lecteur.
+        """
+        self.ensure_one()
+        servis = self._bf_resend_invitations()
+        if not servis:
+            raise UserError(_(
+                "Personne à qui renvoyer : ce rendez-vous n'a pas de "
+                "participant joignable."))
+        return {
+            "type": "ir.actions.client",
+            "tag": "display_notification",
+            "params": {
+                "type": "success",
+                "message": _("Invitation renvoyée à %(nb)s personne(s).",
+                             nb=servis),
+                "next": {"type": "ir.actions.act_window_close"},
+            },
+        }
+
+    def _bf_resend_invitations(self):
+        """Qui reçoit le renvoi, et par quel gabarit. Rend le nombre servi.
+
+        Point d'extension : un module satellite dont la réservation a plusieurs
+        destinataires — le sondage de disponibilités en a un par participant —
+        surcharge ici plutôt que de refaire le bouton.
+        """
+        self.ensure_one()
+        template = self.env.ref(
+            "bf_appointment.mail_template_appointment_confirmation",
+            raise_if_not_found=False)
+        if not template or not self.partner_ids:
+            return 0
+        self._send_appointment_email(template, recipient="booker")
+        return 1
+
     def _send_appointment_email(self, template, attach_ics=True, recipient=None):
         """Send an appointment email with optional ICS attachment.
 

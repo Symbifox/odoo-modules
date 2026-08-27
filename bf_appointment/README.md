@@ -20,6 +20,12 @@ Public self-service booking pages, extending *Resource Booking* (OCA).
   reopen the composer on the draft you were writing: an action opened with
   `target: "new"` from inside a dialog *replaces* it rather than stacking on
   top, so anything else closes the email you are composing.
+- **"Resend invitations"** on a booking sends the branded confirmation again —
+  same template, same `.ics`, in each reader's language and time zone. It
+  replaces the generic portal *Share* button, which mailed clients "X invited
+  you to access the resource booking": the raw model name, no date, no
+  attachment. `_bf_resend_invitations()` is the extension point for bookings
+  with several recipients, such as an availability poll.
 - **SMS reminders.** Each scheduled email can carry a channel — e-mail, SMS,
   or both — with its own short body. The body is screened against the GSM-7
   alphabet and a 150-septet budget when it is written, not when it is sent,

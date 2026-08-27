@@ -290,7 +290,14 @@
     #   Un second clic réutilise le lien tant qu'il tient et que le destinataire n'a pas
     #   changé : le lien restant à l'écran, recliquer est naturel, et sans garde chaque clic
     #   laissait une réservation en attente derrière lui.
-    "version": "18.0.2.52.3",
+    # 18.0.2.52.4: 🔴 le bouton « Share » ouvrait l'assistant de partage d'Odoo, qui
+    #   expédie « Cher(e) X, Untel vous a invité à accéder au/à la resource booking » :
+    #   le nom technique du modèle, sans date, sans heure, sans .ics — à un CLIENT.
+    #   Il devient « Renvoyer les invitations » et emprunte le chemin de l'envoi
+    #   automatique : même gabarit brandé, même pièce jointe, langue et fuseau du
+    #   lecteur. `_bf_resend_invitations()` est le point d'extension pour les
+    #   réservations à plusieurs destinataires (le sondage de disponibilités).
+    "version": "18.0.2.52.4",
     "category": "Appointments",
     "summary": "Public self-service booking pages extending Resource Booking",
     'author': 'Les services de consultation Blue Fox, Inc.',
