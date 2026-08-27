@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!--
+        Browser tab favicon and iOS home-screen icon of the BACKEND, taken
+        from res.company.favicon instead of Odoo's purple defaults. Same
+        source field as the PWA manifest icons — see
+        controllers/webmanifest.py — so the tab, the home screen and the
+        installed application all show one icon.
+
+        Only web.webclient_bootstrap is patched, never web.layout: the website
+        sets `x_icon` from website.favicon on its way IN to the layout, and a
+        t-set inside the callee is evaluated later, so it would silently
+        outrank the site's own favicon. Portal and website keep theirs.
+    -->
+    <template id="webclient_brand_icon"
+              inherit_id="web.webclient_bootstrap"
+              name="Brand favicon (backend)">
+        <xpath expr="//t[@t-set='head_web']" position="before">
+            <t t-set="_brand_co" t-value="request and request.env and request.env.company"/>
+            <!-- Empty string leaves web.layout's own fallback in charge. -->
+            <t t-set="x_icon" t-value="_brand_co and _brand_co._brand_tab_icon_url() or ''"/>
+        </xpath>
+        <xpath expr="//link[@rel='apple-touch-icon']" position="attributes">
+            <attribute name="href"/>
+            <attribute name="t-att-href">_brand_co and _brand_co._brand_icon_url(180) or '/web/static/img/odoo-icon-ios.png'</attribute>
+        </xpath>
+    </template>
+
+</odoo>

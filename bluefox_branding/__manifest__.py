@@ -1,6 +1,6 @@
 {
     "name": "Symbifox Branding",
-    "version": "18.0.3.4.1",
+    "version": "18.0.3.5.0",
     "category": "Tools",
     "summary": "White-label branding panel + branded email templates",
     "description": """
@@ -9,7 +9,7 @@
         tenant rebrand the instance without editing modules.
 
         Exposed fields:
-        - Logo + favicon (standard res.company fields, surfaced in Settings)
+        - Logo + favicon (browser tab, iOS home screen and PWA manifest icons)
         - Primary + dark brand colors (used by navbar, buttons, branded emails, PDF reports)
         - Font selection (Lexend default, swappable per company)
         - Branded email tagline / custom footer HTML / default signature
@@ -41,6 +41,7 @@
         "data/mail_layout_override.xml",
         "data/bf_onboarding.xml",
         "views/res_config_settings_views.xml",
+        "views/webclient_brand_icon.xml",
         "views/brand_css_variables.xml",
         "views/website_brand_css_variables.xml",
         "views/report_layout_overrides.xml",
