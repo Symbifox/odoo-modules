@@ -390,6 +390,125 @@ class TestAppointmentPoll(TransactionCase):
             self.assertTrue(envoi.attachment_ids,
                             "la confirmation doit porter le fichier d'agenda")
 
+    def test_the_senders_timezone_never_reaches_the_reader(self):
+        """🔴 Des gens de Montréal ont reçu des heures d'Auckland.
+
+        Le rendu consultait `env.context['tz']` en premier, donc le fuseau de
+        la SESSION qui déclenche l'envoi. L'organisateur travaillant depuis la
+        Nouvelle-Zélande, ses confirmations partaient à son heure à lui.
+        Signalé en production le 2026-08-26.
+        """
+        auckland = self.env["appointment.poll"].with_context(tz="Pacific/Auckland")
+        poll = auckland.browse(self.poll.id)
+        participant = poll.participant_ids.browse(self.optional_participant.id)
+        self.assertNotEqual(
+            participant._display_tz(), "Pacific/Auckland",
+            "le fuseau de l'expéditeur a repris le dessus",
+        )
+
+    def test_a_created_contact_never_inherits_the_senders_timezone(self):
+        """🔴 La seconde bouche de la même fuite.
+
+        `res.partner.tz` prend par défaut le fuseau de la session qui crée la
+        fiche. En fixant la rencontre depuis la Nouvelle-Zélande, on fabriquait
+        des contacts montréalais estampillés « Pacific/Auckland » — et la fiche
+        reste au carnet d'adresses pour tous les courriels qui suivront.
+        """
+        Participant = self.env["appointment.poll.participant"]
+        sans_contact = Participant.create({
+            "poll_id": self.poll.id, "email": "neuf@test.invalid",
+            "tz": "America/Toronto"})
+        depuis_akl = sans_contact.with_context(tz="Pacific/Auckland")
+        contact = depuis_akl._ensure_partners()
+        self.assertEqual(
+            contact.tz, "America/Toronto",
+            "le contact a hérité du fuseau de qui a cliqué",
+        )
+
+    def test_a_created_contact_falls_back_when_nothing_is_known(self):
+        Participant = self.env["appointment.poll.participant"]
+        muet = Participant.create({
+            "poll_id": self.poll.id, "email": "muet@test.invalid"})
+        contact = muet.with_context(tz="Pacific/Auckland")._ensure_partners()
+        self.assertTrue(contact.tz)
+        self.assertNotEqual(contact.tz, "Pacific/Auckland")
+
+    def test_an_explicit_choice_overrides_what_the_browser_says(self):
+        """Le témoin du navigateur ne peut pas défaire un choix de la personne."""
+        self.optional_participant.tz = "America/Toronto"
+        self.optional_participant._set_tz("Europe/Paris")
+        self.assertEqual(self.optional_participant.tz, "Europe/Paris")
+        self.optional_participant._remember_tz("Pacific/Auckland")
+        self.assertEqual(
+            self.optional_participant.tz, "Europe/Paris",
+            "un témoin de navigateur a écrasé un choix explicite",
+        )
+
+    def test_an_impossible_choice_is_refused(self):
+        self.optional_participant.tz = "America/Toronto"
+        self.assertFalse(self.optional_participant._set_tz("Mars/Olympus_Mons"))
+        self.assertEqual(self.optional_participant.tz, "America/Toronto")
+
+    def test_the_choice_list_always_holds_the_current_zone(self):
+        """⚠️ Sinon quelqu'un venu d'ailleurs ne se voit pas dans sa liste."""
+        Participant = self.env["appointment.poll.participant"]
+        choix = dict(Participant._tz_choices("Asia/Kathmandu"))
+        self.assertIn("Asia/Kathmandu", choix)
+        courants = dict(Participant._tz_choices("America/Toronto"))
+        self.assertIn("America/Toronto", courants)
+        self.assertIn("Europe/Paris", courants)
+        self.assertLess(len(courants), 60, "une liste de six cents ne se lit pas")
+
+    def test_the_choice_list_shows_cities_not_slashes(self):
+        Participant = self.env["appointment.poll.participant"]
+        libelles = dict(Participant._tz_choices())
+        self.assertNotIn("/", libelles["America/Toronto"])
+
+    def test_display_tz_asks_the_person_first(self):
+        self.optional_participant.tz = "Europe/Paris"
+        self.assertEqual(self.optional_participant._display_tz(), "Europe/Paris")
+
+    def test_display_tz_falls_back_to_the_contact(self):
+        contact = self.env["res.partner"].create({
+            "name": "Avec fuseau", "tz": "America/Vancouver"})
+        self.optional_participant.write({"tz": False, "partner_id": contact.id})
+        self.assertEqual(self.optional_participant._display_tz(), "America/Vancouver")
+
+    def test_display_tz_ends_on_something_usable(self):
+        """Sans rien de connu, on tombe sur le calendrier puis sur le défaut
+        réglé dans les Paramètres — jamais sur rien."""
+        self.optional_participant.write({"tz": False, "partner_id": False})
+        import pytz
+        self.assertIn(self.optional_participant._display_tz(), pytz.all_timezones)
+
+    def test_remembering_a_timezone_never_overwrites_a_known_one(self):
+        self.optional_participant.tz = "Europe/Paris"
+        self.optional_participant._remember_tz("America/Toronto")
+        self.assertEqual(self.optional_participant.tz, "Europe/Paris",
+                         "un fuseau connu ne se fait pas écraser par un témoin")
+
+    def test_a_bogus_timezone_is_ignored(self):
+        """⚠️ Le témoin vient du navigateur : il n'engage rien."""
+        self.optional_participant.tz = False
+        self.optional_participant._remember_tz("Mars/Olympus_Mons")
+        self.assertFalse(self.optional_participant.tz)
+        self.optional_participant._remember_tz("America/Toronto")
+        self.assertEqual(self.optional_participant.tz, "America/Toronto")
+
+    def test_the_confirmation_reads_in_the_participants_timezone(self):
+        slots = self._add_slots(1)
+        self.required_participant.tz = "Europe/Paris"
+        self.optional_participant.tz = "America/Toronto"
+        self.poll.state = "closed"
+        self.poll.action_schedule(slots[0])
+        paris = self.poll.scheduled_display(self.required_participant)
+        toronto = self.poll.scheduled_display(self.optional_participant)
+        self.assertNotEqual(
+            paris, toronto,
+            "deux lecteurs de fuseaux différents doivent lire deux heures",
+        )
+        self.assertIn("Paris", paris)
+
     def test_scheduled_display_reads_in_the_polls_timezone(self):
         """Le fuseau où les gens ont VOTÉ, avec son étiquette."""
         slots = self._add_slots(1)

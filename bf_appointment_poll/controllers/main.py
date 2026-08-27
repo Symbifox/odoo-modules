@@ -25,6 +25,18 @@ from odoo.addons.bf_appointment.controllers.main import (
 _logger = logging.getLogger(__name__)
 
 
+def _tz_du_navigateur():
+    """Le fuseau que le site a posé en témoin avec `Intl.DateTimeFormat()`.
+
+    C'est la seule occasion d'apprendre où lit vraiment quelqu'un qui n'a pas
+    de fiche de contact — un inscrit libre n'en a pas.
+    """
+    try:
+        return request.httprequest.cookies.get("tz") or None
+    except Exception:  # noqa: BLE001
+        return None
+
+
 def _en_request():
     """Le lecteur est-il anglophone ? Même règle que les gabarits publics."""
     return (request.env.context.get("lang") or "fr_CA").lower().startswith("en")
@@ -226,7 +238,8 @@ class AppointmentPollController(Controller):
                 "/appointment/poll/join/%s?motif=throttled" % token)
         nom = (kwargs.get("nom") or "").strip()
         courriel = (kwargs.get("courriel") or "").strip()
-        participant, motif = poll.sudo()._self_signup_join(nom, courriel)
+        participant, motif = poll.sudo()._self_signup_join(
+            nom, courriel, tz=_tz_du_navigateur())
         if not participant:
             return request.redirect(
                 "/appointment/poll/join/%s?motif=%s&nom=%s" % (
@@ -254,6 +267,13 @@ class AppointmentPollController(Controller):
         participant = self._get_participant(token)
         if not participant:
             return request.redirect("/appointment")
+        # Un fuseau CHOISI dans la liste déroulante l'emporte, et il se
+        # retient : la confirmation partira dans le fuseau de la page où la
+        # personne a répondu, pas dans un autre.
+        if kwargs.get("tz"):
+            participant.sudo()._set_tz(kwargs["tz"])
+        else:
+            participant.sudo()._remember_tz(_tz_du_navigateur())
         poll = participant.poll_id
         # 🔴 Le verrou vit ICI, sur la page elle-même, et pas seulement sur la
         # redirection qui suit l'inscription : sinon le lien personnel mis en
@@ -263,6 +283,13 @@ class AppointmentPollController(Controller):
                          and not _deja_deverrouille(participant))
         peut_proposer = (not lecture_seule
                          and poll._participant_can_add_slots(participant))
+        # ⚠️ TOUTE la page se rend dans le fuseau du lecteur, pas seulement
+        # l'heure de la confirmation : c'est ici qu'il coche, et cocher une
+        # heure qu'il doit convertir de tête est le meilleur moyen de récolter
+        # des réponses fausses.
+        tz_lecteur = participant._display_tz()
+        poll = poll.with_context(tz=tz_lecteur)
+        participant = participant.with_context(tz=tz_lecteur)
 
         def _compte(nom):
             """Compteur de retour, lu ICI plutôt que dans le gabarit.
@@ -281,6 +308,8 @@ class AppointmentPollController(Controller):
             {
                 "participant": participant,
                 "poll": poll,
+                "tz_lecteur": tz_lecteur,
+                "tz_choix": participant._tz_choices(tz_lecteur),
                 "lecture_seule": lecture_seule,
                 "demande_code": bool(kwargs.get("code")),
                 "motif_code": kwargs.get("motif") or "",
@@ -289,7 +318,7 @@ class AppointmentPollController(Controller):
                 "refuses_plafond": _compte("plafond"),
                 "refuses_perimes": _compte("perimees"),
                 "envoi_perime": bool(kwargs.get("perime")),
-                "slots": poll.slot_ids,
+                "slots": poll.slot_ids.with_context(tz=tz_lecteur),
                 "peut_proposer": peut_proposer,
                 "attend_amorce": poll._waiting_for_seeder() and not peut_proposer,
                 "pool": poll._slot_pool(participant) if peut_proposer else [],
@@ -353,6 +382,7 @@ class AppointmentPollController(Controller):
                     "answer": answer,
                 })
         participant.sudo()._record_response()
+        participant.sudo()._remember_tz(_tz_du_navigateur())
         return request.redirect(f"/appointment/poll/{token}?merci=1")
 
     @route(
@@ -419,6 +449,7 @@ class AppointmentPollController(Controller):
                 perimees += 1
         if poses:
             participant.sudo()._record_response()
+        participant.sudo()._remember_tz(_tz_du_navigateur())
         return request.redirect(
             f"/appointment/poll/{token}"
             f"?propose={poses}&plafond={plafond}&perimees={perimees}")

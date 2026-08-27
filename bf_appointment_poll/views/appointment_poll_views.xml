@@ -121,6 +121,8 @@
                                 <list editable="bottom">
                                     <field name="name"/>
                                     <field name="email"/>
+                                    <field name="tz" optional="show"
+                                           placeholder="par défaut"/>
                                     <field name="required"/>
                                     <field name="vote_url" widget="CopyClipboardURL"
                                            readonly="1" optional="show"/>

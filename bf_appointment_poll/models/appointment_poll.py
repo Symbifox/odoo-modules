@@ -716,7 +716,7 @@ class AppointmentPoll(models.Model):
                 return True
         return False
 
-    def _self_signup_join(self, name, email):
+    def _self_signup_join(self, name, email, tz=None):
         """Inscrit une personne par le lien, ou lui rend sa place si elle revient.
 
         Rend (participant, motif) : le participant est vide quand le motif dit
@@ -738,6 +738,7 @@ class AppointmentPoll(models.Model):
         # ressaisissant son adresse.
         deja = self._self_signup_find(email)
         if deja:
+            deja._remember_tz(tz)
             return deja, ""
 
         ouvert, motif = self._self_signup_state()
@@ -766,6 +767,9 @@ class AppointmentPoll(models.Model):
             # et un seul « Non » de sa part écarterait le créneau pour tous.
             "required": False,
             "self_signup": True,
+            # Capté du navigateur : sans lui, on écrirait à cette personne
+            # dans le fuseau de quelqu'un d'autre.
+            "tz": self.env["bf.timezone"].resolve([tz], fallback=False) or False,
         })
         # ⚠️ `partner_ids` n'est pas décoratif. Sans lui, le message se dépose
         # au fil du sondage et ne notifie PERSONNE — vérifié le 2026-08-25 :
@@ -915,7 +919,7 @@ class AppointmentPoll(models.Model):
         retenus._create_hold()
         return True
 
-    def scheduled_display(self, en=False):
+    def scheduled_display(self, participant=None, en=False):
         """« jeudi 3 septembre · 17:30 – 18:00 (Montréal) », pour la confirmation.
 
         ⚠️ Rendu dans le fuseau du SONDAGE, celui que la page de vote affiche
@@ -937,6 +941,15 @@ class AppointmentPoll(models.Model):
                 "start": self.booking_id.start,
                 "stop": self.booking_id.stop,
             })
+        # 🔴 Le fuseau du LECTEUR, pas celui de la session qui expédie. Sans
+        # `with_context`, `_poll_tzname()` prend d'abord `env.context['tz']` :
+        # un organisateur en Nouvelle-Zélande a ainsi envoyé des heures
+        # d'Auckland à des participants de Montréal.
+        tzname = (participant._display_tz() if participant
+                  else self.env["bf.timezone"].resolve([
+                      self.type_id.resource_calendar_id.tz
+                      if self.type_id else None]))
+        creneau = creneau.with_context(tz=tzname)
         return "%s · %s (%s)" % (creneau.display_day(en), creneau.display_time(),
                                  creneau.display_tz_label())
 

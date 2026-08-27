@@ -269,6 +269,31 @@
         }
     }
 
+    // Le choix du fuseau, au-dessus des heures qu'il gouverne. Au niveau de
+    // la PAGE, donc sur le fond sombre : la couleur s'hérite.
+    .bf-poll-tz {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: .5rem;
+        margin: 0 0 1rem;
+        font-size: .9rem;
+
+        label { margin: 0; opacity: .85; }
+    }
+
+    .bf-poll-tz-champ {
+        width: auto;
+        min-height: 40px;
+        max-width: 16rem;
+    }
+
+    .bf-poll-tz-bouton {
+        min-height: 40px;
+        border: 1px solid rgba(255, 255, 255, .35);
+        color: inherit;
+    }
+
     // Le repli du bassin. ⚠️ Il vit au niveau de la PAGE, donc sur le fond
     // sombre : la couleur s'hérite du corps, on ne la repeint pas (c'est
     // l'erreur symétrique de celle des cartes blanches).

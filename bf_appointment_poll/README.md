@@ -24,12 +24,39 @@ click.
   default. A hold is placed slot by slot, as each one is picked; in `blocking`
   mode, expect every picked slot to leave your public booking page for the
   duration of the poll, bounded by the per-poll slot ceiling.
-- **A public voting page** built for a phone, rendered in the respondent's own
-  time zone, one tap per slot.
+- **A public voting page** built for a phone, one tap per slot, rendered in the
+  **respondent's own time zone** — taken from their browser, overridable from a
+  dropdown above the slots, and falling back to the timezone configured in
+  Settings. The whole page moves with it, not just a label: ticking an hour you
+  have to convert in your head is the surest way to collect wrong answers. The
+  choice is remembered, so the confirmation lands in the same time zone as the
+  page where the person answered.
+- **The grid comes first.** Once somebody has proposed, a newcomer sees what is
+  already on the table before being offered the pool, which folds behind
+  "Suggest other times (x/y left)". The overlap only forms if you see what is
+  there. The counter crosses **both** ceilings — yours and the poll's — because
+  a counter that promises more than will be accepted is worse than none.
+- **Answers are locked behind a code.** Self-signup identifies people by an
+  address they typed, and sign-up is idempotent on it: knowing the link and
+  somebody's address used to be enough to read *and* change their answers.
+  Someone who has already answered now lands on a read-only page — the live
+  state of the poll stays visible — and changing anything asks for a six-digit
+  code sent to their address. The unlock lives in the session, never in the
+  URL, and the code is stored only as an HMAC bound to the participant.
+  Invitees named by the organizer keep their personal link untouched: it
+  reached them by email, which already proves the address.
 - **Invitation and reminder emails** under the tenant's brand.
 - **Closing is a façade.** It calls the parent's `_bf_create_booking()`, so the
   calendar event, the ICS attachment, the video room and the reminders all
   follow the usual path. There is no parallel pipeline to maintain.
+- **Booking asks which slot.** The button opens a chooser that ranks the slots —
+  still viable first, then complete, then the number of Yes, an "if need be"
+  counting half — and preselects the best one, with who answered what beside
+  each. Each slot row also carries its own "book here" shortcut. Calling the
+  method without a slot takes the **best ranked** one, never the earliest.
+- **Everyone is told when it is set.** Each participant gets their own branded
+  confirmation with the `.ics` attached, in their own time zone. The same mail
+  is what the "Resend invitations" button sends.
 
 ## The scheduled job ships disabled
 

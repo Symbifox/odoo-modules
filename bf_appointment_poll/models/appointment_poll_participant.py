@@ -7,7 +7,9 @@ import logging
 import secrets
 from datetime import timedelta
 
-from odoo import _, api, fields, models
+import pytz
+
+from odoo import _, api, fields, models  # noqa: F401
 
 _logger = logging.getLogger(__name__)
 
@@ -46,6 +48,15 @@ class AppointmentPollParticipant(models.Model):
     )
     name = fields.Char(string="Nom")
     email = fields.Char(string="Courriel", required=True)
+    tz = fields.Selection(
+        lambda self: [(t, t) for t in sorted(pytz.all_timezones)],
+        string="Fuseau horaire",
+        help="Celui dans lequel cette personne lit les heures. Capté du "
+             "navigateur quand elle passe par le lien, sinon repris de sa "
+             "fiche de contact. À défaut, celui du calendrier de "
+             "disponibilité, puis le fuseau par défaut réglé dans les "
+             "Paramètres.",
+    )
     required = fields.Boolean(
         string="Présence obligatoire",
         default=False,
@@ -148,6 +159,85 @@ class AppointmentPollParticipant(models.Model):
         self.ensure_one()
         base = self.env["ir.config_parameter"].sudo().get_param("web.base.url", "")
         return f"{base}/appointment/poll/{self.access_token}"
+
+    def _display_tz(self):
+        """Le fuseau dans lequel ÉCRIRE à cette personne.
+
+        🔴 Ne consulte JAMAIS `env.context['tz']`. C'est là qu'était le défaut :
+        le fuseau de la session qui déclenche l'envoi gagnait, et l'organisateur
+        travaillant depuis la Nouvelle-Zélande a expédié des confirmations en
+        heure d'Auckland à des gens de Montréal. Le lecteur d'un courriel n'est
+        jamais celui qui l'expédie.
+
+        L'ordre dit qui sait le mieux : la personne elle-même (captée de son
+        navigateur), sa fiche de contact, le calendrier de disponibilité du
+        type de rencontre, puis le fuseau par défaut des Paramètres.
+        """
+        self.ensure_one()
+        return self.env["bf.timezone"].resolve([
+            self.tz,
+            self.partner_id.tz,
+            self.poll_id.type_id.resource_calendar_id.tz
+            if self.poll_id.type_id else None,
+        ])
+
+    def _remember_tz(self, tzid):
+        """Retient le fuseau du navigateur, sans jamais écraser un choix connu.
+
+        Le site pose un témoin `tz` avec `Intl.DateTimeFormat()`. On le prend
+        au passage : c'est la seule occasion d'apprendre où lit vraiment
+        quelqu'un qui n'a pas de fiche de contact.
+        """
+        for participant in self:
+            if participant.tz or not tzid:
+                continue
+            propre = self.env["bf.timezone"].normalize_name(tzid)
+            if propre and propre in pytz.all_timezones:
+                participant.sudo().tz = propre
+        return True
+
+    def _set_tz(self, tzid):
+        """Retient un fuseau CHOISI à l'écran.
+
+        Contrairement à `_remember_tz`, celui-ci écrase : la personne vient de
+        dire elle-même dans quel fuseau elle lit, ce qui vaut mieux que ce que
+        son navigateur annonce et que ce que porte sa fiche de contact. Le
+        choix suit donc jusqu'à la confirmation, qui partira dans le même
+        fuseau que la page où elle a répondu.
+        """
+        self.ensure_one()
+        propre = self.env["bf.timezone"].normalize_name(tzid or "")
+        if not propre or propre not in pytz.all_timezones:
+            return False
+        self.sudo().tz = propre
+        return True
+
+    @api.model
+    def _tz_choices(self, courant=None):
+        """La courte liste offerte à l'écran, plus le fuseau en cours.
+
+        ⚠️ Pas les six cents fuseaux de la base : une liste déroulante de cette
+        taille ne se lit pas, et personne ne cherche « America/Argentina/Salta »
+        pour répondre à un sondage. On offre ce qu'un sondage de Blue Fox
+        traverse réellement, et on ajoute TOUJOURS le fuseau courant — sinon
+        quelqu'un venu d'ailleurs ne se verrait pas dans sa propre liste.
+        """
+        usuels = [
+            "America/Toronto", "America/Montreal", "America/Halifax",
+            "America/Winnipeg", "America/Edmonton", "America/Vancouver",
+            "America/New_York", "America/Chicago", "America/Denver",
+            "America/Los_Angeles", "America/Mexico_City", "America/Sao_Paulo",
+            "Europe/London", "Europe/Paris", "Europe/Brussels", "Europe/Madrid",
+            "Europe/Zurich", "Europe/Lisbon", "Europe/Bucharest",
+            "Africa/Casablanca", "Africa/Abidjan", "Asia/Dubai",
+            "Asia/Kolkata", "Asia/Shanghai", "Asia/Tokyo",
+            "Australia/Sydney", "Pacific/Auckland", "UTC",
+        ]
+        connus = [t for t in usuels if t in pytz.all_timezones]
+        if courant and courant not in connus and courant in pytz.all_timezones:
+            connus.insert(0, courant)
+        villes = self.env["bf.timezone"]
+        return [(t, villes.tz_city(t) or t) for t in connus]
 
     # ------------------------------------------------------------------
     # Modifier ses réponses : prouver qu'on tient l'adresse
@@ -276,9 +366,17 @@ class AppointmentPollParticipant(models.Model):
                     [("email", "=ilike", participant.email)], limit=1
                 )
             if not partner:
+                # 🔴 `res.partner.tz` prend par défaut le fuseau de la SESSION
+                # qui crée la fiche. Un organisateur travaillant depuis la
+                # Nouvelle-Zélande fabriquait donc des contacts montréalais
+                # estampillés « Pacific/Auckland » — et la fiche survit au
+                # sondage, dans le carnet d'adresses, pour tous les courriels
+                # qui suivront. On pose le fuseau qu'on connaît, à défaut celui
+                # des Paramètres, jamais celui de qui clique.
                 partner = Partner.create({
                     "name": participant.name or participant.email,
                     "email": participant.email,
+                    "tz": participant._display_tz(),
                 })
             participant.partner_id = partner
             partners |= partner

@@ -88,7 +88,38 @@
     #   un texte générique parlant d'« accéder au/à la resource booking », sans
     #   date ni fichier d'agenda. Chaque participant reçoit maintenant sa
     #   confirmation, avec le .ics, rendue dans le fuseau où il a voté.
-    "version": "18.0.1.10.0",
+    # 18.0.1.11.0: 🔴 les confirmations partaient dans le fuseau de la SESSION
+    #   qui les déclenche. L'organisateur travaillant depuis la
+    #   Nouvelle-Zélande, des gens de Montréal ont reçu des heures d'Auckland.
+    #   Le participant porte désormais son propre fuseau, capté du témoin que
+    #   le site pose avec `Intl.DateTimeFormat()` à l'inscription comme au
+    #   vote, sinon repris de sa fiche de contact. La résolution ne consulte
+    #   plus jamais `env.context['tz']` : personne, contact, calendrier de
+    #   disponibilité, puis le défaut des Paramètres (America/Toronto).
+    # 18.0.1.11.1: le correctif ci-dessus n'atteignait pas la base. Le fichier
+    #   de gabarits porte `noupdate="1"` : un `-u` ne réécrit pas ses
+    #   enregistrements, et l'échec est SILENCIEUX. Migration qui recharge le
+    #   seul fichier concerné en mode `init`.
+    # 18.0.1.11.2: 🔴 la fuite du fuseau avait une seconde bouche. À la
+    #   planification, `_ensure_partners()` crée les contacts manquants, et
+    #   `res.partner.tz` prend par défaut le fuseau de la SESSION : des
+    #   contacts montréalais naissaient « Pacific/Auckland », et la fiche
+    #   survit au sondage. Le fuseau posé est celui du participant, à défaut
+    #   celui des Paramètres.
+    # 18.0.1.12.0: la page de vote se rend dans le fuseau du LECTEUR, et une
+    #   liste déroulante au-dessus des disponibilités lui laisse en changer.
+    #   Le défaut vient de son navigateur, à défaut du réglage des Paramètres.
+    #   Un choix fait là se retient sur le participant, donc la confirmation
+    #   partira dans le fuseau de la page où il a répondu. Cocher une heure
+    #   qu'il faut convertir de tête est le meilleur moyen de récolter des
+    #   réponses fausses.
+    # 18.0.1.12.1: le bouton « Appliquer » ne se masquait que sur les sondages
+    #   « chacun propose » — son script vivait dans le bloc du bassin, qui ne
+    #   se rend que là. Sorti, il tourne sur toutes les pages de vote.
+    # 18.0.1.13.0: « Renvoyer les invitations » sert TOUS les participants du
+    #   sondage, pas le seul demandeur — le parent renvoie à `partner_id`,
+    #   parce qu'une réservation publique n'a qu'une personne.
+    "version": "18.0.1.13.0",
     "category": "Appointments",
     "summary": "Proposer plusieurs créneaux, récolter les disponibilités, "
                "puis fixer la rencontre",

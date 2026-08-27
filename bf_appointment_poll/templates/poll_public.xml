@@ -86,6 +86,52 @@
                     </span>
                 </div>
 
+                <!-- Le fuseau se choisit ICI, au-dessus des heures qu'il
+                     gouverne. Le défaut vient du navigateur (le site pose un
+                     témoin avec `Intl.DateTimeFormat()`), et à défaut du
+                     fuseau réglé dans les Paramètres. Un choix fait ici se
+                     RETIENT : la confirmation partira dans le même fuseau que
+                     la page où la personne a répondu.
+
+                     Formulaire GET avec son propre bouton : sans JavaScript
+                     ça marche quand même. Le script ne fait qu'épargner le
+                     clic. -->
+                <form method="get" class="bf-poll-tz"
+                      t-if="poll.state == 'open' and (slots or pool)"
+                      t-attf-action="/appointment/poll/#{participant.access_token}">
+                    <label for="tz">
+                        <t t-out="'Times shown in' if _en else 'Heures affichées en'"/>
+                    </label>
+                    <select name="tz" id="tz" class="form-select bf-poll-tz-champ">
+                        <t t-foreach="tz_choix" t-as="choix">
+                            <option t-att-value="choix[0]"
+                                    t-att-selected="choix[0] == tz_lecteur or None"
+                                    t-out="choix[1]"/>
+                        </t>
+                    </select>
+                    <button type="submit" class="btn bf-poll-tz-bouton">
+                        <t t-out="'Apply' if _en else 'Appliquer'"/>
+                    </button>
+                </form>
+
+                <!-- ⚠️ Hors du bloc du bassin : celui-ci ne se rend qu'en mode
+                     « chacun propose », et le bouton restait alors visible sur
+                     les autres sondages. Un même écran doit se comporter
+                     pareil partout. -->
+                <script type="text/javascript">
+                    (function () {
+                        var champ = document.querySelector(".bf-poll-tz-champ");
+                        var bouton = document.querySelector(".bf-poll-tz-bouton");
+                        if (!champ || !bouton) { return; }
+                        // Le bouton est la voie SANS JavaScript : on ne le
+                        // cache qu'une fois prouvé qu'il y en a.
+                        bouton.style.display = "none";
+                        champ.addEventListener("change", function () {
+                            champ.form.submit();
+                        });
+                    })();
+                </script>
+
                 <form t-if="poll.state == 'open' and slots"
                       t-attf-action="/appointment/poll/#{participant.access_token}/vote"
                       method="post" class="bf-poll-form">
