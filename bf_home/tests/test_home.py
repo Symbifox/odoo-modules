@@ -187,6 +187,71 @@ class TestBfHome(TransactionCase):
         self.assertTrue(Task.search_count(overflow[0]["domain"]) > len(detail),
                         "le domaine de débordement doit rouvrir toute la file")
 
+    def _an_inbox_email(self, user=None, subject="Courriel du test bf_home"):
+        """One row every reading of "boîte de réception" agrees is in it."""
+        rec = self.env["bf.email"].create({
+            "subject": subject,
+            "direction": "in",
+            "source": "imap",
+            "imap_in_inbox": True,
+            "date": fields.Datetime.now(),
+            "user_id": (user or self.env.user).id,
+        })
+        # The rule engine runs on create and is allowed to file a row straight
+        # out of the inbox. This test is about the domain, not about the rules a
+        # tenant happens to carry, so put the row back where it belongs.
+        rec.is_handled = False
+        return rec
+
+    def test_the_email_row_counts_the_readers_own_inbox(self):
+        """The morning figure must be the badge's figure, not the office's.
+
+        Operators in the "tous les courriels" group carry a (1=1) record rule,
+        so a count without the owner leaf reads everyone's backlog as the
+        reader's own: nine on the tenant this was decided against, where two
+        were actually theirs.
+        """
+        if self.env.get("bf.email") is None:
+            self.skipTest("ce locataire ne porte pas bf.email")
+        other = self.env["res.users"].create({
+            "name": "Autre propriétaire (test bf_home)",
+            "login": "autre.proprietaire.test.bf.home",
+        })
+        mine = self._an_inbox_email(subject="À moi")
+        theirs = self._an_inbox_email(other, subject="À quelqu'un d'autre")
+
+        rows = self.env["bf.home"]._c_email()
+        self.assertTrue(rows, "un courriel non traité doit produire une ligne")
+        counted = self.env["bf.email"].search(rows[0]["domain"]).ids
+        self.assertIn(mine.id, counted)
+        self.assertNotIn(theirs.id, counted,
+                         "la ligne compte la boîte de réception d'un autre")
+
+    def test_the_email_row_speaks_the_tenants_own_inbox_vocabulary(self):
+        """Four counters, one definition of "boîte de réception".
+
+        The systray badge, the list action and the phone filter already had to
+        agree on what the word means. A private copy of the domain in this
+        screen is exactly how four counters end up counting four things, so the
+        collector asks bf_email_management for the definition — and this test
+        asserts it did not quietly fall back to its own.
+        """
+        Email = self.env.get("bf.email")
+        if Email is None or not hasattr(Email, "_inbox_folder_defs"):
+            self.skipTest("ce locataire ne porte pas la couche boîte de réception")
+        canonical = next(d["domain"] for d in Email._inbox_folder_defs()
+                         if d.get("key") == "inbox")
+        self._an_inbox_email()
+
+        rows = self.env["bf.home"]._c_email()
+        self.assertTrue(rows, "un courriel non traité doit produire une ligne")
+        domain = rows[0]["domain"]
+        self.assertEqual(tuple(domain[0]), ("user_id", "=", self.env.uid),
+                         "la feuille propriétaire doit venir en tête")
+        self.assertEqual(list(domain[1:]), list(canonical),
+                         "l'écran d'accueil et la boîte de réception ne comptent "
+                         "plus la même chose")
+
     def test_day_bounds_cover_the_readers_day_not_the_servers(self):
         """The window must be the user's calendar day, converted to UTC.
 

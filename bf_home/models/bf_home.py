@@ -287,14 +287,73 @@ class BfHome(models.AbstractModel):
 
     @needs("mail.message", "needaction")
     def _c_inbox(self):
-        """Odoo's own inbox: messages addressed to me and still unread."""
+        """Odoo's own inbox: messages addressed to me and still unread.
+
+        No longer called "la boîte de réception". It counts mentions and
+        followed records, which is not what anybody who owns a mailbox means by
+        the word, and ``_c_email`` below now sits next to it counting real mail.
+        Two different figures under one name is how a screen stops being
+        believed. This row is Discussion; that one is the mailbox.
+        """
         n = self.env["mail.message"].search_count([("needaction", "=", True)])
         if not n:
             return []
         return [self._row(
-            WARN, "mail", _("%s message(s) dans la boîte de réception") % n,
+            WARN, "mail", _("%s message(s) non lu(s) dans Discussion") % n,
             _("Mentions et suivis qui vous sont adressés"), str(n),
             _("Lire"), "mail.message", [("needaction", "=", True)])]
+
+    @needs("bf.email", "user_id", "is_handled", "imap_in_inbox", "source", "date")
+    def _c_email(self):
+        """Real email still waiting, read from bf.email rather than from IMAP.
+
+        "Combien de courriels m'attendent" has three possible answers on an Odoo
+        tenant and only one of them is worth a row. Odoo's own inbox is not it:
+        it counts chatter. The mail server is not it either — Odoo cannot see it
+        without fetchmail, and standing up a second ingestion path for a counter
+        would be an odd way to spend a morning. ``bf.email`` already mirrors the
+        mailbox, IMAP rows and chatter and gateway alike, so the figure is one
+        domain away and stays true without new plumbing.
+
+        The definition of "boîte de réception" is asked of bf_email_management
+        when it publishes one. The systray badge, the list action and the phone
+        filter already had to agree on that vocabulary; a fourth private copy
+        here is precisely how four counters end up counting four things. The
+        literal below is the fallback for a tenant carrying ``bf.email`` without
+        the inbox layer, and it is what the other three say today.
+
+        Scoped to the reader. Operators in the "tous les courriels" group carry
+        a ``(1=1)`` record rule, so without the owner leaf this screen would
+        report the whole company's backlog as their personal morning — nine rows
+        instead of two, on the tenant this was written against.
+        """
+        Email = self.env["bf.email"]
+        dom = None
+        folder_defs = getattr(Email, "_inbox_folder_defs", None)
+        if folder_defs:
+            try:
+                dom = next((d["domain"] for d in folder_defs()
+                            if d.get("key") == "inbox"), None)
+            except Exception:  # noqa: BLE001 - a changed shape costs no row
+                dom = None
+        if dom is None:
+            dom = [("is_handled", "=", False),
+                   "|", ("imap_in_inbox", "=", True),
+                   ("source", "in", ("chatter", "gateway"))]
+        # A leaf in front of a prefix domain is always safe: the remaining terms
+        # keep their own operators and the top level ANDs them together.
+        dom = [("user_id", "=", self.env.uid)] + dom
+        n = Email.search_count(dom)
+        if not n:
+            return []
+        oldest = Email.search(dom, order="date asc", limit=1)
+        late = self._days_since(oldest.date)
+        return [self._row(
+            CRIT if late >= 7 else WARN, "bf_email_management",
+            _("%s courriel(s) dans la boîte de réception") % n,
+            _("Le plus ancien attend depuis %s jours") % late if late
+            else _("Arrivé aujourd'hui"),
+            str(n), _("Traiter"), "bf.email", dom)]
 
     #: Distinct clients shown in the waiting band before the overflow row.
     WAITING_CLIENTS = 3
@@ -608,6 +667,7 @@ class BfHome(models.AbstractModel):
             {"key": "today", "title": _("Ce qui m'attend"), "q": _("aujourd'hui"),
              "rows": self._safe(self._c_meetings) + self._safe(self._c_activities)
                      + self._safe(self._c_tasks) + self._safe(self._c_inbox)
+                     + self._safe(self._c_email)
                      + self._safe(self._c_meeting_reports) + self._safe(self._c_timesheet_gap)},
             {"key": "them", "title": _("En attente d'eux"),
              "q": _("la balle n'est pas dans votre camp"),
