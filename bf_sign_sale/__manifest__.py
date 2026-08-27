@@ -1,6 +1,6 @@
 {
     'name': "Symbifox — Signature pour les ventes",
-    'version': '18.0.1.0.1',
+    'version': '18.0.2.0.0',
     'category': 'Sales/Sales',
     'summary': "Envoyer un devis / bon de commande pour signature électronique (bf_sign).",
     'description': """
