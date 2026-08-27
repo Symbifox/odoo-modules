@@ -2,7 +2,7 @@
     "name": "Step-by-Step — Suivi d'accompagnement client",
     "summary": "Tableau de bord interne et portail libre-service de progression "
                "linéaire pour tout mandat d'accompagnement client.",
-    "version": "18.0.2.0.1",
+    "version": "18.0.2.2.0",
     "category": "Project",
     "website": "https://symbifox.com",
     "author": "Les services de consultation Blue Fox, Inc.",

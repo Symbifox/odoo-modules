@@ -8,6 +8,11 @@ _logger = logging.getLogger(__name__)
 # Default budget when project.allocated_hours is unset
 DEFAULT_BUDGET_HOURS = 40
 
+# A project carrying this tag (project.tags) is on hold. The label carries an
+# emoji and has already shifted between singular and plural, so match on the
+# stable fragment rather than the exact name.
+PAUSED_TAG_FRAGMENT = "en pause"
+
 
 def _classify_sector(project_name):
     """Classify a project into a sector based on its name."""
@@ -91,11 +96,14 @@ class BfStepbystepDashboard(models.Model):
             "warning_budget": 0,
             "inactive_count": 0,
             "stale_count": 0,
+            "completed_count": 0,
+            "paused_count": 0,
         }
 
         for proj in projects:
             pid = proj["id"]
             name = proj["name"] or ""
+            is_paused = bool(proj.get("is_paused"))
             budget = proj.get("allocated_hours") or DEFAULT_BUDGET_HOURS
             hours = hours_map.get(pid, 0.0)
             budget_pct = round((hours / budget) * 100, 1) if budget else 0
@@ -140,7 +148,19 @@ class BfStepbystepDashboard(models.Model):
             if step_count > 0:
                 global_progress = round(global_progress / step_count, 0)
 
-            sector = _classify_sector(name)
+            # A mandate is "complete" when every progression step that has tasks
+            # is fully done (avg of step pcts == 100). Completed projects are
+            # pulled out of the at-risk buckets (Inactifs / Ralentis) below: a
+            # finished mandate naturally has no recent timesheets, so it would
+            # otherwise be mislabelled as inactive.
+            is_complete = bool(step_count > 0 and global_progress >= 100)
+
+            # A paused mandate belongs to its own category, not to the sector
+            # inferred from its name. Like completed mandates, it is kept out of
+            # the at-risk buckets below: a mandate on hold has no recent
+            # timesheets and a frozen budget, so it would sit in Inactifs (and
+            # possibly a budget alert) forever.
+            sector = "pause" if is_paused else _classify_sector(name)
 
             nxt = next_deadline_map.get(pid, {})
             nxt_date = nxt.get("date")
@@ -164,6 +184,8 @@ class BfStepbystepDashboard(models.Model):
                 "task_count": task_count,
                 "current_module": current_step_label,
                 "progress_pct": int(global_progress),
+                "completed": is_complete,
+                "paused": is_paused,
                 "date_start": str(proj.get("date_start") or ""),
                 "date_end": str(proj.get("date_end") or ""),
                 "timeline_pct": timeline_pct,
@@ -174,13 +196,20 @@ class BfStepbystepDashboard(models.Model):
 
             summary["total_projects"] += 1
             summary["total_hours"] += hours
+
+            if is_paused:
+                summary["paused_count"] += 1
+                continue
+
             if b_status == "over":
                 summary["over_budget"] += 1
             elif b_status == "critical":
                 summary["critical_budget"] += 1
             elif b_status == "warning":
                 summary["warning_budget"] += 1
-            if a_status == "red":
+            if is_complete:
+                summary["completed_count"] += 1
+            elif a_status == "red":
                 summary["inactive_count"] += 1
             elif a_status == "amber":
                 summary["stale_count"] += 1
@@ -453,7 +482,7 @@ class BfStepbystepDashboard(models.Model):
 
     @api.model
     def _get_projects(self):
-        """Get active client projects, scoped to the user's allowed companies."""
+        """Get active client projects."""
         self.env.cr.execute("""
             SELECT pp.id,
                    COALESCE(pp.name->>'fr_CA', pp.name->>'en_US',
@@ -461,14 +490,23 @@ class BfStepbystepDashboard(models.Model):
                    COALESCE(rp.name, '') AS partner_name,
                    pp.partner_id,
                    pp.date_start, pp.date AS date_end,
-                   COALESCE(pp.allocated_hours, 0) AS allocated_hours
+                   COALESCE(pp.allocated_hours, 0) AS allocated_hours,
+                   EXISTS (
+                       SELECT 1
+                       FROM project_project_project_tags_rel rel
+                       JOIN project_tags pt ON pt.id = rel.project_tags_id
+                       WHERE rel.project_project_id = pp.id
+                         AND lower(COALESCE(pt.name->>'fr_CA',
+                                            pt.name->>'en_US',
+                                            pt.name #>> '{}', '')) LIKE %s
+                   ) AS is_paused
             FROM project_project pp
             LEFT JOIN res_partner rp ON rp.id = pp.partner_id
             WHERE pp.active = true
               AND (pp.date IS NULL OR pp.date >= CURRENT_DATE)
               AND (pp.company_id IS NULL OR pp.company_id = ANY(%s))
             ORDER BY COALESCE(pp.name->>'fr_CA', pp.name->>'en_US')
-        """, (self.env.companies.ids,))
+        """, (f"%{PAUSED_TAG_FRAGMENT}%", self.env.companies.ids))
         return self.env.cr.dictfetchall()
 
     @api.model

@@ -113,6 +113,24 @@
                             </div>
                         </div>
                     </div>
+                    <div class="col-xl col-md-4 col-6 mb-3">
+                        <div t-attf-class="card h-100 cursor-pointer {{state.data.summary.completed_count > 0 ? 'border-success' : ''}}"
+                             t-on-click="filterCompleted">
+                            <div class="card-body text-center py-3">
+                                <h2 t-attf-class="mb-0 {{state.data.summary.completed_count > 0 ? 'text-success' : 'text-muted'}}"
+                                    t-esc="state.data.summary.completed_count"/>
+                                <small class="text-muted">Terminés</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl col-md-4 col-6 mb-3">
+                        <div class="card h-100 cursor-pointer" t-on-click="filterPaused">
+                            <div class="card-body text-center py-3">
+                                <h2 class="mb-0 text-muted" t-esc="state.data.summary.paused_count"/>
+                                <small class="text-muted">En pause</small>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Filter Toolbar -->
@@ -140,6 +158,7 @@
                                             <option value="scolaire">Scolaire (<t t-esc="getSectorCount('scolaire')"/>)</option>
                                             <option value="entreprise">Entreprise (<t t-esc="getSectorCount('entreprise')"/>)</option>
                                             <option value="interne">Interne (<t t-esc="getSectorCount('interne')"/>)</option>
+                                            <option value="pause">⏸️ Projets en pause (<t t-esc="getSectorCount('pause')"/>)</option>
                                         </select>
                                     </div>
                                     <div class="col-md-2">
@@ -161,6 +180,7 @@
                                             <option value="green">Actif (7j)</option>
                                             <option value="amber">Ralenti (8-14j)</option>
                                             <option value="red">Inactif (15j+)</option>
+                                            <option value="completed">Terminé (100%)</option>
                                         </select>
                                     </div>
                                     <div class="col-md-2 d-flex gap-1">
@@ -236,7 +256,12 @@
                                             <i class="fa fa-tasks me-1"/>-
                                         </small>
                                         <small class="text-muted">
-                                            <t t-esc="proj.progress_pct"/>% global
+                                            <t t-if="proj.completed">
+                                                <span class="badge text-bg-success"><i class="fa fa-check me-1"/>Terminé</span>
+                                            </t>
+                                            <t t-else="">
+                                                <t t-esc="proj.progress_pct"/>% global
+                                            </t>
                                         </small>
                                     </div>
 

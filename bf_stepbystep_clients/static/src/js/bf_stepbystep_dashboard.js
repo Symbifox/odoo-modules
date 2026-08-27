@@ -154,6 +154,18 @@ export class BfStepbystepDashboard extends Component {
         this.state.budgetFilter = "all";
     }
 
+    filterCompleted() {
+        this.state.activityFilter = "completed";
+        this.state.sectorFilter = "all";
+        this.state.budgetFilter = "all";
+    }
+
+    filterPaused() {
+        this.state.sectorFilter = "pause";
+        this.state.activityFilter = "all";
+        this.state.budgetFilter = "all";
+    }
+
     clearFilters() {
         this.state.searchQuery = "";
         this.state.sectorFilter = "all";
@@ -181,15 +193,26 @@ export class BfStepbystepDashboard extends Component {
             );
         }
 
+        // Paused mandates are excluded from the budget alerts, like they are
+        // from the summary counters — their budget is frozen, so a stale alert
+        // would linger. They stay reachable via the "En pause" sector.
         if (this.state.budgetFilter !== "all") {
             projects = projects.filter(
-                (p) => p.budget_status === this.state.budgetFilter
+                (p) => p.budget_status === this.state.budgetFilter && !p.paused
             );
         }
 
-        if (this.state.activityFilter !== "all") {
+        // "completed" is its own bucket. For every other activity filter
+        // (green / amber / red), completed AND paused projects are excluded so
+        // neither ever shows up under Actif / Ralenti / Inactif.
+        if (this.state.activityFilter === "completed") {
+            projects = projects.filter((p) => p.completed && !p.paused);
+        } else if (this.state.activityFilter !== "all") {
             projects = projects.filter(
-                (p) => p.activity_status === this.state.activityFilter
+                (p) =>
+                    p.activity_status === this.state.activityFilter &&
+                    !p.completed &&
+                    !p.paused
             );
         }
 
@@ -322,6 +345,7 @@ export class BfStepbystepDashboard extends Component {
             scolaire: "Scolaire",
             entreprise: "Entreprise",
             interne: "Interne",
+            pause: "En pause",
         };
         return map[sector] || sector;
     }
@@ -333,6 +357,7 @@ export class BfStepbystepDashboard extends Component {
             scolaire: "text-bg-warning",
             entreprise: "text-bg-primary",
             interne: "text-bg-secondary",
+            pause: "text-bg-dark",
         };
         return map[sector] || "text-bg-secondary";
     }
