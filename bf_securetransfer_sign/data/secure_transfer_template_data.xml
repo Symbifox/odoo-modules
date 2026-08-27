@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- noupdate, comme les préréglages eux-mêmes : un opérateur qui décoche
+         l'entente sur un préréglage ne doit pas la voir revenir au prochain
+         `-u` du pont. -->
+    <data noupdate="1">
+
+        <!-- Les trois préréglages du socle sont des salles de données, et une
+             salle de données s'ouvre derrière une entente signée. Le socle ne
+             peut pas poser ce champ (il ne connaît pas bf_sign) : c'est le
+             pont qui le complète, à l'installation.
+
+             ⚠ Sans document d'entente sur la marque, l'assistant retire
+             l'exigence et le dit — voir `_onchange_template_id` du pont. Rien
+             ne casse sur un locataire qui n'a pas encore téléversé de NDA. -->
+
+        <record id="bf_securetransfer.template_dataroom_standard"
+                model="secure.transfer.template">
+            <field name="nda_required" eval="True"/>
+        </record>
+
+        <record id="bf_securetransfer.template_dataroom_wide"
+                model="secure.transfer.template">
+            <field name="nda_required" eval="True"/>
+        </record>
+
+        <record id="bf_securetransfer.template_dataroom_restricted"
+                model="secure.transfer.template">
+            <field name="nda_required" eval="True"/>
+        </record>
+
+    </data>
+</odoo>

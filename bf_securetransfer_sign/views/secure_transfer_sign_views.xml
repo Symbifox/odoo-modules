@@ -107,4 +107,27 @@
         </field>
     </record>
 
+    <!-- Préréglage : exiger l'entente d'emblée -->
+    <record id="template_form_nda" model="ir.ui.view">
+        <field name="name">secure.transfer.template.form.nda</field>
+        <field name="model">secure.transfer.template</field>
+        <field name="inherit_id" ref="bf_securetransfer.view_secure_transfer_template_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='notify_on_join']" position="after">
+                <field name="nda_required"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="template_list_nda" model="ir.ui.view">
+        <field name="name">secure.transfer.template.list.nda</field>
+        <field name="model">secure.transfer.template</field>
+        <field name="inherit_id" ref="bf_securetransfer.view_secure_transfer_template_list"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='audience_max_downloads']" position="after">
+                <field name="nda_required"/>
+            </xpath>
+        </field>
+    </record>
+
 </odoo>

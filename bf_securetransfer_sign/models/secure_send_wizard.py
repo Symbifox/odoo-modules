@@ -57,6 +57,54 @@ class SecureSendWizard(models.TransientModel):
                     "le code par SMS », ou n'exigez pas d'entente."))
         return super().action_send()
 
+
+    @api.onchange("template_id")
+    def _onchange_template_id(self):
+        """⚠ Le décorateur est REPOSÉ sur la surcharge.
+
+        `@api.onchange` marque la fonction, pas le nom : une surcharge non
+        décorée remplacerait la méthode enregistrée par une méthode que rien
+        n'appelle, et le préréglage cesserait de s'appliquer — sans erreur.
+
+        Le socle a déjà écrit `nda_required` (il boucle sur ce que
+        `_apply_vals` lui rend). Il reste à refuser ce que la marque ne peut
+        pas honorer, et à le dire : une entente exigée sur une marque sans
+        document ferait échouer l'envoi tout à la fin, sur une case que
+        l'expéditeur ne regarde plus."""
+        res = super()._onchange_template_id()
+        extra = None
+        for rec in self:
+            if not rec.template_id or not rec.nda_required:
+                continue
+            if not rec.brand_id.nda_document:
+                rec.nda_required = False
+                extra = _(
+                    "« %(tmpl)s » exige une entente de confidentialité, mais "
+                    "la marque « %(brand)s » n'en a aucune de téléversée. "
+                    "L'exigence est retirée.\n\n"
+                    "Téléversez l'entente sur la marque (Configuration › "
+                    "Marques), ou choisissez une marque qui en porte une.",
+                    tmpl=rec.template_id.display_name,
+                    brand=rec.brand_id.display_name or _("(aucune)"))
+            elif rec.audience_allow_sms:
+                # Même refus que `action_send`, un écran plus tôt : une
+                # signature exige une adresse courriel.
+                rec.audience_allow_sms = False
+                extra = _(
+                    "« %(tmpl)s » exige une entente : l'identification par "
+                    "mobile est retirée, un signataire sans adresse courriel "
+                    "n'existant pas.",
+                    tmpl=rec.template_id.display_name)
+        if not extra:
+            return res
+        existing = (res or {}).get("warning") or {}
+        message = "%s\n\n%s" % (existing["message"], extra) \
+            if existing.get("message") else extra
+        return {"warning": {
+            "title": existing.get("title") or _("Préréglage appliqué en partie"),
+            "message": message,
+        }}
+
     def _transfer_vals(self, vals):
         vals = super()._transfer_vals(vals)
         vals["nda_required"] = bool(self.nda_required)
