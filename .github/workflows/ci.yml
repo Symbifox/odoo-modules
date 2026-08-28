@@ -93,11 +93,17 @@ jobs:
       - id: pick
         run: |
           set -o pipefail
-          CHUNKS=$(python3 tools/ci_test_modules.py --chunks 6 --repo . \
-            . oca /usr/lib/python3/dist-packages/odoo/addons)
+          # ⚠️ Ask Python where Odoo is rather than hardcoding a path. The run
+          # before this one passed /usr/lib/python3/dist-packages/odoo/addons,
+          # which is where our own images put it; the official image does not
+          # have to agree, and a wrong path reads exactly like "no module is
+          # testable" with nothing pointing at the cause.
+          CORE=$(python3 -c 'import odoo, os; print(os.path.join(os.path.dirname(odoo.__file__), "addons"))')
+          echo "core addons: $CORE ($(ls "$CORE" | wc -l) modules)"
+          CHUNKS=$(python3 tools/ci_test_modules.py --chunks 6 --repo . . oca "$CORE")
           echo "$CHUNKS"
           if [ "$CHUNKS" = "[]" ]; then
-            echo "::error::no module is testable — the addons path is wrong, not the code"
+            echo "::error::no module is testable — suspect the addons path, not the code"
             exit 1
           fi
           echo "chunks=$CHUNKS" >> "$GITHUB_OUTPUT"
@@ -138,8 +144,9 @@ jobs:
           set -o pipefail
           DB="ci_$(echo '${{ matrix.chunk }}' | md5sum | cut -c1-10)"
           TAGS=$(echo '${{ matrix.chunk }}' | tr ',' '\n' | sed 's|^|/|' | paste -sd,)
+          CORE=$(python3 -c 'import odoo, os; print(os.path.join(os.path.dirname(odoo.__file__), "addons"))')
           odoo -d "$DB" \
-            --addons-path=/usr/lib/python3/dist-packages/odoo/addons,"$GITHUB_WORKSPACE","$GITHUB_WORKSPACE/oca" \
+            --addons-path="$CORE","$GITHUB_WORKSPACE","$GITHUB_WORKSPACE/oca" \
             --db_host=db --db_user=odoo --db_password=odoo \
             --http-port=8069 --gevent-port=8072 \
             -i '${{ matrix.chunk }}' \
