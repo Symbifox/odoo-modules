@@ -53,7 +53,8 @@ class DailyDigestConfig(models.Model):
             )
         # Sorti de l'interpolation : une séquence d'échappement dans la PARTIE
         # EXPRESSION d'une f-string n'est légale qu'à partir de Python 3.12
-        # (PEP 701). Les \' du texte littéral, eux, passent partout.
+        # (PEP 701), alors qu'Odoo 18 se déclare compatible à partir de 3.10.
+        # Les \' du texte littéral, eux, passent partout.
         titre = _("Renouvellements d'abonnements à venir")
         return (
             f'<h3 style="font-family:\'Lexend\',\'Segoe UI\',Arial,sans-serif;font-size:16px;'

@@ -567,8 +567,8 @@ class AppointmentController(Controller):
                 # Les deux libellés sont montés AVANT l'interpolation : imbriquer
                 # une f-string entre guillemets doubles dans une f-string entre
                 # guillemets doubles n'est légal qu'à partir de Python 3.12
-                # (PEP 701), et l'image officielle odoo:18 est sur Debian
-                # bookworm, donc 3.11. Le module n'y importait pas.
+                # (PEP 701). Odoo 18 se déclare compatible à partir de 3.10, et
+                # ce fichier ne s'importait pas sous 3.10 ni 3.11.
                 fr = f"Le champ « {field.name} » est obligatoire."
                 en = f'The field "{field.name}" is required.'
                 return request.redirect(

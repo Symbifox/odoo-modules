@@ -13,7 +13,12 @@
 # above in the noise. Widen this list when the repository is ready for it, one
 # rule family at a time, each with its own cleanup commit.
 
-target-version = "py311"   # plancher réel : l'image officielle odoo:18 est sur Debian bookworm
+# Odoo 18 sets its own floor: MIN_PY_VERSION = (3, 10) in odoo/__init__.py, and
+# Requires-Python >= 3.10. Ubuntu 22.04 ships 3.10 and Debian 12 ships 3.11, so
+# both are hosts a customer plausibly installs the published suite on.
+# (The official odoo:18 Docker image is Ubuntu 24.04 / Python 3.12 — it is NOT
+# what sets this floor, whatever an earlier commit message here claimed.)
+target-version = "py310"
 line-length = 120
 
 exclude = [

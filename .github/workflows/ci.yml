@@ -24,7 +24,7 @@ jobs:
 
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.11"   # the floor: image odoo:18 is Debian bookworm
+          python-version: "3.10"   # the floor Odoo 18 itself sets: MIN_PY_VERSION
 
       - name: Install ruff
         run: pip install --quiet ruff==0.16.5
@@ -39,8 +39,9 @@ jobs:
         run: python tools/check_gettext_shadow.py .
 
       - name: Byte-compile on the supported floor
-        # Catches PEP 701 f-strings, which parse on 3.12 and are a SyntaxError
-        # at import time on the Python the official Odoo image ships.
+        # Catches PEP 701 f-strings, which parse on 3.12 and are a SyntaxError at
+        # import time on 3.10 and 3.11 — the Python that Ubuntu 22.04 and Debian 12
+        # ship, and both are inside the range Odoo 18 declares it supports.
         run: python -m compileall -q -x '(__pycache__|/migrations/)' .
 
       - name: Manifest integrity
