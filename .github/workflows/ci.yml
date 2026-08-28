@@ -162,9 +162,16 @@ jobs:
         # "Couldn't load module base" and nothing pointed back at pip.
         # `--upgrade` is load-bearing: a bare `pip install pyOpenSSL` is
         # satisfied by the 23.2.0 already there and changes nothing.
+        #
+        # ⚠️ `--ignore-installed` is load-bearing too. Replacing a distro
+        # package makes pip try to uninstall it first, and it cannot: the
+        # dpkg-installed copy has no RECORD file, so pip stops with
+        # "Cannot uninstall cryptography 41.0.7 ... installed by debian".
+        # Installing alongside is enough — /usr/local precedes
+        # /usr/lib/python3/dist-packages on sys.path, so the new copy wins.
         run: |
-          pip install --break-system-packages --quiet -r requirements.txt
-          pip install --break-system-packages --quiet --upgrade pyOpenSSL
+          pip install --break-system-packages --quiet --ignore-installed -r requirements.txt
+          pip install --break-system-packages --quiet --ignore-installed --upgrade pyOpenSSL
 
       - name: Install and test
         # One database per chunk. --test-tags restricts the run to this chunk's
