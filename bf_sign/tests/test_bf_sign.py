@@ -8,7 +8,7 @@ from unittest.mock import patch
 _FIXTURES = os.path.join(os.path.dirname(__file__), "fixtures")
 
 from odoo import fields
-from odoo.exceptions import UserError, ValidationError
+from odoo.exceptions import AccessError, UserError, ValidationError
 from odoo.tests import TransactionCase, tagged
 from odoo.tools.pdf import PdfReader
 
@@ -1167,3 +1167,80 @@ class TestBfSign(TransactionCase):
         pad = self._add_fill_field(req, s, "date", fill_mode="auto")
         pad.write({"pos_x": 0.4})  # a plain edit must not trip the constraint
         self.assertEqual(pad.fill_mode, "auto")
+
+    # ── audit trail vs. what was actually mailed (18.0.3.21.0) ────────────────
+    def _sent_notes(self, req):
+        return req.log_ids.filtered(lambda l: l.event == "sent").mapped("note")
+
+    def test_send_note_names_only_the_signers_actually_mailed(self):
+        """Sequential: `action_send` mails the first signer only, so the trail
+        must not claim the others were invited."""
+        req = self._new_request(signers=2, order="sequential")
+        first, second = req.signer_ids[0], req.signer_ids[1]
+        req.action_send()
+        notes = self._sent_notes(req)
+        self.assertEqual(len(notes), 1)
+        self.assertIn(first.email, notes[0])
+        self.assertNotIn(second.email, notes[0])
+        self.assertIn("1 signataire(s) restant(s)", notes[0])
+        # And the clock only started for the one who was mailed.
+        self.assertTrue(first.invited_on)
+        self.assertFalse(second.invited_on)
+
+    def test_send_note_lists_everyone_in_parallel(self):
+        req = self._new_request(signers=2, order="parallel")
+        req.action_send()
+        note = self._sent_notes(req)[0]
+        for signer in req.signer_ids:
+            self.assertIn(signer.email, note)
+        self.assertNotIn("restant", note)
+
+    def test_sequential_handoff_is_journalled(self):
+        """Signing hands the request to the next signer by email; that
+        invitation has to leave an entry, not just an `invited_on` stamp."""
+        req = self._new_request(signers=2, order="sequential")
+        first, second = req.signer_ids[0], req.signer_ids[1]
+        req.action_send()
+        before = len(self._sent_notes(req))
+        self._sign(req, first)
+        notes = self._sent_notes(req)
+        self.assertEqual(len(notes), before + 1)
+        self.assertIn(second.email, notes[-1])
+        self.assertTrue(second.invited_on)
+        # The entry sits at the end of the chain, and the chain still verifies.
+        last = req.log_ids.sorted("id")[-1]
+        self.assertEqual(last.event, "sent")
+        self.assertEqual(last.actor, "system")
+        self.assertTrue(last.verify_chain())
+
+    def test_no_handoff_entry_in_parallel_mode(self):
+        """Parallel signers were all invited up front; signing invites nobody."""
+        req = self._new_request(signers=2, order="parallel")
+        req.action_send()
+        before = len(self._sent_notes(req))
+        self._sign(req, req.signer_ids[0])
+        self.assertEqual(len(self._sent_notes(req)), before)
+
+    # ── sealing key material is admin-only (18.0.3.22.0) ──────────────────────
+    def test_seal_key_management_is_admin_only(self):
+        """`bf.sign.seal` is an AbstractModel: it has no table, so no
+        `ir.model.access` row can cover it, yet its public methods are still
+        dispatched over RPC. The key-management entry points gate themselves."""
+        Seal = self.env["bf.sign.seal"]
+        basic = self.env["res.users"].create({
+            "name": "Utilisateur sans droits",
+            "login": "bf_sign_basic_user",
+            "groups_id": [(6, 0, [self.env.ref("base.group_user").id])],
+        })
+        as_basic = Seal.with_user(basic)
+        for method in ("fernet_key_source", "action_generate_fernet_key",
+                       "action_generate_cert"):
+            with self.assertRaises(AccessError):
+                getattr(as_basic, method)()
+        with self.assertRaises(AccessError):
+            as_basic.store_fernet_key("nope")
+        # Reading the seal state stays open — the signing flow runs as a portal
+        # or public user and has to be able to ask whether a certificate exists.
+        self.assertIn(as_basic.has_cert(), (True, False))
+        # And an administrator still reaches the real logic.
+        self.assertIn(Seal.fernet_key_source(), (None, "conf", "db"))

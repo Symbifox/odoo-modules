@@ -524,18 +524,23 @@ class BfSignRequest(models.Model):
                     "bf_sign.default_expiry_days", "30") or 30)
                 rec.expiry_date = fields.Datetime.now() + timedelta(days=days)
             rec.state = "sent"
+            # Email the right signers depending on the order, then journal the
+            # send from who was ACTUALLY mailed. In sequential mode only the
+            # signer whose turn it is receives anything, so a note listing every
+            # signer would record invitations that never went out — the trail
+            # has to be wrong in neither direction to be worth anything.
+            invited = rec._current_turn_signer() \
+                if rec.signing_order == "sequential" else rec.signer_ids
+            for signer in invited:
+                rec._email_signer(signer)
+            note = _("Envoyée à %s") % (", ".join(invited.mapped("email")) or _("aucun signataire"))
+            remaining = len(rec.signer_ids) - len(invited)
+            if rec.signing_order == "sequential" and remaining > 0:
+                note += _(" (ordre séquentiel : %s signataire(s) restant(s), "
+                          "invité(s) chacun à son tour).") % remaining
             self.env["bf.sign.log"]._append(
                 rec, "sent", actor=self.env.user.name, identity_method="internal_user",
-                hash_before=rec.hash_original,
-                note=_("Envoyée à %s") % ", ".join(rec.signer_ids.mapped("email")))
-            # Email the right signers depending on the order.
-            if rec.signing_order == "sequential":
-                first = rec._current_turn_signer()
-                if first:
-                    rec._email_signer(first)
-            else:
-                for signer in rec.signer_ids:
-                    rec._email_signer(signer)
+                hash_before=rec.hash_original, note=note)
         return True
 
     def _email_signer(self, signer, template_xmlid="bf_sign.mail_template_sign_request",
@@ -964,6 +969,15 @@ class BfSignRequest(models.Model):
                 nxt = self._current_turn_signer()
                 if nxt:
                     self._email_signer(nxt)
+                    # The hand-off is a real outbound invitation and belongs in
+                    # the trail like any other. Without it the journal shows a
+                    # signature followed by nothing, and the only trace that the
+                    # next signer was ever reached is their `invited_on` stamp —
+                    # a field, not an entry in the chained, immutable trail.
+                    self.env["bf.sign.log"]._append(
+                        self, "sent", actor="system", identity_method="system",
+                        note=_("Invitation envoyée à %s (%s) : son tour de signer "
+                               "(ordre séquentiel).") % (nxt.name, nxt.email))
 
     def _finalize(self):
         """Seal the document once all signers have signed."""

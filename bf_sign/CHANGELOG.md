@@ -2,6 +2,63 @@
 
 Versioning follows the Odoo `18.0.MAJOR.MINOR.PATCH` convention.
 
+## 18.0.3.22.0 — Sealing key material is administrator-only
+
+`bf.sign.seal` is an `AbstractModel`. It has no table, so no `ir.model.access`
+row can ever apply to it — yet its public methods are dispatched over RPC like
+any other model's. `fernet_key_source`, `store_fernet_key`,
+`action_generate_fernet_key` and `action_generate_cert` read or write the
+sealing key material and had no rights check of their own, which left them
+reachable by any authenticated user over `call_kw`.
+
+- They now call `_require_admin()` (`base.group_system`) first.
+- `seal_pdf`, `verify_pdf` and `has_cert` stay open on purpose: they run inside
+  the signing flow, where the environment belongs to a portal or public signer.
+
+The gate shipped in this distribution first; it had never been carried back into
+the private lineage of the module, which ran without it until now.
+
+## 18.0.3.21.0 — The audit trail now matches what was actually emailed
+
+Found in production: the second signer of a sequential request was invited by
+email, and the journal said nothing about it. Two defects, pulling in opposite
+directions.
+
+### The sequential hand-off is journalled
+- When a signer completes a sequential request, `_post_sign_progress()` emails
+  the next signer in line. That call was the only one of the five `_email_signer`
+  call sites with no `bf.sign.log` entry behind it — the cron reminder, the
+  manual request-level reminder and the per-signer resend all wrote one.
+- The journal therefore showed a signature followed by nothing, and the sole
+  trace that the next signer had been reached was their `invited_on` field: not
+  part of the chained, immutable trail, and worth correspondingly less if the
+  signature is ever contested.
+- A `sent` entry is now appended for the hand-off, actor `system`.
+
+### `action_send` no longer claims sends that did not happen
+- The `sent` entry built its note from every signer's email
+  (`signer_ids.mapped("email")`), while in **sequential** mode `action_send`
+  emails only the signer whose turn it is. The trail asserted invitations to
+  people who had received nothing.
+- The note is now built from the signers actually mailed, and says how many
+  remain to be invited in turn. The entry is also written **after** the mails go
+  out rather than before.
+
+## 18.0.3.20.0 - Signing a document that already exists
+
+### `_sign_document_file()` on `bf.sign.mixin`
+- The mixin could only put a **freshly rendered QWeb report** under a signature.
+  That is right for a quotation, which *is* its report, and wrong for a record
+  whose document already exists as a stored PDF. An approved policy is the file
+  that was approved; re-rendering it at send time would put a different document
+  under the signature than the one the approval round agreed to.
+- Concrete models may now return base64 PDF bytes from `_sign_document_file()`.
+  When they do, `_sign_report_ref()` is not consulted. Returning `None`, the
+  default, keeps the previous behaviour exactly, so every existing bridge
+  (`bf_sign_sale`, `bf_sign_purchase`, `bf_sign_corporate`, `bf_sign_privacy`,
+  `bf_sign_onboarding`) is untouched.
+- First consumer: `bf_sign_document`, which signs a distributed document version.
+
 ## 18.0.3.19.0 — Reaching the verification page without a QR
 
 ### The certificate now carries the pointer to its own proof

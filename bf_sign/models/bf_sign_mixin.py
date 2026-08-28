@@ -41,6 +41,18 @@ class BfSignMixin(models.AbstractModel):
             }]
         return []
 
+    def _sign_document_file(self):
+        """Base64 PDF to sign, when the document is not rendered from a report.
+
+        ``None`` by default: most models render a QWeb report at send time. A
+        model whose document already exists as a stored PDF (an approved policy,
+        a countersigned deliverable) returns its bytes here instead, and
+        ``_sign_report_ref`` is then not consulted. Rendering a report for those
+        would put a freshly-generated document under the signature, not the one
+        that was approved.
+        """
+        return None
+
     def _sign_document_filename(self):
         self.ensure_one()
         return "%s.pdf" % (self.display_name or self._name).replace("/", "-")
@@ -63,12 +75,13 @@ class BfSignMixin(models.AbstractModel):
         """Create a draft signature request from this record and open it so the
         user can place the pads and send."""
         self.ensure_one()
-        report_ref = self._sign_report_ref()
-        if not report_ref:
+        document_file = self._sign_document_file()
+        report_ref = None if document_file else self._sign_report_ref()
+        if not document_file and not report_ref:
             raise UserError(_(
                 "Aucun rapport n'est configuré pour la signature de ce document."))
         request = self.env["bf.sign.request"].create_from_record(
-            self, report_ref=report_ref,
+            self, report_ref=report_ref, document_file=document_file,
             document_filename=self._sign_document_filename(),
             signers=self._sign_default_signers())
         return {
