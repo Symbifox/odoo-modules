@@ -1,0 +1,137 @@
+name: CI
+
+# The suite carried ~36 000 lines of tests across 50 modules and nothing ran
+# them on push. That made the test suite an invisible asset: it caught no
+# regression before a client did, and it answered no question a prospect or an
+# auditor might ask. This workflow is the smallest thing that changes that.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    name: Lint and static checks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"   # the floor: image odoo:18 is Debian bookworm
+
+      - name: Install ruff
+        run: pip install --quiet ruff==0.16.5
+
+      - name: Ruff
+        run: ruff check --output-format=github .
+
+      - name: Gettext shadowing
+        # A function that both calls _() and binds _ raises UnboundLocalError
+        # where it meant to show a message. Ruff's F823 only proves the narrow
+        # case; this covers the family. See tools/check_gettext_shadow.py.
+        run: python tools/check_gettext_shadow.py .
+
+      - name: Byte-compile on the supported floor
+        # Catches PEP 701 f-strings, which parse on 3.12 and are a SyntaxError
+        # at import time on the Python the official Odoo image ships.
+        run: python -m compileall -q -x '(__pycache__|/migrations/)' .
+
+      - name: Manifest integrity
+        # Every file listed in `data` and `demo` must exist. A missing one is
+        # invisible until somebody installs the module.
+        run: |
+          python - <<'PY'
+          import ast, pathlib, sys
+          bad = []
+          for manifest in sorted(pathlib.Path(".").glob("*/__manifest__.py")):
+              module = manifest.parent
+              try:
+                  meta = ast.literal_eval(manifest.read_text(encoding="utf-8"))
+              except Exception as exc:
+                  bad.append(f"{manifest}: unreadable ({exc})")
+                  continue
+              for key in ("data", "demo"):
+                  for entry in meta.get(key, []):
+                      if not (module / entry).is_file():
+                          bad.append(f"{module.name}: {key} lists missing {entry}")
+              if not meta.get("license"):
+                  bad.append(f"{module.name}: no license in the manifest")
+              if not (module / "LICENSE").is_file():
+                  bad.append(f"{module.name}: no LICENSE file")
+          for line in bad:
+              print(f"::error::{line}")
+          print(f"{len(bad)} manifest problem(s)")
+          sys.exit(1 if bad else 0)
+          PY
+
+  prepare:
+    name: Select testable modules
+    needs: lint
+    runs-on: ubuntu-latest
+    outputs:
+      chunks: ${{ steps.pick.outputs.chunks }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/oca-addons
+      - id: pick
+        run: |
+          CHUNKS=$(python tools/ci_test_modules.py --chunks 6 --repo . . oca)
+          echo "chunks=$CHUNKS" >> "$GITHUB_OUTPUT"
+          echo "$CHUNKS"
+
+  test:
+    name: Tests
+    needs: prepare
+    runs-on: ubuntu-latest
+    container:
+      image: odoo:18
+      options: --user root
+    strategy:
+      fail-fast: false
+      matrix:
+        chunk: ${{ fromJson(needs.prepare.outputs.chunks) }}
+    services:
+      db:
+        image: postgres:16
+        env:
+          POSTGRES_USER: odoo
+          POSTGRES_PASSWORD: odoo
+          POSTGRES_DB: postgres
+        options: >-
+          --health-cmd pg_isready --health-interval 10s
+          --health-timeout 5s --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/oca-addons
+
+      - name: Python dependencies
+        run: pip install --break-system-packages --quiet -r requirements.txt
+
+      - name: Install and test
+        # One database per chunk. --test-tags restricts the run to this chunk's
+        # own tests: without it Odoo also re-runs the core tests of every
+        # dependency it pulled in, which triples the run for no added signal.
+        run: |
+          set -o pipefail
+          DB="ci_$(echo '${{ matrix.chunk }}' | md5sum | cut -c1-10)"
+          TAGS=$(echo '${{ matrix.chunk }}' | tr ',' '\n' | sed 's|^|/|' | paste -sd,)
+          odoo -d "$DB" \
+            --addons-path=/usr/lib/python3/dist-packages/odoo/addons,"$GITHUB_WORKSPACE","$GITHUB_WORKSPACE/oca" \
+            --db_host=db --db_user=odoo --db_password=odoo \
+            --http-port=8069 --gevent-port=8072 \
+            -i '${{ matrix.chunk }}' \
+            --test-enable --test-tags="$TAGS" \
+            --without-demo=all --stop-after-init --log-level=warn 2>&1 | tee run.log
+          # Odoo exits 0 even when a test fails, so the log is the verdict.
+          if grep -qE '^[0-9-]+ [0-9:,]+ [0-9]+ (ERROR|CRITICAL)' run.log; then
+            echo "::error::test failures in chunk ${{ matrix.chunk }}"
+            grep -E '^[0-9-]+ [0-9:,]+ [0-9]+ (ERROR|CRITICAL)' run.log | head -50
+            exit 1
+          fi

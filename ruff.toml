@@ -1,0 +1,46 @@
+# Ruff configuration for the Symbifox module suite.
+#
+# The rule set is deliberately narrow. This repository holds ~180 000 lines of
+# Python written before any linter ran over it, so a broad default set would
+# report thousands of findings, none of them urgent, and the check would be
+# ignored from its first run. What is enforced here is the set that was already
+# clean on 2026-08-27 and that catches defects a reader cannot see: undefined
+# names, unreachable or duplicated definitions, comparison mistakes, bad
+# %-formatting, bare `except`.
+#
+# Style rules (line length, import order, quotes) are NOT enforced. They would
+# produce a large mechanical diff across every module and hide the findings
+# above in the noise. Widen this list when the repository is ready for it, one
+# rule family at a time, each with its own cleanup commit.
+
+target-version = "py311"   # plancher réel : l'image officielle odoo:18 est sur Debian bookworm
+line-length = 120
+
+exclude = [
+    "**/__pycache__",
+    "**/migrations",       # one-shot scripts, run once against a live schema
+]
+
+[lint]
+select = [
+    "E9",                                  # syntax / IO errors ruff cannot parse past
+    "F63", "F7",                           # comparison and statement misuse
+    "F82",                                 # undefined names — a NameError waiting to happen
+    "F811",                                # redefinition of an unused name
+    "F823",                                # local referenced before assignment
+    "F901",                                # raise NotImplemented (not NotImplementedError)
+    "F502", "F503", "F504", "F506", "F507", "F508", "F509",   # %-format defects
+    "F601", "F602", "F632",                # `in`/`is` misuse
+    "E711", "E712", "E713", "E714",        # == None / == True / not ... in
+    "E722",                                # bare except
+]
+
+# F401 (unused import) is not selected at all: an Odoo `models/__init__.py`
+# imports its submodules purely for their side effect, so the rule fires on
+# every module in the suite and means nothing there.
+
+[lint.per-file-ignores]
+# Run through `odoo shell`, which injects `env` into the frame before exec.
+# There is no import that would satisfy F821 without lying about where the
+# name comes from.
+"privacy_consent/scripts/*.py" = ["F821"]

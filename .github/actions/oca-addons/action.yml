@@ -1,0 +1,37 @@
+name: OCA addons
+description: >-
+  Shallow-clone the OCA repositories that Symbifox modules depend on, into a
+  single ./oca directory that goes on the addons path.
+
+# Sixteen of the fifty test suites — including the four largest — sit behind an
+# OCA dependency. Without these clones CI would run the easy two thirds and
+# report green, which is worse than not running at all.
+
+runs:
+  using: composite
+  steps:
+    - name: Clone OCA dependencies
+      shell: bash
+      run: |
+        set -euo pipefail
+        mkdir -p oca
+        clone() {  # repo, then the modules to keep
+          local repo="$1"; shift
+          local dir; dir="$(mktemp -d)"
+          git clone --quiet --depth 1 --branch 18.0 \
+            "https://github.com/OCA/${repo}.git" "$dir"
+          for module in "$@"; do
+            if [ -d "$dir/$module" ]; then
+              cp -r "$dir/$module" oca/
+            else
+              echo "::warning::OCA/${repo} has no ${module} on 18.0"
+            fi
+          done
+          rm -rf "$dir"
+        }
+        clone helpdesk helpdesk_mgmt helpdesk_mgmt_project
+        clone contract  contract
+        clone donation  donation donation_base
+        clone mail      mail_composer_cc_bcc mail_quoted_reply
+        clone calendar  resource_booking
+        echo "addons in ./oca:"; ls oca
