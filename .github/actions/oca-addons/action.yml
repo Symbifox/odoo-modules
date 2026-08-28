@@ -10,6 +10,17 @@ description: >-
 runs:
   using: composite
   steps:
+    - name: Ensure git is available
+      shell: bash
+      # This action also runs inside the odoo:18 container, which does not ship
+      # git. actions/checkout does not need it (it falls back to a REST
+      # tarball), so the gap only shows up here, as `git: command not found`.
+      run: |
+        command -v git >/dev/null && exit 0
+        apt-get update -qq
+        apt-get install -y -qq --no-install-recommends git >/dev/null
+        git --version
+
     - name: Clone OCA dependencies
       shell: bash
       run: |
