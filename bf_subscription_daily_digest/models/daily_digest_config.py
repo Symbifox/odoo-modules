@@ -51,10 +51,14 @@ class DailyDigestConfig(models.Model):
                 f'<td style="padding:8px 10px;border-bottom:1px solid #e5e7eb;font-family:\'Lexend\',Arial,sans-serif;font-size:13px;color:#374151;text-align:right;">{_esc(amount)}</td>'
                 f'</tr>'
             )
+        # Sorti de l'interpolation : une séquence d'échappement dans la PARTIE
+        # EXPRESSION d'une f-string n'est légale qu'à partir de Python 3.12
+        # (PEP 701). Les \' du texte littéral, eux, passent partout.
+        titre = _("Renouvellements d'abonnements à venir")
         return (
             f'<h3 style="font-family:\'Lexend\',\'Segoe UI\',Arial,sans-serif;font-size:16px;'
             f'font-weight:600;color:{dark};margin:0 0 8px 0;">'
-            f'🔄 {_esc(_("Renouvellements d\'abonnements à venir"))}</h3>'
+            f'🔄 {_esc(titre)}</h3>'
             f'<table role="presentation" width="100%" style="border:1px solid #e5e7eb;border-radius:8px;'
             f'border-collapse:separate;overflow:hidden;margin-bottom:8px;">'
             f'<thead><tr>'

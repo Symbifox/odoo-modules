@@ -1,6 +1,6 @@
 {
     'name': "Abonnements — section du digest quotidien",
-    'version': '18.0.1.0.1',
+    'version': '18.0.1.0.2',
     'category': 'Accounting/Accounting',
     'summary': "Ajoute une section « Renouvellements à venir » au digest quotidien",
     'description': """

@@ -71,8 +71,6 @@ class TestExtensionPoints(TransactionCase):
         corrompue. Trois de ces tests fabriquaient leur heure et sont tombés
         le jour où le garde-fou est arrivé.
         """
-        import pytz
-
         debut, fin = self._window(days=30)
         creneaux = self.booking_type._bf_candidate_slots(debut, fin, limit=n + 1)
         self.assertGreater(len(creneaux), n, "pas assez de créneaux disponibles")

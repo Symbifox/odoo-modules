@@ -297,7 +297,7 @@
     #   automatique : même gabarit brandé, même pièce jointe, langue et fuseau du
     #   lecteur. `_bf_resend_invitations()` est le point d'extension pour les
     #   réservations à plusieurs destinataires (le sondage de disponibilités).
-    "version": "18.0.2.52.4",
+    "version": "18.0.2.52.5",
     "category": "Appointments",
     "summary": "Public self-service booking pages extending Resource Booking",
     'author': 'Les services de consultation Blue Fox, Inc.',

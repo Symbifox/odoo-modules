@@ -564,8 +564,15 @@ class AppointmentController(Controller):
             key = f"intake_{field.id}"
             raw = (kwargs.get(key) or "").strip()
             if not raw or not self._validate_intake_value(field, raw):
+                # Les deux libellés sont montés AVANT l'interpolation : imbriquer
+                # une f-string entre guillemets doubles dans une f-string entre
+                # guillemets doubles n'est légal qu'à partir de Python 3.12
+                # (PEP 701), et l'image officielle odoo:18 est sur Debian
+                # bookworm, donc 3.11. Le module n'y importait pas.
+                fr = f"Le champ « {field.name} » est obligatoire."
+                en = f'The field "{field.name}" is required.'
                 return request.redirect(
-                    f"/appointment/{slug}?error={quote_plus(_msg(f'Le champ « {field.name} » est obligatoire.', f'The field "{field.name}" is required.'))}"
+                    f"/appointment/{slug}?error={quote_plus(_msg(fr, en))}"
                 )
         # Find or create partner
         Partner = request.env["res.partner"].sudo()

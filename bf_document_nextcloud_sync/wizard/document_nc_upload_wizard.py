@@ -101,7 +101,12 @@ class DocumentNcUploadWizard(models.TransientModel):
         # Detect MIME type
         content_type = "application/octet-stream"
         if self.file_name:
-            guessed, _ = mimetypes.guess_type(self.file_name)
+            # ⚠️ Surtout pas `guessed, _ = ...` : `_` est la fonction de
+            # traduction d'Odoo, et l'affecter ici en ferait une locale pour
+            # TOUTE la méthode. Le `_("Veuillez sélectionner un fichier.")`
+            # plus haut lèverait alors un UnboundLocalError au lieu du
+            # UserError attendu, donc une trace au lieu d'un message.
+            guessed = mimetypes.guess_type(self.file_name)[0]
             if guessed:
                 content_type = guessed
 

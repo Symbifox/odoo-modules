@@ -67,7 +67,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 |---|---|---|---|---|
 | `audit_ti` | Audit TI - Loi 25 | 18.0.1.17.1 | BUSL-1.1 | IT security audit management for Quebec's Loi 25 compliance |
 | `bf_activity_calendar_link` | BF Activités - Lien Calendrier | 18.0.1.1.0 | LGPL-3 | Lier des événements calendrier existants aux activités |
-| `bf_appointment` | Symbifox Appointment | 18.0.2.52.4 | BUSL-1.1 | Self-service public booking pages (extends `resource_booking`) |
+| `bf_appointment` | Symbifox Appointment | 18.0.2.52.5 | BUSL-1.1 | Self-service public booking pages (extends `resource_booking`) |
 | `bf_appointment_poll` | Symbifox Appointment Polls | 18.0.1.13.0 | BUSL-1.1 | Availability polling: propose slots, collect answers, book the meeting |
 | `bf_apps_menu` | Menu des applications cherchable | 18.0.1.0.0 | LGPL-3 | Le menu des applications devient une grille d'icônes cherchable au clavier |
 | `bf_bloc_notes` | BF Bloc-notes | 18.0.2.9.0 | LGPL-3 | Rich quick notes with multi-record links, one-click activity conversion, keyboard shortcuts, and systray icon (Alt+N) |
@@ -102,7 +102,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_dashboard` | Tableau de bord Symbifox | 18.0.1.2.0 | BUSL-1.1 | Unified dashboard aggregating billing, hosting, knowledge and privacy |
 | `bf_default_all_companies` | BF Default All Companies | 18.0.1.0.0 | LGPL-3 | Pre-selects every allowed company in the multi-company switcher on first login |
 | `bf_document_approval` | Documents — Approbation à plusieurs | 18.0.1.0.0 | BUSL-1.1 | A policy is published only once everyone who had to weigh in has done so, and its distribution follows the RACI recorded in the knowledge matrix |
-| `bf_document_nextcloud_sync` | Document Nextcloud Sync | 18.0.1.4.0 | LGPL-3 | Document sync between Odoo and Nextcloud via WebDAV |
+| `bf_document_nextcloud_sync` | Document Nextcloud Sync | 18.0.1.4.1 | LGPL-3 | Document sync between Odoo and Nextcloud via WebDAV |
 | `bf_editorial` | Atelier éditorial | 18.0.1.4.0 | BUSL-1.1 | Editorial calendar, measured cadence and publication gates for the blog: state is derived, only decisions are stored |
 | `bf_email_management` | Gestion des courriels | 18.0.11.3.1 | BUSL-1.1 | Unified IMAP inbox + Odoo chatter projection, two-pane OWL folder browser (Apple Mail / Thunderbird), bulk per-row target inference |
 | `bf_email_systray` | Boîte de réception bf.email — barre Odoo | 18.0.1.4.0 | LGPL-3 | Systray button opening the bf.email inbox with a (read + unread) counter |
@@ -150,7 +150,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_stepbystep_clients` | Step-by-Step — Suivi d'accompagnement client | 18.0.2.2.1 | BUSL-1.1 | Internal dashboard tracking each client mandate's linear step-by-step progression: current step, hours budget, timeline. |
 | `bf_studio_light` | Symbifox — Studio Light | 18.0.7.0.0 | BUSL-1.1 | Field builder for Odoo Community: add custom fields (incl. polymorphic reference with model whitelist), smart buttons (count via JSON controller, no compute Python), and inject them in views without writing a module — survives `-u all` upgrades |
 | `bf_subscription` | Abonnements | 18.0.1.4.0 | BUSL-1.1 | Paid subscription management with correlation to vendor bills |
-| `bf_subscription_daily_digest` | Abonnements — section du digest quotidien | 18.0.1.0.1 | BUSL-1.1 | Adds an 'Upcoming renewals' section to the daily digest |
+| `bf_subscription_daily_digest` | Abonnements — section du digest quotidien | 18.0.1.0.2 | BUSL-1.1 | Adds an 'Upcoming renewals' section to the daily digest |
 | `bf_subscription_dashboard` | Abonnements — carte du tableau de bord | 18.0.1.0.1 | BUSL-1.1 | Ajoute une carte Abonnements au tableau de bord Symbifox |
 | `bf_subscription_hosting` | Hébergement — pont vers les abonnements | 18.0.1.0.0 | BUSL-1.1 | Create a subscription from a hosting domain (avoids double-entering recurring costs). |
 | `bf_survey_upload` | BF Survey Upload | 18.0.1.2.0 | LGPL-3 | File-upload question type for Odoo surveys |

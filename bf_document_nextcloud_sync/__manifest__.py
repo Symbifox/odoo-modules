@@ -1,7 +1,7 @@
 {
     "name": "Document Nextcloud Sync",
     "summary": "Synchronisation documents Odoo-Nextcloud via WebDAV",
-    "version": "18.0.1.4.0",
+    "version": "18.0.1.4.1",
     "category": "Services/Project",
     "website": "https://symbifox.com",
     "author": "Les services de consultation Blue Fox, Inc.",
