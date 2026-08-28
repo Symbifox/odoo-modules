@@ -85,6 +85,16 @@ jobs:
     container:
       image: odoo:18
       options: --user root
+    defaults:
+      run:
+        # ⚠️ In a container job GitHub Actions does NOT default to bash — it
+        # falls back to `sh -e {0}`, and /bin/sh is dash on Ubuntu 24.04, which
+        # this image is. The steps below opened with `set -o pipefail` and died
+        # on "Illegal option -o pipefail" before running a single line. Declared
+        # at job level rather than per step so a step added later cannot walk
+        # into it again. GitHub's own bash invocation already carries
+        # `-o pipefail`, so no step needs to set it.
+        shell: bash
     outputs:
       chunks: ${{ steps.pick.outputs.chunks }}
     steps:
@@ -92,7 +102,6 @@ jobs:
       - uses: ./.github/actions/oca-addons
       - id: pick
         run: |
-          set -o pipefail
           # ⚠️ Ask Python where Odoo is rather than hardcoding a path. The run
           # before this one passed /usr/lib/python3/dist-packages/odoo/addons,
           # which is where our own images put it; the official image does not
@@ -115,6 +124,16 @@ jobs:
     container:
       image: odoo:18
       options: --user root
+    defaults:
+      run:
+        # ⚠️ In a container job GitHub Actions does NOT default to bash — it
+        # falls back to `sh -e {0}`, and /bin/sh is dash on Ubuntu 24.04, which
+        # this image is. The steps below opened with `set -o pipefail` and died
+        # on "Illegal option -o pipefail" before running a single line. Declared
+        # at job level rather than per step so a step added later cannot walk
+        # into it again. GitHub's own bash invocation already carries
+        # `-o pipefail`, so no step needs to set it.
+        shell: bash
     strategy:
       fail-fast: false
       matrix:
@@ -134,14 +153,24 @@ jobs:
       - uses: ./.github/actions/oca-addons
 
       - name: Python dependencies
-        run: pip install --break-system-packages --quiet -r requirements.txt
+        # ⚠️ pyOpenSSL has to move WITH cryptography. The image ships
+        # cryptography 41.0.7 and pyOpenSSL 23.2.0 as distro packages;
+        # requirements.txt floors cryptography at 42, so pip puts a modern one
+        # in /usr/local and the distro pyOpenSSL — built against the old C
+        # bindings — then raises `module 'lib' has no attribute 'GEN_EMAIL'` on
+        # import. Odoo imports it while loading `base`, so every chunk died with
+        # "Couldn't load module base" and nothing pointed back at pip.
+        # `--upgrade` is load-bearing: a bare `pip install pyOpenSSL` is
+        # satisfied by the 23.2.0 already there and changes nothing.
+        run: |
+          pip install --break-system-packages --quiet -r requirements.txt
+          pip install --break-system-packages --quiet --upgrade pyOpenSSL
 
       - name: Install and test
         # One database per chunk. --test-tags restricts the run to this chunk's
         # own tests: without it Odoo also re-runs the core tests of every
         # dependency it pulled in, which triples the run for no added signal.
         run: |
-          set -o pipefail
           DB="ci_$(echo '${{ matrix.chunk }}' | md5sum | cut -c1-10)"
           TAGS=$(echo '${{ matrix.chunk }}' | tr ',' '\n' | sed 's|^|/|' | paste -sd,)
           CORE=$(python3 -c 'import odoo, os; print(os.path.join(os.path.dirname(odoo.__file__), "addons"))')
