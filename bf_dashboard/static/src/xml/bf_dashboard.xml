@@ -201,7 +201,12 @@
                     </div>
 
                     <!-- H&#233;bergement -->
-                    <div class="col-lg-4 mb-3">
+                    <!-- Absent = pas de tuile ; en echec = la tuile le dit. Le module
+                         n'est plus une dependance dure, donc son absence est normale et
+                         ne merite pas un « donnees non disponibles » sous un roulement
+                         d'attente. La classe du div et le t-on-click qu'il contient sont
+                         l'ancre xpath de bf_subscription_dashboard : ne pas y toucher. -->
+                    <div class="col-lg-4 mb-3" t-if="state.data.hosting or state.data.failed.hosting">
                         <t t-if="state.data.hosting">
                             <div class="card h-100 cursor-pointer" t-on-click="openHostingDashboard">
                                 <div class="card-header bg-light">
@@ -239,14 +244,19 @@
                                     <h6 class="mb-0"><i class="fa fa-server me-2"/>H&#233;bergement</h6>
                                 </div>
                                 <div class="card-body text-center text-muted py-4">
-                                    <i class="fa fa-spinner fa-spin me-1"/>Donn&#233;es non disponibles
+                                    <i class="fa fa-exclamation-triangle me-1"/>Donn&#233;es non disponibles
                                 </div>
                             </div>
                         </t>
                     </div>
 
                     <!-- Connaissances -->
-                    <div class="col-lg-4 mb-3">
+                    <!-- Absent = pas de tuile ; en echec = la tuile le dit. Le module
+                         n'est plus une dependance dure, donc son absence est normale et
+                         ne merite pas un « donnees non disponibles » sous un roulement
+                         d'attente. La classe du div et le t-on-click qu'il contient sont
+                         l'ancre xpath de bf_subscription_dashboard : ne pas y toucher. -->
+                    <div class="col-lg-4 mb-3" t-if="state.data.knowledge or state.data.failed.knowledge">
                         <t t-if="state.data.knowledge">
                             <div class="card h-100 cursor-pointer" t-on-click="openKnowledgeDashboard">
                                 <div class="card-header bg-light">
@@ -285,14 +295,19 @@
                                     <h6 class="mb-0"><i class="fa fa-book me-2"/>Connaissances</h6>
                                 </div>
                                 <div class="card-body text-center text-muted py-4">
-                                    <i class="fa fa-spinner fa-spin me-1"/>Donn&#233;es non disponibles
+                                    <i class="fa fa-exclamation-triangle me-1"/>Donn&#233;es non disponibles
                                 </div>
                             </div>
                         </t>
                     </div>
 
                     <!-- Vie priv&#233;e -->
-                    <div class="col-lg-4 mb-3">
+                    <!-- Absent = pas de tuile ; en echec = la tuile le dit. Le module
+                         n'est plus une dependance dure, donc son absence est normale et
+                         ne merite pas un « donnees non disponibles » sous un roulement
+                         d'attente. La classe du div et le t-on-click qu'il contient sont
+                         l'ancre xpath de bf_subscription_dashboard : ne pas y toucher. -->
+                    <div class="col-lg-4 mb-3" t-if="state.data.privacy or state.data.failed.privacy">
                         <t t-if="state.data.privacy">
                             <div class="card h-100 cursor-pointer" t-on-click="openPrivacyPending">
                                 <div class="card-header bg-light">
@@ -329,7 +344,7 @@
                                     <h6 class="mb-0"><i class="fa fa-shield me-2"/>Vie priv&#233;e</h6>
                                 </div>
                                 <div class="card-body text-center text-muted py-4">
-                                    <i class="fa fa-spinner fa-spin me-1"/>Donn&#233;es non disponibles
+                                    <i class="fa fa-exclamation-triangle me-1"/>Donn&#233;es non disponibles
                                 </div>
                             </div>
                         </t>
