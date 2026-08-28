@@ -99,7 +99,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_cx_subscription` | Expérience client : revenu récurrent à risque | 18.0.1.0.1 | BUSL-1.1 | Recurring revenue at risk on the Customer Experience dashboard tile |
 | `bf_cx_website` | Expérience client : témoignages sur le site web | 18.0.1.1.0 | BUSL-1.1 | Public /temoignages page rendered dynamically from published testimonials |
 | `bf_dark_mode` | Symbifox Dark Mode | 18.0.1.1.0 | LGPL-3 | Dark mode for Odoo using the Symbifox palette |
-| `bf_dashboard` | Tableau de bord Symbifox | 18.0.1.0.1 | BUSL-1.1 | Unified dashboard aggregating billing, hosting, knowledge and privacy |
+| `bf_dashboard` | Tableau de bord Symbifox | 18.0.1.2.0 | BUSL-1.1 | Unified dashboard aggregating billing, hosting, knowledge and privacy |
 | `bf_default_all_companies` | BF Default All Companies | 18.0.1.0.0 | LGPL-3 | Pre-selects every allowed company in the multi-company switcher on first login |
 | `bf_document_approval` | Documents — Approbation à plusieurs | 18.0.1.0.0 | BUSL-1.1 | A policy is published only once everyone who had to weigh in has done so, and its distribution follows the RACI recorded in the knowledge matrix |
 | `bf_document_nextcloud_sync` | Document Nextcloud Sync | 18.0.1.4.0 | LGPL-3 | Document sync between Odoo and Nextcloud via WebDAV |
