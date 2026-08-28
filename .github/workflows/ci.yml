@@ -74,7 +74,16 @@ jobs:
   prepare:
     name: Select testable modules
     needs: lint
+    # ⚠️ Runs inside odoo:18, not on the bare runner. The selector resolves each
+    # module's dependency closure against the addons paths it is given, and most
+    # of those dependencies are core Odoo (mail, project, web, portal…). On a
+    # runner without Odoo installed every module reads as blocked, the chunk
+    # list comes out empty, and the matrix that consumes it fails the run with
+    # nothing to point at. That is exactly what the first run did.
     runs-on: ubuntu-latest
+    container:
+      image: odoo:18
+      options: --user root
     outputs:
       chunks: ${{ steps.pick.outputs.chunks }}
     steps:
@@ -82,9 +91,15 @@ jobs:
       - uses: ./.github/actions/oca-addons
       - id: pick
         run: |
-          CHUNKS=$(python tools/ci_test_modules.py --chunks 6 --repo . . oca)
-          echo "chunks=$CHUNKS" >> "$GITHUB_OUTPUT"
+          set -o pipefail
+          CHUNKS=$(python3 tools/ci_test_modules.py --chunks 6 --repo . \
+            . oca /usr/lib/python3/dist-packages/odoo/addons)
           echo "$CHUNKS"
+          if [ "$CHUNKS" = "[]" ]; then
+            echo "::error::no module is testable — the addons path is wrong, not the code"
+            exit 1
+          fi
+          echo "chunks=$CHUNKS" >> "$GITHUB_OUTPUT"
 
   test:
     name: Tests
