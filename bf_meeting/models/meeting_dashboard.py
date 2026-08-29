@@ -513,7 +513,7 @@ class MeetingDashboard(models.AbstractModel):
         return [
             bool(agenda),                                                       # 1 OdJ drafted
             bool(agenda) and agenda.state in ('confirmed', 'done'),             # 2 OdJ reviewed
-            bool(agenda) and bool(agenda.sent_date),                            # 3 OdJ sent
+            bool(agenda) and bool(agenda.email_sent_date),                      # 3 OdJ sent
             bool(event.start) and event.start < fields.Datetime.now(),          # 4 meeting happened
             bool(record),                                                       # 5 CR drafted
             bool(record) and record.report_state in ('reviewed', 'sent'),       # 6 CR reviewed
@@ -707,7 +707,7 @@ class MeetingDashboardLine(models.Model):
                     b.agenda_resp_id, b.minutes_resp_id,
                     COALESCE(b.skipped_steps, '')               AS skipped_steps,
                     ma.state                                    AS agenda_state,
-                    ma.sent_date                                AS agenda_sent_date,
+                    ma.email_sent_date                          AS agenda_sent_date,
                     mr.report_state                             AS record_state
                 FROM event_anchored b
                 LEFT JOIN meeting_agenda ma ON ma.id = b.agenda_id
@@ -743,7 +743,7 @@ class MeetingDashboardLine(models.Model):
                     ma.organizer_id                             AS minutes_resp_id,
                     ''::varchar                                 AS skipped_steps,
                     ma.state                                    AS agenda_state,
-                    ma.sent_date                                AS agenda_sent_date,
+                    ma.email_sent_date                          AS agenda_sent_date,
                     mr.report_state                             AS record_state
                 FROM meeting_agenda ma
                 LEFT JOIN meeting_record mr ON mr.id = ma.meeting_record_id

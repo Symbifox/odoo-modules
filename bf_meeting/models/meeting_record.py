@@ -306,6 +306,15 @@ class MeetingRecord(models.Model):
         string="Date d'envoi",
         readonly=True,
     )
+    report_sent_manually = fields.Boolean(
+        string='Envoi déclaré à la main',
+        readonly=True,
+        copy=False,
+        tracking=True,
+        help="Le compte rendu a été transmis hors Odoo (client de messagerie, "
+             "clavardage, remise en personne) et l'envoi a été déclaré ici : "
+             "aucun courriel n'est parti du système.",
+    )
     review_notes = fields.Text(
         string='Notes de révision',
         help='Observations de la révision automatique ou manuelle du compte rendu.',
@@ -702,7 +711,53 @@ class MeetingRecord(models.Model):
         self.write({
             'report_state': 'sent',
             'report_sent_date': fields.Datetime.now(),
+            'report_sent_manually': False,
         })
+        return True
+
+    def action_mark_report_sent_manually(self):
+        """Déclarer le compte rendu envoyé hors Odoo.
+
+        Le compte rendu part parfois autrement que par le bouton : copié dans
+        un courriel, déposé dans un fil de clavardage, remis en personne. Sans
+        cette porte, son état restait « brouillon / révisé » indéfiniment et
+        tous les compteurs (tableau de bord, relances) le comptaient comme
+        resté à faire.
+        """
+        for rec in self:
+            if rec.report_state == 'sent' and not rec.report_sent_manually:
+                continue
+            rec.write({
+                'report_state': 'sent',
+                'report_sent_date': rec.report_sent_date or fields.Datetime.now(),
+                'report_sent_manually': True,
+            })
+            rec.message_post(
+                body=Markup(
+                    "<p>✉️ Compte rendu déclaré <strong>envoyé à la main</strong> "
+                    "par %s : la transmission a eu lieu hors Odoo.</p>"
+                ) % escape(self.env.user.name),
+                message_type='comment',
+                subtype_xmlid='mail.mt_note',
+            )
+        return True
+
+    def action_unmark_report_sent_manually(self):
+        """Retirer une déclaration d'envoi manuel posée par erreur."""
+        for rec in self.filtered('report_sent_manually'):
+            rec.write({
+                'report_state': 'reviewed',
+                'report_sent_date': False,
+                'report_sent_manually': False,
+            })
+            rec.message_post(
+                body=Markup(
+                    "<p>↩️ Déclaration d'envoi manuel retirée par %s : "
+                    "le compte rendu repasse à « révisé ».</p>"
+                ) % escape(self.env.user.name),
+                message_type='comment',
+                subtype_xmlid='mail.mt_note',
+            )
         return True
 
     def action_open_refine_wizard(self):

@@ -26,6 +26,11 @@
                        decoration-info="state == 'done'"
                        decoration-warning="state == 'draft'"
                        decoration-danger="state == 'cancelled'"/>
+                <field name="send_state" widget="badge"
+                       decoration-success="send_state in ('sent', 'manual')"
+                       decoration-warning="send_state == 'prepared'"
+                       decoration-danger="send_state == 'not_sent'"/>
+                <field name="email_sent_date" optional="show"/>
                 <field name="sent_date" optional="hide"/>
             </list>
         </field>
@@ -163,6 +168,14 @@
                     <button name="action_reset_draft" type="object"
                             string="Remettre en brouillon"
                             invisible="state not in ('cancelled',)"/>
+                    <button name="action_mark_sent_manually" type="object"
+                            string="Marquer envoyé à la main"
+                            icon="fa-check-square-o"
+                            invisible="send_state in ('sent', 'manual')"
+                            confirm="Déclarer que cet ordre du jour a été transmis hors Odoo ? Il comptera comme envoyé et le rappel automatique cessera."/>
+                    <button name="action_unmark_sent_manually" type="object"
+                            string="Retirer l'envoi manuel"
+                            invisible="send_state != 'manual'"/>
                     <field name="state" widget="statusbar"
                            statusbar_visible="draft,confirmed,done"
                            options="{'clickable': '1'}"/>
@@ -205,6 +218,40 @@
                          invisible="refine_state != 'error'">
                         <b>Le pré-remplissage a échoué.</b>
                         <field name="refine_message" readonly="1" class="d-inline" nolabel="1"/>
+                    </div>
+                    <field name="send_state" invisible="1"/>
+                    <!-- L'état d'envoi se lisait uniquement dans l'onglet
+                         Technique : personne ne pouvait dire, au coup d'œil,
+                         si l'OdJ était parti. -->
+                    <div class="alert alert-danger d-flex align-items-center mb-2"
+                         role="alert" invisible="send_state != 'not_sent'">
+                        <i class="fa fa-envelope-o me-2" title="Non envoyé"/>
+                        <span>
+                            <b>Ordre du jour non envoyé.</b>
+                            Aucun courriel n'est parti aux destinataires.
+                        </span>
+                    </div>
+                    <div class="alert alert-warning d-flex align-items-center mb-2"
+                         role="alert" invisible="send_state != 'prepared'">
+                        <i class="fa fa-exclamation-triangle me-2" title="Envoi non confirmé"/>
+                        <span>
+                            <b>Envoi amorcé, jamais confirmé.</b>
+                            Un envoi a été préparé le
+                            <field name="sent_date" readonly="1" nolabel="1" class="d-inline"/>
+                            mais aucun courriel n'a quitté Odoo — le composeur a
+                            vraisemblablement été fermé sans envoyer.
+                        </span>
+                    </div>
+                    <div class="alert alert-success d-flex align-items-center mb-2"
+                         role="status" invisible="send_state not in ('sent', 'manual')">
+                        <i class="fa fa-paper-plane me-2" title="Envoyé"/>
+                        <span>
+                            <b>Ordre du jour envoyé</b> le
+                            <field name="email_sent_date" readonly="1" nolabel="1" class="d-inline"/>
+                            <span invisible="send_state != 'manual'">
+                                — envoi déclaré à la main, hors Odoo.
+                            </span>
+                        </span>
                     </div>
                     <div class="oe_title">
                         <h1>
@@ -389,6 +436,7 @@
                                 <group>
                                     <field name="nc_path"/>
                                     <field name="sent_date"/>
+                                    <field name="sent_manually"/>
                                     <field name="refine_state" widget="badge"
                                            decoration-info="refine_state == 'queued'"
                                            decoration-success="refine_state == 'done'"
@@ -435,6 +483,13 @@
                 <filter name="filter_done" string="Terminé"
                         domain="[('state', '=', 'done')]"/>
                 <separator/>
+                <filter name="filter_not_sent" string="Non envoyé"
+                        domain="[('send_state', 'in', ('not_sent', 'prepared'))]"/>
+                <filter name="filter_send_unconfirmed" string="Envoi non confirmé"
+                        domain="[('send_state', '=', 'prepared')]"/>
+                <filter name="filter_sent" string="Envoyé"
+                        domain="[('send_state', 'in', ('sent', 'manual'))]"/>
+                <separator/>
                 <filter name="filter_today" string="Aujourd'hui"
                         domain="[('date', '&gt;=', context_today().strftime('%%Y-%%m-%%d 00:00:00')),
                                  ('date', '&lt;=', context_today().strftime('%%Y-%%m-%%d 23:59:59'))]"/>
@@ -462,6 +517,8 @@
                             context="{'group_by': 'date:month'}"/>
                     <filter name="group_state" string="État"
                             context="{'group_by': 'state'}"/>
+                    <filter name="group_send_state" string="Envoi"
+                            context="{'group_by': 'send_state'}"/>
                     <filter name="group_series" string="Série"
                             context="{'group_by': 'series_name'}"/>
                     <filter name="group_meeting_type" string="Mode"

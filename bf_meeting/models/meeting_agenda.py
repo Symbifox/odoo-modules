@@ -315,9 +315,53 @@ class MeetingAgenda(models.Model):
         default=False,
     )
     sent_date = fields.Datetime(
-        string="Date d'envoi",
+        string="Envoi amorcé le",
         readonly=True,
+        help="Horodatage posé dès qu'un envoi est amorcé — bouton « Envoyer » "
+             "ou simple ouverture du composeur. Il ouvre la fenêtre de "
+             "contributions publiques ; il ne prouve PAS qu'un courriel est "
+             "parti : voir « Envoyé le ».",
     )
+    email_sent_date = fields.Datetime(
+        string='Envoyé le',
+        readonly=True,
+        copy=False,
+        help="Départ réel de l'ordre du jour : courriel émis par Odoo, ou "
+             "envoi fait hors Odoo et déclaré à la main.",
+    )
+    sent_manually = fields.Boolean(
+        string='Envoi déclaré à la main',
+        readonly=True,
+        copy=False,
+        help="L'ordre du jour est parti par un autre canal qu'Odoo (client de "
+             "messagerie, clavardage, remise en personne).",
+    )
+    send_state = fields.Selection(
+        [
+            ('not_sent', 'Non envoyé'),
+            ('prepared', 'Envoi non confirmé'),
+            ('sent', 'Envoyé'),
+            ('manual', 'Envoyé à la main'),
+        ],
+        string="Envoi",
+        compute='_compute_send_state',
+        store=True,
+        tracking=True,
+        default='not_sent',
+        help="« Envoi non confirmé » = un envoi a été amorcé mais aucun "
+             "courriel n'a quitté Odoo — typiquement le composeur ouvert puis "
+             "abandonné.",
+    )
+
+    @api.depends('sent_date', 'email_sent_date', 'sent_manually')
+    def _compute_send_state(self):
+        for rec in self:
+            if rec.email_sent_date:
+                rec.send_state = 'manual' if rec.sent_manually else 'sent'
+            elif rec.sent_date:
+                rec.send_state = 'prepared'
+            else:
+                rec.send_state = 'not_sent'
     recipient_ids = fields.Many2many(
         'res.partner',
         'meeting_agenda_recipient_rel',
@@ -944,6 +988,62 @@ class MeetingAgenda(models.Model):
         """Remettre en brouillon."""
         self.write({'state': 'draft'})
 
+    def _message_post_after_hook(self, message, msg_values):
+        """Horodater le départ RÉEL d'un courriel sur l'ordre du jour.
+
+        `action_send_agenda_wizard` estampille `sent_date` à l'OUVERTURE du
+        composeur — il n'a pas le choix : le bloc d'appel aux contributions
+        est rendu à partir de `contributions_open`, qui en dérive. Fermer le
+        composeur sans envoyer laissait donc l'OdJ marqué « envoyé » pour le
+        cron de rappel comme pour l'œil. Le message que le composeur poste
+        réellement passe, lui, par `message_post` avec des destinataires
+        explicites : c'est là que se pose l'horodatage confirmé.
+
+        Ne comptent pas : les notes internes (contributions publiques, notes
+        de suivi) et les notifications aux abonnés, dont les destinataires
+        sont résolus plus tard et n'apparaissent pas dans `partner_ids`.
+        """
+        res = super()._message_post_after_hook(message, msg_values)
+        recipients = (msg_values or {}).get('partner_ids') or message.partner_ids
+        if (recipients
+                and message.message_type in ('comment', 'email')
+                and not self.email_sent_date):
+            self.sudo().write({'email_sent_date': fields.Datetime.now()})
+        return res
+
+    def action_mark_sent_manually(self):
+        """Déclarer que l'ordre du jour a été transmis hors Odoo."""
+        for rec in self:
+            if rec.email_sent_date:
+                continue
+            rec.write({
+                'email_sent_date': fields.Datetime.now(),
+                'sent_manually': True,
+            })
+            rec.message_post(
+                body=Markup(
+                    "<p>✉️ Ordre du jour déclaré <strong>envoyé à la main</strong> "
+                    "par %s : la transmission a eu lieu hors Odoo.</p>"
+                ) % escape(self.env.user.name),
+                message_type='comment',
+                subtype_xmlid='mail.mt_note',
+            )
+        return True
+
+    def action_unmark_sent_manually(self):
+        """Retirer une déclaration d'envoi manuel posée par erreur."""
+        for rec in self.filtered('sent_manually'):
+            rec.write({'email_sent_date': False, 'sent_manually': False})
+            rec.message_post(
+                body=Markup(
+                    "<p>↩️ Déclaration d'envoi manuel retirée par %s : "
+                    "l'ordre du jour repasse à « non envoyé ».</p>"
+                ) % escape(self.env.user.name),
+                message_type='comment',
+                subtype_xmlid='mail.mt_note',
+            )
+        return True
+
     def action_send_agenda(self):
         """Envoyer l'ordre du jour par courriel."""
         self.ensure_one()
@@ -971,6 +1071,12 @@ class MeetingAgenda(models.Model):
         self.flush_recordset(['sent_date', 'contributions_open'])
 
         template.send_mail(self.id, force_send=True)
+        # Le courriel est parti : `sent_date` ne dit que « un envoi a été
+        # amorcé », c'est ici que se pose la preuve d'envoi.
+        self.write({
+            'email_sent_date': fields.Datetime.now(),
+            'sent_manually': False,
+        })
 
     def action_send_agenda_wizard(self):
         """Ouvrir l'assistant d'envoi de l'ordre du jour."""
@@ -1018,7 +1124,7 @@ class MeetingAgenda(models.Model):
         horizon = now + timedelta(days=REMINDER_LEAD_DAYS)
         agendas = self.search([
             ('state', 'in', ACTIVE_AGENDA_STATES),
-            ('sent_date', '=', False),
+            ('email_sent_date', '=', False),
             ('date', '>=', now),
             ('date', '<=', horizon),
         ])

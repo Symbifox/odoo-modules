@@ -121,6 +121,14 @@
                     <button name="action_send_report" type="object"
                             string="Envoyer le rapport"
                             invisible="report_state != 'draft'"/>
+                    <button name="action_mark_report_sent_manually" type="object"
+                            string="Marquer envoyé à la main"
+                            icon="fa-check-square-o"
+                            invisible="report_state == 'sent' and not report_sent_manually"
+                            confirm="Déclarer que ce compte rendu a été transmis hors Odoo ? Il passera à « Envoyé » sans qu'aucun courriel ne parte."/>
+                    <button name="action_unmark_report_sent_manually" type="object"
+                            string="Retirer l'envoi manuel"
+                            invisible="not report_sent_manually"/>
                     <field name="report_state" widget="statusbar"
                            statusbar_visible="draft,reviewed,sent"/>
                 </header>
@@ -181,6 +189,15 @@
                          invisible="refine_state != 'error'">
                         <b>Le raffinage a échoué.</b>
                         <field name="refine_message" readonly="1" class="d-inline" nolabel="1"/>
+                    </div>
+                    <div class="alert alert-info d-flex align-items-center mb-2"
+                         role="status" invisible="not report_sent_manually">
+                        <i class="fa fa-hand-o-right me-2" title="Envoi manuel"/>
+                        <span>
+                            <b>Compte rendu déclaré envoyé à la main.</b>
+                            Aucun courriel n'est parti d'Odoo : la transmission a
+                            eu lieu par un autre canal.
+                        </span>
                     </div>
                     <div class="oe_title">
                         <h1>
@@ -344,6 +361,7 @@
                                 </group>
                                 <group>
                                     <field name="report_sent_date"/>
+                                    <field name="report_sent_manually"/>
                                     <field name="company_id" groups="base.group_multi_company"/>
                                     <field name="active"/>
                                 </group>
