@@ -147,3 +147,94 @@ class TestPreflight(TransactionCase):
         self.entry.planned_date = "2026-09-15"
         self.entry.invalidate_recordset()
         self.assertEqual(str(self.entry.timeline_date), "2026-09-15")
+
+
+@tagged("post_install", "-at_install")
+class TestPreflightLangues(TransactionCase):
+    """La politique multilingue, que la suite ne couvrait nulle part.
+
+    Tous les cas de garde étaient écrits avec ``require_all_langs = "no"``.
+    Le seul chemin où la politique s'applique n'était donc jamais parcouru,
+    et il refusait tout : la garde exigeait l'état « publiée » sur chaque
+    créneau, un état que rien n'atteint avant la publication.
+    """
+
+    def setUp(self):
+        super().setUp()
+        Lang = self.env["res.lang"]
+        Lang._activate_lang("fr_FR")
+        Lang._activate_lang("en_US")
+        self.fr = Lang.search([("code", "=", "fr_FR")], limit=1)
+        self.en = Lang.search([("code", "=", "en_US")], limit=1)
+        self.calendar = self.env["bf.editorial.calendar"].create({
+            "name": "Banc bilingue",
+            "cadence_days": 4,
+            "word_floor": 0,
+            "require_all_langs": "yes",
+            "lang_ids": [(6, 0, (self.fr | self.en).ids)],
+        })
+        self.entry = self.env["bf.editorial.entry"].create({
+            "name": "Entrée bilingue",
+            "calendar_id": self.calendar.id,
+            "stage_id": self.env.ref("bf_editorial.stage_draft").id,
+        })
+        self.entry.checklist_ids.unlink()
+        self.entry.qa_state = "clean"
+        self.versions = self.env["bf.editorial.version"].create([
+            {"entry_id": self.entry.id, "lang_id": self.fr.id,
+             "is_source": True, "state": "todo", "word_count": 2000},
+            {"entry_id": self.entry.id, "lang_id": self.en.id,
+             "state": "todo", "word_count": 1800},
+        ])
+        self.entry.invalidate_recordset()
+
+    def test_creneau_a_traduire_retient(self):
+        self.assertFalse(self.entry.langs_ready)
+        self.assertTrue(
+            any("langues" in p for p in self.entry._preflight_problems())
+        )
+
+    def test_creneau_manquant_retient(self):
+        self.versions[1].unlink()
+        self.entry.invalidate_recordset()
+        self.assertFalse(self.entry.langs_ready)
+        self.assertIn("aucun créneau", self.entry.language_summary)
+
+    def test_langues_relues_laissent_passer(self):
+        """La régression : deux créneaux relus doivent ouvrir la garde.
+
+        Avant le correctif, ce cas refusait encore, parce que « relue » n'est
+        pas « publiée » et que rien ne franchissait jamais ce dernier pas.
+        """
+        self.versions.write({"state": "reviewed"})
+        self.entry.invalidate_recordset()
+        self.assertTrue(self.entry.langs_ready)
+        self.assertFalse(self.entry.langs_complete,
+                         "relue n'est pas livrée : les deux états diffèrent")
+        self.assertEqual(self.entry._preflight_problems(), [])
+
+    def test_publication_sort_les_creneaux(self):
+        self.versions.write({"state": "reviewed"})
+        self.entry.invalidate_recordset()
+        self.entry.action_publish()
+        self.entry.invalidate_recordset()
+        self.assertTrue(self.entry.published_date)
+        self.assertEqual(set(self.versions.mapped("state")), {"published"},
+                         "les créneaux doivent sortir avec l'article")
+        self.assertTrue(self.entry.langs_complete)
+
+    def test_cron_publie_une_entree_bilingue_prete(self):
+        self.versions.write({"state": "reviewed"})
+        self.entry.scheduled_publish_date = "2000-01-01 00:00:00"
+        self.entry.invalidate_recordset()
+        self.env["bf.editorial.entry"]._cron_publish_scheduled()
+        self.assertTrue(self.entry.published_date)
+        self.assertEqual(set(self.versions.mapped("state")), {"published"})
+
+    def test_cron_refuse_une_traduction_en_retard(self):
+        self.versions[0].state = "reviewed"
+        self.entry.scheduled_publish_date = "2000-01-01 00:00:00"
+        self.entry.invalidate_recordset()
+        self.env["bf.editorial.entry"]._cron_publish_scheduled()
+        self.assertFalse(self.entry.published_date)
+        self.assertTrue(self.entry.activity_ids)

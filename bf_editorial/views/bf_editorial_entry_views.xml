@@ -83,6 +83,7 @@
                             </field>
                             <group>
                                 <field name="langs_complete" readonly="1"/>
+                                <field name="langs_ready" readonly="1"/>
                                 <field name="word_count" readonly="1"/>
                                 <field name="word_floor" readonly="1"/>
                             </group>
@@ -296,6 +297,8 @@
                         domain="[('version_drift', '=', True)]"/>
                 <filter name="langs_missing" string="Langue manquante"
                         domain="[('langs_complete', '=', False)]"/>
+                <filter name="langs_not_ready" string="Langue pas encore relue"
+                        domain="[('langs_ready', '=', False)]"/>
                 <separator/>
                 <filter name="planned" string="Date prévue" date="planned_date"/>
                 <filter name="published" string="Publiées" date="published_date"/>

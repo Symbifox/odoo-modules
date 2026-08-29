@@ -10,6 +10,8 @@ langues — se calculent.
 from odoo import _, api, fields, models
 from odoo.exceptions import AccessError, UserError
 
+from .version import READY_STATES
+
 
 class EditorialEntry(models.Model):
     _name = "bf.editorial.entry"
@@ -195,6 +197,13 @@ class EditorialEntry(models.Model):
         string="Toutes les langues livrées", compute="_compute_language_state",
         search="_search_langs_complete",
     )
+    langs_ready = fields.Boolean(
+        string="Toutes les langues relues", compute="_compute_language_state",
+        search="_search_langs_ready",
+        help="Vrai quand chaque langue exigée porte un créneau relu ou déjà"
+             " publié. C'est cet état que la garde de pré-vol contrôle :"
+             " exiger « publiée » AVANT de publier ne se satisfait jamais.",
+    )
     language_summary = fields.Text(
         string="État des langues", compute="_compute_language_state",
     )
@@ -336,16 +345,18 @@ class EditorialEntry(models.Model):
             )
             if not required:
                 entry.langs_complete = True
+                entry.langs_ready = True
                 entry.language_summary = _("Aucune langue exigée.")
                 continue
 
-            lines, missing = [], []
+            lines, missing, not_ready = [], [], []
             for lang in required:
                 version = entry.version_ids.filtered(
                     lambda v: v.lang_id == lang
                 )[:1]
                 if not version:
                     missing.append(lang.name)
+                    not_ready.append(lang.name)
                     lines.append(_("%s : aucun créneau", lang.name))
                     continue
                 lines.append("%s : %s (%s mots)" % (
@@ -355,8 +366,11 @@ class EditorialEntry(models.Model):
                 ))
                 if version.state != "published":
                     missing.append(lang.name)
+                if version.state not in READY_STATES:
+                    not_ready.append(lang.name)
 
             entry.langs_complete = not missing
+            entry.langs_ready = not not_ready
             entry.language_summary = "\n".join(lines)
 
     @api.depends(
@@ -417,10 +431,17 @@ class EditorialEntry(models.Model):
 
         # La politique multilingue est la dernière, parce que c'est celle qui
         # se règle et qu'il faut la lire en connaissant le reste.
+        #
+        # ⚠️ On contrôle « relue », pas « publiée ». La garde exigeait l'état
+        # publié avant de publier : rien ne l'atteignait jamais, puisque seule
+        # une synchronisation depuis un billet DÉJÀ publié le posait. Sur un
+        # vrai brouillon, la condition était insatisfiable et le bouton
+        # refusait à perpétuité.
         if self.calendar_id and self.calendar_id._requires_all_langs():
-            if not self.langs_complete:
+            if not self.langs_ready:
                 problems.append(_(
-                    "Toutes les langues exigées ne sont pas publiées."
+                    "Toutes les langues exigées ne sont pas relues :\n%s",
+                    self.language_summary,
                 ))
         return problems
 
@@ -447,6 +468,11 @@ class EditorialEntry(models.Model):
     def _search_langs_complete(self, operator, value):
         return self._search_derived_bool(
             operator, value, lambda e: e.langs_complete,
+        )
+
+    def _search_langs_ready(self, operator, value):
+        return self._search_derived_bool(
+            operator, value, lambda e: e.langs_ready,
         )
 
     def _search_version_drift(self, operator, value):
@@ -509,7 +535,28 @@ class EditorialEntry(models.Model):
         if closing:
             values["stage_id"] = closing.id
         self.write(values)
+        self._release_versions()
         self.message_post(body=_("Publiée, garde de pré-vol verte."))
+
+    def _release_versions(self):
+        """Faire sortir les créneaux de langue avec l'article.
+
+        Un créneau relu qui reste « à relire » après la publication ferait
+        mentir l'état des langues, et le slug figé n'était relevé par personne :
+        ``action_freeze_slug`` était écrit, documenté, et jamais appelé.
+        """
+        self.ensure_one()
+        required = (
+            self.calendar_id._required_langs() if self.calendar_id
+            else self.env["res.lang"].browse()
+        )
+        versions = self.version_ids
+        if required:
+            versions = versions.filtered(lambda v: v.lang_id in required)
+        pending = versions.filtered(lambda v: v.state != "published")
+        if pending:
+            pending.write({"state": "published"})
+        self.version_ids.action_freeze_slug()
 
     @api.model
     def _cron_publish_scheduled(self):

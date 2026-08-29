@@ -19,6 +19,11 @@ from odoo.exceptions import ValidationError
 # Le créneau source, que le site ne sert pas. Voir l'entête du module.
 IGNORED_SLOTS = ("en_US",)
 
+# Un créneau prêt à sortir. « Traduite » ne suffit pas : c'est la relecture qui
+# engage. « Publiée » compte aussi, sans quoi une entrée déjà sortie ne
+# repasserait plus sa propre garde.
+READY_STATES = ("reviewed", "published")
+
 _TAG_RE = re.compile(r"<[^>]+>")
 _WS_RE = re.compile(r"\s+")
 
