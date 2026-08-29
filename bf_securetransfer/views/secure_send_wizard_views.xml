@@ -36,6 +36,11 @@
                                decoration-warning="not sms_configured"/>
                     </group>
                     <group>
+                        <field name="template_id"
+                               options="{'no_create': True}"
+                               placeholder="Repartir d'une configuration déjà réglée"/>
+                        <field name="template_note" readonly="1" nolabel="1"
+                               colspan="2" invisible="not template_id"/>
                         <field name="brand_id"/>
                         <field name="retention_days"/>
                         <field name="password" password="True"/>

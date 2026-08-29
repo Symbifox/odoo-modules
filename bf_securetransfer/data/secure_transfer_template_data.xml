@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- noupdate : un préréglage est fait pour être ajusté par l'opérateur.
+         Une mise à jour du module qui écraserait ses plafonds serait une
+         surprise silencieuse sur des liens déjà diffusés. -->
+    <data noupdate="1">
+
+        <!-- ⚠ Aucun de ces trois préréglages ne porte de marque, et c'est
+             délibéré : ce module est la source unique de quatre locataires et
+             une marque semée ici n'existerait sur aucun d'eux. Sans marque, le
+             préréglage se pose sur celle que l'expéditeur a déjà choisie.
+
+             Le vocabulaire reste neutre pour la même raison — la déclinaison
+             par secteur appartient au matériel de vente, pas au module. -->
+
+        <record id="template_dataroom_standard" model="secure.transfer.template">
+            <field name="name">Salle de données — standard</field>
+            <field name="sequence">10</field>
+            <field name="audience_mode">open</field>
+            <field name="retention_days">30</field>
+            <field name="audience_max">25</field>
+            <field name="audience_max_downloads">25</field>
+            <field name="notify_on_join" eval="True"/>
+            <field name="note">Le réglage courant : un dossier diffusé à une
+liste d'intéressés qu'on ne connaît pas encore tous. Chacun se déclare, reçoit
+son code, et repart avec son propre budget de téléchargement.</field>
+        </record>
+
+        <record id="template_dataroom_wide" model="secure.transfer.template">
+            <field name="name">Salle de données — audience large</field>
+            <field name="sequence">20</field>
+            <field name="audience_mode">open</field>
+            <field name="retention_days">30</field>
+            <field name="audience_max">100</field>
+            <field name="audience_max_downloads">10</field>
+            <field name="notify_on_join" eval="False"/>
+            <field name="note">Pour une diffusion large, où l'avis à chaque
+nouveau visiteur deviendrait du bruit. Le plafond monte, le budget par
+personne descend : le lien reste consultable sans devenir un dépôt public.
+⚠ Vérifiez que la marque autorise autant de visiteurs.</field>
+        </record>
+
+        <record id="template_dataroom_restricted" model="secure.transfer.template">
+            <field name="name">Salle de données — confidentiel</field>
+            <field name="sequence">30</field>
+            <field name="audience_mode">open</field>
+            <field name="retention_days">7</field>
+            <field name="audience_max">10</field>
+            <field name="audience_max_downloads">3</field>
+            <field name="notify_on_join" eval="True"/>
+            <field name="note">Court, étroit, et chaque arrivée vous est
+signalée. Posez une liste de domaines pour restreindre aux adresses de
+l'organisation visée — le code par SMS devient alors indisponible, un numéro
+n'ayant pas de domaine.</field>
+        </record>
+
+    </data>
+</odoo>

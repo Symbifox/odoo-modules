@@ -86,6 +86,14 @@
             <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
         </record>
 
+        <!-- Un préréglage sans société sert tout le monde : c'est le cas
+             des trois livrés avec le module. -->
+        <record id="rule_secure_transfer_template_company" model="ir.rule">
+            <field name="name">Préréglages : multi-société</field>
+            <field name="model_id" ref="model_secure_transfer_template"/>
+            <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        </record>
+
         <!-- L'audience porte des renseignements personnels de tiers (adresse,
              mobile, IP) : même isolement que le journal, et pour la même
              raison. Elle hérite la société du transfert plutôt que de porter

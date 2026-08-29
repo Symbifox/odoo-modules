@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_secure_transfer_template_list" model="ir.ui.view">
+        <field name="name">secure.transfer.template.list</field>
+        <field name="model">secure.transfer.template</field>
+        <field name="arch" type="xml">
+            <list string="Préréglages de salle de données">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="audience_mode"/>
+                <field name="retention_days"/>
+                <field name="audience_max"/>
+                <field name="audience_max_downloads"/>
+                <field name="brand_id" optional="show"/>
+                <field name="company_id" optional="hide" groups="base.group_multi_company"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_secure_transfer_template_form" model="ir.ui.view">
+        <field name="name">secure.transfer.template.form</field>
+        <field name="model">secure.transfer.template</field>
+        <field name="arch" type="xml">
+            <form string="Préréglage de salle de données">
+                <sheet>
+                    <widget name="web_ribbon" title="Archivé" bg_color="text-bg-danger"
+                            invisible="active"/>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="Salle de données — standard"/></h1>
+                    </div>
+                    <field name="active" invisible="1"/>
+                    <group>
+                        <group string="Portée">
+                            <field name="brand_id"
+                                   options="{'no_create': True}"
+                                   placeholder="Garder la marque choisie à l'envoi"/>
+                            <field name="audience_mode"/>
+                            <field name="company_id" groups="base.group_multi_company"
+                                   options="{'no_create': True}"/>
+                            <field name="sequence"/>
+                        </group>
+                        <group string="Ce que le lien accorde">
+                            <field name="retention_days"/>
+                            <field name="audience_max"
+                                   invisible="audience_mode != 'open'"/>
+                            <field name="audience_max_downloads"
+                                   invisible="audience_mode != 'open'"/>
+                            <field name="notify_on_join"
+                                   invisible="audience_mode != 'open'"/>
+                        </group>
+                    </group>
+                    <group string="Qui peut entrer" invisible="audience_mode != 'open'">
+                        <field name="audience_domains" nolabel="1" colspan="2"
+                               placeholder="@client.com&#10;acheteur@exemple.com"/>
+                        <field name="audience_allow_sms"/>
+                    </group>
+                    <group string="Note">
+                        <field name="note" nolabel="1" colspan="2"
+                               placeholder="Le type de dossier visé, pas les valeurs — elles sont juste au-dessus."/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_secure_transfer_template" model="ir.actions.act_window">
+        <field name="name">Préréglages de salle de données</field>
+        <field name="res_model">secure.transfer.template</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Créez un préréglage</p>
+            <p>Un préréglage rejoue la configuration d'une salle de données : durée,
+                plafond de visiteurs, budget de téléchargement par personne, domaines
+                admis. L'expéditeur le choisit dans l'assistant, et tout se remplit.</p>
+            <p>Laissez la marque vide pour qu'il s'applique à celle déjà choisie.</p>
+        </field>
+    </record>
+
+</odoo>

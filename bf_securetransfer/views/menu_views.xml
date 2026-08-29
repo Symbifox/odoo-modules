@@ -37,6 +37,9 @@
     <menuitem id="menu_config_brands" name="Marques"
               parent="menu_config" action="action_brand" sequence="10"/>
 
+    <menuitem id="menu_config_templates" name="Préréglages de salle de données"
+              parent="menu_config" action="action_secure_transfer_template" sequence="15"/>
+
     <menuitem id="menu_config_settings" name="Paramètres"
               parent="menu_config" action="action_securetransfer_settings" sequence="20"/>
 

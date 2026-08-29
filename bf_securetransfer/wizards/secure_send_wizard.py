@@ -88,6 +88,19 @@ class SecureSendWizard(models.TransientModel):
         selection=[("email", "Courriel"), ("sms", "SMS")],
         string="Canal du code", default="email", required=True,
     )
+    # -- Préréglage ------------------------------------------------------------
+    # Posé AVANT le bloc d'audience : dans le formulaire comme ici, on choisit
+    # le préréglage d'abord, et il remplit ce qui suit.
+    template_id = fields.Many2one(
+        "secure.transfer.template",
+        string="Préréglage",
+        help="Rejoue une configuration de salle de données déjà réglée. "
+             "Les valeurs restent modifiables après application.",
+    )
+    template_note = fields.Text(
+        related="template_id.note", string="À quoi sert ce préréglage",
+        readonly=True)
+
     # -- Audience ouverte ------------------------------------------------------
     # ⚠ C'est le SEUL chemin de création d'une audience ouverte. Le formulaire
     # public reste en destinataires nommés : y ouvrir le mode donnerait à un
@@ -195,6 +208,60 @@ class SecureSendWizard(models.TransientModel):
                 rec.audience_mode = "declared"
             if rec.audience_allow_sms and not rec.brand_allows_audience_sms:
                 rec.audience_allow_sms = False
+
+    @api.onchange("template_id")
+    def _onchange_template_id(self):
+        """Appliquer le préréglage, et DIRE ce qui n'a pas pu l'être.
+
+        ⚠ La marque est posée en premier : les champs calculés qui en
+        dépendent (`brand_allows_audience*`) doivent être à jour avant qu'on
+        juge si le mode demandé tient debout.
+
+        ⚠ On ne se fie pas au fait que `_onchange_brand_audience` se rejoue
+        derrière nous — l'ordre des onchanges en cascade n'est pas un contrat.
+        La coercition est refaite ici, explicitement, et surtout elle est
+        RENDUE VISIBLE : un mode qui retombe en silence sur « destinataires
+        nommés » est exactement la panne que ce préréglage existe pour
+        éviter."""
+        warning = None
+        for rec in self:
+            tmpl = rec.template_id
+            if not tmpl:
+                continue
+            vals = tmpl._apply_vals()
+            brand_id = vals.pop("brand_id", None)
+            if brand_id:
+                rec.brand_id = brand_id
+            for fname, value in vals.items():
+                rec[fname] = value
+            brand = rec.brand_id
+            if rec.audience_mode == "open" and not brand.allow_open_audience:
+                rec.audience_mode = "declared"
+                rec.audience_allow_sms = False
+                warning = {
+                    "title": _("Préréglage appliqué en partie"),
+                    "message": _(
+                        "« %(tmpl)s » demande une audience ouverte, mais la "
+                        "marque « %(brand)s » ne l'offre pas. Le mode est "
+                        "revenu à « destinataires nommés ».\n\n"
+                        "Ouvrez l'audience sur cette marque (Configuration › "
+                        "Marques), ou choisissez une marque qui l'offre.",
+                        tmpl=tmpl.display_name,
+                        brand=brand.display_name or _("(aucune)")),
+                }
+            elif rec.audience_allow_sms and not rec.brand_allows_audience_sms:
+                rec.audience_allow_sms = False
+                warning = {
+                    "title": _("Préréglage appliqué en partie"),
+                    "message": _(
+                        "« %(tmpl)s » offre le code par SMS, mais la marque "
+                        "« %(brand)s » ne l'ouvre pas (ou le canal n'est pas "
+                        "configuré sur cette instance). Les visiteurs "
+                        "s'identifieront par courriel.",
+                        tmpl=tmpl.display_name,
+                        brand=brand.display_name or _("(aucune)")),
+                }
+        return {"warning": warning} if warning else None
 
     @api.depends_context("uid")
     def _compute_sender_locked(self):

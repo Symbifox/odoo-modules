@@ -2,6 +2,7 @@ from . import s3
 from . import sms
 from . import pdf_watermark
 from . import secure_transfer_brand
+from . import secure_transfer_template
 from . import secure_transfer_access_log
 from . import secure_transfer_file
 from . import secure_transfer_audience

@@ -1,6 +1,6 @@
 {
     'name': 'Transfert sécurisé (Secure Transfer)',
-    'version': '18.0.1.20.0',
+    'version': '18.0.1.21.0',
     'category': 'Website',
     'summary': "Transfert de fichiers sécurisé : téléversement direct navigateur → S3, "
                "liens tokenisés avec expiration et mot de passe, journal d'accès "
@@ -47,6 +47,13 @@ Transfert de fichiers « WeTransfer maison » propulsé par Odoo :
   être bloquée individuellement sans toucher au lien. Le mode s'ouvre depuis
   le backend seulement, sous plafond de visiteurs et liste blanche de domaines.
 
+* **Préréglages de salle de données** : la configuration d'un lien, nommée et
+  rejouée — mode, durée, plafond de visiteurs, budget de téléchargement par
+  personne, domaines admis, entente. L'expéditeur choisit un préréglage dans
+  l'assistant et tout se remplit. Une combinaison que l'envoi rejetterait est
+  refusée dès l'enregistrement, et un préréglage que la marque ne peut pas
+  honorer entièrement s'applique en le disant.
+
 Les clés d'accès S3 vivent dans ``odoo.conf`` (ou l'environnement), jamais
 en base de données.
     """,
@@ -74,9 +81,11 @@ en base de données.
         'data/secure_transfer_sequence.xml',
         'data/secure_transfer_brand_data.xml',
         'data/secure_transfer_cron.xml',
+        'data/secure_transfer_template_data.xml',
         'data/secure_transfer_mail_template.xml',
         'views/secure_transfer_views.xml',
         'views/secure_transfer_brand_views.xml',
+        'views/secure_transfer_template_views.xml',
         'views/secure_transfer_access_log_views.xml',
         'views/secure_transfer_audience_views.xml',
         'views/res_config_settings_views.xml',
