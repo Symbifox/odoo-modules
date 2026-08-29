@@ -20,6 +20,18 @@ a file.
   expands, any other node opens its own record with its chatter. With write
   access on an unfrozen version, five tools appear: consult, move, place, link,
   remove. See [Editing from the trace](#editing-from-the-trace)
+- **The deliverable, not only the trace**: "Generate the document" assembles a
+  cover (with a legend drawn by the very primitives the map uses), a table of
+  contents, one page per level, appendices, a validation register and the
+  unfolded map. "Render PDF" still returns the bare trace. A map that says
+  neither where it comes from, nor what it assumes, nor what it does not yet
+  know describes a sequence, not a performance
+- **The prose lives in the records**, in `bf.process.section`: assumptions,
+  open questions and findings sit on the map itself, so they freeze with its
+  version and regenerating after a change to the trace is one click. One model
+  with a kind rather than one model per section — they share a shape and differ
+  only in how they are grouped. An empty section is refused, except in the
+  validation register, whose whole purpose is to arrive blank
 - **Server-side PDF**, 1:1, no browser and no typography engine — see
   [Text measurement](#text-measurement-and-the-server-side-pdf)
 - **Two XML exports, because no single tool reads both**: `.drawio` (mxGraph)
@@ -136,6 +148,16 @@ Text is held back and painted after every fill, exactly as the reference engine
 does. That is not housekeeping: an annotation background drawn after a label
 covers it, and a coordinate-level comparison cannot see it — the word is in the
 file, in the right place, just hidden.
+
+`generateur/document.py` reuses that same drawing for the deliverable, and
+changes one thing: **its pages are a fixed size**. A document has a table of
+contents, therefore page numbers, therefore pages that look alike — so each
+level is scaled to fit the sheet. The unfolded map keeps a page cut to its
+content, because it is read on screen rather than printed. The prose of the
+appendices is laid out with `reportlab`'s flowables; `generateur/texte.py`
+converts the HTML the fields hold into them, and a tag it does not know keeps
+its **content** — losing a sentence in silence would be the worst thing a
+deliverable could do.
 
 ## Editing from the trace
 
