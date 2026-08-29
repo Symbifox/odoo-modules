@@ -388,8 +388,15 @@ class MeetingDashboard(models.AbstractModel):
         for r in rows:
             skipped = self._parse_skipped(r['skipped_steps'])
             if r['is_upcoming'] and r['date'] and r['date'] <= horizon_7d:
+                # Un OdJ parti n'a plus rien « à préparer ». Sans ce garde-fou,
+                # un OdJ envoyé mais laissé en brouillon revenait chaque matin
+                # par l'étape « révisé » : une ligne que le destinataire ne
+                # pouvait pas faire disparaître en faisant son travail, puisque
+                # le travail était fait. La confirmation d'un OdJ déjà envoyé
+                # reste visible au tableau de bord, où elle est à sa place.
                 agenda_flags = [r['has_agenda_drafted'], r['has_agenda_reviewed'], r['has_agenda_sent']]
-                if any(not f and (i + 1) not in skipped for i, f in enumerate(agenda_flags)):
+                if not r['has_agenda_sent'] and any(
+                        not f and (i + 1) not in skipped for i, f in enumerate(agenda_flags)):
                     uid = r['agenda_resp_id']
                     if uid and (wanted is None or uid in wanted):
                         per_user.setdefault(uid, {'odj': [], 'cr': []})['odj'].append(r)

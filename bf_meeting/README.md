@@ -95,7 +95,7 @@ render with the company's palette, or with Odoo's default colours
 | Cron | Model | Frequency | Role |
 |---|---|---|---|
 | `ir_cron_remind_unsent_agenda` | `meeting.agenda` | daily | Creates a "To do" activity on the agenda for the organiser when the meeting is within 7 days and the agenda has not been sent |
-| `cron_meeting_dashboard_daily_digest` | `meeting.dashboard` | daily | Daily meeting digest (legacy, shipped **disabled**; the `_cron_send_daily_digest()` method is kept for ad hoc triggering) |
+| `cron_meeting_dashboard_daily_digest` | `meeting.dashboard` | daily | Daily meeting digest (legacy, shipped **disabled**; the `_cron_send_daily_digest()` method is kept for ad hoc triggering). Its buckets come from `_get_digest_buckets()`, which `daily_todo_digest` also consumes: the "agendas to prepare" section **excludes agendas already sent** — an agenda that left but stayed in draft has nothing left to prepare, and its confirmation shows on the dashboard |
 
 ### Safe HTML rendering
 
