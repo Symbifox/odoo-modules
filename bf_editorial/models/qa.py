@@ -43,7 +43,15 @@ MARKERS = ("<!-- IMAGE", "<!-- FACT-CHECK", "<!-- NE PAS PUBLIER", "<!-- TODO")
 LOW_CONTRAST = ("#27aae2", "#29abe2", "#27AAE2", "#29ABE2")
 
 _H2_EMPTY_RE = re.compile(r"<h2[^>]*>\s*(<br\s*/?>)?\s*</h2>", re.I)
-_TH_RE = re.compile(r"<th(?![^>]*\bscope=)[^>]*>", re.I)
+# ⚠️ Limite de mot après « th » impérative : sans elle, le motif prend
+# « <thead> » pour un « <th> » sans portée — « th » en est un préfixe littéral,
+# et une balise <thead> par tableau, dans le gabarit maison, gonflait le
+# constat de deux faux positifs par article dès qu'un tableau existait.
+# ⚠️ Limite de mot après « th » impérative : sans elle, le motif prend
+# « <thead> » pour un « <th> » sans portée — « th » en est un préfixe littéral,
+# et une balise <thead> par tableau, dans le gabarit maison, gonflait le
+# constat de deux faux positifs par article dès qu'un tableau existait.
+_TH_RE = re.compile(r"<th\b(?![^>]*\bscope=)[^>]*>", re.I)
 _IMG_NO_ALT_RE = re.compile(r"<img(?![^>]*\balt=)[^>]*>", re.I)
 _ROOT_TAG_RE = re.compile(r"<(h[1-6]|p|ul|ol|table|div|blockquote)\b", re.I)
 _H2_RE = re.compile(r"<h2\b", re.I)

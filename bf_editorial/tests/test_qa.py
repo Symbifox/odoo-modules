@@ -59,6 +59,18 @@ class TestEditorialQA(TransactionCase):
         )
         self.assertFalse(any("scope" in f for f in findings))
 
+    def test_thead_n_est_pas_un_th_sans_scope(self):
+        """« th » est un préfixe littéral de « thead » : sans limite de mot,
+        le motif prenait chaque <thead> pour un en-tête sans portée. Vécu
+        sur le billet 239 : deux <thead>, deux faux constats, alors que les
+        six <th> réels portaient tous scope="col"."""
+        findings = self.qa._check_content(
+            '<table><thead><tr>'
+            '<th scope="col">A</th><th scope="col">B</th>'
+            '</tr></thead></table>', "fr_CA",
+        )
+        self.assertFalse(any("scope" in f for f in findings))
+
     def test_image_sans_alt(self):
         findings = self.qa._check_content('<img src="/a.png"/>', "fr_CA")
         self.assertTrue(any("alternatif" in f for f in findings))
