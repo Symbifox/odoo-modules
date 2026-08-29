@@ -5,6 +5,17 @@
               web_icon="bf_editorial,static/description/icon.png"
               groups="bf_editorial.group_editorial_user" sequence="55"/>
 
+    <record id="action_editorial_propose_next" model="ir.actions.server">
+        <field name="name">Prochain article</field>
+        <field name="model_id" ref="model_bf_editorial_proposal"/>
+        <field name="state">code</field>
+        <field name="code">action = env["bf.editorial.proposal"].action_open_next()</field>
+    </record>
+
+    <menuitem id="menu_editorial_propose" name="Prochain article"
+              parent="menu_editorial_root" action="action_editorial_propose_next"
+              sequence="5"/>
+
     <menuitem id="menu_editorial_entry" name="Entrées"
               parent="menu_editorial_root" action="action_editorial_entry"
               sequence="10"/>

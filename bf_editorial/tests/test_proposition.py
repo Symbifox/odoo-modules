@@ -126,3 +126,59 @@ class TestProposition(TransactionCase):
         proposal.action_compute()
         rangs = {l.entry_id: l.sequence for l in proposal.line_ids}
         self.assertLess(rangs[presque], rangs[vide])
+
+
+@tagged("post_install", "-at_install")
+class TestPropositionDepuisLeMenu(TransactionCase):
+    """La proposition doit être joignable sans passer par un calendrier.
+
+    Elle ne vivait que sur le formulaire de `bf.editorial.calendar`, un écran
+    de paramétrage. Depuis la liste des entrées, l'écran où l'on se demande
+    justement quoi publier, aucun chemin n'y menait.
+    """
+
+    def setUp(self):
+        super().setUp()
+        self.autre = self.env["res.users"].create({
+            "name": "Autre responsable", "login": "autre-editorial@essai.invalid",
+            "groups_id": [(6, 0, [self.env.ref("base.group_user").id])],
+        })
+        self.sien = self.env["bf.editorial.calendar"].create({
+            "name": "Flux de l'utilisateur", "sequence": 90,
+            "user_id": self.env.uid, "require_all_langs": "no",
+        })
+        self.autre_flux = self.env["bf.editorial.calendar"].create({
+            "name": "Flux d'un autre", "sequence": 1,
+            "user_id": self.autre.id, "require_all_langs": "no",
+        })
+
+    def test_le_menu_rend_une_proposition_deja_calculee(self):
+        action = self.env["bf.editorial.proposal"].action_open_next()
+        self.assertEqual(action["res_model"], "bf.editorial.proposal")
+        self.assertEqual(action["target"], "new")
+        proposal = self.env["bf.editorial.proposal"].browse(action["res_id"])
+        self.assertTrue(proposal.exists())
+        self.assertTrue(proposal.cadence_note,
+                        "la proposition doit arriver calculée, pas vide")
+
+    def test_le_calendrier_par_defaut_est_le_sien(self):
+        """Même avec une séquence plus haute : c'est le sien qu'on vient voir."""
+        self.assertEqual(
+            self.env["bf.editorial.proposal"]._default_calendar(), self.sien,
+        )
+
+    def test_a_defaut_le_premier_par_sequence(self):
+        self.sien.user_id = self.autre
+        self.assertEqual(
+            self.env["bf.editorial.proposal"]._default_calendar(),
+            self.autre_flux,
+        )
+
+    def test_recalculer_garde_la_fenetre_ouverte(self):
+        proposal = self.env["bf.editorial.proposal"].create({
+            "calendar_id": self.sien.id,
+        })
+        action = proposal.action_recompute()
+        self.assertEqual(action["res_id"], proposal.id,
+                         "recalculer doit rouvrir la même proposition")
+        self.assertTrue(proposal.cadence_note)

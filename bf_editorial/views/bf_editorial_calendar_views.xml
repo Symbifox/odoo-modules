@@ -106,6 +106,12 @@
         <field name="arch" type="xml">
             <form string="Proposition">
                 <sheet>
+                    <group>
+                        <field name="calendar_id"/>
+                        <button name="action_recompute" type="object"
+                                string="Recalculer" class="btn-secondary"
+                                help="Relire la base : cadence, ratio, dépendances et état de préparation."/>
+                    </group>
                     <div class="alert alert-info" role="alert">
                         <field name="recommendation" nolabel="1" readonly="1"/>
                     </div>

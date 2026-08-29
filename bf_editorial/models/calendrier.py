@@ -219,14 +219,7 @@ class EditorialCalendar(models.Model):
             "calendar_id": self.id,
         })
         proposal.action_compute()
-        return {
-            "type": "ir.actions.act_window",
-            "name": _("Proposition"),
-            "res_model": "bf.editorial.proposal",
-            "res_id": proposal.id,
-            "view_mode": "form",
-            "target": "new",
-        }
+        return proposal._open()
 
     def action_view_entries(self):
         self.ensure_one()

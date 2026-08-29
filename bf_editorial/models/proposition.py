@@ -9,6 +9,7 @@ La proposition s'explique. Un classement sans motif n'aide personne à trancher.
 """
 
 from odoo import _, api, fields, models
+from odoo.exceptions import UserError
 
 # Pondérations du classement. Ce sont des choix éditoriaux, pas des constantes
 # techniques : elles se relisent et se discutent.
@@ -27,6 +28,7 @@ class EditorialProposal(models.TransientModel):
 
     calendar_id = fields.Many2one(
         "bf.editorial.calendar", string="Calendrier", required=True,
+        default=lambda self: self._default_calendar(),
     )
     cadence_note = fields.Text(string="Cadence", readonly=True)
     ratio_note = fields.Text(string="Ratio", readonly=True)
@@ -39,6 +41,54 @@ class EditorialProposal(models.TransientModel):
         readonly=True,
     )
     blocked_note = fields.Text(string="Écartées", readonly=True)
+
+    @api.model
+    def _default_calendar(self):
+        """Le calendrier à proposer quand personne n'en a nommé un.
+
+        Celui dont l'utilisateur est responsable d'abord : sur une instance à
+        plusieurs flux, c'est le sien qu'il vient voir.
+        """
+        Calendar = self.env["bf.editorial.calendar"]
+        mine = Calendar.search(
+            [("user_id", "=", self.env.uid)], order="sequence", limit=1,
+        )
+        return mine or Calendar.search([], order="sequence", limit=1)
+
+    @api.model
+    def action_open_next(self):
+        """Proposer sans passer par la fiche d'un calendrier.
+
+        La proposition ne vivait que sur le formulaire du calendrier, un écran
+        de paramétrage où personne ne va pour se demander quoi publier.
+        """
+        calendar = self._default_calendar()
+        if not calendar:
+            raise UserError(_(
+                "Aucun calendrier éditorial n'est défini : il n'y a rien à"
+                " proposer. Créez-en un sous Atelier éditorial > Calendriers."
+            ))
+        proposal = self.create({"calendar_id": calendar.id})
+        proposal.action_compute()
+        return proposal._open()
+
+    def _open(self):
+        """Ouvrir la proposition, calculée, dans sa fenêtre."""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Proposition"),
+            "res_model": "bf.editorial.proposal",
+            "res_id": self.id,
+            "view_mode": "form",
+            "target": "new",
+        }
+
+    def action_recompute(self):
+        """Recalculer et rester à l'écran, changement de calendrier compris."""
+        self.ensure_one()
+        self.action_compute()
+        return self._open()
 
     def action_compute(self):
         """Évaluer le calendrier et classer les candidats."""

@@ -243,6 +243,11 @@
         <field name="arch" type="xml">
             <list decoration-danger="is_blocked" decoration-success="preflight_ok and not published_date"
                   decoration-muted="published_date">
+                <header>
+                    <button name="action_run_qa" type="object"
+                            string="Passer la QA" class="btn-secondary"
+                            help="Contrôles déterministes sur la sélection. Aucune intelligence artificielle n'intervient."/>
+                </header>
                 <field name="name"/>
                 <field name="calendar_id" optional="show"/>
                 <field name="pillar_id" optional="show"/>
