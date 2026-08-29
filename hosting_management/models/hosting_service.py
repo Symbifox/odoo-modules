@@ -704,13 +704,19 @@ class HostingService(models.Model):
             record.health_check_count = counts.get(record.id, 0)
 
     def _compute_maintenance_schedule_count(self):
+        today = fields.Date.today()
         for record in self:
             active_schedules = record.maintenance_schedule_ids.filtered(
                 lambda s: s.active
             )
             record.maintenance_schedule_count = len(active_schedules)
+            # Comparer next_due directement : is_overdue est un calculé stocké
+            # que seul le cron quotidien rafraîchit, donc s'y fier ici ferait
+            # afficher 0 tant que la tâche n'a pas été remarquée faite.
             record.maintenance_overdue_count = len(
-                active_schedules.filtered(lambda s: s.is_overdue)
+                active_schedules.filtered(
+                    lambda s: s.next_due and s.next_due < today
+                )
             )
 
     def action_view_maintenance_schedules(self):

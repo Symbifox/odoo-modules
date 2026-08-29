@@ -18,10 +18,15 @@ def _human_bytes(n):
     return f"{n:.2f} EB"
 
 
-class HostingDashboard(models.Model):
+class HostingDashboard(models.AbstractModel):
     _name = "hosting.dashboard"
     _description = "Tableau de bord d'hébergement"
-    _auto = False
+    # `AbstractModel` : ce modèle n'a ni champ ni table, il ne sert que de point
+    # d'entrée RPC pour le composant OWL. Déclaré `models.Model` + `_auto = False`,
+    # il entrait dans `Registry.check_tables_exist()`, qui ne dispense que
+    # `_abstract` et les modèles à `_table_query` — d'où un `ERROR
+    # odoo.modules.registry: Model <ce modèle> has no table.` journalisé à chaque
+    # passe du chargeur sur une base neuve.
 
     # ------------------------------------------------------------------
     # Public API — called from OWL client action

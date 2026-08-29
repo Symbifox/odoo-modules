@@ -158,5 +158,20 @@
             <field name="active">True</field>
         </record>
 
+        <!-- Tâche planifiée : Rafraîchir les indicateurs d'échéance
+             days_until_due et is_overdue sont des calculés STOCKÉS qui ne
+             dépendent que de next_due : Odoo ne les réécrit qu'au moment où
+             l'échéance bouge. Le temps qui passe n'étant pas une dépendance,
+             il faut ce passage quotidien pour qu'ils restent vrais. -->
+        <record id="ir_cron_hosting_maintenance_refresh_due" model="ir.cron">
+            <field name="name">Hébergement : Rafraîchir les indicateurs d'échéance</field>
+            <field name="model_id" ref="model_hosting_maintenance_schedule"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_refresh_due_indicators()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="active">True</field>
+        </record>
+
     </data>
 </odoo>

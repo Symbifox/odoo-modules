@@ -86,7 +86,7 @@
                 <separator/>
                 <filter name="filter_my_schedules" string="Mes calendriers" domain="[('user_id', '=', uid)]"/>
                 <separator/>
-                <filter name="filter_overdue" string="En retard" domain="[('is_overdue', '=', True)]"/>
+                <filter name="filter_overdue" string="En retard" domain="[('next_due', '&lt;', context_today().strftime('%Y-%m-%d'))]"/>
                 <filter name="filter_due_this_week" string="Dû cette semaine" domain="[('next_due', '&lt;=', (context_today() + relativedelta(days=7)).strftime('%Y-%m-%d')), ('next_due', '>=', context_today().strftime('%Y-%m-%d'))]"/>
                 <filter name="filter_due_this_month" string="Dû ce mois-ci" domain="[('next_due', '&lt;=', (context_today() + relativedelta(days=30)).strftime('%Y-%m-%d')), ('next_due', '>=', context_today().strftime('%Y-%m-%d'))]"/>
                 <separator/>
@@ -193,7 +193,7 @@
         <field name="res_model">hosting.maintenance.schedule</field>
         <field name="view_mode">list,kanban,calendar,activity,form</field>
         <field name="search_view_id" ref="hosting_maintenance_schedule_view_search"/>
-        <field name="domain">[('is_overdue', '=', True), ('active', '=', True)]</field>
+        <field name="domain">[('next_due', '&lt;', context_today().strftime('%Y-%m-%d')), ('active', '=', True)]</field>
     </record>
 
     <!-- Due This Week Maintenance Action -->

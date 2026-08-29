@@ -195,6 +195,24 @@ class HostingMaintenanceSchedule(models.Model):
         for record in self:
             record.is_overdue = record.next_due and record.next_due < today
 
+    @api.model
+    def _cron_refresh_due_indicators(self):
+        """Recalculer les indicateurs qui dépendent de la date du jour.
+
+        ``days_until_due`` et ``is_overdue`` sont stockés et ne dépendent que de
+        ``next_due``. Odoo ne les réécrit donc qu'au moment où l'échéance bouge,
+        c'est-à-dire quand la tâche est marquée faite : entre deux exécutions le
+        calendrier avance et les valeurs restent figées à ce qu'elles valaient ce
+        jour-là. Sans ce passage quotidien, ``days_until_due`` affiche en
+        permanence la longueur du cycle et ``is_overdue`` ne devient jamais vrai.
+        """
+        schedules = self.with_context(active_test=False).search([])
+        if not schedules:
+            return
+        schedules._compute_days_until_due()
+        schedules._compute_is_overdue()
+        schedules.flush_recordset(["days_until_due", "is_overdue"])
+
     def action_mark_done(self):
         """Marquer la tâche de maintenance comme complétée et recalculer la prochaine échéance."""
         today = fields.Date.today()

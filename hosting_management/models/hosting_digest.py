@@ -298,7 +298,8 @@ class HostingDigest(models.Model):
             content_parts.append(email_tpl.get_section_title("Maintenance en retard", "#dc3545"))
             rows = []
             for schedule in data["maintenance_overdue"]:
-                days = schedule.days_until_due
+                # days_until_due est négatif pour une tâche échue
+                days = abs(schedule.days_until_due)
                 days_style = "color:#dc3545; font-weight:600;"
                 maint_type = schedule._get_type_display()
                 assigned = _esc(schedule.user_id.name) if schedule.user_id else "Non assigné"
@@ -306,7 +307,7 @@ class HostingDigest(models.Model):
                     f"{_esc(schedule.service_id.name)}<br/><span style='color:#6B7280; font-size:12px;'>{_esc(schedule.service_id.code)}</span>",
                     f"<span style='font-weight:600;'>{_esc(schedule.name)}</span><br/><span style='color:#6B7280; font-size:12px;'>{_esc(maint_type)}</span>",
                     str(schedule.next_due),
-                    f"<span style='{days_style}'>{days} jours</span>",
+                    f"<span style='{days_style}'>{days} j de retard</span>",
                     assigned,
                 ])
             content_parts.append(email_tpl.get_data_table(
