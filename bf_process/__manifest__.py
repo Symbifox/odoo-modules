@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     "name": "Cartographie de processus",
-    "version": "18.0.4.2.0",
+    "version": "18.0.4.3.0",
     "category": "Services/Project",
     "summary": "Cartographies BPMN vivantes : le modèle est la vérité, le PDF et"
                " les deux XML n'en sont que des rendus",
@@ -31,6 +31,10 @@ Fonctionnalités
   grille du modèle ; poser, lier et retirer écrivent dans les enregistrements.
   Aucune bibliothèque tierce, donc aucun filigrane imposé et aucun appel
   sortant.
+* **Le livrable, pas seulement le tracé** : couverture, légende dessinée avec
+  les mêmes primitives que la carte, sommaire, un niveau par page, annexes
+  (hypothèses, questions ouvertes, constats), registre de validation et carte
+  dépliée. La prose vit en base, sur la carte : elle se gèle avec sa version.
 * **Tracé PDF côté serveur**, à l'échelle 1:1, sans navigateur ni moteur
   typographique : la largeur de la police est étalonnée une fois et figée, et
   le PDF sort de la même géométrie que les deux exports XML.
@@ -70,6 +74,7 @@ Limites assumées
         "views/bf_process_node_views.xml",
         "views/bf_process_resource_views.xml",
         "views/bf_process_portal_templates.xml",
+        "views/bf_process_document_views.xml",
         "views/bf_process_wizard_views.xml",
         "views/menu_views.xml",
     ],

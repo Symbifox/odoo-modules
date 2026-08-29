@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_bf_process_form_document" model="ir.ui.view">
+        <field name="name">bf.process.form.document</field>
+        <field name="model">bf.process</field>
+        <field name="inherit_id" ref="bf_process.view_bf_process_form"/>
+        <field name="arch" type="xml">
+            <button name="action_telecharger_pdf" position="before">
+                <button name="action_telecharger_document" type="object"
+                        string="Générer le document" class="btn-primary"
+                        invisible="diagram_count == 0"
+                        help="Le livrable complet : couverture, légende,
+                              sommaire, un niveau par page, annexes, registre
+                              de validation et carte dépliée. Le bouton
+                              « Tracer en PDF » ne rend que le tracé nu."/>
+            </button>
+            <page name="source" position="before">
+                <page string="Document" name="document"
+                      invisible="diagram_count == 0">
+                    <group>
+                        <field name="sous_titre"
+                               placeholder="État actuel (AS-IS), de … à …"/>
+                        <field name="pied_document"
+                               placeholder="À défaut, la première ligne de la source."/>
+                        <field name="date_document"/>
+                    </group>
+                    <field name="section_ids" nolabel="1"
+                           context="{'default_process_id': id}">
+                        <list editable="bottom" decoration-muted="kind == 'validation'">
+                            <field name="kind" widget="badge"/>
+                            <field name="sequence" widget="handle"/>
+                            <field name="name"/>
+                            <field name="body" widget="html" optional="hide"/>
+                        </list>
+                        <form>
+                            <sheet>
+                                <group>
+                                    <field name="kind"/>
+                                    <field name="sequence"/>
+                                    <field name="name"/>
+                                </group>
+                                <field name="body" widget="html"
+                                       placeholder="Chacune comble un silence de la source. Une hypothèse fausse déplace des flèches, jamais du travail réel."/>
+                            </sheet>
+                        </form>
+                    </field>
+                </page>
+            </page>
+        </field>
+    </record>
+
+</odoo>
