@@ -67,6 +67,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 |---|---|---|---|---|
 | `audit_ti` | Audit TI - Loi 25 | 18.0.1.17.1 | BUSL-1.1 | IT security audit management for Quebec's Loi 25 compliance |
 | `bf_activity_calendar_link` | BF Activités - Lien Calendrier | 18.0.1.1.0 | LGPL-3 | Lier des événements calendrier existants aux activités |
+| `bf_ai_bridge` | AI Bridge (socket transport) | 18.0.1.0.1 | LGPL-3 | The single transport to the AI bridge service |
 | `bf_appointment` | Symbifox Appointment | 18.0.2.52.5 | BUSL-1.1 | Self-service public booking pages (extends `resource_booking`) |
 | `bf_appointment_poll` | Symbifox Appointment Polls | 18.0.1.13.0 | BUSL-1.1 | Availability polling: propose slots, collect answers, book the meeting |
 | `bf_apps_menu` | Menu des applications cherchable | 18.0.1.0.0 | LGPL-3 | Le menu des applications devient une grille d'icônes cherchable au clavier |
