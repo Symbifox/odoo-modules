@@ -470,6 +470,14 @@ curl -X POST https://odoo.example.com/bf_sms_archive/api/ingest \
 
 ## Changelog
 
+### Version 18.0.5.11.1
+
+- **NEW:** `POST /send` on the mobile API accepts `media` -- a list of `{filename, content_type, data_b64}` -- and hands it to `action_send`, which already knew how to turn it into a `sendMMS` call. Outbound MMS was reachable from the web messenger and from nowhere else; the phone could only send text. This is what lets the Android app receive a photo from the system share sheet and send it on as an MMS.
+- **GUARD:** Attachments are validated before `action_send` sees them: at most three parts (the provider exposes `media1`..`media3`, and a fourth would be dropped **silently** -- message created, marked sent, one photo missing at the other end), 1 MB per part, 2 MB in total, base64 that actually decodes, a MIME type matching `type/subtype` before it reaches a `data:` URI, and a filename stripped of path separators.
+- **GUARD:** An MMS on a line with `mms_enabled = False` is refused with a 400 before anything is created. `action_send` does ask the question, but inside its own `try`, so the `UserError` was caught, the message created anyway in `failed` state, and the route answered `ok` -- the caller would move on to the thread with a photo that looks sent and never left the device.
+- **CHANGE:** A send with neither body nor attachment is refused (`empty_message`) instead of dispatching an empty SMS. A send with an attachment and no body is fine: a photo on its own is a whole message.
+- **TESTS:** Nine unit tests on the attachment guard, six HTTP tests covering the send path end to end.
+
 ### Version 18.0.5.10.0
 
 - **NEW:** Linking a conversation to a contact now writes the thread's number into that contact's **Mobile** field. Until now the link only taught the messenger a name: the number itself stayed unknown to the contact record, so it could not be found from anywhere else in Odoo and the next thread opened on it did not match on its own.

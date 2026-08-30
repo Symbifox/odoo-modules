@@ -10,6 +10,8 @@ Chaque requête authentifiée s'exécute DANS le contexte de l'utilisateur de
 l'appareil (``request.update_env(user=…)``), donc les règles d'accès par
 propriétaire des fils s'appliquent telles quelles.
 """
+import base64
+import binascii
 import functools
 import json
 import re
@@ -113,6 +115,65 @@ def _body():
         return json.loads(raw)
     except (ValueError, TypeError):
         return {}
+
+
+# ── MMS sortant depuis l'app ─────────────────────────────────────────────────
+# Trois pièces, parce que VOIP.ms n'expose que ``media1``..``media3`` sur
+# ``sendMMS`` — au-delà, la quatrième partirait dans le vide sans erreur. Les
+# plafonds de taille sont ceux du MMS chez les transporteurs nord-américains
+# (~1 Mo par pièce, ~2 Mo l'enveloppe) : l'app redimensionne AVANT d'envoyer,
+# et ce garde-fou refuse clairement plutôt que de laisser VOIP.ms répondre un
+# statut opaque une fois le message déjà créé.
+MMS_MAX_PARTS = 3
+MMS_MAX_PART_BYTES = 1_000_000
+MMS_MAX_TOTAL_BYTES = 2_000_000
+_MIME_RE = re.compile(r"^[\w.+-]+/[\w.+-]+$")
+
+
+def _parse_media(raw):
+    """Liste de {filename, content_type, data_b64} validée, ou lève UserError.
+
+    Rend une liste vide quand rien n'est joint : ``action_send`` traite alors
+    l'envoi comme un SMS, exactement comme avant.
+    """
+    if not raw:
+        return []
+    if not isinstance(raw, list):
+        raise UserError("Pièces jointes invalides.")
+    if len(raw) > MMS_MAX_PARTS:
+        raise UserError("Maximum %d pièces jointes." % MMS_MAX_PARTS)
+    out = []
+    total = 0
+    for item in raw:
+        if not isinstance(item, dict):
+            raise UserError("Pièce jointe invalide.")
+        data_b64 = (item.get("data_b64") or "").strip()
+        if not data_b64:
+            raise UserError("Pièce jointe vide.")
+        try:
+            size = len(base64.b64decode(data_b64, validate=True))
+        except (ValueError, binascii.Error):
+            raise UserError("Pièce jointe illisible.")
+        if not size:
+            raise UserError("Pièce jointe vide.")
+        if size > MMS_MAX_PART_BYTES:
+            raise UserError("Pièce jointe trop volumineuse (max 1 Mo).")
+        total += size
+        if total > MMS_MAX_TOTAL_BYTES:
+            raise UserError("Pièces jointes trop volumineuses (max 2 Mo au total).")
+        content_type = (item.get("content_type") or "").strip()
+        if not _MIME_RE.match(content_type):
+            content_type = "application/octet-stream"
+        # Le nom ne sert qu'à l'archivage local : on le borne et on retire tout
+        # séparateur de chemin, il finit dans une pièce jointe Odoo.
+        filename = (item.get("filename") or "fichier").strip()
+        filename = re.sub(r"[/\\]", "_", filename)[:128] or "fichier"
+        out.append({
+            "filename": filename,
+            "content_type": content_type,
+            "data_b64": data_b64,
+        })
+    return out
 
 
 def _authed(fn):
@@ -363,6 +424,7 @@ class BfSmsMobileApi(http.Controller):
         data = _body()
         body = data.get("body") or ""
         line_id = data.get("line_id")
+        media = _parse_media(data.get("media"))
         Thread = request.env["sms.archive.thread"]
         Msg = request.env["sms.archive.message"]
         if data.get("thread_id"):
@@ -381,7 +443,26 @@ class BfSmsMobileApi(http.Controller):
             dst = data.get("phone")
         if not (dst and line_id):
             return _json({"error": "missing_destination_or_line"}, 400)
-        msg_id = Msg.action_send(int(line_id), dst, body)
+        # Un MMS peut n'avoir aucun texte — une photo seule est un message
+        # complet. Le corps vide ne se refuse donc que sur le chemin SMS.
+        if not (body.strip() or media):
+            return _json({"error": "empty_message"}, 400)
+        # ⚠️ La ligne sait-elle faire un MMS ? ``action_send`` pose bien la
+        # question, mais DANS son bloc `try` : l'erreur y est rattrapée, le
+        # message créé quand même en « échoué », et la route répondrait « ok ».
+        # L'app enchaînerait sur le fil, où la photo apparaîtrait partie alors
+        # qu'elle n'a jamais quitté l'appareil. On tranche donc avant, pendant
+        # qu'il n'y a encore rien à défaire.
+        if media:
+            line = request.env["sms.archive.line"]._lines_for_user(
+                device.user_id).filtered(lambda l: l.id == int(line_id))
+            if not line:
+                return _json({"error": "line_not_found"}, 404)
+            if not line.mms_enabled:
+                raise UserError(
+                    "Cette ligne n'envoie pas de MMS : retirez la pièce jointe "
+                    "ou choisissez une autre ligne.")
+        msg_id = Msg.action_send(int(line_id), dst, body, media=media or None)
         msg = Msg.browse(msg_id)
         return _json({
             "ok": True,
