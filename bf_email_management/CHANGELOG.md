@@ -4,6 +4,153 @@ All notable changes to `bf_email_management` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This module follows Odoo's `MAJOR.MINOR.PATCH` convention prefixed with the Odoo series (`18.0.X.Y.Z`).
 
+## [18.0.11.5.0] — 2026-08-29
+
+An arrival notice for incoming mail, inside Odoo.
+
+### Added
+
+- **Arrival notice (`bf.email.popup`).** A mail lands, a toast shows up in the
+  open tab. It is the second transport for the same news, alongside the mobile
+  push in `push_transport.py`; both are fed by the **same** sweep of fresh rows
+  in `_sync_account`, so they cannot drift apart.
+
+  Three levels of setting, widest to finest:
+
+  - `ir.config_parameter` `bf_email.popup_enabled` — the instance, with its
+    checkbox under Settings → Gestion des courriels. **Absent means no**: a
+    database that receives this version at its next `-u` does not change
+    behaviour.
+  - `bf.email.account.popup_mode` (`none` / `transient` / `sticky`, default
+    `transient`) — the person. The account already carries `user_id`, so setting
+    it per account **is** the per-person setting; a field on `res.users` would
+    have said the same thing twice and ended up saying it differently.
+  - `bf.email.account.popup_sticky_folders` — the folder. A comma-separated
+    list, case- and space-insensitive. What lands there stays on screen until a
+    gesture. The field **narrows** attention, it switches nothing back on: no
+    effect when the account is set to `none`.
+
+  Past five notices of one kind in a single pass, a summary replaces the pile — a
+  catch-up after downtime must not stack the mailbox on screen. Sticky and
+  transient are counted separately, otherwise a batch of transients would drown
+  the few stickies on a recovery day.
+
+  ⚠️ **The bus payload carries an id and nothing else.** `bus.bus._sendone`
+  broadcasts to the *partner*, one partner can carry more than one user, and the
+  bus consults no record rule. The client re-reads the row through the ORM, which
+  does apply them; a forbidden row comes back empty and produces no notice. Same
+  reasoning as `_broadcast_change`, and the reason the `bf_email/changed` channel
+  carries only a `reason`. A test forbids it explicitly, so "let us avoid the
+  round-trip by putting the subject in" fails instead of shipping.
+
+  The `calendarNotification` service is **not** overridden: calendar reminders
+  keep their popup and their snooze buttons, mail notices sit alongside them.
+
+- `tests/test_popup_notify.py` — 19 tests: the three shapes of the switch's "no"
+  (**absent key**, empty key, key at zero), the payload's contents, the channel's
+  addressee, filtering by account then by folder, the summary and its sticky /
+  transient split, the settings checkbox round-trip, and the hook into ingestion.
+
+  The test that matters most is the **absent key**, not the unreadable value: an
+  absent key is the state of every fresh install, hence of every tenant at its
+  next `-u`.
+
+### Fixed
+
+- 🔴 **`_sync_account` gave up as soon as no mobile device was registered.** The
+  wrapper returned through `super()` when no `bf.email.mobile.device` carried a
+  `push_endpoint`, and therefore did not sweep the fresh rows. Since the push
+  endpoints had been cleared and `bf_email.push_enabled` set to 0 during the ntfy
+  clean-up, **the notice would never have seen anything go by** — with no error
+  and not one line in the log.
+
+  The sweep now fires as soon as **either** transport asks for it, and stays
+  single. The rule that follows: any consumer hooked onto `_sync_account` must
+  add **its own** clause to the guard.
+
+### Known limits
+
+- The notice only covers mail ingested **over IMAP**. A row coming from a chatter
+  or the mail gateway has no `account_id`, hence no setting to read, hence no
+  notice.
+
+## [18.0.11.4.1] — 2026-08-29
+
+A tile that counted zero without saying so.
+
+### Fixed
+
+- 🔴 **"Awaiting reply" always counted zero.** Both dashboard domains
+  (`action_view_awaiting_reply` and `_get_actionable`) filter on
+  `external_age_hours >= 24`. That field is computed and **not stored**: Odoo logs
+  `Non-stored field bf.email.external_age_hours cannot be searched` and returns
+  nothing. The counter therefore showed 0 whatever the real backlog, and a wrong
+  counter goes unnoticed — unlike an error.
+
+  The field now has a `search` method translating to the stored fields that
+  actually carry the value: `response_time_hours` for answered mail, `date` for
+  the rest — with the operator **reversed**, since an older email carries a
+  smaller date. Outbound and date-less rows count as 0.0 and only match when 0
+  satisfies the comparison.
+
+  Storing it would have been the wrong reflex: its value depends on `now`, so it
+  would be stale the moment it was written.
+
+  This also repairs the list view's "Waiting age" column, until now unfilterable.
+
+- 🔴 **Calendar reminders went out exactly twice.** The cron fires a reminder up
+  to a 70-second lead *before* `notify_at`, but both de-dup guards compared
+  against `notify_at` itself. A reminder already pushed for the window therefore
+  carried a timestamp *earlier* than `notify_at` and could never match, so every
+  reminder was sent once on the tick that fired it early and once on the next.
+  The lead now lives in a single constant that both the horizon and the guards
+  read, which is what stops them drifting apart again.
+
+### Added
+
+- `tests/test_external_age_search.py` — the invariant rather than a walk-through:
+  the set returned by `search` must be exactly the set of rows whose **computed**
+  value satisfies the comparison, over the six operators and four thresholds.
+  Plus a test proving the check discriminates, without which the invariant would
+  hold over two empty sets.
+
+- **Instance kill switch for the mobile push** — `ir.config_parameter`
+  `bf_email.push_enabled`, default `"1"`. Clearing a device's `push_endpoint`
+  does stop the push, but the app re-registers on its next launch and it all
+  comes back; the parameter is the durable off.
+
+## [18.0.11.4.0] — 2026-08-27
+
+Where automatic mark-as-read stops. The answer was: nowhere.
+
+### Fixed
+
+- 🔴 **Showing the mailbox as a list marked every displayed mail as read.**
+  Mark-as-read lives in `web_read`, documented as "auto mark-as-read on form
+  open". But Odoo implements `web_search_read` as
+  `records.web_read(specification)` (`addons/web/models/models.py`), so every
+  list, kanban or dashboard render flipped every `new` row it returned to
+  `read`.
+
+  Two consequences measured in production on 2026-08-27. The unread counter and
+  the `new` filter emptied themselves before anyone had opened the message: a
+  `bf.email` row created at 21:27:51 was `read` at 21:27:52,23 — nobody opened
+  it within a second. And every open client wrote the same row at the same
+  instant: six concurrent writes per incoming mail, 33 serialization failures
+  per half-hour replayed by Odoo.
+
+  `web_search_read` now sets a context flag (`bf_email_reading_list`) that
+  `web_read` honours. The list reads, the form marks. `@api.readonly` is taken
+  back from the base method: now that this path no longer writes, the annotation
+  is accurate again.
+
+### Notes
+
+- The form path's `_filtered_access("write")` guard is kept as is: reading a
+  colleague's mailbox still does not mark it read on their behalf.
+- New file `tests/test_mark_read_scope.py`: the list does not touch status, the
+  form does, and a list does not consume the "unread" the form is waiting for.
+
 ## [18.0.11.3.0] — 2026-08-26
 
 What a folder renamed or deleted on the server does to the emails held here.

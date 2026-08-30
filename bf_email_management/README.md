@@ -91,6 +91,48 @@ The list view is still there under **Boîte de réception (liste)**: filters, gr
 ### Chatter handled indicator (9.0+)
 Every chatter message carries a badge — **À traiter**, **Traité** or **Reporté** — reflecting the current user's `bf.email` mirror. `mail.message._to_store` joins `bfEmailState` in one query per rendered batch, and only on the `for_current_user` path: the state is strictly personal and must never ride along in a broadcast. The message actions follow the same state, so « Traité » disappears once the mail is out of the inbox and « Remettre en boîte » only shows where it means something.
 
+### Arrival notice (11.5+)
+A mail lands, a toast shows up in the open tab. This is the **second transport for
+the same news**, alongside the mobile push in `push_transport.py`; both are fed by
+the *same* sweep of fresh rows inside `_sync_account`, so they cannot drift apart.
+
+Three levels of setting, widest to finest:
+
+- `ir.config_parameter` **`bf_email.popup_enabled`** — the instance, with a
+  checkbox under Settings → Gestion des courriels. **Absent means no**, so a
+  database that receives this version at its next `-u` does not change behaviour.
+- **`bf.email.account.popup_mode`** (`none` / `transient` / `sticky`, default
+  `transient`) — the person. The account already carries `user_id`, so setting it
+  per account *is* the per-person setting; a second field on `res.users` would say
+  the same thing twice and eventually say it differently.
+- **`bf.email.account.popup_sticky_folders`** — the folder. A comma-separated
+  list, case- and space-insensitive. What lands there stays on screen until a
+  gesture. The field **narrows** attention, it never switches anything back on:
+  it has no effect when the account is set to `none`.
+
+Past five notices of one kind in a single pass, a summary replaces the pile — a
+catch-up after downtime must not stack the mailbox on screen. Sticky and transient
+are counted separately, otherwise a batch of transients would drown the few
+stickies on a recovery day.
+
+⚠️ **The bus payload carries an id and nothing else.** `bus.bus._sendone`
+broadcasts to the *partner*, one partner can carry more than one user, and the bus
+never consults a record rule. The client re-reads the row through the ORM, which
+does apply them; a row the reader may not see comes back empty and produces no
+notice — that is the intended behaviour, not an error path. Same reasoning as
+`_broadcast_change`, and the reason the `bf_email/changed` channel carries only a
+`reason`. A test forbids adding the subject, so "let's avoid the round-trip" fails
+instead of shipping.
+
+A mail handled elsewhere — another tab, the phone, a rule — closes its own sticky
+notice, off the `bf_email/changed` tick. The `calendarNotification` service is
+**not** overridden: calendar reminders keep their popup and their snooze buttons,
+mail notices simply sit next to them.
+
+**Known limit** — the notice only covers mail ingested **over IMAP**. A row coming
+from a chatter or the mail gateway has no `account_id`, hence no setting to read,
+hence no notice.
+
 ### IMAP Folder Browser (3.5+, OWL client action)
 A mail-client-style view of any IMAP folder, no permanent ingestion required.
 
@@ -236,6 +278,7 @@ A REST/JSON surface under `/bf_email_management/mobile/v1/`, consumed by the **O
 - **Full client.** Read, search, reply / reply-all / forward, compose, archive (with the real IMAP write-back), snooze, plus the Odoo-side verbs: route into a record's chatter, spawn a task / ticket / lead / bill / invoice / expense.
 - **Remote content blocked by default.** Bodies are the sanitized `body_html_display` with remote `<img src>` parked in `data-blocked-src` until the reader asks. `cid:` and `data:` sources are untouched.
 - **Push over UnifiedPush (ntfy), no Google dependency.** One endpoint per device, registered against this module and `bf_sms_archive` independently; payloads are told apart by `type`.
+- **Push has an instance kill switch** — `ir.config_parameter` `bf_email.push_enabled`, default `"1"`. Clearing a device's `push_endpoint` does stop the push, but the app re-registers on its next launch and it all comes back; the parameter is the durable off. The in-Odoo notice has its own, separate switch — see *Arrival notice*.
 
 `bf.email.mobile.device` holds the bearer tokens. Devices are minted only by the controller, in `sudo`, and are owner-scoped — see Security below.
 
@@ -243,11 +286,11 @@ A REST/JSON surface under `/bf_email_management/mobile/v1/`, consumed by the **O
 ```bash
 odoo -d <base> -u bf_email_management --test-enable --test-tags /bf_email_management
 ```
-169 tests dans `tests/` : cycle de vie du jeton d'appareil, repli en fils et filtres, ouverture d'un fil, envois et anti-doublon, les quatre frontières de sécurité, les routes en `HttpCase`, la surface RPC de la boîte de réception (portée, liste blanche d'actions, clé `views`), la boucle de recopie IMAP et l'indicateur de chatter.
+389 tests in `tests/`: device-token lifecycle, thread folding and filters, opening a thread, sending and its anti-duplicate guard, the four security boundaries, the routes under `HttpCase`, the inbox RPC surface (scope, action allow-list, `views` key), the IMAP write-back loop, the chatter indicator, and the arrival notice.
 
-⚠️ Sur le banc `odoo-staging`, `--db-filter` **et** `--addons-path` sont obligatoires : sans le premier les `HttpCase` partent sur une autre base, sans le second (avec `ODOO_RC=/dev/null`) le module n'est même pas trouvé et la suite rend « 0 tests » sans erreur.
+⚠️ On a test bench, `--db-filter` **and** `--addons-path` are both mandatory: without the first, `HttpCase` requests land on another database; without the second (together with `ODOO_RC=/dev/null`) the module is not even found and the run reports "0 tests" with no error.
 
-`tools/smoke_mobile_api.py <instance>` éprouve une instance **vivante** après déploiement, avec code de sortie. Avec `--token`, il vérifie en plus que la forme du contrat correspond toujours à ce qu'attendent les modèles de l'app Android — les fixtures des tests Kotlin sont figées et passeraient malgré une dérive du serveur.
+`tools/smoke_mobile_api.py <instance>` exercises a **live** instance after deployment, with an exit code. With `--token` it also checks that the contract's shape still matches what the Android app's models expect — the Kotlin tests' fixtures are frozen and would pass through a server-side drift.
 
 ## Security
 

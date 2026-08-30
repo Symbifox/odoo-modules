@@ -85,6 +85,13 @@ class BfEmailUnifiedPush(models.AbstractModel):
     def _devices(self, owner):
         if not owner:
             return self.env["bf.email.mobile.device"]
+        # Interrupteur par locataire. Vider push_endpoint coupait bien la
+        # poussée, mais l'app se réinscrit à son prochain lancement et tout
+        # revient. Défaut « 1 » : aucun autre locataire ne change de
+        # comportement au déploiement. Tâche BF #25045.
+        if self.env["ir.config_parameter"].sudo().get_param(
+                "bf_email.push_enabled", "1") != "1":
+            return self.env["bf.email.mobile.device"]
         return self.env["bf.email.mobile.device"].sudo().search([
             ("user_id", "=", owner.id),
             ("active", "=", True),

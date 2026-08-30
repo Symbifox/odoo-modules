@@ -29,7 +29,7 @@ MAX_PAGE = 500
 # bascule donc de source selon le dossier ouvert.
 DRAFTS_FOLDER = "drafts"
 
-# Dossiers IMAP réels dans l'arbre de gauche (). L'arborescence
+# Dossiers IMAP réels dans l'arbre de gauche. L'arborescence
 # vient du serveur (cache `bf.email.account.folder_cache`) mais le CONTENU
 # reste des lignes `bf.email` : ouvrir « Archives/2026 » montre les lignes
 # Odoo classées là, avec Traité / Router / Ajouter et le lien vers le

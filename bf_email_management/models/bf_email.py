@@ -433,6 +433,7 @@ class BfEmail(models.Model):
     external_age_hours = fields.Float(
         string="Âge en attente (h)",
         compute="_compute_external_age",
+        search="_search_external_age_hours",
         help="Heures depuis réception jusqu'à réponse (ou maintenant). "
              "Inbound seulement. Kooti 2015 — médiane des réponses < 47 min, "
              "queue > 24h = vrai backlog.",
@@ -823,6 +824,56 @@ class BfEmail(models.Model):
                 delta = now - rec.date
                 rec.external_age_hours = round(delta.total_seconds() / 3600, 2)
 
+    # Un champ calculé non stocké n'est pas cherchable : sans cette méthode,
+    # `("external_age_hours", ">=", 24)` fait journaliser « Non-stored field
+    # bf.email.external_age_hours cannot be searched » et le domaine ne ramène
+    # RIEN — la tuile « En attente de réponse » comptait donc zéro en silence.
+    # Le stocker serait faux : sa valeur dépend de `now` et serait périmée dès
+    # l'écriture. On traduit plutôt vers les champs stockés qui la portent.
+    _OPERATEURS_AGE = {
+        "=": lambda a, b: a == b,
+        "!=": lambda a, b: a != b,
+        "<": lambda a, b: a < b,
+        "<=": lambda a, b: a <= b,
+        ">": lambda a, b: a > b,
+        ">=": lambda a, b: a >= b,
+    }
+
+    def _search_external_age_hours(self, operator, value):
+        """Traduit une recherche sur l'âge vers `date` et `response_time_hours`.
+
+        Trois cas, exactement ceux de `_compute_external_age` : répondu → la
+        valeur EST `response_time_hours`, qui est stocké ; non répondu → l'âge
+        se lit sur `date`, donc l'opérateur se RENVERSE (plus vieux = date plus
+        petite) ; ni entrant ni daté → la valeur vaut 0.0.
+        """
+        compare = self._OPERATEURS_AGE.get(operator)
+        if compare is None:
+            raise NotImplementedError(
+                _("L'opérateur %s n'est pas géré sur « Âge en attente ».", operator)
+            )
+        seuil = fields.Datetime.now() - timedelta(hours=value)
+        renverse = {"<": ">", "<=": ">=", ">": "<", ">=": "<=",
+                    "=": "=", "!=": "!="}[operator]
+        domaine = [
+            "|",
+            "&", "&", "&",
+            ("direction", "=", "in"), ("date", "!=", False),
+            ("status", "=", "replied"),
+            ("response_time_hours", operator, value),
+            "&", "&", "&",
+            ("direction", "=", "in"), ("date", "!=", False),
+            ("status", "!=", "replied"),
+            ("date", renverse, seuil),
+        ]
+        # Sortants et sans-date valent 0.0 : ils n'entrent que si 0 satisfait
+        # la comparaison demandée.
+        if compare(0.0, value):
+            domaine = ["|"] + domaine + [
+                "|", ("direction", "!=", "in"), ("date", "=", False),
+            ]
+        return domaine
+
     # ------------------------------------------------------------------
     # Nightly cron: recompute expected_reply_minutes per partner
     # ------------------------------------------------------------------
@@ -954,8 +1005,41 @@ class BfEmail(models.Model):
     # ------------------------------------------------------------------
     # Auto mark-as-read on form open
     # ------------------------------------------------------------------
+    @api.model
+    @api.readonly
+    def web_search_read(self, domain, specification, offset=0, limit=None,
+                        order=None, count_limit=None):
+        """Afficher une LISTE ne marque rien comme lu.
+
+        Odoo implémente ``web_search_read`` en ``records.web_read(...)``
+        (``addons/web/models/models.py``), donc tout rendu de liste, de kanban
+        ou de tableau de bord passait par le marquage ci-dessous et basculait à
+        ``read`` chaque ligne ``new`` retournée. Deux conséquences mesurées :
+        le compteur de non-lus et le filtre ``new`` se vidaient avant que
+        quiconque ait ouvert le message, et chaque client ouvert écrivait la
+        même ligne au même instant — six écritures concurrentes par courriel
+        entrant, donc autant d'échecs de sérialisation rejoués par Odoo.
+
+
+        Le drapeau de contexte réserve le marquage au chargement d'un vrai
+        formulaire, qui appelle ``web_read`` directement.
+
+        ``@api.readonly`` est repris de la méthode de base : maintenant que ce
+        chemin n'écrit plus, l'annotation redevient exacte et une lecture de
+        liste reste dirigeable vers un réplica. Sans réplica configuré ici, le
+        curseur « readonly » est un curseur normal et le décorateur est inerte.
+        """
+        return super(
+            BfEmail, self.with_context(bf_email_reading_list=True)
+        ).web_search_read(
+            domain, specification, offset=offset, limit=limit,
+            order=order, count_limit=count_limit,
+        )
+
     def web_read(self, specification):
         result = super().web_read(specification)
+        if self.env.context.get("bf_email_reading_list"):
+            return result
         new_recs = self.filtered(lambda r: r.status == "new")
         if new_recs:
             # Only flip rows the current user may actually write. The
@@ -2737,7 +2821,7 @@ class BfEmail(models.Model):
         # insert a whole thread at one identical timestamp; with strict ``>``,
         # once the watermark lands on that exact second every sibling message
         # is skipped *permanently* (never retried) — the cause of the missing
-        #cluster. ``>=`` re-scans the boundary timestamp each run;
+        # task #6557 cluster. ``>=`` re-scans the boundary timestamp each run;
         # _should_sync dedups by (message_id, user) so no duplicate is created,
         # and the cluster size is always far below batch_size in practice.
         messages = self.env["mail.message"].sudo().search(

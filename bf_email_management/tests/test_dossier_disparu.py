@@ -1,4 +1,4 @@
-"""Un dossier renommé ou supprimé sur le serveur ().
+"""Un dossier renommé ou supprimé sur le serveur.
 
 Rien n'est perdu : le corps, l'objet et les pièces jointes vivent dans cette
 base, pas sur le serveur. Ce qui casse, c'est le **pointeur** — `imap_folder`

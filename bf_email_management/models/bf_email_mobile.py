@@ -148,20 +148,31 @@ class BfEmailMobile(models.Model):
 
     @api.model
     def _sync_account(self, account):
-        """Notify the owner's phone about what this IMAP pull brought in.
+        """Annoncer ce que cette passe IMAP a ramené, aux deux transports.
 
         Wrapped around the whole account sync rather than hooked into
         ``_ingest_rfc822``: pushing per parsed message would fire one HTTP
         POST inside the fetch loop, so a 100-message catch-up would hold the
         IMAP connection open behind a hundred round-trips to ntfy.
+
+        Un seul relevé des lignes fraîches alimente le téléphone
+        (``bf.email.unifiedpush``) et la popup Odoo (``bf.email.popup``).
+        C'est délibéré : deux relevés dériveraient, et c'est justement ce
+        qu'on veut éviter entre deux transports de la même nouvelle.
         """
         Device = self.env["bf.email.mobile.device"].sudo()
-        watching = Device.search_count([
+        wants_push = bool(Device.search_count([
             ("user_id", "=", account.user_id.id),
             ("active", "=", True),
             ("push_endpoint", "!=", False),
-        ])
-        if not watching:
+        ]))
+        # Second transport, le même relevé. ⚠️ Le test du push ne suffit plus
+        # à décider : une personne peut vouloir l'avis
+        # dans Odoo sans avoir d'appareil inscrit — c'est même le cas normal
+        # depuis que bf_email.push_enabled est à 0. Sortir sur le seul
+        # `wants_push` sautait alors le relevé, donc l'avis, sans rien dire.
+        wants_popup = self.env["bf.email.popup"]._watching(account.user_id)
+        if not (wants_push or wants_popup):
             return super()._sync_account(account)
 
         last = self.sudo().search(
@@ -174,7 +185,10 @@ class BfEmailMobile(models.Model):
             ("is_handled", "=", False),
         ])
         if fresh:
-            self.env["bf.email.unifiedpush"]._notify_new_emails(fresh)
+            if wants_push:
+                self.env["bf.email.unifiedpush"]._notify_new_emails(fresh)
+            if wants_popup:
+                self.env["bf.email.popup"]._notify_new_emails(fresh)
         return result
 
     # ------------------------------------------------------------------

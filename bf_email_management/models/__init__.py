@@ -13,6 +13,7 @@ from . import bf_email_inbox
 from . import bf_email_mobile_device
 from . import bf_email_mobile_send
 from . import push_transport
+from . import popup_transport
 from . import bf_email_mobile
 from . import calendar_alarm_manager
 from . import calendar_attendee

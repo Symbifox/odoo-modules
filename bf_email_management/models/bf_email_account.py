@@ -108,6 +108,52 @@ class BfEmailAccount(models.Model):
     )
 
     # ------------------------------------------------------------------
+    # Avis à l'arrivée
+    # ------------------------------------------------------------------
+    # Le compte appartient à une personne, donc régler ici, c'est régler pour
+    # elle. Un second champ sur res.users dirait la même chose deux fois et
+    # finirait par la dire différemment.
+    popup_mode = fields.Selection(
+        selection=[
+            ("none", "Aucun avis"),
+            ("transient", "Avis éphémère"),
+            ("sticky", "Avis persistant"),
+        ],
+        string="Avis à l'arrivée",
+        default="transient",
+        required=True,
+        help="Ce que fait Odoo quand un courriel entre dans ce compte, dans "
+             "l'onglet ouvert.\n\n"
+             "Éphémère : le message passe et s'efface tout seul.\n"
+             "Persistant : il reste à l'écran jusqu'à un geste.\n"
+             "Aucun : rien ne s'affiche, le compteur de la barre suffit.\n\n"
+             "L'avis ne sort pas du navigateur. La poussée vers le téléphone "
+             "est un transport distinct, avec son propre interrupteur.",
+    )
+    popup_sticky_folders = fields.Char(
+        string="Dossiers à avis persistant",
+        help="Dossiers IMAP dont l'arrivée reste à l'écran même quand le "
+             "compte est en éphémère, séparés par des virgules. "
+             "Ex. : INBOX, Clients/Urgent.\n\n"
+             "Sans effet quand l'avis est à « Aucun » : ce champ resserre "
+             "l'attention, il ne rallume rien.",
+    )
+
+    def _popup_sticky_folder_set(self):
+        """Les dossiers persistants, normalisés pour la comparaison.
+
+        Casse et espaces autour des virgules sont du bruit de saisie : c'est
+        ici qu'on les enlève, une fois, plutôt qu'à chaque courriel comparé.
+        """
+        self.ensure_one()
+        raw = self.popup_sticky_folders or ""
+        return {
+            part.strip().lower()
+            for part in raw.split(",")
+            if part.strip()
+        }
+
+    # ------------------------------------------------------------------
     # Watermarks (per-account, advanced by the cron after each batch)
     # ------------------------------------------------------------------
     last_uid_inbox = fields.Integer(string="Dernier UID INBOX", default=0)
@@ -115,7 +161,7 @@ class BfEmailAccount(models.Model):
     last_sync_date = fields.Datetime(string="Dernière synchro", readonly=True)
 
     # ------------------------------------------------------------------
-    # Cache de l'arborescence IMAP ()
+    # Cache de l'arborescence IMAP
     # ------------------------------------------------------------------
     # L'arbre de gauche de la boîte de réception se recharge à chaque
     # ouverture et après chaque action. Un `LIST` par affichage ferait payer

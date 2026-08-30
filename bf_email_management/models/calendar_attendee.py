@@ -182,7 +182,11 @@ class CalendarAttendee(models.Model):
         if not url:
             return
         now = fields.Datetime.now()
-        horizon = now + timedelta(seconds=70)  # cron runs every minute
+        # The cron fires a reminder up to PUSH_LEAD *before* notify_at, so the
+        # de-dup guards below must allow for that lead. Keeping the two in one
+        # constant is what stops them drifting apart again.
+        PUSH_LEAD = timedelta(seconds=70)
+        horizon = now + PUSH_LEAD  # cron runs every minute
         # Catch alarms that fire in the next ~70s OR fired up to 60s ago
         # (in case the previous cron tick missed them).
         floor = now - timedelta(seconds=60)
@@ -207,11 +211,21 @@ class CalendarAttendee(models.Model):
                         continue
                     if attendee.bf_snoozed_until and attendee.bf_snoozed_until > now:
                         continue
+                    # Both guards subtract PUSH_LEAD, and that subtraction is
+                    # the whole point. horizon reaches PUSH_LEAD ahead of
+                    # notify_at, so a reminder already pushed for this window
+                    # carries a timestamp EARLIER than notify_at. Comparing
+                    # against notify_at alone could therefore never match, and
+                    # every reminder went out exactly twice — once on the tick
+                    # that fired it early, once on the next tick. Confirmed
+                    # 2026-08-28 on event 214702: identical relay payload at
+                    # 16:44:00 and 16:45:20. Same reasoning for a dismissal:
+                    # the user dismisses the early push, still before notify_at.
                     if (attendee.bf_dismissed_at
-                            and attendee.bf_dismissed_at >= notify_at):
+                            and attendee.bf_dismissed_at >= notify_at - PUSH_LEAD):
                         continue
                     if (attendee.bf_ntfy_pushed_at
-                            and attendee.bf_ntfy_pushed_at >= notify_at):
+                            and attendee.bf_ntfy_pushed_at >= notify_at - PUSH_LEAD):
                         continue
                     self._bf_push_ntfy_attendee(url, attendee, event, alarm)
 

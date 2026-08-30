@@ -1090,7 +1090,7 @@ export class BfEmailInbox extends Component {
     }
 
     // ------------------------------------------------------------------
-    // Ruban d'actions de l'aperçu ()
+    // Ruban d'actions de l'aperçu
     // ------------------------------------------------------------------
     /**
      * Replié, le ruban devient une seule ligne d'icônes : sur un aperçu placé

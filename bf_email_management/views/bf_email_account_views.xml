@@ -75,6 +75,14 @@
                             <field name="last_sync_date" readonly="1"/>
                         </group>
                     </group>
+                    <group>
+                        <group string="Avis à l'arrivée">
+                            <field name="popup_mode"/>
+                            <field name="popup_sticky_folders"
+                                   placeholder="INBOX, Clients/Urgent"
+                                   invisible="popup_mode == 'none'"/>
+                        </group>
+                    </group>
                     <group string="Dernière erreur" invisible="not last_error">
                         <field name="last_error" nolabel="1" readonly="1"/>
                     </group>

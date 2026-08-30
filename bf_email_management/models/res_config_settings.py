@@ -35,6 +35,18 @@ class ResConfigSettings(models.TransientModel):
              "affichage (déconseillé : un aller-retour IMAP par ouverture).",
     )
 
+    bf_email_popup_enabled = fields.Boolean(
+        string="Avis à l'arrivée d'un courriel",
+        default=False,
+        help="Autorise l'avis qui s'affiche dans Odoo quand un courriel "
+             "entre, pour toute la base. Chacun règle ensuite le sien sur "
+             "ses propres comptes IMAP : éphémère, persistant, ou aucun.\n\n"
+             "Décoché par défaut, y compris sur une base qui vient de "
+             "recevoir la mise à jour : personne ne découvre un avis qu'il "
+             "n'a pas demandé. L'avis reste dans le navigateur ; la poussée "
+             "vers le téléphone est un transport distinct.",
+    )
+
     # ------------------------------------------------------------------
     # ⚠️ Lecture et écriture explicites plutôt que `config_parameter`.
     #
@@ -57,6 +69,9 @@ class ResConfigSettings(models.TransientModel):
         except (TypeError, ValueError):
             minutes = 60
         res["bf_email_folder_cache_minutes"] = minutes
+        res["bf_email_popup_enabled"] = (
+            self.env["bf.email.popup"]._instance_enabled()
+        )
         return res
 
     def set_values(self):
@@ -69,6 +84,10 @@ class ResConfigSettings(models.TransientModel):
         ICP.set_param(
             "bf_email.folder_cache_minutes",
             str(max(0, self.bf_email_folder_cache_minutes or 0)),
+        )
+        ICP.set_param(
+            "bf_email.popup_enabled",
+            "1" if self.bf_email_popup_enabled else "0",
         )
 
     def action_bf_email_refresh_imap_folders(self):

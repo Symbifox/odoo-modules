@@ -16,3 +16,6 @@ from . import test_send_as
 from . import test_imap_folders_and_uid_guard
 from . import test_isolation_boites
 from . import test_dossier_disparu
+from . import test_mark_read_scope
+from . import test_external_age_search
+from . import test_popup_notify

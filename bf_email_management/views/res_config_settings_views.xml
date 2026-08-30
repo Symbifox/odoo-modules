@@ -47,6 +47,11 @@
                                 </div>
                             </div>
                         </setting>
+                        <setting id="bf_email_popup_enabled_setting"
+                                 string="Avis &#224; l'arriv&#233;e d'un courriel"
+                                 help="Autorise l'avis qui s'affiche dans Odoo &#224; l'arriv&#233;e d'un courriel. Chacun r&#232;gle ensuite le sien sur ses comptes IMAP : &#233;ph&#233;m&#232;re, persistant, ou aucun. D&#233;coch&#233; par d&#233;faut, y compris apr&#232;s la mise &#224; jour.">
+                            <field name="bf_email_popup_enabled"/>
+                        </setting>
                     </block>
                 </app>
             </xpath>

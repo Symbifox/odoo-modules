@@ -104,7 +104,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_document_approval` | Documents — Approbation à plusieurs | 18.0.1.0.0 | BUSL-1.1 | A policy is published only once everyone who had to weigh in has done so, and its distribution follows the RACI recorded in the knowledge matrix |
 | `bf_document_nextcloud_sync` | Document Nextcloud Sync | 18.0.1.4.1 | LGPL-3 | Document sync between Odoo and Nextcloud via WebDAV |
 | `bf_editorial` | Atelier éditorial | 18.0.1.7.0 | BUSL-1.1 | Editorial calendar, measured cadence and publication gates for the blog: state is derived, only decisions are stored |
-| `bf_email_management` | Gestion des courriels | 18.0.11.3.1 | BUSL-1.1 | Unified IMAP inbox + Odoo chatter projection, two-pane OWL folder browser (Apple Mail / Thunderbird), bulk per-row target inference |
+| `bf_email_management` | Gestion des courriels | 18.0.11.5.0 | BUSL-1.1 | Unified IMAP inbox + Odoo chatter projection, two-pane OWL folder browser (Apple Mail / Thunderbird), bulk per-row target inference |
 | `bf_email_systray` | Boîte de réception bf.email — barre Odoo | 18.0.1.4.0 | LGPL-3 | Systray button opening the bf.email inbox with a (read + unread) counter |
 | `bf_follower_cleanup` | BF — Nettoyage des abonnés (followers internes uniquement) | 18.0.2.0.0 | LGPL-3 | Cron that removes all non-employee followers from chatters |
 | `bf_fundraising_core` | Levée de fonds — Cœur | 18.0.1.0.0 | AGPL-3 | Donor management and fundraising structure (Funds / Campaigns / Appeals / Packages) on top of the Donation module — comparable to Raiser's Edge |
