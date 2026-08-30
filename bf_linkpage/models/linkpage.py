@@ -637,6 +637,11 @@ class BfLinkpage(models.Model):
                 continue
             try:
                 _fill, _back, avis = page._qr_colors()
+                if not avis and page.qr_branded:
+                    # Un logo demandé mais inutilisable doit se voir SUR LA
+                    # FICHE. C'est le seul endroit où la personne qui vient de
+                    # le téléverser regardera.
+                    _logo, avis = page._qr_logo()
                 page.qr_warning = avis
                 page.qr_preview = base64.b64encode(page._qr_png())
             except Exception as echec:  # noqa: BLE001
@@ -702,7 +707,7 @@ class BfLinkpage(models.Model):
         img = qr.make_image(fill_color=fill_color, back_color=back_color).convert("RGB")
 
         if branded:
-            logo = self._qr_logo()
+            logo, _raison = self._qr_logo()
             if logo is not None:
                 side = int(min(img.size) * LOGO_RATIO)
                 logo = logo.resize((side, side), Image.LANCZOS)
@@ -722,15 +727,42 @@ class BfLinkpage(models.Model):
         return buffer.getvalue()
 
     def _qr_logo(self):
-        """Le logo à incruster, ou None. L'absence de logo n'est pas une erreur."""
+        """Le logo à incruster, ou None. Rend aussi la RAISON de l'absence.
+
+        Le silence était le vrai défaut ici. Un logo que la bibliothèque
+        d'images ne sait pas ouvrir faisait produire un QR sans marque, avec
+        pour seule trace un avertissement au journal que personne ne lit. Sur
+        cette instance, le logo de la société est un SVG : le « QR à la
+        marque » n'en a donc jamais porté, et rien ne le disait à qui l'avait
+        téléversé.
+
+        Le cas SVG est traité à part parce qu'il est le plus fréquent et le
+        plus déroutant : le fichier est une image parfaitement valide, elle
+        s'affiche partout ailleurs dans Odoo, et elle échoue seulement ici.
+        Dire « ce n'est pas une image » serait faux et enverrait chercher au
+        mauvais endroit.
+
+        Rend `(image, raison)` : l'un des deux est toujours None.
+        """
         self.ensure_one()
         from PIL import Image
 
         raw = self.qr_logo or self._company().logo
         if not raw:
-            return None
+            return None, _("Aucun logo n'est disponible : le code sort sans marque.")
+        octets = base64.b64decode(raw)
+        entete = octets.lstrip()[:512]
+        if entete[:5] == b"<?xml" or b"<svg" in entete:
+            return None, _(
+                "Le logo est un fichier SVG, que le générateur d'images ne "
+                "sait pas incruster. Téléversez une version PNG dans « Logo "
+                "du code QR » ci-contre ; le code sort sans marque en attendant."
+            )
         try:
-            return Image.open(io.BytesIO(base64.b64decode(raw))).convert("RGBA")
-        except Exception:  # noqa: BLE001
-            _logger.warning("bf_linkpage: logo de société illisible, QR sans marque")
-            return None
+            return Image.open(io.BytesIO(octets)).convert("RGBA"), None
+        except Exception as echec:  # noqa: BLE001
+            _logger.warning("bf_linkpage: logo illisible (%s), QR sans marque", echec)
+            return None, _(
+                "Le logo n'a pas pu être lu comme une image. Le code sort "
+                "sans marque."
+            )
