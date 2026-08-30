@@ -1,12 +1,12 @@
 {
     "name": "Gen",
-    "version": "18.0.1.15.4",
+    "version": "18.0.1.17.1",
     "category": "Productivity",
     "summary": "Chat with Gen, the AI assistant, directly inside Odoo",
     "website": "https://symbifox.com",
     "author": "Les services de consultation Blue Fox, Inc.",
     "license": "Other proprietary",
-    "depends": ["web", "base", "project", "mail"],
+    "depends": ["web", "base", "project", "mail", "bf_ai_bridge"],
     "external_dependencies": {
         "python": ["cryptography"],
     },

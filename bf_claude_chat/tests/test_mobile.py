@@ -2,25 +2,29 @@
 
 from odoo.tests.common import TransactionCase, tagged
 
-from ..controllers.main import _call_bridge
+from odoo.addons.bf_ai_bridge.tools import transport
 
 
 @tagged("post_install", "-at_install")
 class TestGenfoxMobile(TransactionCase):
 
     # ── Trame HTTP vers le bridge ─────────────────────────────────────
+    #
+    # Le transport vit dans bf_ai_bridge depuis 18.0.1.16.0, et ses propres
+    # tests le couvrent. On garde ces deux-là ici : /assist est le seul point
+    # de terminaison qui passe un en-tête, et c'est ce module qui le fabrique.
     def test_bridge_headers_refuse_line_breaks(self):
         """La requête est bâtie à la main : un CR/LF laisserait ajouter des
         en-têtes, voire un second corps. Le refus doit tomber AVANT la socket."""
         for bad in ("Bearer x\r\nX-Injected: 1", "Bearer x\nX-Injected: 1"):
             with self.assertRaises(ValueError):
-                _call_bridge("/assist", {"text": "bonjour"}, "/tmp/absent.sock", 1,
-                             headers={"Authorization": bad})
+                transport.post("/tmp/absent.sock", "/assist", {"text": "bonjour"}, 1,
+                               headers={"Authorization": bad})
 
     def test_bridge_refuses_a_line_break_in_the_header_name(self):
         with self.assertRaises(ValueError):
-            _call_bridge("/assist", {"text": "bonjour"}, "/tmp/absent.sock", 1,
-                         headers={"X-Bad\r\nInjected": "1"})
+            transport.post("/tmp/absent.sock", "/assist", {"text": "bonjour"}, 1,
+                           headers={"X-Bad\r\nInjected": "1"})
 
     # ── Modèles ───────────────────────────────────────────────────────
     def test_a_session_is_web_unless_said_otherwise(self):

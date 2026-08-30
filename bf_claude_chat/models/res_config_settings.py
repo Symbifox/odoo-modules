@@ -75,9 +75,13 @@ class ResConfigSettings(models.TransientModel):
     )
     claude_bridge_socket = fields.Char(
         string="Bridge Socket Path",
-        config_parameter="bf_claude_chat.bridge_socket",
+        # Le paramètre appartient à bf_ai_bridge, qui porte le transport : ce
+        # réglage est celui que TOUS les modules appelants lisent désormais.
+        config_parameter="bf_ai_bridge.socket",
         default="/run/claude-bridge/bridge.sock",
-        help="Unix socket path for the Claude bridge service.",
+        help="Unix socket path for the Claude bridge service. Shared by every "
+             "Blue Fox module that talks to the bridge (meetings, invoice OCR, "
+             "contact enrichment).",
     )
     claude_timeout = fields.Integer(
         string="Response Timeout (seconds)",

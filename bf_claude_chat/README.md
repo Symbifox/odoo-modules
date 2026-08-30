@@ -200,13 +200,51 @@ bearer token (no session cookie, `save_session=False`):
 
 ## Talking to the bridge
 
-The module talks to the Gen bridge service over a **Unix socket**
-(`/run/claude-bridge/bridge.sock` by default). The controller builds a raw HTTP
-request on the socket, sends the message together with the user and page
-context, and receives the assistant's reply.
+The module talks to the Gen bridge service over a **Unix socket**. The
+transport itself, the raw HTTP request written by hand, in one shot or as a
+stream, lives in the **`bf_ai_bridge`** module, which also carries the single
+system parameter giving the socket path (`bf_ai_bridge.socket`, default
+`/run/claude-bridge/bridge.sock`). Gen sends the message together with the user
+and page context, and receives the assistant's reply.
+
+The same transport serves the meeting, invoice OCR and contact enrichment
+modules. Before 18.0.1.16.0 each carried its own copy and two parameters
+coexisted; the migration removes the old keys.
 
 The smart title is generated in the background by a daemon thread calling
 `/generate-title` on the bridge after the first exchange.
+
+## How a turn is assembled
+
+A Gen turn is not one block of text. When the assistant says what it is about
+to do, calls a tool, then comments on the result, the CLI produces **several
+text blocks** separated by `tool_use` blocks. Two details of the `stream-json`
+format govern what the reader ends up seeing, and they pull in opposite
+directions:
+
+- The CLI puts **no separator** between two text blocks. Concatenating the raw
+  `text_delta` events welds the utterances together (`...the record.Here is
+  what I found`).
+- The `result` field of the final event carries **only the last block**.
+  Persisting it throws away all the narration that came before the tool calls.
+
+The bridge (`_chat_stream_gen`) fixes both, as of 2026-08-30:
+
+1. A paragraph break is inserted when a text block opens after another one. It
+   travels in the SSE stream as an ordinary `text_delta`, so **no client has to
+   deal with it**: the side panel, the full-screen page and the mobile app all
+   benefit without a line of JS.
+2. At the end of the turn, the accumulated text is preferred over `result` only
+   when it **ends with** `result`, meaning it is a strict superset. Otherwise, a
+   silent stream or a reworked `result`, `result` wins. Without that guard the
+   text would be substituted blind.
+
+The consequence for anyone reading the code: the stream and the stored reply now
+carry the **same** text. Before, neither of them was complete.
+
+⚠️ The `usage` block of the `result` event does carry the FULL turn (every
+block, every tool cycle). Accounting from `usage` is correct; accounting from
+the text of `result` is not.
 
 ## Configuration (Settings > Gen)
 
@@ -220,7 +258,7 @@ The smart title is generated in the background by a daemon thread calling
 | Response Timeout | 660s | Maximum delay for a reply (bridge 600s + 60s buffer) |
 | API Key | (empty) | Optional Anthropic key (otherwise the Max plan) |
 | Tenant Slug | pme | Selects the bridge's tools and system prompt |
-| Bridge Socket | /run/claude-bridge/bridge.sock | Unix socket path |
+| Bridge Socket | /run/claude-bridge/bridge.sock | Unix socket path (parameter `bf_ai_bridge.socket`, shared by every module calling the bridge) |
 
 ## Security
 

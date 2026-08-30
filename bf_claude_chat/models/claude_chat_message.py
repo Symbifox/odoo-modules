@@ -1,4 +1,8 @@
-from odoo import api, fields, models
+import logging
+
+from odoo import _, api, fields, models
+
+_logger = logging.getLogger(__name__)
 
 
 class ClaudeChatMessage(models.Model):
@@ -119,3 +123,63 @@ class ClaudeChatMessage(models.Model):
         index=True,
         string="Record Type",
     )
+
+    # ------------------------------------------------------------------
+    # Les passes sans personne au clavier
+    # ------------------------------------------------------------------
+    # Le pont calcule DÉJÀ la consommation de chaque passe `claude -p`
+    # (`_usage_summary`, bridge/server.py), y compris celles que personne ne
+    # regarde partir : raffinage d'un compte rendu, atelier éditorial, carto,
+    # OCR d'une facture, enrichissement d'une fiche. Jusqu'à la 18.0.1.17.0,
+    # seuls le clavardage et le veilleur l'inscrivaient ; les autres la
+    # jetaient. Ce sont pourtant les plus longues, et leur absence faisait lire
+    # le registre comme si l'assistant ne servait qu'à clavarder.
+    #
+    # Ces passes n'ont pas de conversation. On leur en fabrique une par
+    # enregistrement travaillé — un fil pour le compte rendu 341, un autre pour
+    # le 342 — plutôt qu'un fil géant par fonction. Ça coûte le même nombre de
+    # lignes et ça garde `res_model`/`res_id`, donc le rattachement au projet
+    # ou à la tâche reste possible. Un fil unique par fonction l'aurait rendu
+    # impossible sans reprise de données.
+    #
+    # ⚠️ Les deux totaux (`net_tokens`, `total_tokens`) sont calculés et
+    # stockés : les écrire ferait échouer la création. Et le pont rend un
+    # `num_turns` qui n'a pas de colonne. D'où le filtre : une clé inconnue ne
+    # doit jamais faire perdre la mesure d'une passe qui, elle, a bien tourné.
+    CHAMPS_USAGE = (
+        "input_tokens", "output_tokens", "cache_read_tokens",
+        "cache_write_tokens", "cost_usd", "duration_ms",
+    )
+
+    @api.model
+    def journaliser_passe(self, origin, usage, resume="",
+                          res_model=False, res_id=False, user_id=False):
+        """Inscrire au registre ce qu'une passe hors clavardage a consommé.
+
+        Point d'entrée unique du pont. Rend l'identifiant de la ligne écrite,
+        ou ``False`` si rien n'a pu l'être.
+
+        **Jamais bloquant.** Une passe qui a fait son travail ne doit pas être
+        signalée en échec parce que la comptabilité a raté : l'appelant, côté
+        pont, a déjà rendu sa réponse quand on arrive ici.
+        """
+        try:
+            session = self.env["claude.chat.session"].sudo()._fil_de_passe(
+                origin, res_model=res_model, res_id=res_id, user_id=user_id)
+            valeurs = {k: v for k, v in (usage or {}).items()
+                       if k in self.CHAMPS_USAGE}
+            valeurs.update({
+                "session_id": session.id,
+                "role": "assistant",
+                "state": "done",
+                # Ce n'est pas une prise de parole : le panneau web ne doit
+                # jamais l'afficher comme un message de la conversation.
+                "internal": True,
+                "content": resume or _("Passe automatique (%s)", origin),
+            })
+            return self.sudo().create(valeurs).id
+        except Exception:  # noqa: BLE001
+            _logger.warning(
+                "Consommation non journalisée pour la passe « %s » sur %s,%s.",
+                origin, res_model, res_id, exc_info=True)
+            return False

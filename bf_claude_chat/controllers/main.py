@@ -9,6 +9,7 @@ from collections import defaultdict
 
 import odoo
 from odoo import http
+from odoo.addons.bf_ai_bridge.tools import transport
 from odoo.http import request, Response
 from odoo.modules.registry import Registry
 
@@ -155,7 +156,6 @@ def _markdown_to_html(md):
 
 
 # Defaults (overridden by Settings)
-_DEFAULT_SOCKET = "/run/claude-bridge/bridge.sock"
 _DEFAULT_TIMEOUT = 660
 
 
@@ -175,79 +175,9 @@ def _get_settings():
         "max_turns": int(ICP.get_param("bf_claude_chat.max_turns", "45")),
         "api_key": api_key,
         "tenant": ICP.get_param("bf_claude_chat.tenant", "pme"),
-        "socket": ICP.get_param("bf_claude_chat.bridge_socket", _DEFAULT_SOCKET),
+        "socket": request.env["bf.ai.bridge"].socket_path(),
         "timeout": int(ICP.get_param("bf_claude_chat.timeout", str(_DEFAULT_TIMEOUT))),
     }
-
-
-def _call_bridge(endpoint, payload, socket_path, timeout, headers=None):
-    """Call the bridge service via Unix socket.
-
-    ``headers`` carries what an endpoint demands beyond the basics — /assist
-    requires a device bearer token and fails closed without one. Values are
-    refused if they contain a line break: this builds a raw HTTP request by
-    hand, so a CR/LF would let a caller append headers of their own.
-    """
-    body = json.dumps(payload).encode()
-    extra = ""
-    for name, value in (headers or {}).items():
-        text = str(value)
-        if "\r" in text or "\n" in text or "\r" in name or "\n" in name:
-            raise ValueError("Invalid header value")
-        extra += f"{name}: {text}\r\n"
-    sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
-    sock.settimeout(timeout)
-    try:
-        sock.connect(socket_path)
-        req = (
-            f"POST {endpoint} HTTP/1.1\r\n"
-            f"Host: localhost\r\n"
-            f"Content-Type: application/json\r\n"
-            f"{extra}"
-            f"Content-Length: {len(body)}\r\n"
-            f"Connection: close\r\n"
-            f"\r\n"
-        ).encode() + body
-        sock.sendall(req)
-
-        # Read response
-        chunks = []
-        while True:
-            chunk = sock.recv(8192)
-            if not chunk:
-                break
-            chunks.append(chunk)
-        raw = b"".join(chunks).decode()
-
-        # Parse HTTP response — split headers from body
-        header_end = raw.find("\r\n\r\n")
-        if header_end == -1:
-            raise ValueError("Malformed HTTP response")
-        status_line = raw[:raw.find("\r\n")]
-        status_code = int(status_line.split(" ", 2)[1])
-        resp_body = raw[header_end + 4:]
-
-        # Handle chunked transfer encoding
-        headers_block = raw[:header_end].lower()
-        if "transfer-encoding: chunked" in headers_block:
-            decoded = []
-            pos = 0
-            while pos < len(resp_body):
-                nl = resp_body.find("\r\n", pos)
-                if nl == -1:
-                    break
-                chunk_size = int(resp_body[pos:nl], 16)
-                if chunk_size == 0:
-                    break
-                decoded.append(resp_body[nl + 2:nl + 2 + chunk_size])
-                pos = nl + 2 + chunk_size + 2
-            resp_body = "".join(decoded)
-
-        if status_code >= 400:
-            raise ValueError(f"Bridge returned HTTP {status_code}: {resp_body[:200]}")
-        return json.loads(resp_body)
-    finally:
-        sock.close()
 
 
 # ── Streaming (Server-Sent Events) ──────────────────────────────────────────
@@ -283,88 +213,6 @@ def _sse_response(iterable):
     )
 
 
-def _iter_bridge_stream(socket_path, endpoint, payload, timeout):
-    """Yield the bridge's streamed response body incrementally (bytes).
-
-    Speaks just enough HTTP/1.1 to POST over the Unix socket and decode a
-    chunked (or plain) response as the bytes arrive — never buffering the whole
-    body — so Server-Sent Events flow through to the browser in real time.
-    """
-    body = json.dumps(payload).encode()
-    sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
-    sock.settimeout(timeout)  # per-recv; bridge keep-alives keep bytes flowing
-    try:
-        sock.connect(socket_path)
-        head = (
-            f"POST {endpoint} HTTP/1.1\r\n"
-            f"Host: localhost\r\n"
-            f"Content-Type: application/json\r\n"
-            f"Content-Length: {len(body)}\r\n"
-            f"Connection: close\r\n"
-            f"\r\n"
-        ).encode() + body
-        sock.sendall(head)
-
-        buf = b""
-        # 1) read status line + headers
-        while b"\r\n\r\n" not in buf:
-            chunk = sock.recv(65536)
-            if not chunk:
-                return
-            buf += chunk
-        header_blob, buf = buf.split(b"\r\n\r\n", 1)
-        try:
-            status = int(header_blob.split(b" ", 2)[1])
-        except (IndexError, ValueError):
-            status = 0
-        headers_l = header_blob.lower()
-        chunked = b"transfer-encoding: chunked" in headers_l
-        if status >= 400:
-            raise ValueError(f"Bridge returned HTTP {status}")
-
-        if not chunked:
-            # Non-streamed body (defensive) — yield what we have, then drain.
-            if buf:
-                yield buf
-            while True:
-                chunk = sock.recv(65536)
-                if not chunk:
-                    return
-                yield chunk
-            return
-
-        # 2) incremental chunked decode
-        while True:
-            # need a chunk-size line
-            while b"\r\n" not in buf:
-                chunk = sock.recv(65536)
-                if not chunk:
-                    return
-                buf += chunk
-            size_line, buf = buf.split(b"\r\n", 1)
-            size_line = size_line.strip()
-            if not size_line:
-                continue
-            try:
-                size = int(size_line.split(b";")[0], 16)
-            except ValueError:
-                return
-            if size == 0:
-                return  # terminating chunk
-            # ensure the full chunk data + trailing CRLF are buffered
-            while len(buf) < size + 2:
-                chunk = sock.recv(65536)
-                if not chunk:
-                    if buf:
-                        yield buf[:size]
-                    return
-                buf += chunk
-            yield buf[:size]
-            buf = buf[size + 2:]  # skip data + CRLF
-    finally:
-        sock.close()
-
-
 def _generate_smart_title(db_name, session_id, fallback, user_msg, asst_resp, api_key, socket_path):
     """Background thread: call /generate-title and update session name."""
     try:
@@ -374,7 +222,7 @@ def _generate_smart_title(db_name, session_id, fallback, user_msg, asst_resp, ap
         }
         if api_key:
             payload["api_key"] = api_key
-        data = _call_bridge("/generate-title", payload, socket_path, 20)
+        data = transport.post(socket_path, "/generate-title", payload, 20)
         title = data.get("title", "").strip()
         if not title:
             return
@@ -599,9 +447,9 @@ class ClaudeChatController(http.Controller):
 
         # Call bridge service via Unix socket
         try:
-            data = _call_bridge(
-                "/chat", bridge_payload,
-                settings["socket"], settings["timeout"],
+            data = transport.post(
+                settings["socket"], "/chat", bridge_payload,
+                settings["timeout"],
             )
         except socket.timeout:
             _logger.error("Bridge service timed out")
@@ -783,7 +631,7 @@ class ClaudeChatController(http.Controller):
             cur_event = None
             line_buf = b""
             try:
-                for data in _iter_bridge_stream(
+                for data in transport.stream(
                         socket_path, "/chat-stream", bridge_payload, timeout):
                     yield data  # forward raw bridge SSE bytes to the browser
                     line_buf += data

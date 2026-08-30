@@ -5,7 +5,7 @@ Trois choix structurent ce fichier.
 **Le même `/chat-stream` que le bureau.** Mêmes outils (écriture comprise), même
 `claude_session_id`, donc une conversation commencée au téléphone se poursuit à
 l'écran et l'inverse. C'était volontairement en lecture seule à la livraison ;
-la parité complète a été retenue ensuite.
+Olivier a tranché pour la parité complète le 2026-08-16.
 
 **Asynchrone, malgré le flux.** Un tour agentique dure parfois des minutes et le
 serveur n'a que deux travailleurs : tenir un SSE ouvert par téléphone les
@@ -31,9 +31,11 @@ from odoo import fields, http
 from odoo.http import request
 from odoo.modules.registry import Registry
 
+from odoo.addons.bf_ai_bridge.tools import transport
+
 from .main import (
     _attach_steering, _check_rate_limit, _generate_smart_title,
-    _iter_bridge_stream, _get_settings, usage_vals,
+    _get_settings, usage_vals,
 )
 
 _logger = logging.getLogger(__name__)
@@ -157,7 +159,7 @@ def _run_turn(db_name, uid, session_id, message_id, question, payload,
     debut = time.monotonic()
 
     try:
-        for morceau in _iter_bridge_stream(socket_path, "/chat-stream", payload, timeout):
+        for morceau in transport.stream(socket_path, "/chat-stream", payload, timeout):
             if time.monotonic() - debut > _TURN_TIMEOUT:
                 raise TimeoutError("tour trop long")
             tampon += morceau

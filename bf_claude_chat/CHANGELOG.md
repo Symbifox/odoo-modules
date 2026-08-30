@@ -1,5 +1,75 @@
 # Changelog - Gen (bf_claude_chat)
 
+## Bridge fix - 2026-08-30 (outside the module version)
+
+### Utterances no longer weld together, and narration is no longer thrown away
+
+Fixed in the bridge service (`_chat_stream_gen`). No module file changed: the
+correction travels in the SSE stream, so the side panel, the full-screen page
+and the mobile app all benefit without a line of JS. Recorded here because Gen's
+visible behaviour changes.
+
+A turn where the assistant announces what it will do, calls a tool, then
+comments on the result produces **several text blocks**. Two opposite defects
+were hiding each other:
+
+- **In the stream**, the CLI puts no separator between two blocks, so the
+  utterances welded together: `...the record.Here is what I found`.
+- **At storage time**, the `result` field of the final event carries only the
+  **last** block. All the narration before the tool calls was thrown away and
+  replaced on screen what the user had just watched stream by.
+
+Neither view was complete, and the difference between the two read as a display
+glitch.
+
+A paragraph break is now inserted when a text block opens after another one, and
+the accumulated text is preferred over `result` only when it **ends with**
+`result`, meaning it is a strict superset. Otherwise `result` wins: no blind
+substitution.
+
+⚠️ The `usage` block of the `result` event carries the FULL turn. Accounting
+from `usage` is correct; accounting from the text of `result` is not.
+
+## v18.0.1.17.1 - 2026-08-30
+
+### The ledger finally counts every pass, not just the chat
+
+Since 2026-08-09 every chat turn records what it consumed: input and output
+tokens, cached context, re-read context, API-equivalent cost and duration. What
+the ledger did not say is that eight other features spend through the same
+bridge without recording anything: meeting refinement, agenda refinement,
+meeting review, the editorial workshop, process mapping, invoice and card OCR,
+contact enrichment, title generation. Those are the longest passes, and the
+ledger read as though the assistant were only ever used for chatting.
+
+The bridge already computed their consumption and threw it away. This version
+opens the entry point through which it records it:
+`claude.chat.message.journaliser_passe(...)`.
+
+**The Origin field (`origin`) changes meaning.** It used to say where the
+conversation was held, web or mobile, which has meant nothing since mobile
+parity in 18.0.1.11.0: both go through the same `/chat-stream`. It now says
+**which feature did the spending**. That is the dimension needed to answer the
+real question: not how many tokens, but what they bought.
+
+**One thread per record worked on**, not one giant thread per feature. Refining
+meeting 341 gets its own, meeting 342 gets its own. It costs the same number of
+rows and keeps `res_model` / `res_id`, so attaching a pass to a project or a
+task stays possible later. A single thread per feature would have made that
+impossible without a data migration.
+
+### The transport moved out to `bf_ai_bridge`
+
+The hand-written HTTP frame over the Unix socket no longer lives here. It moved
+to the bare leaf module `bf_ai_bridge` (LGPL-3, `base` as its only dependency),
+which now also carries the single system parameter for the socket path,
+`bf_ai_bridge.socket`. The old keys `bf_claude_chat.bridge_socket` and
+`bf_meeting.bridge_socket` are removed by the 18.0.1.16.0 migration.
+
+⚠️ On a tenant where Gen is **not** installed, that migration never runs: remove
+the old key by hand after the switch.
+
+
 ## v18.0.1.15.4 - 2026-08-30
 
 ### The assistant is now called Gen
