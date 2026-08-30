@@ -128,18 +128,61 @@
                         <page string="Présentation" name="bio">
                             <field name="bio" placeholder="Quelques lignes affichées sous le titre."/>
                         </page>
-                        <page string="QR" name="qr">
-                            <div class="text-muted">
-                                Le QR se télécharge à l'adresse
-                                <code><field name="public_url" readonly="1" nolabel="1" class="d-inline"/>/qr.png</code>.
-                                Ajouter <code>?branded=0</code> pour la version sans logo,
-                                et <code>&amp;size=6</code> pour un rendu plus compact.
-                                <p class="mt-2">
-                                    Le QR à la marque est produit en correction
-                                    d'erreur de niveau H parce que le logo masque
-                                    des modules du code. Réduire ce niveau donne
-                                    un QR qui se lit à l'écran puis échoue une
-                                    fois imprimé petit dans une signature.
+                        <page string="Code QR" name="qr">
+                            <group>
+                                <group string="Réglages">
+                                    <field name="qr_branded"/>
+                                    <field name="qr_logo" widget="image"
+                                           class="oe_avatar"
+                                           invisible="not qr_branded"/>
+                                    <div class="text-muted" colspan="2"
+                                         invisible="not qr_branded">
+                                        Vide, c'est le logo de la société qui sert.
+                                    </div>
+                                    <field name="qr_scale"/>
+                                    <field name="qr_fill_color" widget="color"/>
+                                    <field name="qr_back_color" widget="color"/>
+                                </group>
+                                <group string="Aperçu">
+                                    <field name="qr_warning" invisible="1"/>
+                                    <div colspan="2" class="alert alert-warning"
+                                         role="alert" invisible="not qr_warning">
+                                        <field name="qr_warning" nolabel="1" readonly="1"/>
+                                    </div>
+                                    <field name="qr_preview" widget="image"
+                                           nolabel="1" colspan="2"
+                                           options="{'size': [220, 220]}"/>
+                                    <div colspan="2" class="mt-2">
+                                        <button name="action_download_qr" type="object"
+                                                string="Télécharger" class="btn-primary"
+                                                icon="fa-download"
+                                                invisible="not qr_preview"/>
+                                    </div>
+                                </group>
+                            </group>
+                            <div class="text-muted mt-3">
+                                <p>
+                                    L'aperçu est le rendu RÉEL : ce que vous voyez
+                                    est exactement ce qui se télécharge.
+                                </p>
+                                <p>
+                                    Le code se lit par contraste. Il doit rester
+                                    nettement plus sombre que son fond, sinon la
+                                    plupart des appareils ne le lisent pas, même
+                                    lorsqu'il paraît net à l'écran. Un réglage qui
+                                    ne tient pas cette règle retombe sur le noir et
+                                    blanc et le dit ci-dessus, plutôt que de livrer
+                                    un beau code qui ne scanne jamais.
+                                </p>
+                                <p>
+                                    Le logo masque des modules du code. La correction
+                                    d'erreur compense, et la part qu'il occupe est
+                                    bornée à ce qui reste lisible une fois imprimé
+                                    petit dans une signature.
+                                </p>
+                                <p>
+                                    Adresse directe :
+                                    <code><field name="public_url" readonly="1" nolabel="1" class="d-inline"/>/qr.png</code>
                                 </p>
                             </div>
                         </page>

@@ -1,5 +1,6 @@
 """La page de liens elle-même."""
 
+import base64
 import io
 import logging
 import re
@@ -199,6 +200,45 @@ class BfLinkpage(models.Model):
     # jour où elle change, et une page de liens dont la photo date de deux ans
     # est exactement le genre de détail que personne ne pense à corriger.
     has_photo = fields.Boolean(compute="_compute_has_photo")
+
+    # -- le code QR, réglable depuis la fiche --------------------------------
+    qr_branded = fields.Boolean(
+        string="Logo au centre",
+        default=True,
+        help="Le logo masque des modules du code. La correction d'erreur "
+             "compense, et la part occupée est bornée à ce qui reste lisible.",
+    )
+    qr_logo = fields.Image(
+        string="Logo du code QR",
+        max_width=512,
+        max_height=512,
+        help="Laisser vide pour le logo de la société. Une image carrée donne "
+             "le meilleur résultat : elle est redimensionnée sans être rognée.",
+    )
+    qr_scale = fields.Selection(
+        [("s", "Petit (écran)"), ("m", "Moyen"), ("l", "Grand (impression)")],
+        string="Taille",
+        default="m",
+        required=True,
+    )
+    qr_fill_color = fields.Char(
+        string="Couleur du code",
+        default="#000000",
+        help="La couleur des modules. Elle doit rester nettement plus SOMBRE "
+             "que le fond : un code clair sur fond foncé n'est pas lu par la "
+             "plupart des appareils.",
+    )
+    qr_back_color = fields.Char(
+        string="Fond du code",
+        default="#FFFFFF",
+    )
+    qr_preview = fields.Image(
+        string="Aperçu",
+        compute="_compute_qr_preview",
+        help="Rendu réel, avec les réglages ci-dessus. Ce que vous voyez ici "
+             "est exactement ce qui sera téléchargé.",
+    )
+    qr_warning = fields.Char(compute="_compute_qr_preview")
 
     link_ids = fields.One2many("bf.linkpage.link", "page_id", string="Liens")
     link_count = fields.Integer(compute="_compute_link_count")
@@ -531,7 +571,94 @@ class BfLinkpage(models.Model):
 
     # ── QR ───────────────────────────────────────────────────────────────────
 
-    def _qr_png(self, branded=True, box_size=10):
+    @staticmethod
+    def _luminance(couleur):
+        """Luminance relative d'une couleur hexadécimale, ou None."""
+        valeur = (couleur or "").strip().lstrip("#")
+        if len(valeur) == 3:
+            valeur = "".join(c * 2 for c in valeur)
+        if len(valeur) != 6:
+            return None
+        try:
+            canaux = [int(valeur[i:i + 2], 16) / 255.0 for i in (0, 2, 4)]
+        except ValueError:
+            return None
+        lineaire = [
+            c / 12.92 if c <= 0.04045 else ((c + 0.055) / 1.055) ** 2.4
+            for c in canaux
+        ]
+        return 0.2126 * lineaire[0] + 0.7152 * lineaire[1] + 0.0722 * lineaire[2]
+
+    def _qr_colors(self):
+        """Les deux couleurs à employer, et l'avertissement s'il y a lieu.
+
+        Un code QR se lit par CONTRASTE, et pas n'importe lequel : la plupart
+        des lecteurs attendent des modules sombres sur fond clair. Deux règles
+        mécaniques, donc, plutôt qu'un avis de goût :
+
+        1. le rapport de contraste doit atteindre 4:1, sous quoi le code ne se
+           lit plus de façon fiable sur un écran, et encore moins imprimé ;
+        2. le code doit être plus SOMBRE que le fond. Un code inversé est
+           parfaitement contrasté et reste illisible pour beaucoup d'appareils.
+
+        Quand une règle n'est pas tenue, on retombe sur le noir et blanc et on
+        le DIT. Servir un code élégant qui ne scanne pas serait la pire des
+        réponses : le défaut ne se voit qu'au moment où quelqu'un essaie.
+        """
+        self.ensure_one()
+        fill = self.qr_fill_color or "#000000"
+        back = self.qr_back_color or "#FFFFFF"
+        l_fill = self._luminance(fill)
+        l_back = self._luminance(back)
+        if l_fill is None or l_back is None:
+            return "#000000", "#FFFFFF", _(
+                "Couleur non reconnue : le code est rendu en noir sur blanc."
+            )
+        if l_fill >= l_back:
+            return "#000000", "#FFFFFF", _(
+                "Un code plus clair que son fond n'est pas lu par la plupart "
+                "des appareils. Rendu en noir sur blanc."
+            )
+        rapport = (l_back + 0.05) / (l_fill + 0.05)
+        if rapport < 4.0:
+            return "#000000", "#FFFFFF", _(
+                "Contraste insuffisant (%(r).1f:1, il en faut 4). Rendu en "
+                "noir sur blanc.", r=rapport,
+            )
+        return fill, back, False
+
+    @api.depends("slug", "qr_branded", "qr_logo", "qr_scale",
+                 "qr_fill_color", "qr_back_color")
+    def _compute_qr_preview(self):
+        for page in self:
+            page.qr_warning = False
+            page.qr_preview = False
+            if not page.slug:
+                continue
+            try:
+                _fill, _back, avis = page._qr_colors()
+                page.qr_warning = avis
+                page.qr_preview = base64.b64encode(page._qr_png())
+            except Exception as echec:  # noqa: BLE001
+                # L'aperçu ne doit JAMAIS empêcher d'ouvrir la fiche : une
+                # erreur ici rendrait le formulaire inaccessible, pour un
+                # champ purement décoratif.
+                _logger.warning("bf_linkpage: aperçu du QR impossible (%s)", echec)
+                page.qr_warning = _("Aperçu indisponible.")
+
+    def action_download_qr(self):
+        """Télécharger le code QR tel qu'il est réglé sur la fiche."""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_url",
+            "target": "self",
+            "url": "/web/content/bf.linkpage/%s/qr_preview?download=true"
+                   "&filename=qr-%s.png" % (self.id, self.slug),
+        }
+
+    _QR_BOX = {"s": 6, "m": 10, "l": 16}
+
+    def _qr_png(self, branded=None, box_size=None):
         """Rendre le PNG du QR de cette page.
 
         `branded` incruste le logo de la société au centre, ce qui MASQUE des
@@ -556,6 +683,14 @@ class BfLinkpage(models.Model):
         from qrcode.constants import ERROR_CORRECT_H, ERROR_CORRECT_M
         from PIL import Image
 
+        # Les arguments explicites l'emportent (le contrôleur et les tests s'en
+        # servent) ; sinon on suit ce qui est réglé sur la fiche.
+        if branded is None:
+            branded = self.qr_branded
+        if box_size is None:
+            box_size = self._QR_BOX.get(self.qr_scale, 10)
+        fill_color, back_color, _avis = self._qr_colors()
+
         qr = qrcode.QRCode(
             version=None,
             error_correction=ERROR_CORRECT_H if branded else ERROR_CORRECT_M,
@@ -564,14 +699,17 @@ class BfLinkpage(models.Model):
         )
         qr.add_data(self.public_url)
         qr.make(fit=True)
-        img = qr.make_image(fill_color="black", back_color="white").convert("RGB")
+        img = qr.make_image(fill_color=fill_color, back_color=back_color).convert("RGB")
 
         if branded:
             logo = self._qr_logo()
             if logo is not None:
                 side = int(min(img.size) * LOGO_RATIO)
                 logo = logo.resize((side, side), Image.LANCZOS)
-                backdrop = Image.new("RGB", (side + 12, side + 12), "white")
+                # Le cartouche prend la couleur du FOND du code, pas du blanc
+                # en dur : sur un code à fond coloré, un carré blanc au centre
+                # se voit comme une pièce rapportée.
+                backdrop = Image.new("RGB", (side + 12, side + 12), back_color)
                 backdrop.paste(logo, (6, 6), logo if logo.mode == "RGBA" else None)
                 position = (
                     (img.size[0] - backdrop.size[0]) // 2,
@@ -587,9 +725,8 @@ class BfLinkpage(models.Model):
         """Le logo à incruster, ou None. L'absence de logo n'est pas une erreur."""
         self.ensure_one()
         from PIL import Image
-        import base64
 
-        raw = self.env.company.logo
+        raw = self.qr_logo or self._company().logo
         if not raw:
             return None
         try:
