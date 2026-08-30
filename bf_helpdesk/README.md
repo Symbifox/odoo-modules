@@ -71,7 +71,7 @@ The call is routed through the **`bf_llm`** gateway (a hard dependency):
 `bf_helpdesk` no longer holds an API URL, key, or HTTP transport. The provider
 (Anthropic, OpenAI, or an OpenAI-compatible/local server), the model, and the
 Fernet-encrypted key all live in *Settings › Technical › LLM Providers*. The
-triage model override is the provider's `model_triage` field. The GenFox
+triage model override is the provider's `model_triage` field. The Gen
 module (`bf_claude_chat`) is **not** a dependency and is no longer read; bf_llm
 provides its own encrypted key store.
 
@@ -106,4 +106,4 @@ five modules. If that is what you need, [talk to us](https://symbifox.com).
 | 18.0.4.3.0 | Ticket timesheets (`account.analytic.line.ticket_id`, "Feuilles de temps" tab, one-click logging from the chatter; lines land on the ticket project so they deduct from the team hour bank). Branded client update: "Envoyer une mise à jour" preloads the composer with `mail_template_client_update`, editable, never auto-sent. Portal visibility: `/my/ticket` URL and a portal-access indicator on the form, plus "Abonner le client" subscribing the partner as a follower with no invite email. New dependencies: `helpdesk_mgmt_project`, `hr_timesheet`. |
 | 18.0.4.2.0 | The suite is decoupled from `bluefox_branding`: `report_brand_{primary,dark,logo}` move to `bf_onboarding_base`, so branded mails, reports and public pages render without the white-label panel installed. |
 | 18.0.4.1.2 | AI triage migrated onto the new **`bf_llm`** gateway (added as a hard dependency). Removed the in-module direct Anthropic HTTP call (`_call_anthropic_network`) and the plaintext `bf_helpdesk.anthropic_api_key` / `bf_claude_chat` key resolution (`_bf_helpdesk_get_anthropic_api_key`). Keys are now Fernet-encrypted in `bf.llm.provider`. When no provider is configured the triage button degrades gracefully with a soft notification instead of a hard popup; transient errors still land as `triage_state=error`. |
-| 18.0.4.1.1 | `bf_claude_chat` (GenFox) downgraded from hard dependency to optional soft-dep — AI triage reads its config via `ir.config_parameter` and degrades gracefully when absent. README cleanup: removed the stale "Phase 3 (planned)" list (all items already shipped) and corrected the CSAT note (uses core `survey`, not `bf_survey_upload`). |
+| 18.0.4.1.1 | `bf_claude_chat` (Gen) downgraded from hard dependency to optional soft-dep — AI triage reads its config via `ir.config_parameter` and degrades gracefully when absent. README cleanup: removed the stale "Phase 3 (planned)" list (all items already shipped) and corrected the CSAT note (uses core `survey`, not `bf_survey_upload`). |

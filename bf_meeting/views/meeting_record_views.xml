@@ -97,7 +97,7 @@
             <form>
                 <header>
                     <button name="action_open_refine_wizard" type="object"
-                            string="Raffiner avec GenFox"
+                            string="Raffiner avec Gen"
                             class="btn-primary"
                             groups="bf_meeting.group_meeting_manager"
                             invisible="refine_state == 'queued'"/>
@@ -172,7 +172,7 @@
                          role="status" invisible="not refine_in_progress">
                         <i class="fa fa-circle-o-notch fa-spin me-2" title="En cours"/>
                         <span>
-                            <b>GenFox raffine ce compte rendu.</b>
+                            <b>Gen raffine ce compte rendu.</b>
                             Lancé le <field name="refine_date" readonly="1" class="d-inline"/> —
                             comptez quelques minutes, puis rechargez la page.
                         </span>
@@ -366,7 +366,7 @@
                                     <field name="active"/>
                                 </group>
                             </group>
-                            <group string="Raffinage GenFox">
+                            <group string="Raffinage Gen">
                                 <group>
                                     <field name="refine_state" widget="badge"
                                            decoration-info="refine_state == 'queued'"

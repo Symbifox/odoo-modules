@@ -351,7 +351,7 @@ class MeetingRecord(models.Model):
         ('queued', 'En cours'),
         ('done', 'Terminé'),
         ('error', 'Erreur'),
-    ], string='Raffinage GenFox', default='none', readonly=True, copy=False,
+    ], string='Raffinage Gen', default='none', readonly=True, copy=False,
         help="Avancement de la dernière passe /refine-meeting sur ce compte "
              "rendu.")
     refine_date = fields.Datetime(
@@ -773,7 +773,7 @@ class MeetingRecord(models.Model):
         self._check_refine_access()
         return {
             "type": "ir.actions.act_window",
-            "name": "Raffiner avec GenFox",
+            "name": "Raffiner avec Gen",
             "res_model": "meeting.refine.wizard",
             "view_mode": "form",
             "target": "new",
@@ -831,7 +831,7 @@ class MeetingRecord(models.Model):
                     # (data-o-mail-quote) et le chatter la replie derrière
                     # un « … » — les consignes deviendraient invisibles.
                     "<p><b>Consignes de raffinage</b> — transmises à "
-                    "GenFox par %s :</p>"
+                    "Gen par %s :</p>"
                     "<div style=\"border-left:3px solid #29ABE1;"
                     "padding-left:.75em;margin:.25em 0;color:#444;\">%s</div>"
                 ) % (

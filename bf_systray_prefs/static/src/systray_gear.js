@@ -24,7 +24,7 @@ const LABELS = {
     UniversalSearch: "Recherche",
     "bf_nextcloud_browser.launcher": "Nextcloud",
     "bf_gamification.Systray": "Gamification",
-    ClaudeChat: "GenFox",
+    ClaudeChat: "Gen",
     BFDarkModeSystrayItem: "Mode sombre",
 };
 

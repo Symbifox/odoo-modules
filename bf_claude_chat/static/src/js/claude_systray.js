@@ -788,7 +788,7 @@ export class ClaudeSystrayItem extends Component {
         this.action.doAction({
             type: "ir.actions.client",
             tag: "claude_chat",
-            name: "GenFox",
+            name: "Gen",
             target: "current",
         });
     }

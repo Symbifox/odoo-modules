@@ -1,13 +1,13 @@
-# GenFox — Cockpit
+# Gen — Cockpit
 
-Vue d'administration des sessions GenFox, extraite de `bf_claude_chat`.
+Vue d'administration des sessions Gen, extraite de `bf_claude_chat`.
 
 `bf_claude_chat` porte le clavardage. Ce module-ci porte ce qu'on regarde quand
 on se demande si quelque chose cloche : les sessions avec leur compteur
 d'échecs de flux, et la consommation de jetons.
 
 Les deux écrans sont sous `base.group_system` et se rangent sous le menu
-d'administration de GenFox. Ne pas installer ce module ne retire rien au
+d'administration de Gen. Ne pas installer ce module ne retire rien au
 clavardage.
 
 ## Écrans

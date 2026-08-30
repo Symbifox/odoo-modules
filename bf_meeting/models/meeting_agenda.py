@@ -520,7 +520,7 @@ class MeetingAgenda(models.Model):
         ('queued', "En cours"),
         ('done', 'Terminé'),
         ('error', 'Erreur'),
-    ], string="Pré-remplissage GenFox", default='none', readonly=True, copy=False)
+    ], string="Pré-remplissage Gen", default='none', readonly=True, copy=False)
     refine_date = fields.Datetime(
         string='Pré-remplissage — dernier signal',
         readonly=True,
@@ -860,7 +860,7 @@ class MeetingAgenda(models.Model):
         self.ensure_one()
         if not self.env.user.has_group("bf_meeting.group_meeting_manager"):
             raise UserError(
-                "Le pré-remplissage GenFox est réservé aux gestionnaires "
+                "Le pré-remplissage Gen est réservé aux gestionnaires "
                 "(groupe « Rencontres / Gestionnaire »)."
             )
         if not self.project_id:
@@ -879,7 +879,7 @@ class MeetingAgenda(models.Model):
                 "type": "info",
                 "title": "Pré-remplissage lancé",
                 "message": (
-                    "GenFox pré-remplit l'ordre du jour. "
+                    "Gen pré-remplit l'ordre du jour. "
                     "Le résultat apparaîtra dans le formulaire dans quelques minutes."
                 ),
                 "sticky": False,

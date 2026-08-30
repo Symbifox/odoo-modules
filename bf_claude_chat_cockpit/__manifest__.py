@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 {
-    "name": "GenFox — Cockpit",
-    "version": "18.0.1.0.0",
+    "name": "Gen — Cockpit",
+    "version": "18.0.1.0.1",
     "category": "Productivity",
-    "summary": "Vue d'administration des sessions GenFox : pannes de flux et consommation",
+    "summary": "Vue d'administration des sessions Gen : pannes de flux et consommation",
     "description": """
-Le cockpit d'administration de GenFox, sorti de ``bf_claude_chat`` pour que le
+Le cockpit d'administration de Gen, sorti de ``bf_claude_chat`` pour que le
 module de base reste ce qu'on donne à tout le monde : le clavardage.
 
 Deux écrans, tous deux réservés à ``base.group_system`` :
@@ -18,7 +18,7 @@ Deux écrans, tous deux réservés à ``base.group_system`` :
   Informatif, délibérément séparé de l'opérationnel.
 
 Installer ce module ajoute les deux entrées sous le menu d'administration de
-GenFox. Ne pas l'installer ne retire rien au clavardage.
+Gen. Ne pas l'installer ne retire rien au clavardage.
     """,
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",

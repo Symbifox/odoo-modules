@@ -1,4 +1,21 @@
-# Changelog - GenFox (bf_claude_chat)
+# Changelog - Gen (bf_claude_chat)
+
+## v18.0.1.15.4 - 2026-08-30
+
+### The assistant is now called Gen
+
+The public name goes from "GenFox" to "Gen". A first name is easier to
+remember, reads the same in French and English, and steps out of an already
+crowded "fox" family (Blue Fox, Symbifox, `bf_`).
+
+What changes: the module name, the menu, the systray button, the panel header,
+the Settings page, the input placeholder, the fr_CA translations - everything a
+user reads.
+
+What deliberately does not change: the technical name stays `bf_claude_chat`,
+along with every identifier (`genfox_*`, `action_genfox_*`), the notification
+channels and the source comments. **GenFox remains the internal code name; Gen
+is the public one.** No column added, no migration.
 
 ## v18.0.1.13.0 - 2026-08-16
 

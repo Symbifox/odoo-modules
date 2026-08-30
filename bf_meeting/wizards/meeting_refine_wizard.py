@@ -16,7 +16,7 @@ class MeetingRefineWizard(models.TransientModel):
     """
 
     _name = 'meeting.refine.wizard'
-    _description = 'Raffiner un compte rendu avec GenFox'
+    _description = 'Raffiner un compte rendu avec Gen'
 
     meeting_id = fields.Many2one(
         'meeting.record',

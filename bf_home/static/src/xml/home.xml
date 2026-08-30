@@ -19,7 +19,7 @@
           <div class="bfh-mark"><img src="/bf_home/static/src/img/mark.svg" alt="Symbifox"/></div>
           <div class="bfh-hello">
             <h1>Bonjour <t t-esc="state.data.user"/>.</h1>
-            <p><span class="bfh-gf">GenFox</span><t t-esc="state.data.headline"/></p>
+            <p><span class="bfh-gf">Gen</span><t t-esc="state.data.headline"/></p>
           </div>
           <div class="bfh-clock"><b t-esc="state.data.date"/></div>
         </div>

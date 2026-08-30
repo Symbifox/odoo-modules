@@ -135,10 +135,10 @@
                             string="Envoyer avec options..."
                             invisible="state not in ('draft', 'confirmed')"/>
                     <button name="action_refine_agenda" type="object"
-                            string="Pré-remplir avec GenFox"
+                            string="Pré-remplir avec Gen"
                             groups="bf_meeting.group_meeting_manager"
                             invisible="state != 'draft' or refine_state == 'queued'"
-                            confirm="Lancer GenFox pour pré-remplir cet ordre du jour ? L'opération prend quelques minutes."/>
+                            confirm="Lancer Gen pour pré-remplir cet ordre du jour ? L'opération prend quelques minutes."/>
                     <!-- Une passe interrompue reste « en cours » pour toujours et
                          emportait le bouton avec elle : ce second bouton reprend
                          la main dès que la fenêtre utile est passée. -->
@@ -204,7 +204,7 @@
                          role="status" invisible="not refine_in_progress">
                         <i class="fa fa-circle-o-notch fa-spin me-2" title="En cours"/>
                         <span>
-                            <b>GenFox pré-remplit cet ordre du jour.</b>
+                            <b>Gen pré-remplit cet ordre du jour.</b>
                             Comptez quelques minutes, puis rechargez la page.
                         </span>
                     </div>

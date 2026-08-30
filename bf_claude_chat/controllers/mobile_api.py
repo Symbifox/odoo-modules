@@ -101,7 +101,7 @@ def _push(env, user, session, text):
     try:
         env[model].sudo()._send(user, {
             "type": "genfox",
-            "title": session.name or "GenFox",
+            "title": session.name or "Gen",
             "body": text[:180],
             "session_id": session.id,
         })

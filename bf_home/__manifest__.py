@@ -23,7 +23,7 @@ Aucune dépendance dure sur les modules lus. Chaque signal est sondé à l'exéc
 donc le module s'installe sur un locataire qui a trois modules comme sur un qui
 les a tous.
 """,
-    "version": "18.0.1.2.0",
+    "version": "18.0.1.2.1",
     "category": "Productivity",
     "website": "https://symbifox.com",
     "author": "Les services de consultation Blue Fox, Inc.",

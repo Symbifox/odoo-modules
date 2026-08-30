@@ -1,6 +1,6 @@
-# GenFox - Odoo 18 module
+# Gen - Odoo 18 module
 
-An Odoo module for chatting with GenFox, the AI assistant, directly inside the Odoo interface,
+An Odoo module for chatting with Gen, the AI assistant, directly inside the Odoo interface,
 through an integrated side panel and a full-screen page.
 
 ## Architecture
@@ -14,7 +14,7 @@ bf_claude_chat/
 │   ├── claude_chat_session.py       # claude.chat.session model
 │   ├── claude_chat_message.py       # claude.chat.message model
 │   ├── claude_chat_instruction.py   # claude.chat.instruction (steering)
-│   └── res_config_settings.py       # Settings (Settings > GenFox)
+│   └── res_config_settings.py       # Settings (Settings > Gen)
 ├── security/
 │   ├── security.xml             # Access rules (own sessions, admin all)
 │   └── ir.model.access.csv      # Model ACLs
@@ -45,7 +45,7 @@ bf_claude_chat/
 
 ### Side panel (systray)
 
-- A "GenFox" button in the Odoo navigation bar
+- A "Gen" button in the Odoo navigation bar
 - Opens as a right-hand side panel (50% of screen width, min 420px, max 800px)
 - Semi-transparent overlay, closed with Escape / clicking the overlay / the X button
 - **Portal pattern**: the overlay is moved to `<body>` in JS to escape the navbar's stacking context and display above every Odoo element (chatter, statusbar, modals)
@@ -56,7 +56,7 @@ bf_claude_chat/
 
 ### Full-screen page
 
-- Reached through the main "GenFox" menu or the panel's expand button
+- Reached through the main "Gen" menu or the panel's expand button
 - Session sidebar (280px) plus a centred chat area (max 900px)
 - Session renaming by double-click or the pencil icon
 - Session archiving (soft delete through the `active` field)
@@ -108,7 +108,7 @@ contradictions across the active set.
 
 ### Admin cockpit
 
-Under the GenFox menu, restricted to `base.group_system`: every session, plus
+Under the Gen menu, restricted to `base.group_system`: every session, plus
 token and cost counters per turn (pivot, graph and list views).
 
 ### Mobile API
@@ -121,7 +121,7 @@ runs for minutes neither holds a worker on an open SSE connection nor dies with
 the phone's screen.
 
 Authentication is a device bearer token resolved through the mobile-device model
-of `bf_sms_archive` or `bf_email_management` when either is installed - GenFox is
+of `bf_sms_archive` or `bf_email_management` when either is installed - Gen is
 a capability of the existing mobile session, not a third account. Without those
 modules the mobile routes simply answer 401.
 
@@ -200,7 +200,7 @@ bearer token (no session cookie, `save_session=False`):
 
 ## Talking to the bridge
 
-The module talks to the GenFox bridge service over a **Unix socket**
+The module talks to the Gen bridge service over a **Unix socket**
 (`/run/claude-bridge/bridge.sock` by default). The controller builds a raw HTTP
 request on the socket, sends the message together with the user and page
 context, and receives the assistant's reply.
@@ -208,11 +208,11 @@ context, and receives the assistant's reply.
 The smart title is generated in the background by a daemon thread calling
 `/generate-title` on the bridge after the first exchange.
 
-## Configuration (Settings > GenFox)
+## Configuration (Settings > Gen)
 
 | Setting | Default | Description |
 |---------|---------|-------------|
-| Enable GenFox | True | Turns the chatbot on/off |
+| Enable Gen | True | Turns the chatbot on/off |
 | Stream responses | True | Live tokens; off falls back to a buffered reply |
 | Brief me when I open a record | True | Proactive situation report on a fresh record |
 | Model | sonnet | Claude model (sonnet/opus/haiku) |
@@ -291,7 +291,7 @@ DOM after OWL render:            DOM after the portal:
 
 <nav .o_main_navbar>              <nav .o_main_navbar>
   <div .o_menu_systray>             <div .o_menu_systray>
-    <button>GenFox</button>           <button>GenFox</button>
+    <button>Gen</button>           <button>Gen</button>
     <div .bf-panel-overlay>  ---->    <!-- bf-overlay-anchor -->
       <div .bf-side-panel/>         </div>
     </div>                        </nav>

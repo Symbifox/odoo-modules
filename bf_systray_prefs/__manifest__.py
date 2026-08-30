@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Symbifox — Préférences de la barre système',
-    'version': '18.0.1.0.0',
+    'version': '18.0.1.0.1',
     'summary': 'Per-user show/hide of systray (notification-tray) icons, via a gear menu',
     'category': 'Tools',
     'author': 'Les services de consultation Blue Fox, Inc.',

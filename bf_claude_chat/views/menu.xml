@@ -2,14 +2,14 @@
 <odoo>
     <!-- Client action that loads our OWL component -->
     <record id="action_claude_chat" model="ir.actions.client">
-        <field name="name">GenFox</field>
+        <field name="name">Gen</field>
         <field name="tag">claude_chat</field>
     </record>
 
     <!-- Top-level menu item -->
     <menuitem
         id="menu_claude_chat_root"
-        name="GenFox"
+        name="Gen"
         action="action_claude_chat"
         web_icon="bf_claude_chat,static/description/icon.png"
         sequence="99"

@@ -6,12 +6,12 @@
         <field name="inherit_id" ref="base.res_config_settings_view_form"/>
         <field name="arch" type="xml">
             <xpath expr="//form" position="inside">
-                <app data-string="GenFox" string="GenFox"
+                <app data-string="Gen" string="Gen"
                      name="bf_claude_chat"
                      groups="base.group_system">
                     <block title="General">
-                        <setting string="GenFox Assistant"
-                                 help="Enable the GenFox chatbot for all users.">
+                        <setting string="Gen Assistant"
+                                 help="Enable the Gen chatbot for all users.">
                             <field name="claude_enabled"/>
                         </setting>
                         <setting string="Live streaming"
