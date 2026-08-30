@@ -125,7 +125,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_meeting` | Rencontres | 18.0.3.49.2 | BUSL-1.1 | Agendas, meeting records, and discussion items unified around `calendar.event` with automatic reminders |
 | `bf_meeting_call_archive` | Rencontres ↔ Archive d'appels | 18.0.1.0.0 | BUSL-1.1 | Optional link between a meeting record and an archived call |
 | `bf_meeting_portal` | Rencontres - Portail client | 18.0.2.0.1 | BUSL-1.1 | Portal read access to meeting reports that were already emailed to the client |
-| `bf_music_licensing` | Licences musicales : conformité en établissement | 18.0.1.1.0 | BUSL-1.1 | Tracks the SOCAN and Re:Sound royalties an establishment owes, holding the proposed rate beside the certified one so a retroactive Copyright Board ruling is priced, not discovered |
+| `bf_music_licensing` | Licences musicales : conformité en établissement | 18.0.1.2.0 | BUSL-1.1 | Tracks the SOCAN and Re:Sound royalties an establishment owes, holding the proposed rate beside the certified one so a retroactive Copyright Board ruling is priced, not discovered |
 | `bf_nextcloud_browser` | Nextcloud File Browser | 18.0.3.3.0 | LGPL-3 | Embedded + standalone Nextcloud WebDAV file browser on projects/tasks: folder tree, modal preview, drag-and-drop upload/move, configurable share presets, open-in-Nextcloud for office files, Knowledge Matrix linking, systray launcher |
 | `bf_no_gateway_bounce` | BF No Gateway Bounce | 18.0.1.0.0 | LGPL-3 | Never auto-reply MAILER-DAEMON bounces to people who write to Symbifox |
 | `bf_onboarding_base` | Symbifox Onboarding Foundation | 18.0.2.0.0 | LGPL-3 | Shared helpers for Symbifox per-module onboarding panels. |

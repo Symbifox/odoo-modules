@@ -36,6 +36,24 @@ class TestMusicTariffSeed(TransactionCase):
             self.assertFalse(t.rate_proposed, f"{t.name} porte un taux non relevé")
             self.assertFalse(t.rate_base_proposed)
 
+    def test_seed_only_the_2027_block_is_unread(self):
+        """Depuis le relevé du 2026-08-30, une seule ligne reste sans taux."""
+        reste = self.env["bf.music.tariff"].search([("rate_confirmed", "=", False)])
+        self.assertEqual(len(reste), 1)
+        self.assertEqual(reste.code, "3.B")
+        self.assertEqual(reste.date_start.year, 2027)
+
+    def test_seed_socan_2020_matches_the_2022_block(self):
+        """Les deux blocs portent les mêmes montants ; le contrôle fige la lecture."""
+        a20 = self.env.ref("bf_music_licensing.tariff_socan_15a_2020")
+        a22 = self.env.ref("bf_music_licensing.tariff_socan_15a_2022")
+        self.assertAlmostEqual(a20.rate_proposed, 1.53)
+        self.assertAlmostEqual(a20.minimum_proposed, 117.75)
+        self.assertAlmostEqual(a20.rate_proposed, a22.rate_proposed)
+        b20 = self.env.ref("bf_music_licensing.tariff_socan_15b_2020")
+        self.assertAlmostEqual(b20.rate_base_proposed, 117.75)
+        self.assertAlmostEqual(b20.rate_proposed, 2.60)
+
     def test_seed_socan_15a_2025(self):
         t = self.env.ref("bf_music_licensing.tariff_socan_15a_2025")
         self.assertAlmostEqual(t.rate_proposed, 2.32)

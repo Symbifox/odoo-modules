@@ -58,7 +58,7 @@ An amount can never sit in both.
 On an establishment, **Evaluate exposure** (`action_build_history`) creates one
 licence period per missing year since 2020, with its tariff lines, and prices the
 lot. A 250 m² clinic with four on-hold trunk lines, open 300 days a year, comes
-out at roughly $6,560 paid between 2020 and 2026, every dollar of it under
+out at roughly $7,576 paid between 2020 and 2026, every dollar of it under
 tariffs that are not certified.
 
 ## The rate register
@@ -69,10 +69,10 @@ saying whether the rate was read from the text or merely assumed.
 
 | Tariff | Period | Proposed rate | Minimum | Read |
 |---|---|---|---|---|
-| SOCAN 15.A | 2020-2021 | — | — | no |
+| SOCAN 15.A | 2020-2021 | $1.53/m² (14.28¢/sq ft) | $117.75 | yes |
 | SOCAN 15.A | 2022-2024 | $1.53/m² (14.28¢/sq ft) | $117.75 | yes |
 | SOCAN 15.A | 2025-2027 | $2.32/m² (21.58¢/sq ft) | $177.99 | yes |
-| SOCAN 15.B | 2020-2021 | — | — | no |
+| SOCAN 15.B | 2020-2021 | $117.75 + $2.60/line | — | yes |
 | SOCAN 15.B | 2022-2024 | $117.75 + $2.60/line | — | yes |
 | SOCAN 15.B | 2025-2027 | $177.99 + $3.94/line | — | yes |
 | Re:Sound 3.B background | 2023-2026 | 0.9650¢/m²/day | $140.93 | yes |
@@ -97,11 +97,8 @@ successive proposals for fifteen years.
 
 ### Still missing
 
-* **The SOCAN 2020-2021 blocks**, 15.A and 15.B alike. They appear on the list of
-  pending cases, but the proposed tariff itself could not be found. Both rows are
-  seeded at zero and flagged unread, so a 2020 or 2021 year comes out at zero
-  rather than wrong.
-* **The Re:Sound 3.B 2027-2031 block**, which touches no year before 2027.
+* **The Re:Sound 3.B 2027-2031 block**, which touches no year before 2027. It is
+  the only row left without a rate, and a test pins that.
 * The two Re:Sound **fallbacks** when floor area cannot be established (0.5786¢
   per capacity place per day, then 0.3088¢ per admission) are in the text but not
   in the model: only the area basis is computed.

@@ -28,10 +28,13 @@
             <field name="date_end">2021-12-31</field>
             <field name="basis">area_sqm</field>
             <field name="state">proposed</field>
+            <field name="rate_proposed">1.53</field>
+            <field name="minimum_proposed">117.75</field>
             <field name="seasonal_half" eval="True"/>
-            <field name="rate_confirmed" eval="False"/>
-            <field name="source_url">https://www.cb-cda.gc.ca/en/cases-tariffs/ongoing-cases/pending</field>
-            <field name="notes">TROU CONNU. Bloc en instance devant la Commission, mais le projet de tarif lui-même n'a pas été retrouvé : ni la page des tarifs proposés de SOCAN ni le supplément de la Gazette de 2019 ne le portent. Taux à relever avant de facturer une année 2020 ou 2021.</field>
+            <field name="rate_confirmed" eval="True"/>
+            <field name="publication_date">2019-05-18</field>
+            <field name="source_url">https://www.cb-cda.gc.ca/sites/default/files/inline-files/SUP-18052019_2.pdf</field>
+            <field name="notes">Publié au supplément de la Gazette du Canada du 18 mai 2019. Redevance annuelle de 1,53 $ le mètre carré ou 14,28 ¢ le pied carré, minimum annuel de 117,75 $, payable au plus tard le 31 janvier de l'année visée. Demi-tarif pour un établissement exploité moins de six mois par année. Montants identiques à ceux du bloc 2022-2024.</field>
         </record>
 
         <record id="tariff_socan_15a_2022" model="bf.music.tariff">
@@ -81,9 +84,12 @@
             <field name="date_end">2021-12-31</field>
             <field name="basis">line</field>
             <field name="state">proposed</field>
-            <field name="rate_confirmed" eval="False"/>
-            <field name="source_url">https://www.cb-cda.gc.ca/en/cases-tariffs/ongoing-cases/pending</field>
-            <field name="notes">TROU CONNU, même cause que le 15.A 2020-2021 : le projet de tarif n'a pas été retrouvé.</field>
+            <field name="rate_base_proposed">117.75</field>
+            <field name="rate_proposed">2.60</field>
+            <field name="rate_confirmed" eval="True"/>
+            <field name="publication_date">2019-05-18</field>
+            <field name="source_url">https://www.cb-cda.gc.ca/sites/default/files/inline-files/SUP-18052019_2.pdf</field>
+            <field name="notes">Même supplément de la Gazette du 18 mai 2019. 117,75 $ pour une ligne principale de standard, plus 2,60 $ par ligne additionnelle, payable au plus tard le 31 janvier de l'année visée. Montants identiques à ceux du bloc 2022-2024.</field>
         </record>
 
         <record id="tariff_socan_15b_2022" model="bf.music.tariff">
