@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    `noupdate="1"` : la fréquence et l'état de marche de la passe sont des
+    décisions d'exploitation. Un `-u` ne doit pas ramener l'horaire d'origine
+    par-dessus un ajustement fait en connaissance de cause.
+-->
+<odoo noupdate="1">
+
+    <record id="cron_sync_employees" model="ir.cron">
+        <field name="name">Pages de liens : créer et rafraîchir les pages des employés</field>
+        <field name="model_id" ref="model_bf_linkpage"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_sync_employees()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active" eval="True"/>
+        <field name="user_id" ref="base.user_admin"/>
+        <field name="nextcall" eval="(DateTime.now().replace(hour=9, minute=45, second=0) + timedelta(days=1)).strftime('%Y-%m-%d %H:%M:%S')"/>
+    </record>
+
+    <!-- Les réglages de départ. `noupdate` vaut ici double : ce sont les
+         valeurs choisies au déploiement, et les rebasculer à un `-u` serait
+         particulièrement fâcheux pour `autocreate_state`, qui décide si des
+         coordonnées de travail deviennent publiques. -->
+    <record id="param_autocreate" model="ir.config_parameter">
+        <field name="key">bf_linkpage.autocreate</field>
+        <field name="value">True</field>
+    </record>
+    <record id="param_autorefresh" model="ir.config_parameter">
+        <field name="key">bf_linkpage.autorefresh</field>
+        <field name="value">True</field>
+    </record>
+    <record id="param_autocreate_state" model="ir.config_parameter">
+        <field name="key">bf_linkpage.autocreate_state</field>
+        <field name="value">published</field>
+    </record>
+
+</odoo>

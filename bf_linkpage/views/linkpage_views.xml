@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_bf_linkpage_list" model="ir.ui.view">
+        <field name="name">bf.linkpage.list</field>
+        <field name="model">bf.linkpage</field>
+        <field name="arch" type="xml">
+            <!-- La décoration ne peint que ce qui appelle un geste : une page
+                 expirée ou fermée. Une page en ligne est le cas normal et ne
+                 se colore pas. -->
+            <list string="Pages de liens"
+                  decoration-muted="not is_live"
+                  decoration-warning="is_expired">
+                <field name="name"/>
+                <field name="slug"/>
+                <field name="kind"/>
+                <field name="partner_id" optional="show"/>
+                <field name="template_id" optional="hide"/>
+                <field name="link_count" string="Liens"/>
+                <field name="visible_link_count" string="Affichés"/>
+                <field name="visit_count" string="Visites" sum="Visites"/>
+                <field name="date_expiry" optional="show"/>
+                <field name="state"/>
+                <field name="is_live" column_invisible="1"/>
+                <field name="is_expired" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_bf_linkpage_form" model="ir.ui.view">
+        <field name="name">bf.linkpage.form</field>
+        <field name="model">bf.linkpage</field>
+        <field name="arch" type="xml">
+            <form string="Page de liens">
+                <header>
+                    <button name="action_publish" type="object" string="Publier"
+                            class="btn-primary" invisible="state == 'published'"/>
+                    <button name="action_close" type="object" string="Fermer"
+                            invisible="state != 'published'"/>
+                    <button name="action_apply_template" type="object"
+                            string="Réappliquer le gabarit"
+                            invisible="not template_id"
+                            confirm="Les liens posés par le gabarit seront remplacés. Les liens ajoutés à la main restent."/>
+                    <button name="action_open_public" type="object"
+                            string="Voir la page" icon="fa-external-link"
+                            invisible="state != 'published'"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,published,closed"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button" icon="fa-eye" type="object"
+                                name="action_open_public" invisible="state != 'published'">
+                            <field name="visit_count" widget="statinfo" string="Visites"/>
+                        </button>
+                    </div>
+                    <field name="avatar" widget="image" class="oe_avatar"/>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="Jane Doe"/></h1>
+                        <field name="headline" placeholder="Une ligne sous le titre"/>
+                    </div>
+                    <div class="alert alert-warning" role="alert" invisible="not is_expired">
+                        Cette page est expirée : son adresse rend un 404. Un QR
+                        déjà imprimé qui pointe ici ne mène plus nulle part.
+                    </div>
+                    <group>
+                        <group string="Adresse">
+                            <field name="slug" placeholder="jane-doe"/>
+                            <field name="public_url" widget="url" readonly="1"/>
+                            <field name="kind"/>
+                            <field name="active" invisible="1"/>
+                        </group>
+                        <group string="Personne">
+                            <field name="partner_id"
+                                   required="kind == 'owner'"
+                                   invisible="kind != 'owner'"/>
+                            <field name="user_id" invisible="kind != 'owner'"
+                                   help="Sert à résoudre la page de rendez-vous."/>
+                            <field name="template_id"/>
+                        </group>
+                        <group string="Cycle de vie">
+                            <field name="date_expiry"
+                                   required="kind == 'oneoff'"/>
+                            <field name="is_expired" invisible="1"/>
+                            <field name="is_live" invisible="1"/>
+                            <field name="last_visit" readonly="1"/>
+                        </group>
+                        <group string="Présentation">
+                            <field name="layout"/>
+                            <field name="theme"/>
+                            <field name="accent_color" widget="color"/>
+                        </group>
+                        <group string="Propre à la personne">
+                            <field name="booking_slug"
+                                   placeholder="rencontre-flexible"/>
+                            <field name="meet_url"
+                                   placeholder="https://…/r/MaSalle"
+                                   widget="url"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Liens" name="links">
+                            <field name="link_ids">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="name"/>
+                                    <field name="subtitle" optional="show"/>
+                                    <field name="source_code"/>
+                                    <field name="url"
+                                           column_invisible="0"
+                                           readonly="source_code != 'manual'"
+                                           placeholder="https://…"/>
+                                    <field name="resolved_url" optional="show" readonly="1"/>
+                                    <field name="icon" optional="hide"/>
+                                    <field name="click_count" optional="hide" readonly="1"/>
+                                    <field name="from_template" optional="hide" readonly="1"/>
+                                    <field name="source_available" column_invisible="1"/>
+                                    <field name="active" column_invisible="1"/>
+                                </list>
+                            </field>
+                            <div class="text-muted mt-2">
+                                Un lien dont l'adresse résolue est vide ne
+                                s'affiche pas sur la page publique. C'est
+                                voulu : mieux vaut un lien absent qu'un lien
+                                mort atteint par un QR déjà imprimé.
+                            </div>
+                        </page>
+                        <page string="Présentation" name="bio">
+                            <field name="bio" placeholder="Quelques lignes affichées sous le titre."/>
+                        </page>
+                        <page string="QR" name="qr">
+                            <div class="text-muted">
+                                Le QR se télécharge à l'adresse
+                                <code><field name="public_url" readonly="1" nolabel="1" class="d-inline"/>/qr.png</code>.
+                                Ajouter <code>?branded=0</code> pour la version sans logo,
+                                et <code>&amp;size=6</code> pour un rendu plus compact.
+                                <p class="mt-2">
+                                    Le QR à la marque est produit en correction
+                                    d'erreur de niveau H parce que le logo masque
+                                    des modules du code. Réduire ce niveau donne
+                                    un QR qui se lit à l'écran puis échoue une
+                                    fois imprimé petit dans une signature.
+                                </p>
+                            </div>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_bf_linkpage_search" model="ir.ui.view">
+        <field name="name">bf.linkpage.search</field>
+        <field name="model">bf.linkpage</field>
+        <field name="arch" type="xml">
+            <search string="Pages de liens">
+                <field name="name"/>
+                <field name="slug"/>
+                <field name="partner_id"/>
+                <filter name="live" string="En ligne"
+                        domain="[('state', '=', 'published'), ('is_expired', '=', False)]"/>
+                <filter name="expired" string="Expirées" domain="[('is_expired', '=', True)]"/>
+                <filter name="oneoff" string="Ponctuelles" domain="[('kind', '=', 'oneoff')]"/>
+                <separator/>
+                <filter name="archived" string="Archivées" domain="[('active', '=', False)]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="group_kind" string="Nature" context="{'group_by': 'kind'}"/>
+                    <filter name="group_state" string="État" context="{'group_by': 'state'}"/>
+                    <filter name="group_template" string="Gabarit" context="{'group_by': 'template_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_bf_linkpage" model="ir.actions.act_window">
+        <field name="name">Pages de liens</field>
+        <field name="res_model">bf.linkpage</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_live': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Créer une page de liens</p>
+            <p>
+                Une page publique qui rassemble les liens d'une personne sous
+                une adresse courte, et le QR à poser dans une signature
+                courriel. Les liens de rendez-vous et de dépôt sécurisé sont
+                résolus depuis la base : ils suivent la personne au lieu d'être
+                recopiés.
+            </p>
+        </field>
+    </record>
+</odoo>

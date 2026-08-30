@@ -1,0 +1,354 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Les gabarits semés.
+
+    `noupdate="1"` est délibéré : ces jeux de liens sont un point de départ,
+    pas une vérité du module. Dès qu'on ajuste un libellé ou qu'on retire une
+    ligne, un `-u` ultérieur ne doit pas ramener la version d'origine par
+    dessus le travail fait. Le prix à payer est connu : corriger un gabarit
+    ICI ne rejoindra pas une installation déjà faite.
+
+    Aucun gabarit ne vise de groupe. L'attribution automatique par groupe est
+    un choix d'organisation, pas une valeur par défaut raisonnable : elle
+    poserait des liens sur la page de gens qui ne l'ont pas demandé. Un seul
+    gabarit porte `is_default`, et c'est le plus sobre.
+-->
+<odoo noupdate="1">
+
+    <!-- 1. Carte de visite ================================================
+         Le gabarit par défaut. Trois liens, parce que c'est celui qui vit
+         sous un QR dans une signature courriel : la personne qui scanne est
+         debout, sur un téléphone, et cherche UNE chose.
+    -->
+    <record id="template_carte_visite" model="bf.linkpage.template">
+        <field name="name">Carte de visite</field>
+        <field name="sequence">10</field>
+        <field name="is_default" eval="True"/>
+        <field name="note">Le jeu le plus sobre, et le gabarit par défaut. Pensé pour le QR d'une signature courriel : trois liens, aucun sous-titre superflu. Si une personne n'a pas de ressource de rendez-vous, la première ligne disparaîtra d'elle-même de sa page ; c'est le comportement voulu, et l'écart se lit au back-office entre « Liens » et « Liens affichés ».</field>
+    </record>
+
+    <record id="line_carte_visite_rdv" model="bf.linkpage.template.line">
+        <field name="template_id" ref="template_carte_visite"/>
+        <field name="sequence">10</field>
+        <field name="name">Prendre rendez-vous</field>
+        <field name="subtitle">Un moment libre dans mon agenda</field>
+        <field name="icon">fa-calendar-check-o</field>
+        <field name="source_code">appointment</field>
+    </record>
+    <record id="line_carte_visite_meet" model="bf.linkpage.template.line">
+        <field name="template_id" ref="template_carte_visite"/>
+        <field name="sequence">15</field>
+        <field name="name">Rencontre instantanée</field>
+        <field name="subtitle">Ma salle, ouverte en permanence</field>
+        <field name="icon">fa-video-camera</field>
+        <field name="source_code">meet</field>
+    </record>
+    <record id="line_carte_visite_depot" model="bf.linkpage.template.line">
+        <field name="template_id" ref="template_carte_visite"/>
+        <field name="sequence">18</field>
+        <field name="name">M'envoyer un fichier</field>
+        <field name="subtitle">Dépôt sécurisé, sans pièce jointe</field>
+        <field name="icon">fa-paperclip</field>
+        <field name="source_code">securetransfer</field>
+    </record>
+    <record id="line_carte_visite_courriel" model="bf.linkpage.template.line">
+        <field name="template_id" ref="template_carte_visite"/>
+        <field name="sequence">20</field>
+        <field name="name">Écrire</field>
+        <field name="icon">fa-envelope-o</field>
+        <field name="source_code">partner_email</field>
+    </record>
+    <record id="line_carte_visite_tel" model="bf.linkpage.template.line">
+        <field name="template_id" ref="template_carte_visite"/>
+        <field name="sequence">30</field>
+        <field name="name">Appeler</field>
+        <field name="icon">fa-phone</field>
+        <field name="source_code">partner_phone</field>
+    </record>
+
+    <!-- 2. Conseil, page complète =========================================
+         Tout ce qu'une personne en mandat expose. Le dépôt sécurisé est la
+         ligne qui distingue ce gabarit du précédent : c'est le lien qu'on
+         cherche quand un client doit envoyer des pièces.
+    -->
+    <record id="template_conseil_complet" model="bf.linkpage.template">
+        <field name="name">Conseil, page complète</field>
+        <field name="sequence">20</field>
+        <field name="note">Le jeu d'une personne en mandat. Le dépôt sécurisé ne résout que si une marque de transfert porte le même slug que la page, ou si la ligne pointe une marque explicite ; sinon le lien disparaît sans bruit. À vérifier une fois la page créée, en comparant « Liens » et « Liens affichés ».</field>
+    </record>
+
+    <record id="line_conseil_rdv" model="bf.linkpage.template.line">
+        <field name="template_id" ref="template_conseil_complet"/>
+        <field name="sequence">10</field>
+        <field name="name">Prendre rendez-vous</field>
+        <field name="subtitle">Un moment libre dans mon agenda</field>
+        <field name="icon">fa-calendar-check-o</field>
+        <field name="source_code">appointment</field>
+    </record>
+    <record id="line_conseil_meet" model="bf.linkpage.template.line">
+        <field name="template_id" ref="template_conseil_complet"/>
+        <field name="sequence">15</field>
+        <field name="name">Rencontre instantanée</field>
+        <field name="subtitle">Ma salle, ouverte en permanence</field>
+        <field name="icon">fa-video-camera</field>
+        <field name="source_code">meet</field>
+    </record>
+    <record id="line_conseil_depot" model="bf.linkpage.template.line">
+        <field name="template_id" ref="template_conseil_complet"/>
+        <field name="sequence">20</field>
+        <field name="name">M'envoyer un fichier</field>
+        <field name="subtitle">Dépôt sécurisé, sans pièce jointe</field>
+        <field name="icon">fa-paperclip</field>
+        <field name="source_code">securetransfer</field>
+    </record>
+    <record id="line_conseil_courriel" model="bf.linkpage.template.line">
+        <field name="template_id" ref="template_conseil_complet"/>
+        <field name="sequence">30</field>
+        <field name="name">Écrire</field>
+        <field name="icon">fa-envelope-o</field>
+        <field name="source_code">partner_email</field>
+    </record>
+    <record id="line_conseil_tel" model="bf.linkpage.template.line">
+        <field name="template_id" ref="template_conseil_complet"/>
+        <field name="sequence">40</field>
+        <field name="name">Appeler</field>
+        <field name="icon">fa-phone</field>
+        <field name="source_code">partner_phone</field>
+    </record>
+    <record id="line_conseil_site" model="bf.linkpage.template.line">
+        <field name="template_id" ref="template_conseil_complet"/>
+        <field name="sequence">50</field>
+        <field name="name">Blue Fox</field>
+        <field name="subtitle">Le site et le blogue</field>
+        <field name="icon">fa-globe</field>
+        <field name="source_code">manual</field>
+        <field name="url">https://bluefoxconsultant.com</field>
+    </record>
+
+    <!-- 3. Sans agenda public =============================================
+         Pour une personne à qui on ne veut pas ouvrir la prise de
+         rendez-vous. Ce n'est pas le gabarit « Conseil » amputé d'une ligne :
+         la source rendez-vous disparaîtrait déjà toute seule faute de
+         ressource, mais alors PERSONNE ne sait si c'est un choix ou une
+         panne. Ici, l'absence est explicite.
+    -->
+    <record id="template_sans_agenda" model="bf.linkpage.template">
+        <field name="name">Sans agenda public</field>
+        <field name="sequence">30</field>
+        <field name="note">Aucune ligne de rendez-vous, volontairement. Un lien de rendez-vous qui ne résout pas disparaît de la page sans laisser de trace lisible ; ce gabarit dit que l'absence est un choix, pas une configuration manquante.</field>
+    </record>
+
+    <record id="line_sans_agenda_courriel" model="bf.linkpage.template.line">
+        <field name="template_id" ref="template_sans_agenda"/>
+        <field name="sequence">10</field>
+        <field name="name">Écrire</field>
+        <field name="icon">fa-envelope-o</field>
+        <field name="source_code">partner_email</field>
+    </record>
+    <record id="line_sans_agenda_tel" model="bf.linkpage.template.line">
+        <field name="template_id" ref="template_sans_agenda"/>
+        <field name="sequence">20</field>
+        <field name="name">Appeler</field>
+        <field name="icon">fa-phone</field>
+        <field name="source_code">partner_phone</field>
+    </record>
+    <record id="line_sans_agenda_site" model="bf.linkpage.template.line">
+        <field name="template_id" ref="template_sans_agenda"/>
+        <field name="sequence">30</field>
+        <field name="name">Blue Fox</field>
+        <field name="subtitle">Le site et le blogue</field>
+        <field name="icon">fa-globe</field>
+        <field name="source_code">manual</field>
+        <field name="url">https://bluefoxconsultant.com</field>
+    </record>
+
+    <!-- 4. Ponctuelle, événement ==========================================
+         Le seul gabarit fait de liens SAISIS, et c'est structurel : une page
+         ponctuelle n'a pas de contact, donc courriel, téléphone et site du
+         contact ne résolvent rien et s'effaceraient tous. Appliquer ici un
+         gabarit à sources personnelles donnerait une page vide.
+
+         Deux lignes partent sans adresse, à remplir avant publication. La
+         page naît en brouillon, donc rien de vide ne sort publiquement en
+         attendant.
+    -->
+    <record id="template_ponctuelle_evenement" model="bf.linkpage.template">
+        <field name="name">Ponctuelle, événement</field>
+        <field name="sequence">40</field>
+        <field name="note">Liens saisis uniquement. Une page ponctuelle n'a pas de contact rattaché : les sources personnelles (courriel, téléphone, site du contact) n'y résolvent rien et disparaîtraient toutes. Deux lignes arrivent sans adresse et doivent être remplies avant de publier ; tant qu'elles sont vides, elles ne s'affichent pas.</field>
+    </record>
+
+    <record id="line_ponctuelle_inscription" model="bf.linkpage.template.line">
+        <field name="template_id" ref="template_ponctuelle_evenement"/>
+        <field name="sequence">10</field>
+        <field name="name">S'inscrire</field>
+        <field name="subtitle">À remplir : l'adresse du formulaire</field>
+        <field name="icon">fa-ticket</field>
+        <field name="source_code">manual</field>
+    </record>
+    <record id="line_ponctuelle_documents" model="bf.linkpage.template.line">
+        <field name="template_id" ref="template_ponctuelle_evenement"/>
+        <field name="sequence">20</field>
+        <field name="name">Documents de la séance</field>
+        <field name="subtitle">À remplir : l'adresse du dossier</field>
+        <field name="icon">fa-folder-open-o</field>
+        <field name="source_code">manual</field>
+    </record>
+    <record id="line_ponctuelle_ecrire" model="bf.linkpage.template.line">
+        <field name="template_id" ref="template_ponctuelle_evenement"/>
+        <field name="sequence">30</field>
+        <field name="name">Nous écrire</field>
+        <field name="icon">fa-envelope-o</field>
+        <field name="source_code">manual</field>
+        <field name="url">mailto:bonjour@bluefoxconsultant.com</field>
+    </record>
+
+    <!-- ====================================================================
+         Trois variantes d'ALLURE. Elles reprennent à peu près le même jeu de
+         liens que la Carte de visite : ce qui les distingue est la
+         disposition, le thème et l'accent, pas le contenu.
+
+         Le visuel n'est posé sur une page qu'au PREMIER rattachement, ou sur
+         un clic explicite « Appliquer le gabarit ». La passe périodique, elle,
+         ne repose jamais l'allure : sinon la couleur choisie par quelqu'un
+         serait défaite toutes les nuits.
+
+         Les lignes de réseaux ne portent AUCUNE adresse. Elles la lisent sur
+         la fiche de la personne (`x_linkedin_url`) ou sur l'entreprise
+         (`social_*`). Tant que ces champs sont vides, la rangée d'icônes ne
+         s'affiche pas du tout. C'est aussi ce qui les rend posables par un
+         gabarit : une adresse tapée à la main sur le lien serait effacée au
+         prochain rafraîchissement.
+    ==================================================================== -->
+
+    <!-- 5. Épurée ========================================================= -->
+    <record id="template_epuree" model="bf.linkpage.template">
+        <field name="name">Épurée</field>
+        <field name="sequence">50</field>
+        <field name="layout">minimal</field>
+        <field name="theme">auto</field>
+        <field name="accent_color">#2D3031</field>
+        <field name="note">Aucune carte, des filets. L'accent est l'anthracite de la marque plutôt que le bleu : cette allure mise sur le nom et la photo, et une couleur vive y ferait du bruit. Pour quelqu'un dont la page est surtout une carte de visite.</field>
+    </record>
+    <record id="line_epuree_rdv" model="bf.linkpage.template.line">
+        <field name="template_id" ref="template_epuree"/>
+        <field name="sequence">10</field>
+        <field name="name">Prendre rendez-vous</field>
+        <field name="icon">fa-calendar-check-o</field>
+        <field name="source_code">appointment</field>
+    </record>
+    <record id="line_epuree_courriel" model="bf.linkpage.template.line">
+        <field name="template_id" ref="template_epuree"/>
+        <field name="sequence">20</field>
+        <field name="name">Écrire</field>
+        <field name="icon">fa-envelope-o</field>
+        <field name="source_code">partner_email</field>
+    </record>
+    <record id="line_epuree_tel" model="bf.linkpage.template.line">
+        <field name="template_id" ref="template_epuree"/>
+        <field name="sequence">30</field>
+        <field name="name">Appeler</field>
+        <field name="icon">fa-phone</field>
+        <field name="source_code">partner_phone</field>
+    </record>
+    <record id="line_epuree_linkedin" model="bf.linkpage.template.line">
+        <field name="template_id" ref="template_epuree"/>
+        <field name="sequence">90</field>
+        <field name="name">LinkedIn</field>
+        <field name="source_code">social_linkedin</field>
+    </record>
+
+    <!-- 6. Signature en boutons =========================================== -->
+    <record id="template_boutons" model="bf.linkpage.template">
+        <field name="name">Signature en boutons</field>
+        <field name="sequence">60</field>
+        <field name="layout">pills</field>
+        <field name="theme">auto</field>
+        <field name="accent_color">#29ABE1</field>
+        <field name="note">Des boutons pleins à la couleur d'accent, centrés. L'allure la plus directe : c'est celle qui se lit le mieux au bout d'un QR, sur un téléphone tenu à bout de bras. Reprend les trois liens d'action de la signature courriel.</field>
+    </record>
+    <record id="line_boutons_rdv" model="bf.linkpage.template.line">
+        <field name="template_id" ref="template_boutons"/>
+        <field name="sequence">10</field>
+        <field name="name">Prendre rendez-vous</field>
+        <field name="icon">fa-calendar-check-o</field>
+        <field name="source_code">appointment</field>
+    </record>
+    <record id="line_boutons_meet" model="bf.linkpage.template.line">
+        <field name="template_id" ref="template_boutons"/>
+        <field name="sequence">20</field>
+        <field name="name">Rencontre instantanée</field>
+        <field name="icon">fa-video-camera</field>
+        <field name="source_code">meet</field>
+    </record>
+    <record id="line_boutons_depot" model="bf.linkpage.template.line">
+        <field name="template_id" ref="template_boutons"/>
+        <field name="sequence">30</field>
+        <field name="name">M'envoyer un fichier</field>
+        <field name="icon">fa-paperclip</field>
+        <field name="source_code">securetransfer</field>
+    </record>
+    <record id="line_boutons_courriel" model="bf.linkpage.template.line">
+        <field name="template_id" ref="template_boutons"/>
+        <field name="sequence">40</field>
+        <field name="name">Écrire</field>
+        <field name="icon">fa-envelope-o</field>
+        <field name="source_code">partner_email</field>
+    </record>
+    <record id="line_boutons_linkedin" model="bf.linkpage.template.line">
+        <field name="template_id" ref="template_boutons"/>
+        <field name="sequence">90</field>
+        <field name="name">LinkedIn</field>
+        <field name="source_code">social_linkedin</field>
+    </record>
+    <record id="line_boutons_youtube" model="bf.linkpage.template.line">
+        <field name="template_id" ref="template_boutons"/>
+        <field name="sequence">92</field>
+        <field name="name">YouTube</field>
+        <field name="source_code">social_youtube</field>
+    </record>
+
+    <!-- 7. Technique ====================================================== -->
+    <record id="template_technique" model="bf.linkpage.template">
+        <field name="name">Technique</field>
+        <field name="sequence">70</field>
+        <field name="layout">mono</field>
+        <field name="theme">dark</field>
+        <field name="accent_color">#3DDC97</field>
+        <field name="note">Angles vifs, libellés en capitales espacées, thème sombre imposé et accent vert. Pour un profil technique, ou une page qui accompagne une démo. Le thème est imposé plutôt qu'automatique : c'est le seul gabarit où le sombre fait partie du propos.</field>
+    </record>
+    <record id="line_technique_rdv" model="bf.linkpage.template.line">
+        <field name="template_id" ref="template_technique"/>
+        <field name="sequence">10</field>
+        <field name="name">Prendre rendez-vous</field>
+        <field name="icon">fa-calendar-check-o</field>
+        <field name="source_code">appointment</field>
+    </record>
+    <record id="line_technique_meet" model="bf.linkpage.template.line">
+        <field name="template_id" ref="template_technique"/>
+        <field name="sequence">20</field>
+        <field name="name">Rencontre instantanée</field>
+        <field name="icon">fa-video-camera</field>
+        <field name="source_code">meet</field>
+    </record>
+    <record id="line_technique_depot" model="bf.linkpage.template.line">
+        <field name="template_id" ref="template_technique"/>
+        <field name="sequence">30</field>
+        <field name="name">M'envoyer un fichier</field>
+        <field name="icon">fa-paperclip</field>
+        <field name="source_code">securetransfer</field>
+    </record>
+    <record id="line_technique_github" model="bf.linkpage.template.line">
+        <field name="template_id" ref="template_technique"/>
+        <field name="sequence">90</field>
+        <field name="name">GitHub</field>
+        <field name="source_code">social_github</field>
+    </record>
+    <record id="line_technique_linkedin" model="bf.linkpage.template.line">
+        <field name="template_id" ref="template_technique"/>
+        <field name="sequence">92</field>
+        <field name="name">LinkedIn</field>
+        <field name="source_code">social_linkedin</field>
+    </record>
+
+</odoo>

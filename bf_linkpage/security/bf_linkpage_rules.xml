@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Lecture ouverte à tout le groupe : la page est publique de toute
+         façon. La cacher au back-office ne protégerait rien et empêcherait
+         de voir qu'un slug est déjà pris. -->
+    <record id="rule_bf_linkpage_read_all" model="ir.rule">
+        <field name="name">Pages de liens : lecture ouverte</field>
+        <field name="model_id" ref="model_bf_linkpage"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('group_bf_linkpage_user'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <!-- Écriture bornée à SA page. Une page ponctuelle n'a pas de
+         propriétaire : elle n'appartient donc à personne et reste au
+         gestionnaire, ce qui est voulu (c'est elle qui porte une expiration
+         et un usage externe). -->
+    <record id="rule_bf_linkpage_write_own" model="ir.rule">
+        <field name="name">Pages de liens : n'écrire que la sienne</field>
+        <field name="model_id" ref="model_bf_linkpage"/>
+        <field name="domain_force">['|', ('user_id', '=', user.id), ('partner_id', '=', user.partner_id.id)]</field>
+        <field name="groups" eval="[(4, ref('group_bf_linkpage_user'))]"/>
+        <field name="perm_read" eval="False"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <record id="rule_bf_linkpage_manager_all" model="ir.rule">
+        <field name="name">Pages de liens : gestion complète</field>
+        <field name="model_id" ref="model_bf_linkpage"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('group_bf_linkpage_manager'))]"/>
+    </record>
+
+    <record id="rule_bf_linkpage_link_own" model="ir.rule">
+        <field name="name">Liens : ceux de sa page</field>
+        <field name="model_id" ref="model_bf_linkpage_link"/>
+        <field name="domain_force">['|', ('page_id.user_id', '=', user.id), ('page_id.partner_id', '=', user.partner_id.id)]</field>
+        <field name="groups" eval="[(4, ref('group_bf_linkpage_user'))]"/>
+    </record>
+
+    <record id="rule_bf_linkpage_link_manager" model="ir.rule">
+        <field name="name">Liens : gestion complète</field>
+        <field name="model_id" ref="model_bf_linkpage_link"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('group_bf_linkpage_manager'))]"/>
+    </record>
+</odoo>

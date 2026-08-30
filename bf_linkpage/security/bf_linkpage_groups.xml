@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="module_category_linkpage" model="ir.module.category">
+        <field name="name">Pages de liens</field>
+        <field name="description">Pages publiques de liens et QR de signature.</field>
+        <field name="sequence">55</field>
+    </record>
+
+    <record id="group_bf_linkpage_user" model="res.groups">
+        <field name="name">Sa propre page</field>
+        <field name="category_id" ref="module_category_linkpage"/>
+        <field name="comment">Tient sa propre page de liens et télécharge son QR. Voit les pages des autres sans pouvoir les modifier : une page est publique de toute façon, la cacher au back-office ne protégerait rien et empêcherait de repérer un doublon de slug.</field>
+    </record>
+
+    <record id="group_bf_linkpage_manager" model="res.groups">
+        <field name="name">Gestion des pages de liens</field>
+        <field name="category_id" ref="module_category_linkpage"/>
+        <field name="implied_ids" eval="[(4, ref('group_bf_linkpage_user'))]"/>
+        <field name="comment">Tient les gabarits, crée les pages ponctuelles et modifie la page de n'importe qui. Les gabarits sont réservés à ce groupe : ils sont posés par groupe d'usagers, donc les modifier revient à changer la page de plusieurs personnes d'un coup.</field>
+    </record>
+</odoo>

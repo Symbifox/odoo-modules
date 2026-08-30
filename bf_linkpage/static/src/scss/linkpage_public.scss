@@ -1,0 +1,560 @@
+// Page de liens publique.
+//
+// La couleur d'accent arrive par la variable CSS `--bf-linkpage-accent`, posée
+// en style inline sur le conteneur depuis le champ de la page. C'est
+// volontaire : l'accent est une donnée par page, il ne peut pas vivre dans une
+// feuille compilée une fois pour toutes. La politique du site autorise les
+// styles en ligne (`style-src 'self' 'unsafe-inline'`) mais PAS les scripts en
+// ligne, d'où le bascule servi en fichier.
+//
+// LES TROIS SOURCES DE VÉRITÉ DU THÈME, dans cet ordre de priorité :
+//
+//   1. `[data-bf-theme]` posé par le bascule  -> le choix du visiteur gagne
+//   2. `--light` / `--dark`                   -> le thème imposé par la page
+//   3. `--auto` + `prefers-color-scheme`      -> la préférence de l'appareil
+//
+// Chaque palette est écrite UNE fois, dans un mixin, et rappelée à chaque
+// endroit qui en a besoin. Redéfinir les couleurs à la main dans chaque bloc
+// est la façon habituelle de laisser un ton diverger d'un contexte à l'autre.
+
+@mixin bf-linkpage-light {
+    --bf-linkpage-bg: #f4f6f8;
+    --bf-linkpage-bg-glow: rgba(41, 171, 225, 0.10);
+    --bf-linkpage-fg: #2d3031;
+    --bf-linkpage-card: #ffffff;
+    --bf-linkpage-card-hover: #ffffff;
+    --bf-linkpage-border: rgba(45, 48, 49, 0.12);
+    --bf-linkpage-muted: rgba(45, 48, 49, 0.62);
+    // Plates par défaut. Le relief appartient à la disposition « Cartes en
+    // relief », qui repose ces deux variables.
+    --bf-linkpage-shadow: none;
+    --bf-linkpage-shadow-hover: none;
+    --bf-linkpage-shadow-soft: 0 1px 2px rgba(45, 48, 49, 0.05),
+                               0 8px 24px rgba(45, 48, 49, 0.06);
+    --bf-linkpage-shadow-soft-hover: 0 2px 4px rgba(45, 48, 49, 0.07),
+                                     0 12px 32px rgba(45, 48, 49, 0.11);
+    --bf-linkpage-glow-strength: 12%;
+    --bf-linkpage-logo-filter: none;
+    --bf-linkpage-logo-opacity: 0.55;
+}
+
+@mixin bf-linkpage-dark {
+    --bf-linkpage-bg: #1c1f20;
+    --bf-linkpage-bg-glow: rgba(41, 171, 225, 0.16);
+    --bf-linkpage-fg: #f4f6f8;
+    --bf-linkpage-card: #26292b;
+    --bf-linkpage-card-hover: #26292b;
+    --bf-linkpage-border: rgba(244, 246, 248, 0.16);
+    --bf-linkpage-muted: rgba(244, 246, 248, 0.66);
+    --bf-linkpage-shadow: none;
+    --bf-linkpage-shadow-hover: none;
+    --bf-linkpage-shadow-soft: 0 1px 2px rgba(0, 0, 0, 0.30),
+                               0 8px 24px rgba(0, 0, 0, 0.28);
+    --bf-linkpage-shadow-soft-hover: 0 2px 4px rgba(0, 0, 0, 0.36),
+                                     0 12px 32px rgba(0, 0, 0, 0.40);
+    // Le logo Blue Fox est un SVG à l'encre foncée, dessiné pour un fond
+    // clair. Posé tel quel sur le fond sombre il devient illisible : mesuré
+    // à la capture, on ne distinguait plus le mot. On le repeint en blanc
+    // plutôt que d'en maintenir une seconde version à part.
+    --bf-linkpage-glow-strength: 18%;
+    --bf-linkpage-logo-filter: brightness(0) invert(1);
+    --bf-linkpage-logo-opacity: 0.42;
+}
+
+.bf-linkpage {
+    // Palette de départ. Sans elle, une page dont le thème serait inconnu
+    // n'aurait AUCUNE couleur définie et hériterait du corps sombre du site,
+    // avec des cartes claires par-dessus.
+    @include bf-linkpage-light;
+
+    &--dark { @include bf-linkpage-dark; }
+    &--light { @include bf-linkpage-light; }
+
+    @media (prefers-color-scheme: dark) {
+        &--auto { @include bf-linkpage-dark; }
+    }
+
+    // Le bascule tranche, quel que soit l'appareil et quel que soit le thème
+    // choisi sur la page.
+    &[data-bf-theme="dark"] { @include bf-linkpage-dark; }
+    &[data-bf-theme="light"] { @include bf-linkpage-light; }
+
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 3rem 1rem 2.5rem;
+    background: var(--bf-linkpage-bg);
+    color: var(--bf-linkpage-fg);
+    font-family: "Lexend", system-ui, -apple-system, "Segoe UI", sans-serif;
+    -webkit-font-smoothing: antialiased;
+
+    &__card {
+        position: relative;
+        width: 100%;
+        max-width: 34rem;
+    }
+
+    // ── Le bascule ──────────────────────────────────────────────────────────
+
+    &__toggle {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        z-index: 1;
+        width: 2.5rem;
+        height: 2.5rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        border: 1px solid var(--bf-linkpage-border);
+        background: var(--bf-linkpage-card);
+        color: var(--bf-linkpage-muted);
+        box-shadow: var(--bf-linkpage-shadow);
+        cursor: pointer;
+        transition: color 0.15s ease, border-color 0.15s ease;
+
+        &:hover,
+        &:focus-visible {
+            color: var(--bf-linkpage-accent);
+            border-color: var(--bf-linkpage-accent);
+        }
+
+        &:focus-visible {
+            outline: 2px solid var(--bf-linkpage-accent);
+            outline-offset: 2px;
+        }
+    }
+
+    // ── Le sélecteur de langue ──────────────────────────────────────────────
+    //
+    // À gauche, en miroir du bascule de thème. Les deux commandes de la page
+    // occupent ainsi les deux coins hauts plutôt que de se disputer le même.
+
+    &__langs {
+        position: absolute;
+        top: 1rem;
+        left: 1rem;
+        z-index: 1;
+        display: inline-flex;
+        align-items: stretch;
+        border-radius: 1.25rem;
+        border: 1px solid var(--bf-linkpage-border);
+        background: var(--bf-linkpage-card);
+        overflow: hidden;
+    }
+
+    &__lang {
+        padding: 0.45rem 0.8rem;
+        font-size: 0.78rem;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        line-height: 1.4;
+        color: var(--bf-linkpage-muted);
+        text-decoration: none;
+        transition: color 0.15s ease, background-color 0.15s ease;
+
+        &:hover,
+        &:focus-visible {
+            color: var(--bf-linkpage-accent);
+            text-decoration: none;
+        }
+
+        &:focus-visible {
+            outline: 2px solid var(--bf-linkpage-accent);
+            outline-offset: -2px;
+        }
+
+        // La langue en cours est un lien vers la page où l'on est déjà. Elle
+        // reste cliquable et reste dans l'ordre de tabulation : la retirer
+        // ferait disparaître du parcours au clavier l'information « c'est
+        // celle-ci qui est affichée », que porte `aria-current`.
+        &--on {
+            background: var(--bf-linkpage-accent);
+            color: #ffffff;
+            cursor: default;
+
+            &:hover,
+            &:focus-visible { color: #ffffff; }
+        }
+    }
+
+    // ── L'en-tête ───────────────────────────────────────────────────────────
+
+    &__head {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    &__avatar {
+        width: 6rem;
+        height: 6rem;
+        border-radius: 50%;
+        object-fit: cover;
+        margin-bottom: 1rem;
+        background: var(--bf-linkpage-card);
+        border: 3px solid var(--bf-linkpage-accent);
+    }
+
+    &__name {
+        font-size: 1.6rem;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+        margin: 0 0 0.3rem;
+    }
+
+    &__headline {
+        color: var(--bf-linkpage-muted);
+        font-size: 0.95rem;
+        margin: 0 0 0.75rem;
+    }
+
+    &__bio {
+        color: var(--bf-linkpage-muted);
+        font-size: 0.92rem;
+        line-height: 1.55;
+        white-space: pre-line;
+        margin: 0 auto;
+        max-width: 26rem;
+    }
+
+    // ── Les liens ───────────────────────────────────────────────────────────
+
+    &__links {
+        display: flex;
+        flex-direction: column;
+        gap: 0.7rem;
+    }
+
+    &__link {
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 0.85rem;
+        padding: 0.9rem 1.1rem;
+        border-radius: 0.75rem;
+        background: var(--bf-linkpage-card);
+        border: 1px solid var(--bf-linkpage-border);
+        box-shadow: var(--bf-linkpage-shadow);
+        color: inherit;
+        text-decoration: none;
+        transition: transform 0.12s ease, border-color 0.12s ease,
+                    box-shadow 0.12s ease;
+
+        &:hover,
+        &:focus-visible {
+            color: inherit;
+            text-decoration: none;
+            transform: translateY(-1px);
+            border-color: var(--bf-linkpage-accent);
+        }
+
+        // Le focus doit rester visible : la page se parcourt au clavier et
+        // les liens sont sa seule fonction.
+        &:focus-visible {
+            outline: 2px solid var(--bf-linkpage-accent);
+            outline-offset: 2px;
+        }
+    }
+
+    &__icon {
+        color: var(--bf-linkpage-accent);
+        width: 1.25rem;
+        text-align: center;
+        flex: 0 0 auto;
+    }
+
+    &__label {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+    }
+
+    &__link-name {
+        font-weight: 500;
+    }
+
+    &__link-sub {
+        color: var(--bf-linkpage-muted);
+        font-size: 0.83rem;
+        margin-top: 0.1rem;
+    }
+
+    &__empty {
+        text-align: center;
+        color: var(--bf-linkpage-muted);
+    }
+
+    // ── Le pied ─────────────────────────────────────────────────────────────
+
+    &__foot {
+        margin-top: 2.5rem;
+        text-align: center;
+    }
+
+    &__logo {
+        max-height: 2.25rem;
+        width: auto;
+        filter: var(--bf-linkpage-logo-filter);
+        opacity: var(--bf-linkpage-logo-opacity);
+        transition: opacity 0.15s ease;
+
+        &:hover { opacity: 0.85; }
+    }
+
+    // Un visiteur qui a demandé moins d'animation la reçoit. Ce n'est pas un
+    // détail de confort : le mouvement déclenche des malaises chez certaines
+    // personnes, et la page n'a rien à y gagner.
+    @media (prefers-reduced-motion: reduce) {
+        &__link,
+        &__toggle,
+        &__lang,
+        &__logo {
+            transition: none;
+        }
+
+        &__link:hover,
+        &__link:focus-visible {
+            transform: none;
+        }
+    }
+}
+
+// ── Les réseaux ─────────────────────────────────────────────────────────────
+//
+// Une rangée d'icônes sous les liens. Elles ne portent aucun libellé visible,
+// donc chaque lien porte un `aria-label` : une icône seule ne dit rien à un
+// lecteur d'écran, et « lien » est tout ce qu'il annoncerait.
+
+.bf-linkpage__socials {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.6rem;
+    margin-top: 1.6rem;
+}
+
+.bf-linkpage__social {
+    width: 2.6rem;
+    height: 2.6rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: var(--bf-linkpage-card);
+    border: 1px solid var(--bf-linkpage-border);
+    box-shadow: var(--bf-linkpage-shadow);
+    color: var(--bf-linkpage-muted);
+    font-size: 1.05rem;
+    text-decoration: none;
+    transition: color 0.14s ease, border-color 0.14s ease, transform 0.14s ease;
+
+    &:hover,
+    &:focus-visible {
+        color: var(--bf-linkpage-accent);
+        border-color: var(--bf-linkpage-accent);
+        text-decoration: none;
+        transform: translateY(-2px);
+    }
+
+    &:focus-visible {
+        outline: 2px solid var(--bf-linkpage-accent);
+        outline-offset: 2px;
+    }
+}
+
+// ── Les dispositions ────────────────────────────────────────────────────────
+//
+// Chacune ne redéfinit que ce qui la distingue de la disposition en cartes,
+// qui reste la base. Réécrire chaque allure de zéro obligerait à corriger un
+// défaut d'accessibilité quatre fois.
+
+// ÉPURÉE : pas de carte, des filets. Le nom seul porte la page.
+.bf-linkpage--l-minimal {
+    .bf-linkpage__links { gap: 0; }
+
+    .bf-linkpage__link {
+        background: transparent;
+        border: 0;
+        border-bottom: 1px solid var(--bf-linkpage-border);
+        border-radius: 0;
+        box-shadow: none;
+        padding: 1.05rem 0.5rem 1.05rem 0.25rem;
+
+        &:last-child { border-bottom: 0; }
+
+        &:hover,
+        &:focus-visible {
+            background: transparent;
+            border-color: var(--bf-linkpage-border);
+            border-bottom-color: var(--bf-linkpage-accent);
+            box-shadow: none;
+            transform: none;
+        }
+    }
+
+    .bf-linkpage__social {
+        background: transparent;
+        border-color: transparent;
+        box-shadow: none;
+    }
+}
+
+// BOUTONS PLEINS : l'accent occupe la carte. Le texte passe en blanc, posé sur
+// la SURFACE et non sur chaque enfant, pour que ce qu'on ajoutera plus tard
+// hérite du bon ton au lieu de disparaître.
+.bf-linkpage--l-pills {
+    .bf-linkpage__link {
+        justify-content: center;
+        text-align: center;
+        padding: 1rem 1.4rem;
+        border-radius: 2rem;
+        background: var(--bf-linkpage-accent);
+        border-color: var(--bf-linkpage-accent);
+        color: #ffffff;
+
+        &:hover,
+        &:focus-visible {
+            color: #ffffff;
+            background: var(--bf-linkpage-accent);
+            filter: brightness(1.08);
+        }
+
+    }
+
+    .bf-linkpage__icon { color: #ffffff; }
+    .bf-linkpage__link-sub { color: rgba(255, 255, 255, 0.82); }
+}
+
+// TECHNIQUE : angles vifs, libellés en capitales espacées, filets nets.
+.bf-linkpage--l-mono {
+    .bf-linkpage__link {
+        border-radius: 0.25rem;
+        border-width: 1px;
+        border-color: var(--bf-linkpage-border);
+        box-shadow: none;
+        padding: 0.85rem 1rem;
+
+        &:hover,
+        &:focus-visible {
+            box-shadow: none;
+            transform: none;
+            border-color: var(--bf-linkpage-accent);
+        }
+    }
+
+    .bf-linkpage__link-name {
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        font-size: 0.82rem;
+        font-weight: 600;
+    }
+
+    .bf-linkpage__link-sub {
+        font-size: 0.78rem;
+        letter-spacing: 0.01em;
+    }
+
+    .bf-linkpage__name { letter-spacing: 0.01em; }
+
+    .bf-linkpage__avatar { border-radius: 0.5rem; }
+
+    .bf-linkpage__social {
+        border-radius: 0.25rem;
+        box-shadow: none;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .bf-linkpage__social { transition: none; }
+    .bf-linkpage__social:hover,
+    .bf-linkpage__social:focus-visible { transform: none; }
+}
+
+// CARTES EN RELIEF : la passe de finition, devenue une allure à part.
+//
+// Elle a d'abord été appliquée à TOUTES les pages, puis ramenée ici : « par
+// défaut » devait redevenir l'allure plate d'origine, sans pour autant perdre
+// celle-ci. Une page la choisit explicitement.
+.bf-linkpage--l-soft {
+    // La nappe d'accent derrière l'en-tête. Elle dérive de la couleur de la
+    // page plutôt que d'être écrite en dur, sinon elle resterait bleue sur un
+    // gabarit anthracite ou vert. La première déclaration sert de repli aux
+    // navigateurs sans `color-mix`.
+    &::before {
+        content: "";
+        position: absolute;
+        inset: 0 0 auto;
+        height: 22rem;
+        background: radial-gradient(
+            60% 70% at 50% 0%,
+            var(--bf-linkpage-bg-glow) 0%,
+            transparent 100%
+        );
+        background: radial-gradient(
+            60% 70% at 50% 0%,
+            color-mix(in srgb, var(--bf-linkpage-accent) var(--bf-linkpage-glow-strength), transparent) 0%,
+            transparent 100%
+        );
+        pointer-events: none;
+    }
+
+    .bf-linkpage__card { max-width: 30rem; }
+
+    // L'anneau est posé par une ombre plutôt que par une bordure : une bordure
+    // mangerait six pixels de l'image, l'ombre non.
+    .bf-linkpage__avatar {
+        border: 0;
+        margin-bottom: 1.1rem;
+        box-shadow: 0 0 0 3px var(--bf-linkpage-bg),
+                    0 0 0 5px var(--bf-linkpage-accent),
+                    var(--bf-linkpage-shadow-soft);
+    }
+
+    .bf-linkpage__links { gap: 0.7rem; }
+
+    .bf-linkpage__link {
+        padding: 0.95rem 2.4rem 0.95rem 1.1rem;
+        border-radius: 0.85rem;
+        box-shadow: var(--bf-linkpage-shadow-soft);
+
+        // Le chevron dit que la carte est cliquable. Décoratif, donc en
+        // pseudo-élément : rien à lire pour un lecteur d'écran, qui annonce
+        // déjà un lien.
+        &::after {
+            content: "";
+            position: absolute;
+            right: 1.15rem;
+            width: 0.45rem;
+            height: 0.45rem;
+            border-right: 2px solid var(--bf-linkpage-muted);
+            border-bottom: 2px solid var(--bf-linkpage-muted);
+            transform: rotate(-45deg);
+            transition: border-color 0.14s ease, transform 0.14s ease;
+        }
+
+        &:hover,
+        &:focus-visible {
+            transform: translateY(-2px);
+            background: var(--bf-linkpage-card-hover);
+            box-shadow: var(--bf-linkpage-shadow-soft-hover);
+
+            &::after {
+                border-color: var(--bf-linkpage-accent);
+                transform: rotate(-45deg) translate(2px, 2px);
+            }
+        }
+    }
+
+    .bf-linkpage__icon { width: 1.35rem; font-size: 1.05rem; }
+    .bf-linkpage__social { box-shadow: var(--bf-linkpage-shadow-soft); }
+
+    @media (prefers-reduced-motion: reduce) {
+        .bf-linkpage__link,
+        .bf-linkpage__link::after { transition: none; }
+        .bf-linkpage__link:hover,
+        .bf-linkpage__link:focus-visible { transform: none; }
+    }
+}

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form" model="ir.ui.view">
+        <field name="name">res.config.settings.form.bf.linkpage</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base_setup.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <!-- ⚠️ `name` est OBLIGATOIRE sur le bloc app. Odoo 18 le lit
+                     pour compiler la page ; sans lui, `toStringExpression(null)`
+                     fait tomber TOUTE la page des paramètres, pas seulement ce
+                     bloc, et l'erreur n'apparaît qu'au navigateur. -->
+                <app string="Pages de liens" name="bf_linkpage"
+                     logo="/bf_linkpage/static/description/icon.png">
+
+                    <block title="Automatisation pour les employés"
+                           name="bf_linkpage_auto_block">
+
+                        <setting id="bf_linkpage_autocreate_setting"
+                                 string="Créer une page pour chaque employé"
+                                 help="Une passe périodique crée la page manquante des employés actifs qui ont un contact ou un compte utilisateur. Elle rattrape aussi ceux arrivés avant l'activation.">
+                            <field name="bf_linkpage_autocreate"/>
+                            <div class="content-group mt16" invisible="not bf_linkpage_autocreate">
+                                <div class="row">
+                                    <label for="bf_linkpage_autocreate_state" class="col-lg-4 o_light_label"/>
+                                    <field name="bf_linkpage_autocreate_state"/>
+                                </div>
+                                <div class="text-muted mt8">
+                                    Une page publiée expose le courriel et le téléphone
+                                    de travail de la personne sur une URL publique.
+                                </div>
+                            </div>
+                        </setting>
+
+                        <setting id="bf_linkpage_autorefresh_setting"
+                                 string="Rafraîchir les pages qui suivent un gabarit"
+                                 help="Réapplique le gabarit à chaque passe. Les liens ajoutés à la main sur une page sont conservés : seuls ceux venus du gabarit sont remplacés.">
+                            <field name="bf_linkpage_autorefresh"/>
+                        </setting>
+
+                        <setting id="bf_linkpage_cron_setting"
+                                 string="Passe planifiée"
+                                 help="La création et le rafraîchissement passent par la même tâche planifiée.">
+                            <div class="content-group">
+                                <div class="text-muted">
+                                    <field name="bf_linkpage_cron_active" invisible="1"/>
+                                    <span invisible="not bf_linkpage_cron_active">
+                                        Prochaine passe :
+                                        <field name="bf_linkpage_cron_next" readonly="1" class="oe_inline"/>
+                                    </span>
+                                    <span invisible="bf_linkpage_cron_active" class="text-warning">
+                                        La tâche planifiée est arrêtée. Rien ne se fera tout seul.
+                                    </span>
+                                </div>
+                                <div class="mt8">
+                                    <button type="object" name="action_bf_linkpage_sync_now"
+                                            string="Exécuter maintenant" class="btn-primary"/>
+                                    <button type="object" name="action_bf_linkpage_open_cron"
+                                            string="Régler la fréquence" class="btn-link"/>
+                                </div>
+                            </div>
+                        </setting>
+                    </block>
+
+                    <block title="Pages ponctuelles" name="bf_linkpage_oneoff_block">
+                        <setting id="bf_linkpage_expiry_setting"
+                                 string="Durée de vie par défaut"
+                                 help="Une page ponctuelle n'a pas de propriétaire : elle est armée d'une expiration dès sa création, et se ferme d'elle-même sans qu'aucune tâche n'ait à tourner. Une valeur vide ou nulle retombe sur 90 jours.">
+                            <div class="content-group">
+                                <div class="row">
+                                    <field name="bf_linkpage_oneoff_expiry_days" class="col-lg-3"/>
+                                    <span class="col-lg-3 o_light_label">jours</span>
+                                </div>
+                            </div>
+                        </setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="action_bf_linkpage_settings" model="ir.actions.act_window">
+        <field name="name">Réglages des pages de liens</field>
+        <field name="res_model">res.config.settings</field>
+        <field name="view_mode">form</field>
+        <field name="target">inline</field>
+        <field name="context">{'module': 'bf_linkpage'}</field>
+    </record>
+</odoo>

@@ -1,0 +1,9 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_bf_linkpage_user,bf.linkpage.user,model_bf_linkpage,group_bf_linkpage_user,1,1,1,0
+access_bf_linkpage_manager,bf.linkpage.manager,model_bf_linkpage,group_bf_linkpage_manager,1,1,1,1
+access_bf_linkpage_link_user,bf.linkpage.link.user,model_bf_linkpage_link,group_bf_linkpage_user,1,1,1,1
+access_bf_linkpage_link_manager,bf.linkpage.link.manager,model_bf_linkpage_link,group_bf_linkpage_manager,1,1,1,1
+access_bf_linkpage_template_user,bf.linkpage.template.user,model_bf_linkpage_template,group_bf_linkpage_user,1,0,0,0
+access_bf_linkpage_template_manager,bf.linkpage.template.manager,model_bf_linkpage_template,group_bf_linkpage_manager,1,1,1,1
+access_bf_linkpage_template_line_user,bf.linkpage.template.line.user,model_bf_linkpage_template_line,group_bf_linkpage_user,1,0,0,0
+access_bf_linkpage_template_line_manager,bf.linkpage.template.line.manager,model_bf_linkpage_template_line,group_bf_linkpage_manager,1,1,1,1

@@ -13,7 +13,7 @@ modules — the UI fixes, the shared helpers, the Nextcloud integrations, the
 productivity pack. They are free because they are more useful to us being
 widely used than being held.
 
-**69 modules are BUSL-1.1.** The source is published and auditable, and **you
+**70 modules are BUSL-1.1.** The source is published and auditable, and **you
 may run them in production for your own internal business operations** — as a
 company, as a freelancer, as one person on a laptop. What needs an agreement is
 using them to provide a product or service to someone else: hosting them for a
@@ -117,6 +117,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_invoice_ocr` | Symbifox — Invoice OCR Scanner | 18.0.1.0.1 | BUSL-1.1 | Extract vendor bill data from PDF attachments via the bf_llm gateway |
 | `bf_letter_writer` | Letter Writer | 18.0.2.0.0 | BUSL-1.1 | Branded official-letter editor: 5 letterhead modes, field merge (`{{ }}`), reusable templates and quick-text blocks, email + PDF send |
 | `bf_lexend` | Lexend Typeface | 18.0.3.0.0 | LGPL-3 | Adds Lexend across UI/PDF reports and per-company brand color settings (`report_brand_primary`, `report_brand_dark`) |
+| `bf_linkpage` | Pages de liens | 18.0.5.1.0 | BUSL-1.1 | Public link page for a person or a one-off, whose links are resolved from your own records rather than retyped, with a branded QR code for email signatures |
 | `bf_llm` | Symbifox — LLM Provider | 18.0.1.0.1 | LGPL-3 | Provider-agnostic LLM access (chat + document/vision extraction) for Symbifox modules |
 | `bf_mail_import` | BF Import courriel (.eml) | 18.0.1.4.0 | LGPL-3 | Import .eml files into the Odoo chatter |
 | `bf_mail_subject_clean` | BF Nettoyage des sujets de courriel | 18.0.1.1.0 | LGPL-3 | Prevents "Re: Re: Re:" stacking on subjects sent through the chatter |
@@ -196,7 +197,7 @@ Three regimes — see [Licensing](#licensing) above for the details, and the
 `License` column of the table for the module you care about. The `LICENSE`
 file inside each module governs and carries its exact parameters.
 
-- **69 modules: BUSL-1.1.** Production use for your own internal business
+- **70 modules: BUSL-1.1.** Production use for your own internal business
   operations is permitted; providing them as a product or service to third
   parties requires an agreement. Each version converts to
   **LGPL-3.0-or-later four years after its release**.

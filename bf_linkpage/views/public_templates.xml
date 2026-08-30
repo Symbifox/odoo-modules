@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="linkpage_public" name="Page de liens">
+        <t t-call="web.frontend_layout">
+            <t t-set="no_header" t-value="True"/>
+            <t t-set="no_footer" t-value="True"/>
+            <t t-set="additional_title" t-value="page.name"/>
+
+            <t t-set="head">
+                <meta name="description" t-att-content="page.headline or page.name"/>
+                <!-- Une page ponctuelle expire et vise une poignée de gens :
+                     elle n'a rien à faire dans un index de moteur de
+                     recherche, où elle survivrait à sa propre expiration
+                     sous forme de cache. -->
+                <t t-if="noindex">
+                    <meta name="robots" content="noindex, nofollow"/>
+                </t>
+                <meta property="og:title" t-att-content="page.name"/>
+                <meta property="og:description" t-att-content="page.headline or ''"/>
+                <meta property="og:type" content="profile"/>
+                <meta property="og:url" t-att-content="page.public_url"/>
+                <!-- Une adresse qu'on colle dans un message : sans og:image,
+                     l'aperçu est une vignette vide. La photo est déjà servie
+                     par une route publique du module, autant s'en servir. -->
+                <t t-if="page.has_photo">
+                    <meta property="og:image"
+                          t-attf-content="#{page.public_url}/avatar"/>
+                    <meta name="twitter:card" content="summary"/>
+                </t>
+                <!-- La barre du navigateur mobile s'accorde au thème plutôt
+                     que de trancher en blanc au-dessus d'une page sombre. -->
+                <meta name="theme-color" content="#f4f6f8"
+                      media="(prefers-color-scheme: light)"/>
+                <meta name="theme-color" content="#1c1f20"
+                      media="(prefers-color-scheme: dark)"/>
+            </t>
+
+            <div t-attf-class="bf-linkpage bf-linkpage--#{page.theme} bf-linkpage--l-#{page.layout}"
+                 t-att-data-bf-linkpage="page.slug"
+                 t-attf-style="--bf-linkpage-accent: #{page.accent_color or '#29ABE1'};">
+
+                <!-- Le sélecteur de langue. Ce sont de vrais liens vers de
+                     vraies adresses, pas un bascule en JavaScript : la version
+                     anglaise doit pouvoir se partager, se mettre en signet et
+                     s'indexer sous SA propre adresse. `hreflang` dit au
+                     navigateur et aux moteurs ce que chaque lien vise. -->
+                <nav t-if="len(languages) > 1" class="bf-linkpage__langs"
+                     aria-label="Langue de la page">
+                    <!-- ⚠️ NE PAS nommer cette variable `lang`. Les valeurs
+                         QWeb sont UN SEUL dictionnaire partagé avec le gabarit
+                         appelant : une variable de boucle déborde vers le haut.
+                         `web.frontend_layout` garde la sienne dans `lang` et en
+                         fait `lang.replace('_', '-')`. La nommer `lang` ici
+                         remplaçait donc une chaîne par un dictionnaire et
+                         mettait la page ENTIÈRE en erreur 500, avec un
+                         traceback qui désigne un nœud sans rapport, situé dans
+                         le gabarit du site. -->
+                    <a t-foreach="languages" t-as="langopt"
+                       t-att-href="langopt['url']"
+                       t-att-hreflang="langopt['code']"
+                       t-att-lang="langopt['code']"
+                       t-att-title="langopt['name']"
+                       t-att-aria-current="'page' if langopt['current'] else None"
+                       t-attf-class="bf-linkpage__lang#{' bf-linkpage__lang--on' if langopt['current'] else ''}"
+                       t-out="langopt['label']"/>
+                </nav>
+
+                <!-- Le bascule est un vrai bouton, pas une case déguisée : il
+                     se prend au clavier et s'annonce aux lecteurs d'écran. Il
+                     part caché et le script l'affiche, pour qu'un visiteur
+                     sans JavaScript ne voie pas un bouton qui ne fait rien. -->
+                <button t-if="page.show_theme_toggle"
+                        type="button"
+                        class="bf-linkpage__toggle"
+                        data-bf-theme-toggle="1"
+                        hidden="hidden"
+                        aria-pressed="false"
+                        aria-label="Basculer entre le thème clair et sombre">
+                    <i class="fa fa-moon-o" aria-hidden="true"/>
+                </button>
+
+                <main class="bf-linkpage__card">
+                    <header class="bf-linkpage__head">
+                        <t t-if="page.has_photo">
+                            <!-- Route du module, pas /web/image : l'usager
+                                 public n'a aucun droit de lecture sur le
+                                 modèle, et /web/image sert alors une image de
+                                 remplacement en 200, sans rien signaler. -->
+                            <img class="bf-linkpage__avatar"
+                                 t-attf-src="/l/#{page.slug}/avatar"
+                                 width="96" height="96" loading="lazy"
+                                 t-att-alt="page.name"/>
+                        </t>
+                        <h1 class="bf-linkpage__name" t-out="page.name"/>
+                        <p t-if="page.headline" class="bf-linkpage__headline"
+                           t-out="page.headline"/>
+                        <p t-if="page.bio" class="bf-linkpage__bio" t-out="page.bio"/>
+                    </header>
+
+                    <nav class="bf-linkpage__links">
+                        <!-- Chaque lien passe par /go/ : c'est ce qui compte le
+                             clic et, surtout, ce qui vérifie que le lien
+                             appartient bien à CETTE page avant de rediriger. -->
+                        <a t-foreach="links" t-as="link"
+                           class="bf-linkpage__link"
+                           t-attf-href="/l/#{page.slug}/go/#{link.id}"
+                           rel="noopener">
+                            <i t-if="link.icon" t-attf-class="fa #{link.icon} bf-linkpage__icon"
+                               aria-hidden="true"/>
+                            <span class="bf-linkpage__label">
+                                <span class="bf-linkpage__link-name" t-out="link.name"/>
+                                <small t-if="link.subtitle" class="bf-linkpage__link-sub"
+                                       t-out="link.subtitle"/>
+                            </span>
+                        </a>
+                    </nav>
+
+                    <p t-if="not links and not socials" class="bf-linkpage__empty">
+                        Cette page n'a encore aucun lien à afficher.
+                    </p>
+
+                    <!-- Les réseaux : une rangée d'icônes, sans libellé. Le
+                         nom du réseau part dans `aria-label` plutôt que dans
+                         le texte, parce qu'une icône seule ne dit rien à un
+                         lecteur d'écran. La classe vient telle quelle du
+                         catalogue (« fa-brands fa-linkedin ») : ne PAS y
+                         préfixer `fa`, qui pointe une autre famille et
+                         écraserait la police des icônes de marque. -->
+                    <nav t-if="socials" class="bf-linkpage__socials"
+                         aria-label="Réseaux sociaux">
+                        <a t-foreach="socials" t-as="social"
+                           class="bf-linkpage__social"
+                           t-attf-href="/l/#{page.slug}/go/#{social.id}"
+                           t-att-aria-label="social.name"
+                           rel="noopener">
+                            <i t-attf-class="#{social.icon or 'fa fa-link'}"
+                               aria-hidden="true"/>
+                        </a>
+                    </nav>
+
+                    <footer t-if="page.show_company_logo and company_logo"
+                            class="bf-linkpage__foot">
+                        <img class="bf-linkpage__logo"
+                             t-attf-src="/l/#{page.slug}/logo"
+                             height="28" loading="lazy"
+                             t-att-alt="company_name"/>
+                    </footer>
+                </main>
+            </div>
+        </t>
+    </template>
+</odoo>

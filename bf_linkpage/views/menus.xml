@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_bf_linkpage_root" name="Pages de liens"
+              web_icon="bf_linkpage,static/description/icon.png"
+              sequence="52"
+              groups="bf_linkpage.group_bf_linkpage_user"/>
+
+    <menuitem id="menu_bf_linkpage_pages" name="Pages"
+              parent="menu_bf_linkpage_root"
+              action="action_bf_linkpage" sequence="10"/>
+
+    <menuitem id="menu_bf_linkpage_config" name="Configuration"
+              parent="menu_bf_linkpage_root" sequence="90"
+              groups="bf_linkpage.group_bf_linkpage_manager"/>
+
+    <menuitem id="menu_bf_linkpage_templates" name="Gabarits"
+              parent="menu_bf_linkpage_config"
+              action="action_bf_linkpage_template" sequence="10"/>
+
+    <menuitem id="menu_bf_linkpage_settings" name="Réglages"
+              parent="menu_bf_linkpage_config"
+              action="action_bf_linkpage_settings" sequence="20"/>
+</odoo>
