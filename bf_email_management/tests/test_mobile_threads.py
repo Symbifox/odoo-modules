@@ -91,6 +91,50 @@ class TestMobileThreads(MobileApiCase):
         self.assertEqual(after["inbox"], before - 1,
                          "le compteur doit déjà tenir compte de l'archivage")
 
+    def test_counts_match_the_number_of_rows_the_list_shows(self):
+        """🔴 « Image : totaux inexacts ».
+
+        La pastille comptait des MESSAGES pendant que la liste affichait des
+        FILS : le fil de deux messages faisait dire « Boîte de réception · 3 »
+        au-dessus de deux lignes. Le compteur doit suivre le repli, pas la
+        table.
+        """
+        BfEmail = self.as_owner()
+        for grouped in (True, False):
+            rows = BfEmail.get_mobile_threads(
+                filter_name="inbox", limit=100, grouped=grouped)["threads"]
+            counts = BfEmail._mobile_counts(grouped=grouped)
+            self.assertEqual(
+                counts["inbox"], len(rows),
+                "grouped=%s : %d au compteur pour %d lignes"
+                % (grouped, counts["inbox"], len(rows)),
+            )
+        # Et les deux modes ne disent PAS la même chose ici : c'est la preuve
+        # que le drapeau sert à quelque chose sur ce jeu de données.
+        self.assertLess(BfEmail._mobile_counts(grouped=True)["inbox"],
+                        BfEmail._mobile_counts(grouped=False)["inbox"])
+
+    def test_unread_count_matches_the_unread_filter(self):
+        """Même exigence sur « Non lus », le filtre de la capture."""
+        BfEmail = self.as_owner()
+        for grouped in (True, False):
+            rows = BfEmail.get_mobile_threads(
+                filter_name="unread", limit=100, grouped=grouped)["threads"]
+            self.assertEqual(
+                BfEmail._mobile_counts(grouped=grouped)["unread"], len(rows))
+
+    def test_reading_a_thread_moves_the_counter(self):
+        """Ouvrir un fil marque lu côté serveur — le compteur doit le voir.
+
+        C'est le cas que l'app ne pouvait pas rafraîchir : ``/conversation``
+        ne rend pas de totaux, alors la pastille restait allumée sur une liste
+        qui n'avait plus rien à lire.
+        """
+        BfEmail = self.as_owner()
+        before = BfEmail._mobile_counts()["unread"]
+        BfEmail.get_mobile_conversation("<racine-1@test.invalid>")
+        self.assertEqual(BfEmail._mobile_counts()["unread"], before - 1)
+
     def test_search_matches_subject_and_sender(self):
         BfEmail = self.as_owner()
         self.assertTrue(BfEmail.get_mobile_threads(

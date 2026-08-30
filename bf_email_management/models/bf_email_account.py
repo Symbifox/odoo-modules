@@ -124,19 +124,32 @@ class BfEmailAccount(models.Model):
         required=True,
         help="Ce que fait Odoo quand un courriel entre dans ce compte, dans "
              "l'onglet ouvert.\n\n"
-             "Éphémère : le message passe et s'efface tout seul.\n"
-             "Persistant : il reste à l'écran jusqu'à un geste.\n"
+             "Éphémère : le message passe et s'efface au bout de 8 secondes.\n"
+             "Persistant : il tient les 30 secondes pleines.\n"
              "Aucun : rien ne s'affiche, le compteur de la barre suffit.\n\n"
+             "Aucun avis ne dépasse 30 secondes, toutes fenêtres confondues : "
+             "le décompte part de l'envoi par le serveur, pas de l'affichage.\n\n"
              "L'avis ne sort pas du navigateur. La poussée vers le téléphone "
              "est un transport distinct, avec son propre interrupteur.",
     )
     popup_sticky_folders = fields.Char(
         string="Dossiers à avis persistant",
-        help="Dossiers IMAP dont l'arrivée reste à l'écran même quand le "
-             "compte est en éphémère, séparés par des virgules. "
+        help="Dossiers IMAP dont l'arrivée tient les 30 secondes pleines "
+             "même quand le compte est en éphémère, séparés par des virgules. "
              "Ex. : INBOX, Clients/Urgent.\n\n"
              "Sans effet quand l'avis est à « Aucun » : ce champ resserre "
              "l'attention, il ne rallume rien.",
+    )
+
+    popup_snooze_minutes = fields.Integer(
+        string="Report rapide (minutes)",
+        default=60,
+        help="Ce que fait le bouton « Reporter » de l'avis : le courriel sort "
+             "de la boîte pour ce nombre de minutes, puis y revient et "
+             "s'annonce de nouveau.\n\n"
+             "Un report plus long se choisit dans la boîte de réception, qui "
+             "offre l'assistant complet (ce soir, demain, lundi). L'avis, lui, "
+             "ne vit que trente secondes : il lui faut un geste unique.",
     )
 
     def _popup_sticky_folder_set(self):

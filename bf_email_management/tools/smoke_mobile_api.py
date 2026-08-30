@@ -30,7 +30,7 @@ import urllib.request
 
 BASE = "/bf_email_management/mobile/v1"
 
-# Clés dont dépendent les modèles Kotlin (data/MailModels.kt). Une disparition
+# Clés dont dépendent les modèles de données de l'app. Une disparition
 # ici casse l'app silencieusement : kotlinx retombe sur les valeurs par défaut.
 EXPECTED = {
     "/config": {

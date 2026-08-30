@@ -158,6 +158,25 @@ array — **not** an `ir.attachment` id. 404 when out of range, 413 past 25 MB.
 
 ---
 
+## Counts
+
+### `GET /counts?grouped=` (auth)
+```json
+{"counts": {"inbox": 5, "unread": 2, "snoozed": 1, "unrouted": 0}}
+```
+The badge numbers on their own, without a page of mail — cheap enough to re-read
+on every pull-to-refresh, which is what the app does.
+
+⚠️ **Counts follow `grouped`, because they count what the list *shows*.** With
+folding on (the default) a conversation is one row and therefore counts once;
+`grouped=0` counts messages, matching the flat view it serves. Sending the flag
+on `/threads` but not here is what produced "Inbox · 6" over five rows.
+
+The same flag is accepted on the three triage routes below, so the numbers they
+return match the view the app is currently in.
+
+---
+
 ## Triage
 
 All three return `{"ok": true, "counts": {…}}` with counts **already reflecting
@@ -166,9 +185,12 @@ badges from the response instead of refetching `/config`.
 
 | route | body |
 |---|---|
-| `POST /mark_read` | `{"email_ids": [12, 13]}` |
-| `POST /handle` | `{"email_ids": [12], "handled": true}` |
-| `POST /snooze` | `{"email_ids": [12], "until_ms": 1786831200000}` |
+| `POST /mark_read` | `{"email_ids": [12, 13], "grouped": true}` |
+| `POST /handle` | `{"email_ids": [12], "handled": true, "grouped": true}` |
+| `POST /snooze` | `{"email_ids": [12], "until_ms": 1786831200000, "grouped": true}` |
+
+`grouped` is optional and defaults to `true`, so a client written before this
+route existed keeps the behaviour it was built against.
 
 `handled: true` runs the real archive path: the message moves to
 `Archives/{YYYY}` **on the IMAP server** (per `bf.email.account.writeback_archive`)

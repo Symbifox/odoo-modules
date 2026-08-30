@@ -79,6 +79,20 @@ def _flag(value):
     return str(value).lower() in ("1", "true", "yes")
 
 
+def _grouped(source):
+    """Le repli en conversations, tel que l'app l'affiche en ce moment.
+
+    Absent par défaut = replié, comme ``/threads`` : un client plus ancien qui
+    n'envoie pas le drapeau garde le comportement contre lequel il a été
+    écrit. Le booléen JSON ``false`` et la chaîne ``"0"`` disent la même chose,
+    l'app n'ayant pas à savoir par quel encodage le paramètre voyage.
+    """
+    value = source.get("grouped", True)
+    if isinstance(value, bool):
+        return value
+    return str(value).lower() not in ("0", "false", "no")
+
+
 def _allowed_redirect(redirect):
     """True when the redirect target is one of this instance's app schemes.
 
@@ -273,12 +287,33 @@ class BfEmailMobileApi(http.Controller):
             ("Cache-Control", "private, max-age=0, no-store"),
         ])
 
+    # ── Compteurs ─────────────────────────────────────────────────────
+    @http.route(f"{BASE}/counts", type="http", auth="public", methods=["GET"],
+                csrf=False, save_session=False)
+    @_authed
+    def counts(self, device, **kw):
+        """Les seuls totaux, relus à part de la liste.
+
+        ⚠️ Cette route existe parce que l'app n'avait AUCUN moyen de rafraîchir
+        ses pastilles : elles ne descendaient qu'à l'ouverture de l'écran et
+        dans la réponse d'une mutation faite depuis le téléphone. Un courriel
+        qui arrivait, un ménage fait au navigateur, ou simplement OUVRIR un fil
+        — qui marque lu côté serveur — laissaient « Non lus · 5 » au-dessus
+        d'une liste qui n'avait plus rien à lire. Tirer pour rafraîchir n'y
+        changeait rien. Répondre les totaux sans la page de courriels rend le
+        rafraîchissement assez léger pour être fait à chaque relecture.
+        """
+        return _json({"counts": request.env["bf.email"]._mobile_counts(
+            grouped=_grouped(kw))})
+
     # ── Triage ────────────────────────────────────────────────────────
     @http.route(f"{BASE}/mark_read", type="http", auth="public",
                 methods=["POST"], csrf=False, save_session=False)
     @_authed
     def mark_read(self, device, **kw):
-        counts = request.env["bf.email"].mobile_mark_read(_body(**kw).get("email_ids"))
+        data = _body(**kw)
+        counts = request.env["bf.email"].mobile_mark_read(
+            data.get("email_ids"), grouped=_grouped(data))
         return _json({"ok": True, "counts": counts})
 
     @http.route(f"{BASE}/handle", type="http", auth="public", methods=["POST"],
@@ -287,7 +322,8 @@ class BfEmailMobileApi(http.Controller):
     def handle(self, device, **kw):
         data = _body(**kw)
         counts = request.env["bf.email"].mobile_set_handled(
-            data.get("email_ids"), handled=bool(data.get("handled", True)))
+            data.get("email_ids"), handled=bool(data.get("handled", True)),
+            grouped=_grouped(data))
         return _json({"ok": True, "counts": counts})
 
     @http.route(f"{BASE}/snooze", type="http", auth="public", methods=["POST"],
@@ -296,7 +332,8 @@ class BfEmailMobileApi(http.Controller):
     def snooze(self, device, **kw):
         data = _body(**kw)
         counts = request.env["bf.email"].mobile_snooze(
-            data.get("email_ids"), data.get("until_ms"))
+            data.get("email_ids"), data.get("until_ms"),
+            grouped=_grouped(data))
         return _json({"ok": True, "counts": counts})
 
     @http.route(f"{BASE}/attachment/upload", type="http", auth="public",

@@ -1,4 +1,4 @@
-"""Ce que les brouillons planifiés ajoutent à la boîte de réception OWL.
+"""Ce que les brouillons et le réacheminement ajoutent à la boîte OWL.
 
 Trois choses s'y jouent, et chacune a un mode de panne bien à elle :
 

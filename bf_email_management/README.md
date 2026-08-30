@@ -91,7 +91,7 @@ The list view is still there under **Boîte de réception (liste)**: filters, gr
 ### Chatter handled indicator (9.0+)
 Every chatter message carries a badge — **À traiter**, **Traité** or **Reporté** — reflecting the current user's `bf.email` mirror. `mail.message._to_store` joins `bfEmailState` in one query per rendered batch, and only on the `for_current_user` path: the state is strictly personal and must never ride along in a broadcast. The message actions follow the same state, so « Traité » disappears once the mail is out of the inbox and « Remettre en boîte » only shows where it means something.
 
-### Arrival notice (11.5+)
+### Arrival notice (11.5+, buttons and 30 s cap in 11.6)
 A mail lands, a toast shows up in the open tab. This is the **second transport for
 the same news**, alongside the mobile push in `push_transport.py`; both are fed by
 the *same* sweep of fresh rows inside `_sync_account`, so they cannot drift apart.
@@ -106,9 +106,12 @@ Three levels of setting, widest to finest:
   per account *is* the per-person setting; a second field on `res.users` would say
   the same thing twice and eventually say it differently.
 - **`bf.email.account.popup_sticky_folders`** — the folder. A comma-separated
-  list, case- and space-insensitive. What lands there stays on screen until a
-  gesture. The field **narrows** attention, it never switches anything back on:
-  it has no effect when the account is set to `none`.
+  list, case- and space-insensitive. What lands there gets the full 30 seconds
+  instead of 8. The field **narrows** attention, it never switches anything back
+  on: it has no effect when the account is set to `none`.
+- **`bf.email.account.popup_snooze_minutes`** (default 60) — what the *Reporter*
+  button does. Bounded to `[1, 43200]`: zero would mean a deadline already in the
+  past, which `mobile_snooze` refuses.
 
 Past five notices of one kind in a single pass, a summary replaces the pile — a
 catch-up after downtime must not stack the mailbox on screen. Sticky and transient
@@ -124,10 +127,53 @@ notice — that is the intended behaviour, not an error path. Same reasoning as
 `reason`. A test forbids adding the subject, so "let's avoid the round-trip" fails
 instead of shipping.
 
-A mail handled elsewhere — another tab, the phone, a rule — closes its own sticky
+A mail handled elsewhere — another tab, the phone, a rule — closes its own
 notice, off the `bf_email/changed` tick. The `calendarNotification` service is
 **not** overridden: calendar reminders keep their popup and their snooze buttons,
 mail notices simply sit next to them.
+
+**Three buttons (11.6)** — *Ouvrir*, *Reporter*, *Traité*. The last two go through
+`bf.email.popup_snooze` and `bf.email.popup_mark_handled`, which **delegate** to
+`mobile_snooze` / `mobile_set_handled`. Delegation is the point: "handled" must
+mean exactly the same thing in the notice, in the inbox and in the app — IMAP
+write-back to `Archives/{YYYY}` and clearing the phone notification included.
+
+⚠️ Both methods are public, hence callable over XML-RPC by any logged-in account
+with any id it cares to guess. `_mobile_browse` is what refuses somebody else's
+row, and it is reused as-is rather than duplicated: a `group_email_admin` member
+can read every mailbox, and a second check written apart would end up saying
+something different from the first.
+
+**Snoozing re-announces (11.6)** — `_cron_imap_mirror` already woke rows whose
+`snoozed_until` had passed; it now asks for the notice again, flagged `wake`, so
+the toast reads "report échu" rather than announcing an arrival. Without it,
+*Reporter* would make a mail **disappear** rather than defer it. Only the popup is
+replayed: mobile push keeps its own, separate switch.
+
+**Hard 30-second cap, across all windows (11.6)** — 8 s transient, 30 s sticky.
+"Sticky" therefore no longer means "until a gesture"; it means "the full thirty
+seconds".
+
+⚠️ `autocloseDelay` caps nothing. The stock template calls `freeze` when the
+pointer enters the stack and `refresh` when it leaves, and `refresh` RESTARTS the
+delay in full — a "30000 ms" stretches indefinitely under the mouse. The notice is
+declared `sticky` (which neutralises that) and our own timer decides.
+
+The countdown starts from `sent_ms`, the **server** clock at send time, never from
+display. Two open windows show the same notice and extinguish it at the same
+instant; opening a third lengthens nothing. Measured in a browser: 29 800 ms in
+both windows, 11 ms apart at both ends.
+
+The same arithmetic fixes an 11.5.0 defect: `bus.bus` keeps its messages for **24
+hours** (`bus.gc_retention_seconds`) and replays them on reconnect, with
+`last_notification_id` surviving in localStorage — so reopening the browser the
+next morning used to dump every notice from the day before, all at once. A replayed
+notice now arrives expired and never shows.
+
+⚠️ Accepted trade-off: a workstation whose clock runs more than thirty seconds
+**ahead** of the server will see no notice at all. Because that is exactly the kind
+of failure that lies "all is well", the service counts discarded notices and emits
+one `console.warn` at the fifth if none was ever displayed.
 
 **Known limit** — the notice only covers mail ingested **over IMAP**. A row coming
 from a chatter or the mail gateway has no `account_id`, hence no setting to read,
@@ -278,6 +324,7 @@ A REST/JSON surface under `/bf_email_management/mobile/v1/`, consumed by the **O
 - **Full client.** Read, search, reply / reply-all / forward, compose, archive (with the real IMAP write-back), snooze, plus the Odoo-side verbs: route into a record's chatter, spawn a task / ticket / lead / bill / invoice / expense.
 - **Remote content blocked by default.** Bodies are the sanitized `body_html_display` with remote `<img src>` parked in `data-blocked-src` until the reader asks. `cid:` and `data:` sources are untouched.
 - **Push over UnifiedPush (ntfy), no Google dependency.** One endpoint per device, registered against this module and `bf_sms_archive` independently; payloads are told apart by `type`.
+- **Badges have their own cheap route (11.7+).** `GET /counts?grouped=` returns the mailbox counters alone, light enough to be re-read on every refresh; `grouped` (default true) also rides on `/mark_read`, `/handle` and `/snooze`. Without it the totals only came down when the screen opened, or inside the answer to a mutation made from the phone.
 - **Push has an instance kill switch** — `ir.config_parameter` `bf_email.push_enabled`, default `"1"`. Clearing a device's `push_endpoint` does stop the push, but the app re-registers on its next launch and it all comes back; the parameter is the durable off. The in-Odoo notice has its own, separate switch — see *Arrival notice*.
 
 `bf.email.mobile.device` holds the bearer tokens. Devices are minted only by the controller, in `sudo`, and are owner-scoped — see Security below.
@@ -286,7 +333,7 @@ A REST/JSON surface under `/bf_email_management/mobile/v1/`, consumed by the **O
 ```bash
 odoo -d <base> -u bf_email_management --test-enable --test-tags /bf_email_management
 ```
-389 tests in `tests/`: device-token lifecycle, thread folding and filters, opening a thread, sending and its anti-duplicate guard, the four security boundaries, the routes under `HttpCase`, the inbox RPC surface (scope, action allow-list, `views` key), the IMAP write-back loop, the chatter indicator, and the arrival notice.
+406 tests in `tests/`: device-token lifecycle, thread folding and filters, opening a thread, sending and its anti-duplicate guard, the four security boundaries, the routes under `HttpCase`, the inbox RPC surface (scope, action allow-list, `views` key), the IMAP write-back loop, the chatter indicator, and the arrival notice with its thirty-second cap.
 
 ⚠️ On a test bench, `--db-filter` **and** `--addons-path` are both mandatory: without the first, `HttpCase` requests land on another database; without the second (together with `ODOO_RC=/dev/null`) the module is not even found and the run reports "0 tests" with no error.
 

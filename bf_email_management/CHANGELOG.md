@@ -4,6 +4,136 @@ All notable changes to `bf_email_management` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This module follows Odoo's `MAJOR.MINOR.PATCH` convention prefixed with the Odoo series (`18.0.X.Y.Z`).
 
+## [18.0.11.7.0] — 2026-08-30
+
+The phone's mailbox badges were telling the truth about the wrong thing.
+
+### Fixed
+
+- **`_mobile_counts` counts what the LIST shows, not what the table holds.**
+  `get_mobile_threads` has folded a conversation into a single row for a long
+  time; the counters kept counting messages. A five-message thread therefore
+  rendered "Inbox · 5" above **one** row. Same folding key as the list (the RFC
+  2822 root, else the row itself), and `grouped=False` counts messages, matching
+  the flat view it serves in that case.
+
+### Added
+
+- **`GET /counts?grouped=`** — the badge numbers on their own, with no page of
+  mail attached.
+
+  ⚠️ This is the real fix. The app had **no way** to re-read its badges: they
+  only arrived when the screen opened (`/config`) and in the response to a
+  mutation made from the phone. Mail arriving, a cleanup done in the browser,
+  and above all **opening a thread** — which `/conversation` marks read
+  server-side while returning no counts — left the badge frozen. Pull-to-refresh
+  did not help: the list reloaded, the numbers above it did not.
+
+  Light enough to re-read on every refresh, which is what the Android app now
+  does.
+
+- **`grouped` accepted on `/mark_read`, `/handle` and `/snooze`**, and on
+  `mobile_mark_read`, `mobile_set_handled` and `mobile_snooze`. Defaults to
+  `true`, so a client written before this version keeps the behaviour it was
+  built against. The flag only affects the counts returned — never what gets
+  archived or snoozed.
+
+## [18.0.11.6.0] — 2026-08-30
+
+The arrival notice grew buttons, and a hard thirty-second ceiling.
+
+### Added
+
+- **Three buttons instead of one**: *Ouvrir*, *Reporter*, *Traité*.
+
+  The last two go through two new `bf.email` methods, `popup_snooze` and
+  `popup_mark_handled`, which **delegate** to `mobile_snooze` and
+  `mobile_set_handled`. The delegation is the point: "handled" must mean exactly
+  the same thing in the notice, in the inbox and in the app — IMAP write-back to
+  `Archives/{YYYY}` and clearing the notification already sitting on the phone
+  included. Two paths would end up archiving to two different places.
+
+  ⚠️ Without a leading `_`, both methods are callable over XML-RPC by any
+  logged-in account with any id it cares to guess. `_mobile_browse` is what
+  refuses somebody else's row, reused as-is rather than duplicated — a
+  `group_email_admin` member can read every mailbox, and a second check written
+  apart would end up saying something different from the first. Two tests cover it.
+
+- **`bf.email.account.popup_snooze_minutes`** (default 60) — what the *Reporter*
+  button does. A longer deferral is picked in the inbox, which offers the full
+  wizard; the notice only lives thirty seconds, so it needs a single gesture. The
+  value is bounded to `[1, 43200]`: zero would produce a deadline already in the
+  past, which `mobile_snooze` refuses with a `UserError`, and the notice would
+  report "the snooze failed" on an account setting left at zero by accident.
+
+- **An expired snooze wakes AND re-announces.** `_cron_imap_mirror` already woke
+  rows whose `snoozed_until` had passed; it now asks for the notice again, flagged
+  `wake`. Without it, *Reporter* would serve to make a mail **disappear** rather
+  than defer it: it would come back to the inbox silently, and be seen again only
+  at the next glance down the list. The toast then reads "report échu" instead of
+  announcing an arrival that is not one. Only the popup is replayed — mobile push
+  keeps its own switch, and turning it back on through this door would be a
+  decision taken somewhere else.
+
+- **A body you can triage without opening**: subject, preview, then a line of
+  markers — account and folder (dropped when it is the account's INBOX, which
+  teaches nothing), local time, attachment count, linked record, and the
+  "Question" and "En copie" flags. Plus a pure-CSS countdown bar, without which a
+  notice that clears itself reads as a bug.
+
+  ⚠️ Everything coming from the mail goes through `escape()` before entering the
+  `markup()`. A mail subject is a string supplied by a third party; leaving it raw
+  would offer the first sender who tries it the run of the recipient's web client.
+  Exercised in a browser with a subject carrying `<script>`.
+
+- **The summary names its senders**: "De X, Y, Z et 4 autres" rather than a bare
+  count. The payload carries up to eight **ids** for that — the client re-reads
+  those rows through the ORM, so record rules apply as they do everywhere else,
+  and the bus still carries no name.
+
+### Changed
+
+- **Hard thirty-second cap, across all windows.** 8 s transient (rather than
+  Odoo's 4 s: three buttons do not get read in four seconds), 30 s sticky.
+  "Sticky" therefore no longer means "until a gesture" — the cap forbids it — it
+  means "the full thirty seconds".
+
+  ⚠️ **`autocloseDelay` caps nothing.** The stock template calls `freeze` when the
+  pointer enters the stack and `refresh` when it leaves, and `refresh` RESTARTS
+  the delay in full: a "30000 ms" stretches indefinitely under the mouse. The
+  notice is therefore declared `sticky` — which neutralises that mechanism — and
+  our own timer decides.
+
+  The countdown starts from `sent_ms`, the **server** clock at send time, never
+  from display. Two open windows show the same notice and extinguish it at the
+  same instant; opening a third lengthens nothing. Measured in a browser: 29 800 ms
+  in both windows, 11 ms apart at both ends.
+
+### Fixed
+
+- **The bus replay when the browser wakes up.** `bus.bus` keeps its messages for
+  **24 hours** (`bus.gc_retention_seconds`) and replays them on reconnect, with
+  `last_notification_id` surviving in localStorage. In 11.5.0, reopening the
+  browser the next morning dumped every notice from the day before at once. A
+  replayed notice now arrives expired and never shows — the same arithmetic that
+  holds the cap, not a second rule to keep in agreement.
+
+  ⚠️ Accepted trade-off: a workstation whose clock runs more than thirty seconds
+  **ahead** of the server will no longer see any notice at all. Because that is
+  exactly the kind of failure that lies "all is well", the service counts the
+  notices it discards and emits one `console.warn` at the fifth if none was ever
+  displayed.
+
+### Tests
+
+- 33 tests for the notice, against 19 before this batch. Full module suite green
+  on a fresh bench.
+- Browser check (headless Chromium over CDP): durations measured on screen
+  (7 800 ms / 29 800 ms), two windows going dark together, a replayed notice never
+  displayed, a subject carrying `<script>` escaped, *Traité* really archiving the
+  row, *Reporter* answering "Reporté de 45 minutes" per the account setting, and
+  the "report échu" toast after a wake-up. No JavaScript exception.
+
 ## [18.0.11.5.0] — 2026-08-29
 
 An arrival notice for incoming mail, inside Odoo.

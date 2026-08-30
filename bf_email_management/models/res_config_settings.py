@@ -7,7 +7,7 @@ n'a longtemps servi qu'à garder l'xmlid historique
 
 Il reprend du service en 18.0.11.1.0 pour ce qui n'appartient à personne en
 particulier : l'affichage des dossiers IMAP dans la boîte de réception est
-une décision d'organisation, pas une préférence d'affichage. Voir #24976.
+une décision d'organisation, pas une préférence d'affichage.
 """
 
 from odoo import _, api, fields, models

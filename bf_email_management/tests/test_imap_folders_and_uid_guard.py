@@ -1,4 +1,4 @@
-"""Dossiers IMAP dans la boîte, et garde sur l'UID de la recopie (#24976).
+"""Dossiers IMAP dans la boîte, et garde sur l'UID de la recopie.
 
 Deux sujets, une même cause profonde : un UID IMAP n'a de sens que dans SA
 boîte. La recopie s'en servait sans le vérifier, ce qui produisait des

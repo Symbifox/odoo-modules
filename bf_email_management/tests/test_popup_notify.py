@@ -11,15 +11,31 @@ Ce que ces tests éprouvent vraiment, dans l'ordre où ça peut casser :
 3. La décision de relever les lignes fraîches. Elle reposait sur la seule
    présence d'un appareil mobile ; comme il n'y en a plus aucun d'inscrit,
    un avis Odoo n'aurait jamais été calculé.
+4. Le plafond de trente secondes. Il ne tient QUE si la
+   charge utile porte l'horloge du serveur et la durée accordée : c'est ce
+   couple, et non un délai côté client, qui empêche une deuxième fenêtre — ou
+   un rejeu du bus au réveil du navigateur — de rallonger l'affichage.
+5. Les deux gestes des boutons. Ils sont appelables par RPC comme n'importe
+   quelle méthode publique, donc ce qu'on éprouve d'abord, c'est le refus de la
+   ligne d'autrui.
 """
 import json
+import time
 from unittest.mock import patch
 
+from odoo import fields
+from odoo.exceptions import AccessError
 from odoo.tests import tagged
+
+from odoo.addons.bf_email_management.models import (
+    bf_email_imap,
+    popup_transport,
+)
 
 from .common import MobileApiCase
 
 BASE = "odoo.addons.bf_email_management.models.bf_email.BfEmail"
+MOBILE = ("odoo.addons.bf_email_management.models.bf_email_mobile.BfEmailMobile")
 
 
 @tagged("post_install", "-at_install")
@@ -58,6 +74,20 @@ class TestPopupNotify(MobileApiCase):
             if message.get("type") == "bf_email/popup":
                 out.append((json.loads(row.channel), message["payload"]))
         return out
+
+    def _run_mirror_without_imap(self):
+        """Le cron de miroir, sans toucher à un serveur de courriel.
+
+        Le réveil des reports échus est une passe globale faite AVANT la boucle
+        des comptes ; l'erreur de connexion est celle que la boucle sait
+        attraper, donc le cron va jusqu'au bout comme en production.
+        """
+        with patch(
+            "odoo.addons.bf_email_management.models.bf_email"
+            ".bf_email_imap.open_connection",
+            side_effect=bf_email_imap.ImapConnectionError("pas d'IMAP en test"),
+        ):
+            self.env["bf.email"]._cron_imap_mirror()
 
     def _new_inbound(self, count=1, folder="INBOX", offset=200):
         """``count`` courriels entrants tout neufs dans la boîte du propriétaire."""
@@ -144,7 +174,10 @@ class TestPopupNotify(MobileApiCase):
         self.assertEqual(len(popups), 1)
         _channel, payload = popups[0]
         self.assertEqual(payload["email_id"], rec.id)
-        self.assertEqual(set(payload), {"kind", "email_id", "sticky"})
+        self.assertEqual(
+            set(payload),
+            {"kind", "email_id", "sticky", "ttl_ms", "wake", "sent_ms"},
+        )
         serialised = json.dumps(payload)
         self.assertNotIn("Sujet", serialised)
         self.assertNotIn("acme.test", serialised)
@@ -287,4 +320,191 @@ class TestPopupNotify(MobileApiCase):
         with patch(f"{BASE}._sync_account", autospec=True, side_effect=fake_sync):
             self.env["bf.email"]._sync_account(self.account)
 
+        self.assertFalse(self._popups())
+
+    # ------------------------------------------------------------------
+    # 7. Le plafond de trente secondes
+    # ------------------------------------------------------------------
+    def test_charge_utile_porte_l_horloge_du_serveur(self):
+        """Sans `sent_ms`, le client ne peut compter que depuis l'affichage.
+
+        Et compter depuis l'affichage, c'est accorder trente secondes NEUVES à
+        chaque fenêtre ouverte, puis trente autres au rejeu du bus quand le
+        navigateur se reconnecte le lendemain.
+        """
+        before = int(time.time() * 1000)
+        self.Popup._notify_new_emails(self._new_inbound())
+        after = int(time.time() * 1000)
+        _channel, payload = self._popups()[0]
+        self.assertGreaterEqual(payload["sent_ms"], before)
+        self.assertLessEqual(payload["sent_ms"], after)
+
+    def test_ephemere_huit_secondes_persistant_trente(self):
+        self.Popup._notify_new_emails(self._new_inbound())
+        _channel, payload = self._popups()[0]
+        self.assertEqual(payload["ttl_ms"], 8000)
+
+        self.account.popup_sticky_folders = "Direction"
+        self.Popup._notify_new_emails(
+            self._new_inbound(folder="Direction", offset=250))
+        payloads = [p for _c, p in self._popups()]
+        collant = [p for p in payloads if p["sticky"]][0]
+        self.assertEqual(collant["ttl_ms"], 30000)
+
+    def test_aucun_mode_ne_depasse_le_plafond(self):
+        """Le plafond est une règle, pas une valeur qu'on relit dans la table.
+
+        Le jour où quelqu'un allongera le mode persistant « juste un peu »,
+        c'est ici que ça doit s'arrêter, pas dans le navigateur.
+        """
+        with patch.dict(popup_transport.POPUP_TTL_MS, {"sticky": 120000}):
+            self.assertEqual(self.Popup._ttl_ms("sticky"), 30000)
+
+    def test_mode_inconnu_retombe_sur_l_ephemere(self):
+        self.assertEqual(self.Popup._ttl_ms("n'importe quoi"), 8000)
+
+    def test_resume_nomme_ses_lignes_sans_les_decrire(self):
+        """Le résumé porte des identifiants, jamais des noms.
+
+        Le client relit ces lignes-là par l'ORM pour nommer les expéditeurs :
+        les règles d'enregistrement s'appliquent alors comme partout ailleurs,
+        ce que le bus, lui, ne sait pas faire.
+        """
+        self.Popup._notify_new_emails(self._new_inbound(count=6))
+        _channel, payload = self._popups()[0]
+        self.assertEqual(payload["kind"], "batch")
+        self.assertEqual(len(payload["email_ids"]), 6)
+        serialised = json.dumps(payload)
+        self.assertNotIn("Sujet", serialised)
+        self.assertNotIn("acme.test", serialised)
+
+    def test_resume_borne_les_identifiants_joints(self):
+        """Une reprise de cent lignes ne doit pas en porter cent."""
+        self.Popup._notify_new_emails(self._new_inbound(count=12))
+        _channel, payload = self._popups()[0]
+        self.assertEqual(payload["count"], 12)
+        self.assertEqual(
+            len(payload["email_ids"]), popup_transport.BATCH_PREVIEW_IDS)
+
+    # ------------------------------------------------------------------
+    # 8. Les boutons — ce que l'avis pose sur la ligne
+    # ------------------------------------------------------------------
+    def test_les_deux_gestes_refusent_la_ligne_d_autrui(self):
+        """Publiques, donc appelables par RPC avec n'importe quel identifiant.
+
+        Un membre de `group_email_admin` peut lire la boîte de tout le monde :
+        sans ce refus, un identifiant deviné suffirait à archiver le courriel
+        d'un collègue depuis une console.
+        """
+        rec = self._new_inbound(offset=830)
+        rec.sudo().write({"user_id": self.stranger.id})
+        # ⚠️ Le cache de l'ORM est par transaction : l'écriture en sudo vient
+        # d'y poser la valeur, et sans cette invalidation le test passerait
+        # sur un cache chaud plutôt que sur une vraie lecture par le rôle.
+        self.env.invalidate_all()
+        Email = self.env["bf.email"].with_user(self.owner)
+        with self.assertRaises(AccessError):
+            Email.popup_snooze(rec.id)
+        with self.assertRaises(AccessError):
+            Email.popup_mark_handled(rec.id)
+
+    def test_reporter_sort_le_courriel_et_pose_l_echeance(self):
+        rec = self._new_inbound(offset=800)
+        result = self.env["bf.email"].with_user(self.owner).popup_snooze(
+            rec.id, 30)
+        rec.invalidate_recordset()
+        self.assertTrue(rec.is_handled)
+        self.assertTrue(rec.snoozed_until)
+        minutes = (rec.snoozed_until - fields.Datetime.now()).total_seconds() / 60
+        self.assertGreater(minutes, 28)
+        self.assertLess(minutes, 31)
+        self.assertEqual(result["minutes"], 30)
+
+    def test_report_sans_argument_suit_le_reglage_du_compte(self):
+        self.account.popup_snooze_minutes = 15
+        rec = self._new_inbound(offset=840)
+        result = self.env["bf.email"].with_user(self.owner).popup_snooze(rec.id)
+        self.assertEqual(result["minutes"], 15)
+
+    def test_report_borne_les_valeurs_absurdes(self):
+        """Un clic ne doit pas pouvoir faire disparaître un courriel des années.
+
+        Et zéro rendrait une échéance déjà passée, que `mobile_snooze` refuse
+        d'un `UserError` — l'avis afficherait alors « le report a échoué » sur
+        un réglage de compte laissé à zéro par distraction.
+        """
+        Email = self.env["bf.email"].with_user(self.owner)
+        self.assertEqual(Email.popup_snooze(self._new_inbound(offset=850).id, 0)
+                         ["minutes"], 1)
+        self.assertEqual(
+            Email.popup_snooze(self._new_inbound(offset=860).id, 10 ** 9)
+            ["minutes"], 60 * 24 * 30)
+        self.assertEqual(
+            Email.popup_snooze(self._new_inbound(offset=870).id, "trente")
+            ["minutes"], 60)
+
+    def test_traite_passe_par_le_chemin_du_telephone(self):
+        """Même geste que dans la boîte et dans l'app, pas un jumeau.
+
+        La recopie IMAP vers `Archives/{AAAA}` et le retrait de la
+        notification déjà posée sur le téléphone tiennent à ce que ce soit
+        LA MÊME méthode ; deux chemins finiraient par ne plus archiver au même
+        endroit.
+        """
+        rec = self._new_inbound(offset=810)
+        # ⚠️ Pas `BASE` : `mobile_set_handled` est portée par la classe de
+        # `bf_email_mobile.py`, pas par celle de `bf_email.py`. Les deux
+        # construisent le même modèle, mais `patch` vise une classe Python.
+        with patch(f"{MOBILE}.mobile_set_handled", autospec=True) as mocked:
+            self.env["bf.email"].with_user(self.owner).popup_mark_handled(rec.id)
+        mocked.assert_called_once()
+        self.assertEqual(mocked.call_args[0][1], [rec.id])
+        self.assertEqual(mocked.call_args[1], {"handled": True})
+
+    def test_traite_marque_vraiment_la_ligne(self):
+        self.account.writeback_archive = False
+        rec = self._new_inbound(offset=820)
+        self.env["bf.email"].with_user(self.owner).popup_mark_handled(rec.id)
+        rec.invalidate_recordset()
+        self.assertTrue(rec.is_handled)
+
+    # ------------------------------------------------------------------
+    # 9. Le report échu — l'avis repart avec le courriel
+    # ------------------------------------------------------------------
+    def test_report_echu_reveille_et_annonce_de_nouveau(self):
+        """Sans ça, « Reporter » ferait disparaître au lieu de différer.
+
+        Le réveil vit déjà dans `_cron_imap_mirror` ; ce qui est neuf, c'est
+        que l'avis reparte avec, marqué `wake` pour que le toast dise « report
+        échu » plutôt que d'annoncer une arrivée qui n'en est pas une.
+        """
+        rec = self._new_inbound(offset=880)
+        rec.sudo().write({
+            "is_handled": True,
+            "snoozed_until": fields.Datetime.subtract(
+                fields.Datetime.now(), minutes=1),
+        })
+        # L'IMAP n'a rien à faire ici : le réveil est une passe globale, faite
+        # avant la boucle des comptes et sans connexion.
+        self._run_mirror_without_imap()
+
+        rec.invalidate_recordset()
+        self.assertFalse(rec.is_handled, "le report échu doit revenir en boîte")
+        payloads = [p for _c, p in self._popups()]
+        self.assertEqual(len(payloads), 1)
+        self.assertEqual(payloads[0]["email_id"], rec.id)
+        self.assertTrue(payloads[0]["wake"])
+
+    def test_report_echu_muet_si_l_instance_est_eteinte(self):
+        """Le réveil doit continuer de fonctionner sans l'avis."""
+        self.param.set_param("bf_email.popup_enabled", "0")
+        rec = self._new_inbound(offset=890)
+        rec.sudo().write({
+            "is_handled": True,
+            "snoozed_until": fields.Datetime.subtract(
+                fields.Datetime.now(), minutes=1),
+        })
+        self._run_mirror_without_imap()
+        rec.invalidate_recordset()
+        self.assertFalse(rec.is_handled)
         self.assertFalse(self._popups())

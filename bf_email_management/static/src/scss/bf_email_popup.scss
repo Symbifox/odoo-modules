@@ -1,0 +1,146 @@
+// Habillage de l'avis d'arrivée d'un courriel (voir `bf_email_popup.js`).
+//
+// Le toast standard d'Odoo fait 400 px, dont ~330 px utiles, et il range ses
+// boutons dans un simple `d-flex` sans retour à la ligne. La leçon est déjà
+// écrite dans `bf_calendar_reminder.scss` : sans `flex-wrap`, la classe
+// `text-break` du gabarit casse les libellés en plein mot plutôt que de passer
+// à la ligne. Trois boutons y tiennent, mais « Traité » et « Reporter » sont à
+// un mot près de ne plus tenir, alors on pose la règle tout de suite.
+//
+// Aucune teinte fixe : l'avis s'affiche aussi en thème sombre. Les gris passent
+// par `currentColor` ou par du gris neutre en transparence, qui va sur les deux
+// fonds.
+
+.o_notification.o_bf_email_popup {
+
+    // L'expéditeur. Un nom long ne doit pas repousser le bouton de fermeture,
+    // que le gabarit place en absolu dans le coin.
+    .o_notification_title {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .o_bf_email_popup_subject {
+        font-weight: 600;
+        // Deux lignes d'objet, pas plus : au-delà, l'aperçu et la ligne de
+        // repères sortiraient de l'écran sur un portable.
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .o_bf_email_popup_preview {
+        margin-top: 0.15rem;
+        opacity: 0.75;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    // La ligne de repères : compte / dossier, heure, pièces jointes, fiche
+    // liée, et les mentions. Elle passe à la ligne plutôt que de déborder.
+    .o_bf_email_popup_meta {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.25rem 0.5rem;
+        margin-top: 0.4rem;
+        font-size: 0.85em;
+        opacity: 0.8;
+
+        > span {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.2rem;
+            white-space: nowrap;
+        }
+    }
+
+    // Ce qui mérite un cadre : la boîte d'arrivée quand ce n'est pas l'INBOX
+    // du compte principal, et les mentions (« En copie », « Question »,
+    // « Report échu »).
+    .o_bf_email_popup_box,
+    .o_bf_email_popup_flag {
+        padding: 0 0.35rem;
+        border: 1px solid rgba(128, 128, 128, 0.45);
+        border-radius: 0.75rem;
+        line-height: 1.4;
+        // Un nom de dossier profond ne doit pas pousser la ligne hors du
+        // toast : il se coupe, les autres repères restent lisibles.
+        max-width: 14rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .o_bf_email_popup_flag {
+        text-transform: uppercase;
+        font-size: 0.85em;
+        letter-spacing: 0.02em;
+    }
+
+    // Le décompte. Il rend visible ce que la tâche impose : l'avis a une durée
+    // de vie, et elle est courte. Sans lui, un avis qui s'efface au bout de
+    // huit secondes passe pour un bogue.
+    .o_bf_email_popup_bar {
+        margin-top: 0.5rem;
+        height: 2px;
+        border-radius: 1px;
+        background: rgba(128, 128, 128, 0.25);
+        overflow: hidden;
+
+        > span {
+            display: block;
+            height: 100%;
+            width: 100%;
+            background: currentColor;
+            opacity: 0.5;
+            transform-origin: left center;
+            // La durée vient du JS en style en ligne : c'est le temps qu'il
+            // RESTE, pas la durée nominale — une fenêtre ouverte en retard
+            // reprend le décompte là où il en est.
+            animation-name: o_bf_email_popup_drain;
+            animation-timing-function: linear;
+            animation-fill-mode: forwards;
+        }
+    }
+
+    .o_notification_buttons {
+        flex-wrap: wrap;
+
+        > .btn {
+            // Sans cette base, un bouton reste rétrécissable et le texte
+            // recommence à se casser au lieu de passer à la ligne suivante.
+            flex: 0 0 auto;
+            white-space: nowrap;
+        }
+
+        // « Ouvrir » porte le bleu de la marque (le gabarit lui pose
+        // `.btn-primary` parce qu'il est déclaré `primary`). Les deux gestes
+        // de triage passent en contour : ils sont là quand on les cherche,
+        // sans réclamer l'oeil.
+        > .btn-secondary {
+            --btn-bg: transparent;
+            --btn-color: inherit;
+            --btn-border-color: rgba(128, 128, 128, 0.45);
+            --btn-hover-bg: rgba(128, 128, 128, 0.18);
+            --btn-hover-color: inherit;
+            --btn-hover-border-color: rgba(128, 128, 128, 0.65);
+        }
+    }
+}
+
+// Un report échu n'est pas une arrivée : c'est un courriel qu'on a déjà vu et
+// choisi de repousser. La barre de couleur du toast le dit, discrètement.
+.o_notification.o_bf_email_popup_wake {
+    .o_notification_bar {
+        background-color: var(--warning, #f0ad4e) !important;
+    }
+}
+
+@keyframes o_bf_email_popup_drain {
+    from { transform: scaleX(1); }
+    to { transform: scaleX(0); }
+}

@@ -630,9 +630,17 @@ class BfEmailMobile(models.Model):
         }
 
     @api.model
-    def _mobile_counts(self):
+    def _mobile_counts(self, grouped=True):
         """Badge counts per mailbox filter — returned after every mutation so
         the app never has to guess how a write moved the totals.
+
+        ⚠️ **Compte ce que la liste AFFICHE, pas ce que la table contient.**
+        ``get_mobile_threads`` replie une conversation en une seule ligne ;
+        compter les messages donnait donc « Boîte de réception · 6 » au-dessus
+        de cinq lignes, et un fil de cinq messages affichait 5 au-dessus d'UNE
+        ligne. Même clé de repli que la liste (racine RFC 2822, à défaut la
+        ligne elle-même), et ``grouped=False`` compte les messages, comme la
+        vue à plat qu'elle sert alors.
 
         ``flush_all`` first: these counts are read with raw SQL, which does not
         see ORM writes still sitting in the environment's cache. Without it,
@@ -640,12 +648,14 @@ class BfEmailMobile(models.Model):
         phone's badge trails one action behind, forever.
         """
         self.env.flush_all()
+        what = ("COUNT(DISTINCT COALESCE(NULLIF(thread_root_id, ''), "
+                "'id:' || id::text))" if grouped else "COUNT(*)")
         counts = {}
         for name in ("inbox", "unread", "snoozed", "unrouted"):
             where, params = self._mobile_filter_sql(name)
             self.env.cr.execute(
-                "SELECT COUNT(*) FROM bf_email "
-                "WHERE user_id = %%s AND active = true AND %s" % where,
+                "SELECT %s FROM bf_email "
+                "WHERE user_id = %%s AND active = true AND %s" % (what, where),
                 [self.env.uid] + list(params),
             )
             counts[name] = self.env.cr.fetchone()[0]
@@ -734,16 +744,16 @@ class BfEmailMobile(models.Model):
         return records
 
     @api.model
-    def mobile_mark_read(self, email_ids):
+    def mobile_mark_read(self, email_ids, grouped=True):
         records = self._mobile_browse(email_ids)
         records.action_mark_read()
         push = self.env["bf.email.unifiedpush"]
         for rec in records:
             push._notify_clear(self.env.user, rec.id)
-        return self._mobile_counts()
+        return self._mobile_counts(grouped=grouped)
 
     @api.model
-    def mobile_set_handled(self, email_ids, handled=True):
+    def mobile_set_handled(self, email_ids, handled=True, grouped=True):
         """Archive (or restore) from the phone, IMAP write-back included.
 
         ``action_archive`` is reused verbatim rather than writing the fields
@@ -757,10 +767,10 @@ class BfEmailMobile(models.Model):
                 self.env["bf.email.unifiedpush"]._notify_clear(self.env.user, rec.id)
         else:
             records.action_unhandle()
-        return self._mobile_counts()
+        return self._mobile_counts(grouped=grouped)
 
     @api.model
-    def mobile_snooze(self, email_ids, until_ms):
+    def mobile_snooze(self, email_ids, until_ms, grouped=True):
         """Defer out of the inbox until ``until_ms`` (epoch ms, UTC)."""
         records = self._mobile_browse(email_ids)
         try:
@@ -778,7 +788,7 @@ class BfEmailMobile(models.Model):
         push = self.env["bf.email.unifiedpush"]
         for rec in records:
             push._notify_clear(self.env.user, rec.id)
-        return self._mobile_counts()
+        return self._mobile_counts(grouped=grouped)
 
     # ------------------------------------------------------------------
     # Outbound attachments

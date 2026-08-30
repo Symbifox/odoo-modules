@@ -1020,7 +1020,6 @@ class BfEmail(models.Model):
         même ligne au même instant — six écritures concurrentes par courriel
         entrant, donc autant d'échecs de sérialisation rejoués par Odoo.
 
-
         Le drapeau de contexte réserve le marquage au chargement d'un vrai
         formulaire, qui appelle ``web_read`` directement.
 
@@ -1632,7 +1631,8 @@ class BfEmail(models.Model):
                         # copier (RFC 3501), `STORE \Deleted` ne marque rien,
                         # et la ligne enregistre un archivage qui n'a pas eu
                         # lieu : le message reste en INBOX pendant qu'Odoo le
-                        # dit traité. C'est la dérive rapportée en #24976.
+                        # dit traité. C'est la dérive déjà observée en
+                        # production.
                         verdict = bf_email_imap.uid_carries_message_id(
                             conn, rec.imap_uid, rec.message_id_header,
                         )
@@ -3152,8 +3152,8 @@ class BfEmail(models.Model):
     def imap_wake(self, reason=False):
         """Run the IMAP ingestion now instead of waiting for the 5-minute cron.
 
-        Called over XML-RPC by the ``symbifox-imap-idle`` companion container,
-        which holds one IMAP IDLE connection per active account and fires this
+        Called over XML-RPC by an external IMAP IDLE watcher, which holds one
+        IMAP IDLE connection per active account and fires this
         the moment the server announces an arrival. All it does is ask the
         scheduler to run
         ``ir_cron_sync_imap`` immediately: ``_trigger`` writes an
@@ -3432,6 +3432,17 @@ class BfEmail(models.Model):
         if woken:
             woken.write({"is_handled": False, "snoozed_until": False})
             _logger.info("bf.email: woke %s snoozed rows", len(woken))
+            # Le report ne vaut que s'il RAPPELLE. Un courriel qui rentre en
+            # boîte sans rien dire, c'est un courriel qu'on ne reverra qu'au
+            # prochain coup d'oeil à la liste — et le bouton « Reporter » de
+            # l'avis aurait alors servi à faire disparaître,
+            # pas à différer. L'avis repart donc avec lui, à cinq minutes
+            # près, marqué comme un réveil plutôt qu'une arrivée.
+            #
+            # Seule la popup est rappelée : la poussée vers le téléphone a son
+            # propre interrupteur, éteint, et la rallumer par
+            # cette porte serait une décision prise ailleurs.
+            self.env["bf.email.popup"]._notify_new_emails(woken, wake=True)
 
         # ---- IMAP mirror pass: one connection per active account. ----
         Account = self.env["bf.email.account"].sudo()

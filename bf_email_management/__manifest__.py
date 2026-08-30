@@ -1,7 +1,7 @@
 {
     "name": "Gestion des courriels",
     "summary": "Inbox unifiée IMAP + chatters Odoo, avec re-routage UI",
-    "version": "18.0.11.5.0",
+    "version": "18.0.11.7.0",
     "category": "Productivity",
     'website': 'https://symbifox.com',
     "author": "Les services de consultation Blue Fox, Inc.",
@@ -70,6 +70,7 @@
             # Arrival notice. After the calendar reminder and unrelated to
             # it: this service replaces nothing, it sits alongside.
             "bf_email_management/static/src/js/bf_email_popup.js",
+            "bf_email_management/static/src/scss/bf_email_popup.scss",
             "bf_email_management/static/src/js/bf_email_browser.js",
             "bf_email_management/static/src/js/bf_email_inbox.js",
             "bf_email_management/static/src/js/bf_email_new_record_dropdown.js",

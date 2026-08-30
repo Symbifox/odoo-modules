@@ -81,6 +81,8 @@
                             <field name="popup_sticky_folders"
                                    placeholder="INBOX, Clients/Urgent"
                                    invisible="popup_mode == 'none'"/>
+                            <field name="popup_snooze_minutes"
+                                   invisible="popup_mode == 'none'"/>
                         </group>
                     </group>
                     <group string="Dernière erreur" invisible="not last_error">
