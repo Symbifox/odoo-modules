@@ -1,6 +1,6 @@
 {
     "name": "Pages de liens",
-    "version": "18.0.6.1.0",
+    "version": "18.0.7.1.0",
     "category": "Website",
     "summary": "Page publique de liens rattachée à une personne ou ponctuelle, avec QR à la marque pour signature courriel",
     "description": """

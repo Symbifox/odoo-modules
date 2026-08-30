@@ -17,6 +17,20 @@
 (function () {
     "use strict";
 
+    // Le catalogue de traduction d'Odoo, quand il est là. Ce fichier est
+    // chargé sur toutes les pages publiques, y compris avant que le noyau web
+    // ne soit disponible : on ne peut donc pas importer `_t` en dur, sous
+    // peine de casser le script partout où le module n'est pas concerné.
+    function t(texte) {
+        try {
+            var noyau = window.odoo && window.odoo.loader
+                && window.odoo.loader.modules.get("@web/core/l10n/translation");
+            return noyau && noyau._t ? noyau._t(texte) : texte;
+        } catch (error) {
+            return texte;
+        }
+    }
+
     var STORAGE_KEY = "bf_linkpage_theme";
 
     function currentPreference() {
@@ -69,7 +83,7 @@
         button.setAttribute("aria-pressed", theme === "dark" ? "true" : "false");
         button.setAttribute(
             "aria-label",
-            theme === "dark" ? "Passer au thème clair" : "Passer au thème sombre"
+            theme === "dark" ? t("Passer au thème clair") : t("Passer au thème sombre")
         );
     }
 

@@ -97,6 +97,23 @@
                         <p t-if="page.bio" class="bf-linkpage__bio" t-out="page.bio"/>
                     </header>
 
+                    <!-- La carte de visite. Un lien de téléchargement franc,
+                         pas un lien de plus dans la liste : le geste n'est pas
+                         « aller quelque part » mais « garder ceci ». -->
+                    <a t-if="vcard" class="bf-linkpage__vcard"
+                       t-attf-href="/l/#{page.slug}/vcard.vcf"
+                       t-attf-download="#{page.slug}.vcf"
+                       rel="noopener">
+                        <i class="fa fa-address-card-o" aria-hidden="true"/>
+                        <!-- Un bloc et non un `span` : Odoo extrait les termes
+                             traduisibles d'une vue en INCLUANT le balisage en
+                             ligne voisin. Avec un `span`, le terme à traduire
+                             devenait « <i .../>\n   <span>Ajouter…</span> »,
+                             indentation comprise, et la traduction cessait de
+                             s'appliquer au premier reformatage du gabarit. -->
+                        <div class="bf-linkpage__vcard-label">Ajouter à mes contacts</div>
+                    </a>
+
                     <nav class="bf-linkpage__links">
                         <!-- Chaque lien passe par /go/ : c'est ce qui compte le
                              clic et, surtout, ce qui vérifie que le lien

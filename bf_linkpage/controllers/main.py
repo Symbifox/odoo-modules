@@ -74,6 +74,7 @@ class BfLinkpageController(Controller):
             "page": page,
             "links": page._public_links(),
             "socials": page._social_links(),
+            "vcard": page._vcard_available(),
             "company_logo": bool(company and company.logo),
             "company_name": company.name if company else "",
             # Une page ponctuelle n'a pas à finir dans un index de moteur de
@@ -213,6 +214,31 @@ class BfLinkpageController(Controller):
         if not company or not company.logo:
             return request.not_found()
         return self._image_response(base64.b64decode(company.logo), "logo-%s" % page.slug)
+
+    @route(
+        "/l/<string:slug>/vcard.vcf",
+        type="http",
+        auth="public",
+        website=False,
+        sitemap=False,
+    )
+    def linkpage_vcard(self, slug, **kwargs):
+        """La carte de visite de la personne, en téléchargement.
+
+        Publique comme la page : elle ne contient QUE ce que la page affiche
+        déjà. Le contraire serait un canal détourné pour lire des coordonnées
+        qu'on n'a pas voulu publier.
+        """
+        page = request.env["bf.linkpage"]._resolve_slug(slug)
+        if not page or not page._vcard_available():
+            return request.not_found()
+        payload = page._vcard()
+        return request.make_response(payload, headers=[
+            ("Content-Type", "text/vcard; charset=utf-8"),
+            ("Content-Length", len(payload)),
+            ("Content-Disposition", http.content_disposition("%s.vcf" % page.slug)),
+            ("Cache-Control", "public, max-age=300"),
+        ])
 
     @route(
         "/l/<string:slug>/qr.png",

@@ -140,6 +140,12 @@ class BfLinkpage(models.Model):
         help="Le choix du visiteur est gardé dans SON navigateur seulement. "
              "Rien n'est écrit ici, et rien ne le suit d'un appareil à l'autre.",
     )
+    show_vcard = fields.Boolean(
+        string="Offrir la carte de visite",
+        default=True,
+        help="Un bouton « Ajouter à mes contacts » sur la page publique. "
+             "Sans effet sur une page ponctuelle, qui ne porte personne.",
+    )
     show_company_logo = fields.Boolean(
         string="Afficher le logo de l'entreprise",
         default=True,
@@ -311,9 +317,18 @@ class BfLinkpage(models.Model):
         que personne ne remarque avant d'ouvrir la page sur un forfait mobile.
         """
         self.ensure_one()
+        # ⚠️ `bin_size` : le client web lit les champs binaires en demandant
+        # leur TAILLE LISIBLE plutôt que leur contenu, pour ne pas transporter
+        # des mégaoctets dans un formulaire. Le champ rend alors b"32.99 Kb",
+        # que tout traitement d'image prend pour des données et refuse. Le
+        # défaut ne se voit QUE par le navigateur : en shell, le contexte n'est
+        # pas posé et tout fonctionne. Il faut donc le forcer ici, au plus près
+        # de la lecture, et non compter sur l'appelant.
+        self = self.with_context(bin_size=False)
         if self.avatar:
             return self.avatar
         for record in (self.partner_id, self.user_id.partner_id):
+            record = record.with_context(bin_size=False)
             if record and record.image_256:
                 return record.image_256
         return False
@@ -326,6 +341,73 @@ class BfLinkpage(models.Model):
             or self.partner_id.company_id
             or self.env.company
         )
+
+    # ── la carte de visite téléchargeable ────────────────────────────────────
+
+    @staticmethod
+    def _vcard_escape(valeur):
+        """Échapper une valeur vCard.
+
+        La virgule, le point-virgule et la barre oblique inverse sont des
+        SÉPARATEURS dans le format. Un nom d'organisation qui en contient un,
+        « Morin, Roy et Associés » par exemple, casse la fiche en deux champs
+        chez qui l'importe, sans erreur nulle part.
+        """
+        return (
+            (valeur or "")
+            .replace("\\", "\\\\")
+            .replace(";", "\\;")
+            .replace(",", "\\,")
+            .replace("\n", "\\n")
+        )
+
+    def _vcard_available(self):
+        """Une carte n'a de sens que pour une page qui porte une personne."""
+        self.ensure_one()
+        return bool(self.show_vcard and self.kind == "owner" and self.partner_id)
+
+    def _vcard(self):
+        """La carte de visite de la personne de cette page, en vCard 3.0.
+
+        3.0 et non 4.0 : c'est la version que les carnets d'adresses lisent
+        tous, Apple et Android compris. La 4.0 est plus propre et moins reçue,
+        et une carte qu'un téléphone refuse d'ouvrir ne sert à rien.
+
+        L'adresse de la PAGE est incluse comme URL. C'est ce qui rend la carte
+        durable : les coordonnées enregistrées vieillissent, le lien vers la
+        page reste juste.
+        """
+        self.ensure_one()
+        e = self._vcard_escape
+        partner = self.partner_id
+        nom = (partner.name or self.name or "").strip()
+        morceaux = nom.split(" ", 1)
+        prenom = morceaux[0] if morceaux else ""
+        famille = morceaux[1] if len(morceaux) > 1 else ""
+        societe = self.sudo()._company().name or ""
+
+        lignes = [
+            "BEGIN:VCARD",
+            "VERSION:3.0",
+            "N:%s;%s;;;" % (e(famille), e(prenom)),
+            "FN:%s" % e(nom),
+        ]
+        if societe:
+            lignes.append("ORG:%s" % e(societe))
+        if self.headline:
+            lignes.append("TITLE:%s" % e(self.headline))
+        if partner.email:
+            lignes.append("EMAIL;TYPE=INTERNET,WORK:%s" % e(partner.email))
+        for champ, etiquette in (("mobile", "CELL"), ("phone", "WORK,VOICE")):
+            valeur = partner[champ] if champ in partner._fields else None
+            if valeur:
+                lignes.append("TEL;TYPE=%s:%s" % (etiquette, e(valeur)))
+        lignes.append("URL:%s" % e(self.public_url))
+        lignes.append("REV:%s" % fields.Datetime.now().strftime("%Y%m%dT%H%M%SZ"))
+        lignes.append("END:VCARD")
+        # CRLF : la spécification l'impose, et certains carnets d'adresses
+        # refusent une carte en fins de ligne Unix.
+        return ("\r\n".join(lignes) + "\r\n").encode("utf-8")
 
     def _base_url(self):
         return (
@@ -747,7 +829,15 @@ class BfLinkpage(models.Model):
         self.ensure_one()
         from PIL import Image
 
-        raw = self.qr_logo or self._company().logo
+        # ⚠️ `bin_size` : le client web lit les champs binaires en demandant
+        # leur TAILLE LISIBLE plutôt que leur contenu, pour ne pas transporter
+        # des mégaoctets dans un formulaire. Le champ rend alors b"32.99 Kb",
+        # que tout traitement d'image prend pour des données et refuse. Le
+        # défaut ne se voit QUE par le navigateur : en shell, le contexte n'est
+        # pas posé et tout fonctionne. Il faut donc le forcer ici, au plus près
+        # de la lecture, et non compter sur l'appelant.
+        self = self.with_context(bin_size=False)
+        raw = self.qr_logo or self._company().with_context(bin_size=False).logo
         if not raw:
             return None, _("Aucun logo n'est disponible : le code sort sans marque.")
         octets = base64.b64decode(raw)
