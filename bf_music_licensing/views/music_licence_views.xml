@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_music_licence_list" model="ir.ui.view">
+        <field name="name">bf.music.licence.list</field>
+        <field name="model">bf.music.licence</field>
+        <field name="arch" type="xml">
+            <list string="Périodes de licence"
+                  decoration-danger="status == 'overdue'"
+                  decoration-warning="status == 'due_soon'"
+                  decoration-muted="status == 'completed'">
+                <field name="establishment_id"/>
+                <field name="partner_id" optional="show"/>
+                <field name="date_start"/>
+                <field name="date_end"/>
+                <field name="due_date"/>
+                <field name="amount_reference" sum="Total"/>
+                <field name="amount_at_risk" sum="Total"/>
+                <field name="adjustment_total" sum="Total" optional="show"/>
+                <field name="has_uncertified" string="Non homologué"/>
+                <field name="status" widget="badge"
+                       decoration-success="status == 'completed'"
+                       decoration-danger="status == 'overdue'"
+                       decoration-warning="status == 'due_soon'"/>
+                <field name="currency_id" column_invisible="True"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_music_licence_form" model="ir.ui.view">
+        <field name="name">bf.music.licence.form</field>
+        <field name="model">bf.music.licence</field>
+        <field name="arch" type="xml">
+            <form string="Période de licence">
+                <header>
+                    <button name="action_generate_lines" type="object"
+                            string="Reprendre les tarifs applicables"/>
+                    <button name="action_complete" type="object"
+                            string="Marquer réglée" class="oe_highlight"
+                            invisible="status == 'completed'"/>
+                    <button name="action_reset" type="object" string="Rouvrir"
+                            invisible="status != 'completed'"/>
+                    <field name="status" widget="statusbar"
+                           statusbar_visible="upcoming,due_soon,overdue,completed"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group string="Période">
+                            <field name="establishment_id"/>
+                            <field name="partner_id" readonly="1"/>
+                            <field name="date_start"/>
+                            <field name="date_end"/>
+                        </group>
+                        <group string="Renouvellement et preuve">
+                            <field name="due_date"/>
+                            <field name="completed_date"/>
+                            <field name="entandem_account"/>
+                            <field name="payment_reference"
+                                   placeholder="Numéro de reçu ou de facture"/>
+                        </group>
+                    </group>
+                    <div class="alert alert-warning" role="alert" invisible="not has_uncertified">
+                        Au moins un tarif de cette période n'est pas homologué. Ce qui
+                        a été versé reste révisable, avec effet rétroactif, jusqu'à la
+                        décision de la Commission.
+                    </div>
+                    <field name="line_ids">
+                        <list editable="bottom">
+                            <field name="tariff_id"/>
+                            <field name="society" optional="show"/>
+                            <field name="basis"/>
+                            <field name="base_quantity"/>
+                            <field name="amount_proposed" readonly="1"/>
+                            <field name="amount_paid"/>
+                            <field name="amount_certified" readonly="1" optional="show"/>
+                            <field name="amount_at_risk" readonly="1" sum="Total"/>
+                            <field name="adjustment" readonly="1" sum="Total"/>
+                            <field name="rate_confirmed" string="Taux relevé" optional="show"/>
+                            <field name="tariff_state" string="État du tarif" widget="badge"
+                                   decoration-success="tariff_state == 'certified'"
+                                   decoration-warning="tariff_state == 'proposed'"/>
+                            <field name="currency_id" column_invisible="True"/>
+                        </list>
+                    </field>
+                    <group class="oe_subtotal_footer">
+                        <field name="amount_reference"/>
+                        <field name="amount_paid"/>
+                        <field name="amount_at_risk"/>
+                        <field name="adjustment_total"/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_music_licence_search" model="ir.ui.view">
+        <field name="name">bf.music.licence.search</field>
+        <field name="model">bf.music.licence</field>
+        <field name="arch" type="xml">
+            <search string="Périodes de licence">
+                <field name="establishment_id"/>
+                <field name="partner_id"/>
+                <filter name="overdue" string="En retard" domain="[('status', '=', 'overdue')]"/>
+                <filter name="due_soon" string="Échéance proche" domain="[('status', '=', 'due_soon')]"/>
+                <separator/>
+                <filter name="uncertified" string="Tarif non homologué"
+                        domain="[('has_uncertified', '=', True)]"/>
+                <filter name="no_proof" string="Sans preuve de paiement"
+                        domain="[('payment_reference', '=', False)]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="group_establishment" string="Établissement"
+                            context="{'group_by': 'establishment_id'}"/>
+                    <filter name="group_partner" string="Client" context="{'group_by': 'partner_id'}"/>
+                    <filter name="group_status" string="Statut" context="{'group_by': 'status'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_music_licence" model="ir.actions.act_window">
+        <field name="name">Périodes de licence</field>
+        <field name="res_model">bf.music.licence</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="action_music_licence_uncertified" model="ir.actions.act_window">
+        <field name="name">Sous tarif non homologué</field>
+        <field name="res_model">bf.music.licence</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('has_uncertified', '=', True)]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Rien sous tarif non homologué</p>
+            <p>Ce que le client a versé sur ces périodes reste révisable tant que
+               la Commission n'a pas homologué le tarif.</p>
+        </field>
+    </record>
+
+</odoo>

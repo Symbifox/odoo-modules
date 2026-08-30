@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_music_tariff_list" model="ir.ui.view">
+        <field name="name">bf.music.tariff.list</field>
+        <field name="model">bf.music.tariff</field>
+        <field name="arch" type="xml">
+            <list string="Tarifs" decoration-warning="state == 'proposed'"
+                  decoration-muted="not rate_confirmed">
+                <field name="society"/>
+                <field name="code"/>
+                <field name="label" optional="show"/>
+                <field name="usage"/>
+                <field name="date_start"/>
+                <field name="date_end"/>
+                <field name="basis"/>
+                <field name="rate_proposed"/>
+                <field name="rate_certified" optional="show"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'certified'"
+                       decoration-warning="state == 'proposed'"/>
+                <field name="rate_confirmed" string="Relevé"/>
+                <field name="currency_id" column_invisible="True"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_music_tariff_form" model="ir.ui.view">
+        <field name="name">bf.music.tariff.form</field>
+        <field name="model">bf.music.tariff</field>
+        <field name="arch" type="xml">
+            <form string="Tarif">
+                <header>
+                    <button name="action_mark_certified" type="object"
+                            string="Marquer homologué" class="oe_highlight"
+                            invisible="state == 'certified'"
+                            confirm="Marquer ce tarif homologué recalcule le rajustement de toutes les périodes qui s'y rattachent. Continuer?"/>
+                    <field name="state" widget="statusbar" statusbar_visible="proposed,certified"/>
+                </header>
+                <sheet>
+                    <widget name="web_ribbon" title="Taux non relevé" bg_color="text-bg-warning"
+                            invisible="rate_confirmed"/>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group string="Identification">
+                            <field name="society"/>
+                            <field name="code"/>
+                            <field name="label"/>
+                            <field name="usage"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="active" widget="boolean_toggle"/>
+                        </group>
+                        <group string="Période">
+                            <field name="date_start"/>
+                            <field name="date_end"/>
+                            <field name="publication_date"/>
+                            <field name="certification_date"
+                                   required="state == 'certified'"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Taux proposé">
+                            <field name="basis"/>
+                            <field name="rate_base_proposed"/>
+                            <field name="rate_proposed"/>
+                            <field name="minimum_proposed"/>
+                            <field name="seasonal_half"/>
+                        </group>
+                        <group string="Taux homologué">
+                            <field name="rate_base_certified"/>
+                            <field name="rate_certified"/>
+                            <field name="minimum_certified"/>
+                            <field name="rate_in_force" readonly="1"/>
+                            <field name="currency_id" groups="base.group_multi_currency"/>
+                        </group>
+                    </group>
+                    <group string="Source">
+                        <field name="rate_confirmed"/>
+                        <field name="source_url" widget="url"/>
+                        <field name="notes" placeholder="Ce qui reste à relever au texte du tarif."/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_music_tariff_search" model="ir.ui.view">
+        <field name="name">bf.music.tariff.search</field>
+        <field name="model">bf.music.tariff</field>
+        <field name="arch" type="xml">
+            <search string="Tarifs">
+                <field name="code"/>
+                <field name="label"/>
+                <filter name="proposed" string="Proposés" domain="[('state', '=', 'proposed')]"/>
+                <filter name="certified" string="Homologués" domain="[('state', '=', 'certified')]"/>
+                <separator/>
+                <filter name="unconfirmed" string="Taux non relevé"
+                        domain="[('rate_confirmed', '=', False)]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="group_society" string="Société" context="{'group_by': 'society'}"/>
+                    <filter name="group_usage" string="Usage" context="{'group_by': 'usage'}"/>
+                    <filter name="group_state" string="État" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_music_tariff" model="ir.actions.act_window">
+        <field name="name">Tarifs</field>
+        <field name="res_model">bf.music.tariff</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Le référentiel des tarifs</p>
+            <p>Une ligne par société, par tarif et par période. Chaque ligne porte
+               le taux proposé et le taux homologué : c'est l'écart entre les deux
+               qui fait le rajustement rétroactif.</p>
+        </field>
+    </record>
+
+</odoo>

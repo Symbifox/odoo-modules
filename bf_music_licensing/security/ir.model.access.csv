@@ -1,0 +1,9 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_music_tariff_user,Tarif musical - lecture,model_bf_music_tariff,group_music_user,1,0,0,0
+access_music_tariff_manager,Tarif musical - gestion,model_bf_music_tariff,group_music_manager,1,1,1,1
+access_music_establishment_user,Etablissement - lecture,model_bf_music_establishment,group_music_user,1,0,0,0
+access_music_establishment_manager,Etablissement - gestion,model_bf_music_establishment,group_music_manager,1,1,1,1
+access_music_licence_user,Licence - lecture,model_bf_music_licence,group_music_user,1,0,0,0
+access_music_licence_manager,Licence - gestion,model_bf_music_licence,group_music_manager,1,1,1,1
+access_music_licence_line_user,Ligne de redevance - lecture,model_bf_music_licence_line,group_music_user,1,0,0,0
+access_music_licence_line_manager,Ligne de redevance - gestion,model_bf_music_licence_line,group_music_manager,1,1,1,1

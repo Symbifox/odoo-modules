@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+      Référentiel relevé AU TEXTE des tarifs le 2026-08-30, sur les documents
+      publiés par la Commission du droit d'auteur. Chaque ligne porte l'URL du
+      PDF dont son taux est tiré.
+
+      noupdate="0" est VOULU : ces lignes ne sont pas de la saisie utilisateur,
+      ce sont des données de référence tenues par Blue Fox. Une mise à niveau du
+      module doit les rafraîchir quand la Commission homologue. Corollaire : un
+      taux saisi à la main sur une de ces lignes sera écrasé au prochain `-u`.
+      Le tenir dans ce fichier, pas dans l'interface.
+
+      ⚠️ Aucun de ces tarifs n'est homologué. La dernière version homologuée du
+      15.A remonte à la période 2008-2011 (1,23 $/m², minimum 94,51 $), ce que
+      montre le texte comparatif du projet 2025-2027.
+    -->
+    <data noupdate="0">
+
+        <!-- ============ SOCAN 15.A — musique d'ambiance ============ -->
+
+        <record id="tariff_socan_15a_2020" model="bf.music.tariff">
+            <field name="society">socan</field>
+            <field name="code">15.A</field>
+            <field name="label">Musique d'ambiance dans les établissements non visés par le tarif 16</field>
+            <field name="usage">background</field>
+            <field name="date_start">2020-01-01</field>
+            <field name="date_end">2021-12-31</field>
+            <field name="basis">area_sqm</field>
+            <field name="state">proposed</field>
+            <field name="seasonal_half" eval="True"/>
+            <field name="rate_confirmed" eval="False"/>
+            <field name="source_url">https://www.cb-cda.gc.ca/en/cases-tariffs/ongoing-cases/pending</field>
+            <field name="notes">TROU CONNU. Bloc en instance devant la Commission, mais le projet de tarif lui-même n'a pas été retrouvé : ni la page des tarifs proposés de SOCAN ni le supplément de la Gazette de 2019 ne le portent. Taux à relever avant de facturer une année 2020 ou 2021.</field>
+        </record>
+
+        <record id="tariff_socan_15a_2022" model="bf.music.tariff">
+            <field name="society">socan</field>
+            <field name="code">15.A</field>
+            <field name="label">Musique d'ambiance dans les établissements non visés par le tarif 16</field>
+            <field name="usage">background</field>
+            <field name="date_start">2022-01-01</field>
+            <field name="date_end">2024-12-31</field>
+            <field name="basis">area_sqm</field>
+            <field name="state">proposed</field>
+            <field name="rate_proposed">1.53</field>
+            <field name="minimum_proposed">117.75</field>
+            <field name="seasonal_half" eval="True"/>
+            <field name="rate_confirmed" eval="True"/>
+            <field name="publication_date">2020-10-30</field>
+            <field name="source_url">https://www.cb-cda.gc.ca/sites/default/files/inline-files/TAR%20-%202020-10-15%20-%20SOCAN%20Tariff%2015.A%20%282022-2024%29%20-%20EN_0.pdf</field>
+            <field name="notes">Déposé le 2020-10-15, publié le 2020-10-30. Redevance annuelle de 1,53 $ le mètre carré ou 14,28 ¢ le pied carré, minimum annuel de 117,75 $, payable au plus tard le 31 janvier de l'année visée. Demi-tarif pour un établissement exploité moins de six mois par année. Aucune redevance sous le 15 si des redevances sont payées sous le tarif 16, par. 3(2).</field>
+        </record>
+
+        <record id="tariff_socan_15a_2025" model="bf.music.tariff">
+            <field name="society">socan</field>
+            <field name="code">15.A</field>
+            <field name="label">Musique d'ambiance dans les établissements non visés par le tarif 16</field>
+            <field name="usage">background</field>
+            <field name="date_start">2025-01-01</field>
+            <field name="date_end">2027-12-31</field>
+            <field name="basis">area_sqm</field>
+            <field name="state">proposed</field>
+            <field name="rate_proposed">2.32</field>
+            <field name="minimum_proposed">177.99</field>
+            <field name="seasonal_half" eval="True"/>
+            <field name="rate_confirmed" eval="True"/>
+            <field name="publication_date">2023-11-15</field>
+            <field name="source_url">https://decisions.cb-cda.gc.ca/cb-cda/proposed-tariffs/en/521626/1/document.do</field>
+            <field name="notes">Publié le 2023-11-15. Redevance annuelle de 2,32 $ le mètre carré ou 21,58 ¢ le pied carré, minimum annuel de 177,99 $, payable au plus tard le 31 janvier de l'année visée. Demi-tarif saisonnier. Le texte est comparatif : il remplace 1,23 $ le mètre carré et un minimum de 94,51 $, derniers montants HOMOLOGUÉS, qui datent de la période 2008-2011. Contesté par l'Association des hôtels du Canada et Restaurants Canada.</field>
+        </record>
+
+        <!-- ============ SOCAN 15.B — attente téléphonique ============ -->
+
+        <record id="tariff_socan_15b_2020" model="bf.music.tariff">
+            <field name="society">socan</field>
+            <field name="code">15.B</field>
+            <field name="label">Musique d'attente téléphonique</field>
+            <field name="usage">on_hold</field>
+            <field name="date_start">2020-01-01</field>
+            <field name="date_end">2021-12-31</field>
+            <field name="basis">line</field>
+            <field name="state">proposed</field>
+            <field name="rate_confirmed" eval="False"/>
+            <field name="source_url">https://www.cb-cda.gc.ca/en/cases-tariffs/ongoing-cases/pending</field>
+            <field name="notes">TROU CONNU, même cause que le 15.A 2020-2021 : le projet de tarif n'a pas été retrouvé.</field>
+        </record>
+
+        <record id="tariff_socan_15b_2022" model="bf.music.tariff">
+            <field name="society">socan</field>
+            <field name="code">15.B</field>
+            <field name="label">Musique d'attente téléphonique</field>
+            <field name="usage">on_hold</field>
+            <field name="date_start">2022-01-01</field>
+            <field name="date_end">2024-12-31</field>
+            <field name="basis">line</field>
+            <field name="state">proposed</field>
+            <field name="rate_base_proposed">117.75</field>
+            <field name="rate_proposed">2.60</field>
+            <field name="rate_confirmed" eval="True"/>
+            <field name="publication_date">2020-10-30</field>
+            <field name="source_url">https://www.cb-cda.gc.ca/sites/default/files/inline-files/TAR%20-%202020-10-15%20-%20SOCAN%20Tariff%2015.B%20%282022-2024%29%20-%20EN_0.pdf</field>
+            <field name="notes">117,75 $ pour une ligne principale de standard, plus 2,60 $ par ligne additionnelle. Payable au plus tard le 31 janvier de l'année visée, avec déclaration du nombre de lignes.</field>
+        </record>
+
+        <record id="tariff_socan_15b_2025" model="bf.music.tariff">
+            <field name="society">socan</field>
+            <field name="code">15.B</field>
+            <field name="label">Musique d'attente téléphonique</field>
+            <field name="usage">on_hold</field>
+            <field name="date_start">2025-01-01</field>
+            <field name="date_end">2027-12-31</field>
+            <field name="basis">line</field>
+            <field name="state">proposed</field>
+            <field name="rate_base_proposed">177.99</field>
+            <field name="rate_proposed">3.94</field>
+            <field name="rate_confirmed" eval="True"/>
+            <field name="publication_date">2023-11-15</field>
+            <field name="source_url">https://decisions.cb-cda.gc.ca/cb-cda/proposed-tariffs/en/521627/1/document.do</field>
+            <field name="notes">177,99 $ pour une ligne principale de standard, plus 3,94 $ par ligne additionnelle. Payable au plus tard le 31 janvier de l'année visée.</field>
+        </record>
+
+        <!-- ============ Ré:Sonne 3.B — musique d'ambiance ============ -->
+
+        <record id="tariff_resound_3b_2023" model="bf.music.tariff">
+            <field name="society">resound</field>
+            <field name="code">3.B</field>
+            <field name="label">Musique d'ambiance</field>
+            <field name="usage">background</field>
+            <field name="date_start">2023-01-01</field>
+            <field name="date_end">2026-12-31</field>
+            <field name="basis">area_sqm_day</field>
+            <field name="state">proposed</field>
+            <field name="rate_proposed">0.00965</field>
+            <field name="minimum_proposed">140.93</field>
+            <field name="rate_confirmed" eval="True"/>
+            <field name="publication_date">2021-11-03</field>
+            <field name="source_url">https://www.cb-cda.gc.ca/sites/default/files/inline-files/PROTAR%20-%202021-10-14%20ReSound%20Tariff%203.B%202023-2026%20-%20EN.docx.pdf</field>
+            <field name="notes">⚠️ Assiette différente de SOCAN : la superficie accessible au public MULTIPLIÉE par le nombre de jours d'exploitation où de la musique a joué, à 0,9650 ¢ le mètre carré et par jour (0,0889 ¢ le pied carré). Minimum annuel de 140,93 $ par établissement. Deux replis prévus au tarif quand la superficie ne s'établit pas : 0,5786 ¢ par place et par jour, puis 0,3088 ¢ par entrée. Ne s'applique pas quand un fournisseur de musique d'ambiance paie les redevances.</field>
+        </record>
+
+        <record id="tariff_resound_3b_2023_hold" model="bf.music.tariff">
+            <field name="society">resound</field>
+            <field name="code">3.B</field>
+            <field name="label">Musique d'ambiance, attente téléphonique</field>
+            <field name="usage">on_hold</field>
+            <field name="date_start">2023-01-01</field>
+            <field name="date_end">2026-12-31</field>
+            <field name="basis">line</field>
+            <field name="state">proposed</field>
+            <field name="rate_base_proposed">140.93</field>
+            <field name="rate_proposed">3.15</field>
+            <field name="rate_confirmed" eval="True"/>
+            <field name="publication_date">2021-11-03</field>
+            <field name="source_url">https://www.cb-cda.gc.ca/sites/default/files/inline-files/PROTAR%20-%202021-10-14%20ReSound%20Tariff%203.B%202023-2026%20-%20EN.docx.pdf</field>
+            <field name="notes">Article 4(1) du même tarif : 140,93 $ pour la première ligne principale de standard, plus 3,15 $ par ligne additionnelle. S'ajoute à la part musique d'ambiance de l'article 4(2).</field>
+        </record>
+
+        <record id="tariff_resound_3b_2027" model="bf.music.tariff">
+            <field name="society">resound</field>
+            <field name="code">3.B</field>
+            <field name="label">Musique d'ambiance</field>
+            <field name="usage">background</field>
+            <field name="date_start">2027-01-01</field>
+            <field name="date_end">2031-12-31</field>
+            <field name="basis">area_sqm_day</field>
+            <field name="state">proposed</field>
+            <field name="rate_confirmed" eval="False"/>
+            <field name="source_url">https://www.cb-cda.gc.ca/en/cases-tariffs/ongoing-cases/pending</field>
+            <field name="notes">Bloc suivant, en instance. Taux à relever quand le projet sera consulté. Ne mord sur aucune année avant 2027.</field>
+        </record>
+
+    </data>
+</odoo>

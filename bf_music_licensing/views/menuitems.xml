@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <menuitem id="menu_music_root"
+              name="Licences musicales"
+              web_icon="bf_music_licensing,static/description/icon.png"
+              sequence="52"
+              groups="group_music_user"/>
+
+    <menuitem id="menu_music_establishment"
+              name="Établissements"
+              parent="menu_music_root"
+              action="action_music_establishment"
+              sequence="10"/>
+
+    <menuitem id="menu_music_licence"
+              name="Périodes de licence"
+              parent="menu_music_root"
+              action="action_music_licence"
+              sequence="20"/>
+
+    <menuitem id="menu_music_uncertified"
+              name="Sous tarif non homologué"
+              parent="menu_music_root"
+              action="action_music_licence_uncertified"
+              sequence="30"/>
+
+    <menuitem id="menu_music_config"
+              name="Configuration"
+              parent="menu_music_root"
+              sequence="90"
+              groups="group_music_manager"/>
+
+    <menuitem id="menu_music_tariff"
+              name="Référentiel de tarifs"
+              parent="menu_music_config"
+              action="action_music_tariff"
+              sequence="10"/>
+
+</odoo>

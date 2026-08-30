@@ -13,7 +13,7 @@ modules — the UI fixes, the shared helpers, the Nextcloud integrations, the
 productivity pack. They are free because they are more useful to us being
 widely used than being held.
 
-**68 modules are BUSL-1.1.** The source is published and auditable, and **you
+**69 modules are BUSL-1.1.** The source is published and auditable, and **you
 may run them in production for your own internal business operations** — as a
 company, as a freelancer, as one person on a laptop. What needs an agreement is
 using them to provide a product or service to someone else: hosting them for a
@@ -77,7 +77,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_chatter_send_now_force` | BF Chatter — Force Send on Scheduled Send Now | 18.0.1.0.0 | LGPL-3 | The "Send Now" button on a scheduled chatter message sends immediately instead of waiting up to 5 min for the mail queue cron (restores parity with the daily auto-send cron) |
 | `bf_chatter_target` | BF Cible de chatter | 18.0.1.0.0 | LGPL-3 | One search box to pick the record an importer posts onto: every chatter-bearing model at once, no model or project to choose first, pasted Odoo URLs and shorthands resolved inline |
 | `bf_chatter_timesheet` | Symbifox — Feuille de temps depuis le chatter | 18.0.1.2.0 | LGPL-3 | Checkbox in the chatter composer to log a timesheet entry alongside an internal note. |
-| `bf_claude_chat` | Gen | 18.0.1.15.4 | BUSL-1.1 | Chat with Gen, the AI assistant, directly inside Odoo |
+| `bf_claude_chat` | Gen | 18.0.1.17.1 | BUSL-1.1 | Chat with Gen, the AI assistant, directly inside Odoo |
 | `bf_claude_chat_cockpit` | Gen — Cockpit | 18.0.1.0.1 | BUSL-1.1 | Vue d'administration des sessions Gen : pannes de flux et consommation |
 | `bf_contact_enrichment` | Enrichissement de contacts | 18.0.1.2.1 | BUSL-1.1 | Business cards (OCR) from the desktop or an installable mobile page, email signatures, vCard import, duplicate detection and completeness scoring, powered by Gen |
 | `bf_cx` | Expérience client | 18.0.1.8.0 | BUSL-1.1 | Customer experience measurement: NPS programs, continuous feedback, complaints and consent-tracked testimonials |
@@ -104,7 +104,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_document_approval` | Documents — Approbation à plusieurs | 18.0.1.0.0 | BUSL-1.1 | A policy is published only once everyone who had to weigh in has done so, and its distribution follows the RACI recorded in the knowledge matrix |
 | `bf_document_nextcloud_sync` | Document Nextcloud Sync | 18.0.1.4.1 | LGPL-3 | Document sync between Odoo and Nextcloud via WebDAV |
 | `bf_editorial` | Atelier éditorial | 18.0.1.7.0 | BUSL-1.1 | Editorial calendar, measured cadence and publication gates for the blog: state is derived, only decisions are stored |
-| `bf_email_management` | Gestion des courriels | 18.0.11.5.0 | BUSL-1.1 | Unified IMAP inbox + Odoo chatter projection, two-pane OWL folder browser (Apple Mail / Thunderbird), bulk per-row target inference |
+| `bf_email_management` | Gestion des courriels | 18.0.11.7.0 | BUSL-1.1 | Unified IMAP inbox + Odoo chatter projection, two-pane OWL folder browser (Apple Mail / Thunderbird), bulk per-row target inference |
 | `bf_email_systray` | Boîte de réception bf.email — barre Odoo | 18.0.1.4.0 | LGPL-3 | Systray button opening the bf.email inbox with a (read + unread) counter |
 | `bf_follower_cleanup` | BF — Nettoyage des abonnés (followers internes uniquement) | 18.0.2.0.0 | LGPL-3 | Cron that removes all non-employee followers from chatters |
 | `bf_fundraising_core` | Levée de fonds — Cœur | 18.0.1.0.0 | AGPL-3 | Donor management and fundraising structure (Funds / Campaigns / Appeals / Packages) on top of the Donation module — comparable to Raiser's Edge |
@@ -124,6 +124,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_meeting` | Rencontres | 18.0.3.49.2 | BUSL-1.1 | Agendas, meeting records, and discussion items unified around `calendar.event` with automatic reminders |
 | `bf_meeting_call_archive` | Rencontres ↔ Archive d'appels | 18.0.1.0.0 | BUSL-1.1 | Optional link between a meeting record and an archived call |
 | `bf_meeting_portal` | Rencontres - Portail client | 18.0.2.0.1 | BUSL-1.1 | Portal read access to meeting reports that were already emailed to the client |
+| `bf_music_licensing` | Licences musicales : conformité en établissement | 18.0.1.1.0 | BUSL-1.1 | Tracks the SOCAN and Re:Sound royalties an establishment owes, holding the proposed rate beside the certified one so a retroactive Copyright Board ruling is priced, not discovered |
 | `bf_nextcloud_browser` | Nextcloud File Browser | 18.0.3.3.0 | LGPL-3 | Embedded + standalone Nextcloud WebDAV file browser on projects/tasks: folder tree, modal preview, drag-and-drop upload/move, configurable share presets, open-in-Nextcloud for office files, Knowledge Matrix linking, systray launcher |
 | `bf_no_gateway_bounce` | BF No Gateway Bounce | 18.0.1.0.0 | LGPL-3 | Never auto-reply MAILER-DAEMON bounces to people who write to Symbifox |
 | `bf_onboarding_base` | Symbifox Onboarding Foundation | 18.0.2.0.0 | LGPL-3 | Shared helpers for Symbifox per-module onboarding panels. |
@@ -146,7 +147,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_sign_privacy` | Symbifox — Signature des consentements (Loi 25) | 18.0.1.1.0 | BUSL-1.1 | Sign Loi 25 consents with the native bf_sign engine (instead of external DocuSeal / LibreSign). |
 | `bf_sign_purchase` | Symbifox — Signature pour les achats | 18.0.1.0.1 | BUSL-1.1 | Send a purchase order for electronic signature (bf_sign). |
 | `bf_sign_sale` | Symbifox — Signature pour les ventes | 18.0.2.0.0 | BUSL-1.1 | Send a quotation / sales order for electronic signature (bf_sign). |
-| `bf_sms_archive` | SMS & Calls | 18.0.5.10.1 | BUSL-1.1 | Two-way live SMS/MMS messaging via VOIP.ms (chat workspace + systray) plus Android SMS/call-log archiving, search, PDF/CSV export and task linking |
+| `bf_sms_archive` | SMS & Calls | 18.0.5.11.1 | BUSL-1.1 | Two-way live SMS/MMS messaging via VOIP.ms (chat workspace + systray) plus Android SMS/call-log archiving, search, PDF/CSV export and task linking |
 | `bf_stepbystep_clients` | Step-by-Step — Suivi d'accompagnement client | 18.0.2.2.1 | BUSL-1.1 | Internal dashboard tracking each client mandate's linear step-by-step progression: current step, hours budget, timeline. |
 | `bf_studio_light` | Symbifox — Studio Light | 18.0.7.0.0 | BUSL-1.1 | Field builder for Odoo Community: add custom fields (incl. polymorphic reference with model whitelist), smart buttons (count via JSON controller, no compute Python), and inject them in views without writing a module — survives `-u all` upgrades |
 | `bf_subscription` | Abonnements | 18.0.1.4.0 | BUSL-1.1 | Paid subscription management with correlation to vendor bills |
@@ -161,7 +162,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_timesheet_timer` | BF Timer - Feuilles de temps | 18.0.1.11.0 | LGPL-3 | Global timesheet timer with multi-timer support and an OWL UI |
 | `bf_timezone` | Symbifox Timezone Utilities | 18.0.1.0.0 | LGPL-3 | Shared timezone helpers and a configurable default timezone for Symbifox modules |
 | `bf_universal_search` | BF Recherche universelle | 18.0.2.0.2 | LGPL-3 | Cross-module search through the command palette |
-| `bluefox_branding` | Symbifox Branding | 18.0.3.5.0 | BUSL-1.1 | Per-company brand color + email layout overrides driven by `bf_lexend` company fields (CSS variables injected via QWeb layout — no SCSS recompile) |
+| `bluefox_branding` | Symbifox Branding | 18.0.3.7.1 | BUSL-1.1 | Per-company brand color + email layout overrides driven by `bf_lexend` company fields (CSS variables injected via QWeb layout — no SCSS recompile) |
 | `calendar_nextcloud_sync` | Calendar Nextcloud Sync | 18.0.2.12.0 | LGPL-3 | Bidirectional calendar synchronization between Odoo and Nextcloud over CalDAV, and Google Calendar (API v3/OAuth2) |
 | `contacts_nextcloud_sync` | Contacts Nextcloud Sync | 18.0.1.2.0 | LGPL-3 | Sync Odoo contacts with a Nextcloud address book via CardDAV |
 | `daily_todo_digest` | Daily To-Do Digest | 18.0.2.1.0 | LGPL-3 | Daily email digest with activities, overdue tasks, and a week-ahead view |
@@ -194,7 +195,7 @@ Three regimes — see [Licensing](#licensing) above for the details, and the
 `License` column of the table for the module you care about. The `LICENSE`
 file inside each module governs and carries its exact parameters.
 
-- **68 modules: BUSL-1.1.** Production use for your own internal business
+- **69 modules: BUSL-1.1.** Production use for your own internal business
   operations is permitted; providing them as a product or service to third
   parties requires an agreement. Each version converts to
   **LGPL-3.0-or-later four years after its release**.

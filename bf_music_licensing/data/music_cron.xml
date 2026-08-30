@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <record id="cron_music_licence_deadlines" model="ir.cron">
+            <field name="name">Licences musicales : rappels d'échéance</field>
+            <field name="model_id" ref="model_bf_music_licence"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_check_licence_deadlines()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="active" eval="False"/>
+        </record>
+
+    </data>
+</odoo>

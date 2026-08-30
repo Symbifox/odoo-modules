@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+
+        <record id="module_category_music" model="ir.module.category">
+            <field name="name">Licences musicales</field>
+            <field name="sequence">35</field>
+        </record>
+
+        <record id="group_music_user" model="res.groups">
+            <field name="name">Utilisateur</field>
+            <field name="comment">Consulte les établissements, les périodes de licence et le référentiel de tarifs.</field>
+            <field name="category_id" ref="module_category_music"/>
+        </record>
+
+        <record id="group_music_manager" model="res.groups">
+            <field name="name">Gestionnaire</field>
+            <field name="comment">Tient le référentiel de tarifs et les dossiers de conformité. Reçoit les rappels d'échéance.</field>
+            <field name="category_id" ref="module_category_music"/>
+            <field name="implied_ids" eval="[(4, ref('group_music_user'))]"/>
+            <field name="users" eval="[(4, ref('base.user_admin'))]"/>
+        </record>
+
+        <record id="rule_establishment_company" model="ir.rule">
+            <field name="name">Établissement : société</field>
+            <field name="model_id" ref="model_bf_music_establishment"/>
+            <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+            <field name="global" eval="True"/>
+        </record>
+
+        <record id="rule_licence_company" model="ir.rule">
+            <field name="name">Licence : société</field>
+            <field name="model_id" ref="model_bf_music_licence"/>
+            <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+            <field name="global" eval="True"/>
+        </record>
+
+        <record id="rule_tariff_company" model="ir.rule">
+            <field name="name">Tarif : société</field>
+            <field name="model_id" ref="model_bf_music_tariff"/>
+            <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+            <field name="global" eval="True"/>
+        </record>
+
+    </data>
+</odoo>
