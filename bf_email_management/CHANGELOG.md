@@ -4,6 +4,34 @@ All notable changes to `bf_email_management` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This module follows Odoo's `MAJOR.MINOR.PATCH` convention prefixed with the Odoo series (`18.0.X.Y.Z`).
 
+## [18.0.11.9.1] — 2026-08-31
+
+An email composed from the mailbox and filed on a record went out to nobody.
+
+### Fixed
+
+- **Recipients survive the composer's retarget.** "New email" opens the
+  composer on a `bf.email` shell; when the user picks a record,
+  `_bf_retarget_to_chatter` rewrites `model` / `res_ids` before sending. But
+  `partner_ids` is a **stored compute** that depends on them, and Odoo's
+  `_compute_partner_ids`, with no template and no parent, does not recompute
+  anything: it sets `False`. The list was therefore **emptied**, silently.
+
+  The message was still created on the chosen record, with its subject and
+  body — those were already preserved, for the same reason — and showed up in
+  the chatter like any other sent mail. But with not one `mail.notification`:
+  nobody received it, and nothing said so, on screen or in the log.
+
+  `keep` now carries `partner_ids`, `partner_cc_ids` and `partner_bcc_ids`
+  alongside the subject and the body.
+
+  Measured in production on 2026-08-31: seven messages over three months with
+  no recipient at all, four of them real emails. The most recent one asked
+  someone whether they were still free for a meeting that was starting.
+
+  Three tests in `test_inbox_drafts_and_reroute.py` hold the rule — the
+  recipient, the Cc, and the subject with the body.
+
 ## [18.0.11.9.0] — 2026-08-31
 
 The signature leaves the body. It is added once, on send.

@@ -349,3 +349,63 @@ class TestCreateFromInbox(InboxExtrasCase):
         for key in ("has_crm", "has_helpdesk", "has_expense"):
             self.assertIn(key, body,
                           "le menu « Ajouter » cache ce qui n'est pas installé")
+
+
+# ----------------------------------------------------------------------
+# Re-ciblage du composeur : les destinataires survivent au déplacement
+# ----------------------------------------------------------------------
+@tagged("post_install", "-at_install")
+class TestComposeRetargetKeepsRecipients(InboxExtrasCase):
+    """🔴 Le courriel partait à PERSONNE, sans un mot.
+
+    « Nouveau courriel » ouvre le composeur sur une coquille ``bf.email``.
+    Quand l'usager désigne une fiche, ``_bf_retarget_to_chatter`` réécrit
+    ``model`` / ``res_ids`` avant l'envoi — et ``partner_ids`` est un calcul
+    stocké qui en dépend. Sans gabarit ni parent, ``_compute_partner_ids`` ne
+    recalcule rien : **il vide la liste**. Le message naissait sur la bonne
+    fiche, visible dans le chatter comme n'importe quel envoi, et sans un seul
+    ``mail.notification``.
+
+    Relevé en production le 2026-08-31 : sept messages en trois mois, dont
+    quatre vrais courriels.
+    """
+
+    def _composer_from_the_inbox(self, **extra):
+        action = self.env["bf.email"].with_user(self.owner).inbox_compose()
+        shell_id = action["context"]["bf_email_compose_shell_id"]
+        values = {
+            "model": "bf.email",
+            "res_ids": repr([shell_id]),
+            "composition_mode": "comment",
+            "subject": "Toujours disponible ?",
+            "body": "<p>Bonjour</p>",
+            "partner_ids": [(6, 0, [self.partner.id])],
+            "target_reference": "res.partner,%s" % self.folder_b.id,
+        }
+        values.update(extra)
+        return self.env["mail.compose.message"].with_user(self.owner).with_context(
+            bf_email_compose_shell_id=shell_id,
+        ).create(values)
+
+    def test_the_recipient_survives_the_retarget(self):
+        composer = self._composer_from_the_inbox()
+        composer._bf_retarget_to_chatter()
+        self.assertEqual(composer.model, "res.partner",
+                         "le re-ciblage doit avoir eu lieu")
+        self.assertIn(
+            self.partner, composer.partner_ids,
+            "le destinataire saisi a été effacé par le recalcul : "
+            "le courriel serait parti à personne")
+
+    def test_the_body_and_subject_survive_too(self):
+        composer = self._composer_from_the_inbox()
+        composer._bf_retarget_to_chatter()
+        self.assertEqual(composer.subject, "Toujours disponible ?")
+        self.assertIn("Bonjour", composer.body or "")
+
+    def test_a_cc_survives_the_retarget(self):
+        composer = self._composer_from_the_inbox(
+            partner_cc_ids=[(6, 0, [self.folder_a.id])])
+        composer._bf_retarget_to_chatter()
+        self.assertIn(self.folder_a, composer.partner_cc_ids,
+                      "le Cc saisi a été effacé par le recalcul")

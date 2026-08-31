@@ -38,12 +38,22 @@ class MailComposeMessage(models.TransientModel):
         le message y naît au bon endroit, avec ses abonnés et son fil, plutôt
         que d'être déplacé après coup.
 
-        ⚠️ ``subject`` et ``body`` sont des calculs stockés qui dépendent de
-        ``model`` / ``res_ids``. Toucher à la cible **efface le corps**
-        (``_compute_body`` remet False en l'absence de gabarit) et réécrit
-        l'objet. On les relit donc avant, et on les réécrit après : une écriture
-        explicite sur un champ calculé le retire de la file de recalcul, ce
-        qu'un simple `write` groupé ne garantit pas.
+        ⚠️ ``subject``, ``body`` ET **les destinataires** sont des calculs
+        stockés qui dépendent de ``model`` / ``res_ids``. Toucher à la cible
+        **efface le corps** (``_compute_body`` remet False en l'absence de
+        gabarit), réécrit l'objet, et — le plus coûteux —
+        ``_compute_partner_ids`` repasse à ``False`` : sans gabarit ni parent,
+        il ne recalcule pas les destinataires, **il les vide**. On les relit
+        donc avant, et on les réécrit après : une écriture explicite sur un
+        champ calculé le retire de la file de recalcul, ce qu'un simple
+        `write` groupé ne garantit pas.
+
+        🔴 Sans la reprise des destinataires, le courriel partait **à
+        personne** : le message naissait bien sur la fiche choisie, visible
+        dans le chatter comme n'importe quel envoi, mais sans un seul
+        ``mail.notification``. Rien ne le signalait, ni à l'écran ni au
+        journal. Relevé en production le 2026-08-31 : sept messages en trois
+        mois, dont quatre vrais courriels.
         """
         for wizard in self:
             if not wizard.bf_compose_shell_id or not wizard.target_reference:
@@ -55,6 +65,9 @@ class MailComposeMessage(models.TransientModel):
             keep = {
                 "subject": wizard.subject,
                 "body": wizard.body,
+                "partner_ids": [(6, 0, wizard.partner_ids.ids)],
+                "partner_cc_ids": [(6, 0, wizard.partner_cc_ids.ids)],
+                "partner_bcc_ids": [(6, 0, wizard.partner_bcc_ids.ids)],
             }
             wizard.write({
                 "model": target._name,
