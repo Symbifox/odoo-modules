@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="bf_budget_position_wizard_view_form" model="ir.ui.view">
+        <field name="name">bf.budget.position.wizard.form</field>
+        <field name="model">bf.budget.position.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Proposer des postes">
+                <p class="text-muted">
+                    Les postes ci-dessous sont déduits de votre plan comptable, par type de
+                    compte. Rien n'est semé en dur : un catalogue figé serait faux dès la
+                    première société qui n'a pas le même plan.
+                </p>
+                <group>
+                    <field name="budget_type"/>
+                    <field name="company_id" groups="base.group_multi_company"/>
+                </group>
+                <field name="preview" readonly="1" nolabel="1"/>
+                <footer>
+                    <button name="action_create" string="Créer les postes" type="object" class="btn-primary"/>
+                    <button string="Annuler" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="bf_budget_position_wizard_action" model="ir.actions.act_window">
+        <field name="name">Proposer des postes</field>
+        <field name="res_model">bf.budget.position.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

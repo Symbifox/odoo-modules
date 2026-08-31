@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="bf_budget_forecast_company_rule" model="ir.rule">
+        <field name="name">Prévision : société</field>
+        <field name="model_id" ref="model_bf_budget_forecast"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="global" eval="True"/>
+    </record>
+    <record id="bf_budget_forecast_line_company_rule" model="ir.rule">
+        <field name="name">Ligne de prévision : société</field>
+        <field name="model_id" ref="model_bf_budget_forecast_line"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="global" eval="True"/>
+    </record>
+    <record id="bf_budget_forecast_period_company_rule" model="ir.rule">
+        <field name="name">Mois de prévision : société</field>
+        <field name="model_id" ref="model_bf_budget_forecast_period"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="global" eval="True"/>
+    </record>
+</odoo>

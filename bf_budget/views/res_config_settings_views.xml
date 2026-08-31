@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form" model="ir.ui.view">
+        <field name="name">res.config.settings.form.bf.budget</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app string="Budgets" name="bf_budget" logo_backgroundColor="#29ABE1">
+                    <block title="Menus concurrents" name="bf_budget_menus">
+                        <setting id="bf_budget_hide_menus"
+                                 string="Masquer les menus budget des modules tiers"
+                                 help="Plusieurs greffons comptables livrent leur propre menu « Budgets », généralement vide. Rien n'est supprimé : décocher les rallume.">
+                            <field name="bf_budget_hide_thirdparty_menus"/>
+                        </setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+</odoo>

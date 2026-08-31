@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="bf_budget_view_list" model="ir.ui.view">
+        <field name="name">bf.budget.list</field>
+        <field name="model">bf.budget</field>
+        <field name="arch" type="xml">
+            <list string="Budgets" decoration-muted="state in ('cancelled', 'revised')">
+                <field name="name"/>
+                <field name="budget_type"/>
+                <field name="date_start"/>
+                <field name="date_end"/>
+                <field name="amount_planned" sum="Prévu"/>
+                <field name="amount_committed" sum="Engagé"/>
+                <field name="amount_variance" sum="Écart" decoration-danger="amount_variance &lt; 0"/>
+                <field name="alert_line_count" string="Alertes" decoration-danger="alert_line_count &gt; 0"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'open'"
+                       decoration-info="state == 'draft'"
+                       decoration-muted="state in ('cancelled', 'revised', 'closed')"/>
+                <field name="currency_id" column_invisible="True"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_budget_view_form" model="ir.ui.view">
+        <field name="name">bf.budget.form</field>
+        <field name="model">bf.budget</field>
+        <field name="arch" type="xml">
+            <form string="Budget">
+                <header>
+                    <button name="action_open" string="Ouvrir" type="object"
+                            class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_create_revision" string="Réviser" type="object"
+                            invisible="state not in ('open', 'closed')"/>
+                    <button name="action_close" string="Clôturer" type="object"
+                            invisible="state != 'open'"/>
+                    <button name="action_reset_draft" string="Remettre au brouillon" type="object"
+                            invisible="state not in ('open', 'cancelled')"/>
+                    <button name="action_cancel" string="Annuler" type="object"
+                            invisible="state in ('cancelled', 'revised')"/>
+                    <button name="action_generate_lines_from_positions"
+                            string="Une ligne par poste" type="object"
+                            invisible="state != 'draft'"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,open,closed"/>
+                </header>
+                <sheet>
+                    <div class="alert alert-warning" role="alert"
+                         invisible="not coverage_warning or state != 'draft'">
+                        Des comptes d'exploitation ne sont couverts par aucun poste de ce
+                        budget, ou le sont par deux postes. Un budget peut paraître respecté
+                        simplement parce qu'un poste manque. Voir l'onglet « Couverture ».
+                    </div>
+                    <div class="alert alert-info" role="alert" invisible="not revision_of_id">
+                        Ce budget est une révision. L'original reste consultable :
+                        <field name="revision_of_id" readonly="1" nolabel="1" class="oe_inline"/>
+                    </div>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_lines" type="object" class="oe_stat_button" icon="fa-list">
+                            <field name="line_count" widget="statinfo" string="Lignes"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="Exploitation 2026"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="budget_type"/>
+                            <field name="date_start"/>
+                            <field name="date_end"/>
+                        </group>
+                        <group>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="currency_id" groups="base.group_multi_currency"/>
+                            <field name="alert_threshold_pct"/>
+                            <field name="alert_threshold_amount"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Lignes" name="lines">
+                            <field name="line_ids" readonly="state != 'draft'">
+                                <list editable="bottom" decoration-danger="is_alert">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="budget_type" column_invisible="True"/>
+                                    <field name="company_id" column_invisible="True"/>
+                                    <field name="currency_id" column_invisible="True"/>
+                                    <field name="source"/>
+                                    <field name="position_id"/>
+                                    <field name="analytic_account_ids" widget="many2many_tags"
+                                           options="{'no_create': True}"/>
+                                    <field name="amount_planned" sum="Prévu"/>
+                                    <field name="amount_actual" sum="Réalisé"/>
+                                    <field name="amount_committed" sum="Engagé"/>
+                                    <field name="amount_theoretical" sum="Théorique"/>
+                                    <field name="theoretical_basis" optional="show"/>
+                                    <field name="amount_drift" sum="Écart au théorique"/>
+                                    <field name="is_alert" optional="hide"/>
+                                    <field name="overrun_accepted" optional="hide"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Couverture" name="coverage">
+                            <group>
+                                <field name="coverage_warning" invisible="1"/>
+                                <field name="uncovered_account_ids" widget="many2many_tags"
+                                       readonly="1"
+                                       help="Comptes d'exploitation du bon sens qu'aucun poste de ce budget ne couvre."/>
+                                <field name="duplicated_account_ids" widget="many2many_tags"
+                                       readonly="1"
+                                       help="Comptes couverts par plus d'un poste : leurs écritures sont comptées plusieurs fois."/>
+                            </group>
+                        </page>
+                        <page string="Totaux" name="totals">
+                            <group>
+                                <group string="Le plan">
+                                    <field name="amount_planned"/>
+                                    <field name="amount_theoretical"/>
+                                </group>
+                                <group string="Le réel">
+                                    <field name="amount_actual"/>
+                                    <field name="amount_committed"/>
+                                    <field name="amount_variance"/>
+                                    <field name="alert_line_count"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="bf_budget_view_search" model="ir.ui.view">
+        <field name="name">bf.budget.search</field>
+        <field name="model">bf.budget</field>
+        <field name="arch" type="xml">
+            <search string="Budgets">
+                <field name="name"/>
+                <filter name="draft" string="Brouillons" domain="[('state', '=', 'draft')]"/>
+                <filter name="open" string="Ouverts" domain="[('state', '=', 'open')]"/>
+                <separator/>
+                <filter name="expense" string="Charges" domain="[('budget_type', '=', 'expense')]"/>
+                <filter name="revenue" string="Produits" domain="[('budget_type', '=', 'revenue')]"/>
+                <separator/>
+                <filter name="current" string="En cours"
+                        domain="[('date_start', '&lt;=', context_today().strftime('%Y-%m-%d')), ('date_end', '&gt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="group_state" string="État" context="{'group_by': 'state'}"/>
+                    <filter name="group_type" string="Sens" context="{'group_by': 'budget_type'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="bf_budget_action" model="ir.actions.act_window">
+        <field name="name">Budgets</field>
+        <field name="res_model">bf.budget</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Créez votre premier budget</p>
+            <p>
+                Un budget compare un plan au réel, poste par poste. Le réel n'est jamais
+                recopié : il se relit dans la comptabilité à chaque affichage.
+            </p>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="bf_budget_line_form_subscription" model="ir.ui.view">
+        <field name="name">bf.budget.line.form.subscription</field>
+        <field name="model">bf.budget.line</field>
+        <field name="inherit_id" ref="bf_budget.bf_budget_line_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <group string="Engagements récurrents" invisible="not subscription_count">
+                    <group>
+                        <field name="subscription_count"/>
+                        <field name="subscription_due_to_date"/>
+                        <field name="subscription_upcoming"/>
+                        <field name="subscription_period_total"/>
+                    </group>
+                    <group>
+                        <field name="subscription_ids" widget="many2many_tags" readonly="1"/>
+                        <field name="has_subscription_without_calendar" invisible="1"/>
+                        <field name="subscription_no_calendar_ids" widget="many2many_tags"
+                               readonly="1" invisible="not has_subscription_without_calendar"/>
+                    </group>
+                </group>
+                <div class="alert alert-warning" role="alert"
+                     invisible="not has_subscription_without_calendar">
+                    Un abonnement rattaché à ce poste dépense sans échéancier. Le théorique
+                    de calendrier ne le couvre pas, donc il sous-estime ce poste et peut
+                    faire passer une dérive réelle pour un budget tenu.
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="bf_budget_line_list_subscription" model="ir.ui.view">
+        <field name="name">bf.budget.line.list.subscription</field>
+        <field name="model">bf.budget.line</field>
+        <field name="inherit_id" ref="bf_budget.bf_budget_line_view_list"/>
+        <field name="arch" type="xml">
+            <field name="amount_committed" position="after">
+                <field name="subscription_upcoming" optional="show" sum="Renouvellements à venir"/>
+            </field>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="module_category_bf_budget" model="ir.module.category">
+        <field name="name">Budgets</field>
+        <field name="description">Budgets d'exploitation</field>
+        <field name="sequence">30</field>
+    </record>
+
+    <record id="group_bf_budget_user" model="res.groups">
+        <field name="name">Lecture</field>
+        <field name="category_id" ref="module_category_bf_budget"/>
+        <field name="comment">Consulte les budgets et leurs écarts, sans rien y changer.</field>
+    </record>
+
+    <record id="group_bf_budget_manager" model="res.groups">
+        <field name="name">Gestion</field>
+        <field name="category_id" ref="module_category_bf_budget"/>
+        <field name="implied_ids" eval="[(4, ref('group_bf_budget_user'))]"/>
+        <field name="comment">Crée les postes et les budgets, les ouvre, les révise et les clôture.</field>
+    </record>
+
+    <record id="bf_budget_company_rule" model="ir.rule">
+        <field name="name">Budget : société</field>
+        <field name="model_id" ref="model_bf_budget"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="global" eval="True"/>
+    </record>
+
+    <record id="bf_budget_position_company_rule" model="ir.rule">
+        <field name="name">Poste budgétaire : société</field>
+        <field name="model_id" ref="model_bf_budget_position"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="global" eval="True"/>
+    </record>
+
+    <record id="bf_budget_line_company_rule" model="ir.rule">
+        <field name="name">Ligne budgétaire : société</field>
+        <field name="model_id" ref="model_bf_budget_line"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="global" eval="True"/>
+    </record>
+
+    <record id="bf_budget_line_period_company_rule" model="ir.rule">
+        <field name="name">Répartition : société</field>
+        <field name="model_id" ref="model_bf_budget_line_period"/>
+        <field name="domain_force">[('budget_id.company_id', 'in', company_ids)]</field>
+        <field name="global" eval="True"/>
+    </record>
+</odoo>

@@ -7,7 +7,7 @@ Custom Odoo 18 Community Edition modules developed by [Les services de consultat
 Every module in this repository ships its full source. What differs is what you
 may do with it, and there are three regimes.
 
-**48 modules are LGPL-3.** Use them, modify them, redistribute them, build a
+**53 modules are LGPL-3.** Use them, modify them, redistribute them, build a
 product on them. Nothing is asked in return. These are the single-purpose
 modules — the UI fixes, the shared helpers, the Nextcloud integrations, the
 productivity pack. They are free because they are more useful to us being
@@ -66,12 +66,17 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | Directory | Name | Version | License | Description |
 |---|---|---|---|---|
 | `audit_ti` | Audit TI - Loi 25 | 18.0.1.17.1 | BUSL-1.1 | IT security audit management for Quebec's Loi 25 compliance |
-| `bf_activity_calendar_link` | BF Activités - Lien Calendrier | 18.0.1.1.0 | LGPL-3 | Lier des événements calendrier existants aux activités |
+| `bf_activity_calendar_link` | BF Activités - Lien Calendrier | 18.0.1.1.0 | LGPL-3 | Link existing calendar events to activities |
 | `bf_ai_bridge` | AI Bridge (socket transport) | 18.0.1.0.1 | LGPL-3 | The single transport to the AI bridge service |
 | `bf_appointment` | Symbifox Appointment | 18.0.2.52.5 | BUSL-1.1 | Self-service public booking pages (extends `resource_booking`) |
 | `bf_appointment_poll` | Symbifox Appointment Polls | 18.0.1.13.0 | BUSL-1.1 | Availability polling: propose slots, collect answers, book the meeting |
-| `bf_apps_menu` | Menu des applications cherchable | 18.0.1.0.0 | LGPL-3 | Le menu des applications devient une grille d'icônes cherchable au clavier |
+| `bf_apps_menu` | Menu des applications cherchable | 18.0.1.0.0 | LGPL-3 | The apps menu becomes a keyboard-searchable grid of icons |
 | `bf_bloc_notes` | BF Bloc-notes | 18.0.2.9.0 | LGPL-3 | Rich quick notes with multi-record links, one-click activity conversion, keyboard shortcuts, and systray icon (Alt+N) |
+| `bf_budget` | Budgets opérationnels | 18.0.1.0.1 | LGPL-3 | Operating budget by ledger position, compared against actual and committed spend |
+| `bf_budget_campaign` | Budgets opérationnels — campagnes | 18.0.1.1.0 | LGPL-3 | Ties a campaign to an analytic account: it knew what it earned, now it knows what it spent |
+| `bf_budget_forecast` | Budgets opérationnels — prévision glissante | 18.0.1.0.0 | LGPL-3 | A forecast re-made every month over 12 to 18 months, with comparable vintages |
+| `bf_budget_forecast_subscription` | Prévision glissante — amorce par les engagements datés | 18.0.1.0.0 | LGPL-3 | Seeds the forecast from the dated renewal calendar instead of a flat average |
+| `bf_budget_subscription` | Budgets opérationnels — engagements récurrents | 18.0.1.0.1 | LGPL-3 | Subscriptions become a calendar of dated commitments the budget can count early |
 | `bf_bureau` | BF Bureau — vues multi-panneaux | 18.0.3.2.0 | LGPL-3 | User-configurable dashboards ("desks") with multi-pane Odoo actions, six layouts, keyboard shortcuts, time slots, and a sidebar |
 | `bf_calendar_nc_talk` | BF Calendar — Nextcloud Talk button | 18.0.1.1.0 | LGPL-3 | Adds a '+ Nextcloud Talk' button next to '+ Odoo meeting' on calendar events. Creates a public Talk conversation via the Spreed OCS API and writes the room URL into videocall_location. |
 | `bf_chatter_chronological` | BF Chatter Chronological View | 18.0.4.1.0 | LGPL-3 | Sort the chatter feed by the email's original Date header instead of insertion id (Python `_order` + `_message_fetch` + JS `Thread.fetch*` patch); cogwheel action to re-parse lost Date headers from quoted body content |
@@ -121,7 +126,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_fundraising_web` | Levée de fonds — Web & Portail donateur | 18.0.1.0.2 | AGPL-3 | Public website donation form + donor portal (giving history and official receipt download) |
 | `bf_gamification` | Fox Quest | 18.0.2.3.1 | BUSL-1.1 | Gamification system with XP, levels, badges, and rewards |
 | `bf_helpdesk` | Symbifox — Helpdesk | 18.0.4.3.3 | AGPL-3 | Branded helpdesk extension: per-team public form, hour-bank ribbon, waiting states, ntfy critical hook, persona panel, knowledge-matrix link, ticket→meeting, IA triage via Gen, CSAT on close, branded portal, dashboard tile, IMAP gateway hardening, SLA + macros + auto-tag + auto-ack, ticket timesheets (hour-bank deduction), branded client updates |
-| `bf_home` | Accueil Symbifox | 18.0.1.2.1 | BUSL-1.1 | Home screen replacing the app grid, ordered by who is blocked: your day, what waits on others, money, risk — every figure opens its filtered list |
+| `bf_home` | Accueil Symbifox | 18.0.2.0.0 | BUSL-1.1 | Home screen replacing the app grid, ordered by who is blocked: your day, what waits on others, money, risk — every figure opens its filtered list |
 | `bf_hour_bank` | Banque d'heures | 18.0.1.15.0 | BUSL-1.1 | Automated tracking of client hour banks with threshold-based proactive notifications (unbilled hours, % of allocated budget, balance floor) |
 | `bf_invoice_ocr` | Symbifox — Invoice OCR Scanner | 18.0.1.0.1 | BUSL-1.1 | Extract vendor bill data from PDF attachments via the bf_llm gateway |
 | `bf_letter_writer` | Letter Writer | 18.0.2.0.0 | BUSL-1.1 | Branded official-letter editor: 5 letterhead modes, field merge (`{{ }}`), reusable templates and quick-text blocks, email + PDF send |
@@ -211,7 +216,7 @@ file inside each module governs and carries its exact parameters.
   operations is permitted; providing them as a product or service to third
   parties requires an agreement. Each version converts to
   **LGPL-3.0-or-later four years after its release**.
-- **48 modules: LGPL-3.** Use, modify and redistribute them freely. The
+- **53 modules: LGPL-3.** Use, modify and redistribute them freely. The
   repository-root [`LICENSE`](LICENSE) carries the LGPL-3 text.
 - **5 modules: AGPL-3**, inherited rather than chosen: they extend Odoo
   Community Association code that is itself AGPL-3. Four are the fundraising

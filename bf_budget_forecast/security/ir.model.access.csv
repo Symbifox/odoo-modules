@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_bf_budget_forecast_user,bf.budget.forecast lecture,model_bf_budget_forecast,bf_budget.group_bf_budget_user,1,0,0,0
+access_bf_budget_forecast_manager,bf.budget.forecast gestion,model_bf_budget_forecast,bf_budget.group_bf_budget_manager,1,1,1,1
+access_bf_budget_forecast_line_user,bf.budget.forecast.line lecture,model_bf_budget_forecast_line,bf_budget.group_bf_budget_user,1,0,0,0
+access_bf_budget_forecast_line_manager,bf.budget.forecast.line gestion,model_bf_budget_forecast_line,bf_budget.group_bf_budget_manager,1,1,1,1
+access_bf_budget_forecast_period_user,bf.budget.forecast.period lecture,model_bf_budget_forecast_period,bf_budget.group_bf_budget_user,1,0,0,0
+access_bf_budget_forecast_period_manager,bf.budget.forecast.period gestion,model_bf_budget_forecast_period,bf_budget.group_bf_budget_manager,1,1,1,1

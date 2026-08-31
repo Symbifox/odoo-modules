@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_bf_budget_root"
+              name="Budgets"
+              web_icon="bf_budget,static/description/icon.png"
+              sequence="46"
+              groups="group_bf_budget_user"/>
+
+    <menuitem id="menu_bf_budget_main"
+              name="Budgets"
+              parent="menu_bf_budget_root"
+              sequence="10"/>
+
+    <menuitem id="menu_bf_budget_list"
+              name="Budgets"
+              parent="menu_bf_budget_main"
+              action="bf_budget_action"
+              sequence="10"/>
+
+    <menuitem id="menu_bf_budget_lines"
+              name="Suivi budgétaire"
+              parent="menu_bf_budget_main"
+              action="bf_budget_line_action"
+              sequence="20"/>
+
+    <menuitem id="menu_bf_budget_alerts"
+              name="Lignes en alerte"
+              parent="menu_bf_budget_main"
+              action="bf_budget_line_alert_action"
+              sequence="30"/>
+
+    <menuitem id="menu_bf_budget_config"
+              name="Configuration"
+              parent="menu_bf_budget_root"
+              sequence="90"
+              groups="group_bf_budget_manager"/>
+
+    <menuitem id="menu_bf_budget_positions"
+              name="Postes budgétaires"
+              parent="menu_bf_budget_config"
+              action="bf_budget_position_action"
+              sequence="10"/>
+
+    <menuitem id="menu_bf_budget_position_wizard"
+              name="Proposer des postes"
+              parent="menu_bf_budget_config"
+              action="bf_budget_position_wizard_action"
+              sequence="20"/>
+</odoo>

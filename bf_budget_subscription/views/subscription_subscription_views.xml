@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="subscription_form_budget" model="ir.ui.view">
+        <field name="name">subscription.subscription.form.budget</field>
+        <field name="model">subscription.subscription</field>
+        <field name="inherit_id" ref="bf_subscription.subscription_subscription_form"/>
+        <field name="arch" type="xml">
+            <field name="category" position="after">
+                <field name="budget_position_id"/>
+                <field name="budget_has_calendar" invisible="1"/>
+                <div class="text-warning" invisible="budget_has_calendar or state not in ['active', 'paused']">
+                    Cet abonnement dépense sans échéancier : les budgets ne peuvent pas
+                    prévoir sa prochaine échéance.
+                </div>
+            </field>
+        </field>
+    </record>
+
+    <record id="subscription_list_budget" model="ir.ui.view">
+        <field name="name">subscription.subscription.list.budget</field>
+        <field name="model">subscription.subscription</field>
+        <field name="inherit_id" ref="bf_subscription.subscription_subscription_list"/>
+        <field name="arch" type="xml">
+            <list position="inside">
+                <field name="budget_position_id" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="subscription_search_budget" model="ir.ui.view">
+        <field name="name">subscription.subscription.search.budget</field>
+        <field name="model">subscription.subscription</field>
+        <field name="inherit_id" ref="bf_subscription.subscription_subscription_search"/>
+        <field name="arch" type="xml">
+            <search position="inside">
+                <filter name="no_budget_position" string="Sans poste budgétaire"
+                        domain="[('budget_position_id', '=', False)]"/>
+                <filter name="no_calendar" string="Sans échéancier"
+                        domain="[('budget_has_calendar', '=', False)]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="group_budget_position" string="Poste budgétaire"
+                            context="{'group_by': 'budget_position_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+</odoo>

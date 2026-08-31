@@ -1,0 +1,10 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_bf_budget_position_user,bf.budget.position lecture,model_bf_budget_position,group_bf_budget_user,1,0,0,0
+access_bf_budget_position_manager,bf.budget.position gestion,model_bf_budget_position,group_bf_budget_manager,1,1,1,1
+access_bf_budget_user,bf.budget lecture,model_bf_budget,group_bf_budget_user,1,0,0,0
+access_bf_budget_manager,bf.budget gestion,model_bf_budget,group_bf_budget_manager,1,1,1,1
+access_bf_budget_line_user,bf.budget.line lecture,model_bf_budget_line,group_bf_budget_user,1,0,0,0
+access_bf_budget_line_manager,bf.budget.line gestion,model_bf_budget_line,group_bf_budget_manager,1,1,1,1
+access_bf_budget_line_period_user,bf.budget.line.period lecture,model_bf_budget_line_period,group_bf_budget_user,1,0,0,0
+access_bf_budget_line_period_manager,bf.budget.line.period gestion,model_bf_budget_line_period,group_bf_budget_manager,1,1,1,1
+access_bf_budget_position_wizard,bf.budget.position.wizard,model_bf_budget_position_wizard,group_bf_budget_manager,1,1,1,1

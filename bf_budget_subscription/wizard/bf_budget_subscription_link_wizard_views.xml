@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="bf_budget_subscription_link_wizard_form" model="ir.ui.view">
+        <field name="name">bf.budget.subscription.link.wizard.form</field>
+        <field name="model">bf.budget.subscription.link.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Rattacher les abonnements aux postes">
+                <p class="text-muted">
+                    Le poste se déduit du compte de charge qui porte le plus gros des
+                    factures de chaque abonnement. Les cas ambigus ne sont pas tranchés au
+                    hasard : ils sont listés et restent à faire à la main.
+                </p>
+                <group>
+                    <field name="only_unassigned"/>
+                    <field name="company_id" groups="base.group_multi_company"/>
+                </group>
+                <field name="preview" readonly="1" nolabel="1"/>
+                <footer>
+                    <button name="action_apply" string="Rattacher" type="object" class="btn-primary"/>
+                    <button string="Annuler" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="bf_budget_subscription_link_wizard_action" model="ir.actions.act_window">
+        <field name="name">Rattacher les abonnements</field>
+        <field name="res_model">bf.budget.subscription.link.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="menu_bf_budget_subscription_link"
+              name="Rattacher les abonnements"
+              parent="bf_budget.menu_bf_budget_config"
+              action="bf_budget_subscription_link_wizard_action"
+              sequence="30"/>
+</odoo>

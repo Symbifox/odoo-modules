@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="utm_campaign_view_form_budget" model="ir.ui.view">
+        <field name="name">utm.campaign.view.form.budget</field>
+        <field name="model">utm.campaign</field>
+        <field name="inherit_id" ref="utm.utm_campaign_view_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button type="object" name="action_bf_open_analytic_lines"
+                        class="oe_stat_button" icon="fa-money"
+                        invisible="not analytic_account_id">
+                    <field name="bf_cost_total" widget="statinfo" string="Dépense"/>
+                </button>
+                <button type="object" name="action_bf_open_budget_lines"
+                        class="oe_stat_button" icon="fa-pie-chart"
+                        invisible="not bf_budget_count">
+                    <field name="bf_budget_count" widget="statinfo" string="Lignes budgétaires"/>
+                </button>
+            </xpath>
+
+            <xpath expr="//notebook" position="inside">
+                <page string="Budget" name="bf_budget">
+
+                    <div class="alert alert-info" role="alert"
+                         invisible="analytic_account_id">
+                        Cette campagne n'a pas de compte analytique. Sans lui,
+                        aucune dépense ne peut lui être imputée : Odoo sait ce que
+                        la campagne a rapporté, jamais ce qu'elle a coûté.
+                        <button type="object" name="action_bf_create_analytic_account"
+                                string="Créer le compte analytique" class="btn-link"/>
+                    </div>
+
+                    <div class="alert alert-warning" role="alert"
+                         invisible="not bf_has_unvalued_time">
+                        <field name="bf_unvalued_hours" widget="float_time" nolabel="1"
+                               class="oe_inline fw-bold"/>
+                        d'heures sont imputées à cette campagne sans coût horaire sur
+                        la fiche employé. Elles ne comptent donc pas dans la dépense
+                        réelle. Estimées au taux par défaut de
+                        <field name="bf_estimate_rate" nolabel="1" class="oe_inline fw-bold"/>
+                        $ l'heure, elles vaudraient
+                        <field name="bf_cost_internal_estimated" nolabel="1"
+                               class="oe_inline fw-bold"/>.
+                        Le taux se règle dans les paramètres, section Budgets.
+                    </div>
+
+                    <group>
+                        <group string="Rattachement">
+                            <field name="bf_currency_id" invisible="1"/>
+                            <field name="bf_has_unvalued_time" invisible="1"/>
+                            <field name="analytic_account_id"
+                                   options="{'no_quick_create': True}"/>
+                            <field name="bf_amount_planned"
+                                   invisible="not bf_budget_count"/>
+                        </group>
+                        <group string="Dépense">
+                            <field name="bf_cost_accounting"/>
+                            <field name="bf_cost_internal"/>
+                            <field name="bf_cost_total"/>
+                            <field name="bf_hours_internal" widget="float_time"/>
+                        </group>
+                    </group>
+
+                    <group string="Estimation des heures non valorisées"
+                           invisible="not bf_has_unvalued_time">
+                        <group>
+                            <field name="bf_unvalued_hours" widget="float_time"/>
+                            <field name="bf_estimate_rate"/>
+                        </group>
+                        <group>
+                            <field name="bf_cost_internal_estimated"/>
+                            <field name="bf_cost_total_estimated"/>
+                        </group>
+                    </group>
+
+                    <field name="bf_budget_line_ids" readonly="1"
+                           invisible="not bf_budget_count">
+                        <list string="Lignes budgétaires">
+                            <field name="budget_id"/>
+                            <field name="position_id"/>
+                            <field name="source"/>
+                            <field name="currency_id" column_invisible="True"/>
+                            <field name="amount_planned" sum="Prévu"/>
+                            <field name="amount_actual" sum="Réalisé"/>
+                            <field name="amount_variance" sum="Écart au plan"/>
+                        </list>
+                    </field>
+
+                </page>
+            </xpath>
+
+        </field>
+    </record>
+
+    <record id="utm_campaign_view_tree_budget" model="ir.ui.view">
+        <field name="name">utm.campaign.view.list.budget</field>
+        <field name="model">utm.campaign</field>
+        <field name="inherit_id" ref="utm.utm_campaign_view_tree"/>
+        <field name="arch" type="xml">
+            <field name="stage_id" position="after">
+                <field name="bf_currency_id" column_invisible="True"/>
+                <field name="bf_cost_total" sum="Dépense totale" optional="show"/>
+                <field name="bf_cost_accounting" sum="Comptabilisée" optional="hide"/>
+                <field name="bf_cost_internal" sum="Coût interne" optional="hide"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="utm_campaign_view_search_budget" model="ir.ui.view">
+        <field name="name">utm.campaign.view.search.budget</field>
+        <field name="model">utm.campaign</field>
+        <field name="inherit_id" ref="utm.view_utm_campaign_view_search"/>
+        <field name="arch" type="xml">
+            <filter name="filter_inactive" position="after">
+                <separator/>
+                <filter string="Sans compte analytique" name="bf_sans_compte"
+                        domain="[('analytic_account_id', '=', False)]"
+                        help="Campagnes auxquelles aucune dépense ne peut être imputée"/>
+            </filter>
+        </field>
+    </record>
+
+</odoo>

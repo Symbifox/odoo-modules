@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="bf_budget_line_view_list" model="ir.ui.view">
+        <field name="name">bf.budget.line.list</field>
+        <field name="model">bf.budget.line</field>
+        <field name="arch" type="xml">
+            <list string="Lignes budgétaires" decoration-danger="is_alert" create="0">
+                <field name="budget_id"/>
+                <field name="name"/>
+                <field name="source" optional="show"/>
+                <field name="amount_planned" sum="Prévu"/>
+                <field name="amount_theoretical" sum="Théorique"/>
+                <field name="amount_actual" sum="Réalisé"/>
+                <field name="amount_committed" sum="Engagé"/>
+                <field name="amount_drift" sum="Écart au théorique"/>
+                <field name="drift_pct" widget="percentage" optional="show"/>
+                <field name="is_alert" optional="hide"/>
+                <field name="overrun_accepted" optional="hide"/>
+                <field name="currency_id" column_invisible="True"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_budget_line_view_form" model="ir.ui.view">
+        <field name="name">bf.budget.line.form</field>
+        <field name="model">bf.budget.line</field>
+        <field name="arch" type="xml">
+            <form string="Ligne budgétaire">
+                <sheet>
+                    <div class="alert alert-warning" role="alert" invisible="not has_unvalued_time">
+                        Des heures sont saisies sur cette ligne mais valorisées à zéro : le coût
+                        horaire des personnes concernées n'est pas renseigné. La ligne lirait
+                        « rien dépensé » alors qu'il manque un réglage.
+                    </div>
+                    <group>
+                        <group>
+                            <field name="budget_id"/>
+                            <field name="budget_type" invisible="1"/>
+                            <field name="company_id" invisible="1"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="state" invisible="1"/>
+                            <field name="source"/>
+                            <field name="position_id" required="source == 'accounting'"/>
+                            <field name="analytic_account_ids" widget="many2many_tags"
+                                   required="source == 'internal_cost'"
+                                   options="{'no_create': True}"/>
+                        </group>
+                        <group>
+                            <field name="amount_planned"/>
+                            <field name="amount_theoretical"/>
+                            <field name="theoretical_basis"/>
+                            <field name="amount_actual"/>
+                            <field name="amount_committed"/>
+                            <field name="amount_drift"/>
+                            <field name="is_alert"/>
+                            <field name="has_unvalued_time" invisible="1"/>
+                            <field name="unvalued_hours" invisible="not has_unvalued_time"/>
+                        </group>
+                    </group>
+                    <group string="Dépassement" invisible="not is_alert and not overrun_accepted">
+                        <field name="overrun_accepted"/>
+                        <field name="overrun_reason" required="overrun_accepted"/>
+                    </group>
+                    <notebook>
+                        <page string="Répartition mensuelle" name="periods">
+                            <button name="action_spread_evenly" string="Répartir également"
+                                    type="object" class="btn-secondary"
+                                    invisible="state != 'draft'"/>
+                            <field name="period_ids" readonly="state != 'draft'">
+                                <list editable="bottom">
+                                    <field name="name" readonly="1"/>
+                                    <field name="date_start" readonly="1"/>
+                                    <field name="date_end" readonly="1"/>
+                                    <field name="amount_planned" sum="Prévu"/>
+                                    <field name="currency_id" column_invisible="True"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="bf_budget_line_view_pivot" model="ir.ui.view">
+        <field name="name">bf.budget.line.pivot</field>
+        <field name="model">bf.budget.line</field>
+        <field name="arch" type="xml">
+            <pivot string="Budget contre réel">
+                <field name="position_id" type="row"/>
+                <field name="amount_planned" type="measure"/>
+                <field name="amount_committed" type="measure"/>
+                <field name="amount_drift" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="bf_budget_line_view_graph" model="ir.ui.view">
+        <field name="name">bf.budget.line.graph</field>
+        <field name="model">bf.budget.line</field>
+        <field name="arch" type="xml">
+            <graph string="Budget contre réel" type="bar">
+                <field name="position_id"/>
+                <field name="amount_planned" type="measure"/>
+                <field name="amount_committed" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="bf_budget_line_view_search" model="ir.ui.view">
+        <field name="name">bf.budget.line.search</field>
+        <field name="model">bf.budget.line</field>
+        <field name="arch" type="xml">
+            <search string="Lignes budgétaires">
+                <field name="budget_id"/>
+                <field name="position_id"/>
+                <filter name="alerts" string="En alerte" domain="[('is_alert', '=', True)]"/>
+                <filter name="accepted" string="Dépassement assumé" domain="[('overrun_accepted', '=', True)]"/>
+                <separator/>
+                <filter name="accounting" string="Comptabilité" domain="[('source', '=', 'accounting')]"/>
+                <filter name="internal" string="Coût interne" domain="[('source', '=', 'internal_cost')]"/>
+                <separator/>
+                <filter name="open_budgets" string="Budgets ouverts" domain="[('state', '=', 'open')]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="group_budget" string="Budget" context="{'group_by': 'budget_id'}"/>
+                    <filter name="group_position" string="Poste" context="{'group_by': 'position_id'}"/>
+                    <filter name="group_source" string="Source" context="{'group_by': 'source'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="bf_budget_line_action" model="ir.actions.act_window">
+        <field name="name">Suivi budgétaire</field>
+        <field name="res_model">bf.budget.line</field>
+        <field name="view_mode">list,pivot,graph,form</field>
+        <field name="context">{'search_default_open_budgets': 1, 'search_default_group_budget': 1}</field>
+    </record>
+
+    <record id="bf_budget_line_alert_action" model="ir.actions.act_window">
+        <field name="name">Lignes en alerte</field>
+        <field name="res_model">bf.budget.line</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('is_alert', '=', True)]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Aucune ligne en alerte</p>
+            <p>
+                Une ligne est signalée quand sa dérive dépasse à la fois le pourcentage et
+                le plancher en dollars du budget. Les deux, jamais l'un seul : un
+                pourcentage seul hurle sur les petits postes, un montant seul reste muet
+                sur les gros.
+            </p>
+        </field>
+    </record>
+</odoo>
