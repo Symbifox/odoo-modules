@@ -18,7 +18,7 @@ class TestSignerRouting(TransactionCase):
         # Société dédiée : le repli du conseil lit tout le registre de la
         # société, donc les administrateurs déjà en base d'une copie de
         # production fausseraient le résultat. Voir le même montage dans
-        # project_knowledge_matrix/tests/test_corporate_governance.py.
+        # bf_corporate_governance/tests/test_corporate_governance.py.
         cls.societe = cls.env['res.company'].create({'name': 'Société d\'essai 24525 (signature)'})
         cls.env = cls.env(context=dict(cls.env.context, allowed_company_ids=[cls.societe.id]))
         cls.actionnaire = cls.env['res.partner'].create({

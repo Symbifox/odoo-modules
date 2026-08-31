@@ -4,7 +4,7 @@
     <record id="corporate_resolution_view_form_bf_sign" model="ir.ui.view">
         <field name="name">corporate.resolution.form.bf.sign</field>
         <field name="model">corporate.resolution</field>
-        <field name="inherit_id" ref="project_knowledge_matrix.corporate_resolution_view_form"/>
+        <field name="inherit_id" ref="bf_corporate_governance.corporate_resolution_view_form"/>
         <field name="arch" type="xml">
             <!-- The form has no button box yet — create one for the smart button. -->
             <xpath expr="//div[hasclass('oe_title')]" position="before">

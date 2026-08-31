@@ -2,7 +2,7 @@
 
 A bridge module wiring the native [`bf_sign`](../bf_sign) electronic signature
 engine into the corporate resolutions of
-[`project_knowledge_matrix`](../project_knowledge_matrix).
+[`bf_corporate_governance`](../bf_corporate_governance).
 
 ## What it does
 
@@ -10,7 +10,7 @@ engine into the corporate resolutions of
   (`corporate.resolution`) through the `bf.sign.mixin` mixin, plus a
   "Signatures" smart button counting the linked requests.
 - Renders the resolution as a branded PDF (the
-  `project_knowledge_matrix.action_report_corporate_resolution` report),
+  `bf_corporate_governance.action_report_corporate_resolution` report),
   creates a linked `bf_sign` signature request, then posts the signed document
   (plus the completion certificate) back into the resolution's thread once
   everyone has signed.
@@ -29,7 +29,7 @@ than failing on a technical constraint.
 
 ## Dependencies
 
-`bf_sign`, `project_knowledge_matrix`.
+`bf_sign`, `bf_corporate_governance`.
 
 ## Licence
 

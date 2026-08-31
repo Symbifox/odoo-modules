@@ -1,6 +1,6 @@
 {
     'name': "Symbifox — Signature des résolutions corporatives",
-    'version': '18.0.1.2.1',
+    'version': '18.0.1.3.0',
     'category': 'Productivity/Sign',
     'summary': "Envoyer une résolution corporative pour signature électronique (bf_sign).",
     'description': """
@@ -17,7 +17,7 @@ Ils restent modifiables sur la demande en brouillon avant l'envoi.
     'author': "Les services de consultation Blue Fox, Inc.",
     'website': "https://symbifox.com",
     'license': 'Other proprietary',
-    'depends': ['bf_sign', 'project_knowledge_matrix'],
+    'depends': ['bf_sign', 'bf_corporate_governance'],
     'data': [
         'views/corporate_resolution_views.xml',
     ],

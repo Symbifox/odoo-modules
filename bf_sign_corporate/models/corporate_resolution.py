@@ -16,7 +16,7 @@ class CorporateResolution(models.Model):
 
     def _sign_report_ref(self):
         # The branded résolution PDF already auto-bound to the form's Print menu.
-        return "project_knowledge_matrix.action_report_corporate_resolution"
+        return "bf_corporate_governance.action_report_corporate_resolution"
 
     def _sign_signer_partners(self):
         """The partners expected to sign this resolution.
