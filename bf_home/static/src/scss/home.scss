@@ -173,6 +173,18 @@
     .bfh-bar { height: 7px; border-radius: 999px; background: var(--bfh-soft); overflow: hidden;
         i { display: block; height: 100%; border-radius: 999px; background: var(--bfh-ok-ink); } }
 
+    // ── les chiffres ───────────────────────────────────────
+    // Les tuiles absorbées de bf_dashboard sont écrites en
+    // Bootstrap, et cinq modules les étendent par xpath. On ne les restyle
+    // donc pas : on annule seulement le `container-fluid py-4` qui les
+    // croyait seules sur leur page, pour qu'elles s'alignent sur la même
+    // gouttière que les bandes au lieu d'en ajouter une deuxième.
+    .bfh-tiles {
+        .o_bf_dashboard > .container-fluid { padding: 0 !important; }
+        .card { border-radius: 14px; border-color: var(--bfh-line); }
+        h5.text-uppercase { font-size: 13px; letter-spacing: .02em; }
+    }
+
     .bfh-load, .bfh-err { padding: 40px 22px; color: var(--bfh-muted); }
     .bfh-err { display: flex; flex-direction: column; align-items: flex-start; gap: 8px;
         b { color: var(--bfh-crit-ink); } }

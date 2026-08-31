@@ -3,6 +3,7 @@
 import { registry } from "@web/core/registry";
 import { Component, useState, onWillStart } from "@odoo/owl";
 import { useService } from "@web/core/utils/hooks";
+import { BfDashboard } from "./bf_dashboard";
 
 /**
  * Symbifox home screen.
@@ -15,6 +16,12 @@ import { useService } from "@web/core/utils/hooks";
 export class BfHome extends Component {
     static template = "bf_home.Home";
     static props = ["*"];
+    // The figure tiles come from bf_dashboard, absorbed here on 2026-08-30
+    // Kept as its own component rather than folded into a band:
+    // it carries its own RPC, its own loading state, and five xpath extensions
+    // from satellite modules. A band that fails leaves the rest of the screen
+    // standing, and so do these tiles.
+    static components = { BfDashboard };
 
     setup() {
         this.orm = useService("orm");

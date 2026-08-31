@@ -85,6 +85,18 @@
           </div>
         </div>
 
+        <!-- Les chiffres. Section de l'accueil depuis l'absorption de
+             bf_dashboard : même écran, même porte, un seul
+             menu. Le composant charge ses propres données, donc un
+             agrégateur comptable lent ne retarde pas les bandes. -->
+        <section class="bfh-state-head">
+          <h2>Les chiffres</h2>
+          <span class="bfh-q">l'argent, l'exploitation et la sécurité</span>
+        </section>
+        <div class="bfh-tiles">
+          <BfDashboard/>
+        </div>
+
         <p class="bfh-foot">Les applications restent accessibles par la recherche universelle.</p>
       </div>
     </t>

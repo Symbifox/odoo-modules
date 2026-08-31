@@ -22,14 +22,32 @@ Four rules shaped every line of this module, and each of them was earned.
 
 | Band | Question it answers | Collectors |
 | --- | --- | --- |
-| Ce qui m'attend | What is on me today | Today's meetings, overdue activities, tasks due, Odoo inbox, unsent meeting reports, yesterday's missing timesheet |
+| Ce qui m'attend | What is on me today | Today's meetings, overdue activities, tasks due, unread Discussion mentions, unhandled email, unsent meeting reports, yesterday's missing timesheet |
 | En attente d'eux | Where the ball is in somebody else's court | Tasks parked on a client or a third party, signature requests sent and unsigned, secure deposits about to expire, outreach targets due |
 | L'argent | What leaks when nobody looks | Hour banks below the threshold they declare |
 | Le risque | Compliance and operations | Consents about to lapse, services in difficulty, detractors with an open loop |
 
 Below the bands, three read-only panels (meetings, knowledge, hosting) carry background figures. Anything that demands an action belongs in a band above, where it can be clicked and resolved.
 
+## The figures
+
+Below the panels sit the figure tiles: money, operations, security. They came from `bf_dashboard`, a second screen that answered the same question from the same data under a second menu. It was absorbed here on 2026-08-30 and no longer exists as a module.
+
+Three names were kept **verbatim** through that move, and none of them is free to change:
+
+* the model `bf.dashboard`,
+* the signature of `get_dashboard_data()`,
+* the OWL template name `bf_dashboard.Dashboard`.
+
+Five modules extend them, four of those through an xpath anchored on a literal expression inside the template. An extension xpath that no longer resolves **does not raise**: the inheriting module's tile simply stops rendering, with nothing in the log. `tests/test_dashboard.py` pins both anchors so that a template edit fails a test instead of failing a screen.
+
+The accounting collectors moved under the same `@needs` guard as everything else, so `account` and `project` are no longer hard dependencies. The guard asks whether the model and its fields exist, not how the collector reads them, which is why it covers the three blocks of raw SQL as well as the ORM calls.
+
 `En attente d'eux` is the reason the module exists. No ERP surfaces the work that is technically not yours right now, and that is exactly where billable time evaporates.
+
+### What "inbox" counts
+
+Two rows, because the word means two things on an Odoo tenant and merging them produces a figure nobody can act on. **Discussion** counts `mail.message` needing action: mentions and followed records. **Courriels** counts real mail, read from `bf.email` — the mailbox mirror — never from IMAP, which Odoo cannot see without fetchmail. The email row asks `bf_email_management` for its own definition of "boîte de réception" rather than keeping a private copy, because the systray badge, the list action and the phone filter already had to agree on it, and it is scoped to the reader: an operator who may read everyone's mail should still get their own morning. On a tenant without `bf.email`, only the Discussion row appears.
 
 ## Proving silence
 
