@@ -88,10 +88,10 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_contact_enrichment` | Enrichissement de contacts | 18.0.1.2.1 | BUSL-1.1 | Business cards (OCR) from the desktop or an installable mobile page, email signatures, vCard import, duplicate detection and completeness scoring, powered by Gen |
 | `bf_corporate_governance` | Symbifox Corporate Governance | 18.0.1.0.0 | LGPL-3 | The minute book of a share corporation kept in Odoo: resolutions, registers and a compliance calendar |
 | `bf_credentials` | Symbifox Credentials | 18.0.2.0.0 | LGPL-3 | Encrypted per-project credential vault, with rotation, expiry and a second-factor register |
-| `bf_cx` | Expérience client | 18.0.1.8.0 | BUSL-1.1 | Customer experience measurement: NPS programs, continuous feedback, complaints and consent-tracked testimonials |
+| `bf_cx` | Expérience client | 18.0.1.8.1 | BUSL-1.1 | Customer experience measurement: NPS programs, continuous feedback, complaints and consent-tracked testimonials |
 | `bf_cx_appointment` | Expérience client : feedback post-rendez-vous | 18.0.1.1.0 | BUSL-1.1 | Three-smiley feedback request when an appointment is completed (opt-in) |
 | `bf_cx_crm` | Expérience client - sondage post-perte CRM | 18.0.1.1.0 | BUSL-1.1 | Automatic win/loss survey when a CRM opportunity is marked lost |
-| `bf_cx_dashboard` | Expérience client - tuile tableau de bord | 18.0.1.1.1 | BUSL-1.1 | NPS tile with pending detractors and open complaints on the Symbifox dashboard |
+| `bf_cx_dashboard` | Expérience client - tuile tableau de bord | 18.0.1.1.2 | BUSL-1.1 | NPS tile with pending detractors and open complaints on the Symbifox dashboard |
 | `bf_cx_digest` | Expérience client - digest quotidien | 18.0.1.1.1 | BUSL-1.1 | Customer-experience section (follow-ups, complaints, NPS) in the daily digest |
 | `bf_cx_fundraising` | Expérience client : sondage donateur | 18.0.1.0.1 | AGPL-3 | Donor experience survey after a donation is confirmed (fundraising suite) |
 | `bf_cx_gamification` | Expérience client : XP Fox Quest | 18.0.1.0.0 | BUSL-1.1 | Fox Quest XP for closed-loop follow-ups and resolved complaints |
@@ -111,11 +111,11 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_default_all_companies` | BF Default All Companies | 18.0.1.0.0 | LGPL-3 | Pre-selects every allowed company in the multi-company switcher on first login |
 | `bf_document_approval` | Documents — Approbation à plusieurs | 18.0.1.0.0 | BUSL-1.1 | A policy is published only once everyone who had to weigh in has done so, and its distribution follows the RACI recorded in the knowledge matrix |
 | `bf_document_nextcloud_sync` | Document Nextcloud Sync | 18.0.1.4.1 | LGPL-3 | Document sync between Odoo and Nextcloud via WebDAV |
-| `bf_editorial` | Atelier éditorial | 18.0.1.7.0 | BUSL-1.1 | Editorial calendar, measured cadence and publication gates for the blog: state is derived, only decisions are stored |
+| `bf_editorial` | Atelier éditorial | 18.0.1.8.0 | BUSL-1.1 | Editorial calendar, measured cadence and publication gates for the blog: state is derived, only decisions are stored |
 | `bf_email_management` | Gestion des courriels | 18.0.11.7.0 | BUSL-1.1 | Unified IMAP inbox + Odoo chatter projection, two-pane OWL folder browser (Apple Mail / Thunderbird), bulk per-row target inference |
 | `bf_email_systray` | Boîte de réception bf.email — barre Odoo | 18.0.1.4.0 | LGPL-3 | Systray button opening the bf.email inbox with a (read + unread) counter |
 | `bf_employee_experience` | Expérience employé | 18.0.1.0.0 | LGPL-3 | Benefits catalogue, rule-based eligibility, usage register and retention indicators |
-| `bf_employee_experience_dashboard` | Expérience employé — tuile tableau de bord | 18.0.1.0.0 | LGPL-3 | Benefits take-up, and a count of paid benefits nobody claims |
+| `bf_employee_experience_dashboard` | Expérience employé — tuile tableau de bord | 18.0.1.0.1 | LGPL-3 | Benefits take-up, and a count of paid benefits nobody claims |
 | `bf_employee_experience_digest` | Expérience employé — digest quotidien | 18.0.1.0.0 | LGPL-3 | "Benefits" digest section: pending claims, usages with no entitlement, benefits nobody takes |
 | `bf_employee_experience_expense` | Expérience employé — notes de frais | 18.0.1.0.0 | LGPL-3 | An approved expense becomes a benefit usage, at real cost |
 | `bf_employee_experience_health` | Expérience employé — allergies | 18.0.1.2.0 | LGPL-3 | Allergies and food allergies, readable only by the person and by whoever organises |
@@ -124,7 +124,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_follower_cleanup` | BF — Nettoyage des abonnés (followers internes uniquement) | 18.0.2.0.0 | LGPL-3 | Cron that removes all non-employee followers from chatters |
 | `bf_fundraising_core` | Levée de fonds — Cœur | 18.0.1.0.0 | AGPL-3 | Donor management and fundraising structure (Funds / Campaigns / Appeals / Packages) on top of the Donation module — comparable to Raiser's Edge |
 | `bf_fundraising_web` | Levée de fonds — Web & Portail donateur | 18.0.1.0.2 | AGPL-3 | Public website donation form + donor portal (giving history and official receipt download) |
-| `bf_gamification` | Fox Quest | 18.0.2.3.1 | BUSL-1.1 | Gamification system with XP, levels, badges, and rewards |
+| `bf_gamification` | Fox Quest | 18.0.2.5.1 | BUSL-1.1 | Gamification system with XP, levels, badges, and rewards |
 | `bf_helpdesk` | Symbifox — Helpdesk | 18.0.4.3.3 | AGPL-3 | Branded helpdesk extension: per-team public form, hour-bank ribbon, waiting states, ntfy critical hook, persona panel, knowledge-matrix link, ticket→meeting, IA triage via Gen, CSAT on close, branded portal, dashboard tile, IMAP gateway hardening, SLA + macros + auto-tag + auto-ack, ticket timesheets (hour-bank deduction), branded client updates |
 | `bf_home` | Accueil Symbifox | 18.0.2.0.0 | BUSL-1.1 | Home screen replacing the app grid, ordered by who is blocked: your day, what waits on others, money, risk — every figure opens its filtered list |
 | `bf_hour_bank` | Banque d'heures | 18.0.1.15.0 | BUSL-1.1 | Automated tracking of client hour banks with threshold-based proactive notifications (unbilled hours, % of allocated budget, balance floor) |
@@ -137,11 +137,11 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_mail_subject_clean` | BF Nettoyage des sujets de courriel | 18.0.1.1.0 | LGPL-3 | Prevents "Re: Re: Re:" stacking on subjects sent through the chatter |
 | `bf_mail_vigie` | BF Vigie courriels (re-router) | 18.0.2.3.0 | BUSL-1.1 | "Re-route" button on `bf.email` to move a misrouted email to the correct chatter |
 | `bf_mass_notes` | Symbifox — Notes en lot | 18.0.1.0.0 | LGPL-3 | List-view Action to post a chatter note (or message) to many selected records at once; binds to all `mail.thread` models |
-| `bf_meeting` | Rencontres | 18.0.3.49.2 | BUSL-1.1 | Agendas, meeting records, and discussion items unified around `calendar.event` with automatic reminders |
+| `bf_meeting` | Rencontres | 18.0.3.50.2 | BUSL-1.1 | Agendas, meeting records, and discussion items unified around `calendar.event` with automatic reminders |
 | `bf_meeting_call_archive` | Rencontres ↔ Archive d'appels | 18.0.1.0.0 | BUSL-1.1 | Optional link between a meeting record and an archived call |
 | `bf_meeting_portal` | Rencontres - Portail client | 18.0.2.0.1 | BUSL-1.1 | Portal read access to meeting reports that were already emailed to the client |
 | `bf_music_licensing` | Licences musicales : conformité en établissement | 18.0.1.2.0 | BUSL-1.1 | Tracks the SOCAN and Re:Sound royalties an establishment owes, holding the proposed rate beside the certified one so a retroactive Copyright Board ruling is priced, not discovered |
-| `bf_nextcloud_browser` | Nextcloud File Browser | 18.0.3.3.0 | LGPL-3 | Embedded + standalone Nextcloud WebDAV file browser on projects/tasks: folder tree, modal preview, drag-and-drop upload/move, configurable share presets, open-in-Nextcloud for office files, Knowledge Matrix linking, systray launcher |
+| `bf_nextcloud_browser` | Nextcloud File Browser | 18.0.3.6.0 | LGPL-3 | Embedded + standalone Nextcloud WebDAV file browser on projects/tasks: folder tree, modal preview, drag-and-drop upload/move, configurable share presets, open-in-Nextcloud for office files, Knowledge Matrix linking, systray launcher |
 | `bf_no_gateway_bounce` | BF No Gateway Bounce | 18.0.1.0.0 | LGPL-3 | Never auto-reply MAILER-DAEMON bounces to people who write to Symbifox |
 | `bf_onboarding_base` | Symbifox Onboarding Foundation | 18.0.2.0.0 | LGPL-3 | Shared helpers for Symbifox per-module onboarding panels. |
 | `bf_otp` | Symbifox OTP | 18.0.3.0.0 | LGPL-3 | One-time-code vault whose server can read no seed: encryption and code generation happen in the browser |
@@ -160,16 +160,16 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_session_cookie_domain` | BF Session Cookie Domain | 18.0.2.0.0 | LGPL-3 | Share the session cookie across the subdomains of one configured apex domain |
 | `bf_sign` | Symbifox — Signature électronique | 18.0.3.22.0 | BUSL-1.1 | Native electronic signature (SES): parallel or sequential multi-signer requests, drag-and-drop pad placement on the PDF with reusable layout templates, draw/type/upload signature and initials with embedded handwriting fonts, signer-fillable text and date fields, optional email OTP identity verification of signers, refusal flow with reason, branded public signing pages and transactional emails, completion certificate, optional PAdES cryptographic seal (pyHanko) with in-app certificate generation, optional RFC 3161 trusted timestamping, hash-chained tamper-evident audit trail with one-click integrity verification, a public verification page (optional QR stamped on the document) where any holder can drop their own copy and have it hashed in-browser to confirm it matches, link expiry cron, manager-gated link reveal, and a mixin to send any Odoo record for signature with post-back of the signed document |
 | `bf_sign_account` | Symbifox — Signature pour la comptabilité | 18.0.1.0.1 | BUSL-1.1 | Send a customer invoice / vendor bill for electronic signature (bf_sign). |
-| `bf_sign_corporate` | Symbifox — Signature des résolutions corporatives | 18.0.1.2.1 | BUSL-1.1 | Send a corporate resolution for electronic signature (bf_sign). |
+| `bf_sign_corporate` | Symbifox — Signature des résolutions corporatives | 18.0.1.3.0 | BUSL-1.1 | Send a corporate resolution for electronic signature (bf_sign). |
 | `bf_sign_privacy` | Symbifox — Signature des consentements (Loi 25) | 18.0.1.1.0 | BUSL-1.1 | Sign Loi 25 consents with the native bf_sign engine (instead of external DocuSeal / LibreSign). |
 | `bf_sign_purchase` | Symbifox — Signature pour les achats | 18.0.1.0.1 | BUSL-1.1 | Send a purchase order for electronic signature (bf_sign). |
 | `bf_sign_sale` | Symbifox — Signature pour les ventes | 18.0.2.0.0 | BUSL-1.1 | Send a quotation / sales order for electronic signature (bf_sign). |
 | `bf_sms_archive` | SMS & Calls | 18.0.5.11.1 | BUSL-1.1 | Two-way live SMS/MMS messaging via VOIP.ms (chat workspace + systray) plus Android SMS/call-log archiving, search, PDF/CSV export and task linking |
 | `bf_stepbystep_clients` | Step-by-Step — Suivi d'accompagnement client | 18.0.2.2.1 | BUSL-1.1 | Internal dashboard tracking each client mandate's linear step-by-step progression: current step, hours budget, timeline. |
 | `bf_studio_light` | Symbifox — Studio Light | 18.0.7.0.0 | BUSL-1.1 | Field builder for Odoo Community: add custom fields (incl. polymorphic reference with model whitelist), smart buttons (count via JSON controller, no compute Python), and inject them in views without writing a module — survives `-u all` upgrades |
-| `bf_subscription` | Abonnements | 18.0.1.4.0 | BUSL-1.1 | Paid subscription management with correlation to vendor bills |
+| `bf_subscription` | Abonnements | 18.0.1.4.1 | BUSL-1.1 | Paid subscription management with correlation to vendor bills |
 | `bf_subscription_daily_digest` | Abonnements — section du digest quotidien | 18.0.1.0.2 | BUSL-1.1 | Adds an 'Upcoming renewals' section to the daily digest |
-| `bf_subscription_dashboard` | Abonnements — carte du tableau de bord | 18.0.1.0.1 | BUSL-1.1 | Ajoute une carte Abonnements au tableau de bord Symbifox |
+| `bf_subscription_dashboard` | Abonnements — carte du tableau de bord | 18.0.1.0.2 | BUSL-1.1 | Adds a subscription summary card to the Symbifox home screen |
 | `bf_subscription_hosting` | Hébergement — pont vers les abonnements | 18.0.1.0.0 | BUSL-1.1 | Create a subscription from a hosting domain (avoids double-entering recurring costs). |
 | `bf_survey_upload` | BF Survey Upload | 18.0.1.2.0 | LGPL-3 | File-upload question type for Odoo surveys |
 | `bf_systray_prefs` | Symbifox — Préférences de la barre système | 18.0.1.0.1 | LGPL-3 | Per-user show/hide of systray (notification-tray) icons, via a gear menu |
