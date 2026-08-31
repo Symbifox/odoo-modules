@@ -1,6 +1,6 @@
 # Employee Experience — Dashboard bridge (`bf_employee_experience_dashboard`)
 
-Auto-installs when `bf_employee_experience` and `bf_dashboard` are both present.
+Auto-installs when `bf_employee_experience` and `bf_home` are both present.
 Adds one tile that says three things:
 
 * the catalogue's average take-up rate;

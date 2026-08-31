@@ -1,7 +1,7 @@
 {
     "name": "Expérience employé — tuile tableau de bord",
     "summary": "Adhésion aux avantages et avantages payés que personne ne prend",
-    "version": "18.0.1.0.0",
+    "version": "18.0.1.0.1",
     "category": "Human Resources",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",
@@ -13,7 +13,7 @@
 Pont Expérience employé ↔ Tableau de bord
 =========================================
 
-S'auto-installe quand `bf_employee_experience` et `bf_dashboard` sont tous deux
+S'auto-installe quand `bf_employee_experience` et `bf_home` sont tous deux
 installés. Ajoute une tuile qui dit trois choses :
 
 * le taux d'adhésion moyen du catalogue ;
@@ -23,7 +23,7 @@ installés. Ajoute une tuile qui dit trois choses :
 """,
     "depends": [
         "bf_employee_experience",
-        "bf_dashboard",
+        "bf_home",
     ],
     "assets": {
         "web.assets_backend": [

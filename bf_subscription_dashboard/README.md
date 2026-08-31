@@ -2,13 +2,13 @@
 
 A bridge module that adds a subscription summary card (monthly-equivalent
 spend, upcoming renewals, dormant subscriptions) to the Symbifox dashboard
-(`bf_dashboard`).
+(`bf_home`).
 
-Auto-installs when `bf_subscription` **and** `bf_dashboard` are both present.
+Auto-installs when `bf_subscription` **and** `bf_home` are both present.
 
 ## Dependencies
 
-`bf_subscription`, `bf_dashboard`.
+`bf_subscription`, `bf_home`.
 
 ## Licence
 
