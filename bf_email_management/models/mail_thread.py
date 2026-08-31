@@ -22,6 +22,52 @@ _logger = logging.getLogger(__name__)
 class MailThread(models.AbstractModel):
     _inherit = "mail.thread"
 
+    # ------------------------------------------------------------------
+    # Signature : posée ici, jamais dans le corps
+    # ------------------------------------------------------------------
+    def _notify_by_email_prepare_rendering_context(
+            self, message, msg_vals=False, model_description=False,
+            force_email_company=False, force_email_lang=False):
+        """Signer de l'identité qui expédie, quand elle a sa propre signature.
+
+        Odoo signe de ``res.users.signature`` : une personne, une signature.
+        Ce module lui donne plusieurs adresses d'envoi vérifiées, chacune
+        pouvant porter la sienne. L'identité est résolue par l'adresse du
+        « De » du message — le composeur, transitoire, n'existe plus à
+        l'instant du rendu, et le « De » est de toute façon ce que le
+        destinataire lit.
+
+        ⚠️ C'est le SEUL endroit où la signature entre dans un courriel de ce
+        module. Le corps ne la porte jamais : ni le composeur « Nouveau
+        courriel », ni la citation d'une réponse, ni l'entête d'un transfert,
+        ni l'application mobile. Un corps qui la porterait la ferait sortir
+        deux fois, puisque le gabarit de notification l'ajoute ici de toute
+        façon.
+
+        On ne touche à rien quand l'identité n'a pas de signature propre : la
+        valeur calculée plus haut reste, y compris celle qu'un module de
+        signature multi-sociétés substituerait quand le message parle pour une
+        autre société que celle de son auteur.
+        """
+        values = super()._notify_by_email_prepare_rendering_context(
+            message,
+            msg_vals=msg_vals,
+            model_description=model_description,
+            force_email_company=force_email_company,
+            force_email_lang=force_email_lang,
+        )
+        if not values.get("email_add_signature"):
+            return values
+        author_user = values.get("author_user")
+        if not author_user or author_user.share:
+            return values
+        email_from = (msg_vals or {}).get("email_from") or message.email_from
+        identity = self.env["bf.email.identity"].sudo()._for_sender(
+            email_from, author_user)
+        if identity and (identity.signature_html or "").strip():
+            values["signature"] = identity.signature_html
+        return values
+
     @api.model
     def message_route(self, message, message_dict, model=None,
                       thread_id=None, custom_values=None):

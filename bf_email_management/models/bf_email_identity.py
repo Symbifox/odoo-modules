@@ -287,6 +287,24 @@ class BfEmailIdentity(models.Model):
                 return match[:1]
         return self.browse()
 
+    @api.model
+    def _for_sender(self, email_from, user):
+        """L'identité vérifiée de ``user`` qui porte cette adresse d'envoi.
+
+        Sert au moment de signer : la signature est posée à l'envoi, et
+        l'adresse du « De » est la seule chose qui dise, à ce moment-là, sous
+        quelle identité le message part. Le composeur, lui, n'existe plus.
+
+        Rend un ensemble vide dès que l'adresse ne désigne aucune identité
+        vérifiée de cette personne — signer d'une identité que quelqu'un
+        n'aurait pas le droit de porter serait pire que ne pas signer.
+        """
+        bare = email_normalize(parseaddr(email_from or "")[1] or "")
+        if not bare or not user:
+            return self.browse()
+        return self._usable_for(user).filtered(
+            lambda i: i.email_normalized == bare)[:1]
+
     # ------------------------------------------------------------------
     # Semis
     # ------------------------------------------------------------------

@@ -836,7 +836,6 @@ class BfEmail(models.Model):
             "email_from": identity.email_formatted if identity
                           else (self.env.user.email or ""),
         })
-        signature = identity._signature_for()
         action = self.env["ir.actions.actions"]._for_xml_id(
             "mail.action_email_compose_message_wizard"
         )
@@ -848,7 +847,9 @@ class BfEmail(models.Model):
             "default_partner_cc_ids": [(6, 0, [])],
             "default_partner_bcc_ids": [(6, 0, [])],
             "default_subject": "",
-            "default_body": shell._compose_signature_block(identity),
+            # Une ligne vide, pas une signature : celle-ci est posée à
+            # l'envoi, jamais dans le corps (voir _compose_landing_line).
+            "default_body": shell._compose_landing_line(),
             "default_notify": True,
             "force_email": True,
             "mail_create_nosubscribe": True,
@@ -858,7 +859,6 @@ class BfEmail(models.Model):
         }
         if identity:
             action["context"]["default_bf_identity_id"] = identity.id
-            action["context"]["default_bf_signature_snapshot"] = signature
         action["name"] = _("Nouveau courriel")
         return action
 

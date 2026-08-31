@@ -573,7 +573,11 @@ class BfEmailMobile(models.Model):
             "user_name": self.env.user.name,
             "branding": self._mobile_branding(),
             "tz": self.env.user.tz or "America/Montreal",
-            "signature": self.env.user.signature or "",
+            # Vide, et c'est le réglage : la signature est posée à
+            # l'envoi par le serveur. Un composeur qui la préremplirait la
+            # ferait partir en double. La clé reste pour ne pas casser les
+            # versions de l'app qui la lisent encore.
+            "signature": "",
             # Only the addressing bits — never host/login/password, which live
             # on the same model and are readable by the owner.
             "accounts": [{

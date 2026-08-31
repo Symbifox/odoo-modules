@@ -1919,9 +1919,6 @@ class BfEmail(models.Model):
 
         if identity:
             ctx["default_bf_identity_id"] = identity.id
-            # Ce que le corps porte réellement, pour que changer d'identité
-            # dans le composeur sache quoi remplacer sans toucher au texte.
-            ctx["default_bf_signature_snapshot"] = identity._signature_for()
 
         # Forwards on orphans: ship the original attachments.
         if is_forward and not self.mail_message_id and self.raw_rfc822:
@@ -2182,27 +2179,22 @@ class BfEmail(models.Model):
                 ids.append(partner.id)
         return ids
 
-    def _compose_signature_block(self, identity=None):
-        """Editable landing line + the signature of the identity writing.
+    def _compose_landing_line(self):
+        """La ligne vide où le curseur atterrit, au-dessus de la citation.
 
-        Mirrors the top of ``mail.message._prep_quoted_reply_body`` so the
-        composer always opens with a cursor above the quote and the user's
-        signature present \u2014 even for orphan IMAP rows that have no chatter
-        message to delegate to.
+        ⚠️ Elle ne porte **pas** la signature, et c'est délibéré : la
+        signature n'entre jamais dans le corps, elle est posée une seule fois
+        à l'envoi par le gabarit de notification (voir ``mail_thread.py``).
+        Un corps qui la porte la fait sortir en double, une fois écrite ici et
+        une fois ajoutée là — mesuré en production sur un fil réel : neuf blocs
+        dans le corps, dix dans le courriel rendu.
 
-        ``identity`` m\u00e8ne la signature quand elle en porte une : \u00e9crire sous
-        une autre adresse et signer de l'autre soci\u00e9t\u00e9 est pr\u00e9cis\u00e9ment le
-        d\u00e9faut qu'on corrige. Sans identit\u00e9, ou sans signature dessus, on
-        retombe sur ``res.users.signature``, le m\u00eame champ que rend le module
-        de signature multi-soci\u00e9t\u00e9.
+        La ligne, elle, reste nécessaire. Sans elle le composeur s'ouvre avec
+        le curseur piégé à l'intérieur de la citation, et on écrit sa réponse
+        dans le texte de quelqu'un d'autre.
         """
         self.ensure_one()
-        if identity is None:
-            identity = self._compose_identity()
-        return (
-            '<p style="margin:0 0 12px 0;"><br/></p>'
-            f'{identity._signature_for()}'
-        )
+        return '<p style="margin:0 0 12px 0;"><br/></p>'
 
     def _compose_identity(self):
         """L'identit\u00e9 sous laquelle r\u00e9pondre \u00e0 cette rang\u00e9e.
@@ -2222,10 +2214,12 @@ class BfEmail(models.Model):
         return Identity._default_for(self.env.user)
 
     def _build_reply_quote_body(self, identity=None):
-        """Build the quoted-reply HTML for the composer."""
+        """Build the quoted-reply HTML for the composer.
+
+        ``identity`` n'est plus lue : elle menait la signature, et la
+        signature a quitté le corps. Le paramètre reste pour les appelants.
+        """
         self.ensure_one()
-        if identity is None:
-            identity = self._compose_identity()
         if self.mail_message_id:
             try:
                 return self.mail_message_id._prep_quoted_reply_body() or ""
@@ -2234,14 +2228,14 @@ class BfEmail(models.Model):
         # Orphan IMAP rows hold raw email HTML (only NUL-scrubbed, never
         # sanitized): full documents, <style> blocks, Outlook/mso cruft and
         # unclosed tags. Dropped straight into the OWL editor this corrupts
-        # the DOM, swallowing the editable line + signature above and trapping
-        # the cursor in the quote. Sanitize like the chatter path does.
+        # the DOM, swallowing the editable line above and trapping the cursor
+        # in the quote. Sanitize like the chatter path does.
         body = tools.html_sanitize(self.body_html or "")
         date = fields.Datetime.to_string(self.date) if self.date else ""
         sender = self.email_from or ""
         return (
             '<div>'
-            f'{self._compose_signature_block(identity)}'
+            f'{self._compose_landing_line()}'
             '<br/><br/>'
             '<blockquote style="border-left:3px solid #ccc;padding-left:8px;'
             'margin:8px 0;color:#666;">'
@@ -2252,10 +2246,11 @@ class BfEmail(models.Model):
         )
 
     def _build_forward_body(self, identity=None):
-        """Build the standard 'Forwarded message' wrapper for the composer."""
+        """Build the standard 'Forwarded message' wrapper for the composer.
+
+        ``identity`` n'est plus lue : voir ``_build_reply_quote_body``.
+        """
         self.ensure_one()
-        if identity is None:
-            identity = self._compose_identity()
         date = fields.Datetime.to_string(self.date) if self.date else ""
         # Sanitize raw IMAP HTML before it reaches the OWL editor (see
         # _build_reply_quote_body for why).
@@ -2266,7 +2261,7 @@ class BfEmail(models.Model):
         )
         return (
             '<div>'
-            f'{self._compose_signature_block(identity)}'
+            f'{self._compose_landing_line()}'
             '<br/><br/>'
             '<p>---------- Forwarded message ---------- </p>'
             f'<p><strong>De&nbsp;:</strong> {self.email_from or ""}<br/>'

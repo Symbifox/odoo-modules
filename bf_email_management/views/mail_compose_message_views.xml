@@ -34,7 +34,6 @@
             <xpath expr="//field[@name='subject']" position="before">
                 <field name="bf_identity_allowed_ids" invisible="1"/>
                 <field name="bf_identity_count" invisible="1"/>
-                <field name="bf_signature_snapshot" invisible="1"/>
                 <field name="bf_identity_id"
                        options="{'no_create': True, 'no_open': True}"
                        invisible="bf_identity_count &lt; 2"

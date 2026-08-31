@@ -89,7 +89,7 @@ Deactivates the device and clears its push endpoint. → `{"ok": true}`
 {
   "user_name": "Jane Doe",
   "tz": "America/Montreal",
-  "signature": "<p>…</p>",
+  "signature": "",          // always empty since 18.0.11.9.0 — see below
   "accounts": [{"id": 1, "name": "Work", "login": "jane@example.com",
                 "aliases": "", "state": "connected"}],
   "counts": {"inbox": 12, "unread": 3, "snoozed": 2, "unrouted": 5},
@@ -220,9 +220,14 @@ sender; reply_all → sender in To, other thread participants in Cc minus your
 own addresses and the tenant's catchall/bounce aliases. Forward has no default
 recipient by design, so `to` is mandatory there.
 
-The quoted original and your Odoo signature are appended server-side — send
-only what the user typed. A genuine reply to an inbound message flips its
-status to `replied`, same as the desktop composer.
+The quoted original is appended server-side — send only what the user typed.
+A genuine reply to an inbound message flips its status to `replied`, same as
+the desktop composer.
+
+⚠️ **Never insert the signature.** Since 18.0.11.9.0 it is added once, when the
+outgoing mail is rendered, and it is deliberately absent from every stored
+body — which is why `/config` now returns an empty `signature`. A composer that
+pre-fills one makes the recipient receive two.
 
 ### `POST /compose` (auth)
 ```jsonc

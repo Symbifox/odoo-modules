@@ -91,6 +91,27 @@ class MailMessage(models.Model):
             action["context"] = ctx
         return action
 
+    def _prep_quoted_reply_body(self):
+        """Same quote as ``mail_quoted_reply``, minus the signature.
+
+        Le module tiers insère ``self.env.user.signature`` en clair au-dessus
+        de la citation. Ici la signature est posée à l'envoi et nulle part
+        ailleurs : la laisser dans le corps la ferait partir en double, une
+        fois écrite ici et une fois ajoutée par le gabarit de notification.
+
+        On retire le bloc du rendu plutôt que de recopier le gabarit du
+        tiers : la signature y est insérée telle quelle, donc retrouvable
+        telle quelle, et la mise en page de la citation reste la sienne — une
+        copie divergerait à sa prochaine mise à jour.
+        """
+        body = super()._prep_quoted_reply_body()
+        signature = self.env.user.signature or ""
+        # ⚠️ Sans cette garde, ``replace("", ...)`` s'insère entre chaque
+        # caractère du corps.
+        if signature.strip() and signature in body:
+            body = body.replace(signature, "", 1)
+        return body
+
     def action_download_eml(self):
         """Stream this chatter message as an .eml download.
 

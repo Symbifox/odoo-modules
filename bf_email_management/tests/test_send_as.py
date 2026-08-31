@@ -8,8 +8,8 @@ Ce que ces tests tiennent, dans l'ordre où ça compte :
    de tous les composeurs de l'instance ;
 3. on ne peut pas porter l'identité d'autrui, ni une identité que personne
    n'a vérifiée ;
-4. la signature suit l'identité, et changer d'identité ne mange pas le texte
-   déjà tapé.
+4. la signature n'entre JAMAIS dans le corps, elle est posée une seule fois
+   à l'envoi, et elle suit l'identité qui expédie.
 
 ⚠️ Le point 1 s'est révélé faux à la première écriture, et aucun test de
 modèle ne l'aurait vu : ``_prepare_mail_values`` fusionne
@@ -82,6 +82,16 @@ class SendAsCase(TransactionCase):
             "email": "autre@societe-a.test",
             "verified": True,
         })
+
+        # ⚠️ ``res.users.create`` re-rend la signature depuis le gabarit de
+        # la société (module de signature multi-sociétés) : celle passée aux
+        # valeurs de création ne survit pas, et les assertions ci-dessous ne
+        # mesureraient plus rien. Un write sur le SEUL champ ``signature`` ne
+        # déclenche pas ce rendu.
+        cls.writer.sudo().write({"signature": "<p>-- <br/>Jane, Société A</p>"})
+        assert "Société A" in (cls.writer.signature or ""), (
+            "la signature de test n'a pas tenu : les tests de signature "
+            "passeraient sans rien éprouver")
 
         cls.recipient = cls.env["res.partner"].create({
             "name": "Destinataire",
@@ -195,40 +205,96 @@ class SendAsCase(TransactionCase):
         self.assertNotIn(self.foreign, visible)
 
     # ------------------------------------------------------------------
-    # 4. La signature suit, sans manger le texte
+    # 4. La signature quitte le corps et se pose à l'envoi
     # ------------------------------------------------------------------
-    def test_the_signature_follows_the_identity(self):
-        self.assertIn("Société B", self.second._signature_for())
+    # ⚠️ Ces tests remplacent ceux qui éprouvaient la substitution de
+    # signature DANS le corps du composeur. Elle n'existe plus : un corps qui
+    # porte la signature la fait sortir deux fois, puisque le gabarit de
+    # notification l'ajoute de toute façon au rendu. Mesuré le 2026-08-31 sur
+    # un fil réel : neuf blocs dans le corps, dix dans le courriel rendu.
+    def _row(self, **extra):
+        """Une rangée bf.email orpheline, prête pour Répondre / Transférer."""
+        vals = {
+            "subject": "Question",
+            "direction": "in",
+            "status": "new",
+            "email_from": "client@ailleurs.test",
+            "email_to": "jane@societe-a.test",
+            "body_html": "<p>Le message d'origine</p>",
+            "date": fields.Datetime.now(),
+            "user_id": self.writer.id,
+        }
+        vals.update(extra)
+        return self.env["bf.email"].with_user(self.writer).create(vals)
+
+    def _rendered_email(self, message, record):
+        """Le corps HTML tel que le destinataire le recevra.
+
+        Rejoue le chemin de production plutôt qu'un raccourci : c'est la seule
+        façon de compter les signatures là où elles comptent — dans le
+        courriel, pas dans le champ ``body``.
+        """
+        values = record._notify_by_email_prepare_rendering_context(
+            message, msg_vals={})
+        recipients = [
+            group for group in record._notify_get_recipients(message, {})
+            if group.get("notif") == "email"
+        ]
+        return record._notify_by_email_render_layout(
+            message,
+            {"recipients": recipients[:1], "has_button_access": False,
+             "button_access": {}, "actions": []},
+            msg_vals={}, render_values=values)
+
+    def test_a_new_message_opens_on_a_body_without_signature(self):
+        action = self.env["bf.email"].with_user(self.writer).inbox_compose()
+        body = action["context"]["default_body"]
+        self.assertNotIn("Société A", body)
+        self.assertNotIn("Société B", body)
+        # La ligne d'atterrissage, elle, reste : sans elle le curseur tombe
+        # dans la citation et on écrit dans le texte de quelqu'un d'autre.
+        self.assertIn("<br/>", body)
+
+    def test_a_reply_quote_carries_no_signature(self):
+        quote = self._row()._build_reply_quote_body()
+        self.assertNotIn("Société A", quote)
+        self.assertIn("Le message d'origine", quote)
+
+    def test_a_forward_carries_no_signature(self):
+        forwarded = self._row()._build_forward_body()
+        self.assertNotIn("Société A", forwarded)
+        self.assertIn("Forwarded message", forwarded)
+
+    def test_the_mobile_app_is_handed_no_signature(self):
+        config = self.env["bf.email"].with_user(self.writer).get_mobile_config()
+        self.assertEqual(config["signature"], "")
+
+    def test_the_sent_email_carries_exactly_one_signature(self):
+        message = self._post(self.primary)
+        self.assertNotIn("Société A", message.body)
+        rendered = self._rendered_email(message, self.carrier)
+        self.assertEqual(rendered.count("Société A"), 1)
+
+    def test_the_sent_email_signs_with_the_identity_that_sends(self):
+        message = self._post(self.second)
+        rendered = self._rendered_email(message, self.carrier)
+        self.assertEqual(rendered.count("Société B"), 1)
+        self.assertNotIn("Société A", rendered)
 
     def test_an_identity_without_signature_falls_back_to_the_user(self):
         self.assertIn("Société A", self.primary._signature_for())
+        message = self._post(self.primary)
+        self.assertIn("Société A", self._rendered_email(message, self.carrier))
 
-    def test_switching_identity_swaps_the_signature(self):
-        composer = self.env["mail.compose.message"].with_user(self.writer).create({
-            "model": "res.partner",
-            "res_ids": repr([self.carrier.id]),
-            "composition_mode": "comment",
-            "body": "<p>Bonjour</p>" + self.primary._signature_for(),
-            "bf_signature_snapshot": self.primary._signature_for(),
-        })
-        composer.bf_identity_id = self.second
-        composer._onchange_bf_identity_id()
-        self.assertIn("Société B", composer.body)
-        self.assertNotIn("Société A", composer.body)
-        self.assertIn("Bonjour", composer.body)
-
-    def test_a_touched_signature_is_left_alone(self):
-        """Perdre une phrase tapée pour ajuster une signature serait un mauvais marché."""
-        composer = self.env["mail.compose.message"].with_user(self.writer).create({
-            "model": "res.partner",
-            "res_ids": repr([self.carrier.id]),
-            "composition_mode": "comment",
-            "body": "<p>Bonjour</p><p>-- <br/>signature retouchée à la main</p>",
-            "bf_signature_snapshot": self.primary._signature_for(),
-        })
-        composer.bf_identity_id = self.second
-        composer._onchange_bf_identity_id()
-        self.assertIn("retouchée à la main", composer.body)
+    def test_an_address_that_is_not_a_verified_identity_signs_nothing_special(self):
+        """Signer d'une identité qu'on n'a pas le droit de porter serait pire
+        que ne pas signer."""
+        Identity = self.env["bf.email.identity"].sudo()
+        self.assertFalse(Identity._for_sender("jane@pas-a-moi.test", self.writer))
+        self.assertFalse(Identity._for_sender("autre@societe-a.test", self.writer))
+        self.assertEqual(
+            Identity._for_sender("Jane <JANE@societe-b.test>", self.writer),
+            self.second)
 
     # ------------------------------------------------------------------
     # 5. Résolution et semis

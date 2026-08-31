@@ -4,6 +4,54 @@ All notable changes to `bf_email_management` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This module follows Odoo's `MAJOR.MINOR.PATCH` convention prefixed with the Odoo series (`18.0.X.Y.Z`).
 
+## [18.0.11.9.0] — 2026-08-31
+
+The signature leaves the body. It is added once, on send.
+
+### Changed
+
+- **The signature no longer enters a message body, anywhere.** It was written in
+  four places — the "New email" composer, a reply's quote, a forward's header,
+  and `mail_quoted_reply` behind the chatter's Reply button — while Odoo's
+  notification layout appends it at render time regardless. Recipients were
+  getting two. Measured in production on a real thread: nine blocks in the
+  stored body, ten in the rendered mail.
+
+  The asymmetry that made it visible: a **new** message composed on the mobile
+  app carried none in its body (`mobile_compose` added nothing), a reply carried
+  one. In the app one looked signed and the other did not — while both went out
+  signed, and the reply went out signed twice.
+
+  Now: the body carries it nowhere, `mail.mail_notification_layout` adds it at
+  render time, and that is the only place. `_compose_signature_block` becomes
+  `_compose_landing_line`, returning only the empty line the cursor lands on —
+  still needed, or the composer opens inside the quote.
+
+- **The signature follows the sending identity, at render time.** The feature is
+  not lost with the body: `mail.thread._notify_by_email_prepare_rendering_context`
+  resolves the identity from the message's From address (`_for_sender`) and uses
+  its `signature_html` when it has one. An address matching no **verified**
+  identity of the author changes nothing — signing as an identity someone is not
+  entitled to carry would be worse than not signing.
+
+- **The mobile app is no longer handed a signature to pre-fill.**
+  `get_mobile_config` returns `""`. The key stays for app versions that still
+  read it.
+
+### Removed
+
+- `mail.compose.message.bf_signature_snapshot`, and with it the signature swap
+  on identity change (`_replace_signature`, `_canon`). It had to find, inside a
+  sanitized body, the exact block it had inserted unsanitized, and gave up as
+  soon as anyone had touched it. With no signature in the body, there is nothing
+  left to swap.
+
+  ⚠️ Removing a field from the model *and* from the view in one `-u` fails:
+  Odoo validates the combined tree of every inherited view before applying the
+  file, so the sibling view still in the database references a field that is
+  already gone. Two passes: the field survives the first, the view lets go, then
+  the field goes.
+
 ## [18.0.11.8.0] — 2026-08-31
 
 A thread that leaves its record does not find its way back on its own.

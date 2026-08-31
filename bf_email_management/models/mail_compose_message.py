@@ -12,50 +12,7 @@ recompute when they are present, so the bf.email Reply-All flow can pre-fill
 Cc with the other thread participants.
 """
 
-import re
-
 from odoo import _, api, exceptions, fields, models
-
-_WS = re.compile(r"\s+")
-_SELF_CLOSING = re.compile(r"\s*/>")
-
-
-def _canon(html):
-    """Forme comparable de deux fragments HTML équivalents.
-
-    ⚠️ ``body`` est un champ Html **assaini** par Odoo ; l'empreinte qu'on a
-    posée à l'ouverture ne l'est pas. Un même bloc de signature en ressort donc
-    différent — ``<br/>`` contre ``<br>``, une espace en plus — et une
-    comparaison littérale échoue toujours. Mesuré sur banc : la substitution ne
-    partait jamais, la signature de l'ancienne identité restait dans le corps.
-    """
-    return _WS.sub(" ", _SELF_CLOSING.sub(">", html or "")).strip()
-
-
-def _replace_signature(body, old, new):
-    """Remplacer ``old`` par ``new`` dans ``body``, ou rendre None.
-
-    None veut dire « je n'ai pas retrouvé exactement ce que j'avais posé » :
-    la personne y a touché, et on ne réécrit pas un texte qu'on ne reconnaît
-    plus. Perdre une phrase tapée pour ajuster une signature serait un mauvais
-    marché.
-    """
-    if not old:
-        return None
-    if old in body:
-        return body.replace(old, new, 1)
-
-    # Repli sur la forme canonique : on localise le bloc dans le corps assaini
-    # en comparant fenêtre à fenêtre, ce qui évite de reconstruire un parseur.
-    canon_old = _canon(old)
-    if not canon_old:
-        return None
-    canon_body = _canon(body)
-    if canon_old not in canon_body:
-        return None
-    # Le corps assaini porte bien la signature : on la remplace sur la forme
-    # canonique, qui est celle que l'éditeur relira de toute façon.
-    return canon_body.replace(canon_old, _canon(new), 1)
 
 
 class MailComposeMessage(models.TransientModel):
@@ -129,12 +86,6 @@ class MailComposeMessage(models.TransientModel):
         compute="_compute_bf_identity_allowed_ids",
         string="Nombre d'identités disponibles",
     )
-    # Ce que le composeur a inséré comme signature la dernière fois. C'est le
-    # seul moyen de la remplacer sans toucher au texte : on ne substitue que
-    # si on retrouve EXACTEMENT ce qu'on avait posé.
-    bf_signature_snapshot = fields.Html(
-        string="Signature posée", sanitize=False)
-
     @api.depends_context("uid")
     def _compute_bf_identity_allowed_ids(self):
         usable = self.env["bf.email.identity"]._usable_for(self.env.user)
@@ -145,29 +96,17 @@ class MailComposeMessage(models.TransientModel):
 
     @api.onchange("bf_identity_id")
     def _onchange_bf_identity_id(self):
-        """Suivre l'identité choisie : le « De », puis la signature.
+        """Suivre l'identité choisie : le « De ».
 
-        La signature n'est remplacée que si le corps porte encore, mot pour
-        mot, celle que le composeur avait posée. Dès que la personne y a
-        touché, on ne réécrit rien : perdre une phrase déjà tapée pour ajuster
-        une signature serait un mauvais marché.
+        Il n'y a plus de signature à échanger dans le corps — elle n'y entre
+        jamais, elle est posée à l'envoi et suit l'identité à ce moment-là
+        (voir ``mail_thread._notify_by_email_prepare_rendering_context``).
+        C'est ce qui a supprimé la substitution fragile qui vivait ici : elle
+        devait retrouver dans un corps assaini le bloc exact qu'elle avait
+        posé non assaini, et renonçait dès que la personne y avait touché.
         """
-        identity = self.bf_identity_id
-        if not identity:
-            return
-        self.email_from = identity.email_formatted
-
-        new_signature = identity._signature_for()
-        old_signature = self.bf_signature_snapshot or ""
-        body = self.body or ""
-        if not old_signature:
-            self.bf_signature_snapshot = new_signature
-            return
-
-        replaced = _replace_signature(body, old_signature, new_signature)
-        if replaced is not None:
-            self.body = replaced
-            self.bf_signature_snapshot = new_signature
+        if self.bf_identity_id:
+            self.email_from = self.bf_identity_id.email_formatted
 
     def _prepare_mail_values(self, res_ids):
         """Faire descendre l'identité jusqu'au message, après la fusion.
