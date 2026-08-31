@@ -37,6 +37,7 @@ A centralized email management module for Odoo 18 that provides a single, dedupl
 - **`thread_root_id`** — root Message-ID of the conversation, resolved from the `References` header (or `In-Reply-To` / parent chain). Indexed for fast grouping.
 - **Conversation smart button** — opens the full thread filtered by `thread_root_id` directly from any row.
 - **Group-by-thread** in the search view.
+- **A thread never anchors on the mailbox (11.8+)** — `bf.email` inherits `mail.thread`, so the gateway *can* file a message on an inbox row, and it used to: reply to a row the gateway has not routed yet (the IMAP cron creates it minutes earlier) and the outgoing Message-ID reads `openerp-<id>-bf.email`. The correspondent replies to that header and the whole conversation leaves the record — permanently, since every later reply cites the same header. Two defences: `_composer_target` resolves the thread's record from `In-Reply-To`, the `References` chain read nearest-first, the root, then a filed sibling of the same thread, before ever falling back to the row itself; and `message_route` rewrites any route aimed at a `bf.email` row onto the record that row is filed under, which is what recovers threads that already went astray. Everything *inferred* is verified (filing model, live record, write access); an explicit link is returned untouched.
 
 ### Smart Actions
 - **Reply / Forward — always available (2.0+)**. Single dispatcher with 4 branches:

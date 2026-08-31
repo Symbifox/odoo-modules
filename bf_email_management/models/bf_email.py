@@ -32,6 +32,20 @@ BUS_TICK_FIELDS = frozenset(
     {"is_handled", "status", "snoozed_until", "active", "category", "user_id"}
 )
 
+# La boîte n'est pas un dossier. Ancrer un fil sur une rangée ``bf.email``
+# l'en sort pour de bon : le Message-ID part chez le correspondant, et la
+# passerelle le relira à chaque réponse. Voir ``_is_filing_model``.
+_NON_FILING_MODELS = frozenset({
+    "bf.email", "mail.thread", "discuss.channel", "mail.channel",
+})
+# Une réponse peut être ancrée sur une réponse. On remonte la chaîne, mais
+# bornée : une boucle en base ne doit pas faire tourner la passerelle.
+_MAX_ANCHOR_HOPS = 5
+# ``References`` se replie sur plusieurs lignes ; on capture la valeur entière,
+# lignes de continuation comprises, avant d'en extraire les Message-ID.
+_REFERENCES_RE = re.compile(r"^References:[ \t]*(.*(?:\n[ \t]+.*)*)$", re.M | re.I)
+_MESSAGE_ID_RE = re.compile(r"<[^>]+>")
+
 _DIRECTION_LABELS = {
     "in": "\u2190",
     "out": "\u2192",
@@ -2000,18 +2014,133 @@ class BfEmail(models.Model):
     def _composer_target(self):
         """Resolve (model, res_id) for the composer.
 
-        If the row has a chatter source record, post there. Otherwise post
-        on the bf.email row itself (it inherits mail.thread): the reply
-        stays with the email it answers and future responses thread back
-        here. The historical fallback — the user's own res.partner — is
-        gone on purpose: it silently piled every orphan conversation onto
-        the user's own contact card (and correspondents' replies followed
-        by References), polluting the card's chatter.
+        Le lien explicite de la rangée d'abord ; à défaut, le dossier où le
+        FIL vit déjà, retrouvé par les en-têtes RFC 2822.
+
+        Sans cette résolution, une réponse écrite pendant la fenêtre où la
+        rangée n'est pas encore classée — le cron IMAP la crée avant que la
+        passerelle l'ait routée, deux minutes suffisent — part avec un
+        Message-ID ``openerp-<id>-bf.email``. Le correspondant répond à CET
+        en-tête, la passerelle le lit, et toute la suite de la conversation
+        atterrit sur le chatter de la boîte au lieu du dossier. Rattacher la
+        rangée après coup ne rattrape rien : l'en-tête est déjà parti.
+
+        Dernier recours seulement : la rangée elle-même (elle hérite de
+        mail.thread). Le repli historique — la fiche contact de l'usager —
+        est parti exprès : il empilait silencieusement chaque conversation
+        orpheline sur sa propre carte de visite.
         """
         self.ensure_one()
-        if self.res_model and self.res_id:
+        return self._filing_target() or ("bf.email", self.id)
+
+    # ------------------------------------------------------------------
+    # Où ce courriel doit être classé
+    # ------------------------------------------------------------------
+    def _is_filing_model(self, model):
+        """Un modèle qui peut légitimement accueillir le fil."""
+        if not model or model in _NON_FILING_MODELS or model not in self.env:
+            return False
+        return hasattr(self.env[model], "message_post")
+
+    def _filing_target(self):
+        """(modèle, id) du dossier où ce courriel appartient, ou False.
+
+        Trois sources, par fiabilité décroissante : le lien explicite de la
+        rangée, le dossier de la rangée sur laquelle elle est ancrée (une
+        réponse ancrée sur une réponse — on remonte), puis les en-têtes.
+
+        Le lien explicite est une décision, pas une déduction : on le rend
+        tel quel. Tout ce qu'on DÉDUIT est vérifié — fiche vivante et
+        accessible en écriture — sans quoi on classerait au jugé.
+        """
+        self.ensure_one()
+        if self.res_id and self._is_filing_model(self.res_model):
             return self.res_model, self.res_id
-        return "bf.email", self.id
+        for row in self._anchor_chain():
+            if row.res_id and self._is_filing_model(row.res_model):
+                target = self._check_filing_target(row.res_model, row.res_id)
+                if target:
+                    return target
+        return self._thread_target_from_headers()
+
+    def _anchor_chain(self):
+        """Les rangées sur lesquelles celle-ci est ancrée, de proche en proche."""
+        self.ensure_one()
+        chain = []
+        seen = {self.id}
+        row = self
+        Rows = self.sudo()
+        for _hop in range(_MAX_ANCHOR_HOPS):
+            if row.res_model != "bf.email" or not row.res_id or row.res_id in seen:
+                break
+            row = Rows.browse(row.res_id).exists()
+            if not row:
+                break
+            seen.add(row.id)
+            chain.append(row)
+        return chain
+
+    def _thread_target_from_headers(self):
+        """Le dossier du fil, déduit des Message-ID que porte la rangée.
+
+        Du plus proche ancêtre au plus lointain : ``In-Reply-To``, puis la
+        chaîne ``References`` à rebours, puis la racine du fil. Le premier
+        ``mail.message`` retrouvé qui vit dans un vrai dossier gagne.
+
+        À défaut, une rangée sœur du même fil déjà classée : c'est le cas du
+        correspondant qui repart d'un vieux message sans en-tête exploitable.
+        """
+        self.ensure_one()
+        Message = self.env["mail.message"].sudo()
+        for message_id in self._thread_ancestor_ids():
+            msg = Message.search([("message_id", "=", message_id)], limit=1)
+            if not msg:
+                continue
+            target = self._check_filing_target(msg.model, msg.res_id)
+            if target:
+                return target
+        if self.thread_root_id:
+            sibling = self.sudo().with_context(active_test=False).search([
+                ("id", "!=", self.id),
+                ("thread_root_id", "=", self.thread_root_id),
+                ("res_model", "!=", False),
+                ("res_model", "not in", list(_NON_FILING_MODELS)),
+            ], order="date desc, id desc", limit=1)
+            if sibling:
+                target = self._check_filing_target(
+                    sibling.res_model, sibling.res_id,
+                )
+                if target:
+                    return target
+        return False
+
+    def _thread_ancestor_ids(self):
+        """Message-ID des ancêtres du fil, du plus proche au plus lointain."""
+        self.ensure_one()
+        ordered = []
+        if self.in_reply_to:
+            ordered.append(self.in_reply_to.strip())
+        # ``References`` va du plus ancien au plus récent : on le lit à
+        # rebours pour rester sur « le plus proche d'abord ».
+        for value in _REFERENCES_RE.findall(self.raw_headers or ""):
+            ordered.extend(reversed(_MESSAGE_ID_RE.findall(value)))
+        if self.thread_root_id:
+            ordered.append(self.thread_root_id.strip())
+        seen = set()
+        return [m for m in ordered if m and not (m in seen or seen.add(m))]
+
+    def _check_filing_target(self, model, res_id):
+        """Valider une piste : modèle classable, fiche vivante, accessible."""
+        if not res_id or not self._is_filing_model(model):
+            return False
+        record = self.env[model].browse(res_id).exists()
+        if not record:
+            return False
+        try:
+            record.check_access("write")
+        except Exception:
+            return False
+        return model, res_id
 
     def _build_reply_recipients(self):
         """Return [partner_id, ...] for a Reply.

@@ -4,6 +4,46 @@ All notable changes to `bf_email_management` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This module follows Odoo's `MAJOR.MINOR.PATCH` convention prefixed with the Odoo series (`18.0.X.Y.Z`).
 
+## [18.0.11.8.0] — 2026-08-31
+
+A thread that leaves its record does not find its way back on its own.
+
+### Fixed
+
+- **Replying from the mailbox no longer tears a thread away from its record.**
+  The IMAP cron creates the row before the mail gateway has routed the message —
+  minutes apart, seventeen seconds on the day this showed up. During that window
+  the row carries no `res_model`, so `_composer_target` fell back to
+  `("bf.email", id)` and the outgoing Message-ID read `openerp-<id>-bf.email`.
+  The correspondent replies to *that* header, the gateway reads it, and **the
+  rest of the conversation** lands on the mailbox row's chatter instead of the
+  record. Filing the row afterwards fixed nothing — the header was already out —
+  and every later reply anchored one step further away.
+
+  `_composer_target` now looks for the thread's record before falling back:
+  `In-Reply-To`, then the `References` chain read nearest-first, then the thread
+  root, then a filed sibling of the same thread. The row's explicit link is
+  returned untouched — that is a decision, not an inference. Everything
+  *inferred* is verified: filing model, live record, write access. With no lead
+  at all, the fallback to the row itself remains — a brand-new email composed
+  through `inbox_compose` still needs a thread of its own.
+
+- **A reply aimed at the mailbox is redirected to the record, on arrival.** New
+  `message_route` override (`models/mail_thread.py`): a route pointing at a
+  `bf.email` row that carries a record is rewritten onto that record, walking up
+  the anchor chain when it has to. This is what serves threads that **already**
+  went astray — the Message-ID is with the correspondent and cannot be taken
+  back, but where the row is filed can be read. Only the model and the id
+  change: the alias and the default values the gateway picked stay its own.
+
+### Added
+
+- `tests/test_thread_anchor.py` — 14 checks, one of which replays the failure
+  end to end through `message_process`. Every positive case is paired with the
+  case where resolution must *not* happen (fallback preserved, explicit link
+  untouched, foreign route left alone, dead record, ancestor itself in the
+  mailbox). Against the previous code, 9 of the 14 fail.
+
 ## [18.0.11.7.0] — 2026-08-30
 
 The phone's mailbox badges were telling the truth about the wrong thing.

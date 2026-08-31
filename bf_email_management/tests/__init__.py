@@ -19,3 +19,4 @@ from . import test_dossier_disparu
 from . import test_mark_read_scope
 from . import test_external_age_search
 from . import test_popup_notify
+from . import test_thread_anchor

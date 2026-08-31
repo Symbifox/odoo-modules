@@ -25,6 +25,9 @@ from . import calendar_event
 # par `name_search` sur la cible : les trois surcharges étaient devenues mortes.
 from . import mail_compose_message
 from . import mail_message
+# Garde de routage : une réponse qui vise une rangée de la boîte est
+# redirigée vers le dossier du fil. Voir mail_thread.py.
+from . import mail_thread
 from . import mail_notification
 from . import mail_scheduled_message
 from . import onboarding_onboarding
