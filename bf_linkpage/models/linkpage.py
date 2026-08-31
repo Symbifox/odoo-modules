@@ -221,6 +221,20 @@ class BfLinkpage(models.Model):
         help="Laisser vide pour le logo de la société. Une image carrée donne "
              "le meilleur résultat : elle est redimensionnée sans être rognée.",
     )
+    qr_logo_plate = fields.Selection(
+        [
+            ("back", "Fond du code"),
+            ("fill", "Couleur du code"),
+            ("none", "Aucune"),
+        ],
+        string="Cartouche derrière le logo",
+        default="back",
+        required=True,
+        help="Le petit carré posé sous le logo. « Couleur du code » sert quand "
+             "le logo et le fond partagent la même teinte : un logo bleu sur "
+             "un fond bleu disparaît. « Aucune » colle le logo directement sur "
+             "le code.",
+    )
     qr_scale = fields.Selection(
         [("s", "Petit (écran)"), ("m", "Moyen"), ("l", "Grand (impression)")],
         string="Taille",
@@ -743,7 +757,7 @@ class BfLinkpage(models.Model):
             )
         return fill, back, False
 
-    @api.depends("slug", "qr_branded", "qr_logo", "qr_scale",
+    @api.depends("slug", "qr_branded", "qr_logo", "qr_scale", "qr_logo_plate",
                  "qr_fill_color", "qr_back_color")
     def _compute_qr_preview(self):
         for page in self:
@@ -827,16 +841,31 @@ class BfLinkpage(models.Model):
             if logo is not None:
                 side = int(min(img.size) * LOGO_RATIO)
                 logo = logo.resize((side, side), Image.LANCZOS)
-                # Le cartouche prend la couleur du FOND du code, pas du blanc
-                # en dur : sur un code à fond coloré, un carré blanc au centre
-                # se voit comme une pièce rapportée.
-                backdrop = Image.new("RGB", (side + 12, side + 12), back_color)
-                backdrop.paste(logo, (6, 6), logo if logo.mode == "RGBA" else None)
-                position = (
-                    (img.size[0] - backdrop.size[0]) // 2,
-                    (img.size[1] - backdrop.size[1]) // 2,
-                )
-                img.paste(backdrop, position)
+                if self.qr_logo_plate == "none":
+                    # Sans cartouche : le logo est collé sur le code. Mesuré,
+                    # ça se décode encore, parce que ce sont les MÊMES modules
+                    # qui sont masqués dans les deux cas ; la cartouche n'ajoute
+                    # au masquage que sa mince bordure.
+                    position = (
+                        (img.size[0] - side) // 2,
+                        (img.size[1] - side) // 2,
+                    )
+                    img.paste(logo, position, logo if logo.mode == "RGBA" else None)
+                else:
+                    # Le cartouche ne prend jamais du blanc en dur : sur un code
+                    # à fond coloré, un carré blanc au centre se voit comme une
+                    # pièce rapportée. « fill » existe parce qu'un logo de la
+                    # même teinte que le fond disparaît dessus : mesuré sur le
+                    # renard bleu posé sur un fond bleu, il devenait illisible
+                    # alors que le code, lui, se décodait toujours.
+                    teinte = fill_color if self.qr_logo_plate == "fill" else back_color
+                    backdrop = Image.new("RGB", (side + 16, side + 16), teinte)
+                    backdrop.paste(logo, (8, 8), logo if logo.mode == "RGBA" else None)
+                    position = (
+                        (img.size[0] - backdrop.size[0]) // 2,
+                        (img.size[1] - backdrop.size[1]) // 2,
+                    )
+                    img.paste(backdrop, position)
 
         buffer = io.BytesIO()
         img.save(buffer, format="PNG")

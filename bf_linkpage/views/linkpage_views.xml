@@ -194,6 +194,8 @@
                                          invisible="not qr_branded">
                                         Vide, c'est le logo de la société qui sert.
                                     </div>
+                                    <field name="qr_logo_plate"
+                                           invisible="not qr_branded"/>
                                     <field name="qr_scale"/>
                                     <field name="qr_fill_color" widget="color"/>
                                     <field name="qr_back_color" widget="color"/>
