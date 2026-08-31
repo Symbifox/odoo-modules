@@ -1,6 +1,5 @@
 import json
 import logging
-import socket
 import threading
 from datetime import timedelta
 
@@ -9,9 +8,9 @@ from markupsafe import Markup, escape
 from odoo import api, fields, models
 from odoo.exceptions import UserError
 
-_logger = logging.getLogger(__name__)
+from odoo.addons.bf_ai_bridge.tools import transport
 
-_DEFAULT_BRIDGE_SOCKET = "/run/claude-bridge/bridge.sock"
+_logger = logging.getLogger(__name__)
 
 # Ceiling on the free-text instructions collected by meeting.refine.wizard.
 # They are pasted into the `claude -p` prompt, so an unbounded field would
@@ -56,59 +55,6 @@ def _format_meeting_date_display(record):
     return Markup(
         '%s <span style="font-size:0.82em;color:#9CA3AF;">(%s : %s)</span>'
     ) % (primary, tz_helper.tz_city(originator_tz_name), secondary)
-
-
-def _post_to_bridge(socket_path, endpoint, payload, timeout):
-    """Minimal HTTP-over-Unix-socket POST, returns parsed JSON response.
-
-    Mirrors the helper in bf_claude_chat to keep this module standalone.
-    """
-    body = json.dumps(payload).encode()
-    sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
-    sock.settimeout(timeout)
-    try:
-        sock.connect(socket_path)
-        req = (
-            f"POST {endpoint} HTTP/1.1\r\n"
-            f"Host: localhost\r\n"
-            f"Content-Type: application/json\r\n"
-            f"Content-Length: {len(body)}\r\n"
-            f"Connection: close\r\n"
-            f"\r\n"
-        ).encode() + body
-        sock.sendall(req)
-        chunks = []
-        while True:
-            chunk = sock.recv(8192)
-            if not chunk:
-                break
-            chunks.append(chunk)
-        raw = b"".join(chunks).decode()
-        header_end = raw.find("\r\n\r\n")
-        if header_end == -1:
-            raise ValueError("Malformed HTTP response from bridge")
-        status_line = raw[:raw.find("\r\n")]
-        status_code = int(status_line.split(" ", 2)[1])
-        resp_body = raw[header_end + 4:]
-        headers_block = raw[:header_end].lower()
-        if "transfer-encoding: chunked" in headers_block:
-            decoded = []
-            pos = 0
-            while pos < len(resp_body):
-                nl = resp_body.find("\r\n", pos)
-                if nl == -1:
-                    break
-                chunk_size = int(resp_body[pos:nl], 16)
-                if chunk_size == 0:
-                    break
-                decoded.append(resp_body[nl + 2:nl + 2 + chunk_size])
-                pos = nl + 2 + chunk_size + 2
-            resp_body = "".join(decoded)
-        if status_code >= 400:
-            raise ValueError(f"Bridge HTTP {status_code}: {resp_body[:200]}")
-        return json.loads(resp_body)
-    finally:
-        sock.close()
 
 
 class MeetingRecord(models.Model):
@@ -841,17 +787,14 @@ class MeetingRecord(models.Model):
                 subtype_xmlid="mail.mt_note",
             )
 
-        import os as _os
         ICP = self.env["ir.config_parameter"].sudo()
-        socket_path = ICP.get_param("bf_meeting.bridge_socket", _DEFAULT_BRIDGE_SOCKET)
         timeout = int(ICP.get_param("bf_meeting.bridge_timeout", "480"))
 
-        if not _os.path.exists(socket_path):
-            raise UserError(
-                f"Bridge Claude non disponible (socket introuvable : {socket_path}).\n"
-                f"Configurer le paramètre système `bf_meeting.bridge_socket` "
-                f"vers le socket du service `claude-chatbot-bridge`."
-            )
+        # Lève un UserError nommant le paramètre à corriger si la socket manque.
+        self.env["bf.ai.bridge"].check_available()
+        # Capturé ici : le fil détaché ci-dessous survit à ce curseur, il ne
+        # peut donc plus relire la configuration.
+        socket_path = self.env["bf.ai.bridge"].socket_path()
 
         record_id = self.id
         db_name = self.env.cr.dbname
@@ -868,7 +811,7 @@ class MeetingRecord(models.Model):
         def _run():
             from odoo import api as _api, registry as _registry
             try:
-                resp = _post_to_bridge(
+                resp = transport.post(
                     socket_path, "/refine-meeting",
                     {
                         "meeting_id": record_id,

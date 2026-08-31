@@ -212,6 +212,7 @@
     </tbody>
 </table>
             </field>
+            <field name="report_template_ids" eval="[(4, ref('bf_meeting.action_report_meeting_agenda'))]"/>
         </record>
 
     </data>

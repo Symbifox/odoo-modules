@@ -1,6 +1,6 @@
 {
     'name': 'Rencontres',
-    'version': '18.0.3.49.2',
+    'version': '18.0.3.50.2',
     'category': 'Services/Meetings',
     'summary': 'Gestion des rencontres, ordres du jour et comptes rendus',
     'description': """
@@ -53,7 +53,7 @@ compte rendu.
     'author': 'Les services de consultation Blue Fox, Inc.',
     'website': 'https://symbifox.com',
     'license': 'Other proprietary',
-    'depends': ['project', 'mail', 'calendar', 'project_knowledge_matrix', 'bf_onboarding_base', 'bf_timezone'],
+    'depends': ['project', 'mail', 'calendar', 'project_knowledge_matrix', 'bf_onboarding_base', 'bf_timezone', 'bf_ai_bridge'],
     'data': [
         'security/meeting_security.xml',
         'security/ir.model.access.csv',

@@ -73,6 +73,7 @@ tracking decisions as knowledge matrix lines.
 | `project_knowledge_matrix` | Knowledge matrices fed by decisions |
 | `bf_onboarding_base` | Guided welcome panel (a configuration step) and the `report_brand_{primary,dark,logo}` brand fields on `res.company` (palette for PDF reports and emails) |
 | `bf_timezone` | Displaying dates/times in the recipient's time zone |
+| `bf_ai_bridge` | The single Unix-socket transport used to reach the assistant; the module used to carry two copies of that helper inline |
 
 The white-label module `bluefox_branding` is **not** required: it only exposes
 and styles the `report_brand_*` fields, which have belonged to

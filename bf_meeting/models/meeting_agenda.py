@@ -1,8 +1,6 @@
 import json
 import logging
-import os
 import secrets
-import socket
 import threading
 from datetime import timedelta
 
@@ -10,6 +8,8 @@ from markupsafe import Markup, escape
 
 from odoo import api, fields, models
 from odoo.exceptions import UserError
+
+from odoo.addons.bf_ai_bridge.tools import transport
 
 from .meeting_record import (
     _MAX_REFINE_MESSAGE,
@@ -24,8 +24,6 @@ CLOSED_TASK_STATES = ('1_done', '1_canceled')
 
 REMINDER_LEAD_DAYS = 7
 REMINDER_ACTIVITY_SUMMARY = "Envoyer l'ordre du jour avant la rencontre"
-
-_DEFAULT_BRIDGE_SOCKET = "/run/claude-bridge/bridge.sock"
 
 
 _EMPTY_HTML_VALUES = ('', '<p><br></p>', '<p><br/></p>', '<p></p>')
@@ -89,59 +87,6 @@ def _highlight_user_additions(html_str):
     return ''.join(
         _html.tostring(c, encoding='unicode', with_tail=True) for c in wrapper
     )
-
-
-def _post_to_bridge(socket_path, endpoint, payload, timeout):
-    """Minimal HTTP-over-Unix-socket POST, returns parsed JSON response.
-
-    Mirrors the helper in meeting_record.py to keep this file standalone.
-    """
-    body = json.dumps(payload).encode()
-    sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
-    sock.settimeout(timeout)
-    try:
-        sock.connect(socket_path)
-        req = (
-            f"POST {endpoint} HTTP/1.1\r\n"
-            f"Host: localhost\r\n"
-            f"Content-Type: application/json\r\n"
-            f"Content-Length: {len(body)}\r\n"
-            f"Connection: close\r\n"
-            f"\r\n"
-        ).encode() + body
-        sock.sendall(req)
-        chunks = []
-        while True:
-            chunk = sock.recv(8192)
-            if not chunk:
-                break
-            chunks.append(chunk)
-        raw = b"".join(chunks).decode()
-        header_end = raw.find("\r\n\r\n")
-        if header_end == -1:
-            raise ValueError("Malformed HTTP response from bridge")
-        status_line = raw[:raw.find("\r\n")]
-        status_code = int(status_line.split(" ", 2)[1])
-        resp_body = raw[header_end + 4:]
-        headers_block = raw[:header_end].lower()
-        if "transfer-encoding: chunked" in headers_block:
-            decoded = []
-            pos = 0
-            while pos < len(resp_body):
-                nl = resp_body.find("\r\n", pos)
-                if nl == -1:
-                    break
-                chunk_size = int(resp_body[pos:nl], 16)
-                if chunk_size == 0:
-                    break
-                decoded.append(resp_body[nl + 2:nl + 2 + chunk_size])
-                pos = nl + 2 + chunk_size + 2
-            resp_body = "".join(decoded)
-        if status_code >= 400:
-            raise ValueError(f"Bridge HTTP {status_code}: {resp_body[:200]}")
-        return json.loads(resp_body)
-    finally:
-        sock.close()
 
 
 class MeetingAgenda(models.Model):
@@ -743,9 +688,8 @@ class MeetingAgenda(models.Model):
     def create(self, vals_list):
         records = super().create(vals_list)
         ICP = self.env["ir.config_parameter"].sudo()
-        socket_path = ICP.get_param("bf_meeting.bridge_socket", _DEFAULT_BRIDGE_SOCKET)
         auto = ICP.get_param("bf_meeting.agenda_auto_refine", "1") in ("1", "true", "True")
-        if not auto or not os.path.exists(socket_path):
+        if not auto or not self.env["bf.ai.bridge"].available():
             return records
         for rec in records:
             if rec.state == 'draft' and rec.project_id and not self.env.context.get('skip_auto_refine'):
@@ -865,12 +809,7 @@ class MeetingAgenda(models.Model):
             )
         if not self.project_id:
             raise UserError("Sélectionner d'abord un projet pour le pré-remplissage.")
-        ICP = self.env["ir.config_parameter"].sudo()
-        socket_path = ICP.get_param("bf_meeting.bridge_socket", _DEFAULT_BRIDGE_SOCKET)
-        if not os.path.exists(socket_path):
-            raise UserError(
-                f"Bridge Claude non disponible (socket introuvable : {socket_path})."
-            )
+        self.env["bf.ai.bridge"].check_available()
         self._launch_refine_agenda(silent=False)
         return {
             "type": "ir.actions.client",
@@ -890,8 +829,9 @@ class MeetingAgenda(models.Model):
         """Spawn the bridge call in a background thread and post status to chatter."""
         self.ensure_one()
         ICP = self.env["ir.config_parameter"].sudo()
-        socket_path = ICP.get_param("bf_meeting.bridge_socket", _DEFAULT_BRIDGE_SOCKET)
         timeout = int(ICP.get_param("bf_meeting.bridge_timeout", "480"))
+        # Capturé ici : le fil détaché ci-dessous survit à ce curseur.
+        socket_path = self.env["bf.ai.bridge"].socket_path()
 
         agenda_id = self.id
         db_name = self.env.cr.dbname
@@ -906,7 +846,7 @@ class MeetingAgenda(models.Model):
         def _run():
             from odoo import api as _api, registry as _registry
             try:
-                resp = _post_to_bridge(
+                resp = transport.post(
                     socket_path, "/refine-agenda",
                     {
                         "agenda_id": agenda_id,
