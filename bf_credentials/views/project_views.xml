@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Le bouton intelligent « Identifiants » de la fiche projet.
+
+         Il était dans la vue du socle jusqu'à sa 18.0.12.0.0, où il lisait
+         `credential_count`. Ce champ ayant déménagé, le bouton devait suivre :
+         un champ absent dans une vue n'échoue pas au chargement du module qui
+         la porte, il échoue à l'OUVERTURE de la fiche, chez l'utilisateur.
+
+         La vue s'insère APRÈS celle du socle plutôt que dans la boîte à
+         boutons directement, pour que le bouton garde sa place entre les
+         matrices et les documents. -->
+    <record id="project_view_form_inherit_credentials" model="ir.ui.view">
+        <field name="name">project.project.form.inherit.credentials</field>
+        <field name="model">project.project</field>
+        <field name="inherit_id" ref="project_knowledge_matrix.project_view_form_inherit_knowledge"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='action_view_documents']" position="before">
+                <button class="oe_stat_button" type="object"
+                        name="action_view_credentials"
+                        icon="fa-key"
+                        groups="bf_credentials.group_credential_user">
+                    <field name="credential_count" widget="statinfo" string="Identifiants"/>
+                </button>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

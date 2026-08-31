@@ -44,67 +44,6 @@ class DashboardCase(TransactionCase):
         })
 
 
-class TestCredentialMetrics(DashboardCase):
-    """Le défaut : « Expirant bientôt : 0, Expirés : 0 », quoi qu'il y ait en base.
-
-    Les compteurs cherchaient des identifiants ``state = 'active'`` dont la date
-    d'expiration était passée ou proche. Or c'est la tâche quotidienne qui fait
-    SORTIR ces identifiants de l'état actif, vers ``expiring`` et ``expired`` :
-    le tableau de bord contredisait la comptabilité du module.
-    """
-
-    @classmethod
-    def setUpClass(cls):
-        super().setUpClass()
-        cls.projet = cls.env['project.project'].create({'name': 'Projet tableau de bord'})
-        cls.type_id = cls.env['project.credential.type'].create({
-            'name': 'Type tableau', 'code': 'TEST-DASH',
-        })
-
-    def _identifiant(self, nom, **kwargs):
-        valeurs = {
-            'name': nom, 'project_id': self.projet.id, 'type_id': self.type_id.id,
-        }
-        valeurs.update(kwargs)
-        return self.env['project.credential'].create(valeurs)
-
-    def test_the_counters_see_what_the_daily_job_wrote(self):
-        self._identifiant('Actif un')
-        self._identifiant('Actif deux')
-        self._identifiant('Expire bientôt',
-                          expiration_date=self.aujourdhui + timedelta(days=10))
-        self._identifiant('Expiré',
-                          expiration_date=self.aujourdhui - timedelta(days=10))
-        self._identifiant('Révoqué')
-
-        # C'est la tâche planifiée qui déplace les statuts. On la joue.
-        self.env['project.credential']._cron_check_expiring_credentials()
-        self.env['project.credential'].search([
-            ('name', '=', 'Révoqué')]).action_revoke()
-
-        mesures = self.Tableau.get_credential_metrics()
-
-        self.assertEqual(mesures['expiring_soon'], 1,
-                         "L'identifiant qui expire dans 10 jours est invisible")
-        self.assertEqual(mesures['expired'], 1,
-                         "L'identifiant expiré depuis 10 jours est invisible")
-        self.assertEqual(mesures['revoked'], 1)
-        self.assertEqual(mesures['total'], 2, 'Seuls les actifs comptent dans le total')
-
-    def test_the_four_counters_partition_the_whole_set(self):
-        """Aucun identifiant compté deux fois, aucun oublié."""
-        for i in range(3):
-            self._identifiant(f'Actif {i}')
-        self._identifiant('Bientôt', expiration_date=self.aujourdhui + timedelta(days=5))
-        self._identifiant('Fini', expiration_date=self.aujourdhui - timedelta(days=5))
-        self.env['project.credential']._cron_check_expiring_credentials()
-
-        mesures = self.Tableau.get_credential_metrics()
-        somme = (mesures['total'] + mesures['expiring_soon']
-                 + mesures['expired'] + mesures['revoked'])
-        self.assertEqual(somme, self.env['project.credential'].search_count([]))
-
-
 class TestDrilldownsMirrorTheirCounter(DashboardCase):
     """Chaque chiffre doit ramener sa propre population.
 
@@ -113,40 +52,9 @@ class TestDrilldownsMirrorTheirCounter(DashboardCase):
     exécute le domaine et compare au chiffre.
     """
 
-    @classmethod
-    def setUpClass(cls):
-        super().setUpClass()
-        cls.projet = cls.env['project.project'].create({'name': 'Projet forage'})
-        cls.type_id = cls.env['project.credential.type'].create({
-            'name': 'Type forage', 'code': 'TEST-FORAGE',
-        })
-        Credential = cls.env['project.credential']
-        for nom, jours in (('Actif A', None), ('Actif B', None),
-                           ('Bientôt', 12), ('Fini', -12)):
-            valeurs = {'name': nom, 'project_id': cls.projet.id,
-                       'type_id': cls.type_id.id}
-            if jours is not None:
-                valeurs['expiration_date'] = cls.aujourdhui + timedelta(days=jours)
-            Credential.create(valeurs)
-        Credential._cron_check_expiring_credentials()
-        Credential.search([('name', '=', 'Actif B')]).action_revoke()
-
     def _compter_par_action(self, xmlid):
         action = self.env.ref(f'project_knowledge_matrix.{xmlid}')
         return self.env[action.res_model].search_count(self._evaluer_domaine(action))
-
-    def test_each_credential_drilldown_returns_its_counter(self):
-        mesures = self.Tableau.get_credential_metrics()
-        for cle, xmlid in (
-            ('total', 'report_action_cred_active'),
-            ('expiring_soon', 'report_action_cred_expiring'),
-            ('expired', 'report_action_cred_expired'),
-        ):
-            with self.subTest(compteur=cle):
-                self.assertEqual(
-                    self._compter_par_action(xmlid), mesures[cle],
-                    f'Le forage « {xmlid} » ne ramène pas ce que « {cle} » annonce',
-                )
 
     def test_the_document_drilldowns_still_target_document_states(self):
         """Garde-fou : les états d'un document ne sont pas ceux d'un identifiant.
@@ -233,11 +141,14 @@ class TestAggregatedBlocks(DashboardCase):
         )
 
     def test_the_whole_dashboard_still_answers_every_block(self):
-        """Distribution allumée, le tableau de bord rend ses onze blocs.
+        """Distribution allumée, le tableau de bord rend ses huit blocs.
 
         Les trois blocs de distribution sont conditionnels depuis la 11.5.0 :
         le test les exige donc avec l'interrupteur mis, et
-        ``TestDistributionSwitch`` couvre l'autre moitié.
+        ``TestDistributionSwitch`` couvre l'autre moitié. Les blocs corporatif
+        et identifiants, eux, ont quitté le module aux 12.0.0 et 13.0.0 : ce
+        sont ``bf_corporate_governance`` et ``bf_credentials`` qui les
+        ajoutent, et qui les éprouvent.
         """
         porteur = self.env.ref('project_knowledge_matrix.group_document_user')
         porteur.write({'implied_ids': [(4, self.env.ref(
@@ -246,8 +157,7 @@ class TestAggregatedBlocks(DashboardCase):
         donnees = self.Tableau.get_dashboard_data()
         for bloc in ('document_overview', 'review_metrics', 'client_metrics',
                      'internal_metrics', 'distribution_activity', 'content_quality',
-                     'matrix_metrics', 'credential_metrics', 'decision_metrics',
-                     'corporate_metrics'):
+                     'matrix_metrics', 'decision_metrics'):
             with self.subTest(bloc=bloc):
                 self.assertIn(bloc, donnees)
                 self.assertIsNotNone(donnees[bloc])

@@ -1,0 +1,9 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_credential_user,Credential User Access,model_project_credential,group_credential_user,1,1,1,0
+access_credential_manager,Credential Manager Access,model_project_credential,group_credential_manager,1,1,1,1
+access_credential_type_user,Credential Type User Access,model_project_credential_type,group_credential_user,1,0,0,0
+access_credential_type_manager,Credential Type Manager Access,model_project_credential_type,group_credential_manager,1,1,1,1
+access_credential_rotate_wizard_user,Credential Rotate Wizard User Access,model_project_credential_rotate_wizard,group_credential_user,1,1,1,1
+access_credential_rotate_wizard_manager,Credential Rotate Wizard Manager Access,model_project_credential_rotate_wizard,group_credential_manager,1,1,1,1
+access_credential_vault_user,Credential Vault User Access,model_project_credential_vault,group_credential_user,1,0,0,0
+access_credential_vault_manager,Credential Vault Manager Access,model_project_credential_vault,group_credential_manager,1,1,1,1

@@ -26,11 +26,6 @@
                     </div>
                 </button>
                 <button class="oe_stat_button" type="object"
-                        name="action_view_credentials"
-                        icon="fa-key">
-                    <field name="credential_count" widget="statinfo" string="Credentials"/>
-                </button>
-                <button class="oe_stat_button" type="object"
                         name="action_view_documents"
                         icon="fa-file-text-o"
                         groups="project_knowledge_matrix.group_document_user">
@@ -53,6 +48,19 @@
                         <span class="o_stat_text">RACI</span>
                     </div>
                 </button>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Extend Project Form: mark a project as a demonstration -->
+    <record id="project_view_form_inherit_knowledge_demo" model="ir.ui.view">
+        <field name="name">project.project.form.inherit.knowledge.demo</field>
+        <field name="model">project.project</field>
+        <field name="inherit_id" ref="project.edit_project"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group[@name='extra_settings']" position="inside">
+                <field name="knowledge_is_demo"
+                       groups="project_knowledge_matrix.group_knowledge_user"/>
             </xpath>
         </field>
     </record>

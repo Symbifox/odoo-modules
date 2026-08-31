@@ -7,7 +7,7 @@ import { _t } from "@web/core/l10n/translation";
 import { useState } from "@odoo/owl";
 
 export class CopyablePasswordField extends CharField {
-    static template = "project_knowledge_matrix.CopyablePasswordField";
+    static template = "bf_credentials.CopyablePasswordField";
 
     setup() {
         super.setup();

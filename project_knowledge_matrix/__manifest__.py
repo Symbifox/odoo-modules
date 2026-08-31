@@ -1,6 +1,6 @@
 {
     'name': 'Project Knowledge Matrix',
-    'version': '18.0.11.5.0',
+    'version': '18.0.13.2.0',
     'category': 'Services/Project',
     'summary': 'Base de connaissances projets, politiques et documentation',
     'description': """
@@ -57,23 +57,18 @@ Fonctionnalités:
         'security/document_body_security.xml',
         # Reference data
         'data/knowledge_section_data.xml',
-        'data/credential_type_data.xml',
-        'data/credential_cron.xml',
         'data/document_type_data.xml',
         'data/document_section_type_data.xml',
         'data/document_type_section_data.xml',
         'data/document_cron.xml',
         'data/document_mail_templates.xml',
         'data/document_report_mail_template.xml',
-        'data/corporate_compliance_data.xml',
-        'data/corporate_cron.xml',
         'data/knowledge_activity_type.xml',
         'data/knowledge_activity_cron.xml',
         'data/matrix_report_cron.xml',
         # Reports
         'report/knowledge_matrix_paperformat.xml',
         'report/knowledge_matrix_report_templates.xml',
-        'report/corporate_resolution_templates.xml',
         'report/document_body_templates.xml',
         # Wizards
         'wizard/import_csv_wizard_views.xml',
@@ -82,16 +77,10 @@ Fonctionnalités:
         'views/knowledge_section_views.xml',
         'views/knowledge_item_views.xml',
         'views/knowledge_matrix_views.xml',
-        'views/credential_type_views.xml',
-        'views/credential_views.xml',
         'views/document_type_views.xml',
         'views/document_views.xml',
         'views/raci_stakeholder_views.xml',
         'views/project_views.xml',
-        'views/corporate_resolution_views.xml',
-        'views/corporate_director_views.xml',
-        'views/corporate_officer_views.xml',
-        'views/corporate_compliance_views.xml',
         # Actions de forage du rapport courriel: charge APRÈS toutes les vues
         # qu'elle référence en search_view_id (document, distribution,
         # identifiant, élément de connaissance, et les quatre corporatives).

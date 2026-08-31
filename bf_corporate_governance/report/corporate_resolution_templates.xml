@@ -19,8 +19,8 @@
         <field name="name">Résolution</field>
         <field name="model">corporate.resolution</field>
         <field name="report_type">qweb-pdf</field>
-        <field name="report_name">project_knowledge_matrix.report_corporate_resolution</field>
-        <field name="report_file">project_knowledge_matrix.report_corporate_resolution</field>
+        <field name="report_name">bf_corporate_governance.report_corporate_resolution</field>
+        <field name="report_file">bf_corporate_governance.report_corporate_resolution</field>
         <field name="print_report_name">'%s_%s' % (object.sequence, object.name)</field>
         <field name="binding_model_id" ref="model_corporate_resolution"/>
         <field name="binding_type">report</field>
@@ -33,6 +33,14 @@
             <t t-foreach="docs" t-as="doc">
                 <t t-set="directors" t-value="doc._get_directors_at_date()"/>
                 <t t-set="signatories" t-value="doc._get_signatories()"/>
+                <!-- La palette passe par le helper DÉFENSIF de res.company.
+                     Lire report_brand_* directement lève une AttributeError
+                     chez un locataire sans bluefox_branding, qui n'est PAS une
+                     dépendance déclarée : la garde « company and company.champ »
+                     protège d'une société absente, pas d'un champ absent. -->
+                <t t-set="marque" t-value="env.company._pkm_brand() if env.company else {}"/>
+                <t t-set="brand_primary" t-value="marque.get('primary') or '#714B67'"/>
+                <t t-set="brand_dark" t-value="marque.get('dark') or '#212529'"/>
                 <div class="article" style="padding: 0 !important; margin: 0 !important;">
                     <link rel="stylesheet" href="/bf_lexend/static/src/scss/lexend_report.css"/>
                     <style>
@@ -49,14 +57,14 @@
                             font-family: "Lexend", system-ui, -apple-system, sans-serif;
                             font-size: 12pt;
                             line-height: 1.6;
-                            color: <t t-esc="(env.company and env.company.report_brand_dark) or '#212529'"/>;
+                            color: <t t-esc="brand_dark"/>;
                             position: relative;
                             min-height: 270mm;
                         }
 
                         /* ── Top Banner ── */
                         .res-banner {
-                            background: <t t-esc="(env.company and env.company.report_brand_dark) or '#212529'"/>;
+                            background: <t t-esc="brand_dark"/>;
                             padding: 28pt 32pt 24pt 32pt;
                             display: table;
                             width: 100%;
@@ -80,7 +88,7 @@
                             font-weight: 600;
                             text-transform: uppercase;
                             letter-spacing: 2pt;
-                            color: <t t-esc="(env.company and env.company.report_brand_primary) or '#714B67'"/>;
+                            color: <t t-esc="brand_primary"/>;
                             margin: 0 0 4pt 0;
                         }
                         .res-banner h1 {
@@ -98,7 +106,7 @@
                         /* Blue accent bar under banner */
                         .res-accent-bar {
                             height: 4px;
-                            background: <t t-esc="(env.company and env.company.report_brand_primary) or '#714B67'"/>;
+                            background: <t t-esc="brand_primary"/>;
                             margin: 0 0 20pt 0;
                             width: 100%;
                         }
@@ -112,8 +120,8 @@
                         }
                         .res-ref span {
                             display: inline-block;
-                            border: 1.5px solid <t t-esc="(env.company and env.company.report_brand_primary) or '#714B67'"/>;
-                            color: <t t-esc="(env.company and env.company.report_brand_primary) or '#714B67'"/>;
+                            border: 1.5px solid <t t-esc="brand_primary"/>;
+                            color: <t t-esc="brand_primary"/>;
                             font-size: 10.5pt;
                             font-weight: 600;
                             padding: 4pt 14pt;
@@ -144,7 +152,7 @@
                         }
                         .res-meta td.ml {
                             font-weight: 600;
-                            color: <t t-esc="(env.company and env.company.report_brand_dark) or '#212529'"/>;
+                            color: <t t-esc="brand_dark"/>;
                             width: 210px;
                             background: #f8f9fb;
                         }
@@ -170,10 +178,10 @@
                             font-weight: 600;
                             text-transform: uppercase;
                             letter-spacing: 1pt;
-                            color: <t t-esc="(env.company and env.company.report_brand_primary) or '#714B67'"/>;
+                            color: <t t-esc="brand_primary"/>;
                             margin-bottom: 16pt;
                             padding-bottom: 6pt;
-                            border-bottom: 2px solid <t t-esc="(env.company and env.company.report_brand_primary) or '#714B67'"/>;
+                            border-bottom: 2px solid <t t-esc="brand_primary"/>;
                             display: inline-block;
                         }
                         .res-sig-entry {
@@ -181,14 +189,14 @@
                             width: 280px;
                         }
                         .res-sig-line {
-                            border-bottom: 1.5px solid <t t-esc="(env.company and env.company.report_brand_dark) or '#212529'"/>;
+                            border-bottom: 1.5px solid <t t-esc="brand_dark"/>;
                             height: 54pt;
                         }
                         .res-sig-name {
                             padding-top: 5pt;
                             font-size: 11pt;
                             font-weight: 600;
-                            color: <t t-esc="(env.company and env.company.report_brand_dark) or '#212529'"/>;
+                            color: <t t-esc="brand_dark"/>;
                         }
                         .res-sig-role {
                             font-size: 10pt;

@@ -1,8 +1,11 @@
 import logging
 from datetime import timedelta
+from urllib.parse import quote
 
 from odoo import api, fields, models, _
-from odoo.exceptions import AccessError, UserError
+from odoo.exceptions import AccessError, UserError, ValidationError
+
+from .otp_secret_guard import otp_secret_reason
 
 _logger = logging.getLogger(__name__)
 
@@ -156,6 +159,98 @@ class ProjectCredential(models.Model):
         help="Si coché, le mot de passe n'est visible que par les gestionnaires d'identifiants",
     )
 
+    # -------------------------------------------------------------------------
+    # Deuxième facteur — le registre, jamais la graine
+    #
+    # Le coffre porte le mot de passe. Son deuxième facteur vit ailleurs, et ces
+    # champs disent seulement OÙ et CHEZ QUI. Aucun d'eux ne contient de secret,
+    # et `_check_no_otp_secret` refuse ce qui ressemble à une graine : mettre le
+    # mot de passe et son deuxième facteur dans la même base laisserait UN
+    # facteur au client, pas deux. Napkin BF #25077.
+    # -------------------------------------------------------------------------
+
+    mfa_type = fields.Selection([
+        ('unknown', 'À documenter'),
+        ('none', 'Aucun'),
+        ('totp', 'Code à durée limitée (TOTP)'),
+        ('hardware', 'Clé matérielle (FIDO2, YubiKey)'),
+        ('app', "Notification d'une application"),
+        ('sms', 'SMS'),
+        ('email', 'Courriel'),
+        ('backup_codes', 'Codes de secours seulement'),
+        ('other', 'Autre'),
+    ],
+        string='Deuxième facteur',
+        # « À documenter » et non « Aucun » : les identifiants qui existaient
+        # avant ce lot n'ont jamais été interrogés là-dessus. Les déclarer sans
+        # deuxième facteur inventerait une réponse, et une réponse fausse dans
+        # le sens rassurant. « À documenter » les fait apparaître comme du
+        # travail à faire, ce qu'ils sont.
+        default='unknown',
+        required=True,
+        tracking=True,
+        index=True,
+    )
+    mfa_vault_id = fields.Many2one(
+        'project.credential.vault',
+        string='Porteur du facteur',
+        tracking=True,
+        help="Où vit le deuxième facteur. Jamais son contenu.",
+    )
+    mfa_reference = fields.Char(
+        string='Référence chez le porteur',
+        tracking=True,
+        help="L'étiquette du facteur chez son porteur, de quoi le retrouver sans "
+             "le lire.\n"
+             "⚠️ Jamais la graine elle-même : ce champ la refuse.",
+    )
+    mfa_holder_ids = fields.Many2many(
+        'res.users',
+        'project_credential_mfa_holder_rel', 'credential_id', 'user_id',
+        string='Peuvent produire un code',
+        tracking=True,
+    )
+    mfa_holder_note = fields.Char(
+        string='Autre porteur',
+        tracking=True,
+        help="Quand la personne qui détient le facteur n'a pas de compte ici : "
+             "un jeton dans un tiroir, quelqu'un chez le client.",
+    )
+    mfa_recovery = fields.Selection([
+        ('unknown', 'À documenter'),
+        ('none', 'Aucune'),
+        ('backup_codes', 'Codes de secours'),
+        ('second_holder', 'Une deuxième personne peut produire un code'),
+        ('vault', 'Le facteur est dans un porteur partagé'),
+        ('provider', 'Réémission par le fournisseur'),
+    ],
+        string='Reprise',
+        default='unknown',
+        required=True,
+        tracking=True,
+        help="Ce qui se passe si le porteur disparaît. C'est la question que "
+             "personne ne se pose avant un départ.",
+    )
+    mfa_last_reviewed = fields.Date(
+        string='Dernière revue du facteur',
+        tracking=True,
+    )
+    mfa_state = fields.Selection([
+        ('unknown', 'À documenter'),
+        ('absent', 'Aucun deuxième facteur'),
+        ('at_risk', 'Deuxième facteur sans relève'),
+        ('covered', 'Couvert'),
+    ],
+        string='État du deuxième facteur',
+        compute='_compute_mfa_state',
+        store=True,
+        index=True,
+    )
+    mfa_item_url = fields.Char(
+        string="Lien vers l'élément",
+        compute='_compute_mfa_item_url',
+    )
+
     # Notes
     notes = fields.Html(
         string='Notes',
@@ -242,7 +337,7 @@ class ProjectCredential(models.Model):
     def _compute_password(self):
         """Déchiffrer le mot de passe pour l'affichage."""
         is_manager = self.env.user.has_group(
-            'project_knowledge_matrix.group_credential_manager'
+            'bf_credentials.group_credential_manager'
         )
         for record in self:
             if record.restricted and not is_manager:
@@ -263,7 +358,7 @@ class ProjectCredential(models.Model):
     def _compute_api_key(self):
         """Déchiffrer la clé API pour l'affichage."""
         is_manager = self.env.user.has_group(
-            'project_knowledge_matrix.group_credential_manager'
+            'bf_credentials.group_credential_manager'
         )
         for record in self:
             if record.restricted and not is_manager:
@@ -283,7 +378,7 @@ class ProjectCredential(models.Model):
 
     def _is_credential_manager(self):
         return self.env.su or self.env.user.has_group(
-            'project_knowledge_matrix.group_credential_manager'
+            'bf_credentials.group_credential_manager'
         )
 
     def write(self, vals):
@@ -301,7 +396,144 @@ class ProjectCredential(models.Model):
                     "Seul un gestionnaire d'identifiants peut modifier l'état "
                     "« Restreint » d'un identifiant."
                 ))
-        return super().write(vals)
+
+        # Toucher au deuxième facteur, c'est l'avoir revu : la date se pose
+        # toute seule. Sans ça, `mfa_last_reviewed` resterait vide à jamais, et
+        # une « dernière revue » toujours vide est pire qu'absente — elle laisse
+        # croire que personne n'a jamais regardé.
+        #
+        # ⚠️ On estampille sur un changement RÉEL, pas sur la présence du champ
+        # dans les valeurs : enregistrer un formulaire réécrit tous les champs,
+        # et estampiller là-dessus ferait passer pour une revue le simple fait
+        # d'avoir ouvert la fiche.
+        if (not self._MFA_CHAMPS_DE_REVUE.intersection(vals)
+                or 'mfa_last_reviewed' in vals
+                or self.env.context.get('bf_cred_sans_horodatage')):
+            return super().write(vals)
+
+        avant = {rec.id: rec._mfa_empreinte() for rec in self}
+        resultat = super().write(vals)
+        changees = self.filtered(lambda r: r._mfa_empreinte() != avant[r.id])
+        if changees:
+            changees.with_context(bf_cred_sans_horodatage=True).write(
+                {'mfa_last_reviewed': fields.Date.context_today(self)})
+        return resultat
+
+    # Ce qui, changé, vaut une revue. `mfa_state` en est absent : il est calculé,
+    # il suit ces champs-là et ne se touche pas à la main.
+    _MFA_CHAMPS_DE_REVUE = {
+        'mfa_type', 'mfa_vault_id', 'mfa_reference', 'mfa_holder_ids',
+        'mfa_holder_note', 'mfa_recovery',
+    }
+
+    def _mfa_empreinte(self):
+        """Ce que le registre dit du facteur, sous une forme comparable.
+
+        Les identifiants du many2many sont TRIÉS : sans ça, un simple
+        réordonnancement se lirait comme un changement et poserait une date de
+        revue que personne n'a faite.
+        """
+        self.ensure_one()
+        return (
+            self.mfa_type, self.mfa_vault_id.id, self.mfa_reference or '',
+            tuple(sorted(self.mfa_holder_ids.ids)), self.mfa_holder_note or '',
+            self.mfa_recovery,
+        )
+
+    # -------------------------------------------------------------------------
+    # Deuxième facteur — calculs et garde-fou
+    # -------------------------------------------------------------------------
+
+    # Les types qui désignent un vrai facteur, celui qu'il faut pouvoir produire
+    # le jour où on en a besoin. « none » et « unknown » n'en sont pas, et les
+    # codes de secours seuls sont déjà leur propre relève.
+    _MFA_TYPES_REELS = ('totp', 'hardware', 'app', 'sms', 'email', 'other')
+
+    @api.depends('mfa_type', 'mfa_vault_id', 'mfa_holder_ids',
+                 'mfa_holder_note', 'mfa_recovery')
+    def _compute_mfa_state(self):
+        """Résume en un mot ce que le registre sait du deuxième facteur.
+
+        L'état ne juge pas la sécurité du facteur, il juge ce qu'on en SAIT. Un
+        facteur que personne n'est nommé pour produire, ou dont la reprise n'est
+        pas écrite, est un facteur qui bloquera quelqu'un un jour, quelle que
+        soit sa qualité cryptographique.
+        """
+        for record in self:
+            if record.mfa_type == 'unknown':
+                record.mfa_state = 'unknown'
+            elif record.mfa_type == 'none':
+                record.mfa_state = 'absent'
+            elif record.mfa_type not in record._MFA_TYPES_REELS:
+                # Codes de secours seuls : documenté, et sa propre relève.
+                record.mfa_state = 'covered'
+            else:
+                porteur_nomme = bool(
+                    record.mfa_vault_id or record.mfa_holder_ids
+                    or record.mfa_holder_note
+                )
+                reprise_ecrite = record.mfa_recovery not in ('unknown', 'none')
+                record.mfa_state = (
+                    'covered' if porteur_nomme and reprise_ecrite else 'at_risk'
+                )
+
+    @api.depends('mfa_vault_id.item_url_pattern', 'mfa_reference')
+    def _compute_mfa_item_url(self):
+        """Un lien vers l'élément chez son porteur, construit sans rien lire.
+
+        C'est tout le raccordement : Odoo sait où aller, il n'y va pas. La
+        référence est encodée pour l'URL, jamais interpolée telle quelle.
+        """
+        for record in self:
+            gabarit = record.mfa_vault_id.item_url_pattern
+            if gabarit and record.mfa_reference and '{ref}' in gabarit:
+                record.mfa_item_url = gabarit.replace(
+                    '{ref}', quote(record.mfa_reference, safe=''))
+            else:
+                record.mfa_item_url = False
+
+    # Les champs surveillés, et avec quelle sévérité.
+    #
+    # `notes` est le VRAI chemin de fuite : personne ne colle une graine dans
+    # « Référence chez le porteur », mais on colle volontiers les instructions
+    # d'enrôlement en entier dans les notes, adresse otpauth:// comprise.
+    #
+    # ⚠️ Les notes sont du texte libre, donc on n'y applique que les deux règles
+    # CERTAINES. La règle du base32 nu y ferait des faux positifs, et un faux
+    # positif sur un champ de rédaction bloquerait une sauvegarde sans porte de
+    # sortie.
+    _CHAMPS_SANS_GRAINE = {
+        'mfa_reference': True,
+        'mfa_holder_note': True,
+        'notes': False,
+    }
+
+    @api.constrains('mfa_reference', 'mfa_holder_note', 'notes')
+    def _check_no_otp_secret(self):
+        """Refuse une graine dans les champs du registre.
+
+        La promesse du module est qu'il ne détient aucune graine. Sans cette
+        contrainte, la promesse ne tiendrait qu'à la discipline de qui saisit,
+        et le premier collage d'une adresse otpauth:// la briserait en silence.
+        """
+        etiquettes = {
+            'mfa_reference': _('Référence chez le porteur'),
+            'mfa_holder_note': _('Autre porteur'),
+            'notes': _('Notes'),
+        }
+        for record in self:
+            for champ, strict in self._CHAMPS_SANS_GRAINE.items():
+                etiquette = etiquettes[champ]
+                raison = otp_secret_reason(record[champ], strict=strict)
+                if raison:
+                    raise ValidationError(_(
+                        "Le champ « %(champ)s » a reçu %(raison)s.\n\n"
+                        "Ce registre ne garde aucune graine : il dit seulement "
+                        "où vit le deuxième facteur et qui peut produire un "
+                        "code. Range la graine chez son porteur, et mets ici "
+                        "l'étiquette qui permet de la retrouver.",
+                        champ=etiquette, raison=raison,
+                    ))
 
     # -------------------------------------------------------------------------
     # Statut d'expiration

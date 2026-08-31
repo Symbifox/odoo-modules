@@ -220,34 +220,6 @@
     </record>
 
     <!-- ==================================================== -->
-    <!-- IDENTIFIANTS                                         -->
-    <!-- ==================================================== -->
-
-    <record id="report_action_cred_active" model="ir.actions.act_window">
-        <field name="name">Identifiants actifs</field>
-        <field name="res_model">project.credential</field>
-        <field name="view_mode">list,kanban,form</field>
-        <field name="search_view_id" ref="credential_view_search"/>
-        <field name="domain">[('state', '=', 'active')]</field>
-    </record>
-
-    <record id="report_action_cred_expiring" model="ir.actions.act_window">
-        <field name="name">Identifiants expirant sous 30 jours</field>
-        <field name="res_model">project.credential</field>
-        <field name="view_mode">list,kanban,form</field>
-        <field name="search_view_id" ref="credential_view_search"/>
-        <field name="domain">[('state', '=', 'expiring')]</field>
-    </record>
-
-    <record id="report_action_cred_expired" model="ir.actions.act_window">
-        <field name="name">Identifiants expirés</field>
-        <field name="res_model">project.credential</field>
-        <field name="view_mode">list,kanban,form</field>
-        <field name="search_view_id" ref="credential_view_search"/>
-        <field name="domain">[('state', '=', 'expired')]</field>
-    </record>
-
-    <!-- ==================================================== -->
     <!-- DÉCISIONS                                            -->
     <!-- ==================================================== -->
     <!--
@@ -301,50 +273,6 @@
                 Les décisions à fort impact encore à trancher apparaîtront ici.
             </p>
         </field>
-    </record>
-
-    <!-- ==================================================== -->
-    <!-- GOUVERNANCE CORPORATIVE                              -->
-    <!-- ==================================================== -->
-
-    <record id="report_action_corp_directors" model="ir.actions.act_window">
-        <field name="name">Administrateurs actifs</field>
-        <field name="res_model">corporate.director</field>
-        <field name="view_mode">list,form</field>
-        <field name="search_view_id" ref="corporate_director_view_search"/>
-        <field name="domain">[('is_active', '=', True)]</field>
-    </record>
-
-    <record id="report_action_corp_officers" model="ir.actions.act_window">
-        <field name="name">Dirigeants actifs</field>
-        <field name="res_model">corporate.officer</field>
-        <field name="view_mode">list,form</field>
-        <field name="search_view_id" ref="corporate_officer_view_search"/>
-        <field name="domain">[('is_active', '=', True)]</field>
-    </record>
-
-    <record id="report_action_corp_resolutions_adopted" model="ir.actions.act_window">
-        <field name="name">Résolutions adoptées</field>
-        <field name="res_model">corporate.resolution</field>
-        <field name="view_mode">list,form</field>
-        <field name="search_view_id" ref="corporate_resolution_view_search"/>
-        <field name="domain">[('status', '=', 'adopted')]</field>
-    </record>
-
-    <record id="report_action_corp_compliance_overdue" model="ir.actions.act_window">
-        <field name="name">Conformité corporative en retard</field>
-        <field name="res_model">corporate.compliance.event</field>
-        <field name="view_mode">list,calendar,form</field>
-        <field name="search_view_id" ref="corporate_compliance_view_search"/>
-        <field name="domain">[('completed_date', '=', False), ('status', '=', 'overdue')]</field>
-    </record>
-
-    <record id="report_action_corp_compliance_due_soon" model="ir.actions.act_window">
-        <field name="name">Conformité corporative à échéance proche</field>
-        <field name="res_model">corporate.compliance.event</field>
-        <field name="view_mode">list,calendar,form</field>
-        <field name="search_view_id" ref="corporate_compliance_view_search"/>
-        <field name="domain">[('completed_date', '=', False), ('status', '=', 'due_soon')]</field>
     </record>
 
 </odoo>

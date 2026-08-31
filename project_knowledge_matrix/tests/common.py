@@ -1,4 +1,4 @@
-"""Jeu d'essai partagé, figé.
+"""Jeu d'essai partagé — celui du 19 août, figé.
 
 Deux documents, trois versions, six distributions. Les valeurs attendues sont
 calculées à la main dans la docstring de ``KnowledgeCase`` et reprises telles

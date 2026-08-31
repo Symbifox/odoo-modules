@@ -367,32 +367,13 @@
                         </div>
                     </div>
 
-                    <!-- Credentials -->
-                    <div class="col-lg-4 col-md-6 mb-3">
-                        <div class="card h-100 cursor-pointer" t-on-click="openCredentials">
-                            <div class="card-header bg-light">
-                                <h6 class="mb-0"><i class="fa fa-key me-2"/>Identifiants</h6>
-                            </div>
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between mb-2">
-                                    <span>Identifiants actifs</span>
-                                    <strong t-esc="state.data.credential_metrics.total"/>
-                                </div>
-                                <div class="d-flex justify-content-between mb-2 cursor-pointer" t-on-click.stop="openExpiringCredentials">
-                                    <span>Expirent sous 30j</span>
-                                    <span t-attf-class="badge {{state.data.credential_metrics.expiring_soon > 0 ? 'text-bg-warning' : 'text-bg-success'}}" t-esc="state.data.credential_metrics.expiring_soon"/>
-                                </div>
-                                <div class="d-flex justify-content-between mb-2 cursor-pointer" t-on-click.stop="openExpiredCredentials">
-                                    <span>Expirés</span>
-                                    <span t-attf-class="badge {{state.data.credential_metrics.expired > 0 ? 'text-bg-danger' : 'text-bg-success'}}" t-esc="state.data.credential_metrics.expired"/>
-                                </div>
-                                <div class="d-flex justify-content-between cursor-pointer" t-on-click.stop="openRevokedCredentials">
-                                    <span>Révoqués</span>
-                                    <span class="badge text-bg-secondary" t-esc="state.data.credential_metrics.revoked"/>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <!-- Colonnes ajoutées à cette rangée par un module posé
+                         par-dessus : c'est ici que bf_credentials remet sa carte
+                         « Identifiants », qui en était la troisième colonne
+                         jusqu'à la 18.0.12.0.0. Un t-call plutôt qu'un xpath
+                         posé sur la carte voisine, qui se décrocherait à la
+                         première retouche de la rangée. -->
+                    <t t-call="project_knowledge_matrix.DashboardQualityColumns"/>
                 </div>
 
                 <!-- Decision Tracking Row -->
@@ -444,67 +425,16 @@
                     </div>
                 </div>
 
-                <!-- Corporate Governance Row (hidden when filtered by project) -->
-                <div class="row mb-4" t-if="state.data.corporate_metrics and !state.projectId">
-                    <div class="col-12">
-                        <h5 class="text-uppercase text-muted mb-3">
-                            <i class="fa fa-institution me-2"/>Gouvernance corporative
-                        </h5>
-                    </div>
-                    <div class="col-lg-4 col-md-6 mb-3">
-                        <div class="card h-100">
-                            <div class="card-header" style="background-color: #1a1a2e;">
-                                <h6 class="mb-0 text-white"><i class="fa fa-users me-2"/>Registres</h6>
-                            </div>
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between mb-2 cursor-pointer" t-on-click="openDirectors">
-                                    <span><i class="fa fa-user-tie me-2"/>Administrateurs actifs</span>
-                                    <strong t-esc="state.data.corporate_metrics.active_directors"/>
-                                </div>
-                                <div class="d-flex justify-content-between mb-2 cursor-pointer" t-on-click="openOfficers">
-                                    <span><i class="fa fa-briefcase me-2"/>Dirigeants actifs</span>
-                                    <strong t-esc="state.data.corporate_metrics.active_officers"/>
-                                </div>
-                                <div class="d-flex justify-content-between cursor-pointer" t-on-click="openResolutions">
-                                    <span><i class="fa fa-gavel me-2"/>Résolutions adoptées</span>
-                                    <strong t-esc="state.data.corporate_metrics.adopted_resolutions"/>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-md-6 mb-3">
-                        <div class="card h-100">
-                            <div class="card-header bg-light">
-                                <h6 class="mb-0"><i class="fa fa-calendar-check-o me-2"/>Conformité corporative</h6>
-                            </div>
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between mb-2 cursor-pointer" t-on-click="openOverdueCompliance">
-                                    <span>En retard</span>
-                                    <span t-attf-class="badge {{state.data.corporate_metrics.overdue_compliance > 0 ? 'text-bg-danger' : 'text-bg-success'}}" t-esc="state.data.corporate_metrics.overdue_compliance"/>
-                                </div>
-                                <div class="d-flex justify-content-between mb-2 cursor-pointer" t-on-click="openComplianceCalendar">
-                                    <span>Échéance proche</span>
-                                    <span t-attf-class="badge {{state.data.corporate_metrics.due_soon_compliance > 0 ? 'text-bg-warning' : 'text-bg-secondary'}}" t-esc="state.data.corporate_metrics.due_soon_compliance"/>
-                                </div>
-                                <div class="d-flex justify-content-between cursor-pointer" t-on-click="openComplianceCalendar">
-                                    <span>À venir</span>
-                                    <span class="badge text-bg-info" t-esc="state.data.corporate_metrics.upcoming_compliance"/>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-md-6 mb-3" t-if="state.data.corporate_metrics and !state.projectId and state.data.corporate_metrics.overdue_compliance > 0">
-                        <div class="card h-100 border-danger cursor-pointer" t-on-click="openOverdueCompliance">
-                            <div class="card-body d-flex align-items-center">
-                                <i class="fa fa-exclamation-triangle fa-3x text-danger me-3"/>
-                                <div>
-                                    <h3 class="text-danger mb-0" t-esc="state.data.corporate_metrics.overdue_compliance"/>
-                                    <span class="text-muted">obligation(s) corporative(s) en retard</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <!-- Point d'extension du tableau de bord.
+
+                     Un module posé par-dessus accroche ici ses propres blocs,
+                     entre les décisions et l'activité : c'est ce que fait
+                     bf_corporate_governance pour la gouvernance corporative.
+
+                     Le t-call partage le contexte de rendu du composant — `state`
+                     et les gestionnaires de clic y répondent comme dans le
+                     gabarit principal. -->
+                <t t-call="project_knowledge_matrix.DashboardExtraRows"/>
 
                 <!-- Activity Row -->
                 <div class="row">
@@ -568,5 +498,13 @@
             </div>
         </div>
     </t>
+
+    <!-- Vide par défaut : le socle ne connaît aucune colonne supplémentaire. -->
+    <t t-name="project_knowledge_matrix.DashboardQualityColumns"/>
+
+    <!-- Vide par défaut : le socle ne connaît aucun bloc supplémentaire. Un
+         module qui en ajoute l'étend par t-inherit plutôt que de reprendre le
+         gabarit entier. -->
+    <t t-name="project_knowledge_matrix.DashboardExtraRows"/>
 
 </templates>

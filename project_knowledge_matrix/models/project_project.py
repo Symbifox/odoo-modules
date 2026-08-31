@@ -21,24 +21,22 @@ class ProjectProject(models.Model):
         help='Pourcentage moyen de complétion de toutes les matrices',
     )
 
-    # Champs identifiants
-    credential_ids = fields.One2many(
-        'project.credential',
-        'project_id',
-        string='Identifiants',
-        help='Identifiants stockés pour ce projet',
-    )
-    credential_count = fields.Integer(
-        string="Nombre d'identifiants",
-        compute='_compute_credential_count',
-    )
-
     # Champs éléments de matrice
     knowledge_item_ids = fields.One2many(
         'project.knowledge.item',
         'project_id',
         string='Éléments de matrice',
         help='Éléments de la matrice de connaissances pour ce projet',
+    )
+
+    # Périmètre de comptage
+    knowledge_is_demo = fields.Boolean(
+        string='Projet de démonstration',
+        default=False,
+        help="Projet fictif, monté pour la démonstration. Ses enregistrements "
+             "restent consultables et le projet reste sélectionnable dans le "
+             "tableau de bord ; ils cessent seulement de peser dans les totaux "
+             "du parc.",
     )
 
     # Champs documents
@@ -63,15 +61,31 @@ class ProjectProject(models.Model):
             else:
                 project.knowledge_progress = 0.0
 
-    @api.depends('credential_ids')
-    def _compute_credential_count(self):
-        for project in self:
-            project.credential_count = len(project.credential_ids)
-
     @api.depends('document_ids')
     def _compute_document_count(self):
         for project in self:
             project.document_count = len(project.document_ids)
+
+    @api.model
+    def _demo_exclusion_domain(self, path='project_id'):
+        """Domaine qui écarte les enregistrements des projets de démonstration.
+
+        ``path`` est le chemin qui mène du modèle compté au projet —
+        ``project_id`` depuis un identifiant ou un document,
+        ``document_id.project_id`` depuis une distribution.
+
+        Le domaine TRAVERSE vers le drapeau plutôt que de matérialiser une liste
+        d'identifiants de projets. C'est ce qui permet à un compteur Python et à
+        l'action de forage qui l'accompagne — un domaine écrit en XML statique,
+        hors de portée de toute méthode — de porter la MÊME condition. Deux
+        écritures différentes de la même règle finiraient par diverger, et le
+        chiffre annoncerait alors autre chose que la liste derrière lui.
+
+        La branche ``= False`` est explicite : une traversée sur un ``Many2one``
+        vide n'apparie rien, or un enregistrement sans projet n'appartient à
+        aucune démonstration et doit continuer de compter.
+        """
+        return ['|', (path, '=', False), (f'{path}.knowledge_is_demo', '=', False)]
 
     def action_view_knowledge_matrix(self):
         """Ouvrir les matrices de connaissances pour ce projet."""
@@ -105,21 +119,6 @@ class ProjectProject(models.Model):
             'context': {
                 'default_project_id': self.id,
                 'default_name': f'{self.name} - Matrice de connaissances',
-            },
-        }
-
-    def action_view_credentials(self):
-        """Ouvrir les identifiants pour ce projet."""
-        self.ensure_one()
-        return {
-            'type': 'ir.actions.act_window',
-            'name': f'Identifiants - {self.name}',
-            'res_model': 'project.credential',
-            'views': [[False, 'list'], [False, 'kanban'], [False, 'form']],
-            'domain': [('project_id', '=', self.id)],
-            'context': {
-                'default_project_id': self.id,
-                'search_default_filter_active': 1,
             },
         }
 

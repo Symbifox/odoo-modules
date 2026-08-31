@@ -31,7 +31,6 @@ class KnowledgeDashboard(models.AbstractModel):
             'project.document.version': [('document_id.project_id', '=', project_id)],
             'project.knowledge.matrix': [('project_id', '=', project_id)],
             'project.knowledge.item': [('project_id', '=', project_id)],
-            'project.credential': [('project_id', '=', project_id)],
         }
         return mapping.get(model_name, [])
 
@@ -400,35 +399,6 @@ class KnowledgeDashboard(models.AbstractModel):
         }
 
     # ==========================================
-    # CREDENTIAL METRICS
-    # ==========================================
-
-    @api.model
-    def get_credential_metrics(self, project_id=False):
-        """Répartition des identifiants par statut.
-
-        Les deux compteurs « expirant » et « expiré » annonçaient zéro en
-        permanence, quelles que soient les dates en base. Ils cherchaient des
-        identifiants ``state = 'active'`` dont la date d'expiration était passée
-        ou proche — or c'est précisément la tâche planifiée quotidienne qui fait
-        SORTIR ces identifiants de l'état actif, vers ``expiring`` et ``expired``.
-        Le tableau de bord contredisait donc la comptabilité du module, et la
-        seule population qu'il pouvait compter était celle que le cron n'avait
-        pas encore traitée.
-
-        Le statut est la comptabilité du module : on le lit tel quel.
-        """
-        pd = self._get_project_domain(project_id, 'project.credential')
-        comptes = self._grouper_comptes('project.credential', pd, ['state'])
-
-        return {
-            'total': comptes.get('active', 0),
-            'expiring_soon': comptes.get('expiring', 0),
-            'expired': comptes.get('expired', 0),
-            'revoked': comptes.get('revoked', 0),
-        }
-
-    # ==========================================
     # DECISION METRICS
     # ==========================================
 
@@ -464,47 +434,6 @@ class KnowledgeDashboard(models.AbstractModel):
         }
 
     # ==========================================
-    # CORPORATE GOVERNANCE METRICS
-    # ==========================================
-
-    @api.model
-    def get_corporate_metrics(self):
-        """Get corporate governance metrics (not project-specific)."""
-        Director = self.env['corporate.director']
-        Officer = self.env['corporate.officer']
-        Compliance = self.env['corporate.compliance.event']
-        Resolution = self.env['corporate.resolution']
-
-        active_directors = Director.search_count([('is_active', '=', True)])
-        active_officers = Officer.search_count([('is_active', '=', True)])
-
-        overdue_compliance = Compliance.search_count([
-            ('completed_date', '=', False),
-            ('status', '=', 'overdue'),
-        ])
-        due_soon_compliance = Compliance.search_count([
-            ('completed_date', '=', False),
-            ('status', '=', 'due_soon'),
-        ])
-        upcoming_compliance = Compliance.search_count([
-            ('completed_date', '=', False),
-            ('status', '=', 'upcoming'),
-        ])
-
-        recent_resolutions = Resolution.search_count([
-            ('status', '=', 'adopted'),
-        ])
-
-        return {
-            'active_directors': active_directors,
-            'active_officers': active_officers,
-            'overdue_compliance': overdue_compliance,
-            'due_soon_compliance': due_soon_compliance,
-            'upcoming_compliance': upcoming_compliance,
-            'adopted_resolutions': recent_resolutions,
-        }
-
-    # ==========================================
     # AGGREGATE DASHBOARD DATA
     # ==========================================
 
@@ -514,15 +443,20 @@ class KnowledgeDashboard(models.AbstractModel):
 
         Les trois blocs de distribution ne sont calculés QUE si la fonction est
         allumée. Leur clé est alors absente du résultat, et le gabarit s'en sert
-        comme condition d'affichage, à la même mécanique que les indicateurs
-        corporatifs, absents dès qu'un projet est sélectionné.
+        comme condition d'affichage.
+
+        Un module installé par-dessus peut ajouter ses propres blocs en
+        surchargeant cette méthode : c'est ce que font
+        ``bf_corporate_governance`` pour ``corporate_metrics`` et
+        ``bf_credentials`` pour ``credential_metrics``. Le second surcharge
+        aussi ``_get_project_domain`` — sans quoi son bloc compterait tout le
+        parc sous un filtre de projet.
         """
         result = {
             'document_overview': self.get_document_overview(project_id=project_id),
             'review_metrics': self.get_review_metrics(project_id=project_id),
             'content_quality': self.get_content_quality_metrics(project_id=project_id),
             'matrix_metrics': self.get_matrix_metrics(project_id=project_id),
-            'credential_metrics': self.get_credential_metrics(project_id=project_id),
             'decision_metrics': self.get_decision_metrics(project_id=project_id),
             'project_id': project_id,
         }
@@ -530,7 +464,4 @@ class KnowledgeDashboard(models.AbstractModel):
             result['client_metrics'] = self.get_client_doc_metrics(project_id=project_id)
             result['internal_metrics'] = self.get_internal_compliance_metrics(project_id=project_id)
             result['distribution_activity'] = self.get_distribution_activity(project_id=project_id)
-        # Corporate metrics are not project-specific — only include when unfiltered
-        if not project_id:
-            result['corporate_metrics'] = self.get_corporate_metrics()
         return result

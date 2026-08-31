@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Les six menus s'accrochent à la racine « Base de connaissances » du
+         socle : la gouvernance corporative n'est pas une application à part,
+         c'est un registre de plus sous le même toit.
+
+         Le groupe est porté par le SEUL menu parent. Un menuitem ne produit
+         que des Command.link sur `groups` — leçon du y ajouter
+         un groupe n'en retire jamais un autre. Un seul porteur évite d'avoir
+         à en retirer un jour six. -->
+
+    <menuitem id="menu_corporate_parent"
+              name="Gouvernance corporative"
+              parent="project_knowledge_matrix.menu_knowledge_root"
+              groups="group_corporate_manager"
+              sequence="55"/>
+
+    <menuitem id="menu_corporate_resolutions"
+              name="Résolutions"
+              parent="menu_corporate_parent"
+              action="corporate_resolution_action"
+              sequence="10"/>
+
+    <menuitem id="menu_corporate_directors"
+              name="Registre des administrateurs"
+              parent="menu_corporate_parent"
+              action="corporate_director_action"
+              sequence="20"/>
+
+    <menuitem id="menu_corporate_officers"
+              name="Registre des dirigeants"
+              parent="menu_corporate_parent"
+              action="corporate_officer_action"
+              sequence="30"/>
+
+    <menuitem id="menu_corporate_compliance"
+              name="Calendrier de conformité"
+              parent="menu_corporate_parent"
+              action="corporate_compliance_action"
+              sequence="40"/>
+
+    <menuitem id="menu_corporate_minute_book"
+              name="Livre des minutes"
+              parent="menu_corporate_parent"
+              action="corporate_minute_book_action"
+              sequence="50"/>
+
+</odoo>

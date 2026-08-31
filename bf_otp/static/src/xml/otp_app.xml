@@ -1,0 +1,374 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+<t t-name="bf_otp.App">
+    <div class="o_bf_otp d-flex flex-column h-100">
+
+        <!-- Contexte non sécurisé : rien ne peut marcher, et il vaut mieux le
+             dire une fois que d'échouer champ par champ. -->
+        <div t-if="!state.secure" class="alert alert-danger m-4" role="alert">
+            <h5>Chiffrement indisponible</h5>
+            <p class="mb-0">
+                Ce coffre chiffre les graines dans le navigateur, ce qui exige une
+                connexion sécurisée. Cette page est servie sans HTTPS, donc
+                <code>crypto.subtle</code> n'existe pas. Ouvre Odoo en HTTPS.
+            </p>
+        </div>
+
+        <t t-elif="!state.ready">
+            <div class="d-flex justify-content-center p-5"><span class="fa fa-circle-o-notch fa-spin fa-2x text-muted"/></div>
+        </t>
+
+        <!-- Aucun coffre : on en crée un -->
+        <t t-elif="!state.vault">
+            <div class="o_bf_otp_gate mx-auto p-4">
+                <h4 class="mb-3">Créer ton coffre de jetons</h4>
+                <div class="alert alert-warning" role="alert">
+                    <strong>À lire avant de continuer.</strong>
+                    Les graines sont chiffrées ici, dans ton navigateur, par une clé
+                    tirée de cette phrase. Le serveur ne la reçoit jamais et ne peut
+                    pas la retrouver. <strong>Phrase perdue, jetons perdus</strong> :
+                    range-la dans ton gestionnaire de mots de passe avant de valider.
+                </div>
+                <form t-on-submit="onCreateVault">
+                    <div class="mb-2">
+                        <label class="form-label" for="bf_otp_pass">Phrase de passe</label>
+                        <input id="bf_otp_pass" type="password" class="form-control"
+                               t-ref="passphrase" autocomplete="new-password"
+                               placeholder="douze caractères au moins"/>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="bf_otp_pass2">Répète-la</label>
+                        <input id="bf_otp_pass2" type="password" class="form-control"
+                               t-ref="confirm" autocomplete="new-password"/>
+                    </div>
+                    <div t-if="state.error" class="alert alert-danger py-2" t-esc="state.error"/>
+                    <button class="btn btn-primary" type="submit" t-att-disabled="state.busy">
+                        <span t-if="state.busy" class="fa fa-circle-o-notch fa-spin me-1"/>
+                        Créer le coffre
+                    </button>
+                </form>
+            </div>
+        </t>
+
+        <!-- Coffre fermé -->
+        <t t-elif="!state.unlocked">
+            <div class="o_bf_otp_gate mx-auto p-4 text-center">
+                <div class="mb-3"><span class="fa fa-lock fa-3x text-muted"/></div>
+                <h4>Coffre verrouillé</h4>
+                <p class="text-muted">
+                    <t t-esc="state.vault.token_count"/> jeton(s) à l'intérieur.
+                </p>
+                <button t-if="credentials.length and state.passkeyOk"
+                        class="btn btn-primary w-100 mb-3"
+                        t-on-click="onUnlockWithPasskey" t-att-disabled="state.busy">
+                    <span t-if="state.busy" class="fa fa-circle-o-notch fa-spin me-1"/>
+                    <span t-else="" class="fa fa-fingerprint me-1"/>
+                    Ouvrir avec une clé d'accès
+                </button>
+                <div t-if="credentials.length and state.passkeyOk" class="text-muted small mb-2">ou</div>
+                <form t-on-submit="onUnlock" class="text-start">
+                    <input type="password" class="form-control mb-2" t-ref="passphrase"
+                           autocomplete="current-password" placeholder="Phrase de passe"/>
+                    <div t-if="state.error" class="alert alert-danger py-2" t-esc="state.error"/>
+                    <button class="btn w-100" type="submit" t-att-disabled="state.busy"
+                            t-att-class="credentials.length and state.passkeyOk ? 'btn-secondary' : 'btn-primary'">
+                        <span t-if="state.busy" class="fa fa-circle-o-notch fa-spin me-1"/>
+                        Ouvrir
+                    </button>
+                </form>
+            </div>
+        </t>
+
+        <!-- Coffre ouvert -->
+        <t t-else="">
+            <div class="o_bf_otp_bar d-flex align-items-center gap-2 p-2 border-bottom">
+                <input type="search" class="form-control form-control-sm o_bf_otp_search"
+                       placeholder="Chercher un compte, un émetteur, un regroupement"
+                       t-model="state.search"/>
+                <button class="btn btn-sm btn-primary" t-on-click="() => this.openForm()">
+                    <span class="fa fa-plus me-1"/>Ajouter
+                </button>
+                <button class="btn btn-sm btn-secondary" t-on-click="() => state.showImport = true">
+                    <span class="fa fa-upload me-1"/>Importer
+                </button>
+                <button class="btn btn-sm btn-light ms-auto"
+                        t-on-click="toggleSort"
+                        t-att-title="state.sortMode === 'recent' ? 'Trié par dernière utilisation — cliquer pour trier par nom' : 'Trié par nom — cliquer pour trier par usage'">
+                    <span t-att-class="state.sortMode === 'recent' ? 'fa fa-history me-1' : 'fa fa-sort-alpha-asc me-1'"/>
+                    <t t-esc="state.sortMode === 'recent' ? 'Récents' : 'A-Z'"/>
+                </button>
+                <button class="btn btn-sm btn-light" t-on-click="() => state.compact = !state.compact"
+                        t-att-title="state.compact ? 'Vue cartes' : 'Vue compacte'">
+                    <span t-att-class="state.compact ? 'fa fa-th-large' : 'fa fa-bars'"/>
+                </button>
+                <button t-if="state.passkeyOk" class="btn btn-sm btn-light"
+                        t-on-click="() => state.showKeys = true" title="Clés d'accès">
+                    <span class="fa fa-fingerprint"/>
+                </button>
+                <button class="btn btn-sm btn-light" t-on-click="() => this.lock()"
+                        title="Refermer le coffre (Échap)">
+                    <span class="fa fa-lock me-1"/>Verrouiller
+                </button>
+            </div>
+
+            <div class="flex-grow-1 overflow-auto p-3">
+                <div t-if="state.tokens.length" class="small text-muted mb-2">
+                    Tape pour chercher · <kbd>Entrée</kbd> copie le premier · <kbd>Échap</kbd> efface puis verrouille
+                </div>
+                <div t-if="!state.tokens.length" class="text-center text-muted p-5">
+                    <p class="mb-1">Ce coffre est vide.</p>
+                    <p>Ajoute un jeton, ou importe l'export de ton gestionnaire OTP.</p>
+                </div>
+
+                <t t-foreach="groupes" t-as="grp" t-key="grp[0]">
+                    <h6 class="text-uppercase text-muted small mt-3 mb-2" t-esc="grp[0]"/>
+                    <div t-att-class="state.compact ? 'o_bf_otp_list' : 'o_bf_otp_grid'">
+                        <t t-foreach="grp[1]" t-as="tok" t-key="tok.id">
+                            <div class="o_bf_otp_card card"
+                                 t-att-class="{ 'o_bf_otp_broken': tok.broken, 'o_bf_otp_compact': state.compact }">
+                                <div class="card-body py-2 px-3">
+                                    <div class="d-flex align-items-start">
+                                        <span class="o_bf_otp_chip me-2" t-att-style="chipStyle(tok)"
+                                              t-esc="chipText(tok)"/>
+                                        <div class="flex-grow-1 min-w-0">
+                                            <div class="fw-bold text-truncate" t-esc="tok.issuer or tok.name"/>
+                                            <div class="small text-muted text-truncate" t-esc="tok.name"/>
+                                            <div t-if="tok.partner_id or tok.project_id" class="small text-truncate">
+                                                <span t-if="tok.partner_id" class="badge text-bg-light me-1">
+                                                    <i class="fa fa-user me-1" title="Client"/><t t-esc="tok.partner_id[1]"/>
+                                                </span>
+                                                <span t-if="tok.project_id" class="badge text-bg-light">
+                                                    <i class="fa fa-folder-o me-1" title="Projet"/><t t-esc="tok.project_id[1]"/>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="btn-group btn-group-sm">
+                                            <button class="btn btn-light" t-on-click="() => this.toggleFavorite(tok)"
+                                                    t-att-title="tok.favorite ? 'Retirer des favoris' : 'Mettre en favori'">
+                                                <span t-att-class="tok.favorite ? 'fa fa-star text-warning' : 'fa fa-star-o'"/>
+                                            </button>
+                                            <button class="btn btn-light" t-on-click="() => this.openForm(tok)"
+                                                    title="Modifier"><span class="fa fa-pencil"/></button>
+                                            <button class="btn btn-light text-danger" t-on-click="() => this.removeToken(tok)"
+                                                    title="Supprimer"><span class="fa fa-trash"/></button>
+                                        </div>
+                                    </div>
+                                    <div t-if="tok.broken" class="small text-danger mt-2">
+                                        Ce jeton ne se déchiffre pas avec cette phrase.
+                                    </div>
+                                    <div t-else="" class="d-flex align-items-center mt-2">
+                                        <button class="o_bf_otp_code btn btn-link p-0 me-auto"
+                                                t-on-click="() => this.copyCode(tok)"
+                                                t-att-title="isRevealed(tok) ? 'Copier' : 'Afficher'">
+                                            <span t-esc="displayCode(tok)"/>
+                                        </button>
+                                        <button t-if="tok.sensitive" class="btn btn-sm btn-light me-2"
+                                                t-on-click="() => this.toggleReveal(tok)">
+                                            <span t-att-class="isRevealed(tok) ? 'fa fa-eye-slash' : 'fa fa-eye'"/>
+                                        </button>
+                                        <span t-if="tok.otp_type === 'totp'" class="o_bf_otp_left small"
+                                              t-att-class="tok.left &lt;= 5 ? 'text-danger' : 'text-muted'"
+                                              t-esc="tok.left + ' s'"/>
+                                        <span t-else="" class="badge text-bg-secondary">n° <t t-esc="tok.counter"/></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+                </t>
+            </div>
+
+            <!-- Ajout / modification -->
+            <div t-if="state.showForm" class="o_bf_otp_overlay">
+                <div class="o_bf_otp_panel card shadow">
+                    <div class="card-header d-flex align-items-center">
+                        <strong t-esc="state.form.id ? 'Modifier le jeton' : 'Ajouter un jeton'"/>
+                        <button class="btn-close ms-auto" t-on-click="() => state.showForm = false"/>
+                    </div>
+                    <form class="card-body" t-on-submit="saveToken">
+                        <div class="mb-3">
+                            <label class="form-label">Coller une adresse otpauth://</label>
+                            <input type="text" class="form-control" t-model="state.form.uri"
+                                   t-on-change="onUriPasted"
+                                   placeholder="otpauth://totp/…"/>
+                            <div class="form-text">Remplit les champs ci-dessous d'un coup.</div>
+                        </div>
+                        <div class="row g-2">
+                            <div class="col-6"><label class="form-label">Émetteur</label>
+                                <input class="form-control" t-model="state.form.issuer"/></div>
+                            <div class="col-6"><label class="form-label">Compte</label>
+                                <input class="form-control" t-model="state.form.name" required="required"/></div>
+                            <div class="col-12"><label class="form-label">Graine (base32)</label>
+                                <input class="form-control font-monospace" type="password"
+                                       t-model="state.form.secret" autocomplete="off"
+                                       t-att-placeholder="state.form.id ? 'Laisser vide pour ne pas la changer' : ''"/></div>
+                            <div class="col-4"><label class="form-label">Type</label>
+                                <select class="form-select" t-model="state.form.otp_type">
+                                    <option value="totp">TOTP</option>
+                                    <option value="hotp">HOTP</option>
+                                </select></div>
+                            <div class="col-4"><label class="form-label">Algorithme</label>
+                                <select class="form-select" t-model="state.form.algorithm">
+                                    <option value="SHA1">SHA-1</option>
+                                    <option value="SHA256">SHA-256</option>
+                                    <option value="SHA512">SHA-512</option>
+                                </select></div>
+                            <div class="col-2"><label class="form-label">Chiffres</label>
+                                <input class="form-control" type="number" t-model="state.form.digits" min="6" max="8"/></div>
+                            <div class="col-2"><label class="form-label">Période</label>
+                                <input class="form-control" type="number" t-model="state.form.period" min="1"/></div>
+                            <div class="col-6 position-relative">
+                                <label class="form-label">Client</label>
+                                <div class="input-group">
+                                    <input class="form-control" t-model="state.form.partner_label"
+                                           t-on-input="(ev) => this.chercherCible('res.partner', ev.target.value)"
+                                           placeholder="deux lettres suffisent"/>
+                                    <button class="btn btn-outline-secondary" type="button"
+                                            t-if="state.form.partner_id"
+                                            t-on-click="() => this.effacerCible('partner_id')"
+                                            title="Détacher">×</button>
+                                </div>
+                            </div>
+                            <div class="col-6 position-relative">
+                                <label class="form-label">Projet</label>
+                                <div class="input-group">
+                                    <input class="form-control" t-model="state.form.project_label"
+                                           t-on-input="(ev) => this.chercherCible('project.project', ev.target.value)"
+                                           placeholder="deux lettres suffisent"/>
+                                    <button class="btn btn-outline-secondary" type="button"
+                                            t-if="state.form.project_id"
+                                            t-on-click="() => this.effacerCible('project_id')"
+                                            title="Détacher">×</button>
+                                </div>
+                            </div>
+                            <div class="col-12" t-if="state.lookup.length">
+                                <div class="list-group o_bf_otp_lookup">
+                                    <t t-foreach="state.lookup" t-as="ligne" t-key="ligne[0]">
+                                        <button type="button" class="list-group-item list-group-item-action py-1"
+                                                t-on-click="() => this.choisirCible(ligne)">
+                                            <t t-esc="ligne[1]"/>
+                                        </button>
+                                    </t>
+                                </div>
+                            </div>
+                            <div class="col-6"><label class="form-label">Regroupement</label>
+                                <input class="form-control" t-model="state.form.group_name"
+                                       placeholder="laisse vide : le client sert de regroupement"/></div>
+                            <div class="col-6 d-flex align-items-end">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="bf_otp_sens"
+                                           t-model="state.form.sensitive"/>
+                                    <label class="form-check-label" for="bf_otp_sens">Sensible (code masqué)</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div t-if="state.error" class="alert alert-danger py-2 mt-3" t-esc="state.error"/>
+                        <div class="mt-3 text-end">
+                            <button type="button" class="btn btn-secondary me-2"
+                                    t-on-click="() => state.showForm = false">Annuler</button>
+                            <button type="submit" class="btn btn-primary" t-att-disabled="state.busy">Enregistrer</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Clés d'accès -->
+            <div t-if="state.showKeys" class="o_bf_otp_overlay">
+                <div class="o_bf_otp_panel card shadow">
+                    <div class="card-header d-flex align-items-center">
+                        <strong>Clés d'accès</strong>
+                        <button class="btn-close ms-auto" t-on-click="() => state.showKeys = false"/>
+                    </div>
+                    <div class="card-body">
+                        <div class="alert alert-info" role="alert">
+                            Une clé d'accès ouvre ce coffre en touchant un capteur, sans taper
+                            la phrase. Elle scelle une copie de la clé du coffre&#160;; le serveur
+                            ne peut toujours rien lire.
+                            <strong>Garde ta phrase de passe</strong>&#160;: une clé d'accès est
+                            liée à cet appareil et à ce domaine, et c'est la phrase qui te sauve
+                            si tu perds l'un ou l'autre.
+                        </div>
+
+                        <div t-if="!credentials.length" class="text-muted mb-3">
+                            Aucune clé d'accès enregistrée.
+                        </div>
+                        <ul t-else="" class="list-group mb-3">
+                            <t t-foreach="credentials" t-as="c" t-key="c.id">
+                                <li class="list-group-item d-flex align-items-center">
+                                    <span class="fa fa-fingerprint me-2 text-muted"/>
+                                    <span class="flex-grow-1" t-esc="c.name"/>
+                                    <button class="btn btn-sm btn-light text-danger"
+                                            t-on-click="() => this.onRemovePasskey(c)"
+                                            title="Retirer"><span class="fa fa-trash"/></button>
+                                </li>
+                            </t>
+                        </ul>
+
+                        <form t-on-submit="onEnrolPasskey">
+                            <div class="row g-2">
+                                <div class="col-6">
+                                    <label class="form-label">Nom de l'appareil</label>
+                                    <input class="form-control" t-model="state.enrolName"
+                                           placeholder="MacBook, clé jaune…"/>
+                                </div>
+                                <div class="col-6">
+                                    <label class="form-label">Ta phrase de passe</label>
+                                    <input type="password" class="form-control"
+                                           t-model="state.enrolPass" autocomplete="current-password"/>
+                                    <div class="form-text">Redemandée exprès pour ajouter un moyen d'ouvrir.</div>
+                                </div>
+                            </div>
+                            <div t-if="state.error" class="alert alert-danger py-2 mt-3" t-esc="state.error"/>
+                            <div class="mt-3 text-end">
+                                <button type="submit" class="btn btn-primary" t-att-disabled="state.busy">
+                                    <span t-if="state.busy" class="fa fa-circle-o-notch fa-spin me-1"/>
+                                    Ajouter cette clé d'accès
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Import -->
+            <div t-if="state.showImport" class="o_bf_otp_overlay">
+                <div class="o_bf_otp_panel card shadow">
+                    <div class="card-header d-flex align-items-center">
+                        <strong>Importer depuis un gestionnaire OTP</strong>
+                        <button class="btn-close ms-auto" t-on-click="() => state.showImport = false"/>
+                    </div>
+                    <form class="card-body" t-on-submit="runImport">
+                        <p class="text-muted small">
+                            Dans le gestionnaire OTP de Nextcloud, exporte tes comptes en JSON,
+                            puis colle le contenu du fichier ici. Le déchiffrement et le
+                            rechiffrement se font dans cette page : le serveur ne voit que du chiffré.
+                        </p>
+                        <textarea class="form-control font-monospace" rows="8"
+                                  t-model="state.importText"
+                                  placeholder='{"accounts": [ … ]}'/>
+                        <div class="mt-2">
+                            <label class="form-label">Phrase du coffre d'origine</label>
+                            <input type="password" class="form-control" t-model="state.importPassword"
+                                   autocomplete="off"/>
+                            <div class="form-text">
+                                Nécessaire seulement si l'export est chiffré (fichier
+                                <code>accounts_encrypted_secret.json</code>).
+                            </div>
+                        </div>
+                        <div t-if="state.error" class="alert alert-danger py-2 mt-3" t-esc="state.error"/>
+                        <div class="mt-3 text-end">
+                            <button type="button" class="btn btn-secondary me-2"
+                                    t-on-click="() => state.showImport = false">Annuler</button>
+                            <button type="submit" class="btn btn-primary" t-att-disabled="state.busy">
+                                <span t-if="state.busy" class="fa fa-circle-o-notch fa-spin me-1"/>Importer
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </t>
+    </div>
+</t>
+
+</templates>

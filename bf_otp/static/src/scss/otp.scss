@@ -1,0 +1,123 @@
+.o_bf_otp {
+    background: var(--bf-otp-bg, #f8f9fa);
+
+    .o_bf_otp_gate {
+        max-width: 26rem;
+        width: 100%;
+        margin-top: 3rem;
+    }
+
+    .o_bf_otp_search {
+        max-width: 24rem;
+    }
+
+    .o_bf_otp_grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
+        gap: 0.75rem;
+    }
+
+    .o_bf_otp_card {
+        border-left: 3px solid #29ABE1;
+
+        &.o_bf_otp_broken {
+            border-left-color: var(--bs-danger, #dc3545);
+        }
+    }
+
+    // Le code est ce qu'on vient lire : gros, chiffres à chasse fixe pour qu'il
+    // ne sautille pas d'une seconde à l'autre, et sélectionnable.
+    .o_bf_otp_code {
+        font-size: 1.6rem;
+        font-weight: 600;
+        letter-spacing: 0.06em;
+        font-variant-numeric: tabular-nums;
+        font-family: var(--bs-font-monospace, monospace);
+        text-decoration: none;
+        color: #2D3031;
+
+        &:hover {
+            color: #29ABE1;
+        }
+    }
+
+    .o_bf_otp_left {
+        font-variant-numeric: tabular-nums;
+        min-width: 2.5rem;
+        text-align: right;
+    }
+
+    .o_bf_otp_overlay {
+        position: absolute;
+        inset: 0;
+        background: rgba(45, 48, 49, 0.45);
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        padding: 3rem 1rem;
+        overflow: auto;
+        z-index: 10;
+    }
+
+    .o_bf_otp_panel {
+        width: 100%;
+        max-width: 34rem;
+    }
+}
+
+// --- Pastille d'émetteur : couleur calculée du nom, jamais une favicon
+//     récupérée ailleurs (ça révélerait la liste des comptes protégés).
+.o_bf_otp .o_bf_otp_chip {
+    flex: 0 0 auto;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 0.5rem;
+    color: #fff;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+}
+
+// --- Vue compacte : une colonne, des lignes basses. 144 cartes se parcourent
+//     mal ; en compact on en voit trois fois plus par écran.
+.o_bf_otp .o_bf_otp_list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.o_bf_otp .o_bf_otp_card.o_bf_otp_compact {
+    .card-body {
+        padding-top: 0.25rem !important;
+        padding-bottom: 0.25rem !important;
+    }
+
+    .o_bf_otp_chip {
+        width: 1.5rem;
+        height: 1.5rem;
+        font-size: 0.6rem;
+        border-radius: 0.35rem;
+    }
+
+    .o_bf_otp_code {
+        font-size: 1.15rem;
+    }
+}
+
+// --- Résultats de recherche client/projet, sous les deux champs.
+.o_bf_otp .o_bf_otp_lookup {
+    max-height: 11rem;
+    overflow-y: auto;
+}
+
+.o_bf_otp kbd {
+    background: #2D3031;
+    color: #fff;
+    border-radius: 0.2rem;
+    padding: 0 0.3rem;
+    font-size: 0.75em;
+}

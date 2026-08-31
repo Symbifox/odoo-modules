@@ -1,9 +1,9 @@
-"""Compteurs de distribution.
+"""Compteurs de distribution — le filet.
 
-Les cinq compteurs sont agrégés en une requête. Trois choses peuvent casser
-sans que rien ne se voie à l'écran : une valeur fausse, un compteur qui se
-remplit bien pour un enregistrement seul mais pas pour un lot, et un retour
-silencieux au ``search()`` par enregistrement.
+Les cinq compteurs ont été réécrits en ``_read_group`` le 19 août. Trois choses
+peuvent casser sans que rien ne se voie à l'écran : une valeur fausse, un
+compteur qui se remplit bien pour un enregistrement seul mais pas pour un lot,
+et un retour silencieux au ``search()`` par enregistrement.
 """
 
 from unittest.mock import patch
@@ -151,10 +151,9 @@ class TestDistributionCounts(KnowledgeCase):
     def test_document_counters_cost_one_query_whatever_the_volume(self):
         """Le coût de l'agrégation ne suit pas le nombre de documents.
 
-        C'est l'invariant que l'agrégation a acheté : sur un parc de deux cents
-        documents, la liste passe de plus de 400 ms à une centaine. Un retour au
-        ``search()`` par enregistrement rendrait les mêmes valeurs et
-        repasserait ce test au rouge.
+        C'est l'invariant que la réécriture du 19 août a acheté : 414 ms à
+        101 ms sur 205 documents. Un retour au ``search()`` par enregistrement
+        rendrait les mêmes valeurs et repasserait ce test au rouge.
         """
         Document = self.env['project.document']
         supplementaires = Document.create([
@@ -190,7 +189,7 @@ class TestDistributionCounts(KnowledgeCase):
         self.assertEqual(appels['search'], 0, appels)
 
     # ------------------------------------------------------------------
-    # Recalcul — les @api.depends des compteurs
+    # Recalcul — les @api.depends ajoutés le 19 août
     # ------------------------------------------------------------------
 
     def test_counters_follow_a_state_change(self):
@@ -220,7 +219,8 @@ class TestRecipientName(KnowledgeCase):
     ``recipient_name`` est un calcul stocké. Sans ``partner_id.name`` dans ses
     dépendances, un changement de nom ne le rejoue jamais : la distribution
     garde le nom du jour de l'envoi, à l'écran comme dans les rapports et les
-    rappels d'accusé.
+    rappels d'accusé. Le parc en portait un cas, corrigé par la migration
+    18.0.11.1.0.
     """
 
     def test_partner_rename_refreshes_the_stored_name(self):

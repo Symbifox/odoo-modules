@@ -16,8 +16,9 @@
             <field name="body_html" type="html">
 
 <t t-set="company" t-value="(object.company_id if hasattr(object, 'company_id') and object.company_id else user.company_id)"/>
-<t t-set="brand_primary" t-value="(company and company.report_brand_primary) or '#714B67'"/>
-<t t-set="brand_dark" t-value="(company and company.report_brand_dark) or '#212529'"/>
+<t t-set="marque" t-value="company._pkm_brand() if company else {}"/>
+<t t-set="brand_primary" t-value="marque.get('primary') or '#714B67'"/>
+<t t-set="brand_dark" t-value="marque.get('dark') or '#212529'"/>
 <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="box-sizing:border-box;border-collapse:collapse;background-color:#F3F4F6">
     <tbody>
         <tr>
@@ -178,8 +179,9 @@
             <field name="body_html" type="html">
 
 <t t-set="company" t-value="(object.company_id if hasattr(object, 'company_id') and object.company_id else user.company_id)"/>
-<t t-set="brand_primary" t-value="(company and company.report_brand_primary) or '#714B67'"/>
-<t t-set="brand_dark" t-value="(company and company.report_brand_dark) or '#212529'"/>
+<t t-set="marque" t-value="company._pkm_brand() if company else {}"/>
+<t t-set="brand_primary" t-value="marque.get('primary') or '#714B67'"/>
+<t t-set="brand_dark" t-value="marque.get('dark') or '#212529'"/>
 <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="box-sizing:border-box;border-collapse:collapse;background-color:#F3F4F6">
     <tbody>
         <tr>
@@ -289,8 +291,9 @@
             <field name="body_html" type="html">
 
 <t t-set="company" t-value="(object.company_id if hasattr(object, 'company_id') and object.company_id else user.company_id)"/>
-<t t-set="brand_primary" t-value="(company and company.report_brand_primary) or '#714B67'"/>
-<t t-set="brand_dark" t-value="(company and company.report_brand_dark) or '#212529'"/>
+<t t-set="marque" t-value="company._pkm_brand() if company else {}"/>
+<t t-set="brand_primary" t-value="marque.get('primary') or '#714B67'"/>
+<t t-set="brand_dark" t-value="marque.get('dark') or '#212529'"/>
 <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="box-sizing:border-box;border-collapse:collapse;background-color:#F3F4F6">
     <tbody>
         <tr>

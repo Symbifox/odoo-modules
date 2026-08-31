@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Les cinq chiffres corporatifs du rapport bimensuel, un par action.
+         Chaque domaine reproduit EXACTEMENT le compteur de
+         `_get_dashboard_report_data`, sans quoi le lien mène à un autre
+         nombre que celui sur lequel on a cliqué.
+
+         `_get_report_link_actions` les nomme; le lien retombe sur le tableau
+         de bord si l'action manque, plutôt que sur un '#' qui ne mène nulle
+         part. -->
+
+    <record id="report_action_corp_directors" model="ir.actions.act_window">
+        <field name="name">Administrateurs actifs</field>
+        <field name="res_model">corporate.director</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="corporate_director_view_search"/>
+        <field name="domain">[('is_active', '=', True)]</field>
+    </record>
+
+    <record id="report_action_corp_officers" model="ir.actions.act_window">
+        <field name="name">Dirigeants actifs</field>
+        <field name="res_model">corporate.officer</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="corporate_officer_view_search"/>
+        <field name="domain">[('is_active', '=', True)]</field>
+    </record>
+
+    <record id="report_action_corp_resolutions_adopted" model="ir.actions.act_window">
+        <field name="name">Résolutions adoptées</field>
+        <field name="res_model">corporate.resolution</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="corporate_resolution_view_search"/>
+        <field name="domain">[('status', '=', 'adopted')]</field>
+    </record>
+
+    <record id="report_action_corp_compliance_overdue" model="ir.actions.act_window">
+        <field name="name">Conformité corporative en retard</field>
+        <field name="res_model">corporate.compliance.event</field>
+        <field name="view_mode">list,calendar,form</field>
+        <field name="search_view_id" ref="corporate_compliance_view_search"/>
+        <field name="domain">[('completed_date', '=', False), ('status', '=', 'overdue')]</field>
+    </record>
+
+    <record id="report_action_corp_compliance_due_soon" model="ir.actions.act_window">
+        <field name="name">Conformité corporative à échéance proche</field>
+        <field name="res_model">corporate.compliance.event</field>
+        <field name="view_mode">list,calendar,form</field>
+        <field name="search_view_id" ref="corporate_compliance_view_search"/>
+        <field name="domain">[('completed_date', '=', False), ('status', '=', 'due_soon')]</field>
+    </record>
+
+</odoo>

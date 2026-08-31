@@ -5,6 +5,14 @@
         <t t-call="web.html_container">
             <t t-foreach="docs" t-as="doc">
                 <t t-set="data" t-value="doc._get_report_data()"/>
+                <!-- La palette passe par le helper DÉFENSIF de res.company.
+                     Lire report_brand_* directement lève une AttributeError
+                     chez un locataire sans bluefox_branding, qui n'est PAS une
+                     dépendance déclarée : la garde « company and company.champ »
+                     protège d'une société absente, pas d'un champ absent. -->
+                <t t-set="marque" t-value="env.company._pkm_brand() if env.company else {}"/>
+                <t t-set="brand_primary" t-value="marque.get('primary') or '#714B67'"/>
+                <t t-set="brand_dark" t-value="marque.get('dark') or '#212529'"/>
                 <div class="article" style="padding: 0 !important; margin: 0 !important;">
                     <link rel="stylesheet" href="/bf_lexend/static/src/scss/lexend_report.css"/>
                     <style>
@@ -21,12 +29,12 @@
                             font-family: "Lexend", system-ui, -apple-system, sans-serif;
                             font-size: 9pt;
                             line-height: 1.4;
-                            color: <t t-esc="(env.company and env.company.report_brand_dark) or '#212529'"/>;
+                            color: <t t-esc="brand_dark"/>;
                         }
 
                         /* &#9472;&#9472; Top Banner &#9472;&#9472; */
                         .km-banner {
-                            background: <t t-esc="(env.company and env.company.report_brand_dark) or '#212529'"/>;
+                            background: <t t-esc="brand_dark"/>;
                             padding: 18pt 24pt 16pt 24pt;
                             display: table;
                             width: 100%;
@@ -50,7 +58,7 @@
                             font-weight: 600;
                             text-transform: uppercase;
                             letter-spacing: 2pt;
-                            color: <t t-esc="(env.company and env.company.report_brand_primary) or '#714B67'"/>;
+                            color: <t t-esc="brand_primary"/>;
                             margin: 0 0 3pt 0;
                         }
                         .km-banner h1 {
@@ -67,7 +75,7 @@
                         }
                         .km-accent-bar {
                             height: 3px;
-                            background: <t t-esc="(env.company and env.company.report_brand_primary) or '#714B67'"/>;
+                            background: <t t-esc="brand_primary"/>;
                             margin: 0;
                             width: 100%;
                         }
@@ -96,7 +104,7 @@
                         .km-meta-value {
                             font-size: 11pt;
                             font-weight: 600;
-                            color: <t t-esc="(env.company and env.company.report_brand_dark) or '#212529'"/>;
+                            color: <t t-esc="brand_dark"/>;
                         }
 
                         /* &#9472;&#9472; KPI Cards &#9472;&#9472; */
@@ -129,9 +137,9 @@
                             letter-spacing: 0.5pt;
                             margin-top: 2pt;
                         }
-                        .km-kpi-total { color: <t t-esc="(env.company and env.company.report_brand_dark) or '#212529'"/>; }
+                        .km-kpi-total { color: <t t-esc="brand_dark"/>; }
                         .km-kpi-done { color: #27ae60; }
-                        .km-kpi-progress { color: <t t-esc="(env.company and env.company.report_brand_primary) or '#714B67'"/>; }
+                        .km-kpi-progress { color: <t t-esc="brand_primary"/>; }
                         .km-kpi-overdue { color: #e74c3c; }
 
                         /* &#9472;&#9472; Progress bar &#9472;&#9472; */
@@ -147,7 +155,7 @@
                         }
                         .km-progress-bar-fill {
                             height: 100%;
-                            background: <t t-esc="(env.company and env.company.report_brand_primary) or '#714B67'"/>;
+                            background: <t t-esc="brand_primary"/>;
                             border-radius: 3px;
                         }
 
@@ -158,10 +166,10 @@
                         .km-section-title {
                             font-size: 11pt;
                             font-weight: 600;
-                            color: <t t-esc="(env.company and env.company.report_brand_dark) or '#212529'"/>;
+                            color: <t t-esc="brand_dark"/>;
                             margin: 16pt 0 8pt 0;
                             padding-bottom: 4pt;
-                            border-bottom: 2px solid <t t-esc="(env.company and env.company.report_brand_primary) or '#714B67'"/>;
+                            border-bottom: 2px solid <t t-esc="brand_primary"/>;
                             display: inline-block;
                         }
 
@@ -173,7 +181,7 @@
                             margin-bottom: 6pt;
                         }
                         .km-table th {
-                            background: <t t-esc="(env.company and env.company.report_brand_dark) or '#212529'"/>;
+                            background: <t t-esc="brand_dark"/>;
                             color: #fff;
                             padding: 5pt 6pt;
                             text-align: left;
@@ -201,7 +209,7 @@
                         }
                         .km-badge-done { background: #27ae60; }
                         .km-badge-accepted { background: #27ae60; }
-                        .km-badge-in_progress { background: <t t-esc="(env.company and env.company.report_brand_primary) or '#714B67'"/>; }
+                        .km-badge-in_progress { background: <t t-esc="brand_primary"/>; }
                         .km-badge-pending { background: #888; }
                         .km-badge-proposed { background: #f39c12; }
                         .km-badge-rejected { background: #95a5a6; }

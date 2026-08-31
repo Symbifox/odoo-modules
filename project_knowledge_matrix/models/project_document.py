@@ -27,20 +27,6 @@ class ProjectDocument(models.Model):
         help='Code de référence unique pour ce document',
     )
 
-    # Minute book section
-    minute_book_section = fields.Selection(
-        selection=[
-            ('charter', 'Statuts constitutifs'),
-            ('bylaws', 'Reglements'),
-            ('agreements', "Conventions d'actionnaires"),
-            ('director_minutes', 'Proces-verbaux des administrateurs'),
-            ('shareholder_minutes', 'Proces-verbaux des actionnaires'),
-            ('forms_filed', 'Formulaires deposes'),
-            ('financial_statements', 'Etats financiers'),
-        ],
-        string='Section du livre des minutes',
-    )
-
     # Classification
     type_id = fields.Many2one(
         'project.document.type',
@@ -153,8 +139,8 @@ class ProjectDocument(models.Model):
     # Les alertes d'expiration ont leurs propres drapeaux. Tant qu'elles
     # partageaient ceux des révisions, un document portant les deux dates ne
     # recevait jamais que le rappel de révision : la passe le marquait, et la
-    # recherche d'expiration l'excluait aussitôt, ce qui touche tout document
-    # portant les deux dates.
+    # recherche d'expiration l'excluait aussitôt. Sur ce parc, 107 documents
+    # actifs sur 194 portent les deux dates.
     expiration_reminder_sent_90 = fields.Boolean(
         string="Alerte d'expiration 90 jours envoyée",
         default=False,
@@ -300,7 +286,7 @@ class ProjectDocument(models.Model):
 
         L'ancienne version faisait un ``search()`` par document. Comme
         ``distribution_count`` figure dans la liste et le kanban par défaut,
-        afficher une liste de documents coûtait une requête par document.
+        afficher 205 documents coûtait 205 requêtes.
         """
         self.distribution_count = 0
         self.acknowledgment_count = 0
@@ -707,21 +693,6 @@ class ProjectDocument(models.Model):
             if internal_distributions > 0 else 0
         )
 
-        # Identifiants — répartition par statut, en une requête.
-        # Ces trois chiffres portaient le même défaut que le tableau de bord :
-        # ils cherchaient des identifiants « actifs » dont la date d'expiration
-        # était passée ou proche, alors que c'est la tâche quotidienne qui les
-        # fait sortir de l'état actif. Le courriel annonçait donc « 0 expiré »
-        # tous les quinze jours, quoi qu'il y ait en base.
-        comptes_identifiants = {
-            etat: nombre
-            for etat, nombre in self.env['project.credential']._read_group(
-                [], groupby=['state'], aggregates=['__count'])
-        }
-        credentials_total = comptes_identifiants.get('active', 0)
-        credentials_expiring = comptes_identifiants.get('expiring', 0)
-        credentials_expired = comptes_identifiants.get('expired', 0)
-
         # Distribution activity
         first_of_month = today.replace(day=1)
         if first_of_month.month == 1:
@@ -777,26 +748,6 @@ class ProjectDocument(models.Model):
             ('state', 'in', ['pending', 'proposed']),
         ])
 
-        # Corporate governance metrics
-        Director = self.env['corporate.director']
-        Officer = self.env['corporate.officer']
-        Compliance = self.env['corporate.compliance.event']
-        Resolution = self.env['corporate.resolution']
-
-        corp_active_directors = Director.search_count([('is_active', '=', True)])
-        corp_active_officers = Officer.search_count([('is_active', '=', True)])
-        corp_overdue_compliance = Compliance.search_count([
-            ('completed_date', '=', False),
-            ('status', '=', 'overdue'),
-        ])
-        corp_due_soon_compliance = Compliance.search_count([
-            ('completed_date', '=', False),
-            ('status', '=', 'due_soon'),
-        ])
-        corp_adopted_resolutions = Resolution.search_count([
-            ('status', '=', 'adopted'),
-        ])
-
         # Documents by type
         documents_by_type = []
         doc_types = self.env['project.document.type'].search([])
@@ -837,10 +788,6 @@ class ProjectDocument(models.Model):
             'internal_distributions': internal_distributions,
             'internal_pending': internal_pending,
             'internal_compliance_rate': internal_compliance_rate,
-            # Credentials
-            'credentials_total': credentials_total,
-            'credentials_expiring': credentials_expiring,
-            'credentials_expired': credentials_expired,
             # Activity
             'distributions_this_month': distributions_this_month,
             'distributions_last_month': distributions_last_month,
@@ -853,69 +800,64 @@ class ProjectDocument(models.Model):
             'decisions_proposed': decisions_proposed,
             'decisions_rejected': decisions_rejected,
             'decisions_high_impact': decisions_high_impact,
-            # Corporate governance
-            'corp_active_directors': corp_active_directors,
-            'corp_active_officers': corp_active_officers,
-            'corp_overdue_compliance': corp_overdue_compliance,
-            'corp_due_soon_compliance': corp_due_soon_compliance,
-            'corp_adopted_resolutions': corp_adopted_resolutions,
             # Other
             'documents_by_type': documents_by_type[:10],
             'dashboard_url': dashboard_url,
         }
 
-    # Chaque clé est un compteur de `_get_dashboard_report_data`; la valeur est
-    # l'action dont le domaine reproduit ce compteur. Ajouter un chiffre au
-    # courriel = ajouter son entrée ici ET son action dans
-    # views/report_drilldown_actions.xml, sinon le lien retombe muettement sur
-    # le tableau de bord.
-    _REPORT_LINK_ACTIONS = {
-        # Aperçu
-        'active_documents': 'report_action_docs_active',
-        'internal_documents': 'report_action_docs_internal',
-        'client_documents': 'report_action_docs_client',
-        'archived_documents': 'report_action_docs_archived',
-        'documents_by_type': 'report_action_docs_by_type',
-        # Attention requise
-        'expired_documents': 'report_action_docs_expired',
-        'overdue_review': 'report_action_docs_overdue_review',
-        'expiring_30d': 'report_action_docs_expiring_30d',
-        # Calendrier des révisions
-        'review_0_30': 'report_action_docs_review_0_30',
-        'review_30_60': 'report_action_docs_review_30_60',
-        'review_60_90': 'report_action_docs_review_60_90',
-        # Qualité
-        'docs_without_versions': 'report_action_docs_without_version',
-        # Documentation clients
-        'client_distributions': 'report_action_dist_client',
-        'client_ack_rate': 'report_action_dist_client_ack',
-        'client_pending': 'report_action_dist_client_pending',
-        'client_outdated': 'report_action_dist_client_outdated',
-        # Conformité interne
-        'internal_distributions': 'report_action_dist_internal',
-        'internal_compliance_rate': 'report_action_dist_internal_ack',
-        'internal_pending': 'report_action_dist_internal_pending',
-        'overdue_acknowledgments': 'report_action_dist_overdue_ack',
-        # Activité
-        'distributions_this_month': 'report_action_dist_this_month',
-        'distributions_last_month': 'report_action_dist_last_month',
-        # Identifiants
-        'credentials_total': 'report_action_cred_active',
-        'credentials_expiring': 'report_action_cred_expiring',
-        'credentials_expired': 'report_action_cred_expired',
-        # Décisions
-        'decisions_total': 'report_action_decisions_all',
-        'decisions_accepted': 'report_action_decisions_accepted',
-        'decisions_proposed': 'report_action_decisions_proposed',
-        'decisions_rejected': 'report_action_decisions_rejected',
-        'decisions_high_impact': 'report_action_decisions_high_impact',
-        # Gouvernance corporative
-        'corp_active_directors': 'report_action_corp_directors',
-        'corp_active_officers': 'report_action_corp_officers',
-        'corp_adopted_resolutions': 'report_action_corp_resolutions_adopted',
-        'corp_overdue_compliance': 'report_action_corp_compliance_overdue',
-        'corp_due_soon_compliance': 'report_action_corp_compliance_due_soon',
-    }
+    @api.model
+    def _get_report_link_actions(self):
+        """Une action de forage par chiffre du rapport bimensuel.
+
+        La clé est un compteur de `_get_dashboard_report_data`; la valeur est
+        l'ID externe COMPLET de l'action dont le domaine reproduit ce compteur.
+        Ajouter un chiffre au courriel = ajouter son entrée ici ET son action,
+        sinon le lien retombe muettement sur le tableau de bord.
+
+        C'est une méthode et non un attribut de classe pour qu'un module posé
+        par-dessus puisse y ajouter les siennes par `super()`. Un attribut
+        redéclaré dans une classe héritée MASQUE celui du socle au lieu de le
+        compléter : les trente liens du socle disparaîtraient sans un mot.
+        L'ID externe est complet pour la même raison — l'action ajoutée vit
+        dans le module qui l'ajoute, pas ici.
+        """
+        return {
+            # Aperçu
+            'active_documents': 'project_knowledge_matrix.report_action_docs_active',
+            'internal_documents': 'project_knowledge_matrix.report_action_docs_internal',
+            'client_documents': 'project_knowledge_matrix.report_action_docs_client',
+            'archived_documents': 'project_knowledge_matrix.report_action_docs_archived',
+            'documents_by_type': 'project_knowledge_matrix.report_action_docs_by_type',
+            # Attention requise
+            'expired_documents': 'project_knowledge_matrix.report_action_docs_expired',
+            'overdue_review': 'project_knowledge_matrix.report_action_docs_overdue_review',
+            'expiring_30d': 'project_knowledge_matrix.report_action_docs_expiring_30d',
+            # Calendrier des révisions
+            'review_0_30': 'project_knowledge_matrix.report_action_docs_review_0_30',
+            'review_30_60': 'project_knowledge_matrix.report_action_docs_review_30_60',
+            'review_60_90': 'project_knowledge_matrix.report_action_docs_review_60_90',
+            # Qualité
+            'docs_without_versions': 'project_knowledge_matrix.report_action_docs_without_version',
+            # Documentation clients
+            'client_distributions': 'project_knowledge_matrix.report_action_dist_client',
+            'client_ack_rate': 'project_knowledge_matrix.report_action_dist_client_ack',
+            'client_pending': 'project_knowledge_matrix.report_action_dist_client_pending',
+            'client_outdated': 'project_knowledge_matrix.report_action_dist_client_outdated',
+            # Conformité interne
+            'internal_distributions': 'project_knowledge_matrix.report_action_dist_internal',
+            'internal_compliance_rate': 'project_knowledge_matrix.report_action_dist_internal_ack',
+            'internal_pending': 'project_knowledge_matrix.report_action_dist_internal_pending',
+            'overdue_acknowledgments': 'project_knowledge_matrix.report_action_dist_overdue_ack',
+            # Activité
+            'distributions_this_month': 'project_knowledge_matrix.report_action_dist_this_month',
+            'distributions_last_month': 'project_knowledge_matrix.report_action_dist_last_month',
+            # Décisions
+            'decisions_total': 'project_knowledge_matrix.report_action_decisions_all',
+            'decisions_accepted': 'project_knowledge_matrix.report_action_decisions_accepted',
+            'decisions_proposed': 'project_knowledge_matrix.report_action_decisions_proposed',
+            'decisions_rejected': 'project_knowledge_matrix.report_action_decisions_rejected',
+            'decisions_high_impact': 'project_knowledge_matrix.report_action_decisions_high_impact',
+        }
 
     @api.model
     def _get_report_links(self, base_url, fallback_url):
@@ -930,11 +872,8 @@ class ProjectDocument(models.Model):
         qu'un '#' qui ne mène nulle part.
         """
         links = {}
-        for key, action_xmlid in self._REPORT_LINK_ACTIONS.items():
-            action = self.env.ref(
-                f'project_knowledge_matrix.{action_xmlid}',
-                raise_if_not_found=False,
-            )
+        for key, action_xmlid in self._get_report_link_actions().items():
+            action = self.env.ref(action_xmlid, raise_if_not_found=False)
             links[key] = (
                 f"{base_url}/odoo/action-{action.id}" if action else fallback_url
             )

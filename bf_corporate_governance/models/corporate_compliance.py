@@ -104,7 +104,7 @@ class CorporateComplianceEvent(models.Model):
             ('reminder_sent', '=', False),
         ])
         manager_group = self.env.ref(
-            'project_knowledge_matrix.group_corporate_manager',
+            'bf_corporate_governance.group_corporate_manager',
             raise_if_not_found=False,
         )
         if not manager_group:

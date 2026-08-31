@@ -43,12 +43,6 @@ msgid "1.0"
 msgstr "1.0"
 
 #. module: project_knowledge_matrix
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.view_document_software_form
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.view_document_software_version_form
-msgid "28.0.1"
-msgstr "28.0.1"
-
-#. module: project_knowledge_matrix
 #. odoo-javascript
 #: code:addons/project_knowledge_matrix/static/src/xml/knowledge_dashboard.xml:0
 msgid "30-60 jours"
@@ -59,12 +53,6 @@ msgstr "30-60 jours"
 #: code:addons/project_knowledge_matrix/static/src/xml/knowledge_dashboard.xml:0
 msgid "60-90 jours"
 msgstr "60-90 jours"
-
-#. module: project_knowledge_matrix
-#. odoo-python
-#: code:addons/project_knowledge_matrix/wizard/credential_rotate_wizard.py:0
-msgid "<br/><b>Notes:</b> %s"
-msgstr "<br/><b>Notes:</b> %s"
 
 #. module: project_knowledge_matrix
 #: model:mail.template,body_html:project_knowledge_matrix.mail_template_document_digest
@@ -296,11 +284,6 @@ msgid "<i class=\"fa fa-lock\" title=\"Bloqué\"/> Blocked"
 msgstr "<i class=\"fa fa-lock\" title=\"Bloqué\"/> Blocked"
 
 #. module: project_knowledge_matrix
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.credential_view_kanban
-msgid "<i class=\"fa fa-lock\"/> Restricted"
-msgstr "<i class=\"fa fa-lock\"/> Restreint"
-
-#. module: project_knowledge_matrix
 #: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.knowledge_item_view_kanban
 msgid "<i class=\"fa fa-paperclip\" title=\"Pièces jointes\"/>"
 msgstr "<i class=\"fa fa-paperclip\" title=\"Pièces jointes\"/>"
@@ -324,11 +307,6 @@ msgstr "<i class=\"fa fa-tasks\" title=\"Tâches\"/>"
 #: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.view_knowledge_dashboard_qweb
 msgid "<i class=\"fa fa-th me-2\"/>Matrices de connaissances"
 msgstr "<i class=\"fa fa-th me-2\"/>Matrices de connaissances"
-
-#. module: project_knowledge_matrix
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.credential_view_kanban
-msgid "<i class=\"fa fa-user\" title=\"Nom d'utilisateur\"/>"
-msgstr "<i class=\"fa fa-user\" title=\"Nom d'utilisateur\"/>"
 
 #. module: project_knowledge_matrix
 #: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.view_knowledge_dashboard_qweb
@@ -570,12 +548,6 @@ msgstr ""
 msgid "<strong>Overdue:</strong> The deadline for this item has passed."
 msgstr ""
 "<strong>En retard:</strong> La date limite pour cet élément est dépassée."
-
-#. module: project_knowledge_matrix
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.credential_view_form
-msgid "<strong>Supported formats:</strong> .pem, .key, .p12, .ppk, .cer, .crt"
-msgstr ""
-"<strong>Formats supportés:</strong> .pem, .key, .p12, .ppk, .cer, .crt"
 
 #. module: project_knowledge_matrix
 #: model:mail.template,body_html:project_knowledge_matrix.mail_template_document_dashboard_report
@@ -1809,42 +1781,6 @@ msgid "A venir"
 msgstr "À venir"
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields.selection,name:project_knowledge_matrix.selection__corporate_resolution__meeting_type__agm
-msgid "AGM"
-msgstr "AGA"
-
-#. module: project_knowledge_matrix
-#: model:project.credential.type,name:project_knowledge_matrix.credential_type_api
-msgid "API / Integration"
-msgstr "API / Intégration"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_credential__api_key
-msgid "API Key"
-msgstr "Clé API"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_credential__api_key_encrypted
-msgid "API Key (Encrypted)"
-msgstr "Clé API (chiffrée)"
-
-#. module: project_knowledge_matrix
-#: model:project.credential.type,description:project_knowledge_matrix.credential_type_api
-msgid "API keys and integration credentials"
-msgstr "Clés API et identifiants d'intégration"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_resolution__whereas_text
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.corporate_resolution_view_form
-msgid "ATTENDU QUE..."
-msgstr "ATTENDU QUE..."
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_resolution__vote_abstain
-msgid "Abstentions"
-msgstr "Abstentions"
-
-#. module: project_knowledge_matrix
 #: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.knowledge_item_view_form
 msgid "Accept"
 msgstr "Accepter"
@@ -1916,8 +1852,6 @@ msgid "Accusés internes"
 msgstr "Accusés internes"
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_document_software__active
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_document_software_version__active
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document__active
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document_type__active
 #: model:ir.model.fields.selection,name:project_knowledge_matrix.selection__project_document__state__active
@@ -1931,11 +1865,6 @@ msgid "Actifs"
 msgstr "Actifs"
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_compliance_event__message_needaction
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_director__message_needaction
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_officer__message_needaction
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_resolution__message_needaction
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_credential__message_needaction
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document__message_needaction
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document_distribution__message_needaction
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document_version__message_needaction
@@ -1951,15 +1880,8 @@ msgid "Actions rapides"
 msgstr "Actions rapides"
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_director__is_active
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_officer__is_active
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_credential_type__active
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_knowledge_matrix__active
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_knowledge_section__active
-#: model:ir.model.fields.selection,name:project_knowledge_matrix.selection__project_credential__state__active
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.corporate_director_view_search
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.corporate_officer_view_search
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.credential_view_search
 msgid "Active"
 msgstr "Actif"
 
@@ -1969,19 +1891,11 @@ msgid "Active (Not N/A)"
 msgstr "Actif (pas N/A)"
 
 #. module: project_knowledge_matrix
-#: model:project.credential.type,name:project_knowledge_matrix.credential_type_ad
-msgid "Active Directory / Entra ID"
-msgstr "Active Directory / Entra ID"
-
-#. module: project_knowledge_matrix
 #: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.view_project_document_form
 msgid "Activer"
 msgstr "Activer"
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_compliance_event__activity_ids
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_resolution__activity_ids
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_credential__activity_ids
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document__activity_ids
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document_distribution__activity_ids
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document_version__activity_ids
@@ -1991,9 +1905,6 @@ msgid "Activities"
 msgstr "Activités"
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_compliance_event__activity_exception_decoration
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_resolution__activity_exception_decoration
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_credential__activity_exception_decoration
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document__activity_exception_decoration
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document_distribution__activity_exception_decoration
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document_version__activity_exception_decoration
@@ -2003,9 +1914,6 @@ msgid "Activity Exception Decoration"
 msgstr "Décoration d'exception d'activité"
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_compliance_event__activity_state
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_resolution__activity_state
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_credential__activity_state
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document__activity_state
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document_distribution__activity_state
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document_version__activity_state
@@ -2015,9 +1923,6 @@ msgid "Activity State"
 msgstr "État de l'activité"
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_compliance_event__activity_type_icon
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_resolution__activity_type_icon
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_credential__activity_type_icon
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document__activity_type_icon
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document_distribution__activity_type_icon
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document_version__activity_type_icon
@@ -2044,45 +1949,9 @@ msgid "Actualiser"
 msgstr "Actualiser"
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields.selection,name:project_knowledge_matrix.selection__document_software_version__support_status__current
-msgid "Actuelle"
-msgstr "Actuelle"
-
-#. module: project_knowledge_matrix
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.view_document_software_version_search
-msgid "Actuelles"
-msgstr "Actuelles"
-
-#. module: project_knowledge_matrix
-#: model_terms:ir.actions.act_window,help:project_knowledge_matrix.corporate_minute_book_action
-msgid "Add a document with a minute book section to see it here"
-msgstr ""
-"Ajoutez un document avec une section du livre des minutes pour le voir ici"
-
-#. module: project_knowledge_matrix
-#: model_terms:ir.actions.act_window,help:project_knowledge_matrix.corporate_director_action
-msgid "Add your first director"
-msgstr "Ajoutez votre premier administrateur"
-
-#. module: project_knowledge_matrix
-#: model_terms:ir.actions.act_window,help:project_knowledge_matrix.corporate_officer_action
-msgid "Add your first officer"
-msgstr "Ajoutez votre premier dirigeant"
-
-#. module: project_knowledge_matrix
 #: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.knowledge_item_view_form
 msgid "Additional context or notes..."
 msgstr "Contexte ou notes additionnelles..."
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields,help:project_knowledge_matrix.field_project_credential__notes
-msgid "Additional information or instructions"
-msgstr "Informations ou instructions supplémentaires"
-
-#. module: project_knowledge_matrix
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.credential_view_form
-msgid "Additional instructions or information..."
-msgstr "Instructions ou informations supplémentaires..."
 
 #. module: project_knowledge_matrix
 #: model:ir.model.fields,help:project_knowledge_matrix.field_project_knowledge_matrix__description
@@ -2095,11 +1964,6 @@ msgid "Additional notes about this matrix..."
 msgstr "Notes supplémentaires sur cette matrice..."
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields,help:project_knowledge_matrix.field_project_credential_rotate_wizard__notes
-msgid "Additional notes about this password rotation"
-msgstr "Notes supplémentaires sur cette rotation de mot de passe"
-
-#. module: project_knowledge_matrix
 #: model:ir.model.fields,help:project_knowledge_matrix.field_project_knowledge_item__notes
 msgid "Additional notes or context"
 msgstr "Notes ou contexte supplémentaires"
@@ -2109,17 +1973,6 @@ msgstr "Notes ou contexte supplémentaires"
 #: code:addons/project_knowledge_matrix/static/src/xml/knowledge_dashboard.xml:0
 msgid "Administrateurs actifs"
 msgstr "Administrateurs actifs"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields.selection,name:project_knowledge_matrix.selection__corporate_resolution__status__adopted
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.corporate_resolution_view_search
-msgid "Adopted"
-msgstr "Adopté"
-
-#. module: project_knowledge_matrix
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.corporate_resolution_view_form
-msgid "Adopter"
-msgstr "Adopter"
 
 #. module: project_knowledge_matrix
 #: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.res_config_settings_view_form_knowledge_matrix
@@ -2152,43 +2005,10 @@ msgid "Annexes contractuelles et pièces jointes"
 msgstr "Annexes contractuelles et pièces jointes"
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields.selection,name:project_knowledge_matrix.selection__corporate_compliance_event__event_type__annual_declaration
-msgid "Annual Declaration"
-msgstr "Déclaration annuelle"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields.selection,name:project_knowledge_matrix.selection__corporate_compliance_event__event_type__agm
-msgid "Annual General Meeting"
-msgstr "Assemblée générale annuelle"
-
-#. module: project_knowledge_matrix
 #. odoo-javascript
 #: code:addons/project_knowledge_matrix/static/src/xml/knowledge_dashboard.xml:0
 msgid "Aperçu des documents"
 msgstr "Aperçu des documents"
-
-#. module: project_knowledge_matrix
-#: model:project.credential.type,name:project_knowledge_matrix.credential_type_app
-msgid "Application Login"
-msgstr "Connexion application"
-
-#. module: project_knowledge_matrix
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.corporate_director_view_form
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.corporate_officer_view_form
-msgid "Appointment"
-msgstr "Nomination"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_director__appointment_date
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_officer__appointment_date
-msgid "Appointment Date"
-msgstr "Date de nomination"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_director__appointment_resolution_id
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_officer__appointment_resolution_id
-msgid "Appointment Resolution"
-msgstr "Résolution de nomination"
 
 #. module: project_knowledge_matrix
 #: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.view_document_version_form
@@ -2213,7 +2033,6 @@ msgid "Approuvé par"
 msgstr "Approuvé par"
 
 #. module: project_knowledge_matrix
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.credential_type_view_form
 #: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.knowledge_matrix_view_form
 #: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.knowledge_matrix_view_search
 #: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.knowledge_section_view_search
@@ -2227,7 +2046,6 @@ msgstr "Archiver"
 
 #. module: project_knowledge_matrix
 #: model:ir.model.fields.selection,name:project_knowledge_matrix.selection__project_document__state__archived
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.view_document_software_form
 #: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.view_document_type_form
 #: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.view_project_document_form
 #: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.view_project_document_search
@@ -2237,16 +2055,9 @@ msgstr "Archivé"
 #. module: project_knowledge_matrix
 #. odoo-javascript
 #: code:addons/project_knowledge_matrix/static/src/xml/knowledge_dashboard.xml:0
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.view_document_software_search
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.view_document_software_version_search
 #: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.view_document_type_search
 msgid "Archivés"
 msgstr "Archivés"
-
-#. module: project_knowledge_matrix
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.credential_view_form
-msgid "Are you sure you want to revoke this credential?"
-msgstr "Êtes-vous sûr de vouloir révoquer cet identifiant?"
 
 #. module: project_knowledge_matrix
 #: model:ir.actions.server,name:project_knowledge_matrix.action_item_assign_to_me
@@ -2264,11 +2075,6 @@ msgid "Assignee"
 msgstr "Assigné"
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_compliance_event__message_attachment_count
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_director__message_attachment_count
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_officer__message_attachment_count
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_resolution__message_attachment_count
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_credential__message_attachment_count
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document__message_attachment_count
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document_distribution__message_attachment_count
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document_version__message_attachment_count
@@ -2278,7 +2084,6 @@ msgid "Attachment Count"
 msgstr "Nombre de pièces jointes"
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_resolution__attachment_ids
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_knowledge_item__attachment_count
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_knowledge_item__attachment_ids
 #: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.knowledge_item_view_form
@@ -2317,12 +2122,6 @@ msgid "Aucune version trouvée"
 msgstr "Aucune version trouvée"
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields.selection,name:project_knowledge_matrix.selection__corporate_compliance_event__event_type__auditor_appointment
-#: model:ir.model.fields.selection,name:project_knowledge_matrix.selection__corporate_resolution__subject_category__auditor_appointment
-msgid "Auditor Appointment"
-msgstr "Nomination du vérificateur"
-
-#. module: project_knowledge_matrix
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document__author_id
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document_version__author_id
 #: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.view_document_version_search
@@ -2338,11 +2137,6 @@ msgstr "Autre"
 #: model:ir.model.fields,help:project_knowledge_matrix.field_project_project__knowledge_progress
 msgid "Average completion percentage across all matrices"
 msgstr "Pourcentage moyen de complétion de toutes les matrices"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields.selection,name:project_knowledge_matrix.selection__corporate_resolution__subject_category__bank_authorization
-msgid "Bank Authorization"
-msgstr "Autorisation bancaire"
 
 #. module: project_knowledge_matrix
 #: model:ir.ui.menu,name:project_knowledge_matrix.menu_knowledge_root
@@ -2377,19 +2171,8 @@ msgid "Blocking Others"
 msgstr "Bloque d'autres"
 
 #. module: project_knowledge_matrix
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.corporate_resolution_view_search
-msgid "Board"
-msgstr "Conseil d'administration"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields.selection,name:project_knowledge_matrix.selection__corporate_resolution__resolution_type__board
-msgid "Board Resolution"
-msgstr "Résolution du conseil"
-
-#. module: project_knowledge_matrix
 #: model:ir.model.fields.selection,name:project_knowledge_matrix.selection__project_document__state__draft
 #: model:ir.model.fields.selection,name:project_knowledge_matrix.selection__project_document_version__state__draft
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.corporate_resolution_view_form
 #: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.view_document_version_search
 #: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.view_project_document_search
 msgid "Brouillon"
@@ -2417,16 +2200,6 @@ msgid "Business"
 msgstr "Affaires"
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields.selection,name:project_knowledge_matrix.selection__corporate_resolution__subject_category__bylaw_amendment
-msgid "Bylaw Amendment"
-msgstr "Modification des règlements"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields.selection,name:project_knowledge_matrix.selection__corporate_compliance_event__event_type__bylaw_review
-msgid "Bylaw Review"
-msgstr "Révision des règlements"
-
-#. module: project_knowledge_matrix
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_knowledge_import_wizard__csv_file
 msgid "CSV File"
 msgstr "Fichier CSV"
@@ -2435,12 +2208,6 @@ msgstr "Fichier CSV"
 #: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.import_csv_wizard_view_form
 msgid "CSV Settings"
 msgstr "Paramètres CSV"
-
-#. module: project_knowledge_matrix
-#: model:ir.actions.act_window,name:project_knowledge_matrix.corporate_compliance_action
-#: model:ir.ui.menu,name:project_knowledge_matrix.menu_corporate_compliance
-msgid "Calendrier de conformite"
-msgstr "Calendrier de conformité"
 
 #. module: project_knowledge_matrix
 #. odoo-javascript
@@ -2453,13 +2220,6 @@ msgstr "Calendrier des expirations"
 #: code:addons/project_knowledge_matrix/static/src/xml/knowledge_dashboard.xml:0
 msgid "Calendrier des révisions"
 msgstr "Calendrier des révisions"
-
-#. module: project_knowledge_matrix
-#: model:res.groups,comment:project_knowledge_matrix.group_credential_user
-msgid "Can view and edit credentials for projects they have access to."
-msgstr ""
-"Peut consulter et modifier les identifiants pour les projets auxquels il a "
-"accès."
 
 #. module: project_knowledge_matrix
 #: model:res.groups,comment:project_knowledge_matrix.group_knowledge_user
@@ -2477,32 +2237,15 @@ msgstr ""
 "auxquels il a accès."
 
 #. module: project_knowledge_matrix
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.credential_rotate_wizard_view_form
 #: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.import_csv_wizard_view_form
 msgid "Cancel"
 msgstr "Annuler"
 
 #. module: project_knowledge_matrix
 #. odoo-javascript
-#: code:addons/project_knowledge_matrix/static/src/js/credential_copy.js:0
-msgid "Cannot copy restricted or empty password"
-msgstr "Impossible de copier un mot de passe restreint ou vide"
-
-#. module: project_knowledge_matrix
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.corporate_resolution_view_search
-msgid "Category"
-msgstr "Catégorie"
-
-#. module: project_knowledge_matrix
-#. odoo-javascript
 #: code:addons/project_knowledge_matrix/static/src/xml/knowledge_dashboard.xml:0
 msgid "Ce mois"
 msgstr "Ce mois"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.constraint,message:project_knowledge_matrix.constraint_document_software_version_version_software_uniq
-msgid "Cette version existe déjà pour ce logiciel!"
-msgstr "Cette version existe déjà pour ce logiciel!"
 
 #. module: project_knowledge_matrix
 #: model:ir.model.fields,help:project_knowledge_matrix.field_project_knowledge_import_wizard__delimiter
@@ -2526,22 +2269,11 @@ msgid "Chemin source"
 msgstr "Chemin source"
 
 #. module: project_knowledge_matrix
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.corporate_director_view_form
-msgid "City, Province, Country"
-msgstr "Ville, Province, Pays"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields,help:project_knowledge_matrix.field_document_software__icon
-msgid "Classe Font Awesome (ex: fa-cloud, fa-database)"
-msgstr "Classe Font Awesome (ex: fa-cloud, fa-database)"
-
-#. module: project_knowledge_matrix
 #: model:ir.model.fields,help:project_knowledge_matrix.field_project_document_type__icon
 msgid "Classe d'icône Font Awesome (ex: fa-book, fa-gavel)"
 msgstr "Classe d'icône Font Awesome (ex: fa-book, fa-gavel)"
 
 #. module: project_knowledge_matrix
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.corporate_resolution_view_form
 #: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.knowledge_item_view_form
 msgid "Classification"
 msgstr "Classification"
@@ -2571,32 +2303,15 @@ msgid "Clients avec docs obsolètes"
 msgstr "Clients avec docs obsolètes"
 
 #. module: project_knowledge_matrix
-#: model:project.credential.type,name:project_knowledge_matrix.credential_type_cloud
-msgid "Cloud Platform"
-msgstr "Plateforme infonuagique"
-
-#. module: project_knowledge_matrix
-#: model:project.credential.type,description:project_knowledge_matrix.credential_type_cloud
-msgid "Cloud platform credentials (AWS, Azure, GCP, etc.)"
-msgstr "Identifiants de plateforme infonuagique (AWS, Azure, GCP, etc.)"
-
-#. module: project_knowledge_matrix
 #: model:ir.model.fields,help:project_knowledge_matrix.field_project_document_type__is_internal
 msgid "Cochez pour les documents internes (politiques, procédures RH, etc.)"
 msgstr "Cochez pour les documents internes (politiques, procédures RH, etc.)"
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_document_software__code
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_credential_type__code
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document_type__code
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_knowledge_section__code
 msgid "Code"
 msgstr "Code"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields,help:project_knowledge_matrix.field_document_software__code
-msgid "Code court unique (ex: NC pour Nextcloud)"
-msgstr "Code court unique (ex: NC pour Nextcloud)"
 
 #. module: project_knowledge_matrix
 #: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.view_project_document_form
@@ -2609,7 +2324,6 @@ msgid "Code de référence unique pour ce document"
 msgstr "Code de référence unique pour ce document"
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_credential_type__color
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_knowledge_item__color
 msgid "Color"
 msgstr "Couleur"
@@ -2631,11 +2345,6 @@ msgid "Comma (,)"
 msgstr "Virgule (,)"
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_compliance_event__company_id
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_director__company_id
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_officer__company_id
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_resolution__company_id
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_credential__company_id
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_knowledge_item__company_id
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_knowledge_matrix__company_id
 #: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.knowledge_matrix_view_search
@@ -2648,16 +2357,9 @@ msgid "Company policies and rules"
 msgstr "Politiques et règles de l'entreprise"
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields.selection,name:project_knowledge_matrix.selection__corporate_compliance_event__status__completed
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.corporate_compliance_view_search
 #: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.knowledge_matrix_view_search
 msgid "Completed"
 msgstr "Terminé"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_compliance_event__completed_date
-msgid "Completed Date"
-msgstr "Date de complétion"
 
 #. module: project_knowledge_matrix
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_knowledge_matrix__completed_count
@@ -2668,21 +2370,6 @@ msgstr "Éléments terminés"
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_knowledge_item__completion_date
 msgid "Completion Date"
 msgstr "Date de complétion"
-
-#. module: project_knowledge_matrix
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.corporate_compliance_view_calendar
-msgid "Compliance Calendar"
-msgstr "Calendrier de conformité"
-
-#. module: project_knowledge_matrix
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.corporate_compliance_view_form
-msgid "Compliance Event"
-msgstr "Événement de conformité"
-
-#. module: project_knowledge_matrix
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.corporate_compliance_view_list
-msgid "Compliance Events"
-msgstr "Événements de conformité"
 
 #. module: project_knowledge_matrix
 #: model:ir.model,name:project_knowledge_matrix.model_res_config_settings
@@ -2699,11 +2386,6 @@ msgstr "Configuration"
 #: model:project.knowledge.section,name:project_knowledge_matrix.section_cfg
 msgid "Configuration & Setup"
 msgstr "Configuration et installation"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_credential_rotate_wizard__confirm_password
-msgid "Confirm Password"
-msgstr "Confirmer le mot de passe"
 
 #. module: project_knowledge_matrix
 #. odoo-javascript
@@ -2735,7 +2417,6 @@ msgstr "Consulté"
 
 #. module: project_knowledge_matrix
 #: model:ir.model,name:project_knowledge_matrix.model_res_partner
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_credential__partner_id
 msgid "Contact"
 msgstr "Contact"
 
@@ -2743,11 +2424,6 @@ msgstr "Contact"
 #: model:ir.model.fields,help:project_knowledge_matrix.field_project_document_distribution__acknowledged_by_partner_id
 msgid "Contact client ayant accusé réception du document"
 msgstr "Contact client ayant accusé réception du document"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields,help:project_knowledge_matrix.field_project_credential__partner_id
-msgid "Contact person for this credential"
-msgstr "Personne-ressource pour cet identifiant"
 
 #. module: project_knowledge_matrix
 #: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.view_document_version_form
@@ -2772,11 +2448,6 @@ msgid "Contexte de projet optionnel pour cette distribution"
 msgstr "Contexte de projet optionnel pour cette distribution"
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields.selection,name:project_knowledge_matrix.selection__corporate_resolution__subject_category__contract_approval
-msgid "Contract Approval"
-msgstr "Approbation de contrat"
-
-#. module: project_knowledge_matrix
 #: model:project.document.type,name:project_knowledge_matrix.document_type_contract
 msgid "Contract/Agreement"
 msgstr "Contrat/Entente"
@@ -2787,56 +2458,9 @@ msgid "Contractual"
 msgstr "Contractuel"
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields.selection,name:project_knowledge_matrix.selection__project_document__minute_book_section__agreements
-msgid "Conventions d'actionnaires"
-msgstr "Conventions d'actionnaires"
-
-#. module: project_knowledge_matrix
 #: model:ir.model.fields.selection,name:project_knowledge_matrix.selection__project_document_distribution__distribution_method__physical
 msgid "Copie physique"
 msgstr "Copie physique"
-
-#. module: project_knowledge_matrix
-#. odoo-javascript
-#: code:addons/project_knowledge_matrix/static/src/js/credential_copy.js:0
-msgid "Copied to clipboard"
-msgstr "Copié dans le presse-papiers"
-
-#. module: project_knowledge_matrix
-#. odoo-javascript
-#: code:addons/project_knowledge_matrix/static/src/xml/credential_copy.xml:0
-msgid "Copy to clipboard"
-msgstr "Copier dans le presse-papiers"
-
-#. module: project_knowledge_matrix
-#: model:ir.model,name:project_knowledge_matrix.model_corporate_compliance_event
-msgid "Corporate Compliance Event"
-msgstr "Événement de conformité corporative"
-
-#. module: project_knowledge_matrix
-#: model:ir.model,name:project_knowledge_matrix.model_corporate_director
-msgid "Corporate Director"
-msgstr "Administrateur corporatif"
-
-#. module: project_knowledge_matrix
-#: model:res.groups,name:project_knowledge_matrix.group_corporate_manager
-msgid "Corporate Governance Manager"
-msgstr "Gestionnaire de gouvernance corporative"
-
-#. module: project_knowledge_matrix
-#: model:ir.model,name:project_knowledge_matrix.model_corporate_officer
-msgid "Corporate Officer"
-msgstr "Dirigeant corporatif"
-
-#. module: project_knowledge_matrix
-#: model:ir.model,name:project_knowledge_matrix.model_corporate_resolution
-msgid "Corporate Resolution"
-msgstr "Résolution corporative"
-
-#. module: project_knowledge_matrix
-#: model:ir.actions.server,name:project_knowledge_matrix.cron_corporate_compliance_check_ir_actions_server
-msgid "Corporate: Check Compliance Deadlines"
-msgstr "Corporatif: Vérifier les échéances de conformité"
 
 #. module: project_knowledge_matrix
 #: model:ir.model.fields.selection,name:project_knowledge_matrix.selection__project_document_version__change_type__patch
@@ -2844,12 +2468,6 @@ msgid "Correctif - Corrections mineures"
 msgstr "Correctif - Corrections mineures"
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields.selection,name:project_knowledge_matrix.selection__document_software_version__support_status__security
-msgid "Correctifs sécurité uniquement"
-msgstr "Correctifs sécurité uniquement"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_document_software__color
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document_type__color
 msgid "Couleur"
 msgstr "Couleur"
@@ -2872,26 +2490,6 @@ msgid "Create Task"
 msgstr "Créer une tâche"
 
 #. module: project_knowledge_matrix
-#: model_terms:ir.actions.act_window,help:project_knowledge_matrix.credential_action
-msgid "Create a credential"
-msgstr "Créer un identifiant"
-
-#. module: project_knowledge_matrix
-#: model_terms:ir.actions.act_window,help:project_knowledge_matrix.credential_type_action
-msgid "Create a credential type"
-msgstr "Créer un type d'identifiant"
-
-#. module: project_knowledge_matrix
-#: model_terms:ir.actions.act_window,help:project_knowledge_matrix.corporate_compliance_action
-msgid "Create your first compliance event"
-msgstr "Créez votre premier événement de conformité"
-
-#. module: project_knowledge_matrix
-#: model_terms:ir.actions.act_window,help:project_knowledge_matrix.corporate_resolution_action
-msgid "Create your first corporate resolution"
-msgstr "Créez votre première résolution corporative"
-
-#. module: project_knowledge_matrix
 #: model_terms:ir.actions.act_window,help:project_knowledge_matrix.knowledge_matrix_action
 msgid "Create your first knowledge matrix"
 msgstr "Créez votre première matrice de connaissances"
@@ -2902,15 +2500,6 @@ msgid "Create your first template"
 msgstr "Créez votre premier modèle"
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_compliance_event__create_uid
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_director__create_uid
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_officer__create_uid
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_resolution__create_uid
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_document_software__create_uid
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_document_software_version__create_uid
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_credential__create_uid
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_credential_rotate_wizard__create_uid
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_credential_type__create_uid
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document__create_uid
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document_distribution__create_uid
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document_type__create_uid
@@ -2923,15 +2512,6 @@ msgid "Created by"
 msgstr "Créé par"
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_compliance_event__create_date
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_director__create_date
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_officer__create_date
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_resolution__create_date
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_document_software__create_date
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_document_software_version__create_date
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_credential__create_date
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_credential_rotate_wizard__create_date
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_credential_type__create_date
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document__create_date
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document_distribution__create_date
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document_type__create_date
@@ -2944,111 +2524,14 @@ msgid "Created on"
 msgstr "Créé le"
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_credential_rotate_wizard__credential_id
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.credential_view_form
-msgid "Credential"
-msgstr "Identifiant"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_project__credential_count
-msgid "Credential Count"
-msgstr "Nombre d'identifiants"
-
-#. module: project_knowledge_matrix
-#: model:res.groups,name:project_knowledge_matrix.group_credential_manager
-msgid "Credential Manager"
-msgstr "Gestionnaire des identifiants"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_credential_rotate_wizard__credential_name
-msgid "Credential Name"
-msgstr "Nom de l'identifiant"
-
-#. module: project_knowledge_matrix
-#: model:ir.model,name:project_knowledge_matrix.model_project_credential_type
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.credential_type_view_form
-msgid "Credential Type"
-msgstr "Type d'identifiant"
-
-#. module: project_knowledge_matrix
-#: model:ir.actions.act_window,name:project_knowledge_matrix.credential_type_action
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.credential_type_view_list
-msgid "Credential Types"
-msgstr "Types d'identifiants"
-
-#. module: project_knowledge_matrix
-#: model:res.groups,name:project_knowledge_matrix.group_credential_user
-msgid "Credential User"
-msgstr "Utilisateur des identifiants"
-
-#. module: project_knowledge_matrix
-#. odoo-python
-#: code:addons/project_knowledge_matrix/models/project_credential.py:0
-msgid "Credential has been reactivated."
-msgstr "L'identifiant a été réactivé."
-
-#. module: project_knowledge_matrix
-#. odoo-python
-#: code:addons/project_knowledge_matrix/models/project_credential.py:0
-msgid "Credential has been revoked."
-msgstr "L'identifiant a été révoqué."
-
-#. module: project_knowledge_matrix
-#. odoo-python
-#: code:addons/project_knowledge_matrix/models/project_credential.py:0
-msgid "Credential has expired."
-msgstr "L'identifiant a expiré."
-
-#. module: project_knowledge_matrix
-#: model_terms:ir.actions.act_window,help:project_knowledge_matrix.credential_type_action
-msgid ""
-"Credential types define the category and which fields are displayed\n"
-"                when creating credentials (e.g., Email, Server, API)."
-msgstr ""
-"Credential types define the category and which fields are displayed\n"
-"                when creating credentials (e.g., Email, Server, API)."
-
-#. module: project_knowledge_matrix
-#. odoo-python
-#: code:addons/project_knowledge_matrix/models/project_credential.py:0
-msgid "Credential verified as working."
-msgstr "Identifiant vérifié comme fonctionnel."
-
-#. module: project_knowledge_matrix
-#. odoo-python
-#: code:addons/project_knowledge_matrix/models/project_credential.py:0
-msgid "Credential will expire on %s."
-msgstr "L'identifiant expirera le %s."
-
-#. module: project_knowledge_matrix
-#: model:ir.actions.act_window,name:project_knowledge_matrix.credential_action
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_project__credential_ids
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.credential_view_form
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.credential_view_list
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.credential_view_search
 #: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.project_view_form_inherit_knowledge
 msgid "Credentials"
 msgstr "Identifiants"
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields,help:project_knowledge_matrix.field_project_project__credential_ids
-msgid "Credentials stored for this project"
-msgstr "Identifiants stockés pour ce projet"
-
-#. module: project_knowledge_matrix
-#: model:ir.actions.server,name:project_knowledge_matrix.ir_cron_check_expiring_credentials_ir_actions_server
-msgid "Credentials: Check Expiration Status"
-msgstr "Credentials: Check Expiration Status"
-
-#. module: project_knowledge_matrix
 #: model_terms:ir.actions.act_window,help:project_knowledge_matrix.project_document_action_client
 msgid "Créer un document client"
 msgstr "Créer un document client"
-
-#. module: project_knowledge_matrix
-#: model_terms:ir.actions.act_window,help:project_knowledge_matrix.document_software_action
-msgid "Créer un logiciel"
-msgstr "Créer un logiciel"
 
 #. module: project_knowledge_matrix
 #: model_terms:ir.actions.act_window,help:project_knowledge_matrix.document_type_action
@@ -3061,11 +2544,6 @@ msgid "Créer une politique ou procédure interne"
 msgstr "Créer une politique ou procédure interne"
 
 #. module: project_knowledge_matrix
-#: model_terms:ir.actions.act_window,help:project_knowledge_matrix.document_software_version_action
-msgid "Créer une version de logiciel"
-msgstr "Créer une version de logiciel"
-
-#. module: project_knowledge_matrix
 #: model_terms:ir.actions.act_window,help:project_knowledge_matrix.project_document_action
 msgid "Créer votre premier document"
 msgstr "Créer votre premier document"
@@ -3074,11 +2552,6 @@ msgstr "Créer votre premier document"
 #: model_terms:ir.actions.act_window,help:project_knowledge_matrix.document_version_action
 msgid "Créez des versions depuis le formulaire du document."
 msgstr "Créez des versions depuis le formulaire du document."
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_credential_rotate_wizard__current_password
-msgid "Current Password"
-msgstr "Mot de passe actuel"
 
 #. module: project_knowledge_matrix
 #: model:project.knowledge.section,name:project_knowledge_matrix.section_cur
@@ -3091,35 +2564,9 @@ msgid "Current status of this item"
 msgstr "État actuel de cet élément"
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_officer__title_custom
-msgid "Custom Title"
-msgstr "Titre personnalisé"
-
-#. module: project_knowledge_matrix
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.corporate_officer_view_form
-msgid "Custom title..."
-msgstr "Titre personnalisé..."
-
-#. module: project_knowledge_matrix
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.credential_view_form
-msgid "DOMAIN or tenant.onmicrosoft.com"
-msgstr "DOMAINE ou tenant.onmicrosoft.com"
-
-#. module: project_knowledge_matrix
 #: model:project.knowledge.section,name:project_knowledge_matrix.section_dat
 msgid "Data & Migration"
 msgstr "Données et migration"
-
-#. module: project_knowledge_matrix
-#: model:project.credential.type,name:project_knowledge_matrix.credential_type_db
-msgid "Database"
-msgstr "Base de données"
-
-#. module: project_knowledge_matrix
-#: model:project.credential.type,description:project_knowledge_matrix.credential_type_db
-msgid "Database connection credentials (PostgreSQL, MySQL, etc.)"
-msgstr ""
-"Identifiants de connexion aux bases de données (PostgreSQL, MySQL, etc.)"
 
 #. module: project_knowledge_matrix
 #: model:ir.model.fields,help:project_knowledge_matrix.field_project_document__expiration_date
@@ -3158,15 +2605,9 @@ msgid "Date de l'accusé"
 msgstr "Date de l'accusé"
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_document_software_version__release_date
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document_version__release_date
 msgid "Date de publication"
 msgstr "Date de publication"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields,help:project_knowledge_matrix.field_document_software__version_date
-msgid "Date de publication de la version actuelle"
-msgstr "Date de publication de la version actuelle"
 
 #. module: project_knowledge_matrix
 #: model:ir.model.fields,help:project_knowledge_matrix.field_project_document_version__review_date
@@ -3179,11 +2620,6 @@ msgid "Date de signature"
 msgstr "Date de signature"
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_document_software__version_date
-msgid "Date de version"
-msgstr "Date de version"
-
-#. module: project_knowledge_matrix
 #: model:ir.model.fields,help:project_knowledge_matrix.field_project_document_version__release_date
 msgid "Date et heure de publication de cette version"
 msgstr "Date et heure de publication de cette version"
@@ -3192,16 +2628,6 @@ msgstr "Date et heure de publication de cette version"
 #: model:ir.model.fields,help:project_knowledge_matrix.field_project_knowledge_item__completion_date
 msgid "Date when marked as done"
 msgstr "Date de complétion"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields,help:project_knowledge_matrix.field_project_credential__last_rotated
-msgid "Date when the password was last changed"
-msgstr "Date du dernier changement de mot de passe"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields,help:project_knowledge_matrix.field_project_credential__last_verified
-msgid "Date when this credential was last verified to be working"
-msgstr "Date de la dernière vérification de fonctionnement de cet identifiant"
 
 #. module: project_knowledge_matrix
 #: model:ir.model.fields,help:project_knowledge_matrix.field_project_document__review_date
@@ -3314,18 +2740,11 @@ msgid "Dernière version"
 msgstr "Dernière version"
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields,help:project_knowledge_matrix.field_document_software__current_version
-msgid "Dernière version connue du logiciel"
-msgstr "Dernière version connue du logiciel"
-
-#. module: project_knowledge_matrix
 #: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.view_document_distribution_form
 msgid "Dernière version disponible"
 msgstr "Dernière version disponible"
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_document_software__description
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_credential_type__description
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document__description
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document_type__description
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_knowledge_matrix__description
@@ -3347,20 +2766,9 @@ msgid "Description du document..."
 msgstr "Description du document..."
 
 #. module: project_knowledge_matrix
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.view_document_software_form
-msgid "Description du logiciel..."
-msgstr "Description du logiciel..."
-
-#. module: project_knowledge_matrix
 #: model:ir.model.fields,help:project_knowledge_matrix.field_project_document_version__changelog
 msgid "Description détaillée des changements (format Markdown supporté)"
 msgstr "Description détaillée des changements (format Markdown supporté)"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields,help:project_knowledge_matrix.field_project_credential__name
-#: model:ir.model.fields,help:project_knowledge_matrix.field_project_credential_rotate_wizard__credential_name
-msgid "Descriptive name for this credential"
-msgstr "Nom descriptif pour cet identifiant"
 
 #. module: project_knowledge_matrix
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document_distribution__recipient_name
@@ -3380,38 +2788,9 @@ msgid "Detailed description of what this section covers"
 msgstr "Description détaillée de ce que couvre cette section"
 
 #. module: project_knowledge_matrix
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.corporate_compliance_view_form
 #: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.knowledge_item_view_form
 msgid "Details"
 msgstr "Détails"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields.selection,name:project_knowledge_matrix.selection__project_credential__environment__development
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.credential_view_search
-msgid "Development"
-msgstr "Développement"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_director__partner_id
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.corporate_director_view_form
-msgid "Director"
-msgstr "Administrateur"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields.selection,name:project_knowledge_matrix.selection__corporate_compliance_event__event_type__director_election
-#: model:ir.model.fields.selection,name:project_knowledge_matrix.selection__corporate_resolution__subject_category__director_election
-msgid "Director Election"
-msgstr "Élection des administrateurs"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields.selection,name:project_knowledge_matrix.selection__corporate_officer__title__director_general
-msgid "Director General"
-msgstr "Directeur général"
-
-#. module: project_knowledge_matrix
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.corporate_director_view_list
-msgid "Directors"
-msgstr "Administrateurs"
 
 #. module: project_knowledge_matrix
 #. odoo-javascript
@@ -3440,15 +2819,7 @@ msgid "Display"
 msgstr "Affichage"
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_compliance_event__display_name
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_director__display_name
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_officer__display_name
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_resolution__display_name
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_document_software__display_name
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_knowledge_dashboard__display_name
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_credential__display_name
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_credential_rotate_wizard__display_name
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_credential_type__display_name
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document__display_name
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document_distribution__display_name
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document_type__display_name
@@ -3464,35 +2835,6 @@ msgstr "Nom affiché"
 #: model:ir.model.fields,help:project_knowledge_matrix.field_project_knowledge_section__name
 msgid "Display name for this section"
 msgstr "Nom d'affichage pour cette section"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields,help:project_knowledge_matrix.field_project_credential__show_api_key
-#: model:ir.model.fields,help:project_knowledge_matrix.field_project_credential_type__show_api_key
-msgid "Display the API key field for credentials of this type"
-msgstr "Afficher le champ clé API pour les identifiants de ce type"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields,help:project_knowledge_matrix.field_project_credential__show_url
-#: model:ir.model.fields,help:project_knowledge_matrix.field_project_credential_type__show_url
-msgid "Display the URL field for credentials of this type"
-msgstr "Afficher le champ URL pour les identifiants de ce type"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields,help:project_knowledge_matrix.field_project_credential__show_domain
-#: model:ir.model.fields,help:project_knowledge_matrix.field_project_credential_type__show_domain
-msgid "Display the domain field for credentials of this type"
-msgstr "Afficher le champ domaine pour les identifiants de ce type"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields,help:project_knowledge_matrix.field_project_credential__show_key_file
-#: model:ir.model.fields,help:project_knowledge_matrix.field_project_credential_type__show_key_file
-msgid "Display the key file upload field for credentials of this type"
-msgstr "Afficher le champ fichier clé pour les identifiants de ce type"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields.selection,name:project_knowledge_matrix.selection__corporate_resolution__subject_category__dissolution
-msgid "Dissolution"
-msgstr "Dissolution"
 
 #. module: project_knowledge_matrix
 #: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.view_document_version_form
@@ -3551,11 +2893,6 @@ msgstr "Distribués"
 #: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.view_document_distribution_search
 msgid "Distribués par moi"
 msgstr "Distribués par moi"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields.selection,name:project_knowledge_matrix.selection__corporate_resolution__subject_category__dividend_declaration
-msgid "Dividend Declaration"
-msgstr "Déclaration de dividende"
 
 #. module: project_knowledge_matrix
 #: model:ir.model,name:project_knowledge_matrix.model_project_document
@@ -3670,13 +3007,10 @@ msgstr ""
 
 #. module: project_knowledge_matrix
 #: model:ir.actions.act_window,name:project_knowledge_matrix.project_document_action
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_document_software__document_count
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_project__document_ids
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_res_partner__document_distribution_count
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_res_users__document_distribution_count
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.corporate_resolution_view_form
 #: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.project_view_form_inherit_knowledge
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.view_document_software_form
 #: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.view_partner_form_inherit_documents
 msgid "Documents"
 msgstr "Documents"
@@ -3777,42 +3111,10 @@ msgid "Documents: Vérifier révisions et expirations"
 msgstr "Documents: Vérifier révisions et expirations"
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_credential__domain
-msgid "Domain"
-msgstr "Domaine"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields,help:project_knowledge_matrix.field_project_credential__domain
-msgid "Domain or tenant for authentication (e.g., AD domain)"
-msgstr "Domaine ou locataire pour l'authentification (ex: domaine AD)"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_director__domicile
-msgid "Domicile"
-msgstr "Domicile"
-
-#. module: project_knowledge_matrix
 #: model:ir.model.fields.selection,name:project_knowledge_matrix.selection__project_knowledge_item__state__done
 #: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.knowledge_item_view_search
 msgid "Done"
 msgstr "Fait"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields.selection,name:project_knowledge_matrix.selection__corporate_resolution__status__draft
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.corporate_resolution_view_search
-msgid "Draft"
-msgstr "Brouillon"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_compliance_event__due_date
-msgid "Due Date"
-msgstr "Date d'échéance"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields.selection,name:project_knowledge_matrix.selection__corporate_compliance_event__status__due_soon
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.corporate_compliance_view_search
-msgid "Due Soon"
-msgstr "Échéance proche"
 
 #. module: project_knowledge_matrix
 #: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.knowledge_item_view_search
@@ -3846,21 +3148,6 @@ msgstr "Département responsable de ce document (pour les documents internes)"
 #: code:addons/project_knowledge_matrix/static/src/xml/knowledge_dashboard.xml:0
 msgid "Echeance proche"
 msgstr "Échéance proche"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_resolution__effective_date
-msgid "Effective Date"
-msgstr "Date d'effet"
-
-#. module: project_knowledge_matrix
-#: model:project.credential.type,name:project_knowledge_matrix.credential_type_email
-msgid "Email Account"
-msgstr "Compte courriel"
-
-#. module: project_knowledge_matrix
-#: model:project.credential.type,description:project_knowledge_matrix.credential_type_email
-msgid "Email account credentials (IMAP, SMTP, webmail)"
-msgstr "Identifiants de compte courriel (IMAP, SMTP, webmail)"
 
 #. module: project_knowledge_matrix
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document_distribution__user_id
@@ -3920,22 +3207,6 @@ msgid "En révision"
 msgstr "En révision"
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_director__end_date
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_officer__end_date
-msgid "End Date"
-msgstr "Date de fin"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_director__end_reason
-msgid "End Reason"
-msgstr "Motif de fin"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_director__end_resolution_id
-msgid "End Resolution"
-msgstr "Résolution de fin"
-
-#. module: project_knowledge_matrix
 #: model:project.document.type,description:project_knowledge_matrix.document_type_manual
 msgid "End-user documentation and user guides"
 msgstr "Documentation utilisateur et guides"
@@ -3949,12 +3220,6 @@ msgstr "English (Canada)"
 #: model:ir.model.fields.selection,name:project_knowledge_matrix.selection__project_document__language__en_us
 msgid "English (US)"
 msgstr "English (US)"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_credential__environment
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.credential_view_search
-msgid "Environment"
-msgstr "Environnement"
 
 #. module: project_knowledge_matrix
 #: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.res_config_settings_view_form_knowledge_matrix
@@ -4023,21 +3288,6 @@ msgid "Erreur lors de l'envoi du rapport. Vérifiez la configuration."
 msgstr "Erreur lors de l'envoi du rapport. Vérifiez la configuration."
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields.selection,name:project_knowledge_matrix.selection__project_document__minute_book_section__financial_statements
-msgid "Etats financiers"
-msgstr "États financiers"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_compliance_event__event_type
-msgid "Event Type"
-msgstr "Type d'événement"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_credential__expiration_date
-msgid "Expiration Date"
-msgstr "Date d'expiration"
-
-#. module: project_knowledge_matrix
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document__is_expiring_soon
 #: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.view_project_document_form
 #: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.view_project_document_kanban
@@ -4046,25 +3296,10 @@ msgid "Expire bientôt"
 msgstr "Expire bientôt"
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields.selection,name:project_knowledge_matrix.selection__project_credential__state__expired
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.credential_view_form
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.credential_view_search
-msgid "Expired"
-msgstr "Expiré"
-
-#. module: project_knowledge_matrix
 #. odoo-javascript
 #: code:addons/project_knowledge_matrix/static/src/xml/knowledge_dashboard.xml:0
 msgid "Expirent sous 30j"
 msgstr "Expirent sous 30j"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_credential__is_expiring_soon
-#: model:ir.model.fields.selection,name:project_knowledge_matrix.selection__project_credential__state__expiring
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.credential_view_form
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.credential_view_search
-msgid "Expiring Soon"
-msgstr "Expire bientôt"
 
 #. module: project_knowledge_matrix
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document__is_expired
@@ -4081,11 +3316,6 @@ msgid "Expirés"
 msgstr "Expirés"
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_compliance_event__failed_message_ids
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_director__failed_message_ids
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_officer__failed_message_ids
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_resolution__failed_message_ids
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_credential__failed_message_ids
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document__failed_message_ids
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document_distribution__failed_message_ids
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document_version__failed_message_ids
@@ -4093,12 +3323,6 @@ msgstr "Expirés"
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_knowledge_matrix__failed_message_ids
 msgid "Failed Messages"
 msgstr "Messages échoués"
-
-#. module: project_knowledge_matrix
-#. odoo-javascript
-#: code:addons/project_knowledge_matrix/static/src/js/credential_copy.js:0
-msgid "Failed to copy"
-msgstr "Échec de la copie"
 
 #. module: project_knowledge_matrix
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document_version__attachment_id
@@ -4116,11 +3340,6 @@ msgid "Fichiers supplémentaires"
 msgstr "Fichiers supplémentaires"
 
 #. module: project_knowledge_matrix
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.credential_type_view_form
-msgid "Field Visibility"
-msgstr "Visibilité des champs"
-
-#. module: project_knowledge_matrix
 #: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.import_csv_wizard_view_form
 msgid "File"
 msgstr "Fichier"
@@ -4131,46 +3350,11 @@ msgid "Filename"
 msgstr "Nom de fichier"
 
 #. module: project_knowledge_matrix
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.credential_view_form
-msgid "Files"
-msgstr "Fichiers"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_compliance_event__filing_reference
-msgid "Filing Reference"
-msgstr "Référence de dépôt"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields.selection,name:project_knowledge_matrix.selection__document_software_version__support_status__eol
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.view_document_software_version_form
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.view_document_software_version_search
-msgid "Fin de vie"
-msgstr "Fin de vie"
-
-#. module: project_knowledge_matrix
 #: model:ir.model.fields.selection,name:project_knowledge_matrix.selection__project_knowledge_item__decision_category__financial
 msgid "Financial"
 msgstr "Financier"
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields.selection,name:project_knowledge_matrix.selection__corporate_compliance_event__event_type__financial_approval
-#: model:ir.model.fields.selection,name:project_knowledge_matrix.selection__corporate_resolution__subject_category__financial_approval
-msgid "Financial Approval"
-msgstr "Approbation financière"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_compliance_event__fiscal_year
-#: model:ir.model.fields.selection,name:project_knowledge_matrix.selection__corporate_resolution__subject_category__fiscal_year
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.corporate_compliance_view_search
-msgid "Fiscal Year"
-msgstr "Année fiscale"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_compliance_event__message_follower_ids
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_director__message_follower_ids
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_officer__message_follower_ids
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_resolution__message_follower_ids
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_credential__message_follower_ids
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document__message_follower_ids
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document_distribution__message_follower_ids
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document_version__message_follower_ids
@@ -4180,11 +3364,6 @@ msgid "Followers"
 msgstr "Abonnés"
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_compliance_event__message_partner_ids
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_director__message_partner_ids
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_officer__message_partner_ids
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_resolution__message_partner_ids
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_credential__message_partner_ids
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document__message_partner_ids
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document_distribution__message_partner_ids
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document_version__message_partner_ids
@@ -4194,14 +3373,6 @@ msgid "Followers (Partners)"
 msgstr "Abonnés (Partenaires)"
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields,help:project_knowledge_matrix.field_project_credential_type__icon
-msgid "Font Awesome icon class (e.g., fa-envelope, fa-server)"
-msgstr "Classe d'icône Font Awesome (ex: fa-envelope, fa-server)"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields,help:project_knowledge_matrix.field_corporate_compliance_event__activity_type_icon
-#: model:ir.model.fields,help:project_knowledge_matrix.field_corporate_resolution__activity_type_icon
-#: model:ir.model.fields,help:project_knowledge_matrix.field_project_credential__activity_type_icon
 #: model:ir.model.fields,help:project_knowledge_matrix.field_project_document__activity_type_icon
 #: model:ir.model.fields,help:project_knowledge_matrix.field_project_document_distribution__activity_type_icon
 #: model:ir.model.fields,help:project_knowledge_matrix.field_project_document_version__activity_type_icon
@@ -4209,12 +3380,6 @@ msgstr "Classe d'icône Font Awesome (ex: fa-envelope, fa-server)"
 #: model:ir.model.fields,help:project_knowledge_matrix.field_project_knowledge_matrix__activity_type_icon
 msgid "Font awesome icon e.g. fa-tasks"
 msgstr "Icône Font Awesome (ex: fa-tasks)"
-
-#. module: project_knowledge_matrix
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.corporate_director_view_search
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.corporate_officer_view_search
-msgid "Former"
-msgstr "Ancien"
 
 #. module: project_knowledge_matrix
 #: model:project.document.type,name:project_knowledge_matrix.document_type_form
@@ -4225,11 +3390,6 @@ msgstr "Formulaire"
 #: model:project.document.type,description:project_knowledge_matrix.document_type_form
 msgid "Formulaires (consentement, demandes, etc.)"
 msgstr "Formulaires (consentement, demandes, etc.)"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields.selection,name:project_knowledge_matrix.selection__project_document__minute_book_section__forms_filed
-msgid "Formulaires deposes"
-msgstr "Formulaires déposés"
 
 #. module: project_knowledge_matrix
 #: model:ir.model.fields.selection,name:project_knowledge_matrix.selection__project_document__language__fr_ca
@@ -4247,15 +3407,6 @@ msgid "Fréquence de révision recommandée en mois"
 msgstr "Fréquence de révision recommandée en mois"
 
 #. module: project_knowledge_matrix
-#: model:res.groups,comment:project_knowledge_matrix.group_credential_manager
-msgid ""
-"Full access to all credentials including restricted ones, type management, "
-"and deletion."
-msgstr ""
-"Accès complet à tous les identifiants incluant les restreints, gestion des "
-"types et suppression."
-
-#. module: project_knowledge_matrix
 #: model:res.groups,comment:project_knowledge_matrix.group_document_manager
 msgid "Full access to all documents, manage types, delete documents."
 msgstr "Accès complet à tous les documents, gestion des types, suppression."
@@ -4264,15 +3415,6 @@ msgstr "Accès complet à tous les documents, gestion des types, suppression."
 #: model:res.groups,comment:project_knowledge_matrix.group_knowledge_manager
 msgid "Full access to all knowledge matrices and sections."
 msgstr "Accès complet à toutes les matrices de connaissances et sections."
-
-#. module: project_knowledge_matrix
-#: model:res.groups,comment:project_knowledge_matrix.group_corporate_manager
-msgid ""
-"Full access to corporate governance features (resolutions, directors, "
-"officers, compliance)."
-msgstr ""
-"Accès complet aux fonctions de gouvernance corporative (résolutions, "
-"administrateurs, dirigeants, conformité)."
 
 #. module: project_knowledge_matrix
 #: model:project.document.type,name:project_knowledge_matrix.document_type_template
@@ -4302,15 +3444,10 @@ msgstr "Phase de mise en production"
 #. module: project_knowledge_matrix
 #. odoo-javascript
 #: code:addons/project_knowledge_matrix/static/src/xml/knowledge_dashboard.xml:0
-#: model:ir.ui.menu,name:project_knowledge_matrix.menu_corporate_parent
 msgid "Gouvernance corporative"
 msgstr "Gouvernance corporative"
 
 #. module: project_knowledge_matrix
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.corporate_compliance_view_search
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.corporate_officer_view_search
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.corporate_resolution_view_search
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.credential_view_search
 #: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.knowledge_item_view_search
 #: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.knowledge_matrix_view_search
 msgid "Group By"
@@ -4318,7 +3455,6 @@ msgstr "Grouper par"
 
 #. module: project_knowledge_matrix
 #: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.view_document_distribution_search
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.view_document_software_version_search
 #: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.view_document_version_search
 #: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.view_project_document_search
 msgid "Grouper par"
@@ -4335,11 +3471,6 @@ msgid "Gérez les politiques RH, procédures TI, et autres documents internes."
 msgstr "Gérez les politiques RH, procédures TI, et autres documents internes."
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_compliance_event__has_message
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_director__has_message
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_officer__has_message
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_resolution__has_message
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_credential__has_message
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document__has_message
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document_distribution__has_message
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document_version__has_message
@@ -4381,16 +3512,7 @@ msgid "High Priority"
 msgstr "Priorité élevée"
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_compliance_event__id
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_director__id
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_officer__id
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_resolution__id
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_document_software__id
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_document_software_version__id
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_knowledge_dashboard__id
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_credential__id
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_credential_rotate_wizard__id
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_credential_type__id
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document__id
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document_distribution__id
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document_type__id
@@ -4403,16 +3525,6 @@ msgid "ID"
 msgstr "ID"
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_resolution__resolved_text
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.corporate_resolution_view_form
-msgid "IL EST RESOLU QUE..."
-msgstr "IL EST RÉSOLU QUE..."
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_compliance_event__activity_exception_icon
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_resolution__activity_exception_icon
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_credential__activity_exception_icon
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_credential_type__icon
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document__activity_exception_icon
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document_distribution__activity_exception_icon
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document_version__activity_exception_icon
@@ -4422,9 +3534,6 @@ msgid "Icon"
 msgstr "Icône"
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields,help:project_knowledge_matrix.field_corporate_compliance_event__activity_exception_icon
-#: model:ir.model.fields,help:project_knowledge_matrix.field_corporate_resolution__activity_exception_icon
-#: model:ir.model.fields,help:project_knowledge_matrix.field_project_credential__activity_exception_icon
 #: model:ir.model.fields,help:project_knowledge_matrix.field_project_document__activity_exception_icon
 #: model:ir.model.fields,help:project_knowledge_matrix.field_project_document_distribution__activity_exception_icon
 #: model:ir.model.fields,help:project_knowledge_matrix.field_project_document_version__activity_exception_icon
@@ -4434,7 +3543,6 @@ msgid "Icon to indicate an exception activity."
 msgstr "Icône pour indiquer une activité d'exception."
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_document_software__icon
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document_type__icon
 msgid "Icône"
 msgstr "Icône"
@@ -4447,7 +3555,6 @@ msgstr "Identifiant unique pour ce type de document"
 #. module: project_knowledge_matrix
 #. odoo-javascript
 #: code:addons/project_knowledge_matrix/static/src/xml/knowledge_dashboard.xml:0
-#: model:ir.ui.menu,name:project_knowledge_matrix.menu_credentials
 msgid "Identifiants"
 msgstr "Identifiants"
 
@@ -4464,11 +3571,6 @@ msgid "Identification"
 msgstr "Identification"
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields,help:project_knowledge_matrix.field_corporate_compliance_event__message_needaction
-#: model:ir.model.fields,help:project_knowledge_matrix.field_corporate_director__message_needaction
-#: model:ir.model.fields,help:project_knowledge_matrix.field_corporate_officer__message_needaction
-#: model:ir.model.fields,help:project_knowledge_matrix.field_corporate_resolution__message_needaction
-#: model:ir.model.fields,help:project_knowledge_matrix.field_project_credential__message_needaction
 #: model:ir.model.fields,help:project_knowledge_matrix.field_project_document__message_needaction
 #: model:ir.model.fields,help:project_knowledge_matrix.field_project_document_distribution__message_needaction
 #: model:ir.model.fields,help:project_knowledge_matrix.field_project_document_version__message_needaction
@@ -4478,23 +3580,6 @@ msgid "If checked, new messages require your attention."
 msgstr "Si coché, de nouveaux messages requièrent votre attention."
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields,help:project_knowledge_matrix.field_project_credential__restricted
-msgid "If checked, password is only visible to Credential Managers"
-msgstr ""
-"Si coché, le mot de passe est visible uniquement par les gestionnaires "
-"d'identifiants"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields,help:project_knowledge_matrix.field_corporate_compliance_event__message_has_error
-#: model:ir.model.fields,help:project_knowledge_matrix.field_corporate_compliance_event__message_has_sms_error
-#: model:ir.model.fields,help:project_knowledge_matrix.field_corporate_director__message_has_error
-#: model:ir.model.fields,help:project_knowledge_matrix.field_corporate_director__message_has_sms_error
-#: model:ir.model.fields,help:project_knowledge_matrix.field_corporate_officer__message_has_error
-#: model:ir.model.fields,help:project_knowledge_matrix.field_corporate_officer__message_has_sms_error
-#: model:ir.model.fields,help:project_knowledge_matrix.field_corporate_resolution__message_has_error
-#: model:ir.model.fields,help:project_knowledge_matrix.field_corporate_resolution__message_has_sms_error
-#: model:ir.model.fields,help:project_knowledge_matrix.field_project_credential__message_has_error
-#: model:ir.model.fields,help:project_knowledge_matrix.field_project_credential__message_has_sms_error
 #: model:ir.model.fields,help:project_knowledge_matrix.field_project_document__message_has_error
 #: model:ir.model.fields,help:project_knowledge_matrix.field_project_document__message_has_sms_error
 #: model:ir.model.fields,help:project_knowledge_matrix.field_project_document_distribution__message_has_error
@@ -4650,16 +3735,6 @@ msgid "Is Blocked"
 msgstr "Est bloqué"
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_credential__is_expired
-msgid "Is Expired"
-msgstr "Est expiré"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_compliance_event__message_is_follower
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_director__message_is_follower
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_officer__message_is_follower
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_resolution__message_is_follower
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_credential__message_is_follower
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document__message_is_follower
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document_distribution__message_is_follower
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document_version__message_is_follower
@@ -4720,16 +3795,6 @@ msgstr "Jours avant expiration"
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document__days_until_review
 msgid "Jours avant révision"
 msgstr "Jours avant révision"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_credential__key_file
-msgid "Key File"
-msgstr "Fichier clé"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_credential__key_filename
-msgid "Key Filename"
-msgstr "Nom du fichier clé"
 
 #. module: project_knowledge_matrix
 #: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.knowledge_item_view_form
@@ -4803,13 +3868,6 @@ msgstr ""
 "                You can also create templates to reuse across multiple projects."
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_document_software_version__is_lts
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.view_document_software_version_form
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.view_document_software_version_search
-msgid "LTS"
-msgstr "LTS"
-
-#. module: project_knowledge_matrix
 #: model:ir.model.fields,help:project_knowledge_matrix.field_project_document__project_id
 #: model:ir.model.fields,help:project_knowledge_matrix.field_project_document_version__project_id
 msgid "Laisser vide pour les documents à l'échelle de l'entreprise"
@@ -4821,20 +3879,6 @@ msgid "Langue"
 msgstr "Langue"
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_credential__last_rotated
-msgid "Last Rotated"
-msgstr "Dernière rotation"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_compliance_event__write_uid
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_director__write_uid
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_officer__write_uid
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_resolution__write_uid
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_document_software__write_uid
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_document_software_version__write_uid
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_credential__write_uid
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_credential_rotate_wizard__write_uid
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_credential_type__write_uid
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document__write_uid
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document_distribution__write_uid
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document_type__write_uid
@@ -4847,15 +3891,6 @@ msgid "Last Updated by"
 msgstr "Dernière mise à jour par"
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_compliance_event__write_date
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_director__write_date
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_officer__write_date
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_resolution__write_date
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_document_software__write_date
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_document_software_version__write_date
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_credential__write_date
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_credential_rotate_wizard__write_date
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_credential_type__write_date
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document__write_date
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document_distribution__write_date
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document_type__write_date
@@ -4868,11 +3903,6 @@ msgid "Last Updated on"
 msgstr "Dernière mise à jour le"
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_credential__last_verified
-msgid "Last Verified"
-msgstr "Dernière vérification"
-
-#. module: project_knowledge_matrix
 #: model:ir.model.constraint,message:project_knowledge_matrix.constraint_project_document_code_company_uniq
 msgid "Le code de référence doit être unique par société!"
 msgstr "Le code de référence doit être unique par société!"
@@ -4881,11 +3911,6 @@ msgstr "Le code de référence doit être unique par société!"
 #: model:ir.model.constraint,message:project_knowledge_matrix.constraint_project_document_type_code_uniq
 msgid "Le code doit être unique!"
 msgstr "Le code doit être unique!"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.constraint,message:project_knowledge_matrix.constraint_document_software_code_uniq
-msgid "Le code logiciel doit être unique!"
-msgstr "Le code logiciel doit être unique!"
 
 #. module: project_knowledge_matrix
 #: model:ir.model.fields,help:project_knowledge_matrix.field_project_document_version__attachment_id
@@ -4929,15 +3954,6 @@ msgstr ""
 "apparaîtront ici."
 
 #. module: project_knowledge_matrix
-#: model_terms:ir.actions.act_window,help:project_knowledge_matrix.document_software_action
-msgid ""
-"Les logiciels permettent de catégoriser la documentation par application "
-"(ex: Nextcloud, Odoo)."
-msgstr ""
-"Les logiciels permettent de catégoriser la documentation par application "
-"(ex: Nextcloud, Odoo)."
-
-#. module: project_knowledge_matrix
 #: model_terms:ir.actions.act_window,help:project_knowledge_matrix.document_type_action
 msgid ""
 "Les types de documents permettent de catégoriser vos documents (ex: Manuel, "
@@ -4945,13 +3961,6 @@ msgid ""
 msgstr ""
 "Les types de documents permettent de catégoriser vos documents (ex: Manuel, "
 "Politique, Contrat)."
-
-#. module: project_knowledge_matrix
-#: model_terms:ir.actions.act_window,help:project_knowledge_matrix.document_software_version_action
-msgid ""
-"Les versions permettent de suivre la documentation par version de logiciel."
-msgstr ""
-"Les versions permettent de suivre la documentation par version de logiciel."
 
 #. module: project_knowledge_matrix
 #: model:project.document.type,name:project_knowledge_matrix.document_type_letter
@@ -4975,23 +3984,12 @@ msgid "Linked Tasks"
 msgstr "Tâches liées"
 
 #. module: project_knowledge_matrix
-#: model:ir.actions.act_window,name:project_knowledge_matrix.corporate_minute_book_action
-#: model:ir.ui.menu,name:project_knowledge_matrix.menu_corporate_minute_book
-msgid "Livre des minutes"
-msgstr "Livre des minutes"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_document_software_version__software_id
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document__software_id
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.view_document_software_form
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.view_document_software_version_form
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.view_document_software_version_search
 #: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.view_project_document_search
 msgid "Logiciel"
 msgstr "Logiciel"
 
 #. module: project_knowledge_matrix
-#: model:ir.model,name:project_knowledge_matrix.model_document_software
 #: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.view_project_document_form
 msgid "Logiciel documenté"
 msgstr "Logiciel documenté"
@@ -5000,16 +3998,6 @@ msgstr "Logiciel documenté"
 #: model:ir.model.fields,help:project_knowledge_matrix.field_project_document__software_id
 msgid "Logiciel documenté (ex: Nextcloud, Odoo)"
 msgstr "Logiciel documenté (ex: Nextcloud, Odoo)"
-
-#. module: project_knowledge_matrix
-#: model:ir.ui.menu,name:project_knowledge_matrix.menu_document_software
-msgid "Logiciels"
-msgstr "Logiciels"
-
-#. module: project_knowledge_matrix
-#: model:ir.actions.act_window,name:project_knowledge_matrix.document_software_action
-msgid "Logiciels documentés"
-msgstr "Logiciels documentés"
 
 #. module: project_knowledge_matrix
 #: model:ir.model.fields.selection,name:project_knowledge_matrix.selection__project_knowledge_item__impact_level__low
@@ -5063,11 +4051,6 @@ msgid "Marquer comme révisé"
 msgstr "Marquer comme révisé"
 
 #. module: project_knowledge_matrix
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.corporate_compliance_view_form
-msgid "Marquer complete"
-msgstr "Marquer complété"
-
-#. module: project_knowledge_matrix
 #: model:ir.ui.menu,name:project_knowledge_matrix.menu_knowledge_matrix
 msgid "Matrices"
 msgstr "Matrices"
@@ -5111,27 +4094,11 @@ msgid "Medium"
 msgstr "Moyen"
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_resolution__meeting_date
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.corporate_resolution_view_search
-msgid "Meeting Date"
-msgstr "Date de réunion"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_resolution__meeting_type
-msgid "Meeting Type"
-msgstr "Type de réunion"
-
-#. module: project_knowledge_matrix
 #: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.view_project_document_search
 msgid "Mes documents"
 msgstr "Mes documents"
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_compliance_event__message_content
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_director__message_content
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_officer__message_content
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_resolution__message_content
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_credential__message_content
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document__message_content
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document_distribution__message_content
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document_version__message_content
@@ -5141,11 +4108,6 @@ msgid "Message Content"
 msgstr "Contenu du message"
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_compliance_event__message_has_error
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_director__message_has_error
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_officer__message_has_error
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_resolution__message_has_error
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_credential__message_has_error
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document__message_has_error
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document_distribution__message_has_error
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document_version__message_has_error
@@ -5155,11 +4117,6 @@ msgid "Message Delivery error"
 msgstr "Erreur de livraison du message"
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_compliance_event__message_search
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_director__message_search
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_officer__message_search
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_resolution__message_search
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_credential__message_search
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document__message_search
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document_distribution__message_search
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document_version__message_search
@@ -5169,11 +4126,6 @@ msgid "Message Search"
 msgstr "Recherche de message"
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields,help:project_knowledge_matrix.field_corporate_compliance_event__message_content
-#: model:ir.model.fields,help:project_knowledge_matrix.field_corporate_director__message_content
-#: model:ir.model.fields,help:project_knowledge_matrix.field_corporate_officer__message_content
-#: model:ir.model.fields,help:project_knowledge_matrix.field_corporate_resolution__message_content
-#: model:ir.model.fields,help:project_knowledge_matrix.field_project_credential__message_content
 #: model:ir.model.fields,help:project_knowledge_matrix.field_project_document__message_content
 #: model:ir.model.fields,help:project_knowledge_matrix.field_project_document_distribution__message_content
 #: model:ir.model.fields,help:project_knowledge_matrix.field_project_document_version__message_content
@@ -5183,11 +4135,6 @@ msgid "Message content, to be used only in searches"
 msgstr "Contenu du message, à utiliser uniquement dans les recherches"
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields,help:project_knowledge_matrix.field_corporate_compliance_event__message_search
-#: model:ir.model.fields,help:project_knowledge_matrix.field_corporate_director__message_search
-#: model:ir.model.fields,help:project_knowledge_matrix.field_corporate_officer__message_search
-#: model:ir.model.fields,help:project_knowledge_matrix.field_corporate_resolution__message_search
-#: model:ir.model.fields,help:project_knowledge_matrix.field_project_credential__message_search
 #: model:ir.model.fields,help:project_knowledge_matrix.field_project_document__message_search
 #: model:ir.model.fields,help:project_knowledge_matrix.field_project_document_distribution__message_search
 #: model:ir.model.fields,help:project_knowledge_matrix.field_project_document_version__message_search
@@ -5197,11 +4144,6 @@ msgid "Message search, to be used only in searches"
 msgstr "Recherche de message, à utiliser uniquement dans les recherches"
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_compliance_event__message_ids
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_director__message_ids
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_officer__message_ids
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_resolution__message_ids
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_credential__message_ids
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document__message_ids
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document_distribution__message_ids
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document_version__message_ids
@@ -5214,11 +4156,6 @@ msgstr "Messages"
 #: model:ir.model.fields.selection,name:project_knowledge_matrix.selection__project_document_version__change_type__minor
 msgid "Mineure - Ajouts/modifications"
 msgstr "Mineure - Ajouts/modifications"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_resolution__document_ids
-msgid "Minute Book Documents"
-msgstr "Documents du livre des minutes"
 
 #. module: project_knowledge_matrix
 #: model:project.document.type,description:project_knowledge_matrix.document_type_other
@@ -5242,14 +4179,6 @@ msgid "Mois dernier"
 msgstr "Mois dernier"
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_resolution__mover_id
-msgid "Mover"
-msgstr "Proposeur"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_compliance_event__my_activity_date_deadline
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_resolution__my_activity_date_deadline
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_credential__my_activity_date_deadline
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document__my_activity_date_deadline
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document_distribution__my_activity_date_deadline
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document_version__my_activity_date_deadline
@@ -5284,14 +4213,6 @@ msgid "N/A Items"
 msgstr "Éléments N/A"
 
 #. module: project_knowledge_matrix
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.view_document_software_form
-msgid "NC"
-msgstr "NC"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_compliance_event__name
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_credential__name
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_credential_type__name
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_knowledge_matrix__name
 msgid "Name"
 msgstr "Nom"
@@ -5307,25 +4228,11 @@ msgid "Nature des changements dans cette version"
 msgstr "Nature des changements dans cette version"
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_credential_rotate_wizard__new_password
-msgid "New Password"
-msgstr "Nouveau mot de passe"
-
-#. module: project_knowledge_matrix
-#. odoo-python
-#: code:addons/project_knowledge_matrix/wizard/credential_rotate_wizard.py:0
-msgid "New password cannot be empty."
-msgstr "Le nouveau mot de passe ne peut pas être vide."
-
-#. module: project_knowledge_matrix
 #: model:mail.template,subject:project_knowledge_matrix.mail_template_document_outdated
 msgid "New version available: {{ object.version_id.document_id.name }}"
 msgstr "Nouvelle version disponible: {{ object.version_id.document_id.name }}"
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_compliance_event__activity_calendar_event_id
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_resolution__activity_calendar_event_id
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_credential__activity_calendar_event_id
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document__activity_calendar_event_id
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document_distribution__activity_calendar_event_id
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document_version__activity_calendar_event_id
@@ -5335,9 +4242,6 @@ msgid "Next Activity Calendar Event"
 msgstr "Prochain événement de calendrier d'activité"
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_compliance_event__activity_date_deadline
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_resolution__activity_date_deadline
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_credential__activity_date_deadline
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document__activity_date_deadline
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document_distribution__activity_date_deadline
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document_version__activity_date_deadline
@@ -5347,9 +4251,6 @@ msgid "Next Activity Deadline"
 msgstr "Prochaine échéance d'activité"
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_compliance_event__activity_summary
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_resolution__activity_summary
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_credential__activity_summary
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document__activity_summary
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document_distribution__activity_summary
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document_version__activity_summary
@@ -5359,9 +4260,6 @@ msgid "Next Activity Summary"
 msgstr "Résumé de la prochaine activité"
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_compliance_event__activity_type_id
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_resolution__activity_type_id
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_credential__activity_type_id
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document__activity_type_id
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document_distribution__activity_type_id
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document_version__activity_type_id
@@ -5376,7 +4274,6 @@ msgid "No knowledge items found"
 msgstr "Aucun élément de connaissance trouvé"
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_document_software__name
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document__name
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document_type__name
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document_version__name
@@ -5384,25 +4281,10 @@ msgid "Nom"
 msgstr "Nom"
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_document_software_version__display_name
-msgid "Nom affiché"
-msgstr "Nom affiché"
-
-#. module: project_knowledge_matrix
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.credential_view_kanban
-msgid "Nom d'utilisateur"
-msgstr "Nom d'utilisateur"
-
-#. module: project_knowledge_matrix
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document_distribution__document_name
 #: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.view_project_document_form
 msgid "Nom du document"
 msgstr "Nom du document"
-
-#. module: project_knowledge_matrix
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.view_document_software_form
-msgid "Nom du logiciel"
-msgstr "Nom du logiciel"
 
 #. module: project_knowledge_matrix
 #: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.view_document_type_form
@@ -5415,16 +4297,8 @@ msgid "Not Started"
 msgstr "Non commencé"
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_compliance_event__notes
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_resolution__notes
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_document_software_version__notes
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_credential__notes
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_credential_rotate_wizard__notes
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document_distribution__notes
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_knowledge_item__notes
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.corporate_compliance_view_form
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.corporate_resolution_view_form
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.credential_view_form
 #: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.knowledge_item_view_form
 msgid "Notes"
 msgstr "Notes"
@@ -5445,19 +4319,9 @@ msgid "Notes de conformité..."
 msgstr "Notes de conformité..."
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields,help:project_knowledge_matrix.field_document_software_version__notes
-msgid "Notes de version ou remarques importantes"
-msgstr "Notes de version ou remarques importantes"
-
-#. module: project_knowledge_matrix
 #: model:ir.model.fields,help:project_knowledge_matrix.field_project_document_distribution__compliance_notes
 msgid "Notes relatives à la conformité et à la reconnaissance du document"
 msgstr "Notes relatives à la conformité et à la reconnaissance du document"
-
-#. module: project_knowledge_matrix
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.view_document_software_version_form
-msgid "Notes sur cette version..."
-msgstr "Notes sur cette version..."
 
 #. module: project_knowledge_matrix
 #: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.view_document_distribution_form
@@ -5465,11 +4329,6 @@ msgid "Notifier mise à jour"
 msgstr "Notifier mise à jour"
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_compliance_event__message_needaction_counter
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_director__message_needaction_counter
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_officer__message_needaction_counter
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_resolution__message_needaction_counter
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_credential__message_needaction_counter
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document__message_needaction_counter
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document_distribution__message_needaction_counter
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document_version__message_needaction_counter
@@ -5479,11 +4338,6 @@ msgid "Number of Actions"
 msgstr "Nombre d'actions"
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_compliance_event__message_has_error_counter
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_director__message_has_error_counter
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_officer__message_has_error_counter
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_resolution__message_has_error_counter
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_credential__message_has_error_counter
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document__message_has_error_counter
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document_distribution__message_has_error_counter
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document_version__message_has_error_counter
@@ -5493,11 +4347,6 @@ msgid "Number of errors"
 msgstr "Nombre d'erreurs"
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields,help:project_knowledge_matrix.field_corporate_compliance_event__message_needaction_counter
-#: model:ir.model.fields,help:project_knowledge_matrix.field_corporate_director__message_needaction_counter
-#: model:ir.model.fields,help:project_knowledge_matrix.field_corporate_officer__message_needaction_counter
-#: model:ir.model.fields,help:project_knowledge_matrix.field_corporate_resolution__message_needaction_counter
-#: model:ir.model.fields,help:project_knowledge_matrix.field_project_credential__message_needaction_counter
 #: model:ir.model.fields,help:project_knowledge_matrix.field_project_document__message_needaction_counter
 #: model:ir.model.fields,help:project_knowledge_matrix.field_project_document_distribution__message_needaction_counter
 #: model:ir.model.fields,help:project_knowledge_matrix.field_project_document_version__message_needaction_counter
@@ -5507,11 +4356,6 @@ msgid "Number of messages requiring action"
 msgstr "Nombre de messages requérant une action"
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields,help:project_knowledge_matrix.field_corporate_compliance_event__message_has_error_counter
-#: model:ir.model.fields,help:project_knowledge_matrix.field_corporate_director__message_has_error_counter
-#: model:ir.model.fields,help:project_knowledge_matrix.field_corporate_officer__message_has_error_counter
-#: model:ir.model.fields,help:project_knowledge_matrix.field_corporate_resolution__message_has_error_counter
-#: model:ir.model.fields,help:project_knowledge_matrix.field_project_credential__message_has_error_counter
 #: model:ir.model.fields,help:project_knowledge_matrix.field_project_document__message_has_error_counter
 #: model:ir.model.fields,help:project_knowledge_matrix.field_project_document_distribution__message_has_error_counter
 #: model:ir.model.fields,help:project_knowledge_matrix.field_project_document_version__message_has_error_counter
@@ -5533,7 +4377,6 @@ msgstr "Numéro de version (ex: 1.0, 1.1, 2.0)"
 
 #. module: project_knowledge_matrix
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document_distribution__is_outdated
-#: model:ir.model.fields.selection,name:project_knowledge_matrix.selection__document_software_version__support_status__deprecated
 #: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.view_document_distribution_form
 msgid "Obsolète"
 msgstr "Obsolète"
@@ -5546,40 +4389,9 @@ msgid "Obsolètes"
 msgstr "Obsolètes"
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_officer__partner_id
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.corporate_officer_view_form
-msgid "Officer"
-msgstr "Dirigeant"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields.selection,name:project_knowledge_matrix.selection__corporate_resolution__subject_category__officer_appointment
-msgid "Officer Appointment"
-msgstr "Nomination d'un dirigeant"
-
-#. module: project_knowledge_matrix
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.corporate_officer_view_list
-msgid "Officers"
-msgstr "Dirigeants"
-
-#. module: project_knowledge_matrix
 #: model:ir.model.fields.selection,name:project_knowledge_matrix.selection__project_knowledge_item__decision_category__operational
 msgid "Operational"
 msgstr "Opérationnel"
-
-#. module: project_knowledge_matrix
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.credential_type_view_form
-msgid "Optional description of this credential type..."
-msgstr "Description optionnelle de ce type d'identifiant..."
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields,help:project_knowledge_matrix.field_project_credential__reference
-msgid "Optional external reference or ticket number"
-msgstr "Référence externe ou numéro de billet optionnel"
-
-#. module: project_knowledge_matrix
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.credential_rotate_wizard_view_form
-msgid "Optional notes about this rotation..."
-msgstr "Notes optionnelles sur cette rotation..."
 
 #. module: project_knowledge_matrix
 #: model:ir.model.fields,help:project_knowledge_matrix.field_project_knowledge_section__sequence
@@ -5597,24 +4409,9 @@ msgid "Organizational"
 msgstr "Organisationnel"
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields.selection,name:project_knowledge_matrix.selection__corporate_compliance_event__event_type__other
-#: model:ir.model.fields.selection,name:project_knowledge_matrix.selection__corporate_director__end_reason__other
-#: model:ir.model.fields.selection,name:project_knowledge_matrix.selection__corporate_officer__title__other
-#: model:ir.model.fields.selection,name:project_knowledge_matrix.selection__corporate_resolution__subject_category__other
-#: model:ir.model.fields.selection,name:project_knowledge_matrix.selection__project_credential_rotate_wizard__rotation_reason__other
 #: model:project.document.type,name:project_knowledge_matrix.document_type_other
 msgid "Other"
 msgstr "Autre"
-
-#. module: project_knowledge_matrix
-#: model:project.credential.type,name:project_knowledge_matrix.credential_type_other
-msgid "Other / Ad-hoc"
-msgstr "Autre / Ad hoc"
-
-#. module: project_knowledge_matrix
-#: model:project.credential.type,description:project_knowledge_matrix.credential_type_other
-msgid "Other credentials not covered by specific types"
-msgstr "Autres identifiants non couverts par les types spécifiques"
 
 #. module: project_knowledge_matrix
 #: model:ir.model.fields,help:project_knowledge_matrix.field_project_knowledge_item__alternatives_considered
@@ -5627,37 +4424,12 @@ msgid "Output"
 msgstr "Extrant"
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields.selection,name:project_knowledge_matrix.selection__corporate_compliance_event__status__overdue
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.corporate_compliance_view_search
 #: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.knowledge_item_view_search
 msgid "Overdue"
 msgstr "En retard"
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_credential__password
-msgid "Password"
-msgstr "Mot de passe"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_credential__password_encrypted
-msgid "Password (Encrypted)"
-msgstr "Mot de passe (chiffré)"
-
-#. module: project_knowledge_matrix
-#. odoo-python
-#: code:addons/project_knowledge_matrix/wizard/credential_rotate_wizard.py:0
-msgid "Password rotated.<br/><b>Reason:</b> %s"
-msgstr "Mot de passe mis à jour.<br/><b>Motif:</b> %s"
-
-#. module: project_knowledge_matrix
-#. odoo-python
-#: code:addons/project_knowledge_matrix/wizard/credential_rotate_wizard.py:0
-msgid "Passwords do not match."
-msgstr "Les mots de passe ne correspondent pas."
-
-#. module: project_knowledge_matrix
 #: model:ir.model.fields.selection,name:project_knowledge_matrix.selection__project_knowledge_item__state__pending
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.corporate_compliance_view_search
 #: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.knowledge_item_view_search
 #: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.knowledge_matrix_view_form
 msgid "Pending"
@@ -5715,11 +4487,6 @@ msgid "Planning"
 msgstr "Planification"
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields.selection,name:project_knowledge_matrix.selection__project_credential_rotate_wizard__rotation_reason__policy
-msgid "Policy Requirement"
-msgstr "Exigence de politique"
-
-#. module: project_knowledge_matrix
 #: model:project.document.type,name:project_knowledge_matrix.document_type_policy
 msgid "Politique"
 msgstr "Politique"
@@ -5761,29 +4528,9 @@ msgid "Portail client"
 msgstr "Portail client"
 
 #. module: project_knowledge_matrix
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.corporate_officer_view_form
-msgid "Position"
-msgstr "Poste"
-
-#. module: project_knowledge_matrix
 #: model:ir.model.fields,help:project_knowledge_matrix.field_project_knowledge_item__consequences
 msgid "Positive and negative impacts"
 msgstr "Impacts positifs et négatifs"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields.selection,name:project_knowledge_matrix.selection__project_credential_rotate_wizard__rotation_reason__compromise
-msgid "Potential Compromise"
-msgstr "Compromission potentielle"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields,help:project_knowledge_matrix.field_corporate_resolution__whereas_text
-msgid "Preamble / whereas clauses"
-msgstr "Préambule / clauses ATTENDU QUE"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields.selection,name:project_knowledge_matrix.selection__corporate_officer__title__president
-msgid "President"
-msgstr "Président"
 
 #. module: project_knowledge_matrix
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_knowledge_import_wizard__preview
@@ -5818,16 +4565,6 @@ msgid "Procedure"
 msgstr "Procédure"
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields.selection,name:project_knowledge_matrix.selection__project_document__minute_book_section__shareholder_minutes
-msgid "Proces-verbaux des actionnaires"
-msgstr "Proces-verbaux des actionnaires"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields.selection,name:project_knowledge_matrix.selection__project_document__minute_book_section__director_minutes
-msgid "Proces-verbaux des administrateurs"
-msgstr "Proces-verbaux des administrateurs"
-
-#. module: project_knowledge_matrix
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document__review_date
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document_version__review_date
 msgid "Prochaine révision"
@@ -5850,12 +4587,6 @@ msgid "Procédures informatiques et guides techniques internes"
 msgstr "Procédures informatiques et guides techniques internes"
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields.selection,name:project_knowledge_matrix.selection__project_credential__environment__production
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.credential_view_search
-msgid "Production"
-msgstr "Production"
-
-#. module: project_knowledge_matrix
 #: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.knowledge_matrix_view_form
 msgid "Progress"
 msgstr "Progression"
@@ -5867,20 +4598,12 @@ msgstr "Progression (%)"
 
 #. module: project_knowledge_matrix
 #: model:ir.model,name:project_knowledge_matrix.model_project_project
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_credential__project_id
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_credential_rotate_wizard__project_id
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_knowledge_item__project_id
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_knowledge_matrix__project_id
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.credential_view_search
 #: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.knowledge_item_view_search
 #: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.knowledge_matrix_view_search
 msgid "Project"
 msgstr "Projet"
-
-#. module: project_knowledge_matrix
-#: model:ir.model,name:project_knowledge_matrix.model_project_credential
-msgid "Project Credential"
-msgstr "Identifiant de projet"
 
 #. module: project_knowledge_matrix
 #: model:ir.model,name:project_knowledge_matrix.model_project_knowledge_matrix
@@ -5923,9 +4646,7 @@ msgid "Propose"
 msgstr "Proposer"
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields.selection,name:project_knowledge_matrix.selection__corporate_resolution__status__proposed
 #: model:ir.model.fields.selection,name:project_knowledge_matrix.selection__project_knowledge_item__state__proposed
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.corporate_resolution_view_search
 msgid "Proposed"
 msgstr "Proposé"
 
@@ -5934,11 +4655,6 @@ msgstr "Proposé"
 #: code:addons/project_knowledge_matrix/static/src/xml/knowledge_dashboard.xml:0
 msgid "Proposees"
 msgstr "Proposées"
-
-#. module: project_knowledge_matrix
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.corporate_resolution_view_form
-msgid "Proposer"
-msgstr "Proposer"
 
 #. module: project_knowledge_matrix
 #: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.view_document_version_form
@@ -5966,11 +4682,6 @@ msgstr "Emplacement dans le questionnaire"
 #: model:project.document.type,name:project_knowledge_matrix.document_type_guide
 msgid "Quick Guide"
 msgstr "Guide rapide"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields,help:project_knowledge_matrix.field_corporate_compliance_event__filing_reference
-msgid "REQ confirmation number or other filing reference"
-msgstr "Numéro de confirmation REQ ou autre référence de dépôt"
 
 #. module: project_knowledge_matrix
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document__review_reminder_sent_30
@@ -6036,11 +4747,6 @@ msgid "Rapport envoyé"
 msgstr "Rapport envoyé"
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_compliance_event__rating_ids
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_director__rating_ids
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_officer__rating_ids
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_resolution__rating_ids
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_credential__rating_ids
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document__rating_ids
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document_distribution__rating_ids
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document_version__rating_ids
@@ -6056,15 +4762,9 @@ msgid "Rationale"
 msgstr "Justification"
 
 #. module: project_knowledge_matrix
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.credential_view_form
 #: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.knowledge_item_view_form
 msgid "Reactivate"
 msgstr "Réactiver"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_credential_rotate_wizard__rotation_reason
-msgid "Reason"
-msgstr "Motif"
 
 #. module: project_knowledge_matrix
 #: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.view_document_distribution_search
@@ -6082,43 +4782,14 @@ msgid "Rechercher des versions"
 msgstr "Rechercher des versions"
 
 #. module: project_knowledge_matrix
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.view_document_software_search
-msgid "Rechercher les logiciels"
-msgstr "Rechercher les logiciels"
-
-#. module: project_knowledge_matrix
 #: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.view_document_type_search
 msgid "Rechercher les types"
 msgstr "Rechercher les types"
 
 #. module: project_knowledge_matrix
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.view_document_software_version_search
-msgid "Rechercher les versions"
-msgstr "Rechercher les versions"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_resolution__sequence
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_credential__reference
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.corporate_compliance_view_form
-msgid "Reference"
-msgstr "Référence"
-
-#. module: project_knowledge_matrix
 #: model:project.document.type,name:project_knowledge_matrix.document_type_registry
 msgid "Registre"
 msgstr "Registre"
-
-#. module: project_knowledge_matrix
-#: model:ir.actions.act_window,name:project_knowledge_matrix.corporate_director_action
-#: model:ir.ui.menu,name:project_knowledge_matrix.menu_corporate_directors
-msgid "Registre des administrateurs"
-msgstr "Registre des administrateurs"
-
-#. module: project_knowledge_matrix
-#: model:ir.actions.act_window,name:project_knowledge_matrix.corporate_officer_action
-#: model:ir.ui.menu,name:project_knowledge_matrix.menu_corporate_officers
-msgid "Registre des dirigeants"
-msgstr "Registre des dirigeants"
 
 #. module: project_knowledge_matrix
 #. odoo-javascript
@@ -6132,27 +4803,11 @@ msgid "Registres et inventaires (incidents, fournisseurs, traitements)"
 msgstr "Registres et inventaires (incidents, fournisseurs, traitements)"
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields.selection,name:project_knowledge_matrix.selection__project_document__minute_book_section__bylaws
-msgid "Reglements"
-msgstr "Règlements"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields.selection,name:project_knowledge_matrix.selection__corporate_resolution__meeting_type__regular
-msgid "Regular"
-msgstr "Ordinaire"
-
-#. module: project_knowledge_matrix
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.corporate_compliance_view_form
-msgid "Reinitialiser"
-msgstr "Réinitialiser"
-
-#. module: project_knowledge_matrix
 #: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.knowledge_item_view_form
 msgid "Reject"
 msgstr "Rejeter"
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields.selection,name:project_knowledge_matrix.selection__corporate_resolution__status__rejected
 #: model:ir.model.fields.selection,name:project_knowledge_matrix.selection__project_knowledge_item__state__rejected
 msgid "Rejected"
 msgstr "Rejeté"
@@ -6162,11 +4817,6 @@ msgstr "Rejeté"
 #: code:addons/project_knowledge_matrix/static/src/xml/knowledge_dashboard.xml:0
 msgid "Rejetees"
 msgstr "Rejetées"
-
-#. module: project_knowledge_matrix
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.corporate_resolution_view_form
-msgid "Rejeter"
-msgstr "Rejeter"
 
 #. module: project_knowledge_matrix
 #: model:project.document.type,name:project_knowledge_matrix.document_type_release
@@ -6185,19 +4835,9 @@ msgid "Remettre en brouillon"
 msgstr "Remettre en brouillon"
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_compliance_event__reminder_sent
-msgid "Reminder Sent"
-msgstr "Rappel envoyé"
-
-#. module: project_knowledge_matrix
 #: model:mail.template,subject:project_knowledge_matrix.mail_template_document_reminder
 msgid "Reminder: Please acknowledge receipt of {{ object.version_id.name }}"
 msgstr "Rappel: Veuillez accuser réception de {{ object.version_id.name }}"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields.selection,name:project_knowledge_matrix.selection__corporate_director__end_reason__removal
-msgid "Removal"
-msgstr "Révocation"
 
 #. module: project_knowledge_matrix
 #: model:ir.model.fields.selection,name:project_knowledge_matrix.selection__project_document_distribution__state__superseded
@@ -6218,11 +4858,6 @@ msgstr "Requiert attention"
 #: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.knowledge_item_view_form
 msgid "Required Inputs"
 msgstr "Entrées requises"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields,help:project_knowledge_matrix.field_corporate_director__domicile
-msgid "Required for LSAQ Canadian residency requirements"
-msgstr "Requis pour les exigences de résidence canadienne de la LSAQ"
 
 #. module: project_knowledge_matrix
 #: model:ir.model.fields.selection,name:project_knowledge_matrix.selection__project_knowledge_item__phase__2_requirements
@@ -6246,39 +4881,6 @@ msgid "Reset to Pending"
 msgstr "Remettre en attente"
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields.selection,name:project_knowledge_matrix.selection__corporate_director__end_reason__resignation
-msgid "Resignation"
-msgstr "Démission"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_compliance_event__resolution_id
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.corporate_resolution_view_form
-msgid "Resolution"
-msgstr "Résolution"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_resolution__resolution_type
-msgid "Resolution Type"
-msgstr "Type de résolution"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields,help:project_knowledge_matrix.field_corporate_resolution__resolved_text
-msgid "Resolution body"
-msgstr "Corps de la résolution"
-
-#. module: project_knowledge_matrix
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.corporate_resolution_view_form
-msgid "Resolution title..."
-msgstr "Titre de la résolution..."
-
-#. module: project_knowledge_matrix
-#: model:ir.actions.act_window,name:project_knowledge_matrix.corporate_resolution_action
-#: model:ir.ui.menu,name:project_knowledge_matrix.menu_corporate_resolutions
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.corporate_resolution_view_list
-msgid "Resolutions"
-msgstr "Résolutions"
-
-#. module: project_knowledge_matrix
 #. odoo-javascript
 #: code:addons/project_knowledge_matrix/static/src/xml/knowledge_dashboard.xml:0
 msgid "Resolutions adoptees"
@@ -6291,9 +4893,6 @@ msgid "Responsable"
 msgstr "Responsable"
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_compliance_event__activity_user_id
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_resolution__activity_user_id
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_credential__activity_user_id
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document__activity_user_id
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document_distribution__activity_user_id
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document_version__activity_user_id
@@ -6301,13 +4900,6 @@ msgstr "Responsable"
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_knowledge_matrix__activity_user_id
 msgid "Responsible User"
 msgstr "Utilisateur responsable"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_credential__restricted
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.credential_view_form
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.credential_view_search
-msgid "Restricted"
-msgstr "Restreint"
 
 #. module: project_knowledge_matrix
 #: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.view_document_version_form
@@ -6320,30 +4912,6 @@ msgstr "Retirer"
 #: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.view_document_version_search
 msgid "Retiré"
 msgstr "Retiré"
-
-#. module: project_knowledge_matrix
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.credential_view_form
-msgid "Revoke"
-msgstr "Révoquer"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields.selection,name:project_knowledge_matrix.selection__project_credential__state__revoked
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.credential_view_search
-msgid "Revoked"
-msgstr "Révoqué"
-
-#. module: project_knowledge_matrix
-#: model:ir.model,name:project_knowledge_matrix.model_project_credential_rotate_wizard
-msgid "Rotate Credential Password"
-msgstr "Rotation du mot de passe de l'identifiant"
-
-#. module: project_knowledge_matrix
-#. odoo-python
-#: code:addons/project_knowledge_matrix/models/project_credential.py:0
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.credential_rotate_wizard_view_form
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.credential_view_form
-msgid "Rotate Password"
-msgstr "Rotation du mot de passe"
 
 #. module: project_knowledge_matrix
 #. odoo-javascript
@@ -6403,11 +4971,6 @@ msgid "Révoqués"
 msgstr "Révoqués"
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_compliance_event__message_has_sms_error
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_director__message_has_sms_error
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_officer__message_has_sms_error
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_resolution__message_has_sms_error
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_credential__message_has_sms_error
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document__message_has_sms_error
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document_distribution__message_has_sms_error
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document_version__message_has_sms_error
@@ -6415,11 +4978,6 @@ msgstr "Révoqués"
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_knowledge_matrix__message_has_sms_error
 msgid "SMS Delivery error"
 msgstr "Erreur de livraison SMS"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields,help:project_knowledge_matrix.field_project_credential__key_file
-msgid "SSH key, certificate, or other key file (.pem, .key, .p12, .ppk)"
-msgstr "Clé SSH, certificat ou autre fichier clé (.pem, .key, .p12, .ppk)"
 
 #. module: project_knowledge_matrix
 #. odoo-javascript
@@ -6433,21 +4991,6 @@ msgid "Santé et sécurité"
 msgstr "Santé et sécurité"
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields.selection,name:project_knowledge_matrix.selection__project_credential_rotate_wizard__rotation_reason__scheduled
-msgid "Scheduled Rotation"
-msgstr "Rotation planifiée"
-
-#. module: project_knowledge_matrix
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.corporate_compliance_view_search
-msgid "Search Compliance Events"
-msgstr "Rechercher les événements de conformité"
-
-#. module: project_knowledge_matrix
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.corporate_director_view_search
-msgid "Search Directors"
-msgstr "Rechercher les administrateurs"
-
-#. module: project_knowledge_matrix
 #: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.knowledge_item_view_search
 msgid "Search Items"
 msgstr "Rechercher les éléments"
@@ -6458,29 +5001,9 @@ msgid "Search Matrices"
 msgstr "Rechercher les matrices"
 
 #. module: project_knowledge_matrix
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.corporate_officer_view_search
-msgid "Search Officers"
-msgstr "Rechercher les dirigeants"
-
-#. module: project_knowledge_matrix
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.corporate_resolution_view_search
-msgid "Search Resolutions"
-msgstr "Rechercher les résolutions"
-
-#. module: project_knowledge_matrix
 #: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.knowledge_section_view_search
 msgid "Search Sections"
 msgstr "Rechercher les sections"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_resolution__seconder_id
-msgid "Seconder"
-msgstr "Secondeur"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields.selection,name:project_knowledge_matrix.selection__corporate_officer__title__secretary
-msgid "Secretary"
-msgstr "Secrétaire"
 
 #. module: project_knowledge_matrix
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_knowledge_item__section_id
@@ -6498,11 +5021,6 @@ msgstr "Nom de section"
 #: model:ir.model.constraint,message:project_knowledge_matrix.constraint_project_knowledge_section_code_uniq
 msgid "Section code must be unique!"
 msgstr "Le code de section doit être unique!"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document__minute_book_section
-msgid "Section du livre des minutes"
-msgstr "Section du livre des minutes"
 
 #. module: project_knowledge_matrix
 #: model:ir.actions.act_window,name:project_knowledge_matrix.knowledge_section_action
@@ -6531,56 +5049,15 @@ msgid "Security & Compliance"
 msgstr "Sécurité et conformité"
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields.selection,name:project_knowledge_matrix.selection__project_credential_rotate_wizard__rotation_reason__security
-msgid "Security Incident"
-msgstr "Incident de sécurité"
-
-#. module: project_knowledge_matrix
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.corporate_director_view_form
-msgid "Select director..."
-msgstr "Sélectionner un administrateur..."
-
-#. module: project_knowledge_matrix
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.corporate_officer_view_form
-msgid "Select officer..."
-msgstr "Sélectionner un dirigeant..."
-
-#. module: project_knowledge_matrix
 #: model:ir.model.fields.selection,name:project_knowledge_matrix.selection__project_knowledge_import_wizard__delimiter__;
 msgid "Semicolon (;)"
 msgstr "Point-virgule (;)"
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_credential_type__sequence
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_knowledge_item__sequence
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_knowledge_section__sequence
 msgid "Sequence"
 msgstr "Séquence"
-
-#. module: project_knowledge_matrix
-#: model:project.credential.type,name:project_knowledge_matrix.credential_type_server
-msgid "Server / SSH"
-msgstr "Serveur / SSH"
-
-#. module: project_knowledge_matrix
-#: model:project.credential.type,description:project_knowledge_matrix.credential_type_server
-msgid "Server access credentials including SSH keys"
-msgstr "Identifiants d'accès serveur incluant les clés SSH"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields.selection,name:project_knowledge_matrix.selection__corporate_resolution__subject_category__share_issuance
-msgid "Share Issuance"
-msgstr "Émission d'actions"
-
-#. module: project_knowledge_matrix
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.corporate_resolution_view_search
-msgid "Shareholder"
-msgstr "Actionnaire"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields.selection,name:project_knowledge_matrix.selection__corporate_resolution__resolution_type__shareholder
-msgid "Shareholder Resolution"
-msgstr "Résolution des actionnaires"
 
 #. module: project_knowledge_matrix
 #: model:ir.model.fields,help:project_knowledge_matrix.field_project_knowledge_section__code
@@ -6593,38 +5070,9 @@ msgid "Short reference guides and quick-start documents"
 msgstr "Guides de référence rapide et documents de démarrage"
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_credential__show_api_key
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_credential_type__show_api_key
-msgid "Show API Key Field"
-msgstr "Afficher le champ clé API"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_credential__show_domain
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_credential_type__show_domain
-msgid "Show Domain Field"
-msgstr "Afficher le champ domaine"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_credential__show_key_file
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_credential_type__show_key_file
-msgid "Show Key File Field"
-msgstr "Afficher le champ fichier clé"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_credential__show_url
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_credential_type__show_url
-msgid "Show URL Field"
-msgstr "Afficher le champ URL"
-
-#. module: project_knowledge_matrix
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document_distribution__requires_signature
 msgid "Signature requise"
 msgstr "Signature requise"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_document_software__website
-msgid "Site web"
-msgstr "Site web"
 
 #. module: project_knowledge_matrix
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_knowledge_import_wizard__skip_header
@@ -6652,11 +5100,6 @@ msgid "Source"
 msgstr "Source"
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields.selection,name:project_knowledge_matrix.selection__corporate_resolution__meeting_type__special
-msgid "Special"
-msgstr "Spécial"
-
-#. module: project_knowledge_matrix
 #: model:project.document.type,name:project_knowledge_matrix.document_type_spec
 msgid "Specification"
 msgstr "Spécification"
@@ -6665,12 +5108,6 @@ msgstr "Spécification"
 #: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.view_project_document_search
 msgid "Spécifiques au projet"
 msgstr "Spécifiques au projet"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields.selection,name:project_knowledge_matrix.selection__project_credential__environment__staging
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.credential_view_search
-msgid "Staging"
-msgstr "Préproduction"
 
 #. module: project_knowledge_matrix
 #: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.knowledge_item_view_form
@@ -6688,22 +5125,12 @@ msgid "Start (In Progress)"
 msgstr "Commencer (En cours)"
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_compliance_event__status
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_resolution__status
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_credential__state
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_knowledge_item__state
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.corporate_compliance_view_search
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.corporate_director_view_form
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.corporate_resolution_view_search
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.credential_view_search
 #: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.knowledge_item_view_search
 msgid "Status"
 msgstr "État"
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields,help:project_knowledge_matrix.field_corporate_compliance_event__activity_state
-#: model:ir.model.fields,help:project_knowledge_matrix.field_corporate_resolution__activity_state
-#: model:ir.model.fields,help:project_knowledge_matrix.field_project_credential__activity_state
 #: model:ir.model.fields,help:project_knowledge_matrix.field_project_document__activity_state
 #: model:ir.model.fields,help:project_knowledge_matrix.field_project_document_distribution__activity_state
 #: model:ir.model.fields,help:project_knowledge_matrix.field_project_document_version__activity_state
@@ -6721,38 +5148,9 @@ msgstr ""
 "Planifié: Activités futures."
 
 #. module: project_knowledge_matrix
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.view_document_software_version_search
-msgid "Statut"
-msgstr "Statut"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_document_software_version__support_status
-msgid "Statut de support"
-msgstr "Statut de support"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields.selection,name:project_knowledge_matrix.selection__project_document__minute_book_section__charter
-msgid "Statuts constitutifs"
-msgstr "Statuts constitutifs"
-
-#. module: project_knowledge_matrix
 #: model:project.document.type,description:project_knowledge_matrix.document_type_procedure
 msgid "Step-by-step processes and procedures"
 msgstr "Processus et procédures étape par étape"
-
-#. module: project_knowledge_matrix
-#: model_terms:ir.actions.act_window,help:project_knowledge_matrix.credential_action
-msgid ""
-"Store and manage credentials for project resources securely.\n"
-"                Passwords and API keys are encrypted at rest."
-msgstr ""
-"Stockez et gérez les identifiants des ressources de projet en toute sécurité.\n"
-"                Les mots de passe et les clés API sont chiffrés au repos."
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_resolution__subject_category
-msgid "Subject Category"
-msgstr "Catégorie du sujet"
 
 #. module: project_knowledge_matrix
 #: model_terms:ir.actions.act_window,help:project_knowledge_matrix.document_distribution_action_internal
@@ -6785,13 +5183,11 @@ msgid "Supersede"
 msgstr "Remplacer"
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields.selection,name:project_knowledge_matrix.selection__corporate_resolution__status__superseded
 #: model:ir.model.fields.selection,name:project_knowledge_matrix.selection__project_knowledge_item__state__superseded
 msgid "Superseded"
 msgstr "Remplacé"
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_resolution__superseded_by_id
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_knowledge_item__superseded_by_id
 msgid "Superseded By"
 msgstr "Remplacé par"
@@ -6805,16 +5201,6 @@ msgstr "Remplace"
 #: model:ir.model.fields,help:project_knowledge_matrix.field_project_knowledge_item__attachment_ids
 msgid "Supporting documents"
 msgstr "Documents justificatifs"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields.selection,name:project_knowledge_matrix.selection__document_software_version__support_status__supported
-msgid "Supportée"
-msgstr "Supportée"
-
-#. module: project_knowledge_matrix
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.view_document_software_version_search
-msgid "Supportées"
-msgstr "Supportées"
 
 #. module: project_knowledge_matrix
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document_type__sequence
@@ -6924,12 +5310,6 @@ msgstr ""
 "                des matrices de connaissances standardisées."
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields.selection,name:project_knowledge_matrix.selection__corporate_director__end_reason__term_expired
-msgid "Term Expired"
-msgstr "Mandat expiré"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields.selection,name:project_knowledge_matrix.selection__project_credential__environment__testing
 #: model:ir.model.fields.selection,name:project_knowledge_matrix.selection__project_knowledge_item__phase__4_testing
 msgid "Testing"
 msgstr "Test"
@@ -6940,21 +5320,9 @@ msgid "Testing Phase"
 msgstr "Phase de test"
 
 #. module: project_knowledge_matrix
-#: model:ir.model.constraint,message:project_knowledge_matrix.constraint_project_credential_type_code_uniq
-msgid "The code must be unique!"
-msgstr "Le code doit être unique!"
-
-#. module: project_knowledge_matrix
 #: model:ir.model.fields,help:project_knowledge_matrix.field_project_knowledge_item__name
 msgid "The decision or element being tracked"
 msgstr "La décision ou l'élément suivi"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_officer__title
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_resolution__name
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.corporate_officer_view_search
-msgid "Title"
-msgstr "Titre"
 
 #. module: project_knowledge_matrix
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_knowledge_matrix__item_count
@@ -7006,11 +5374,6 @@ msgid "Training and onboarding documentation"
 msgstr "Documentation de formation et d'intégration"
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields.selection,name:project_knowledge_matrix.selection__corporate_officer__title__treasurer
-msgid "Treasurer"
-msgstr "Trésorier"
-
-#. module: project_knowledge_matrix
 #: model:ir.model.fields,help:project_knowledge_matrix.field_project_knowledge_item__is_blocked
 msgid "True if blocked by incomplete items"
 msgstr "Vrai si bloqué par des éléments incomplets"
@@ -7021,12 +5384,8 @@ msgid "True if deadline has passed and item is not done"
 msgstr "Vrai si la date limite est dépassée et l'élément n'est pas terminé"
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_credential__type_id
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document__type_id
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_knowledge_item__item_type
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.corporate_compliance_view_search
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.corporate_resolution_view_search
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.credential_view_search
 #: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.view_project_document_search
 msgid "Type"
 msgstr "Type"
@@ -7052,9 +5411,6 @@ msgid "Type de modification"
 msgstr "Type de modification"
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields,help:project_knowledge_matrix.field_corporate_compliance_event__activity_exception_decoration
-#: model:ir.model.fields,help:project_knowledge_matrix.field_corporate_resolution__activity_exception_decoration
-#: model:ir.model.fields,help:project_knowledge_matrix.field_project_credential__activity_exception_decoration
 #: model:ir.model.fields,help:project_knowledge_matrix.field_project_document__activity_exception_decoration
 #: model:ir.model.fields,help:project_knowledge_matrix.field_project_document_distribution__activity_exception_decoration
 #: model:ir.model.fields,help:project_knowledge_matrix.field_project_document_version__activity_exception_decoration
@@ -7062,11 +5418,6 @@ msgstr "Type de modification"
 #: model:ir.model.fields,help:project_knowledge_matrix.field_project_knowledge_matrix__activity_exception_decoration
 msgid "Type of the exception activity on record."
 msgstr "Type de l'activité d'exception sur l'enregistrement."
-
-#. module: project_knowledge_matrix
-#: model:ir.ui.menu,name:project_knowledge_matrix.menu_credential_types
-msgid "Types d'identifiants"
-msgstr "Types d'identifiants"
 
 #. module: project_knowledge_matrix
 #: model:ir.actions.act_window,name:project_knowledge_matrix.document_type_action
@@ -7080,19 +5431,9 @@ msgid "Tâches"
 msgstr "Tâches"
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_credential__url
-msgid "URL"
-msgstr "URL"
-
-#. module: project_knowledge_matrix
 #: model:ir.model.fields,help:project_knowledge_matrix.field_project_document__external_url
 msgid "URL vers le document sur Nextcloud ou autre système"
 msgstr "URL vers le document sur Nextcloud ou autre système"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_resolution__unanimously_adopted
-msgid "Unanimously Adopted"
-msgstr "Adopté à l'unanimité"
 
 #. module: project_knowledge_matrix
 #: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.knowledge_item_view_search
@@ -7103,17 +5444,6 @@ msgstr "Non assigné"
 #: model:ir.model.fields,help:project_knowledge_matrix.field_project_knowledge_item__decision_id
 msgid "Unique identifier (e.g., A1, B6, IN55)"
 msgstr "Identifiant unique (ex: A1, B6, IN55)"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields,help:project_knowledge_matrix.field_project_credential_type__code
-msgid "Unique identifier for this credential type"
-msgstr "Identifiant unique pour ce type d'identifiant"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields.selection,name:project_knowledge_matrix.selection__corporate_compliance_event__status__upcoming
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.corporate_compliance_view_search
-msgid "Upcoming"
-msgstr "À venir"
 
 #. module: project_knowledge_matrix
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_knowledge_import_wizard__update_existing
@@ -7141,36 +5471,13 @@ msgid "User Manual"
 msgstr "Manuel d'utilisation"
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_credential__username
-msgid "Username"
-msgstr "Nom d'utilisateur"
-
-#. module: project_knowledge_matrix
-#: model:project.credential.type,name:project_knowledge_matrix.credential_type_vpn
-msgid "VPN / Remote Access"
-msgstr "VPN / Accès à distance"
-
-#. module: project_knowledge_matrix
-#: model:project.credential.type,description:project_knowledge_matrix.credential_type_vpn
-msgid "VPN and remote access credentials"
-msgstr "Identifiants VPN et d'accès à distance"
-
-#. module: project_knowledge_matrix
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.credential_view_form
-msgid "Verify"
-msgstr "Vérifier"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_document_software_version__version
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document_distribution__version_number
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document_version__version_number
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.view_document_software_version_form
 #: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.view_document_version_form
 msgid "Version"
 msgstr "Version"
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_document_software__current_version
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document__current_version
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document_distribution__current_version_id
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document_version__is_current
@@ -7183,12 +5490,6 @@ msgstr "Version actuelle"
 #: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.view_document_version_form
 msgid "Version de document"
 msgstr "Version de document"
-
-#. module: project_knowledge_matrix
-#: model:ir.model,name:project_knowledge_matrix.model_document_software_version
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.view_document_software_version_form
-msgid "Version de logiciel"
-msgstr "Version de logiciel"
 
 #. module: project_knowledge_matrix
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document_distribution__version_id
@@ -7216,11 +5517,6 @@ msgid "Version spécifique du logiciel documentée"
 msgstr "Version spécifique du logiciel documentée"
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields,help:project_knowledge_matrix.field_document_software_version__is_lts
-msgid "Version à support long terme (Long Term Support)"
-msgstr "Version à support long terme (Long Term Support)"
-
-#. module: project_knowledge_matrix
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document__version_count
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document__version_ids
 #: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.view_project_document_form
@@ -7246,35 +5542,9 @@ msgid "Versions de documents"
 msgstr "Versions de documents"
 
 #. module: project_knowledge_matrix
-#: model:ir.actions.act_window,name:project_knowledge_matrix.document_software_version_action
-#: model:ir.ui.menu,name:project_knowledge_matrix.menu_document_software_versions
-msgid "Versions de logiciels"
-msgstr "Versions de logiciels"
-
-#. module: project_knowledge_matrix
 #: model:ir.model.fields,help:project_knowledge_matrix.field_project_document__translation_ids
 msgid "Versions traduites de ce document"
 msgstr "Versions traduites de ce document"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields.selection,name:project_knowledge_matrix.selection__corporate_officer__title__vice_president
-msgid "Vice-President"
-msgstr "Vice-président"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_resolution__vote_against
-msgid "Votes Against"
-msgstr "Votes contre"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_resolution__vote_for
-msgid "Votes For"
-msgstr "Votes pour"
-
-#. module: project_knowledge_matrix
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.corporate_resolution_view_form
-msgid "Voting"
-msgstr "Vote"
 
 #. module: project_knowledge_matrix
 #: model:ir.model.fields,help:project_knowledge_matrix.field_project_document_distribution__is_outdated
@@ -7292,16 +5562,6 @@ msgid "We will..."
 msgstr "Nous allons..."
 
 #. module: project_knowledge_matrix
-#: model:project.credential.type,description:project_knowledge_matrix.credential_type_app
-msgid "Web or desktop application login credentials"
-msgstr "Identifiants de connexion application web ou bureau"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_compliance_event__website_message_ids
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_director__website_message_ids
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_officer__website_message_ids
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_corporate_resolution__website_message_ids
-#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_credential__website_message_ids
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document__website_message_ids
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document_distribution__website_message_ids
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document_version__website_message_ids
@@ -7311,11 +5571,6 @@ msgid "Website Messages"
 msgstr "Messages du site web"
 
 #. module: project_knowledge_matrix
-#: model:ir.model.fields,help:project_knowledge_matrix.field_corporate_compliance_event__website_message_ids
-#: model:ir.model.fields,help:project_knowledge_matrix.field_corporate_director__website_message_ids
-#: model:ir.model.fields,help:project_knowledge_matrix.field_corporate_officer__website_message_ids
-#: model:ir.model.fields,help:project_knowledge_matrix.field_corporate_resolution__website_message_ids
-#: model:ir.model.fields,help:project_knowledge_matrix.field_project_credential__website_message_ids
 #: model:ir.model.fields,help:project_knowledge_matrix.field_project_document__website_message_ids
 #: model:ir.model.fields,help:project_knowledge_matrix.field_project_document_distribution__website_message_ids
 #: model:ir.model.fields,help:project_knowledge_matrix.field_project_document_version__website_message_ids
@@ -7355,26 +5610,6 @@ msgid "Why this option was chosen"
 msgstr "Pourquoi cette option a été choisie"
 
 #. module: project_knowledge_matrix
-#: model:project.credential.type,description:project_knowledge_matrix.credential_type_ad
-msgid "Windows Active Directory or Microsoft Entra ID credentials"
-msgstr "Identifiants Windows Active Directory ou Microsoft Entra ID"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields.selection,name:project_knowledge_matrix.selection__corporate_resolution__meeting_type__written
-msgid "Written"
-msgstr "Écrit"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields.selection,name:project_knowledge_matrix.selection__corporate_resolution__resolution_type__written_board
-msgid "Written Board Resolution"
-msgstr "Résolution écrite du conseil"
-
-#. module: project_knowledge_matrix
-#: model:ir.model.fields.selection,name:project_knowledge_matrix.selection__corporate_resolution__resolution_type__written_shareholder
-msgid "Written Shareholder Resolution"
-msgstr "Résolution écrite des actionnaires"
-
-#. module: project_knowledge_matrix
 #: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.res_config_settings_view_form_knowledge_matrix
 msgid "admin@example.com, manager@example.com"
 msgstr "admin@example.com, manager@example.com"
@@ -7405,16 +5640,6 @@ msgid "e.g., Charte de projet"
 msgstr "ex: Charte de projet"
 
 #. module: project_knowledge_matrix
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.credential_type_view_form
-msgid "e.g., Email Account"
-msgstr "ex: Compte courriel"
-
-#. module: project_knowledge_matrix
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.credential_view_form
-msgid "e.g., Production Database"
-msgstr "ex: Base de données de production"
-
-#. module: project_knowledge_matrix
 #: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.knowledge_item_view_form
 msgid "e.g., Q1, Q2"
 msgstr "ex: Q1, Q2"
@@ -7441,29 +5666,9 @@ msgid "ex: Mise à jour politique vacances"
 msgstr "ex: Mise à jour politique vacances"
 
 #. module: project_knowledge_matrix
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.view_document_software_form
-msgid "ex: Nextcloud"
-msgstr "ex: Nextcloud"
-
-#. module: project_knowledge_matrix
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.view_document_software_form
-msgid "fa-cloud"
-msgstr "fa-cloud"
-
-#. module: project_knowledge_matrix
 #: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.view_document_type_form
 msgid "fa-file"
 msgstr "fa-file"
-
-#. module: project_knowledge_matrix
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.credential_type_view_form
-msgid "fa-key"
-msgstr "fa-key"
-
-#. module: project_knowledge_matrix
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.credential_view_form
-msgid "https://example.com/login"
-msgstr "https://example.com/login"
 
 #. module: project_knowledge_matrix
 #: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.knowledge_matrix_view_kanban
@@ -7480,11 +5685,6 @@ msgstr "obligation(s) corporative(s) en retard"
 #: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.view_partner_form_inherit_documents
 msgid "obsolètes"
 msgstr "obsolètes"
-
-#. module: project_knowledge_matrix
-#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.credential_view_form
-msgid "username@example.com"
-msgstr "username@example.com"
 
 #. module: project_knowledge_matrix
 #: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.view_project_document_kanban

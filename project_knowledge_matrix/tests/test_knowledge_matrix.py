@@ -1,7 +1,8 @@
 """Matrices et éléments — le vrai produit, celui qui reste après le découpage.
 
-C'est le sous-système que tout déploiement du module emploie, donc le seul
-dont une régression touche à coup sûr un utilisateur.
+Des dizaines de matrices et des centaines d'éléments par base. C'est le
+seul sous-système que les deux locataires emploient, donc le seul dont une
+régression touche un client.
 """
 
 from odoo.exceptions import ValidationError
@@ -128,8 +129,8 @@ class TestItemStateMachine(MatrixCase):
 
         ``decision_id`` est unique par matrice. La copie telle quelle violait la
         contrainte : le bouton « Remplacer » levait une erreur de base de
-        données à chaque appel. Le successeur prend maintenant le premier
-        numéro libre du même préfixe.
+        données à chaque appel, et la production porte 0 élément remplacé sur
+        660. Le successeur prend le premier numéro libre du même préfixe.
         """
         self._element('G1')
         self._element('G2')

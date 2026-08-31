@@ -1,9 +1,7 @@
-"""Gouvernance corporative.
+"""Gouvernance corporative — le filet du sous-système.
 
-Résolutions, administrateurs, dirigeants et échéances de conformité forment un
-sous-système autonome. Ce qui doit survivre à toute évolution du module, c'est
-la numérotation des résolutions, le calcul de statut des échéances et les
-périodes de mandat.
+Ce qui doit survivre à toute évolution du module : la numérotation des résolutions, le calcul de statut des échéances,
+les périodes de mandat, et le bloc de signature du PDF.
 """
 
 import html
@@ -11,7 +9,7 @@ from datetime import timedelta
 
 from odoo import fields
 from odoo.exceptions import ValidationError
-from odoo.tests import TransactionCase
+from odoo.tests import TransactionCase, tagged
 
 
 class TestCorporateResolution(TransactionCase):
@@ -28,8 +26,8 @@ class TestCorporateResolution(TransactionCase):
     def test_a_resolution_gets_a_reference_from_the_sequence(self):
         """La référence sort d'``ir.sequence``, pas d'un compteur maison.
 
-        La séquence est une donnée du module. Un déplacement du modèle qui
-        l'oublie laisse toutes les résolutions suivantes en « New ».
+        La séquence est une donnée du module. Une extraction qui l'oublie
+        laisse toutes les résolutions suivantes en « New ».
         """
         resolution = self._creer()
         self.assertTrue(resolution.sequence)
@@ -123,6 +121,11 @@ class TestCorporateMandates(TransactionCase):
         self.assertFalse(dirigeant.is_active)
 
 
+# Créer une res.company demande un registre COMPLET : les champs obligatoires
+# qu'un module de vente ou de stock ajoute à la société n'existent pas encore
+# quand les tests d'installation de ce module-ci tournent, et l'insertion tombe
+# alors sur une colonne NOT NULL sans valeur. D'où le post_install.
+@tagged('post_install', '-at_install')
 class TestCorporateSignatories(TransactionCase):
     """Le bloc de signature du PDF.
 
@@ -141,7 +144,7 @@ class TestCorporateSignatories(TransactionCase):
         # sur toute copie de production — le registre existant se mêlerait au
         # jeu d'essai et ferait échouer les replis pour une raison qui n'a rien
         # à voir avec ce qu'ils éprouvent.
-        cls.societe = cls.env['res.company'].create({'name': 'Société d\'essai'})
+        cls.societe = cls.env['res.company'].create({'name': 'Société d\'essai 24525'})
         cls.env = cls.env(context=dict(cls.env.context, allowed_company_ids=[cls.societe.id]))
         cls.actionnaire = cls.env['res.partner'].create({'name': 'Actionnaire Unique'})
         cls.dirigeant = cls.env['res.partner'].create({'name': 'Dirigeant Attestant'})
@@ -166,7 +169,7 @@ class TestCorporateSignatories(TransactionCase):
         voir avec ce qu'elle éprouve.
         """
         return html.unescape(str(self.env['ir.qweb']._render(
-            'project_knowledge_matrix.report_corporate_resolution',
+            'bf_corporate_governance.report_corporate_resolution',
             {'docs': resolution, 'env': self.env},
         )))
 
@@ -183,7 +186,7 @@ class TestCorporateSignatories(TransactionCase):
     # ------------------------------------------------------------------
 
     def test_signatories_win_over_the_director_registry(self):
-        """Une résolution d'actionnaires, réduite à ses deux signatures.
+        """Une résolution d'actionnaires réduite à ses deux signatures.
 
         Un actionnaire adopte, un dirigeant contresigne pour attester sa
         dénonciation d'intérêt. Aucun des deux ne signe « comme
@@ -317,8 +320,8 @@ class TestCorporateSignatories(TransactionCase):
         """Un PDF réimprimé aujourd'hui doit nommer le conseil de l'époque.
 
         ``is_active`` répond « aujourd'hui » : sans borne de date, les
-        des résolutions fondatrices nommaient un administrateur élu onze mois
-        plus tard.
+        des résolutions fondatrices nommaient un administrateur élu
+        onze mois plus tard.
         """
         self._administrateur(
             self.ancien,

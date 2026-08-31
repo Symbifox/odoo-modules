@@ -1,8 +1,8 @@
-"""Coffre d'identifiants.
+"""Coffre d'identifiants — ce que devra retrouver intact.
 
-Le coffre garde des mots de passe et des clés d'API chiffrés. Ce qui doit
-survivre à toute évolution du module, c'est la capacité à relire les secrets et
-le verrou qui décide qui les voit.
+75 mots de passe chiffrés chez Blue Fox. Le déménagement du modèle vers
+``bf_credentials`` réattribue une table ; ce qui doit survivre, c'est la
+capacité à relire les secrets et le verrou qui décide qui les voit.
 """
 
 from datetime import timedelta
@@ -23,11 +23,11 @@ class TestCredentials(TransactionCase):
         })
         cls.gestionnaire = new_test_user(
             cls.env, login='pkm.gestionnaire',
-            groups='base.group_user,project_knowledge_matrix.group_credential_manager',
+            groups='base.group_user,bf_credentials.group_credential_manager',
         )
         cls.utilisateur = new_test_user(
             cls.env, login='pkm.utilisateur',
-            groups='base.group_user,project_knowledge_matrix.group_credential_user',
+            groups='base.group_user,bf_credentials.group_credential_user',
         )
         # La règle « Identifiants : Membres du projet » filtre sur les abonnés
         # du projet. Sans cet abonnement, un utilisateur d'identifiants n'a même
@@ -163,7 +163,8 @@ class TestCredentials(TransactionCase):
     def test_a_revoked_credential_reports_neither_expired_nor_expiring(self):
         """Un identifiant révoqué sort des deux compteurs, par conception.
 
-        Fixer ce comportement ici rend visible tout changement d'arbitrage.
+        C'est la branche que touche la (« identifiants expirés
+        invisibles ») : le fixer ici rend visible tout changement d'arbitrage.
         """
         aujourdhui = fields.Date.today()
         revoque = self._creer(

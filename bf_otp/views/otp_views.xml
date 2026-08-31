@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_otp_app" model="ir.actions.client">
+        <field name="name">Jetons OTP</field>
+        <field name="tag">bf_otp.app</field>
+    </record>
+
+    <!-- Application à part entière : c'est le seul module de la suite qui
+         détient des graines, et le sortir sous son propre toit rend visible ce
+         qu'il est. Il porte aussi l'icône de jeton, donc il s'installe en PWA
+         sous son propre nom. -->
+    <menuitem id="menu_otp_root"
+              name="Jetons OTP"
+              web_icon="bf_otp,static/description/icon.png"
+              groups="group_otp_user"
+              sequence="52"/>
+
+    <menuitem id="menu_otp_app"
+              name="Mon coffre"
+              parent="menu_otp_root"
+              action="action_otp_app"
+              groups="group_otp_user"
+              sequence="10"/>
+</odoo>

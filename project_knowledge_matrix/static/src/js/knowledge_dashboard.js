@@ -82,8 +82,6 @@ export class KnowledgeDashboard extends Component {
             "project.document.distribution": [["document_id.project_id", "=", this.state.projectId]],
             "project.knowledge.item": [["project_id", "=", this.state.projectId]],
             "project.knowledge.matrix": [["project_id", "=", this.state.projectId]],
-            "project.credential": [["project_id", "=", this.state.projectId]],
-            "corporate.compliance.event": [],
         };
         return mapping[model] || [];
     }
@@ -180,17 +178,6 @@ export class KnowledgeDashboard extends Component {
             views: [[false, "list"], [false, "form"]],
             domain: this._getProjectDomain("project.knowledge.matrix"),
             context: {},
-        });
-    }
-
-    openCredentials() {
-        this.action.doAction({
-            type: "ir.actions.act_window",
-            name: "Identifiants",
-            res_model: "project.credential",
-            views: [[false, "list"], [false, "kanban"], [false, "form"]],
-            domain: this._getProjectDomain("project.credential"),
-            context: { search_default_filter_active: 1 },
         });
     }
 
@@ -427,43 +414,6 @@ export class KnowledgeDashboard extends Component {
         });
     }
 
-    openExpiringCredentials() {
-        // Le domaine doit refléter get_credential_metrics à l'identique. Il a
-        // porté le même défaut que le compteur : il cherchait des identifiants
-        // « actifs » alors que la tâche quotidienne les fait passer à
-        // « expiring ». Compteur et liste annonçaient zéro de concert.
-        this.action.doAction({
-            type: "ir.actions.act_window",
-            name: "Identifiants expirant sous 30 jours",
-            res_model: "project.credential",
-            views: [[false, "list"], [false, "form"]],
-            domain: [...this._getProjectDomain("project.credential"), ["state", "=", "expiring"]],
-            context: {},
-        });
-    }
-
-    openExpiredCredentials() {
-        this.action.doAction({
-            type: "ir.actions.act_window",
-            name: "Identifiants expirés",
-            res_model: "project.credential",
-            views: [[false, "list"], [false, "form"]],
-            domain: [...this._getProjectDomain("project.credential"), ["state", "=", "expired"]],
-            context: {},
-        });
-    }
-
-    openRevokedCredentials() {
-        this.action.doAction({
-            type: "ir.actions.act_window",
-            name: "Identifiants révoqués",
-            res_model: "project.credential",
-            views: [[false, "list"], [false, "form"]],
-            domain: [...this._getProjectDomain("project.credential"), ["state", "=", "revoked"]],
-            context: {},
-        });
-    }
-
     openDistributionsThisMonth() {
         const now = new Date();
         const monthStart = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-01`;
@@ -559,34 +509,6 @@ export class KnowledgeDashboard extends Component {
             res_model: "project.knowledge.item",
             views: [[false, "list"], [false, "form"]],
             domain: [...this._getProjectDomain("project.knowledge.item"), ["item_type", "=", "decision"], ["impact_level", "=", "high"], ["state", "in", ["pending", "proposed"]]],
-            context: {},
-        });
-    }
-
-    // Corporate navigation
-    openResolutions() {
-        this.action.doAction("project_knowledge_matrix.corporate_resolution_action");
-    }
-
-    openDirectors() {
-        this.action.doAction("project_knowledge_matrix.corporate_director_action");
-    }
-
-    openOfficers() {
-        this.action.doAction("project_knowledge_matrix.corporate_officer_action");
-    }
-
-    openComplianceCalendar() {
-        this.action.doAction("project_knowledge_matrix.corporate_compliance_action");
-    }
-
-    openOverdueCompliance() {
-        this.action.doAction({
-            type: "ir.actions.act_window",
-            name: "Conformité en retard",
-            res_model: "corporate.compliance.event",
-            views: [[false, "list"], [false, "form"]],
-            domain: [["status", "=", "overdue"]],
             context: {},
         });
     }

@@ -1,8 +1,8 @@
 """L'interrupteur du sous-système de distribution.
 
-La fonction se prête à un essai qui n'aboutit pas : quelques envois, des
-accusés qui ne rentrent jamais, des accusés saisis à la main en une fois, puis
-plus rien. Une instance qui ne distribue pas doit pouvoir l'éteindre. Le code reste écrit
+L'essai de février se lit sans ambiguïté : quatre envois, deux jamais accusés
+puis rappelés, deux marqués accusés à dix-sept secondes d'écart, soit une saisie
+manuelle en une fois. Douze jours d'essai, puis plus rien. Le code reste écrit
 et réactivable ; ce qui change, c'est qu'il ne s'affiche plus par défaut.
 
 Ce que ce filet doit tenir, dans les deux sens :
@@ -17,7 +17,7 @@ Ce que ce filet doit tenir, dans les deux sens :
 from unittest.mock import patch
 
 from odoo import fields
-from odoo.tests import TransactionCase
+from odoo.tests import TransactionCase, tagged
 
 
 class DistributionSwitchCase(TransactionCase):
@@ -112,8 +112,8 @@ class TestTheDailyMaintenancePasses(DistributionSwitchCase):
         """Les rappels de révision ne lisent aucune distribution.
 
         Les accrocher à l'interrupteur par mégarde éteindrait, avec une fonction
-        abandonnée, la seule passe qui travaille vraiment sur un parc de
-        documents datés.
+        abandonnée, la seule passe qui travaille vraiment : 107 documents sur
+        194 portent les deux dates.
         """
         for allume in (True, False):
             with self.subTest(allume=allume):
@@ -149,8 +149,7 @@ class TestTheDashboardBlocks(DistributionSwitchCase):
     def test_the_other_blocks_never_move(self):
         """Éteindre la distribution ne doit rien retirer d'autre."""
         autres = ('document_overview', 'review_metrics', 'content_quality',
-                  'matrix_metrics', 'credential_metrics', 'decision_metrics',
-                  'corporate_metrics')
+                  'matrix_metrics', 'decision_metrics')
         self._allumer(False)
         eteint = self.Tableau.get_dashboard_data()
         self._allumer(True)
@@ -251,12 +250,18 @@ class TestTheBiweeklyReport(DistributionSwitchCase):
         allume = Document._get_dashboard_report_data()
         for cle in ('total_documents', 'active_documents', 'overdue_review',
                     'expired_documents', 'review_0_30', 'docs_without_versions',
-                    'credentials_total', 'credentials_expiring',
-                    'credentials_expired', 'decisions_total'):
+                    'decisions_total'):
             with self.subTest(cle=cle):
                 self.assertEqual(eteint[cle], allume[cle])
 
 
+# Rendre ce gabarit lit report_brand_* sur res.company, un champ que
+# `bluefox_branding` apporte — et qui n'est PAS une dépendance déclarée de ce
+# module. Les tests d'installation tournent quand ce module-ci vient de se
+# charger : rien n'oblige bluefox_branding à l'avoir précédé, et le rendu lève
+# alors une AttributeError. Vert sur une base, rouge sur une autre, pour
+# une raison qui n'a rien à voir avec ce que le test éprouve.
+@tagged('post_install', '-at_install')
 class TestTheReportActuallyRenders(DistributionSwitchCase):
     """Le gabarit du rapport, rendu pour de vrai, dans les deux états.
 

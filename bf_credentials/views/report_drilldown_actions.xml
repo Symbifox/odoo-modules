@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Les trois chiffres d'identifiants du rapport bimensuel, un par action.
+         Chaque domaine reproduit EXACTEMENT le compteur de
+         `_get_dashboard_report_data` — sur le STATUT, pas sur la date, et hors
+         projets de démonstration — sans quoi le lien mène à un autre nombre que
+         celui sur lequel on a cliqué. La condition sur la démonstration est la
+         forme rendue par `project.project._demo_exclusion_domain()` : elle est
+         recopiée ici parce qu'un domaine d'action est du XML statique, et le
+         test `test_each_credential_drilldown_returns_its_counter` éprouve que
+         les deux écritures restent d'accord. -->
+
+    <record id="report_action_cred_active" model="ir.actions.act_window">
+        <field name="name">Identifiants actifs</field>
+        <field name="res_model">project.credential</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="search_view_id" ref="credential_view_search"/>
+        <field name="domain">['|', ('project_id', '=', False), ('project_id.knowledge_is_demo', '=', False), ('state', '=', 'active')]</field>
+    </record>
+
+    <record id="report_action_cred_expiring" model="ir.actions.act_window">
+        <field name="name">Identifiants expirant sous 30 jours</field>
+        <field name="res_model">project.credential</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="search_view_id" ref="credential_view_search"/>
+        <field name="domain">['|', ('project_id', '=', False), ('project_id.knowledge_is_demo', '=', False), ('state', '=', 'expiring')]</field>
+    </record>
+
+    <record id="report_action_cred_expired" model="ir.actions.act_window">
+        <field name="name">Identifiants expirés</field>
+        <field name="res_model">project.credential</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="search_view_id" ref="credential_view_search"/>
+        <field name="domain">['|', ('project_id', '=', False), ('project_id.knowledge_is_demo', '=', False), ('state', '=', 'expired')]</field>
+    </record>
+
+    <!-- Les deux chiffres du deuxième facteur. Même discipline que les trois
+         au-dessus : le domaine reproduit EXACTEMENT `get_credential_metrics`,
+         exclusion de démonstration comprise, et les révoqués sortent.
+         `test_each_mfa_drilldown_returns_its_counter` exécute le domaine et le
+         compare au compteur. -->
+
+    <record id="report_action_cred_mfa_unknown" model="ir.actions.act_window">
+        <field name="name">Deuxième facteur à documenter</field>
+        <field name="res_model">project.credential</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="search_view_id" ref="credential_view_search"/>
+        <field name="domain">['|', ('project_id', '=', False), ('project_id.knowledge_is_demo', '=', False), ('state', '!=', 'revoked'), ('mfa_state', '=', 'unknown')]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Tout est documenté
+            </p>
+            <p>
+                Aucun identifiant n'attend qu'on dise s'il a un deuxième facteur.
+            </p>
+        </field>
+    </record>
+
+    <record id="report_action_cred_mfa_at_risk" model="ir.actions.act_window">
+        <field name="name">Deuxième facteur sans relève</field>
+        <field name="res_model">project.credential</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="search_view_id" ref="credential_view_search"/>
+        <field name="domain">['|', ('project_id', '=', False), ('project_id.knowledge_is_demo', '=', False), ('state', '!=', 'revoked'), ('mfa_state', '=', 'at_risk')]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Chaque facteur a sa relève
+            </p>
+            <p>
+                Aucun deuxième facteur ne dépend d'un porteur unique sans reprise écrite.
+            </p>
+        </field>
+    </record>
+
+</odoo>

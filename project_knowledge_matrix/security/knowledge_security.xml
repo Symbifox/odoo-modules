@@ -8,19 +8,9 @@
             <field name="sequence">30</field>
         </record>
 
-        <record id="module_category_credentials" model="ir.module.category">
-            <field name="name">Identifiants</field>
-            <field name="sequence">31</field>
-        </record>
-
         <record id="module_category_documents" model="ir.module.category">
             <field name="name">Documents</field>
             <field name="sequence">32</field>
-        </record>
-
-        <record id="module_category_corporate" model="ir.module.category">
-            <field name="name">Gouvernance corporative</field>
-            <field name="sequence">33</field>
         </record>
 
         <!-- Groupes de sécurité — Matrices de connaissances -->
@@ -36,22 +26,6 @@
             <field name="comment">Accès complet à toutes les matrices de connaissances et sections.</field>
             <field name="category_id" ref="module_category_knowledge_matrix"/>
             <field name="implied_ids" eval="[(4, ref('project_knowledge_matrix.group_knowledge_user'))]"/>
-            <field name="users" eval="[(4, ref('base.user_admin'))]"/>
-        </record>
-
-        <!-- Groupes de sécurité — Identifiants -->
-        <record id="group_credential_user" model="res.groups">
-            <field name="name">Utilisateur</field>
-            <field name="comment">Peut consulter et modifier les identifiants des projets auxquels il a accès.</field>
-            <field name="category_id" ref="module_category_credentials"/>
-            <field name="implied_ids" eval="[(4, ref('project.group_project_user'))]"/>
-        </record>
-
-        <record id="group_credential_manager" model="res.groups">
-            <field name="name">Gestionnaire</field>
-            <field name="comment">Accès complet à tous les identifiants, y compris restreints, gestion des types et suppression.</field>
-            <field name="category_id" ref="module_category_credentials"/>
-            <field name="implied_ids" eval="[(4, ref('project_knowledge_matrix.group_credential_user'))]"/>
             <field name="users" eval="[(4, ref('base.user_admin'))]"/>
         </record>
 
@@ -91,15 +65,6 @@
             <field name="name">Distribution et accusés de réception</field>
             <field name="comment">Interrupteur du sous-système de distribution de documents (menus, passes d'entretien, blocs du tableau de bord et du rapport bimensuel). N'accorde aucun droit par lui-même.</field>
             <field name="category_id" ref="base.module_category_hidden"/>
-        </record>
-
-        <!-- Groupes de sécurité — Gouvernance corporative -->
-        <record id="group_corporate_manager" model="res.groups">
-            <field name="name">Gestionnaire</field>
-            <field name="comment">Accès complet aux fonctionnalités de gouvernance corporative (résolutions, administrateurs, dirigeants, conformité).</field>
-            <field name="category_id" ref="module_category_corporate"/>
-            <field name="implied_ids" eval="[(4, ref('project_knowledge_matrix.group_document_manager'))]"/>
-            <field name="users" eval="[(4, ref('base.user_admin'))]"/>
         </record>
 
     </data>
@@ -158,50 +123,6 @@
             <field name="model_id" ref="model_project_knowledge_item"/>
             <field name="domain_force">[(1, '=', 1)]</field>
             <field name="groups" eval="[(4, ref('group_knowledge_manager'))]"/>
-        </record>
-
-        <!-- Règles d'accès — Identifiants -->
-
-        <!-- Identifiants : Les utilisateurs voient ceux de leurs projets -->
-        <record id="rule_credential_user" model="ir.rule">
-            <field name="name">Identifiants : Membres du projet</field>
-            <field name="model_id" ref="model_project_credential"/>
-            <field name="domain_force">[
-                ('project_id.message_partner_ids', 'in', [user.partner_id.id])
-            ]</field>
-            <field name="groups" eval="[(4, ref('group_credential_user'))]"/>
-            <field name="perm_read" eval="True"/>
-            <field name="perm_write" eval="True"/>
-            <field name="perm_create" eval="True"/>
-            <field name="perm_unlink" eval="False"/>
-        </record>
-
-        <!-- Identifiants : Les gestionnaires ont un accès complet -->
-        <record id="rule_credential_manager" model="ir.rule">
-            <field name="name">Identifiants : Accès complet gestionnaire</field>
-            <field name="model_id" ref="model_project_credential"/>
-            <field name="domain_force">[(1, '=', 1)]</field>
-            <field name="groups" eval="[(4, ref('group_credential_manager'))]"/>
-        </record>
-
-        <!-- Types d'identifiants : Tous les utilisateurs peuvent lire -->
-        <record id="rule_credential_type_read" model="ir.rule">
-            <field name="name">Types d'identifiants : Accès en lecture</field>
-            <field name="model_id" ref="model_project_credential_type"/>
-            <field name="domain_force">[(1, '=', 1)]</field>
-            <field name="groups" eval="[(4, ref('group_credential_user'))]"/>
-            <field name="perm_read" eval="True"/>
-            <field name="perm_write" eval="False"/>
-            <field name="perm_create" eval="False"/>
-            <field name="perm_unlink" eval="False"/>
-        </record>
-
-        <!-- Types d'identifiants : Les gestionnaires ont un accès complet -->
-        <record id="rule_credential_type_manager" model="ir.rule">
-            <field name="name">Types d'identifiants : Accès complet gestionnaire</field>
-            <field name="model_id" ref="model_project_credential_type"/>
-            <field name="domain_force">[(1, '=', 1)]</field>
-            <field name="groups" eval="[(4, ref('group_credential_manager'))]"/>
         </record>
 
         <!-- Règles d'accès — Documents -->
