@@ -1,143 +1,295 @@
-# Pages de liens (`bf_linkpage`)
+# Link Pages (`bf_linkpage`)
 
-Une page publique qui rassemble les liens d'une personne sous une adresse
-courte, et le QR à poser dans une signature courriel.
+A public page gathering one person's links under a short URL, plus the QR code
+to drop into an email signature.
 
-## Ce que ça ajoute par rapport à un service de pages de liens
+## What this adds over a hosted link-page service
 
-Les liens existent déjà dans la base. Le lien de prise de rendez-vous, la page
-de dépôt sécurisé, le téléphone et le courriel sont des enregistrements, pas
-des chaînes recopiées à la main. La page les **résout à l'affichage**.
+The links already exist in the database. The booking link, the secure upload
+page, the phone number and the email address are records, not strings retyped by
+hand. The page **resolves them at render time**.
 
-Conséquence recherchée : quand le slug de rendez-vous d'une personne change, sa
-page suit sans que personne n'y touche, et le QR déjà imprimé dans sa signature
-continue de pointer au bon endroit. C'est la seule chose qu'un service externe
-ne peut pas faire.
+The intended consequence: when someone's booking slug changes, their page
+follows with nobody touching it, and the QR code already printed in their
+signature keeps pointing to the right place. That is the one thing an outside
+service cannot do.
 
-## Les trois décisions qui gouvernent le module
+## The three decisions that govern the module
 
-### 1. Un slug inconnu rend un 404 franc
+### 1. An unknown slug returns a plain 404
 
-Le module voisin `bf_appointment` redirige en silence vers son index quand le
-slug ne résout pas. C'est acceptable là où l'adresse est cliquée depuis un
-courriel qu'on peut corriger et renvoyer. Ici l'adresse part dans un **QR
-imprimé** : elle ne se corrige plus. Une redirection donnerait une page qui
-s'affiche, donc l'apparence du succès, et personne ne saurait que le QR pointe
-à côté.
+The sibling module `bf_appointment` silently redirects to its index when a slug
+does not resolve. That is acceptable where the address is clicked from an email
+somebody can correct and resend. Here the address goes into a **printed QR
+code**: it cannot be corrected. A redirect would produce a page that displays,
+so the appearance of success, and nobody would know the QR lands elsewhere.
 
-Corollaire : tous les refus rendent le même 404. Un slug inexistant, une page
-en brouillon, fermée, archivée ou expirée sont indiscernables de l'extérieur,
-sans quoi l'adresse deviendrait un oracle qui confirme à un visiteur anonyme
-quels slugs existent.
+Corollary: every refusal returns the same 404. A missing slug, a draft page, a
+closed, archived or expired one are indistinguishable from outside, otherwise
+the address becomes an oracle confirming to an anonymous visitor which slugs
+exist.
 
-### 2. Une source qui ne résout pas fait disparaître le lien
+### 2. A source that fails to resolve makes its link disappear
 
-Elle ne rend pas une adresse approximative et n'envoie personne vers une page
-d'accueil. Un lien mort atteint par un QR déjà imprimé coûte plus cher qu'un
-lien absent. L'écart entre « Liens » et « Liens affichés » au back-office est
-la seule façon de voir qu'une source est devenue muette.
+It does not return an approximate address and it sends nobody to a home page. A
+dead link reached by an already-printed QR code costs more than an absent one.
+The gap between "links" and "visible links" in the back office is the only way
+to see that a source has gone silent.
 
-### 3. Une page ponctuelle porte une expiration, armée à la création
+### 3. A one-off page carries an expiry, armed at creation
 
-Une page publique sans propriétaire que personne ne révoque est le même angle
-mort qu'un partage éternel. L'expiration est une **date lue à l'affichage**, pas
-un état à maintenir : aucun cron n'a besoin de tourner pour qu'une page se
-ferme. Le délai par défaut est de 90 jours, réglable par le paramètre système
-`bf_linkpage.oneoff_expiry_days`.
+A public page with no owner that nobody revokes is the same blind spot as an
+eternal share. The expiry is a **date read at render time**, not a state to
+maintain: no scheduled job needs to run for a page to close. The default is 90
+days, adjustable through the `bf_linkpage.oneoff_expiry_days` system parameter.
 
-## Le préfixe d'URL
+## The URL prefix
 
-Les pages sont servies sous `/l/<slug>`, jamais à la racine. Un slug servi à
-`/<slug>` entre en collision avec le routage du site (pages website, `/shop`,
-`/blog`), et le préfixe de langue est retiré avant le routage, ce qui rend la
-collision intermittente donc difficile à voir. Le préfixe dédié coûte deux
-caractères dans le QR et supprime la classe entière de pannes.
+Pages are served under `/l/<slug>`, never at the root. A slug served at
+`/<slug>` collides with website routing (website pages, `/shop`, `/blog`), and
+the language prefix is stripped before routing, which makes the collision
+intermittent and therefore hard to see. The dedicated prefix costs two
+characters in the QR code and removes the entire class of failures.
 
-## Les sources
+## The sources
 
-| Code | Résout | Fournisseur requis |
+| Code | Resolves to | Provider required |
 | --- | --- | --- |
-| `manual` | L'adresse saisie dans le lien | aucun |
-| `appointment` | La page de rendez-vous publique de la personne, par sa ressource | `bf_appointment` |
-| `securetransfer` | La page de dépôt `/to/<slug>` | `bf_securetransfer` |
-| `partner_email` | `mailto:` de la fiche | aucun |
-| `partner_phone` | `tel:` de la fiche, ponctuation retirée | aucun |
-| `partner_website` | Le site web de la fiche | aucun |
+| `manual` | The address typed into the link | none |
+| `appointment` | The person's booking page, through their resource. `booking_slug` on the page wins | `bf_appointment` |
+| `securetransfer` | The `/to/<slug>` upload page, matched by the brand's **owner** then by slug | `bf_securetransfer` |
+| `meet` | The permanent room recorded on the page (`meet_url`) | none |
+| `partner_email` | `mailto:` from the contact record | none |
+| `phone_work` | The employee record's work phone, the company's otherwise | none |
+| `phone_mobile` | The contact's mobile, the employee record's otherwise | none |
+| `phone_direct` | The contact record's "phone" field | none |
+| `phone_tollfree` | The company's toll-free number | none |
+| `partner_phone` | *Legacy*: the contact's mobile then phone, without saying which | none |
+| `partner_website` | The contact's website | none |
+| `social_linkedin` | The contact's `x_linkedin_url`, the company page otherwise | none |
+| `social_github`, `social_instagram`, `social_facebook`, `social_youtube`, `social_twitter` | The company's `social_*` fields | none |
 
-**Aucun import vers un module fournisseur.** Le module ne dépend ni de
-`bf_appointment` ni de `bf_securetransfer` : il vérifie la présence du modèle au
-registre et se tait sinon. Un import ferait échouer l'installation là où le
-fournisseur est absent.
+> **The toll-free number lives in the company record's "mobile" field**, for want
+> of a dedicated one in Odoo. That is not a data-entry mistake.
 
-Un module satellite ajoute une source en surchargeant `_sources()` sur le
-modèle abstrait `bf.linkpage.source` et en définissant la méthode
-`_resolve_<code>` correspondante.
+> **`partner_phone` does not say which number it serves.** It is kept for
+> existing pages; the four `phone_*` sources name theirs. A business signature's
+> number is almost always `phone_work`, which lives on the EMPLOYEE record and
+> not on the contact.
 
-## Le QR
+The `social_*` sources render as a **row of icons**, with no label and the
+network name in `aria-label`. Their address is **read**, never typed: that is
+what lets a template lay them down, whereas an address typed onto a template
+link would be wiped at the next refresh.
 
-`GET /l/<slug>/qr.png` — réservé aux usagers connectés membres du module. Le QR
-n'encode qu'une adresse publique, mais composer une image à la demande sur une
-route publique est un levier commode pour saturer le serveur ; il se télécharge
-une fois, par la personne qui monte sa signature.
+**No import of a provider module.** The module depends on neither
+`bf_appointment` nor `bf_securetransfer`: it checks the registry for the model
+and stays quiet otherwise. An import would break installation wherever the
+provider is absent.
 
-- `?branded=0` — sans le logo de la société.
-- `&size=6` — rendu plus compact (4 à 20).
+A satellite module adds a source by overriding `_sources()` on the abstract
+`bf.linkpage.source` model and defining the matching `_resolve_<code>` method.
 
-Le QR à la marque est produit en **correction d'erreur de niveau H** parce que
-le logo masque des modules du code, et le logo est borné à 22 % du côté.
-Réduire ce niveau donne un QR qui se lit à l'écran puis échoue une fois imprimé
-petit dans une signature.
+## The QR code
 
-## Hors portée délibérément
+`GET /l/<slug>/qr.png` — restricted to signed-in members of the module. The code
+only ever encodes a public address, but composing an image on demand from a
+public route is a convenient lever for exhausting a server; it is downloaded
+once, by the person assembling their signature.
 
-**Le domaine personnalisé.** Chaque domaine demande un host de proxy et un
-certificat posés à la main, plus la configuration `website.domain` côté Odoo.
-C'est de la corvée d'hébergement récurrente qui n'ajoute rien au module. Un
-client qui le demande explicitement est traité comme du travail
-d'hébergement, pas comme une fonctionnalité.
+- `?branded=0` — without the logo.
+- `&size=6` — a more compact rendering (4 to 20).
 
-## Ce que le QA du 2026-08-30 a établi
+The branded code is produced at **error-correction level H** because the logo
+masks modules of the code, and the logo is capped at 22% of the side. Lowering
+that level yields a code that reads on screen and then fails once printed small
+in a signature.
 
-75 tests, verts en installation neuve avec ET sans les modules fournisseurs.
-Chaque invariant a été soumis à une mutation : on casse la règle dans le code
-et on exige que la suite rougisse. 18 mutations sur 19 rougissent.
+### The settings, on the record
 
-**La seule qui ne rougit pas**, et c'est assumé : remettre le compteur de
-visites en lire-modifier-écrire au lieu de l'incrément fait par la base. La
-perte de visites sous charge n'est pas démontrable dans une transaction
-unique. L'incrément SQL reste une précaution non couverte par un test.
+A **QR code** tab carries the logo (the page's own wins over the company's), the
+plate behind it, the size, both colours, a preview that is the real rendering,
+and a download button.
 
-Quatre défauts trouvés à cette occasion, tous corrigés :
+### The contrast guard, and what it measured
 
-- **La photo ne s'affichait pas.** Servie par `/web/image/bf.linkpage/<id>/avatar`,
-  elle arrivait au visiteur sous forme d'image de remplacement — 6078 octets de
-  silhouette générique là où la photo en fait 77 — parce que l'usager public n'a
-  aucun droit de lecture sur le modèle et que `/web/image` répond alors **200**
-  au lieu d'une erreur. La photo passe maintenant par `/l/<slug>/avatar`.
-- **Le doublon de slug remontait une erreur de base de données.** La contrainte
-  SQL s'applique au INSERT, donc avant toute contrainte Python : le contrôle a
-  été déplacé dans `create()` et `write()`.
-- **Un paramètre `oneoff_expiry_days` mal saisi empêchait de créer une page.**
-  Il retombe sur 90 jours.
-- **`_compute_linkpage_count` n'avait pas de `@api.depends`**, donc n'était
-  jamais invalidé.
+Two mechanical rules rather than a matter of taste:
 
-Et un constat qu'il faut lire avec sa correction : le QA a d'abord cru trouver
-une **redirection ouverte** par la source « site web du contact ». Vérification
-faite, `res.partner.website` normalise à l'écriture — `//exemple.invalide/x`
-devient `http://exemple.invalide/x` — donc aucune des six sources actuelles ne
-peut faire sortir un schéma exécutable. Le filtre `_safe_url` a été ajouté quand
-même : il couvre l'adresse RÉSOLUE, là où la contrainte d'écriture ne voyait que
-le champ `url`, et une source ajoutée plus tard n'aura pas ce garde-fou par
-accident.
+1. the contrast ratio must reach **4:1**;
+2. the code must be **darker** than its background.
 
-## Lancer les tests
+The second is not a precaution held on principle. Measured with a decoder, a
+code lighter than its background reads at **no size at all**: not blue on
+charcoal, not even white on charcoal. A setting failing either rule falls back
+to black on white **and says so** in a warning on the record.
 
-⚠️ Le banc d'essai a `list_db = False`. Une requête **anonyme** ne peut alors
-résoudre une base que si le `dbfilter` n'en désigne qu'une seule. Avec
-`--db-filter='.*'`, toutes les routes publiques rendent un 404 werkzeug nu, et
-les assertions « doit rendre 404 » passent **sans rien discriminer**. Toujours
-épingler le filtre sur la base d'essai :
+> **A brand colour does not necessarily pass.** `#29ABE1` on white reaches only
+> **2.6:1**. It is the colour anyone reaches for first, and it would produce
+> handsome codes that nobody can scan, the defect surfacing only once printed.
+> Those same two brand colours work the other way round, charcoal on blue, down
+> to 90 px and not 70.
+
+### The logo plate
+
+Three values: the code's background, the code's own colour, or none.
+
+"The code's colour" exists for a measured reason: **a logo sharing the code's
+background colour vanishes on it**. On a charcoal code over a blue background, a
+blue logo becomes invisible while the code itself still decodes perfectly. The
+defect is in the logo, not the code, and no decode check catches it.
+
+> **The logo must be a raster image.** An SVG is a perfectly valid image, it
+> renders everywhere else in Odoo, and the imaging library cannot embed it. The
+> module says so on the record instead of silently producing an unbranded code.
+
+## Templates, layouts and theme
+
+A **template** carries a set of links AND a look: layout, theme, accent colour.
+Seven are seeded, and five layouts exist (cards, raised cards, minimal, filled
+buttons, technical).
+
+**The look is applied only on FIRST attachment**, or on an explicit "apply
+template" click. The periodic pass never reapplies it: otherwise a colour
+somebody chose would be undone overnight.
+
+The theme follows the device by default, with a toggle offered to the visitor.
+Their choice lives in THEIR browser, in `localStorage`, and is never sent to the
+server: it is a display preference, not a tracker.
+
+> **The toggle is an asset file, not an inline script.** The site's policy is
+> `script-src 'self'` WITHOUT `unsafe-inline`: a `<script>` in the template
+> would be blocked by the browser, silently.
+
+## The automation, and what it deliberately does not do
+
+A daily pass creates the missing page of every active employee and refreshes the
+ones following a template. Settings live under Settings → Link Pages.
+
+A **periodic pass** rather than an override of `hr.employee.create`, for three
+reasons in order: the module depends on no provider and depending on `hr` would
+cost it that property; a pass catches employees created before it was enabled,
+arriving through an import, or completed afterwards; creation and refresh become
+the same gesture, reading the gap between what should be and what is.
+
+The accepted price: a new employee's page appears at the next run.
+
+**A link added by hand survives the refresh.** Only `from_template` links are
+replaced. That property, and only that, is what makes a periodic pass
+acceptable. Values belonging to the person (`booking_slug`, `meet_url`) live on
+the PAGE and never on a link, for the same reason.
+
+## The contact card
+
+`GET /l/<slug>/vcard.vcf`, and an "add to my contacts" button offered by
+default. In **vCard 3.0** rather than 4.0: 4.0 is cleaner and less widely
+accepted, and a card a phone refuses to open is worth nothing.
+
+It carries the SAME numbers as the page, in the same order, and de-duplicates a
+number entered in two places. The page's address travels with it as the URL:
+saved contact details go stale, the link to the page stays right.
+
+A one-off page carries no person and therefore offers no card.
+
+> vCard separators (`,` `;` `\`) are escaped. An organisation name containing a
+> comma would split the card into two fields on import, with no error anywhere.
+
+## Languages
+
+The page is served at `/l/<slug>` and `/<lang>/l/<slug>`, with a selector made
+of **real links to real addresses**: the English version has to be shareable,
+bookmarkable and indexable under its own.
+
+Labels, subtitles, headline and bio are translatable. A template line's
+translations are **carried across language by language** onto the link it
+creates: without that, the nightly pass running in `fr_CA` would recreate
+French-only links and the English page would fall back to French with nothing
+signalling it.
+
+> **Module data text lives in the `en_US` slot even when it is French.** Writing
+> English into it without first WRITING the French into `fr_CA` takes the French
+> with it.
+
+> **Odoo extracts a view's translatable terms including the neighbouring inline
+> markup.** Text wrapped by an icon inside a `span` yields a single term,
+> indentation included, and the translation breaks the first time the template is
+> reformatted. Put the text in a block.
+
+## What the page counts
+
+Visits per page, clicks per link, shown in the **Statistics** tab. A marked gap
+between the two says people arrive and leave without opening anything. It is the
+only way to know whether a signature's QR code is actually used.
+
+Every link carries a **shown** flag: unticking it removes the link from the page
+without deleting it.
+
+> **`active_test: False` is mandatory on the links one2many** in the view.
+> Without it, unticking "shown" makes the row DISAPPEAR from the list and nothing
+> can bring it back. A button that hides without allowing un-hiding is worse than
+> no button.
+
+## Two traps visible ONLY through a browser
+
+**The `bin_size` context.** The web client reads binary fields asking for their
+HUMAN-READABLE SIZE, not their content: the field returns `b"32.99 Kb"`, which
+any image processing refuses. In `odoo shell` the context is not set and
+everything works, so **a shell check proves nothing** for a binary field. Force
+`bin_size=False` at the point of reading.
+
+**A served image's type must be DERIVED from its bytes.** The site sets
+`X-Content-Type-Options: nosniff`: announcing `image/png` for an SVG gives a
+route answering 200 with the right byte count and a broken image on screen.
+Nothing in the logs.
+
+## Deliberately out of scope
+
+**The custom domain.** Every domain needs a proxy host and a certificate placed
+by hand, plus the `website.domain` configuration on the Odoo side. That is
+recurring hosting chore work adding nothing to the module. A client explicitly
+asking for one is handled as hosting work, not as a feature.
+
+## What the QA established
+
+75 tests, green on a fresh install with AND without the provider modules. Every
+invariant was submitted to a mutation: break the rule in the code and require
+the suite to go red. 18 mutations out of 19 do.
+
+**The only one that does not**, and it is accepted: putting the visit counter
+back to read-modify-write instead of the database-side increment. Losing visits
+under load is not demonstrable inside a single transaction. The SQL increment
+remains a precaution no test covers.
+
+Four defects found on that occasion, all fixed:
+
+- **The photo did not display.** Served through
+  `/web/image/bf.linkpage/<id>/avatar`, it reached the visitor as a placeholder
+  image — 6078 bytes of generic silhouette where the photo itself is 77 —
+  because the public user has no read access on the model and `/web/image`
+  answers **200** rather than an error. The photo now goes through
+  `/l/<slug>/avatar`.
+- **A duplicate slug surfaced a raw database error.** The SQL constraint applies
+  at INSERT, therefore before any Python constraint: the check moved into
+  `create()` and `write()`.
+- **A malformed `oneoff_expiry_days` prevented creating a page.** It falls back
+  to 90 days.
+- **`_compute_linkpage_count` had no `@api.depends`**, so it was never
+  invalidated.
+
+And one finding that must be read with its correction: the QA first believed it
+had found an **open redirect** through the "contact website" source. On
+verification, `res.partner.website` normalises on write —
+`//example.invalid/x` becomes `http://example.invalid/x` — so none of the
+sources can emit an executable scheme. The `_safe_url` filter was added anyway:
+it covers the RESOLVED address, where the write constraint only saw the `url`
+field, and a source added later will not lack the guard by accident.
+
+## Running the tests
+
+The bench has `list_db = False`. An **anonymous** request can then resolve a
+database only if `dbfilter` designates exactly one. With `--db-filter='.*'`,
+every public route returns a bare werkzeug 404, and the "must return 404"
+assertions pass **without discriminating anything**. Always pin the filter to
+the test database:
 
 ```sh
 docker exec odoo-staging odoo -d dryrun_linkpage -i bf_linkpage \
@@ -145,5 +297,5 @@ docker exec odoo-staging odoo -d dryrun_linkpage -i bf_linkpage \
     --http-port=8199 --db-filter='^dryrun_linkpage$'
 ```
 
-C'est `test_page_publiee_repond_200` qui rend les tests de refus significatifs :
-il prouve que la donnée est visible du serveur.
+`test_page_publiee_repond_200` is what makes the refusal tests meaningful: it
+proves the data is visible to the server.

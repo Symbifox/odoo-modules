@@ -117,7 +117,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_invoice_ocr` | Symbifox — Invoice OCR Scanner | 18.0.1.0.1 | BUSL-1.1 | Extract vendor bill data from PDF attachments via the bf_llm gateway |
 | `bf_letter_writer` | Letter Writer | 18.0.2.0.0 | BUSL-1.1 | Branded official-letter editor: 5 letterhead modes, field merge (`{{ }}`), reusable templates and quick-text blocks, email + PDF send |
 | `bf_lexend` | Lexend Typeface | 18.0.3.0.0 | LGPL-3 | Adds Lexend across UI/PDF reports and per-company brand color settings (`report_brand_primary`, `report_brand_dark`) |
-| `bf_linkpage` | Pages de liens | 18.0.9.0.0 | BUSL-1.1 | Public link page for a person or a one-off, whose links are resolved from your own records rather than retyped, with a branded QR code for email signatures |
+| `bf_linkpage` | Pages de liens | 18.0.9.1.0 | BUSL-1.1 | Public link page for a person or a one-off, whose links are resolved from your own records rather than retyped, with a branded QR code for email signatures |
 | `bf_llm` | Symbifox — LLM Provider | 18.0.1.0.1 | LGPL-3 | Provider-agnostic LLM access (chat + document/vision extraction) for Symbifox modules |
 | `bf_mail_import` | BF Import courriel (.eml) | 18.0.1.4.0 | LGPL-3 | Import .eml files into the Odoo chatter |
 | `bf_mail_subject_clean` | BF Nettoyage des sujets de courriel | 18.0.1.1.0 | LGPL-3 | Prevents "Re: Re: Re:" stacking on subjects sent through the chatter |
@@ -174,7 +174,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `privacy_framework_nz` | Cadre de confidentialité — Privacy Act 2020 (Nouvelle-Zélande) | 18.0.1.0.1 | BUSL-1.1 | New Zealand Privacy Act 2020 regulatory-framework pack for the Privacy module |
 | `privacy_framework_pipeda` | Cadre de confidentialité — LPRPDE / PIPEDA (Canada) | 18.0.1.0.1 | BUSL-1.1 | PIPEDA (Canada federal) regulatory-framework pack for the Privacy module |
 | `privacy_framework_uk` | Cadre de confidentialité — UK GDPR (Royaume-Uni) | 18.0.1.0.1 | BUSL-1.1 | UK GDPR / DPA 2018 regulatory-framework pack for the Privacy module |
-| `project_knowledge_matrix` | Project Knowledge Matrix | 18.0.11.5.0 | BUSL-1.1 | Project knowledge base, policies, and documentation |
+| `project_knowledge_matrix` | Project Knowledge Matrix | 18.0.13.2.0 | BUSL-1.1 | Project knowledge base, policies, and documentation |
 <!-- MODULES_TABLE:END -->
 
 ## Installation
