@@ -47,13 +47,22 @@ pre-flight gate.
   field to sort and group on rather than several competing dates.
 - **Version drift**: an article documenting a module reports that the module has
   moved since the last fact-check.
+- **Signed waivers**: when a finding is acceptable on this particular article,
+  the editor says so in writing and the refusal yields — on that ground, on
+  that ground only, and until the text moves again.
+- **Mechanical repairs**: the two findings that call for no judgement at all —
+  an empty heading left by the editor, a table header without a scope — are
+  fixed by one button, across every language.
 
 ## What it does not do
 
 It holds state and runs mechanical checks. It does not judge an angle, does not
 decide a topic is dead, and does not replace a human read.
 
-It never rewrites post content. It reads, measures and refuses.
+It does not write. It touches post content only for the two mechanical repairs
+above, which are enumerated and admit no judgement. Anything that needs one — an
+em dash to replace, a sentence to recast, a missing visual — stays a human's
+job.
 
 ## Things worth knowing
 

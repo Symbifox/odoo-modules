@@ -16,6 +16,20 @@
                     <button name="action_apply_checklist_templates" type="object"
                             string="Reposer les gabarits" class="btn-secondary"
                             help="Utile après un changement de pilier ou de nature."/>
+                    <button name="action_fix_mechanical" type="object"
+                            string="Corriger les défauts mécaniques"
+                            class="btn-secondary" invisible="not post_id"
+                            confirm="Cette action écrit dans le billet. Elle ne corrige que les titres vides et les en-têtes de tableau sans portée, dans toutes les langues, puis repasse la QA. Continuer?"
+                            help="Titres vides et portées de tableau, dans toutes les langues. Rien qui demande un jugement."/>
+                    <button name="action_open_waiver" type="object"
+                            string="Signer une dérogation" class="btn-secondary"
+                            invisible="preflight_ok or published_date or qa_waived"
+                            groups="bf_editorial.group_editorial_manager"
+                            help="Accepter par écrit les motifs de jugement qui retiennent la publication."/>
+                    <button name="action_revoke_waiver" type="object"
+                            string="Lever la dérogation" class="btn-secondary"
+                            invisible="not qa_waived"
+                            groups="bf_editorial.group_editorial_manager"/>
                     <button name="action_publish" type="object" string="Publier"
                             class="btn-primary" invisible="published_date or not preflight_ok"
                             groups="bf_editorial.group_editorial_manager"/>
@@ -62,8 +76,29 @@
                          invisible="not preflight_ok or published_date">
                         <field name="preflight_summary" nolabel="1"/>
                     </div>
+                    <div class="alert alert-info" role="alert"
+                         invisible="not qa_waived or qa_waiver_stale">
+                        <strong>Cette entrée est sous dérogation.</strong>
+                        La QA voit toujours ce qu'elle voit; c'est le refus de
+                        publier qui a cédé, sur les motifs signés et sur
+                        ceux-là seulement.
+                        <group class="mt-2">
+                            <field name="qa_waived_by" readonly="1"/>
+                            <field name="qa_waived_on" readonly="1"/>
+                            <field name="qa_waiver_reason" readonly="1"/>
+                            <field name="qa_waiver_problems" readonly="1"/>
+                        </group>
+                    </div>
+                    <div class="alert alert-danger" role="alert"
+                         invisible="not qa_waiver_stale">
+                        <strong>La dérogation ne couvre plus rien.</strong>
+                        Le texte a bougé depuis sa signature. À signer de
+                        nouveau sur les constats actuels, ou à lever.
+                    </div>
                     <field name="preflight_ok" invisible="1"/>
                     <field name="is_blocked" invisible="1"/>
+                    <field name="qa_waived" invisible="1"/>
+                    <field name="qa_waiver_stale" invisible="1"/>
 
                     <notebook>
 
@@ -108,6 +143,9 @@
                                 <field name="qa_state" readonly="1"/>
                                 <field name="qa_last_run" readonly="1"/>
                                 <field name="qa_run_by" readonly="1"/>
+                                <field name="qa_waived" readonly="1"/>
+                                <field name="qa_waiver_stale" readonly="1"
+                                       invisible="not qa_waived"/>
                             </group>
                             <field name="qa_findings" nolabel="1" readonly="1"
                                    placeholder="Aucun constat. Passez la QA pour remplir cette zone."/>
@@ -304,6 +342,8 @@
                         domain="[('langs_complete', '=', False)]"/>
                 <filter name="langs_not_ready" string="Langue pas encore relue"
                         domain="[('langs_ready', '=', False)]"/>
+                <filter name="waived" string="Sous dérogation"
+                        domain="[('qa_waived', '=', True)]"/>
                 <separator/>
                 <filter name="planned" string="Date prévue" date="planned_date"/>
                 <filter name="published" string="Publiées" date="published_date"/>

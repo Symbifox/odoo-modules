@@ -143,6 +143,13 @@ class TestPropositionDepuisLeMenu(TransactionCase):
             "name": "Autre responsable", "login": "autre-editorial@essai.invalid",
             "groups_id": [(6, 0, [self.env.ref("base.group_user").id])],
         })
+        # ⚠️ Le défaut se calcule sur TOUS les calendriers de la base, pas
+        # seulement sur ceux du test. Un banc restauré depuis une prod, ou
+        # sali par une sonde manuelle, en porte d'autres — et le test mesurait
+        # alors l'état du banc au lieu de la règle. On les écarte d'abord.
+        self.env["bf.editorial.calendar"].search([]).write({
+            "user_id": self.autre.id, "sequence": 900,
+        })
         self.sien = self.env["bf.editorial.calendar"].create({
             "name": "Flux de l'utilisateur", "sequence": 90,
             "user_id": self.env.uid, "require_all_langs": "no",

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     "name": "Atelier éditorial",
-    "version": "18.0.1.7.0",
+    "version": "18.0.1.8.0",
     "category": "Marketing",
     "summary": "Calendrier éditorial, cadence mesurée et contrôles de publication"
                " pour le blogue — l'état se calcule, seules les décisions se stockent",
@@ -36,6 +36,12 @@ Fonctionnalités
   entre créneaux de langue.
 * **Garde de pré-vol** : la publication refuse tant que la liste de contrôle
   n'est pas verte, que la publication soit manuelle ou différée.
+* **Dérogation signée** : quand un constat est acceptable sur cet article-là,
+  la direction éditoriale le dit par écrit et le refus cède sur ce motif, sur
+  celui-là seulement, et jusqu'à ce que le texte bouge.
+* **Réparations mécaniques** : les deux défauts qui n'appellent aucun
+  arbitrage (titre vide laissé par l'éditeur, en-tête de tableau sans portée)
+  se corrigent d'un bouton, dans toutes les langues.
 * **Dérive de version** : un billet qui documente un module signale de lui-même
   que le module a bougé depuis le dernier fact-check.
 * **Piliers et sujets** repris de la taxonomie native du blogue, donc visibles
@@ -47,8 +53,10 @@ Limites assumées
   ne décide pas qu'un sujet est mort, et ne remplace pas une relecture.
 * Les contrôles de langue portent sur la structure et le vocabulaire, jamais
   sur la qualité d'une traduction.
-* Rien n'est écrit dans le contenu d'un billet : le module lit, mesure et
-  refuse, il ne réécrit pas.
+* Le module ne rédige pas. Il n'écrit dans le contenu d'un billet que pour
+  deux réparations mécaniques, énumérées et sans arbitrage possible. Tout ce
+  qui demande un jugement — un cadratin à remplacer, une formule à réécrire,
+  un visuel qui manque — reste la charge d'un humain.
     """,
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",
@@ -69,6 +77,7 @@ Limites assumées
         "views/bf_editorial_satellite_views.xml",
         "views/blog_views.xml",
         "views/res_config_settings_views.xml",
+        "wizard/derogation_views.xml",
         "views/menu_views.xml",
     ],
     "application": True,

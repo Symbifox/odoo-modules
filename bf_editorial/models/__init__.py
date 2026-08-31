@@ -8,6 +8,7 @@ from . import liste_controle
 from . import source
 from . import affirmation
 from . import qa
+from . import reparation
 from . import proposition
 from . import blog_post
 from . import res_config_settings

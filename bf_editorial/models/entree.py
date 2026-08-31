@@ -10,7 +10,15 @@ langues — se calculent.
 from odoo import _, api, fields, models
 from odoo.exceptions import AccessError, UserError
 
-from .version import READY_STATES
+from . import reparation
+from .version import IGNORED_SLOTS, READY_STATES
+
+# Les motifs de refus qu'un humain peut signer. Ce sont les deux motifs de
+# JUGEMENT : la QA a vu quelque chose qu'on accepte de publier quand même, ou
+# l'article est plus court que le plancher et on le sort quand même. Les
+# autres motifs sont des FAITS — une dépendance pas sortie, une source morte,
+# une langue pas relue — et un fait ne se signe pas, il se règle.
+WAIVABLE = ("qa_findings", "word_floor")
 
 
 class EditorialEntry(models.Model):
@@ -222,6 +230,40 @@ class EditorialEntry(models.Model):
         "res.users", string="QA passée par", readonly=True, copy=False,
     )
 
+    # --- dérogation -------------------------------------------------------
+    # La QA dit ce qu'elle voit ; la dérogation dit ce qu'un humain accepte de
+    # publier quand même. Les deux restent lisibles côte à côte : rien n'efface
+    # un constat, c'est le REFUS qui cède, en nommant qui le fait céder.
+    qa_waived = fields.Boolean(
+        string="Sous dérogation", readonly=True, copy=False, tracking=True,
+    )
+    qa_waiver_reason = fields.Text(
+        string="Motif de la dérogation", readonly=True, copy=False,
+    )
+    qa_waiver_problems = fields.Text(
+        string="Motifs couverts", readonly=True, copy=False,
+        help="Les motifs de refus, mot pour mot, tels qu'ils se lisaient à la"
+             " signature. La dérogation ne couvre QUE ceux-là : un motif qui"
+             " change de texte n'est plus le motif signé.",
+    )
+    qa_waiver_findings = fields.Text(
+        string="Constats couverts", readonly=True, copy=False,
+        help="Les constats de QA au moment de la signature. Ils servent"
+             " d'empreinte : dès que la QA en rapporte d'autres, la"
+             " dérogation ne les couvre plus.",
+    )
+    qa_waived_by = fields.Many2one(
+        "res.users", string="Dérogation signée par", readonly=True, copy=False,
+    )
+    qa_waived_on = fields.Datetime(
+        string="Dérogation signée le", readonly=True, copy=False,
+    )
+    qa_waiver_stale = fields.Boolean(
+        string="Dérogation périmée", compute="_compute_qa_waiver_stale",
+        help="Vrai quand une dérogation existe mais que le texte a bougé"
+             " depuis. Elle ne couvre alors plus rien, et la garde reprend.",
+    )
+
     preflight_ok = fields.Boolean(
         string="Pré-vol vert", compute="_compute_preflight",
         search="_search_preflight_ok",
@@ -382,52 +424,108 @@ class EditorialEntry(models.Model):
         for entry in self:
             problems = entry._preflight_problems()
             entry.preflight_ok = not problems
-            entry.preflight_summary = (
-                "\n".join("• " + p for p in problems) if problems
-                else _("Rien ne s'oppose à la publication.")
+            lignes = (
+                ["• " + p for p in problems] if problems
+                else [_("Rien ne s'oppose à la publication.")]
+            )
+            # Une dérogation ne se lit pas dans un onglet : elle se lit là où
+            # se lit le verdict, sinon on publie sous dérogation sans le voir.
+            if entry.qa_waived and not entry.qa_waiver_stale:
+                lignes.append(_(
+                    "⚠ Sous dérogation, signée par %(qui)s le %(quand)s :"
+                    " %(motif)s",
+                    qui=entry.qa_waived_by.name or "?",
+                    quand=entry.qa_waived_on or "?",
+                    motif=entry.qa_waiver_reason or "",
+                ))
+            elif entry.qa_waiver_stale:
+                lignes.append(_(
+                    "⚠ Une dérogation existe mais le texte a bougé depuis :"
+                    " elle ne couvre plus rien. À signer de nouveau, ou à"
+                    " lever."
+                ))
+            entry.preflight_summary = "\n".join(lignes)
+
+    @api.depends("qa_waived", "qa_waiver_findings", "qa_findings")
+    def _compute_qa_waiver_stale(self):
+        for entry in self:
+            entry.qa_waiver_stale = bool(entry.qa_waived) and (
+                (entry.qa_waiver_findings or "") != (entry.qa_findings or "")
             )
 
-    def _preflight_problems(self):
-        """Les raisons de refuser la publication. Liste vide = feu vert."""
+    def _preflight_problems(self, ignore_waiver=False):
+        """Les raisons de refuser la publication. Liste vide = feu vert.
+
+        Les motifs qu'une dérogation couvre sont retirés ici, pas plus haut :
+        la garde continue de les CALCULER, elle cesse seulement de refuser
+        dessus. Un motif signé reste donc lisible dans le chatter, dans les
+        constats et dans le résumé de pré-vol.
+        """
+        self.ensure_one()
+        problems = []
+        for code, message in self._preflight_findings():
+            if (
+                not ignore_waiver
+                and code in WAIVABLE
+                and self._waiver_covers(message)
+            ):
+                continue
+            problems.append(message)
+        return problems
+
+    def _preflight_findings(self):
+        """Les motifs de refus, chacun avec son code. Liste vide = feu vert.
+
+        Le code sert à savoir lequel se signe : les motifs de JUGEMENT (la QA
+        a vu quelque chose, l'article est court) se signent, les motifs de
+        FAIT (une dépendance n'est pas sortie, une source est morte, une
+        langue n'a pas été relue) ne se signent pas — ils se règlent.
+        """
         self.ensure_one()
         problems = []
 
         if self.is_blocked:
-            problems.append(_("Entrée bloquée : %s", self.blocking_summary))
+            problems.append(
+                ("blocked", _("Entrée bloquée : %s", self.blocking_summary))
+            )
 
         if self.open_checklist_count:
-            problems.append(_(
+            problems.append(("checklist", _(
                 "%s reste(s) bloquant(s) dans la liste de contrôle.",
                 self.open_checklist_count,
-            ))
+            )))
 
         if self.qa_state == "todo":
-            problems.append(_("La QA éditoriale n'a pas été passée."))
+            problems.append(
+                ("qa_todo", _("La QA éditoriale n'a pas été passée."))
+            )
         elif self.qa_state == "findings":
-            problems.append(_("La QA éditoriale a laissé des constats ouverts."))
+            problems.append(("qa_findings", _(
+                "La QA éditoriale a laissé des constats ouverts."
+            )))
 
         floor = self.word_floor
         if floor and self.word_count and self.word_count < floor:
-            problems.append(_(
+            problems.append(("word_floor", _(
                 "Plancher de mots non atteint : %s contre %s.",
                 self.word_count, floor,
-            ))
+            )))
 
         if self.version_drift:
-            problems.append(_(
+            problems.append(("version_drift", _(
                 "Le module documenté a bougé depuis le fact-check : %s → %s.",
                 self.source_version, self.current_version,
-            ))
+            )))
 
         if self.dead_source_count:
-            problems.append(_(
+            problems.append(("dead_source", _(
                 "%s source(s) ne répondent plus.", self.dead_source_count,
-            ))
+            )))
 
         if self.unverified_claim_count:
-            problems.append(_(
+            problems.append(("claims", _(
                 "%s affirmation(s) sans verdict.", self.unverified_claim_count,
-            ))
+            )))
 
         # La politique multilingue est la dernière, parce que c'est celle qui
         # se règle et qu'il faut la lire en connaissant le reste.
@@ -439,10 +537,10 @@ class EditorialEntry(models.Model):
         # refusait à perpétuité.
         if self.calendar_id and self.calendar_id._requires_all_langs():
             if not self.langs_ready:
-                problems.append(_(
+                problems.append(("langs", _(
                     "Toutes les langues exigées ne sont pas relues :\n%s",
                     self.language_summary,
-                ))
+                )))
         return problems
 
     # --- recherche sur les dérivés ----------------------------------------
@@ -501,6 +599,195 @@ class EditorialEntry(models.Model):
             ))
         return True
 
+    # --- dérogation -------------------------------------------------------
+    def _waiver_covers(self, message):
+        """La dérogation couvre-t-elle CE motif, tel qu'il se lit aujourd'hui ?
+
+        Deux conditions, et les deux comptent :
+
+        * le motif doit figurer mot pour mot parmi ceux qui ont été signés.
+          Les motifs portent leurs chiffres (« 1667 contre 1900 ») : un
+          article qui raccourcit encore change son motif, donc sort de la
+          signature tout seul, sans qu'on ait à comparer des nombres ;
+        * les constats de QA ne doivent pas avoir bougé depuis. Le motif de QA,
+          lui, est générique (« la QA a laissé des constats ouverts ») : sans
+          cette seconde condition, une signature d'hier couvrirait des défauts
+          apparus depuis.
+        """
+        self.ensure_one()
+        if not self.qa_waived or self.qa_waiver_stale:
+            return False
+        return message in (self.qa_waiver_problems or "").split("\n")
+
+    def _waivable_problems(self):
+        """Les motifs de refus actuels qu'un humain a le droit de signer."""
+        self.ensure_one()
+        return [
+            message for code, message in self._preflight_findings()
+            if code in WAIVABLE
+        ]
+
+    def action_open_waiver(self):
+        """Ouvrir la fenêtre de signature, qui montre ce qu'on signe."""
+        self.ensure_one()
+        if not self.env.user.has_group("bf_editorial.group_editorial_manager"):
+            raise AccessError(_(
+                "Signer une dérogation demande le groupe « Direction"
+                " éditoriale ». C'est le même groupe que publier, et c'est"
+                " voulu : une dérogation est une publication d'avance."
+            ))
+        problems = self._waivable_problems()
+        if not problems:
+            raise UserError(_(
+                "Il n'y a rien à signer : aucun motif de jugement ne retient"
+                " cette entrée. Ce qui reste au pré-vol se règle, il ne se"
+                " signe pas."
+            ))
+        wizard = self.env["bf.editorial.waiver"].create({
+            "entry_id": self.id,
+            "problems": "\n".join("• " + p for p in problems),
+        })
+        return {
+            "type": "ir.actions.act_window",
+            "res_model": "bf.editorial.waiver",
+            "res_id": wizard.id,
+            "view_mode": "form",
+            "target": "new",
+            "name": _("Signer une dérogation"),
+        }
+
+    def _sign_waiver(self, reason):
+        """Poser la signature. Appelée par la fenêtre, jamais par un bouton."""
+        self.ensure_one()
+        problems = self._waivable_problems()
+        if not problems:
+            raise UserError(_("Il n'y a plus rien à signer."))
+        self.write({
+            "qa_waived": True,
+            "qa_waiver_reason": reason,
+            "qa_waiver_problems": "\n".join(problems),
+            "qa_waiver_findings": self.qa_findings or False,
+            "qa_waived_by": self.env.user.id,
+            "qa_waived_on": fields.Datetime.now(),
+        })
+        self.message_post(body=_(
+            "Dérogation signée par %(qui)s.\n\nMotifs couverts :\n%(motifs)s"
+            "\n\nRaison : %(raison)s",
+            qui=self.env.user.name,
+            motifs="\n".join("• " + p for p in problems),
+            raison=reason,
+        ))
+        return True
+
+    def action_revoke_waiver(self):
+        """Lever la dérogation. La garde reprend là où elle s'était arrêtée."""
+        for entry in self:
+            if not self.env.user.has_group(
+                "bf_editorial.group_editorial_manager"
+            ):
+                raise AccessError(_(
+                    "Lever une dérogation demande le groupe « Direction"
+                    " éditoriale »."
+                ))
+            if not entry.qa_waived:
+                continue
+            entry.write({
+                "qa_waived": False,
+                "qa_waiver_reason": False,
+                "qa_waiver_problems": False,
+                "qa_waiver_findings": False,
+                "qa_waived_by": False,
+                "qa_waived_on": False,
+            })
+            entry.message_post(body=_(
+                "Dérogation levée par %s. La garde de pré-vol reprend.",
+                self.env.user.name,
+            ))
+        return True
+
+    # --- réparations mécaniques -------------------------------------------
+    def action_fix_mechanical(self):
+        """Réparer les défauts qui n'appellent aucun arbitrage, puis repasser
+        la QA pour que l'état dise la vérité tout de suite.
+
+        ⚠️ C'est le SEUL endroit du module qui écrit dans le contenu d'un
+        billet, et il n'écrit que deux choses (voir ``reparation.py``).
+        L'écriture est du SQL créneau par créneau : un ``write`` ORM dans un
+        contexte de langue étrangère écraserait le créneau source, et un
+        ``write`` sur le champ entier effacerait ce qu'un humain aurait
+        corrigé dans une autre langue entre-temps.
+        """
+        if not self.env.user.has_group("bf_editorial.group_editorial_user"):
+            raise AccessError(_(
+                "Corriger un billet demande au moins le groupe « Rédaction »."
+            ))
+        for entry in self:
+            if not entry.post_id:
+                raise UserError(_(
+                    "« %s » n'est rattachée à aucun billet : il n'y a nulle"
+                    " part où corriger.", entry.name,
+                ))
+            entry._fix_mechanical_one()
+        return True
+
+    def _fix_mechanical_one(self):
+        self.ensure_one()
+        slots = self._read_content_slots()
+        rapports = {}
+        for lang, html in slots.items():
+            corrige, rapport = reparation.corriger(html)
+            if corrige == html:
+                continue
+            self._write_content_slot(lang, corrige)
+            rapports[lang] = rapport
+
+        if not rapports:
+            self.message_post(body=_(
+                "Réparation mécanique : rien à corriger."
+            ))
+            return False
+
+        self.post_id.invalidate_recordset(["content"])
+        lignes = []
+        for lang, rapport in sorted(rapports.items()):
+            lignes.append("• %s : %s" % (
+                lang, reparation.rapport_lisible(rapport, _),
+            ))
+        # L'écriture est en SQL : le crochet ORM qui remet la QA à « à passer »
+        # ne la voit pas. On repasse donc la QA nous-mêmes, ce qui a le mérite
+        # de montrer tout de suite ce que la réparation a réglé.
+        self.action_run_qa()
+        self.message_post(body=_(
+            "Réparation mécanique appliquée par %(qui)s :\n%(detail)s"
+            "\n\nLa QA a été repassée dans la foulée.",
+            qui=self.env.user.name, detail="\n".join(lignes),
+        ))
+        return True
+
+    def _read_content_slots(self):
+        """Les créneaux de langue du billet, tels qu'ils sont en base.
+
+        ⚠️ Le créneau source fantôme (``en_US``) est réparé lui aussi. Le site
+        ne le sert jamais, mais l'éditeur s'en sert de base au prochain
+        enregistrement : le laisser cassé ferait revenir le défaut.
+        """
+        self.ensure_one()
+        self.env.cr.execute(
+            "SELECT content FROM blog_post WHERE id = %s", (self.post_id.id,)
+        )
+        row = self.env.cr.fetchone()
+        return dict(row[0] or {}) if row else {}
+
+    def _write_content_slot(self, lang, html):
+        """Poser un seul créneau, sans toucher aux autres clés du jsonb."""
+        self.ensure_one()
+        self.env.cr.execute(
+            "UPDATE blog_post SET content = jsonb_set("
+            "  COALESCE(content, '{}'::jsonb), %s, to_jsonb(%s::text), true"
+            ") WHERE id = %s",
+            ("{%s}" % lang, html, self.post_id.id),
+        )
+
     def action_publish(self):
         """Publier, si et seulement si la garde de pré-vol est verte.
 
@@ -536,7 +823,19 @@ class EditorialEntry(models.Model):
             values["stage_id"] = closing.id
         self.write(values)
         self._release_versions()
-        self.message_post(body=_("Publiée, garde de pré-vol verte."))
+        if self.qa_waived and not self.qa_waiver_stale:
+            # Publier sous dérogation et publier au vert ne sont pas le même
+            # geste. Le chatter doit pouvoir les distinguer des mois plus tard.
+            self.message_post(body=_(
+                "Publiée SOUS DÉROGATION, signée par %(qui)s le %(quand)s."
+                "\n\nMotifs couverts :\n%(motifs)s\n\nRaison : %(raison)s",
+                qui=self.qa_waived_by.name or "?",
+                quand=self.qa_waived_on or "?",
+                motifs=self.qa_waiver_problems or "",
+                raison=self.qa_waiver_reason or "",
+            ))
+        else:
+            self.message_post(body=_("Publiée, garde de pré-vol verte."))
 
     def _release_versions(self):
         """Faire sortir les créneaux de langue avec l'article.
