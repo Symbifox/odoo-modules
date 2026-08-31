@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!--
+            RH-EX-2 — les déclarations d'allergie.
+
+            ⚠️ Zéro année active, et ce n'est pas un oubli. La durée de vie
+            d'une déclaration d'allergie n'est pas une horloge : c'est le lien
+            d'emploi. La fin poursuivie est accomplie le jour du départ, plus
+            de repas d'équipe et plus de trousse à prévoir, et l'art. 23
+            commande alors la destruction. Écrire « 3 ans » ou « 7 ans »
+            donnerait une fausse précision et retiendrait un renseignement de
+            santé longtemps après qu'il ait cessé de servir.
+
+            ⚠️ On ne s'aligne PAS sur MED-001 (7 ans, art. 17 du Règlement sur
+            les dossiers de santé). MED-001 vise le dossier de santé au travail
+            constitué par l'employeur ; une allergie déclarée volontairement
+            pour la commande des repas n'en fait pas partie.
+
+            🔴 L'exécution passe par le cron « purge après départ », LIVRÉ
+            DÉSACTIVÉ, ou par une campagne visant les déclarations classifiées.
+        -->
+        <record id="retention_ex_allergy" model="privacy.retention.calendar">
+            <field name="name">Allergies et contraintes alimentaires</field>
+            <field name="code">RH-EX-2</field>
+            <field name="document_type">medical</field>
+            <field name="description">Déclarations d'allergie et de contrainte alimentaire (bf.ex.allergy) : l'allergène, la gravité et la note. Renseignement concernant la santé, donc sensible.</field>
+            <field name="legal_basis">Art. 23 LPRPSP : le renseignement personnel est détruit lorsque la fin pour laquelle il a été recueilli ou utilisé est accomplie. La fin d'une déclaration d'allergie est accomplie au départ de la personne. Art. 59 : renseignement sensible, consentement exprès requis à la collecte.</field>
+            <field name="active_retention_years">0</field>
+            <field name="semi_active_retention_years">0</field>
+            <field name="final_disposition">destroy</field>
+            <field name="destruction_method">delete</field>
+            <field name="requires_approval" eval="True"/>
+            <field name="applies_to_model">bf.ex.allergy</field>
+            <field name="notes">Le déclencheur est le DÉPART, pas une durée. Exécution par le cron « Allergies — purge après départ », livré désactivé, avec un délai de grâce de 90 jours parce qu'un départ se défait parfois dans les premières semaines. ⚠️ L'entrée de registre ne nomme jamais l'allergène : l'inscrire reviendrait à conserver pour toujours ce qu'on vient de détruire.</field>
+        </record>
+
+        <!--
+            🔴 Cron livré DÉSACTIVÉ, et il faut que ça reste une décision.
+            Une purge irréversible ne doit jamais être un effet de bord d'une
+            installation. Quelqu'un doit l'allumer, et choisir son délai.
+        -->
+        <record id="cron_privacy_purge_departed_allergies" model="ir.cron">
+            <field name="name">Allergies — purge après départ (RH-EX-2)</field>
+            <field name="model_id" ref="bf_employee_experience_health.model_bf_ex_allergy"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_privacy_purge_departed()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="active" eval="False"/>
+        </record>
+
+    </data>
+</odoo>

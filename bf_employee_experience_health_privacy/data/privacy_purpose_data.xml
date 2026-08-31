@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <record id="purpose_ex_allergy" model="privacy.purpose">
+            <field name="code">ex_allergy</field>
+            <field name="name">Allergies et contraintes alimentaires</field>
+            <field name="plain_language_summary"><![CDATA[
+                <p>Si vous nous le dites, nous notons vos allergies et vos
+                contraintes alimentaires. Cela sert à deux choses : commander
+                des repas que vous pouvez manger, et savoir quoi faire si une
+                réaction survient au travail.</p>
+                <p>Vous n'êtes pas obligé de le déclarer. C'est un
+                renseignement concernant votre santé, et il vous appartient.</p>
+                <p>La fiche est lue par vous et par les personnes qui
+                administrent le dossier. Ni vos collègues, ni votre
+                gestionnaire n'y ont accès. Quand nous commandons des repas,
+                le traiteur reçoit la liste des contraintes du groupe
+                <strong>sans aucun nom</strong>.</p>
+                <p>La déclaration est détruite lorsque vous quittez
+                l'entreprise : elle n'a plus de raison d'être.</p>
+            ]]></field>
+            <!--
+                ⚠️ Consentement EXPRÈS, contrairement à la finalité des
+                avantages. Une allergie est un renseignement concernant la
+                santé, donc sensible au sens de l'art. 59 LPRPSP, et l'art. 12
+                al. 2 exige un consentement manifeste, libre et éclairé, donné
+                à des fins spécifiques. Déclarer une allergie est volontaire :
+                personne n'est tenu de dire à son employeur ce qui l'envoie à
+                l'hôpital.
+            -->
+            <field name="requires_consent" eval="True"/>
+            <field name="requires_express_opt_in" eval="True"/>
+            <field name="default_validity_days">0</field>
+            <field name="context_scope">general</field>
+            <field name="channel_scope">all</field>
+            <field name="sequence">31</field>
+        </record>
+
+    </data>
+</odoo>

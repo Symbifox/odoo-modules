@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_usage_aggregate_list" model="ir.ui.view">
+        <field name="name">bf.ex.usage.aggregate.list</field>
+        <field name="model">bf.ex.usage.aggregate</field>
+        <field name="arch" type="xml">
+            <list string="Usage agrégé">
+                <field name="year"/>
+                <field name="benefit_id"/>
+                <field name="entitled_people" string="Ont eu droit"/>
+                <field name="people" string="S'en sont servis"/>
+                <field name="uptake_rate" string="Adhésion (%)"/>
+                <field name="uses"/>
+                <field name="amount" widget="monetary" sum="Coût"/>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="computed_on" optional="hide"/>
+                <field name="source_line_count" optional="hide"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_usage_aggregate_form" model="ir.ui.view">
+        <field name="name">bf.ex.usage.aggregate.form</field>
+        <field name="model">bf.ex.usage.aggregate</field>
+        <field name="arch" type="xml">
+            <form string="Agrégat">
+                <header>
+                    <button name="action_recompute" type="object" string="Recalculer"
+                            class="btn-primary" groups="hr.group_hr_user"/>
+                </header>
+                <sheet>
+                    <div class="alert alert-info" role="alert">
+                        Cet agrégat ne contient aucun nom. Il survit à la destruction des
+                        lignes d'usage, et c'est ce qui permet de les détruire à l'échéance
+                        sans perdre la mesure.
+                    </div>
+                    <group>
+                        <group>
+                            <field name="benefit_id"/>
+                            <field name="year"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="computed_on"/>
+                        </group>
+                        <group>
+                            <field name="entitled_people"/>
+                            <field name="people"/>
+                            <field name="uptake_rate"/>
+                            <field name="uses"/>
+                            <field name="amount" widget="monetary"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="source_line_count"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_usage_aggregate" model="ir.actions.act_window">
+        <field name="name">Usage agrégé (anonymisé)</field>
+        <field name="res_model">bf.ex.usage.aggregate</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="action_build_aggregates" model="ir.actions.server">
+        <field name="name">Agréger tous les usages</field>
+        <field name="model_id" ref="model_bf_ex_usage_aggregate"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_build_all()</field>
+    </record>
+
+    <menuitem id="menu_usage_aggregate" name="Usage agrégé (anonymisé)"
+              parent="bf_employee_experience.menu_analysis"
+              action="action_usage_aggregate" sequence="20"/>
+    <menuitem id="menu_build_aggregates" name="Agréger tous les usages"
+              parent="bf_employee_experience.menu_analysis"
+              action="action_build_aggregates" sequence="30"
+              groups="hr.group_hr_manager"/>
+
+</odoo>

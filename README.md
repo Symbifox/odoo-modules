@@ -7,7 +7,7 @@ Custom Odoo 18 Community Edition modules developed by [Les services de consultat
 Every module in this repository ships its full source. What differs is what you
 may do with it, and there are three regimes.
 
-**41 modules are LGPL-3.** Use them, modify them, redistribute them, build a
+**48 modules are LGPL-3.** Use them, modify them, redistribute them, build a
 product on them. Nothing is asked in return. These are the single-purpose
 modules — the UI fixes, the shared helpers, the Nextcloud integrations, the
 productivity pack. They are free because they are more useful to us being
@@ -109,6 +109,13 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_editorial` | Atelier éditorial | 18.0.1.7.0 | BUSL-1.1 | Editorial calendar, measured cadence and publication gates for the blog: state is derived, only decisions are stored |
 | `bf_email_management` | Gestion des courriels | 18.0.11.7.0 | BUSL-1.1 | Unified IMAP inbox + Odoo chatter projection, two-pane OWL folder browser (Apple Mail / Thunderbird), bulk per-row target inference |
 | `bf_email_systray` | Boîte de réception bf.email — barre Odoo | 18.0.1.4.0 | LGPL-3 | Systray button opening the bf.email inbox with a (read + unread) counter |
+| `bf_employee_experience` | Expérience employé | 18.0.1.0.0 | LGPL-3 | Benefits catalogue, rule-based eligibility, usage register and retention indicators |
+| `bf_employee_experience_dashboard` | Expérience employé — tuile tableau de bord | 18.0.1.0.0 | LGPL-3 | Benefits take-up, and a count of paid benefits nobody claims |
+| `bf_employee_experience_digest` | Expérience employé — digest quotidien | 18.0.1.0.0 | LGPL-3 | "Benefits" digest section: pending claims, usages with no entitlement, benefits nobody takes |
+| `bf_employee_experience_expense` | Expérience employé — notes de frais | 18.0.1.0.0 | LGPL-3 | An approved expense becomes a benefit usage, at real cost |
+| `bf_employee_experience_health` | Expérience employé — allergies | 18.0.1.1.0 | LGPL-3 | Allergies and food allergies, readable only by the person and by whoever organises |
+| `bf_employee_experience_health_privacy` | Expérience employé — allergies, pont vie privée (Loi 25) | 18.0.1.0.0 | LGPL-3 | Express consent, retention tied to the employment relationship, destruction on departure |
+| `bf_employee_experience_privacy` | Expérience employé — pont vie privée (Loi 25) | 18.0.1.0.0 | LGPL-3 | Declare what the usage register collects, set a retention rule, keep the measurement when the lines go |
 | `bf_follower_cleanup` | BF — Nettoyage des abonnés (followers internes uniquement) | 18.0.2.0.0 | LGPL-3 | Cron that removes all non-employee followers from chatters |
 | `bf_fundraising_core` | Levée de fonds — Cœur | 18.0.1.0.0 | AGPL-3 | Donor management and fundraising structure (Funds / Campaigns / Appeals / Packages) on top of the Donation module — comparable to Raiser's Edge |
 | `bf_fundraising_web` | Levée de fonds — Web & Portail donateur | 18.0.1.0.2 | AGPL-3 | Public website donation form + donor portal (giving history and official receipt download) |
@@ -204,7 +211,7 @@ file inside each module governs and carries its exact parameters.
   operations is permitted; providing them as a product or service to third
   parties requires an agreement. Each version converts to
   **LGPL-3.0-or-later four years after its release**.
-- **41 modules: LGPL-3.** Use, modify and redistribute them freely. The
+- **48 modules: LGPL-3.** Use, modify and redistribute them freely. The
   repository-root [`LICENSE`](LICENSE) carries the LGPL-3 text.
 - **5 modules: AGPL-3**, inherited rather than chosen: they extend Odoo
   Community Association code that is itself AGPL-3. Four are the fundraising

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <menuitem id="menu_root" name="Expérience employé"
+              web_icon="bf_employee_experience,static/description/icon.png"
+              sequence="95"/>
+
+    <menuitem id="menu_catalogue" name="Catalogue" parent="menu_root" sequence="10"/>
+    <menuitem id="menu_benefit" name="Avantages" parent="menu_catalogue"
+              action="action_benefit" sequence="10"/>
+    <menuitem id="menu_rule" name="Règles d'admissibilité" parent="menu_catalogue"
+              action="action_rule" sequence="20" groups="hr.group_hr_user"/>
+    <menuitem id="menu_starter" name="Charger un catalogue de départ" parent="menu_catalogue"
+              action="action_starter_catalogue" sequence="90"
+              groups="hr.group_hr_manager"/>
+
+    <menuitem id="menu_people" name="Personnel" parent="menu_root" sequence="20"/>
+    <menuitem id="menu_entitlement" name="Droits" parent="menu_people"
+              action="action_entitlement" sequence="10"/>
+    <menuitem id="menu_usage" name="Registre d'usage" parent="menu_people"
+              action="action_usage" sequence="20"/>
+    <menuitem id="menu_claim" name="Demandes" parent="menu_people"
+              action="action_claim" sequence="30"/>
+
+    <menuitem id="menu_analysis" name="Analyse" parent="menu_root" sequence="30"
+              groups="hr.group_hr_user"/>
+    <menuitem id="menu_indicator" name="Indicateurs de rétention" parent="menu_analysis"
+              action="action_indicator" sequence="10"/>
+
+</odoo>

@@ -1,0 +1,16 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_benefit_user,Avantage (catalogue),model_bf_ex_benefit,base.group_user,1,0,0,0
+access_benefit_hr,Avantage (administration),model_bf_ex_benefit,hr.group_hr_user,1,1,1,0
+access_benefit_manager,Avantage (contrôle complet),model_bf_ex_benefit,hr.group_hr_manager,1,1,1,1
+access_rule_hr,Règle d'admissibilité (administration),model_bf_ex_eligibility_rule,hr.group_hr_user,1,1,1,1
+access_entitlement_user,Droit (le mien),model_bf_ex_entitlement,base.group_user,1,0,0,0
+access_entitlement_hr,Droit (administration),model_bf_ex_entitlement,hr.group_hr_user,1,1,1,0
+access_entitlement_manager,Droit (contrôle complet),model_bf_ex_entitlement,hr.group_hr_manager,1,1,1,1
+access_usage_user,Usage (le mien),model_bf_ex_usage,base.group_user,1,0,1,0
+access_usage_hr,Usage (administration),model_bf_ex_usage,hr.group_hr_user,1,1,1,0
+access_usage_manager,Usage (contrôle complet),model_bf_ex_usage,hr.group_hr_manager,1,1,1,1
+access_claim_user,Demande (la mienne),model_bf_ex_claim,base.group_user,1,1,1,0
+access_claim_hr,Demande (administration),model_bf_ex_claim,hr.group_hr_user,1,1,1,0
+access_claim_manager,Demande (contrôle complet),model_bf_ex_claim,hr.group_hr_manager,1,1,1,1
+access_indicator_hr,Indicateur (administration),model_bf_ex_indicator,hr.group_hr_user,1,1,1,0
+access_indicator_manager,Indicateur (contrôle complet),model_bf_ex_indicator,hr.group_hr_manager,1,1,1,1

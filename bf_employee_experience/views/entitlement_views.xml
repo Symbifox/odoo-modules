@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_entitlement_list" model="ir.ui.view">
+        <field name="name">bf.ex.entitlement.list</field>
+        <field name="model">bf.ex.entitlement</field>
+        <field name="arch" type="xml">
+            <list string="Droits" decoration-muted="state == 'ended'"
+                  decoration-info="state == 'scheduled'">
+                <field name="employee_id"/>
+                <field name="benefit_id"/>
+                <field name="date_start"/>
+                <field name="date_end"/>
+                <field name="state"/>
+                <field name="source"/>
+                <field name="rule_id" optional="hide"/>
+                <field name="granted_by_id" optional="hide"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+                <button name="action_close" type="object" string="Fermer"
+                        icon="fa-times" invisible="state != 'active'"
+                        groups="hr.group_hr_user"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_entitlement_form" model="ir.ui.view">
+        <field name="name">bf.ex.entitlement.form</field>
+        <field name="model">bf.ex.entitlement</field>
+        <field name="arch" type="xml">
+            <form string="Droit">
+                <header>
+                    <button name="action_close" type="object" string="Fermer le droit"
+                            invisible="state != 'active'" groups="hr.group_hr_user"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="scheduled,active,ended"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="employee_id"/>
+                            <field name="benefit_id"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                        <group>
+                            <field name="date_start"/>
+                            <field name="date_end"/>
+                            <field name="source"/>
+                            <field name="rule_id" invisible="source != 'rule'"/>
+                            <field name="granted_by_id" invisible="source != 'manual'"/>
+                        </group>
+                    </group>
+                    <group string="Motif" invisible="source != 'manual'">
+                        <field name="reason" nolabel="1"
+                               placeholder="Pourquoi cette personne y a droit hors des règles."/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_entitlement_search" model="ir.ui.view">
+        <field name="name">bf.ex.entitlement.search</field>
+        <field name="model">bf.ex.entitlement</field>
+        <field name="arch" type="xml">
+            <search string="Droits">
+                <field name="employee_id"/>
+                <field name="benefit_id"/>
+                <filter name="f_active" string="En vigueur" domain="[('state', '=', 'active')]"/>
+                <filter name="f_ended" string="Terminés" domain="[('state', '=', 'ended')]"/>
+                <separator/>
+                <filter name="f_manual" string="Accordés à la main"
+                        domain="[('source', '=', 'manual')]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="g_benefit" string="Avantage" context="{'group_by': 'benefit_id'}"/>
+                    <filter name="g_employee" string="Employé" context="{'group_by': 'employee_id'}"/>
+                    <filter name="g_source" string="Source" context="{'group_by': 'source'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_entitlement" model="ir.actions.act_window">
+        <field name="name">Droits</field>
+        <field name="res_model">bf.ex.entitlement</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_f_active': 1}</field>
+    </record>
+
+</odoo>

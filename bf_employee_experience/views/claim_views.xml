@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_claim_list" model="ir.ui.view">
+        <field name="name">bf.ex.claim.list</field>
+        <field name="model">bf.ex.claim</field>
+        <field name="arch" type="xml">
+            <list string="Demandes" decoration-muted="state in ('refused', 'consumed')">
+                <field name="date_request"/>
+                <field name="employee_id"/>
+                <field name="benefit_id"/>
+                <field name="quantity" optional="hide"/>
+                <field name="amount" widget="monetary"/>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="state"/>
+                <field name="approver_id" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_claim_form" model="ir.ui.view">
+        <field name="name">bf.ex.claim.form</field>
+        <field name="model">bf.ex.claim</field>
+        <field name="arch" type="xml">
+            <form string="Demande">
+                <header>
+                    <button name="action_submit" type="object" string="Soumettre"
+                            class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_approve" type="object" string="Approuver"
+                            class="btn-primary" invisible="state != 'submitted'"
+                            groups="hr.group_hr_user"/>
+                    <button name="action_refuse" type="object" string="Refuser"
+                            invisible="state != 'submitted'" groups="hr.group_hr_user"/>
+                    <button name="action_consume" type="object" string="Consommer"
+                            class="btn-primary" invisible="state != 'approved'"
+                            groups="hr.group_hr_user"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,submitted,approved,consumed"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="employee_id" readonly="state != 'draft'"/>
+                            <field name="benefit_id" readonly="state != 'draft'"/>
+                            <field name="date_request" readonly="state != 'draft'"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                        <group>
+                            <field name="quantity" readonly="state != 'draft'"/>
+                            <field name="amount" widget="monetary" readonly="state != 'draft'"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="approver_id" invisible="not approver_id"/>
+                            <field name="date_processed" invisible="not date_processed"/>
+                            <field name="usage_id" invisible="not usage_id"/>
+                        </group>
+                    </group>
+                    <group string="Motivation">
+                        <field name="motivation" nolabel="1"/>
+                    </group>
+                    <group string="Motif du refus"
+                           invisible="state not in ('submitted', 'refused')">
+                        <field name="refusal_reason" nolabel="1"
+                               placeholder="Obligatoire pour refuser."/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_claim" model="ir.actions.act_window">
+        <field name="name">Demandes</field>
+        <field name="res_model">bf.ex.claim</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+</odoo>

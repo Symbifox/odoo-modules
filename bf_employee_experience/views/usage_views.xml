@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_usage_list" model="ir.ui.view">
+        <field name="name">bf.ex.usage.list</field>
+        <field name="model">bf.ex.usage</field>
+        <field name="arch" type="xml">
+            <list string="Usages" decoration-warning="entitled == False"
+                  decoration-muted="state == 'draft'">
+                <field name="date"/>
+                <field name="employee_id"/>
+                <field name="benefit_id"/>
+                <field name="quantity"/>
+                <field name="amount" widget="monetary" sum="Coût"/>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="source"/>
+                <field name="entitled" string="Avait le droit"/>
+                <field name="state"/>
+                <button name="action_confirm" type="object" string="Confirmer"
+                        icon="fa-check" invisible="state != 'draft'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_usage_form" model="ir.ui.view">
+        <field name="name">bf.ex.usage.form</field>
+        <field name="model">bf.ex.usage</field>
+        <field name="arch" type="xml">
+            <form string="Usage">
+                <header>
+                    <button name="action_confirm" type="object" string="Confirmer"
+                            class="btn-primary" invisible="state != 'draft'"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="alert alert-warning" role="alert" invisible="entitled or not benefit_id">
+                        Cette personne n'avait aucun droit ouvert à cet avantage ce jour-là.
+                        La ligne reste enregistrable : c'est un signalement, pas un blocage.
+                    </div>
+                    <group>
+                        <group>
+                            <field name="employee_id" readonly="state == 'confirmed'"/>
+                            <field name="benefit_id" readonly="state == 'confirmed'"/>
+                            <field name="date" readonly="state == 'confirmed'"/>
+                            <field name="entitled" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="quantity" readonly="state == 'confirmed'"/>
+                            <field name="amount" widget="monetary" readonly="state == 'confirmed'"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="source" readonly="state == 'confirmed'"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                    <group string="Note">
+                        <field name="note" nolabel="1"/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_usage_search" model="ir.ui.view">
+        <field name="name">bf.ex.usage.search</field>
+        <field name="model">bf.ex.usage</field>
+        <field name="arch" type="xml">
+            <search string="Usages">
+                <field name="employee_id"/>
+                <field name="benefit_id"/>
+                <filter name="f_confirmed" string="Confirmés" domain="[('state', '=', 'confirmed')]"/>
+                <filter name="f_draft" string="Brouillons" domain="[('state', '=', 'draft')]"/>
+                <separator/>
+                <filter name="f_no_right" string="Sans droit ouvert"
+                        domain="[('entitled', '=', False)]"/>
+                <filter name="f_year" string="Douze derniers mois"
+                        domain="[('date', '&gt;=', (context_today() - relativedelta(years=1)).strftime('%Y-%m-%d'))]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="g_benefit" string="Avantage" context="{'group_by': 'benefit_id'}"/>
+                    <filter name="g_employee" string="Employé" context="{'group_by': 'employee_id'}"/>
+                    <filter name="g_month" string="Mois" context="{'group_by': 'date:month'}"/>
+                    <filter name="g_source" string="Origine" context="{'group_by': 'source'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_usage" model="ir.actions.act_window">
+        <field name="name">Registre d'usage</field>
+        <field name="res_model">bf.ex.usage</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+</odoo>

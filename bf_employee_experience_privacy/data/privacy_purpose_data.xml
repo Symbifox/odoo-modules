@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <record id="purpose_ex_benefits" model="privacy.purpose">
+            <field name="code">ex_benefits</field>
+            <field name="name">Gestion des avantages sociaux</field>
+            <field name="plain_language_summary"><![CDATA[
+                <p>Nous tenons la liste des avantages auxquels vous avez droit,
+                la date à laquelle chacun s'est ouvert, et ce que vous en avez
+                utilisé. Cela sert à trois choses : vous donner ce à quoi vous
+                avez droit, savoir ce que chaque avantage coûte, et repérer ceux
+                que l'entreprise paie sans que personne ne s'en serve.</p>
+                <p>Ce registre est lu par vous et par les personnes qui
+                administrent les avantages. Il n'est pas visible de vos
+                collègues, ni de votre gestionnaire.</p>
+                <p>Il est conservé avec le reste de votre dossier d'employé,
+                puis détruit selon le calendrier de conservation. Une fois
+                détruit, il ne reste qu'un décompte par avantage et par année,
+                sans aucun nom.</p>
+            ]]></field>
+            <!--
+                Pas de consentement à demander, et c'est délibéré. Administrer
+                un avantage prévu aux conditions de travail est l'exécution du
+                lien d'emploi. Demander un consentement laisserait croire qu'il
+                peut être refusé sans que l'avantage s'arrête, ce qui est faux :
+                un consentement qu'on ne peut pas refuser n'en est pas un, et le
+                présenter comme tel vicie tous les autres.
+            -->
+            <field name="requires_consent" eval="False"/>
+            <field name="requires_express_opt_in" eval="False"/>
+            <field name="default_validity_days">0</field>
+            <!--
+                « general » et non un scope RH : la sélection de
+                `privacy.purpose.context_scope` n'en offre pas. Ajouter une
+                valeur au coeur pour une seule finalité créerait une divergence
+                entre le module et ses ponts.
+            -->
+            <field name="context_scope">general</field>
+            <field name="channel_scope">all</field>
+            <field name="sequence">30</field>
+        </record>
+
+        <!--
+            ⚠️ Aucune `privacy.retention.policy` attachée à cette finalité, et
+            c'est voulu. Une politique ne se déclenche que sur l'expiration ou
+            le retrait d'un consentement (`trigger_on`), et celle-ci n'en repose
+            sur aucun. Lui en attacher une afficherait un déclencheur qui ne se
+            produira jamais. La durée est portée par la règle RH-EX-1 du
+            calendrier de conservation, qui est l'instrument prévu pour ça.
+        -->
+
+    </data>
+</odoo>

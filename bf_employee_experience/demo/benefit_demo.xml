@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!--
+          Le catalogue de départ, pour que la démonstration ne s'ouvre pas sur
+          un écran vide. Même méthode que le bouton : une seule liste à tenir.
+        -->
+        <function model="bf.ex.benefit" name="_load_starter_catalogue"/>
+
+    </data>
+</odoo>

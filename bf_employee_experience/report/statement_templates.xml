@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!--
+      Le relevé se CALCULE : aucun modèle de plus, aucune donnée dupliquée.
+      Il répond à deux questions qu'on pose à l'accueil d'un nouvel employé et
+      à la rencontre annuelle : à quoi j'ai droit, et ce que j'ai pris.
+    -->
+    <template id="report_statement_document">
+        <t t-call="web.external_layout">
+            <t t-set="doc" t-value="doc.with_context(lang=doc.env.user.lang)"/>
+            <t t-set="today" t-value="context_timestamp(datetime.datetime.now()).date()"/>
+            <div class="page">
+                <h2 class="mb-0">Relevé personnel des avantages</h2>
+                <p class="text-muted">
+                    <span t-field="doc.name"/>
+                    <t t-if="doc.job_title"> — <span t-field="doc.job_title"/></t>
+                    <br/>
+                    Arrêté au <span t-esc="today" t-options='{"widget": "date"}'/>
+                </p>
+
+                <h4 class="mt-4">Ce à quoi vous avez droit</h4>
+                <t t-set="open_rights"
+                   t-value="doc.ex_entitlement_ids.filtered(lambda e: e.is_open_on(today))"/>
+                <t t-if="open_rights">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Avantage</th>
+                                <th>Catégorie</th>
+                                <th>Ouvert le</th>
+                                <th>Jusqu'au</th>
+                                <th>Source</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="open_rights" t-as="right">
+                                <td><span t-field="right.benefit_id.name"/></td>
+                                <td><span t-field="right.benefit_id.category"/></td>
+                                <td><span t-field="right.date_start"/></td>
+                                <td>
+                                    <t t-if="right.date_end"><span t-field="right.date_end"/></t>
+                                    <t t-else="">sans terme</t>
+                                </td>
+                                <td>
+                                    <t t-if="right.source == 'manual'">accordé à la main</t>
+                                    <t t-else="">règle</t>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </t>
+                <p t-else="" class="text-muted">Aucun droit ouvert à ce jour.</p>
+
+                <h4 class="mt-4">Ce que vous avez pris</h4>
+                <t t-set="usages" t-value="doc.env['bf.ex.usage'].search(
+                    [('employee_id', '=', doc.id), ('state', '=', 'confirmed')],
+                    order='date desc', limit=100)"/>
+                <t t-if="usages">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Avantage</th>
+                                <th class="text-end">Quantité</th>
+                                <th class="text-end">Coût</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="usages" t-as="line">
+                                <td><span t-field="line.date"/></td>
+                                <td><span t-field="line.benefit_id.name"/></td>
+                                <td class="text-end"><span t-field="line.quantity"/></td>
+                                <td class="text-end">
+                                    <span t-field="line.amount"
+                                          t-options='{"widget": "monetary", "display_currency": line.currency_id}'/>
+                                </td>
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="3" class="text-end fw-bold">Total</td>
+                                <td class="text-end fw-bold">
+                                    <span t-esc="sum(usages.mapped('amount'))"
+                                          t-options='{"widget": "monetary", "display_currency": doc.company_id.currency_id}'/>
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </t>
+                <p t-else="" class="text-muted">Aucun usage confirmé.</p>
+
+                <h4 class="mt-4">Ce à quoi vous n'avez pas encore droit</h4>
+                <t t-set="held" t-value="open_rights.benefit_id"/>
+                <t t-set="rest" t-value="doc.env['bf.ex.benefit'].search(
+                    [('company_id', '=', doc.company_id.id), ('id', 'not in', held.ids)])"/>
+                <t t-if="rest">
+                    <ul>
+                        <li t-foreach="rest" t-as="benefit">
+                            <span t-field="benefit.name"/>
+                            <t t-if="benefit.rule_ids">
+                                <span class="text-muted"> :
+                                    <t t-esc="' ou '.join(benefit.rule_ids.mapped('criteria_summary'))"/>
+                                </span>
+                            </t>
+                        </li>
+                    </ul>
+                </t>
+                <p t-else="" class="text-muted">Vous avez droit à tout le catalogue.</p>
+            </div>
+        </t>
+    </template>
+
+    <template id="report_statement">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="bf_employee_experience.report_statement_document"/>
+            </t>
+        </t>
+    </template>
+
+</odoo>

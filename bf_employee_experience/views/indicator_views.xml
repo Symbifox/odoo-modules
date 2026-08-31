@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_indicator_list" model="ir.ui.view">
+        <field name="name">bf.ex.indicator.list</field>
+        <field name="model">bf.ex.indicator</field>
+        <field name="arch" type="xml">
+            <list string="Indicateurs de rétention">
+                <field name="period"/>
+                <field name="headcount_end" string="Effectif"/>
+                <field name="hires" string="Arrivées"/>
+                <field name="departures" string="Départs"/>
+                <field name="turnover_rate" string="Roulement (%)"/>
+                <field name="median_tenure_months" string="Ancienneté médiane (mois)"/>
+                <field name="benefit_cost" widget="monetary" sum="Coût"/>
+                <field name="cost_per_employee" widget="monetary"/>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_indicator_form" model="ir.ui.view">
+        <field name="name">bf.ex.indicator.form</field>
+        <field name="model">bf.ex.indicator</field>
+        <field name="arch" type="xml">
+            <form string="Indicateur">
+                <header>
+                    <button name="action_recompute" type="object" string="Recalculer"
+                            class="btn-primary" groups="hr.group_hr_user"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="period"/></h1>
+                    </div>
+                    <group>
+                        <group string="Mouvement">
+                            <field name="headcount_start"/>
+                            <field name="headcount_end"/>
+                            <field name="hires"/>
+                            <field name="departures"/>
+                            <field name="turnover_rate"/>
+                            <field name="median_tenure_months"/>
+                        </group>
+                        <group string="Avantages">
+                            <field name="benefit_cost" widget="monetary"/>
+                            <field name="cost_per_employee" widget="monetary"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                    <group string="Coût d'un départ">
+                        <div class="text-muted" colspan="2">
+                            Les composantes réelles et le pourcentage du salaire estiment la
+                            même chose. Choisir l'une des deux méthodes, jamais les additionner.
+                        </div>
+                        <field name="departure_cost_method"/>
+                        <field name="departure_cost" widget="monetary"
+                               invisible="departure_cost_method == 'none'"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_indicator" model="ir.actions.act_window">
+        <field name="name">Indicateurs de rétention</field>
+        <field name="res_model">bf.ex.indicator</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Aucun relevé pour le moment</p>
+            <p>
+                Un relevé par mois et par société. Le cron nocturne relève le mois
+                qui vient de se terminer.
+            </p>
+        </field>
+    </record>
+
+</odoo>

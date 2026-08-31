@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_benefit_list" model="ir.ui.view">
+        <field name="name">bf.ex.benefit.list</field>
+        <field name="model">bf.ex.benefit</field>
+        <field name="arch" type="xml">
+            <list string="Avantages" decoration-warning="unused == True">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="category"/>
+                <field name="provider_id" optional="hide"/>
+                <field name="cost_model"/>
+                <field name="entitled_count" string="Ont droit"/>
+                <field name="user_count" string="S'en servent"/>
+                <field name="uptake_rate" string="Adhésion (%)" widget="percentage" optional="show"/>
+                <field name="annual_cost" widget="monetary"/>
+                <field name="cost_per_entitled" widget="monetary" optional="hide"/>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="unused" column_invisible="1"/>
+                <field name="approval_required" optional="hide"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_benefit_form" model="ir.ui.view">
+        <field name="name">bf.ex.benefit.form</field>
+        <field name="model">bf.ex.benefit</field>
+        <field name="arch" type="xml">
+            <form string="Avantage">
+                <header>
+                    <button name="action_recompute_entitlements" type="object"
+                            string="Rejouer les règles" class="btn-primary"
+                            groups="hr.group_hr_user"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_entitlements" type="object"
+                                class="oe_stat_button" icon="fa-users">
+                            <field name="entitled_count" widget="statinfo" string="Ont droit"/>
+                        </button>
+                        <button name="action_view_usage" type="object"
+                                class="oe_stat_button" icon="fa-check-square-o">
+                            <field name="user_count" widget="statinfo" string="S'en servent"/>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Archivé" bg_color="text-bg-danger"
+                            invisible="active"/>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="Assurance collective"/></h1>
+                    </div>
+                    <group>
+                        <group string="Ce que c'est">
+                            <field name="category"/>
+                            <field name="code"/>
+                            <field name="provider_id"/>
+                            <field name="responsible_id"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="active" invisible="1"/>
+                        </group>
+                        <group string="Ce que ça coûte">
+                            <field name="cost_model"/>
+                            <field name="cost_amount" widget="monetary"
+                                   invisible="cost_model == 'none'"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="date_start"/>
+                            <field name="date_end"/>
+                        </group>
+                    </group>
+                    <group string="Approbation">
+                        <field name="approval_required"/>
+                        <field name="approver_mode" invisible="not approval_required"/>
+                    </group>
+                    <notebook>
+                        <page string="Qui y a droit" name="rules">
+                            <p class="text-muted">
+                                Une règle est un ET de ses critères remplis. Les règles d'un
+                                même avantage sont cumulatives : une personne visée par
+                                n'importe laquelle y a droit. Un critère laissé vide ne
+                                contraint rien.
+                            </p>
+                            <field name="rule_ids">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="name"/>
+                                    <field name="criteria_summary"/>
+                                    <field name="employee_count" string="Personnes"/>
+                                    <field name="active" optional="hide"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Description" name="description">
+                            <field name="description"/>
+                        </page>
+                        <page string="Indicateurs" name="indicators">
+                            <group>
+                                <group>
+                                    <field name="entitled_count"/>
+                                    <field name="user_count"/>
+                                    <field name="uptake_rate" widget="percentage"/>
+                                </group>
+                                <group>
+                                    <field name="annual_cost" widget="monetary"/>
+                                    <field name="cost_per_entitled" widget="monetary"/>
+                                    <field name="unused"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_benefit_search" model="ir.ui.view">
+        <field name="name">bf.ex.benefit.search</field>
+        <field name="model">bf.ex.benefit</field>
+        <field name="arch" type="xml">
+            <search string="Avantages">
+                <field name="name"/>
+                <field name="provider_id"/>
+                <filter name="f_unused" string="Personne ne l'utilise"
+                        domain="[('unused', '=', True)]"/>
+                <filter name="f_approval" string="Approbation requise"
+                        domain="[('approval_required', '=', True)]"/>
+                <separator/>
+                <filter name="f_archived" string="Archivés" domain="[('active', '=', False)]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="g_category" string="Catégorie" context="{'group_by': 'category'}"/>
+                    <filter name="g_cost" string="Modèle de coût" context="{'group_by': 'cost_model'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_benefit" model="ir.actions.act_window">
+        <field name="name">Avantages</field>
+        <field name="res_model">bf.ex.benefit</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Décrire un premier avantage</p>
+            <p>
+                Le catalogue dit ce que l'entreprise offre. Les règles disent qui y a
+                droit, le registre d'usage dit qui s'en sert.
+            </p>
+        </field>
+    </record>
+
+</odoo>

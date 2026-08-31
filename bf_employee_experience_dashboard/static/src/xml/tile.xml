@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="bf_employee_experience_dashboard.Tile" t-inherit="bf_dashboard.Dashboard" t-inherit-mode="extension">
+        <xpath expr="//t[@t-if='state.data.overdue_activities']" position="after">
+            <!-- Expérience employé -->
+            <t t-if="state.data.employee_experience">
+                <div class="col-lg col-md-6 mb-3">
+                    <div t-attf-class="card h-100 {{state.data.employee_experience.unused_count > 0 ? 'border-warning' : ''}}">
+                        <div class="card-body text-center">
+                            <h2 class="mb-0 text-muted" t-esc="state.data.employee_experience.uptake_display"/>
+                            <small class="text-muted">
+                                <i class="fa fa-gift me-1"/>Adhésion aux avantages
+                                (<t t-esc="state.data.employee_experience.benefit_count"/>)
+                            </small>
+                            <t t-if="state.data.employee_experience.unused_count > 0">
+                                <br/>
+                                <small class="text-warning fw-bold">
+                                    <t t-esc="state.data.employee_experience.unused_count"/> que personne ne prend
+                                </small>
+                            </t>
+                            <t t-if="state.data.employee_experience.annual_cost">
+                                <br/>
+                                <small class="text-muted">
+                                    <t t-esc="state.data.employee_experience.annual_cost"/><t t-esc="state.data.employee_experience.currency"/> par année
+                                </small>
+                            </t>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </xpath>
+    </t>
+
+</templates>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_expense_form_ex" model="ir.ui.view">
+        <field name="name">hr.expense.form.employee.experience</field>
+        <field name="model">hr.expense</field>
+        <field name="inherit_id" ref="hr_expense.hr_expense_view_form"/>
+        <field name="arch" type="xml">
+            <field name="product_id" position="after">
+                <field name="ex_benefit_id"/>
+                <field name="ex_usage_id" invisible="not ex_usage_id" readonly="1"/>
+            </field>
+        </field>
+    </record>
+
+    <!--
+      La catégorie de dépense est éditée sur `product.product` dans Odoo 18
+      (Notes de frais > Configuration > Catégories de dépenses). Le champ vit sur
+      `product.template` et s'atteint par délégation.
+    -->
+    <record id="view_product_expense_form_ex" model="ir.ui.view">
+        <field name="name">product.product.expense.form.employee.experience</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="hr_expense.product_product_expense_form_view"/>
+        <field name="arch" type="xml">
+            <field name="categ_id" position="after">
+                <field name="ex_benefit_id" class="w-50"/>
+            </field>
+        </field>
+    </record>
+
+</odoo>

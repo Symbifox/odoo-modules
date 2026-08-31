@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_allergen_user,Allergène (lecture),model_bf_ex_allergen,base.group_user,1,0,0,0
+access_allergen_hr,Allergène (administration),model_bf_ex_allergen,hr.group_hr_user,1,1,1,1
+access_allergy_user,Allergie (la mienne),model_bf_ex_allergy,base.group_user,1,1,1,1
+access_allergy_hr,Allergie (administration),model_bf_ex_allergy,hr.group_hr_user,1,1,1,1

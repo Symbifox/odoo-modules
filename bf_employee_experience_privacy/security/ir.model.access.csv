@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_usage_aggregate_user,Agrégat d'usage (lecture),model_bf_ex_usage_aggregate,base.group_user,1,0,0,0
+access_usage_aggregate_hr,Agrégat d'usage (administration),model_bf_ex_usage_aggregate,hr.group_hr_user,1,1,1,0
+access_usage_aggregate_manager,Agrégat d'usage (contrôle complet),model_bf_ex_usage_aggregate,hr.group_hr_manager,1,1,1,1
