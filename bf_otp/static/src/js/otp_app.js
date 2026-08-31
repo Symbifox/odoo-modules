@@ -22,7 +22,7 @@ const ITERATIONS = 600000;
 
 export class BfOtpApp extends Component {
     static template = "bf_otp.App";
-    static props = {};
+    static props = ["*"];
 
     setup() {
         this.orm = useService("orm");
