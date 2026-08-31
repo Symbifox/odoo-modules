@@ -48,6 +48,11 @@
                                 <i class="fa fa-times"/>
                             </button>
                         </t>
+                        <button t-if="hiddenCount" class="btn btn-sm btn-link p-0 me-1"
+                                t-on-click="toggleHidden"
+                                t-att-title="state.showHidden ? 'Masquer les fichiers caches' : hiddenCount + ' fichier(s) cache(s)'">
+                            <i class="fa" t-att-class="state.showHidden ? 'fa-eye-slash' : 'fa-eye'"/>
+                        </button>
                         <div class="input-group input-group-sm o_nc_filter">
                             <span class="input-group-text"><i class="fa fa-search"/></span>
                             <input type="text" class="form-control" placeholder="Filtrer…" t-model="state.filter"/>
@@ -93,16 +98,19 @@
                                 <tbody>
                                     <t t-foreach="sortedEntries" t-as="e" t-key="e.rel">
                                         <tr draggable="true"
-                                            t-att-class="{ o_nc_folder_row: e.is_dir }"
+                                            t-att-class="{ o_nc_folder_row: e.is_dir, o_nc_drop_target: isDropTarget(e.rel), o_nc_hidden_row: e.is_hidden }"
                                             t-on-dragstart="(ev) => this.onRowDragStart(e, ev)"
+                                            t-on-dragend="onRowDragEnd"
                                             t-on-dragover="(ev) => this.onListDragOver(e, ev)"
+                                            t-on-dragleave="onFolderDragLeave"
                                             t-on-drop="(ev) => this.onListDrop(e, ev)">
                                             <td class="o_nc_check">
                                                 <input type="checkbox" t-att-checked="isSelected(e.rel)"
                                                        t-on-change="() => this.toggleSelect(e.rel)"
                                                        t-att-disabled="!canMutate"/>
                                             </td>
-                                            <td class="o_nc_name" t-on-click="() => this.onEntryClick(e)">
+                                            <td class="o_nc_name" t-on-click="() => this.onEntryClick(e)"
+                                                t-att-title="e.is_dir ? 'Ouvrir le dossier' : (isOfficeFile(e) ? 'Modifier dans Collabora' : 'Apercu')">
                                                 <i t-att-class="this._iconClass(e)" t-att-style="e.is_dir ? ('color:' + state.folderColor) : ''"/>
                                                 <span class="ms-2" t-esc="e.name"/>
                                             </td>
@@ -111,7 +119,12 @@
                                             <td class="text-end text-muted small text-nowrap" t-esc="e.size_display"/>
                                             <td class="text-end text-nowrap o_nc_actions">
                                                 <t t-if="!e.is_dir">
-                                                    <button t-if="e.internal_url" class="btn btn-sm btn-link p-0 me-2" t-on-click="() => this.openInNextcloud(e)" title="Ouvrir dans Nextcloud">
+                                                    <button t-if="isOfficeFile(e)" class="btn btn-sm btn-link p-0 me-2 o_nc_edit"
+                                                            t-on-click="() => this.openOffice(e.internal_url)"
+                                                            title="Modifier dans Collabora (nouvel onglet)">
+                                                        <i class="fa fa-pencil-square-o"/>
+                                                    </button>
+                                                    <button t-if="e.internal_url" class="btn btn-sm btn-link p-0 me-2" t-on-click="() => this.openInNextcloud(e)" title="Voir dans Nextcloud (nouvel onglet)">
                                                         <i class="fa fa-external-link"/>
                                                     </button>
                                                     <button class="btn btn-sm btn-link p-0 me-2" t-on-click="() => this.download(e)" title="Telecharger">
@@ -149,8 +162,10 @@
 
     <t t-name="bf_nextcloud_browser.NcTreeNode">
         <li class="o_nc_tree_node">
-            <div class="o_nc_tree_row" t-att-class="{ o_active: props.node.rel === props.browser.state.relPath }"
-                 t-on-dragover="(ev) => props.browser.onFolderDragOver(ev)"
+            <div class="o_nc_tree_row"
+                 t-att-class="{ o_active: props.node.rel === props.browser.state.relPath, o_nc_drop_target: props.browser.isDropTarget(props.node.rel) }"
+                 t-on-dragover="(ev) => props.browser.onFolderDragOver(ev, props.node.rel)"
+                 t-on-dragleave="() => props.browser.onFolderDragLeave()"
                  t-on-drop="(ev) => props.browser.onFolderDrop(props.node.rel, ev)">
                 <t t-if="props.browser.nodeHasCaret(props.node)">
                     <i class="o_nc_caret fa" t-att-class="props.node.expanded ? 'fa-caret-down' : 'fa-caret-right'"
@@ -158,7 +173,8 @@
                 </t>
                 <i t-else="" class="o_nc_caret"/>
                 <i t-if="props.node.loading" class="fa fa-spinner fa-spin text-muted me-1"/>
-                <i t-else="" class="fa fa-folder text-warning me-1"/>
+                <i t-else="" class="fa fa-folder me-1"
+                   t-att-style="'color:' + props.browser.state.folderColor"/>
                 <span class="o_nc_tree_label" t-on-click="() => props.browser.openTreeFolder(props.node)" t-esc="props.node.name"/>
             </div>
             <t t-if="props.node.expanded">
@@ -257,14 +273,57 @@
         </Dialog>
     </t>
 
-    <t t-name="bf_nextcloud_browser.NcLauncherSystray">
+    <t t-name="bf_nextcloud_browser.NcPanelSystray">
         <t t-if="state.show">
-            <div class="o_nc_systray">
-                <button class="btn" t-on-click="open" title="Ouvrir Nextcloud">
+            <div class="o_nc_systray" t-att-class="{ o_nc_systray_open: state.open }">
+                <button class="btn" t-on-click="toggle"
+                        t-att-aria-expanded="state.open ? 'true' : 'false'"
+                        aria-label="Fichiers Nextcloud" title="Fichiers Nextcloud">
                     <i class="fa fa-folder-open-o"/>
                 </button>
             </div>
         </t>
+    </t>
+
+    <!--
+        Le panneau embarque : un voile qui ferme au clic a cote, et le cadre
+        ancre en haut a droite. Les deux sont freres, donc un clic dans le
+        panneau n'atteint jamais le voile — pas de `stopPropagation` a poser.
+    -->
+    <t t-name="bf_nextcloud_browser.NcBrowserPanel">
+        <div class="o_nc_panel_root">
+            <div class="o_nc_panel_scrim" t-on-click="() => props.close()"/>
+            <section class="o_nc_panel" t-att-style="panelStyle"
+                     role="dialog" aria-label="Fichiers Nextcloud">
+                <header class="o_nc_panel_header d-flex align-items-center gap-2">
+                    <i class="fa fa-folder-open-o"/>
+                    <span class="o_nc_panel_title">Fichiers Nextcloud</span>
+                    <span class="o_nc_panel_size text-muted small" t-esc="sizeLabel"/>
+                    <div class="ms-auto d-flex align-items-center">
+                        <button t-if="!isDefaultSize" class="btn btn-sm btn-link"
+                                t-on-click="resetSize" title="Revenir à la taille par défaut">
+                            <i class="fa fa-compress"/>
+                        </button>
+                        <button class="btn btn-sm btn-link" t-on-click="openFullPage"
+                                title="Ouvrir en pleine page">
+                            <i class="fa fa-expand"/>
+                        </button>
+                        <button class="btn btn-sm btn-link o_nc_panel_close"
+                                t-on-click="() => props.close()" title="Fermer (Échap)">
+                            <i class="fa fa-times"/>
+                        </button>
+                    </div>
+                </header>
+                <div class="o_nc_panel_body">
+                    <NcBrowserApp/>
+                </div>
+                <div class="o_nc_panel_grip" title="Redimensionner"
+                     t-on-pointerdown="startResize"
+                     t-on-pointermove="onResizeMove"
+                     t-on-pointerup="stopResize"
+                     t-on-pointercancel="stopResize"/>
+            </section>
+        </div>
     </t>
 
 </templates>

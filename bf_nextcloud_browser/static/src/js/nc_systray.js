@@ -1,57 +1,83 @@
 /** @odoo-module **/
 
-import { Component, onWillStart, useState } from "@odoo/owl";
+import { Component, onWillStart, onWillUnmount, useState } from "@odoo/owl";
 import { registry } from "@web/core/registry";
 import { useService } from "@web/core/utils/hooks";
 import { user } from "@web/core/user";
+import { NcBrowserPanel } from "@bf_nextcloud_browser/js/nc_panel";
 
 /**
- * Systray launcher: a toggleable button (shown only to group_nc_browser_user)
- * that opens the full Nextcloud web app in a centered ~75%-of-screen popup
- * window. An embedded iframe is impossible — Nextcloud sends
- * X-Frame-Options: SAMEORIGIN / frame-ancestors 'self' — so we open a real
- * window instead.
+ * Bouton de barre systeme : il ouvre et referme le panneau de fichiers.
+ *
+ * Il ouvrait auparavant le vrai Nextcloud dans une fenetre a part. On reste
+ * desormais dans Odoo — c'est tout l'objet du guichet unique : le fichier se
+ * cherche, se televerse et se partage sans quitter la fiche qu'on avait sous
+ * les yeux. L'echappee vers Nextcloud demeure la ou elle sert vraiment,
+ * fichier par fichier (bouton « Ouvrir dans Nextcloud » et clic sur un
+ * document bureautique, qui passent par Collabora).
+ *
+ * Le bouton reste cache tant que la personne n'est pas dans le groupe ou
+ * qu'aucune configuration de stockage n'est active.
  */
-export class NcLauncherSystray extends Component {
-    static template = "bf_nextcloud_browser.NcLauncherSystray";
+export class NcPanelSystray extends Component {
+    static template = "bf_nextcloud_browser.NcPanelSystray";
     static props = {};
 
     setup() {
         this.orm = useService("orm");
-        this.state = useState({ show: false, url: "" });
+        this.overlay = useService("overlay");
+        this.state = useState({ show: false, open: false, widthPct: 80, heightPct: 80 });
+        this.removePanel = null;
+
         onWillStart(async () => {
             if (!(await user.hasGroup("bf_nextcloud_browser.group_nc_browser_user"))) {
                 return;
             }
             try {
-                const url = await this.orm.call("bf.nc.browser", "get_app_url", []);
-                if (url) {
-                    this.state.url = url;
+                const cfg = await this.orm.call("bf.nc.browser", "get_panel_config", []);
+                if (cfg && cfg.available) {
+                    this.state.widthPct = cfg.width_pct || 80;
+                    this.state.heightPct = cfg.height_pct || 80;
                     this.state.show = true;
                 }
             } catch {
-                // No config / no access: stay hidden.
+                // pas de configuration, pas d'acces : on reste cache
             }
         });
+
+        onWillUnmount(() => this.close());
     }
 
-    open() {
-        const w = Math.round(screen.availWidth * 0.75);
-        const h = Math.round(screen.availHeight * 0.75);
-        const left = Math.round((screen.availWidth - w) / 2);
-        const top = Math.round((screen.availHeight - h) / 2);
-        const win = window.open(
-            this.state.url,
-            "bf_nc_app",
-            `width=${w},height=${h},left=${left},top=${top},resizable=yes,scrollbars=yes`
-        );
-        if (win) {
-            win.opener = null; // sever the opener reference (defence in depth)
+    toggle() {
+        if (this.removePanel) {
+            this.close();
+            return;
         }
+        this.removePanel = this.overlay.add(
+            NcBrowserPanel,
+            {
+                close: () => this.close(),
+                defaultWidthPct: this.state.widthPct,
+                defaultHeightPct: this.state.heightPct,
+            },
+            // Sous la sequence des dialogues (50), qui doivent s'ouvrir par-dessus.
+            {
+                sequence: 40,
+                onRemove: () => {
+                    this.removePanel = null;
+                    this.state.open = false;
+                },
+            }
+        );
+        this.state.open = true;
+    }
+
+    close() {
+        this.removePanel?.();
     }
 }
 
-export const ncLauncherSystrayItem = { Component: NcLauncherSystray };
+export const ncPanelSystrayItem = { Component: NcPanelSystray };
 registry
     .category("systray")
-    .add("bf_nextcloud_browser.launcher", ncLauncherSystrayItem, { sequence: 30 });
+    .add("bf_nextcloud_browser.panel", ncPanelSystrayItem, { sequence: 30 });

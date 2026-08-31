@@ -142,11 +142,21 @@ export class NcBrowser extends Component {
         } catch {
             // ignore malformed pref
         }
+        // Preferences par personne, lues une fois au montage.
+        let showHidden = false;
+        try {
+            showHidden = browser.localStorage.getItem("bf_nc_browser_hidden") === "1";
+        } catch {
+            // ignore malformed pref
+        }
         this.state = useState({
             ready: false,
             loading: false,
             error: "",
             relPath: "",
+            showHidden,
+            dropTarget: "", // rel du dossier survole pendant un glisser
+            maxUploadBytes: 0, // rempli par le serveur au premier listing
             breadcrumb: [],
             entries: [],
             dragOver: false, // OS-file drop on the panel
@@ -159,7 +169,7 @@ export class NcBrowser extends Component {
             filter: "",
             selected: [], // rels of checked entries
         });
-        onWillStart(() => this.load(""));
+        onWillStart(() => this.load(this._rememberedPath()));
     }
 
     get model() {
@@ -222,11 +232,21 @@ export class NcBrowser extends Component {
             this.state.openExtensions = res.open_extensions || this.state.openExtensions;
             this.state.folderColor = res.folder_color || this.state.folderColor;
             this.state.presets = res.presets || this.state.presets;
+            this.state.maxUploadBytes = res.max_upload_bytes || this.state.maxUploadBytes;
+            this._rememberPath(res.rel_path);
             this.state.error = "";
             this.state.selected = [];
             this.state.filter = "";
             this._syncTree(res.rel_path, res.entries);
         } catch (e) {
+            // Le dossier memorise a pu etre supprime ou renomme depuis la
+            // derniere visite : on retombe sur la racine plutot que d'ouvrir
+            // le panneau sur une erreur.
+            if (relPath) {
+                this._rememberPath("");
+                this.state.loading = false;
+                return this.load("");
+            }
             this.state.entries = [];
             this.state.breadcrumb = [];
             this.state.error =
@@ -379,9 +399,12 @@ export class NcBrowser extends Component {
             return (e.name || "").toLowerCase();
         };
         const q = (this.state.filter || "").trim().toLowerCase();
-        const list = q
-            ? this.state.entries.filter((e) => (e.name || "").toLowerCase().includes(q))
-            : this.state.entries;
+        let list = this.state.showHidden
+            ? this.state.entries
+            : this.state.entries.filter((e) => !e.is_hidden);
+        if (q) {
+            list = list.filter((e) => (e.name || "").toLowerCase().includes(q));
+        }
         return [...list].sort((a, b) => {
             if (a.is_dir !== b.is_dir) {
                 return a.is_dir ? -1 : 1; // folders pinned first
@@ -409,6 +432,47 @@ export class NcBrowser extends Component {
         } catch {
             // ignore storage failures
         }
+    }
+
+    /**
+     * Cle de memoire du dernier dossier ouvert. Elle porte la portee, sinon le
+     * panneau autonome et l'onglet d'une fiche se voleraient leur position.
+     */
+    get _pathKey() {
+        return "bf_nc_browser_path:" + (this.needsRecord ? `${this.model}:${this.resId}` : "root");
+    }
+
+    _rememberedPath() {
+        try {
+            return browser.localStorage.getItem(this._pathKey) || "";
+        } catch {
+            return "";
+        }
+    }
+
+    _rememberPath(rel) {
+        try {
+            browser.localStorage.setItem(this._pathKey, rel || "");
+        } catch {
+            // navigation privee, quota plein : on rouvre a la racine, sans plus
+        }
+    }
+
+    toggleHidden() {
+        this.state.showHidden = !this.state.showHidden;
+        this.state.selected = [];
+        try {
+            browser.localStorage.setItem(
+                "bf_nc_browser_hidden",
+                this.state.showHidden ? "1" : "0"
+            );
+        } catch {
+            // sans stockage, le choix ne vaut que pour cette ouverture
+        }
+    }
+
+    get hiddenCount() {
+        return this.state.entries.filter((e) => e.is_hidden).length;
     }
 
     // --- multi-selection + bulk actions ---
@@ -479,13 +543,42 @@ export class NcBrowser extends Component {
     // ----------------------------------------------------------------
     // Navigation / open
     // ----------------------------------------------------------------
+    /**
+     * Ouvrir un document dans Nextcloud (donc dans Collabora pour les formats
+     * bureautiques), en REUTILISANT le meme onglet.
+     *
+     * `window.open(url, "_blank")` en ouvrait un neuf a chaque clic : dix
+     * documents consultes, dix onglets. Un nom de fenetre les rassemble.
+     *
+     * ⚠️ Le lien reste `/f/<fileid>`, donc l'ouverture se fait dans la session
+     * Nextcloud DE LA PERSONNE. L'API d'edition directe irait droit a
+     * l'editeur, mais ses jetons sont lies au compte de service : tout le
+     * monde editerait sous la meme identite et l'historique des versions
+     * deviendrait faux.
+     */
+    openOffice(url) {
+        const win = window.open(url, "bf_nc_office", "noopener,noreferrer");
+        if (win && !win.closed) {
+            win.focus(); // l'onglet existe deja : le ramener devant
+        }
+    }
+
+    /** Un clic sur ce fichier ouvrira-t-il Collabora ? */
+    isOfficeFile(entry) {
+        return (
+            !entry.is_dir &&
+            !!entry.internal_url &&
+            this.state.openExtensions.includes(this._ext(entry.name))
+        );
+    }
+
     onEntryClick(entry) {
         if (entry.is_dir) {
             this.load(entry.rel);
             return;
         }
-        if (entry.internal_url && this.state.openExtensions.includes(this._ext(entry.name))) {
-            window.open(entry.internal_url, "_blank", "noopener,noreferrer");
+        if (this.isOfficeFile(entry)) {
+            this.openOffice(entry.internal_url);
             return;
         }
         this.dialog.add(NcPreviewDialog, {
@@ -497,7 +590,7 @@ export class NcBrowser extends Component {
 
     openInNextcloud(entry) {
         if (entry.internal_url) {
-            window.open(entry.internal_url, "_blank", "noopener,noreferrer");
+            this.openOffice(entry.internal_url);
         }
     }
 
@@ -523,22 +616,65 @@ export class NcBrowser extends Component {
         await this._call("upload_file", [this.state.relPath, file.name, b64]);
     }
 
+    /**
+     * Televerser, en refusant AVANT lecture ce que le serveur refuserait apres.
+     *
+     * Le plafond etait connu du seul serveur : le navigateur lisait donc un
+     * fichier de 500 Mo en memoire, l'encodait en base64 et l'envoyait, pour se
+     * faire refuser a l'arrivee. On le sait maintenant d'avance.
+     *
+     * Et un echec ne fait plus tomber le reste du lot : chaque fichier est tente
+     * separement, le compte rendu dit ce qui est passe et ce qui a bloque.
+     */
     async _uploadMany(files) {
         if (!this.canMutate || !files.length) {
             return;
         }
-        this.state.loading = true;
-        try {
-            for (const file of files) {
-                await this._uploadOne(file);
-            }
+        const cap = this.state.maxUploadBytes;
+        const tooBig = cap ? files.filter((f) => f.size > cap) : [];
+        const toSend = cap ? files.filter((f) => f.size <= cap) : files;
+
+        if (tooBig.length) {
+            const capMo = Math.floor(cap / (1024 * 1024));
             this.notification.add(
-                files.length > 1 ? _t("Fichiers televerses.") : _t("Fichier televerse."),
-                { type: "success" }
+                tooBig.length === 1
+                    ? _t("« %s » depasse la limite de %s Mo et n'a pas ete envoye.", tooBig[0].name, capMo)
+                    : _t("%s fichiers depassent la limite de %s Mo et n'ont pas ete envoyes.", tooBig.length, capMo),
+                { type: "warning", sticky: true }
             );
+        }
+        if (!toSend.length) {
+            return;
+        }
+
+        this.state.loading = true;
+        const failed = [];
+        let sent = 0;
+        try {
+            for (const file of toSend) {
+                try {
+                    await this._uploadOne(file);
+                    sent++;
+                } catch (e) {
+                    failed.push(file.name);
+                    if (failed.length === 1) {
+                        this._err(e); // la cause, une seule fois
+                    }
+                }
+            }
+            if (sent) {
+                this.notification.add(
+                    sent > 1 ? _t("%s fichiers televerses.", sent) : _t("Fichier televerse."),
+                    { type: "success" }
+                );
+            }
+            if (failed.length) {
+                this.notification.add(
+                    _t("Echec pour : %s", failed.join(", ")),
+                    { type: "danger", sticky: true }
+                );
+            }
             await this.load(this.state.relPath);
-        } catch (e) {
-            this._err(e);
         } finally {
             this.state.loading = false;
         }
@@ -590,14 +726,34 @@ export class NcBrowser extends Component {
         ev.dataTransfer.effectAllowed = "move";
     }
 
-    onFolderDragOver(ev) {
+    // Un glisser abandonne (touche Echap, relache dans le vide) laisserait
+    // sinon la derniere ligne survolee allumee.
+    onRowDragEnd() {
+        this.state.dropTarget = "";
+    }
+
+    onFolderDragOver(ev, rel) {
         if (this.canMutate && ev.dataTransfer.types.includes("application/x-nc-rel")) {
             ev.preventDefault();
             ev.dataTransfer.dropEffect = "move";
+            // La regle CSS `.o_nc_drop_target` existait depuis la v3 sans que
+            // personne ne pose la classe : on visait un dossier a l'aveugle.
+            if (rel !== undefined) {
+                this.state.dropTarget = rel;
+            }
         }
     }
 
+    onFolderDragLeave() {
+        this.state.dropTarget = "";
+    }
+
+    isDropTarget(rel) {
+        return this.state.dropTarget === rel && !!this.state.dropTarget;
+    }
+
     async onFolderDrop(targetRel, ev) {
+        this.state.dropTarget = "";
         const src = ev.dataTransfer.getData("application/x-nc-rel");
         if (!src) {
             return; // OS-file drop: let it bubble to the panel uploader
@@ -613,7 +769,7 @@ export class NcBrowser extends Component {
     // List-row variants: only folder rows are valid move targets.
     onListDragOver(entry, ev) {
         if (entry.is_dir) {
-            this.onFolderDragOver(ev);
+            this.onFolderDragOver(ev, entry.rel);
         }
     }
 

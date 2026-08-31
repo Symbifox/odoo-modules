@@ -170,16 +170,28 @@ class BfNcBrowser(models.TransientModel):
         return posixpath.normpath(p)
 
     @api.model
-    def get_app_url(self):
-        """Nextcloud web base URL for the systray launcher (group members only)."""
+    def get_panel_config(self):
+        """Whether the systray panel opens, and at what size (group members only).
+
+        Returns an empty dict when the caller has no business seeing the button:
+        no group, or no active storage config to browse. The systray keeps
+        itself hidden on anything falsy, so a failure here is never a broken
+        button.
+        """
         if not self.env.user.has_group(GROUP):
-            return ""
+            return {}
         config = (
             self.env["nextcloud.document.config"]
             .sudo()
             .search([("active", "=", True)], limit=1)
         )
-        return (config.nextcloud_base_url or "").rstrip("/") if config else ""
+        if not config:
+            return {}
+        return {
+            "available": True,
+            "width_pct": config.nc_panel_width_pct or 80,
+            "height_pct": config.nc_panel_height_pct or 80,
+        }
 
     # ------------------------------------------------------------------
     # Browse
@@ -220,8 +232,13 @@ class BfNcBrowser(models.TransientModel):
             internal_url = ""
             if fid and not is_dir and config.nextcloud_base_url:
                 internal_url = config.nextcloud_base_url.rstrip("/") + "/f/" + str(fid)
+            name = e.get("name") or posixpath.basename(nc_path)
             entries.append({
-                "name": e.get("name") or posixpath.basename(nc_path),
+                "name": name,
+                # Nextcloud masque les fichiers points par defaut dans sa propre
+                # interface. On les renvoie quand meme, marques : c'est le
+                # client qui choisit de les afficher, sans second aller-retour.
+                "is_hidden": name.startswith("."),
                 "is_dir": is_dir,
                 "size": e.get("size", 0),
                 "size_display": "" if is_dir else _human_size(e.get("size", 0)),
@@ -244,6 +261,9 @@ class BfNcBrowser(models.TransientModel):
         config._ensure_share_presets()
         return {
             "ok": True,
+            # Le client s'en sert pour refuser un fichier trop gros avant de le
+            # lire en memoire; le serveur revalide de toute facon.
+            "max_upload_bytes": MAX_UPLOAD_BYTES,
             "rel_path": "" if cur_rel in ("", ".") else cur_rel,
             "breadcrumb": crumbs,
             "entries": entries,

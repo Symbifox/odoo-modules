@@ -68,6 +68,11 @@
                 background: rgba(41, 171, 225, 0.15);
                 font-weight: 500;
             }
+            &.o_nc_drop_target {
+                background: rgba(41, 171, 225, 0.18);
+                outline: 2px solid var(--bf-accent);
+                outline-offset: -2px;
+            }
         }
         .o_nc_caret {
             width: 12px;
@@ -111,13 +116,25 @@
         .o_nc_actions {
             white-space: nowrap;
         }
+        // « Modifier dans Collabora » porte l'accent : c'est l'action
+        // principale sur un document bureautique, pas une action de gestion.
+        .o_nc_edit {
+            color: var(--bf-accent);
+        }
         .o_nc_check {
             width: 1%;
             white-space: nowrap;
             text-align: center;
         }
+        // Cible de depot : posee par `state.dropTarget`, enfin visible.
         .o_nc_folder_row.o_nc_drop_target {
-            background: rgba(41, 171, 225, 0.12);
+            background: rgba(41, 171, 225, 0.18);
+            outline: 2px solid var(--bf-accent);
+            outline-offset: -2px;
+        }
+        // Un fichier point reste discret meme quand on choisit de le voir.
+        .o_nc_hidden_row .o_nc_name {
+            opacity: 0.55;
         }
     }
 
@@ -148,4 +165,133 @@
     input {
         margin-right: 0.25rem;
     }
+}
+
+// ---------------------------------------------------------------------------
+// Panneau embarque ouvert depuis la barre systeme.
+//
+// Monte par le service `overlay`, dont chaque element est deja `position:
+// fixed` au z-index des modales. On ne surencherit donc pas sur le z-index :
+// c'est l'ordre du DOM, pilote par la sequence, qui empile le panneau sous les
+// boites de dialogue qu'il ouvre lui-meme.
+// ---------------------------------------------------------------------------
+.o_nc_panel_root {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+}
+
+// Voile transparent : il ne masque rien, il ne sert qu'a fermer au clic a cote.
+.o_nc_panel_scrim {
+    position: fixed;
+    inset: 0;
+    pointer-events: auto;
+    background: rgba(45, 48, 49, 0.12);
+}
+
+.o_nc_panel {
+    position: fixed;
+    pointer-events: auto;
+    display: flex;
+    flex-direction: column;
+    background: var(--o-view-background-color, #fff);
+    border: 1px solid var(--border-color, #dee2e6);
+    border-radius: 8px;
+    box-shadow: 0 12px 32px rgba(45, 48, 49, 0.28);
+    overflow: hidden;
+    animation: o_nc_panel_in 0.16s ease-out;
+
+    .o_nc_panel_header {
+        flex: 0 0 auto;
+        padding: 8px 12px;
+        border-bottom: 1px solid var(--border-color, #dee2e6);
+        background: rgba(41, 171, 225, 0.08);
+        color: #2D3031;
+        font-family: "Lexend", var(--bs-body-font-family, sans-serif);
+    }
+
+    .o_nc_panel_title {
+        font-weight: 500;
+    }
+
+    // La taille courante n'apparait que quand le pointeur est sur le panneau:
+    // utile pendant qu'on tire la poignee, encombrant le reste du temps.
+    .o_nc_panel_size {
+        opacity: 0;
+        transition: opacity 0.12s;
+    }
+    &:hover .o_nc_panel_size {
+        opacity: 1;
+    }
+
+    .o_nc_panel_close {
+        color: #2D3031;
+    }
+
+    .o_nc_panel_body {
+        flex: 1 1 auto;
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+    }
+
+    // Le navigateur remplit le cadre. Ses plafonds a 70vh sont dimensionnes
+    // pour une vue pleine page: dans le panneau, c'est le panneau qui borne.
+    .o_nc_browser {
+        flex: 1 1 auto;
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+        padding: 10px 12px;
+
+        .o_nc_main {
+            flex: 1 1 auto;
+            min-height: 0;
+        }
+        .o_nc_tree,
+        .o_nc_content {
+            max-height: none;
+            height: 100%;
+        }
+    }
+
+    // Poignee au coin inferieur GAUCHE: le panneau est ancre en haut a droite,
+    // il grandit donc vers la gauche et vers le bas.
+    .o_nc_panel_grip {
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 16px;
+        height: 16px;
+        cursor: nesw-resize;
+        touch-action: none;
+        background: linear-gradient(
+            45deg,
+            transparent 0 40%,
+            var(--bf-accent, #29ABE1) 40% 55%,
+            transparent 55% 70%,
+            var(--bf-accent, #29ABE1) 70% 85%,
+            transparent 85%
+        );
+        opacity: 0.55;
+        &:hover {
+            opacity: 1;
+        }
+    }
+}
+
+@keyframes o_nc_panel_in {
+    from {
+        opacity: 0;
+        transform: translate(8px, -8px) scale(0.99);
+    }
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+// Le bouton de la barre systeme reste allume tant que le panneau est ouvert.
+.o_nc_systray.o_nc_systray_open > .btn {
+    color: #29ABE1;
 }

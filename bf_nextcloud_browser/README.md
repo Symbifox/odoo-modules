@@ -4,7 +4,7 @@ Embedded and standalone WebDAV file browser for Nextcloud, integrated into Odoo
 project and task forms. Browse, preview, upload, organise and share files stored
 on a Nextcloud instance — without leaving Odoo.
 
-- **Author:** Les services de consultation Blue Fox, Inc.
+- **Author:** Blue Fox Inc.
 - **License:** LGPL-3
 - **Odoo:** 18.0
 - **Depends:** `bf_document_nextcloud_sync`, `project`, `project_knowledge_matrix`
@@ -58,7 +58,7 @@ service-account configuration provided by `bf_document_nextcloud_sync`.
 ## Configuration
 
 1. Open **Nextcloud → Configuration** (admin only).
-2. On the *Symbifox Nextcloud* configuration record set the Nextcloud base URL,
+2. On the *Blue Fox Nextcloud* configuration record set the Nextcloud base URL,
    WebDAV path, service-account user and app password.
 3. Set **Préfixe racine (navigateur)** to scope the browser (e.g. `/Company/`).
    *Required for the standalone app.*
@@ -84,19 +84,3 @@ and see the systray launcher.
   instead.
 - Odoo Knowledge article linking is only available when the Knowledge app is
   installed; otherwise files link to the Knowledge Matrix.
-
-## License
-
-LGPL-3. See [`LICENSE`](LICENSE) for the full text.
-
-**Licence note.** The dependency on `project_knowledge_matrix` is BUSL-1.1.
-The coupling is at runtime rather than structural — the browser searches and
-opens `project.knowledge.item` records through the ORM — so the manifest
-dependency could technically be dropped. It is kept deliberately: linking a
-Nextcloud file to a knowledge item is a core feature of this browser, not a
-side integration, and a build without it would install cleanly while missing
-the point.
-
-The LGPL-3 text applies to this module's own source, but a working install
-needs the BUSL-1.1 terms on `project_knowledge_matrix`. If you need more than
-those terms allow, [talk to us](https://symbifox.com).

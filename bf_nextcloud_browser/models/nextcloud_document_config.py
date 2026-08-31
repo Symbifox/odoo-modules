@@ -10,8 +10,8 @@ from urllib.parse import quote as url_quote
 
 import requests
 
-from odoo import _, fields, models
-from odoo.exceptions import UserError
+from odoo import _, api, fields, models
+from odoo.exceptions import UserError, ValidationError
 
 from odoo.addons.bf_document_nextcloud_sync.models.nextcloud_document_config import (
     _sanitize_nc_path,
@@ -43,11 +43,42 @@ class NextcloudDocumentConfig(models.Model):
         "Defaut: anthracite Blue Fox. Mettre la couleur d'accent (#29ABE1) pour du contraste.",
     )
 
+    nc_panel_width_pct = fields.Integer(
+        string="Largeur du panneau (%)",
+        default=80,
+        help="Largeur, en pourcentage de la fenetre, du panneau embarque ouvert "
+        "depuis la barre systeme. Valeur de depart seulement: chaque personne "
+        "peut ensuite redimensionner le panneau, et sa preference a priorite.",
+    )
+
+    nc_panel_height_pct = fields.Integer(
+        string="Hauteur du panneau (%)",
+        default=80,
+        help="Hauteur, en pourcentage de la fenetre, du panneau embarque ouvert "
+        "depuis la barre systeme. Meme regle que la largeur: c'est une valeur de "
+        "depart, que la preference de chacun remplace.",
+    )
+
     share_preset_ids = fields.One2many(
         "nextcloud.share.preset",
         "config_id",
         string="Prereglages de partage",
     )
+
+    @api.constrains("nc_panel_width_pct", "nc_panel_height_pct")
+    def _check_nc_panel_size(self):
+        for cfg in self:
+            for value, dim in (
+                (cfg.nc_panel_width_pct, _("largeur")),
+                (cfg.nc_panel_height_pct, _("hauteur")),
+            ):
+                if value and not 40 <= value <= 100:
+                    raise ValidationError(
+                        _(
+                            "La %(dim)s du panneau doit etre comprise entre 40 et 100.",
+                            dim=dim,
+                        )
+                    )
 
     def _open_extensions_list(self):
         self.ensure_one()
