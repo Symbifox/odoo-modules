@@ -133,6 +133,16 @@ bf_dark_mode/
   instant client-side cookie toggle is preserved and seeded from the session
   preference; toggling persists back to `res.users`.
 
+### 18.0.1.1.1
+- Outgoing emails are no longer tinted by the dark theme. Odoo inlines every
+  applicable CSS declaration before an email leaves the composer, and it
+  resolves those declarations by inserting a copy of the body into the live
+  document. Because CSS selectors resolve against the whole document rather
+  than the queried subtree, every `body.bf_dark_mode p { color: … }` rule this
+  module ships used to match that copy, and the dark grays were baked into the
+  message the recipient received. The body class is now dropped for the
+  duration of the inlining pass and restored afterwards.
+
 ### 18.0.1.0.0
 - Initial release: per-browser cookie systray toggle and Symbifox dark palette.
 
