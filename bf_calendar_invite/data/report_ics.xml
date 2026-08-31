@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+      The report the mail template attaches. `report_name` is required on
+      ir.actions.report and normally names a QWeb template; nothing renders
+      QWeb here (see _render_qweb_ics), but the value must stay unique because
+      _get_report also resolves reports by report_name.
+
+      print_report_name fixes the filename: the extension is what gives the
+      attachment its text/calendar mimetype, and "invitation.ics" is the name
+      core already uses in _send_mail_to_attendees.
+    -->
+    <record id="report_calendar_event_ics" model="ir.actions.report">
+        <field name="name">Invitation (.ics)</field>
+        <field name="model">calendar.event</field>
+        <field name="report_type">qweb-ics</field>
+        <field name="report_name">bf_calendar_invite.calendar_event_ics</field>
+        <field name="report_file">bf_calendar_invite.calendar_event_ics</field>
+        <field name="print_report_name">'invitation.ics'</field>
+        <field name="binding_model_id" eval="False"/>
+    </record>
+</odoo>

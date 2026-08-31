@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+      The body of the EMAIL button's message, kept in a QWeb template rather
+      than inline in `mail.template.body_html` for two reasons.
+
+      It is translated. A mail template body is a translated field, so its
+      French would have to live in the jsonb of each template record; a QWeb
+      template is exported to `i18n/` once and every template that calls it
+      renders in whatever language it was asked for.
+
+      And it is shared. Three templates call it — one that picks the language
+      from the guests, two that force one — so that the language can be changed
+      after the composer is open by picking another template. One body, three
+      switches, nothing duplicated.
+
+      `object` is a `calendar.event` here, not a `calendar.attendee`: this
+      message goes to the whole list at once, which is why it greets a guest
+      only when there is exactly one, and why the hours carry the company's
+      timezone rather than any one reader's.
+    -->
+    <template id="mail_body_calendar_invite" name="Calendar invitation email body">
+        <t t-set="brand" t-value="object._bf_mail_brand()"/>
+        <t t-set="mail_tz" t-value="object._bf_mail_tz()"/>
+        <t t-set="guest_name" t-value="object._bf_guest_name()"/>
+        <div>
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#F8FAFC;">
+                <tbody>
+                    <tr>
+                        <td align="center" style="padding:24px;">
+                            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px; max-width:600px; margin:0 auto; background-color:#FFFFFF; border-radius:12px; border:1px solid #E5E7EB; border-collapse:collapse;">
+                                <tbody>
+                                    <tr>
+                                        <td t-attf-style="background-color:{{ brand['dark'] }}; padding:16px 24px; border-radius:12px 12px 0 0;">
+                                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                                                <tbody>
+                                                    <tr>
+                                                        <td align="left">
+                                                            <img t-att-src="brand['logo_src']" t-att-alt="brand['company'].name" style="height:40px; width:auto; display:block; border:0;"/>
+                                                        </td>
+                                                        <td align="right" style="color:#E6EDF3; font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:22px; font-weight:800; letter-spacing:0.2px;">
+                                                            Invitation
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td t-attf-style="height:4px; line-height:4px; background-color:{{ brand['primary'] }};">&#160;</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding:24px; font-family:'Lexend','Segoe UI',Arial,sans-serif;">
+                                            <p style="margin:0 0 12px 0;font-size:16px;line-height:26px;color:#374151;font-weight:300;">
+                                                <t t-if="guest_name">Hello <t t-out="guest_name"/>,</t>
+                                                <t t-else="">Hello,</t>
+                                            </p>
+                                            <p style="margin:0 0 20px 0;font-size:15px;line-height:24px;color:#374151;font-weight:300;">
+                                                Here are the details for <strong t-attf-style="color:{{ brand['dark'] }};" t-out="object.name or ''">Meeting</strong>.
+                                            </p>
+
+                                            <table role="presentation" border="0" cellpadding="0" cellspacing="0" style="margin:0 0 16px 0;">
+                                                <tr>
+                                                    <td width="120" style="min-width:120px;vertical-align:top;">
+                                                        <div t-attf-style="border-top-left-radius:6px;border-top-right-radius:6px;font-size:12px;text-align:center;font-weight:600;color:#FFFFFF;background-color:{{ brand['primary'] }};padding:6px 0;"><t t-out="format_datetime(dt=object.start, tz=mail_tz if not object.allday else None, dt_format='EEEE', lang_code=object.env.lang) or ''">Tuesday</t></div>
+                                                        <div t-attf-style="font-size:44px;font-weight:700;text-align:center;color:{{ brand['dark'] }};background-color:#F5F7FA;border-left:1px solid {{ brand['primary'] }};border-right:1px solid {{ brand['primary'] }};padding:6px 0;line-height:1;"><t t-out="format_datetime(dt=object.start, tz=mail_tz if not object.allday else None, dt_format='d', lang_code=object.env.lang) or ''">4</t></div>
+                                                        <div t-attf-style="font-size:12px;text-align:center;font-weight:600;color:#FFFFFF;background-color:{{ brand['primary'] }};padding:6px 0;"><t t-out="format_datetime(dt=object.start, tz=mail_tz if not object.allday else None, dt_format='MMMM y', lang_code=object.env.lang) or ''">May 2021</t></div>
+                                                        <div t-attf-style="border-bottom-left-radius:6px;border-bottom-right-radius:6px;color:{{ brand['dark'] }};text-align:center;font-size:13px;font-weight:600;background-color:#F5F7FA;border-left:1px solid {{ brand['primary'] }};border-right:1px solid {{ brand['primary'] }};border-bottom:1px solid {{ brand['primary'] }};padding:8px 0;">
+                                                            <t t-if="not object.allday">
+                                                                <div><t t-out="format_time(time=object.start, tz=mail_tz, time_format='short', lang_code=object.env.lang) or ''">11:00 AM</t></div>
+                                                                <div style="font-size:10px;font-weight:400;color:#6B7280;">(<t t-out="mail_tz"/>)</div>
+                                                            </t>
+                                                        </div>
+                                                    </td>
+                                                    <td width="20"/>
+                                                    <td style="vertical-align:top;font-size:14px;color:#374151;">
+                                                        <p t-attf-style="margin:0 0 8px 0;color:{{ brand['dark'] }};font-weight:600;font-size:15px;">Event details</p>
+                                                        <ul style="margin:0;padding-left:18px;line-height:22px;">
+                                                            <!--
+                                                              Skipped when the location is just the video-call link
+                                                              again, which is what a meeting created from a call room
+                                                              stores, and the map link only where an address could be
+                                                              looked up: Google Maps on a URL returns nothing.
+                                                            -->
+                                                            <li t-if="object.location and object.location != object.videocall_location">
+                                                                <strong t-attf-style="color:{{ brand['dark'] }};">Where:</strong>
+                                                                <t t-out="object.location or ''">Office</t>
+                                                                <a t-if="not object.location.startswith(('http://', 'https://'))" t-attf-href="https://maps.google.com/maps?oi=map&amp;q={{ object.location }}" t-attf-style="margin-left:6px;color:{{ brand['primary'] }};text-decoration:none;">View map</a>
+                                                            </li>
+                                                            <li t-if="not object.allday and object.duration">
+                                                                <strong t-attf-style="color:{{ brand['dark'] }};">Duration:</strong>
+                                                                <t t-out="('%dH%02d' % (object.duration, round(object.duration * 60) % 60)) or ''">1H00</t>
+                                                            </li>
+                                                            <li t-if="object.videocall_location">
+                                                                <strong t-attf-style="color:{{ brand['dark'] }};">Video call:</strong>
+                                                                <a t-att-href="object.videocall_location" target="_blank" t-attf-style="color:{{ brand['primary'] }};text-decoration:none;" t-out="object.videocall_location or ''">https://example.com/call/xyz</a>
+                                                            </li>
+                                                            <li t-if="object.attendee_ids">
+                                                                <strong t-attf-style="color:{{ brand['dark'] }};">Attendees:</strong>
+                                                                <t t-out="', '.join(a.common_name for a in object.attendee_ids if a.common_name)">Guest One, Guest Two</t>
+                                                            </li>
+                                                        </ul>
+                                                    </td>
+                                                </tr>
+                                            </table>
+
+                                            <div t-if="object.bf_invitation_url" style="text-align:center;padding:8px 0 4px 0;">
+                                                <a t-att-href="object.bf_invitation_url" target="_blank" t-attf-style="display:inline-block;padding:10px 22px;margin:4px;color:#FFFFFF;text-decoration:none;background-color:{{ brand['primary'] }};border-radius:6px;font-weight:600;font-size:14px;border:1px solid {{ brand['primary'] }};">View the invitation</a>
+                                                <div style="margin-top:6px;font-size:13px;color:#6B7280;">You can confirm or decline your attendance from that page.</div>
+                                            </div>
+
+                                            <p style="margin:16px 0 0 0;font-size:13px;color:#6B7280;">
+                                                The <strong>invitation.ics</strong> file attached to this message adds the event to your calendar.
+                                            </p>
+
+                                            <div t-if="not is_html_empty(object.description)" style="margin-top:16px;font-size:14px;color:#374151;">
+                                                <t t-out="object.description">Agenda of the meeting</t>
+                                            </div>
+
+                                            <p style="margin:24px 0 0 0;font-size:15px;line-height:24px;color:#374151;font-weight:300;">
+                                                Looking forward,<br/>
+                                                <t t-if="object.user_id.signature" data-o-mail-quote-container="1"><t t-out="object.user_id.signature or ''" data-o-mail-quote="1"/></t>
+                                                <t t-else=""><strong t-attf-style="color:{{ brand['dark'] }};"><t t-out="object.user_id.partner_id.name or user.name"/></strong></t>
+                                            </p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="height:1px; line-height:1px; background-color:#E5E7EB;">&#160;</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding:16px 24px 20px 24px; background-color:#FFFFFF; border-radius:0 0 12px 12px;">
+                                            <p style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:12px; color:#6B7280; margin:0;">
+                                                <strong t-attf-style="color:{{ brand['dark'] }};">Invitation sent from the calendar of <t t-out="brand['company'].name + '.'">Blue Fox.</t></strong>
+                                            </p>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px; max-width:600px; margin:12px auto 0;">
+                                <tbody>
+                                    <tr>
+                                        <td t-attf-style="height:3px; line-height:3px; background-color:{{ brand['primary'] }}; width:50%;">&#160;</td>
+                                        <td t-attf-style="height:3px; line-height:3px; background-color:{{ brand['dark'] }}; width:50%;">&#160;</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </template>
+</odoo>

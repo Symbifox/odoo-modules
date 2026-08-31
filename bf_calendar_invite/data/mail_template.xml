@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+      Templates used by the EMAIL button on a calendar event.
+
+      Two things core's `calendar_template_meeting_update` does not do:
+      `report_template_ids` attaches the generated invitation.ics, and the body
+      links to the invitation page when the event has a single guest (see
+      calendar.event._bf_guest_attendee_url for why it is conditional).
+
+      Three records, one body. They differ only in `lang`, which is what
+      decides the language the composer renders in:
+
+        - the default one asks the event (`bf_mail_lang`), which answers with
+          the guests' language when they share one;
+        - the two others force French or English, so that the language can be
+          changed after the composer is open by picking another template from
+          its dropdown. That is the only way to change it there: the body is
+          rendered once, when the template is chosen.
+
+      The body itself lives in `data/mail_body.xml`, so its French is exported
+      to `i18n/fr_CA.po` once instead of being pasted into three records.
+
+      Left updatable on purpose, and note what that means: an upgrade of this
+      module rewrites all three bodies. Reword them under Settings → Technical
+      → Email Templates for one message, not to keep an edit — for that, change
+      `mail_body.xml` here.
+    -->
+    <record id="mail_template_calendar_invite" model="mail.template">
+        <field name="name">Calendar: Event details (with .ics)</field>
+        <field name="model_id" ref="calendar.model_calendar_event"/>
+        <field name="subject">{{ object.name }}</field>
+        <field name="email_from">{{ (object.user_id.email_formatted or user.email_formatted or '') }}</field>
+        <field name="lang">{{ object.bf_mail_lang }}</field>
+        <field name="description">Event details, the invitation link and the .ics — written in the guests' language</field>
+        <field name="report_template_ids" eval="[Command.set([ref('bf_calendar_invite.report_calendar_event_ics')])]"/>
+        <field name="body_html" type="html">
+            <t t-call="bf_calendar_invite.mail_body_calendar_invite"/>
+        </field>
+    </record>
+
+    <record id="mail_template_calendar_invite_fr" model="mail.template">
+        <field name="name">Calendar: Event details (with .ics) — Français</field>
+        <field name="model_id" ref="calendar.model_calendar_event"/>
+        <field name="subject">{{ object.name }}</field>
+        <field name="email_from">{{ (object.user_id.email_formatted or user.email_formatted or '') }}</field>
+        <field name="lang">{{ object.bf_mail_lang_fr }}</field>
+        <field name="description">The same message, forced to French</field>
+        <field name="report_template_ids" eval="[Command.set([ref('bf_calendar_invite.report_calendar_event_ics')])]"/>
+        <field name="body_html" type="html">
+            <t t-call="bf_calendar_invite.mail_body_calendar_invite"/>
+        </field>
+    </record>
+
+    <record id="mail_template_calendar_invite_en" model="mail.template">
+        <field name="name">Calendar: Event details (with .ics) — English</field>
+        <field name="model_id" ref="calendar.model_calendar_event"/>
+        <field name="subject">{{ object.name }}</field>
+        <field name="email_from">{{ (object.user_id.email_formatted or user.email_formatted or '') }}</field>
+        <field name="lang">{{ object.bf_mail_lang_en }}</field>
+        <field name="description">The same message, forced to English</field>
+        <field name="report_template_ids" eval="[Command.set([ref('bf_calendar_invite.report_calendar_event_ics')])]"/>
+        <field name="body_html" type="html">
+            <t t-call="bf_calendar_invite.mail_body_calendar_invite"/>
+        </field>
+    </record>
+</odoo>

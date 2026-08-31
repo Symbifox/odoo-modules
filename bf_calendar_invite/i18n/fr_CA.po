@@ -1,0 +1,200 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_calendar_invite
+#
+# Placeholder terms are left untranslated on purpose. "Tuesday", "May 2021",
+# "Office", "Guest One, Guest Two" and the like are the fallback content of a
+# `t-out`, shown only when a record is missing the value — never in a sent
+# message. Same for `'invitation.ics'` and `{{ object.name }}`, which are code
+# rather than prose: translating either would break the report filename or the
+# subject.
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0\n"
+"Report-Msgid-Bugs-To: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: bf_calendar_invite
+#: model_terms:ir.ui.view,arch_db:bf_calendar_invite.mail_body_calendar_invite
+msgid "Attendees:"
+msgstr "Participants :"
+
+#. module: bf_calendar_invite
+#: model:mail.template,name:bf_calendar_invite.mail_template_calendar_invite
+msgid "Calendar: Event details (with .ics)"
+msgstr "Calendrier : détails de l'événement (avec le .ics)"
+
+#. module: bf_calendar_invite
+#: model:mail.template,name:bf_calendar_invite.mail_template_calendar_invite_en
+msgid "Calendar: Event details (with .ics) — English"
+msgstr "Calendrier : détails de l'événement (avec le .ics) — English"
+
+#. module: bf_calendar_invite
+#: model:mail.template,name:bf_calendar_invite.mail_template_calendar_invite_fr
+msgid "Calendar: Event details (with .ics) — Français"
+msgstr "Calendrier : détails de l'événement (avec le .ics) — Français"
+
+#. module: bf_calendar_invite
+#: model_terms:ir.ui.view,arch_db:bf_calendar_invite.mail_body_calendar_invite
+msgid "Duration:"
+msgstr "Durée :"
+
+#. module: bf_calendar_invite
+#: model_terms:ir.ui.view,arch_db:bf_calendar_invite.mail_body_calendar_invite
+msgid "Event details"
+msgstr "Détails de l'événement"
+
+#. module: bf_calendar_invite
+#: model:mail.template,description:bf_calendar_invite.mail_template_calendar_invite
+msgid ""
+"Event details, the invitation link and the .ics — written in the guests' "
+"language"
+msgstr ""
+"Les détails de l'événement, le lien d'invitation et le .ics — rédigés dans "
+"la langue des invités"
+
+#. module: bf_calendar_invite
+#: model_terms:ir.ui.view,arch_db:bf_calendar_invite.mail_body_calendar_invite
+msgid "Hello"
+msgstr "Bonjour"
+
+#. module: bf_calendar_invite
+#: model_terms:ir.ui.view,arch_db:bf_calendar_invite.mail_body_calendar_invite
+msgid "Hello,"
+msgstr "Bonjour,"
+
+#. module: bf_calendar_invite
+#: model_terms:ir.ui.view,arch_db:bf_calendar_invite.mail_body_calendar_invite
+msgid "Here are the details for"
+msgstr "Voici les détails de"
+
+#. module: bf_calendar_invite
+#: model_terms:ir.ui.view,arch_db:bf_calendar_invite.mail_body_calendar_invite
+msgid "Invitation"
+msgstr "Invitation"
+
+#. module: bf_calendar_invite
+#: model:ir.actions.report,name:bf_calendar_invite.report_calendar_event_ics
+msgid "Invitation (.ics)"
+msgstr "Invitation (.ics)"
+
+#. module: bf_calendar_invite
+#: model:ir.model.fields,field_description:bf_calendar_invite.field_calendar_event__bf_mail_lang
+msgid "Invitation language"
+msgstr "Langue de l'invitation"
+
+#. module: bf_calendar_invite
+#: model:ir.model.fields,field_description:bf_calendar_invite.field_calendar_event__bf_invitation_url
+msgid "Invitation page"
+msgstr "Page d'invitation"
+
+#. module: bf_calendar_invite
+#: model:ir.model.fields,field_description:bf_calendar_invite.field_calendar_event__bf_mail_lang_en
+msgid "Invitation language (English)"
+msgstr "Langue de l'invitation (anglais)"
+
+#. module: bf_calendar_invite
+#: model:ir.model.fields,field_description:bf_calendar_invite.field_calendar_event__bf_mail_lang_fr
+msgid "Invitation language (French)"
+msgstr "Langue de l'invitation (français)"
+
+#. module: bf_calendar_invite
+#: model_terms:ir.ui.view,arch_db:bf_calendar_invite.mail_body_calendar_invite
+msgid "Invitation sent from the calendar of"
+msgstr "Invitation envoyée depuis le calendrier de"
+
+#. module: bf_calendar_invite
+#: model:ir.model.fields,help:bf_calendar_invite.field_calendar_event__bf_mail_lang
+msgid ""
+"Language the EMAIL button writes in: the guests' own when they share one, "
+"the organiser's otherwise."
+msgstr ""
+"Langue dans laquelle le bouton COURRIEL rédige : celle des invités quand ils "
+"la partagent, celle de l'organisateur sinon."
+
+#. module: bf_calendar_invite
+#: model_terms:ir.ui.view,arch_db:bf_calendar_invite.mail_body_calendar_invite
+msgid "Looking forward,<br/>"
+msgstr "Au plaisir,<br/>"
+
+#. module: bf_calendar_invite
+#. odoo-python
+#: code:addons/bf_calendar_invite/models/calendar_event.py:0
+#: model_terms:ir.ui.view,arch_db:bf_calendar_invite.mail_body_calendar_invite
+msgid "Meeting"
+msgstr "Rencontre"
+
+#. module: bf_calendar_invite
+#: model:ir.model.fields,help:bf_calendar_invite.field_calendar_event__bf_invitation_url
+msgid ""
+"Public page where the attendee can see the event and accept or decline it. "
+"Only set when exactly one attendee is an outside guest, because the link "
+"identifies whoever opens it as that attendee."
+msgstr ""
+"Page publique où le participant voit l'événement et peut l'accepter ou le "
+"refuser. Renseignée uniquement quand un seul participant est un invité "
+"externe, parce que le lien identifie comme ce participant quiconque l'ouvre."
+
+#. module: bf_calendar_invite
+#: model_terms:ir.ui.view,arch_db:bf_calendar_invite.mail_body_calendar_invite
+msgid ""
+"The <strong>invitation.ics</strong> file attached to this message adds the "
+"event to your calendar."
+msgstr ""
+"Le fichier <strong>invitation.ics</strong> joint à ce message ajoute "
+"l'événement à votre agenda."
+
+#. module: bf_calendar_invite
+#. odoo-python
+#: code:addons/bf_calendar_invite/models/ir_actions_report.py:0
+msgid ""
+"The iCalendar report type only applies to calendar events, not to %(model)s."
+msgstr ""
+"Le type de rapport iCalendar ne s'applique qu'aux événements du calendrier, "
+"pas à %(model)s."
+
+#. module: bf_calendar_invite
+#: model:mail.template,description:bf_calendar_invite.mail_template_calendar_invite_en
+msgid "The same message, forced to English"
+msgstr "Le même message, forcé en anglais"
+
+#. module: bf_calendar_invite
+#: model:mail.template,description:bf_calendar_invite.mail_template_calendar_invite_fr
+msgid "The same message, forced to French"
+msgstr "Le même message, forcé en français"
+
+#. module: bf_calendar_invite
+#: model_terms:ir.ui.view,arch_db:bf_calendar_invite.mail_body_calendar_invite
+msgid "Video call:"
+msgstr "Visioconférence :"
+
+#. module: bf_calendar_invite
+#: model_terms:ir.ui.view,arch_db:bf_calendar_invite.mail_body_calendar_invite
+msgid "View map"
+msgstr "Voir la carte"
+
+#. module: bf_calendar_invite
+#: model_terms:ir.ui.view,arch_db:bf_calendar_invite.mail_body_calendar_invite
+msgid "View the invitation"
+msgstr "Voir l'invitation"
+
+#. module: bf_calendar_invite
+#: model_terms:ir.ui.view,arch_db:bf_calendar_invite.mail_body_calendar_invite
+msgid "Where:"
+msgstr "Lieu :"
+
+#. module: bf_calendar_invite
+#: model_terms:ir.ui.view,arch_db:bf_calendar_invite.mail_body_calendar_invite
+msgid "You can confirm or decline your attendance from that page."
+msgstr "Vous pouvez y confirmer ou décliner votre présence."
+
+#. module: bf_calendar_invite
+#: model:ir.model.fields.selection,name:bf_calendar_invite.selection__ir_actions_report__report_type__qweb-ics
+msgid "iCalendar (.ics)"
+msgstr "iCalendar (.ics)"
