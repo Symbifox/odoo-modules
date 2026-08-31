@@ -10,7 +10,7 @@ class HostingMaintenanceSchedule(models.Model):
 
     def write(self, vals):
         res = super().write(vals)
-        if 'last_performed_date' in vals:
+        if 'last_performed' in vals:
             for schedule in self:
                 self._award_maintenance_xp(schedule)
         return res

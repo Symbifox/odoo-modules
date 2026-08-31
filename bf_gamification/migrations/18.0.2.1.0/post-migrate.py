@@ -177,7 +177,7 @@ def _update_existing_badges(env):
         maint_badge.write({
             'condition_type': 'automatic',
             'condition_model': 'hosting.maintenance.schedule',
-            'condition_domain': "[('last_performed_date', '!=', False)]",
+            'condition_domain': "[('last_performed', '!=', False)]",
             'condition_threshold': 1,
             'condition_user_field': 'write_uid',
         })
@@ -306,7 +306,7 @@ def _create_new_badges(env):
         'rarity': 'uncommon',
         'condition_type': 'automatic',
         'condition_model': 'hosting.maintenance.schedule',
-        'condition_domain': "[('last_performed_date', '!=', False)]",
+        'condition_domain': "[('last_performed', '!=', False)]",
         'condition_threshold': 10,
         'condition_user_field': 'write_uid',
         'popup_effect': 'confetti',
@@ -320,7 +320,7 @@ def _create_new_badges(env):
         'rarity': 'rare',
         'condition_type': 'automatic',
         'condition_model': 'hosting.maintenance.schedule',
-        'condition_domain': "[('last_performed_date', '!=', False)]",
+        'condition_domain': "[('last_performed', '!=', False)]",
         'condition_threshold': 50,
         'condition_user_field': 'write_uid',
         'popup_effect': 'fireworks',

@@ -66,6 +66,7 @@ Built for [Les services de consultation Blue Fox, Inc.](https://symbifox.com)
 | `project` | Task completion XP integration |
 | `web` | OWL component framework |
 | `project_knowledge_matrix` | Document/knowledge item XP integration |
+| `bf_corporate_governance` | Holds `corporate.resolution`, which this module inherits |
 | `hosting_management` | Maintenance completion XP integration |
 | `helpdesk_mgmt` | Helpdesk ticket resolution XP integration |
 | `bf_onboarding_base` | Shared onboarding-panel helpers (guided setup step) |
@@ -258,7 +259,7 @@ Overrides `create()` and `write()`:
 
 ### Hosting (`hosting.maintenance.schedule`)
 
-Overrides `write()`. When `last_performed_date` is updated (maintenance marked done):
+Overrides `write()`. When `last_performed` is updated (maintenance marked done):
 
 - Awards XP (default: 2) to the current user
 
@@ -526,6 +527,16 @@ bf_gamification/
 ---
 
 ## Changelog
+
+### v2.5.1
+
+- The maintenance badges watched `last_performed_date`, a field that no longer
+  exists under that name. Three badge conditions, the 2.1.0 migration that
+  seeds them and the `write()` override now all read `last_performed`; a
+  migration repairs the conditions already stored on existing databases.
+- `bf_corporate_governance` is declared: `corporate.resolution` left
+  `project_knowledge_matrix` at its 18.0.12.0.0, and without the dependency
+  Fox Quest loads before the module holding the model it inherits.
 
 ### v2.3.0
 

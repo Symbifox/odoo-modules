@@ -231,7 +231,7 @@
             <field name="rarity">common</field>
             <field name="condition_type">automatic</field>
             <field name="condition_model">hosting.maintenance.schedule</field>
-            <field name="condition_domain">[('last_performed_date', '!=', False)]</field>
+            <field name="condition_domain">[('last_performed', '!=', False)]</field>
             <field name="condition_threshold">1</field>
             <field name="condition_user_field">write_uid</field>
             <field name="popup_effect">glow</field>
@@ -245,7 +245,7 @@
             <field name="rarity">uncommon</field>
             <field name="condition_type">automatic</field>
             <field name="condition_model">hosting.maintenance.schedule</field>
-            <field name="condition_domain">[('last_performed_date', '!=', False)]</field>
+            <field name="condition_domain">[('last_performed', '!=', False)]</field>
             <field name="condition_threshold">10</field>
             <field name="condition_user_field">write_uid</field>
             <field name="popup_effect">confetti</field>
@@ -259,7 +259,7 @@
             <field name="rarity">rare</field>
             <field name="condition_type">automatic</field>
             <field name="condition_model">hosting.maintenance.schedule</field>
-            <field name="condition_domain">[('last_performed_date', '!=', False)]</field>
+            <field name="condition_domain">[('last_performed', '!=', False)]</field>
             <field name="condition_threshold">50</field>
             <field name="condition_user_field">write_uid</field>
             <field name="popup_effect">fireworks</field>

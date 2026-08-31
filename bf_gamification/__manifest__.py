@@ -1,7 +1,7 @@
 {
     "name": "Fox Quest",
     "summary": "Syst\u00e8me de gamification avec XP, niveaux, badges et r\u00e9compenses",
-    "version": "18.0.2.3.1",
+    "version": "18.0.2.5.1",
     "category": "Human Resources",
     'website': 'https://symbifox.com',
     "author": "Les services de consultation Blue Fox, Inc.",
@@ -17,6 +17,10 @@
         "project",
         "web",
         "project_knowledge_matrix",
+        # `corporate.resolution` a quitté project_knowledge_matrix à sa
+        # 18.0.12.0.0 : sans cette ligne, Fox Quest se charge avant le
+        # module qui porte le modèle qu'il hérite.
+        "bf_corporate_governance",
         "hosting_management",
         "helpdesk_mgmt",
         "bf_onboarding_base",
