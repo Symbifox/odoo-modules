@@ -101,8 +101,15 @@
                     </group>
                     <notebook>
                         <page string="Liens" name="links">
-                            <field name="link_ids">
-                                <list editable="bottom">
+                            <!-- ⚠️ `active_test: False` est OBLIGATOIRE ici.
+                                 Un `one2many` filtre les enregistrements
+                                 archivés par défaut : sans ce contexte, cocher
+                                 « Affiché » à faux fait DISPARAÎTRE la ligne de
+                                 la liste, et plus rien ne permet de la
+                                 réafficher. Un bouton qui masque sans permettre
+                                 de démasquer est pire que pas de bouton. -->
+                            <field name="link_ids" context="{'active_test': False}">
+                                <list editable="bottom" decoration-muted="not active">
                                     <field name="sequence" widget="handle"/>
                                     <field name="name"/>
                                     <field name="subtitle" optional="show"/>
@@ -113,10 +120,16 @@
                                            placeholder="https://…"/>
                                     <field name="resolved_url" optional="show" readonly="1"/>
                                     <field name="icon" optional="hide"/>
-                                    <field name="click_count" optional="hide" readonly="1"/>
+                                    <field name="click_count" string="Clics" optional="show" readonly="1"/>
                                     <field name="from_template" optional="hide" readonly="1"/>
                                     <field name="source_available" column_invisible="1"/>
-                                    <field name="active" column_invisible="1"/>
+                                    <!-- Afficher/masquer VISIBLE : masquer un lien
+                                         sans le supprimer est le geste courant
+                                         (un numéro qu'on ne veut plus donner, un
+                                         dépôt fermé pour la saison). Caché dans
+                                         une colonne facultative, personne ne le
+                                         trouvait et les gens supprimaient. -->
+                                    <field name="active" string="Affiché" widget="boolean_toggle"/>
                                 </list>
                             </field>
                             <div class="text-muted mt-2">
@@ -124,10 +137,51 @@
                                 s'affiche pas sur la page publique. C'est
                                 voulu : mieux vaut un lien absent qu'un lien
                                 mort atteint par un QR déjà imprimé.
+                                <br/>
+                                Décocher « Affiché » retire un lien de la page
+                                sans le supprimer : la ligne reste ici, en gris,
+                                et se rallume d'un clic. C'est le geste à faire
+                                pour un numéro qu'on ne veut plus donner.
                             </div>
                         </page>
                         <page string="Présentation" name="bio">
                             <field name="bio" placeholder="Quelques lignes affichées sous le titre."/>
+                        </page>
+                        <page string="Statistiques" name="stats">
+                            <group>
+                                <group string="La page">
+                                    <field name="visit_count" readonly="1"/>
+                                    <field name="last_visit" readonly="1"/>
+                                    <field name="link_count" readonly="1"/>
+                                    <field name="visible_link_count" readonly="1"/>
+                                </group>
+                            </group>
+                            <separator string="Clics par lien"/>
+                            <field name="link_ids" readonly="1" nolabel="1"
+                                   context="{'active_test': False}">
+                                <list create="false" delete="false" edit="false"
+                                      decoration-muted="not active"
+                                      default_order="click_count desc">
+                                    <field name="name"/>
+                                    <field name="source_code"/>
+                                    <field name="click_count" string="Clics"/>
+                                    <field name="resolved_url" string="Mène à"/>
+                                    <field name="active" string="Affiché" widget="boolean_toggle" readonly="1"/>
+                                </list>
+                            </field>
+                            <div class="text-muted mt-3">
+                                <p>
+                                    Les visites comptent les affichages de la page,
+                                    les clics comptent les départs vers un lien.
+                                    Un écart marqué entre les deux dit que les gens
+                                    arrivent et repartent sans rien ouvrir.
+                                </p>
+                                <p>
+                                    C'est la seule façon de savoir si le code QR
+                                    d'une signature sert vraiment, plutôt que de
+                                    le supposer.
+                                </p>
+                            </div>
                         </page>
                         <page string="Code QR" name="qr">
                             <group>

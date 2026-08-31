@@ -75,9 +75,42 @@ class BfLinkpageSource(models.AbstractModel):
             },
             {
                 "code": "partner_phone",
-                "label": "Téléphone du contact",
+                "label": "Téléphone du contact (mobile d'abord)",
                 "provider": False,
-                "help": "tel: tiré de la fiche du contact (mobile en premier).",
+                "help": "Le mobile de la fiche contact, à défaut son téléphone. "
+                        "Conservé pour les pages existantes ; préférez une des "
+                        "sources ci-dessous, qui nomment le numéro qu'elles "
+                        "servent au lieu de le deviner.",
+            },
+            {
+                "code": "phone_work",
+                "label": "Téléphone au bureau",
+                "provider": False,
+                "help": "Le téléphone de travail de la fiche employé, à défaut "
+                        "celui de la société. C'est le numéro qu'on met dans "
+                        "une signature.",
+            },
+            {
+                "code": "phone_mobile",
+                "label": "Mobile",
+                "provider": False,
+                "help": "Le mobile de la fiche contact, à défaut celui de la "
+                        "fiche employé.",
+            },
+            {
+                "code": "phone_direct",
+                "label": "Ligne directe",
+                "provider": False,
+                "help": "Le champ « téléphone » de la fiche contact, celui "
+                        "qu'on garde pour une ligne personnelle.",
+            },
+            {
+                "code": "phone_tollfree",
+                "label": "Sans frais",
+                "provider": False,
+                "help": "Le numéro sans frais de la société. ⚠️ Il est rangé "
+                        "dans le champ « mobile » de la fiche société, faute "
+                        "d'un champ dédié dans Odoo.",
             },
             {
                 "code": "meet",
@@ -335,6 +368,42 @@ class BfLinkpageSource(models.AbstractModel):
         if not company or not field or field not in company._fields:
             return False
         return company[field] or False
+
+    @staticmethod
+    def _tel(numero):
+        """Un numéro en lien `tel:`, ou False.
+
+        `tel:` n'accepte ni espace ni ponctuation de présentation. On garde le
+        `+` initial, qui porte l'indicatif international.
+        """
+        if not numero:
+            return False
+        propre = "".join(c for c in numero if c.isdigit() or c == "+")
+        return "tel:%s" % propre if propre else False
+
+    @api.model
+    def _resolve_phone_work(self, link):
+        page = link.page_id
+        employe = page._employee()
+        if employe and employe.work_phone:
+            return self._tel(employe.work_phone)
+        return self._tel(page.sudo()._company().phone)
+
+    @api.model
+    def _resolve_phone_mobile(self, link):
+        page = link.page_id
+        if page.partner_id.mobile:
+            return self._tel(page.partner_id.mobile)
+        employe = page._employee()
+        return self._tel(employe.mobile_phone) if employe else False
+
+    @api.model
+    def _resolve_phone_direct(self, link):
+        return self._tel(link.page_id.partner_id.phone)
+
+    @api.model
+    def _resolve_phone_tollfree(self, link):
+        return self._tel(link.page_id.sudo()._company().mobile)
 
     @api.model
     def _resolve_meet(self, link):

@@ -58,12 +58,32 @@
         <field name="icon">fa-envelope-o</field>
         <field name="source_code">partner_email</field>
     </record>
+    <record id="line_carte_visite_bureau" model="bf.linkpage.template.line">
+        <field name="template_id" ref="template_carte_visite"/>
+        <field name="sequence">25</field>
+        <field name="name">Appeler au bureau</field>
+        <field name="icon">fa-phone</field>
+        <field name="source_code">phone_work</field>
+    </record>
+    <record id="line_carte_visite_sansfrais" model="bf.linkpage.template.line">
+        <field name="template_id" ref="template_carte_visite"/>
+        <field name="sequence">27</field>
+        <field name="name">Sans frais</field>
+        <field name="icon">fa-phone-square</field>
+        <field name="source_code">phone_tollfree</field>
+    </record>
+    <record id="line_carte_visite_linkedin" model="bf.linkpage.template.line">
+        <field name="template_id" ref="template_carte_visite"/>
+        <field name="sequence">90</field>
+        <field name="name">LinkedIn</field>
+        <field name="source_code">social_linkedin</field>
+    </record>
     <record id="line_carte_visite_tel" model="bf.linkpage.template.line">
         <field name="template_id" ref="template_carte_visite"/>
         <field name="sequence">30</field>
-        <field name="name">Appeler</field>
-        <field name="icon">fa-phone</field>
-        <field name="source_code">partner_phone</field>
+        <field name="name">Mobile</field>
+        <field name="icon">fa-mobile</field>
+        <field name="source_code">phone_mobile</field>
     </record>
 
     <!-- 2. Conseil, page complète =========================================
@@ -108,12 +128,25 @@
         <field name="icon">fa-envelope-o</field>
         <field name="source_code">partner_email</field>
     </record>
+    <record id="line_conseil_bureau" model="bf.linkpage.template.line">
+        <field name="template_id" ref="template_conseil_complet"/>
+        <field name="sequence">35</field>
+        <field name="name">Appeler au bureau</field>
+        <field name="icon">fa-phone</field>
+        <field name="source_code">phone_work</field>
+    </record>
+    <record id="line_conseil_linkedin" model="bf.linkpage.template.line">
+        <field name="template_id" ref="template_conseil_complet"/>
+        <field name="sequence">90</field>
+        <field name="name">LinkedIn</field>
+        <field name="source_code">social_linkedin</field>
+    </record>
     <record id="line_conseil_tel" model="bf.linkpage.template.line">
         <field name="template_id" ref="template_conseil_complet"/>
         <field name="sequence">40</field>
-        <field name="name">Appeler</field>
-        <field name="icon">fa-phone</field>
-        <field name="source_code">partner_phone</field>
+        <field name="name">Mobile</field>
+        <field name="icon">fa-mobile</field>
+        <field name="source_code">phone_mobile</field>
     </record>
     <record id="line_conseil_site" model="bf.linkpage.template.line">
         <field name="template_id" ref="template_conseil_complet"/>
@@ -148,9 +181,9 @@
     <record id="line_sans_agenda_tel" model="bf.linkpage.template.line">
         <field name="template_id" ref="template_sans_agenda"/>
         <field name="sequence">20</field>
-        <field name="name">Appeler</field>
-        <field name="icon">fa-phone</field>
-        <field name="source_code">partner_phone</field>
+        <field name="name">Mobile</field>
+        <field name="icon">fa-mobile</field>
+        <field name="source_code">phone_mobile</field>
     </record>
     <record id="line_sans_agenda_site" model="bf.linkpage.template.line">
         <field name="template_id" ref="template_sans_agenda"/>
@@ -247,9 +280,9 @@
     <record id="line_epuree_tel" model="bf.linkpage.template.line">
         <field name="template_id" ref="template_epuree"/>
         <field name="sequence">30</field>
-        <field name="name">Appeler</field>
-        <field name="icon">fa-phone</field>
-        <field name="source_code">partner_phone</field>
+        <field name="name">Mobile</field>
+        <field name="icon">fa-mobile</field>
+        <field name="source_code">phone_mobile</field>
     </record>
     <record id="line_epuree_linkedin" model="bf.linkpage.template.line">
         <field name="template_id" ref="template_epuree"/>

@@ -333,6 +333,19 @@ class BfLinkpage(models.Model):
                 return record.image_256
         return False
 
+    def _employee(self):
+        """La fiche employé de la personne de cette page, ou un ensemble vide.
+
+        Registre vérifié plutôt qu'importé : le module ne dépend pas de `hr`.
+        """
+        self.ensure_one()
+        Employee = self.env.get("hr.employee")
+        if Employee is None or not self.user_id:
+            return None
+        return self.env["hr.employee"].sudo().search(
+            [("user_id", "=", self.user_id.id)], limit=1
+        )
+
     def _company(self):
         """L'entreprise dont on montre le logo."""
         self.ensure_one()
@@ -398,10 +411,31 @@ class BfLinkpage(models.Model):
             lignes.append("TITLE:%s" % e(self.headline))
         if partner.email:
             lignes.append("EMAIL;TYPE=INTERNET,WORK:%s" % e(partner.email))
-        for champ, etiquette in (("mobile", "CELL"), ("phone", "WORK,VOICE")):
-            valeur = partner[champ] if champ in partner._fields else None
-            if valeur:
-                lignes.append("TEL;TYPE=%s:%s" % (etiquette, e(valeur)))
+
+        # Les mêmes numéros que la page, et dans le même ordre. Une carte qui
+        # donnerait d'autres numéros que la page serait une deuxième vérité à
+        # tenir à jour, et c'est exactement ce que ce module refuse ailleurs.
+        # Le bureau vient de la fiche employé, à défaut de la société : c'est le
+        # numéro d'une signature, et il n'est PAS sur la fiche contact.
+        employe = self._employee()
+        societe = self.sudo()._company()
+        numeros = [
+            ("WORK,VOICE", (employe.work_phone if employe else None) or societe.phone),
+            ("WORK,VOICE,PREF", societe.mobile),
+            ("CELL", partner.mobile or (employe.mobile_phone if employe else None)),
+            ("HOME,VOICE", partner.phone),
+        ]
+        vus = set()
+        for etiquette, valeur in numeros:
+            if not valeur:
+                continue
+            # Un même numéro saisi à deux endroits ne doit pas sortir deux fois :
+            # le carnet d'adresses le montrerait en double sans rien expliquer.
+            cle = "".join(c for c in valeur if c.isdigit())
+            if cle in vus:
+                continue
+            vus.add(cle)
+            lignes.append("TEL;TYPE=%s:%s" % (etiquette, e(valeur)))
         lignes.append("URL:%s" % e(self.public_url))
         lignes.append("REV:%s" % fields.Datetime.now().strftime("%Y%m%dT%H%M%SZ"))
         lignes.append("END:VCARD")
