@@ -2,7 +2,7 @@
     "name": "Expérience employé — allergies",
     "summary": "Allergies et allergies alimentaires, lisibles seulement par la "
                "personne et par qui organise",
-    "version": "18.0.1.1.0",
+    "version": "18.0.1.2.0",
     "category": "Human Resources",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",

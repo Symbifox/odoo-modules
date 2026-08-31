@@ -2,7 +2,7 @@
     "name": "Expérience employé — pont vie privée (Loi 25)",
     "summary": "Déclarer ce que le registre d'usage collecte, poser une règle de "
                "conservation, et garder la mesure quand les lignes s'en vont",
-    "version": "18.0.1.0.0",
+    "version": "18.0.1.1.0",
     "category": "Human Resources",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",

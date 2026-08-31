@@ -1,7 +1,7 @@
 from dateutil.relativedelta import relativedelta
 
 from odoo import fields
-from odoo.exceptions import UserError
+from odoo.exceptions import AccessError, UserError
 from odoo.tests.common import TransactionCase, tagged
 
 
@@ -194,3 +194,57 @@ class TestPrivacyBridge(TransactionCase):
         right_id = right.id
         self._line(right)._execute_destruction()
         self.assertFalse(self.env["bf.ex.entitlement"].browse(right_id).exists())
+
+    # ---------------- qui a le droit de construire l'agrégat ----------------
+
+    def _plain_user(self):
+        return self.env["res.users"].create({
+            "name": "Sans droits", "login": "sansdroits_agg_test",
+            "groups_id": [(6, 0, [self.env.ref("base.group_user").id])],
+        })
+
+    def test_build_all_is_refused_to_a_plain_employee(self):
+        """`action_build_all` est publique, donc appelable par RPC. L'ACL ne
+        donne que la lecture à `base.group_user`, mais `_build_for_year` écrit
+        en `sudo()` : sans garde, un compte en lecture seule créait des lignes.
+        """
+        with self.assertRaises(AccessError):
+            self.env["bf.ex.usage.aggregate"].with_user(
+                self._plain_user()).action_build_all()
+
+    def test_recompute_is_refused_to_a_plain_employee(self):
+        """Même porte, autre poignée : `action_recompute` passe par le même
+        `_build_for_year`."""
+        aggregate = self.env["bf.ex.usage.aggregate"]._build_for_year(
+            self.today.year, company=self.company, benefits=self.benefit)
+        with self.assertRaises(AccessError):
+            aggregate.with_user(self._plain_user()).action_recompute()
+
+    def test_a_plain_employee_cannot_open_the_destruction_gate(self):
+        """🔴 Ce que la garde protège vraiment.
+
+        La campagne refuse de détruire une ligne d'usage dont l'année n'est pas
+        agrégée. Si n'importe qui peut construire l'agrégat, n'importe qui peut
+        satisfaire cette condition, et l'ordre « agréger d'abord, détruire
+        ensuite » ne tient plus.
+        """
+        Aggregate = self.env["bf.ex.usage.aggregate"]
+        self.assertFalse(
+            Aggregate._has_coverage(self.benefit, self.today.year, self.company),
+            "l'année ne doit pas encore être couverte au départ")
+        with self.assertRaises(AccessError):
+            Aggregate.with_user(self._plain_user()).action_build_all()
+        self.assertFalse(
+            Aggregate._has_coverage(self.benefit, self.today.year, self.company),
+            "la tentative refusée ne doit avoir rien écrit")
+
+    def test_hr_still_builds(self):
+        hr = self.env["res.users"].create({
+            "name": "RH", "login": "rh_agg_test",
+            "groups_id": [(6, 0, [self.env.ref("base.group_user").id,
+                                  self.env.ref("hr.group_hr_user").id])],
+        })
+        self.env["bf.ex.usage.aggregate"].with_user(hr).action_build_all()
+        self.assertTrue(
+            self.env["bf.ex.usage.aggregate"]._has_coverage(
+                self.benefit, self.today.year, self.company))

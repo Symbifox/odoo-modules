@@ -23,6 +23,9 @@ manager has no access.
   that are common at work (latex, insect stings, fragranced products).
 * One declaration per person (`bf.ex.allergy`): the allergen, the severity, and a
   note. Severity "anaphylaxis" is visible in the list view.
+* **A self-service entry point.** Everyone declares their own, from
+  *Employee Experience > People > My allergies*, scoped to themselves by the
+  record rule.
 * A **catering list**: for a group of people, the dietary constraints **without
   the names**. This is what you hand to a caterer, and it avoids circulating a
   medical record to order sandwiches. Non-food allergens are excluded from it.
@@ -49,9 +52,23 @@ It does not replace an emergency plan and does not claim to be a medical record.
 It carries no retention rule: that is `bf_employee_experience_health_privacy`,
 which adds express consent and destruction on departure.
 
+## People declare their own, and that is not a detail
+
+The privacy bridge sets `requires_express_opt_in` and states that declaring an
+allergy is voluntary. A consent its holder cannot exercise is not one, so the
+self-service menu is part of the design rather than a convenience: without it,
+the only way an allergy reaches the system is HR typing it on someone's behalf,
+which is the opposite of what the bridge declares.
+
+⚠️ The employee record's `ex_allergy_ids` and `ex_has_anaphylaxis` stay reserved
+to `hr.group_hr_user`, and must. Opening them to staff would expose no allergy —
+the record rule empties the list on a colleague — but `ex_has_anaphylaxis` would
+then compute "no" for everyone. A safety flag that answers "no" for want of read
+access is worse than an absent one.
+
 ## Tests
 
-13 tests. The access rule carries a **counter-proof**: its domain is replaced by
+19 tests. The access rule carries a **counter-proof**: its domain is replaced by
 `[(1, '=', 1)]` and the test verifies that the colleague's allergy then appears —
 without it, a green test would not say whether that rule is what masks. Four more
 tests pin the catering list's authorisation rather than only the shape of its

@@ -120,7 +120,7 @@ then re-import. Lines arrive as drafts; they are confirmed in bulk afterwards.
 | `bf_employee_experience_expense` | an approved expense becomes a confirmed usage, at real cost. Auto-installs with `hr_expense` |
 | `bf_employee_experience_dashboard` | take-up tile and a count of benefits nobody claims. Auto-installs with `bf_dashboard` |
 | `bf_employee_experience_digest` | a "Benefits" section in the daily digest. Auto-installs with `daily_todo_digest` |
-| `bf_employee_experience_health` | allergies and food allergies, with an anonymous catering list |
+| `bf_employee_experience_health` | allergies and food allergies, declared by each person, with an anonymous catering list |
 | `bf_employee_experience_privacy` | purpose, retention rule, and the anonymised aggregate that survives destruction. Auto-installs with `privacy_consent` |
 | `bf_employee_experience_health_privacy` | a separate regime for allergies: express consent, destruction on departure |
 
@@ -144,7 +144,7 @@ been aggregated **raises**, destroying nothing and certifying nothing.
 
 ## Tests
 
-111 tests across the family, 57 of them on the base module. Fresh install from an
+118 tests across the family, 57 of them on the base module. Fresh install from an
 empty database, views loaded under a real account for each role (never uid 1,
 which has no groups), and parity between declared columns and
 `information_schema` with zero missing.

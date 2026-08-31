@@ -1,4 +1,4 @@
-from odoo.exceptions import AccessError
+from odoo.exceptions import AccessError, UserError
 from odoo.tests.common import TransactionCase, tagged
 
 
@@ -142,3 +142,60 @@ class TestHealth(TransactionCase):
         self.env.invalidate_all()
         with self.assertRaises(AccessError):
             self.peanut.with_user(self.user_a).write({"name": "Renommé"})
+
+    # ---------------- le libre-service ----------------
+
+    def _run_my_allergies(self, user):
+        """Déclencher l'action de menu comme le ferait le client web."""
+        action = self.env.ref("bf_employee_experience_health.action_my_allergy")
+        return action.with_user(user).run()
+
+    def test_a_plain_employee_sees_the_self_service_menu(self):
+        """🔴 Le pont vie privée pose `requires_express_opt_in` et écrit que
+        déclarer une allergie est volontaire. Avant ce menu, la personne avait
+        tous les droits ORM sur sa déclaration et AUCUNE surface pour les
+        exercer : les RH saisissaient à sa place."""
+        menus = self.env["ir.ui.menu"].with_user(self.user_a).load_menus(False)
+        noms = {v["name"] for v in menus.values()
+                if isinstance(v, dict) and v.get("name")}
+        self.assertIn("Mes allergies", noms)
+        self.assertNotIn("Santé et sécurité", noms,
+                         "les écrans de l'administration restent hors de vue")
+
+    def test_the_self_service_action_is_scoped_to_the_caller(self):
+        action = self._run_my_allergies(self.user_a)
+        self.assertEqual(action["res_model"], "bf.ex.allergy")
+        self.assertEqual(action["domain"], [("employee_id", "=", self.emp_a.id)])
+        self.assertEqual(action["context"]["default_employee_id"], self.emp_a.id)
+
+    def test_two_people_get_two_different_scopes(self):
+        """La contre-épreuve du libre-service : le même menu ne rend pas le
+        même périmètre à deux personnes."""
+        a = self._run_my_allergies(self.user_a)
+        b = self._run_my_allergies(self.user_b)
+        self.assertNotEqual(a["domain"], b["domain"])
+        self.assertEqual(b["domain"], [("employee_id", "=", self.emp_b.id)])
+
+    def test_a_user_without_an_employee_record_gets_a_clear_message(self):
+        orphan = self.env["res.users"].create({
+            "name": "Sans fiche", "login": "sansfiche_health_test",
+            "groups_id": [(6, 0, [self.env.ref("base.group_user").id])],
+        })
+        with self.assertRaises(UserError):
+            self._run_my_allergies(orphan)
+
+    def test_the_self_service_form_does_not_carry_the_employee_field(self):
+        """Sur sa propre déclaration, le champ « Employé » est du bruit : il
+        vaut toujours soi. Le défaut du contexte le remplit."""
+        form = self.env.ref("bf_employee_experience_health.view_my_allergy_form")
+        self.assertNotIn('name="employee_id"', form.arch)
+
+    def test_the_anaphylaxis_flag_stays_out_of_reach_of_the_staff(self):
+        """⚠️ Contre-épreuve d'une tentation : ouvrir `ex_allergy_ids` au
+        personnel n'exposerait aucune allergie, la règle d'accès vidant la liste
+        chez un collègue. Mais `ex_has_anaphylaxis` calculerait alors « non »
+        sur tout le monde, et un drapeau de sécurité qui répond « non » faute de
+        droit de lecture est pire qu'un drapeau absent."""
+        champs = self.env["hr.employee"].with_user(self.user_a).fields_get(
+            allfields=["ex_allergy_ids", "ex_has_anaphylaxis"])
+        self.assertFalse(champs, "les deux champs restent réservés à l'administration")

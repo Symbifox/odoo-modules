@@ -84,6 +84,92 @@
         </field>
     </record>
 
+    <!-- LIBRE-SERVICE
+
+         Le pont vie privée pose `requires_express_opt_in` et écrit que déclarer
+         une allergie est volontaire. Un consentement exprès dont le titulaire
+         ne peut pas se servir n'en est pas un : sans ces trois enregistrements,
+         l'ACL et la règle d'accès donnaient à chacun tous les droits sur sa
+         propre déclaration, et AUCUNE surface pour les exercer. Les RH
+         saisissaient à la place de la personne, ce qui est exactement le
+         contraire de ce que le pont déclare.
+
+         ⚠️ Le champ `ex_allergy_ids` de la fiche employé reste réservé à
+         l'administration, et il doit le rester. L'ouvrir au personnel
+         n'exposerait aucune allergie (la règle d'accès vide la liste chez un
+         collègue), mais `ex_has_anaphylaxis` calculerait alors « non » sur tout
+         le monde. Un drapeau de sécurité qui répond « non » faute de droit de
+         lecture est pire qu'un drapeau absent. -->
+
+    <record id="view_my_allergy_list" model="ir.ui.view">
+        <field name="name">bf.ex.allergy.list.mine</field>
+        <field name="model">bf.ex.allergy</field>
+        <field name="arch" type="xml">
+            <list string="Mes allergies" editable="bottom"
+                  decoration-danger="severity == 'anaphylaxis'">
+                <field name="allergen_id"/>
+                <field name="severity"/>
+                <field name="is_food" optional="hide"/>
+                <field name="note"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_my_allergy_form" model="ir.ui.view">
+        <field name="name">bf.ex.allergy.form.mine</field>
+        <field name="model">bf.ex.allergy</field>
+        <field name="arch" type="xml">
+            <form string="Mon allergie">
+                <sheet>
+                    <div class="alert alert-info" role="alert">
+                        Déclarer une allergie est volontaire. Ce que vous inscrivez ici est
+                        lisible par vous et par l'administration, jamais par votre
+                        gestionnaire ni par le reste de l'entreprise. Vous pouvez retirer
+                        une déclaration à tout moment.
+                    </div>
+                    <group>
+                        <field name="allergen_id"/>
+                        <field name="severity"/>
+                        <field name="is_food" readonly="1"/>
+                    </group>
+                    <group string="Note">
+                        <field name="note" nolabel="1"
+                               placeholder="Ce qu'il est utile de savoir : seuil, forme, quoi faire."/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_my_allergy" model="ir.actions.server">
+        <field name="name">Mes allergies</field>
+        <field name="model_id" ref="model_bf_ex_allergy"/>
+        <field name="state">code</field>
+        <field name="code">
+employee = env.user.employee_id
+if not employee:
+    raise UserError(
+        "Aucune fiche employé n'est rattachée à votre compte, alors il n'y a "
+        "personne à qui rattacher une déclaration. L'administration peut en créer une."
+    )
+action = {
+    "type": "ir.actions.act_window",
+    "name": "Mes allergies",
+    "res_model": "bf.ex.allergy",
+    "view_mode": "list,form",
+    "views": [
+        (env.ref("bf_employee_experience_health.view_my_allergy_list").id, "list"),
+        (env.ref("bf_employee_experience_health.view_my_allergy_form").id, "form"),
+    ],
+    "domain": [("employee_id", "=", employee.id)],
+    "context": {"default_employee_id": employee.id},
+}
+        </field>
+    </record>
+
+    <menuitem id="menu_my_allergy" name="Mes allergies" parent="bf_employee_experience.menu_people"
+              action="action_my_allergy" sequence="40"/>
+
     <menuitem id="menu_health" name="Santé et sécurité" parent="bf_employee_experience.menu_root"
               sequence="40" groups="hr.group_hr_user"/>
     <menuitem id="menu_allergy" name="Allergies" parent="menu_health"

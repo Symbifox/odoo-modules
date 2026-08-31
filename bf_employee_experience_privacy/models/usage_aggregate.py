@@ -11,6 +11,7 @@ pas.
 """
 
 from odoo import _, api, fields, models
+from odoo.exceptions import AccessError
 
 
 class UsageAggregate(models.Model):
@@ -133,7 +134,7 @@ class UsageAggregate(models.Model):
         return True
 
     @api.model
-    def has_coverage(self, benefit, year, company):
+    def _has_coverage(self, benefit, year, company):
         """L'année de cet avantage est-elle agrégée?
 
         C'est la question que pose la campagne de destruction avant d'effacer
@@ -145,7 +146,32 @@ class UsageAggregate(models.Model):
             ("company_id", "=", company.id),
         ]))
 
+    def _check_may_build(self):
+        """Qui a le droit de faire écrire `_build_for_year`.
+
+        ⚠️ Les deux portes d'entrée ci-dessous sont PUBLIQUES, donc appelables
+        par RPC par tout utilisateur interne : l'ACL donne la lecture à
+        `base.group_user`. Ce que `_build_for_year` écrit, il l'écrit en
+        `sudo()`, donc un compte en lecture seule créait et récrivait des
+        agrégats.
+
+        🔴 Et l'enjeu dépasse l'écriture. L'existence de l'agrégat est
+        exactement la condition que la campagne de destruction vérifie avant
+        d'effacer une ligne d'usage. Laisser n'importe quel compte la
+        satisfaire, c'est laisser n'importe qui ouvrir la porte que l'ordre
+        « agréger d'abord, détruire ensuite » est censé tenir fermée.
+
+        `_build_for_year` reste privée, donc hors de portée de `call_kw` : la
+        garde se pose ici, sur ce qui est atteignable.
+        """
+        if not self.env.su and not self.env.user.has_group("hr.group_hr_user"):
+            raise AccessError(_(
+                "Construire les agrégats relève de l'administration des "
+                "avantages. C'est ce qui autorise ensuite une destruction."
+            ))
+
     def action_recompute(self):
+        self._check_may_build()
         for record in self:
             self._build_for_year(
                 record.year, company=record.company_id, benefits=record.benefit_id,
@@ -154,7 +180,11 @@ class UsageAggregate(models.Model):
 
     @api.model
     def action_build_all(self):
-        """Bouton : agréger toutes les années où il existe un usage confirmé."""
+        """Bouton : agréger toutes les années où il existe un usage confirmé.
+
+        Voir `_check_may_build` pour pourquoi une garde est nécessaire ici.
+        """
+        self._check_may_build()
         Usage = self.env["bf.ex.usage"].sudo()
         company = self.env.company
         years = sorted({

@@ -113,9 +113,9 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_employee_experience_dashboard` | Expérience employé — tuile tableau de bord | 18.0.1.0.0 | LGPL-3 | Benefits take-up, and a count of paid benefits nobody claims |
 | `bf_employee_experience_digest` | Expérience employé — digest quotidien | 18.0.1.0.0 | LGPL-3 | "Benefits" digest section: pending claims, usages with no entitlement, benefits nobody takes |
 | `bf_employee_experience_expense` | Expérience employé — notes de frais | 18.0.1.0.0 | LGPL-3 | An approved expense becomes a benefit usage, at real cost |
-| `bf_employee_experience_health` | Expérience employé — allergies | 18.0.1.1.0 | LGPL-3 | Allergies and food allergies, readable only by the person and by whoever organises |
+| `bf_employee_experience_health` | Expérience employé — allergies | 18.0.1.2.0 | LGPL-3 | Allergies and food allergies, readable only by the person and by whoever organises |
 | `bf_employee_experience_health_privacy` | Expérience employé — allergies, pont vie privée (Loi 25) | 18.0.1.0.0 | LGPL-3 | Express consent, retention tied to the employment relationship, destruction on departure |
-| `bf_employee_experience_privacy` | Expérience employé — pont vie privée (Loi 25) | 18.0.1.0.0 | LGPL-3 | Declare what the usage register collects, set a retention rule, keep the measurement when the lines go |
+| `bf_employee_experience_privacy` | Expérience employé — pont vie privée (Loi 25) | 18.0.1.1.0 | LGPL-3 | Declare what the usage register collects, set a retention rule, keep the measurement when the lines go |
 | `bf_follower_cleanup` | BF — Nettoyage des abonnés (followers internes uniquement) | 18.0.2.0.0 | LGPL-3 | Cron that removes all non-employee followers from chatters |
 | `bf_fundraising_core` | Levée de fonds — Cœur | 18.0.1.0.0 | AGPL-3 | Donor management and fundraising structure (Funds / Campaigns / Appeals / Packages) on top of the Donation module — comparable to Raiser's Edge |
 | `bf_fundraising_web` | Levée de fonds — Web & Portail donateur | 18.0.1.0.2 | AGPL-3 | Public website donation form + donor portal (giving history and official receipt download) |

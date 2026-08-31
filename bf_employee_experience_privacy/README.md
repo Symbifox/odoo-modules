@@ -35,6 +35,17 @@ whose year has not yet been aggregated **raises**. It destroys nothing, and it
 records nothing in the register. That is the only order that works: aggregate
 first, destroy second.
 
+## Who may build an aggregate
+
+🔴 `action_build_all()` and `action_recompute()` are public methods, so any
+internal user reaches them over RPC — the ACL grants read to `base.group_user`,
+and what they call writes under `sudo()`. Both are gated on `hr.group_hr_user`.
+
+The stake is larger than the write. The existence of an aggregate is exactly the
+condition the destruction campaign checks before erasing a usage line. Letting
+any account satisfy it is letting any account open the door that "aggregate
+first, destroy second" is meant to hold shut.
+
 ## Attachments
 
 ⚠️ `mail.thread.unlink` removes messages and followers, not the attachments linked
@@ -43,8 +54,9 @@ the destruction of that line. The bridge deletes them explicitly.
 
 ## Tests
 
-13 tests, including the one that proves a campaign raises rather than destroying
-when the aggregate is missing.
+17 tests, including the one that proves a campaign raises rather than destroying
+when the aggregate is missing, and one that proves a plain employee cannot open
+that gate by building the aggregate themselves.
 
 ```
 odoo -d <database> -u bf_employee_experience_privacy --test-enable \

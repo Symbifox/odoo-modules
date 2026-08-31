@@ -90,7 +90,7 @@ class PrivacyDestructionCampaignLine(models.Model):
         """
         Aggregate = self.env["bf.ex.usage.aggregate"].sudo()
         year = record.date.year
-        if Aggregate.has_coverage(record.benefit_id, year, record.company_id):
+        if Aggregate._has_coverage(record.benefit_id, year, record.company_id):
             return
         raise UserError(
             _("L'usage de %(year)s pour « %(benefit)s » n'a pas encore été "
