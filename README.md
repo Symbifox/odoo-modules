@@ -68,7 +68,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `audit_ti` | Audit TI - Loi 25 | 18.0.1.17.1 | BUSL-1.1 | IT security audit management for Quebec's Loi 25 compliance |
 | `bf_activity_calendar_link` | BF Activités - Lien Calendrier | 18.0.1.1.0 | LGPL-3 | Link existing calendar events to activities |
 | `bf_ai_bridge` | AI Bridge (socket transport) | 18.0.1.0.1 | LGPL-3 | The single transport to the AI bridge service |
-| `bf_appointment` | Symbifox Appointment | 18.0.2.52.5 | BUSL-1.1 | Self-service public booking pages (extends `resource_booking`) |
+| `bf_appointment` | Symbifox Appointment | 18.0.2.53.0 | BUSL-1.1 | Self-service public booking pages (extends `resource_booking`) |
 | `bf_appointment_poll` | Symbifox Appointment Polls | 18.0.1.13.0 | BUSL-1.1 | Availability polling: propose slots, collect answers, book the meeting |
 | `bf_apps_menu` | Menu des applications cherchable | 18.0.1.0.0 | LGPL-3 | The apps menu becomes a keyboard-searchable grid of icons |
 | `bf_bloc_notes` | BF Bloc-notes | 18.0.2.9.0 | LGPL-3 | Rich quick notes with multi-record links, one-click activity conversion, keyboard shortcuts, and systray icon (Alt+N) |
@@ -181,7 +181,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_timezone` | Symbifox Timezone Utilities | 18.0.1.1.0 | LGPL-3 | Shared timezone helpers and a configurable default timezone for Symbifox modules |
 | `bf_universal_search` | BF Recherche universelle | 18.0.2.0.2 | LGPL-3 | Cross-module search through the command palette |
 | `bluefox_branding` | Symbifox Branding | 18.0.3.7.1 | BUSL-1.1 | Per-company brand color + email layout overrides driven by `bf_lexend` company fields (CSS variables injected via QWeb layout — no SCSS recompile) |
-| `calendar_nextcloud_sync` | Calendar Nextcloud Sync | 18.0.2.12.0 | LGPL-3 | Bidirectional calendar synchronization between Odoo and Nextcloud over CalDAV, and Google Calendar (API v3/OAuth2) |
+| `calendar_nextcloud_sync` | Calendar Nextcloud Sync | 18.0.2.14.0 | LGPL-3 | Bidirectional calendar synchronization between Odoo and Nextcloud over CalDAV, and Google Calendar (API v3/OAuth2) |
 | `contacts_nextcloud_sync` | Contacts Nextcloud Sync | 18.0.1.2.0 | LGPL-3 | Sync Odoo contacts with a Nextcloud address book via CardDAV |
 | `daily_todo_digest` | Daily To-Do Digest | 18.0.2.1.0 | LGPL-3 | Daily email digest with activities, overdue tasks, and a week-ahead view |
 | `hosting_management` | Gestion d'hébergement | 18.0.2.51.1 | BUSL-1.1 | Manage hosting services, client computer parks (endpoints, BitLocker, Action1 sync) and software license pools |

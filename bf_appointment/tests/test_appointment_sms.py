@@ -53,6 +53,13 @@ class TestAppointmentSms(TransactionCase):
     def setUpClass(cls):
         super().setUpClass()
         cls.env = cls.env(context=dict(cls.env.context, tracking_disable=True, tz="UTC"))
+        # Ces suites forcent un envoi avec une fenêtre volontairement large
+        # (`hours` de plusieurs années) pour garder `send_at` dans le passé
+        # sans sortir la réservation du futur. Depuis 2.53.0 un rappel « avant »
+        # n'est plus rattrapable indéfiniment, alors on lève la borne ici :
+        # c'est `test_cron_rappels.py` qui l'éprouve, pas ces tests-ci.
+        cls.env["ir.config_parameter"].sudo().set_param(
+            "bf_appointment.reminder_grace_hours", "876000")
         attendances = [
             Command.create({
                 "name": f"All day {d}",

@@ -4,7 +4,7 @@
     "summary": "Bidirectional calendar synchronization between Odoo and Nextcloud (CalDAV) and Google Calendar (API v3/OAuth2)",
     # 18.0.2.12.0: l'heure poussée vers Nextcloud part avec SON fuseau.
     #   `build_ics` écrivait `DTSTART:…Z`. L'instant était juste, mais aucun
-    #   fuseau n'accompagnait l'heure : le client titrait alors la fiche
+    #   fuseau n'accompagnait l'heure : Nextcloud titrait alors la fiche
     #   « 21:00 UTC » et reléguait l'heure réelle en seconde ligne grise.
     #   On écrit désormais `DTSTART;TZID=<zone>` avec le VTIMEZONE
     #   correspondant, sérialisé par vobject (déjà dans les dépendances
@@ -15,8 +15,23 @@
     #   et déplacerait le rendez-vous : le repli en UTC est donc conservé dès
     #   qu'on ne sait pas produire le VTIMEZONE. Le lien vers bf_appointment
     #   reste MOU (hasattr, pas d'import) — ce module tourne aussi chez des
-    #   locataires sans prise de rendez-vous.
-    "version": "18.0.2.12.0",
+    #   locataires sans prise de rendez-vous. Tâche #24695.
+    # 18.0.2.13.0: STATUS du VEVENT dans les deux sens. Une rencontre marquée
+    #   Tentative ou Annulée dans Odoo part avec `STATUS:` dans le .ics, et un
+    #   .ics qui en porte un le rend à Odoo. Le lien vers `bf_calendar_invite`
+    #   (qui porte le champ) reste MOU — `in self._fields`, pas d'import ni de
+    #   dépendance : ce module tourne chez des locataires sans ce champ. Le
+    #   réglage partagé `default_alarm_minutes` accepte désormais une liste
+    #   (« 1,15 ») ; ce module-ci n'en garde que le plus grand délai, son filet
+    #   n'étant pas un jeu de rappels par défaut. Tâche #25173.
+    # 18.0.2.14.0: 🔴 le fuseau d'un .ics d'Outlook/Calendly est enfin lu.
+    #   Un TZID Windows (« New Zealand Standard Time ») ne se résolvait pas et
+    #   le repli prenait l'heure murale locale pour de l'UTC : une entrevue est
+    #   arrivée DOUZE HEURES trop tard. On lit désormais le bloc VTIMEZONE que
+    #   le .ics embarque — autoritaire, transitions d'heure avancée comprises,
+    #   et rien à maintenir. Ordre de résolution : nom IANA, puis VTIMEZONE,
+    #   puis UTC en ERROR. Tâche #25173.
+    "version": "18.0.2.14.0",
     "category": "Calendar",
     "website": "https://symbifox.com",
     "author": "Les services de consultation Blue Fox, Inc.",

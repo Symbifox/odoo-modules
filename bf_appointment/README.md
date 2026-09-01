@@ -34,6 +34,13 @@ Public self-service booking pages, extending *Resource Booking* (OCA).
   number on file, a refused message, or the per-run budget running out. A
   reminder is never silently dropped. Requires an SMS transport module; the
   import is soft, so the channel simply never fires without one.
+- **One bad booking no longer takes the run down.** The reminder cron isolates
+  each booking: a write that raises — an OCA scheduling constraint, say — is
+  caught and logged for that booking alone, instead of escaping the loop and
+  stopping reminders for everybody. And a "X hours before" reminder is bounded
+  on both sides, so booking inside its own window no longer fires it within the
+  minute, and a catch-up run after an outage does not replay "reminder:
+  tomorrow" two hours before the meeting.
 - **Optional organization field** on the public form, per booking type (off
   by default), stored as the booker's company name.
 - **Consent checked on every path that creates a booking**, not only on the

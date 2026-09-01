@@ -300,6 +300,14 @@ class CalDavBackend(models.AbstractModel):
         if privacy in ("PUBLIC", "PRIVATE", "CONFIDENTIAL"):
             lines.append("CLASS:%s" % privacy)
 
+        # STATUS n'est écrit que si Odoo en a un à dire. Un VEVENT sans STATUS
+        # est « non précisé » en RFC 5545, ce qui est exactement l'état d'une
+        # rencontre créée avant que ce champ existe ; écrire CONFIRMED d'office
+        # affirmerait une confirmation que personne n'a donnée, et le ferait sur
+        # tout l'historique à la première repoussée.
+        if data.get("status") in ("TENTATIVE", "CONFIRMED", "CANCELLED"):
+            lines.append("STATUS:%s" % data["status"])
+
         organizer = data.get("organizer") or {}
         if organizer.get("email"):
             lines.append(

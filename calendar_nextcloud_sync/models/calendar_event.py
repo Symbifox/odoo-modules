@@ -80,7 +80,7 @@ class CalendarEvent(models.Model):
         # emits a SECOND iMIP invitation to the same booker. Two competing
         # invitations for one slot is exactly what stops Gmail from auto-adding
         # the event (booker must click "Accept" on a .ics attachment instead),
-        # reintroducing the double-booking no-show problem.
+        # reintroducing the Cal.com no-show problem seen in production.
         # The event itself still syncs to the organizer's calendar as a busy
         # block; only the invitee list is withheld.
         is_booking_event = bool(
@@ -148,6 +148,17 @@ class CalendarEvent(models.Model):
                 "description": html2plaintext(self.description or "").strip(),
                 "privacy": self.privacy,
                 "show_as": self.show_as,
+                # STATUS du VEVENT (RFC 5545 §3.8.1.11), quand le champ existe.
+                # ⚠️ Lien MOU, comme celui vers `bf_appointment` plus haut :
+                # `bf_event_status` appartient à `bf_calendar_invite`, et ce
+                # module tourne aussi chez des locataires qui ne l'ont pas. Une
+                # dépendance dure ici pour un attribut facultatif du .ics leur
+                # imposerait tout un module de courriels d'invitation.
+                "status": (
+                    self._bf_ics_status()
+                    if "bf_event_status" in self._fields
+                    else False
+                ),
                 "attendees": attendees,
                 "organizer": organizer,
                 "caldav_href": self.x_caldav_href,
@@ -611,14 +622,29 @@ class CalendarEvent(models.Model):
         lui-même est un confort d'interface, inventer un rappel qui n'existe
         dans aucune source pendant une synchronisation doit être un choix
         explicite.
+
+        ⚠️ Le réglage est PARTAGÉ avec `bf_email_management`, qui accepte
+        plusieurs délais séparés par des virgules (« 1,15 »). Ce filet-ci n'en
+        garde qu'un, le plus GRAND : c'est un filet, pas un jeu de rappels par
+        défaut, et un filet posé une minute avant ne rattrape personne. Sans
+        cette lecture, un réglage à « 1,15 » ferait échouer la conversion en
+        entier et éteindrait le filet en silence.
         """
         raw = self.env["ir.config_parameter"].sudo().get_param(
             "bf_email_management.default_alarm_minutes", "0",
         )
-        try:
-            return [max(0, int(str(raw).strip() or 0))] if int(str(raw).strip() or 0) > 0 else []
-        except ValueError:
-            return []
+        minutes = []
+        for chunk in str(raw or "").split(","):
+            chunk = chunk.strip()
+            if not chunk:
+                continue
+            try:
+                value = int(chunk)
+            except ValueError:
+                continue
+            if value > 0:
+                minutes.append(value)
+        return [max(minutes)] if minutes else []
 
     @api.model
     def _bf_alarm_ids_for_minutes(self, minutes_list):
@@ -723,6 +749,16 @@ class CalendarEvent(models.Model):
                 )
         if partner_ids:
             vals["partner_ids"] = [(6, 0, list(partner_ids))]
+
+        # Statut de la rencontre (STATUS du VEVENT). Écrit seulement quand le
+        # .ics en porte un ET que le champ existe dans cette base : un .ics
+        # muet laisse Odoo tel quel, plutôt que de remettre « Confirmé » sur
+        # une rencontre qu'on venait de marquer annulée dans Odoo.
+        ics_status = data.get("status")
+        if ics_status and "bf_event_status" in self._fields:
+            mapped = self._bf_status_from_ics(ics_status)
+            if mapped:
+                vals["bf_event_status"] = mapped
 
         # Rappels. Le .ics est la source de vérité : ce que l'usager a posé
         # dans son client d'agenda doit exister dans Odoo, sinon la chaîne de

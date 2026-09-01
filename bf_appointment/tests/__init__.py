@@ -7,3 +7,4 @@ from . import test_meeting_description
 from . import test_consent_gating
 from . import test_video_room
 from . import test_courriels_et_limiteurs
+from . import test_cron_rappels

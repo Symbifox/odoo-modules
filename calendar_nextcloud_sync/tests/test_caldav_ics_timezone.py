@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Fuseau de l'ICS poussé vers Nextcloud (2.12.0).
 
-Signalé en production le 2026-08-20 : Nextcloud titrait la
+Signalé en production le 2026-08-20 (tâche #24695) : Nextcloud titrait la
 fiche d'un rendez-vous « 20 août 2026 21:00 UTC » et reléguait « 09:00 heure
 locale » en seconde ligne. L'instant était juste; c'est le fuseau qui manquait,
 et il manquait parce que nous poussions ``DTSTART:…Z``.
@@ -117,7 +117,7 @@ class TestCalDavIcsTimezone(TransactionCase):
 
     def test_vtimezone_is_valid_for_a_southern_zone(self):
         """Auckland : les règles s'inversent, et c'est le fuseau réel de
-        l'organisateur une partie de l'année."""
+        l'organisateur de Blue Fox une partie de l'année."""
         lignes = self.backend._vtimezone_lines("Pacific/Auckland")
         self.assertTrue(lignes)
         self.assertEqual(lignes[0], "BEGIN:VTIMEZONE")

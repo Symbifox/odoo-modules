@@ -1,5 +1,6 @@
 # License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl).
 
+import io
 import json
 import logging
 import re
@@ -10,6 +11,7 @@ from xml.etree import ElementTree
 import pytz
 import requests
 from dateutil import parser as dt_parser
+from dateutil.tz import tzical
 
 from odoo import api, fields, models
 from odoo.addons.bf_timezone.tools import tz as tz_tools
@@ -1529,6 +1531,8 @@ class NextcloudCalendarSyncConfig(models.Model):
                 props["location"] = self._unescape_ics(value)
             elif prop_name == "DESCRIPTION":
                 props["description"] = self._unescape_ics(value)
+            elif prop_name == "STATUS":
+                props["status"] = value
             elif prop_name == "RRULE":
                 props["rrule"] = value
             elif prop_name == "EXDATE":
@@ -1543,12 +1547,17 @@ class NextcloudCalendarSyncConfig(models.Model):
         if not props.get("uid"):
             return None
 
+        # Les fuseaux que le .ics définit lui-même, lus UNE fois et passés à
+        # chaque conversion. Sans ce passage, `_ics_vtimezones` existerait sans
+        # servir à rien — le correctif serait en place et inerte.
+        vtimezones = self._ics_vtimezones(ics_text)
+
         # Parse dates
         start_dt, allday = self._parse_ics_datetime(
-            props.get("start_raw"), props.get("start_params", "")
+            props.get("start_raw"), props.get("start_params", ""), vtimezones
         )
         end_dt, _ = self._parse_ics_datetime(
-            props.get("end_raw"), props.get("end_params", "")
+            props.get("end_raw"), props.get("end_params", ""), vtimezones
         )
 
         # If no DTEND but DURATION, compute end from start
@@ -1577,7 +1586,7 @@ class NextcloudCalendarSyncConfig(models.Model):
             event_tz = self._normalize_timezone(tzid_match.group(1))
 
         # Parse EXDATE values
-        exdates = self._parse_exdates(props.get("exdates_raw", []))
+        exdates = self._parse_exdates(props.get("exdates_raw", []), vtimezones)
 
         # Format for Odoo
         if allday:
@@ -1606,6 +1615,11 @@ class NextcloudCalendarSyncConfig(models.Model):
             "exdates": exdates,
             "event_tz": event_tz,
             "alarms": self._parse_valarms(alarm_blocks),
+            # Absent quand le .ics n'en porte pas — et non « CONFIRMED par
+            # défaut ». La distinction compte au tirage : `None` veut dire « ce
+            # .ics ne dit rien du statut », donc ne touche pas à ce qu'Odoo a,
+            # tandis qu'une valeur écrase.
+            "status": props.get("status"),
         }
 
     def _parse_valarms(self, alarm_blocks):
@@ -1665,12 +1679,15 @@ class NextcloudCalendarSyncConfig(models.Model):
             minutes.add(int(delta.total_seconds() // 60))
         return sorted(m for m in minutes if m >= 0)
 
-    def _parse_ics_datetime(self, value, params_str):
+    def _parse_ics_datetime(self, value, params_str, vtimezones=None):
         """Parse an ICS date/datetime value.
 
         Args:
             value: raw date string (e.g., '20260214', '20260214T100000Z')
             params_str: parameter string (e.g., ';VALUE=DATE', ';TZID=America/Montreal')
+            vtimezones: fuseaux définis par le .ics (voir `_ics_vtimezones`),
+                consultés quand le TZID n'est pas un nom IANA. C'est ce qui
+                rattrape les noms Windows d'Outlook et de Calendly.
 
         Returns:
             tuple: (datetime_utc, is_allday)
@@ -1690,9 +1707,14 @@ class NextcloudCalendarSyncConfig(models.Model):
 
         # Extract TZID if present
         tzid = None
+        raw_tzid = None
         tzid_match = re.search(r"TZID=([^;:]+)", params_str or "", re.IGNORECASE)
         if tzid_match:
-            tzid = self._normalize_timezone(tzid_match.group(1))
+            # ⚠️ Les deux formes sont gardées : le nom NORMALISÉ sert à
+            # interroger tzdata, le nom BRUT à retrouver le bloc VTIMEZONE, qui
+            # est indexé par le TZID tel que l'expéditeur l'a écrit.
+            raw_tzid = tzid_match.group(1).strip()
+            tzid = self._normalize_timezone(raw_tzid)
 
         try:
             # UTC indicator
@@ -1707,16 +1729,37 @@ class NextcloudCalendarSyncConfig(models.Model):
             else:
                 dt = dt_parser.parse(value)
 
-            # Apply timezone if specified
+            # Résolution du fuseau, dans cet ordre :
+            #   1. nom IANA (la base tzdata est plus complète qu'un VTIMEZONE,
+            #      qui ne porte souvent que les règles courantes) ;
+            #   2. le VTIMEZONE du .ics, qui rattrape les noms Windows ;
+            #   3. UTC, en dernier recours ET en le disant fort.
             if tzid:
+                tz = None
                 try:
                     tz = pytz.timezone(tzid)
-                    if dt.tzinfo is None:
-                        dt = tz.localize(dt)
-                    dt = dt.astimezone(timezone.utc)
                 except pytz.UnknownTimeZoneError:
-                    _logger.warning("Unknown timezone: %s", tzid)
-                    # Treat as UTC
+                    tz = (vtimezones or {}).get(tzid) or (vtimezones or {}).get(raw_tzid)
+
+                if tz is not None:
+                    if dt.tzinfo is None:
+                        # ⚠️ `localize` pour pytz, `replace` pour un tzinfo de
+                        # dateutil : pytz exige le premier (sinon on hérite du
+                        # LMT historique, décalé de quelques minutes), et
+                        # dateutil ne fournit pas la méthode.
+                        dt = (tz.localize(dt) if hasattr(tz, "localize")
+                              else dt.replace(tzinfo=tz))
+                    dt = dt.astimezone(timezone.utc)
+                else:
+                    # 🔴 Le repli qui a décalé une entrevue de douze heures :
+                    # prendre une heure murale locale pour de l'UTC. On le
+                    # garde — refuser l'événement serait pire — mais en
+                    # ERROR, parce qu'un WARNING de cron ne se lit jamais.
+                    _logger.error(
+                        "Fuseau « %s » irrésolu et absent des VTIMEZONE du .ics : "
+                        "l'heure %s est traitée comme de l'UTC, la rencontre sera "
+                        "décalée de tout le fuseau.", tzid, value,
+                    )
                     dt = dt.replace(tzinfo=timezone.utc)
             elif dt.tzinfo is None:
                 # No timezone info — assume UTC
@@ -1730,6 +1773,35 @@ class NextcloudCalendarSyncConfig(models.Model):
             return None, False
 
     @staticmethod
+    def _ics_vtimezones(ics_text):
+        """Fuseaux définis PAR le .ics lui-même, indexés par leur TZID.
+
+        🔴 C'est le correctif de fond au décalage de fuseau. Outlook et
+        Calendly n'écrivent pas des noms IANA mais des noms **Windows** —
+        « New Zealand Standard Time », « Tokyo Standard Time » — que `pytz`
+        ne connaît pas. Une table Windows→IANA les rattrape un par un et se
+        périme; le `.ics`, lui, embarque toujours le `VTIMEZONE` complet, avec
+        ses `TZOFFSETTO` et ses règles de bascule. Il est autoritaire par
+        construction et n'a rien à maintenir.
+
+        `dateutil.tz.tzical` sait lire ce bloc et rend un `tzinfo` qui honore
+        les transitions d'heure avancée : pour la Nouvelle-Zélande il rend bien
+        +12 en septembre et +13 à la mi-octobre.
+
+        ⚠️ Ne lève jamais. Un `VTIMEZONE` malformé chez un expéditeur ne doit
+        pas emporter la synchronisation de tout un agenda : on rend une table
+        vide et l'appelant retombe sur ses autres résolutions.
+        """
+        if not ics_text or "BEGIN:VTIMEZONE" not in ics_text:
+            return {}
+        try:
+            cal = tzical(io.StringIO(ics_text))
+            return {key: cal.get(key) for key in cal.keys()}
+        except Exception as exc:  # noqa: BLE001 - voir docstring
+            _logger.warning("VTIMEZONE illisible, ignoré : %s", exc)
+            return {}
+
+    @staticmethod
     def _normalize_timezone(tzid):
         """Normalize timezone name, mapping Windows names to IANA.
 
@@ -1737,7 +1809,7 @@ class NextcloudCalendarSyncConfig(models.Model):
         for the Windows->IANA map)."""
         return tz_tools.normalize_name(tzid)
 
-    def _parse_exdates(self, exdates_raw):
+    def _parse_exdates(self, exdates_raw, vtimezones=None):
         """Parse raw EXDATE values into a list of datetime objects.
 
         Args:
@@ -1753,7 +1825,7 @@ class NextcloudCalendarSyncConfig(models.Model):
                 date_str = date_str.strip()
                 if not date_str:
                     continue
-                dt, _ = self._parse_ics_datetime(date_str, params_str or "")
+                dt, _ = self._parse_ics_datetime(date_str, params_str or "", vtimezones)
                 if dt:
                     result.append(dt)
         return result

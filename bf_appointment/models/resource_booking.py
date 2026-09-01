@@ -1543,6 +1543,32 @@ class ResourceBooking(models.Model):
     # Picked arbitrarily; only this cron uses it.
     _CRON_ADVISORY_LOCK_KEY = 0x4250414F4C434C4B  # "BPAOLCLK"
 
+    # Tolérance de rattrapage d'un rappel « avant », en heures. Le cron passe
+    # aux quarts d'heure, donc une heure absorbe largement un tick manqué sans
+    # laisser partir un rappel devenu faux.
+    _CRON_REMINDER_GRACE_HOURS = 1.0
+
+    @api.model
+    def _cron_reminder_grace_hours(self):
+        """Tolérance de rattrapage, réglable par `ir.config_parameter`.
+
+        ⚠️ Le réglage ABSENT — le cas de tous les locataires au déploiement —
+        rend `False`, et `float(False)` vaut `0.0` sans lever : sans le premier
+        test ci-dessous, la tolérance retombait silencieusement à zéro partout
+        et PLUS AUCUN rappel ne partait. Ne pas confondre « non réglé » (défaut)
+        et « réglé à zéro » (aucun rattrapage, choix légitime).
+        """
+        brut = self.env["ir.config_parameter"].sudo().get_param(
+            "bf_appointment.reminder_grace_hours"
+        )
+        if brut in (None, False, ""):
+            return self._CRON_REMINDER_GRACE_HOURS
+        try:
+            valeur = float(brut)
+        except (TypeError, ValueError):
+            return self._CRON_REMINDER_GRACE_HOURS
+        return valeur if valeur >= 0 else self._CRON_REMINDER_GRACE_HOURS
+
     @api.model
     def _cron_send_appointment_emails(self):
         """Send scheduled appointment emails (reminders + follow-ups).
@@ -1605,79 +1631,138 @@ class ResourceBooking(models.Model):
             ("type_id.email_schedule_ids", "!=", False),
         ])
         for booking in bookings:
-            for schedule in booking.type_id.email_schedule_ids.filtered("active"):
-                booking.invalidate_recordset(["sent_schedule_ids"])
-                if schedule in booking.sent_schedule_ids:
-                    continue
-                should_send = False
-                if schedule.trigger == "before":
-                    send_at = booking.start - timedelta(hours=schedule.hours)
-                    should_send = now >= send_at and now < booking.start
-                elif schedule.trigger == "after":
-                    stop = booking.start + timedelta(
-                        hours=booking.duration or 1.0
+            # ⚠️ Chaque réservation a son propre point de reprise, et ce n'est
+            # pas du confort : sans cette isolation, UNE réservation fautive
+            # emporte la run entière, donc les rappels de tout le locataire.
+            #
+            # Vécu en production du 2026-08-30 au 2026-08-31. L'écriture de
+            # `sent_schedule_ids` sur la réservation #414 faisait lever
+            # `_check_scheduling` d'OCA (« Cannot schedule these bookings
+            # because no resources are selected ») : une automatisation du
+            # locataire filtrant sur `state` force un recalcul de `state` au
+            # milieu de cette écriture, et la contrainte s'exécute alors sur un
+            # enregistrement à moitié écrit. L'exception remontait hors de la
+            # boucle — aucun rappel n'est parti pendant 24 h, pour AUCUNE
+            # réservation, et le blocage ne s'est dénoué que quand l'heure de la
+            # rencontre fautive est passée.
+            #
+            # Le verrou consultatif est pris AVANT le point de reprise : un
+            # retour en arrière ne le relâche pas.
+            try:
+                with self.env.cr.savepoint():
+                    sms_budget = booking._cron_send_for_booking(now, sms_budget)
+            except Exception:
+                # Le cache de l'ORM peut porter des valeurs que le retour en
+                # arrière vient d'annuler.
+                self.env.invalidate_all()
+                _logger.exception(
+                    "bf_appointment: la réservation %d a échoué, la run "
+                    "continue avec les suivantes.",
+                    booking.id,
+                )
+
+    def _cron_send_for_booking(self, now, sms_budget):
+        """Traite une seule réservation. Rend le budget SMS restant.
+
+        Extrait de `_cron_send_appointment_emails` pour que la boucle appelante
+        puisse borner les dégâts d'une réservation fautive à cette réservation.
+        """
+        self.ensure_one()
+        booking = self
+        for schedule in booking.type_id.email_schedule_ids.filtered("active"):
+            booking.invalidate_recordset(["sent_schedule_ids"])
+            if schedule in booking.sent_schedule_ids:
+                continue
+            should_send = False
+            if schedule.trigger == "before":
+                send_at = booking.start - timedelta(hours=schedule.hours)
+                # ⚠️ La fenêtre est BORNÉE des deux côtés. Avec le seul
+                # `now >= send_at`, deux situations produisent un avis qui
+                # ment :
+                #  1. réserver à moins de X heures de l'échéance fait
+                #     partir le rappel « X heures avant » dans la minute
+                #     qui suit la réservation — relevé le 2026-08-26,
+                #     une cliente a reçu « rappel : demain » 90 secondes
+                #     après avoir réservé pour le lendemain ;
+                #  2. une reprise après interruption du cron rejoue un
+                #     rappel « 24 h avant » à deux heures de la rencontre.
+                # La tolérance ne dépasse jamais le préavis lui-même,
+                # sinon elle n'en serait plus une : un rappel « 30 min
+                # avant » garde 30 minutes de rattrapage, pas une heure.
+                tolerance = min(
+                    timedelta(hours=self._cron_reminder_grace_hours()),
+                    timedelta(hours=schedule.hours),
+                )
+                should_send = (
+                    send_at <= now < booking.start
+                    and now <= send_at + tolerance
+                )
+            elif schedule.trigger == "after":
+                stop = booking.start + timedelta(
+                    hours=booking.duration or 1.0
+                )
+                send_at = stop + timedelta(hours=schedule.hours)
+                should_send = now >= send_at
+            if not should_send:
+                continue
+            # Claim the schedule BEFORE sending so a transient send
+            # failure does not retry forever, and so any concurrent path
+            # that bypasses the advisory lock still sees the claim.
+            booking.sent_schedule_ids = [(4, schedule.id)]
+            # Skip ICS on "after" follow-ups, the meeting already
+            # happened, so re-sending the calendar invite is noise.
+            attach_ics = schedule.trigger != "after"
+            sms_sent = False
+            if schedule.channel in ("sms", "both") and sms_budget > 0:
+                try:
+                    sms_sent = booking._send_appointment_sms(schedule)
+                except Exception as e:  # never let SMS sink the run
+                    _logger.error(
+                        "bf_appointment: SMS en erreur pour la "
+                        "réservation %d (planification %d): %s",
+                        booking.id, schedule.id, e,
                     )
-                    send_at = stop + timedelta(hours=schedule.hours)
-                    should_send = now >= send_at
-                if not should_send:
-                    continue
-                # Claim the schedule BEFORE sending so a transient send
-                # failure does not retry forever, and so any concurrent path
-                # that bypasses the advisory lock still sees the claim.
-                booking.sent_schedule_ids = [(4, schedule.id)]
-                # Skip ICS on "after" follow-ups, the meeting already
-                # happened, so re-sending the calendar invite is noise.
-                attach_ics = schedule.trigger != "after"
-                sms_sent = False
-                if schedule.channel in ("sms", "both") and sms_budget > 0:
-                    try:
-                        sms_sent = booking._send_appointment_sms(schedule)
-                    except Exception as e:  # never let SMS sink the run
-                        _logger.error(
-                            "bf_appointment: SMS en erreur pour la "
-                            "réservation %d (planification %d): %s",
-                            booking.id, schedule.id, e,
-                        )
-                        sms_sent = False
-                    if sms_sent:
-                        sms_budget -= 1
-                    elif booking._appointment_sms_phone():
-                        # A booker with a number on file whose send still
-                        # failed means the refusal came from VoIP.ms, not
-                        # from our data — most likely the ~27/day quota,
-                        # which does not drain until midnight. Retrying the
-                        # rest of the batch would only hammer the account
-                        # (suspension risk), so stand down for this run and
-                        # let e-mail carry the remainder. The next tick
-                        # tries again from scratch.
-                        sms_budget = 0
-                        _logger.warning(
-                            "bf_appointment: SMS refusé pour la réservation "
-                            "%d — bascule du reste de l'exécution sur le "
-                            "courriel.", booking.id,
-                        )
-                # E-mail goes out unless the SMS alone was asked for and it
-                # actually left: it is the fallback for every failure path
-                # (no number, refused message, quota), so a reminder is never
-                # silently dropped.
-                if not (schedule.channel == "sms" and sms_sent):
-                    try:
-                        # Pas de `recipient=` explicite ici, et c'est voulu :
-                        # le gabarit d'une planification est choisi par un
-                        # administrateur, donc lui seul sait à qui il écrit.
-                        # C'est le cas où l'inspection d'`email_to` reste le
-                        # seul signal disponible.
-                        booking._send_appointment_email(
-                            schedule.template_id, attach_ics=attach_ics
-                        )
-                    except Exception as e:
-                        _logger.error(
-                            "Failed to send scheduled email for booking %d "
-                            "(schedule %d): %s",
-                            booking.id,
-                            schedule.id,
-                            e,
-                        )
+                    sms_sent = False
+                if sms_sent:
+                    sms_budget -= 1
+                elif booking._appointment_sms_phone():
+                    # A booker with a number on file whose send still
+                    # failed means the refusal came from VoIP.ms, not
+                    # from our data — most likely the ~27/day quota,
+                    # which does not drain until midnight. Retrying the
+                    # rest of the batch would only hammer the account
+                    # (suspension risk), so stand down for this run and
+                    # let e-mail carry the remainder. The next tick
+                    # tries again from scratch.
+                    sms_budget = 0
+                    _logger.warning(
+                        "bf_appointment: SMS refusé pour la réservation "
+                        "%d — bascule du reste de l'exécution sur le "
+                        "courriel.", booking.id,
+                    )
+            # E-mail goes out unless the SMS alone was asked for and it
+            # actually left: it is the fallback for every failure path
+            # (no number, refused message, quota), so a reminder is never
+            # silently dropped.
+            if not (schedule.channel == "sms" and sms_sent):
+                try:
+                    # Pas de `recipient=` explicite ici, et c'est voulu :
+                    # le gabarit d'une planification est choisi par un
+                    # administrateur, donc lui seul sait à qui il écrit.
+                    # C'est le cas où l'inspection d'`email_to` reste le
+                    # seul signal disponible.
+                    booking._send_appointment_email(
+                        schedule.template_id, attach_ics=attach_ics
+                    )
+                except Exception as e:
+                    _logger.error(
+                        "Failed to send scheduled email for booking %d "
+                        "(schedule %d): %s",
+                        booking.id,
+                        schedule.id,
+                        e,
+                    )
+        return sms_budget
 
     # ------------------------------------------------------------------
     # Lot d'ouverture (2.40.0) — résolution de la provenance
