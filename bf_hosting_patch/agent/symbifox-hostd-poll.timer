@@ -1,0 +1,16 @@
+[Unit]
+Description=Symbifox — interrogation régulière pour les ordres de mise à jour
+
+[Timer]
+# Aux 15 minutes : c'est le délai entre « je clique dans Odoo » et « la machine
+# commence ». Plus court multiplierait les requêtes sans rien avancer ; plus
+# long rendrait le bouton frustrant au point qu'on retourne au terminal.
+OnUnitActiveSec=15min
+OnBootSec=5min
+# Étalement modeste : l'interrogation est une requête minuscule, elle n'a pas
+# besoin du même étalement qu'un relevé complet.
+RandomizedDelaySec=120
+Persistent=true
+
+[Install]
+WantedBy=timers.target

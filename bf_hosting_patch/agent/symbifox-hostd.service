@@ -1,0 +1,30 @@
+[Unit]
+Description=Symbifox — relevé de l'état des mises à jour
+Documentation=https://bluefoxconsultant.com
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/symbifox-hostd report
+# Le relevé est strictement en lecture : aucune des commandes lancées ne change
+# l'état des paquets de la machine. Les privilèges ne servent qu'à lire
+# /etc/symbifox/hostd.conf.
+#
+# ⚠️ PAS `ProtectSystem=strict`. Mesuré sur une machine Fedora : `strict`
+# monte TOUTE la hiérarchie en lecture seule, /var compris, et
+# `dnf check-update` meurt sur « cannot create temporary directory (30) -
+# Read-only file system [/var/cache/libdnf5/...] » avec le code 1. Ce code n'est
+# ni 0 ni 100, donc `run_counted` rend « je n'ai pas pu compter » et la machine
+# rapporte un compte INCONNU tous les jours, pour toujours. Interroger un
+# gestionnaire de paquets écrit son cache de métadonnées ; ça ne touche pas
+# l'état installé. `full` garde /usr, /boot et /etc en lecture seule — ce qui
+# est la garantie qui compte pour un agent qui tourne en root — et laisse /var.
+#
+# ⚠️ Le piège se cache : `symbifox-hostd report` lancé À LA MAIN n'est pas dans
+# le bac à sable et réussit. Vérifier par « systemctl start
+# symbifox-hostd.service », jamais par la commande nue.
+ProtectSystem=full
+ProtectHome=yes
+PrivateTmp=yes
+NoNewPrivileges=yes

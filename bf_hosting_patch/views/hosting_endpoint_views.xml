@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="hosting_endpoint_view_list_patch" model="ir.ui.view">
+        <field name="name">hosting.endpoint.list.patch</field>
+        <field name="model">hosting.endpoint</field>
+        <field name="inherit_id" ref="hosting_management.hosting_endpoint_view_list"/>
+        <field name="arch" type="xml">
+            <field name="lifecycle_state" position="before">
+                <field name="patch_state" widget="badge"
+                       decoration-danger="patch_state in ('security', 'stale', 'blind')"
+                       decoration-warning="patch_state in ('reboot', 'updates')"
+                       decoration-success="patch_state == 'ok'"
+                       optional="show"/>
+                <field name="system_count" optional="show"/>
+                <!-- Le compteur ne s'affiche jamais seul : un « à jour » daté
+                     d'il y a trois semaines ne doit pas se lire comme un
+                     « à jour » d'aujourd'hui. -->
+                <field name="agent_last_report" optional="show"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="hosting_endpoint_view_form_patch" model="ir.ui.view">
+        <field name="name">hosting.endpoint.form.patch</field>
+        <field name="model">hosting.endpoint</field>
+        <field name="inherit_id" ref="hosting_management.hosting_endpoint_view_form"/>
+        <field name="arch" type="xml">
+
+            <div name="button_box" position="inside">
+                <button name="action_view_systems" type="object"
+                        class="oe_stat_button" icon="fa-desktop"
+                        invisible="system_count == 0">
+                    <field name="system_count" widget="statinfo" string="Systèmes"/>
+                </button>
+            </div>
+
+            <!-- Ancré sur le titre : Odoo refuse `title` comme sélecteur
+                 d'héritage, et le formulaire parent porte deux `web_ribbon`
+                 que le nom seul ne distingue pas. -->
+            <xpath expr="//div[hasclass('oe_title')]" position="before">
+                <widget name="web_ribbon" title="Muet"
+                        bg_color="text-bg-danger"
+                        invisible="patch_state != 'stale'"/>
+            </xpath>
+
+            <notebook position="inside">
+                <page string="Mises à jour" name="patch">
+                    <div class="alert alert-info" role="status"
+                         invisible="system_count != 0">
+                        Aucun système enrôlé sur cette machine. Le parc étant
+                        presque tout en double amorçage, il en faut un par côté :
+                        générer un code d'enrôlement, poser l'agent, recommencer
+                        pour l'autre système.
+                    </div>
+                    <group>
+                        <group string="Machine">
+                            <field name="machine_uuid" readonly="1"/>
+                            <field name="patch_state"/>
+                            <field name="agent_last_report"/>
+                            <field name="server_id"/>
+                            <field name="hosted_service_count"
+                                   invisible="not server_id"/>
+                            <button name="action_generate_enrol_code"
+                                    type="object"
+                                    string="Générer un code d'enrôlement"
+                                    class="btn-secondary"/>
+                        </group>
+                    </group>
+                    <field name="system_ids" readonly="1">
+                        <list decoration-danger="patch_state in ('security', 'stale', 'blind')"
+                              decoration-warning="patch_state in ('reboot', 'updates')">
+                            <field name="name"/>
+                            <field name="os_family" widget="badge"/>
+                            <field name="os_release"/>
+                            <field name="patch_state" widget="badge"/>
+                            <field name="pending_known"/>
+                            <field name="pending_count"/>
+                            <field name="reboot_required"/>
+                            <field name="agent_last_report"/>
+                        </list>
+                    </field>
+                </page>
+            </notebook>
+        </field>
+    </record>
+
+    <record id="hosting_endpoint_view_search_patch" model="ir.ui.view">
+        <field name="name">hosting.endpoint.search.patch</field>
+        <field name="model">hosting.endpoint</field>
+        <field name="inherit_id" ref="hosting_management.hosting_endpoint_view_search"/>
+        <field name="arch" type="xml">
+            <search position="inside">
+                <separator/>
+                <filter name="patch_stale" string="Machines muettes"
+                        domain="[('patch_state', '=', 'stale')]"/>
+                <filter name="patch_security" string="Sécurité en attente"
+                        domain="[('patch_state', '=', 'security')]"/>
+                <filter name="patch_unmanaged" string="Sans système suivi"
+                        domain="[('patch_state', '=', 'unmanaged')]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="by_patch_state" string="État des mises à jour"
+                            context="{'group_by': 'patch_state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="hosting_endpoint_action_patch" model="ir.actions.act_window">
+        <field name="name">État des mises à jour</field>
+        <field name="res_model">hosting.endpoint</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('patch_managed', '=', True)]</field>
+        <field name="context">{'search_default_by_patch_state': 1}</field>
+    </record>
+
+</odoo>

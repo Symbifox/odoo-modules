@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- Sans ce cron, une machine qui cesse de parler garderait pour
+             toujours l'état vert de son dernier relevé : `patch_state` est un
+             calcul stocké, et « muet » dépend de l'heure qu'il est, ce qu'aucun
+             @api.depends ne sait déclarer.
+
+             ⚠️ Le porteur est `bf.patch.system`, pas `hosting.endpoint` : la
+             18.0.2.0.0 a déplacé la méthode avec l'état. Odoo évalue le code
+             avec `model = env[model_id.model]` ; un modèle qui n'a pas la
+             méthode lève une AttributeError toutes les 4 h, sans que rien
+             d'autre ne bronche. L'état de la MACHINE suit par dépendance
+             (`system_ids.patch_state`), il n'y a rien à rejouer de ce côté. -->
+        <record id="cron_refresh_patch_state" model="ir.cron">
+            <field name="name">Hébergement : rejouer l'état des mises à jour (machines muettes)</field>
+            <field name="model_id" ref="model_bf_patch_system"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_refresh_patch_state()</field>
+            <field name="interval_number">4</field>
+            <field name="interval_type">hours</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="cron_purge_patch_reports" model="ir.cron">
+            <field name="name">Hébergement : purger les relevés de mise à jour (90 j)</field>
+            <field name="model_id" ref="model_bf_patch_report"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_purge()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <!-- Un ordre que personne n'a ramassé finit par mourir. Vise `queued`
+             ET `claimed` : un agent qui prend un ordre puis meurt avant de
+             rapporter laisserait sinon une ligne « pris en charge » pour
+             toujours, et la file cesserait d'être lisible. -->
+        <record id="cron_expire_patch_jobs" model="ir.cron">
+            <field name="name">Hébergement : périmer les ordres de mise à jour non exécutés (7 j)</field>
+            <field name="model_id" ref="model_bf_patch_job"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_expire_jobs()</field>
+            <field name="interval_number">6</field>
+            <field name="interval_type">hours</field>
+            <field name="active" eval="True"/>
+        </record>
+
+    </data>
+</odoo>

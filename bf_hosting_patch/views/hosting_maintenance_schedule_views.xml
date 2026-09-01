@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="hosting_maintenance_schedule_view_form_patch" model="ir.ui.view">
+        <field name="name">hosting.maintenance.schedule.form.patch</field>
+        <field name="model">hosting.maintenance.schedule</field>
+        <field name="inherit_id" ref="hosting_management.hosting_maintenance_schedule_view_form"/>
+        <field name="arch" type="xml">
+            <field name="service_id" position="attributes">
+                <attribute name="required">not endpoint_id and not system_id</attribute>
+            </field>
+            <field name="service_id" position="after">
+                <field name="endpoint_id"
+                       required="not service_id"
+                       readonly="service_id != False"
+                       options="{'no_create': True}"/>
+                <field name="system_id"
+                       invisible="not endpoint_id"
+                       domain="[('endpoint_id', '=', endpoint_id)]"
+                       options="{'no_create': True}"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="hosting_maintenance_schedule_view_list_patch" model="ir.ui.view">
+        <field name="name">hosting.maintenance.schedule.list.patch</field>
+        <field name="model">hosting.maintenance.schedule</field>
+        <field name="inherit_id" ref="hosting_management.hosting_maintenance_schedule_view_tree"/>
+        <field name="arch" type="xml">
+            <field name="service_id" position="after">
+                <field name="target_label" string="Cible" optional="show"/>
+            </field>
+        </field>
+    </record>
+
+</odoo>

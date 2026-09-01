@@ -1,0 +1,881 @@
+#!/usr/bin/env python3
+# License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
+"""symbifox-hostd — relève l'état de mise à jour d'une machine et le POSTe.
+
+La machine parle, le centre écoute. Rien ici n'écoute sur un port, rien ne
+tourne en permanence, et le relevé est STRICTEMENT en lecture : aucune des
+commandes lancées ne modifie la machine, et aucune n'exige les privilèges.
+
+Bibliothèque standard seulement, pour que l'agent s'installe partout sans rien
+tirer derrière lui.
+
+    symbifox-hostd enrol --url URL --code CODE   échange un code contre un jeton
+    symbifox-hostd report                        relève et POSTe
+    symbifox-hostd show                          relève et imprime, sans rien envoyer
+    symbifox-hostd poll                          demande un ordre, et l'exécute
+
+⚠️ `poll` est la SEULE sous-commande qui modifie la machine, et elle refuse de
+le faire si /etc/symbifox/apply-allowed n'existe pas. Ce fichier est le
+consentement : local, posé à la main, retirable sans passer par Odoo. Le serveur
+peut dire ce qu'il veut, sans ce fichier rien ne s'applique.
+
+Configuration : /etc/symbifox/hostd.conf (JSON) ou les variables
+SYMBIFOX_URL / SYMBIFOX_TOKEN.
+"""
+
+import argparse
+import json
+import os
+import re
+import shutil
+import subprocess
+import sys
+import urllib.error
+import urllib.request
+from datetime import datetime, timezone
+
+VERSION = "1.0.0"
+CONF_PATH = os.environ.get("SYMBIFOX_CONF", "/etc/symbifox/hostd.conf")
+# Le consentement à être mis à jour à distance est LOCAL, posé à la main, et
+# retirable sans passer par Odoo. Le lot 1 ne l'utilise pas encore ; l'agent le
+# relève pour que le serveur sache d'avance ce qu'il pourra demander.
+APPLY_FLAG = "/etc/symbifox/apply-allowed"
+TIMEOUT = 30
+ENDING_SOON_DAYS = 180
+
+
+# ----------------------------------------------------------------------
+# Petites aides
+# ----------------------------------------------------------------------
+def run(cmd, timeout=120):
+    """Sortie d'une commande de LECTURE, ou '' si elle a raté.
+
+    ⚠️ Ne JAMAIS s'en servir pour compter : une commande ratée rend '' et donc
+    zéro élément. Pour tout ce qui se compte, passer par `run_counted`, qui dit
+    si le compte est VRAI.
+    """
+    ok, out = run_counted(cmd, timeout=timeout)
+    return out if ok else ""
+
+
+def run_counted(cmd, timeout=120, ok_codes=(0,)):
+    """Rendre `(succès, sortie)`.
+
+    🔴 C'est la fonction qui empêche la faute centrale du dossier : un
+    gestionnaire de paquets cassé, un dépôt injoignable ou un verrou `dpkg`
+    tenu font échouer la commande, et une sortie vide se lit alors comme
+    « zéro paquet en attente ». La machine passe au vert en ne mesurant rien.
+    Ici, l'échec est rapporté comme tel, et le serveur affiche « compte
+    inconnu » plutôt qu'un zéro rassurant.
+    """
+    try:
+        out = subprocess.run(
+            cmd, capture_output=True, text=True, timeout=timeout, check=False
+        )
+    except (OSError, subprocess.TimeoutExpired):
+        return False, ""
+    return out.returncode in ok_codes, out.stdout
+
+
+def have(binary):
+    return shutil.which(binary) is not None
+
+
+def os_release():
+    values = {}
+    try:
+        with open("/etc/os-release", encoding="utf-8") as handle:
+            for line in handle:
+                if "=" in line:
+                    key, _, value = line.partition("=")
+                    values[key.strip()] = value.strip().strip('"')
+    except OSError:
+        pass
+    return values
+
+
+# ----------------------------------------------------------------------
+# Identité
+# ----------------------------------------------------------------------
+def machine_id():
+    """L'identité de l'INSTALLATION, pas de la machine.
+
+    ⚠️ Un poste en double amorçage a un `/etc/machine-id` PAR système : ce
+    n'est donc pas l'identité de la machine, et le parc Blue Fox est presque
+    tout en double amorçage. L'identité physique, c'est `machine_uuid()`.
+    """
+    for path in ("/etc/machine-id", "/var/lib/dbus/machine-id"):
+        try:
+            with open(path, encoding="utf-8") as handle:
+                value = handle.read().strip()
+            if value:
+                return value
+        except OSError:
+            continue
+    return ""
+
+
+def machine_uuid():
+    """L'identité de la MACHINE, lue dans le DMI.
+
+    ⚠️ `product_uuid` et les numéros de série DMI sont en lecture root
+    seulement. L'agent quotidien tourne sans privilège et rend donc None ;
+    seul l'enrôlement, lancé par `install.sh` en root, peut la relever. C'est
+    voulu : l'identité physique se pose une fois, elle ne change pas.
+    """
+    for path in ("/sys/class/dmi/id/product_uuid",
+                 "/sys/class/dmi/id/board_serial",
+                 "/sys/class/dmi/id/chassis_serial"):
+        try:
+            with open(path, encoding="utf-8") as handle:
+                value = handle.read().strip()
+            if value and value.lower() not in (
+                "none", "unknown", "not specified", "to be filled by o.e.m.",
+                "default string", "0",
+            ):
+                return value
+        except OSError:
+            continue
+    return None
+
+
+def os_family():
+    if sys.platform.startswith("linux"):
+        return "linux"
+    if sys.platform == "darwin":
+        return "macos"
+    if sys.platform.startswith("win"):
+        return "windows"
+    return "other"
+
+
+def boot_time():
+    try:
+        with open("/proc/uptime", encoding="utf-8") as handle:
+            seconds = float(handle.read().split()[0])
+    except (OSError, ValueError, IndexError):
+        return None
+    now = datetime.now(timezone.utc).timestamp() - seconds
+    return datetime.fromtimestamp(now, timezone.utc).strftime("%Y-%m-%d %H:%M:%S")
+
+
+# ----------------------------------------------------------------------
+# Noyau et redémarrage
+# ----------------------------------------------------------------------
+def kernels():
+    running = run(["uname", "-r"]).strip()
+    installed = running
+    if have("dpkg"):
+        found = re.findall(r"linux-image-(\S+?)\s", run(["dpkg", "-l", "linux-image-*"]))
+        versions = [v for v in found if v[0].isdigit()]
+        if versions:
+            installed = sorted(versions, key=_version_key)[-1]
+    elif have("rpm"):
+        versions = [line.strip()[len("kernel-"):]
+                    for line in run(["rpm", "-q", "kernel"]).splitlines()
+                    if line.startswith("kernel-")]
+        if versions:
+            installed = sorted(versions, key=_version_key)[-1]
+    return running, installed
+
+
+def _version_key(value):
+    return [int(part) if part.isdigit() else part
+            for part in re.split(r"[.\-+~]", value)]
+
+
+def reboot_state():
+    """Trois vérités différentes selon la distribution.
+
+    La DATE compte plus que le drapeau : un booléen ne trie rien, une machine
+    qui attend depuis neuf jours se voit tout de suite.
+    """
+    flag = "/var/run/reboot-required"
+    if os.path.exists(flag):
+        since = datetime.fromtimestamp(
+            os.stat(flag).st_mtime, timezone.utc
+        ).strftime("%Y-%m-%d %H:%M:%S")
+        packages = ""
+        try:
+            with open(flag + ".pkgs", encoding="utf-8") as handle:
+                packages = ", ".join(sorted(set(handle.read().split())))[:512]
+        except OSError:
+            pass
+        return True, since, packages
+
+    if have("dnf") and "needs-restarting" in run(["dnf", "--help"]):
+        result = subprocess.run(
+            ["dnf", "needs-restarting", "-r"],
+            capture_output=True, text=True, check=False,
+        )
+        if result.returncode == 1:
+            return True, None, "dnf needs-restarting"
+
+    running, installed = kernels()
+    if installed and running and installed != running:
+        return True, None, f"noyau {installed} installé, {running} chargé"
+    return False, None, ""
+
+
+# ----------------------------------------------------------------------
+# Paquets en attente
+# ----------------------------------------------------------------------
+def pending_apt():
+    packages = []
+    ok, output = run_counted(["apt", "list", "--upgradable"])
+    if not ok:
+        return "apt", None
+    for line in output.splitlines():
+        match = re.match(r"^(\S+?)/(\S+)\s+(\S+)\s+\S+\s+\[upgradable from: (\S+)\]",
+                         line.strip())
+        if not match:
+            continue
+        name, origin, candidate, installed = match.groups()
+        packages.append({
+            "name": name,
+            "origin": origin,
+            "version_candidate": candidate,
+            "version_installed": installed,
+            "is_security": "security" in origin,
+        })
+    return "apt", packages
+
+
+def pending_dnf():
+    packages = []
+    security = set()
+    # `updateinfo` peut échouer sans que le compte soit faux : on perd alors la
+    # seule distinction sécurité, pas le compte. C'est signalé plus bas.
+    for line in run(["dnf", "-q", "updateinfo", "list", "--security"]).splitlines():
+        parts = line.split()
+        if len(parts) >= 3:
+            security.add(parts[-1])
+    # ⚠️ `dnf check-update` rend 100 quand des mises à jour EXISTENT, 0 quand il
+    # n'y en a pas. Traiter 100 comme un échec ferait dire « inconnu » à toute
+    # machine Fedora en retard.
+    ok, output = run_counted(["dnf", "-q", "check-update"], ok_codes=(0, 100))
+    if not ok:
+        return "dnf", None
+    for line in output.splitlines():
+        parts = line.split()
+        if len(parts) == 3 and not line.startswith(" ") and "." in parts[0]:
+            packages.append({
+                "name": parts[0],
+                "version_candidate": parts[1],
+                "origin": parts[2],
+                "is_security": any(parts[0] in item for item in security),
+            })
+    return "dnf", packages
+
+
+def pending_pacman():
+    packages = []
+    # ⚠️ `checkupdates` rend 2 quand il n'y a rien à faire, et `pacman -Qu`
+    # rend 1 dans le même cas. Les deux sont des succès.
+    if have("checkupdates"):
+        source, ok_codes = ["checkupdates"], (0, 2)
+    else:
+        source, ok_codes = ["pacman", "-Qu"], (0, 1)
+    ok, output = run_counted(source, ok_codes=ok_codes)
+    if not ok:
+        return "pacman", None
+    for line in output.splitlines():
+        parts = line.split()
+        if len(parts) >= 4 and parts[2] == "->":
+            packages.append({
+                "name": parts[0],
+                "version_installed": parts[1],
+                "version_candidate": parts[3],
+                # Arch ne distingue pas les correctifs de sécurité dans ses
+                # dépôts : dire « 0 sécurité » serait faux, on ne dit rien.
+                "is_security": False,
+            })
+    return "pacman", packages
+
+
+def pending():
+    # rpm-ostree AVANT dnf : sur un système par image, « nombre de paquets en
+    # attente » ne veut rien dire, l'unité est le déploiement.
+    if have("rpm-ostree") or have("bootc"):
+        ok, output = run_counted(["rpm-ostree", "status"])
+        if not ok:
+            return "bootc", None
+        staged = "staged" in output.lower()
+        return "bootc", ([{"name": "déploiement en attente", "is_security": False}]
+                         if staged else [])
+    if have("apt"):
+        return pending_apt()
+    if have("dnf"):
+        return pending_dnf()
+    if have("checkupdates") or have("pacman"):
+        return pending_pacman()
+    if have("zypper"):
+        # Pas encore écrit : dire « inconnu » plutôt que « zéro ».
+        return "zypper", None
+    return "other", None
+
+
+# ----------------------------------------------------------------------
+# Le MODE de l'auto-updateur, jamais sa présence
+# ----------------------------------------------------------------------
+def auto_update():
+    """Trois machines du parc BF ont un auto-updateur configuré et aucune des
+    trois n'applique ce qui attend. Un booléen répondrait « oui » trois fois.
+    """
+    if have("systemctl"):
+        state = run(["systemctl", "is-enabled", "unattended-upgrades"]).strip()
+        if state == "enabled":
+            origins = _uu_origins()
+            joined = ", ".join(origins)
+            if any(o.endswith("-updates") for o in origins):
+                return "all", f"unattended-upgrades : {joined}"
+            if any("security" in o for o in origins):
+                return "security", (
+                    f"unattended-upgrades : {joined}. Les dépôts -updates ne "
+                    "sont PAS dans les origines autorisées."
+                )
+            return "unknown", f"unattended-upgrades : {joined}"
+
+        for unit in ("dnf5-automatic.timer", "dnf-automatic.timer",
+                     "dnf-automatic-install.timer"):
+            if run(["systemctl", "is-enabled", unit]).strip() == "enabled":
+                mode = _dnf_automatic_mode()
+                return mode, f"{unit} : {_dnf_automatic_detail(mode)}"
+
+    return "off", "aucun auto-updateur détecté"
+
+
+def _uu_origins():
+    origins = []
+    inside = False
+    for path in ("/etc/apt/apt.conf.d/50unattended-upgrades",
+                 "/etc/apt/apt.conf.d/52unattended-upgrades-local"):
+        try:
+            with open(path, encoding="utf-8") as handle:
+                for line in handle:
+                    stripped = line.strip()
+                    if stripped.startswith("//"):
+                        continue
+                    if "Allowed-Origins" in stripped:
+                        inside = True
+                        continue
+                    if inside:
+                        # ⚠️ Tester « } n'importe où » couperait le bloc dès la
+                        # première ligne : `${distro_id}` en contient une. Seule
+                        # une accolade EN TÊTE ferme la liste.
+                        if stripped.startswith("}"):
+                            inside = False
+                            continue
+                        found = re.search(r'"([^"]+)"', stripped)
+                        if found:
+                            origins.append(found.group(1))
+        except OSError:
+            continue
+    return origins
+
+
+def _dnf_automatic_mode():
+    for path in ("/etc/dnf/automatic.conf", "/etc/dnf/dnf5-plugins/automatic.conf"):
+        try:
+            with open(path, encoding="utf-8") as handle:
+                text = handle.read()
+        except OSError:
+            continue
+        apply_match = re.search(r"^\s*apply_updates\s*=\s*(\w+)", text, re.M)
+        if apply_match:
+            if apply_match.group(1).lower() in ("yes", "true", "1"):
+                upgrade = re.search(r"^\s*upgrade_type\s*=\s*(\w+)", text, re.M)
+                return "security" if upgrade and upgrade.group(1) == "security" \
+                    else "all"
+            return "download"
+    # Le défaut de dnf-automatic est le téléchargement seul. Le supposer est
+    # moins trompeur que de répondre « inconnu » : le journal le confirme.
+    return "download"
+
+
+def _dnf_automatic_detail(mode):
+    if mode == "download":
+        return ("téléchargement seul, rien n'est appliqué "
+                "(journal : « Packages downloaded. »)")
+    return "applique les mises à jour"
+
+
+# ----------------------------------------------------------------------
+# Disque et fin de support
+# ----------------------------------------------------------------------
+def disk_pct(path):
+    """Le pourcentage que `df` affiche, pas un autre.
+
+    `df` calcule occupé / (occupé + disponible), ce qui EXCLUT les blocs
+    réservés au superutilisateur. Rapporter (total - libre) / total donnerait
+    quelques points de plus et ne correspondrait à rien de ce qu'un humain voit
+    en ouvrant un terminal.
+    """
+    try:
+        usage = shutil.disk_usage(path)
+    except OSError:
+        return None
+    denominator = usage.used + usage.free
+    if not denominator:
+        return None
+    return round(100 * usage.used / denominator)
+
+
+def support():
+    """La fin de support est LUE sur la machine, jamais devinée.
+
+    Fedora la met dans os-release (SUPPORT_END), Ubuntu la publie via
+    distro-info. Un roulement continu n'en a pas, et c'est l'information.
+    """
+    values = os_release()
+    if values.get("BUILD_ID") == "rolling" or values.get("ID") in ("arch", "garuda"):
+        return None, "rolling"
+
+    end = values.get("SUPPORT_END")
+    if not end:
+        end = _ubuntu_support_end(values.get("VERSION_ID", ""))
+    if not end:
+        return None, "unknown"
+
+    try:
+        remaining = (datetime.strptime(end, "%Y-%m-%d").date()
+                     - datetime.now(timezone.utc).date()).days
+    except ValueError:
+        return None, "unknown"
+    if remaining < 0:
+        return end, "ended"
+    if remaining <= ENDING_SOON_DAYS:
+        return end, "ending_soon"
+    return end, "supported"
+
+
+def _ubuntu_support_end(version_id):
+    try:
+        with open("/usr/share/distro-info/ubuntu.csv", encoding="utf-8") as handle:
+            for line in handle:
+                parts = line.strip().split(",")
+                if len(parts) >= 7 and parts[0].split()[0] == version_id:
+                    return parts[5]
+    except OSError:
+        pass
+    return None
+
+
+# ----------------------------------------------------------------------
+# Le relevé
+# ----------------------------------------------------------------------
+def collect():
+    values = os_release()
+    manager, packages = pending()
+    # `packages is None` veut dire « je n'ai pas pu compter », ce qui n'est PAS
+    # la même chose que « zéro ». Le serveur doit voir la différence.
+    counted = packages is not None
+    packages = packages or []
+    needs_reboot, since, reboot_packages = reboot_state()
+    running, installed = kernels()
+    mode, detail = auto_update()
+    support_end, support_state = support()
+    return {
+        "agent_version": VERSION,
+        "machine_id": machine_id(),
+        "os_family": os_family(),
+        "hostname": run(["hostname"]).strip(),
+        "os_release": values.get("PRETTY_NAME") or values.get("NAME") or "",
+        "kernel_running": running,
+        "kernel_installed": installed,
+        "boot_time": boot_time(),
+        "reboot_required": needs_reboot,
+        "reboot_pending_since": since,
+        "reboot_packages": reboot_packages,
+        "package_manager": manager,
+        "pending_known": counted,
+        "pending_count": len(packages) if counted else 0,
+        "pending_security_count": (
+            sum(1 for p in packages if p.get("is_security")) if counted else 0
+        ),
+        "auto_update_mode": mode,
+        "auto_update_detail": detail,
+        "disk_root_pct": disk_pct("/"),
+        "disk_boot_pct": disk_pct("/boot") if os.path.ismount("/boot")
+        else disk_pct("/"),
+        "os_support_end": support_end,
+        "os_support_state": support_state,
+        "apply_allowed": os.path.exists(APPLY_FLAG),
+        "packages": packages,
+    }
+
+
+# ----------------------------------------------------------------------
+# L'application sur commande
+# ----------------------------------------------------------------------
+# ⚠️ Deux bornes différentes, et c'est voulu : le serveur cesse de PROPOSER un
+# ordre après 7 jours, l'agent cesse de l'ACCEPTER après 24 h. Une machine
+# rallumée après trois semaines ne doit pas appliquer une décision prise dans un
+# autre monde — les paquets visés n'existent peut-être plus.
+MAX_ORDER_AGE_HOURS = 24
+
+
+def apply_allowed():
+    """Le consentement, lu sur le disque à CHAQUE fois.
+
+    🔴 Jamais mis en cache, jamais déduit de ce que le serveur a répondu.
+    L'effacement du fichier doit suffire à tout arrêter, immédiatement, sans
+    joindre Odoo ni redémarrer quoi que ce soit.
+    """
+    return os.path.exists(APPLY_FLAG)
+
+
+def order_too_old(created, max_hours):
+    """Vrai si l'ordre est trop vieux. Illisible = trop vieux."""
+    if not created:
+        return True
+    text = str(created).strip().replace("T", " ").split(".")[0]
+    try:
+        stamp = datetime.strptime(text, "%Y-%m-%d %H:%M:%S")
+    except ValueError:
+        # ⚠️ En cas de doute on REFUSE. Une date qu'on ne sait pas lire ne doit
+        # pas se lire comme « tout frais ».
+        return True
+    age = (datetime.now(timezone.utc) - stamp.replace(tzinfo=timezone.utc))
+    return age.total_seconds() > max_hours * 3600
+
+
+def upgrade_command(manager, scope, packages):
+    """Rendre `(argv, env, refus)` pour ce gestionnaire et cette portée.
+
+    Un refus explicite vaut mieux qu'une commande approximative : appliquer
+    autre chose que ce qui a été demandé est pire que ne rien appliquer.
+    """
+    env = dict(os.environ, DEBIAN_FRONTEND="noninteractive", LC_ALL="C")
+
+    if manager == "apt":
+        keep = ["-o", "Dpkg::Options::=--force-confdef",
+                "-o", "Dpkg::Options::=--force-confold"]
+        if scope == "all":
+            # `upgrade` et non `dist-upgrade` : il n'enlève jamais de paquet.
+            return ["apt-get", "-y", *keep, "upgrade"], env, ""
+        if not packages:
+            return None, env, "aucun paquet à appliquer"
+        return ["apt-get", "-y", *keep, "--only-upgrade", "install",
+                *packages], env, ""
+
+    if manager == "dnf":
+        if scope == "all":
+            return ["dnf", "-y", "upgrade"], env, ""
+        if scope == "security":
+            # dnf sait le faire nativement, lui.
+            return ["dnf", "-y", "upgrade", "--security"], env, ""
+        if not packages:
+            return None, env, "aucun paquet à appliquer"
+        return ["dnf", "-y", "upgrade", *packages], env, ""
+
+    if manager == "pacman":
+        if scope == "all":
+            return ["pacman", "-Syu", "--noconfirm"], env, ""
+        # 🔴 Les deux refus qui comptent sur Arch.
+        if scope == "security":
+            return None, env, (
+                "Arch ne distingue pas les correctifs de sécurité dans ses "
+                "dépôts. Appliquer « tout » à la place serait faire autre chose "
+                "que ce qui a été demandé, en le taisant. Demander la portée "
+                "« toutes les mises à jour » si c'est bien ce qui est voulu."
+            )
+        return None, env, (
+            "Arch ne supporte pas les mises à jour partielles : installer "
+            "quelques paquets contre un système non synchronisé casse les "
+            "dépendances. Utiliser la portée « toutes les mises à jour »."
+        )
+
+    if manager == "bootc":
+        if scope != "all":
+            return None, env, (
+                "Un système par image n'a pas de paquets à choisir : son unité "
+                "est le déploiement. Seule la portée « toutes » a un sens."
+            )
+        return ["rpm-ostree", "upgrade"], env, ""
+
+    return None, env, f"gestionnaire « {manager} » non pris en charge"
+
+
+def security_names():
+    """Les paquets marqués sécurité au relevé de MAINTENANT.
+
+    Sert à la portée « sécurité » sur apt, qui n'a pas d'équivalent natif : on
+    relit l'état et on ne nomme que ce qui l'exige. Rend `None` si le compte
+    n'est pas fiable — auquel cas on n'applique rien plutôt que de deviner.
+    """
+    _manager, packages = pending()
+    if packages is None:
+        return None
+    return [p["name"] for p in packages if p.get("is_security")]
+
+
+def run_upgrade(argv, env):
+    """Lancer la mise à jour. Rend `(code, sortie)`.
+
+    Pas de `timeout` court : une mise à jour de 300 paquets sur un lien lent
+    prend le temps qu'elle prend, et tuer `dpkg` au milieu laisse la machine
+    dans un état pire que celui d'où elle partait.
+    """
+    try:
+        done = subprocess.run(argv, capture_output=True, text=True,
+                              env=env, timeout=3 * 3600, check=False)
+    except subprocess.TimeoutExpired:
+        return 124, "la mise à jour a dépassé trois heures et a été abandonnée"
+    except OSError as error:
+        return 127, f"commande impossible à lancer : {error}"
+    return done.returncode, (done.stdout or "") + (done.stderr or "")
+
+
+def do_poll(conf):
+    """Demander un ordre, et l'exécuter s'il y en a un."""
+    answer = post(conf["url"], "/symbifox/patch/v1/poll", {},
+                  token=conf["token"])
+    if not answer.get("ok"):
+        print(f"interrogation refusée : {answer.get('error')}", file=sys.stderr)
+        return 1
+
+    job = answer.get("job")
+    if not job:
+        reason = answer.get("reason")
+        print(f"aucun ordre en attente{' : ' + reason if reason else ''}")
+        return 0
+
+    job_id = job.get("id")
+
+    def report_back(state, code=None, output=None, changed=None):
+        body = {"job_id": job_id, "state": state}
+        if code is not None:
+            body["exit_code"] = code
+        if output is not None:
+            # Les dernières lignes, pas les premières : c'est là que se trouve
+            # l'erreur quand il y en a une.
+            body["output"] = output[-60000:]
+        if changed is not None:
+            body["packages_changed"] = changed
+        return post(conf["url"], "/symbifox/patch/v1/result", body,
+                    token=conf["token"])
+
+    # 🔴 Le consentement d'abord, avant même de regarder ce qu'on demande.
+    if not apply_allowed():
+        message = (f"refus : {APPLY_FLAG} n'existe pas sur cette machine. "
+                   "L'application à distance n'y est pas autorisée.")
+        print(message, file=sys.stderr)
+        report_back("failed", code=77, output=message)
+        return 1
+
+    # L'ordre m'est-il bien destiné ?
+    mine = machine_id()
+    target = job.get("machine_id")
+    if target and mine and target != mine:
+        message = (f"refus : ordre destiné au système {target}, "
+                   f"or je suis {mine}.")
+        print(message, file=sys.stderr)
+        report_back("failed", code=78, output=message)
+        return 1
+
+    if order_too_old(job.get("created"),
+                     job.get("max_age_hours") or MAX_ORDER_AGE_HOURS):
+        message = (f"ordre du {job.get('created')} périmé : plus de "
+                   f"{job.get('max_age_hours') or MAX_ORDER_AGE_HOURS} heures. "
+                   "Rien n'a été appliqué.")
+        print(message, file=sys.stderr)
+        report_back("expired", output=message)
+        return 0
+
+    manager, before = pending()
+    scope = job.get("scope")
+    packages = list(job.get("packages") or [])
+
+    if scope == "security" and manager == "apt":
+        packages = security_names()
+        if packages is None:
+            message = ("le gestionnaire de paquets n'a pas répondu : impossible "
+                       "de savoir lesquels relèvent de la sécurité. Rien n'a "
+                       "été appliqué.")
+            report_back("failed", code=75, output=message)
+            print(message, file=sys.stderr)
+            return 1
+        if not packages:
+            report_back("done", code=0, output="aucun correctif de sécurité en "
+                                               "attente.", changed=0)
+            print("aucun correctif de sécurité en attente")
+            return 0
+
+    argv, env, refusal = upgrade_command(manager, scope, packages)
+    if refusal:
+        print(f"refus : {refusal}", file=sys.stderr)
+        report_back("failed", code=76, output=f"refus : {refusal}")
+        return 1
+
+    report_back("running")
+    print(f"ordre {job_id} : {' '.join(argv)}")
+    code, output = run_upgrade(argv, env)
+
+    # Le nombre de paquets qui ont cessé d'être en attente. Mesuré, pas déduit
+    # de la sortie : chaque gestionnaire la formate à sa façon.
+    _manager, after = pending()
+    changed = None
+    if before is not None and after is not None:
+        changed = max(0, len(before) - len(after))
+
+    report_back("done" if code == 0 else "failed", code=code, output=output,
+                changed=changed)
+    print(f"ordre {job_id} terminé : code {code}"
+          + (f", {changed} paquet(s) en moins" if changed is not None else ""))
+
+    if code == 0:
+        maybe_reboot(job.get("reboot_after"))
+    return 0 if code == 0 else 1
+
+
+def maybe_reboot(mode):
+    """Redémarrer si l'ordre le demandait — APRÈS avoir rapporté.
+
+    ⚠️ L'ordre du code compte : rapporter d'abord, redémarrer ensuite. Une
+    machine qui redémarre avant d'avoir rapporté laisse un ordre « en cours »
+    que plus personne ne vient clore.
+    """
+    if mode == "always":
+        wanted = True
+    elif mode == "if_required":
+        wanted = reboot_state()[0]
+    else:
+        return
+    if not wanted:
+        return
+    print("redémarrage demandé par l'ordre")
+    subprocess.run(["systemctl", "reboot"], check=False)
+
+
+# ----------------------------------------------------------------------
+# Transport
+# ----------------------------------------------------------------------
+def load_conf():
+    conf = {}
+    try:
+        with open(CONF_PATH, encoding="utf-8") as handle:
+            conf = json.load(handle)
+    except (OSError, ValueError):
+        pass
+    for key, env in (("url", "SYMBIFOX_URL"), ("token", "SYMBIFOX_TOKEN")):
+        if os.environ.get(env):
+            conf[key] = os.environ[env]
+    return conf
+
+
+def save_conf(conf):
+    # 0700 : le répertoire porte le jeton de la machine.
+    # ⚠️ `os.makedirs(mode=..., exist_ok=True)` n'applique son mode QUE s'il crée
+    # le répertoire. S'il existe déjà — l'installateur le pose — le mode est
+    # ignoré en silence et un 0755 reste 0755. Le `chmod` qui suit n'est donc pas
+    # redondant : c'est lui qui tient l'invariant.
+    directory = os.path.dirname(CONF_PATH)
+    os.makedirs(directory, mode=0o700, exist_ok=True)
+    os.chmod(directory, 0o700)
+    # ⚠️ Ouvrir en 0600 dès la création. Un `open()` ordinaire suivi d'un
+    # `chmod` laisse le jeton lisible par tous pendant l'écriture.
+    flags = os.O_WRONLY | os.O_CREAT | os.O_TRUNC
+    with os.fdopen(os.open(CONF_PATH, flags, 0o600), "w",
+                   encoding="utf-8") as handle:
+        json.dump(conf, handle, indent=2)
+    os.chmod(CONF_PATH, 0o600)
+
+
+def post(url, path, body, token=None):
+    request = urllib.request.Request(
+        url.rstrip("/") + path,
+        data=json.dumps(body).encode("utf-8"),
+        headers={"Content-Type": "application/json"},
+        method="POST",
+    )
+    if token:
+        request.add_header("Authorization", f"Bearer {token}")
+    try:
+        with urllib.request.urlopen(request, timeout=TIMEOUT) as response:
+            return json.loads(response.read().decode("utf-8"))
+    except urllib.error.HTTPError as error:
+        try:
+            return json.loads(error.read().decode("utf-8"))
+        except (ValueError, OSError):
+            return {"ok": False, "error": f"HTTP {error.code}"}
+    except (urllib.error.URLError, OSError, ValueError) as error:
+        return {"ok": False, "error": str(error)}
+
+
+def main(argv=None):
+    parser = argparse.ArgumentParser(prog="symbifox-hostd")
+    sub = parser.add_subparsers(dest="command", required=True)
+
+    enrol = sub.add_parser("enrol", help="échanger un code contre un jeton")
+    enrol.add_argument("--url", required=True)
+    enrol.add_argument("--code", required=True)
+    enrol.add_argument(
+        "--allow-http", action="store_true",
+        help="autoriser une URL en clair (bancs d'essai seulement)",
+    )
+
+    sub.add_parser("report", help="relever et envoyer")
+    sub.add_parser("show", help="relever et imprimer, sans rien envoyer")
+    sub.add_parser("poll", help="demander un ordre, et l'exécuter")
+
+    args = parser.parse_args(argv)
+    if args.command == "show":
+        print(json.dumps(collect(), indent=2, ensure_ascii=False))
+        return 0
+
+    if args.command == "enrol":
+        # Le jeton voyage dans un en-tête Authorization : en clair, il est lu
+        # par tout ce qui se trouve sur le chemin.
+        if not args.url.startswith("https://") and not args.allow_http:
+            print("refus : l'URL n'est pas en HTTPS et le jeton voyagerait en "
+                  "clair. Ajouter --allow-http pour un banc d'essai.",
+                  file=sys.stderr)
+            return 2
+        uuid = machine_uuid()
+        if not uuid:
+            print("note : UUID materiel illisible (il faut root). La machine "
+                  "sera identifiee par son seul systeme.", file=sys.stderr)
+        answer = post(args.url, "/symbifox/patch/v1/enrol", {
+            "code": args.code,
+            "machine_id": machine_id(),
+            "machine_uuid": uuid,
+            "os_family": os_family(),
+            "os_release": os_release().get("PRETTY_NAME", ""),
+            "hostname": run(["hostname"]).strip(),
+        })
+        if not answer.get("ok"):
+            print(f"enrôlement refusé : {answer.get('error')}", file=sys.stderr)
+            return 1
+        save_conf({"url": args.url, "token": answer["token"],
+                   "endpoint": answer.get("endpoint")})
+        print(f"système « {answer.get('system')} » enrôlé sur "
+              f"{answer.get('name')} ({answer.get('endpoint')})")
+        return 0
+
+    conf = load_conf()
+    if not conf.get("url") or not conf.get("token"):
+        print("pas de configuration : lancer d'abord « symbifox-hostd enrol »",
+              file=sys.stderr)
+        return 1
+
+    if args.command == "poll":
+        return do_poll(conf)
+
+    answer = post(conf["url"], "/symbifox/patch/v1/report", collect(),
+                  token=conf["token"])
+    if not answer.get("ok"):
+        print(f"relevé refusé : {answer.get('error')}", file=sys.stderr)
+        return 1
+    pending = answer.get("pending")
+    known = answer.get("pending_known", True)
+    compte = f"{pending} en attente ({answer.get('delta'):+d})" if known \
+        else "compte INCONNU (le gestionnaire de paquets n'a pas répondu)"
+    machine = answer.get("machine_state")
+    suffixe = f", machine {machine}" if machine and machine != answer.get("state") else ""
+    print(f"relevé déposé : {compte}, système {answer.get('state')}{suffixe}")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

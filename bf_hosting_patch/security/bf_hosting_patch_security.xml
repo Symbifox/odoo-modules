@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- Sans ces règles, un utilisateur d'hébergement borné à ses propres
+             clients par la règle de `hosting.endpoint` lisait quand même les
+             relevés de TOUT le parc, charge utile comprise, donc l'inventaire
+             logiciel complet de chaque machine. Le modèle enfant n'hérite pas
+             de la règle du parent : il faut la répéter. -->
+
+
+        <record id="bf_patch_system_rule_user" model="ir.rule">
+            <field name="name">Systèmes : l'utilisateur voit ceux des postes de ses clients</field>
+            <field name="model_id" ref="model_bf_patch_system"/>
+            <field name="domain_force">[('endpoint_id.partner_id.hosting_service_ids.user_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('hosting_management.group_hosting_user'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="bf_patch_system_rule_manager" model="ir.rule">
+            <field name="name">Systèmes : le gestionnaire voit tout</field>
+            <field name="model_id" ref="model_bf_patch_system"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('hosting_management.group_hosting_manager'))]"/>
+        </record>
+
+        <record id="bf_patch_report_rule_user" model="ir.rule">
+            <field name="name">Relevés : l'utilisateur voit ceux des postes de ses clients</field>
+            <field name="model_id" ref="model_bf_patch_report"/>
+            <field name="domain_force">[('endpoint_id.partner_id.hosting_service_ids.user_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('hosting_management.group_hosting_user'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="bf_patch_report_rule_manager" model="ir.rule">
+            <field name="name">Relevés : le gestionnaire voit tout</field>
+            <field name="model_id" ref="model_bf_patch_report"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('hosting_management.group_hosting_manager'))]"/>
+        </record>
+
+        <record id="bf_patch_package_rule_user" model="ir.rule">
+            <field name="name">Paquets : l'utilisateur voit ceux des postes de ses clients</field>
+            <field name="model_id" ref="model_bf_patch_package"/>
+            <field name="domain_force">[('endpoint_id.partner_id.hosting_service_ids.user_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('hosting_management.group_hosting_user'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="bf_patch_package_rule_manager" model="ir.rule">
+            <field name="name">Paquets : le gestionnaire voit tout</field>
+            <field name="model_id" ref="model_bf_patch_package"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('hosting_management.group_hosting_manager'))]"/>
+        </record>
+
+        <!-- Un ordre porte `output`, c'est-à-dire la sortie complète d'un
+             `apt-get upgrade` : la liste des paquets, leurs versions, parfois
+             des chemins. C'est le même inventaire logiciel que les relevés, et
+             il lui faut donc la même règle. -->
+
+        <record id="bf_patch_job_rule_user" model="ir.rule">
+            <field name="name">Ordres : l'utilisateur voit ceux des postes de ses clients</field>
+            <field name="model_id" ref="model_bf_patch_job"/>
+            <field name="domain_force">[('endpoint_id.partner_id.hosting_service_ids.user_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('hosting_management.group_hosting_user'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="bf_patch_job_rule_manager" model="ir.rule">
+            <field name="name">Ordres : le gestionnaire voit tout</field>
+            <field name="model_id" ref="model_bf_patch_job"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('hosting_management.group_hosting_manager'))]"/>
+        </record>
+
+    </data>
+</odoo>

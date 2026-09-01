@@ -1,0 +1,22 @@
+[Unit]
+Description=Symbifox — demande et exécute un ordre de mise à jour
+Documentation=https://bluefoxconsultant.com
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/symbifox-hostd poll
+# ⚠️ AUCUN durcissement de système de fichiers ici, contrairement à l'unité du
+# relevé. Celle-ci installe des paquets : elle doit écrire dans /usr, /etc, /var
+# et /boot. `ProtectSystem`, même en `full`, ferait échouer `dpkg` et `rpm` —
+# et l'échec ressemblerait à un dépôt injoignable plutôt qu'à un bac à sable.
+#
+# Ce qui tient la sécurité ici n'est pas le bac à sable, c'est le consentement :
+# l'agent refuse tout ordre si /etc/symbifox/apply-allowed n'existe pas. Un
+# durcissement qui casse l'outil n'ajoute rien ; il ne fait que déplacer la
+# panne là où on ne la lit pas.
+NoNewPrivileges=no
+# Une mise à jour longue ne doit pas être tuée au milieu : dpkg interrompu
+# laisse la machine dans un état pire que celui d'où elle partait.
+TimeoutStartSec=4h

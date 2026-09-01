@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <menuitem
+        id="hosting_menu_patch_state"
+        name="État des mises à jour"
+        parent="hosting_management.hosting_menu_endpoints_root"
+        action="hosting_endpoint_action_patch"
+        sequence="40"/>
+
+    <menuitem
+        id="hosting_menu_patch_systems"
+        name="Systèmes suivis"
+        parent="hosting_management.hosting_menu_endpoints_root"
+        action="bf_patch_system_action"
+        sequence="45"/>
+
+    <menuitem
+        id="hosting_menu_patch_attention"
+        name="Systèmes à regarder"
+        parent="hosting_management.hosting_menu_endpoints_root"
+        action="bf_patch_system_action_attention"
+        sequence="50"/>
+
+    <menuitem
+        id="hosting_menu_patch_reports"
+        name="Relevés de mise à jour"
+        parent="hosting_management.hosting_menu_endpoints_root"
+        action="bf_patch_report_action"
+        sequence="55"/>
+
+    <menuitem
+        id="hosting_menu_patch_jobs"
+        name="Ordres de mise à jour"
+        parent="hosting_management.hosting_menu_endpoints_root"
+        action="bf_patch_job_action"
+        sequence="60"/>
+
+</odoo>

@@ -1,0 +1,20 @@
+[Unit]
+Description=Symbifox — relevé quotidien de l'état des mises à jour
+
+[Timer]
+# Les dépôts amont publient au jour, pas à l'heure : un relevé horaire
+# multiplierait le bruit par 24 sans avancer d'une décision.
+OnCalendar=daily
+# Plus l'état au réveil, sinon un portable resté fermé bascule en « muet »
+# alors qu'il vient de rouvrir.
+OnBootSec=3min
+# Étale les relevés du parc pour ne pas les faire arriver tous à minuit.
+# ⚠️ Le délai aléatoire s'applique à CHAQUE déclenchement, OnBootSec compris :
+# à 3600 s, le relevé « au réveil » ci-dessus arrivait entre 3 et 63 minutes
+# après le démarrage, ce qui annulait sa raison d'être sur un portable rouvert
+# vingt minutes. Quinze minutes suffisent à étaler quatre machines.
+RandomizedDelaySec=900
+Persistent=true
+
+[Install]
+WantedBy=timers.target

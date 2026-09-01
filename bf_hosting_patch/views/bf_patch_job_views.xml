@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="bf_patch_job_view_list" model="ir.ui.view">
+        <field name="name">bf.patch.job.list</field>
+        <field name="model">bf.patch.job</field>
+        <field name="arch" type="xml">
+            <list decoration-muted="state in ('expired',)"
+                  decoration-danger="state == 'failed'"
+                  decoration-success="state == 'done'"
+                  decoration-info="state in ('claimed', 'running')">
+                <field name="create_date" string="Demandé le"/>
+                <field name="endpoint_id"/>
+                <field name="system_id"/>
+                <field name="scope"/>
+                <field name="package_names" optional="hide"/>
+                <field name="reboot_after"/>
+                <field name="requested_by" widget="many2one_avatar_user"/>
+                <field name="claimed_at" optional="hide"/>
+                <field name="finished_at" optional="show"/>
+                <field name="packages_changed" sum="Paquets"/>
+                <field name="exit_code" optional="hide"/>
+                <field name="state" widget="badge"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_patch_job_view_form" model="ir.ui.view">
+        <field name="name">bf.patch.job.form</field>
+        <field name="model">bf.patch.job</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_cancel" type="object"
+                            string="Retirer de la file" class="btn-secondary"
+                            invisible="state not in ('queued', 'claimed')"
+                            confirm="Retirer cet ordre de la file ?"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="queued,claimed,running,done"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group string="Cible">
+                            <field name="system_id"
+                                   readonly="state != 'queued'"
+                                   options="{'no_create': True}"/>
+                            <field name="endpoint_id"/>
+                            <field name="partner_id" optional="hide"/>
+                        </group>
+                        <group string="Ce qui sera appliqué">
+                            <field name="scope" readonly="state != 'queued'"/>
+                            <field name="package_names"
+                                   invisible="scope != 'named'"
+                                   required="scope == 'named'"
+                                   readonly="state != 'queued'"/>
+                            <field name="reboot_after"
+                                   readonly="state != 'queued'"/>
+                            <field name="window_start"
+                                   readonly="state != 'queued'"/>
+                        </group>
+                    </group>
+                    <group string="Issue"
+                           invisible="state in ('queued', 'claimed')">
+                        <group>
+                            <field name="requested_by"/>
+                            <field name="claimed_at"/>
+                            <field name="finished_at"/>
+                        </group>
+                        <group>
+                            <field name="exit_code"/>
+                            <field name="packages_changed"/>
+                        </group>
+                    </group>
+                    <notebook invisible="not output">
+                        <page string="Sortie de la machine" name="output">
+                            <field name="output" widget="text" readonly="1"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="bf_patch_job_view_search" model="ir.ui.view">
+        <field name="name">bf.patch.job.search</field>
+        <field name="model">bf.patch.job</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="system_id"/>
+                <field name="endpoint_id"/>
+                <field name="requested_by"/>
+                <filter name="open" string="En cours"
+                        domain="[('state', 'in', ('queued', 'claimed', 'running'))]"/>
+                <filter name="failed" string="Échoués"
+                        domain="[('state', '=', 'failed')]"/>
+                <separator/>
+                <filter name="security" string="Sécurité"
+                        domain="[('scope', '=', 'security')]"/>
+                <group expand="0" string="Grouper par">
+                    <filter name="by_machine" string="Machine"
+                            context="{'group_by': 'endpoint_id'}"/>
+                    <filter name="by_state" string="État"
+                            context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="bf_patch_job_action" model="ir.actions.act_window">
+        <field name="name">Ordres de mise à jour</field>
+        <field name="res_model">bf.patch.job</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_open': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Aucun ordre en file.</p>
+            <p>
+                Un ordre descend en étant demandé : Odoo le dépose ici, et
+                l'agent de la machine le ramasse à sa prochaine interrogation.
+                Une machine éteinte ne le rate pas, elle le prend au réveil.
+            </p>
+            <p>
+                Rien ne part vers une machine dont le fichier
+                <code>/etc/symbifox/apply-allowed</code> est absent.
+            </p>
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="bf_patch_report_view_list" model="ir.ui.view">
+        <field name="name">bf.patch.report.list</field>
+        <field name="model">bf.patch.report</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="pending_security_count &gt; 0"
+                  decoration-warning="reboot_required"
+                  create="false">
+                <field name="report_date"/>
+                <field name="system_id"/>
+                <field name="endpoint_id" optional="hide"/>
+                <field name="package_manager"/>
+                <field name="pending_known" optional="show"/>
+                <field name="pending_count" sum="En attente"/>
+                <field name="pending_security_count"/>
+                <field name="pending_delta"/>
+                <field name="auto_update_mode"/>
+                <field name="reboot_required" widget="boolean_toggle"
+                       readonly="1"/>
+                <field name="kernel_running" optional="show"/>
+                <field name="kernel_installed" optional="show"/>
+                <field name="disk_root_pct" optional="hide"/>
+                <field name="agent_version" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_patch_report_view_form" model="ir.ui.view">
+        <field name="name">bf.patch.report.form</field>
+        <field name="model">bf.patch.report</field>
+        <field name="arch" type="xml">
+            <form create="false" edit="false">
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="system_id" readonly="1"/></h1>
+                        <h3><field name="report_date" readonly="1"/></h3>
+                    </div>
+                    <group>
+                        <group string="Système">
+                            <field name="os_release"/>
+                            <field name="kernel_running"/>
+                            <field name="kernel_installed"/>
+                            <field name="boot_time"/>
+                            <field name="os_support_end"/>
+                            <field name="os_support_state"/>
+                        </group>
+                        <group string="Mises à jour">
+                            <field name="package_manager"/>
+                            <field name="pending_known"/>
+                            <field name="pending_count"/>
+                            <field name="pending_security_count"/>
+                            <field name="pending_delta"/>
+                            <field name="auto_update_mode"/>
+                            <field name="auto_update_detail"/>
+                        </group>
+                        <group string="Redémarrage">
+                            <field name="reboot_required"/>
+                            <field name="reboot_pending_since"/>
+                            <field name="reboot_packages"/>
+                        </group>
+                        <group string="Disque">
+                            <field name="disk_root_pct"/>
+                            <field name="disk_boot_pct"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Paquets en attente" name="packages">
+                            <field name="package_ids" readonly="1">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="version_installed"/>
+                                    <field name="version_candidate"/>
+                                    <field name="origin"/>
+                                    <field name="is_security"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Charge utile" name="payload">
+                            <field name="payload" readonly="1"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="bf_patch_report_view_search" model="ir.ui.view">
+        <field name="name">bf.patch.report.search</field>
+        <field name="model">bf.patch.report</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="system_id"/>
+                <field name="endpoint_id"/>
+                <field name="os_release"/>
+                <filter name="has_security" string="Sécurité en attente"
+                        domain="[('pending_security_count', '&gt;', 0)]"/>
+                <filter name="needs_reboot" string="Redémarrage requis"
+                        domain="[('reboot_required', '=', True)]"/>
+                <separator/>
+                <filter name="last_week" string="7 derniers jours"
+                        domain="[('report_date', '&gt;=', (context_today() - datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="by_system" string="Système"
+                            context="{'group_by': 'system_id'}"/>
+                    <filter name="by_endpoint" string="Machine"
+                            context="{'group_by': 'endpoint_id'}"/>
+                    <filter name="by_manager" string="Gestionnaire de paquets"
+                            context="{'group_by': 'package_manager'}"/>
+                    <filter name="by_date" string="Date"
+                            context="{'group_by': 'report_date:day'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="bf_patch_report_action" model="ir.actions.act_window">
+        <field name="name">Relevés de mise à jour</field>
+        <field name="res_model">bf.patch.report</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="bf_patch_report_view_search"/>
+        <field name="context">{'search_default_last_week': 1}</field>
+    </record>
+
+</odoo>
