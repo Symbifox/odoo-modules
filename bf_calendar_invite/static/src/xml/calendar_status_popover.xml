@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <!--
+      Anchored on the attendee answer group rather than on the footer itself:
+      the two belong side by side, and an OWL xpath that misses its anchor is
+      dropped in silence, so anchoring on something this specific fails loudly
+      at asset build time if core moves it.
+    -->
+    <t t-name="bf_calendar_invite.PopoverStatus"
+       t-inherit="calendar.AttendeeCalendarCommonPopover.footer"
+       t-inherit-mode="extension">
+        <xpath expr="//t[@t-if='displayAttendeeAnswerChoice']" position="before">
+            <t t-if="bfDisplayStatusChoice">
+                <div class="btn-group w-100 w-lg-auto order-first px-2 px-lg-0 mb-1 mb-lg-0">
+                    <button t-foreach="bfStatusChoices" t-as="choice" t-key="choice.value"
+                            class="btn btn-sm"
+                            t-attf-class="#{bfEventStatus === choice.value ? 'btn-secondary active' : 'btn-outline-secondary'}"
+                            t-on-click="() => this.bfChangeStatus(choice.value)"
+                            t-out="choice.label"/>
+                </div>
+            </t>
+        </xpath>
+        <!--
+          Anchored on the `t-if` wrapper, not on the Delete link inside it:
+          `position="before"` on the link would land the Poke button INSIDE
+          `t-if="isEventDeletable"`, so it would vanish on every event the user
+          may edit but not delete.
+        -->
+        <xpath expr="//t[@t-if='isEventDeletable']" position="before">
+            <a t-if="isEventEditable" href="#"
+               class="btn btn-secondary o_cw_popover_bf_poke"
+               t-on-click.prevent="bfOnClickPoke">Poke</a>
+        </xpath>
+    </t>
+
+</templates>

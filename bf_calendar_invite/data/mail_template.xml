@@ -64,4 +64,48 @@
             <t t-call="bf_calendar_invite.mail_body_calendar_invite"/>
         </field>
     </record>
+
+    <!--
+      The poke. Three records again, one body, same language switch as above.
+
+      No `report_template_ids`: this message must NOT carry an .ics. The event
+      has not changed, and a second .ics for the same UID is read by most
+      clients as an update — some redraw the entry, some re-prompt every guest.
+      A note asking whether we are still meeting would then move the meeting.
+    -->
+    <record id="mail_template_calendar_poke" model="mail.template">
+        <field name="name">Calendar: Are we still meeting?</field>
+        <field name="model_id" ref="calendar.model_calendar_event"/>
+        <field name="subject">{{ object.name }}</field>
+        <field name="email_from">{{ (object.user_id.email_formatted or user.email_formatted or '') }}</field>
+        <field name="lang">{{ object.bf_mail_lang }}</field>
+        <field name="description">A short "are we still meeting?" note with the joining details — written in the guests' language</field>
+        <field name="body_html" type="html">
+            <t t-call="bf_calendar_invite.mail_body_calendar_poke"/>
+        </field>
+    </record>
+
+    <record id="mail_template_calendar_poke_fr" model="mail.template">
+        <field name="name">Calendar: Are we still meeting? — Français</field>
+        <field name="model_id" ref="calendar.model_calendar_event"/>
+        <field name="subject">{{ object.name }}</field>
+        <field name="email_from">{{ (object.user_id.email_formatted or user.email_formatted or '') }}</field>
+        <field name="lang">{{ object.bf_mail_lang_fr }}</field>
+        <field name="description">The same note, forced to French</field>
+        <field name="body_html" type="html">
+            <t t-call="bf_calendar_invite.mail_body_calendar_poke"/>
+        </field>
+    </record>
+
+    <record id="mail_template_calendar_poke_en" model="mail.template">
+        <field name="name">Calendar: Are we still meeting? — English</field>
+        <field name="model_id" ref="calendar.model_calendar_event"/>
+        <field name="subject">{{ object.name }}</field>
+        <field name="email_from">{{ (object.user_id.email_formatted or user.email_formatted or '') }}</field>
+        <field name="lang">{{ object.bf_mail_lang_en }}</field>
+        <field name="description">The same note, forced to English</field>
+        <field name="body_html" type="html">
+            <t t-call="bf_calendar_invite.mail_body_calendar_poke"/>
+        </field>
+    </record>
 </odoo>

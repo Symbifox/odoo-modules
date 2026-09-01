@@ -7,6 +7,7 @@ from . import meeting_agenda_topic
 from . import meeting_attendance
 from . import meeting_dashboard
 from . import calendar_event
+from . import calendar_event_type
 from . import project_task
 from . import project_project
 from . import res_partner

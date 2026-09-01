@@ -198,3 +198,119 @@ msgstr "Vous pouvez y confirmer ou décliner votre présence."
 #: model:ir.model.fields.selection,name:bf_calendar_invite.selection__ir_actions_report__report_type__qweb-ics
 msgid "iCalendar (.ics)"
 msgstr "iCalendar (.ics)"
+
+#. module: bf_calendar_invite
+#: model_terms:ir.ui.view,arch_db:bf_calendar_invite.mail_body_calendar_poke
+msgid "Just checking that we are still meeting for"
+msgstr "Je voulais simplement m'assurer que nous nous rencontrons toujours pour"
+
+#. module: bf_calendar_invite
+#: model_terms:ir.ui.view,arch_db:bf_calendar_invite.mail_body_calendar_poke
+msgid "at"
+msgstr "à"
+
+#. module: bf_calendar_invite
+#: model_terms:ir.ui.view,arch_db:bf_calendar_invite.mail_body_calendar_poke
+msgid "Join the meeting"
+msgstr "Rejoindre la rencontre"
+
+#. module: bf_calendar_invite
+#: model_terms:ir.ui.view,arch_db:bf_calendar_invite.mail_body_calendar_poke
+msgid "We are at"
+msgstr "Nous sommes au"
+
+#. module: bf_calendar_invite
+#: model_terms:ir.ui.view,arch_db:bf_calendar_invite.mail_body_calendar_poke
+msgid "the office"
+msgstr "bureau"
+
+#. module: bf_calendar_invite
+#: model_terms:ir.ui.view,arch_db:bf_calendar_invite.mail_body_calendar_poke
+msgid "Thanks,<br/>"
+msgstr "Merci,<br/>"
+
+#. module: bf_calendar_invite
+#: model:mail.template,name:bf_calendar_invite.mail_template_calendar_poke
+msgid "Calendar: Are we still meeting?"
+msgstr "Calendrier : on se rencontre toujours ?"
+
+#. module: bf_calendar_invite
+#: model:mail.template,name:bf_calendar_invite.mail_template_calendar_poke_en
+msgid "Calendar: Are we still meeting? — English"
+msgstr "Calendrier : on se rencontre toujours ? — English"
+
+#. module: bf_calendar_invite
+#: model:mail.template,name:bf_calendar_invite.mail_template_calendar_poke_fr
+msgid "Calendar: Are we still meeting? — Français"
+msgstr "Calendrier : on se rencontre toujours ? — Français"
+
+#. module: bf_calendar_invite
+#: model:mail.template,description:bf_calendar_invite.mail_template_calendar_poke
+msgid "A short \"are we still meeting?\" note with the joining details — written in the guests' language"
+msgstr "Un mot court demandant si la rencontre a toujours lieu, avec le lien pour la rejoindre, rédigé dans la langue des invités"
+
+#. module: bf_calendar_invite
+#: model:mail.template,description:bf_calendar_invite.mail_template_calendar_poke_en
+msgid "The same note, forced to English"
+msgstr "Le même mot, forcé en anglais"
+
+#. module: bf_calendar_invite
+#: model:mail.template,description:bf_calendar_invite.mail_template_calendar_poke_fr
+msgid "The same note, forced to French"
+msgstr "Le même mot, forcé en français"
+
+#. module: bf_calendar_invite
+#: model:ir.model.fields,field_description:bf_calendar_invite.field_calendar_event__bf_event_status
+msgid "Status"
+msgstr "Statut"
+
+#. module: bf_calendar_invite
+#: model:ir.model.fields.selection,name:bf_calendar_invite.selection__calendar_event__bf_event_status__tentative
+msgid "Tentative"
+msgstr "Tentative"
+
+#. module: bf_calendar_invite
+#: model:ir.model.fields.selection,name:bf_calendar_invite.selection__calendar_event__bf_event_status__confirmed
+msgid "Confirmed"
+msgstr "Confirmée"
+
+#. module: bf_calendar_invite
+#: model:ir.model.fields.selection,name:bf_calendar_invite.selection__calendar_event__bf_event_status__cancelled
+msgid "Cancelled"
+msgstr "Annulée"
+
+#. module: bf_calendar_invite
+#: model:ir.model.fields,help:bf_calendar_invite.field_calendar_event__bf_event_status
+msgid "Whether the meeting itself is going ahead. Distinct from \"Attending?\", which is one attendee's answer to the invitation: a confirmed meeting can have guests who declined, and a cancelled one can have guests who had accepted."
+msgstr "Indique si la rencontre a lieu. À ne pas confondre avec « Participe ? », qui est la réponse d'un participant à l'invitation : une rencontre confirmée peut compter des invités qui ont refusé, et une rencontre annulée des invités qui avaient accepté."
+
+#. module: bf_calendar_invite
+#: model_terms:ir.ui.view,arch_db:bf_calendar_invite.calendar_event_view_form_inherit_bf
+msgid "POKE"
+msgstr "RELANCER"
+
+#. module: bf_calendar_invite
+#: model_terms:ir.ui.view,arch_db:bf_calendar_invite.calendar_event_view_form_inherit_bf
+msgid "Ask a missing guest whether the meeting is still on"
+msgstr "Demander à un invité absent si la rencontre a toujours lieu"
+
+#. module: bf_calendar_invite
+#: model_terms:ir.ui.view,arch_db:bf_calendar_invite.calendar_event_view_form_quick_create_inherit_bf
+msgid "Tags..."
+msgstr "Étiquettes..."
+
+#. module: bf_calendar_invite
+#: model_terms:ir.ui.view,arch_db:bf_calendar_invite.calendar_event_view_form_quick_create_inherit_bf
+msgid "Reminders..."
+msgstr "Rappels..."
+
+#. module: bf_calendar_invite
+#: model_terms:ir.ui.view,arch_db:bf_calendar_invite.calendar_event_view_search_inherit_bf
+msgid "Group By"
+msgstr "Regrouper par"
+
+#. module: bf_calendar_invite
+#. odoo-javascript
+#: code:addons/bf_calendar_invite/static/src/xml/calendar_status_popover.xml:0
+msgid "Poke"
+msgstr "Relancer"

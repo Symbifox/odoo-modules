@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <!--
+      Deux pastilles sur la vignette d'une rencontre, dans la grille du
+      calendrier : ordre du jour et compte rendu. Même lecture que le tableau
+      de bord des rencontres, mais sans ouvrir le tableau de bord.
+
+      ⚠️ Le gabarit hérité est celui du calendrier des PARTICIPANTS
+      (`calendar.AttendeeCalendarCommonRenderer.event`), et surtout PAS le
+      `web.CalendarCommonRenderer.event` générique dont il descend. La vue
+      calendrier de `calendar.event` porte `js_class="attendee_calendar"`, dont
+      le renderer redéfinit `eventTemplate` pour pointer sur le sien : une
+      extension posée sur le gabarit générique se compile parfaitement, ne
+      lève rien, et n'apparaît jamais à l'écran. Vérifié en navigateur, pas
+      déduit — c'est la première version de ce fichier qui s'est fait prendre.
+      Le test `test_le_gabarit_vise_le_renderer_reellement_utilise` tient les
+      deux bouts.
+
+      ⚠️ Et `contains(@t-attf-class, …)`, pas `hasclass(…)` : dans ce
+      gabarit-ci la classe du titre est posée par `t-attf-class` et non par un
+      attribut `class`, que `hasclass()` est seul à savoir lire. L'ancre ne
+      correspond alors à rien — et là, contrairement au mauvais gabarit, ça
+      hurle : « Cannot instantiate FullCalendar », vue calendrier morte pour
+      tout le monde. Les deux erreurs se ressemblent à l'écriture et ne se
+      ressemblent pas du tout en production.
+
+      ⚠️ Les valeurs viennent de `rawRecord`, qui ne contient que les champs
+      déclarés dans l'arch de la vue calendrier. `bf_agenda_state` et
+      `bf_minutes_state` y sont posés en `invisible="1"` par
+      `views/calendar_event_views.xml` : les retirer de l'arch vide ces deux
+      pastilles sans lever la moindre erreur. D'où le `t-if` sur l'existence de
+      la clé plutôt que sur sa seule valeur.
+    -->
+    <t t-name="bf_meeting.CalendarEventBadges"
+       t-inherit="calendar.AttendeeCalendarCommonRenderer.event"
+       t-inherit-mode="extension">
+        <xpath expr="//div[contains(@t-attf-class, 'o_event_title')]" position="before">
+            <span t-if="rawRecord and rawRecord.bf_agenda_state"
+                  class="bf_meeting_badge"
+                  t-attf-class="bf_meeting_badge_{{ rawRecord.bf_agenda_state }}"
+                  title="Ordre du jour">
+                <i class="fa fa-list-alt"/>
+            </span>
+            <span t-if="rawRecord and rawRecord.bf_minutes_state"
+                  class="bf_meeting_badge"
+                  t-attf-class="bf_meeting_badge_{{ rawRecord.bf_minutes_state }}"
+                  title="Compte rendu">
+                <i class="fa fa-file-text-o"/>
+            </span>
+        </xpath>
+    </t>
+
+</templates>

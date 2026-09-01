@@ -299,3 +299,112 @@ class CalendarEvent(models.Model):
         if len(self) == 1:
             action.setdefault("context", {})["default_body"] = self._bf_sms_body()
         return action
+
+    # ------------------------------------------------------------
+    # Event status
+    # ------------------------------------------------------------
+
+    bf_event_status = fields.Selection(
+        [
+            ("tentative", "Tentative"),
+            ("confirmed", "Confirmed"),
+            ("cancelled", "Cancelled"),
+        ],
+        string="Status",
+        index=True,
+        tracking=True,
+        help="Whether the meeting itself is going ahead. Distinct from "
+             "\"Attending?\", which is one attendee's answer to the "
+             "invitation: a confirmed meeting can have guests who declined, "
+             "and a cancelled one can have guests who had accepted.",
+    )
+
+    # RFC 5545 §3.8.1.11. Only these three values exist for a VEVENT, which is
+    # why the field carries exactly them and not a wider workflow: anything
+    # else would not survive a round trip through a calendar client.
+    _BF_ICS_STATUS = {
+        "tentative": "TENTATIVE",
+        "confirmed": "CONFIRMED",
+        "cancelled": "CANCELLED",
+    }
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        """New meetings are confirmed; old ones are left alone.
+
+        ⚠️ Posed here and NOT as `default="confirmed"` on the field, and the
+        difference is the entire history of this database. A field default is
+        written into every existing row when the column is created: measured on
+        a copy of production, `default=` stamped **15 464 meetings** — every
+        meeting ever held — as "confirmed". That is precisely the claim
+        `_bf_ics_status` refuses to make, and the first re-push of the calendar
+        would have carried `STATUS:CONFIRMED` to Nextcloud for all of them.
+
+        What we want is the distinction: an event written before this field
+        existed has **no** status, because nobody ruled on it; an event created
+        from now on is confirmed unless someone says otherwise.
+        """
+        for vals in vals_list:
+            vals.setdefault("bf_event_status", "confirmed")
+        return super().create(vals_list)
+
+    def _bf_ics_status(self):
+        """ICS `STATUS` value, or False when the event should not carry one.
+
+        Returning False rather than defaulting to CONFIRMED matters on the
+        push side: a VEVENT with no STATUS is "unspecified", which is what an
+        event written before this field existed actually is. Writing CONFIRMED
+        for it would claim a confirmation nobody gave.
+        """
+        self.ensure_one()
+        return self._BF_ICS_STATUS.get(self.bf_event_status, False)
+
+    @api.model
+    def _bf_status_from_ics(self, value):
+        """Odoo value for an ICS `STATUS`, or False when we cannot map it.
+
+        Unknown values are dropped rather than guessed. A client is free to
+        send an x-name here, and coercing it to `confirmed` would silently
+        promote a status we did not understand.
+        """
+        reverse = {v: k for k, v in self._BF_ICS_STATUS.items()}
+        return reverse.get((value or "").strip().upper(), False)
+
+    # ------------------------------------------------------------
+    # Poke
+    # ------------------------------------------------------------
+
+    def action_bf_poke(self):
+        """Composer on a short "are we still meeting?" note to the guests.
+
+        Same shape as the EMAIL button — a draft the user reads and sends —
+        and the same language rule, so the person who is late gets asked in
+        their own language rather than the organiser's.
+
+        No `.ics`: the event is unchanged and re-attaching it would read as a
+        reschedule. The message repeats where to join instead, because the
+        commonest reason someone is missing is that they cannot find the link,
+        not that they forgot.
+        """
+        self.ensure_one()
+        action = self.action_open_composer()
+        template_id = self.env["ir.model.data"]._xmlid_to_res_id(
+            "bf_calendar_invite.mail_template_calendar_poke", raise_if_not_found=False,
+        )
+        if template_id:
+            action.setdefault("context", {})["default_template_id"] = template_id
+        return action
+
+    def _bf_poke_join_url(self):
+        """Where to tell a missing guest to go.
+
+        The video-call link first: someone who is not in the room needs the
+        room, not the invitation page. `location` only when it is not that same
+        link repeated, which is what an event created from a call room stores.
+        """
+        self.ensure_one()
+        if self.videocall_location:
+            return self.videocall_location
+        if self.location and self.location.startswith(("http://", "https://")):
+            return self.location
+        return False

@@ -1,13 +1,13 @@
 {
     'name': "Abonnements — carte du tableau de bord",
-    'version': '18.0.1.0.2',
+    'version': '18.0.1.0.3',
     'category': 'Accounting/Accounting',
-    'summary': "Ajoute une carte Abonnements au tableau de bord Symbifox",
+    'summary': "Ajoute une carte Abonnements au tableau de bord Blue Fox",
     'description': """
 Module-pont : ajoute une carte de synthèse des abonnements (dépense mensualisée,
-renouvellements à venir, dormants) à l'accueil Symbifox (bf_home).
+renouvellements à venir, dormants) au tableau de bord Blue Fox (bf_dashboard).
 
-S'installe automatiquement lorsque bf_subscription ET bf_home sont présents.
+S'installe automatiquement lorsque bf_subscription ET bf_dashboard sont présents.
     """,
     'author': 'Les services de consultation Blue Fox, Inc.',
     'website': 'https://symbifox.com',

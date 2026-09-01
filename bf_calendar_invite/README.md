@@ -33,6 +33,21 @@ The SMS button opens the composer with an empty body.
 - **A prefilled SMS**: title, date and time, and the same link. Kept inside the
   GSM-7 alphabet and under 160 characters so a reminder stays one segment.
 
+- **A meeting status** (`Tentative` / `Confirmed` / `Cancelled`), distinct
+  from "Attending?". The status says whether the meeting itself is going
+  ahead; "Attending?" is one guest's answer to the invitation, so a confirmed
+  meeting can have guests who declined and a cancelled one can have guests who
+  had accepted. It is written into the `.ics` `STATUS` property and read back
+  from it, so it survives a round trip through a calendar client. Only the
+  three values RFC 5545 §3.8.1.11 defines for a VEVENT exist: a status a
+  client invented is not silently promoted to "confirmed". Shown on a popover
+  in the calendar view.
+- **A POKE button** — a short "are we still meeting?" note to the guests, in
+  their own language. No `.ics` is attached: the event has not changed, and
+  re-attaching one reads as a reschedule. The message repeats where to join
+  instead, because the commonest reason someone is missing is that they cannot
+  find the link.
+
 Both remain drafts: the composer opens, the user edits and sends.
 
 ## Changing the language of one message

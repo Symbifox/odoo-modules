@@ -150,4 +150,73 @@
             </table>
         </div>
     </template>
+
+    <!--
+      The poke's body. Same brand shell as the invitation, deliberately much
+      shorter: this is read on a phone, by someone who is either already late
+      or about to tell us the meeting is off. Anything below the joining link
+      will not be read.
+
+      It does not say how late anyone is, and does not suggest rescheduling.
+      Both turn a two-line question into a conversation, and the commonest
+      answer to this message is the guest walking into the room.
+    -->
+    <template id="mail_body_calendar_poke" name="Calendar poke email body">
+        <t t-set="brand" t-value="object._bf_mail_brand()"/>
+        <t t-set="mail_tz" t-value="object._bf_mail_tz()"/>
+        <t t-set="guest_name" t-value="object._bf_guest_name()"/>
+        <t t-set="join_url" t-value="object._bf_poke_join_url()"/>
+        <div>
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#F8FAFC;">
+                <tbody>
+                    <tr>
+                        <td align="center" style="padding:24px;">
+                            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px; max-width:600px; margin:0 auto; background-color:#FFFFFF; border-radius:12px; border:1px solid #E5E7EB; border-collapse:collapse;">
+                                <tbody>
+                                    <tr>
+                                        <td t-attf-style="height:4px; line-height:4px; background-color:{{ brand['primary'] }}; border-radius:12px 12px 0 0;">&#160;</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding:24px; font-family:'Lexend','Segoe UI',Arial,sans-serif;">
+                                            <p style="margin:0 0 12px 0;font-size:16px;line-height:26px;color:#374151;font-weight:300;">
+                                                <t t-if="guest_name">Hello <t t-out="guest_name"/>,</t>
+                                                <t t-else="">Hello,</t>
+                                            </p>
+                                            <p style="margin:0 0 16px 0;font-size:15px;line-height:24px;color:#374151;font-weight:300;">
+                                                Just checking that we are still meeting for
+                                                <strong t-attf-style="color:{{ brand['dark'] }};" t-out="object.name or ''">Meeting</strong>
+                                                at
+                                                <strong t-attf-style="color:{{ brand['dark'] }};"><t t-out="format_time(time=object.start, tz=mail_tz, time_format='short', lang_code=object.env.lang) or ''">11:00 AM</t></strong>?
+                                            </p>
+
+                                            <div t-if="join_url" style="text-align:center;padding:4px 0 8px 0;">
+                                                <a t-att-href="join_url" target="_blank" t-attf-style="display:inline-block;padding:10px 22px;color:#FFFFFF;text-decoration:none;background-color:{{ brand['primary'] }};border-radius:6px;font-weight:600;font-size:14px;border:1px solid {{ brand['primary'] }};">Join the meeting</a>
+                                            </div>
+                                            <p t-if="not join_url and object.location" style="margin:0 0 16px 0;font-size:15px;line-height:24px;color:#374151;font-weight:300;">
+                                                We are at <strong t-attf-style="color:{{ brand['dark'] }};" t-out="object.location or ''">the office</strong>.
+                                            </p>
+
+                                            <p style="margin:20px 0 0 0;font-size:15px;line-height:24px;color:#374151;font-weight:300;">
+                                                Thanks,<br/>
+                                                <t t-if="object.user_id.signature" data-o-mail-quote-container="1"><t t-out="object.user_id.signature or ''" data-o-mail-quote="1"/></t>
+                                                <t t-else=""><strong t-attf-style="color:{{ brand['dark'] }};"><t t-out="object.user_id.partner_id.name or user.name"/></strong></t>
+                                            </p>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px; max-width:600px; margin:12px auto 0;">
+                                <tbody>
+                                    <tr>
+                                        <td t-attf-style="height:3px; line-height:3px; background-color:{{ brand['primary'] }}; width:50%;">&#160;</td>
+                                        <td t-attf-style="height:3px; line-height:3px; background-color:{{ brand['dark'] }}; width:50%;">&#160;</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </template>
 </odoo>

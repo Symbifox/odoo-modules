@@ -1,0 +1,59 @@
+// Une rencontre annulée, dans la grille du calendrier.
+//
+// Barrée plutôt que masquée : elle reste dans l'agenda parce que le créneau a
+// été retenu et qu'on veut s'en souvenir, mais elle ne doit pas se lire comme
+// une rencontre qui a lieu. C'est la convention de tous les clients d'agenda
+// qui gèrent STATUS:CANCELLED.
+//
+// ⚠️ Le trait porte sur le TITRE, pas sur la vignette : `text-decoration` sur
+// le conteneur barre aussi l'heure et les pastilles OdJ/CR, qui, elles, restent
+// vraies.
+.fc-event.bf_event_cancelled {
+    .o_event_title {
+        text-decoration: line-through;
+        text-decoration-thickness: 1px;
+    }
+
+    opacity: 0.7;
+}
+
+// Le pied de la bulle d'un événement, sur deux rangées.
+//
+// Mesuré : la bulle fait 448 px, son pied en réclamait 676 en `nowrap`. « Oui /
+// Non / Peut-être » d'Odoo était intégralement hors cadre et « Supprimer »
+// coupé en deux — avant même que ce module y ajoute quoi que ce soit, la place
+// manquait déjà; les boutons de statut et Relancer n'ont fait que rendre le
+// débordement visible.
+//
+// Rangée 1, les états : le statut de la rencontre et la réponse du participant.
+// Rangée 2, les actions : Modifier, Aucune préparation, Relancer, Supprimer.
+// La séparation suit ce que les commandes FONT, pas leur ordre d'arrivée dans
+// le gabarit.
+.o_cw_popover .card-footer,
+.popover .card-footer {
+    flex-wrap: wrap;
+    row-gap: 0.35rem;
+
+    // ⚠️ `!important` et ce n'est pas de la paresse : les deux groupes portent
+    // les utilitaires Bootstrap `order-first` / `order-lg-0`, qui sont
+    // eux-mêmes déclarés `!important`. Une règle ordinaire perdrait en silence
+    // et les rangées resteraient mélangées.
+    > .btn-group {
+        order: 1 !important;
+    }
+
+    // La coupure de ligne : un élément fantôme qui prend toute la largeur,
+    // glissé entre les deux ordres. Sans lui, `flex-wrap` casserait la ligne
+    // n'importe où — au milieu des actions selon la langue, puisque la largeur
+    // des libellés change d'une traduction à l'autre.
+    &::after {
+        content: "";
+        flex-basis: 100%;
+        height: 0;
+        order: 2;
+    }
+
+    > a {
+        order: 3;
+    }
+}

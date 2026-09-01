@@ -1,6 +1,6 @@
 {
     'name': 'Rencontres',
-    'version': '18.0.3.50.2',
+    'version': '18.0.3.52.0',
     'category': 'Services/Meetings',
     'summary': 'Gestion des rencontres, ordres du jour et comptes rendus',
     'description': """
@@ -88,6 +88,10 @@ compte rendu.
             'bf_meeting/static/src/scss/meeting_dashboard.scss',
             'bf_meeting/static/src/js/meeting_dashboard.js',
             'bf_meeting/static/src/xml/meeting_dashboard.xml',
+            'bf_meeting/static/src/scss/calendar_event_badges.scss',
+            'bf_meeting/static/src/xml/calendar_event_badges.xml',
+            'bf_meeting/static/src/js/calendar_skip_popover.js',
+            'bf_meeting/static/src/xml/calendar_skip_popover.xml',
         ],
     },
 }

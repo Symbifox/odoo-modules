@@ -1,0 +1,60 @@
+// Les deux pastilles OdJ / compte rendu sur la vignette d'une rencontre.
+//
+// Trois niveaux de lecture, pas sept. Le tableau de bord des rencontres montre
+// les sept étapes parce qu'il sert à savoir QUOI faire ensuite; une vignette de
+// calendrier sert à savoir s'il reste quelque chose à faire, et une icône de
+// dix pixels ne porte pas sept nuances.
+//
+//   effacée          le document n'existe pas
+//   pleine           il existe (rédigé, et souligné une fois révisé)
+//   pleine + coche   il est parti
+//
+// ⚠️ `currentColor` et non une couleur fixe : la vignette prend la couleur du
+// participant (`color="partner_ids"` dans l'arch), donc un fond arbitraire.
+// Une pastille peinte en gris disparaît sur la moitié des palettes.
+.bf_meeting_badge {
+    display: inline-flex;
+    align-items: center;
+    margin-right: 3px;
+    line-height: 1;
+    flex: 0 0 auto;
+    color: currentColor;
+
+    // Absent. Présent quand même, et c'est voulu : l'absence d'un ordre du jour
+    // est justement ce qu'on veut voir d'un coup d'œil, et une pastille qui
+    // disparaît ne se distingue pas d'une rencontre hors périmètre.
+    //
+    // L'écart avec « rédigé » se joue sur l'opacité ET sur la graisse : 0,3
+    // contre 0,6 ne se lisait pas à la taille réelle, les deux états
+    // paraissaient identiques sur une capture de la grille.
+    &.bf_meeting_badge_none {
+        opacity: 0.32;
+    }
+
+    &.bf_meeting_badge_draft,
+    &.bf_meeting_badge_reviewed,
+    &.bf_meeting_badge_sent {
+        opacity: 1;
+    }
+
+    // Révisé : le trait sous l'icône. Assez discret pour ne pas concurrencer la
+    // coche, assez net pour se voir à côté d'une icône qui n'en a pas.
+    &.bf_meeting_badge_reviewed > i {
+        border-bottom: 1px solid currentColor;
+        padding-bottom: 1px;
+    }
+
+    // Envoyé : la coche qui dit que le cycle est clos.
+    &.bf_meeting_badge_sent::after {
+        content: "\f00c"; // fa-check
+        font-family: "FontAwesome";
+        font-size: 0.62em;
+        margin-left: 1px;
+    }
+
+    // Dispensé : rien à suivre, donc rien à montrer. Masqué plutôt que retiré
+    // du gabarit, pour que la règle reste au même endroit que les autres états.
+    &.bf_meeting_badge_skipped {
+        display: none;
+    }
+}

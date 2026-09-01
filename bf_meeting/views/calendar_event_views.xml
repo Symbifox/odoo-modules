@@ -69,4 +69,56 @@
         </field>
     </record>
 
+    <!--
+      Les deux états que lisent les pastilles de la grille du calendrier.
+
+      ⚠️ `invisible="1"` ne veut pas dire « inutile » : la vue calendrier
+      construit sa requête à partir des champs déclarés ici (`activeFields`),
+      et c'est par là que les deux valeurs arrivent jusqu'au gabarit OWL
+      (`static/src/xml/calendar_event_badges.xml`). Retirer ces deux lignes
+      éteint les pastilles sans provoquer la moindre erreur.
+    -->
+    <record id="calendar_event_view_calendar_inherit_meeting" model="ir.ui.view">
+        <field name="name">calendar.event.calendar.inherit.meeting</field>
+        <field name="model">calendar.event</field>
+        <field name="inherit_id" ref="calendar.view_calendar_event_calendar"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='categ_ids']" position="after">
+                <field name="bf_agenda_state" invisible="1"/>
+                <field name="bf_minutes_state" invisible="1"/>
+                <!-- Lu par le bouton « Aucune préparation » de la bulle, qui
+                     bascule cette case sans passer par le formulaire. -->
+                <field name="bf_skip_agenda" invisible="1"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Les dispenses portées par l'étiquette elle-même. -->
+    <record id="calendar_event_type_view_tree_inherit_meeting" model="ir.ui.view">
+        <field name="name">calendar.event.type.list.inherit.meeting</field>
+        <field name="model">calendar.event.type</field>
+        <field name="inherit_id" ref="calendar.view_calendar_event_type_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="bf_skip_agenda"/>
+                <field name="bf_skip_dashboard"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Filtres pour retrouver ce qu'il reste à faire, depuis le calendrier. -->
+    <record id="calendar_event_view_search_inherit_meeting_states" model="ir.ui.view">
+        <field name="name">calendar.event.search.inherit.meeting.states</field>
+        <field name="model">calendar.event</field>
+        <field name="inherit_id" ref="calendar.view_calendar_event_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">
+                <separator/>
+                <filter name="filter_agenda_not_sent" string="OdJ non envoyé"
+                        domain="[('bf_agenda_state', 'in', ['none', 'draft', 'reviewed'])]"/>
+                <filter name="filter_minutes_not_sent" string="Compte rendu non envoyé"
+                        domain="[('bf_minutes_state', 'in', ['none', 'draft', 'reviewed'])]"/>
+            </xpath>
+        </field>
+    </record>
 </odoo>

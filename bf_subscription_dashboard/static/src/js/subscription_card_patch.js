@@ -1,7 +1,7 @@
 /** @odoo-module **/
 
 import { patch } from "@web/core/utils/patch";
-import { BfDashboard } from "@bf_dashboard/js/bf_dashboard";
+import { BfDashboard } from "@bf_home/js/bf_dashboard";
 
 patch(BfDashboard.prototype, {
     openSubscriptionDashboard() {

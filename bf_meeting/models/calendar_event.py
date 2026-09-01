@@ -117,6 +117,12 @@ class CalendarEvent(models.Model):
     def create(self, vals_list):
         events = super().create(vals_list)
         events._bf_resolve_responsibles()
+        # ⚠️ Un `onchange` ne se joue que dans un formulaire. Les rencontres
+        # arrivent ici par la synchronisation Nextcloud, par la prise de
+        # rendez-vous et par import — jamais par un formulaire. Sans ce relais,
+        # une étiquette dispensant d'OdJ ne dispenserait de rien dans
+        # exactement les cas où on la pose en lot.
+        events._bf_apply_tag_skips()
         return events
 
     @api.depends('meeting_record_ids')
@@ -262,3 +268,150 @@ class CalendarEvent(models.Model):
                 'res_id': self.meeting_agenda_id.id,
                 'views': [[False, 'form']],
             }
+
+    # ------------------------------------------------------------------
+    # Deux pastilles sur la vue Calendrier : OdJ et compte rendu
+    # ------------------------------------------------------------------
+
+    # Mêmes étapes que le tableau de bord, repliées en trois états par
+    # document. Le tableau de bord en montre sept parce qu'il sert à savoir
+    # QUOI faire ensuite ; une pastille de calendrier sert à savoir s'il reste
+    # quelque chose à faire, et sept nuances dans une icône de dix pixels ne se
+    # lisent pas.
+    _BF_DOC_STATES = [
+        ('none', 'Absent'),
+        ('draft', 'Rédigé'),
+        ('reviewed', 'Révisé'),
+        ('sent', 'Envoyé'),
+        ('skipped', 'Non requis'),
+    ]
+
+    bf_agenda_state = fields.Selection(
+        _BF_DOC_STATES,
+        string="État de l'OdJ",
+        compute='_compute_bf_doc_states',
+        store=True,
+        help="Avancement de l'ordre du jour, résumé pour la pastille de la "
+             "vue Calendrier. Reprend les étapes 1 à 3 du tableau de bord.",
+    )
+    bf_minutes_state = fields.Selection(
+        _BF_DOC_STATES,
+        string='État du compte rendu',
+        compute='_compute_bf_doc_states',
+        store=True,
+        help="Avancement du compte rendu, résumé pour la pastille de la vue "
+             "Calendrier. Reprend les étapes 5 à 7 du tableau de bord.",
+    )
+
+    # ⚠️ Aucun `default=` sur ces deux champs, et c'est délibéré : un défaut sur
+    # un champ calculé stocké remplit la valeur à la création, le champ cesse
+    # d'être « à calculer » et le calcul n'est jamais joué. Le symptôme serait
+    # le pire possible — une valeur plausible (« Absent ») sur une rencontre qui
+    # a bel et bien un OdJ. Le calcul rend déjà 'none' quand il n'y a rien.
+    @api.depends('meeting_agenda_ids', 'meeting_agenda_ids.state',
+                 'meeting_agenda_ids.email_sent_date',
+                 'meeting_record_ids', 'meeting_record_ids.report_state',
+                 'bf_skip_agenda', 'bf_skip_dashboard')
+    def _compute_bf_doc_states(self):
+        """Les deux états, stockés.
+
+        ⚠️ Stockés, et c'est le point : la vue calendrier lit ses lignes par un
+        `search_read` sur TOUS les champs déclarés dans l'arch. Un calcul non
+        stocké se rejouerait donc par événement affiché — plusieurs centaines
+        en vue mois — et chacun traverserait l'OdJ et le compte rendu. Stocké,
+        c'est une colonne.
+
+        L'OdJ lit `email_sent_date` et non `sent_date` : le second est posé à
+        la simple ouverture du composeur et compterait comme envoyé un OdJ
+        qu'on a seulement regardé. Voir `meeting.agenda.send_state`.
+        """
+        for event in self:
+            # La dispense l'emporte, même quand un document existe déjà.
+            #
+            # C'est ce que fait déjà le tableau de bord : `bf_skip_agenda` en
+            # retire la LIGNE ENTIÈRE, sans regarder s'il y a un OdJ. Les deux
+            # surfaces doivent dire la même chose, sinon le bouton « Aucune
+            # préparation » sort la rencontre du tableau de bord tout en
+            # laissant sa pastille allumée dans la grille — ce qui s'est
+            # exactement produit à l'essai.
+            #
+            # Et c'est la bonne lecture : une pastille répond « reste-t-il
+            # quelque chose à faire ? ». Sur une rencontre dispensée, non.
+            if event.bf_skip_agenda or event.bf_skip_dashboard:
+                event.bf_agenda_state = 'skipped'
+                event.bf_minutes_state = 'skipped'
+                continue
+
+            agenda = event.meeting_agenda_ids[:1]
+            record = event.meeting_record_ids[:1]
+
+            if agenda:
+                if agenda.email_sent_date:
+                    event.bf_agenda_state = 'sent'
+                elif agenda.state in ('confirmed', 'done'):
+                    event.bf_agenda_state = 'reviewed'
+                else:
+                    event.bf_agenda_state = 'draft'
+            else:
+                event.bf_agenda_state = 'none'
+
+            if record:
+                if record.report_state == 'sent':
+                    event.bf_minutes_state = 'sent'
+                elif record.report_state == 'reviewed':
+                    event.bf_minutes_state = 'reviewed'
+                else:
+                    event.bf_minutes_state = 'draft'
+            else:
+                event.bf_minutes_state = 'none'
+
+    # ------------------------------------------------------------------
+    # Étiquettes qui dispensent d'OdJ et de compte rendu
+    # ------------------------------------------------------------------
+
+    @api.onchange('categ_ids')
+    def _onchange_categ_ids_bf_skip(self):
+        """Coche les dispenses portées par les étiquettes choisies.
+
+        Un `onchange` et non un calcul : les deux cases restent modifiables à
+        la main sur une rencontre précise, et un champ calculé les rendrait au
+        prochain enregistrement. L'étiquette pose la valeur par défaut, elle ne
+        la confisque pas.
+
+        Ne décoche jamais. Retirer l'étiquette « Interne » d'une rencontre ne
+        veut pas dire qu'on réclame soudain un ordre du jour formel pour elle,
+        et une case qui se décoche toute seule ferait réapparaître sur le
+        tableau de bord des rencontres qu'on en avait délibérément sorties.
+        """
+        for event in self:
+            tags = event.categ_ids
+            if any(tags.mapped('bf_skip_agenda')):
+                event.bf_skip_agenda = True
+            if any(tags.mapped('bf_skip_dashboard')):
+                event.bf_skip_dashboard = True
+
+    def write(self, vals):
+        res = super().write(vals)
+        if 'categ_ids' in vals:
+            self._bf_apply_tag_skips()
+        return res
+
+    def _bf_apply_tag_skips(self):
+        """Pose les dispenses portées par les étiquettes, sans jamais les retirer.
+
+        Ne décoche jamais : retirer l'étiquette « Interne » d'une rencontre ne
+        veut pas dire qu'on réclame soudain un ordre du jour formel pour elle,
+        et une case qui se décoche toute seule ferait réapparaître sur le
+        tableau de bord des rencontres qu'on en avait délibérément sorties.
+        """
+        for event in self:
+            tags = event.categ_ids
+            if not tags:
+                continue
+            vals = {}
+            if any(tags.mapped('bf_skip_agenda')) and not event.bf_skip_agenda:
+                vals['bf_skip_agenda'] = True
+            if any(tags.mapped('bf_skip_dashboard')) and not event.bf_skip_dashboard:
+                vals['bf_skip_dashboard'] = True
+            if vals:
+                event.write(vals)

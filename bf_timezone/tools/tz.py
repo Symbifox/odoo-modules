@@ -43,6 +43,39 @@ WINDOWS_TZ_MAP = {
     "W. Europe Standard Time": "Europe/Berlin",
     "GMT Standard Time": "Europe/London",
     "UTC": "UTC",
+    # Asie-Pacifique. Ajoutés le 2026-09-01 après qu'une invitation Calendly
+    # néo-zélandaise soit arrivée décalée de DOUZE HEURES : le nom n'était pas
+    # dans cette table, la résolution échouait, et l'analyseur du .ics prenait
+    # alors l'heure murale locale pour de l'UTC.
+    "New Zealand Standard Time": "Pacific/Auckland",
+    "AUS Eastern Standard Time": "Australia/Sydney",
+    "AUS Central Standard Time": "Australia/Darwin",
+    "E. Australia Standard Time": "Australia/Brisbane",
+    "W. Australia Standard Time": "Australia/Perth",
+    "Cen. Australia Standard Time": "Australia/Adelaide",
+    "Tasmania Standard Time": "Australia/Hobart",
+    "Fiji Standard Time": "Pacific/Fiji",
+    "Tokyo Standard Time": "Asia/Tokyo",
+    "Korea Standard Time": "Asia/Seoul",
+    "China Standard Time": "Asia/Shanghai",
+    "Singapore Standard Time": "Asia/Singapore",
+    "India Standard Time": "Asia/Kolkata",
+    # Europe et Amériques restantes, tant qu'à ouvrir le fichier.
+    "Central Europe Standard Time": "Europe/Budapest",
+    "Central European Standard Time": "Europe/Warsaw",
+    "E. Europe Standard Time": "Europe/Chisinau",
+    "FLE Standard Time": "Europe/Kyiv",
+    "GTB Standard Time": "Europe/Bucharest",
+    "W. Central Africa Standard Time": "Africa/Lagos",
+    "South Africa Standard Time": "Africa/Johannesburg",
+    "Israel Standard Time": "Asia/Jerusalem",
+    "Arabian Standard Time": "Asia/Dubai",
+    "SA Pacific Standard Time": "America/Bogota",
+    "SA Eastern Standard Time": "America/Cayenne",
+    "E. South America Standard Time": "America/Sao_Paulo",
+    "Argentina Standard Time": "America/Argentina/Buenos_Aires",
+    "Alaskan Standard Time": "America/Anchorage",
+    "Hawaiian Standard Time": "Pacific/Honolulu",
 }
 
 # IANA timezone -> human city label shown to users. Extend as Blue Fox's
@@ -58,6 +91,13 @@ def normalize_name(tzid):
     """Map a Windows tz name to IANA and strip a leading slash.
 
     Returns the input unchanged when it is falsy or already IANA.
+
+    ⚠️ Cette table est une COMMODITÉ, pas la source de vérité. Elle ne peut pas
+    être exhaustive et se périme; un `.ics` dont le TZID n'y figure pas doit
+    être résolu par son propre bloc `VTIMEZONE`, qui est autoritaire et
+    n'exige aucun entretien. Voir
+    `calendar_nextcloud_sync._ics_vtimezones`. Un nom manquant ici n'est donc
+    plus une panne, seulement un chemin plus lent.
     """
     if not tzid:
         return tzid

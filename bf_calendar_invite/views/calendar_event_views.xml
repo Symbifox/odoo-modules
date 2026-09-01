@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+      Three things core keeps behind the quick-create dialog's "More Options"
+      button, put back on the dialog itself: the status of the meeting, its
+      tags, and its reminders. All three are decided at the moment the slot is
+      drawn, and having to open the full form to set them means they are set
+      later, or never.
+
+      Kept to those three. The dialog is a dialog because it is short; the rest
+      of the form is behind "More Options" for a reason.
+    -->
+    <record id="calendar_event_view_form_quick_create_inherit_bf" model="ir.ui.view">
+        <field name="name">calendar.event.form.quick_create.bf.invite</field>
+        <field name="model">calendar.event</field>
+        <field name="inherit_id" ref="calendar.view_calendar_event_form_quick_create"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='description']" position="before">
+                <field name="bf_event_status" widget="radio" options="{'horizontal': True}"/>
+                <field name="categ_ids" widget="many2many_tags"
+                       options="{'color_field': 'color', 'no_create_edit': True}"
+                       placeholder="Tags..."/>
+                <field name="alarm_ids" widget="many2many_tags"
+                       options="{'no_quick_create': True}"
+                       placeholder="Reminders..."/>
+            </xpath>
+        </field>
+    </record>
+
+    <!--
+      The full form gets the status next to "Attending?", which is the field it
+      is most often confused with: one says whether the meeting is happening,
+      the other says whether you are going.
+    -->
+    <record id="calendar_event_view_form_inherit_bf" model="ir.ui.view">
+        <field name="name">calendar.event.form.bf.invite</field>
+        <field name="model">calendar.event</field>
+        <field name="inherit_id" ref="calendar.view_calendar_event_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='current_status']" position="before">
+                <field name="bf_event_status" readonly="not user_can_edit"/>
+            </xpath>
+            <xpath expr="//div[@name='send_buttons']" position="inside">
+                <button name="action_bf_poke" type="object"
+                        string=" POKE" icon="fa-hand-o-right"
+                        help="Ask a missing guest whether the meeting is still on"
+                        invisible="not user_can_edit"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!--
+      `invisible="1"` here is not decoration: the calendar model fetches every
+      field the arch declares (`activeFields`), and that is how the status
+      reaches `rawRecord` for the popover's button group and for the strike
+      styling on a cancelled event. Dropping the field drops the feature, with
+      no error anywhere.
+    -->
+    <record id="calendar_event_view_calendar_inherit_bf" model="ir.ui.view">
+        <field name="name">calendar.event.calendar.bf.invite</field>
+        <field name="model">calendar.event</field>
+        <field name="inherit_id" ref="calendar.view_calendar_event_calendar"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='categ_ids']" position="after">
+                <field name="bf_event_status" invisible="1"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="calendar_event_view_search_inherit_bf" model="ir.ui.view">
+        <field name="name">calendar.event.search.bf.invite</field>
+        <field name="model">calendar.event</field>
+        <field name="inherit_id" ref="calendar.view_calendar_event_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">
+                <separator/>
+                <filter name="bf_status_tentative" string="Tentative"
+                        domain="[('bf_event_status', '=', 'tentative')]"/>
+                <filter name="bf_status_cancelled" string="Cancelled"
+                        domain="[('bf_event_status', '=', 'cancelled')]"/>
+                <group expand="0" string="Group By">
+                    <filter name="bf_group_status" string="Status"
+                            context="{'group_by': 'bf_event_status'}"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <!--
+      Le bouton se range avec Modifier / Relancer / Supprimer, pas avec les
+      groupes de statut : c'est une action sur la rencontre, pas un état à
+      choisir parmi trois.
+
+      ⚠️ Ancré sur le `t-if` qui enveloppe Supprimer et non sur le lien
+      lui-même : `position="before"` sur le lien poserait le bouton À
+      L'INTÉRIEUR de `t-if="isEventDeletable"`, donc invisible sur toute
+      rencontre qu'on peut modifier sans pouvoir la supprimer.
+    -->
+    <t t-name="bf_meeting.PopoverSkipAgenda"
+       t-inherit="calendar.AttendeeCalendarCommonPopover.footer"
+       t-inherit-mode="extension">
+        <xpath expr="//t[@t-if='isEventDeletable']" position="before">
+            <a t-if="bfDisplaySkipAgenda" href="#"
+               class="btn o_cw_popover_bf_skip"
+               t-attf-class="#{bfSkipAgenda ? 'btn-secondary active' : 'btn-outline-secondary'}"
+               t-att-title="bfSkipAgenda ? 'Cette rencontre est dispensée d\'ordre du jour et de compte rendu. Cliquer pour la remettre au suivi.' : 'Retirer cette rencontre du suivi des OdJ et comptes rendus'"
+               t-on-click.prevent="bfToggleSkipAgenda">Aucune préparation</a>
+        </xpath>
+    </t>
+
+</templates>

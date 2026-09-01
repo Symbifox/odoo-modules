@@ -18,6 +18,8 @@ The same timezone code had been copy-pasted across several modules:
   `bf_meeting`, `bf_appointment`, `calendar_nextcloud_sync`
 - a Montréal/Auckland city-label map (`bf_meeting`)
 - a Windows→IANA name map (`calendar_nextcloud_sync`)
+
+Since **1.1.0** that map also covers Australia, New Zealand and Fiji. A Windows name missing from it does not fail loudly: resolution returns nothing and an `.ics` parser upstream can then read the local wall time as UTC, which lands an invitation whole hours off.
 - a hardcoded `America/Toronto` fallback, everywhere
 
 This module is the single source of truth for all of it.
@@ -28,7 +30,7 @@ This module is the single source of truth for all of it.
 
 | Function | Purpose |
 |---|---|
-| `normalize_name(tzid)` | Windows→IANA, strip leading `/` |
+| `normalize_name(tzid)` | Windows→IANA, strip leading `/` (Asia-Pacific names added in 1.1.0) |
 | `tz_city(name)` | `America/Toronto` → `Montréal` (else last path segment) |
 | `to_tz(dt, name)` | convert a (naive-UTC or aware) datetime to `name` |
 | `resolve(candidates, fallback, validate=False)` | first usable tz name |
