@@ -7,14 +7,46 @@ A button in Odoo's systray that opens the `bf.email` inbox, with a counter
 
 - Systray icon giving quick access to the `bf.email` inbox.
 - Live message counter (read and unread).
+- **Two ways to open the inbox**, whichever suits: **as a panel**, anchored
+  under the button in the top-right corner, over the current screen which
+  stays where it is; or **full page**, the way the menu opens it.
+- A menu on the button: open as a panel, full page, or in the list view
+  (filters, grouping, pivot, export), plus a choice of what a plain click does.
+- The panel is resizable from the grip in its bottom-left corner. Size and
+  chosen mode are remembered per person, in the browser.
+
+## Settings
+
+Under **Settings → Email management → Inbox**:
+
+- **What the systray button does**: panel or full page, the database default.
+- **Panel width (%)**: starting width, 40 to 100.
+- **Panel height (%)**: starting height, 40 to 100.
+
+These are the database defaults. Anyone can override them from the button's
+menu, and their choice wins.
+
+## Implementation notes
+
+The panel is mounted through Odoo's `overlay` service at **sequence 40**, below
+the sequence dialogs use (50). The overlay container sorts by sequence and all
+its items share one z-index, so the wizards the inbox opens itself (routing,
+composer, scheduling) always render *above* the panel, never behind it.
+
+It closes on `ACTION_MANAGER:UPDATE`, the event Odoo emits when an action
+replaces the page. Without it, "open the linked record" would change the page
+underneath a panel that stayed open: `dialog.closeAll()` does not reach the
+`overlay` service. The event is not emitted for `target: "new"` actions, so a
+dialog does not close the panel.
+
+The counter's domain is a **hand-written copy** of `bf.email._inbox_domain()`.
+The badge counts before any action is opened, so it cannot import the server's
+domain. Two tests pin the copy, one in this module and one in
+`bf_email_management`.
 
 ## Dependencies
 
 `web`, `bf_email_management`.
-
-## Licence
-
-Distributed under the **LGPL-3** licence. See the `LICENSE` file.
 
 ## License
 

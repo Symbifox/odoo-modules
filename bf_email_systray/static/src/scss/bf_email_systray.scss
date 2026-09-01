@@ -1,0 +1,140 @@
+// Bouton de barre système et panneau de la boîte de réception.
+
+// La pastille du compteur.
+//
+// Elle était en `bg-dark`, soit #212529. En mode sombre la barre elle-même
+// vaut #2E3132 (`$dk-surface` de bf_dark_mode, qui rhabille .bg-light et
+// .text-bg-secondary mais pas .bg-dark) : le rond disparaissait et seuls les
+// chiffres blancs restaient. L'accent Blue Fox se détache des deux barres,
+// la violette d'Odoo comme la sombre.
+//
+// ⚠️ Le sélecteur est long exprès. Odoo pose
+// `.o_main_navbar .o_menu_systray .badge { background-color: var(--o-navbar-badge-bg, #28a745) }`,
+// soit trois classes : une classe seule perd et la pastille reste VERTE.
+// L'ancien `bg-dark` ne gagnait que par le `!important` de Bootstrap. Mesuré
+// au rendu le 2026-08-31, pas déduit.
+.o_main_navbar .o_menu_systray .badge.o_bf_email_systray_badge {
+    background-color: #29ABE1;
+    color: #fff;
+    font-weight: 600;
+}
+
+// Le chevron n'existe que pour le menu : il ne doit pas peser autant que
+// l'icône elle-même, qui porte le geste courant.
+.o_bf_email_systray_caret {
+    opacity: 0.65;
+    &:hover,
+    &:focus {
+        opacity: 1;
+    }
+    .fa {
+        font-size: 0.75em;
+    }
+}
+
+// Le bouton reste allumé tant que le panneau est ouvert.
+.bf-email-systray.o_bf_email_systray_active {
+    color: #29ABE1;
+}
+
+.o_bf_email_panel_root {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+}
+
+// Voile transparent : il ne masque rien, il ne sert qu'à fermer au clic à côté.
+.o_bf_email_panel_scrim {
+    position: fixed;
+    inset: 0;
+    pointer-events: auto;
+    background: rgba(45, 48, 49, 0.12);
+}
+
+.o_bf_email_panel {
+    position: fixed;
+    pointer-events: auto;
+    display: flex;
+    flex-direction: column;
+    background: var(--o-view-background-color, #fff);
+    border: 1px solid var(--border-color, #dee2e6);
+    border-radius: 8px;
+    box-shadow: 0 12px 32px rgba(45, 48, 49, 0.28);
+    overflow: hidden;
+    animation: o_bf_email_panel_in 0.16s ease-out;
+
+    .o_bf_email_panel_header {
+        flex: 0 0 auto;
+        padding: 8px 12px;
+        border-bottom: 1px solid var(--border-color, #dee2e6);
+        background: rgba(41, 171, 225, 0.08);
+        color: #2D3031;
+        font-family: "Lexend", var(--bs-body-font-family, sans-serif);
+    }
+
+    .o_bf_email_panel_title {
+        font-weight: 500;
+    }
+
+    // La taille courante n'apparaît que quand le pointeur est sur le panneau :
+    // utile pendant qu'on tire la poignée, encombrant le reste du temps.
+    .o_bf_email_panel_size {
+        opacity: 0;
+        transition: opacity 0.12s;
+    }
+    &:hover .o_bf_email_panel_size {
+        opacity: 1;
+    }
+
+    .o_bf_email_panel_close {
+        color: #2D3031;
+    }
+
+    .o_bf_email_panel_body {
+        flex: 1 1 auto;
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+    }
+
+    // La boîte remplit le cadre. Son gabarit est `d-flex flex-grow-1`, donc
+    // il attend un parent en colonne avec une hauteur définie : c'est le
+    // panneau qui la donne ici, comme l'action cliente la donne en pleine page.
+    .o_bf_email_browser {
+        flex: 1 1 auto;
+        min-height: 0;
+    }
+
+    .o_bf_email_panel_grip {
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 16px;
+        height: 16px;
+        cursor: nesw-resize;
+        touch-action: none;
+        background: linear-gradient(
+            45deg,
+            transparent 0 40%,
+            var(--bf-accent, #29ABE1) 40% 55%,
+            transparent 55% 70%,
+            var(--bf-accent, #29ABE1) 70% 85%,
+            transparent 85%
+        );
+        opacity: 0.55;
+        &:hover {
+            opacity: 1;
+        }
+    }
+}
+
+@keyframes o_bf_email_panel_in {
+    from {
+        opacity: 0;
+        transform: translate(8px, -8px) scale(0.99);
+    }
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}

@@ -2,15 +2,80 @@
 <templates>
 
     <t t-name="bf_email_systray.Systray">
-        <button class="btn d-flex align-items-center position-relative bf-email-systray"
-                t-on-click="onOpen"
-                title="Boîte de réception (Courriels Blue Fox)">
-            <i class="fa fa-inbox"/>
-            <span t-if="hasCount"
-                  class="badge rounded-pill bg-dark text-white ms-1">
-                <t t-esc="countLabel"/>
-            </span>
-        </button>
+        <div class="o_bf_email_systray d-flex align-items-center">
+            <button class="btn d-flex align-items-center position-relative bf-email-systray"
+                    t-on-click="onOpen"
+                    t-att-title="buttonTitle"
+                    t-att-class="{ 'o_bf_email_systray_active': state.open }">
+                <i class="fa fa-inbox"/>
+                <span t-if="hasCount"
+                      class="badge rounded-pill o_bf_email_systray_badge ms-1">
+                    <t t-esc="countLabel"/>
+                </span>
+            </button>
+            <Dropdown>
+                <button class="btn px-1 o_bf_email_systray_caret"
+                        title="Comment ouvrir la bo&#238;te">
+                    <i class="fa fa-caret-down"/>
+                </button>
+                <t t-set-slot="content">
+                    <DropdownItem onSelected="() => this.togglePanel()">
+                        <i class="fa fa-columns fa-fw me-2"/>Ouvrir en panneau
+                    </DropdownItem>
+                    <DropdownItem onSelected="() => this.openFullPage()">
+                        <i class="fa fa-expand fa-fw me-2"/>Ouvrir en pleine page
+                    </DropdownItem>
+                    <DropdownItem onSelected="() => this.openListView()">
+                        <i class="fa fa-list fa-fw me-2"/>Ouvrir la vue (liste)
+                    </DropdownItem>
+                    <div role="separator" class="dropdown-divider"/>
+                    <DropdownItem onSelected="() => this.setMode('panneau')">
+                        <i t-att-class="isPanelMode ? 'fa fa-check fa-fw me-2' : 'fa fa-fw me-2'"/>
+                        Toujours en panneau
+                    </DropdownItem>
+                    <DropdownItem onSelected="() => this.setMode('page')">
+                        <i t-att-class="!isPanelMode ? 'fa fa-check fa-fw me-2' : 'fa fa-fw me-2'"/>
+                        Toujours en pleine page
+                    </DropdownItem>
+                </t>
+            </Dropdown>
+        </div>
+    </t>
+
+    <t t-name="bf_email_systray.Panel">
+        <div class="o_bf_email_panel_root">
+            <div class="o_bf_email_panel_scrim" t-on-click="() => props.close()"/>
+            <section class="o_bf_email_panel" t-att-style="panelStyle"
+                     role="dialog" aria-label="Bo&#238;te de r&#233;ception">
+                <header class="o_bf_email_panel_header d-flex align-items-center gap-2">
+                    <i class="fa fa-inbox"/>
+                    <span class="o_bf_email_panel_title">Bo&#238;te de r&#233;ception</span>
+                    <span class="o_bf_email_panel_size text-muted small" t-esc="sizeLabel"/>
+                    <div class="ms-auto d-flex align-items-center">
+                        <button t-if="!isDefaultSize" class="btn btn-sm btn-link"
+                                t-on-click="resetSize" title="Revenir &#224; la taille par d&#233;faut">
+                            <i class="fa fa-compress"/>
+                        </button>
+                        <button class="btn btn-sm btn-link" t-on-click="openFullPage"
+                                title="Ouvrir en pleine page">
+                            <i class="fa fa-expand"/>
+                        </button>
+                        <button class="btn btn-sm btn-link o_bf_email_panel_close"
+                                t-on-click="() => props.close()" title="Fermer (&#201;chap)">
+                            <i class="fa fa-times"/>
+                        </button>
+                    </div>
+                </header>
+                <div class="o_bf_email_panel_body">
+                    <BfEmailInbox/>
+                </div>
+                <div class="o_bf_email_panel_grip" title="Redimensionner"
+                     t-on-pointerdown="startResize"
+                     t-on-pointermove="onResizeMove"
+                     t-on-pointerup="stopResize"
+                     t-on-pointercancel="stopResize"/>
+            </section>
+        </div>
     </t>
 
 </templates>

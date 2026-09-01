@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Le bouton de la barre système se règle là où se règle la boîte de
+         réception : sous « Gestion des courriels », dans le bloc qui porte
+         déjà les dossiers IMAP et la signature. Un onglet à part pour trois
+         champs enterrerait le réglage. -->
+    <record id="res_config_settings_view_form_bf_email_systray" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.bf_email_systray</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id"
+               ref="bf_email_management.res_config_settings_view_form_bf_email"/>
+        <field name="arch" type="xml">
+            <xpath expr="//block[@name='bf_email_inbox_setting_container']"
+                   position="inside">
+                <setting id="bf_email_systray_mode_setting"
+                         string="Bouton de la barre syst&#232;me"
+                         help="Ce que fait l'ic&#244;ne de bo&#238;te de r&#233;ception dans la barre du haut. Le panneau s'ouvre par-dessus l'&#233;cran courant et le laisse en place ; la pleine page le remplace, comme le menu. Chacun peut choisir autrement depuis le menu du bouton, et son choix prime sur celui-ci.">
+                    <field name="bf_email_systray_mode" widget="radio"/>
+                    <div class="content-group"
+                         invisible="bf_email_systray_mode != 'panneau'">
+                        <div class="row mt16">
+                            <label for="bf_email_systray_width_pct"
+                                   class="col-lg-4 o_light_label"/>
+                            <field name="bf_email_systray_width_pct"
+                                   class="col-lg-2"/>
+                        </div>
+                        <div class="row">
+                            <label for="bf_email_systray_height_pct"
+                                   class="col-lg-4 o_light_label"/>
+                            <field name="bf_email_systray_height_pct"
+                                   class="col-lg-2"/>
+                        </div>
+                        <div class="text-muted mt8">
+                            Taille de d&#233;part, entre 40 et 100&#160;%. La poign&#233;e du
+                            panneau permet de le retailler, et cette taille-l&#224;
+                            est retenue par personne.
+                        </div>
+                    </div>
+                </setting>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

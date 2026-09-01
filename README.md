@@ -114,7 +114,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_document_nextcloud_sync` | Document Nextcloud Sync | 18.0.1.4.1 | LGPL-3 | Document sync between Odoo and Nextcloud via WebDAV |
 | `bf_editorial` | Atelier éditorial | 18.0.1.8.0 | BUSL-1.1 | Editorial calendar, measured cadence and publication gates for the blog: state is derived, only decisions are stored |
 | `bf_email_management` | Gestion des courriels | 18.0.11.9.0 | BUSL-1.1 | Unified IMAP inbox + Odoo chatter projection, two-pane OWL folder browser (Apple Mail / Thunderbird), bulk per-row target inference |
-| `bf_email_systray` | Boîte de réception bf.email — barre Odoo | 18.0.1.4.0 | LGPL-3 | Systray button opening the bf.email inbox with a (read + unread) counter |
+| `bf_email_systray` | Boîte de réception bf.email — barre Odoo | 18.0.2.0.0 | LGPL-3 | Systray button opening the bf.email inbox with a (read + unread) counter |
 | `bf_employee_experience` | Expérience employé | 18.0.1.0.0 | LGPL-3 | Benefits catalogue, rule-based eligibility, usage register and retention indicators |
 | `bf_employee_experience_dashboard` | Expérience employé — tuile tableau de bord | 18.0.1.0.1 | LGPL-3 | Benefits take-up, and a count of paid benefits nobody claims |
 | `bf_employee_experience_digest` | Expérience employé — digest quotidien | 18.0.1.0.0 | LGPL-3 | "Benefits" digest section: pending claims, usages with no entitlement, benefits nobody takes |
