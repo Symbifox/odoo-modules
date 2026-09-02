@@ -1,10 +1,10 @@
 {
     'name': 'Symbifox OTP',
-    'version': '18.0.3.3.0',
+    'version': '18.0.4.0.0',
     'category': 'Productivity',
-    'summary': "Coffre de jetons OTP dont le serveur ne peut lire aucune graine",
+    'summary': "Coffre de tokens OTP dont le serveur ne peut lire aucune graine",
     'description': """
-Blue Fox OTP / Coffre de jetons
+Blue Fox OTP / Coffre de tokens
 ================================
 
 Un gestionnaire de codes à usage unique (TOTP et HOTP) rattaché à Odoo, dont
@@ -22,13 +22,13 @@ détient. Ce module choisit donc que ce moment n'arrive jamais sur le serveur.
 * Les codes se calculent dans la page, contre les vecteurs officiels des
   RFC 4226 et 6238.
 
-⚠️ **Phrase de passe perdue, jetons perdus.** Personne ne peut les rendre.
+⚠️ **Phrase de passe perdue, tokens perdus.** Personne ne peut les rendre.
 
 Ce que le module fait
 ---------------------
 * Coffre personnel, ouvert par phrase de passe, refermé seul après cinq minutes
   d'inactivité
-* Jetons TOTP et HOTP, SHA-1 / SHA-256 / SHA-512, 6 à 8 chiffres
+* Tokens TOTP et HOTP, SHA-1 / SHA-256 / SHA-512, 6 à 8 chiffres
 * Regroupement libre et marque « sensible », qui garde le code masqué
 * Ajout par adresse ``otpauth://`` ou à la main
 * Import d'un export du gestionnaire OTP de Nextcloud, chiffré ou en clair, le
@@ -42,7 +42,7 @@ Ce que le module ne fait PAS encore
     'author': 'Les services de consultation Blue Fox, Inc.',
     'website': 'https://symbifox.com',
     'license': 'LGPL-3',
-    # ⚠️ `project` est là pour le champ Projet du jeton : un champ typé rend sa
+    # ⚠️ `project` est là pour le champ Projet du token : un champ typé rend sa
     # dépendance obligatoire. Décidé le 2026-08-30.
     # Volontairement AUCUNE dépendance à bf_credentials : le coffre de mots de
     # passe et le coffre de graines ne doivent pas partager de rayon

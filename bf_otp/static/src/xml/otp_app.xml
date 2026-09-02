@@ -22,13 +22,13 @@
         <!-- Aucun coffre : on en crée un -->
         <t t-elif="!state.vault">
             <div class="o_bf_otp_gate mx-auto p-4">
-                <h4 class="mb-3">Créer ton coffre de jetons</h4>
+                <h4 class="mb-3">Créer votre coffre de tokens</h4>
                 <div class="alert alert-warning" role="alert">
                     <strong>À lire avant de continuer.</strong>
-                    Les graines sont chiffrées ici, dans ton navigateur, par une clé
+                    Les graines sont chiffrées ici, dans votre navigateur, par une clé
                     tirée de cette phrase. Le serveur ne la reçoit jamais et ne peut
-                    pas la retrouver. <strong>Phrase perdue, jetons perdus</strong> :
-                    range-la dans ton gestionnaire de mots de passe avant de valider.
+                    pas la retrouver. <strong>Phrase perdue, tokens perdus</strong> :
+                    rangez-la dans votre gestionnaire de mots de passe avant de valider.
                 </div>
                 <form t-on-submit="onCreateVault">
                     <div class="mb-2">
@@ -57,7 +57,7 @@
                 <div class="mb-3"><span class="fa fa-lock fa-3x text-muted"/></div>
                 <h4>Coffre verrouillé</h4>
                 <p class="text-muted">
-                    <t t-esc="state.vault.token_count"/> jeton(s) à l'intérieur.
+                    <t t-esc="state.vault.token_count"/> token(s) à l'intérieur.
                 </p>
                 <button t-if="credentials.length and state.passkeyOk"
                         class="btn btn-primary w-100 mb-3"
@@ -73,7 +73,7 @@
                 <p t-if="!credentials.length and state.passkeyOk" class="text-muted small mb-2">
                     <span class="fa fa-fingerprint me-1"/>
                     Ce coffre peut aussi s'ouvrir en touchant un capteur.
-                    Ouvre-le, puis « Clé d'accès » dans la barre du haut.
+                    Ouvrez-le, puis « Clé d'accès » dans la barre du haut.
                 </p>
                 <form t-on-submit="onUnlock" class="text-start">
                     <input type="password" class="form-control mb-2" t-ref="passphrase"
@@ -102,7 +102,7 @@
                 </button>
                 <button class="btn btn-sm btn-light ms-auto"
                         t-on-click="toggleSort"
-                        t-att-title="state.sortMode === 'recent' ? 'Trié par dernière utilisation — cliquer pour trier par nom' : 'Trié par nom — cliquer pour trier par usage'">
+                        t-att-title="state.sortMode === 'recent' ? 'Trié par dernière utilisation, cliquer pour trier par nom' : 'Trié par nom, cliquer pour trier par usage'">
                     <span t-att-class="state.sortMode === 'recent' ? 'fa fa-history me-1' : 'fa fa-sort-alpha-asc me-1'"/>
                     <t t-esc="state.sortMode === 'recent' ? 'Récents' : 'A-Z'"/>
                 </button>
@@ -126,11 +126,11 @@
 
             <div class="flex-grow-1 overflow-auto p-3">
                 <div t-if="state.tokens.length" class="small text-muted mb-2">
-                    Tape pour chercher · <kbd>Entrée</kbd> copie le premier · <kbd>Échap</kbd> efface puis verrouille
+                    Tapez pour chercher · <kbd>Entrée</kbd> copie le premier · <kbd>Échap</kbd> efface puis verrouille
                 </div>
                 <div t-if="!state.tokens.length" class="text-center text-muted p-5">
                     <p class="mb-1">Ce coffre est vide.</p>
-                    <p>Ajoute un jeton, ou importe l'export de ton gestionnaire OTP.</p>
+                    <p>Ajoutez un token, ou importez l'export de votre gestionnaire OTP.</p>
                 </div>
 
                 <t t-foreach="groupes" t-as="grp" t-key="grp[0]">
@@ -173,7 +173,7 @@
                                         </div>
                                     </div>
                                     <div t-if="tok.broken" class="small text-danger mt-2">
-                                        Ce jeton ne se déchiffre pas avec cette phrase.
+                                        Ce token ne se déchiffre pas avec cette phrase.
                                     </div>
                                     <div t-else="" class="d-flex align-items-center mt-2">
                                         <button class="o_bf_otp_code btn btn-link p-0 me-auto"
@@ -201,7 +201,7 @@
             <div t-if="state.showForm" class="o_bf_otp_overlay">
                 <div class="o_bf_otp_panel card shadow">
                     <div class="card-header d-flex align-items-center">
-                        <strong t-esc="state.form.id ? 'Modifier le jeton' : 'Ajouter un jeton'"/>
+                        <strong t-esc="state.form.id ? 'Modifier le token' : 'Ajouter un token'"/>
                         <button class="btn-close ms-auto" t-on-click="() => state.showForm = false"/>
                     </div>
                     <form class="card-body" t-on-submit="saveToken">
@@ -303,25 +303,25 @@
                             Une clé d'accès ouvre ce coffre en touchant un capteur, sans taper
                             la phrase. Elle scelle une copie de la clé du coffre&#160;; le serveur
                             ne peut toujours rien lire.
-                            <strong>Garde ta phrase de passe</strong>&#160;: une clé d'accès est
+                            <strong>Conservez votre phrase de passe</strong>&#160;: une clé d'accès est
                             liée à cet appareil et à ce domaine, et c'est la phrase qui te sauve
-                            si tu perds l'un ou l'autre.
+                            si vous perdez l'un ou l'autre.
                         </div>
 
                         <div t-if="state.prfRefus" class="alert alert-warning" role="alert">
                             <p class="mb-2">
                                 <strong>Ce fournisseur de clés d'accès ne gère pas l'extension PRF.</strong>
-                                Sans elle, une clé d'accès prouve qui tu es mais ne rend aucun
+                                Sans elle, une clé d'accès prouve qui vous êtes mais ne rend aucun
                                 secret&#160;: il n'y a rien avec quoi sceller la clé du coffre.
                             </p>
                             <p class="mb-2">
                                 🔴 <strong>Une clé d'accès inutile vient d'être créée</strong> chez
-                                ton fournisseur, sous le nom « Blue Fox — Jetons OTP ».
-                                Retire-la, elle ne servira jamais.
+                                votre fournisseur, sous le nom « Blue Fox, tokens OTP ».
+                                Retirez-la, elle ne servira jamais.
                             </p>
                             <p class="mb-0">
                                 Ce qui fonctionne&#160;: une <strong>clé matérielle FIDO2</strong>
-                                (YubiKey et semblables), le <strong>gestionnaire de ton
+                                (YubiKey et semblables), le <strong>gestionnaire de votre
                                 téléphone</strong> en passant par le code QR, ou le gestionnaire
                                 intégré de l'appareil quand il y en a un.
                                 <span class="d-block mt-1 small">
@@ -354,7 +354,7 @@
                                            placeholder="MacBook, clé jaune…"/>
                                 </div>
                                 <div class="col-6">
-                                    <label class="form-label">Ta phrase de passe</label>
+                                    <label class="form-label">Votre phrase de passe</label>
                                     <input type="password" class="form-control"
                                            t-model="state.enrolPass" autocomplete="current-password"/>
                                     <div class="form-text">Redemandée exprès pour ajouter un moyen d'ouvrir.</div>
@@ -381,7 +381,7 @@
                     </div>
                     <form class="card-body" t-on-submit="runImport">
                         <p class="text-muted small">
-                            Dans le gestionnaire OTP de Nextcloud, exporte tes comptes en JSON,
+                            Dans le gestionnaire OTP de Nextcloud, exportez vos comptes en JSON,
                             puis colle le contenu du fichier ici. Le déchiffrement et le
                             rechiffrement se font dans cette page : le serveur ne voit que du chiffré.
                         </p>

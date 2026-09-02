@@ -46,5 +46,12 @@
             <field name="domain_force">[('user_id', '=', user.id)]</field>
             <field name="groups" eval="[(4, ref('group_otp_user'))]"/>
         </record>
+
+        <record id="rule_otp_device_own" model="ir.rule">
+            <field name="name">Appareils appariés : les siens seulement</field>
+            <field name="model_id" ref="model_bf_otp_device"/>
+            <field name="domain_force">[('user_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('group_otp_user'))]"/>
+        </record>
     </data>
 </odoo>
