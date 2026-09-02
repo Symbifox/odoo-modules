@@ -84,10 +84,10 @@ class SendAsCase(TransactionCase):
         })
 
         # ⚠️ ``res.users.create`` re-rend la signature depuis le gabarit de
-        # la société (module de signature multi-sociétés) : celle passée aux
-        # valeurs de création ne survit pas, et les assertions ci-dessous ne
-        # mesureraient plus rien. Un write sur le SEUL champ ``signature`` ne
-        # déclenche pas ce rendu.
+        # la société (bf_multi_company_email) : celle passée aux valeurs de
+        # création ne survit pas, et les assertions ci-dessous ne mesureraient
+        # plus rien. Un write sur le SEUL champ ``signature`` ne déclenche pas
+        # ce rendu — il n'est pas dans ``_BF_SIGNATURE_USER_TRIGGERS``.
         cls.writer.sudo().write({"signature": "<p>-- <br/>Jane, Société A</p>"})
         assert "Société A" in (cls.writer.signature or ""), (
             "la signature de test n'a pas tenu : les tests de signature "
@@ -212,6 +212,33 @@ class SendAsCase(TransactionCase):
     # porte la signature la fait sortir deux fois, puisque le gabarit de
     # notification l'ajoute de toute façon au rendu. Mesuré le 2026-08-31 sur
     # un fil réel : neuf blocs dans le corps, dix dans le courriel rendu.
+    def _visible(self, rendu):
+        """Le courriel sans l'aperçu texte caché que le gabarit met en tête.
+
+        ⚠️ ``mail.notification_preview`` recopie le TEXTE du corps dans un div
+        invisible destiné à la ligne d'aperçu des clients de messagerie.
+        Compter une signature sur le rendu brut la compte donc DEUX fois dès
+        que le corps la porte — un faux positif qui a fait échouer cet essai
+        avant qu'on regarde le gabarit.
+        """
+        marque = 'style="display: none; max-height: 0px;'
+        debut = rendu.find(marque)
+        if debut < 0:
+            return rendu
+        fin = rendu.find("</div>", debut)
+        return rendu[:debut] + rendu[fin + 6:] if fin >= 0 else rendu
+
+    def _placement(self, mode):
+        """Poser le réglage « Où vit la signature » pour cet essai.
+
+        ⚠️ Aucun essai de signature ne doit dépendre du défaut : le défaut a
+        déjà changé deux fois en une journée, et un essai muet aurait suivi
+        sans rien dire.
+        """
+        self.env["ir.config_parameter"].sudo().set_param(
+            "bf_email.signature_placement", mode)
+        self.assertEqual(self.env["bf.email"]._signature_placement(), mode)
+
     def _row(self, **extra):
         """Une rangée bf.email orpheline, prête pour Répondre / Transférer."""
         vals = {
@@ -247,6 +274,7 @@ class SendAsCase(TransactionCase):
             msg_vals={}, render_values=values)
 
     def test_a_new_message_opens_on_a_body_without_signature(self):
+        self._placement("envoi")
         action = self.env["bf.email"].with_user(self.writer).inbox_compose()
         body = action["context"]["default_body"]
         self.assertNotIn("Société A", body)
@@ -256,16 +284,19 @@ class SendAsCase(TransactionCase):
         self.assertIn("<br/>", body)
 
     def test_a_reply_quote_carries_no_signature(self):
+        self._placement("envoi")
         quote = self._row()._build_reply_quote_body()
         self.assertNotIn("Société A", quote)
         self.assertIn("Le message d'origine", quote)
 
     def test_a_forward_carries_no_signature(self):
+        self._placement("envoi")
         forwarded = self._row()._build_forward_body()
         self.assertNotIn("Société A", forwarded)
         self.assertIn("Forwarded message", forwarded)
 
     def test_the_mobile_app_is_handed_no_signature(self):
+        self._placement("envoi")
         config = self.env["bf.email"].with_user(self.writer).get_mobile_config()
         self.assertEqual(config["signature"], "")
 
@@ -295,6 +326,203 @@ class SendAsCase(TransactionCase):
         self.assertEqual(
             Identity._for_sender("Jane <JANE@societe-b.test>", self.writer),
             self.second)
+
+    # ------------------------------------------------------------------
+    # 4 bis. L'aperçu : voir la signature sans l'écrire dans le corps
+    # ------------------------------------------------------------------
+    def _composer(self, **valeurs):
+        base = {
+            "model": "res.partner",
+            "res_ids": repr([self.carrier.id]),
+            "composition_mode": "comment",
+            "subject": "Essai",
+            "body": "<p>Bonjour</p>",
+        }
+        base.update(valeurs)
+        return self.env(user=self.writer.id)["mail.compose.message"].create(base)
+
+    def test_the_preview_shows_the_signature_that_will_be_appended(self):
+        self._placement("envoi")
+        self.assertIn("Société A", self._composer().bf_signature_preview or "")
+
+    def test_the_preview_follows_the_sending_identity(self):
+        self._placement("envoi")
+        preview = self._composer(
+            bf_identity_id=self.second.id).bf_signature_preview or ""
+        self.assertIn("Société B", preview)
+        self.assertNotIn("Société A", preview)
+
+    def test_the_preview_drops_the_signature_when_the_send_would(self):
+        """Un aperçu qui montre ce qui ne partira pas ment — et un aperçu qui
+        ment est pire que pas d'aperçu."""
+        self._placement("envoi")
+        composer = self._composer()
+        composer.email_add_signature = False
+        self.assertNotIn("Société A", composer.bf_signature_preview or "")
+
+    def test_the_preview_shows_the_company_fallback_when_nothing_else_signs(self):
+        self._placement("envoi")
+        if "brand_email_signature_default" not in self.env["res.company"]._fields:
+            self.skipTest("bluefox_branding n'est pas installé sur ce locataire")
+        self.env.company.sudo().brand_email_signature_default = "<p>Repli société</p>"
+        composer = self._composer()
+        composer.email_add_signature = False
+        self.assertIn("Repli société", composer.bf_signature_preview or "")
+
+    def test_the_preview_never_enters_the_body(self):
+        self._placement("envoi")
+        composer = self._composer()
+        self.assertNotIn("Société A", composer.body or "")
+        self.assertNotIn("Société A", self._post(self.primary).body)
+
+    # ------------------------------------------------------------------
+    # 4 ter. La place de la signature : au-dessus de la citation
+    # ------------------------------------------------------------------
+    def _post_body(self, corps):
+        """Poster ce corps exact et rendre le courriel tel qu'il partira."""
+        env = self.env(user=self.writer.id)
+        composer = env["mail.compose.message"].create({
+            "model": "res.partner",
+            "res_ids": repr([self.carrier.id]),
+            "composition_mode": "comment",
+            "subject": "Essai",
+            "body": corps,
+            "partner_ids": [Command.set([self.recipient.id])],
+        })
+        high_water = env["mail.message"].search([], order="id desc", limit=1).id
+        composer.action_send_mail()
+        message = env["mail.message"].search(
+            [("id", ">", high_water), ("subject", "=", "Essai")],
+            order="id desc", limit=1)
+        return self._rendered_email(message, self.carrier)
+
+    def test_the_signature_sits_above_the_quote(self):
+        rendu = self._post_body(
+            '<p>Ma réponse</p><blockquote>Le message d\'origine</blockquote>')
+        self.assertEqual(rendu.count("Société A"), 1,
+                         "une seule signature, toujours")
+        self.assertLess(rendu.index("Société A"), rendu.index("<blockquote"),
+                        "la signature doit passer AU-DESSUS du bloc cité")
+        # 🔴 Le bloc inséré doit être du HTML, pas du texte échappé : la
+        # première écriture le passait en ``str`` à ``Markup.replace``, qui
+        # l'échappait, et le destinataire recevait `&lt;div style=…` en clair.
+        self.assertNotIn("&lt;div style=", rendu)
+
+    def test_the_signature_sits_above_a_forwarded_header(self):
+        rendu = self._post_body(
+            '<p>Je te transfère</p><p>---------- Forwarded message ----------</p>'
+            '<p>De : quelqu\'un</p>')
+        self.assertEqual(rendu.count("Société A"), 1)
+        # ⚠️ ``rindex`` : le gabarit place en tête un aperçu TEXTE du corps,
+        # où le marqueur apparaît aussi. Mesurer la première occurrence ferait
+        # échouer un placement correct.
+        self.assertLess(rendu.index("Société A"),
+                        rendu.rindex("---------- Forwarded message"))
+
+    def test_without_a_quote_the_signature_stays_where_odoo_puts_it(self):
+        """Un courriel neuf n'a rien au-dessus de quoi passer."""
+        rendu = self._post_body("<p>Bonjour, ceci est un courriel neuf.</p>")
+        self.assertEqual(rendu.count("Société A"), 1)
+        self.assertLess(rendu.index("courriel neuf"), rendu.index("Société A"))
+
+    def test_a_body_that_is_only_a_quote_keeps_the_signature_at_the_end(self):
+        """Personne n'a écrit au-dessus : la signature en tête serait absurde."""
+        rendu = self._post_body("<blockquote>Rien que la citation</blockquote>")
+        self.assertEqual(rendu.count("Société A"), 1)
+        self.assertLess(rendu.index("<blockquote"), rendu.index("Société A"))
+
+    def test_the_deepest_quote_is_not_the_anchor(self):
+        """Dans un fil empilé, la signature passe au-dessus de TOUT le cité."""
+        rendu = self._post_body(
+            '<p>Ma réponse</p><blockquote>premier niveau'
+            '<blockquote>second niveau</blockquote></blockquote>')
+        self.assertEqual(rendu.count("Société A"), 1)
+        self.assertLess(rendu.index("Société A"), rendu.rindex("premier niveau"))
+
+    # ------------------------------------------------------------------
+    # 4 quater. Le mode « brouillon » — le défaut depuis le 2026-08-31
+    # ------------------------------------------------------------------
+    def test_the_draft_opens_with_the_signature(self):
+        """Ce qu'on voit en écrivant doit être ce qui part."""
+        self._placement("brouillon")
+        body = self.env["bf.email"].with_user(self.writer).inbox_compose()[
+            "context"]["default_body"]
+        self.assertIn("Société A", body)
+        self.assertIn("o_bf_signature", body)
+        # La ligne d'atterrissage reste au-dessus : sans elle le curseur tombe
+        # dans la citation.
+        self.assertLess(body.index("<br/>"), body.index("Société A"))
+
+    def test_a_reply_quote_carries_the_signature_above_the_quote(self):
+        self._placement("brouillon")
+        quote = self._row().with_user(self.writer)._build_reply_quote_body()
+        self.assertIn("Société A", quote)
+        self.assertLess(quote.index("Société A"), quote.index("<blockquote"))
+
+    def test_a_forward_carries_the_signature(self):
+        self._placement("brouillon")
+        forwarded = self._row().with_user(self.writer)._build_forward_body()
+        self.assertIn("Société A", forwarded)
+        self.assertLess(forwarded.index("Société A"),
+                        forwarded.index("Forwarded message"))
+
+    def test_the_mobile_app_is_handed_the_signature(self):
+        self._placement("brouillon")
+        config = self.env["bf.email"].with_user(self.writer).get_mobile_config()
+        self.assertIn("Société A", config["signature"])
+
+    def test_a_body_that_already_signs_gets_no_second_signature(self):
+        """🔴 La garde qui tient quel que soit le chemin d'envoi.
+
+        C'est le défaut qui a coûté la refonte du 2026-08-31 : le corps
+        portait la signature ET le gabarit en ajoutait une. Mesuré alors sur
+        le fil « mot de passe » d'Écolaction, neuf blocs dans le corps et dix
+        dans le courriel rendu.
+        """
+        self._placement("brouillon")
+        marque = self.env(user=self.writer.id)["bf.email"]._compose_signature_block_for_user()
+        rendu = self._visible(self._post_body("<p>Ma réponse</p>%s" % marque))
+        self.assertEqual(rendu.count("Société A"), 1)
+
+    def test_the_marker_survives_the_stored_message(self):
+        """🔴 Un marqueur qui ne survit pas au stockage = garde morte.
+
+        ``mail.message.body`` est assaini à l'écriture et retire les `data-*`
+        qu'Odoo ne connaît pas. Éprouver le marqueur sur un vrai
+        ``mail.message``, jamais sur ``tools.html_sanitize`` appelé à la main :
+        celui-ci les conserve et le contrôle passerait à côté.
+        """
+        self._placement("brouillon")
+        marque = self.env(user=self.writer.id)["bf.email"]._compose_signature_block_for_user()
+        message = self.env(user=self.writer.id)["mail.message"].create({
+            "model": "res.partner", "res_id": self.carrier.id,
+            "message_type": "comment",
+            "subtype_id": self.env.ref("mail.mt_comment").id,
+            "subject": "Marqueur", "body": "<p>Bonjour</p>%s" % marque,
+        })
+        self.assertIn(self.env["bf.email"].SIGNATURE_MARKER, message.body)
+        valeurs = self.carrier._notify_by_email_prepare_rendering_context(message)
+        self.assertFalse(valeurs.get("email_add_signature"),
+                         "le gabarit ne doit pas ajouter une deuxième signature")
+
+    def test_a_body_without_the_marker_still_gets_signed(self):
+        """Un message posté ailleurs (chatter nu, automatisation) reste signé."""
+        self._placement("brouillon")
+        rendu = self._visible(self._post_body("<p>Un mot sans signature</p>"))
+        self.assertEqual(rendu.count("Société A"), 1)
+
+    def test_the_preview_hides_when_the_body_carries_the_signature(self):
+        """Deux signatures à l'écran diraient une chose fausse."""
+        self._placement("brouillon")
+        self.assertFalse(self._composer().bf_signature_preview)
+
+    def test_the_placement_setting_drives_the_draft(self):
+        """Le réglage décide, et il décide dans les deux sens."""
+        Boite = self.env["bf.email"].with_user(self.writer)
+        self._placement("brouillon")
+        self.assertIn("Société A", Boite.inbox_compose()["context"]["default_body"])
+        self._placement("envoi")
+        self.assertNotIn("Société A", Boite.inbox_compose()["context"]["default_body"])
 
     # ------------------------------------------------------------------
     # 5. Résolution et semis

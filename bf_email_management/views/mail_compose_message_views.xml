@@ -22,6 +22,31 @@
         </field>
     </record>
 
+    <!-- Aperçu de la signature, sous le corps. La signature n'entre jamais
+         dans le corps — elle est ajoutée une seule fois au rendu du courriel —
+         et rien ne le disait à l'écran : le composeur s'ouvrait nu et donnait
+         à croire que le courriel partirait non signé. Ce bloc le dit, en
+         lecture seule. -->
+    <record id="mail_compose_message_bf_signature_form" model="ir.ui.view">
+        <field name="name">mail.compose.message.form.bf.signature</field>
+        <field name="model">mail.compose.message</field>
+        <field name="inherit_id" ref="mail.email_compose_message_wizard_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='attachment_ids']" position="after">
+                <div class="mt-2 o_bf_signature_preview"
+                     invisible="not bf_signature_preview">
+                    <small class="text-muted">
+                        Signature ajoutée à l'envoi
+                    </small>
+                    <div class="border rounded p-2 mt-1 bg-view"
+                         style="max-height:190px;overflow:auto;">
+                        <field name="bf_signature_preview" nolabel="1" readonly="1"/>
+                    </div>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
     <!-- « Envoyer en tant que » : l'adresse qui portera le « De ». Le champ
          ne s'affiche que si la personne a plus d'une identité vérifiée —
          avec une seule, il n'y a rien à choisir et la ligne serait du bruit
@@ -38,6 +63,27 @@
                        options="{'no_create': True, 'no_open': True}"
                        invisible="bf_identity_count &lt; 2"
                        placeholder="Depuis quelle adresse ?"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Bouton « Enregistrer comme brouillon » dans le pied du composeur.
+         Le composeur n'offrait qu'Envoyer / Journaliser / Programmer / Ignorer :
+         pour garder un courriel inachevé il fallait le PROGRAMMER et saisir une
+         date lointaine à la main. Le bouton fait ce geste en un clic. Mêmes
+         conditions de visibilité que le menu « Programmer » du noyau, qui est
+         le mécanisme qu'il emprunte. -->
+    <record id="mail_compose_message_bf_draft_form" model="ir.ui.view">
+        <field name="name">mail.compose.message.form.bf.save.as.draft</field>
+        <field name="model">mail.compose.message</field>
+        <field name="inherit_id" ref="mail.email_compose_message_wizard_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//footer/button[@special='cancel']" position="before">
+                <button string="Enregistrer comme brouillon"
+                        name="action_bf_save_as_draft"
+                        type="object"
+                        class="btn-secondary w-auto"
+                        invisible="composition_batch or composition_mode != 'comment'"/>
             </xpath>
         </field>
     </record>

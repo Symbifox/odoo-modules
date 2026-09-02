@@ -89,7 +89,7 @@ Deactivates the device and clears its push endpoint. → `{"ok": true}`
 {
   "user_name": "Jane Doe",
   "tz": "America/Montreal",
-  "signature": "",          // always empty since 18.0.11.9.0 — see below
+  "signature": "",          // follows the server setting — see below
   "accounts": [{"id": 1, "name": "Work", "login": "jane@example.com",
                 "aliases": "", "state": "connected"}],
   "counts": {"inbox": 12, "unread": 3, "snoozed": 2, "unrouted": 5},
@@ -224,10 +224,20 @@ The quoted original is appended server-side — send only what the user typed.
 A genuine reply to an inbound message flips its status to `replied`, same as
 the desktop composer.
 
-⚠️ **Never insert the signature.** Since 18.0.11.9.0 it is added once, when the
-outgoing mail is rendered, and it is deliberately absent from every stored
-body — which is why `/config` now returns an empty `signature`. A composer that
-pre-fills one makes the recipient receive two.
+⚠️ **Insert the signature only when the server hands you one.** `/config`
+answers for the instance setting `bf_email.signature_placement` (11.13+), and
+the app must not decide on its own:
+
+- **`envoi` (send)** — `signature` is `""`. The signature is added once, when
+  the outgoing mail is rendered, and is deliberately absent from every stored
+  body. A composer that pre-filled one would make the recipient receive two.
+  This was the only behaviour between 18.0.11.9.0 and 18.0.11.13.0.
+- **`brouillon` (draft), the default** — `signature` carries the marked block
+  to pre-fill, exactly as the desktop composer does. The marker is what stops
+  the render adding a second one.
+
+In both cases the rule is the same from the app's side: pre-fill what `/config`
+returns, and nothing else.
 
 ### `POST /compose` (auth)
 ```jsonc

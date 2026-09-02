@@ -7,7 +7,7 @@ n'a longtemps servi qu'à garder l'xmlid historique
 
 Il reprend du service en 18.0.11.1.0 pour ce qui n'appartient à personne en
 particulier : l'affichage des dossiers IMAP dans la boîte de réception est
-une décision d'organisation, pas une préférence d'affichage.
+une décision d'organisation, pas une préférence d'affichage. Voir #24976.
 """
 
 from odoo import _, api, fields, models
@@ -33,6 +33,23 @@ class ResConfigSettings(models.TransientModel):
         help="Durée pendant laquelle la liste des dossiers relevée sur le "
              "serveur est réutilisée sans le rappeler. 0 = relire à chaque "
              "affichage (déconseillé : un aller-retour IMAP par ouverture).",
+    )
+
+    bf_email_signature_placement = fields.Selection(
+        [("brouillon", "Dans le brouillon, visible en écrivant"),
+         ("envoi", "À l'envoi seulement")],
+        string="Où vit la signature",
+        default="brouillon",
+        help="**Dans le brouillon** : la signature est écrite dans le corps "
+             "dès l'ouverture du composeur. On la voit en écrivant, on peut "
+             "la couper pour un mot bref, et la copie gardée au chatter "
+             "montre le courriel tel qu'il est parti.\n\n"
+             "**À l'envoi seulement** : le corps reste nu et la signature est "
+             "posée au rendu du courriel, juste avant la citation. Un seul "
+             "endroit la pose, donc aucun doublon possible même si un chemin "
+             "d'envoi l'oublie ; en échange, à l'écran et au chatter le "
+             "message paraît non signé.\n\n"
+             "Dans les deux cas le destinataire en reçoit une seule.",
     )
 
     bf_email_popup_enabled = fields.Boolean(
@@ -69,6 +86,9 @@ class ResConfigSettings(models.TransientModel):
         except (TypeError, ValueError):
             minutes = 60
         res["bf_email_folder_cache_minutes"] = minutes
+        res["bf_email_signature_placement"] = (
+            self.env["bf.email"]._signature_placement()
+        )
         res["bf_email_popup_enabled"] = (
             self.env["bf.email.popup"]._instance_enabled()
         )
@@ -84,6 +104,13 @@ class ResConfigSettings(models.TransientModel):
         ICP.set_param(
             "bf_email.folder_cache_minutes",
             str(max(0, self.bf_email_folder_cache_minutes or 0)),
+        )
+        # Une Selection n'est jamais vide ici : ``set_param`` ne supprimera
+        # donc pas la rangée, contrairement au piège des cases à cocher
+        # documenté plus haut.
+        ICP.set_param(
+            "bf_email.signature_placement",
+            self.bf_email_signature_placement or "brouillon",
         )
         ICP.set_param(
             "bf_email.popup_enabled",

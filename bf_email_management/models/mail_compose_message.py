@@ -12,6 +12,8 @@ recompute when they are present, so the bf.email Reply-All flow can pre-fill
 Cc with the other thread participants.
 """
 
+from dateutil.relativedelta import relativedelta
+
 from odoo import _, api, exceptions, fields, models
 
 
@@ -52,8 +54,9 @@ class MailComposeMessage(models.TransientModel):
         personne** : le message naissait bien sur la fiche choisie, visible
         dans le chatter comme n'importe quel envoi, mais sans un seul
         ``mail.notification``. Rien ne le signalait, ni à l'écran ni au
-        journal. Relevé en production le 2026-08-31 : sept messages en trois
-        mois, dont quatre vrais courriels.
+        journal. Relevé le 2026-08-31 : sept messages en trois mois, dont
+        quatre vrais courriels — le plus récent demandait à quelqu'un s'il
+        était toujours disponible pour une rencontre qui commençait.
         """
         for wizard in self:
             if not wizard.bf_compose_shell_id or not wizard.target_reference:
@@ -106,6 +109,68 @@ class MailComposeMessage(models.TransientModel):
         for composer in self:
             composer.bf_identity_allowed_ids = usable
             composer.bf_identity_count = count
+
+    # ------------------------------------------------------------------
+    # Aperçu de la signature
+    # ------------------------------------------------------------------
+    bf_signature_preview = fields.Html(
+        string="Signature",
+        compute="_compute_bf_signature_preview",
+        sanitize=False,
+        readonly=True,
+        help="Ce qui sera ajouté au bas du courriel à l'envoi. En lecture "
+             "seule : la signature n'entre pas dans le corps, sinon le "
+             "destinataire en recevrait deux.",
+    )
+
+    @api.depends("bf_identity_id", "email_add_signature", "template_id")
+    @api.depends_context("uid")
+    def _compute_bf_signature_preview(self):
+        """Montrer la signature que l'envoi posera — sans l'écrire dans le corps.
+
+        Le composeur s'ouvre nu depuis la 18.0.11.9.0, et c'est voulu : la
+        signature est ajoutée une seule fois au rendu du courriel. Restait
+        qu'à l'écran plus rien ne disait qu'elle partirait. Ce champ le dit,
+        en rejouant la MÊME résolution que
+        ``mail_thread._notify_by_email_prepare_rendering_context`` :
+
+        1. rien du tout quand ``email_add_signature`` est faux — c'est le cas
+           dès qu'un gabarit est choisi, Odoo coupe alors la signature ;
+        2. la signature de l'identité d'expédition si elle en a une ;
+        3. sinon celle de la personne (déjà rendue aux couleurs de sa société
+           par ``bf_multi_company_email``) ;
+        4. en dernier ressort le repli de société, quand rien d'autre n'existe.
+
+        ⚠️ Un aperçu qui mentirait serait pire que pas d'aperçu : toute
+        divergence avec l'ordre ci-dessus est un défaut, pas un détail
+        cosmétique.
+        """
+        # En mode « brouillon » la signature est DANS le corps, sous les yeux :
+        # un aperçu la montrerait deux fois à l'écran.
+        if self.env["bf.email"]._signature_placement() == "brouillon":
+            for composer in self:
+                composer.bf_signature_preview = False
+            return
+        Identity = (self.env["bf.email.identity"]
+                    if "bf.email.identity" in self.env else None)
+        company = self.env.company
+        repli = ""
+        if "brand_email_signature_default" in company._fields:
+            repli = company.sudo().brand_email_signature_default or ""
+        for composer in self:
+            signature = ""
+            if composer.email_add_signature:
+                identity = composer.bf_identity_id
+                if not identity and Identity is not None:
+                    identity = Identity.sudo()._for_sender(
+                        composer.email_from, self.env.user)
+                if identity and (identity.signature_html or "").strip():
+                    signature = identity.signature_html
+                else:
+                    signature = self.env.user.signature or ""
+            if not (signature or "").strip():
+                signature = repli
+            composer.bf_signature_preview = signature or False
 
     @api.onchange("bf_identity_id")
     def _onchange_bf_identity_id(self):
@@ -184,6 +249,39 @@ class MailComposeMessage(models.TransientModel):
         # atterrirait sur le brouillon et non sur la fiche choisie.
         self._bf_retarget_to_chatter()
         return super().action_schedule_message(scheduled_date=scheduled_date)
+
+    # ------------------------------------------------------------------
+    # « Enregistrer comme brouillon »
+    # ------------------------------------------------------------------
+    # Années d'avance de la sentinelle. Le noyau EXIGE une date d'envoi et la
+    # refuse dans le passé : un brouillon doit donc en porter une. On la met
+    # assez loin pour qu'aucun cron ne la rattrape de notre vivant
+    # professionnel — et `bf_is_draft` fait le vrai travail, la date n'est
+    # qu'une formalité imposée par le schéma.
+    _BF_DRAFT_SENTINEL_YEARS = 5
+
+    def action_bf_save_as_draft(self):
+        """Garder le courriel sans l'envoyer, et fermer le composeur.
+
+        Il n'existait aucun « Enregistrer » : le composeur est un
+        ``TransientModel``, le refermer perdait tout, et la seule façon de
+        garder un texte était de le PROGRAMMER en saisissant une date lointaine
+        à la main. Ce bouton fait ce geste-là en un clic.
+
+        Le brouillon atterrit dans le dossier « Brouillons » de la boîte, d'où
+        « Envoyer maintenant » le fait partir. Rien ne part d'ici.
+        """
+        self.ensure_one()
+        # Même garde que l'envoi : une identité qu'on n'a pas le droit de
+        # porter ne doit pas plus s'écrire dans un brouillon, sinon le refus
+        # n'arrive qu'au moment de l'envoi, des jours plus tard.
+        self._bf_check_identity()
+        sentinelle = fields.Datetime.now() + relativedelta(
+            years=self._BF_DRAFT_SENTINEL_YEARS)
+        # ⚠️ `bf_save_as_draft` et non `default_bf_is_draft` : `create` du
+        # noyau passe par `clean_context`, qui efface les clés `default_*`.
+        return self.with_context(bf_save_as_draft=True).action_schedule_message(
+            scheduled_date=sentinelle)
 
     @api.depends(
         "composition_mode",

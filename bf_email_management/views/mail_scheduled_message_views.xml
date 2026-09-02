@@ -21,6 +21,8 @@
                        string="Destinataires" optional="show"/>
                 <field name="is_note" widget="boolean"
                        string="Note interne" optional="hide"/>
+                <field name="bf_is_draft" widget="boolean"
+                       string="Brouillon" optional="show"/>
                 <button name="action_open_record"
                         type="object"
                         icon="fa-external-link"
@@ -67,6 +69,7 @@
                                    string="Envoi pr&#233;vu le"/>
                             <field name="author_id"/>
                             <field name="is_note"/>
+                            <field name="bf_is_draft"/>
                         </group>
                         <group>
                             <field name="record_name" readonly="1"/>
@@ -115,6 +118,13 @@
                 <filter name="filter_note"
                         string="Notes internes"
                         domain="[('is_note', '=', True)]"/>
+                <separator/>
+                <filter name="filter_is_draft"
+                        string="Brouillons"
+                        domain="[('bf_is_draft', '=', True)]"/>
+                <filter name="filter_planned_send"
+                        string="Envois diff&#233;r&#233;s"
+                        domain="[('bf_is_draft', '=', False)]"/>
                 <separator/>
                 <filter name="filter_today"
                         string="Aujourd'hui"

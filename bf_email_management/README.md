@@ -180,6 +180,57 @@ one `console.warn` at the fifth if none was ever displayed.
 from a chatter or the mail gateway has no `account_id`, hence no setting to read,
 hence no notice.
 
+### Where the signature lives (11.13+)
+One setting, `bf_email.signature_placement`, decides where the signature is put,
+and the recipient gets exactly one either way.
+
+- **`brouillon` (draft), the default** — written into the body when the composer
+  opens. You see it while writing, you can cut it for a one-liner, and the copy
+  kept in the chatter shows the mail as it actually went out.
+- **`envoi` (send)** — the body stays bare and the signature is placed at render
+  time, just before the quote. One single place puts it there; in exchange the
+  message looks unsigned on screen.
+
+The anti-duplicate guard does not depend on the sending path: the block written
+into the draft carries a `data-bf-signature` marker, and
+`_notify_by_email_prepare_rendering_context` refuses to add a second one when it
+sees it. A message posted elsewhere (bare chatter, automation) carries no marker
+and is still signed by the template. In draft mode the composer also shows a
+read-only preview (`bf_signature_preview`, 11.10+) replaying the same
+resolution — sending identity, then person, then company fallback — so it can
+never advertise a signature that will not go out.
+
+In a reply the signature sits **above** the quote (11.11+): Odoo's layout
+appends it under the whole rendered body, which in a reply put it after the
+entire quoted thread.
+
+### Calendar reminders (11.12+)
+- `bf_email_management.default_alarm_minutes` accepts **several** delays,
+  comma-separated (`1,15` = one reminder a minute before and one fifteen
+  minutes before). A single delay still works, `0` places none. Values are
+  de-duplicated and sorted, an unreadable chunk is skipped rather than taking
+  the valid delays with it, and each delay is matched against an existing
+  `calendar.alarm` before one is created.
+- **`bf.calendar.reminder.ack` (11.13+)** keeps "seen" and "snoozed" outside the
+  attendee row, which does not survive a CalDAV series being reimported (the
+  recurrence and every occurrence are deleted and recreated with fresh ids, so a
+  dismissed reminder fired again). The acknowledgement is keyed on the series'
+  CalDAV UID plus the occurrence start — deliberately a string, not a typed
+  link, so the module does not require the sync module to be installed.
+- **Popup buttons.** Five snooze presets (*5 min*, *15 min*, *1 h*, *Demain* at
+  08:00) plus *Autre…*, which opens a small dialog asking for a delay in
+  minutes — 30 by default, `Enter` to confirm, refused unless it is a positive
+  integer. *Vu* stops the reminder for that event for good, *Ouvrir* jumps to
+  the event form. Every button hits a real server endpoint (`bf_snooze` /
+  `bf_dismiss` on `calendar.attendee`), so a decision taken in one window
+  closes the reminder in the others.
+- A reminder replayed by `bus.bus` no longer surfaces on the spot. The bus
+  replays up to 24 h on reconnection, and a replayed payload carries an already
+  negative `timer` that `setTimeout` rounds to zero. Payloads are stamped with
+  the server clock (`sent_ms`) and dropped client-side past two minutes; the
+  direct `/calendar/notify` poll is never filtered. Reminders for a meeting that
+  is already over are not pushed at all.
+
 ### IMAP Folder Browser (3.5+, OWL client action)
 A mail-client-style view of any IMAP folder, no permanent ingestion required.
 
@@ -222,6 +273,17 @@ The 8 heuristic signals are based on empirical email-overload research:
 - Inline send-now and open-source actions.
 - Editable form for subject, body, recipients, attachments.
 - Inherits Odoo core's per-record post-access ACL.
+- **Save as draft (11.14+)** — a button in the composer footer, next to
+  "Discard". The composer is a `TransientModel`, so closing it used to lose
+  everything, and keeping an unfinished text meant *scheduling* it with a
+  distant date typed by hand. The button makes that gesture one click, and the
+  draft lands in the mailbox's "Drafts" folder. Nothing is sent by the button.
+- **`bf_is_draft` (11.14+)** — the core model knows only a send date; this flag
+  says what the date cannot, namely that the row is a draft rather than a send
+  someone is waiting for. It drives the sort order (drafts first, newest
+  written to oldest; deferred sends after, soonest first), the displayed date
+  (a draft shows when it was written, not its sentinel), and the refusal to
+  auto-send: `_post_messages_cron` sets drafts aside whatever their date.
 
 ### Views
 - **List** — inbox-style; rows without a linked Odoo record are highlighted in warning color with an inline "Import to chatter" button.

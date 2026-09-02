@@ -18,6 +18,7 @@ from . import bf_email_mobile
 from . import calendar_alarm_manager
 from . import calendar_attendee
 from . import calendar_event
+from . import bf_calendar_reminder_ack
 # inherit_account_move / inherit_project_task / inherit_res_partner ont été
 # retirés en 18.0.8.2.0 : ils surchargeaient `name_search` sous le drapeau de
 # contexte `bf_email_reroute_search`, que seule l'ancienne liste déroulante du

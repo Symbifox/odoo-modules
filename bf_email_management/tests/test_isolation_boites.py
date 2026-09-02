@@ -130,7 +130,7 @@ class TestEmailAdmin(IsolationCase):
 
 @tagged("post_install", "-at_install")
 class TestImapFolderTreeIsolation(IsolationCase):
-    """L'arbre des dossiers IMAP ne doit rien laisser filtrer."""
+    """L'arbre des dossiers IMAP (#24976) ne doit rien laisser filtrer."""
 
     def setUp(self):
         super().setUp()

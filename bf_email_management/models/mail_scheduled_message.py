@@ -1,8 +1,55 @@
-from odoo import api, fields, models
+from odoo import _, api, fields, models
 
 
 class MailScheduledMessage(models.Model):
     _inherit = "mail.scheduled.message"
+
+    # ------------------------------------------------------------------
+    # Brouillon vs envoi différé
+    # ------------------------------------------------------------------
+    # Le modèle du noyau ne connaît qu'une chose : une date d'envoi. « Parquer
+    # un brouillon » se faisait donc en posant une date lointaine à la main
+    # (sentinelle ~2031) et en envoyant soi-même le moment venu. Ce drapeau dit
+    # ce que la date ne dit pas — que la ligne est un BROUILLON, pas un envoi
+    # que quelqu'un attend — et c'est lui, pas la date, qui décide du tri, de
+    # la date affichée et du refus d'auto-envoi.
+    bf_is_draft = fields.Boolean(
+        string="Brouillon",
+        default=False,
+        index=True,
+        help="Un brouillon ne part jamais tout seul : le cron l'ignore, quelle "
+             "que soit sa date. Il attend « Envoyer maintenant ».",
+    )
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        """Le composeur marque ses brouillons par le contexte.
+
+        ⚠️ Pas par un ``default_bf_is_draft`` : ``create`` du noyau passe par
+        ``clean_context``, qui retire justement toutes les clés ``default_*``.
+        Une clé qui ne commence pas par ``default_`` survit, elle.
+        """
+        if self.env.context.get("bf_save_as_draft"):
+            vals_list = [dict(vals, bf_is_draft=True) for vals in vals_list]
+        return super().create(vals_list)
+
+    @api.model
+    def _post_messages_cron(self, limit=50):
+        """Un brouillon ne part jamais tout seul, même quand sa date arrive.
+
+        Le cron du noyau balaie sur la SEULE date (``scheduled_date <= now``).
+        La sentinelle lointaine suffit à le tenir à distance aujourd'hui, mais
+        elle finit par arriver : sans ce filtre, tous les brouillons parqués
+        partiraient d'un coup le jour venu, à des destinataires qui ne les
+        attendent plus. Six lignes recopiées du noyau, pour une clause de plus.
+        """
+        domain = [("scheduled_date", "<=", fields.Datetime.now()),
+                  ("bf_is_draft", "=", False)]
+        messages_to_post = self.search(domain, limit=limit)
+        messages_to_post.with_context(
+            mail_notify_force_send=True)._post_message(raise_exception=False)
+        if self.search_count(domain, limit=1):
+            self.env.ref("mail.ir_cron_post_scheduled_message")._trigger()
 
     record_name = fields.Char(
         string="Enregistrement",

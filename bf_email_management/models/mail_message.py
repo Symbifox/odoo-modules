@@ -92,25 +92,32 @@ class MailMessage(models.Model):
         return action
 
     def _prep_quoted_reply_body(self):
-        """Same quote as ``mail_quoted_reply``, minus the signature.
+        """La citation du module tiers, sa signature marquée ou retirée.
 
-        Le module tiers insère ``self.env.user.signature`` en clair au-dessus
-        de la citation. Ici la signature est posée à l'envoi et nulle part
-        ailleurs : la laisser dans le corps la ferait partir en double, une
-        fois écrite ici et une fois ajoutée par le gabarit de notification.
+        ``mail_quoted_reply`` insère ``self.env.user.signature`` en clair
+        au-dessus de la citation. Selon le réglage « Où vit la signature » :
 
-        On retire le bloc du rendu plutôt que de recopier le gabarit du
-        tiers : la signature y est insérée telle quelle, donc retrouvable
-        telle quelle, et la mise en page de la citation reste la sienne — une
-        copie divergerait à sa prochaine mise à jour.
+        - en mode **brouillon**, on la garde et on l'enveloppe du marqueur,
+          pour que l'envoi sache que le corps en porte déjà une ;
+        - en mode **envoi**, on la retire : elle sera posée au rendu, et la
+          laisser ici la ferait partir en double.
+
+        On agit sur le rendu du tiers plutôt que d'en recopier le gabarit :
+        la signature y est insérée telle quelle, donc retrouvable telle
+        quelle, et la mise en page de la citation reste la sienne — une copie
+        divergerait à sa prochaine mise à jour.
         """
         body = super()._prep_quoted_reply_body()
         signature = self.env.user.signature or ""
         # ⚠️ Sans cette garde, ``replace("", ...)`` s'insère entre chaque
         # caractère du corps.
-        if signature.strip() and signature in body:
-            body = body.replace(signature, "", 1)
-        return body
+        if not signature.strip() or signature not in body:
+            return body
+        BfEmail = self.env["bf.email"]
+        if BfEmail._signature_placement() != "brouillon":
+            return body.replace(signature, "", 1)
+        marque = f'<div class="{BfEmail.SIGNATURE_MARKER}">{signature}</div>'
+        return body.replace(signature, marque, 1)
 
     def action_download_eml(self):
         """Stream this chatter message as an .eml download.

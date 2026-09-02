@@ -41,18 +41,43 @@ class CalendarEvent(models.Model):
 
     @api.model
     def _bf_default_alarm_minutes(self):
-        """Délai du rappel posé d'office, en minutes. 0 désactive.
+        """Délais des rappels posés d'office, en minutes. Liste vide = aucun.
 
         Vit ici plutôt que dans le module de synchronisation parce que c'est ce
         module-ci qui porte la chaîne de rappel (fenêtre de report, cron, ntfy).
+
+        Le réglage accepte plusieurs délais séparés par des virgules
+        (« 1,15 » = un rappel une minute avant et un quinze minutes avant), un
+        seul délai (« 15 »), ou 0 pour n'en poser aucun. La forme liste existait
+        déjà en face, dans `_bf_pull_fallback_alarm_minutes` du module de
+        synchronisation ; les deux lecteurs du même réglage lisent désormais la
+        même grammaire.
+
+        ⚠️ Rend une LISTE, là où la version précédente rendait un entier. Le
+        seul appelant est `_bf_default_alarm_ids` juste en dessous, mais une
+        surcharge écrite ailleurs contre l'ancienne signature comparerait un
+        entier à une liste sans lever d'erreur — d'où le changement de nom du
+        contrat dans la docstring plutôt qu'un ajustement silencieux.
         """
         raw = self.env["ir.config_parameter"].sudo().get_param(
             "bf_email_management.default_alarm_minutes", "15",
         )
-        try:
-            return max(0, int(str(raw).strip() or 0))
-        except ValueError:
-            return 0
+        minutes = []
+        for chunk in str(raw or "").split(","):
+            chunk = chunk.strip()
+            if not chunk:
+                continue
+            try:
+                value = int(chunk)
+            except ValueError:
+                # Un réglage illisible ne doit pas emporter les délais valides
+                # qui l'accompagnent : on saute le morceau fautif.
+                continue
+            if value > 0:
+                minutes.append(value)
+        # Dédoublonné et trié : « 15,1,15 » ne doit pas poser deux fois la même
+        # alarme, et l'ordre rend la liste lisible dans l'interface.
+        return sorted(set(minutes))
 
     @api.model
     def _bf_default_alarm_ids(self):
@@ -69,18 +94,26 @@ class CalendarEvent(models.Model):
         minutes = self._bf_default_alarm_minutes()
         if not minutes:
             return []
-        alarm = self.env["calendar.alarm"].search([
-            ("alarm_type", "=", "notification"),
-            ("duration_minutes", "=", minutes),
-        ], limit=1)
-        if not alarm:
-            alarm = self.env["calendar.alarm"].create({
-                "name": "%s min avant" % minutes,
-                "alarm_type": "notification",
-                "duration": minutes,
-                "interval": "minutes",
-            })
-        return [(6, 0, alarm.ids)]
+        Alarm = self.env["calendar.alarm"]
+        alarm_ids = []
+        for value in minutes:
+            # Rapprochement sur `duration_minutes` plutôt que création
+            # systématique : sans ça, chaque délai inédit fabriquerait un
+            # doublon de l'alarme d'usine (« Notification - 15 minutes ») et la
+            # liste déroulante des rappels deviendrait illisible.
+            alarm = Alarm.search([
+                ("alarm_type", "=", "notification"),
+                ("duration_minutes", "=", value),
+            ], limit=1)
+            if not alarm:
+                alarm = Alarm.create({
+                    "name": "%s min avant" % value,
+                    "alarm_type": "notification",
+                    "duration": value,
+                    "interval": "minutes",
+                })
+            alarm_ids.append(alarm.id)
+        return [(6, 0, alarm_ids)]
 
     alarm_ids = fields.Many2many(
         default=lambda self: self._bf_default_alarm_ids(),

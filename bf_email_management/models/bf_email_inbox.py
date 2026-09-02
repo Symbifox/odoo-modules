@@ -666,12 +666,19 @@ class BfEmail(models.Model):
         et ``correspondent`` les destinataires.
         """
         recipients = [p.display_name for p in draft.partner_ids]
+        # ⚠️ Un BROUILLON porte une date d'envoi parce que le schéma en exige
+        # une, pas parce qu'elle veut dire quelque chose : c'est la sentinelle
+        # posée par « Enregistrer comme brouillon ». L'afficher annoncerait un
+        # envoi prévu en 2031. Ce qui compte sur un brouillon, c'est quand on
+        # l'a écrit pour la dernière fois.
+        est_brouillon = draft.bf_is_draft
+        date_utile = draft.write_date if est_brouillon else draft.scheduled_date
         return {
             "id": draft.id,
             "kind": "draft",
+            "is_draft": est_brouillon,
             "date": (
-                draft.scheduled_date
-                and fields.Datetime.to_string(draft.scheduled_date) or False
+                date_utile and fields.Datetime.to_string(date_utile) or False
             ),
             "subject": draft.subject or "",
             "correspondent": ", ".join(recipients),
@@ -683,8 +690,10 @@ class BfEmail(models.Model):
             "record_name": draft.record_name or "",
             "attachment_count": len(draft.attachment_ids),
             "has_attachments": bool(draft.attachment_ids),
+            # Un brouillon n'est jamais « en retard » : personne ne l'attend.
             "is_late": bool(
-                draft.scheduled_date
+                not est_brouillon
+                and draft.scheduled_date
                 and draft.scheduled_date < fields.Datetime.now()
             ),
             # La liste met en gras ce qui n'est pas vu ; un brouillon est
@@ -694,11 +703,18 @@ class BfEmail(models.Model):
 
     @api.model
     def inbox_get_drafts(self, offset=0, limit=100, search=None):
-        """Une page du dossier « Brouillons », du plus proche au plus lointain.
+        """Une page du dossier « Brouillons ».
 
-        L'ordre est l'inverse de celui des courriels : sur du courrier reçu on
-        veut le plus récent en haut, sur des envois programmés on veut le
-        prochain à partir.
+        Deux natures cohabitent, et elles ne se rangent pas pareil :
+
+        * les **brouillons** (« Enregistrer comme brouillon ») passent devant,
+          du plus récemment écrit au plus ancien — c'est ce qu'on vient
+          d'abandonner qu'on rouvre ;
+        * les **envois différés** suivent, du plus proche au plus lointain :
+          ce qui compte là, c'est le prochain à partir.
+
+        ⚠️ Trier sur ``scheduled_date`` seul mélangeait les deux et enfonçait
+        les brouillons tout au fond, leur sentinelle étant à cinq ans.
         """
         Scheduled = self.env["mail.scheduled.message"]
         domain = self._inbox_drafts_domain()
@@ -708,11 +724,25 @@ class BfEmail(models.Model):
                        ("record_name", "ilike", term)]
         offset = max(0, int(offset or 0))
         limit = max(1, min(int(limit or 100), MAX_PAGE))
-        total = Scheduled.search_count(domain)
-        drafts = Scheduled.search(
-            domain, offset=offset, limit=limit,
-            order="scheduled_date asc, id asc",
+        # ⚠️ Une seule clause ORDER BY ne sait pas trier deux groupes sur deux
+        # clés différentes. On fait donc deux recherches et on les met bout à
+        # bout : c'est le dossier d'UN usager, il tient dans une poignée de
+        # lignes. Un `bf_is_draft desc, scheduled_date asc` unique aurait rangé
+        # les brouillons entre eux par leur sentinelle, c'est-à-dire par ordre
+        # de création — l'inverse de ce qu'on veut voir en haut.
+        ids = (
+            Scheduled.search(
+                domain + [("bf_is_draft", "=", True)],
+                order="write_date desc, id desc",
+            ).ids
+            + Scheduled.search(
+                domain + [("bf_is_draft", "=", False)],
+                order="scheduled_date asc, id asc",
+            ).ids
         )
+        total = len(ids)
+        # `browse` garde l'ordre des identifiants qu'on lui donne.
+        drafts = Scheduled.browse(ids[offset:offset + limit])
         return {
             "folder": DRAFTS_FOLDER,
             "messages": [self._inbox_draft_row(d) for d in drafts],
@@ -847,9 +877,9 @@ class BfEmail(models.Model):
             "default_partner_cc_ids": [(6, 0, [])],
             "default_partner_bcc_ids": [(6, 0, [])],
             "default_subject": "",
-            # Une ligne vide, pas une signature : celle-ci est posée à
-            # l'envoi, jamais dans le corps (voir _compose_landing_line).
-            "default_body": shell._compose_landing_line(),
+            # Ligne vide seule, ou ligne vide + signature, selon le réglage
+            # « Où vit la signature » (voir bf.email._signature_placement).
+            "default_body": shell._compose_lead_in(),
             "default_notify": True,
             "force_email": True,
             "mail_create_nosubscribe": True,
@@ -886,6 +916,29 @@ class BfEmail(models.Model):
             ("message_type", "in", ("email", "comment")),
         ], order="date desc, id desc", limit=1)
         if not posted:
+            # 🔴 Un envoi PROGRAMMÉ n'est pas un ``mail.message`` : il attend
+            # dans ``mail.scheduled.message``, et c'est ainsi qu'un brouillon
+            # est parqué (sentinelle lointaine, envoi manuel). Effacer la
+            # coquille l'emporterait EN CASCADE — ``mail_thread.unlink``
+            # supprime les envois programmés de la fiche — et le brouillon
+            # disparaîtrait sans un mot, ni à l'écran ni au journal. Reproduit
+            # le 2026-08-31 : coquille et brouillon créés,
+            # composeur refermé, les deux évanouis de la table.
+            #
+            # La coquille reste donc en vie tant qu'un brouillon s'y appuie,
+            # et reste HORS boîte (``is_handled``) : le dossier « Brouillons »
+            # le montre déjà, un doublon dans « Sans dossier » annoncerait un
+            # courriel qui n'est pas parti.
+            #
+            # ``sudo`` : ``mail.scheduled.message._search`` filtre sur l'accès
+            # à la fiche liée. Ici la fiche EST la coquille qu'on s'apprête à
+            # détruire — se fier à ce filtre reviendrait à demander la
+            # permission au condamné.
+            if self.env["mail.scheduled.message"].sudo().search_count([
+                ("model", "=", self._name),
+                ("res_id", "=", shell.id),
+            ]):
+                return True
             shell.unlink()
             return False
         msg = posted.sudo()

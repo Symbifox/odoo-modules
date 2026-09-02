@@ -11,7 +11,7 @@ Ce que ces tests éprouvent vraiment, dans l'ordre où ça peut casser :
 3. La décision de relever les lignes fraîches. Elle reposait sur la seule
    présence d'un appareil mobile ; comme il n'y en a plus aucun d'inscrit,
    un avis Odoo n'aurait jamais été calculé.
-4. Le plafond de trente secondes. Il ne tient QUE si la
+4. Le plafond de trente secondes (#25069, second lot). Il ne tient QUE si la
    charge utile porte l'horloge du serveur et la durée accordée : c'est ce
    couple, et non un délai côté client, qui empêche une deuxième fenêtre — ou
    un rejeu du bus au réveil du navigateur — de rallonger l'affichage.

@@ -14,6 +14,8 @@ message. Une réécriture de route, pas un second envoi.
 
 import logging
 
+from markupsafe import Markup
+
 from odoo import api, models
 
 _logger = logging.getLogger(__name__)
@@ -37,16 +39,15 @@ class MailThread(models.AbstractModel):
         l'instant du rendu, et le « De » est de toute façon ce que le
         destinataire lit.
 
-        ⚠️ C'est le SEUL endroit où la signature entre dans un courriel de ce
-        module. Le corps ne la porte jamais : ni le composeur « Nouveau
-        courriel », ni la citation d'une réponse, ni l'entête d'un transfert,
-        ni l'application mobile. Un corps qui la porterait la ferait sortir
-        deux fois, puisque le gabarit de notification l'ajoute ici de toute
-        façon.
+        ⚠️ C'est aussi ici que se décide s'il faut en poser une : quand le
+        corps en porte DÉJÀ une — mode « brouillon », le défaut — le marqueur
+        ``data-bf-signature`` le dit, et le gabarit n'en ajoute pas une
+        seconde. C'est la seule garde qui tienne quel que soit le chemin
+        d'envoi ; sans elle le destinataire en reçoit deux.
 
         On ne touche à rien quand l'identité n'a pas de signature propre : la
-        valeur calculée plus haut reste, y compris celle qu'un module de
-        signature multi-sociétés substituerait quand le message parle pour une
+        valeur calculée plus haut reste, y compris celle que
+        ``bf_multi_company_email`` substitue quand le message parle pour une
         autre société que celle de son auteur.
         """
         values = super()._notify_by_email_prepare_rendering_context(
@@ -58,6 +59,11 @@ class MailThread(models.AbstractModel):
         )
         if not values.get("email_add_signature"):
             return values
+        # Le corps porte déjà sa signature : ne pas en ajouter une deuxième.
+        corps = (msg_vals or {}).get("body") or message.body or ""
+        if self.env["bf.email"].SIGNATURE_MARKER in corps:
+            values["email_add_signature"] = False
+            return values
         author_user = values.get("author_user")
         if not author_user or author_user.share:
             return values
@@ -67,6 +73,76 @@ class MailThread(models.AbstractModel):
         if identity and (identity.signature_html or "").strip():
             values["signature"] = identity.signature_html
         return values
+
+    # Ce qui ouvre une citation, dans les trois chemins du module : la réponse
+    # depuis la boîte et le bouton Répondre du chatter posent un
+    # ``<blockquote>``, le transfert pose son entête « Forwarded message ».
+    # ⚠️ Pas ``data-o-mail-quote`` : cet attribut décore aussi les signatures
+    # elles-mêmes, l'ancre tomberait n'importe où.
+    _BF_QUOTE_MARKERS = ("<blockquote", "---------- forwarded message")
+
+    def _bf_quote_offset(self, body):
+        """Où commence la citation dans ce corps, -1 s'il n'y en a pas.
+
+        La PREMIÈRE occurrence, donc la citation la plus externe : dans un fil
+        qui s'empile, la signature doit passer au-dessus de tout le bloc cité,
+        pas se glisser entre deux niveaux.
+        """
+        minuscule = (body or "").lower()
+        positions = [p for p in (minuscule.find(m) for m in self._BF_QUOTE_MARKERS) if p >= 0]
+        return min(positions) if positions else -1
+
+    def _notify_by_email_render_layout(self, message, recipients_group,
+                                       msg_vals=False, render_values=None):
+        """Poser la signature au-dessus de la citation, pas sous elle.
+
+        Le gabarit d'Odoo rend ``message.body`` d'un bloc puis ajoute la
+        signature dessous : dans une réponse, elle se retrouve **après** tout
+        le fil cité. Avant que la signature quitte le corps, elle tombait au
+        bon endroit parce qu'elle était écrite là — au prix du doublon que la
+        18.0.11.9.0 a supprimé.
+
+        On garde donc l'unicité et on récupère l'ordre de lecture : le gabarit
+        n'ajoute rien, et la signature est insérée dans le rendu juste avant
+        l'ouverture de la citation.
+
+        ⚠️ Trois cas retombent volontairement sur le comportement d'Odoo, la
+        signature en fin de courriel : pas de citation (un courriel neuf n'a
+        rien au-dessus de quoi passer), une citation qui commence au tout
+        début du corps (personne n'a écrit au-dessus), et un corps qui ne
+        ressort pas tel quel du rendu. Ce dernier repli compte : perdre la
+        signature parce qu'on n'a pas retrouvé son ancre serait pire que la
+        poser trop bas.
+        """
+        valeurs = dict(render_values or {})
+        signature = valeurs.get("signature") or ""
+        corps = (msg_vals or {}).get("body") or message.body or ""
+        depart = self._bf_quote_offset(corps)
+        if not (valeurs.get("email_add_signature") and signature.strip() and depart > 0):
+            return super()._notify_by_email_render_layout(
+                message, recipients_group, msg_vals=msg_vals,
+                render_values=render_values)
+
+        valeurs["email_add_signature"] = False
+        rendu = super()._notify_by_email_render_layout(
+            message, recipients_group, msg_vals=msg_vals, render_values=valeurs)
+        rendu = Markup(rendu if isinstance(rendu, str) else (rendu or b"").decode())
+        # ⚠️ ``Markup.replace`` échappe tout argument qui n'est pas déjà du
+        # Markup : un bloc en ``str`` ressortait en clair dans le courriel,
+        # `&lt;div style=…` au lieu de la signature. Les deux côtés doivent
+        # donc être déclarés sûrs — ils le sont, c'est le HTML que le gabarit
+        # aurait rendu tel quel.
+        ancre = Markup(corps[depart:depart + 120])
+        if ancre not in rendu:
+            _logger.info(
+                "bf_email_management: ancre de citation introuvable dans le "
+                "rendu du message %s, signature laissée en fin de courriel",
+                message.id)
+            return super()._notify_by_email_render_layout(
+                message, recipients_group, msg_vals=msg_vals,
+                render_values=render_values)
+        bloc = Markup('<div style="font-size: 13px;">%s</div>') % Markup(signature)
+        return rendu.replace(ancre, bloc + ancre, 1)
 
     @api.model
     def message_route(self, message, message_dict, model=None,

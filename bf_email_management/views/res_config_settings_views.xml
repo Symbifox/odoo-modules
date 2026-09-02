@@ -11,7 +11,7 @@
         <field name="context">{'default_user_id': uid}</field>
     </record>
 
-    <!-- Réglages d'organisation. Le reste de la configuration du
+    <!-- Réglages d'organisation (#24976). Le reste de la configuration du
          module est par usager et vit sous Courriels → Configuration ; ce qui
          est ici engage toute la base, donc `base.group_system`. -->
     <record id="res_config_settings_view_form_bf_email" model="ir.ui.view">
@@ -46,6 +46,11 @@
                                             class="btn-link"/>
                                 </div>
                             </div>
+                        </setting>
+                        <setting id="bf_email_signature_placement_setting"
+                                 string="O&#249; vit la signature"
+                                 help="Dans le brouillon : &#233;crite dans le corps d&#232;s l'ouverture du composeur, donc visible en &#233;crivant et dans la copie gard&#233;e au chatter. &#192; l'envoi seulement : le corps reste nu et la signature est pos&#233;e au rendu, juste avant la citation. Dans les deux cas le destinataire en re&#231;oit une seule.">
+                            <field name="bf_email_signature_placement" widget="radio"/>
                         </setting>
                         <setting id="bf_email_popup_enabled_setting"
                                  string="Avis &#224; l'arriv&#233;e d'un courriel"

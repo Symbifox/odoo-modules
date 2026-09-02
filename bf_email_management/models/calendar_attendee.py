@@ -75,6 +75,22 @@ class CalendarAttendee(models.Model):
             ))
         return attendee
 
+    def _bf_record_reminder_ack(self, **vals):
+        """Doubler l'état de la fiche participant dans l'accusé durable.
+
+        La fiche participant disparaît dès que ``calendar_nextcloud_sync``
+        réimporte la série récurrente : elle rase la récurrence et toutes ses
+        occurrences avant de les recréer avec des ``id`` neufs. L'accusé, lui,
+        est classé sous l'UID CalDAV de la série et l'heure de l'occurrence,
+        que le ``.ics`` conserve. Voir ``bf_calendar_reminder_ack.py``.
+        """
+        for attendee in self:
+            if not attendee.partner_id or not attendee.event_id:
+                continue
+            self.env["bf.calendar.reminder.ack"]._bf_record(
+                attendee.partner_id, attendee.event_id, **vals
+            )
+
     def _bf_broadcast_reminder_closed(self, event_id, reason):
         """Dire aux AUTRES onglets de retirer le rappel de cet événement.
 
@@ -112,9 +128,16 @@ class CalendarAttendee(models.Model):
             "bf_snoozed_until": target,
             "bf_dismissed_at": False,
         })
+        attendee._bf_record_reminder_ack(
+            snoozed_until=target, dismissed_at=False,
+        )
         # Ack the partner so the standard mechanism stops firing this alarm
         # until the snooze expires (the cron will re-push).
-        attendee.partner_id.write({
+        # ⚠️ sudo : écrire sur res.partner demande « Contact Creation », que la
+        # plupart des usagers internes n'ont pas. Sans ça, reporter son propre
+        # rappel rend une AccessError. Odoo fait la même chose dans
+        # /calendar/notify_ack, avec le même sudo.
+        attendee.partner_id.sudo().write({
             "calendar_last_notif_ack": fields.Datetime.now(),
         })
         attendee._bf_broadcast_reminder_closed(event_id, "snooze")
@@ -129,7 +152,8 @@ class CalendarAttendee(models.Model):
             "bf_dismissed_at": now,
             "bf_snoozed_until": False,
         })
-        attendee.partner_id.write({
+        attendee._bf_record_reminder_ack(dismissed_at=now, snoozed_until=False)
+        attendee.partner_id.sudo().write({
             "calendar_last_notif_ack": now,
         })
         attendee._bf_broadcast_reminder_closed(event_id, "dismiss")
@@ -209,7 +233,26 @@ class CalendarAttendee(models.Model):
                 for attendee in event.attendee_ids:
                     if attendee.state == "declined":
                         continue
-                    if attendee.bf_snoozed_until and attendee.bf_snoozed_until > now:
+                    # L'accusé durable rattrape ce que la fiche participant a
+                    # perdu quand la série récurrente a été rasée et recréée :
+                    # sans lui, le téléphone recevait une deuxième fois le même
+                    # rappel, quelques minutes après avoir été écarté.
+                    ack = self.env["bf.calendar.reminder.ack"]._bf_find(
+                        attendee.partner_id, event,
+                    )
+                    snoozed_until = max(
+                        [s for s in (attendee.bf_snoozed_until, ack.snoozed_until) if s],
+                        default=False,
+                    )
+                    dismissed_at = max(
+                        [d for d in (attendee.bf_dismissed_at, ack.dismissed_at) if d],
+                        default=False,
+                    )
+                    ntfy_pushed_at = max(
+                        [n for n in (attendee.bf_ntfy_pushed_at, ack.ntfy_pushed_at) if n],
+                        default=False,
+                    )
+                    if snoozed_until and snoozed_until > now:
                         continue
                     # Both guards subtract PUSH_LEAD, and that subtraction is
                     # the whole point. horizon reaches PUSH_LEAD ahead of
@@ -221,11 +264,11 @@ class CalendarAttendee(models.Model):
                     # 2026-08-28 on event 214702: identical relay payload at
                     # 16:44:00 and 16:45:20. Same reasoning for a dismissal:
                     # the user dismisses the early push, still before notify_at.
-                    if (attendee.bf_dismissed_at
-                            and attendee.bf_dismissed_at >= notify_at - PUSH_LEAD):
+                    if (dismissed_at
+                            and dismissed_at >= notify_at - PUSH_LEAD):
                         continue
-                    if (attendee.bf_ntfy_pushed_at
-                            and attendee.bf_ntfy_pushed_at >= notify_at - PUSH_LEAD):
+                    if (ntfy_pushed_at
+                            and ntfy_pushed_at >= notify_at - PUSH_LEAD):
                         continue
                     self._bf_push_ntfy_attendee(url, attendee, event, alarm)
 
@@ -248,4 +291,6 @@ class CalendarAttendee(models.Model):
                 attendee.id, event.id, exc,
             )
             return
-        attendee.write({"bf_ntfy_pushed_at": fields.Datetime.now()})
+        pushed_at = fields.Datetime.now()
+        attendee.write({"bf_ntfy_pushed_at": pushed_at})
+        attendee._bf_record_reminder_ack(ntfy_pushed_at=pushed_at)

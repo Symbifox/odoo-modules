@@ -1033,7 +1033,7 @@ class BfEmail(models.Model):
         quiconque ait ouvert le message, et chaque client ouvert écrivait la
         même ligne au même instant — six écritures concurrentes par courriel
         entrant, donc autant d'échecs de sérialisation rejoués par Odoo.
-
+        
         Le drapeau de contexte réserve le marquage au chargement d'un vrai
         formulaire, qui appelle ``web_read`` directement.
 
@@ -1645,8 +1645,7 @@ class BfEmail(models.Model):
                         # copier (RFC 3501), `STORE \Deleted` ne marque rien,
                         # et la ligne enregistre un archivage qui n'a pas eu
                         # lieu : le message reste en INBOX pendant qu'Odoo le
-                        # dit traité. C'est la dérive déjà observée en
-                        # production.
+                        # dit traité. C'est la dérive rapportée en #24976.
                         verdict = bf_email_imap.uid_carries_message_id(
                             conn, rec.imap_uid, rec.message_id_header,
                         )
@@ -2186,8 +2185,8 @@ class BfEmail(models.Model):
         signature n'entre jamais dans le corps, elle est posée une seule fois
         à l'envoi par le gabarit de notification (voir ``mail_thread.py``).
         Un corps qui la porte la fait sortir en double, une fois écrite ici et
-        une fois ajoutée là — mesuré en production sur un fil réel : neuf blocs
-        dans le corps, dix dans le courriel rendu.
+        une fois ajoutée là — mesuré sur le fil « mot de passe » d'Écolaction
+        le 2026-08-31 : neuf blocs dans le corps, dix dans le courriel rendu.
 
         La ligne, elle, reste nécessaire. Sans elle le composeur s'ouvre avec
         le curseur piégé à l'intérieur de la citation, et on écrit sa réponse
@@ -2195,6 +2194,80 @@ class BfEmail(models.Model):
         """
         self.ensure_one()
         return '<p style="margin:0 0 12px 0;"><br/></p>'
+
+    # ------------------------------------------------------------------
+    # Où vit la signature
+    # ------------------------------------------------------------------
+    SIGNATURE_PARAM = "bf_email.signature_placement"
+    # 🔴 Une CLASSE, pas un attribut `data-*`. `mail.message.body` est un champ
+    # Html assaini à l'écriture : il **retire** les `data-*` qu'Odoo ne connaît
+    # pas — et avec eux le div devenu vide. Mesuré le 2026-08-31 :
+    # `data-bf-signature` et `data-o-bf-signature` disparaissent, `class` et
+    # `id` survivent. Un marqueur qui ne survit pas au stockage, c'est une
+    # garde qui ne se déclenche jamais et un destinataire qui reçoit deux
+    # signatures. ⚠️ `tools.html_sanitize` appelé à la main les conserve : ce
+    # contrôle-là ne prouve rien, il faut passer par un vrai `mail.message`.
+    SIGNATURE_MARKER = "o_bf_signature"
+
+    def _signature_placement(self):
+        """« brouillon » (défaut) ou « envoi ».
+
+        **brouillon** — la signature est écrite dans le corps dès l'ouverture
+        du composeur : on la voit en écrivant, et la copie gardée au chatter
+        la montre comme le destinataire la recevra. C'est le comportement
+        d'avant la 18.0.11.9.0, rétabli par défaut le 2026-08-31 : un fil de
+        chatter qui affiche un courriel non signé ne dit pas la vérité sur ce
+        qui est parti.
+
+        **envoi** — le corps reste nu et la signature est posée au rendu,
+        juste avant la citation. Un seul endroit qui la pose, donc aucun
+        doublon possible même si un chemin d'envoi l'oublie ; en échange, à
+        l'écran le message paraît non signé.
+
+        Les deux modes garantissent UNE signature chez le destinataire : en
+        mode brouillon, ``mail_thread`` voit le marqueur dans le corps et
+        empêche le gabarit d'en ajouter une seconde.
+        """
+        raw = self.env["ir.config_parameter"].sudo().get_param(
+            self.SIGNATURE_PARAM, "brouillon")
+        return "envoi" if str(raw).strip().lower() == "envoi" else "brouillon"
+
+    def _compose_signature_block(self):
+        """La signature du composeur, marquée pour être reconnue à l'envoi.
+
+        ⚠️ Le marqueur n'est pas décoratif : c'est lui qui dit à
+        ``mail_thread._notify_by_email_prepare_rendering_context`` que le corps
+        porte déjà une signature et que le gabarit ne doit pas en ajouter une.
+        Sans lui, le destinataire en recevrait deux — le défaut mesuré le
+        2026-08-31 sur le fil « mot de passe » d'Écolaction, neuf blocs dans
+        le corps et dix dans le courriel rendu.
+
+        Si la personne efface le bloc, le marqueur part avec : le gabarit
+        reprend alors la main et signe à l'envoi. C'est voulu.
+        """
+        self.ensure_one()
+        return self._compose_signature_block_for_user()
+
+    @api.model
+    def _compose_signature_block_for_user(self):
+        """Le même bloc, sans rangée sous la main (app mobile, réglages)."""
+        signature = self.env.user.signature or ""
+        if not signature.strip():
+            return ""
+        return f'<div class="{self.SIGNATURE_MARKER}">{signature}</div>'
+
+    def _compose_lead_in(self):
+        """Ce qui ouvre un brouillon, au-dessus de la citation.
+
+        La ligne vide reste indispensable dans les deux modes : sans elle le
+        composeur s'ouvre avec le curseur piégé À L'INTÉRIEUR de la citation,
+        et on écrit sa réponse dans le texte de quelqu'un d'autre.
+        """
+        self.ensure_one()
+        ligne = self._compose_landing_line()
+        if self._signature_placement() != "brouillon":
+            return ligne
+        return f'{ligne}{self._compose_signature_block()}'
 
     def _compose_identity(self):
         """L'identit\u00e9 sous laquelle r\u00e9pondre \u00e0 cette rang\u00e9e.
@@ -2235,7 +2308,7 @@ class BfEmail(models.Model):
         sender = self.email_from or ""
         return (
             '<div>'
-            f'{self._compose_landing_line()}'
+            f'{self._compose_lead_in()}'
             '<br/><br/>'
             '<blockquote style="border-left:3px solid #ccc;padding-left:8px;'
             'margin:8px 0;color:#666;">'
@@ -2261,7 +2334,7 @@ class BfEmail(models.Model):
         )
         return (
             '<div>'
-            f'{self._compose_landing_line()}'
+            f'{self._compose_lead_in()}'
             '<br/><br/>'
             '<p>---------- Forwarded message ---------- </p>'
             f'<p><strong>De&nbsp;:</strong> {self.email_from or ""}<br/>'
@@ -3564,7 +3637,7 @@ class BfEmail(models.Model):
             # près, marqué comme un réveil plutôt qu'une arrivée.
             #
             # Seule la popup est rappelée : la poussée vers le téléphone a son
-            # propre interrupteur, éteint, et la rallumer par
+            # propre interrupteur, éteint depuis #25045, et la rallumer par
             # cette porte serait une décision prise ailleurs.
             self.env["bf.email.popup"]._notify_new_emails(woken, wake=True)
 

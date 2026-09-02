@@ -4,6 +4,255 @@ All notable changes to `bf_email_management` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This module follows Odoo's `MAJOR.MINOR.PATCH` convention prefixed with the Odoo series (`18.0.X.Y.Z`).
 
+## [18.0.11.14.2] — 2026-09-01
+
+### Fixed
+
+- **"Other…" finally snoozes a calendar reminder.** The button called
+  `browser.prompt`, which does not exist: `@web/core/browser/browser` exposes an
+  explicit list and stops at the methods a test needs to swap out. Clicking it
+  raised a `TypeError` and opened Odoo's crash dialog instead of asking for a
+  delay — from the day the button shipped, never otherwise. In its place, a
+  small in-house dialog (the `NcPromptDialog` pattern): a number field
+  defaulting to 30 minutes, `Enter` to confirm, and a button greyed out until
+  the value is a positive integer. A `window.prompt` would have fixed the call
+  but freezes the execution thread — and therefore the bus — for as long as the
+  native box is open, and it ignores the theme.
+- **A failed snooze no longer crashes on top of its own notice.** The five
+  snooze paths now share a single call site; the free-form value, whose dialog
+  has already closed by the time the request goes out, holds the error after
+  showing it in red rather than letting an unhandled promise reopen the crash
+  dialog.
+
+## [18.0.11.14.1] — 2026-08-31
+
+### Fixed
+
+- **Drafts parked before the flag existed now carry it.** The ones kept the old
+  way — scheduled at a sentinel at least four years out, sent by hand — stayed
+  filed among the deferred sends: the list announced a 2031 delivery, and the
+  cron would have posted them on the day. Migration `18.0.11.14.1`, four-year
+  threshold (the convention), so a distant but deliberate send is never
+  reclassified by mistake.
+
+## [18.0.11.14.0] — 2026-08-31
+
+The composer can finally keep an email without sending it.
+
+### Added
+
+- **"Save as draft" button** in the composer footer, next to "Discard". The
+  composer is a `TransientModel`: closing it lost everything, and the only way
+  to keep an unfinished text was to SCHEDULE it by typing a distant date by
+  hand. The button does that in one click, and the draft lands in the mailbox's
+  "Drafts" folder, from where "Send now" sends it. Nothing leaves from the
+  button itself.
+
+- **`mail.scheduled.message.bf_is_draft`** — the core model knows only a send
+  date. This flag says what the date cannot: that the row is a draft, not a
+  send someone is waiting for. It, and not the date, decides the sort order,
+  the displayed date and the refusal to auto-send. Column and two filters in
+  "Scheduled drafts".
+
+### Fixed
+
+- **A draft no longer leaves on its own the day its sentinel comes up.** The
+  core cron sweeps on the date alone; the sentinel pushes it away but it
+  arrives eventually, and every parked draft would have gone out at once, to
+  recipients no longer expecting them. `_post_messages_cron` now sets drafts
+  aside, whatever their date.
+
+- **The "Drafts" folder sorts its two natures.** Drafts come first, most
+  recently written to oldest; deferred sends follow, nearest to furthest. A
+  single sort on `scheduled_date` buried the drafts at the very bottom, their
+  sentinel being five years out. And the list shows a draft's writing date
+  rather than its sentinel: it was announcing a send due in five years.
+
+### Tests
+
+- `TestSaveAsDraftButton`, nine tests, three of them counter-proofs: an
+  ordinary deferred send must NOT carry the flag, the cron must still post a
+  due deferred send, and the draft must survive the composer closing (the path
+  that lost the email, cf. 18.0.11.13.2).
+
+## [18.0.11.13.2] — 2026-08-31
+
+A parked draft no longer leaves with the composer's shell.
+
+### Fixed
+
+- **🔴 The email that was written disappeared, without a word.** "New email"
+  opens the composer on a `bf.email` shell that acts as its own thread. On
+  close, `inbox_close_compose` kept the shell only if a `mail.message` had been
+  **posted** on it. A scheduled send is not one: it waits in
+  `mail.scheduled.message`. The shell was therefore deleted, and
+  `mail_thread.unlink` **cascades** to the record's scheduled messages. The
+  draft went with it, with no error and no trace in the log.
+
+  It only bit on the mailbox composer with **no target**: "File under" is
+  optional, and retargeting otherwise moves the scheduled send to the chosen
+  record. It is, however, exactly the path a "Save as draft" button takes.
+
+  The shell now survives as long as a `mail.scheduled.message` leans on it, and
+  stays out of the mailbox (`is_handled`): the "Drafts" folder already shows
+  it, and a duplicate under "Unfiled" would announce an email that has not
+  gone out.
+
+### Tests
+
+- `TestComposeClosingKeepsAParkedDraft`, four tests, one of which checks that
+  the guard still **discriminates**: a composer abandoned with neither message
+  nor draft must still leave no shell behind. Counter-proof run against the
+  uncorrected code: 2 failures + 1 error out of 4.
+
+## [18.0.11.13.1] — 2026-08-31
+
+A dismissed calendar reminder stays dismissed — across a series rebuild, and
+across a reconnection.
+
+### Added
+
+- **`bf.calendar.reminder.ack`, a reminder acknowledgement that outlives the
+  attendee row.** "Seen" and "snoozed" lived only on `calendar.attendee`. But
+  `calendar_nextcloud_sync` handles a recurring series by RAZING it: as soon as
+  the reimported `.ics` carries an `RRULE`, the recurrence and its occurrences
+  are deleted and recreated with fresh ids. The attendee row goes with them,
+  and its `bf_dismissed_at` too — so an already-dismissed reminder fired again
+  on every workstation. The key therefore hangs on no id at all: it is the
+  series' CalDAV UID, which the `.ics` preserves from one import to the next,
+  plus the occurrence's start time. Measured on a production database: two
+  recurring series each had their 719 occurrences destroyed and recreated an
+  hour apart, each time followed by a push carrying a negative `timer`.
+
+  ⚠️ The key is deliberately a string and not a typed link: this module does
+  not depend on `calendar_nextcloud_sync`, and a Many2one would make that
+  dependency mandatory everywhere it is installed.
+
+### Fixed
+
+- **A reminder replayed by the bus no longer surfaces on the spot.** `bus.bus`
+  replays up to 24 h of messages on reconnection — `_poll` filters on
+  `id > last` with no date bound, and the client keeps `last_notification_id`
+  in `localStorage`, so it survives closing the browser. A laptop reopened the
+  next day had the previous day's reminders poured into it, each with an
+  already-negative `timer` that `setTimeout` rounds to zero and therefore shows
+  immediately. `do_notif_reminder` now stamps each payload with the **server**
+  clock (`sent_ms`), and the client drops the ones that have slept more than
+  two minutes — wide for a live push, short against the 24 h of the replay.
+
+  ⚠️ The counterpart: a workstation whose clock runs more than two minutes
+  AHEAD of the server would see no bus-borne reminder at all, with no error and
+  no trace. Hence the counter that eventually says so out loud. The direct
+  `/calendar/notify` poll is never filtered, so reminders still arrive when the
+  session opens.
+
+- **A reminder for a meeting that is already over is no longer pushed.** The
+  guard stops at the meeting's end, not at its start: opening a laptop at 08:55
+  for a 09:00 meeting must still show the 08:45 reminder.
+
+## [18.0.11.13.0] — 2026-08-31
+
+The signature comes back into the draft, and where it lives becomes a setting.
+
+### Added
+
+- **"Where the signature lives" setting** (Email → Configuration), two modes,
+  parameter `bf_email.signature_placement`:
+
+  - **`brouillon` (draft), the default** — the signature is written into the
+    body as soon as the composer opens, as before 18.0.11.9.0. You see it while
+    writing, you can cut it for a one-liner, and above all **the copy kept in
+    the chatter shows the email as it went out**: that is what the "on send"
+    version had cost.
+  - **`envoi` (send)** — the body stays bare and the signature is placed at
+    render time, just before the quote. One single place puts it there; in
+    exchange, on screen the message looks unsigned.
+
+  Both modes guarantee ONE signature at the recipient's end.
+
+### Changed
+
+- **The anti-duplicate guard no longer depends on the sending path.** The block
+  written into the draft carries a `data-bf-signature` marker, and
+  `mail_thread._notify_by_email_prepare_rendering_context` refuses to add a
+  second one when it sees it. That is what makes the draft mode safe: the
+  18.0.11.8.0 duplicate came precisely from no guard looking at the body. A
+  message posted elsewhere (bare chatter, automation) carries no marker and is
+  therefore still signed by the template.
+
+  ⚠️ If someone deletes the block from the draft, the marker goes with it: the
+  template takes over and signs on send. Intended.
+
+- The mobile app is handed a signature to pre-fill again in draft mode, and the
+  composer preview (18.0.11.10.0) hides itself in that mode — the signature is
+  already in plain sight, and showing it twice would lie.
+
+## [18.0.11.12.0] — 2026-08-31
+
+### Changed
+
+- **The default reminder accepts SEVERAL delays.**
+  `bf_email_management.default_alarm_minutes` now reads as a comma-separated
+  list ("1,15" = one reminder a minute before and one fifteen minutes before);
+  a single delay ("15") and `0` (none at all) still work. The list form already
+  existed on the other side, in the sync module's
+  `_bf_pull_fallback_alarm_minutes`; both readers of the same setting now read
+  the same grammar. Values are de-duplicated and sorted, and an unreadable
+  chunk is skipped rather than taking the valid delays with it. Each delay is
+  matched against an existing `calendar.alarm` on `duration_minutes` before
+  creating one, so a new delay does not fabricate a duplicate of the factory
+  alarm.
+
+  ⚠️ `_bf_default_alarm_minutes` now returns a **list** where it returned an
+  integer. Its only caller is `_bf_default_alarm_ids`, but an override written
+  elsewhere against the old signature would compare an integer to a list
+  without raising.
+
+## [18.0.11.11.0] — 2026-08-31
+
+In a reply, the signature moves above the quote.
+
+### Changed
+
+- **The signature is placed before the quoted block, no longer at the end of
+  the email.** Odoo's template renders `message.body` as one block then appends
+  the signature below it: in a reply it ended up after the entire quoted
+  thread. Measured on a real send: signature at byte 43,912, quote opening at
+  13,430 of the body. `mail.thread._notify_by_email_render_layout` now asks the
+  template to add nothing, and inserts the signature just before the quote
+  opens — `<blockquote>` for a reply from the mailbox or from the chatter's
+  Reply button, the "Forwarded message" header for a forward. One signature, as
+  before.
+
+  ⚠️ Three cases deliberately fall back to Odoo's behaviour: no quote at all, a
+  quote that opens the body (nobody wrote above it), and a body that does not
+  come out of the render unchanged. Losing the signature for want of an anchor
+  would be worse than placing it too low.
+
+  🔴 `Markup.replace` escapes any argument that is not already `Markup`: the
+  first version inserted the block as a `str`, and the recipient would have
+  received `&lt;div style=…` in plain text. One test holds that exact point.
+
+## [18.0.11.10.0] — 2026-08-31
+
+The composer shows the signature it no longer writes.
+
+### Added
+
+- **Signature preview under the composer body.** Since 18.0.11.9.0 the
+  signature no longer enters the body — it is added once when the email is
+  rendered — and nothing said so on screen: the composer opened bare and gave
+  the impression the email would go out unsigned. The read-only
+  `mail.compose.message.bf_signature_preview` field replays the SAME resolution
+  as `_notify_by_email_prepare_rendering_context`: nothing when
+  `email_add_signature` is false, otherwise the sending identity's signature,
+  otherwise the person's, otherwise the company fallback
+  (`res.company.brand_email_signature_default`).
+
+  ⚠️ A preview showing what will not go out would be worse than no preview: the
+  tests hold all four branches, including the one where the preview must stay
+  silent.
+
 ## [18.0.11.9.1] — 2026-08-31
 
 An email composed from the mailbox and filed on a record went out to nobody.

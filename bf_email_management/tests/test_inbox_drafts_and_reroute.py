@@ -366,8 +366,8 @@ class TestComposeRetargetKeepsRecipients(InboxExtrasCase):
     fiche, visible dans le chatter comme n'importe quel envoi, et sans un seul
     ``mail.notification``.
 
-    Relevé en production le 2026-08-31 : sept messages en trois mois, dont
-    quatre vrais courriels.
+    Relevé le 2026-08-31 sur la production : sept messages en trois mois,
+    dont quatre vrais courriels.
     """
 
     def _composer_from_the_inbox(self, **extra):
@@ -409,3 +409,226 @@ class TestComposeRetargetKeepsRecipients(InboxExtrasCase):
         composer._bf_retarget_to_chatter()
         self.assertIn(self.folder_a, composer.partner_cc_ids,
                       "le Cc saisi a été effacé par le recalcul")
+
+
+# ----------------------------------------------------------------------
+# Fermeture du composeur : un brouillon parqué ne doit pas partir avec la coquille
+# ----------------------------------------------------------------------
+@tagged("post_install", "-at_install")
+class TestComposeClosingKeepsAParkedDraft(InboxExtrasCase):
+    """🔴 Le brouillon disparaissait avec la coquille, sans un mot.
+
+    « Nouveau courriel » ouvre le composeur sur une coquille ``bf.email`` qui
+    sert de fil à elle-même. À la fermeture, ``inbox_close_compose`` décide de
+    la garder ou non selon qu'un ``mail.message`` y a été POSTÉ. Un envoi
+    programmé n'en est pas un : il attend dans ``mail.scheduled.message``.
+
+    La coquille était donc effacée, et ``mail_thread.unlink`` supprime en
+    cascade les envois programmés de la fiche. Le brouillon partait avec elle,
+    sans erreur ni trace au journal. Reproduit sur la production le
+    2026-08-31, sur une coquille et un brouillon d'essai.
+
+    Ça ne mordait que sur le composeur de la boîte SANS cible : « Classer
+    dans » est facultatif, et c'est exactement le chemin qu'emprunte un
+    bouton « Enregistrer comme brouillon ».
+    """
+
+    def _shell_from_the_inbox(self):
+        action = self.env["bf.email"].with_user(self.owner).inbox_compose()
+        return action["context"]["bf_email_compose_shell_id"]
+
+    def _park_a_draft_on(self, shell_id):
+        """Ce que fait « Programmer » depuis ce composeur : aucune cible
+        choisie, donc l'envoi programmé reste accroché à la coquille."""
+        return self.env["mail.scheduled.message"].with_user(self.owner).create({
+            "subject": "À finir demain",
+            "body": "<p>Je reprends ça plus tard</p>",
+            "scheduled_date": self._future(days=1500),
+            "model": "bf.email",
+            "res_id": shell_id,
+            "author_id": self.owner.partner_id.id,
+        })
+
+    def test_a_parked_draft_survives_the_composer_closing(self):
+        shell_id = self._shell_from_the_inbox()
+        draft = self._park_a_draft_on(shell_id)
+        self.env["bf.email"].with_user(self.owner).inbox_close_compose(
+            shell_id=shell_id)
+        self.assertTrue(
+            draft.exists(),
+            "le brouillon a été supprimé en cascade par l'effacement de la "
+            "coquille : le courriel écrit est perdu, sans un mot")
+
+    def test_the_shell_outlives_the_composer_when_it_carries_a_draft(self):
+        shell_id = self._shell_from_the_inbox()
+        self._park_a_draft_on(shell_id)
+        kept = self.env["bf.email"].with_user(self.owner).inbox_close_compose(
+            shell_id=shell_id)
+        self.assertTrue(kept, "inbox_close_compose doit annoncer la conserver")
+        self.assertTrue(
+            self.env["bf.email"].browse(shell_id).exists(),
+            "la coquille porte le brouillon : la détruire le détruit")
+
+    def test_the_kept_shell_stays_out_of_the_inbox(self):
+        shell_id = self._shell_from_the_inbox()
+        self._park_a_draft_on(shell_id)
+        self.env["bf.email"].with_user(self.owner).inbox_close_compose(
+            shell_id=shell_id)
+        self.assertTrue(
+            self.env["bf.email"].browse(shell_id).is_handled,
+            "la coquille conservée doit rester hors boîte : le dossier "
+            "« Brouillons » montre déjà le brouillon, et « Sans dossier » "
+            "annoncerait un courriel qui n'est pas parti")
+
+    def test_an_abandoned_composer_still_leaves_nothing_behind(self):
+        """Le garde-fou ne doit pas devenir « on ne supprime plus jamais »."""
+        shell_id = self._shell_from_the_inbox()
+        kept = self.env["bf.email"].with_user(self.owner).inbox_close_compose(
+            shell_id=shell_id)
+        self.assertFalse(kept)
+        self.assertFalse(
+            self.env["bf.email"].browse(shell_id).exists(),
+            "un composeur abandonné, sans message ni brouillon, ne doit pas "
+            "laisser de coquille vide en haut de la boîte")
+
+
+# ----------------------------------------------------------------------
+# « Enregistrer comme brouillon » — le bouton
+# ----------------------------------------------------------------------
+@tagged("post_install", "-at_install")
+class TestSaveAsDraftButton(InboxExtrasCase):
+    """Le composeur n'avait pas d'« Enregistrer ».
+
+    C'est un `TransientModel` : le refermer perdait tout, et la seule façon de
+    garder un texte inachevé était de le PROGRAMMER en saisissant une date
+    lointaine à la main. Le bouton fait ce geste en un clic, et pose le
+    drapeau qui distingue un brouillon d'un envoi que quelqu'un attend.
+    """
+
+    def _composer(self, **extra):
+        action = self.env["bf.email"].with_user(self.owner).inbox_compose()
+        shell_id = action["context"]["bf_email_compose_shell_id"]
+        values = {
+            "model": "bf.email",
+            "res_ids": repr([shell_id]),
+            "composition_mode": "comment",
+            "subject": "À finir demain",
+            "body": "<p>Je reprends ça plus tard</p>",
+            "partner_ids": [(6, 0, [self.partner.id])],
+        }
+        values.update(extra)
+        composer = self.env["mail.compose.message"].with_user(
+            self.owner).with_context(
+                bf_email_compose_shell_id=shell_id).create(values)
+        return composer, shell_id
+
+    def _my_drafts(self):
+        return self.env["mail.scheduled.message"].with_user(self.owner).search(
+            [("author_id", "=", self.owner.partner_id.id)])
+
+    def test_the_button_keeps_the_mail_without_sending_it(self):
+        composer, __ = self._composer()
+        # ⚠️ Le repère se prend APRÈS la création de la coquille : `bf.email`
+        # est un `mail.thread`, sa création journalise déjà un message. Le
+        # compter dans le repère ferait échouer l'essai sur un message que le
+        # bouton n'a pas posté.
+        before = self.env["mail.message"].search_count([])
+        composer.action_bf_save_as_draft()
+        draft = self._my_drafts()
+        self.assertEqual(len(draft), 1, "le brouillon n'a pas été gardé")
+        self.assertEqual(draft.subject, "À finir demain")
+        self.assertIn("plus tard", draft.body or "")
+        self.assertIn(self.partner, draft.partner_ids,
+                      "le destinataire saisi doit suivre le brouillon")
+        self.assertEqual(
+            self.env["mail.message"].search_count([]), before,
+            "un brouillon ne doit poster AUCUN message : rien ne part d'ici")
+
+    def test_a_saved_draft_is_flagged_as_one(self):
+        composer, __ = self._composer()
+        composer.action_bf_save_as_draft()
+        self.assertTrue(
+            self._my_drafts().bf_is_draft,
+            "sans le drapeau, le brouillon se lit comme un envoi différé que "
+            "quelqu'un attend, et le cron finirait par le poster")
+
+    def test_a_plain_scheduled_send_is_not_flagged(self):
+        """Le drapeau doit DISCRIMINER : « Programmer » n'est pas « garder »."""
+        composer, __ = self._composer()
+        composer.action_schedule_message(scheduled_date=self._future(days=2))
+        self.assertFalse(
+            self._my_drafts().bf_is_draft,
+            "un envoi différé ordinaire ne doit pas passer pour un brouillon")
+
+    def test_the_sentinel_sits_far_enough_to_never_fire(self):
+        composer, __ = self._composer()
+        composer.action_bf_save_as_draft()
+        marge = self._my_drafts().scheduled_date - fields.Datetime.now()
+        self.assertGreater(
+            marge.days, 4 * 365,
+            "la sentinelle doit rester à plus de quatre ans : une date proche "
+            "ferait partir tout seul un texte que personne n'a relu")
+
+    def test_the_cron_never_posts_a_draft_even_when_its_date_has_come(self):
+        """La sentinelle éloigne le cron; le drapeau doit l'arrêter pour de bon."""
+        composer, __ = self._composer()
+        composer.action_bf_save_as_draft()
+        draft = self._my_drafts()
+        # On force la date échue comme le fera le simple passage du temps.
+        self.env.cr.execute(
+            "UPDATE mail_scheduled_message SET scheduled_date = %s WHERE id = %s",
+            (fields.Datetime.now() - timedelta(hours=1), draft.id))
+        draft.invalidate_recordset(["scheduled_date"])
+        self.env["mail.scheduled.message"]._post_messages_cron()
+        self.assertTrue(
+            draft.exists(),
+            "le cron a posté un BROUILLON : le jour où la sentinelle arrive, "
+            "tous les brouillons parqués partiraient d'un coup")
+
+    def test_the_cron_still_posts_a_real_scheduled_send(self):
+        """Contre-épreuve : le filtre ne doit pas geler le cron entier."""
+        composer, __ = self._composer()
+        composer.action_schedule_message(scheduled_date=self._future(days=2))
+        planned = self._my_drafts()
+        self.env.cr.execute(
+            "UPDATE mail_scheduled_message SET scheduled_date = %s WHERE id = %s",
+            (fields.Datetime.now() - timedelta(hours=1), planned.id))
+        planned.invalidate_recordset(["scheduled_date"])
+        self.env["mail.scheduled.message"]._post_messages_cron()
+        self.assertFalse(
+            planned.exists(),
+            "un envoi différé échu doit toujours partir : le filtre des "
+            "brouillons ne doit pas arrêter le cron pour tout le monde")
+
+    def test_the_shell_survives_so_the_draft_keeps_its_thread(self):
+        """Le bouton emprunte le chemin qui perdait le courriel (cf. #25125)."""
+        composer, shell_id = self._composer()
+        composer.action_bf_save_as_draft()
+        self.env["bf.email"].with_user(self.owner).inbox_close_compose(
+            shell_id=shell_id)
+        self.assertTrue(self._my_drafts().exists(),
+                        "le brouillon a été emporté par la coquille")
+
+    def test_a_draft_shows_when_it_was_written_not_its_sentinel(self):
+        composer, __ = self._composer()
+        composer.action_bf_save_as_draft()
+        page = self.env["bf.email"].with_user(self.owner).inbox_get_drafts()
+        row = page["messages"][0]
+        self.assertTrue(row["is_draft"])
+        self.assertFalse(row["is_late"], "un brouillon n'est jamais en retard")
+        self.assertLess(
+            row["date"], "2030",
+            "la liste annonce la sentinelle : le brouillon paraît prévu dans "
+            "cinq ans, au lieu de dire quand il a été écrit")
+
+    def test_drafts_come_before_planned_sends(self):
+        composer, __ = self._composer()
+        composer.action_schedule_message(scheduled_date=self._future(days=2))
+        composer2, __ = self._composer(subject="Brouillon du jour")
+        composer2.action_bf_save_as_draft()
+        page = self.env["bf.email"].with_user(self.owner).inbox_get_drafts()
+        self.assertEqual(
+            page["messages"][0]["subject"], "Brouillon du jour",
+            "les brouillons doivent passer devant : leur sentinelle à cinq "
+            "ans les enfonçait tout au fond de la liste")
+        self.assertEqual(page["total"], 2)

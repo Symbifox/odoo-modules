@@ -167,7 +167,7 @@ class BfEmailMobile(models.Model):
             ("push_endpoint", "!=", False),
         ]))
         # Second transport, le même relevé. ⚠️ Le test du push ne suffit plus
-        # à décider : une personne peut vouloir l'avis
+        # à décider : depuis l'avis dans Odoo, une personne peut le vouloir
         # dans Odoo sans avoir d'appareil inscrit — c'est même le cas normal
         # depuis que bf_email.push_enabled est à 0. Sortir sur le seul
         # `wants_push` sautait alors le relevé, donc l'avis, sans rien dire.
@@ -573,11 +573,14 @@ class BfEmailMobile(models.Model):
             "user_name": self.env.user.name,
             "branding": self._mobile_branding(),
             "tz": self.env.user.tz or "America/Montreal",
-            # Vide, et c'est le réglage : la signature est posée à
-            # l'envoi par le serveur. Un composeur qui la préremplirait la
-            # ferait partir en double. La clé reste pour ne pas casser les
-            # versions de l'app qui la lisent encore.
-            "signature": "",
+            # Suit le réglage « Où vit la signature » : le bloc marqué en
+            # mode brouillon, vide en mode envoi (le serveur la pose alors au
+            # rendu, et un composeur qui la préremplirait la doublerait).
+            "signature": (
+                self.env["bf.email"]._compose_signature_block_for_user()
+                if self.env["bf.email"]._signature_placement() == "brouillon"
+                else ""
+            ),
             # Only the addressing bits — never host/login/password, which live
             # on the same model and are readable by the owner.
             "accounts": [{
