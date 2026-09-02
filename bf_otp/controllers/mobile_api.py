@@ -11,6 +11,7 @@ clé se dérive d'une phrase de passe qui ne lui est jamais envoyée.
 porteur : sans ça, chaque appel d'une application mobile crée une session Odoo
 qui ne servira jamais et que rien ne nettoie.
 """
+import datetime
 import functools
 import json
 import logging
@@ -39,9 +40,28 @@ SCHEMAS_DEFAUT = "com.bluefoxconsultant.otp://"
 COULEURS_ODOO = {"#714B67", "#875A7B", "#212529", "#017E84"}
 
 
+def _serialisable(valeur):
+    """Rend en JSON ce que l'ORM produit et que `json` ignore.
+
+    🔴 Payé en production le 2026-09-02, sur un vrai téléphone : `read()` rend
+    `last_used` en `datetime`, et `json.dumps` lève. Un coffre neuf n'a aucun
+    token utilisé, donc `last_used` y vaut `False`, qui se sérialise très bien :
+    les essais passaient au vert et la route tombait dès qu'on avait touché un
+    seul code. Un compte d'essai vide n'est pas un petit compte, c'est un compte
+    qui n'a pas les valeurs qui cassent.
+
+    ISO 8601, et le fuseau reste implicite en UTC comme partout dans Odoo.
+    """
+    if isinstance(valeur, datetime.datetime):
+        return valeur.isoformat(sep=" ")
+    if isinstance(valeur, datetime.date):
+        return valeur.isoformat()
+    raise TypeError("Type non sérialisable : %r" % type(valeur))
+
+
 def _json(payload, status=200):
     return request.make_response(
-        json.dumps(payload),
+        json.dumps(payload, default=_serialisable),
         headers=[("Content-Type", "application/json; charset=utf-8")],
         status=status,
     )
@@ -85,8 +105,14 @@ def _authentifie(fn):
             return fn(self, appareil, *args, **kw)
         except (UserError, AccessError) as exc:
             return _json({"error": str(exc)}, 400)
-        except (TypeError, ValueError) as exc:
-            _logger.info("API mobile du coffre : requête mal formée (%s)", exc)
+        except (TypeError, ValueError):
+            # ⚠️ Trace complète, pas une ligne d'information. Ces deux
+            # exceptions sont presque toujours la faute de l'appelant, mais pas
+            # toujours : un défaut de sérialisation d'ici tombe dans la même
+            # branche, et le journaliser comme « requête mal formée » l'a fait
+            # passer pour une erreur du téléphone pendant qu'il venait du
+            # serveur. Payé le 2026-09-02.
+            _logger.exception("API mobile du coffre : requête refusée")
             return _json({"error": "bad_request"}, 400)
         except Exception:  # noqa: BLE001
             _logger.exception("API mobile du coffre : erreur inattendue")

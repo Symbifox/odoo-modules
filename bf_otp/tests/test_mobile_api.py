@@ -196,6 +196,57 @@ class TestRoutesMobiles(HttpCase):
         r = self.opener.get(f"{self.base_url()}{BASE}/vault", headers=entetes)
         self.assertEqual(r.status_code, 401)
 
+    def test_un_token_deja_utilise_se_rend_quand_meme(self):
+        """🔴 Le défaut qui a atteint un vrai téléphone, figé ici.
+
+        `read()` rend `last_used` en `datetime`, que `json` ne sait pas écrire.
+        Un coffre neuf n'a aucun token utilisé, donc la valeur y vaut `False` et
+        se sérialise très bien : la suite passait au vert et la route tombait
+        dès qu'on avait touché un seul code. ⚠️ Un compte d'essai vide n'est pas
+        un petit compte, c'est un compte qui n'a pas les valeurs qui cassent.
+        """
+        import base64
+        import os
+
+        from odoo import fields
+
+        self.authenticate("banc-otp-http", "banc-otp-http")
+        coffre = self.env["bf.otp.vault"].with_user(self.personne).create({
+            "user_id": self.personne.id,
+            "salt": base64.b64encode(os.urandom(16)).decode(),
+            "iterations": 600000,
+            "verifier": base64.b64encode(os.urandom(40)).decode(),
+            "verifier_iv": base64.b64encode(os.urandom(12)).decode(),
+        })
+        client = self.env["res.partner"].create({"name": "Client de banc"})
+        self.env["bf.otp.token"].with_user(self.personne).create({
+            "vault_id": coffre.id, "issuer": "Banc", "name": "utilise@exemple.com",
+            "secret_cipher": base64.b64encode(os.urandom(40)).decode(),
+            "secret_iv": base64.b64encode(os.urandom(12)).decode(),
+            # Les deux formes que `read()` rend et que `json` ignore : une date,
+            # et un Many2one, qui sort en couple.
+            "last_used": fields.Datetime.now(),
+            "partner_id": client.id,
+        })
+
+        r = self.url_open(
+            f"{BASE}/auth/start?redirect=com.bluefoxconsultant.otp://auth",
+            allow_redirects=False)
+        code = r.headers["Location"].split("code=")[1].split("&")[0]
+        jeton = self._json(self.url_open(
+            f"{BASE}/auth/exchange", data=json.dumps({"code": code}),
+            headers={"Content-Type": "application/json"}))["token"]
+
+        r = self.opener.get(f"{self.base_url()}{BASE}/tokens",
+                            headers={"Authorization": f"Bearer {jeton}"})
+        self.assertEqual(200, r.status_code,
+                         "un token déjà utilisé ne doit pas faire échouer la route")
+        rendus = self._json(r)["tokens"]
+        self.assertEqual(1, len(rendus))
+        # La date sort en texte, lisible par l'application.
+        self.assertIsInstance(rendus[0]["last_used"], str)
+        self.assertTrue(rendus[0]["last_used"])
+
     def test_les_jetons_rendus_sont_chiffres_et_jamais_des_graines(self):
         """🔴 La propriété du module, éprouvée du côté de l'application.
 
