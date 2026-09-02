@@ -10,6 +10,18 @@ BASE = "/bf_otp/mobile/v1"
 class TestAppariement(TransactionCase):
     """Le cycle du code à usage unique, sans passer par HTTP."""
 
+    VERIFICATEUR = "verificateur-unitaire-0123456789abcdefghij"
+
+    @property
+    def DEFI(self):
+        import base64
+        import hashlib
+        return base64.urlsafe_b64encode(
+            hashlib.sha256(self.VERIFICATEUR.encode()).digest()).decode().rstrip("=")
+
+    def _emettre(self):
+        return self.Appareil._issue_pending(self.personne.id, challenge=self.DEFI)
+
     def setUp(self):
         super().setUp()
         self.Appareil = self.env["bf.otp.device"]
@@ -19,17 +31,17 @@ class TestAppariement(TransactionCase):
         })
 
     def test_le_code_ne_sert_qu_une_fois(self):
-        code = self.Appareil._issue_pending(self.personne.id)
-        premier = self.Appareil._exchange(code)
+        code = self._emettre()
+        premier = self.Appareil._exchange(code, self.VERIFICATEUR)
         self.assertTrue(premier, "le premier échange devrait réussir")
         self.assertTrue(premier.sudo().device_token)
         # 🔴 Le second doit échouer. Un code qui survit à son échange est une
         # clé réutilisable dès qu'il traîne dans un historique de navigateur.
-        self.assertFalse(self.Appareil._exchange(code))
+        self.assertFalse(self.Appareil._exchange(code, self.VERIFICATEUR))
 
     def test_le_code_est_efface_par_l_echange(self):
-        code = self.Appareil._issue_pending(self.personne.id)
-        appareil = self.Appareil._exchange(code)
+        code = self._emettre()
+        appareil = self.Appareil._exchange(code, self.VERIFICATEUR)
         self.assertFalse(appareil.sudo().pending_code)
         self.assertFalse(appareil.sudo().pending_code_expiry)
 
@@ -37,30 +49,41 @@ class TestAppariement(TransactionCase):
         from datetime import timedelta
 
         from odoo import fields
-        code = self.Appareil._issue_pending(self.personne.id)
+        code = self._emettre()
         attente = self.Appareil.sudo().search([("pending_code", "=", code)])
         attente.write({
             "pending_code_expiry": fields.Datetime.now() - timedelta(minutes=1),
         })
-        self.assertFalse(self.Appareil._exchange(code))
+        self.assertFalse(self.Appareil._exchange(code, self.VERIFICATEUR))
         self.assertFalse(attente.exists(),
                          "un appariement périmé ne doit pas rester en base")
 
+    def test_sans_verificateur_le_code_ne_vaut_rien_et_est_brule(self):
+        # 🔴 Le cœur du correctif, éprouvé sans passer par HTTP : qui a le code
+        # mais pas le vérificateur n'obtient rien, et ne pourra pas réessayer.
+        code = self._emettre()
+        self.assertFalse(self.Appareil._exchange(code, None))
+        self.assertFalse(self.Appareil._exchange(code, "pas-le-bon"))
+        self.assertFalse(self.Appareil._exchange(code, self.VERIFICATEUR),
+                         "le code doit être brûlé, même pour le bon porteur")
+        self.assertFalse(
+            self.Appareil.sudo().search([("pending_code", "=", code)]))
+
     def test_un_code_inconnu_est_refuse_sans_lever(self):
         for mauvais in ("", None, "pas-un-code", "x" * 64):
-            self.assertFalse(self.Appareil._exchange(mauvais))
+            self.assertFalse(self.Appareil._exchange(mauvais, self.VERIFICATEUR))
 
     def test_le_jeton_resout_l_appareil_et_pas_un_autre(self):
-        code = self.Appareil._issue_pending(self.personne.id)
-        appareil = self.Appareil._exchange(code)
+        code = self._emettre()
+        appareil = self.Appareil._exchange(code, self.VERIFICATEUR)
         jeton = appareil.sudo().device_token
         self.assertEqual(self.Appareil._resolve(jeton), appareil)
         self.assertFalse(self.Appareil._resolve(jeton + "x"))
         self.assertFalse(self.Appareil._resolve(""))
 
     def test_un_appareil_desactive_ne_resout_plus(self):
-        code = self.Appareil._issue_pending(self.personne.id)
-        appareil = self.Appareil._exchange(code)
+        code = self._emettre()
+        appareil = self.Appareil._exchange(code, self.VERIFICATEUR)
         jeton = appareil.sudo().device_token
         appareil.sudo().write({"active": False})
         self.assertFalse(self.Appareil._resolve(jeton),
@@ -71,13 +94,13 @@ class TestAppariement(TransactionCase):
 
         from odoo import fields
         # Un appariement abandonné, périmé.
-        abandonne = self.Appareil._issue_pending(self.personne.id)
+        abandonne = self._emettre()
         self.Appareil.sudo().search([("pending_code", "=", abandonne)]).write({
             "pending_code_expiry": fields.Datetime.now() - timedelta(hours=1),
         })
         # Un appareil bel et bien apparié.
         vivant = self.Appareil._exchange(
-            self.Appareil._issue_pending(self.personne.id))
+            self._emettre(), self.VERIFICATEUR)
 
         self.Appareil._purger_codes_perimes()
         self.assertTrue(vivant.exists(),
@@ -133,8 +156,10 @@ class TestRoutesMobiles(HttpCase):
 
     def test_auth_start_accepte_le_schema_de_l_application(self):
         self.authenticate("banc-otp-http", "banc-otp-http")
+        _, defi = self._pkce()
         r = self.url_open(
-            f"{BASE}/auth/start?redirect=com.bluefoxconsultant.otp://auth&state=xyz",
+            f"{BASE}/auth/start?redirect=com.bluefoxconsultant.otp://auth&state=xyz"
+            f"&code_challenge={defi}&code_challenge_method=S256",
             allow_redirects=False)
         self.assertEqual(r.status_code, 302)
         cible = r.headers["Location"]
@@ -152,6 +177,71 @@ class TestRoutesMobiles(HttpCase):
         self.assertIn(r.status_code, (302, 303))
         self.assertIn("/web/login", r.headers.get("Location", ""))
 
+    def test_auth_start_refuse_un_appariement_sans_defi(self):
+        # 🔴 PKCE n'est pas optionnel : sans défi, l'échange serait ouvert à qui
+        # intercepte le code, et un schéma d'application personnalisé
+        # s'intercepte.
+        self.authenticate("banc-otp-http", "banc-otp-http")
+        r = self.url_open(
+            f"{BASE}/auth/start?redirect=com.bluefoxconsultant.otp://auth",
+            allow_redirects=False)
+        self.assertEqual(302, r.status_code)
+        self.assertIn("error=pkce_required", r.headers["Location"])
+        self.assertNotIn("code=", r.headers["Location"].replace("pkce_required", ""))
+
+    def test_auth_start_refuse_une_methode_de_defi_faible(self):
+        # ⚠️ « plain » laisserait passer un défi égal au vérificateur, ce qui ne
+        # protège de rien.
+        self.authenticate("banc-otp-http", "banc-otp-http")
+        r = self.url_open(
+            f"{BASE}/auth/start?redirect=com.bluefoxconsultant.otp://auth"
+            f"&code_challenge=abc&code_challenge_method=plain",
+            allow_redirects=False)
+        self.assertIn("error=pkce_required", r.headers["Location"])
+
+    def test_UN_CODE_INTERCEPTE_NE_S_ECHANGE_PAS(self):
+        """🔴 L'essai qui porte tout le correctif.
+
+        On joue l'application malveillante : elle a reçu le code par le lien
+        profond, mais elle n'a pas le vérificateur. Elle ne doit obtenir aucun
+        jeton, et le code doit être brûlé pour que la vraie application ne
+        puisse pas non plus l'utiliser après coup.
+        """
+        verificateur, defi = self._pkce()
+        self.authenticate("banc-otp-http", "banc-otp-http")
+        r = self.url_open(
+            f"{BASE}/auth/start?redirect=com.bluefoxconsultant.otp://auth"
+            f"&code_challenge={defi}&code_challenge_method=S256",
+            allow_redirects=False)
+        code = r.headers["Location"].split("code=")[1].split("&")[0]
+
+        for tentative in ({"code": code},
+                          {"code": code, "code_verifier": ""},
+                          {"code": code, "code_verifier": "pas-le-bon"},
+                          {"code": code, "code_verifier": defi}):
+            r = self.url_open(f"{BASE}/auth/exchange", data=json.dumps(tentative),
+                              headers={"Content-Type": "application/json"})
+            self.assertEqual(401, r.status_code, f"a cédé sur {tentative}")
+            self.assertNotIn("token", self._json(r))
+
+        # ⚠️ Et le code est brûlé : même le bon vérificateur ne le rattrape
+        # plus. Sans ça, un attaquant pourrait réessayer en boucle.
+        r = self.url_open(
+            f"{BASE}/auth/exchange",
+            data=json.dumps({"code": code, "code_verifier": verificateur}),
+            headers={"Content-Type": "application/json"})
+        self.assertEqual(401, r.status_code)
+        self.assertFalse(self.env["bf.otp.device"].sudo().search(
+            [("pending_code", "=", code)]),
+            "l'appareil en attente doit avoir été jeté")
+
+    def test_le_bon_verificateur_ouvre_bien(self):
+        # La contre-épreuve du précédent : le refus ne doit pas être universel.
+        self.assertTrue(self._apparier())
+
+    def test_la_sonde_annonce_que_pkce_est_exige(self):
+        self.assertEqual("S256", self._json(self.url_open(f"{BASE}/ping"))["pkce"])
+
     def test_les_routes_du_coffre_refusent_sans_jeton(self):
         for chemin in ("/vault", "/tokens"):
             r = self.url_open(f"{BASE}{chemin}")
@@ -167,16 +257,7 @@ class TestRoutesMobiles(HttpCase):
 
     def test_le_parcours_complet_rend_le_coffre_chiffre(self):
         self.authenticate("banc-otp-http", "banc-otp-http")
-        r = self.url_open(
-            f"{BASE}/auth/start?redirect=com.bluefoxconsultant.otp://auth",
-            allow_redirects=False)
-        code = r.headers["Location"].split("code=")[1].split("&")[0]
-
-        r = self.url_open(f"{BASE}/auth/exchange",
-                          data=json.dumps({"code": code}),
-                          headers={"Content-Type": "application/json"})
-        self.assertEqual(r.status_code, 200)
-        jeton = self._json(r)["token"]
+        jeton = self._apparier()
         self.assertTrue(jeton)
 
         entetes = {"Authorization": f"Bearer {jeton}"}
@@ -229,13 +310,7 @@ class TestRoutesMobiles(HttpCase):
             "partner_id": client.id,
         })
 
-        r = self.url_open(
-            f"{BASE}/auth/start?redirect=com.bluefoxconsultant.otp://auth",
-            allow_redirects=False)
-        code = r.headers["Location"].split("code=")[1].split("&")[0]
-        jeton = self._json(self.url_open(
-            f"{BASE}/auth/exchange", data=json.dumps({"code": code}),
-            headers={"Content-Type": "application/json"}))["token"]
+        jeton = self._apparier()
 
         r = self.opener.get(f"{self.base_url()}{BASE}/tokens",
                             headers={"Authorization": f"Bearer {jeton}"})
@@ -247,15 +322,26 @@ class TestRoutesMobiles(HttpCase):
         self.assertIsInstance(rendus[0]["last_used"], str)
         self.assertTrue(rendus[0]["last_used"])
 
+    @staticmethod
+    def _pkce(verificateur="verificateur-de-banc-0123456789abcdef"):
+        import base64
+        import hashlib
+        defi = base64.urlsafe_b64encode(
+            hashlib.sha256(verificateur.encode()).digest()).decode().rstrip("=")
+        return verificateur, defi
+
     def _apparier(self):
         """Rend un jeton porteur pour le compte de banc."""
+        verificateur, defi = self._pkce()
         self.authenticate("banc-otp-http", "banc-otp-http")
         r = self.url_open(
-            f"{BASE}/auth/start?redirect=com.bluefoxconsultant.otp://auth",
+            f"{BASE}/auth/start?redirect=com.bluefoxconsultant.otp://auth"
+            f"&code_challenge={defi}&code_challenge_method=S256",
             allow_redirects=False)
         code = r.headers["Location"].split("code=")[1].split("&")[0]
         return self._json(self.url_open(
-            f"{BASE}/auth/exchange", data=json.dumps({"code": code}),
+            f"{BASE}/auth/exchange",
+            data=json.dumps({"code": code, "code_verifier": verificateur}),
             headers={"Content-Type": "application/json"}))["token"]
 
     def _coffre_avec_token(self, **valeurs):
@@ -461,13 +547,7 @@ class TestRoutesMobiles(HttpCase):
         # ⚠️ Aucun `commit()` : Odoo 18 l'interdit dans un test, et
         # HttpCase partage sa transaction avec le serveur HTTP, donc ce qui
         # vient d'être créé est déjà visible par les routes.
-        r = self.url_open(
-            f"{BASE}/auth/start?redirect=com.bluefoxconsultant.otp://auth",
-            allow_redirects=False)
-        code = r.headers["Location"].split("code=")[1].split("&")[0]
-        jeton = self._json(self.url_open(
-            f"{BASE}/auth/exchange", data=json.dumps({"code": code}),
-            headers={"Content-Type": "application/json"}))["token"]
+        jeton = self._apparier()
 
         r = self.opener.get(f"{self.base_url()}{BASE}/tokens",
                             headers={"Authorization": f"Bearer {jeton}"})

@@ -193,6 +193,9 @@ class BfOtpMobileApi(http.Controller):
             # clé enrôlée sous l'une n'ouvre rien sous l'autre. Le serveur dit
             # lequel il utilise, une fois pour toutes.
             "rp_id": request.httprequest.host.split(":")[0],
+            # L'application doit savoir avant de lancer un appariement
+            # que le serveur exigera un vérificateur.
+            "pkce": "S256",
         })
 
     # ── Appariement ───────────────────────────────────────────────────
@@ -228,8 +231,17 @@ class BfOtpMobileApi(http.Controller):
         if not utilisateur.has_group("bf_otp.group_otp_user"):
             return rebondir(error="no_access")
 
+        # 🔴 PKCE obligatoire. Sans défi, l'échange serait ouvert à qui
+        # intercepte le code, et un schéma d'application personnalisé
+        # s'intercepte. Une application trop ancienne pour l'envoyer reçoit un
+        # refus lisible plutôt qu'un appariement faussement sûr.
+        defi = (kw.get("code_challenge") or "").strip()
+        methode = (kw.get("code_challenge_method") or "S256").upper()
+        if not defi or methode != "S256":
+            return rebondir(error="pkce_required")
+
         code = request.env["bf.otp.device"]._issue_pending(
-            utilisateur.id, name=kw.get("device_name"))
+            utilisateur.id, name=kw.get("device_name"), challenge=defi)
         return rebondir(code=code)
 
     @http.route(f"{BASE}/auth/exchange", type="http", auth="public",
@@ -237,7 +249,8 @@ class BfOtpMobileApi(http.Controller):
     def auth_exchange(self, **kw):
         donnees = _corps(**kw)
         appareil = request.env["bf.otp.device"]._exchange(
-            (donnees.get("code") or "").strip())
+            (donnees.get("code") or "").strip(),
+            (donnees.get("code_verifier") or "").strip())
         if not appareil:
             return _json({"error": "invalid_or_expired_code"}, 401)
         request.update_env(user=appareil.user_id.id)

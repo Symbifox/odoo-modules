@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- ⚠️ La méthode de purge existait et était éprouvée, mais rien ne
+             l'appelait : les appariements abandonnés s'accumulaient sans fin.
+             Une fonction de ménage sans minuterie n'est pas du ménage. -->
+        <record id="cron_purger_appariements" model="ir.cron">
+            <field name="name">Tokens OTP : retirer les appariements abandonnés</field>
+            <field name="model_id" ref="model_bf_otp_device"/>
+            <field name="state">code</field>
+            <field name="code">model._purger_codes_perimes()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">hours</field>
+            <field name="active" eval="True"/>
+        </record>
+    </data>
+</odoo>
