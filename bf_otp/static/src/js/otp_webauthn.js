@@ -63,6 +63,33 @@ async function keyFromPrf(prfBytes) {
     );
 }
 
+/**
+ * Le fournisseur de clés d'accès a bien créé la clé, mais ne rend pas PRF.
+ *
+ * 🔴 Distinct d'un échec ordinaire : la clé d'accès EXISTE désormais chez le
+ * fournisseur et n'a aucun usage. Qui attrape cette erreur doit le dire, sinon
+ * chaque tentative laisse une clé morte de plus dans le coffre de la personne.
+ */
+export class PrfNonRendu extends Error {
+    constructor() {
+        super("Ce fournisseur de clés d'accès ne rend pas l'extension PRF.");
+        this.name = "PrfNonRendu";
+    }
+}
+
+/**
+ * Ce que `create()` dit de PRF, avant même de demander une évaluation.
+ *
+ * ⚠️ Trois réponses, pas deux : `true` (PRF disponible), `false` (le
+ * fournisseur a répondu NON), et `undefined` (il n'a rien dit du tout — vieux
+ * navigateur, ou sortie d'extension absente). Seul `false` est un refus ; on ne
+ * traite pas le silence comme un non, sinon on refuserait des authentificateurs
+ * qui fonctionnent.
+ */
+function prfEnabled(cred) {
+    return cred.getClientExtensionResults?.()?.prf?.enabled;
+}
+
 function prfResult(cred) {
     const ext = cred.getClientExtensionResults?.();
     const first = ext?.prf?.results?.first;
@@ -111,13 +138,19 @@ export async function enrollPasskey(userName, displayName, vaultKeyBytes) {
     }
     const credentialId = toB64Url(new Uint8Array(cred.rawId));
 
-    // Second passage : obtenir le secret PRF pour de vrai.
+    // ⚠️ Demander l'avis de `create()` AVANT le second appel. Un fournisseur
+    // qui ne gère pas PRF répond `enabled: false` ici ; insister avec un `get()`
+    // ne changerait rien et coûterait une deuxième demande d'empreinte, après
+    // quoi on annoncerait la même chose avec un geste de plus.
+    if (prfEnabled(cred) === false) {
+        throw new PrfNonRendu();
+    }
+
+    // Second passage : obtenir le secret PRF pour de vrai. Le silence de
+    // `create()` n'est pas une promesse — c'est ici que ça se décide.
     const secret = await evaluatePrf(credentialId, salt);
     if (!secret) {
-        throw new Error(
-            "Cette clé d'accès ne gère pas l'extension PRF. " +
-            "Il faut un authentificateur qui la prend en charge."
-        );
+        throw new PrfNonRendu();
     }
     const key = await keyFromPrf(secret);
     const iv = randomBytes(12);

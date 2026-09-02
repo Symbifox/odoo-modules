@@ -67,6 +67,14 @@
                     Ouvrir avec une clé d'accès
                 </button>
                 <div t-if="credentials.length and state.passkeyOk" class="text-muted small mb-2">ou</div>
+                <!-- Disparaît dès la première clé enrôlée : ce n'est pas un
+                     bandeau permanent, c'est la seule occasion de dire que le
+                     déverrouillage par capteur existe. -->
+                <p t-if="!credentials.length and state.passkeyOk" class="text-muted small mb-2">
+                    <span class="fa fa-fingerprint me-1"/>
+                    Ce coffre peut aussi s'ouvrir en touchant un capteur.
+                    Ouvre-le, puis « Clé d'accès » dans la barre du haut.
+                </p>
                 <form t-on-submit="onUnlock" class="text-start">
                     <input type="password" class="form-control mb-2" t-ref="passphrase"
                            autocomplete="current-password" placeholder="Phrase de passe"/>
@@ -103,8 +111,12 @@
                     <span t-att-class="state.compact ? 'fa fa-th-large' : 'fa fa-bars'"/>
                 </button>
                 <button t-if="state.passkeyOk" class="btn btn-sm btn-light"
-                        t-on-click="() => state.showKeys = true" title="Clés d'accès">
+                        t-on-click="onOpenKeys" title="Clés d'accès">
                     <span class="fa fa-fingerprint"/>
+                    <!-- Tant que rien n'est enrôlé, l'icône seule ne dit à
+                         personne que la fonction existe : elle porte donc son
+                         nom. Une fois une clé en place, la barre se resserre. -->
+                    <span t-if="!credentials.length" class="ms-1">Clé d'accès</span>
                 </button>
                 <button class="btn btn-sm btn-light" t-on-click="() => this.lock()"
                         title="Refermer le coffre (Échap)">
@@ -288,6 +300,29 @@
                             <strong>Garde ta phrase de passe</strong>&#160;: une clé d'accès est
                             liée à cet appareil et à ce domaine, et c'est la phrase qui te sauve
                             si tu perds l'un ou l'autre.
+                        </div>
+
+                        <div t-if="state.prfRefus" class="alert alert-warning" role="alert">
+                            <p class="mb-2">
+                                <strong>Ce fournisseur de clés d'accès ne gère pas l'extension PRF.</strong>
+                                Sans elle, une clé d'accès prouve qui tu es mais ne rend aucun
+                                secret&#160;: il n'y a rien avec quoi sceller la clé du coffre.
+                            </p>
+                            <p class="mb-2">
+                                🔴 <strong>Une clé d'accès inutile vient d'être créée</strong> chez
+                                ton fournisseur, sous le nom « Blue Fox — Jetons OTP ».
+                                Retire-la, elle ne servira jamais.
+                            </p>
+                            <p class="mb-0">
+                                Ce qui fonctionne&#160;: une <strong>clé matérielle FIDO2</strong>
+                                (YubiKey et semblables), le <strong>gestionnaire de ton
+                                téléphone</strong> en passant par le code QR, ou le gestionnaire
+                                intégré de l'appareil quand il y en a un.
+                                <span class="d-block mt-1 small">
+                                    ⚠️ Bitwarden est dans ce cas&#160;: son extension crée bien la
+                                    clé, mais ne rend pas PRF.
+                                </span>
+                            </p>
                         </div>
 
                         <div t-if="!credentials.length" class="text-muted mb-3">

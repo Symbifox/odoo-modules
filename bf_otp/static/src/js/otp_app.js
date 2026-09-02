@@ -10,7 +10,7 @@ import {
     deriveKeyBytes, keyFromBytes, wipe,
 } from "./otp_crypto";
 import {
-    webauthnAvailable, enrollPasskey, unlockWithPasskey,
+    webauthnAvailable, enrollPasskey, unlockWithPasskey, PrfNonRendu,
 } from "./otp_webauthn";
 import { base32Decode, totp, hotp, secondsLeft, parseOtpauth } from "./otp_totp";
 
@@ -49,6 +49,7 @@ export class BfOtpApp extends Component {
             lookupField: "",      // le champ qu'on est en train de remplir
             passkeyOk: false,     // le navigateur gère-t-il les clés d'accès
             showKeys: false,      // panneau de gestion des clés d'accès
+            prfRefus: false,      // le fournisseur a créé la clé sans rendre PRF
             enrolPass: "",
             enrolName: "",
             form: this._formVierge(),
@@ -300,6 +301,11 @@ export class BfOtpApp extends Component {
     async onEnrolPasskey(ev) {
         ev.preventDefault();
         this.state.error = "";
+        // ⚠️ Le refus précédent doit tomber ICI, pas seulement à l'ouverture du
+        // panneau : le geste qui suit un refus est justement de rebrancher un
+        // autre authentificateur et de réessayer sans fermer l'écran. Sans ça,
+        // l'avertissement survit à sa propre réfutation.
+        this.state.prfRefus = false;
         if (!this.state.enrolPass) {
             this.state.error = _t("Entre ta phrase de passe pour confirmer.");
             return;
@@ -334,11 +340,27 @@ export class BfOtpApp extends Component {
                 { type: "success", sticky: true }
             );
         } catch (e) {
-            this.state.error = e.message || _t("Enrôlement impossible.");
+            // ⚠️ Un refus PRF n'est pas un échec à réessayer : la clé d'accès
+            // a été créée et ne servira jamais. On sort du registre des
+            // messages d'erreur pour expliquer, parce que la personne doit
+            // faire deux choses — retirer la clé morte, et en prendre une
+            // autre — et qu'aucune ligne rouge ne porte ça.
+            if (e instanceof PrfNonRendu) {
+                this.state.prfRefus = true;
+            } else {
+                this.state.error = e.message || _t("Enrôlement impossible.");
+            }
         } finally {
             wipe(octets);
             this.state.busy = false;
         }
+    }
+
+    /** Ouvre le panneau des clés d'accès en repartant d'une ardoise propre. */
+    onOpenKeys() {
+        this.state.error = "";
+        this.state.prfRefus = false;
+        this.state.showKeys = true;
     }
 
     async onRemovePasskey(c) {
