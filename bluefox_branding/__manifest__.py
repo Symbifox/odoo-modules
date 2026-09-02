@@ -1,6 +1,6 @@
 {
     "name": "Symbifox Branding",
-    "version": "18.0.3.5.0",
+    "version": "18.0.3.7.1",
     "category": "Tools",
     "summary": "White-label branding panel + branded email templates",
     "description": """
@@ -55,6 +55,10 @@
         ],
         "web.assets_backend": [
             "bluefox_branding/static/src/scss/branding.scss",
+            # Opens "Install App" to every app, not Odoo's three. See the file.
+            "bluefox_branding/static/src/js/install_app_menu.js",
+            # Second worker registration, scoped to /scoped_app.
+            "bluefox_branding/static/src/js/scoped_app_worker.js",
         ],
         "web.assets_frontend": [
             "bluefox_branding/static/src/scss/branding.scss",
