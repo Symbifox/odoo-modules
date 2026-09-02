@@ -30,7 +30,13 @@ serveur**.
   seul après cinq minutes sans activité
 * Jetons TOTP et HOTP, SHA-1 / SHA-256 / SHA-512, 6 à 8 chiffres
 * Rattachement à un **client** et à un **projet** ; sans étiquette de
-  regroupement, le client sert de regroupement
+  regroupement, le client sert de regroupement, et à défaut l'**émetteur**
+  quand il porte plus d'un jeton
+* Icône de marque pour une trentaine de services courants, **embarquée** dans
+  le module : aucune favicon n'est récupérée, parce que la requête révélerait
+  au service, et à qui regarde le réseau, la liste des comptes protégés. Ce
+  qui n'est pas reconnu garde une pastille de couleur calculée du nom.
+  Voir `THIRD_PARTY.md`
 * Favoris épinglés en tête, tri par dernière utilisation, recherche au clavier
 * Ajout par adresse `otpauth://` ou à la main
 * Import d'un export du gestionnaire OTP de Nextcloud, chiffré ou en clair, le
