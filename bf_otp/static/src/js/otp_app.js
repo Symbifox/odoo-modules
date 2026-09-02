@@ -482,24 +482,54 @@ export class BfOtpApp extends Component {
     }
 
     /**
+     * Les émetteurs qui portent plus d'un jeton, et eux seuls.
+     *
+     * 🔴 Le compte se fait sur TOUT le coffre, jamais sur la vue filtrée :
+     * compté sur ce qui est visible, un mot tapé dans la recherche ferait
+     * fondre un groupe de six à un, et les en-têtes sauteraient à chaque
+     * frappe.
+     *
+     * ⚠️ Et seulement au-delà de un. Regrouper un émetteur qui n'a qu'un jeton
+     * fabrique un en-tête par ligne : sur ce coffre, 112 émetteurs pour 144
+     * jetons, ça remplacerait une liste par une liste deux fois plus haute.
+     */
+    get emetteursMultiples() {
+        const n = new Map();
+        for (const t of this.state.tokens) {
+            const e = (t.issuer || "").trim();
+            if (e) {
+                n.set(e, (n.get(e) || 0) + 1);
+            }
+        }
+        return new Set([...n.entries()].filter(([, c]) => c > 1).map(([e]) => e));
+    }
+
+    /**
      * Le regroupement affiché.
      *
      * ⚠️ Les favoris sortent de leur groupe et forment le leur, en tête : un
      * favori qu'il faut aller chercher dans son groupe n'est plus un favori.
      * En dessous, on regroupe par l'étiquette libre si elle existe, sinon par
      * client — ce qui range un coffre importé sans qu'on ait rien à saisir.
+     *
+     * ⚠️ L'émetteur vient en DERNIER recours, après les trois champs qu'on a
+     * pu remplir : il ne doit jamais défaire le rangement de quelqu'un qui,
+     * lui, a saisi ses regroupements.
      */
     get groupes() {
         const favoris = [];
+        const multiples = this.emetteursMultiples;
         const m = new Map();
         for (const t of this.visibleTokens) {
             if (t.favorite) {
                 favoris.push(t);
                 continue;
             }
+            const emetteur = (t.issuer || "").trim();
             const g = t.group_name
                 || (t.partner_id && t.partner_id[1])
                 || (t.project_id && t.project_id[1])
+                || (multiples.has(emetteur) ? emetteur : "")
                 || _t("Sans regroupement");
             if (!m.has(g)) {
                 m.set(g, []);
