@@ -102,7 +102,16 @@ def _authentifie(fn):
         appareil.sudo().write({"last_seen": fields.Datetime.now()})
         request.update_env(user=appareil.user_id.id)
         try:
-            return fn(self, appareil, *args, **kw)
+            # 🔴 Le point de reprise n'est PAS décoratif. Attraper une erreur
+            # métier et rendre un JSON au lieu de la laisser remonter empêche
+            # Odoo d'annuler la requête : l'écriture refusée reste en base et
+            # la transaction se valide quand même à la fin. Mesuré ici : le
+            # garde « pas de graine en clair » levait bien, la route répondait
+            # bien 400, et le token à graine lisible était bel et bien créé.
+            # Une écriture refusée qui persiste est pire qu'une absence de
+            # garde, parce qu'elle donne l'illusion d'un refus.
+            with request.env.cr.savepoint():
+                return fn(self, appareil, *args, **kw)
         except (UserError, AccessError) as exc:
             return _json({"error": str(exc)}, 400)
         except (TypeError, ValueError):
@@ -290,6 +299,34 @@ class BfOtpMobileApi(http.Controller):
         d = _corps(**kw)
         request.env["bf.otp.vault"].remove_credential(int(d.get("id") or 0))
         return _json({"ok": True, "vault": request.env["bf.otp.vault"].get_my_vault()})
+
+    # ── Ajouter un token, lu au code QR sur le téléphone ──────────────
+    @http.route(f"{BASE}/token/save", type="http", auth="public",
+                methods=["POST"], csrf=False, save_session=False)
+    @_authentifie
+    def token_save(self, appareil, **kw):
+        """Enregistre un token dont la graine a été chiffrée SUR le téléphone.
+
+        🔴 Un code QR `otpauth://` contient la graine en clair. Elle est donc
+        lue, chiffrée et effacée dans l'application ; ce qui arrive ici est du
+        chiffré, comme tout le reste. Le garde du modèle refuse d'ailleurs
+        qu'une graine base32 ou une adresse `otpauth://` entre dans
+        `secret_cipher` : si l'application cessait de chiffrer, l'écriture
+        échouerait au lieu de remplir la base de graines.
+
+        ⚠️ `save_token` filtre lui-même les champs permis. On ne rajoute pas de
+        filtre ici : deux listes de champs autorisées finissent toujours par
+        diverger, et c'est celle du modèle qui fait autorité.
+        """
+        d = _corps(**kw)
+        valeurs = d.get("values") if isinstance(d.get("values"), dict) else d
+        identifiant = request.env["bf.otp.token"].save_token(
+            valeurs, token_id=d.get("token_id") or None)
+        return _json({
+            "ok": True,
+            "id": identifiant,
+            "tokens": request.env["bf.otp.token"].load_my_tokens(),
+        })
 
     # ── Usage : ce que « taper pour copier » remonte ──────────────────
     @http.route(f"{BASE}/touch", type="http", auth="public", methods=["POST"],

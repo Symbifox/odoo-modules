@@ -317,6 +317,58 @@ class TestRoutesMobiles(HttpCase):
             r = self.url_open(f"{BASE}{chemin}", data=json.dumps({}))
             self.assertEqual(401, r.status_code, chemin)
 
+    def test_un_token_lu_au_qr_s_enregistre_chiffre(self):
+        import base64
+        import os
+
+        self._coffre_avec_token()   # le coffre doit exister
+        jeton = self._apparier()
+        chiffre = base64.b64encode(os.urandom(40)).decode()
+        r = self.opener.post(
+            f"{self.base_url()}{BASE}/token/save",
+            data=json.dumps({"values": {
+                "issuer": "Service QR", "name": "moi@exemple.com",
+                "secret_cipher": chiffre,
+                "secret_iv": base64.b64encode(os.urandom(12)).decode(),
+                "otp_type": "totp", "digits": 6, "period": 30,
+                "algorithm": "SHA1",
+            }}),
+            headers={"Authorization": f"Bearer {jeton}",
+                     "Content-Type": "application/json"})
+        self.assertEqual(200, r.status_code)
+        corps = self._json(r)
+        self.assertTrue(corps["id"])
+        # La liste revient à jour, pour que l'écran n'ait pas à redemander.
+        self.assertTrue(any(t["issuer"] == "Service QR" for t in corps["tokens"]))
+
+    def test_une_graine_en_clair_est_REFUSEE_a_l_enregistrement(self):
+        """🔴 Le garde du module, éprouvé depuis l'application.
+
+        Si le téléphone cessait de chiffrer, la base se remplirait de graines
+        et rien ne le dirait. L'écriture doit échouer, pas réussir.
+        """
+        self._coffre_avec_token()
+        jeton = self._apparier()
+        entetes = {"Authorization": f"Bearer {jeton}",
+                   "Content-Type": "application/json"}
+        for graine in ("JBSWY3DPEHPK3PXP",
+                       "otpauth://totp/X?secret=JBSWY3DPEHPK3PXP"):
+            r = self.opener.post(
+                f"{self.base_url()}{BASE}/token/save",
+                data=json.dumps({"values": {
+                    "issuer": "Fuite", "name": "fuite@exemple.com",
+                    "secret_cipher": graine,
+                    "secret_iv": "dmVjdGV1cg==",
+                }}), headers=entetes)
+            self.assertNotEqual(200, r.status_code,
+                                f"« {graine[:20]}… » aurait dû être refusée")
+        self.assertFalse(self.env["bf.otp.token"].sudo().search(
+            [("issuer", "=", "Fuite")]))
+
+    def test_l_enregistrement_refuse_sans_jeton(self):
+        r = self.url_open(f"{BASE}/token/save", data=json.dumps({"values": {}}))
+        self.assertEqual(401, r.status_code)
+
     def test_copier_depuis_le_telephone_horodate_le_token(self):
         # ⚠️ Sans cette route, le tri « les plus récents » ne bougerait que
         # depuis le site, et l'ordre paraîtrait figé sur le téléphone.
