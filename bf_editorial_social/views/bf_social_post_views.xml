@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <record id="view_social_post_form" model="ir.ui.view">
+    <field name="name">bf.social.post.form</field>
+    <field name="model">bf.social.post</field>
+    <field name="arch" type="xml">
+      <form string="Billet social">
+        <header>
+          <button name="action_send_now" type="object" string="Diffuser maintenant"
+                  class="btn-primary" invisible="state in ('sent','cancelled')"
+                  groups="bf_editorial.group_editorial_manager"/>
+          <field name="state" widget="statusbar"
+                 statusbar_visible="draft,scheduled,sent"/>
+        </header>
+        <sheet>
+          <widget name="web_ribbon" title="Diffusé" bg_color="text-bg-success"
+                  invisible="state != 'sent'"/>
+          <group>
+            <group>
+              <field name="entry_id"/>
+              <field name="channel_id"/>
+              <field name="kind"/>
+              <field name="lang_id" readonly="1"/>
+            </group>
+            <group>
+              <field name="scheduled_datetime"/>
+              <field name="published_datetime" readonly="1"
+                     invisible="not published_datetime"/>
+              <field name="attempt_count" readonly="1"/>
+              <field name="remote_url" widget="url" readonly="1"
+                     invisible="not remote_url"/>
+            </group>
+          </group>
+          <field name="body" placeholder="Le texte diffusé, lien compris"/>
+          <group>
+            <field name="body_length" readonly="1"/>
+            <field name="over_limit" readonly="1"/>
+            <field name="link_url" readonly="1"/>
+            <field name="tracker_id" readonly="1"/>
+          </group>
+          <div class="alert alert-danger" role="alert" invisible="not error_message">
+            <field name="error_message" nolabel="1" readonly="1"/>
+          </div>
+          <group string="Clé d'idempotence" groups="base.group_no_one">
+            <field name="idempotency_key" readonly="1"/>
+            <field name="remote_id" readonly="1"/>
+          </group>
+          <separator string="Mesures"/>
+          <field name="metric_ids" readonly="1">
+            <list>
+              <field name="capture_date"/>
+              <field name="likes"/>
+              <field name="reposts"/>
+              <field name="replies"/>
+              <field name="clicks"/>
+              <field name="impressions" optional="hide"/>
+            </list>
+          </field>
+        </sheet>
+        <chatter/>
+      </form>
+    </field>
+  </record>
+
+  <record id="view_social_post_list" model="ir.ui.view">
+    <field name="name">bf.social.post.list</field>
+    <field name="model">bf.social.post</field>
+    <field name="arch" type="xml">
+      <list decoration-danger="state == 'failed'" decoration-success="state == 'sent'"
+            decoration-warning="over_limit">
+        <field name="scheduled_datetime"/>
+        <field name="channel_id"/>
+        <field name="entry_id"/>
+        <field name="name" string="Aperçu"/>
+        <field name="kind"/>
+        <field name="body_length"/>
+        <field name="over_limit" optional="hide"/>
+        <field name="state"/>
+        <field name="remote_url" widget="url" optional="hide"/>
+      </list>
+    </field>
+  </record>
+
+  <record id="action_social_post" model="ir.actions.act_window">
+    <field name="name">Diffusions</field>
+    <field name="res_model">bf.social.post</field>
+    <field name="view_mode">list,form</field>
+  </record>
+</odoo>

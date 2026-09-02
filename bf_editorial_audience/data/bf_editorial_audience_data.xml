@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <record id="cron_capture_audience" model="ir.cron">
+            <field name="name">Atelier éditorial : relevé d'audience de la veille</field>
+            <field name="model_id" ref="model_bf_editorial_audience"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_capture()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="active" eval="False"/>
+        </record>
+
+        <record id="cron_reclass_agents" model="ir.cron">
+            <field name="name">Atelier éditorial : ranger les agents non classés</field>
+            <field name="model_id" ref="website.model_website_visitor"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_reclass_agents()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="active" eval="False"/>
+        </record>
+
+        <record id="cron_forget_agents" model="ir.cron">
+            <field name="name">Atelier éditorial : oublier les agents trop vieux</field>
+            <field name="model_id" ref="website.model_website_visitor"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_forget_agents()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="active" eval="False"/>
+        </record>
+
+        <!-- Zéro : rien n'est effacé. C'est une décision à porter au registre
+             des politiques, pas un défaut que le module choisit tout seul. -->
+        <record id="param_ua_retention" model="ir.config_parameter">
+            <field name="key">bf_editorial_audience.ua_retention_days</field>
+            <field name="value">0</field>
+        </record>
+
+    </data>
+</odoo>

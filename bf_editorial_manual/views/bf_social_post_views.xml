@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+  <record id="view_social_post_form_manual" model="ir.ui.view">
+    <field name="name">bf.social.post.form.manual</field>
+    <field name="model">bf.social.post</field>
+    <field name="inherit_id" ref="bf_editorial_social.view_social_post_form"/>
+    <field name="arch" type="xml">
+
+      <xpath expr="//header" position="inside">
+        <field name="is_manual_channel" invisible="1"/>
+        <button name="action_mark_published_manually" type="object"
+                string="Marquer comme diffusé" class="btn-primary"
+                invisible="not is_manual_channel or state == 'sent' or remote_id"
+                help="Consigne une publication faite à la main sur le réseau."/>
+      </xpath>
+
+      <xpath expr="//field[@name='link_url']" position="after">
+        <field name="manual_url" invisible="not is_manual_channel"
+               placeholder="https://www.linkedin.com/feed/update/..."
+               readonly="state == 'sent'"/>
+      </xpath>
+
+    </field>
+  </record>
+
+</odoo>

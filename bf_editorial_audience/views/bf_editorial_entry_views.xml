@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_editorial_entry_form_audience" model="ir.ui.view">
+        <field name="name">bf.editorial.entry.form.audience</field>
+        <field name="model">bf.editorial.entry</field>
+        <field name="inherit_id" ref="bf_editorial.view_editorial_entry_form"/>
+        <field name="arch" type="xml">
+            <notebook position="inside">
+                <page string="Audience" name="audience"
+                      invisible="not post_id">
+                    <div class="alert alert-info" role="alert">
+                        « Vues retenues » n'est pas le brut : Odoo écarte
+                        lui-même de sa traçabilité tout agent qui se nomme
+                        robot. Le brut est le compteur natif, à droite. Ce que
+                        vous voyez ici, c'est le partage de ce qu'Odoo a bien
+                        voulu tracer, en trois seaux qui s'additionnent. Le
+                        seau « agent non relevé » porte tout ce qu'on n'a pas
+                        su lire, y compris chaque visite d'avant la mise en
+                        service de la capture.
+                    </div>
+                    <group>
+                        <group string="Depuis le premier relevé">
+                            <field name="audience_first_day"/>
+                            <field name="audience_tracked"/>
+                            <field name="audience_human"/>
+                            <field name="audience_bot"/>
+                            <field name="audience_unknown"/>
+                            <field name="audience_bot_share" widget="percentage"/>
+                        </group>
+                        <group string="Compteur natif">
+                            <field name="raw_visits"/>
+                        </group>
+                    </group>
+                    <field name="audience_ids" nolabel="1" readonly="1">
+                        <list>
+                            <field name="capture_date"/>
+                            <field name="lang_id"/>
+                            <field name="tracked_views" sum="Retenues"/>
+                            <field name="human_views" sum="Humaines"/>
+                            <field name="bot_views" sum="Robots"/>
+                            <field name="unknown_views" sum="Non relevé"/>
+                        </list>
+                    </field>
+                </page>
+            </notebook>
+        </field>
+    </record>
+
+</odoo>

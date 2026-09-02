@@ -13,7 +13,7 @@ modules — the UI fixes, the shared helpers, the Nextcloud integrations, the
 productivity pack. They are free because they are more useful to us being
 widely used than being held.
 
-**70 modules are BUSL-1.1.** The source is published and auditable, and **you
+**76 modules are BUSL-1.1.** The source is published and auditable, and **you
 may run them in production for your own internal business operations** — as a
 company, as a freelancer, as one person on a laptop. What needs an agreement is
 using them to provide a product or service to someone else: hosting them for a
@@ -112,7 +112,13 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_default_all_companies` | BF Default All Companies | 18.0.1.0.0 | LGPL-3 | Pre-selects every allowed company in the multi-company switcher on first login |
 | `bf_document_approval` | Documents — Approbation à plusieurs | 18.0.1.0.0 | BUSL-1.1 | A policy is published only once everyone who had to weigh in has done so, and its distribution follows the RACI recorded in the knowledge matrix |
 | `bf_document_nextcloud_sync` | Document Nextcloud Sync | 18.0.1.4.1 | LGPL-3 | Document sync between Odoo and Nextcloud via WebDAV |
-| `bf_editorial` | Atelier éditorial | 18.0.1.8.0 | BUSL-1.1 | Editorial calendar, measured cadence and publication gates for the blog: state is derived, only decisions are stored |
+| `bf_editorial` | Atelier éditorial | 18.0.1.8.1 | BUSL-1.1 | Editorial calendar, measured cadence and publication gates for the blog: state is derived, only decisions are stored |
+| `bf_editorial_audience` | Atelier éditorial — audience | 18.0.1.2.0 | BUSL-1.1 | An article's readership once the crawlers Odoo does not recognise are taken out, recorded daily before the visitor purge takes the trace away |
+| `bf_editorial_bluesky` | Atelier éditorial — Bluesky | 18.0.1.0.0 | BUSL-1.1 | Post to Bluesky from the editorial workshop, over the AT protocol with an app password |
+| `bf_editorial_genfox` | Atelier éditorial — Gen | 18.0.1.4.1 | BUSL-1.1 | Article suggestion, review and expansion by Gen, as proposals a human reads before applying |
+| `bf_editorial_linkedin` | Atelier éditorial — LinkedIn | 18.0.1.0.0 | BUSL-1.1 | Post to LinkedIn from the editorial workshop, over the versioned API with a member token |
+| `bf_editorial_manual` | Atelier éditorial — canal manuel | 18.0.1.1.1 | BUSL-1.1 | A channel fed by hand: the text is written and proofread in Odoo, the posting happens on the network |
+| `bf_editorial_social` | Atelier éditorial — réseaux sociaux | 18.0.1.5.0 | BUSL-1.1 | Deferred distribution to social networks from the editorial workshop, with a no-duplicate guarantee and measurement coming back |
 | `bf_email_management` | Gestion des courriels | 18.0.11.14.1 | BUSL-1.1 | Unified IMAP inbox + Odoo chatter projection, two-pane OWL folder browser (Apple Mail / Thunderbird), bulk per-row target inference |
 | `bf_email_systray` | Boîte de réception bf.email — barre Odoo | 18.0.2.0.0 | LGPL-3 | Systray button opening the bf.email inbox with a (read + unread) counter |
 | `bf_employee_experience` | Expérience employé | 18.0.1.0.0 | LGPL-3 | Benefits catalogue, rule-based eligibility, usage register and retention indicators |
@@ -146,7 +152,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_nextcloud_browser` | Nextcloud File Browser | 18.0.3.6.0 | LGPL-3 | Embedded + standalone Nextcloud WebDAV file browser on projects/tasks: folder tree, modal preview, drag-and-drop upload/move, configurable share presets, open-in-Nextcloud for office files, Knowledge Matrix linking, systray launcher |
 | `bf_no_gateway_bounce` | BF No Gateway Bounce | 18.0.1.0.0 | LGPL-3 | Never auto-reply MAILER-DAEMON bounces to people who write to Symbifox |
 | `bf_onboarding_base` | Symbifox Onboarding Foundation | 18.0.2.0.0 | LGPL-3 | Shared helpers for Symbifox per-module onboarding panels. |
-| `bf_otp` | Symbifox OTP | 18.0.3.0.1 | LGPL-3 | One-time-code vault whose server can read no seed: encryption and code generation happen in the browser |
+| `bf_otp` | Symbifox OTP | 18.0.3.2.0 | LGPL-3 | One-time-code vault whose server can read no seed: encryption and code generation happen in the browser |
 | `bf_outreach` | Campagnes de démarchage | 18.0.1.2.0 | BUSL-1.1 | Track call, email and letter outreach campaigns, with a follow-up cadence per channel |
 | `bf_outreach_appointment` | Démarchage — rendez-vous | 18.0.1.0.0 | BUSL-1.1 | A confirmed booking logs a meeting and advances the outreach target on its own |
 | `bf_outreach_call` | Démarchage — appels journalisés | 18.0.1.0.0 | BUSL-1.1 | Reconciles the calls actually placed with the outreach targets, duration included |
@@ -214,7 +220,7 @@ Three regimes — see [Licensing](#licensing) above for the details, and the
 `License` column of the table for the module you care about. The `LICENSE`
 file inside each module governs and carries its exact parameters.
 
-- **70 modules: BUSL-1.1.** Production use for your own internal business
+- **76 modules: BUSL-1.1.** Production use for your own internal business
   operations is permitted; providing them as a product or service to third
   parties requires an agreement. Each version converts to
   **LGPL-3.0-or-later four years after its release**.

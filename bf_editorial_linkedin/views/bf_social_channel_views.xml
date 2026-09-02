@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_bf_social_channel_form_linkedin" model="ir.ui.view">
+        <field name="name">bf.social.channel.form.linkedin</field>
+        <field name="model">bf.social.channel</field>
+        <field name="inherit_id" ref="bf_editorial_social.view_social_channel_form"/>
+        <field name="arch" type="xml">
+            <field name="credentials_message" position="after">
+                <field name="linkedin_member_urn"
+                       invisible="network != 'linkedin'"/>
+                <field name="linkedin_token_expiry"
+                       invisible="network != 'linkedin'"
+                       help="Un jeton LinkedIn de membre dure 60 jours et rien ne le renouvelle. Notez sa date ici : un rappel part au chatter une semaine d'avance."/>
+                <field name="linkedin_token_days_left"
+                       invisible="network != 'linkedin' or not linkedin_token_expiry"/>
+            </field>
+        </field>
+    </record>
+
+</odoo>

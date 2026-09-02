@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
+    <!-- Une application dont la racine n'a pas d'action ne s'ouvre pas :
+         `menu_service.selectMenu` sort dès que `actionID` est vide, et le
+         premier enfant est « Prochain article », qui rend une fenêtre
+         `target="new"`. Cliquer l'application ne menait donc nulle part, ou
+         à un dialogue posé sur un écran vide. La racine ouvre les entrées. -->
     <menuitem id="menu_editorial_root" name="Atelier éditorial"
               web_icon="bf_editorial,static/description/icon.png"
+              action="action_editorial_entry"
               groups="bf_editorial.group_editorial_user" sequence="55"/>
 
     <record id="action_editorial_propose_next" model="ir.actions.server">

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="rule_channel_company" model="ir.rule">
+            <field name="name">Canal : société</field>
+            <field name="model_id" ref="model_bf_social_channel"/>
+            <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+            <field name="global" eval="True"/>
+        </record>
+        <record id="rule_post_company" model="ir.rule">
+            <field name="name">Billet social : société</field>
+            <field name="model_id" ref="model_bf_social_post"/>
+            <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+            <field name="global" eval="True"/>
+        </record>
+        <!-- ⚠️ ir.rule ne traverse pas une relation : les enfants ont la leur. -->
+        <record id="rule_blurb_company" model="ir.rule">
+            <field name="name">Blurb : société</field>
+            <field name="model_id" ref="model_bf_editorial_blurb"/>
+            <field name="domain_force">['|', ('entry_id.company_id', '=', False), ('entry_id.company_id', 'in', company_ids)]</field>
+            <field name="global" eval="True"/>
+        </record>
+        <record id="rule_metric_company" model="ir.rule">
+            <field name="name">Mesure sociale : société</field>
+            <field name="model_id" ref="model_bf_social_metric"/>
+            <field name="domain_force">['|', ('channel_id.company_id', '=', False), ('channel_id.company_id', 'in', company_ids)]</field>
+            <field name="global" eval="True"/>
+        </record>
+    </data>
+</odoo>

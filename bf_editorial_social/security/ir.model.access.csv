@@ -1,0 +1,9 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_social_channel_user,social.channel.user,model_bf_social_channel,bf_editorial.group_editorial_user,1,0,0,0
+access_social_channel_manager,social.channel.manager,model_bf_social_channel,bf_editorial.group_editorial_manager,1,1,1,1
+access_social_post_user,social.post.user,model_bf_social_post,bf_editorial.group_editorial_user,1,1,1,0
+access_social_post_manager,social.post.manager,model_bf_social_post,bf_editorial.group_editorial_manager,1,1,1,1
+access_editorial_blurb_user,editorial.blurb.user,model_bf_editorial_blurb,bf_editorial.group_editorial_user,1,1,1,1
+access_editorial_blurb_manager,editorial.blurb.manager,model_bf_editorial_blurb,bf_editorial.group_editorial_manager,1,1,1,1
+access_social_metric_user,social.metric.user,model_bf_social_metric,bf_editorial.group_editorial_user,1,0,0,0
+access_social_metric_manager,social.metric.manager,model_bf_social_metric,bf_editorial.group_editorial_manager,1,1,1,1

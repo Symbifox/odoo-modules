@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <record id="view_social_channel_form" model="ir.ui.view">
+    <field name="name">bf.social.channel.form</field>
+    <field name="model">bf.social.channel</field>
+    <field name="arch" type="xml">
+      <form string="Canal">
+        <header>
+          <button name="action_check_credentials" type="object"
+                  string="Vérifier les identifiants" class="btn-primary"/>
+          <field name="credentials_state" widget="statusbar"/>
+        </header>
+        <sheet>
+          <div class="oe_title"><label for="name"/><h1><field name="name"/></h1></div>
+          <group>
+            <group string="Compte">
+              <field name="network"/>
+              <field name="handle" placeholder="bluefoxconsultant.com"/>
+              <field name="lang_id"/>
+              <field name="company_id" groups="base.group_multi_company"/>
+              <field name="active" invisible="1"/>
+            </group>
+            <group string="Identifiants">
+              <field name="login" placeholder="bluefoxconsultant.com"/>
+              <field name="secret" password="True"
+                     groups="bf_editorial.group_editorial_manager"/>
+              <field name="last_checked" readonly="1"/>
+              <field name="credentials_message" readonly="1"/>
+            </group>
+          </group>
+          <div class="alert alert-warning" role="alert"
+               invisible="credentials_state != 'ko'">
+            Les identifiants ont été refusés : rien ne partira sur ce canal.
+          </div>
+          <group>
+            <group string="Attribution">
+              <field name="utm_source_id"/>
+              <field name="utm_medium_id"/>
+            </group>
+            <group string="Portée">
+              <field name="calendar_ids" widget="many2many_tags"/>
+              <field name="body_limit" readonly="1"/>
+              <field name="post_count" readonly="1"/>
+            </group>
+          </group>
+        </sheet>
+        <chatter/>
+      </form>
+    </field>
+  </record>
+
+  <record id="view_social_channel_list" model="ir.ui.view">
+    <field name="name">bf.social.channel.list</field>
+    <field name="model">bf.social.channel</field>
+    <field name="arch" type="xml">
+      <list decoration-danger="credentials_state == 'ko'"
+            decoration-muted="credentials_state == 'unknown'">
+        <field name="sequence" widget="handle"/>
+        <field name="name"/>
+        <field name="network"/>
+        <field name="handle"/>
+        <field name="lang_id"/>
+        <field name="credentials_state"/>
+        <field name="post_count"/>
+        <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+      </list>
+    </field>
+  </record>
+
+  <record id="action_social_channel" model="ir.actions.act_window">
+    <field name="name">Canaux</field>
+    <field name="res_model">bf.social.channel</field>
+    <field name="view_mode">list,form</field>
+    <field name="help" type="html">
+      <p class="o_view_nocontent_smiling_face">Déclarer un canal</p>
+      <p>Un canal est un compte sur un réseau, avec la langue qu'il publie et
+         son mot de passe d'application. Le mot de passe est chiffré hors de
+         la base : ne jamais y poser le mot de passe du compte.</p>
+    </field>
+  </record>
+</odoo>

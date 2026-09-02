@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <menuitem id="menu_editorial_audience"
+              name="Audience"
+              parent="bf_editorial.menu_editorial_root"
+              action="action_editorial_audience"
+              sequence="25"/>
+
+    <menuitem id="menu_editorial_palmares_brut"
+              name="Palmarès (brut)"
+              parent="bf_editorial.menu_editorial_root"
+              action="action_editorial_palmares_brut"
+              sequence="26"/>
+
+</odoo>

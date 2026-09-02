@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_editorial_entry_form_genfox" model="ir.ui.view">
+        <field name="name">bf.editorial.entry.form.genfox</field>
+        <field name="model">bf.editorial.entry</field>
+        <field name="inherit_id" ref="bf_editorial.view_editorial_entry_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//header/button[@name='action_run_qa']" position="after">
+                <button name="action_genfox_full" type="object"
+                        string="Revue Gen" class="btn-secondary"
+                        invisible="not genfox_available or genfox_pending"
+                        groups="bf_editorial.group_editorial_manager"
+                        help="Une seule passe : ce que les expressions régulières n'atteignent pas — répétitions, texte des liens, dérive par rapport à l'angle déclaré, style maison — et un texte étoffé si l'entrée en a besoin. Rien n'est écrit dans l'article de lui-même."/>
+                <button name="action_view_suggestions" type="object"
+                        string="Gen travaille…" class="btn-secondary" disabled="1"
+                        invisible="not genfox_pending"/>
+                <!-- Deux variantes du même bouton, mutuellement exclusives : le
+                     bleu signale une proposition qui attend une décision, le
+                     gris n'annonce qu'une lecture. -->
+                <button name="action_view_suggestions" type="object"
+                        string="Propositions Gen" class="btn-primary"
+                        invisible="not genfox_pending_decision or genfox_pending"/>
+                <button name="action_view_suggestions" type="object"
+                        string="Propositions Gen" class="btn-secondary"
+                        invisible="genfox_pending_decision or not suggestion_ids or genfox_pending"/>
+            </xpath>
+
+            <xpath expr="//field[@name='preflight_ok'][@invisible='1']" position="after">
+                <field name="genfox_available" invisible="1"/>
+                <field name="genfox_pending" invisible="1"/>
+                <field name="genfox_stalled" invisible="1"/>
+                <field name="genfox_pending_decision" invisible="1"/>
+
+                <div class="alert alert-info mb-2" role="alert"
+                     invisible="not genfox_pending">
+                    <i class="fa fa-circle-o-notch fa-spin me-2" title="En cours"/>
+                    <span>
+                        <b>Gen travaille sur cet article.</b>
+                        Lancé le <field name="genfox_started" readonly="1" class="d-inline"/> :
+                        comptez quelques minutes, puis rechargez la page. Le résultat
+                        s'ouvrira dans l'onglet « Gen ».
+                    </span>
+                </div>
+                <div class="alert alert-warning mb-2" role="alert"
+                     invisible="not genfox_stalled">
+                    <b>Passe sans nouvelle.</b>
+                    Celle lancée le <field name="genfox_started" readonly="1" class="d-inline"/>
+                    n'a jamais rendu de statut : le pont a probablement été redémarré,
+                    ou le plafond de temps est passé. Rien n'a été écrit dans l'article.
+                    Les boutons sont redevenus disponibles, relancez-la.
+                </div>
+            </xpath>
+
+            <xpath expr="//page[@name='qa']" position="after">
+                <page string="Gen" name="genfox" invisible="not suggestion_ids">
+                    <div class="alert alert-info" role="alert">
+                        Gen propose, vous appliquez. Une proposition n'entre
+                        dans l'article que par le bouton « Appliquer au billet »,
+                        et elle refuse si l'article a bougé depuis son calcul.
+                    </div>
+                    <field name="suggestion_ids" nolabel="1" readonly="1">
+                        <list decoration-muted="applied" decoration-danger="state == 'error'"
+                              decoration-info="state == 'queued'"
+                              decoration-primary="pending_decision">
+                            <field name="create_date"/>
+                            <field name="kind"/>
+                            <field name="state"/>
+                            <field name="has_proposal"/>
+                            <field name="pending_decision" optional="hide"/>
+                            <field name="applied"/>
+                            <field name="triggered_by" optional="hide"/>
+                            <button name="action_open" type="object"
+                                    icon="fa-arrow-right" title="Ouvrir la proposition"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+
+        </field>
+    </record>
+
+</odoo>

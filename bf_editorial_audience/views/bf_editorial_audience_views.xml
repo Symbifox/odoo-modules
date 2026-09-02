@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_editorial_audience_list" model="ir.ui.view">
+        <field name="name">bf.editorial.audience.list</field>
+        <field name="model">bf.editorial.audience</field>
+        <field name="arch" type="xml">
+            <list string="Relevés d'audience" create="0">
+                <field name="capture_date"/>
+                <field name="entry_id"/>
+                <field name="lang_id"/>
+                <field name="tracked_views" sum="Retenues"/>
+                <field name="human_views" sum="Humaines"/>
+                <field name="bot_views" sum="Robots"/>
+                <field name="unknown_views" sum="Agent non relevé"/>
+                <field name="bot_share" widget="percentage" optional="show"/>
+                <field name="human_visitors" sum="Visiteurs humains" optional="hide"/>
+                <field name="tracked_visitors" sum="Visiteurs retenus" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_editorial_audience_pivot" model="ir.ui.view">
+        <field name="name">bf.editorial.audience.pivot</field>
+        <field name="model">bf.editorial.audience</field>
+        <field name="arch" type="xml">
+            <pivot string="Audience">
+                <field name="entry_id" type="row"/>
+                <field name="capture_date" interval="month" type="col"/>
+                <field name="human_views" type="measure"/>
+                <field name="tracked_views" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_editorial_audience_graph" model="ir.ui.view">
+        <field name="name">bf.editorial.audience.graph</field>
+        <field name="model">bf.editorial.audience</field>
+        <field name="arch" type="xml">
+            <graph string="Audience" type="line">
+                <field name="capture_date" interval="day"/>
+                <field name="human_views" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="view_editorial_audience_search" model="ir.ui.view">
+        <field name="name">bf.editorial.audience.search</field>
+        <field name="model">bf.editorial.audience</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="entry_id"/>
+                <field name="lang_id"/>
+                <filter name="lus" string="Vues humaines"
+                        domain="[('human_views', '>', 0)]"/>
+                <filter name="robots" string="Surtout des robots"
+                        domain="[('bot_share', '>=', 50)]"/>
+                <separator/>
+                <filter name="jour" string="Journée" date="capture_date"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="g_entry" string="Entrée"
+                            context="{'group_by': 'entry_id'}"/>
+                    <filter name="g_lang" string="Langue"
+                            context="{'group_by': 'lang_id'}"/>
+                    <filter name="g_date" string="Journée"
+                            context="{'group_by': 'capture_date'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_editorial_audience" model="ir.actions.act_window">
+        <field name="name">Audience</field>
+        <field name="res_model">bf.editorial.audience</field>
+        <field name="view_mode">list,graph,pivot</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Aucun relevé encore</p>
+            <p>
+                Le relevé fige chaque journée avant que la purge des visiteurs
+                n'emporte ses traces. Il commence à dire quelque chose d'utile
+                le lendemain de sa mise en service : les visites d'avant n'ont
+                pas d'agent relevé et comptent comme telles.
+                Attention au vocabulaire : « vues retenues » est déjà filtré
+                par Odoo, qui refuse de tracer tout agent qui se nomme robot.
+                Le brut, c'est le compteur natif du billet.
+            </p>
+        </field>
+    </record>
+
+    <!-- Le palmarès brut, gardé et annoté pour ce qu'il est. -->
+    <record id="action_editorial_palmares_brut" model="ir.actions.act_window">
+        <field name="name">Palmarès (brut, robots compris)</field>
+        <field name="res_model">bf.editorial.entry</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('post_id', '!=', False)]</field>
+        <field name="context">{'search_default_published': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Le palmarès historique</p>
+            <p>
+                Trié sur le compteur natif d'Odoo, qui compte tout ce qui
+                passe, robots compris. Il est gardé tel quel parce qu'on ne
+                sait pas ce qu'il contenait, et il n'est pas corrigé
+                rétroactivement. Pour un classement d'où les robots sont
+                retirés, voir Audience.
+            </p>
+        </field>
+    </record>
+
+</odoo>

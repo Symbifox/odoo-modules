@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <record id="view_editorial_entry_form_social" model="ir.ui.view">
+    <field name="name">bf.editorial.entry.form.social</field>
+    <field name="model">bf.editorial.entry</field>
+    <field name="inherit_id" ref="bf_editorial.view_editorial_entry_form"/>
+    <field name="arch" type="xml">
+      <notebook position="inside">
+        <page string="Diffusion" name="diffusion">
+          <field name="blurb_ids">
+            <list editable="bottom" decoration-warning="over_limit">
+              <field name="channel_id"/>
+              <field name="lang_id" readonly="1"/>
+              <field name="variant"/>
+              <field name="body"/>
+              <field name="hashtags"/>
+              <field name="article_url" widget="url" readonly="1"/>
+              <field name="body_length" readonly="1"/>
+              <field name="over_limit" readonly="1"/>
+              <field name="state"/>
+              <button name="action_run_qa" type="object" icon="fa-check-square-o"
+                      title="Passer la QA sur ce blurb"/>
+              <button name="action_queue" type="object" icon="fa-paper-plane-o"
+                      title="Mettre en file de diffusion"/>
+            </list>
+          </field>
+          <separator string="Diffusions"/>
+          <field name="social_post_ids" readonly="1">
+            <list decoration-success="state == 'sent'" decoration-danger="state == 'failed'">
+              <field name="channel_id"/>
+              <field name="scheduled_datetime"/>
+              <field name="link_url" widget="url"/>
+              <field name="state"/>
+              <field name="remote_url" widget="url"/>
+            </list>
+          </field>
+        </page>
+      </notebook>
+    </field>
+  </record>
+</odoo>

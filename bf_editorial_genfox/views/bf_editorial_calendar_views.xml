@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_editorial_calendar_form_genfox" model="ir.ui.view">
+        <field name="name">bf.editorial.calendar.form.genfox</field>
+        <field name="model">bf.editorial.calendar</field>
+        <field name="inherit_id" ref="bf_editorial.view_editorial_calendar_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header/button[@name='action_propose_next']" position="after">
+                <button name="action_genfox_propose" type="object"
+                        string="Suggérer avec Gen" class="btn-secondary"
+                        invisible="not genfox_available"
+                        groups="bf_editorial.group_editorial_manager"
+                        help="Le classement dit ce qui est le plus avancé. Gen dit si l'angle tient encore et ce qu'il ferait."/>
+                <field name="genfox_available" invisible="1"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="action_editorial_genfox_propose" model="ir.actions.server">
+        <field name="name">Suggérer avec Gen</field>
+        <field name="model_id" ref="bf_editorial.model_bf_editorial_calendar"/>
+        <field name="state">code</field>
+        <field name="code">action = env["bf.editorial.calendar"].action_genfox_propose_default()</field>
+    </record>
+
+    <menuitem id="menu_editorial_genfox_propose" name="Suggérer avec Gen"
+              parent="bf_editorial.menu_editorial_root"
+              action="action_editorial_genfox_propose"
+              groups="bf_editorial.group_editorial_manager" sequence="6"/>
+
+    <menuitem id="menu_editorial_suggestion" name="Propositions Gen"
+              parent="bf_editorial.menu_editorial_root"
+              action="action_editorial_suggestion" sequence="30"/>
+
+</odoo>

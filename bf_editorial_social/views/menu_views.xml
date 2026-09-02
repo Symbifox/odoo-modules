@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <menuitem id="menu_social_post" name="Diffusions"
+            parent="bf_editorial.menu_editorial_root"
+            action="action_social_post" sequence="30"/>
+  <menuitem id="menu_social_channel" name="Canaux"
+            parent="bf_editorial.menu_editorial_config"
+            action="action_social_channel" sequence="40"/>
+</odoo>
