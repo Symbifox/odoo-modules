@@ -178,6 +178,12 @@ class BfOtpMobileApi(http.Controller):
             "api": API_VERSION,
             "version": module.installed_version or "",
             "branding": _marque(),
+            # ⚠️ L'application ne doit PAS déduire le RP ID de l'adresse
+            # saisie : « bluefoxconsultant.com » et « www.bluefoxconsultant.com »
+            # sont deux parties de confiance différentes pour WebAuthn, et une
+            # clé enrôlée sous l'une n'ouvre rien sous l'autre. Le serveur dit
+            # lequel il utilise, une fois pour toutes.
+            "rp_id": request.httprequest.host.split(":")[0],
         })
 
     # ── Appariement ───────────────────────────────────────────────────
@@ -252,3 +258,65 @@ class BfOtpMobileApi(http.Controller):
     @_authentifie
     def tokens(self, appareil, **kw):
         return _json({"tokens": request.env["bf.otp.token"].load_my_tokens()})
+
+    # ── Clés d'accès : la MÊME que sur le site ────────────────────────
+    @http.route(f"{BASE}/credential/add", type="http", auth="public",
+                methods=["POST"], csrf=False, save_session=False)
+    @_authentifie
+    def credential_add(self, appareil, **kw):
+        """Enregistre une clé d'accès enrôlée depuis le téléphone.
+
+        ⚠️ Le scellé arrive tout fait : l'application a dérivé le secret PRF et
+        chiffré la clé du coffre avec, exactement comme le navigateur. Le
+        serveur ne vérifie aucune signature WebAuthn et n'a pas à le faire, il
+        n'accorde aucun droit sur la foi de cette clé.
+
+        🔴 L'identifiant de partie de confiance est le DOMAINE, pas
+        l'application : c'est ce qui fait qu'une clé enrôlée ici ouvre aussi le
+        coffre depuis le site, et l'inverse. Android ne l'autorise que si le
+        domaine publie la déclaration Digital Asset Links correspondante.
+        """
+        d = _corps(**kw)
+        request.env["bf.otp.vault"].add_credential(
+            (d.get("name") or "Téléphone").strip(),
+            d.get("credential_id"), d.get("prf_salt"),
+            d.get("wrapped_secret"), d.get("wrapped_iv"))
+        return _json({"ok": True, "vault": request.env["bf.otp.vault"].get_my_vault()})
+
+    @http.route(f"{BASE}/credential/remove", type="http", auth="public",
+                methods=["POST"], csrf=False, save_session=False)
+    @_authentifie
+    def credential_remove(self, appareil, **kw):
+        d = _corps(**kw)
+        request.env["bf.otp.vault"].remove_credential(int(d.get("id") or 0))
+        return _json({"ok": True, "vault": request.env["bf.otp.vault"].get_my_vault()})
+
+    # ── Usage : ce que « taper pour copier » remonte ──────────────────
+    @http.route(f"{BASE}/touch", type="http", auth="public", methods=["POST"],
+                csrf=False, save_session=False)
+    @_authentifie
+    def touch(self, appareil, **kw):
+        """Horodate un token qui vient d'être copié.
+
+        ⚠️ Le tri « les plus récents » ne veut rien dire si seul le site
+        alimente la date. Sans cette route, copier depuis le téléphone laisserait
+        le token au fond de la liste, et l'ordre paraîtrait figé.
+        """
+        donnees = _corps(**kw)
+        request.env["bf.otp.token"].touch_token(int(donnees.get("token_id") or 0))
+        return _json({"ok": True})
+
+    @http.route(f"{BASE}/bump", type="http", auth="public", methods=["POST"],
+                csrf=False, save_session=False)
+    @_authentifie
+    def bump(self, appareil, **kw):
+        """Avance le compteur d'un token HOTP.
+
+        🔴 Un HOTP est à usage unique : son compteur DOIT avancer là où le code
+        est produit, sinon le téléphone et le site rendent éternellement le même
+        code et le service le refuse au deuxième usage.
+        """
+        donnees = _corps(**kw)
+        request.env["bf.otp.token"].bump_counter(
+            int(donnees.get("token_id") or 0), int(donnees.get("counter") or 0))
+        return _json({"ok": True})

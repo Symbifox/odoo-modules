@@ -1,6 +1,6 @@
 {
     'name': 'Symbifox OTP',
-    'version': '18.0.4.0.1',
+    'version': '18.0.6.0.0',
     'category': 'Productivity',
     'summary': "Coffre de tokens OTP dont le serveur ne peut lire aucune graine",
     'description': """

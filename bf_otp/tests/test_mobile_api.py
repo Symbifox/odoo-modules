@@ -247,6 +247,142 @@ class TestRoutesMobiles(HttpCase):
         self.assertIsInstance(rendus[0]["last_used"], str)
         self.assertTrue(rendus[0]["last_used"])
 
+    def _apparier(self):
+        """Rend un jeton porteur pour le compte de banc."""
+        self.authenticate("banc-otp-http", "banc-otp-http")
+        r = self.url_open(
+            f"{BASE}/auth/start?redirect=com.bluefoxconsultant.otp://auth",
+            allow_redirects=False)
+        code = r.headers["Location"].split("code=")[1].split("&")[0]
+        return self._json(self.url_open(
+            f"{BASE}/auth/exchange", data=json.dumps({"code": code}),
+            headers={"Content-Type": "application/json"}))["token"]
+
+    def _coffre_avec_token(self, **valeurs):
+        import base64
+        import os
+        coffre = self.env["bf.otp.vault"].with_user(self.personne).create({
+            "user_id": self.personne.id,
+            "salt": base64.b64encode(os.urandom(16)).decode(),
+            "iterations": 600000,
+            "verifier": base64.b64encode(os.urandom(40)).decode(),
+            "verifier_iv": base64.b64encode(os.urandom(12)).decode(),
+        })
+        base = {
+            "vault_id": coffre.id, "issuer": "Banc", "name": "essai@exemple.com",
+            "secret_cipher": base64.b64encode(os.urandom(40)).decode(),
+            "secret_iv": base64.b64encode(os.urandom(12)).decode(),
+        }
+        base.update(valeurs)
+        return self.env["bf.otp.token"].with_user(self.personne).create(base)
+
+    def test_la_sonde_annonce_le_rp_id(self):
+        # 🔴 « bluefoxconsultant.com » et « www.bluefoxconsultant.com » sont
+        # deux parties de confiance DIFFÉRENTES pour WebAuthn. Une clé enrôlée
+        # sous l'une n'ouvre rien sous l'autre, et l'application n'a aucun moyen
+        # de deviner laquelle le site a utilisée : le serveur doit le dire.
+        corps = self._json(self.url_open(f"{BASE}/ping"))
+        self.assertIn("rp_id", corps)
+        self.assertTrue(corps["rp_id"])
+        self.assertNotIn(":", corps["rp_id"], "le port n'a rien à faire dans un RP ID")
+
+    def test_une_cle_d_acces_enrolee_du_telephone_est_conservee(self):
+        self._coffre_avec_token()
+        jeton = self._apparier()
+        entetes = {"Authorization": f"Bearer {jeton}",
+                   "Content-Type": "application/json"}
+        r = self.opener.post(
+            f"{self.base_url()}{BASE}/credential/add",
+            data=json.dumps({
+                "name": "Pixel de banc",
+                "credential_id": "Y3JlZC1kZS1iYW5j",
+                "prf_salt": "c2VsLWRlLWJhbmM=",
+                "wrapped_secret": "c2NlbGxlLWRlLWJhbmM=",
+                "wrapped_iv": "dmVjdGV1cg==",
+            }), headers=entetes)
+        self.assertEqual(200, r.status_code)
+        coffre = self._json(r)["vault"]
+        self.assertEqual(1, len(coffre["credentials"]))
+        self.assertEqual("Pixel de banc", coffre["credentials"][0]["name"])
+
+        # Et elle se retire.
+        r = self.opener.post(
+            f"{self.base_url()}{BASE}/credential/remove",
+            data=json.dumps({"id": coffre["credentials"][0]["id"]}), headers=entetes)
+        self.assertEqual(200, r.status_code)
+        self.assertEqual(0, len(self._json(r)["vault"]["credentials"]))
+
+    def test_les_routes_de_cles_d_acces_refusent_sans_jeton(self):
+        for chemin in ("/credential/add", "/credential/remove"):
+            r = self.url_open(f"{BASE}{chemin}", data=json.dumps({}))
+            self.assertEqual(401, r.status_code, chemin)
+
+    def test_copier_depuis_le_telephone_horodate_le_token(self):
+        # ⚠️ Sans cette route, le tri « les plus récents » ne bougerait que
+        # depuis le site, et l'ordre paraîtrait figé sur le téléphone.
+        token = self._coffre_avec_token()
+        self.assertFalse(token.last_used)
+        jeton = self._apparier()
+        r = self.opener.post(
+            f"{self.base_url()}{BASE}/touch",
+            data=json.dumps({"token_id": token.id}),
+            headers={"Authorization": f"Bearer {jeton}",
+                     "Content-Type": "application/json"})
+        self.assertEqual(200, r.status_code)
+        token.invalidate_recordset()
+        self.assertTrue(token.last_used, "la date d'usage n'a pas été posée")
+
+    def test_le_compteur_hotp_avance_depuis_le_telephone(self):
+        # 🔴 Un HOTP est à usage unique. Si le compteur n'avance pas là où le
+        # code est produit, le service refuse le deuxième usage.
+        token = self._coffre_avec_token(otp_type="hotp", counter=4)
+        jeton = self._apparier()
+        r = self.opener.post(
+            f"{self.base_url()}{BASE}/bump",
+            data=json.dumps({"token_id": token.id, "counter": 5}),
+            headers={"Authorization": f"Bearer {jeton}",
+                     "Content-Type": "application/json"})
+        self.assertEqual(200, r.status_code)
+        token.invalidate_recordset()
+        self.assertEqual(5, token.counter)
+
+    def test_les_routes_d_usage_refusent_sans_jeton(self):
+        for chemin in ("/touch", "/bump"):
+            r = self.url_open(f"{BASE}{chemin}", data=json.dumps({"token_id": 1}))
+            self.assertEqual(401, r.status_code, chemin)
+
+    def test_on_ne_peut_pas_horodater_le_token_de_quelqu_un_d_autre(self):
+        # 🔴 La route fait confiance à l'identifiant reçu : c'est la règle
+        # d'enregistrement du modèle qui doit empêcher d'atteindre autrui.
+        autre = self.env["res.users"].create({
+            "name": "Autre", "login": "autre-otp-http",
+            "groups_id": [(4, self.env.ref("bf_otp.group_otp_user").id)],
+        })
+        import base64
+        import os
+        coffre = self.env["bf.otp.vault"].with_user(autre).create({
+            "user_id": autre.id,
+            "salt": base64.b64encode(os.urandom(16)).decode(),
+            "iterations": 600000,
+            "verifier": base64.b64encode(os.urandom(40)).decode(),
+            "verifier_iv": base64.b64encode(os.urandom(12)).decode(),
+        })
+        sien = self.env["bf.otp.token"].with_user(autre).create({
+            "vault_id": coffre.id, "issuer": "Autre", "name": "pas@moi.com",
+            "secret_cipher": base64.b64encode(os.urandom(40)).decode(),
+            "secret_iv": base64.b64encode(os.urandom(12)).decode(),
+        })
+        jeton = self._apparier()
+        r = self.opener.post(
+            f"{self.base_url()}{BASE}/touch",
+            data=json.dumps({"token_id": sien.id}),
+            headers={"Authorization": f"Bearer {jeton}",
+                     "Content-Type": "application/json"})
+        self.assertNotEqual(200, r.status_code,
+                            "le token d'autrui ne doit pas être atteignable")
+        sien.invalidate_recordset()
+        self.assertFalse(sien.last_used)
+
     def test_les_jetons_rendus_sont_chiffres_et_jamais_des_graines(self):
         """🔴 La propriété du module, éprouvée du côté de l'application.
 
