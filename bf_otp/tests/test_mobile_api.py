@@ -381,10 +381,10 @@ class TestRoutesMobiles(HttpCase):
             f"{self.base_url()}{BASE}/credential/add",
             data=json.dumps({
                 "name": "Pixel de banc",
-                "credential_id": "Y3JlZC1kZS1iYW5j",
-                "prf_salt": "c2VsLWRlLWJhbmM=",
-                "wrapped_secret": "c2NlbGxlLWRlLWJhbmM=",
-                "wrapped_iv": "dmVjdGV1cg==",
+                "credential_id": "Y3JlZC1kZS1iYW5jLTAxMjM0NTY3ODk",
+                "prf_salt": "c2VsLWRlLWJhbmMtMDEyMzQ1Njc4OWFi",
+                "wrapped_secret": "c2NlbGxlLWRlLWJhbmMtMDEyMzQ1Njc4OWFiY2RlZmdoaWprbG1ub3BxcnN0",
+                "wrapped_iv": "dmVjdGV1cjEyb2N0",
             }), headers=entetes)
         self.assertEqual(200, r.status_code)
         coffre = self._json(r)["vault"]
@@ -397,6 +397,46 @@ class TestRoutesMobiles(HttpCase):
             data=json.dumps({"id": coffre["credentials"][0]["id"]}), headers=entetes)
         self.assertEqual(200, r.status_code)
         self.assertEqual(0, len(self._json(r)["vault"]["credentials"]))
+
+    def test_credential_add_refuse_ce_qui_n_est_pas_du_base64_borne(self):
+        self._coffre_avec_token()
+        jeton = self._apparier()
+        entetes = {"Authorization": f"Bearer {jeton}", "Content-Type": "application/json"}
+        bon = {"name": "x", "credential_id": "Y3JlZC1kZS1iYW5jLTAxMjM0NTY3ODk",
+               "prf_salt": "c2VsLWRlLWJhbmMtMDEyMzQ1Njc4OWFi",
+               "wrapped_secret": "c2NlbGxlLWRlLWJhbmMtMDEyMzQ1Njc4OWFiY2RlZmdoaWo=",
+               "wrapped_iv": "dmVjdGV1cjEyb2N0"}
+        for champ, mauvais in (("prf_salt", "pas du base64 !"),
+                               ("wrapped_secret", "QUJD"),           # 3 octets
+                               ("wrapped_iv", "dmVjdGV1cg=="),       # 7 octets
+                               ("credential_id", ""),
+                               ("wrapped_secret", "QQ==" * 200)):   # 200 octets
+            corps = dict(bon); corps[champ] = mauvais
+            r = self.opener.post(f"{self.base_url()}{BASE}/credential/add",
+                                 data=json.dumps(corps), headers=entetes)
+            self.assertEqual(400, r.status_code, f"{champ}={mauvais[:20]!r} accepté à tort")
+        self.assertFalse(self.env["bf.otp.credential"].sudo().search([]),
+                         "rien ne doit avoir été écrit")
+        r = self.opener.post(f"{self.base_url()}{BASE}/credential/add",
+                             data=json.dumps(bon), headers=entetes)
+        self.assertEqual(200, r.status_code, "la forme correcte doit passer")
+
+    def test_le_nombre_d_appareils_est_plafonne(self):
+        from odoo.addons.bf_otp.models.bf_otp_device import PLAFOND_APPAREILS
+        A = self.env["bf.otp.device"]
+        v, d = self._pkce()
+        for _ in range(PLAFOND_APPAREILS):
+            code = A._issue_pending(self.personne.id, challenge=d)
+            self.assertTrue(A._exchange(code, v))
+        from odoo.exceptions import UserError
+        with self.assertRaises(UserError):
+            A._issue_pending(self.personne.id, challenge=d)
+        # Et par HTTP, le refus rebondit vers l'application au lieu d'une page.
+        self.authenticate("banc-otp-http", "banc-otp-http")
+        r = self.url_open(
+            f"{BASE}/auth/start?redirect=com.bluefoxconsultant.otp://auth"
+            f"&code_challenge={d}&code_challenge_method=S256", allow_redirects=False)
+        self.assertIn("error=too_many_devices", r.headers["Location"])
 
     def test_les_routes_de_cles_d_acces_refusent_sans_jeton(self):
         for chemin in ("/credential/add", "/credential/remove"):

@@ -17,12 +17,14 @@ import secrets
 from datetime import timedelta
 
 from odoo import api, fields, models
+from odoo.exceptions import UserError
 
 _logger = logging.getLogger(__name__)
 
 # Le code d'appariement ne sert qu'à traverser le navigateur. Court, parce
 # qu'il ne doit pas survivre à l'aller-retour.
 DUREE_CODE_MINUTES = 5
+PLAFOND_APPAREILS = 10
 
 
 class BfOtpDevice(models.Model):
@@ -70,6 +72,16 @@ class BfOtpDevice(models.Model):
     def _issue_pending(self, user_id, name=None, platform="android",
                        challenge=None):
         """Crée un appareil en attente et rend son code à usage unique."""
+        # ⚠️ Un plafond par personne. Rien ne bornait le nombre d'appareils
+        # appariés : ni la mémoire d'une personne (dix téléphones ?), ni un
+        # attaquant en possession d'une session, qui pourrait en semer sans fin.
+        actifs = self.sudo().search_count([
+            ("user_id", "=", user_id), ("active", "=", True),
+            ("device_token", "!=", False)])
+        if actifs >= PLAFOND_APPAREILS:
+            raise UserError(
+                "Trop d'appareils appariés (%d). Retirez-en un depuis le site."
+                % actifs)
         code = secrets.token_urlsafe(24)
         self.sudo().create({
             "user_id": user_id,

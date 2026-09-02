@@ -90,6 +90,25 @@ def _redirection_permise(redirect):
     return bool(redirect) and bool(permis) and redirect.startswith(permis)
 
 
+def _exiger_base64(valeur, nom, minimum, maximum, urlsafe=False):
+    """Refuse ce qui n'est pas du base64 d'une taille plausible, en levant
+    une UserError que l'enveloppe traduit en 400 propre."""
+    import base64
+    import binascii
+    if not isinstance(valeur, str) or not valeur:
+        raise UserError("%s manquant" % nom)
+    try:
+        if urlsafe:
+            octets = base64.urlsafe_b64decode(valeur + "=" * (-len(valeur) % 4))
+        else:
+            octets = base64.b64decode(valeur, validate=True)
+    except (binascii.Error, ValueError):
+        raise UserError("%s n'est pas du base64" % nom)
+    if not minimum <= len(octets) <= maximum:
+        raise UserError("%s : %d octets, attendu entre %d et %d"
+                        % (nom, len(octets), minimum, maximum))
+
+
 def _authentifie(fn):
     """Résout le jeton porteur, bascule l'environnement, ou répond 401."""
     @functools.wraps(fn)
@@ -240,8 +259,12 @@ class BfOtpMobileApi(http.Controller):
         if not defi or methode != "S256":
             return rebondir(error="pkce_required")
 
-        code = request.env["bf.otp.device"]._issue_pending(
-            utilisateur.id, name=kw.get("device_name"), challenge=defi)
+        try:
+            code = request.env["bf.otp.device"]._issue_pending(
+                utilisateur.id, name=(kw.get("device_name") or "")[:120],
+                challenge=defi)
+        except UserError:
+            return rebondir(error="too_many_devices")
         return rebondir(code=code)
 
     @http.route(f"{BASE}/auth/exchange", type="http", auth="public",
@@ -299,8 +322,15 @@ class BfOtpMobileApi(http.Controller):
         domaine publie la déclaration Digital Asset Links correspondante.
         """
         d = _corps(**kw)
+        # ⚠️ Forme et taille avant écriture. Le modèle ne valide rien de
+        # ces champs, et sans borne un client pouvait y ranger des mégaoctets
+        # ou n'importe quel texte, que le site tenterait ensuite de décoder.
+        _exiger_base64(d.get("credential_id"), "credential_id", 16, 1024, urlsafe=True)
+        _exiger_base64(d.get("prf_salt"), "prf_salt", 16, 64)
+        _exiger_base64(d.get("wrapped_secret"), "wrapped_secret", 32, 256)
+        _exiger_base64(d.get("wrapped_iv"), "wrapped_iv", 12, 16)
         request.env["bf.otp.vault"].add_credential(
-            (d.get("name") or "Téléphone").strip(),
+            (d.get("name") or "Téléphone").strip()[:120],
             d.get("credential_id"), d.get("prf_salt"),
             d.get("wrapped_secret"), d.get("wrapped_iv"))
         return _json({"ok": True, "vault": request.env["bf.otp.vault"].get_my_vault()})
