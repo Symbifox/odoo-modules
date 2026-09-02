@@ -1,6 +1,6 @@
 {
     'name': 'Symbifox OTP',
-    'version': '18.0.3.2.0',
+    'version': '18.0.3.3.0',
     'category': 'Productivity',
     'summary': "Coffre de jetons OTP dont le serveur ne peut lire aucune graine",
     'description': """
@@ -57,6 +57,7 @@ Ce que le module ne fait PAS encore
     'assets': {
         'web.assets_backend': [
             'bf_otp/static/src/js/otp_crypto.js',
+            'bf_otp/static/src/js/otp_icons.js',
             'bf_otp/static/src/js/otp_totp.js',
             'bf_otp/static/src/js/otp_webauthn.js',
             'bf_otp/static/src/js/otp_app.js',

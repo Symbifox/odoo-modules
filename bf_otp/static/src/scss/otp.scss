@@ -121,3 +121,10 @@
     padding: 0 0.3rem;
     font-size: 0.75em;
 }
+
+// Le glyphe de marque occupe la pastille sans la remplir jusqu'au bord.
+.o_bf_otp .o_bf_otp_chip .o_bf_otp_glyphe {
+    width: 60%;
+    height: 60%;
+    display: block;
+}

@@ -13,6 +13,7 @@ import {
     webauthnAvailable, enrollPasskey, unlockWithPasskey, PrfNonRendu,
 } from "./otp_webauthn";
 import { base32Decode, totp, hotp, secondsLeft, parseOtpauth } from "./otp_totp";
+import { iconeDe, contraste } from "./otp_icons";
 
 /** Minutes d'inactivité après lesquelles le coffre se referme tout seul.
  *  Un coffre ouvert sur un écran laissé sans surveillance est un coffre ouvert
@@ -82,7 +83,24 @@ export class BfOtpApp extends Component {
      * réseau — la liste des comptes qu'on protège. Une pastille locale ne dit
      * rien à personne.
      */
+    /**
+     * L'icône embarquée de l'émetteur, ou `null`.
+     *
+     * ⚠️ Aucune requête : les tracés vivent dans le paquet. Le refus d'aller
+     * chercher une favicon tient toujours, et pour la même raison.
+     */
+    icone(t) {
+        return iconeDe(t.issuer);
+    }
+
     chipStyle(t) {
+        // Quand on connaît la marque, sa couleur dit le service plus vite que
+        // n'importe quelle teinte calculée. Le glyphe passe en noir ou en blanc
+        // selon la luminance, sans quoi une marque claire l'avalerait.
+        const ic = this.icone(t);
+        if (ic) {
+            return `background: ${ic.hex}; color: ${contraste(ic.hex)};`;
+        }
         const src = (t.issuer || t.name || "?").toLowerCase();
         let h = 0;
         for (let i = 0; i < src.length; i++) {

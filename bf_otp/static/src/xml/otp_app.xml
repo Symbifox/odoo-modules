@@ -141,8 +141,14 @@
                                  t-att-class="{ 'o_bf_otp_broken': tok.broken, 'o_bf_otp_compact': state.compact }">
                                 <div class="card-body py-2 px-3">
                                     <div class="d-flex align-items-start">
-                                        <span class="o_bf_otp_chip me-2" t-att-style="chipStyle(tok)"
-                                              t-esc="chipText(tok)"/>
+                                        <span class="o_bf_otp_chip me-2" t-att-style="chipStyle(tok)">
+                                            <svg t-if="icone(tok)" viewBox="0 0 24 24"
+                                                 class="o_bf_otp_glyphe" aria-hidden="true"
+                                                 xmlns="http://www.w3.org/2000/svg">
+                                                <path t-att-d="icone(tok).d" fill="currentColor"/>
+                                            </svg>
+                                            <t t-else="" t-esc="chipText(tok)"/>
+                                        </span>
                                         <div class="flex-grow-1 min-w-0">
                                             <div class="fw-bold text-truncate" t-esc="tok.issuer or tok.name"/>
                                             <div class="small text-muted text-truncate" t-esc="tok.name"/>
