@@ -114,7 +114,7 @@
             </head>
             <body>
                 <div class="bf-header">
-                    <img t-attf-src="/web/image/res.company/#{req.company_id.id}/#{req.company_id.report_brand_logo and 'report_brand_logo' or 'logo'}" alt=""/>
+                    <img t-attf-src="/web/image/res.company/#{req.company_id.id}/#{req.company_id.logo and 'logo' or 'report_brand_logo'}" alt=""/>
                     <span class="t"><t t-esc="req.company_id.name"/></span>
                 </div>
                 <div class="bf-accent"/>
@@ -882,7 +882,7 @@
             </head>
             <body>
                 <div class="bf-header">
-                    <img t-attf-src="/web/image/res.company/#{req.company_id.id}/#{req.company_id.report_brand_logo and 'report_brand_logo' or 'logo'}" alt=""/>
+                    <img t-attf-src="/web/image/res.company/#{req.company_id.id}/#{req.company_id.logo and 'logo' or 'report_brand_logo'}" alt=""/>
                     <span class="t"><t t-esc="req.company_id.name"/></span>
                 </div>
                 <div class="bf-accent"/>
@@ -966,7 +966,7 @@
             <body>
                 <div class="bf-wrap">
                     <div style="text-align:center; padding:18px 0 12px;">
-                        <img t-attf-src="/web/image/res.company/#{req.company_id.id}/#{req.company_id.report_brand_logo and 'report_brand_logo' or 'logo'}"
+                        <img t-attf-src="/web/image/res.company/#{req.company_id.id}/#{req.company_id.logo and 'logo' or 'report_brand_logo'}"
                              t-att-alt="req.company_id.name" style="height:34px;"/>
                     </div>
 

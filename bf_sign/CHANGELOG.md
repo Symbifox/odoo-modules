@@ -2,6 +2,19 @@
 
 Versioning follows the Odoo `18.0.MAJOR.MINOR.PATCH` convention.
 
+## 18.0.3.23.0 — The company logo comes first on every portal page
+
+The three portal templates each build the header image from the same fallback,
+and they had drifted apart: `verify_page` had been switched to prefer
+`res.company.logo` while `sign_page` and `sign_otp` still preferred
+`report_brand_logo`. A signer opening the document and a third party checking
+its signature would see two different marks on the same envelope.
+
+All three now read `logo and 'logo' or 'report_brand_logo'`. The company's own
+logo is the identity a signer is being asked to trust; `report_brand_logo` is
+the branding pack's print mark and stays the fallback for a company that has
+not uploaded a logo.
+
 ## 18.0.3.22.0 — Sealing key material is administrator-only
 
 `bf.sign.seal` is an `AbstractModel`. It has no table, so no `ir.model.access`
