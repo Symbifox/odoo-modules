@@ -280,7 +280,7 @@ export class BfOtpApp extends Component {
             if (!res) {
                 this.state.error = _t(
                     "Aucune clé d'accès enregistrée n'a répondu sur cet appareil. " +
-                    "Utilise ta phrase de passe."
+                    "Utilisez votre phrase de passe."
                 );
                 return;
             }
@@ -293,7 +293,7 @@ export class BfOtpApp extends Component {
                 this._key = null;
                 this.state.tokens = [];
                 this.state.error = _t(
-                    "Cette clé d'accès n'ouvre plus ce coffre. Utilise ta phrase de passe."
+                    "Cette clé d'accès n'ouvre plus ce coffre. Utilisez votre phrase de passe."
                 );
                 return;
             }
@@ -325,7 +325,7 @@ export class BfOtpApp extends Component {
         // l'avertissement survit à sa propre réfutation.
         this.state.prfRefus = false;
         if (!this.state.enrolPass) {
-            this.state.error = _t("Entre ta phrase de passe pour confirmer.");
+            this.state.error = _t("Entrez votre phrase de passe pour confirmer.");
             return;
         }
         this.state.busy = true;
@@ -342,7 +342,7 @@ export class BfOtpApp extends Component {
             }
             const scelle = await enrollPasskey(
                 this.env.services.user?.name || "coffre",
-                _t("Coffre de jetons OTP"),
+                _t("Coffre de tokens OTP"),
                 octets
             );
             await this.orm.call("bf.otp.vault", "add_credential", [
@@ -354,7 +354,7 @@ export class BfOtpApp extends Component {
             this.state.enrolPass = "";
             this.state.enrolName = "";
             this.notification.add(
-                _t("Clé d'accès enregistrée. Garde ta phrase : elle reste le seul recours si tu perds cet appareil."),
+                _t("Clé d'accès enregistrée. Conservez votre phrase : elle reste le seul recours si vous perdez cet appareil."),
                 { type: "success", sticky: true }
             );
         } catch (e) {
@@ -411,7 +411,7 @@ export class BfOtpApp extends Component {
             this.state.tokens = [];
             this._ouvrir();
             this.notification.add(
-                _t("Coffre créé. Note ta phrase ailleurs : personne ne peut la retrouver, et sans elle les jetons sont perdus."),
+                _t("Coffre créé. Notez votre phrase ailleurs : personne ne peut la retrouver, et sans elle les tokens sont perdus."),
                 { type: "warning", sticky: true }
             );
         } finally {
@@ -703,7 +703,7 @@ export class BfOtpApp extends Component {
             values.secret_cipher = cipher;
             values.secret_iv = iv;
         } else if (!f.id) {
-            this.state.error = _t("La graine est obligatoire pour un jeton neuf.");
+            this.state.error = _t("La graine est obligatoire pour un token neuf.");
             return;
         }
         this.state.busy = true;
@@ -720,9 +720,9 @@ export class BfOtpApp extends Component {
         this.dialog.add(
             (await import("@web/core/confirmation_dialog/confirmation_dialog")).ConfirmationDialog,
             {
-                title: _t("Supprimer ce jeton"),
+                title: _t("Supprimer ce token"),
                 body: _t(
-                    "« %s » sera supprimé de ce coffre. Si tu n'as pas la graine ailleurs, le deuxième facteur de ce compte devient irrécupérable.",
+                    "« %s » sera supprimé de ce coffre. Si vous n'avez pas la graine ailleurs, le deuxième facteur de ce compte devient irrécupérable.",
                     `${t.issuer ? t.issuer + " — " : ""}${t.name}`
                 ),
                 confirmLabel: _t("Supprimer"),
@@ -806,7 +806,7 @@ export class BfOtpApp extends Component {
                 });
             }
             if (!entries.length) {
-                this.state.error = _t("Aucun jeton lisible dans ce fichier.");
+                this.state.error = _t("Aucun token lisible dans ce fichier.");
                 return;
             }
             const res = await this.orm.call("bf.otp.token", "import_tokens", [entries]);
@@ -814,7 +814,7 @@ export class BfOtpApp extends Component {
             this.state.importText = "";
             this.state.importPassword = "";
             await this._chargerJetons();
-            let msg = _t("%s jeton(s) importé(s).", res.created);
+            let msg = _t("%s token(s) importé(s).", res.created);
             if (res.skipped) {
                 msg += " " + _t("%s déjà présent(s), ignoré(s).", res.skipped);
             }
