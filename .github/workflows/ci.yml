@@ -44,6 +44,29 @@ jobs:
         # ship, and both are inside the range Odoo 18 declares it supports.
         run: python -m compileall -q -x '(__pycache__|/migrations/)' .
 
+      - name: XML is well-formed
+        # Odoo parse chaque fichier de `data` au chargement : un XML mal formé
+        # ne se voit qu'à l'installation, neuf minutes plus tard, et il tue le
+        # lot entier. Payé une fois, en écrivant un « -- » dans un commentaire
+        # XML, ce qui est illégal et qu'aucune autre étape ne regardait.
+        # expat, dans la bibliothèque standard, le refuse : pas de dépendance.
+        run: |
+          python - <<'PY'
+          import pathlib, sys, xml.etree.ElementTree as ET
+          bad = []
+          for f in sorted(pathlib.Path(".").rglob("*.xml")):
+              if ".git" in f.parts:
+                  continue
+              try:
+                  ET.parse(f)
+              except ET.ParseError as exc:
+                  bad.append(f"{f}: {exc}")
+          for line in bad:
+              print(f"::error::{line}")
+          print(f"{len(bad)} malformed XML file(s)")
+          sys.exit(1 if bad else 0)
+          PY
+
       - name: Manifest integrity
         # Every file listed in `data` and `demo` must exist. A missing one is
         # invisible until somebody installs the module.

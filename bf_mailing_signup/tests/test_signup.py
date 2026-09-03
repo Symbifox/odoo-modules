@@ -43,16 +43,25 @@ class TestMailingSignup(HttpCase):
             lambda serveur, message, *a, **kw: self.envois.append(message) or "essai")
         correctif.start()
         self.addCleanup(correctif.stop)
-        # ⚠️ Sur une base NEUVE — la CI en fabrique une par lot — la société
-        # n'a pas d'adresse et `mail.catchall.domain` / `mail.default.from` ne
-        # sont pas posés. `mail_mail._send` s'arrête alors AVANT `send_email`,
-        # sur « You must either provide a sender address explicitly » : le
-        # mouchard ci-dessus ne voit rien passer et six essais tombaient sur un
-        # `IndexError: list index out of range` qui ne disait pas pourquoi.
-        # Sur une base de travail, la configuration existait et masquait tout.
-        icp = self.env["ir.config_parameter"].sudo()
-        icp.set_param("mail.catchall.domain", "example.com")
-        icp.set_param("mail.default.from", "notifications")
+        # ⚠️ Le contrôleur ne pose PAS `email_from`, exprès : la confirmation
+        # part de l'adresse d'envoi de l'instance, la seule alignée en SPF et
+        # DKIM. Encore faut-il que l'instance en ait une. Depuis la 17, elle
+        # vient d'un `mail.alias.domain` rattaché à la société, et le module
+        # `mail` n'en livre AUCUN par défaut : sur une base neuve — la CI en
+        # fabrique une par lot — `mail_mail._send` s'arrêtait donc AVANT le
+        # mouchard de `send_email`, sur « You must either provide a sender
+        # address explicitly ». Le mouchard ne voyait rien passer et six essais
+        # tombaient sur un `IndexError` muet sur la cause. Sur une base de
+        # travail le domaine existait et masquait tout.
+        domaine = self.env["mail.alias.domain"].search([], limit=1)
+        if not domaine:
+            domaine = self.env["mail.alias.domain"].create({
+                "name": "example.com",
+                "bounce_alias": "bounce",
+                "catchall_alias": "catchall",
+                "default_from": "notifications",
+            })
+        self.env.company.alias_domain_id = domaine
         self.liste = self.env["mailing.list"].create({"name": "Essai — nouveautés"})
         self.env["ir.config_parameter"].sudo().set_param(
             ctl.ICP_LIST, str(self.liste.id))
