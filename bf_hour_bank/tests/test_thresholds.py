@@ -27,10 +27,15 @@ class TestHourBankThresholds(TransactionCase):
             'allow_timesheets': True,
             'partner_id': cls.partner.id,
         })
+        # ⚠️ Pas d'`invoice_policy` : le champ vient de `sale`, dont ce module
+        # ne dépend pas. Sur une base qui ne l'installe pas — la CI en fabrique
+        # une par lot — la création levait « Invalid field 'invoice_policy' on
+        # model 'product.product' » dans le setUpClass, et toute la classe
+        # tombait. Le test ne le lit nulle part : il n'a besoin que d'un
+        # produit de service.
         cls.product = cls.env['product.product'].create({
             'name': 'Heures de service',
             'type': 'service',
-            'invoice_policy': 'order',
             'list_price': 100.0,
         })
         cls.journal = cls.env['account.journal'].search(
