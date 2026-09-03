@@ -55,6 +55,24 @@ disappeared on the first server upgrade. The error window is bounded by the TTL,
 which is configurable, and a "Clear the cache now" button lives in Settings →
 Collabora Online for when you do not want to wait for it.
 
+## 4. Documents in another company open again
+
+`cool_frame` is declared `website=True` upstream. Odoo's website layer
+**forces** `allowed_company_ids` to the website's own company on every website
+request (`website/models/ir_http.py`), overwriting whatever the back office
+company switcher says.
+
+Measured in production: any document attached to a record belonging to a second
+company returned 403 from the editor, and ticking that company in the switcher
+changed nothing, because the switcher was never read.
+
+The fix reads the `cids` cookie the browser sends anyway and intersects it with
+the companies the user is actually entitled to. It never widens beyond
+`company_ids`: at worst it grants what the person would get by ticking every
+box. The two WOPI routes called by the Collabora **server** get the same
+treatment from the token's user, since a server-to-server call carries no
+cookie and would otherwise fall back to the person's main company alone.
+
 ## Settings
 
 Settings → Collabora Online. One setting: `bf_collabora.decouverte_ttl`, in
