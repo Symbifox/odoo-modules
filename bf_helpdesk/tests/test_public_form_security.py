@@ -169,3 +169,62 @@ class TestPublicFormSecurity(HttpCase):
             "only the first _SUBMIT_MAX submissions per IP should create tickets",
         )
         public_form._submit_data.clear()
+
+    def test_browser_renderable_extensions_rejected(self):
+        # svg/html/xml attachments render inline in the agent's backend origin
+        # when opened → stored XSS. They must be blocked like .exe.
+        for fname, payload in (
+            ("payload.svg", b"<svg xmlns='http://www.w3.org/2000/svg'>"
+                            b"<script>alert(1)</script></svg>"),
+            ("payload.html", b"<html><script>alert(1)</script></html>"),
+            ("payload.xml", b"<?xml version='1.0'?><x/>"),
+        ):
+            token = self._csrf()
+            before = self.Ticket.search_count([("team_id", "=", self.team.id)])
+            resp = self.url_open(
+                "/support/security-test/submit",
+                data={
+                    "csrf_token": token,
+                    "name": "Attacker",
+                    "email": "atk@example.com",
+                    "subject": "test",
+                    "description": "test",
+                },
+                files={"attachment": (fname, payload, "image/svg+xml")},
+            )
+            self.assertEqual(resp.status_code, 200)
+            self.assertIn("non autorisé", resp.text.lower())
+            self.assertEqual(
+                self.Ticket.search_count([("team_id", "=", self.team.id)]),
+                before,
+                "%s must be rejected (stored-XSS vector)" % fname,
+            )
+
+    def test_accepted_attachment_gets_server_derived_mimetype(self):
+        # A benign upload whose client Content-Type lies must be stored with a
+        # server-derived mimetype (never the client's) so it can't be served
+        # inline as html/svg.
+        token = self._csrf()
+        resp = self.url_open(
+            "/support/security-test/submit",
+            data={
+                "csrf_token": token,
+                "name": "Good",
+                "email": "mime@example.com",
+                "subject": "mime",
+                "description": "mime",
+            },
+            # Client claims html for a .txt payload; server must store text/plain.
+            files={"attachment": ("note.txt", b"hello", "text/html")},
+        )
+        self.assertEqual(resp.status_code, 200)
+        ticket = self.Ticket.search(
+            [("team_id", "=", self.team.id), ("partner_email", "=", "mime@example.com")],
+            limit=1, order="id desc",
+        )
+        att = self.env["ir.attachment"].search([
+            ("res_model", "=", "helpdesk.ticket"), ("res_id", "=", ticket.id),
+        ], limit=1)
+        self.assertTrue(att)
+        self.assertNotEqual(att.mimetype, "text/html")
+        self.assertEqual(att.mimetype, "text/plain")

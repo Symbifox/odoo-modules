@@ -1,7 +1,7 @@
 {
     "name": "Symbifox — Helpdesk",
     "summary": "Fork OCA helpdesk_mgmt with BF integrations: hour bank, ticket timesheets, waiting states, branded public form, ntfy critical hook",
-    "version": "18.0.4.3.4",
+    "version": "18.0.4.4.4",
     "category": "After-Sales",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",
@@ -15,10 +15,10 @@
         "bf_persona",
         "project_knowledge_matrix",
         "bf_meeting",
+        "bf_claude_chat",
         "survey",
-        "bf_dashboard",
+        "bf_home",
         "bf_onboarding_base",
-        "bf_llm",
     ],
     "data": [
         "security/ir.model.access.csv",

@@ -34,6 +34,14 @@ class BfDashboard(models.AbstractModel):
             "total_unattended": sum(r["unattended"] for r in rows),
         }
 
+    # ⚠️ @api.model OBLIGATOIRE, et il manquait. Cette surcharge est la DERNIÈRE
+    # de la chaîne d'héritage : c'est elle que `call_kw` inspecte. Sans le
+    # décorateur, l'appel est routé vers `_call_kw_multi`, qui consomme le
+    # premier argument comme une liste d'identifiants — avec zéro argument,
+    # c'est `IndexError: tuple index out of range`, que le composant OWL
+    # affiche sous la forme « Impossible de charger les données du tableau
+    # de bord ». Les trois autres extensions de bf.dashboard le portent.
+    @api.model
     def get_dashboard_data(self):
         data = super().get_dashboard_data()
         data["helpdesk"] = self._get_helpdesk_summary()

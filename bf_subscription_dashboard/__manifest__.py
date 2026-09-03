@@ -5,9 +5,9 @@
     'summary': "Ajoute une carte Abonnements au tableau de bord Blue Fox",
     'description': """
 Module-pont : ajoute une carte de synthèse des abonnements (dépense mensualisée,
-renouvellements à venir, dormants) au tableau de bord Blue Fox (bf_dashboard).
+renouvellements à venir, dormants) au tableau de bord d'accueil (bf_home).
 
-S'installe automatiquement lorsque bf_subscription ET bf_dashboard sont présents.
+S'installe automatiquement lorsque bf_subscription ET bf_home sont présents.
     """,
     'author': 'Les services de consultation Blue Fox, Inc.',
     'website': 'https://symbifox.com',

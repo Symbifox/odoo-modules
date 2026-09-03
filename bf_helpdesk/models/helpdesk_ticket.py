@@ -1,5 +1,6 @@
 import json
 import logging
+import urllib.error
 import urllib.request
 from datetime import timedelta
 
@@ -538,7 +539,7 @@ class HelpdeskTicket(models.Model):
         }
 
     # ------------------------------------------------------------------
-    # Triage IA via the bf_llm gateway — one-shot, provider-agnostic
+    # Triage IA via Claude — one-shot Anthropic API call
     # ------------------------------------------------------------------
     triage_state = fields.Selection(
         selection=[
@@ -588,57 +589,94 @@ class HelpdeskTicket(models.Model):
             "Pas de bla-bla. Pas d'introduction. Pas de conclusion."
         )
 
+    def _call_anthropic_network(self, prompt):
+        """Call Anthropic Messages API directly. Returns assistant text.
+
+        Raises UserError for configuration issues (missing key) or HTTP errors.
+        Lets network exceptions propagate (caller catches and persists 'error').
+        """
+        IConf = self.env["ir.config_parameter"].sudo()
+        api_key = self._bf_helpdesk_get_anthropic_api_key()
+        if not api_key:
+            raise UserError(
+                "Clé API Anthropic non configurée. Voir Settings → Claude Chat ou paramètre "
+                "système 'bf_helpdesk.anthropic_api_key'."
+            )
+        model = IConf.get_param("bf_claude_chat.model", "claude-sonnet-4-6")
+        timeout = float(IConf.get_param("bf_helpdesk.triage_timeout", "30"))
+        payload = {
+            "model": model,
+            "max_tokens": 1024,
+            "messages": [{"role": "user", "content": prompt}],
+        }
+        req = urllib.request.Request(
+            "https://api.anthropic.com/v1/messages",
+            data=json.dumps(payload).encode("utf-8"),
+            headers={
+                "x-api-key": api_key,
+                "anthropic-version": "2023-06-01",
+                "content-type": "application/json",
+            },
+            method="POST",
+        )
+        try:
+            with urllib.request.urlopen(req, timeout=timeout) as resp:
+                body = resp.read().decode("utf-8", errors="replace")
+                data = json.loads(body)
+        except urllib.error.HTTPError as e:
+            raise UserError(f"Anthropic API a retourné HTTP {e.code} : {e.read()[:200].decode('utf-8', errors='replace')}")
+        # Extract text from content blocks
+        content = data.get("content") or []
+        parts = [c.get("text", "") for c in content if c.get("type") == "text"]
+        return "\n".join(parts).strip()
+
+    def _bf_helpdesk_get_anthropic_api_key(self):
+        """Resolve the Anthropic API key.
+
+        Priority:
+        1. ir.config_parameter 'bf_helpdesk.anthropic_api_key' (plain — for tests)
+        2. bf_claude_chat encrypted key, decrypted via the same Fernet pattern.
+        """
+        IConf = self.env["ir.config_parameter"].sudo()
+        plain = (IConf.get_param("bf_helpdesk.anthropic_api_key", "") or "").strip()
+        if plain:
+            return plain
+        encrypted = IConf.get_param("bf_claude_chat.api_key_encrypted", "")
+        if not encrypted:
+            return ""
+        try:
+            ResConfig = self.env["res.config.settings"]
+            return ResConfig._decrypt_api_key(self.env, encrypted)
+        except Exception:
+            _logger.exception("bf_helpdesk: cannot decrypt bf_claude_chat API key")
+            return ""
+
     def action_triage_with_claude(self):
-        """Run AI triage on this ticket via the bf_llm gateway.
+        """Run Claude triage on this ticket.
 
-        Provider resolution, key handling (Fernet-encrypted in
-        ``bf.llm.provider``), and the Anthropic/OpenAI HTTP transport now live
-        in ``bf_llm`` — this module no longer holds an API URL or key.
-
-        - When no LLM provider is configured, degrade gracefully: show a soft
-          (non-blocking) notification, leave the ticket state untouched. The
-          GenFox/``bf_claude_chat`` module stays a soft, optional dep; bf_llm
-          provides its own encrypted key store, so triage works without it.
-        - Transient/model errors come back on the normalized envelope
-          (``res["error"]``): the suggestion field shows the error and the
-          state goes to ``error`` so the user can retry.
-        - Success → state ``done``, HTML stored, ``triage_last_run`` set.
+        - Configuration errors (missing API key, etc.) raise UserError and
+          surface as a popup; the form state is unchanged.
+        - Network/transient errors are caught, the suggestion field shows
+          the error, and the state goes to 'error' so the user can retry.
         """
         self.ensure_one()
         prompt = self._triage_prompt()
         try:
-            provider = self.env["bf.llm"].for_feature("triage")
-        except UserError as exc:
-            # No default LLM provider configured → soft degrade, no state change.
-            _logger.info(
-                "bf_helpdesk: triage skipped on ticket %s, no LLM provider: %s",
-                self.number, exc,
-            )
-            return {
-                "type": "ir.actions.client",
-                "tag": "display_notification",
-                "params": {
-                    "title": "Triage IA indisponible",
-                    "message": str(exc),
-                    "type": "warning",
-                    "sticky": False,
-                },
-            }
-        res = provider.chat(messages=[{"role": "user", "content": prompt}])
-        if res.get("error"):
+            response_text = self._call_anthropic_network(prompt)
+        except (ConnectionError, urllib.error.URLError, TimeoutError, OSError) as e:
             _logger.warning(
-                "bf_helpdesk: triage LLM error on ticket %s: %s",
-                self.number, res["error"],
+                "bf_helpdesk: triage network failure on ticket %s: %s",
+                self.number, e,
             )
             self.write({
                 "triage_state": "error",
-                "triage_suggestion_html": f"<p><strong>Erreur :</strong> {res['error']}</p>",
+                "triage_suggestion_html": f"<p><strong>Erreur réseau :</strong> {e}</p>",
                 "triage_last_run": fields.Datetime.now(),
             })
             return True
         self.write({
             "triage_state": "done",
-            "triage_suggestion_html": res["text"] or "",
+            "triage_suggestion_html": response_text,
             "triage_last_run": fields.Datetime.now(),
         })
         return True

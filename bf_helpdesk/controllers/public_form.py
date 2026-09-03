@@ -1,9 +1,10 @@
 import base64
+import logging
+import mimetypes
+import re
 import threading
 import time
 from collections import defaultdict
-import logging
-import re
 
 import werkzeug
 
@@ -11,28 +12,6 @@ from odoo import _, http
 from odoo.http import request
 from odoo.tools import plaintext2html
 
-_logger = logging.getLogger(__name__)
-
-# Basic RFC-5322-ish, good enough to reject obvious garbage. Server-side defense
-# in depth — the input has type="email" client-side too.
-EMAIL_RE = re.compile(r"^[A-Za-z0-9._%+\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}$")
-
-# Per-attachment hard cap (MB). Defaults to ir.config_parameter
-# bf_helpdesk.public_form_max_attachment_mb (default 10 MB).
-ATTACHMENT_MB_PARAM = "bf_helpdesk.public_form_max_attachment_mb"
-# Total request payload cap (MB) — sum of all attachments.
-ATTACHMENT_TOTAL_MB_PARAM = "bf_helpdesk.public_form_max_total_attachment_mb"
-
-# Block obvious dangerous extensions (defense in depth — most should be
-# stopped at the proxy too).
-#
-# ⚠ Kept in step with bf_survey_upload.DENY_EXTENSIONS and
-# bf_securetransfer._FALLBACK_DENY_EXTENSIONS. This list used to cover
-# executables and scripts but NOT the browser-renderable formats those two
-# classify first, under "Browser-renderable / XSS vectors" — yet the file lands
-# here from an anonymous POST on /support/<slug>, and ir.attachment derives the
-# mimetype from the name, so an .html arrived as text/html. Any addition below
-# belongs in all three lists.
 # Per-IP throttle on unauthenticated ticket creation (anti spam + auto-ack
 # mail-bomb). Keyed on the ProxyFix-corrected client IP (proxy_mode = True).
 _submit_lock = threading.Lock()
@@ -60,27 +39,36 @@ def _check_submit_rate_limit():
         _submit_data[ip].append(now)
         return True
 
+_logger = logging.getLogger(__name__)
+
+# Basic RFC-5322-ish, good enough to reject obvious garbage. Server-side defense
+# in depth — the input has type="email" client-side too.
+EMAIL_RE = re.compile(r"^[A-Za-z0-9._%+\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}$")
+
+# Per-attachment hard cap (MB). Defaults to ir.config_parameter
+# bf_helpdesk.public_form_max_attachment_mb (default 10 MB).
+ATTACHMENT_MB_PARAM = "bf_helpdesk.public_form_max_attachment_mb"
+# Total request payload cap (MB) — sum of all attachments.
+ATTACHMENT_TOTAL_MB_PARAM = "bf_helpdesk.public_form_max_total_attachment_mb"
+
+# Block obvious dangerous extensions (defense in depth — most should be
+# stopped at the proxy too).
 BLOCKED_EXTENSIONS = {
-    # Browser-renderable / XSS vectors
-    ".html", ".htm", ".xhtml", ".svg", ".svgz", ".mhtml", ".mht",
-    ".shtml", ".xml", ".xsl", ".xslt",
-    ".js", ".mjs", ".wasm",
-    # Server-side execution
-    ".php", ".php3", ".php4", ".php5", ".php7", ".phps", ".phtml", ".pht",
-    ".asp", ".aspx", ".ashx", ".cer",
-    ".jsp", ".jspx", ".jsv", ".jspf",
-    ".cgi", ".pl", ".rb", ".lua",
-    ".py", ".pyc", ".pyo",
-    ".swf",
-    ".class", ".jar", ".war", ".ear",
-    # Native executables and scripts
     ".exe", ".bat", ".cmd", ".com", ".scr", ".pif",
-    ".sh", ".bash", ".zsh", ".msi", ".dll",
-    ".vbs", ".vbe", ".jse", ".wsf", ".wsh", ".hta",
-    ".ps1", ".ps1xml", ".psm1",
-    ".lnk", ".reg", ".chm",
-    # Web server config honored if dropped in a served path
-    ".htaccess", ".htpasswd",
+    ".sh", ".msi", ".vbs", ".vbe", ".js", ".jse", ".wsf", ".wsh",
+    ".jar", ".ps1", ".ps1xml", ".dll", ".lnk", ".chm", ".hta",
+    ".php", ".php3", ".php4", ".php5", ".phtml",
+    ".rb", ".py", ".pyc", ".pyo",
+    # Browser-renderable types execute in the backend origin when an agent
+    # opens /web/content/<id> inline → stored XSS / session theft.
+    ".html", ".htm", ".xhtml", ".shtml", ".svg", ".svgz",
+    ".xml", ".xsl", ".xslt", ".mht", ".mhtml", ".mjs", ".wasm",
+    # Alignés sur la copie publiée le 2026-08-22 : exécution côté serveur et
+    # fichiers de configuration web que cette liste ne couvrait pas.
+    ".asp", ".aspx", ".ashx", ".cer", ".cgi", ".class", ".ear",
+    ".htaccess", ".htpasswd", ".jsp", ".jspf", ".jspx", ".jsv",
+    ".lua", ".php7", ".phps", ".pht", ".pl", ".psm1", ".reg",
+    ".swf", ".war", ".bash", ".zsh",
 }
 
 
@@ -288,13 +276,20 @@ class BFHelpdeskPublicForm(http.Controller):
 
         ticket = Ticket.create(vals)
 
-        # Attach pre-validated files
+        # Attach pre-validated files. Force a server-derived mimetype (never the
+        # client-supplied Content-Type) and fall back to octet-stream so a
+        # crafted upload can't be served inline and executed in the agent's
+        # session when they open it.
         for filename, data in accepted:
+            server_mimetype = (
+                mimetypes.guess_type(filename)[0] or "application/octet-stream"
+            )
             request.env["ir.attachment"].sudo().create({
                 "name": filename,
                 "datas": base64.b64encode(data),
                 "res_model": "helpdesk.ticket",
                 "res_id": ticket.id,
+                "mimetype": server_mimetype,
             })
 
         if partner_id:
