@@ -141,3 +141,68 @@ class TestSocietes(HttpCase):
         reponse = self.url_open("/collabora_odoo/frame/%s/read" % piece.id)
         self.assertEqual(reponse.status_code, 403,
                          "un témoin bricolé ne doit rien ouvrir de plus")
+
+
+@tagged("post_install", "-at_install")
+class TestHoteWopi(HttpCase):
+    """🔴 `frame-ancestors` de Collabora suit l'hôte du WOPISrc, et rien d'autre.
+
+    Le même Odoo répond sur `exemple.com` et sur `www.exemple.com`. Si le
+    réglage porte une forme et le navigateur l'autre, le cadre est refusé par le
+    navigateur alors que tout le reste fonctionne. Mesuré en production le
+    2026-09-02.
+    """
+
+    def setUp(self):
+        super().setUp()
+        self.Param = self.env["ir.config_parameter"].sudo()
+        self.Param.set_param("cool_wopi_host_url", "https://www.exemple.test")
+
+    def _hote_rendu(self, hote_de_requete):
+        from unittest.mock import patch as remplacer
+
+        class RequeteFactice:
+            class httprequest:
+                host_url = hote_de_requete
+
+        with remplacer("odoo.http.request", RequeteFactice):
+            return self.Param.get_param("cool_wopi_host_url")
+
+    def test_le_domaine_nu_est_rendu_tel_quel(self):
+        self.assertEqual(self._hote_rendu("https://exemple.test/"),
+                         "https://exemple.test")
+
+    def test_le_www_reste_le_www(self):
+        self.assertEqual(self._hote_rendu("https://www.exemple.test/"),
+                         "https://www.exemple.test")
+
+    def test_un_hote_etranger_ne_passe_pas(self):
+        """Un en-tête Host forgé ne doit pas déplacer le WOPISrc."""
+        self.assertEqual(self._hote_rendu("https://pirate.invalide/"),
+                         "https://www.exemple.test")
+
+    def test_un_sous_domaine_ne_passe_pas_non_plus(self):
+        self.assertEqual(self._hote_rendu("https://autre.exemple.test/"),
+                         "https://www.exemple.test")
+
+    def test_le_schema_reste_celui_du_reglage(self):
+        self.assertEqual(self._hote_rendu("http://exemple.test/"),
+                         "https://exemple.test")
+
+    def test_hors_requete_le_reglage_est_rendu(self):
+        self.assertEqual(self.Param.get_param("cool_wopi_host_url"),
+                         "https://www.exemple.test")
+
+    def test_les_autres_parametres_ne_sont_pas_touches(self):
+        self.Param.set_param("bf_essai_25265", "https://www.exemple.test")
+        self.assertEqual(self._hote_rendu_autre(), "https://www.exemple.test")
+
+    def _hote_rendu_autre(self):
+        from unittest.mock import patch as remplacer
+
+        class RequeteFactice:
+            class httprequest:
+                host_url = "https://exemple.test/"
+
+        with remplacer("odoo.http.request", RequeteFactice):
+            return self.Param.get_param("bf_essai_25265")

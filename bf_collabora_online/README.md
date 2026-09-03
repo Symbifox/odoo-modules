@@ -73,6 +73,24 @@ box. The two WOPI routes called by the Collabora **server** get the same
 treatment from the token's user, since a server-to-server call carries no
 cookie and would otherwise fall back to the person's main company alone.
 
+## 5. The editor frame stops being blocked by the browser
+
+Collabora computes its `frame-ancestors` header from the host of the `WOPISrc`
+it is given, and from nothing else. Measured: a `WOPISrc` on
+`www.example.com` yields `frame-ancestors … www.example.com:*`, full stop.
+
+The same Odoo usually answers on both forms of its domain. When someone browses
+the bare domain while the setting carries the `www` one, the browser refuses the
+frame and shows "refused to connect", even though everything else works: the
+page renders 200 and Collabora does call `CheckFileInfo` back successfully.
+
+The fix returns the host of the current request for `cool_wopi_host_url`. The
+only difference tolerated is the presence or absence of `www.`, and the scheme
+always stays the one from the setting, so a forged `Host` header cannot move the
+`WOPISrc` anywhere.
+
+⚠️ The Collabora server must also trust both forms in its `alias_groups`.
+
 ## Settings
 
 Settings → Collabora Online. One setting: `bf_collabora.decouverte_ttl`, in

@@ -1,8 +1,8 @@
 {
     "name": "Collabora Online, correctifs Blue Fox",
-    "version": "18.0.1.2.0",
+    "version": "18.0.1.3.0",
     "category": "Technical",
-    "summary": "Quatre correctifs au connecteur Collabora amont, sans le forker",
+    "summary": "Cinq correctifs au connecteur Collabora amont, sans le forker",
     "description": """
 Collabora Online, correctifs Blue Fox
 =====================================
