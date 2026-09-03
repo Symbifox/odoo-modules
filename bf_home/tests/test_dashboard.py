@@ -166,11 +166,18 @@ class TestBfDashboard(TransactionCase):
         l'exécution ne le signalait : la charge utile était juste, le gabarit
         rendait, il manquait seulement la porte.
         """
-        action = self.env.ref("bf_dashboard.bf_dashboard_action")
+        # ⚠️ Le test visait `bf_dashboard.bf_dashboard_action`, l'action du
+        # module absorbé ici le 2026-08-30. Sur la production, l'identifiant
+        # résout encore parce que l'ancien module y a été installé et que ses
+        # lignes `ir.model.data` ont survécu à l'absorption. Sur une
+        # installation NEUVE de `bf_home` seul, il n'existe pas : KeyError, un
+        # reste de fusion qui ne se voyait nulle part. C'est l'action de
+        # `bf_home` qui ouvre l'écran depuis.
+        action = self.env.ref("bf_home.bf_home_action")
         menus = self.env["ir.ui.menu"].search([
             ("action", "=", "%s,%s" % (action.type, action.id)),
         ])
-        self.assertTrue(menus, "aucun menu n'ouvre bf_dashboard.bf_dashboard_action")
+        self.assertTrue(menus, "aucun menu n'ouvre bf_home.bf_home_action")
 
     def test_no_post_init_hook_rewrites_personal_settings(self):
         """Le module ne doit plus toucher au réglage d'accueil de personne.

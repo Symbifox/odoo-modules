@@ -29,6 +29,22 @@ class TestPublicFormSecurity(HttpCase):
         cls.IConfig.set_param("bf_helpdesk.public_form_max_attachment_mb", "1")
         cls.IConfig.set_param("bf_helpdesk.public_form_max_total_attachment_mb", "2")
 
+    def setUp(self):
+        super().setUp()
+        # 🔴 Le seau de limitation par IP est un état de MODULE, partagé par
+        # toute la classe : `_check_submit_rate_limit()` est appelé AVANT la
+        # validation, donc même un envoi rejeté consomme du budget. Cinq envois
+        # suffisent, et cette classe en fait bien plus — le test des extensions
+        # rendables en poste trois à lui seul. Passé le plafond, le contrôleur
+        # rend la page de succès sans créer de billet : quatre essais
+        # échouaient en affirmant que le rejet n'avait pas eu lieu, alors que
+        # c'est la requête entière qui était tombée d'avance. Le seul essai qui
+        # passait, celui du pot de miel, passait pour la mauvaise raison — il
+        # attend justement zéro billet.
+        # `bf_mailing_signup` documente le même piège sur son propre seau.
+        from odoo.addons.bf_helpdesk.controllers import public_form
+        public_form._submit_data.clear()
+
     def _csrf(self):
         import re
         resp = self.url_open("/support/security-test")
