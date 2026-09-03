@@ -3,10 +3,13 @@
     <data noupdate="1">
 
         <!-- ⚠️ Se périme. LinkedIn retire une version d'API au bout d'environ
-             un an ; le paramètre existe pour la bouger sans redéployer. -->
+             un an ; le paramètre existe pour la bouger sans redéployer.
+             202608 est retirée le 17 août 2027.
+             ⚠️ Ce bloc est noupdate : une mise à niveau ne corrigera PAS une
+             base déjà installée. Y écrire le paramètre à la main. -->
         <record id="param_api_version" model="ir.config_parameter">
             <field name="key">bf_editorial_linkedin.api_version</field>
-            <field name="value">202506</field>
+            <field name="value">202608</field>
         </record>
 
         <record id="cron_warn_token_expiry" model="ir.cron">

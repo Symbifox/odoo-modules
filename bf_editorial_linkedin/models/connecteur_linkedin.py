@@ -38,8 +38,9 @@ DELAI = 20
 LIMITE_TEXTE = 3000
 
 # Une version connue pour fonctionner au moment d'écrire. Elle SE PÉRIME :
-# le paramètre existe pour qu'on la bouge sans redéployer.
-VERSION_PAR_DEFAUT = "202506"
+# le paramètre existe pour qu'on la bouge sans redéployer. 202608 est retirée
+# le 17 août 2027 — table « API Migration Status » de la documentation LinkedIn.
+VERSION_PAR_DEFAUT = "202608"
 CLE_VERSION = "bf_editorial_linkedin.api_version"
 
 # Combien de jours d'avance sur l'expiration du jeton.

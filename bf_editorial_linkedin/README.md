@@ -34,7 +34,13 @@ to check the feed before retrying, rather than guessing.
 header, and LinkedIn retires versions after roughly a year. Hard-coded, it
 takes distribution down one morning with nothing having changed on your side.
 It is set through the `bf_editorial_linkedin.api_version` parameter so a
-version change does not need a deployment.
+version change does not need a deployment. The module ships `202608`, which
+LinkedIn retires on 17 August 2027.
+
+That default sits in a `noupdate` data file, so **upgrading the module will not
+correct a database that already carries an older value** — on an existing
+install, write the parameter yourself. The two places have to move together, or
+a fresh install and an upgraded one end up on different versions.
 
 ## Installation
 
