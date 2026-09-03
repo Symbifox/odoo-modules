@@ -88,6 +88,11 @@ class TestTicketTimesheet(TransactionCase):
         })
         ticket = self.Ticket.create({
             "name": "No project ticket",
+            # `description` est requis chez helpdesk_mgmt (OCA) et devient une
+            # colonne NOT NULL : l'omettre lève une NotNullViolation avant
+            # d'atteindre ce que le test vérifie. `_make_ticket` le passe déjà ;
+            # cette création écrite à la main l'avait oublié.
+            "description": "<p>desc</p>",
             "team_id": team_no_project.id,
         })
         ticket.project_id = False

@@ -265,12 +265,22 @@ class BfDashboard(models.AbstractModel):
         """Delegate to knowledge.dashboard for key KPIs."""
         dashboard = self.env["knowledge.dashboard"]
         review = dashboard.get_review_metrics()
-        creds = dashboard.get_credential_metrics()
+        # ⚠️ `get_credential_metrics` a suivi le coffre chez `bf_credentials`
+        # quand il a quitté `project_knowledge_matrix`. Le garde `@needs`
+        # vérifie le MODÈLE, pas la méthode : sur une base qui a la matrice
+        # sans le coffre, l'appel levait une AttributeError, `_safe` la
+        # rattrapait, et le collecteur tombait EN ENTIER — emportant les deux
+        # chiffres de revue, qui eux étaient calculables.
+        # Sans le coffre les deux clés valent None, pas zéro : « aucun
+        # identifiant n'expire » et « je n'en sais rien » ne se disent pas
+        # pareil, et un tableau de bord qui répond zéro rassure à tort.
+        creds = (dashboard.get_credential_metrics()
+                 if hasattr(dashboard, "get_credential_metrics") else None)
         return {
             "total_attention": review["total_attention"],
             "overdue_review": review["overdue_review"],
-            "credentials_expiring": creds["expiring_soon"],
-            "credentials_expired": creds["expired"],
+            "credentials_expiring": creds["expiring_soon"] if creds else None,
+            "credentials_expired": creds["expired"] if creds else None,
         }
 
     @api.model
