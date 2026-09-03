@@ -24,7 +24,15 @@ urllib3>=2.0                  # bf_sms_archive pinned-IP media fetch
 # `pypdf`). It is still what the Odoo image ships and what bf_sign /
 # bf_letter_writer import today. Migrating means adding pypdf to the image AND
 # re-testing the stamping path — tracked separately, do not flip this line alone.
-PyPDF2>=2.12
+#
+# 🔴 A FLOOR here was wrong, and this is the one entry in the group that cannot
+# take one. The image ships 2.12.1, and `>=2.12` lets pip put 3.0.1 in
+# /usr/local, which precedes dist-packages on sys.path. 3.x turns the 2.x names
+# into hard errors, and ODOO'S OWN `tools/pdf.merge_pdf` still calls them
+# (`PdfFileReader.getNumPages`, `addPage`). Thirty-six bf_sign and NDA tests
+# died there, inside core code, on a line no module of ours wrote. A real
+# deployment that pip-installs this file gets the same broken merge.
+PyPDF2~=2.12
 
 # ── Not shipped by Odoo core (compatible-release pins) ───────────────────────
 boto3~=1.40                   # bf_securetransfer S3 backend
