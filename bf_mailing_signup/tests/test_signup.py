@@ -10,7 +10,9 @@
    est connue ou non transforme le point d'entrée en oracle.
 """
 
+import re
 from datetime import date
+from email.header import decode_header, make_header
 from unittest.mock import patch
 
 from odoo.addons.base.models.ir_mail_server import IrMailServer
@@ -60,6 +62,29 @@ class TestMailingSignup(HttpCase):
             return None
         return self.env["mailing.subscription"].search(
             [("contact_id", "=", contact.id), ("list_id", "=", self.liste.id)], limit=1)
+
+    def _corps_html(self, message):
+        """Le HTML tel que le destinataire le recevra, décodé.
+
+        ⚠️ Ne PAS lire `as_string()`. Dès que le corps dépasse la longueur de
+        ligne d'un courriel, il part en quoted-printable et le codage insère
+        des `=\\n` au beau milieu de ce qu'on cherche : un jeton coupé en deux
+        fait échouer l'essai pour une raison qui n'a rien à voir avec ce qu'il
+        vérifie. Tant que le corps tenait en trois `<p>` nus, le piège dormait.
+        """
+        partie = message.get_body(preferencelist=("html",))
+        self.assertIsNotNone(partie, "le courriel doit porter une partie HTML")
+        return partie.get_content()
+
+    def _sujet(self, message):
+        return str(make_header(decode_header(message["Subject"])))
+
+    def _habiller(self, marque="Symbifox", sigle="https://exemple.test/sigle.png",
+                  logo="https://exemple.test/logo.png"):
+        icp = self.env["ir.config_parameter"].sudo()
+        icp.set_param(ctl.ICP_BRAND, marque)
+        icp.set_param(ctl.ICP_MARK, sigle)
+        icp.set_param(ctl.ICP_LOGO, logo)
 
     def _jeton(self):
         return ctl._token(self.env, self.liste.id, self.adresse,
@@ -152,9 +177,13 @@ class TestMailingSignup(HttpCase):
         self._poster()
         self.assertEqual(len(self.envois), 1,
                          "exactement un courriel, celui de confirmation")
-        corps = self.envois[0].as_string()
+        corps = self._corps_html(self.envois[0])
         self.assertIn("/infolettre/confirmer", corps)
         self.assertIn(self._jeton(), corps)
+        self.assertEqual(corps.count(self._jeton()), 3,
+                         "le lien vit à trois endroits : la cible du bouton, "
+                         "celle du repli, et le repli écrit en clair pour qui "
+                         "ne voit ni bouton ni lien")
 
     def test_rien_ne_part_sans_adresse_valable(self):
         self._poster(site_web="robot")
@@ -169,3 +198,86 @@ class TestMailingSignup(HttpCase):
         self.url_open(f"/infolettre/confirmer?e={self.adresse}&j={self._jeton()}&lang=fr",
                       allow_redirects=False)
         self.assertEqual(self.envois, [])
+
+    # -------------------------------------------------------------- habillage
+
+    def test_le_courriel_est_brande(self):
+        """La confirmation est le PREMIER courriel reçu : il porte la marque."""
+        self._habiller()
+        self._poster()
+        corps = self._corps_html(self.envois[0])
+        self.assertIn("Symbifox", corps)
+        self.assertIn("https://exemple.test/sigle.png", corps)
+        self.assertIn("https://exemple.test/logo.png", corps)
+        self.assertIn(ctl.MARINE, corps, "l'en-tête marine du bandeau")
+        self.assertIn(ctl.BLEU, corps, "le bleu du bouton")
+        self.assertIn("Lexend", corps)
+        self.assertNotIn("<style", corps,
+                         "les clients courriel jettent les feuilles de style")
+
+    def test_le_cadre_exterieur_reste_clair(self):
+        """🔴 Le piège qui a déjà rendu un courriel Blue Fox illisible.
+
+        Plusieurs clients jettent le `background-color` de la carte intérieure.
+        Avec un cadre sombre, le texte foncé se retrouve sur le fond foncé du
+        cadre et plus rien ne se lit. Le cadre doit donc être clair.
+        """
+        self._habiller()
+        self._poster()
+        corps = self._corps_html(self.envois[0])
+        self.assertIn(f'<body style="margin:0;padding:0;background-color:{ctl.GLACE}"',
+                      corps)
+        self.assertIn(f'bgcolor="{ctl.GLACE}"', corps)
+        # Les seuls aplats sombres sont posés en attribut `bgcolor`, que
+        # personne ne retire — jamais en `background-color` seul.
+        self.assertIn(f'bgcolor="{ctl.MARINE}"', corps)
+        self.assertNotIn(f"background-color:{ctl.MARINE}", corps)
+
+    def test_habillage_sans_images_ne_casse_rien(self):
+        """Un locataire qui ne pose aucune URL reçoit un courriel sobre.
+
+        C'est le comportement voulu, et c'est aussi ce qui permet de publier le
+        module : sans valeur par défaut, personne n'hérite de NOS images, donc
+        personne ne fait relever les ouvertures de SES abonnés par NOTRE
+        serveur.
+        """
+        icp = self.env["ir.config_parameter"].sudo()
+        for cle in (ctl.ICP_BRAND, ctl.ICP_MARK, ctl.ICP_LOGO):
+            icp.set_param(cle, "")
+        self._poster()
+        corps = self._corps_html(self.envois[0])
+        # ⚠️ Il reste UNE image : le pixel d'ouverture qu'Odoo colle lui-même à
+        # la fin de tout `mail.mail`. Il n'est pas de notre habillage, et un
+        # `assertNotIn("<img")` sec échouerait sur lui.
+        images = re.findall(r"<img[^>]*>", corps)
+        self.assertTrue(all("mail/tracking/open" in i for i in images),
+                        f"aucune image de l'habillage sans URL réglée : {images}")
+        self.assertIn(self.env.company.name, corps, "repli sur le nom de la société")
+        self.assertIn(self._jeton(), corps, "et le lien est toujours là")
+
+    def test_la_marque_va_dans_le_sujet(self):
+        self._habiller(marque="Marque d'essai")
+        self._poster()
+        self.assertEqual(self._sujet(self.envois[0]),
+                         "Confirmez votre inscription à Marque d'essai")
+
+    def test_version_anglaise(self):
+        self._habiller()
+        self._poster(lang="en")
+        message = self.envois[0]
+        self.assertEqual(self._sujet(message), "Confirm your Symbifox subscription")
+        corps = self._corps_html(message)
+        self.assertIn("Confirm my subscription", corps)
+        self.assertIn('<html lang="en"', corps)
+        self.assertIn("lang=en", corps, "le lien garde la langue")
+
+    def test_l_adresse_postale_est_dans_le_pied(self):
+        """La LCAP veut une adresse dans un message qui demande un consentement."""
+        self.env.company.partner_id.write({
+            "street": "1 rue de l'Essai", "city": "Québec", "zip": "G1A 1A1"})
+        self._habiller()
+        self._poster()
+        corps = self._corps_html(self.envois[0])
+        self.assertIn("1 rue de l'Essai", corps)
+        self.assertIn("G1A 1A1", corps)
+

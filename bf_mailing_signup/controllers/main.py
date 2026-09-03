@@ -9,6 +9,7 @@ la personne qui relève l'adresse peut la confirmer.
 """
 
 import hmac
+import html
 import logging
 import re
 import threading
@@ -30,6 +31,14 @@ _logger = logging.getLogger(__name__)
 ICP_LIST = "bf_mailing_signup.list_id"
 ICP_REPLY_TO_FR = "bf_mailing_signup.reply_to_fr"
 ICP_REPLY_TO_EN = "bf_mailing_signup.reply_to_en"
+ICP_BASE_URL = "bf_mailing_signup.base_url"
+
+# L'habillage du courriel. Mêmes raisons : la marque, son sigle et le logo de
+# la société se règlent sans toucher au code, et un locataire qui n'en pose
+# aucun reçoit un courriel sobre plutôt qu'un courriel cassé.
+ICP_BRAND = "bf_mailing_signup.brand_name"
+ICP_MARK = "bf_mailing_signup.brand_mark_url"
+ICP_LOGO = "bf_mailing_signup.brand_logo_url"
 
 # Où retomber après un envoi. Ce sont des pages du site appelant, pas des vues
 # d'ici : le module n'ajoute aucune vue, c'est tout son intérêt.
@@ -128,6 +137,217 @@ def _list_id(env):
         return 0
 
 
+
+# ---------------------------------------------------------------- habillage
+
+# Palette relevée sur symbifox.com/styles.css, la même que celle des gabarits
+# d'infolettre : la confirmation est le PREMIER courriel que la personne
+# reçoit, et il doit ressembler à ceux qui suivront.
+#
+# ⚠️ Le cadre EXTÉRIEUR est CLAIR. Un cadre sombre a plus d'allure à l'écran,
+# mais plusieurs clients jettent le `background-color` de la carte intérieure :
+# le texte foncé se retrouve alors sur le fond foncé du cadre, et le message
+# devient illisible. Les seuls aplats sombres sont posés en attribut `bgcolor`,
+# que personne ne retire.
+BLEU, MARINE, ENCRE = "#176CF2", "#071B4A", "#10213A"
+GRIS, TRAIT, DOUX, GLACE, PAPIER = "#64748B", "#DCE6F3", "#EDF4FF", "#F6F9FF", "#FFFFFF"
+CIEL = "#8EBBFA"
+
+# Lexend ne se charge pas dans un client courriel : la pile de repli est
+# nommée, sinon chaque plateforme choisit la sienne.
+POLICE = ("Lexend,'Segoe UI',-apple-system,BlinkMacSystemFont,"
+          "'Helvetica Neue',Arial,sans-serif")
+
+# Le texte, au complet, dans les deux langues. Le sujet et les trois phrases du
+# corps sont ceux d'avant l'habillage, mot pour mot : ils ont été écrits pour
+# être lus par quelqu'un qui vient de remplir un formulaire, et l'habillage
+# n'avait pas à les rouvrir.
+TEXTES = {
+    "fr": {
+        "sujet": "Confirmez votre inscription à {marque}",
+        "entete": "Un dernier geste, et c'est fait. Le lien expire dans sept jours.",
+        "titre": "Confirmez votre inscription",
+        "intro": "Quelqu'un — nous espérons que c'est vous — a demandé à recevoir "
+                 "les nouveautés {marque}.",
+        "bouton": "Confirmer mon inscription",
+        "repli": "Si le bouton ne s'affiche pas, copiez ce lien dans votre navigateur :",
+        "note": "Si ce n'est pas vous, ignorez ce message. Rien n'est envoyé à une "
+                "adresse qui n'a pas confirmé, et ce lien expire dans sept jours.",
+        "par": "par {societe}",
+        "pourquoi": "Vous recevez ce message parce que cette adresse a été saisie sur "
+                    "{site}. Rien d'autre ne partira tant qu'elle n'aura pas confirmé.",
+    },
+    "en": {
+        "sujet": "Confirm your {marque} subscription",
+        "entete": "One last step, and you are on the list. The link expires in seven days.",
+        "titre": "Confirm your subscription",
+        "intro": "Someone — we hope you — asked to receive the {marque} updates.",
+        "bouton": "Confirm my subscription",
+        "repli": "If the button does not show, copy this link into your browser:",
+        "note": "If it was not you, ignore this message. Nothing is sent to an address "
+                "that has not confirmed, and this link expires in seven days.",
+        "par": "by {societe}",
+        "pourquoi": "You are receiving this message because this address was entered on "
+                    "{site}. Nothing else will be sent until it is confirmed.",
+    },
+}
+
+
+def _ech(valeur):
+    """Échappe du TEXTE. `quote=False` : dans un noeud texte, l'apostrophe n'a
+    rien à protéger, et la changer en `&#x27;` rend le source illisible pour qui
+    relit le courriel envoyé."""
+    return html.escape(valeur or "", quote=False)
+
+
+def _att(valeur):
+    """Échappe une valeur d'ATTRIBUT — les guillemets y comptent, eux."""
+    return html.escape(valeur or "", quote=True)
+
+
+def _site(env):
+    """Le nom d'hôte du site qui porte le formulaire, pour le pied de page."""
+    icp = env["ir.config_parameter"].sudo()
+    base = icp.get_param(ICP_BASE_URL) or icp.get_param("web.base.url") or ""
+    return base.split("//")[-1].strip("/")
+
+
+def _marque(env):
+    """Ce que l'habillage doit savoir de la marque, pris aux paramètres système.
+
+    ⚠️ Le sigle et le logo sont des URL absolues SANS valeur par défaut. Un
+    module publié qui pointerait sur nos images à nous ferait relever les
+    ouvertures des abonnés de qui l'installe par notre serveur à nous. Non
+    réglés, l'en-tête garde son libellé et perd la vignette : rien ne casse.
+    """
+    icp = env["ir.config_parameter"].sudo()
+    # ⚠️ `sudo()` n'est pas de la commodité. Ce code tourne pour l'usager
+    # PUBLIC : il n'a le droit de lire ni la fiche partenaire de la société ni
+    # le `res.country` dont dépend le format d'adresse. Sans ça, la mise en
+    # forme lève, `signup` attrape, et la personne repart avec la page de
+    # remerciement SANS avoir reçu de courriel — l'inscription devient
+    # impossible, en silence.
+    societe = env.company.sudo()
+    adresse = societe.partner_id._display_address(without_company=True) or ""
+    return {
+        "marque": icp.get_param(ICP_BRAND) or societe.name,
+        "societe": societe.name,
+        "sigle": icp.get_param(ICP_MARK) or "",
+        "logo": icp.get_param(ICP_LOGO) or "",
+        # La LCAP veut une adresse postale dans un message qui demande un
+        # consentement. `_display_address` la met au format du pays plutôt
+        # qu'au nôtre, ce qui évite de bricoler province et code postal.
+        "postale": ", ".join(l.strip() for l in adresse.splitlines() if l.strip()),
+    }
+
+
+def _habiller(env, url, lang):
+    """Sujet et corps HTML du courriel de confirmation.
+
+    Tout en tableaux `role="presentation"` et en style EN LIGNE : les clients
+    courriel jettent les feuilles de style, ignorent `max-width` sur un div et
+    ne connaissent ni flex ni grid. Les fonds sont explicites partout, sinon le
+    mode sombre d'iOS et d'Outlook recolore le texte sans recolorer son fond.
+    """
+    b = _marque(env)
+    t = {k: v.format(marque=b["marque"], societe=b["societe"], site=_site(env))
+         for k, v in TEXTES[lang].items()}
+
+    marque, societe = _att(b["marque"]), _att(b["societe"])
+    lien_href = _att(url)
+    lien = _ech(url)
+    sujet = t["sujet"]
+
+    vignette = ""
+    if b["sigle"]:
+        vignette = (
+            f'<td width="40" style="padding-right:13px" valign="middle">'
+            f'<img src="{_att(b["sigle"])}" alt="{marque}" width="40" height="40" '
+            f'style="display:block;width:40px;height:40px;border:0;border-radius:9px"></td>')
+    # « par Blue Fox » sous « Symbifox » situe le produit. Quand la marque EST
+    # la société — un locataire qui n'a pas posé `brand_name` —, la ligne se
+    # contente de répéter le titre : on la retire.
+    signature = ""
+    if b["marque"] != b["societe"]:
+        signature = (
+            f'<p style="margin:2px 0 0;font-family:{POLICE};font-size:12.5px;'
+            f'color:{CIEL};line-height:1.2">{_ech(t["par"])}</p>')
+
+    logo = ""
+    if b["logo"]:
+        logo = (
+            f'<td width="60" valign="top" style="padding-right:16px">'
+            f'<img src="{_att(b["logo"])}" alt="{societe}" width="60" height="60" '
+            f'style="display:block;width:60px;height:60px;border:0"></td>')
+
+    corps = f"""<!doctype html>
+<html lang="{lang}"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="x-apple-disable-message-reformatting">
+<title>{_ech(sujet)}</title></head>
+<body style="margin:0;padding:0;background-color:{GLACE}">
+<div style="display:none;font-size:0;line-height:0;max-height:0;overflow:hidden;opacity:0">
+{_ech(t["entete"])}</div>
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%"
+       bgcolor="{GLACE}" style="background-color:{GLACE};margin:0;padding:0">
+<tr><td align="center" style="padding:28px 12px">
+
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600"
+       style="width:100%;max-width:600px;background-color:{PAPIER};border-radius:16px;
+              overflow:hidden;border:1px solid {TRAIT}">
+
+  <tr><td bgcolor="{MARINE}" style="padding:24px 34px">
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+    <tr>{vignette}
+      <td valign="middle">
+        <p style="margin:0;font-family:{POLICE};font-size:21px;font-weight:600;
+                  letter-spacing:-.01em;color:{PAPIER};line-height:1.15">{marque}</p>
+        {signature}</td>
+    </tr></table>
+  </td></tr>
+
+  <tr><td style="padding:34px 34px 30px">
+    <h1 style="margin:0 0 18px;font-family:{POLICE};font-size:25px;line-height:1.3;
+               font-weight:600;letter-spacing:-.015em;color:{ENCRE}">{_ech(t["titre"])}</h1>
+    <p style="margin:0 0 16px;font-family:{POLICE};font-size:16px;line-height:1.65;
+              color:{ENCRE}">{_ech(t["intro"])}</p>
+
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0"
+           style="margin:28px 0 6px">
+    <tr><td bgcolor="{BLEU}" style="border-radius:8px">
+      <a href="{lien_href}" style="display:inline-block;padding:13px 26px;font-family:{POLICE};
+         font-size:15px;font-weight:600;color:{PAPIER};text-decoration:none;
+         border-radius:8px">{_ech(t["bouton"])}</a></td></tr></table>
+
+    <p style="margin:26px 0 6px;font-family:{POLICE};font-size:13.5px;line-height:1.6;
+              color:{GRIS}">{_ech(t["repli"])}</p>
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
+    <tr><td bgcolor="{DOUX}" style="padding:12px 14px;border-radius:8px">
+      <a href="{lien_href}" style="font-family:{POLICE};font-size:12.5px;line-height:1.5;
+         color:{BLEU};text-decoration:none;word-break:break-all">{lien}</a>
+    </td></tr></table>
+
+    <p style="margin:26px 0 0;font-family:{POLICE};font-size:14.5px;line-height:1.65;
+              color:{GRIS}">{_ech(t["note"])}</p>
+  </td></tr>
+
+  <tr><td bgcolor="{GLACE}" style="padding:22px 34px;border-top:1px solid {TRAIT}">
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
+    <tr>{logo}
+      <td valign="top">
+        <p style="margin:0 0 7px;font-family:{POLICE};font-size:12.5px;line-height:1.6;
+                  color:{GRIS}">{societe}<br>{_ech(b["postale"])}</p>
+        <p style="margin:0;font-family:{POLICE};font-size:12.5px;line-height:1.6;
+                  color:{GRIS}">{_ech(t["pourquoi"])}</p></td>
+    </tr></table>
+  </td></tr>
+
+</table>
+</td></tr></table>
+</body></html>"""
+    return sujet, corps
+
+
 class BfMailingSignup(http.Controller):
 
     # ⚠️ `csrf=False` est obligatoire, pas commode : la page appelante est un
@@ -218,30 +438,19 @@ class BfMailingSignup(http.Controller):
         `email_from` n'est pas posé : `mail.mail` retombe sur l'adresse d'envoi
         par défaut de l'instance, qui est celle dont le domaine est aligné en
         SPF et DKIM. En poser une ici serait le meilleur moyen de faire classer
-        la confirmation en pourriel.
+        la confirmation en pourriel. ⚠️ Habiller le courriel aux couleurs de la
+        marque donne très envie d'y mettre une adresse assortie : c'est
+        précisément ce qu'il ne faut pas faire. Le `reply_to`, lui, porte déjà
+        l'adresse de la marque, et c'est le bon endroit pour ça.
         """
         icp = env["ir.config_parameter"].sudo()
-        base = (icp.get_param("bf_mailing_signup.base_url") or "https://symbifox.com").rstrip("/")
+        base = (icp.get_param(ICP_BASE_URL) or "https://symbifox.com").rstrip("/")
         token = _token(env, list_id, email, date.today().toordinal())
         url = (f"{base}/infolettre/confirmer?e={quote(email)}"
                f"&j={token}&lang={lang}")
         reply_to = icp.get_param(
             ICP_REPLY_TO_EN if lang == "en" else ICP_REPLY_TO_FR) or ""
-        if lang == "en":
-            subject = "Confirm your Symbifox subscription"
-            body = (
-                "<p>Someone — we hope you — asked to receive the Symbifox updates.</p>"
-                f'<p><a href="{url}">Confirm my subscription</a></p>'
-                "<p>If it was not you, ignore this message. Nothing is sent to an "
-                "address that has not confirmed, and this link expires in seven days.</p>")
-        else:
-            subject = "Confirmez votre inscription à Symbifox"
-            body = (
-                "<p>Quelqu'un — nous espérons que c'est vous — a demandé à recevoir "
-                "les nouveautés Symbifox.</p>"
-                f'<p><a href="{url}">Confirmer mon inscription</a></p>'
-                "<p>Si ce n'est pas vous, ignorez ce message. Rien n'est envoyé à une "
-                "adresse qui n'a pas confirmé, et ce lien expire dans sept jours.</p>")
+        subject, body = _habiller(env, url, lang)
         mail = env["mail.mail"].sudo().create({
             "subject": subject,
             "body_html": body,

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     "name": "Inscription publique à une liste d'envoi",
-    "version": "18.0.1.0.0",
+    "version": "18.0.1.1.0",
     "category": "Marketing",
     "summary": "Formulaire d'infolettre en HTML pur, à double consentement, "
                "sans reCaptcha ni ressource tierce",
@@ -54,7 +54,9 @@ Ce que le module ne fait pas
 ----------------------------
 
 * Il n'ajoute aucun script, aucun style et aucune vue au site : le formulaire
-  vit dans la page appelante, en HTML ordinaire.
+  vit dans la page appelante, en HTML ordinaire. Le seul HTML qu'il produise
+  est celui du courriel de confirmation, qui porte la marque parce qu'un
+  premier courriel en texte nu ne se fait pas reconnaitre.
 * Il ne désinscrit pas — Odoo sert déjà ``/mailing/...`` pour ça, et chaque envoi
   porte le lien.
 * Il ne crée pas de ``res.partner``. Une adresse d'infolettre n'est pas un

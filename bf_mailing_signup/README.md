@@ -54,6 +54,26 @@ liste.
 | `lang` | `fr` ou `en`, choisit la langue du courriel et les pages de retour. |
 | `site_web` | **pot de miel**. Sorti de l'écran par la feuille de style, `tabindex="-1"`, `aria-hidden`. Rempli, l'envoi est jeté en silence. |
 
+## Le courriel porte la marque
+
+La confirmation est le **premier** courriel que la personne reçoit : s'il arrive
+en texte nu, elle doute d'avoir écrit à la bonne enseigne, et un lien qu'on ne
+reconnaît pas ne se clique pas. Il part donc dans la même coquille que les
+infolettres qui suivront — bandeau marine, sigle, bouton bleu, pied avec
+l'adresse postale.
+
+Trois choses, apprises ailleurs, y sont volontaires :
+
+* **Le cadre extérieur est clair.** Plusieurs clients jettent le
+  `background-color` de la carte intérieure ; sur un cadre sombre le texte
+  foncé devient alors illisible. Les seuls aplats sombres sont posés en
+  attribut `bgcolor`, que personne ne retire.
+* **Le lien figure aussi en clair**, sous le bouton. Un bouton dont le fond
+  disparaît ne se voit plus.
+* **Tout est en tableaux et en style en ligne.** Les clients courriel jettent
+  les `<style>`, ignorent `max-width` sur un `div` et ne connaissent ni flex ni
+  grid.
+
 ## Paramètres système
 
 | Clé | Défaut | Rôle |
@@ -62,6 +82,18 @@ liste.
 | `bf_mailing_signup.base_url` | `https://symbifox.com` | Le domaine écrit dans le lien de confirmation. |
 | `bf_mailing_signup.reply_to_fr` | *(aucun)* | Adresse de réponse du courriel français. |
 | `bf_mailing_signup.reply_to_en` | *(aucun)* | Adresse de réponse du courriel anglais. |
+| `bf_mailing_signup.brand_name` | *(le nom de la société)* | Le nom écrit dans le sujet, l'en-tête et le corps. |
+| `bf_mailing_signup.brand_mark_url` | *(aucune)* | URL absolue du sigle, dans le bandeau. |
+| `bf_mailing_signup.brand_logo_url` | *(aucune)* | URL absolue du logo de la société, dans le pied. |
+
+⚠️ Les deux URL d'images n'ont **aucune valeur par défaut**, et c'est délibéré :
+un module publié qui pointerait sur les images de son auteur ferait relever les
+ouvertures des abonnés de qui l'installe par le serveur de l'auteur. Sans elles,
+l'en-tête garde son libellé et perd la vignette, ce qui ne casse rien.
+
+Le reste de la coquille (palette, police) est en dur : c'est de l'habillage, pas
+de la configuration, et sept paramètres de plus pour changer un bleu ne rendent
+service à personne.
 
 `email_from` n'est **pas** posé : `mail.mail` retombe sur l'adresse d'envoi par
 défaut de l'instance, la seule dont le domaine est aligné en SPF et DKIM. En
