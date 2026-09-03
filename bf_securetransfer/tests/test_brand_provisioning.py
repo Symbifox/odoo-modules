@@ -11,9 +11,11 @@ from unittest.mock import patch
 
 from odoo.tests import TransactionCase, tagged
 
+from .common import LanguesActives
+
 
 @tagged("post_install", "-at_install")
-class TestBrandProvisioning(TransactionCase):
+class TestBrandProvisioning(LanguesActives, TransactionCase):
 
     @classmethod
     def setUpClass(cls):

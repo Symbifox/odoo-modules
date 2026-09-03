@@ -16,11 +16,13 @@ from odoo import fields
 from odoo.exceptions import UserError
 from odoo.tests import TransactionCase, tagged
 
+from .common import LanguesActives
+
 S3_MOD = "odoo.addons.bf_securetransfer.models.s3"
 
 
 @tagged("post_install", "-at_install")
-class TestOperatorActions(TransactionCase):
+class TestOperatorActions(LanguesActives, TransactionCase):
 
     @classmethod
     def setUpClass(cls):

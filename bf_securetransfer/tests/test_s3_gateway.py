@@ -21,6 +21,8 @@ from odoo.tests import TransactionCase, tagged
 
 from odoo.addons.bf_securetransfer.models import s3
 
+from .common import LanguesActives
+
 # ---------------------------------------------------------------- ClientError
 # Real botocore class when the image has it (so the isinstance/except paths are
 # exercised exactly as in production), a structural double otherwise.
@@ -54,7 +56,7 @@ BUCKET = "bf-test-bucket"
 
 
 @tagged("post_install", "-at_install")
-class TestS3Gateway(TransactionCase):
+class TestS3Gateway(LanguesActives, TransactionCase):
 
     def setUp(self):
         super().setUp()

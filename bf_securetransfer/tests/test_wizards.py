@@ -19,13 +19,15 @@ from unittest.mock import patch
 from odoo.exceptions import UserError
 from odoo.tests import TransactionCase, tagged
 
+from .common import LanguesActives
+
 S3_MOD = "odoo.addons.bf_securetransfer.models.s3"
 SMS_MOD = "odoo.addons.bf_securetransfer.models.sms"
 MAIL_SEND = "odoo.addons.mail.models.mail_mail.MailMail.send"
 
 
 @tagged("post_install", "-at_install")
-class TestWizards(TransactionCase):
+class TestWizards(LanguesActives, TransactionCase):
 
     @classmethod
     def setUpClass(cls):

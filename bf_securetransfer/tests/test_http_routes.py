@@ -20,6 +20,8 @@ from odoo.tools import mute_logger
 from odoo.addons.bf_securetransfer.controllers import main as st_main
 from odoo.addons.bf_securetransfer.controllers.main import HONEYPOT_FIELD
 
+from .common import LanguesActives
+
 S3_MOD = "odoo.addons.bf_securetransfer.models.s3"
 API_MOD = "odoo.addons.bf_securetransfer.controllers.upload_api"
 MAIL_SEND = "odoo.addons.mail.models.mail_mail.MailMail.send"
@@ -43,7 +45,7 @@ _LIMITERS = (
 
 
 @tagged("post_install", "-at_install")
-class TestSecureTransferHttpRoutes(HttpCase):
+class TestSecureTransferHttpRoutes(LanguesActives, HttpCase):
 
     @classmethod
     def setUpClass(cls):

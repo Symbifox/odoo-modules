@@ -24,6 +24,8 @@ from odoo.tests import TransactionCase, tagged
 from odoo.addons.bf_securetransfer import hooks
 from odoo.addons.bf_securetransfer.controllers import main as st_main
 
+from .common import LanguesActives
+
 S3_MOD = "odoo.addons.bf_securetransfer.models.s3"
 MAIN_MOD = "odoo.addons.bf_securetransfer.controllers.main"
 MODULE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -38,7 +40,7 @@ _TEMPLATE_XIDS = (
 
 
 @tagged("post_install", "-at_install")
-class TestEmailsI18n(TransactionCase):
+class TestEmailsI18n(LanguesActives, TransactionCase):
 
     @classmethod
     def setUpClass(cls):

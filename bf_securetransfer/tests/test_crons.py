@@ -28,6 +28,8 @@ from odoo.addons.bf_securetransfer.models.secure_transfer import (
     MPU_SWEEP_GRACE_HOURS,
 )
 
+from .common import LanguesActives
+
 S3_MOD = "odoo.addons.bf_securetransfer.models.s3"
 MB = 1024 * 1024
 
@@ -45,7 +47,7 @@ def _endpoint_error():
 
 
 @tagged("post_install", "-at_install")
-class TestSecureTransferCrons(TransactionCase):
+class TestSecureTransferCrons(LanguesActives, TransactionCase):
 
     @classmethod
     def setUpClass(cls):

@@ -7,9 +7,11 @@ avec ``sms_toolong`` — c'est l'origine des échecs du journal d'envoi.
 from odoo.addons.bf_securetransfer.models import sms
 from odoo.tests import TransactionCase, tagged
 
+from .common import LanguesActives
+
 
 @tagged("post_install", "-at_install")
-class TestSecureTransferSms(TransactionCase):
+class TestSecureTransferSms(LanguesActives, TransactionCase):
 
     # ------------------------------------------------------------- troncature
     def test_short_body_is_untouched(self):

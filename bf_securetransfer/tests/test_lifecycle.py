@@ -14,12 +14,14 @@ from odoo import fields
 from odoo.exceptions import UserError, ValidationError
 from odoo.tests import TransactionCase, tagged
 
+from .common import LanguesActives
+
 S3_MOD = "odoo.addons.bf_securetransfer.models.s3"
 MB = 1024 * 1024
 
 
 @tagged("post_install", "-at_install")
-class TestSecureTransferLifecycle(TransactionCase):
+class TestSecureTransferLifecycle(LanguesActives, TransactionCase):
 
     @classmethod
     def setUpClass(cls):

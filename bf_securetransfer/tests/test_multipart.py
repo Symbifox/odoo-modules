@@ -23,6 +23,8 @@ from unittest.mock import patch
 from odoo.exceptions import UserError
 from odoo.tests import TransactionCase, tagged
 
+from .common import LanguesActives
+
 from ..controllers.upload_api import SecureTransferUploadApi, _file_or_error
 
 S3_MOD = "odoo.addons.bf_securetransfer.models.s3"
@@ -52,7 +54,7 @@ class _FakeRequest:
 
 
 @tagged("post_install", "-at_install")
-class TestMultipartUpload(TransactionCase):
+class TestMultipartUpload(LanguesActives, TransactionCase):
 
     @classmethod
     def setUpClass(cls):

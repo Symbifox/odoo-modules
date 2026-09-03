@@ -19,9 +19,11 @@ l'avertissement REMONTE.
 from odoo.exceptions import ValidationError
 from odoo.tests import TransactionCase, tagged
 
+from .common import LanguesActives
+
 
 @tagged("post_install", "-at_install")
-class TestDataroomTemplates(TransactionCase):
+class TestDataroomTemplates(LanguesActives, TransactionCase):
 
     @classmethod
     def setUpClass(cls):
