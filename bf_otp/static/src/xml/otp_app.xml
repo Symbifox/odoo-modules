@@ -75,7 +75,7 @@
                     Ce coffre peut aussi s'ouvrir en touchant un capteur.
                     Ouvrez-le, puis « Clé d'accès » dans la barre du haut.
                 </p>
-                <form t-on-submit="onUnlock" class="text-start">
+                <form t-if="!state.useRecovery" t-on-submit="onUnlock" class="text-start">
                     <input type="password" class="form-control mb-2" t-ref="passphrase"
                            autocomplete="current-password" placeholder="Phrase de passe"/>
                     <div t-if="state.error" class="alert alert-danger py-2" t-esc="state.error"/>
@@ -85,6 +85,29 @@
                         Ouvrir
                     </button>
                 </form>
+
+                <!-- ⚠️ Le code de relève ne s'annonce QUE s'il en existe un.
+                     Proposer une porte qui n'a pas été fabriquée enverrait
+                     quelqu'un fouiller un coffre-fort vide, le jour précis où
+                     il a déjà perdu sa phrase. -->
+                <form t-if="state.useRecovery" t-on-submit="onUnlockWithRecovery" class="text-start">
+                    <label class="form-label small">Code de relève</label>
+                    <input type="text" class="form-control mb-2 font-monospace text-uppercase"
+                           t-model="state.recovInput" autocomplete="off" spellcheck="false"
+                           placeholder="XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX"/>
+                    <div class="form-text mb-2">
+                        Les tirets, les espaces et la casse n'ont pas d'importance.
+                    </div>
+                    <div t-if="state.error" class="alert alert-danger py-2" t-esc="state.error"/>
+                    <button class="btn btn-primary w-100" type="submit" t-att-disabled="state.busy">
+                        <span t-if="state.busy" class="fa fa-circle-o-notch fa-spin me-1"/>
+                        Ouvrir avec ce code
+                    </button>
+                </form>
+                <button t-if="recoveries.length" class="btn btn-link btn-sm mt-2"
+                        t-on-click="() => { state.useRecovery = !state.useRecovery; state.error = ''; }">
+                    <t t-esc="state.useRecovery ? 'Revenir à la phrase de passe' : 'Phrase perdue ? Utiliser un code de relève'"/>
+                </button>
             </div>
         </t>
 
@@ -100,6 +123,11 @@
                 <button class="btn btn-sm btn-secondary" t-on-click="() => state.showImport = true">
                     <span class="fa fa-upload me-1"/>Importer
                 </button>
+                <button class="btn btn-sm btn-secondary"
+                        t-on-click="() => { state.showExport = true; state.error = ''; }"
+                        title="Écrire le coffre dans un fichier chiffré">
+                    <span class="fa fa-download me-1"/>Exporter
+                </button>
                 <button class="btn btn-sm btn-light ms-auto"
                         t-on-click="toggleSort"
                         t-att-title="state.sortMode === 'recent' ? 'Trié par dernière utilisation, cliquer pour trier par nom' : 'Trié par nom, cliquer pour trier par usage'">
@@ -109,6 +137,19 @@
                 <button class="btn btn-sm btn-light" t-on-click="() => state.compact = !state.compact"
                         t-att-title="state.compact ? 'Vue cartes' : 'Vue compacte'">
                     <span t-att-class="state.compact ? 'fa fa-th-large' : 'fa fa-bars'"/>
+                </button>
+                <button class="btn btn-sm btn-light" t-on-click="openTrash"
+                        title="Corbeille">
+                    <span class="fa fa-trash-o"/>
+                </button>
+                <!-- Tant qu'aucun code n'existe, le bouton porte son nom : c'est
+                     la seule occasion de faire savoir que la phrase n'est plus
+                     l'unique porte. Une fois un code en place, la barre se
+                     resserre, comme pour les clés d'accès. -->
+                <button class="btn btn-sm btn-light" t-on-click="openRecovery"
+                        title="Codes de relève">
+                    <span class="fa fa-life-ring"/>
+                    <span t-if="!recoveries.length" class="ms-1">Code de relève</span>
                 </button>
                 <button t-if="state.passkeyOk" class="btn btn-sm btn-light"
                         t-on-click="onOpenKeys" title="Clés d'accès">
@@ -380,21 +421,33 @@
                         <button class="btn-close ms-auto" t-on-click="() => state.showImport = false"/>
                     </div>
                     <form class="card-body" t-on-submit="runImport">
+                        <p class="text-muted small mb-2">
+                            Collez ce que vous avez. Trois provenances sont reconnues au contenu,
+                            sans rien choisir :
+                        </p>
+                        <ul class="text-muted small">
+                            <li>un <strong>export Symbifox</strong>, celui que produit le bouton
+                                « Exporter » ;</li>
+                            <li>un <strong>export Google Authenticator</strong> : l'adresse
+                                <code>otpauth-migration://</code> que contient son code QR ;</li>
+                            <li>un <strong>export du gestionnaire OTP de Nextcloud</strong>, en JSON,
+                                chiffré ou non.</li>
+                        </ul>
                         <p class="text-muted small">
-                            Dans le gestionnaire OTP de Nextcloud, exportez vos comptes en JSON,
-                            puis colle le contenu du fichier ici. Le déchiffrement et le
-                            rechiffrement se font dans cette page : le serveur ne voit que du chiffré.
+                            Le déchiffrement et le rechiffrement se font dans cette page : le
+                            serveur ne voit que du chiffré.
                         </p>
                         <textarea class="form-control font-monospace" rows="8"
                                   t-model="state.importText"
-                                  placeholder='{"accounts": [ … ]}'/>
+                                  placeholder='{"accounts": [ … ]}   ·   otpauth-migration://offline?data=…'/>
                         <div class="mt-2">
-                            <label class="form-label">Phrase du coffre d'origine</label>
+                            <label class="form-label">Phrase de l'export</label>
                             <input type="password" class="form-control" t-model="state.importPassword"
                                    autocomplete="off"/>
                             <div class="form-text">
-                                Nécessaire seulement si l'export est chiffré (fichier
-                                <code>accounts_encrypted_secret.json</code>).
+                                Nécessaire seulement si le fichier est chiffré : la phrase choisie
+                                à l'export pour un export Symbifox, celle du coffre d'origine pour
+                                un <code>accounts_encrypted_secret.json</code>.
                             </div>
                         </div>
                         <div t-if="state.error" class="alert alert-danger py-2 mt-3" t-esc="state.error"/>
@@ -406,6 +459,192 @@
                             </button>
                         </div>
                     </form>
+                </div>
+            </div>
+
+            <!-- Export -->
+            <div t-if="state.showExport" class="o_bf_otp_overlay">
+                <div class="o_bf_otp_panel card shadow">
+                    <div class="card-header d-flex align-items-center">
+                        <strong>Exporter le coffre</strong>
+                        <button class="btn-close ms-auto" t-on-click="() => state.showExport = false"/>
+                    </div>
+                    <form class="card-body" t-on-submit="onExport">
+                        <p class="text-muted small">
+                            Le fichier porte vos
+                            <t t-esc="state.tokens.length"/> token(s), chiffrés par la phrase
+                            que vous choisissez ici. Il se fabrique dans cette page : le serveur
+                            n'y participe pas et n'en garde rien.
+                        </p>
+                        <div class="alert alert-warning py-2 small" role="alert">
+                            <strong>Cette phrase n'est pas celle du coffre</strong>, et c'est
+                            voulu : le fichier part ailleurs et vit plus longtemps qu'une session.
+                            Sans elle, personne ne pourra relire l'export, nous pas plus qu'un autre.
+                        </div>
+                        <div class="row g-2">
+                            <div class="col-12">
+                                <label class="form-label">Phrase de ce fichier</label>
+                                <input type="password" class="form-control" t-model="state.exportPass"
+                                       autocomplete="new-password"/>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">La même, pour confirmer</label>
+                                <input type="password" class="form-control" t-model="state.exportConfirm"
+                                       autocomplete="new-password"/>
+                            </div>
+                        </div>
+                        <div t-if="state.error" class="alert alert-danger py-2 mt-3" t-esc="state.error"/>
+                        <div class="mt-3 text-end">
+                            <button type="button" class="btn btn-secondary me-2"
+                                    t-on-click="() => state.showExport = false">Annuler</button>
+                            <button type="submit" class="btn btn-primary" t-att-disabled="state.busy">
+                                <span t-if="state.busy" class="fa fa-circle-o-notch fa-spin me-1"/>
+                                <span t-else="" class="fa fa-download me-1"/>Exporter
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Codes de relève -->
+            <div t-if="state.showRecovery" class="o_bf_otp_overlay">
+                <div class="o_bf_otp_panel card shadow">
+                    <div class="card-header d-flex align-items-center">
+                        <strong>Codes de relève</strong>
+                        <button class="btn-close ms-auto" t-on-click="_fermerPanneaux"/>
+                    </div>
+                    <div class="card-body">
+                        <!-- Le code, montré UNE fois. Tout le reste du panneau
+                             disparaît pendant ce temps : rien ne doit inviter à
+                             cliquer ailleurs avant de l'avoir mis à l'abri. -->
+                        <div t-if="state.recovCode">
+                            <div class="alert alert-warning" role="alert">
+                                <strong>Ce code ne se réaffichera jamais.</strong>
+                                Il n'a pas été envoyé au serveur, et rien nulle part ne permet
+                                de le retrouver. Mettez-le à l'abri avant de fermer cet écran.
+                            </div>
+                            <div class="o_bf_otp_code_releve font-monospace text-center my-3"
+                                 t-esc="state.recovCode"/>
+                            <p class="text-muted small">
+                                Ce code ouvre le coffre entier, exactement comme votre phrase de
+                                passe. Sa place est une enveloppe scellée, un coffre-fort, ou un
+                                gestionnaire de mots de passe qui n'est pas celui que ces tokens
+                                protègent.
+                            </p>
+                            <div class="text-end">
+                                <button class="btn btn-secondary me-2" t-on-click="onImprimerCode">
+                                    <span class="fa fa-print me-1"/>Imprimer
+                                </button>
+                                <button class="btn btn-secondary me-2" t-on-click="onCopyRecoveryCode">
+                                    <span class="fa fa-clipboard me-1"/>Copier
+                                </button>
+                                <button class="btn btn-primary" t-on-click="() => state.recovCode = ''">
+                                    Je l'ai mis à l'abri
+                                </button>
+                            </div>
+                        </div>
+
+                        <div t-else="">
+                            <p class="text-muted small">
+                                Une clé d'accès est liée à un appareil et à un domaine : elle rend
+                                l'ouverture rapide, elle ne remplace pas la phrase. Un code de relève,
+                                lui, tient dans une enveloppe et survit au portable.
+                            </p>
+                            <div t-if="recoveries.length" class="list-group mb-3">
+                                <div t-foreach="recoveries" t-as="r" t-key="r.id"
+                                     class="list-group-item d-flex align-items-center">
+                                    <div>
+                                        <div t-esc="r.name"/>
+                                        <div class="text-muted small">
+                                            Créé le <t t-esc="r.created.slice(0, 10)"/>
+                                            <t t-if="r.last_used">
+                                                · a servi le <t t-esc="r.last_used.slice(0, 10)"/>
+                                            </t>
+                                        </div>
+                                    </div>
+                                    <button class="btn btn-sm btn-outline-danger ms-auto"
+                                            t-on-click="() => this.onRemoveRecovery(r)">Révoquer</button>
+                                </div>
+                            </div>
+                            <p t-else="" class="text-muted small fst-italic">
+                                Aucun code pour l'instant : la phrase de passe est la seule porte
+                                de ce coffre.
+                            </p>
+
+                            <form t-on-submit="onCreateRecovery">
+                                <div class="row g-2">
+                                    <div class="col-12">
+                                        <label class="form-label">Où il sera rangé</label>
+                                        <input type="text" class="form-control" t-model="state.recovName"
+                                               placeholder="enveloppe au coffre-fort"/>
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label">Votre phrase de passe</label>
+                                        <input type="password" class="form-control" t-model="state.recovPass"
+                                               autocomplete="current-password"/>
+                                        <div class="form-text">
+                                            Demandée exprès : ajouter une porte se confirme par ce
+                                            que vous savez, pas par le fait que cet écran soit ouvert.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div t-if="state.error" class="alert alert-danger py-2 mt-3" t-esc="state.error"/>
+                                <div class="mt-3 text-end">
+                                    <button type="submit" class="btn btn-primary" t-att-disabled="state.busy">
+                                        <span t-if="state.busy" class="fa fa-circle-o-notch fa-spin me-1"/>
+                                        Créer un code
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Corbeille -->
+            <div t-if="state.showTrash" class="o_bf_otp_overlay">
+                <div class="o_bf_otp_panel card shadow">
+                    <div class="card-header d-flex align-items-center">
+                        <strong>Corbeille</strong>
+                        <button class="btn-close ms-auto" t-on-click="() => state.showTrash = false"/>
+                    </div>
+                    <div class="card-body">
+                        <p t-if="!state.trash.length" class="text-muted text-center py-4 mb-0">
+                            La corbeille est vide.
+                        </p>
+                        <div t-else="">
+                            <p class="text-muted small">
+                                Un token retiré du coffre atterrit ici et y reste. Rien ne le
+                                détruit tout seul : la destruction se demande, et elle est
+                                définitive.
+                            </p>
+                            <div class="list-group">
+                                <div t-foreach="state.trash" t-as="t" t-key="t.id"
+                                     class="list-group-item d-flex align-items-center">
+                                    <div>
+                                        <div>
+                                            <t t-if="t.issuer"><strong t-esc="t.issuer"/> · </t>
+                                            <t t-esc="t.name"/>
+                                        </div>
+                                        <div class="text-muted small" t-if="t.deleted_at">
+                                            Retiré le <t t-esc="t.deleted_at.slice(0, 10)"/>
+                                        </div>
+                                    </div>
+                                    <div class="ms-auto">
+                                        <button class="btn btn-sm btn-outline-primary me-1"
+                                                t-on-click="() => this.restoreToken(t)">Restaurer</button>
+                                        <button class="btn btn-sm btn-outline-danger"
+                                                t-on-click="() => this.purgeToken(t)">Détruire</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-3 text-end">
+                                <button class="btn btn-outline-danger" t-on-click="emptyTrash">
+                                    <span class="fa fa-trash me-1"/>Vider la corbeille
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </t>

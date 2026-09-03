@@ -36,6 +36,32 @@ export function base32Decode(input) {
     return new Uint8Array(out);
 }
 
+/**
+ * Encode des octets en base32, sans remplissage.
+ *
+ * ⚠️ Écrit pour l'import d'un export Google Authenticator, qui livre la graine
+ * en octets bruts dans son protobuf alors que tout le reste du monde OTP la
+ * manipule en base32. Sans remplissage : `base32Decode` le retire de toute
+ * façon, et une graine sans `=` se recopie mieux à la main.
+ */
+export function base32Encode(bytes) {
+    let bits = 0;
+    let value = 0;
+    let out = "";
+    for (const b of bytes) {
+        value = (value << 8) | b;
+        bits += 8;
+        while (bits >= 5) {
+            bits -= 5;
+            out += B32[(value >>> bits) & 31];
+        }
+    }
+    if (bits > 0) {
+        out += B32[(value << (5 - bits)) & 31];
+    }
+    return out;
+}
+
 const HASHES = { SHA1: "SHA-1", SHA256: "SHA-256", SHA512: "SHA-512" };
 
 /** HOTP, RFC 4226. Le compteur est un entier 64 bits en gros-boutiste. */

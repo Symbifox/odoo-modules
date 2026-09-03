@@ -29,7 +29,7 @@ class BfOtpVault(models.Model):
     """Le coffre personnel d'un usager. Un seul par personne."""
 
     _name = 'bf.otp.vault'
-    _description = 'Coffre de jetons OTP'
+    _description = 'Coffre de tokens OTP'
     _rec_name = 'user_id'
 
     user_id = fields.Many2one(
@@ -58,20 +58,22 @@ class BfOtpVault(models.Model):
         string='Témoin',
         required=True,
         help="Un texte connu, chiffré avec la clé. Sert au navigateur à dire "
-             "« mauvaise phrase » avant de tenter de déchiffrer les jetons.",
+             "« mauvaise phrase » avant de tenter de déchiffrer les tokens.",
     )
     verifier_iv = fields.Char(string='Vecteur du témoin', required=True)
 
     credential_ids = fields.One2many(
         'bf.otp.credential', 'vault_id', string="Clés d'accès")
+    recovery_ids = fields.One2many(
+        'bf.otp.recovery', 'vault_id', string='Codes de relève')
 
-    token_ids = fields.One2many('bf.otp.token', 'vault_id', string='Jetons')
+    token_ids = fields.One2many('bf.otp.token', 'vault_id', string='Tokens')
     token_count = fields.Integer(
-        string='Nombre de jetons', compute='_compute_token_count')
+        string='Nombre de tokens', compute='_compute_token_count')
 
     _sql_constraints = [
         ('user_uniq', 'unique(user_id)',
-         "Une personne n'a qu'un seul coffre de jetons."),
+         "Une personne n'a qu'un seul coffre de tokens."),
     ]
 
     @api.depends('token_ids')
@@ -120,6 +122,22 @@ class BfOtpVault(models.Model):
                 }
                 for c in vault.credential_ids
             ],
+            # ⚠️ Ajout additif : l'application mobile lit ce JSON avec `org.json`,
+            # qui ignore les clés qu'elle ne connaît pas. Une clé de plus ne
+            # casse donc aucune version déjà installée.
+            'recoveries': [
+                {
+                    'id': r.id,
+                    'name': r.name,
+                    'salt': r.salt,
+                    'iterations': r.iterations,
+                    'wrapped_secret': r.wrapped_secret,
+                    'wrapped_iv': r.wrapped_iv,
+                    'created': r.create_date and str(r.create_date) or '',
+                    'last_used': r.last_used and str(r.last_used) or '',
+                }
+                for r in vault.recovery_ids
+            ],
         }
 
     @api.model
@@ -133,7 +151,7 @@ class BfOtpVault(models.Model):
         if self.search_count([('user_id', '=', self.env.uid)]):
             raise UserError(_(
                 "Ce coffre existe déjà. Pour en changer la phrase de passe, "
-                "il faut rechiffrer les jetons, ce qui se fait depuis le coffre "
+                "il faut rechiffrer les tokens, ce qui se fait depuis le coffre "
                 "ouvert."
             ))
         vault = self.create({
@@ -194,12 +212,73 @@ class BfOtpVault(models.Model):
             cred.sudo().last_used = fields.Datetime.now()
         return True
 
+    # -------------------------------------------------------------------------
+    # Codes de relève
+    # -------------------------------------------------------------------------
+
+    @api.model
+    def add_recovery(self, name, salt, iterations, wrapped_secret, wrapped_iv):
+        """Enregistre un code de relève capable d'ouvrir MON coffre.
+
+        Comme pour une clé d'accès, tout arrive scellé : le serveur range un
+        bloc qu'il ne peut pas ouvrir. Le code lui-même n'est jamais envoyé, et
+        il n'existe rien ici pour le vérifier. Un mauvais code ne déchiffre
+        simplement rien.
+        """
+        from .bf_otp_recovery import PLAFOND_RELEVES
+        vault = self.search([('user_id', '=', self.env.uid)], limit=1)
+        if not vault:
+            raise UserError(_("Aucun coffre : il faut en créer un d'abord."))
+        if len(vault.recovery_ids) >= PLAFOND_RELEVES:
+            raise UserError(_(
+                "Ce coffre porte déjà %(nombre)s codes de relève. Retirez-en un "
+                "avant d'en créer un autre : chaque code est une porte de plus, "
+                "et un inventaire qu'il faut tenir.",
+                nombre=PLAFOND_RELEVES,
+            ))
+        releve = self.env['bf.otp.recovery'].create({
+            'vault_id': vault.id,
+            'name': name or _('Code de relève'),
+            'salt': salt,
+            'iterations': int(iterations),
+            'wrapped_secret': wrapped_secret,
+            'wrapped_iv': wrapped_iv,
+        })
+        return releve.id
+
+    @api.model
+    def remove_recovery(self, recovery_row_id):
+        """Révoque un code de relève. L'enveloppe imprimée ne vaut plus rien."""
+        releve = self.env['bf.otp.recovery'].search([
+            ('id', '=', int(recovery_row_id)),
+            ('user_id', '=', self.env.uid),
+        ])
+        if not releve:
+            raise UserError(_("Code de relève introuvable."))
+        releve.unlink()
+        return True
+
+    @api.model
+    def touch_recovery(self, recovery_row_id):
+        """Note qu'un code de relève vient de servir.
+
+        ⚠️ Ce n'est pas de la statistique : un code de relève qui s'utilise
+        alors que personne ne s'en souvient est le seul signal qu'on aura.
+        """
+        releve = self.env['bf.otp.recovery'].search([
+            ('id', '=', int(recovery_row_id)),
+            ('user_id', '=', self.env.uid),
+        ])
+        if releve:
+            releve.sudo().last_used = fields.Datetime.now()
+        return True
+
     def unlink(self):
         """Supprimer un coffre emporte ses jetons : on le dit, on ne le devine pas."""
         for vault in self:
             if vault.token_count:
                 raise UserError(_(
-                    "Ce coffre porte %(nombre)s jeton(s). Vide-le avant de le "
+                    "Ce coffre porte %(nombre)s token(s). Videz-le avant de le "
                     "supprimer : une fois parti, aucune phrase de passe ne les "
                     "rendra.", nombre=vault.token_count,
                 ))

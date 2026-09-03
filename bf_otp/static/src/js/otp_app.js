@@ -5,6 +5,13 @@ import { registry } from "@web/core/registry";
 import { useService } from "@web/core/utils/hooks";
 import { _t } from "@web/core/l10n/translation";
 import { browser } from "@web/core/browser/browser";
+// 🔴 Importé EN HAUT, jamais par `await import("@web/…")`. Le système de
+// modules d'Odoo n'est pas de l'ESM natif : un `import()` dynamique d'un
+// spécificateur `@web/…` part au navigateur, qui ne sait pas le résoudre et
+// lève « Failed to resolve module specifier ». La fonction ne s'ouvre alors
+// jamais, et rien ne le dit à l'écran. Trouvé au navigateur le 2026-09-02 :
+// la suppression d'un token n'a jamais fonctionné depuis qu'elle existe.
+import { ConfirmationDialog } from "@web/core/confirmation_dialog/confirmation_dialog";
 import {
     cryptoAvailable, buildVaultMaterial, unlockVault, encryptText, decryptText,
     deriveKeyBytes, keyFromBytes, wipe,
@@ -14,6 +21,13 @@ import {
 } from "./otp_webauthn";
 import { base32Decode, totp, hotp, secondsLeft, parseOtpauth } from "./otp_totp";
 import { iconeDe, contraste } from "./otp_icons";
+import {
+    construireExport, lireExport, estUnExportSymbifox, PhraseIncorrecte,
+} from "./otp_export";
+import { estUneMigration, lireMigration } from "./otp_migration";
+import {
+    genererCode, scellerPourCode, ouvrirAvecCode,
+} from "./otp_recovery";
 
 /** Minutes d'inactivité après lesquelles le coffre se referme tout seul.
  *  Un coffre ouvert sur un écran laissé sans surveillance est un coffre ouvert
@@ -56,6 +70,18 @@ export class BfOtpApp extends Component {
             form: this._formVierge(),
             importText: "",
             importPassword: "",
+            importNote: "",       // ce que l'import a compris du fichier
+            showExport: false,
+            exportPass: "",
+            exportConfirm: "",
+            showRecovery: false,  // panneau des codes de relève
+            recovName: "",
+            recovPass: "",
+            recovCode: "",        // montré UNE fois, jamais relu ailleurs
+            useRecovery: false,   // l'écran verrouillé demande un code
+            recovInput: "",
+            showTrash: false,
+            trash: [],
         });
 
         // La clé ne va PAS dans le state : rien qui la porte ne doit finir dans
@@ -165,9 +191,8 @@ export class BfOtpApp extends Component {
                       cible.tagName === "SELECT" || cible.isContentEditable);
 
         if (ev.key === "Escape") {
-            if (this.state.showForm || this.state.showImport) {
-                this.state.showForm = false;
-                this.state.showImport = false;
+            if (this._unPanneauEstOuvert()) {
+                this._fermerPanneaux();
             } else if (this.state.search) {
                 this.state.search = "";
             } else {
@@ -178,7 +203,7 @@ export class BfOtpApp extends Component {
             ev.preventDefault();
             return;
         }
-        if (this.state.showForm || this.state.showImport) {
+        if (this._unPanneauEstOuvert()) {
             return;
         }
         if (ev.key === "Enter" && !dansUnChamp) {
@@ -198,6 +223,31 @@ export class BfOtpApp extends Component {
                 champ.focus();
             }
         }
+    }
+
+    /**
+     * Y a-t-il un panneau par-dessus la liste ?
+     *
+     * ⚠️ Une seule liste, tenue à un seul endroit. Chaque panneau ajouté
+     * jusqu'ici a dû être répété dans le clavier ET dans le verrouillage, et
+     * c'est exactement le genre d'énumération qu'on oublie de compléter : le
+     * panneau oublié laisse alors Échap verrouiller le coffre sous un
+     * formulaire à moitié rempli.
+     */
+    _panneaux() {
+        return ["showForm", "showImport", "showKeys", "showExport",
+                "showRecovery", "showTrash"];
+    }
+
+    _unPanneauEstOuvert() {
+        return this._panneaux().some((nom) => this.state[nom]);
+    }
+
+    _fermerPanneaux() {
+        for (const nom of this._panneaux()) {
+            this.state[nom] = false;
+        }
+        this.state.recovCode = "";
     }
 
     /**
@@ -223,8 +273,8 @@ export class BfOtpApp extends Component {
         this.state.unlocked = false;
         this.state.tokens = [];
         this.state.revealed = {};
-        this.state.showForm = false;
-        this.state.showImport = false;
+        this._fermerPanneaux();
+        this.state.trash = [];
         if (automatique) {
             this.notification.add(
                 _t("Coffre refermé après cinq minutes sans activité."),
@@ -392,7 +442,7 @@ export class BfOtpApp extends Component {
         const phrase = this.passphraseRef.el?.value || "";
         const confirm = this.confirmRef.el?.value || "";
         if (phrase.length < 12) {
-            this.state.error = _t("Choisis une phrase d'au moins douze caractères.");
+            this.state.error = _t("Choisissez une phrase d'au moins douze caractères.");
             return;
         }
         if (phrase !== confirm) {
@@ -718,12 +768,12 @@ export class BfOtpApp extends Component {
 
     async removeToken(t) {
         this.dialog.add(
-            (await import("@web/core/confirmation_dialog/confirmation_dialog")).ConfirmationDialog,
+            ConfirmationDialog,
             {
                 title: _t("Supprimer ce token"),
                 body: _t(
                     "« %s » sera supprimé de ce coffre. Si vous n'avez pas la graine ailleurs, le deuxième facteur de ce compte devient irrécupérable.",
-                    `${t.issuer ? t.issuer + " — " : ""}${t.name}`
+                    `${t.issuer ? t.issuer + " · " : ""}${t.name}`
                 ),
                 confirmLabel: _t("Supprimer"),
                 confirm: async () => {
@@ -738,54 +788,86 @@ export class BfOtpApp extends Component {
     // -- import --------------------------------------------------------------
 
     /**
-     * Lit un export du gestionnaire OTP de Nextcloud.
+     * Lit ce qu'on lui colle, quel que soit d'où ça vient.
      *
-     * Deux formes possibles. Sans `iv`, les graines sont EN CLAIR dans le
-     * fichier ; avec `iv`, elles sont chiffrées par la phrase du coffre
-     * d'origine, que la personne doit fournir ici. Dans les deux cas le
-     * déchiffrement et le rechiffrement se font DANS CETTE PAGE : le serveur ne
-     * voit passer que du chiffré.
+     * Trois provenances, reconnues au contenu plutôt qu'à un menu : personne ne
+     * sait nommer le format de son propre export, et se tromper de case donne
+     * un refus incompréhensible.
+     *
+     * 1. Une adresse `otpauth-migration://` : l'export de Google Authenticator,
+     *    lu par `otp_migration.js`. ⚠️ Elle porte les graines EN CLAIR.
+     * 2. Un export Symbifox, chiffré par sa propre phrase.
+     * 3. Un export du gestionnaire OTP de Nextcloud, chiffré ou non.
+     *
+     * Dans les trois cas, le déchiffrement et le rechiffrement se font DANS
+     * CETTE PAGE : le serveur ne voit passer que du chiffré.
      */
     async runImport(ev) {
         ev.preventDefault();
         this.state.error = "";
-        let data;
-        try {
-            data = JSON.parse(this.state.importText);
-        } catch {
-            this.state.error = _t("Ce n'est pas du JSON valide.");
-            return;
-        }
-        const comptes = data.accounts || data;
-        if (!Array.isArray(comptes)) {
-            this.state.error = _t("Ce fichier ne contient pas de liste « accounts ».");
+        this.state.importNote = "";
+        const texte = (this.state.importText || "").trim();
+        if (!texte) {
+            this.state.error = _t("Collez d'abord le contenu de votre export.");
             return;
         }
         this.state.busy = true;
         try {
-            const chiffreALaSource = !!data.iv;
-            let cleSource = null;
-            if (chiffreALaSource) {
-                if (!this.state.importPassword) {
+            let brutes = [];
+            let refuses = [];
+            let note = "";
+
+            if (estUneMigration(texte)) {
+                const r = lireMigration(texte);
+                brutes = r.comptes;
+                refuses = r.refuses;
+                if (r.lot) {
+                    note = _t(
+                        "Cet export est découpé : c'est le code %(index)s d'une série de %(taille)s. Importez aussi les autres, sinon il vous manquera des tokens.",
+                        { index: r.lot.index, taille: r.lot.taille }
+                    );
+                }
+            } else {
+                let data;
+                try {
+                    data = JSON.parse(texte);
+                } catch {
                     this.state.error = _t(
-                        "Cet export est chiffré : il faut la phrase de passe du coffre Nextcloud d'origine."
+                        "Ce n'est ni du JSON valide ni une adresse otpauth-migration://."
                     );
                     return;
                 }
-                cleSource = await this._cleNextcloud(this.state.importPassword, data.iv);
-            }
-            const entries = [];
-            const refuses = [];
-            for (const c of comptes) {
-                let graine = c.secret;
-                if (chiffreALaSource) {
-                    graine = await this._dechiffrerNextcloud(cleSource, c.secret, data.iv);
-                    if (graine === null) {
-                        refuses.push(c.name || "?");
-                        continue;
+                if (estUnExportSymbifox(data)) {
+                    if (!this.state.importPassword) {
+                        this.state.error = _t(
+                            "Cet export Symbifox est chiffré : entrez la phrase choisie au moment de l'export."
+                        );
+                        return;
                     }
+                    let lu;
+                    try {
+                        lu = await lireExport(data, this.state.importPassword);
+                    } catch (e) {
+                        this.state.error = e instanceof PhraseIncorrecte
+                            ? _t("Ce n'est pas la phrase de cet export.")
+                            : e.message;
+                        return;
+                    }
+                    brutes = lu.entrees;
+                    refuses = lu.refuses;
+                } else {
+                    const r = await this._lireExportNextcloud(data);
+                    if (!r) {
+                        return;
+                    }
+                    brutes = r.comptes;
+                    refuses = r.refuses;
                 }
-                graine = (graine || "").replace(/[\s-]/g, "").toUpperCase();
+            }
+
+            const entries = [];
+            for (const c of brutes) {
+                const graine = (c.secret || "").replace(/[\s-]/g, "").toUpperCase();
                 try {
                     base32Decode(graine);
                 } catch {
@@ -796,36 +878,384 @@ export class BfOtpApp extends Component {
                 entries.push({
                     name: c.name || _t("Sans nom"),
                     issuer: c.issuer || "",
-                    otp_type: (c.type || "totp").toLowerCase() === "hotp" ? "hotp" : "totp",
+                    otp_type: (c.otp_type || "totp").toLowerCase() === "hotp" ? "hotp" : "totp",
                     algorithm: (c.algorithm || "SHA1").toUpperCase(),
                     digits: c.digits || 6,
                     period: c.period || 30,
                     counter: c.counter || 0,
+                    group_name: c.group_name || "",
+                    sensitive: !!c.sensitive,
+                    favorite: !!c.favorite,
+                    partner: c.partner || "",
+                    project: c.project || "",
                     secret_cipher: cipher,
                     secret_iv: iv,
                 });
             }
             if (!entries.length) {
-                this.state.error = _t("Aucun token lisible dans ce fichier.");
+                this.state.error = _t("Aucun token lisible là-dedans.");
                 return;
             }
+            const rattaches = await this._resoudreRattachements(entries);
             const res = await this.orm.call("bf.otp.token", "import_tokens", [entries]);
             this.state.showImport = false;
             this.state.importText = "";
             this.state.importPassword = "";
             await this._chargerJetons();
+
             let msg = _t("%s token(s) importé(s).", res.created);
             if (res.skipped) {
                 msg += " " + _t("%s déjà présent(s), ignoré(s).", res.skipped);
             }
+            if (rattaches) {
+                msg += " " + _t("%s rattachement(s) rétabli(s).", rattaches);
+            }
             if (refuses.length) {
                 msg += " " + _t("%s illisible(s) : %s.", refuses.length, refuses.slice(0, 5).join(", "));
             }
-            this.notification.add(msg, { type: refuses.length ? "warning" : "success", sticky: !!refuses.length });
+            if (note) {
+                msg += " " + note;
+            }
+            this.notification.add(msg, {
+                type: (refuses.length || note) ? "warning" : "success",
+                sticky: !!(refuses.length || note),
+            });
+        } catch (e) {
+            this.state.error = e.message || _t("Import impossible.");
         } finally {
             this.state.busy = false;
         }
     }
+
+    /**
+     * La branche Nextcloud de l'import, sortie de `runImport` pour que les
+     * trois provenances se lisent au même niveau.
+     */
+    async _lireExportNextcloud(data) {
+        const comptes = data.accounts || data;
+        if (!Array.isArray(comptes)) {
+            this.state.error = _t(
+                "Ce fichier ne contient pas de liste « accounts », et ce n'est pas un export Symbifox."
+            );
+            return null;
+        }
+        const chiffreALaSource = !!data.iv;
+        let cleSource = null;
+        if (chiffreALaSource) {
+            if (!this.state.importPassword) {
+                this.state.error = _t(
+                    "Cet export est chiffré : il faut la phrase de passe du coffre Nextcloud d'origine."
+                );
+                return null;
+            }
+            cleSource = await this._cleNextcloud(this.state.importPassword, data.iv);
+        }
+        const sortie = [];
+        const refuses = [];
+        for (const c of comptes) {
+            let graine = c.secret;
+            if (chiffreALaSource) {
+                graine = await this._dechiffrerNextcloud(cleSource, c.secret, data.iv);
+                if (graine === null) {
+                    refuses.push(c.name || "?");
+                    continue;
+                }
+            }
+            sortie.push({
+                name: c.name, issuer: c.issuer, secret: graine,
+                otp_type: (c.type || "totp"), algorithm: c.algorithm,
+                digits: c.digits, period: c.period, counter: c.counter,
+            });
+        }
+        return { comptes: sortie, refuses };
+    }
+
+    /**
+     * Rétablit les rattachements d'un export Symbifox, par le NOM.
+     *
+     * ⚠️ Seulement quand le nom désigne UN SEUL client ou projet de cette
+     * instance. Un import qui devine mal rattacherait des tokens au mauvais
+     * client, ce qui est pire que de ne rien rattacher : la faute serait
+     * invisible et se propagerait dans les rapports de fin de mandat.
+     *
+     * Une requête par nom DISTINCT, pas par token : cent quarante tokens ne
+     * portent qu'une vingtaine de clients.
+     */
+    async _resoudreRattachements(entries) {
+        const paires = [["partner", "partner_id", "res.partner"],
+                        ["project", "project_id", "project.project"]];
+        let poses = 0;
+        for (const [champTexte, champId, modele] of paires) {
+            const noms = [...new Set(entries.map((e) => e[champTexte]).filter(Boolean))];
+            const table = new Map();
+            for (const nom of noms) {
+                try {
+                    const trouves = await this.orm.call(
+                        "bf.otp.token", "name_search_targets", [modele, nom, 5]
+                    );
+                    const exacts = trouves.filter((l) => l[1] === nom);
+                    if (exacts.length === 1) {
+                        table.set(nom, exacts[0][0]);
+                    }
+                } catch {
+                    // Un nom qui ne se cherche pas ne doit pas faire tomber
+                    // l'import : le token entre, sans rattachement.
+                }
+            }
+            for (const e of entries) {
+                const cible = table.get(e[champTexte]);
+                if (cible) {
+                    e[champId] = cible;
+                    poses += 1;
+                }
+                delete e[champTexte];
+            }
+        }
+        return poses;
+    }
+
+    // -- export --------------------------------------------------------------
+
+    /**
+     * Écrit le coffre dans un fichier chiffré, et le fait télécharger.
+     *
+     * ⚠️ La phrase demandée ici n'est PAS celle du coffre, et l'écran le dit :
+     * le fichier part ailleurs et vit plus longtemps que la session. Il n'existe
+     * volontairement aucune option « en clair ».
+     */
+    async onExport(ev) {
+        ev.preventDefault();
+        this.state.error = "";
+        const phrase = this.state.exportPass || "";
+        if (phrase.length < 12) {
+            this.state.error = _t("Choisissez une phrase d'au moins douze caractères pour ce fichier.");
+            return;
+        }
+        if (phrase !== this.state.exportConfirm) {
+            this.state.error = _t("Les deux phrases ne correspondent pas.");
+            return;
+        }
+        this.state.busy = true;
+        try {
+            const { fichier, exportes, ignores } = await construireExport(
+                this.state.tokens, phrase, ITERATIONS
+            );
+            if (!exportes) {
+                this.state.error = _t("Aucun token lisible à exporter.");
+                return;
+            }
+            const nom = `symbifox-tokens-${new Date().toISOString().slice(0, 10)}.json`;
+            const blob = new Blob([JSON.stringify(fichier, null, 2)],
+                                  { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+            const lien = document.createElement("a");
+            lien.href = url;
+            lien.download = nom;
+            lien.click();
+            URL.revokeObjectURL(url);
+
+            this.state.showExport = false;
+            this.state.exportPass = "";
+            this.state.exportConfirm = "";
+            let msg = _t("%(nombre)s token(s) exporté(s) dans %(fichier)s.",
+                         { nombre: exportes, fichier: nom });
+            if (ignores) {
+                msg += " " + _t("%s illisible(s) dans ce coffre, non exporté(s).", ignores);
+            }
+            msg += " " + _t("Sans la phrase de ce fichier, personne ne pourra le relire.");
+            this.notification.add(msg, { type: "success", sticky: true });
+        } catch (e) {
+            this.state.error = e.message || _t("Export impossible.");
+        } finally {
+            this.state.busy = false;
+        }
+    }
+
+    // -- codes de relève -----------------------------------------------------
+
+    get recoveries() {
+        return (this.state.vault && this.state.vault.recoveries) || [];
+    }
+
+    openRecovery() {
+        this.state.error = "";
+        this.state.recovCode = "";
+        this.state.recovName = "";
+        this.state.recovPass = "";
+        this.state.showRecovery = true;
+    }
+
+    /**
+     * Fabrique un code de relève. Redemande la phrase, comme l'enrôlement d'une
+     * clé d'accès et pour la même raison : ajouter une porte se confirme par ce
+     * qu'on SAIT.
+     */
+    async onCreateRecovery(ev) {
+        ev.preventDefault();
+        this.state.error = "";
+        if (!this.state.recovPass) {
+            this.state.error = _t("Entrez votre phrase de passe pour confirmer.");
+            return;
+        }
+        this.state.busy = true;
+        let octets = null;
+        try {
+            const v = this.state.vault;
+            octets = await deriveKeyBytes(this.state.recovPass, v.salt, v.iterations);
+            const controle = await keyFromBytes(octets);
+            try {
+                await decryptText(controle, v.verifier, v.verifier_iv);
+            } catch {
+                this.state.error = _t("Phrase de passe incorrecte.");
+                return;
+            }
+            const code = genererCode();
+            const scelle = await scellerPourCode(code, octets, v.iterations);
+            await this.orm.call("bf.otp.vault", "add_recovery", [
+                this.state.recovName || _t("Code de relève"),
+                scelle.salt, scelle.iterations,
+                scelle.wrapped_secret, scelle.wrapped_iv,
+            ]);
+            this.state.vault = await this.orm.call("bf.otp.vault", "get_my_vault", []);
+            this.state.recovPass = "";
+            this.state.recovName = "";
+            // ⚠️ Le code s'affiche ICI et nulle part ailleurs. Il n'a pas été
+            // envoyé, il n'est pas relisible, et fermer cet écran le perd.
+            this.state.recovCode = code;
+        } catch (e) {
+            this.state.error = e.message || _t("Création impossible.");
+        } finally {
+            wipe(octets);
+            this.state.busy = false;
+        }
+    }
+
+    async onCopyRecoveryCode() {
+        await browser.navigator.clipboard.writeText(this.state.recovCode);
+        this.notification.add(
+            _t("Code copié. Collez-le maintenant à l'endroit prévu : il ne se réaffichera pas."),
+            { type: "warning", sticky: true }
+        );
+    }
+
+    onImprimerCode() {
+        window.print();
+    }
+
+    async onRemoveRecovery(r) {
+        this.dialog.add(
+            ConfirmationDialog,
+            {
+                title: _t("Révoquer ce code de relève"),
+                body: _t(
+                    "« %s » n'ouvrira plus ce coffre. L'enveloppe ou la fiche qui le porte devient inutile, et il faudra la détruire.",
+                    r.name
+                ),
+                confirmLabel: _t("Révoquer"),
+                confirm: async () => {
+                    await this.orm.call("bf.otp.vault", "remove_recovery", [r.id]);
+                    this.state.vault = await this.orm.call("bf.otp.vault", "get_my_vault", []);
+                    this.notification.add(_t("Code de relève révoqué."), { type: "info" });
+                },
+                cancel: () => {},
+            }
+        );
+    }
+
+    /** Ouvre le coffre avec un code de relève, quand la phrase est perdue. */
+    async onUnlockWithRecovery(ev) {
+        ev.preventDefault();
+        this.state.busy = true;
+        this.state.error = "";
+        let octets = null;
+        try {
+            const res = await ouvrirAvecCode(this.state.recovInput, this.recoveries);
+            if (!res) {
+                this.state.error = _t("Ce code n'ouvre pas ce coffre.");
+                return;
+            }
+            octets = res.keyBytes;
+            this._key = await keyFromBytes(octets);
+            await this._chargerJetons();
+            this.state.recovInput = "";
+            this._ouvrir();
+            this.orm.call("bf.otp.vault", "touch_recovery", [res.row_id]).catch(() => {});
+            this.notification.add(
+                _t("Coffre ouvert par un code de relève. Ce code a servi : si ce n'était pas prévu, révoquez-le."),
+                { type: "warning", sticky: true }
+            );
+        } catch (e) {
+            this.state.error = e.message || _t("Ouverture impossible.");
+        } finally {
+            wipe(octets);
+            this.state.busy = false;
+        }
+    }
+
+    // -- corbeille -----------------------------------------------------------
+
+    async openTrash() {
+        this.state.error = "";
+        this.state.trash = await this.orm.call("bf.otp.token", "load_my_trash", []);
+        this.state.showTrash = true;
+    }
+
+    async restoreToken(t) {
+        await this.orm.call("bf.otp.token", "restore_token", [t.id]);
+        this.state.trash = await this.orm.call("bf.otp.token", "load_my_trash", []);
+        await this._chargerJetons();
+        this.notification.add(_t("Token remis dans le coffre."), { type: "success" });
+    }
+
+    /**
+     * Détruit un token pour de bon.
+     *
+     * 🔴 C'est le SECOND geste, et le seul irréversible du module. Le premier
+     * (la corbeille) est réversible exprès : jusqu'à la 18.0.10.0.0 il ne
+     * l'était pas, et un clic de travers effaçait un deuxième facteur dont
+     * personne n'avait la graine ailleurs.
+     */
+    async purgeToken(t) {
+        this.dialog.add(
+            ConfirmationDialog,
+            {
+                title: _t("Détruire ce token"),
+                body: _t(
+                    "« %s » sera détruit. Aucune phrase de passe, aucun code de relève et aucune sauvegarde ne le rendra.",
+                    `${t.issuer ? t.issuer + " · " : ""}${t.name}`
+                ),
+                confirmLabel: _t("Détruire"),
+                confirm: async () => {
+                    await this.orm.call("bf.otp.token", "purge_token", [t.id]);
+                    this.state.trash = await this.orm.call("bf.otp.token", "load_my_trash", []);
+                    this.notification.add(_t("Token détruit."), { type: "info" });
+                },
+                cancel: () => {},
+            }
+        );
+    }
+
+    async emptyTrash() {
+        const combien = this.state.trash.length;
+        this.dialog.add(
+            ConfirmationDialog,
+            {
+                title: _t("Vider la corbeille"),
+                body: _t(
+                    "%s token(s) seront détruits. Rien ne les rendra. Si vous n'en êtes pas certain, exportez d'abord votre coffre.",
+                    combien
+                ),
+                confirmLabel: _t("Tout détruire"),
+                confirm: async () => {
+                    const n = await this.orm.call("bf.otp.token", "empty_trash", []);
+                    this.state.trash = [];
+                    this.notification.add(_t("%s token(s) détruit(s).", n), { type: "info" });
+                },
+                cancel: () => {},
+            }
+        );
+    }
+
 
     /**
      * Reproduit la dérivation du gestionnaire OTP de Nextcloud.

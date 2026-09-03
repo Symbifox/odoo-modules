@@ -43,7 +43,7 @@ class BfOtpDevice(models.Model):
     # ⚠️ `groups` interdit la lecture du jeton par l'interface, y compris à son
     # propriétaire : rien dans l'application web n'a besoin de le voir, et un
     # champ affiché finit par être copié quelque part.
-    device_token = fields.Char(string="Jeton porteur", copy=False, index=True,
+    device_token = fields.Char(string="Token porteur", copy=False, index=True,
                                groups="base.group_system")
     pending_code = fields.Char(string="Code d'appariement", copy=False,
                                index=True, groups="base.group_system")

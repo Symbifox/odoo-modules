@@ -5,6 +5,179 @@
         <field name="tag">bf_otp.app</field>
     </record>
 
+    <!-- ══════════════════════════════════════════════════════════════════
+         L'inventaire.
+
+         ⚠️ Aucune de ces vues ne montre `secret_cipher` ni `secret_iv`. Ce
+         n'est pas de la pudeur : le chiffré affiché dans une liste finit dans
+         une capture d'écran, un export tableur ou un rapport, et il donne à qui
+         le récupère un point de départ pour une attaque hors ligne. Il n'a
+         aucune raison d'être lisible ici, puisque personne ne peut l'ouvrir
+         depuis le back-office de toute façon.
+
+         Ce que ces vues apportent et que l'application ne peut pas : rattacher
+         CENT tokens à un client en une fois, et répondre à « qu'est-ce qu'on
+         détient pour eux » depuis leur fiche.
+         ══════════════════════════════════════════════════════════════════ -->
+
+    <record id="view_otp_token_list" model="ir.ui.view">
+        <field name="name">bf.otp.token.list</field>
+        <field name="model">bf.otp.token</field>
+        <field name="arch" type="xml">
+            <!-- `create="0"` : un token neuf exige une graine chiffrée dans le
+                 navigateur, donc il ne peut naître que dans l'application.
+                 `delete="0"` : la corbeille est le chemin, et elle est là-bas. -->
+            <list string="Tokens OTP" create="0" delete="0"
+                  multi_edit="1" editable="bottom" sample="1">
+                <field name="favorite" widget="boolean_favorite" string=" "/>
+                <field name="issuer" readonly="1"/>
+                <field name="name" readonly="1"/>
+                <field name="otp_type" readonly="1" optional="hide"/>
+                <field name="group_name"/>
+                <field name="partner_id" options="{'no_create': True}"/>
+                <field name="project_id" options="{'no_create': True}"/>
+                <field name="sensitive" optional="show"/>
+                <field name="last_used" readonly="1" optional="show"/>
+                <field name="deleted_at" readonly="1" optional="hide"/>
+                <field name="active" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_otp_token_form" model="ir.ui.view">
+        <field name="name">bf.otp.token.form</field>
+        <field name="model">bf.otp.token</field>
+        <field name="arch" type="xml">
+            <form string="Token OTP" create="0" duplicate="0">
+                <sheet>
+                    <div class="alert alert-info" role="status">
+                        La graine de ce token n'est pas lisible ici, et elle ne
+                        l'est nulle part sur le serveur. Le code se calcule dans
+                        <em>Mon coffre</em>, une fois la phrase de passe entrée.
+                        Cet écran sert au rangement : à qui ce token appartient,
+                        et sur quel mandat.
+                    </div>
+                    <widget name="web_ribbon" title="À la corbeille" bg_color="text-bg-danger"
+                            invisible="active"/>
+                    <group>
+                        <group string="Le compte">
+                            <field name="issuer" readonly="1"/>
+                            <field name="name" readonly="1"/>
+                            <field name="otp_type" readonly="1"/>
+                            <field name="algorithm" readonly="1"/>
+                            <field name="digits" readonly="1"/>
+                            <field name="period" readonly="1"
+                                   invisible="otp_type != 'totp'"/>
+                            <field name="counter" readonly="1"
+                                   invisible="otp_type != 'hotp'"/>
+                        </group>
+                        <group string="Le rangement">
+                            <field name="partner_id" options="{'no_create': True}"/>
+                            <field name="project_id" options="{'no_create': True}"/>
+                            <field name="group_name"/>
+                            <field name="favorite"/>
+                            <field name="sensitive"/>
+                            <field name="last_used" readonly="1"/>
+                            <field name="deleted_at" readonly="1" invisible="active"/>
+                            <field name="active" invisible="1"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_otp_token_search" model="ir.ui.view">
+        <field name="name">bf.otp.token.search</field>
+        <field name="model">bf.otp.token</field>
+        <field name="arch" type="xml">
+            <search string="Tokens OTP">
+                <field name="name" string="Compte ou émetteur"
+                       filter_domain="['|', ('name', 'ilike', self), ('issuer', 'ilike', self)]"/>
+                <field name="partner_id"/>
+                <field name="project_id"/>
+                <field name="group_name"/>
+                <filter name="favoris" string="Favoris" domain="[('favorite', '=', True)]"/>
+                <filter name="sensibles" string="Sensibles" domain="[('sensitive', '=', True)]"/>
+                <separator/>
+                <!-- La vraie liste de départ avant un départ, une fin de mandat
+                     ou un ménage : ce qu'on détient sans savoir pour qui. -->
+                <filter name="sans_rattachement" string="Sans client ni projet"
+                        domain="[('partner_id', '=', False), ('project_id', '=', False)]"/>
+                <filter name="jamais_utilise" string="Jamais utilisé"
+                        domain="[('last_used', '=', False)]"/>
+                <separator/>
+                <!-- ⚠️ Un domaine qui nomme `active` désactive de lui-même le
+                     filtre implicite des archivés : pas besoin de contexte. -->
+                <filter name="corbeille" string="À la corbeille"
+                        domain="[('active', '=', False)]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="par_client" string="Client" context="{'group_by': 'partner_id'}"/>
+                    <filter name="par_projet" string="Projet" context="{'group_by': 'project_id'}"/>
+                    <filter name="par_groupe" string="Regroupement" context="{'group_by': 'group_name'}"/>
+                    <filter name="par_emetteur" string="Émetteur" context="{'group_by': 'issuer'}"/>
+                    <filter name="par_type" string="Type" context="{'group_by': 'otp_type'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_otp_tokens" model="ir.actions.act_window">
+        <field name="name">Inventaire</field>
+        <field name="res_model">bf.otp.token</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_otp_token_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Aucun token dans votre coffre</p>
+            <p>
+                Les tokens s'ajoutent depuis <em>Mon coffre</em>, où la graine est
+                chiffrée dans le navigateur avant de partir. Cet inventaire sert
+                ensuite à les ranger : rattacher un token à un client, à un
+                mandat, ou retrouver ce qu'on détient pour quelqu'un.
+            </p>
+        </field>
+    </record>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         Les boutons intelligents.
+
+         ⚠️ Restreints au groupe : sans ça, une fiche client afficherait à tout
+         le monde un compteur qui vaut toujours zéro, et qui poserait la
+         question « pourquoi zéro ? » à des gens qui n'ont pas de coffre.
+         ══════════════════════════════════════════════════════════════════ -->
+
+    <record id="view_partner_form_otp" model="ir.ui.view">
+        <field name="name">res.partner.form.bf.otp</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <div name="button_box" position="inside">
+                <button type="object" name="action_bf_otp_tokens"
+                        class="oe_stat_button" icon="fa-key"
+                        groups="bf_otp.group_otp_user"
+                        invisible="bf_otp_token_count == 0">
+                    <field name="bf_otp_token_count" widget="statinfo" string="Tokens OTP"/>
+                </button>
+            </div>
+        </field>
+    </record>
+
+    <record id="view_project_form_otp" model="ir.ui.view">
+        <field name="name">project.project.form.bf.otp</field>
+        <field name="model">project.project</field>
+        <field name="inherit_id" ref="project.edit_project"/>
+        <field name="arch" type="xml">
+            <div name="button_box" position="inside">
+                <button type="object" name="action_bf_otp_tokens"
+                        class="oe_stat_button" icon="fa-key"
+                        groups="bf_otp.group_otp_user"
+                        invisible="bf_otp_token_count == 0">
+                    <field name="bf_otp_token_count" widget="statinfo" string="Tokens OTP"/>
+                </button>
+            </div>
+        </field>
+    </record>
+
     <!-- Application à part entière : c'est le seul module de la suite qui
          détient des graines, et le sortir sous son propre toit rend visible ce
          qu'il est. Il porte aussi l'icône de token, donc il s'installe en PWA
@@ -21,4 +194,11 @@
               action="action_otp_app"
               groups="group_otp_user"
               sequence="10"/>
+
+    <menuitem id="menu_otp_inventaire"
+              name="Inventaire"
+              parent="menu_otp_root"
+              action="action_otp_tokens"
+              groups="group_otp_user"
+              sequence="20"/>
 </odoo>

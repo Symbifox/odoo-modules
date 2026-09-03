@@ -1,6 +1,6 @@
 {
     'name': 'Symbifox OTP',
-    'version': '18.0.9.0.0',
+    'version': '18.0.10.0.0',
     'category': 'Productivity',
     'summary': "Coffre de tokens OTP dont le serveur ne peut lire aucune graine",
     'description': """
@@ -31,13 +31,23 @@ Ce que le module fait
 * Tokens TOTP et HOTP, SHA-1 / SHA-256 / SHA-512, 6 à 8 chiffres
 * Regroupement libre et marque « sensible », qui garde le code masqué
 * Ajout par adresse ``otpauth://`` ou à la main
-* Import d'un export du gestionnaire OTP de Nextcloud, chiffré ou en clair, le
-  déchiffrement se faisant dans la page
+* Import d'un export Symbifox, d'un export Google Authenticator
+  (``otpauth-migration://``) ou d'un export du gestionnaire OTP de Nextcloud,
+  le déchiffrement se faisant toujours dans la page
+* **Export chiffré du coffre**, sous une phrase distincte de celle du coffre.
+  Il n'existe volontairement aucun export en clair
+* **Codes de relève** : une copie scellée de la clé, ouverte par un code tiré au
+  sort et rangé hors ligne, pour que la phrase perdue ne soit plus une perte
+* **Corbeille** : retirer un token est réversible, le détruire est un second
+  geste et il le dit
+* **Inventaire** dans Odoo : liste, filtres, regroupements, et le compte des
+  tokens sur la fiche du client et du projet
 
 Ce que le module ne fait PAS encore
 -----------------------------------
 * Le partage entre personnes, qui demande un chiffrement par enveloppe
-* La lecture d'un QR par la caméra
+* La lecture d'un QR par la caméra depuis le navigateur (l'application Android
+  le fait)
     """,
     'author': 'Les services de consultation Blue Fox, Inc.',
     'website': 'https://symbifox.com',
@@ -61,6 +71,9 @@ Ce que le module ne fait PAS encore
             'bf_otp/static/src/js/otp_icons.js',
             'bf_otp/static/src/js/otp_totp.js',
             'bf_otp/static/src/js/otp_webauthn.js',
+            'bf_otp/static/src/js/otp_recovery.js',
+            'bf_otp/static/src/js/otp_export.js',
+            'bf_otp/static/src/js/otp_migration.js',
             'bf_otp/static/src/js/otp_app.js',
             'bf_otp/static/src/xml/otp_app.xml',
             'bf_otp/static/src/scss/otp.scss',

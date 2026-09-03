@@ -118,7 +118,7 @@ export async function enrollPasskey(userName, displayName, vaultKeyBytes) {
     const cred = await navigator.credentials.create({
         publicKey: {
             challenge,
-            rp: { name: "Blue Fox — Jetons OTP", id: location.hostname },
+            rp: { name: "Symbifox Tokens", id: location.hostname },
             user: { id: userId, name: userName, displayName: displayName || userName },
             pubKeyCredParams: [
                 { type: "public-key", alg: -7 },    // ES256

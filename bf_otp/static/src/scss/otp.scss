@@ -128,3 +128,35 @@
     height: 60%;
     display: block;
 }
+
+// Le code de relève, montré une seule fois : il doit se recopier à la main sans
+// hésiter sur un caractère. Grand, espacé, en chiffres tabulaires, et
+// sélectionnable d'un coup.
+.o_bf_otp_code_releve {
+    font-size: 1.35rem;
+    letter-spacing: .12em;
+    line-height: 1.9;
+    word-break: break-all;
+    user-select: all;
+    padding: .75rem 1rem;
+    border: 1px dashed var(--bs-border-color, #ced4da);
+    border-radius: .5rem;
+    background: var(--bs-tertiary-bg, #f8f9fa);
+}
+
+// ⚠️ À l'impression, on ne veut QUE le code : une capture du back-office autour
+// d'un secret qu'on va glisser dans une enveloppe n'apporte rien et révèle le
+// reste de l'écran.
+@media print {
+    body * { visibility: hidden !important; }
+    .o_bf_otp_code_releve,
+    .o_bf_otp_code_releve * { visibility: visible !important; }
+    .o_bf_otp_code_releve {
+        position: absolute;
+        top: 2rem;
+        left: 2rem;
+        right: 2rem;
+        border: 1px solid #000;
+        background: #fff;
+    }
+}

@@ -25,7 +25,7 @@ _URI_OTPAUTH = re.compile(r'\botpauth(-migration)?://', re.IGNORECASE)
 
 class BfOtpToken(models.Model):
     _name = 'bf.otp.token'
-    _description = 'Jeton OTP'
+    _description = 'Token OTP'
     _order = 'favorite desc, sequence, issuer, name, id'
 
     # -- rattachement --------------------------------------------------------
@@ -88,14 +88,14 @@ class BfOtpToken(models.Model):
     last_used = fields.Datetime(
         string='Dernière utilisation',
         help="Posée à chaque code copié. Sur un coffre où l'on n'utilise "
-             "vraiment qu'une dizaine de jetons, c'est ce qui les fait "
+             "vraiment qu'une dizaine de tokens, c'est ce qui les fait "
              "remonter sans qu'on ait rien à ranger.",
     )
 
     # -- sensibilité ---------------------------------------------------------
     group_name = fields.Char(
         string='Regroupement',
-        help="Étiquette libre pour ranger les jetons : un client, un "
+        help="Étiquette libre pour ranger les tokens : un client, un "
              "environnement, une équipe.",
     )
     sensitive = fields.Boolean(
@@ -113,7 +113,17 @@ class BfOtpToken(models.Model):
     )
     secret_iv = fields.Char(string='Vecteur', required=True)
 
+    # ⚠️ `active` EST la corbeille. Un token retiré passe ici à False au lieu
+    # d'être détruit : le geste qui coûte cher (perdre un deuxième facteur pour
+    # de bon) doit demander deux décisions, pas une. La destruction réelle
+    # existe, elle s'appelle `purge_token`, et elle le dit.
     active = fields.Boolean(string='Actif', default=True)
+    deleted_at = fields.Datetime(
+        string='Mis à la corbeille',
+        help="Posé au passage à la corbeille. Sert à dire depuis quand, pas à "
+             "purger tout seul : rien ici ne détruit une graine sans qu'on le "
+             "demande.",
+    )
 
     # -------------------------------------------------------------------------
     # Le garde : du chiffré, jamais une graine
@@ -179,9 +189,13 @@ class BfOtpToken(models.Model):
             raise ValidationError(_(
                 "Aucun coffre : il faut en créer un avant d'importer."))
 
+        # 🔴 `active_test=False` : sans lui, un token à la corbeille ne compte
+        # pas comme connu, l'import en recrée un jumeau, et la restauration
+        # rend ensuite deux lignes identiques. Le doublon n'apparaîtrait qu'au
+        # moment où quelqu'un vide sa corbeille, des semaines plus tard.
         connus = {
-            (t.issuer or '', t.name) for t in self.search(
-                [('user_id', '=', self.env.uid)])
+            (t.issuer or '', t.name) for t in self.with_context(
+                active_test=False).search([('user_id', '=', self.env.uid)])
         }
         a_creer, ignores = [], 0
         for e in entries:
@@ -204,6 +218,14 @@ class BfOtpToken(models.Model):
                 'counter': int(e.get('counter') or 0),
                 'group_name': e.get('group_name') or False,
                 'sensitive': bool(e.get('sensitive')),
+                'favorite': bool(e.get('favorite')),
+                # ⚠️ Les rattachements arrivent déjà RÉSOLUS en identifiants :
+                # c'est la page qui a cherché le nom et n'a retenu qu'une
+                # correspondance exacte et unique. Le serveur ne devine rien
+                # ici, sinon un import rattacherait des tokens au mauvais
+                # client sans que personne ne le voie.
+                'partner_id': int(e['partner_id']) if e.get('partner_id') else False,
+                'project_id': int(e['project_id']) if e.get('project_id') else False,
                 'secret_cipher': e['secret_cipher'],
                 'secret_iv': e['secret_iv'],
             })
@@ -224,23 +246,29 @@ class BfOtpToken(models.Model):
             token = self.search(
                 [('id', '=', int(token_id)), ('user_id', '=', self.env.uid)])
             if not token:
-                raise ValidationError(_("Jeton introuvable."))
+                raise ValidationError(_("Token introuvable."))
             token.write(permis)
             return token.id
         permis['vault_id'] = vault.id
         return self.create(permis).id
 
     @api.model
-    def _mine(self, token_id):
-        """Le jeton demandé, s'il appartient à la personne connectée.
+    def _mine(self, token_id, corbeille=False):
+        """Le token demandé, s'il appartient à la personne connectée.
 
         Toutes les façades passent par ici : la règle d'enregistrement suffirait,
         mais une recherche explicite rend le refus lisible plutôt que muet.
+
+        ⚠️ `corbeille=True` lève le filtre des archivés. Les façades qui
+        restaurent ou détruisent en ont besoin ; les autres ne doivent PAS le
+        lever, sinon un token à la corbeille redeviendrait copiable et
+        modifiable sans jamais être ressorti.
         """
-        token = self.search(
+        cible = self.with_context(active_test=False) if corbeille else self
+        token = cible.search(
             [('id', '=', int(token_id)), ('user_id', '=', self.env.uid)])
         if not token:
-            raise ValidationError(_("Jeton introuvable."))
+            raise ValidationError(_("Token introuvable."))
         return token
 
     @api.model
@@ -281,7 +309,65 @@ class BfOtpToken(models.Model):
         token.counter = int(counter)
         return True
 
+    # -------------------------------------------------------------------------
+    # La corbeille
+    # -------------------------------------------------------------------------
+
     @api.model
     def delete_token(self, token_id):
-        self._mine(token_id).unlink()
+        """Met un token à la corbeille. Ne détruit rien.
+
+        🔴 Avant la 18.0.10.0.0 cette façade appelait `unlink()` : un clic de
+        travers effaçait pour de bon un deuxième facteur dont personne n'avait
+        la graine ailleurs. L'avertissement était juste, il arrivait juste trop
+        tard pour servir à quoi que ce soit.
+        """
+        token = self._mine(token_id)
+        token.write({'active': False, 'deleted_at': fields.Datetime.now()})
         return True
+
+    @api.model
+    def load_my_trash(self):
+        """Les tokens à la corbeille, chiffrés tels quels.
+
+        Ils portent encore leur graine chiffrée : la corbeille n'est pas une
+        demi-suppression, c'est un rangement. Le navigateur les affiche sans
+        calculer de code, parce qu'un token à la corbeille ne doit pas servir.
+        """
+        tokens = self.with_context(active_test=False).search([
+            ('user_id', '=', self.env.uid), ('active', '=', False),
+        ])
+        return tokens.read(list(self._CHAMPS_LUS) + ['deleted_at'])
+
+    @api.model
+    def restore_token(self, token_id):
+        """Ressort un token de la corbeille."""
+        token = self._mine(token_id, corbeille=True)
+        token.write({'active': True, 'deleted_at': False})
+        return True
+
+    @api.model
+    def purge_token(self, token_id):
+        """Détruit un token pour de bon. Aucune phrase ne le rendra.
+
+        ⚠️ Refuse un token qui n'est pas déjà à la corbeille : détruire doit
+        toujours être le SECOND geste, jamais le premier.
+        """
+        token = self._mine(token_id, corbeille=True)
+        if token.active:
+            raise ValidationError(_(
+                "Ce token n'est pas à la corbeille. Mettez-l'y d'abord : "
+                "la destruction est irréversible."
+            ))
+        token.unlink()
+        return True
+
+    @api.model
+    def empty_trash(self):
+        """Vide la corbeille. Rend le nombre de tokens détruits."""
+        tokens = self.with_context(active_test=False).search([
+            ('user_id', '=', self.env.uid), ('active', '=', False),
+        ])
+        nombre = len(tokens)
+        tokens.unlink()
+        return nombre
