@@ -64,10 +64,13 @@ class DailyDigestConfig(models.Model):
             ))
         if unused:
             names = ", ".join(unused[:MAX_ROWS].mapped("display_name"))
+            # Le libellé reste hors de la f-string : une contre-oblique dans la
+            # partie EXPRESSION d'une f-string ne se lit qu'à partir de 3.12.
+            intro = _("Personne n'a pris ces avantages depuis un an :")
             blocks.append(
                 f'<p style="margin:6px 0 12px 0;font-family:Arial,sans-serif;'
                 f'font-size:13px;color:#92400e;">'
-                f'{_esc(_("Personne n\'a pris ces avantages depuis un an :"))} '
+                f'{_esc(intro)} '
                 f'{_esc(names)}</p>'
             )
         return "".join(blocks)
