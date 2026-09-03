@@ -88,11 +88,19 @@
         <!-- Native "Phish Alert Button by email": employees forward a suspicious
              message (as attachment) to this alias and a report is created with
              the .eml attached. alias_contact='employees' rejects outside senders.
-             Rename / set the alias domain to taste; noupdate keeps your edits. -->
+             Rename / set the alias domain to taste; noupdate keeps your edits.
+
+             alias_contact is 'partners' and not 'employees': the 'employees'
+             value is added by hr, which this module does not depend on, so a
+             fresh install without hr died here with "Wrong value for
+             mail.alias.alias_contact". Nothing is loosened -- message_new
+             rejects any sender that is not an internal user, which is stricter
+             than either value; see _is_internal_sender. This block is noupdate,
+             so an install that already set 'employees' keeps it. -->
         <record id="alias_reported_phish" model="mail.alias">
             <field name="alias_name">signaler-hameconnage</field>
             <field name="alias_model_id" ref="model_bf_reported_phish"/>
-            <field name="alias_contact">employees</field>
+            <field name="alias_contact">partners</field>
         </record>
     </data>
 

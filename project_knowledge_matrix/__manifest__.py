@@ -18,8 +18,6 @@ Fonctionnalités:
 * Collaboration complète (chatter, activités)
 * Système de modèles réutilisables
 * Actions groupées pour gestion efficace
-* Stockage sécurisé des identifiants avec chiffrement
-* Rotation des mots de passe avec audit
 * Suivi des versions de documents clients et internes
 * Distribution et accusé de réception des documents (optionnel, éteint par défaut)
 * Gestion des politiques et procédures internes
@@ -47,9 +45,6 @@ Fonctionnalités:
     # marque blanche, optionnel. Sans lui, les documents sortent aux couleurs
     # par défaut de l'instance.
     'depends': ['project', 'mail', 'bf_onboarding_base'],
-    'external_dependencies': {
-        'python': ['cryptography'],
-    },
     'data': [
         # Security first
         'security/knowledge_security.xml',
@@ -94,8 +89,6 @@ Fonctionnalités:
     ],
     'assets': {
         'web.assets_backend': [
-            'project_knowledge_matrix/static/src/js/credential_copy.js',
-            'project_knowledge_matrix/static/src/xml/credential_copy.xml',
             'project_knowledge_matrix/static/src/js/knowledge_dashboard.js',
             'project_knowledge_matrix/static/src/xml/knowledge_dashboard.xml',
             'project_knowledge_matrix/static/src/js/chatter_knowledge_action.js',

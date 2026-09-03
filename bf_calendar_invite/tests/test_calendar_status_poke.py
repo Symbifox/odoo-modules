@@ -174,6 +174,18 @@ class TestCalendarPoke(TransactionCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
+        # ⚠️ `_activate_lang` bascule le drapeau `active` du `res.lang` et
+        # RIEN d'autre : les `.po` d'un module ne sont importés qu'à son
+        # installation, pour les langues actives à ce moment-là. Sur une base
+        # neuve où seul l'anglais l'est — la CI en fabrique une par lot — le
+        # corps sortait en anglais et les assertions de langue tombaient, alors
+        # que le code visé était bon. Sur les bases où le français était déjà
+        # installé, personne ne le voyait.
+        cls.env["res.lang"]._activate_lang("fr_CA")
+        cls.env["res.lang"]._activate_lang("en_US")
+        cls.env["ir.module.module"]._load_module_terms(
+            ["bf_calendar_invite"], ["fr_CA"])
+        cls.env.registry.clear_cache()
         cls.organiser = cls.env["res.users"].create({
             "name": "Organiser",
             "login": "bf_poke_organiser",

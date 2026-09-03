@@ -62,6 +62,26 @@ jobs:
                   for entry in meta.get(key, []):
                       if not (module / entry).is_file():
                           bad.append(f"{module.name}: {key} lists missing {entry}")
+              # Same rule for `assets`. A bundle entry that points at a file
+              # nobody removed from the manifest is not invisible: the asset
+              # compiler logs "Could not get content" on every single page
+              # load. project_knowledge_matrix carried two of them for months
+              # after its vault moved to bf_credentials, which is 16 ERROR
+              # lines per CI run and a broken bundle in production.
+              for bundle, entries in (meta.get("assets") or {}).items():
+                  for entry in entries:
+                      parts = entry if isinstance(entry, (list, tuple)) else [entry]
+                      for path in parts:
+                          if not isinstance(path, str) or "/" not in path:
+                              continue          # 'prepend', 'replace', 'after'
+                          if any(c in path for c in "*?["):
+                              continue          # a glob resolves at runtime
+                          owner = path.split("/", 1)[0]
+                          if not (pathlib.Path(owner) / "__manifest__.py").is_file():
+                              continue          # core or OCA, not ours to judge
+                          if not pathlib.Path(path).is_file():
+                              bad.append(
+                                  f"{module.name}: assets {bundle} lists missing {path}")
               if not meta.get("license"):
                   bad.append(f"{module.name}: no license in the manifest")
               if not (module / "LICENSE").is_file():
@@ -188,9 +208,35 @@ jobs:
             -i '${{ matrix.chunk }}' \
             --test-enable --test-tags="$TAGS" \
             --without-demo=all --stop-after-init --log-level=warn 2>&1 | tee run.log
-          # Odoo exits 0 even when a test fails, so the log is the verdict.
-          if grep -qE '^[0-9-]+ [0-9:,]+ [0-9]+ (ERROR|CRITICAL)' run.log; then
+          # Odoo exits 0 even when a test fails, so the log is the verdict --
+          # but NOT any ERROR line in it. ⚠️ The first version of this step
+          # failed on every ERROR, and that reads a lot of things as failures
+          # that are not: a test asserting that a constraint raises logs its
+          # own `odoo.sql_db: bad query`, the asset compiler complains about a
+          # file another module declares, and a defensive collector logs the
+          # failure it just caught. The 2026-09-03 run had a chunk marked red
+          # with 38 such lines and zero failing tests.
+          #
+          # These two lines are Odoo's own verdicts, and it writes them ONLY
+          # when a test did not pass: modules/loading.py:320 (per module) and
+          # tests/result.py:198 (per run). An install that dies never reaches
+          # here -- the runner's `-eo pipefail` fails the step on odoo's own
+          # non-zero exit.
+          VERDICT='(Module [a-zA-Z0-9_.]+: [0-9]+ failures, [0-9]+ errors of|[0-9]+ failed, [0-9]+ error\(s\) of [0-9]+ tests)'
+          if grep -qE "$VERDICT" run.log; then
             echo "::error::test failures in chunk ${{ matrix.chunk }}"
-            grep -E '^[0-9-]+ [0-9:,]+ [0-9]+ (ERROR|CRITICAL)' run.log | head -50
+            grep -E "$VERDICT" run.log | head -20
+            grep -E '(FAIL|ERROR): [A-Za-z_]+\.[A-Za-z_]+' run.log | head -50
             exit 1
+          fi
+          if grep -qE '^[0-9-]+ [0-9:,]+ [0-9]+ CRITICAL' run.log; then
+            echo "::error::critical error in chunk ${{ matrix.chunk }}"
+            grep -E '^[0-9-]+ [0-9:,]+ [0-9]+ CRITICAL' run.log | head -20
+            exit 1
+          fi
+          # The rest stays visible without deciding the run: silence would
+          # let a real regression hide behind "it was noisy before too".
+          if grep -qE '^[0-9-]+ [0-9:,]+ [0-9]+ ERROR' run.log; then
+            echo "::notice::${{ matrix.chunk }}: $(grep -cE '^[0-9-]+ [0-9:,]+ [0-9]+ ERROR' run.log) ERROR line(s) in the log, no failing test"
+            grep -E '^[0-9-]+ [0-9:,]+ [0-9]+ ERROR' run.log | head -30
           fi

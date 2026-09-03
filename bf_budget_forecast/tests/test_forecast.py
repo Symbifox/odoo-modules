@@ -34,6 +34,20 @@ class TestForecast(BfBudgetCommon):
         )
         return f
 
+    def _through_le_mois_davant(self):
+        """L'arrêt du réel reculé d'un mois, pour que le premier mois OUVERT
+        soit un mois DÉJÀ FINI.
+
+        ⚠️ Avec l'arrêt par défaut — la fin du mois dernier — le premier mois
+        ouvert est le mois COURANT, et sa fin est dans le futur. Or la
+        contrainte `_check_dates` refuse un réel arrêté dans le futur, et
+        `action_roll_forward` ramène de lui-même l'arrêt à la fin du mois
+        dernier. Les deux tests qui closent ce mois-là ne passaient donc que
+        le dernier jour du mois, et échouaient les trente autres. Le code visé
+        était bon : c'est l'horloge qui décidait.
+        """
+        return self.through.replace(day=1) - relativedelta(days=1)
+
     # ------------------------------------------------------------------
     def test_the_horizon_crosses_the_exercise(self):
         """🔴 Rien ne doit supposer douze mois ni un début au 1er janvier."""
@@ -71,7 +85,7 @@ class TestForecast(BfBudgetCommon):
         « On avait prévu 900, il en est venu 1 240 » n'est calculable que si le
         chiffre prévu n'a pas été écrasé au moment où le mois s'est clos.
         """
-        f = self._forecast()
+        f = self._forecast(actuals_through=self._through_le_mois_davant())
         line = f.line_ids
         futur = (line.period_ids - line.period_ids.filtered("is_closed")).sorted("date_start")[0]
         futur.amount_forecast = 900.0
@@ -224,7 +238,7 @@ class TestForecast(BfBudgetCommon):
         entre-temps clos : sans cette mémoire, la comparaison entre millésimes
         s'efface dès la deuxième passe.
         """
-        f = self._forecast()
+        f = self._forecast(actuals_through=self._through_le_mois_davant())
         line = f.line_ids
         ouverts = (line.period_ids - line.period_ids.filtered("is_closed")).sorted("date_start")
         ouverts[0].amount_forecast = 1500.0

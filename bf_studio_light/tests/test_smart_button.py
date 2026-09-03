@@ -9,6 +9,8 @@ constraint surface and the view-injection back-pointer boundary.
 from odoo.exceptions import ValidationError
 from odoo.tests.common import TransactionCase, tagged
 
+from odoo.addons.bf_studio_light.models.studio_light_field import is_model_locked
+
 
 @tagged("bf_studio_light", "post_install", "-at_install")
 class TestStudioLightSmartButton(TransactionCase):
@@ -82,6 +84,22 @@ class TestStudioLightSmartButton(TransactionCase):
             )
 
     def test_locked_target_model_refused(self):
+        """Le verrou par PRÉFIXE, l'autre branche de is_model_locked.
+
+        ⚠️ Le module ne dépend pas d'`account`. Sur une base qui ne l'a pas —
+        la CI en fabrique une par lot — `_get("account.move")` rend un ensemble
+        VIDE, `target_model_id` partait à NULL et la contrainte NOT NULL de
+        Postgres levait avant le garde-fou : une NotNullViolation à la place de
+        la ValidationError attendue. Le test ne prouvait plus rien, et il ne le
+        disait pas. On vérifie donc la règle elle-même dans tous les cas, et le
+        refus complet seulement là où le modèle existe.
+        """
+        self.assertTrue(is_model_locked("account.move"),
+                        "le préfixe « account. » ne verrouille plus")
+        self.assertFalse(is_model_locked("res.partner"),
+                         "res.partner ne devrait pas être verrouillé")
+        if "account.move" not in self.env:
+            self.skipTest("account n'est pas installé sur cette base")
         with self.assertRaises(ValidationError):
             self.env["studio.light.smart.button"].create(
                 dict(
