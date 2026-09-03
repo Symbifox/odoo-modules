@@ -348,6 +348,116 @@ def _habiller(env, url, lang):
     return sujet, corps
 
 
+# ------------------------------------------------------------------- avis
+
+# À qui dire qu'une inscription vient d'arriver. Une ou plusieurs adresses
+# séparées par des virgules. Non réglé, aucun avis ne part : c'est le défaut,
+# et c'est ce qui permet de publier le module sans qu'un locataire hérite d'une
+# adresse qui n'est pas la sienne.
+ICP_NOTIFY = "bf_mailing_signup.notify_email"
+
+MOMENTS = {
+    "demande": (
+        "Infolettre : demande d'inscription de {email}",
+        "Demande reçue, en attente de confirmation",
+        "Le courriel de confirmation vient de partir. Tant que le lien n'est pas "
+        "suivi, l'inscription reste désactivée et rien d'autre ne sera envoyé à "
+        "cette adresse.",
+    ),
+    "confirmation": (
+        "Infolettre : inscription confirmée de {email}",
+        "Consentement exprès confirmé",
+        "Le lien a été suivi depuis cette adresse. Le consentement est daté au "
+        "fil du contact, et l'adresse recevra les prochains envois.",
+    ),
+}
+
+
+def _avis_html(env, moment, email, lang, contact):
+    b = _marque(env)
+    sujet, etat, contexte = MOMENTS[moment]
+    icp = env["ir.config_parameter"].sudo()
+    base = (icp.get_param("web.base.url") or "").rstrip("/")
+    liste = env["mailing.list"].sudo().browse(_list_id(env))
+
+    fiche = _ech(contact.email if contact else email)
+    if contact and base:
+        cible = _att(f"{base}/odoo/m-mailing.contact/{contact.id}")
+        fiche = (f'<a href="{cible}" style="color:{BLEU};text-decoration:none">'
+                 f'{_ech(contact.email or email)}</a>')
+
+    lignes = [
+        ("Adresse", fiche),
+        ("Langue", "Français" if lang == "fr" else "English"),
+        ("État", _ech(etat)),
+        ("Liste", _ech(liste.name if liste.exists() else "(aucune)")),
+        ("Reçu le", _ech(fields.Datetime.to_string(fields.Datetime.now()) + " UTC")),
+    ]
+    corps_lignes = "".join(
+        f'<tr>'
+        f'<td style="padding:7px 16px 7px 0;font-family:{POLICE};font-size:13.5px;'
+        f'color:{GRIS};white-space:nowrap;vertical-align:top">{_ech(cle)}</td>'
+        f'<td style="padding:7px 0;font-family:{POLICE};font-size:14.5px;'
+        f'color:{ENCRE};vertical-align:top">{valeur}</td></tr>'
+        for cle, valeur in lignes)
+
+    marque = _att(b["marque"])
+    return f"""<!doctype html>
+<html lang="fr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="x-apple-disable-message-reformatting">
+<title>{_ech(sujet.format(email=email))}</title></head>
+<body style="margin:0;padding:0;background-color:{GLACE}">
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%"
+       bgcolor="{GLACE}" style="background-color:{GLACE};margin:0;padding:0">
+<tr><td align="center" style="padding:24px 12px">
+
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="560"
+       style="width:100%;max-width:560px;background-color:{PAPIER};border-radius:14px;
+              overflow:hidden;border:1px solid {TRAIT}">
+
+  <tr><td bgcolor="{MARINE}" style="padding:16px 26px">
+    <p style="margin:0;font-family:{POLICE};font-size:15px;font-weight:600;
+              color:{PAPIER};line-height:1.3">{marque} &#183; infolettre</p></td></tr>
+
+  <tr><td style="padding:24px 26px 20px">
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
+      {corps_lignes}
+    </table>
+    <p style="margin:20px 0 0;font-family:{POLICE};font-size:13.5px;line-height:1.6;
+              color:{GRIS}">{_ech(contexte)}</p>
+  </td></tr>
+
+</table>
+</td></tr></table>
+</body></html>"""
+
+
+def _aviser(env, moment, email, lang, contact=None):
+    """Prévenir l'interne qu'une inscription bouge. Ne peut RIEN faire échouer.
+
+    ⚠️ Tout est sous `try` jusqu'au bout. Cet avis est un confort d'exploitation
+    posé APRÈS le travail utile : s'il lève, la personne qui vient de s'inscrire
+    ne doit pas en payer le prix, ni voir une erreur, ni perdre son inscription.
+    """
+    try:
+        destinataires = (env["ir.config_parameter"].sudo()
+                         .get_param(ICP_NOTIFY) or "").strip()
+        if not destinataires:
+            return
+        sujet = MOMENTS[moment][0].format(email=email)
+        # `email_from` reste absent, pour la même raison que sur la confirmation :
+        # l'adresse d'envoi par défaut est la seule alignée en SPF et DKIM.
+        env["mail.mail"].sudo().create({
+            "subject": sujet,
+            "body_html": _avis_html(env, moment, email, lang, contact),
+            "email_to": destinataires,
+            "auto_delete": True,
+        }).send(raise_exception=False)
+    except Exception:               # noqa: BLE001
+        _logger.exception("bf_mailing_signup : avis interne non envoyé (%s)", moment)
+
+
 class BfMailingSignup(http.Controller):
 
     # ⚠️ `csrf=False` est obligatoire, pas commode : la page appelante est un
@@ -385,8 +495,9 @@ class BfMailingSignup(http.Controller):
             return merci
 
         try:
-            self._ensure_pending(env, list_id, email)
+            contact = self._ensure_pending(env, list_id, email)
             self._send_confirmation(env, list_id, email, lang)
+            _aviser(env, "demande", email, lang, contact)
         except Exception:               # noqa: BLE001 — la page ne doit jamais 500
             _logger.exception("bf_mailing_signup : échec d'inscription")
         return merci
@@ -406,7 +517,7 @@ class BfMailingSignup(http.Controller):
             # est la seule chose utile à faire ensuite.
             return werkzeug.utils.redirect(pages["retour"], 303)
         try:
-            self._activate(env, list_id, email)
+            self._activate(env, list_id, email, lang)
         except Exception:               # noqa: BLE001
             _logger.exception("bf_mailing_signup : échec de confirmation")
         return werkzeug.utils.redirect(pages["confirme"], 303)
@@ -466,7 +577,7 @@ class BfMailingSignup(http.Controller):
         except Exception:               # noqa: BLE001
             _logger.exception("bf_mailing_signup : envoi différé de la confirmation")
 
-    def _activate(self, env, list_id, email):
+    def _activate(self, env, list_id, email, lang="fr"):
         """Lève l'`opt_out` et date le consentement dans le fil du contact."""
         contact = env["mailing.contact"].sudo().search(
             [("email_normalized", "=", email)], limit=1)
@@ -475,12 +586,22 @@ class BfMailingSignup(http.Controller):
         sub = env["mailing.subscription"].sudo().search(
             [("contact_id", "=", contact.id), ("list_id", "=", list_id)], limit=1)
         if sub:
+            nouvelle = sub.opt_out
             sub.write({"opt_out": False})
         else:
+            nouvelle = True
             env["mailing.subscription"].sudo().create({
                 "contact_id": contact.id, "list_id": list_id, "opt_out": False})
         # La preuve du consentement exprès, datée, là où quelqu'un la cherchera.
+        # Elle est posée à CHAQUE passage, même si le lien est rechargé : chaque
+        # clic est un acte de consentement de plus, et une trace en double coûte
+        # moins cher qu'une trace manquante le jour où on la cherche.
         contact.message_post(body=(
             "Consentement exprès confirmé par lien courriel le "
             f"{fields.Datetime.now()} UTC "
             "(inscription publique symbifox.com, double consentement)."))
+        # L'avis, lui, ne part QUE si l'état a changé. Un lien rechargé deux
+        # fois n'est pas une deuxième inscription, et prévenir deux fois pour la
+        # même personne apprend à ignorer l'avis.
+        if nouvelle:
+            _aviser(env, "confirmation", email, lang, contact)

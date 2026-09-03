@@ -85,6 +85,7 @@ Trois choses, apprises ailleurs, y sont volontaires :
 | `bf_mailing_signup.brand_name` | *(le nom de la société)* | Le nom écrit dans le sujet, l'en-tête et le corps. |
 | `bf_mailing_signup.brand_mark_url` | *(aucune)* | URL absolue du sigle, dans le bandeau. |
 | `bf_mailing_signup.brand_logo_url` | *(aucune)* | URL absolue du logo de la société, dans le pied. |
+| `bf_mailing_signup.notify_email` | *(aucune)* | Qui prévenir d'une inscription. Vide, personne n'est prévenu. Plusieurs adresses séparées par des virgules. |
 
 ⚠️ Les deux URL d'images n'ont **aucune valeur par défaut**, et c'est délibéré :
 un module publié qui pointerait sur les images de son auteur ferait relever les
@@ -98,6 +99,28 @@ service à personne.
 `email_from` n'est **pas** posé : `mail.mail` retombe sur l'adresse d'envoi par
 défaut de l'instance, la seule dont le domaine est aligné en SPF et DKIM. En
 poser une ici est le meilleur moyen de faire classer la confirmation en pourriel.
+
+## L'avis interne
+
+Deux moments distincts sont annoncés à `notify_email`, et ils ne disent pas la
+même chose :
+
+* **la demande**, quand quelqu'un remplit le formulaire. L'inscription est
+  encore désactivée et le courriel de confirmation vient de partir. C'est le
+  moment qui révèle une confirmation qui n'arrive jamais, donc un problème de
+  délivrabilité — mais c'est aussi celui qu'un robot passé à travers le pot de
+  miel peut déclencher ;
+* **la confirmation**, quand le lien est suivi. C'est la seule vraie
+  inscription, et l'avis ne part **que si l'état a changé** : recharger le lien
+  n'est pas une deuxième inscription, et prévenir deux fois pour la même
+  personne apprend à ignorer l'avis.
+
+L'avis porte l'adresse, la langue, l'état, la liste visée et un lien direct
+vers la fiche du contact dans Odoo.
+
+⚠️ Il est posé **après** le travail utile et tout entier sous `try` : s'il lève,
+la personne qui vient de s'inscrire ne doit ni voir d'erreur, ni perdre son
+inscription, ni attendre. Un essai le vérifie en le faisant échouer exprès.
 
 ## Côté proxy
 

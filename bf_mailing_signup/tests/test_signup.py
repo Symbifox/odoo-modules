@@ -281,3 +281,72 @@ class TestMailingSignup(HttpCase):
         self.assertIn("1 rue de l'Essai", corps)
         self.assertIn("G1A 1A1", corps)
 
+    # ------------------------------------------------------------------- avis
+
+    def _avis(self, fragment):
+        """Le message d'avis interne dont le sujet porte `fragment`, ou None."""
+        for message in self.envois:
+            if fragment in self._sujet(message):
+                return message
+        return None
+
+    def test_avis_a_la_demande(self):
+        self.env["ir.config_parameter"].sudo().set_param(
+            ctl.ICP_NOTIFY, "veille@example.com")
+        self._poster()
+        self.assertEqual(len(self.envois), 2,
+                         "la confirmation à la personne, l'avis à l'interne")
+        avis = self._avis("demande d'inscription")
+        self.assertIsNotNone(avis, f"sujets vus : {[self._sujet(m) for m in self.envois]}")
+        self.assertEqual(avis["To"], "veille@example.com")
+        corps = self._corps_html(avis)
+        self.assertIn(self.adresse, corps)
+        self.assertIn("en attente de confirmation", corps)
+        self.assertIn("/odoo/m-mailing.contact/", corps, "un lien vers la fiche")
+
+    def test_avis_a_la_confirmation(self):
+        self.env["ir.config_parameter"].sudo().set_param(
+            ctl.ICP_NOTIFY, "veille@example.com")
+        self._poster()
+        self.envois.clear()
+        self.url_open(f"/infolettre/confirmer?e={self.adresse}&j={self._jeton()}&lang=fr",
+                      allow_redirects=False)
+        avis = self._avis("inscription confirmée")
+        self.assertIsNotNone(avis, "la confirmation doit prévenir l'interne")
+        self.assertIn("Consentement exprès confirmé", self._corps_html(avis))
+
+    def test_aucun_avis_sans_destinataire(self):
+        """Le défaut est le silence — c'est ce qui rend le module publiable."""
+        self._poster()
+        self.assertEqual(len(self.envois), 1, "seule la confirmation part")
+
+    def test_un_lien_recharge_n_avise_pas_deux_fois(self):
+        """Recharger le lien n'est pas une deuxième inscription.
+
+        Prévenir deux fois pour la même personne apprend à ignorer l'avis.
+        """
+        self.env["ir.config_parameter"].sudo().set_param(
+            ctl.ICP_NOTIFY, "veille@example.com")
+        self._poster()
+        lien = f"/infolettre/confirmer?e={self.adresse}&j={self._jeton()}&lang=fr"
+        self.url_open(lien, allow_redirects=False)
+        self.envois.clear()
+        self.url_open(lien, allow_redirects=False)
+        self.assertEqual(self.envois, [], "le deuxième passage n'avise personne")
+
+    def test_un_avis_qui_casse_ne_casse_pas_l_inscription(self):
+        """🔴 L'avis est un confort d'exploitation, pas une étape du parcours.
+
+        S'il lève, la personne qui vient de s'inscrire ne doit ni le voir ni
+        perdre son inscription, et la confirmation doit être partie quand même.
+        """
+        self.env["ir.config_parameter"].sudo().set_param(
+            ctl.ICP_NOTIFY, "veille@example.com")
+        with patch.object(ctl, "_avis_html", side_effect=RuntimeError("boum")):
+            r = self._poster()
+        self.assertEqual(r.status_code, 303)
+        self.assertEqual(r.headers["Location"], "/infolettre-merci.html")
+        self.assertTrue(self._inscription(), "l'inscription existe quand même")
+        self.assertEqual(len(self.envois), 1, "la confirmation est partie")
+        self.assertIn(self._jeton(), self._corps_html(self.envois[0]))
+

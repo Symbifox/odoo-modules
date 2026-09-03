@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     "name": "Inscription publique à une liste d'envoi",
-    "version": "18.0.1.1.0",
+    "version": "18.0.1.2.0",
     "category": "Marketing",
     "summary": "Formulaire d'infolettre en HTML pur, à double consentement, "
                "sans reCaptcha ni ressource tierce",
@@ -59,6 +59,8 @@ Ce que le module ne fait pas
   premier courriel en texte nu ne se fait pas reconnaitre.
 * Il ne désinscrit pas — Odoo sert déjà ``/mailing/...`` pour ça, et chaque envoi
   porte le lien.
+* Il ne tient aucun tableau de bord : ce qui se passe s'annonce par courriel à
+  l'adresse de son choix, et se relit ensuite sur la fiche du contact.
 * Il ne crée pas de ``res.partner``. Une adresse d'infolettre n'est pas un
   contact tant qu'elle n'a rien demandé d'autre.
 """,
