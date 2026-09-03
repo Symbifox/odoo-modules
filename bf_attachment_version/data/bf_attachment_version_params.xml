@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Les valeurs de départ sont posées explicitement plutôt que laissées au
+         repli du code : un réglage absent ne se distingue pas d'un réglage
+         éteint dans la page Paramètres, et se lirait comme une désactivation. -->
+    <data noupdate="1">
+        <record id="param_actif" model="ir.config_parameter">
+            <field name="key">bf_attachment_version.actif</field>
+            <field name="value">True</field>
+        </record>
+        <record id="param_extensions" model="ir.config_parameter">
+            <field name="key">bf_attachment_version.extensions</field>
+            <field name="value">csv,doc,docx,dotx,fodp,fods,fodt,md,odp,ods,odt,otp,ots,ott,pdf,ppt,pptx,rtf,txt,xls,xlsx</field>
+        </record>
+        <record id="param_modeles_exclus" model="ir.config_parameter">
+            <field name="key">bf_attachment_version.modeles_exclus</field>
+            <field name="value">ir.ui.view,ir.asset,ir.module.module,ir.actions.report,spreadsheet.dashboard,bf.attachment.version</field>
+        </record>
+        <record id="param_max_versions" model="ir.config_parameter">
+            <field name="key">bf_attachment_version.max_versions</field>
+            <field name="value">20</field>
+        </record>
+        <record id="param_max_jours" model="ir.config_parameter">
+            <field name="key">bf_attachment_version.max_jours</field>
+            <field name="value">0</field>
+        </record>
+        <record id="param_taille_max_mo" model="ir.config_parameter">
+            <field name="key">bf_attachment_version.taille_max_mo</field>
+            <field name="value">50</field>
+        </record>
+    </data>
+</odoo>

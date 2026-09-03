@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_res_config_settings_bf_attachment_version" model="ir.ui.view">
+        <field name="name">res.config.settings.bf.attachment.version</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app string="Versions de pièces jointes" name="bf_attachment_version">
+                    <block title="Conservation" name="bf_av_conservation">
+                        <setting id="bf_av_setting_actif"
+                                 help="Quand une pièce jointe est réécrite, l'ancien contenu est conservé. Éteint, un remplacement redevient définitif et sans trace.">
+                            <field name="bf_av_actif"/>
+                        </setting>
+                        <setting id="bf_av_setting_extensions" string="Extensions versionnées"
+                                 help="Séparées par des virgules, sans le point.">
+                            <field name="bf_av_extensions"/>
+                        </setting>
+                        <setting id="bf_av_setting_modeles" string="Modèles exclus"
+                                 help="Leurs pièces ne sont jamais versionnées.">
+                            <field name="bf_av_modeles_exclus"/>
+                        </setting>
+                        <setting id="bf_av_setting_taille" string="Taille maximale versionnée"
+                                 help="Au-delà, le remplacement reste définitif. 0 pour ne pas limiter.">
+                            <field name="bf_av_taille_max_mo"/> Mo
+                        </setting>
+                    </block>
+                    <block title="Purge" name="bf_av_purge">
+                        <setting id="bf_av_setting_max" string="Versions gardées par pièce"
+                                 help="Les plus anciennes sont supprimées au-delà. 0 pour ne rien purger.">
+                            <field name="bf_av_max_versions"/>
+                        </setting>
+                        <setting id="bf_av_setting_jours" string="Âge maximal"
+                                 help="0 pour ne pas purger sur l'âge.">
+                            <field name="bf_av_max_jours"/> jours
+                        </setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+</odoo>

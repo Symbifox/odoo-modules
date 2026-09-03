@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates xml:space="preserve">
+    <t t-inherit="mail.AttachmentList" t-inherit-mode="extension">
+        <!-- Ancre distincte de celle du connecteur ONLYOFFICE (qui vise le div
+             `o-mail-AttachmentCard-aside`), pour que les deux greffes
+             cohabitent sans se disputer le même point. -->
+        <xpath expr="//button[hasclass('o-mail-AttachmentCard-unlink')]" position="before">
+            <button t-if="bfNombreVersions(attachment)"
+                    class="btn d-flex align-items-center justify-content-center w-100 h-100 rounded-0 border-0 bg-300 o_bf_av_bouton"
+                    t-on-click.stop="() => this.bfOuvrirVersions(attachment)"
+                    t-attf-title="Versions conservées : {{ bfNombreVersions(attachment) }}">
+                <i class="fa fa-history" role="img" aria-label="Versions conservées"/>
+            </button>
+        </xpath>
+    </t>
+</templates>

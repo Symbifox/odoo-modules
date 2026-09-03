@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_res_config_settings_bf_collabora" model="ir.ui.view">
+        <field name="name">res.config.settings.bf.collabora</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app string="Collabora Online" name="bf_collabora_online">
+                    <block title="Découverte du serveur" name="bf_cool_decouverte">
+                        <setting id="bf_cool_setting_ttl" string="Durée de vie de la découverte"
+                                 help="Le connecteur amont retélécharge le fichier de découverte à chaque ouverture de document. Ce délai le garde en mémoire. 0 pour revenir au comportement d'origine.">
+                            <field name="bf_cool_decouverte_ttl"/> secondes
+                            <div class="mt-2">
+                                <button name="action_bf_vider_cache_decouverte" type="object"
+                                        string="Vider le cache maintenant" class="btn-link"/>
+                                <div class="text-muted">
+                                    À lancer après une mise à niveau du serveur Collabora :
+                                    l'adresse gardée porte son numéro de compilation.
+                                </div>
+                            </div>
+                        </setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+</odoo>
