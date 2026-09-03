@@ -3,11 +3,11 @@ X-Forwarded-Host chains, default fallback, single-default constraint."""
 from odoo.exceptions import ValidationError
 from odoo.tests import TransactionCase, tagged
 
-from .common import LanguesActives
+from .common import BaseNeuve
 
 
 @tagged("post_install", "-at_install")
-class TestBrandHostResolution(LanguesActives, TransactionCase):
+class TestBrandHostResolution(BaseNeuve, TransactionCase):
 
     @classmethod
     def setUpClass(cls):

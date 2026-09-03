@@ -14,7 +14,7 @@ from unittest.mock import MagicMock, patch
 
 from odoo.tests import TransactionCase, tagged
 
-from .common import LanguesActives
+from .common import BaseNeuve
 
 S3_MOD = "odoo.addons.bf_securetransfer.models.s3"
 PDF_MOD = "odoo.addons.bf_securetransfer.models.pdf_watermark"
@@ -33,7 +33,7 @@ def _minimal_pdf():
 
 
 @tagged("post_install", "-at_install")
-class TestDownloadGates(LanguesActives, TransactionCase):
+class TestDownloadGates(BaseNeuve, TransactionCase):
 
     @classmethod
     def setUpClass(cls):

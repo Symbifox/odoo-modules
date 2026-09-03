@@ -24,7 +24,7 @@ from unittest.mock import MagicMock, patch
 from odoo.exceptions import UserError, ValidationError
 from odoo.tests import TransactionCase, tagged
 
-from .common import LanguesActives
+from .common import BaseNeuve
 
 S3_MOD = "odoo.addons.bf_securetransfer.models.s3"
 SMS_MOD = "odoo.addons.bf_securetransfer.models.sms"
@@ -43,7 +43,7 @@ def _minimal_pdf():
 
 
 @tagged("post_install", "-at_install")
-class TestOpenAudience(LanguesActives, TransactionCase):
+class TestOpenAudience(BaseNeuve, TransactionCase):
 
     @classmethod
     def setUpClass(cls):

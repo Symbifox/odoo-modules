@@ -23,7 +23,7 @@ from unittest.mock import patch
 from odoo.exceptions import UserError
 from odoo.tests import TransactionCase, tagged
 
-from .common import LanguesActives
+from .common import BaseNeuve
 
 S3_MOD = "odoo.addons.bf_securetransfer.models.s3"
 SMS_MOD = "odoo.addons.bf_securetransfer.models.sms"
@@ -32,7 +32,7 @@ MB = 1024 * 1024
 
 
 @tagged("post_install", "-at_install")
-class TestBackendUpload(LanguesActives, TransactionCase):
+class TestBackendUpload(BaseNeuve, TransactionCase):
 
     @classmethod
     def setUpClass(cls):

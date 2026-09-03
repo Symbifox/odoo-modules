@@ -12,13 +12,13 @@ from odoo.exceptions import AccessError, UserError, ValidationError
 from odoo.tests import TransactionCase, tagged
 from odoo.tools.pdf import PdfReader
 
-from .common import LanguesActives
+from .common import BaseNeuve
 
 _PNG_MAGIC = b"\x89PNG\r\n\x1a\n"
 
 
 @tagged("post_install", "-at_install", "bf_sign")
-class TestBfSign(LanguesActives, TransactionCase):
+class TestBfSign(BaseNeuve, TransactionCase):
     """Hardening coverage for the bf_sign palier 1 (SES) module.
 
     The completion certificate is rendered by wkhtmltopdf, which needs a running

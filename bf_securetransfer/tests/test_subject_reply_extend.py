@@ -22,13 +22,13 @@ from odoo import fields
 from odoo.exceptions import AccessError, UserError
 from odoo.tests import TransactionCase, tagged
 
-from .common import LanguesActives
+from .common import BaseNeuve
 
 S3_MOD = "odoo.addons.bf_securetransfer.models.s3"
 
 
 @tagged("post_install", "-at_install")
-class TestSubjectReplyExtend(LanguesActives, TransactionCase):
+class TestSubjectReplyExtend(BaseNeuve, TransactionCase):
 
     @classmethod
     def setUpClass(cls):

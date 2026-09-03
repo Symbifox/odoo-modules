@@ -13,6 +13,8 @@ import io
 
 from odoo.tests import TransactionCase, tagged
 
+from .common import BaseNeuve
+
 
 def _pdf_bytes():
     from reportlab.pdfgen import canvas
@@ -26,7 +28,7 @@ def _pdf_bytes():
 
 
 @tagged("post_install", "-at_install")
-class TestDataroomTemplateNda(TransactionCase):
+class TestDataroomTemplateNda(BaseNeuve, TransactionCase):
 
     @classmethod
     def setUpClass(cls):

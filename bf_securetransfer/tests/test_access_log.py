@@ -3,11 +3,11 @@ immutability (write blocked, unlink blocked outside the st_gc context)."""
 from odoo.exceptions import UserError
 from odoo.tests import TransactionCase, tagged
 
-from .common import LanguesActives
+from .common import BaseNeuve
 
 
 @tagged("post_install", "-at_install")
-class TestSecureTransferAccessLog(LanguesActives, TransactionCase):
+class TestSecureTransferAccessLog(BaseNeuve, TransactionCase):
 
     @classmethod
     def setUpClass(cls):

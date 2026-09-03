@@ -12,13 +12,13 @@ from unittest.mock import patch
 from odoo.exceptions import AccessError, UserError
 from odoo.tests import TransactionCase, tagged
 
-from .common import LanguesActives
+from .common import BaseNeuve
 
 S3_MOD = "odoo.addons.bf_securetransfer.models.s3"
 
 
 @tagged("post_install", "-at_install")
-class TestSecurityAcl(LanguesActives, TransactionCase):
+class TestSecurityAcl(BaseNeuve, TransactionCase):
 
     @classmethod
     def setUpClass(cls):

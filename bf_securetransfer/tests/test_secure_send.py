@@ -12,13 +12,13 @@ from odoo.tests import TransactionCase, tagged
 
 from odoo.addons.bf_securetransfer.models import sms as sms_mod
 
-from .common import LanguesActives
+from .common import BaseNeuve
 
 SMS_MOD = "odoo.addons.bf_securetransfer.models.sms"
 
 
 @tagged("post_install", "-at_install")
-class TestSecureSend(LanguesActives, TransactionCase):
+class TestSecureSend(BaseNeuve, TransactionCase):
 
     @classmethod
     def setUpClass(cls):

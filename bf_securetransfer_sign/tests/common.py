@@ -29,7 +29,7 @@ class BaseNeuve:
         for code in langues:
             cls.env["res.lang"].sudo()._activate_lang(code)
         cls.env["ir.module.module"].sudo()._load_module_terms(
-            ["bf_securetransfer"], langues)
+            ["bf_securetransfer_sign"], langues)
 
         domaine = cls.env["mail.alias.domain"].sudo().search([], limit=1)
         if not domaine:

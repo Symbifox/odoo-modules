@@ -1,21 +1,26 @@
-"""Socle commun aux essais : les deux langues canadiennes doivent EXISTER.
+"""Ce qu'une base NEUVE n'a pas, et que ces essais tiennent pour acquis.
 
-⚠️ Le module écrit `with_context(lang="fr_CA")` un peu partout — courriels,
-pages publiques, filigranes. Sur une base de travail les deux langues sont
-installées depuis longtemps et personne n'y pense. Sur une base NEUVE, celle
-que la CI fabrique par lot, seul `en_US` est actif, et `Environment.lang`
-(odoo/api.py) lève alors `UserError: Invalid language code: fr_CA`. Cent
-soixante-quatre essais du module tombaient là-dessus, sur une cause qui n'a
-rien à voir avec ce qu'ils vérifient.
+La CI fabrique une base par lot. Deux choses y manquent, présentes depuis si
+longtemps sur une base de travail que personne n'y pense — et les deux tombent
+loin de ce que l'essai vérifie.
 
-`_activate_lang` bascule le drapeau et RIEN d'autre : les `.po` ne sont
-importés qu'à l'installation, pour les langues actives à ce moment-là. Les
-essais qui lisent du texte traduit ont donc besoin du chargement explicite qui
-suit.
+1. **Les deux langues canadiennes.** Le module écrit
+   `with_context(lang="fr_CA")` un peu partout : courriels, pages publiques,
+   filigranes. Seul `en_US` est actif sur une base neuve, et
+   `Environment.lang` (odoo/api.py) lève `UserError: Invalid language code`.
+   ⚠️ `_activate_lang` bascule un drapeau et n'importe AUCUNE traduction : les
+   `.po` ne sont lus qu'à l'installation, pour les langues actives alors. D'où
+   le chargement explicite des termes.
+
+2. **Une adresse d'expédition.** Depuis la 17, elle vient d'un
+   `mail.alias.domain` rattaché à la société, et le module `mail` n'en livre
+   aucun par défaut. Sans lui, `mail_mail._send` s'arrête sur « You must either
+   provide a sender address explicitly » — y compris quand l'essai a remplacé
+   `send_email` par un mouchard, puisque l'arrêt est AVANT.
 """
 
 
-class LanguesActives:
+class BaseNeuve:
 
     @classmethod
     def setUpClass(cls):
@@ -25,4 +30,14 @@ class LanguesActives:
             cls.env["res.lang"].sudo()._activate_lang(code)
         cls.env["ir.module.module"].sudo()._load_module_terms(
             ["bf_sign"], langues)
+
+        domaine = cls.env["mail.alias.domain"].sudo().search([], limit=1)
+        if not domaine:
+            domaine = cls.env["mail.alias.domain"].sudo().create({
+                "name": "example.com",
+                "bounce_alias": "bounce",
+                "catchall_alias": "catchall",
+                "default_from": "notifications",
+            })
+        cls.env.company.sudo().alias_domain_id = domaine
         cls.env.registry.clear_cache()

@@ -23,7 +23,7 @@ from unittest.mock import patch
 from odoo.exceptions import UserError
 from odoo.tests import TransactionCase, tagged
 
-from .common import LanguesActives
+from .common import BaseNeuve
 
 from ..controllers.upload_api import SecureTransferUploadApi, _file_or_error
 
@@ -54,7 +54,7 @@ class _FakeRequest:
 
 
 @tagged("post_install", "-at_install")
-class TestMultipartUpload(LanguesActives, TransactionCase):
+class TestMultipartUpload(BaseNeuve, TransactionCase):
 
     @classmethod
     def setUpClass(cls):

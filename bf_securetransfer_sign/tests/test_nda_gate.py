@@ -19,6 +19,8 @@ from unittest.mock import patch
 from odoo.exceptions import UserError, ValidationError
 from odoo.tests import TransactionCase, tagged
 
+from .common import BaseNeuve
+
 S3_MOD = "odoo.addons.bf_securetransfer.models.s3"
 SMS_MOD = "odoo.addons.bf_securetransfer.models.sms"
 
@@ -43,7 +45,7 @@ def _png_b64():
 
 
 @tagged("post_install", "-at_install")
-class TestNdaGate(TransactionCase):
+class TestNdaGate(BaseNeuve, TransactionCase):
 
     @classmethod
     def setUpClass(cls):

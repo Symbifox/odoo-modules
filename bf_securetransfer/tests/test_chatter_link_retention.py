@@ -23,11 +23,11 @@ from odoo.tests import TransactionCase, tagged
 
 from odoo.addons.bf_securetransfer.models.secure_transfer import SHARE_TOKEN_MASK
 
-from .common import LanguesActives
+from .common import BaseNeuve
 
 
 @tagged("post_install", "-at_install")
-class TestChatterLinkRetention(LanguesActives, TransactionCase):
+class TestChatterLinkRetention(BaseNeuve, TransactionCase):
 
     @classmethod
     def setUpClass(cls):
