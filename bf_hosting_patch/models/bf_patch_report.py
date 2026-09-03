@@ -17,6 +17,12 @@ _logger = logging.getLogger(__name__)
 # endroits ni à se souvenir lequel.
 MIRRORED_FIELDS = (
     "agent_version",
+    # 🔴 Sans cette ligne, le consentement local n'atteignait JAMAIS la fiche du
+    # système : le contrôleur le recevait, `bf.patch.report` ne le portait pas,
+    # et la recopie ne le nommait pas. Le serveur refusait donc tout ordre à
+    # toute machine, pour toujours — lot 3 était inopérant de bout en bout.
+    # Le commentaire en tête de cette liste dit exactement pourquoi elle existe.
+    "apply_allowed",
     "pending_known",
     "os_release",
     "kernel_running",
@@ -71,6 +77,12 @@ class BfPatchReport(models.Model):
     kernel_installed = fields.Char(string="Noyau installé")
     boot_time = fields.Datetime(string="Démarrée le")
 
+    apply_allowed = fields.Boolean(
+        string="Application autorisée",
+        help="Le fichier /etc/symbifox/apply-allowed existait sur la machine au "
+             "moment du relevé. Historisé ici pour qu'on puisse dire QUAND le "
+             "consentement a été donné ou retiré.",
+    )
     reboot_required = fields.Boolean(string="Redémarrage requis")
     reboot_pending_since = fields.Datetime(string="En attente depuis")
     reboot_packages = fields.Char(string="Redémarrage dû à")

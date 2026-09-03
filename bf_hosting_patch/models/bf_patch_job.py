@@ -6,9 +6,14 @@ vers les machines : il dépose l'ordre dans une file, et l'agent le ramasse à s
 prochaine interrogation. Une machine éteinte ne rate pas l'ordre, elle le prend
 au réveil — à condition qu'il ne soit pas périmé.
 
-⚠️ L'ordre vise un `bf.patch.system`, PAS une `hosting.endpoint`. Une première conception posait `endpoint_id`, avant que l'état ne soit
-déplacé vers le système : le parc est en double amorçage, et « applique les correctifs sur
-ce portable » n'a aucun sens tant qu'on n'a pas dit de quel côté.
+⚠️ L'ordre vise un `bf.patch.system`, PAS une `hosting.endpoint`. Le chapitre 8
+du plan disait `endpoint_id`, mais le chapitre 20 a déplacé l'état vers le
+système : le parc est en double amorçage, et « applique les correctifs sur
+le poste X » n'a aucun sens tant qu'on n'a pas dit de quel côté.
+
+La portée « redémarrer seulement » ne touche aucun paquet : elle existe parce
+que demander un redémarrage en le greffant sur une mise à jour qu'on ne veut pas
+serait faire deux choses pour en obtenir une.
 
 TROIS CONSENTEMENTS, et il faut les trois :
 
@@ -87,6 +92,7 @@ class BfPatchJob(models.Model):
             ("security", "Sécurité seulement"),
             ("all", "Toutes les mises à jour"),
             ("named", "Paquets nommés"),
+            ("reboot", "Redémarrer seulement"),
         ],
         string="Portée", required=True, default="security",
     )
@@ -137,6 +143,23 @@ class BfPatchJob(models.Model):
                 raise ValidationError(
                     _("Une portée « paquets nommés » sans aucun paquet "
                       "n'appliquerait rien.")
+                )
+
+    @api.constrains("scope", "reboot_after")
+    def _check_reboot_scope(self):
+        """⚠️ Un ordre de redémarrage qui ne redémarre jamais ne fait RIEN.
+
+        `reboot_after` vaut « jamais » par défaut, ce qui est le bon défaut pour
+        une mise à jour et le pire pour un redémarrage : l'ordre partirait, la
+        machine le prendrait, le rapporterait `done`, et rien ne se passerait.
+        Un succès qui n'a rien fait est pire qu'un refus.
+        """
+        for job in self:
+            if job.scope == "reboot" and job.reboot_after == "never":
+                raise ValidationError(
+                    _("Un ordre « redémarrer seulement » doit dire quand "
+                      "redémarrer : « toujours », ou « si la machine le "
+                      "demande ». Avec « jamais », il ne ferait rien.")
                 )
 
     def package_list(self):

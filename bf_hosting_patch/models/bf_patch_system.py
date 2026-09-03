@@ -278,10 +278,13 @@ class BfPatchSystem(models.Model):
     # ------------------------------------------------------------------
     MIN_REPORT_INTERVAL_SECONDS = 60
 
-    # Le minuteur d'interrogation bat aux 15 minutes. Le plancher est bien plus
-    # bas que la cadence : il n'est pas là pour rythmer un agent sain, mais pour
-    # qu'un agent en dérive — ou un jeton volé — ne puisse pas marteler la route.
-    MIN_POLL_INTERVAL_SECONDS = 30
+    # Le minuteur d'interrogation bat à la minute. Le plancher doit rester SOUS
+    # l'intervalle le plus court qu'une gigue puisse produire, sinon un agent
+    # parfaitement sain se ferait refuser en 429 de temps en temps et on
+    # chercherait longtemps pourquoi. Il n'est pas là pour rythmer un agent
+    # sain, mais pour qu'un agent en dérive — ou un jeton volé — ne puisse pas
+    # marteler la route.
+    MIN_POLL_INTERVAL_SECONDS = 20
 
     def _poll_too_soon(self):
         self.ensure_one()

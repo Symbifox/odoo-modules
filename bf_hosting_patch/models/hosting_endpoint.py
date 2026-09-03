@@ -7,7 +7,7 @@ licence) et porte une ligne `bf.patch.system` par système installé dessus.
 
 ⚠️ Ce partage n'est pas cosmétique. Le `/etc/machine-id` identifie
 l'INSTALLATION : le poser sur la fiche de parc aurait fabriqué deux fiches par
-portable, donc exactement le doublon de fiches qu'on venait de fusionner.
+portable, donc exactement le doublon `vir` / `VIR` qu'on venait de fusionner.
 
 Règle qui commande tout le reste :
 

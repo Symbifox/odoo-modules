@@ -89,8 +89,9 @@ Only the third really matters: it is **local**, placed by hand, and revoked
 without going through Odoo. A compromised Odoo cannot brick a laptop. The first
 two exist so an operational mistake is caught before it reaches a machine.
 
-An order carries a scope (`security`, `all`, `named`), an optional package list,
-a reboot policy (`never`, `if_required`, `always`) and an optional start window.
+An order carries a scope (`security`, `all`, `named`, `reboot`), an optional
+package list, a reboot policy (`never`, `if_required`, `always`) and an optional
+start window.
 The server stops offering an unclaimed order after 7 days; the agent refuses to
 run one older than 24 hours — a machine woken after three weeks must not apply a
 decision taken in another world.
@@ -100,6 +101,28 @@ is refused because the repositories carry no security channel: quietly applying
 "everything" instead would be doing something other than what was asked. A
 `named` scope is refused there too, since partial upgrades break dependencies.
 Doing nothing and saying so beats doing something else in silence.
+
+### Rebooting on its own
+
+The `reboot` scope touches no package at all. It exists because asking for a
+reboot by grafting it onto an update you did not want would be doing two things
+to obtain one.
+
+A reboot-only order **must** say when to reboot: `always`, or `if_required`.
+`never` is refused at validation, because it is the right default for an update
+and the worst one here — the order would go out, the machine would take it,
+report `done`, and nothing would happen. A success that did nothing is worse
+than a refusal.
+
+With `if_required`, a machine that is not asking for a reboot reports back
+straight away, says so in as many words, and stays up.
+
+### The report says when consent existed
+
+Each reading now records whether `/etc/symbifox/apply-allowed` was present on
+the machine at that moment. The consent itself was already enforced; what the
+history adds is the ability to say **when** it was given, and when it was
+withdrawn.
 
 ## Installing the agent on a machine
 

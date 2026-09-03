@@ -2,14 +2,19 @@
 Description=Symbifox — interrogation régulière pour les ordres de mise à jour
 
 [Timer]
-# Aux 15 minutes : c'est le délai entre « je clique dans Odoo » et « la machine
-# commence ». Plus court multiplierait les requêtes sans rien avancer ; plus
-# long rendrait le bouton frustrant au point qu'on retourne au terminal.
-OnUnitActiveSec=15min
-OnBootSec=5min
-# Étalement modeste : l'interrogation est une requête minuscule, elle n'a pas
-# besoin du même étalement qu'un relevé complet.
-RandomizedDelaySec=120
+# À la minute. C'est le délai entre « je clique dans Odoo » et « la machine
+# commence », et c'est ce délai qui décide si l'outil se fait utiliser ou si on
+# retourne au terminal. Le coût est une requête minuscule par machine et par
+# minute : cinq machines font cinq requêtes, cent en font moins de deux par
+# seconde.
+OnUnitActiveSec=1min
+OnBootSec=30s
+# ⚠️ Gigue COURTE, et c'est la moitié du réglage. À 120 s, l'intervalle réel
+# aurait varié de 1 à 3 minutes et aurait annulé le gain — la même erreur que
+# le RandomizedDelaySec=3600 qui rendait inutile le relevé au réveil. Elle doit
+# aussi rester sous le plancher anti-martèlement du serveur, sinon une passe
+# sur deux se ferait refuser en 429.
+RandomizedDelaySec=10
 Persistent=true
 
 [Install]

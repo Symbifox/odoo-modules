@@ -2,7 +2,7 @@
 {
     "name": "Hébergement — Mises à jour du système",
     "summary": "Relevé des paquets, du noyau et des redémarrages, par système installé",
-    "version": "18.0.4.0.0",
+    "version": "18.0.4.2.0",
     "category": "Services",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",

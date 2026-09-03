@@ -114,6 +114,66 @@ class TestJobQueue(JobCase):
         job = self._job(scope="named", package_names="bash, curl  openssl")
         self.assertEqual(job.package_list(), ["bash", "curl", "openssl"])
 
+    def test_reboot_scope_must_say_when(self):
+        """🔴 Un ordre « redémarrer » avec « jamais » réussirait sans rien faire.
+
+        `reboot_after` vaut « jamais » par défaut — le bon défaut pour une mise
+        à jour, le pire pour un redémarrage. Sans cette garde, l'ordre partait,
+        revenait `done`, et la machine ne bougeait pas : un succès qui n'a rien
+        fait, ce que ce module existe pour empêcher.
+        """
+        with self.assertRaises(ValidationError):
+            self._job(scope="reboot", reboot_after="never")
+
+        # Et la garde DISCRIMINE : les deux autres politiques passent.
+        for mode in ("always", "if_required"):
+            job = self._job(scope="reboot", reboot_after=mode)
+            self.assertEqual(job.scope, "reboot")
+
+    def test_reboot_scope_carries_no_packages(self):
+        """La charge remise à l'agent ne nomme aucun paquet."""
+        job = self._job(scope="reboot", reboot_after="always")
+        payload = job._payload_for_agent()
+        self.assertEqual(payload["scope"], "reboot")
+        self.assertEqual(payload["packages"], [])
+        self.assertEqual(payload["reboot_after"], "always")
+
+    def test_consent_reaches_the_system_through_a_report(self):
+        """🔴 Le test qui manquait, et son absence a laissé passer un bogue.
+
+        Les autres posent `apply_allowed` directement sur la fiche : ils
+        prouvent que la garde discrimine, jamais que le champ peut DEVENIR vrai
+        par le chemin réel. Il ne le pouvait pas — le contrôleur recevait le
+        consentement, `bf.patch.report` ne le portait pas, la recopie ne le
+        nommait pas, et le serveur refusait donc tout ordre à toute machine.
+
+        La leçon vaut plus que le test : vérifier qu'un garde REFUSE ne dit rien
+        sur sa capacité à LAISSER PASSER quand il le doit.
+        """
+        self.system.apply_allowed = False
+        self.system._apply_report({"apply_allowed": True, "pending_known": True,
+                                   "pending_count": 0})
+        self.assertTrue(
+            self.system.apply_allowed,
+            "le consentement n'a pas traversé le relevé jusqu'à la fiche",
+        )
+
+        # Et la RÉVOCATION doit traverser aussi, sinon elle ne révoque rien.
+        self.system._apply_report({"apply_allowed": False, "pending_known": True,
+                                   "pending_count": 0})
+        self.assertFalse(
+            self.system.apply_allowed,
+            "le retrait du consentement n'a pas traversé : une machine "
+            "continuerait de recevoir des ordres après l'avoir refusé",
+        )
+
+    def test_consent_is_historised_on_each_report(self):
+        """On doit pouvoir dire QUAND le consentement a été donné ou retiré."""
+        first = self.system._apply_report({"apply_allowed": True})
+        second = self.system._apply_report({"apply_allowed": False})
+        self.assertTrue(first.apply_allowed)
+        self.assertFalse(second.apply_allowed)
+
     def test_final_state_is_not_reopened(self):
         """🔴 Un agent qui rejoue son rapport ne réécrit pas l'issue."""
         job = self._job()
