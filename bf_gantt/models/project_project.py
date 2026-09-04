@@ -48,7 +48,11 @@ class ProjectProject(models.Model):
     # `bf.gantt.plan` n'avait pas le défaut : son ACL borne déjà l'écriture.
 
     def _bf_gantt_exiger_le_droit_de_publier(self):
-        if not self.env.user.has_group(GROUPE_GESTION):
+        # ⚠️ Le superusager passe, comme partout dans Odoo : une migration, un
+        # fichier de données ou une action serveur tournent sous `env.su`, et une
+        # garde applicative qui les refuse casse l'installation sans rien
+        # protéger de plus (qui peut écrire une action serveur est déjà admin).
+        if not self.env.su and not self.env.user.has_group(GROUPE_GESTION):
             raise AccessError(_(
                 "Publier un échéancier le rend lisible sans compte. Ce geste "
                 "demande le groupe « Échéancier : gestion et publication »."))
@@ -103,8 +107,17 @@ class ProjectProject(models.Model):
         return True
 
     def action_bf_gantt_copier_lien(self):
-        """Rend l'adresse complète, prête à coller dans un courriel."""
+        """Rend l'adresse complète, prête à coller dans un courriel.
+
+        ⚠️ Le même droit que publier. La méthode est publique, donc appelable
+        par RPC par n'importe quel usager qui lit le projet, et elle FRAPPE le
+        jeton au passage : sans cette garde, un lecteur pouvait se fabriquer
+        l'adresse privée d'un échéancier et la distribuer. Le bouton est déjà
+        caché aux autres dans la vue, mais cacher un bouton n'a jamais rien
+        fermé.
+        """
         self.ensure_one()
+        self._bf_gantt_exiger_le_droit_de_publier()
         self._portal_ensure_token()
         base = self.env["ir.config_parameter"].sudo().get_param("web.base.url")
         lien = "%s/mon/echeancier/project/%s?access_token=%s" % (

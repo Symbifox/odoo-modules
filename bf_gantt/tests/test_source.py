@@ -5,7 +5,12 @@
 un compte de banc vide cache exactement les valeurs qui cassent
 (dates absentes, tâche sans responsable, jalon sans échéance).
 """
+import base64
 from datetime import date, datetime, timedelta
+
+# Un PNG 1x1 valide, pour donner un logo à la société sans dépendre d'un fichier.
+_PNG_MINIME = base64.b64decode(
+    "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==")
 
 from odoo.exceptions import AccessError, ValidationError
 from odoo.tests.common import TransactionCase, tagged, new_test_user
@@ -104,6 +109,27 @@ class TestSource(TransactionCase):
         cles = {c["key"] for c in payload["lanes"]}
         self.assertIn("assignee-none", cles)
         self.assertIn("assignee-%s" % usager.id, cles)
+
+    def test_plusieurs_responsables_se_disent_en_un_nom_plus_un_compte(self):
+        """⚠️ Deux noms abrégés collés dépassent la colonne et le nom de la tâche
+        passe dessous. Le raccourci est fait à la source, pas à l'affichage."""
+        a = new_test_user(self.env, login="banc_gantt_r1", name="Alice Nadeau")
+        b = new_test_user(self.env, login="banc_gantt_r2", name="Bruno Lévesque")
+        c = new_test_user(self.env, login="banc_gantt_r3", name="Chloé Ouimet")
+        tache = self._tache("À plusieurs", user_ids=[(6, 0, (a + b + c).ids)],
+                            date_deadline=datetime(2026, 9, 20, 17, 0))
+        payload = self.source.get_echeancier("project", self.projet.id)
+        barre = next(x for x in payload["tasks"] if x["id"] == tache.id)
+        self.assertRegex(barre["assignee"], r"^\S+ \S\. \+2$")
+        self.assertLess(len(barre["assignee"]), 24)
+
+    def test_un_seul_responsable_garde_son_nom_abrege(self):
+        u = new_test_user(self.env, login="banc_gantt_r4", name="Alice Nadeau")
+        tache = self._tache("Seule", user_ids=[(6, 0, u.ids)],
+                            date_deadline=datetime(2026, 9, 20, 17, 0))
+        payload = self.source.get_echeancier("project", self.projet.id)
+        barre = next(x for x in payload["tasks"] if x["id"] == tache.id)
+        self.assertEqual(barre["assignee"], "Alice N.")
 
     def test_le_regroupement_aucun_range_tout_ensemble(self):
         self._tache("A", stage_id=self.etape_todo.id,
@@ -214,6 +240,12 @@ class TestSource(TransactionCase):
         with self.assertRaises(AccessError):
             projet.write({"bf_gantt_published": True})
 
+    def test_le_superusager_publie_sans_le_groupe(self):
+        """⚠️ Une garde applicative qui refuse `env.su` casse les migrations, les
+        fichiers de données et les actions serveur, sans rien protéger de plus."""
+        self.projet.sudo().with_context(active_test=False).action_bf_gantt_publier()
+        self.assertTrue(self.projet.bf_gantt_published)
+
     def test_publier_avec_le_groupe_passe(self):
         gestionnaire = new_test_user(
             self.env, login="banc_gantt_gestion",
@@ -237,6 +269,20 @@ class TestSource(TransactionCase):
         self.assertEqual(self.projet.access_token, "un-token-quelconque")
 
     # ----------------------------------------------------------- la géométrie
+
+    def test_la_geometrie_est_serialisable_en_JSON(self):
+        """🔴 C'est le contrôle qui manquait. `boite_logo` rend les OCTETS du
+        fichier ; laissés dans la réponse, `json.dumps` meurt et le navigateur
+        affiche « Connection … couldn't be established ». Éprouver la méthode en
+        Python ne le voit pas : il faut sérialiser comme le fait le RPC."""
+        import json
+
+        self.env.company.logo = base64.b64encode(_PNG_MINIME)
+        self._tache("Avec logo", date_deadline=datetime(2026, 9, 20, 17, 0))
+        g = self.source.get_geometrie("project", self.projet.id)
+        json.dumps(g)            # ne doit lever aucune exception
+        self.assertIsNone(g.get("logo"))
+        self.assertEqual(g["societe"]["logo"], "")
 
     def test_la_geometrie_rend_les_details_pour_l_infobulle(self):
         tache = self._tache("Détail", date_deadline=datetime(2026, 9, 20, 17, 0))
@@ -266,3 +312,29 @@ class TestSource(TransactionCase):
             [("model", "=", "project.project"), ("res_id", "=", self.projet.id)],
             order="id desc", limit=1)
         self.assertIn(res["attachment_id"], message.attachment_ids.ids)
+
+
+@tagged("post_install", "-at_install", "bf_gantt")
+class TestCopierLien(TransactionCase):
+    """⚠️ `action_bf_gantt_copier_lien` est publique : appelable par RPC par
+    quiconque lit le projet. Elle frappe le jeton et rend l'adresse privée, donc
+    elle demande le droit de publier, pas seulement celui de lire."""
+
+    def setUp(self):
+        super().setUp()
+        self.projet = self.env["project.project"].create({"name": "Banc lien"})
+
+    def test_un_lecteur_ne_peut_pas_se_fabriquer_l_adresse(self):
+        lecteur = new_test_user(
+            self.env, login="banc_gantt_lecteur_lien",
+            groups="project.group_project_user,bf_gantt.group_bf_gantt_user")
+        with self.assertRaises(AccessError):
+            self.projet.with_user(lecteur).action_bf_gantt_copier_lien()
+
+    def test_le_droit_de_publier_ouvre_l_adresse(self):
+        gestionnaire = new_test_user(
+            self.env, login="banc_gantt_gestion_lien",
+            groups="project.group_project_manager,bf_gantt.group_bf_gantt_manager")
+        action = self.projet.with_user(gestionnaire).action_bf_gantt_copier_lien()
+        self.assertIn("/mon/echeancier/project/", action["params"]["message"])
+        self.assertTrue(self.projet.access_token)

@@ -58,7 +58,9 @@ change the time scale; the client caches them.
 3. **the same check on the files as on the page**, otherwise guessing the PDF's
    address would be enough to walk around the rest.
 
-Publishing itself is guarded **on the server**, not in the view: `write()` and
+Copying the private address is guarded by the same right as publishing, because the
+call mints the token on its way past. Publishing itself is guarded **on the server**,
+not in the view: `write()` and
 `create()` refuse to set the published flag without the manage group, on both
 `project.project` and `bf.gantt.plan`, so write access on the project alone is not
 enough to open a schedule to the internet. The plan's ACL says the same thing a
@@ -126,6 +128,11 @@ proven is that its files enter the asset bundle and that the stylesheet compiles
 
 | Version | Notes |
 |---|---|
+| 18.0.1.5.3 | Copying a schedule's private address now needs the same right as publishing one. The method is callable over RPC and mints the token as it goes, so hiding its button was never enough: anyone who could read the project could mint a link and hand it out. |
+| 18.0.1.5.2 | Field labels that were falling back to their technical English names now read properly in the interface. |
+| 18.0.1.5.1 | Several assignees on one task read as `Jane D. +2` instead of two full names side by side, which overflowed the label column and ran under the task name. Shortened at the source, so all five outputs agree. |
+| 18.0.1.5.0 | The header band is painted rather than left transparent, and the task name and assignee each get their own column, so a long name can no longer run into the one beside it. |
+| 18.0.1.4.4 | 🔴 The backend view could not open: the geometry sent to the browser carried the company logo's raw bytes, which JSON cannot serialise, so the RPC call died and the component reported a connection error. The browser does not draw the logo, so it is no longer sent. A test now asserts the payload survives `json.dumps`. |
 | 18.0.1.4.2 | The origin-of-start field moves out of the main task pane, where it cluttered every task without a planned start, and sits beside the assignment date in developer mode. The schedule and the portal still state it themselves. |
 | 18.0.1.4.1 | A bar running past the clamped window is pinned at the edge with a chevron instead of being drawn off-canvas, and every output states the clamp. Colour validation moved to a single place; two remaining date-overflow sites closed; the public routes refuse cleanly instead of returning 500. |
 | 18.0.1.4.0 | Publishing is guarded server-side, not only in the view. The schedule span is capped, so a mistyped deadline can no longer turn a public route into a resource sink. Upload size and row caps on imported workbooks; escaping hardened on the import preview and on SVG attributes. |

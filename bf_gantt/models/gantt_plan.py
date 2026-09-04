@@ -30,8 +30,8 @@ class BfGanttPlan(models.Model):
     _inherit = ["portal.mixin", "mail.thread", "mail.activity.mixin"]
     _order = "date_start desc, name"
 
-    name = fields.Char(required=True, tracking=True)
-    active = fields.Boolean(default=True)
+    name = fields.Char(string="Nom", required=True, tracking=True)
+    active = fields.Boolean(string="Actif", default=True)
     company_id = fields.Many2one(
         "res.company", string="Société", required=True,
         default=lambda self: self.env.company, index=True,
@@ -46,12 +46,13 @@ class BfGanttPlan(models.Model):
         "res.users", string="Responsable", default=lambda self: self.env.user,
         tracking=True,
     )
-    state = fields.Selection(ETATS, default="draft", required=True, tracking=True)
+    state = fields.Selection(ETATS, string="Statut", default="draft",
+                             required=True, tracking=True)
     date_start = fields.Date(string="Début", tracking=True)
     date_end = fields.Date(string="Fin", tracking=True)
     note = fields.Html(string="Notes")
     item_ids = fields.One2many("bf.gantt.item", "plan_id", string="Lignes")
-    item_count = fields.Integer(compute="_compute_item_count")
+    item_count = fields.Integer(string="Lignes", compute="_compute_item_count")
     portal_published = fields.Boolean(
         string="Publié au portail", tracking=True,
         help="Tant que la case est décochée, l'adresse à token répond « accès "
@@ -105,7 +106,11 @@ class BfGanttPlan(models.Model):
         reposait alors ENTIÈREMENT sur elle : desserrer le CSV plus tard aurait
         ouvert la publication sans que rien ne le signale. Les deux modèles
         échouent maintenant de la même façon, pour la même raison."""
-        if not self.env.user.has_group(GROUPE_GESTION):
+        # ⚠️ Le superusager passe, comme partout dans Odoo : une migration, un
+        # fichier de données ou une action serveur tournent sous `env.su`, et une
+        # garde applicative qui les refuse casse l'installation sans rien
+        # protéger de plus (qui peut écrire une action serveur est déjà admin).
+        if not self.env.su and not self.env.user.has_group(GROUPE_GESTION):
             raise AccessError(_(
                 "Publier un échéancier le rend lisible sans compte. Ce geste "
                 "demande le groupe « Échéancier : gestion et publication »."))
@@ -146,7 +151,7 @@ class BfGanttItem(models.Model):
     _description = "Ligne d'un échéancier autonome"
     _order = "sequence, date_start, id"
 
-    name = fields.Char(required=True)
+    name = fields.Char(string="Ligne", required=True)
     plan_id = fields.Many2one(
         "bf.gantt.plan", string="Échéancier", required=True,
         ondelete="cascade", index=True,
@@ -154,7 +159,7 @@ class BfGanttItem(models.Model):
     company_id = fields.Many2one(
         related="plan_id.company_id", store=True, index=True,
     )
-    sequence = fields.Integer(default=10)
+    sequence = fields.Integer(string="Séquence", default=10)
     lane = fields.Char(
         string="Couloir",
         help="Le regroupement horizontal. Une phase, une équipe, un lot : "
@@ -166,19 +171,19 @@ class BfGanttItem(models.Model):
         string="Jalon",
         help="Un jalon est un événement de durée nulle. Sa date de fin est ignorée.",
     )
-    progress = fields.Integer(string="Avancement (%)", default=0)
+    progress = fields.Integer(string="Avancement", default=0)
     assignee = fields.Char(string="Responsable")
     allocated_hours = fields.Float(string="Heures prévues")
     state = fields.Selection(
         [("todo", "À venir"), ("doing", "En cours"),
          ("done", "Terminé"), ("cancel", "Annulé")],
-        default="todo", required=True,
+        string="Statut", default="todo", required=True,
     )
     depend_on_ids = fields.Many2many(
         "bf.gantt.item", "bf_gantt_item_dep_rel", "item_id", "depends_on_id",
         string="Précédée par",
     )
-    note = fields.Text()
+    note = fields.Text(string="Note")
 
     @api.constrains("progress")
     def _check_progress(self):

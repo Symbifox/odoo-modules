@@ -127,7 +127,36 @@
                         <rect x="28" y="0" t-att-width="geo.largeur_libelles - 8"
                               t-att-height="geo.hauteur"/>
                     </clipPath>
+                    <!-- ⚠️ Le nom d'une tâche a sa PROPRE zone, plus étroite que
+                         la colonne : sinon il passe sous le responsable, qui est
+                         aligné à droite dans la même colonne. Les rendus serveur
+                         coupent le texte à la mesure de leur police ; le
+                         navigateur, lui, rogne. -->
+                    <clipPath id="bf_gantt_cadre_noms">
+                        <rect x="28" y="0" t-att-width="geo.largeur_libelles - 74"
+                              t-att-height="geo.hauteur"/>
+                    </clipPath>
+                    <!-- Et le responsable a la sienne, sinon deux noms longs
+                         repartent vers la gauche et repassent sous la tâche. -->
+                    <clipPath id="bf_gantt_cadre_responsables">
+                        <rect t-att-x="28 + geo.largeur_libelles - 72" y="0"
+                              width="64" t-att-height="geo.hauteur"/>
+                    </clipPath>
                 </defs>
+
+                <!-- Le bandeau. La géométrie lui réserve sa hauteur pour que
+                     l'écran et le PDF coïncident ; ne pas le peindre laissait un
+                     vide qui a grandi le jour où le logo est arrivé. -->
+                <rect t-att-x="28" y="32" width="3.2" height="26"
+                      t-att-fill="geo.societe.color or '#29ABE1'"/>
+                <text x="39" y="46" class="o_bf_gantt_titre" t-esc="geo.titre"/>
+                <text t-if="geo.sous_titre" x="39" y="59"
+                      class="o_bf_gantt_sous_titre" t-esc="geo.sous_titre"/>
+                <text t-att-x="geo.largeur - 28" t-att-y="geo.y_axe - 14"
+                      text-anchor="end" class="o_bf_gantt_repere">
+                    <t t-esc="geo.compte"/> lignes ·
+                    <t t-esc="geo.debut"/> au <t t-esc="geo.fin"/>
+                </text>
 
                 <!-- Fins de semaine -->
                 <t t-foreach="geo.bandes" t-as="bande" t-key="bande_index">
@@ -189,11 +218,12 @@
                               class="o_bf_gantt_zone"/>
 
                         <text t-att-x="42" t-att-y="ligne.y + 15"
-                              clip-path="url(#bf_gantt_cadre_libelles)"
+                              t-attf-clip-path="url(#bf_gantt_cadre_{{ ligne.assignee ? 'noms' : 'libelles' }})"
                               class="o_bf_gantt_libelle" t-esc="ligne.name"/>
                         <text t-if="ligne.assignee"
                               t-att-x="28 + geo.largeur_libelles - 8"
                               t-att-y="ligne.y + 15" text-anchor="end"
+                              clip-path="url(#bf_gantt_cadre_responsables)"
                               class="o_bf_gantt_responsable" t-esc="ligne.assignee"/>
 
                         <t t-if="ligne.is_milestone">

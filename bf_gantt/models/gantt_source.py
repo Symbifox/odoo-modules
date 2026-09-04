@@ -67,6 +67,23 @@ def abreger(nom):
     return nom
 
 
+def responsables(usagers):
+    """« Jane D. » ou « Jane D. +2 ». Jamais deux noms complets côte à côte.
+
+    ⚠️ La colonne des libellés fait 236 points et le responsable en a 58 : deux
+    noms abrégés collés par une virgule les dépassent, et le nom de la tâche
+    passe dessous. Couper à l'affichage ampute un texte aligné à droite par la
+    gauche, ce qui se lit comme un défaut. On raccourcit donc à la source, pour
+    les cinq rendus d'un coup.
+    """
+    noms = [abreger(u.display_name) for u in usagers if u.display_name]
+    if not noms:
+        return ""
+    if len(noms) == 1:
+        return noms[0]
+    return "%s +%d" % (noms[0], len(noms) - 1)
+
+
 def _jour(valeur):
     """Ramène un Date, un Datetime ou None à un `date` (ou None)."""
     if not valeur:
@@ -158,7 +175,13 @@ class BfGanttSource(models.AbstractModel):
         geometrie = geo.construire(payload, echelle=echelle)
         # Le tracé n'a pas besoin des barres brutes, mais l'infobulle si.
         geometrie["details"] = {t["ref"]: t for t in payload["tasks"]}
+        # 🔴 Le navigateur ne dessine pas le logo, et surtout : `boite_logo` rend
+        # un dict qui contient les OCTETS BRUTS du fichier. JSON ne sait pas les
+        # sérialiser, donc la réponse RPC mourait dans `json.dumps` et la vue
+        # affichait « Connection … couldn't be established ». Le retirer n'est pas
+        # une économie de bande passante, c'est ce qui rend la réponse valide.
         geometrie["societe"] = dict(geometrie["societe"], logo="")
+        geometrie["logo"] = None
         geometrie["grouping"] = payload["grouping"]
         geometrie["source"] = payload["source"]
         return geometrie
@@ -246,9 +269,7 @@ class BfGanttSource(models.AbstractModel):
             "deadline": str(_jour(tache.date_deadline) or ""),
             "progress": self._avancement(tache),
             "status": self._statut(tache.state, _jour(tache.date_deadline), aujourdhui),
-            "assignee": ", ".join(
-                abreger(u.display_name) for u in tache.user_ids
-            ),
+            "assignee": responsables(tache.user_ids),
             "allocated_hours": round(tache.allocated_hours or 0.0, 2),
             "effective_hours": round(tache.effective_hours or 0.0, 2),
             "is_milestone": False,

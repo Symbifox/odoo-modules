@@ -46,10 +46,10 @@ Ni chemin critique, ni ordonnancement automatique, ni nivellement de ressources.
 Le ``.mpp`` binaire n'est pas lu : Microsoft Project sait exporter en MSPDI, et la
 seule bibliothèque capable de lire le ``.mpp`` exige une machine virtuelle Java.
 """,
-    "version": "18.0.1.4.2",
+    "version": "18.0.1.5.3",
     "category": "Services/Project",
     "website": "https://symbifox.com",
-    "author": "Les services de consultation Blue Fox, Inc.",
+    "author": "Blue Fox Inc.",
     "license": "Other proprietary",
     "application": True,
     "installable": True,

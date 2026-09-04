@@ -64,7 +64,7 @@
                                            column_invisible="0"
                                            readonly="is_milestone"/>
                                     <field name="is_milestone" optional="show"/>
-                                    <field name="progress" widget="integer" optional="show"/>
+                                    <field name="progress" string="%" widget="integer" optional="show"/>
                                     <field name="allocated_hours" optional="hide"/>
                                     <field name="depend_on_ids" widget="many2many_tags"
                                            optional="hide"
