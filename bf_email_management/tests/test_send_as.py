@@ -476,7 +476,7 @@ class SendAsCase(TransactionCase):
 
         C'est le défaut qui a coûté la refonte du 2026-08-31 : le corps
         portait la signature ET le gabarit en ajoutait une. Mesuré alors sur
-        le fil « mot de passe » d'Écolaction, neuf blocs dans le corps et dix
+        un fil de discussion réel, neuf blocs dans le corps et dix
         dans le courriel rendu.
         """
         self._placement("brouillon")

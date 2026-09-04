@@ -40,7 +40,7 @@ class RecipientGroupCase(MailCommon):
         })
 
         Partner = cls.env["res.partner"]
-        cls.societe = Partner.create({"name": "Écolaction Test", "is_company": True})
+        cls.societe = Partner.create({"name": "Société Test", "is_company": True})
         cls.membres = Partner.create([{
             "name": "Membre %d" % i,
             "email": "membre%d@test.invalid" % i,

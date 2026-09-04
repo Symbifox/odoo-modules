@@ -2186,7 +2186,7 @@ class BfEmail(models.Model):
         signature n'entre jamais dans le corps, elle est posée une seule fois
         à l'envoi par le gabarit de notification (voir ``mail_thread.py``).
         Un corps qui la porte la fait sortir en double, une fois écrite ici et
-        une fois ajoutée là — mesuré sur le fil « mot de passe » d'Écolaction
+        une fois ajoutée là — mesuré sur un fil de discussion réel
         le 2026-08-31 : neuf blocs dans le corps, dix dans le courriel rendu.
 
         La ligne, elle, reste nécessaire. Sans elle le composeur s'ouvre avec
@@ -2240,7 +2240,7 @@ class BfEmail(models.Model):
         ``mail_thread._notify_by_email_prepare_rendering_context`` que le corps
         porte déjà une signature et que le gabarit ne doit pas en ajouter une.
         Sans lui, le destinataire en recevrait deux — le défaut mesuré le
-        2026-08-31 sur le fil « mot de passe » d'Écolaction, neuf blocs dans
+        2026-08-31 sur un fil de discussion réel, neuf blocs dans
         le corps et dix dans le courriel rendu.
 
         Si la personne efface le bloc, le marqueur part avec : le gabarit
