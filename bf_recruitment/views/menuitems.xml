@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <menuitem id="menu_interview_root"
+              name="Entrevues"
+              parent="hr_recruitment.menu_hr_recruitment_root"
+              sequence="3"/>
+
+    <menuitem id="menu_interview_mine"
+              name="Mes entrevues"
+              parent="menu_interview_root"
+              action="action_interview_mine"
+              sequence="1"/>
+
+    <menuitem id="menu_interview_all"
+              name="Toutes les séances"
+              parent="menu_interview_root"
+              action="action_interview"
+              sequence="2"
+              groups="hr_recruitment.group_hr_recruitment_user"/>
+
+    <menuitem id="menu_interview_guide"
+              name="Grilles d'entrevue"
+              parent="hr_recruitment.menu_hr_recruitment_configuration"
+              action="action_interview_guide"
+              sequence="25"
+              groups="hr_recruitment.group_hr_recruitment_user"/>
+
+</odoo>

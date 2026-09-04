@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_hr_applicant_form_letter" model="ir.ui.view">
+        <field name="name">hr.applicant.form.letter</field>
+        <field name="model">hr.applicant</field>
+        <field name="inherit_id" ref="hr_recruitment.hr_applicant_view_form"/>
+        <field name="arch" type="xml">
+
+            <div name="button_box" position="inside">
+                <button name="action_view_letters" type="object" class="oe_stat_button"
+                        icon="fa-envelope-open-o"
+                        groups="hr_recruitment.group_hr_recruitment_user"
+                        invisible="letter_count == 0">
+                    <field name="letter_count" widget="statinfo" string="Lettres"/>
+                </button>
+            </div>
+
+            <header position="inside">
+                <button name="action_draft_offer_letter" type="object"
+                        string="Rédiger l'offre" class="btn-secondary"
+                        groups="hr_recruitment.group_hr_recruitment_user"
+                        invisible="refuse_reason_id"
+                        help="Crée un brouillon d'offre d'emploi sur le papier brandé de la société, avec les conditions déjà consignées au dossier. Rien n'est envoyé."/>
+            </header>
+
+        </field>
+    </record>
+
+</odoo>

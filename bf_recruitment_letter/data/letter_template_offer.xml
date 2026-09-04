@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+      ⚠️ `noupdate="1"` : une mise à niveau du module ne récrit JAMAIS ce texte.
+      C'est une lettre que le client signe et fait relire ; ce qu'il y a réécrit
+      lui appartient. Contrepartie assumée : une amélioration de notre côté
+      n'atteint pas les locataires déjà installés.
+
+      ⚠️ Les champs de fusion se lisent contre la LETTRE, pas contre la
+      candidature : `bf_letter_writer` rend avec `[self.id]` sur
+      `letter.document`. D'où `object.applicant_id.…` partout.
+    -->
+    <data noupdate="1">
+
+        <record id="letter_template_job_offer" model="letter.template">
+            <field name="name">Offre d'emploi</field>
+            <field name="subject">Offre d'emploi : {{ object.applicant_id.job_id.name }}</field>
+            <field name="letterhead_style">banner</field>
+            <field name="note">Livré avec le module « Recrutement : l'offre d'emploi ». Le texte vous appartient : une mise à niveau ne le récrit pas. Les conditions viennent de la candidature (salaire proposé, conditions particulières, disponibilité).</field>
+            <field name="body_html" type="html">
+                <div>
+                    <p>Madame, Monsieur,</p>
+
+                    <p>À la suite de nos échanges, nous avons le plaisir de vous
+                    offrir le poste de <strong>{{ object.applicant_id.job_id.name }}</strong>
+                    au sein de {{ object.company_id.name }}.</p>
+
+                    <p><strong>Les conditions</strong></p>
+
+                    <ul>
+                        <li>Poste : {{ object.applicant_id.job_id.name }}</li>
+                        <li>Rémunération : {{ object.applicant_id.salary_proposed_display }}</li>
+                        <li>Conditions particulières : {{ object.applicant_id.offer_conditions_display }}</li>
+                        <li>Entrée en fonction : {{ object.applicant_id.offer_availability_display }}</li>
+                    </ul>
+
+                    <p>Cette offre vous est faite sous réserve des vérifications
+                    d'usage. Elle ouvre l'embauche, elle ne la conclut pas : le
+                    contrat de travail, qui en précisera les modalités
+                    complètes, vous sera remis séparément.</p>
+
+                    <p>Si vous acceptez, retournez-nous cette lettre signée.
+                    Nous conviendrons ensuite d'une date de début et des
+                    premières journées.</p>
+
+                    <p>Nous sommes heureux à l'idée de vous accueillir, et
+                    restons disponibles d'ici là pour toute question.</p>
+                </div>
+            </field>
+        </record>
+
+    </data>
+</odoo>

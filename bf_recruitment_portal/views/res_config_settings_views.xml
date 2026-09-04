@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="res_config_settings_view_form_recruitment_portal" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.recruitment.portal</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="hr_recruitment.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//block[@name='recruitment_process_div']" position="inside">
+                <setting id="recruitment_portal_book"
+                         string="Cahier d'entrevues téléchargeable"
+                         help="La personne évaluée télécharge son cahier depuis le portail. Décoché, elle voit toujours la décision et le motif écrit, et le droit d'accès s'exerce sur demande.">
+                    <field name="recruitment_portal_book_enabled"/>
+                </setting>
+                <setting id="recruitment_portal_otp"
+                         string="Code à usage unique sur le portail candidat"
+                         help="Un code de six chiffres part vers l'adresse du dossier avant d'ouvrir la page.">
+                    <field name="recruitment_portal_otp_required"/>
+                    <div class="text-muted" invisible="not recruitment_portal_otp_required">
+                        ⚠️ Le lien arrive lui aussi par courriel : le code ne protège pas
+                        d'une boîte compromise. Il protège d'un lien qui a fuité, transféré
+                        ou laissé dans un historique.
+                    </div>
+                </setting>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!--
+            RH-REC-1 : candidatures, personnes et séances d'entrevue.
+
+            Alignée sur RH-001 « Dossiers d'employés » : 3 ans actifs, 2
+            semi-actifs. C'est le régime retenu :
+            un seul régime de durée pour tout le dossier de recrutement, au lieu
+            de deux calendriers à tenir d'accord. La bascule vers RH-001 quand la
+            personne est embauchée devient alors un changement de rattachement,
+            et pas un changement d'échéance.
+
+            ⚠️ La règle reste DISTINCTE de RH-001, malgré la durée identique. Un
+            candidat refusé n'est pas un employé : la finalité qui justifie la
+            conservation n'est pas la même, la base légale non plus, et une
+            campagne doit pouvoir viser les candidatures sans toucher aux
+            dossiers d'employés.
+
+            ⚠️ Méthode « Suppression », pas « Effacement sécurisé », alors que
+            RH-001 dit l'inverse. L'effacement sécurisé de `privacy_consent` ne
+            sait traiter que `ir.attachment` : sur une candidature, il viderait
+            le CV et ARCHIVERAIT le reste, en certifiant la suppression. Voir
+            models/privacy_destruction_campaign.py.
+
+            🔴 Une campagne qui vise une candidature dont l'année d'entrevue
+            n'est pas encore agrégée LÈVE. Agréger d'abord, détruire ensuite.
+        -->
+        <record id="retention_recruitment_application" model="privacy.retention.calendar">
+            <field name="name">Candidatures non retenues</field>
+            <field name="code">RH-REC-1</field>
+            <field name="document_type">hr_file</field>
+            <field name="description">Candidature (hr.applicant), personne qui a postulé (hr.candidate), CV et pièces déposées, fil de discussion, et séances d'entrevue avec les notations et les commentaires écrits par le panel (bf.interview).</field>
+            <field name="legal_basis">Art. 3.2 LPRPSP : l'entreprise établit un cadre de conservation et de destruction des renseignements personnels. Art. 23 LPRPSP : destruction une fois la fin accomplie, ici la dotation du poste. Durée alignée sur RH-001 « Dossiers d'employés » (art. 2925 C.c.Q.), plus deux années semi-actives : c'est le délai qui permet de répondre à une plainte pour discrimination à l'embauche sans conserver au-delà de toute utilité.</field>
+            <field name="active_retention_years">3</field>
+            <field name="semi_active_retention_years">2</field>
+            <field name="final_disposition">destroy</field>
+            <field name="destruction_method">delete</field>
+            <field name="requires_approval" eval="True"/>
+            <field name="applies_to_model">hr.applicant</field>
+            <field name="notes">Rien ne s'exécute tout seul sous cette règle : la destruction passe par une campagne, qui exige une approbation. ⚠️ Une candidature dont l'année d'entrevue n'a pas été agrégée fait LEVER la campagne : agréger d'abord, détruire ensuite. L'agrégat (bf.interview.aggregate) ne garde aucun nom, ni de candidat, ni d'évaluateur, et survit à la destruction. ⚠️ La candidature de la personne embauchée bascule sous RH-001 et se détruit avec son dossier d'employé.</field>
+        </record>
+
+        <!--
+            Le cron d'agrégation, livré ALLUMÉ.
+
+            Contrairement aux crons de purge, celui-ci ne détruit rien : il
+            calcule une mesure sans nom. Le livrer éteint garantirait au
+            contraire qu'un jour une campagne se heurte à un mur, ou pire, que
+            quelqu'un désactive le garde pour passer.
+        -->
+        <record id="cron_build_interview_aggregates" model="ir.cron">
+            <field name="name">Entrevues : agréger les notations (anonymisé)</field>
+            <field name="model_id" ref="model_bf_interview_aggregate"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_build_aggregates()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="active" eval="True"/>
+        </record>
+
+    </data>
+</odoo>

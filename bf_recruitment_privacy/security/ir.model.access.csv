@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_interview_aggregate_interviewer,Agrégat d'entrevues (lecture),model_bf_interview_aggregate,hr_recruitment.group_hr_recruitment_interviewer,1,0,0,0
+access_interview_aggregate_officer,Agrégat d'entrevues (recruteur),model_bf_interview_aggregate,hr_recruitment.group_hr_recruitment_user,1,1,1,0
+access_interview_aggregate_manager,Agrégat d'entrevues (administrateur),model_bf_interview_aggregate,hr_recruitment.group_hr_recruitment_manager,1,1,1,1
+access_interview_aggregate_criterion_interviewer,Agrégat par critère (lecture),model_bf_interview_aggregate_criterion,hr_recruitment.group_hr_recruitment_interviewer,1,0,0,0
+access_interview_aggregate_criterion_officer,Agrégat par critère (recruteur),model_bf_interview_aggregate_criterion,hr_recruitment.group_hr_recruitment_user,1,1,1,0
+access_interview_aggregate_criterion_manager,Agrégat par critère (administrateur),model_bf_interview_aggregate_criterion,hr_recruitment.group_hr_recruitment_manager,1,1,1,1

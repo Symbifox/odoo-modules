@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="hr_expense_view_form_source" model="ir.ui.view">
+        <field name="name">hr.expense.view.form.source</field>
+        <field name="model">hr.expense</field>
+        <field name="inherit_id" ref="bf_recruitment_expense.hr_expense_view_form_job"/>
+        <field name="arch" type="xml">
+            <field name="job_id" position="after">
+                <field name="recruitment_source_id"
+                       groups="hr_recruitment.group_hr_recruitment_user"
+                       domain="[('job_id', '=', job_id)]"
+                       options="{'no_create_edit': True}"
+                       readonly="not is_editable"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="hr_expense_view_analysis_tree_source" model="ir.ui.view">
+        <field name="name">hr.expense.list.source</field>
+        <field name="model">hr.expense</field>
+        <field name="inherit_id" ref="bf_recruitment_expense.hr_expense_view_analysis_tree_job"/>
+        <field name="arch" type="xml">
+            <field name="job_id" position="after">
+                <field name="recruitment_source_id" optional="hide"
+                       groups="hr_recruitment.group_hr_recruitment_user"
+                       readonly="not is_editable"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="hr_expense_view_search_source" model="ir.ui.view">
+        <field name="name">hr.expense.search.source</field>
+        <field name="model">hr.expense</field>
+        <field name="inherit_id" ref="bf_recruitment_expense.hr_expense_view_search_job"/>
+        <field name="arch" type="xml">
+            <filter name="job" position="after">
+                <filter string="Site d'emploi" name="recruitment_source" domain="[]"
+                        context="{'group_by': 'recruitment_source_id'}"
+                        groups="hr_recruitment.group_hr_recruitment_user"/>
+            </filter>
+        </field>
+    </record>
+
+</odoo>

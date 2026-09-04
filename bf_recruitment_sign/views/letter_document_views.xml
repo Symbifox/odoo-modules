@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_letter_document_form_sign" model="ir.ui.view">
+        <field name="name">letter.document.form.sign</field>
+        <field name="model">letter.document</field>
+        <field name="inherit_id" ref="bf_letter_writer.letter_document_view_form"/>
+        <field name="arch" type="xml">
+
+            <header position="inside">
+                <button name="action_send_for_signature" type="object"
+                        string="Envoyer pour signature" class="btn-primary"
+                        invisible="state == 'draft'"
+                        help="Crée une demande de signature à partir de cette lettre, avec le PDF brandé tel qu'il sera lu."/>
+            </header>
+
+            <!--
+              ⚠️ Le formulaire de la lettre n'a PAS de boîte à boutons : le
+              compteur de signatures va donc dans l'en-tête, à côté du bouton
+              qui les crée, plutôt que dans un `div` qu'il faudrait inventer.
+            -->
+            <xpath expr="//header/button[@name='action_send_for_signature']" position="after">
+                <button name="action_view_sign_requests" type="object"
+                        string="Voir les signatures" icon="fa-pencil-square-o"
+                        invisible="sign_request_count == 0"/>
+                <field name="sign_request_count" invisible="1"/>
+                <!-- Commande la visibilité du bouton juste au-dessus. -->
+            </xpath>
+
+        </field>
+    </record>
+
+</odoo>

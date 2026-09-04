@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_interview_form" model="ir.ui.view">
+        <field name="name">bf.interview.form</field>
+        <field name="model">bf.interview</field>
+        <field name="arch" type="xml">
+            <form string="Séance d'entrevue">
+                <header>
+                    <button name="action_submit" type="object" string="Déposer ma notation"
+                            class="oe_highlight" invisible="my_rating_state != 'brouillon'"
+                            confirm="Une notation déposée ne se récrit plus. Déposer?"/>
+                    <button name="action_mark_held" type="object" string="Marquer tenue"
+                            invisible="state != 'planifiee'"/>
+                    <button name="action_no_show" type="object" string="Absence du candidat"
+                            invisible="state != 'planifiee'"/>
+                    <button name="action_cancel" type="object" string="Annuler"
+                            invisible="state in ('annulee', 'absence')"/>
+                    <button name="action_reset_to_planned" type="object" string="Remettre en planifiée"
+                            invisible="state == 'planifiee'"
+                            groups="hr_recruitment.group_hr_recruitment_user"/>
+                    <button name="action_print_book" type="object" string="Cahier du candidat"
+                            groups="hr_recruitment.group_hr_recruitment_user"/>
+                    <field name="state" widget="statusbar" statusbar_visible="planifiee,tenue"/>
+                </header>
+                <sheet>
+                    <widget name="web_ribbon" title="Critère éliminatoire" bg_color="text-bg-danger"
+                            invisible="not knockout_failed"/>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="applicant_id"/>
+                            <field name="job_id" readonly="1"/>
+                            <field name="round_number"/>
+                            <field name="guide_id" readonly="submitted_count &gt; 0"/>
+                            <field name="guide_version" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="date_start"/>
+                            <field name="duration" widget="float_time"/>
+                            <field name="interviewer_ids" widget="many2many_tags"
+                                   options="{'no_create': True}"/>
+                            <field name="blind"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="my_rating_state" invisible="1"/><!-- lu par le bouton « Déposer ma notation » de l'en-tête -->
+                        </group>
+                    </group>
+                    <group string="Résultat" invisible="not submitted_count">
+                        <group>
+                            <field name="score_total"/>
+                            <field name="score_max"/>
+                            <field name="score_pct" widget="percentage" digits="[5,1]"/>
+                        </group>
+                        <group>
+                            <field name="submitted_count"/>
+                            <field name="submitted_user_ids" widget="many2many_tags"/>
+                            <field name="knockout_failed"/>
+                            <field name="recommendation"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Notations" name="ratings">
+                            <div class="alert alert-info" role="status" invisible="not blind or my_rating_state != 'brouillon'">
+                                Cette séance est à l'aveugle : les notations des autres personnes du
+                                panel restent masquées tant que vous n'avez pas déposé la vôtre.
+                            </div>
+                            <field name="rating_line_ids" nolabel="1">
+                                <list default_order="user_id, sequence" editable="bottom" create="0" delete="0">
+                                    <field name="user_id" readonly="1"/>
+                                    <field name="criterion_name" string="Critère" readonly="1"/>
+                                    <field name="weight" readonly="1" optional="show"/>
+                                    <field name="is_knockout" readonly="1" optional="hide"/>
+                                    <field name="score" readonly="state == 'depose'"/>
+                                    <field name="scale_max" readonly="1" string="sur" optional="show"/>
+                                    <field name="comment" readonly="state == 'depose'"/>
+                                    <field name="state" widget="badge"
+                                           decoration-success="state == 'depose'" readonly="1"/>
+                                </list>
+                            </field>
+                            <div class="text-muted mt-2">
+                                Les commentaires sont écrits pour être lus : la personne qui a
+                                postulé a un droit d'accès aux renseignements qu'on détient sur
+                                elle, appréciations comprises.
+                            </div>
+                        </page>
+                        <page string="Synthèse" name="summary">
+                            <field name="summary_html" placeholder="Écrite après le dépôt de tout le panel."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_interview_list" model="ir.ui.view">
+        <field name="name">bf.interview.list</field>
+        <field name="model">bf.interview</field>
+        <field name="arch" type="xml">
+            <list string="Séances" decoration-danger="knockout_failed" decoration-muted="state in ('annulee', 'absence')">
+                <field name="date_start"/>
+                <field name="candidate_name" string="Candidat"/>
+                <field name="job_id" optional="show"/>
+                <field name="round_number"/>
+                <field name="guide_id" optional="show"/>
+                <field name="interviewer_ids" widget="many2many_tags" optional="show"/>
+                <field name="submitted_count" optional="hide"/>
+                <field name="score_pct" widget="percentage" digits="[5,1]" optional="show"/>
+                <field name="recommendation" optional="show"/>
+                <field name="knockout_failed" optional="hide"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'tenue'"
+                       decoration-muted="state in ('annulee', 'absence')"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_interview_search" model="ir.ui.view">
+        <field name="name">bf.interview.search</field>
+        <field name="model">bf.interview</field>
+        <field name="arch" type="xml">
+            <search string="Séances">
+                <field name="applicant_id"/>
+                <field name="job_id"/>
+                <field name="guide_id"/>
+                <field name="interviewer_ids"/>
+                <filter name="mine" string="Mes séances"
+                        domain="[('interviewer_ids', 'in', [uid])]"/>
+                <filter name="to_rate" string="Ma notation reste à déposer"
+                        domain="[('interviewer_ids', 'in', [uid]), ('submitted_user_ids', 'not in', [uid])]"/>
+                <separator/>
+                <filter name="planifiee" string="Planifiées" domain="[('state', '=', 'planifiee')]"/>
+                <filter name="tenue" string="Tenues" domain="[('state', '=', 'tenue')]"/>
+                <filter name="knockout" string="Critère éliminatoire" domain="[('knockout_failed', '=', True)]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="group_job" string="Poste" context="{'group_by': 'job_id'}"/>
+                    <filter name="group_applicant" string="Candidature" context="{'group_by': 'applicant_id'}"/>
+                    <filter name="group_round" string="Tour" context="{'group_by': 'round_number'}"/>
+                    <filter name="group_state" string="État" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_interview" model="ir.actions.act_window">
+        <field name="name">Entrevues</field>
+        <field name="res_model">bf.interview</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Planifiez une première séance</p>
+            <p>
+                Une séance porte une grille gelée, un panel, et une notation par
+                personne et par critère. Pas une note collective négociée à voix haute.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_interview_mine" model="ir.actions.act_window">
+        <field name="name">Mes entrevues</field>
+        <field name="res_model">bf.interview</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_mine': 1, 'search_default_to_rate': 1}</field>
+    </record>
+
+</odoo>

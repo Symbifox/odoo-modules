@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+
+        <!--
+            Les quatre gabarits du coeur, repris.
+
+            On surcharge par identifiant XML plutôt que d'en créer de nouveaux :
+            les déclencheurs existants (l'étape « Nouveau » pour l'accusé, les
+            motifs de refus pour les deux autres) continuent de fonctionner sans
+            reconfiguration chez le locataire.
+
+            ⚠️ `email_layout_xmlid` est ce qui habille le message. Sans lui, le
+            corps part nu : `bf_mail_layout` n'est PAS une surcharge du gabarit
+            de notification d'Odoo, il ne s'applique que si on le nomme.
+
+            ⚠️ `email_from` n'était posé sur aucun des quatre. Odoo retombait
+            alors sur `odoobot@example.com`, que les relais rejettent.
+
+            ⚠️ On ne touche PAS `reply_to` : Odoo l'aiguille déjà vers l'alias
+            du poste, ce qui fait revenir la réponse sur la candidature.
+
+            ⚠️ HTML de courriel : tableaux et styles en ligne seulement. Pas de
+            flexbox, pas de grille, pas de feuille de style. Outlook rend encore
+            avec un moteur Word.
+        -->
+
+        <!-- ============ 1. Accusé de réception (étape « Nouveau ») ============ -->
+        <record id="hr_recruitment.email_template_data_applicant_congratulations" model="mail.template">
+            <field name="name">Recrutement : accusé de réception</field>
+            <field name="subject">Votre candidature est bien arrivée : {{ object.job_id.name }}</field>
+            <field name="email_from">{{ (object.company_id.partner_id.email_formatted or user.company_id.partner_id.email_formatted or '') }}</field>
+            <field name="email_layout_xmlid">bluefox_branding.bf_mail_layout</field>
+            <field name="body_html" type="html">
+<div style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:16px;line-height:26px;color:#1F2937;">
+    <t t-set="prenom" t-value="(object.partner_name or '').split(' ')[0]"/>
+    <p style="margin:0 0 20px 0;font-size:20px;line-height:28px;font-weight:600;color:#111827;">
+        Merci <t t-out="prenom">Camille</t>, on a votre candidature.
+    </p>
+    <p style="margin:0 0 20px 0;">
+        Vous avez postulé au poste de <strong t-out="object.job_id.name or ''">Conseiller TI</strong>,
+        et votre dossier est maintenant entre les mains de l'équipe.
+    </p>
+
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%"
+           style="background-color:#F3F4F6;border-radius:12px;margin:0 0 20px 0;">
+        <tbody>
+            <tr>
+                <td style="padding:18px 22px;font-size:15px;line-height:24px;color:#374151;">
+                    <strong style="display:block;margin-bottom:8px;color:#111827;">La suite</strong>
+                    On lit votre dossier.<br/>
+                    On vous répond, que ce soit oui ou non.<br/>
+                    Vous n'avez rien à faire d'ici là.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+
+    <!--
+        ⚠️ Couplage volontairement SOUPLE avec `bf_recruitment_portal`. Ce
+        module n'en dépend pas : le lien n'apparaît que si le portail est
+        installé, et le `t-if` sur `_fields` est ce qui rend le gabarit sûr
+        quand il ne l'est pas. Sans ce garde, `object.access_url` lèverait un
+        AttributeError au rendu, chez tous les locataires sans portail.
+    -->
+    <t t-if="'access_url' in object._fields">
+        <p style="margin:0 0 20px 0;">
+            <a t-attf-href="{{ object.get_base_url() }}{{ object.get_portal_url() }}"
+               style="display:inline-block;padding:12px 22px;border-radius:10px;background-color:#111827;color:#ffffff;text-decoration:none;font-weight:600;">
+                Suivre ma candidature
+            </a>
+        </p>
+    </t>
+    <p style="margin:0 0 20px 0;">
+        Une pièce à ajouter, une coquille à corriger ? Répondez simplement à ce courriel.
+    </p>
+    <p style="margin:0;">Au plaisir,</p>
+    <p style="margin:4px 0 0 0;color:#6B7280;font-size:15px;">
+        L'équipe de <t t-out="object.company_id.name or ''">votre entreprise</t>
+    </p>
+
+    <p style="margin:24px 0 0 0;font-size:13px;line-height:20px;color:#9CA3AF;">
+        Ce que vous nous avez envoyé sert à évaluer cette candidature, rien d'autre. On le garde
+        le temps prévu par notre politique, puis on le supprime. Vous pouvez demander à consulter
+        ce que nous détenons à votre sujet quand vous voulez.<t t-if="object.company_id.brand_privacy_url">
+            <a t-att-href="object.company_id.brand_privacy_url" style="color:#9CA3AF;">Notre politique de confidentialité</a>.</t>
+    </p>
+</div>
+            </field>
+        </record>
+
+        <!-- ============ 2. Invitation en entrevue ============ -->
+        <record id="hr_recruitment.email_template_data_applicant_interest" model="mail.template">
+            <field name="name">Recrutement : invitation en entrevue</field>
+            <field name="subject">On aimerait vous rencontrer : {{ object.job_id.name }}</field>
+            <field name="email_from">{{ (object.company_id.partner_id.email_formatted or user.company_id.partner_id.email_formatted or '') }}</field>
+            <field name="email_layout_xmlid">bluefox_branding.bf_mail_layout</field>
+            <field name="body_html" type="html">
+<div style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:16px;line-height:26px;color:#1F2937;">
+    <t t-set="prenom" t-value="(object.partner_name or '').split(' ')[0]"/>
+    <p style="margin:0 0 20px 0;font-size:20px;line-height:28px;font-weight:600;color:#111827;">
+        Bonne nouvelle <t t-out="prenom">Camille</t> : on aimerait vous rencontrer.
+    </p>
+    <p style="margin:0 0 20px 0;">
+        Votre candidature au poste de <strong t-out="object.job_id.name or ''">Conseiller TI</strong>
+        a retenu notre attention, et on aimerait poursuivre avec une entrevue.
+    </p>
+
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%"
+           style="background-color:#F3F4F6;border-radius:12px;margin:0 0 20px 0;">
+        <tbody>
+            <tr>
+                <td style="padding:18px 22px;font-size:15px;line-height:24px;color:#374151;">
+                    <strong style="display:block;margin-bottom:8px;color:#111827;">À quoi vous attendre</strong>
+                    Une rencontre avec une ou plusieurs personnes de l'équipe.<br/>
+                    On parle de votre parcours et de situations concrètes du poste.<br/>
+                    Les critères sont fixés d'avance, les mêmes pour tout le monde.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p style="margin:0 0 20px 0;">
+        <t t-if="object.user_id"><t t-out="object.user_id.name or ''">Anouk Lemieux</t> vous écrira pour trouver un moment.</t>
+        <t t-else="">On vous écrira sous peu pour trouver un moment.</t>
+        Si certaines plages vous arrangent mieux, dites-le nous en répondant ici.
+    </p>
+    <p style="margin:0 0 20px 0;">
+        Et si vous avez besoin d'un aménagement pour participer, écrivez-le nous. On s'adapte.
+    </p>
+    <p style="margin:0;">À très bientôt,</p>
+    <p style="margin:4px 0 0 0;color:#6B7280;font-size:15px;">
+        L'équipe de <t t-out="object.company_id.name or ''">votre entreprise</t>
+    </p>
+</div>
+            </field>
+        </record>
+
+        <!-- ============ 3. Refus ============ -->
+        <record id="hr_recruitment.email_template_data_applicant_refuse" model="mail.template">
+            <field name="name">Recrutement : refus</field>
+            <!--
+                ⚠️ Le sujet ne porte pas le mot « refus », et ce n'est pas de la
+                pudeur : il reste dans la boîte de la personne pour des années.
+                Il se distingue des trois autres sans la marquer. La décision,
+                elle, est en toutes lettres dès la première ligne du corps.
+            -->
+            <field name="subject">Notre réponse pour le poste de {{ object.job_id.name }}</field>
+            <field name="email_from">{{ (object.company_id.partner_id.email_formatted or user.company_id.partner_id.email_formatted or '') }}</field>
+            <field name="email_layout_xmlid">bluefox_branding.bf_mail_layout</field>
+            <field name="body_html" type="html">
+<div style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:16px;line-height:26px;color:#1F2937;">
+    <t t-set="prenom" t-value="(object.partner_name or '').split(' ')[0]"/>
+    <p style="margin:0 0 20px 0;font-size:20px;line-height:28px;font-weight:600;color:#111827;">
+        <t t-out="prenom">Camille</t>, nous ne retiendrons pas votre candidature.
+    </p>
+    <p style="margin:0 0 20px 0;">
+        On a terminé l'examen des candidatures pour le poste de
+        <strong t-out="object.job_id.name or ''">Conseiller TI</strong>, et on voulait vous le dire
+        sans vous faire attendre.
+    </p>
+    <t t-if="object.held_interview_count">
+        <p style="margin:0 0 20px 0;">
+            Merci d'avoir pris le temps de nous rencontrer. Une entrevue, ça se prépare, et on en
+            est conscients.
+        </p>
+    </t>
+    <t t-else="">
+        <p style="margin:0 0 20px 0;">
+            Merci du temps que vous avez mis dans votre candidature.
+        </p>
+    </t>
+
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%"
+           style="background-color:#F3F4F6;border-radius:12px;margin:0 0 20px 0;">
+        <tbody>
+            <tr>
+                <td style="padding:18px 22px;font-size:15px;line-height:24px;color:#374151;">
+                    <strong style="display:block;margin-bottom:8px;color:#111827;">Ce que vous pouvez demander</strong>
+                    La décision a été prise par une personne, pas par un tri automatique.<t t-if="object.held_interview_count"> Sur les mêmes critères que pour les autres personnes rencontrées.</t><br/>
+                    Vous avez le droit de consulter ce qu'on a noté à votre sujet<t t-if="object.held_interview_count">, y compris les appréciations écrites en entrevue</t>. Répondez à ce courriel et on vous l'envoie.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+
+    <t t-if="'access_url' in object._fields">
+        <p style="margin:0 0 20px 0;">
+            <a t-attf-href="{{ object.get_base_url() }}{{ object.get_portal_url() }}"
+               style="display:inline-block;padding:12px 22px;border-radius:10px;background-color:#111827;color:#ffffff;text-decoration:none;font-weight:600;">
+                Voir mon dossier et télécharger le cahier
+            </a>
+        </p>
+    </t>
+    <p style="margin:0 0 20px 0;">
+        On vous souhaite sincèrement de trouver le poste qui vous convient. Nos autres affichages
+        vous restent grands ouverts.
+    </p>
+    <p style="margin:0;">Bonne suite,</p>
+    <p style="margin:4px 0 0 0;color:#6B7280;font-size:15px;">
+        L'équipe de <t t-out="object.company_id.name or ''">votre entreprise</t>
+    </p>
+
+    <p style="margin:24px 0 0 0;font-size:13px;line-height:20px;color:#9CA3AF;">
+        Votre dossier est gardé le temps prévu par notre politique, puis supprimé.<t t-if="object.company_id.brand_privacy_url">
+            <a t-att-href="object.company_id.brand_privacy_url" style="color:#9CA3AF;">Notre politique de confidentialité</a>.</t>
+    </p>
+</div>
+            </field>
+        </record>
+
+        <!-- ============ 4. Retrait par le candidat ============ -->
+        <record id="hr_recruitment.email_template_data_applicant_not_interested" model="mail.template">
+            <field name="name">Recrutement : retrait de candidature</field>
+            <field name="subject">C'est noté : vous retirez votre candidature ({{ object.job_id.name }})</field>
+            <field name="email_from">{{ (object.company_id.partner_id.email_formatted or user.company_id.partner_id.email_formatted or '') }}</field>
+            <field name="email_layout_xmlid">bluefox_branding.bf_mail_layout</field>
+            <field name="body_html" type="html">
+<div style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:16px;line-height:26px;color:#1F2937;">
+    <t t-set="prenom" t-value="(object.partner_name or '').split(' ')[0]"/>
+    <p style="margin:0 0 20px 0;font-size:20px;line-height:28px;font-weight:600;color:#111827;">
+        C'est noté, <t t-out="prenom">Camille</t>.
+    </p>
+    <p style="margin:0 0 20px 0;">
+        Vous ne souhaitez pas poursuivre pour le poste de
+        <strong t-out="object.job_id.name or ''">Conseiller TI</strong>. Votre dossier est clos et
+        on ne vous relancera pas.
+    </p>
+    <t t-if="object.held_interview_count">
+        <p style="margin:0 0 20px 0;">Merci d'avoir pris le temps de nous rencontrer.</p>
+    </t>
+    <p style="margin:0 0 20px 0;">
+        Si votre situation change, nos autres affichages vous restent grands ouverts.
+    </p>
+    <p style="margin:0;">Bonne suite,</p>
+    <p style="margin:4px 0 0 0;color:#6B7280;font-size:15px;">
+        L'équipe de <t t-out="object.company_id.name or ''">votre entreprise</t>
+    </p>
+
+    <p style="margin:24px 0 0 0;font-size:13px;line-height:20px;color:#9CA3AF;">
+        Votre dossier est gardé le temps prévu par notre politique, puis supprimé. Vous pouvez
+        demander à consulter ce que nous détenons à votre sujet.<t t-if="object.company_id.brand_privacy_url">
+            <a t-att-href="object.company_id.brand_privacy_url" style="color:#9CA3AF;">Notre politique de confidentialité</a>.</t>
+    </p>
+</div>
+            </field>
+        </record>
+
+    </data>
+</odoo>

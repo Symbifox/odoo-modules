@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="res_config_settings_view_form_recruitment_expense" model="ir.ui.view">
+        <field name="name">res.config.settings.form.recruitment.expense</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="hr_recruitment.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <!--
+              Ancrage : le bloc « Process » de l'app Recrutement. Il vient de
+              hr_recruitment et porte un `name`, donc il ne bouge pas d'une
+              version mineure à l'autre.
+            -->
+            <xpath expr="//block[@name='recruitment_process_div']" position="inside">
+                <setting id="recruitment_panel_hourly_cost_setting"
+                         string="Taux horaire de repli du panel"
+                         help="Valorise les heures d'entrevue des personnes qui n'ont pas de coût horaire d'employé dans cette société">
+                    <div class="content-group">
+                        <div class="mt16">
+                            <field name="company_currency_id" invisible="1"/>
+                            <!-- Requis par le widget monetary du taux de repli. -->
+                            <field name="recruitment_panel_hourly_cost" class="o_light_label"/>
+                        </div>
+                        <div class="text-muted">
+                            Laissé à zéro, les heures de ces personnes ne sont pas
+                            valorisées. Le poste l'écrit alors noir sur blanc au
+                            lieu de les compter pour rien.
+                        </div>
+                    </div>
+                </setting>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

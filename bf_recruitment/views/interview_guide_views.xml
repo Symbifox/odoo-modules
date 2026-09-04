@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_interview_guide_form" model="ir.ui.view">
+        <field name="name">bf.interview.guide.form</field>
+        <field name="model">bf.interview.guide</field>
+        <field name="arch" type="xml">
+            <form string="Grille d'entrevue">
+                <header>
+                    <button name="action_publish" type="object" string="Publier et geler"
+                            class="oe_highlight" invisible="state != 'brouillon'"
+                            confirm="Une grille publiée est gelée : ni elle ni ses critères ne se modifient plus. On la fait évoluer en tirant une nouvelle version. Publier?"/>
+                    <button name="action_new_version" type="object" string="Nouvelle version"
+                            invisible="state == 'brouillon'"/>
+                    <button name="action_set_archived" type="object" string="Archiver"
+                            invisible="state != 'publiee'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="brouillon,publiee"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_interviews" type="object" class="oe_stat_button"
+                                icon="fa-comments-o">
+                            <field name="interview_count" widget="statinfo" string="Séances"/>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Gelée" bg_color="text-bg-info"
+                            invisible="state == 'brouillon'"/>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="Conseiller TI - tour 2"/></h1>
+                        <h3><field name="version" readonly="1" string="Version"/></h3>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="code"/>
+                            <field name="round_type"/>
+                            <field name="role_family"/>
+                            <field name="scale_max"/>
+                        </group>
+                        <group>
+                            <field name="job_ids" widget="many2many_tags"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="previous_version_id" invisible="not previous_version_id"/>
+                            <field name="weight_total"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Critères" name="criteria">
+                            <field name="criterion_ids">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="name"/>
+                                    <field name="description" optional="show"/>
+                                    <field name="weight"/>
+                                    <field name="is_knockout" widget="boolean_toggle"/>
+                                    <field name="knockout_min" column_invisible="0"/>
+                                </list>
+                                <form string="Critère">
+                                    <sheet>
+                                        <group>
+                                            <group>
+                                                <field name="name"/>
+                                                <field name="weight"/>
+                                            </group>
+                                            <group>
+                                                <field name="is_knockout"/>
+                                                <field name="knockout_min" invisible="not is_knockout"/>
+                                                <field name="scale_max" readonly="1"/>
+                                            </group>
+                                        </group>
+                                        <group string="Ce qu'on cherche">
+                                            <field name="description" nolabel="1"/>
+                                        </group>
+                                        <group string="Question à poser">
+                                            <field name="question_html" nolabel="1"/>
+                                        </group>
+                                        <group string="Ancrages">
+                                            <div class="text-muted" colspan="2">
+                                                Décrivez en comportements observables ce que vaut chaque note.
+                                                Sans ça, deux personnes du panel ne notent pas la même chose.
+                                            </div>
+                                            <field name="anchor_ids" nolabel="1" colspan="2">
+                                                <list editable="bottom">
+                                                    <field name="score"/>
+                                                    <field name="label"/>
+                                                    <field name="description"/>
+                                                </list>
+                                            </field>
+                                        </group>
+                                    </sheet>
+                                </form>
+                            </field>
+                        </page>
+                        <page string="Consignes" name="instructions">
+                            <field name="instructions_html"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_interview_guide_list" model="ir.ui.view">
+        <field name="name">bf.interview.guide.list</field>
+        <field name="model">bf.interview.guide</field>
+        <field name="arch" type="xml">
+            <list string="Grilles d'entrevue">
+                <field name="name"/>
+                <field name="version"/>
+                <field name="code" optional="show"/>
+                <field name="round_type"/>
+                <field name="role_family" optional="hide"/>
+                <field name="criterion_count"/>
+                <field name="interview_count" optional="show"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'publiee'"
+                       decoration-muted="state == 'archivee'"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_interview_guide_search" model="ir.ui.view">
+        <field name="name">bf.interview.guide.search</field>
+        <field name="model">bf.interview.guide</field>
+        <field name="arch" type="xml">
+            <search string="Grilles">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="role_family"/>
+                <field name="job_ids"/>
+                <filter name="publiee" string="Publiées" domain="[('state', '=', 'publiee')]"/>
+                <filter name="brouillon" string="Brouillons" domain="[('state', '=', 'brouillon')]"/>
+                <separator/>
+                <filter name="inactive" string="Archivées" domain="[('active', '=', False)]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="group_round" string="Tour" context="{'group_by': 'round_type'}"/>
+                    <filter name="group_family" string="Famille de rôles" context="{'group_by': 'role_family'}"/>
+                    <filter name="group_state" string="État" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_interview_guide" model="ir.actions.act_window">
+        <field name="name">Grilles d'entrevue</field>
+        <field name="res_model">bf.interview.guide</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_publiee': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Créez une première grille</p>
+            <p>
+                Une grille tient les critères d'un tour d'entrevue, leur pondération,
+                et ce que vaut chaque note en comportements observables.
+                Publiez-la pour la geler : les séances déjà tenues resteront lisibles
+                telles qu'elles ont été notées.
+            </p>
+        </field>
+    </record>
+
+</odoo>

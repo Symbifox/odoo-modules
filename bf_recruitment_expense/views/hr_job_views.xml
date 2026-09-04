@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_hr_job_form_expense" model="ir.ui.view">
+        <field name="name">hr.job.form.expense</field>
+        <field name="model">hr.job</field>
+        <field name="inherit_id" ref="hr_recruitment.hr_job_survey"/>
+        <field name="arch" type="xml">
+
+            <div name="button_box" position="inside">
+                <button class="oe_stat_button" type="object"
+                        name="action_view_recruitment_expenses" icon="fa-money"
+                        groups="hr_recruitment.group_hr_recruitment_user"
+                        invisible="expense_count == 0">
+                    <field name="expense_count" widget="statinfo" string="Débours"/>
+                </button>
+            </div>
+
+            <sheet position="inside">
+                <group string="Coût du recrutement"
+                       groups="hr_recruitment.group_hr_recruitment_user">
+                    <field name="currency_id" invisible="1"/>
+                    <!-- Requis par le widget monetary des champs de coût. -->
+                    <field name="cost_is_partial" invisible="1"/>
+                    <!-- Commande l'affichage de l'encadré d'avertissement plus bas. -->
+
+                    <group>
+                        <field name="analytic_distribution" widget="analytic_distribution"
+                               groups="analytic.group_analytic_accounting"
+                               options="{'business_domain': 'expense'}"/>
+                        <field name="recruitment_expense_total" widget="monetary"/>
+                        <field name="panel_hours" widget="float_time"/>
+                        <field name="panel_hours_unpriced" widget="float_time"
+                               invisible="panel_hours_unpriced == 0"
+                               decoration-warning="1"/>
+                    </group>
+                    <group>
+                        <field name="panel_cost" widget="monetary"
+                               groups="hr.group_hr_user"/>
+                        <field name="recruitment_cost_total" widget="monetary"
+                               groups="hr.group_hr_user"/>
+                        <field name="no_of_hired_employee" string="Embauches"/>
+                        <field name="cost_per_hire" widget="monetary"
+                               groups="hr.group_hr_user"
+                               invisible="no_of_hired_employee == 0"/>
+                    </group>
+
+                    <div class="alert alert-warning" role="alert" colspan="2"
+                         invisible="not cost_is_partial">
+                        <field name="cost_warning" nolabel="1" readonly="1"/>
+                    </div>
+                </group>
+            </sheet>
+        </field>
+    </record>
+
+</odoo>

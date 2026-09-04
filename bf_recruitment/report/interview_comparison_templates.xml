@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="report_interview_comparison_document">
+        <t t-call="web.external_layout">
+            <div class="page">
+                <h2>Grille comparative des candidats</h2>
+                <p><strong>Poste :</strong> <span t-field="doc.name"/></p>
+
+                <t t-set="applicants" t-value="doc.env['hr.applicant'].search([('job_id', '=', doc.id)]).filtered(lambda a: a.held_interview_count)"/>
+                <p t-if="not applicants" class="text-muted">
+                    Aucun candidat n'a encore passé d'entrevue tenue sur ce poste.
+                </p>
+
+                <t t-if="applicants">
+                    <table class="table table-sm table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Candidat</th>
+                                <th class="text-center">Entrevues tenues</th>
+                                <th class="text-center">Score moyen</th>
+                                <th class="text-center">Critère éliminatoire</th>
+                                <th>Étape</th>
+                                <th>Décision</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="applicants.sorted(lambda a: -a.interview_score_pct)" t-as="applicant">
+                                <td><span t-field="applicant.partner_name"/></td>
+                                <td class="text-center"><span t-esc="applicant.held_interview_count"/></td>
+                                <td class="text-center">
+                                    <span t-esc="'%.1f' % applicant.interview_score_pct"/> %
+                                </td>
+                                <td class="text-center">
+                                    <t t-if="any(i.knockout_failed for i in applicant.interview_ids)">oui</t>
+                                    <t t-else="">non</t>
+                                </td>
+                                <td><span t-field="applicant.stage_id.name"/></td>
+                                <td>
+                                    <t t-if="applicant.refuse_reason_id">Refusé</t>
+                                    <t t-elif="applicant.date_closed">Embauché</t>
+                                    <t t-else="">En cours</t>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h3 class="mt-4">Le détail, critère par critère</h3>
+                    <t t-set="guides" t-value="doc.env['bf.interview'].search([('job_id', '=', doc.id), ('state', '=', 'tenue')]).mapped('guide_id')"/>
+                    <t t-foreach="guides" t-as="guide">
+                        <h4 class="mt-3">
+                            <span t-field="guide.name"/>
+                            <small class="text-muted">(version <span t-esc="guide.version"/>)</small>
+                        </h4>
+                        <table class="table table-sm table-bordered">
+                            <thead>
+                                <tr>
+                                    <th style="width:30%">Critère</th>
+                                    <th class="text-center" style="width:8%">Pond.</th>
+                                    <th t-foreach="applicants" t-as="applicant" class="text-center">
+                                        <span t-field="applicant.partner_name"/>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="guide.criterion_ids" t-as="criterion">
+                                    <td>
+                                        <span t-field="criterion.name"/>
+                                        <span t-if="criterion.is_knockout" class="text-danger">(éliminatoire)</span>
+                                    </td>
+                                    <td class="text-center"><span t-esc="'%.1f' % criterion.weight"/></td>
+                                    <td t-foreach="applicants" t-as="applicant" class="text-center">
+                                        <t t-set="scores" t-value="[r.score for i in applicant.interview_ids if i.guide_id == guide for r in i.rating_line_ids if r.criterion_id == criterion and r.state == 'depose' and r.score]"/>
+                                        <t t-if="scores">
+                                            <span t-esc="'%.1f' % (sum(scores) / len(scores))"/>
+                                        </t>
+                                        <t t-else=""><span class="text-muted">.</span></t>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </t>
+                </t>
+
+                <p class="text-muted mt-5" style="font-size: 9px;">
+                    Les scores servent à préparer une décision humaine. Aucune candidature n'est
+                    écartée par un seuil.
+                </p>
+            </div>
+        </t>
+    </template>
+
+    <template id="report_interview_comparison">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="bf_recruitment.report_interview_comparison_document"/>
+            </t>
+        </t>
+    </template>
+
+</odoo>

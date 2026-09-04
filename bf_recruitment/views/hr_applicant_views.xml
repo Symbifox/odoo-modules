@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_hr_applicant_form_interview" model="ir.ui.view">
+        <field name="name">hr.applicant.form.interview</field>
+        <field name="model">hr.applicant</field>
+        <field name="inherit_id" ref="hr_recruitment.hr_applicant_view_form"/>
+        <field name="arch" type="xml">
+            <div name="button_box" position="inside">
+                <button name="action_open_interviews" type="object" class="oe_stat_button"
+                        icon="fa-comments-o">
+                    <field name="interview_count" widget="statinfo" string="Entrevues"/>
+                </button>
+            </div>
+            <notebook position="inside">
+                <page string="Entrevues" name="bf_interviews">
+                    <group>
+                        <group>
+                            <field name="held_interview_count"/>
+                            <field name="interview_score_pct" widget="percentage" digits="[5,1]"/>
+                        </group>
+                        <group>
+                            <field name="decided_by_id"/>
+                            <field name="decision_date"/>
+                        </group>
+                    </group>
+                    <separator string="Motif de la décision"/>
+                    <field name="decision_note" nolabel="1"
+                           placeholder="Écrit pour être lu. Un refus qui suit une entrevue tenue en exige un."/>
+                    <separator string="Séances"/>
+                    <field name="interview_ids" nolabel="1" readonly="1">
+                        <list>
+                            <field name="date_start"/>
+                            <field name="round_number"/>
+                            <field name="guide_id"/>
+                            <field name="interviewer_ids" widget="many2many_tags"/>
+                            <field name="score_pct" widget="percentage" digits="[5,1]"/>
+                            <field name="recommendation"/>
+                            <field name="knockout_failed" optional="hide"/>
+                            <field name="state" widget="badge" decoration-success="state == 'tenue'"/>
+                        </list>
+                    </field>
+                    <button name="action_print_interview_book" type="object" string="Imprimer le cahier"
+                            class="btn-secondary mt-2"
+                            groups="hr_recruitment.group_hr_recruitment_user"/>
+                    <button name="action_print_interview_book_candidate" type="object"
+                            string="Copie pour la personne évaluée"
+                            class="btn-secondary mt-2"
+                            title="Sans le nom des évaluateurs ni de la personne qui a décidé. Pour une demande d'accès."
+                            groups="hr_recruitment.group_hr_recruitment_user"/>
+                </page>
+            </notebook>
+        </field>
+    </record>
+
+    <record id="view_hr_job_form_interview" model="ir.ui.view">
+        <field name="name">hr.job.form.interview</field>
+        <field name="model">hr.job</field>
+        <field name="inherit_id" ref="hr_recruitment.hr_job_survey"/>
+        <field name="arch" type="xml">
+            <sheet position="inside">
+                <group string="Cahier d'entrevues">
+                    <field name="interview_guide_ids" widget="many2many_tags" nolabel="1"
+                           domain="[('state', '=', 'publiee')]"/>
+                    <button name="action_print_interview_comparison" type="object"
+                            string="Grille comparative des candidats" class="btn-secondary"
+                            groups="hr_recruitment.group_hr_recruitment_user"/>
+                </group>
+            </sheet>
+        </field>
+    </record>
+
+</odoo>

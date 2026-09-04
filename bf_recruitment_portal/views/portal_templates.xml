@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Compteur sur l'accueil du portail -->
+    <template id="portal_my_home_candidature" name="Portail : mes candidatures"
+              inherit_id="portal.portal_my_home" priority="40">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+            <t t-call="portal.portal_docs_entry">
+                <t t-set="icon" t-value="'/bf_recruitment_portal/static/description/icon.png'"/>
+                <t t-set="title">Mes candidatures</t>
+                <t t-set="text">Suivre l'état de mes candidatures</t>
+                <t t-set="url" t-value="'/my/candidatures'"/>
+                <t t-set="placeholder_count" t-value="'candidature_count'"/>
+            </t>
+        </xpath>
+    </template>
+
+    <!-- Liste -->
+    <template id="portal_liste" name="Mes candidatures">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            <h4 class="mb-4">Mes candidatures</h4>
+            <t t-if="not candidatures">
+                <div class="alert alert-info" role="status">
+                    Aucune candidature rattachée à ce compte.
+                </div>
+            </t>
+            <t t-else="">
+                <div class="list-group">
+                    <a t-foreach="candidatures" t-as="c" t-att-href="c['url']"
+                       class="list-group-item list-group-item-action">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong t-out="c['job']"/>
+                                <div class="text-muted small">
+                                    Déposée le <span t-out="c['applied_on']"/>
+                                    <t t-if="c['held_interviews']">
+                                        · <span t-out="c['held_interviews']"/> entrevue(s) tenue(s)
+                                    </t>
+                                </div>
+                            </div>
+                            <span t-attf-class="badge #{'bg-success' if c['state'] == 'retenue' else ('bg-secondary' if c['state'] == 'non_retenue' else 'bg-info')}"
+                                  t-out="c['state_label']"/>
+                        </div>
+                    </a>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <!-- Détail -->
+    <template id="portal_detail" name="Ma candidature">
+        <t t-call="portal.portal_layout">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0" t-out="dossier['job']"/>
+                    <span t-attf-class="badge #{'bg-success' if dossier['state'] == 'retenue' else ('bg-secondary' if dossier['state'] in ('non_retenue', 'close') else 'bg-info')}"
+                          t-out="dossier['state_label']"/>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted">
+                        Déposée le <span t-out="dossier['applied_on']"/>
+                        <t t-if="dossier['closed_on']">
+                            · Close le <span t-out="dossier['closed_on']"/>
+                        </t>
+                    </p>
+
+                    <!-- Avant la décision : l'état, et rien d'autre. -->
+                    <t t-if="not dossier['decision_taken']">
+                        <div class="alert alert-info" role="status">
+                            <strong>Votre dossier est à l'étude.</strong>
+                            <div>
+                                Nous revenons vers vous dans tous les cas. Les appréciations
+                                écrites lors des entrevues vous seront accessibles ici une fois
+                                la décision prise.
+                            </div>
+                        </div>
+                    </t>
+
+                    <!-- Après la décision : la décision, le motif, le cahier. -->
+                    <t t-else="">
+                        <t t-if="dossier['decision_note']">
+                            <h6 class="mt-4">Le motif de la décision</h6>
+                            <p style="white-space:pre-line;" t-out="dossier['decision_note']"/>
+                        </t>
+                        <t t-if="seances">
+                            <h6 class="mt-4">Vos entrevues</h6>
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Tour</th><th>Date</th><th>Grille</th>
+                                        <th class="text-end">Panel</th><th class="text-end">Critères</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr t-foreach="seances" t-as="s">
+                                        <td t-out="s['round']"/>
+                                        <td t-out="s['date']"/>
+                                        <td t-out="s['guide']"/>
+                                        <td class="text-end" t-out="s['panel_size']"/>
+                                        <td class="text-end" t-out="s['criteria']"/>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <!-- ⚠️ `text-white` explicite, et voici ce qui est MESURÉ
+                                 plutôt que supposé : `bluefox_branding` récrit
+                                 le fond et la bordure de `.btn-primary` en
+                                 `!important` et ne touche JAMAIS à la couleur
+                                 du texte. Celle-ci reste au bout d'une chaîne
+                                 de variables CSS de Bootstrap (la couleur du
+                                 bouton, qui retombe sur celle du corps de
+                                 page) dont la valeur dépend du contexte de
+                                 rendu. Je n'ai pas reproduit la cascade exacte
+                                 depuis le paquet CSS ; ce qui est sûr, c'est
+                                 que la couleur du texte n'est fixée nulle part
+                                 et peut donc dériver. `text-white` la fixe.
+                                 🔴 Le fond de `.btn-primary` étant récrit sans
+                                 sa couleur de texte, TOUS les boutons primaires
+                                 du parc portent le même risque : à signaler à
+                                 qui tient `bluefox_branding`. -->
+                            <a t-if="dossier['book_enabled']"
+                               t-attf-href="/my/candidature/#{dossier['id']}/cahier#{'?access_token=%s' % access_token if access_token else ''}"
+                               class="btn btn-primary text-white">
+                                Télécharger le cahier de mes entrevues (PDF)
+                            </a>
+                            <div t-if="not dossier['book_enabled']"
+                                 class="alert alert-light border" role="status">
+                                Le cahier de vos entrevues ne se télécharge pas
+                                depuis cette page. Vous gardez le droit d'y
+                                accéder : écrivez à l'adresse qui vous a
+                                transmis la décision et il vous sera remis.
+                            </div>
+                            <p class="text-muted small mt-2">
+                                Ce document reprend les critères évalués et ce qui a été écrit à
+                                votre sujet. Le nom des personnes qui vous ont évaluée n'y figure
+                                pas : ce sont des renseignements qui portent sur elles.
+                            </p>
+                        </t>
+                    </t>
+
+                    <!-- La deuxième porte : le compte. -->
+                    <t t-if="signup_url or reset_url">
+                        <hr/>
+                        <h6>Retrouver vos candidatures</h6>
+                        <p class="text-muted small">
+                            Ce lien vous est personnel. Pour retrouver vos candidatures sans lui,
+                            créez un compte ou réinitialisez votre mot de passe.
+                        </p>
+                        <a t-if="signup_url" t-att-href="signup_url" class="btn btn-outline-primary btn-sm">
+                            Créer mon compte
+                        </a>
+                        <a t-att-href="reset_url" class="btn btn-outline-secondary btn-sm">
+                            Réinitialiser mon mot de passe
+                        </a>
+                    </t>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!--
+      La page d'un lien qui ne mène plus à rien.
+
+      🔴 Elle sert la MÊME réponse pour un dossier détruit et pour un jeton qui
+      ne correspond à rien. Distinguer les deux dirait à qui essaie des numéros
+      lesquels ont existé, et cette page-là serait pire que la redirection
+      qu'elle remplace.
+
+      ⚠️ Elle ne nomme personne, ne confirme aucune candidature, et n'affirme
+      pas que le dossier a été détruit : elle dit ce qui est vrai dans les deux
+      cas, et où s'adresser.
+    -->
+    <template id="portal_lien_perime" name="Portail : lien périmé">
+        <t t-call="portal.portal_layout">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Ce lien ne mène plus à rien</h5>
+                </div>
+                <div class="card-body">
+                    <p>
+                        Le dossier auquel ce lien donnait accès n'est plus disponible.
+                    </p>
+                    <p class="text-muted">
+                        Les dossiers de candidature ne sont pas conservés indéfiniment :
+                        au terme du calendrier de conservation, ils sont détruits, et les
+                        liens qui y menaient cessent de fonctionner. C'est le
+                        fonctionnement prévu, pas une panne.
+                    </p>
+                    <p class="text-muted">
+                        Si vous pensez que ce lien devrait encore fonctionner, écrivez à
+                        l'adresse qui vous l'a transmis : la réponse à votre candidature
+                        porte les coordonnées de la personne à contacter.
+                    </p>
+                    <a href="/" class="btn btn-outline-secondary btn-sm">Retour à l'accueil</a>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!--
+      La page qui demande le code. Elle est RENDUE, jamais atteinte par une
+      redirection depuis la page qu'elle garde : une barrière qui renvoie vers
+      son propre appelant boucle à l'infini.
+    -->
+    <template id="portal_code" name="Portail : code d'accès">
+        <t t-call="portal.portal_layout">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Un code pour ouvrir votre dossier</h5>
+                </div>
+                <div class="card-body">
+                    <p>
+                        Votre dossier contient les appréciations écrites lors de vos
+                        entrevues. Un code à six chiffres est envoyé à l'adresse que
+                        porte votre candidature, et il vaut quinze minutes.
+                    </p>
+
+                    <div t-if="erreur == 'faux'" class="alert alert-warning" role="alert">
+                        Ce code ne correspond pas. Vérifiez-le, ou demandez-en un autre.
+                    </div>
+                    <div t-if="erreur == 'perime'" class="alert alert-warning" role="alert">
+                        Ce code a expiré. Demandez-en un nouveau.
+                    </div>
+                    <div t-if="erreur == 'bloque'" class="alert alert-danger" role="alert">
+                        Trop de codes erronés. Reprenez dans une quinzaine de minutes.
+                    </div>
+                    <div t-if="erreur == 'trop'" class="alert alert-danger" role="alert">
+                        Trop de codes demandés. Reprenez dans une quinzaine de minutes.
+                    </div>
+                    <div t-if="erreur == 'repos'" class="alert alert-info" role="status">
+                        Un code vient de partir. Laissez-lui quelques secondes.
+                    </div>
+                    <div t-if="erreur == 'sans_adresse'" class="alert alert-danger" role="alert">
+                        Aucune adresse courriel n'est rattachée à ce dossier : le code ne
+                        peut pas être envoyé. Écrivez à la personne qui vous a transmis
+                        ce lien.
+                    </div>
+
+                    <t t-if="not deja_envoye">
+                        <form t-attf-action="/my/candidature/#{applicant_id}/code#{'?access_token=%s' % access_token if access_token else ''}"
+                              method="post">
+                            <button type="submit" class="btn btn-primary text-white">
+                                M'envoyer un code
+                            </button>
+                            <p t-if="adresse_indice" class="text-muted small mt-2">
+                                Il partira vers <span t-out="adresse_indice"/>.
+                            </p>
+                        </form>
+                    </t>
+
+                    <t t-if="deja_envoye">
+                        <form t-attf-action="/my/candidature/#{applicant_id}/verifier#{'?access_token=%s' % access_token if access_token else ''}"
+                              method="post" class="row g-2 align-items-end">
+                            <div class="col-auto">
+                                <label class="form-label" for="code">Code reçu</label>
+                                <input type="text" name="code" id="code" class="form-control"
+                                       inputmode="numeric" autocomplete="one-time-code"
+                                       maxlength="6" pattern="[0-9]{6}" required="required"/>
+                            </div>
+                            <div class="col-auto">
+                                <button type="submit" class="btn btn-primary text-white">Ouvrir</button>
+                            </div>
+                        </form>
+                        <form t-attf-action="/my/candidature/#{applicant_id}/code#{'?access_token=%s' % access_token if access_token else ''}"
+                              method="post" class="mt-3">
+                            <button type="submit" class="btn btn-link p-0">
+                                Me renvoyer un code
+                            </button>
+                        </form>
+                    </t>
+                </div>
+            </div>
+        </t>
+    </template>
+
+</odoo>

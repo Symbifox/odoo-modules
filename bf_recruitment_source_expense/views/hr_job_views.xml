@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_hr_job_form_source_expense" model="ir.ui.view">
+        <field name="name">hr.job.form.source.expense</field>
+        <field name="model">hr.job</field>
+        <field name="inherit_id" ref="bf_recruitment_source.view_hr_job_form_source"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//field[@name='source_coverage_rate']" position="after">
+                <field name="attributed_expense_total" widget="monetary"/>
+                <field name="unattributed_expense_total" widget="monetary"
+                       decoration-warning="unattributed_expense_total > 0"/>
+            </xpath>
+
+            <xpath expr="//field[@name='source_ids']/list/field[@name='conversion_rate']"
+                   position="after">
+                <field name="currency_id" column_invisible="1"/>
+                <field name="expense_total" readonly="1" widget="monetary"
+                       optional="show"/>
+                <field name="cost_per_applicant" readonly="1" widget="monetary"
+                       optional="show"/>
+                <field name="cost_per_hire_from_source" readonly="1"
+                       widget="monetary" optional="hidden"/>
+            </xpath>
+
+        </field>
+    </record>
+
+</odoo>

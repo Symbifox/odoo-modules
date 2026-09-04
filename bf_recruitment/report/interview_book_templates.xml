@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="report_interview_book_document">
+        <t t-call="web.external_layout">
+            <div class="page">
+                <h2>Cahier d'entrevues</h2>
+                <div class="row mb-4">
+                    <div class="col-6">
+                        <strong>Candidat</strong><br/>
+                        <span t-field="doc.partner_name"/>
+                    </div>
+                    <div class="col-6">
+                        <strong>Poste</strong><br/>
+                        <span t-field="doc.job_id.name"/>
+                    </div>
+                </div>
+
+                <t t-set="interviews" t-value="doc.interview_ids.sorted('round_number')"/>
+                <p t-if="not interviews" class="text-muted">
+                    Aucune séance d'entrevue n'a été tenue pour cette candidature.
+                </p>
+
+                <t t-foreach="interviews" t-as="interview">
+                    <div class="mt-4" style="page-break-inside: avoid;">
+                        <h3>
+                            Tour <span t-esc="interview.round_number"/> :
+                            <span t-field="interview.guide_id.name"/>
+                            <small class="text-muted">
+                                (version <span t-esc="interview.guide_version"/>)
+                            </small>
+                        </h3>
+                        <table class="table table-sm">
+                            <tr>
+                                <td style="width:25%"><strong>Date</strong></td>
+                                <td><span t-field="interview.date_start"/></td>
+                                <td style="width:25%"><strong>État</strong></td>
+                                <td><span t-field="interview.state"/></td>
+                            </tr>
+                            <tr t-if="not hide_evaluators">
+                                <td><strong>Panel</strong></td>
+                                <td colspan="3">
+                                    <t t-foreach="interview.interviewer_ids" t-as="member">
+                                        <span t-field="member.name"/><t t-if="not member_last">, </t>
+                                    </t>
+                                </td>
+                            </tr>
+                            <tr t-if="hide_evaluators">
+                                <td><strong>Panel</strong></td>
+                                <td colspan="3">
+                                    <span t-esc="len(interview.interviewer_ids)"/> personne(s)
+                                </td>
+                            </tr>
+                            <tr t-if="interview.submitted_count">
+                                <td><strong>Score pondéré</strong></td>
+                                <td>
+                                    <span t-esc="'%.2f' % interview.score_total"/>
+                                    sur <span t-esc="'%.2f' % interview.score_max"/>
+                                    (<span t-esc="'%.1f' % interview.score_pct"/> %)
+                                </td>
+                                <td><strong>Recommandation</strong></td>
+                                <td><span t-field="interview.recommendation"/></td>
+                            </tr>
+                        </table>
+
+                        <p t-if="interview.knockout_failed" class="text-danger">
+                            <strong>Un critère éliminatoire est passé sous son seuil.</strong>
+                        </p>
+
+                        <table class="table table-sm table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Critère</th>
+                                    <th class="text-center">Pond.</th>
+                                    <th t-if="not hide_evaluators">Évaluateur</th>
+                                    <th class="text-center">Note</th>
+                                    <th>Commentaire</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-set="ratings" t-value="interview.rating_line_ids.filtered(lambda r: r.state == 'depose').sorted(lambda r: (r.sequence, r.user_id.id))"/>
+                                <tr t-foreach="ratings" t-as="rating">
+                                    <td><span t-field="rating.criterion_id.name"/></td>
+                                    <td class="text-center"><span t-esc="'%.1f' % rating.weight"/></td>
+                                    <td t-if="not hide_evaluators"><span t-field="rating.user_id.name"/></td>
+                                    <td class="text-center">
+                                        <span t-esc="rating.score"/> / <span t-esc="rating.scale_max"/>
+                                    </td>
+                                    <td><span t-field="rating.comment"/></td>
+                                </tr>
+                                <tr t-if="not ratings">
+                                    <td t-att-colspan="4 if hide_evaluators else 5" class="text-muted">
+                                        Aucune notation déposée pour cette séance.
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div t-if="interview.summary_html">
+                            <h4>Synthèse</h4>
+                            <div t-field="interview.summary_html"/>
+                        </div>
+                    </div>
+                </t>
+
+                <div class="mt-5" style="page-break-inside: avoid;" t-if="doc.decision_note or doc.decided_by_id">
+                    <h3>Décision</h3>
+                    <table class="table table-sm">
+                        <tr t-if="not hide_evaluators">
+                            <td style="width:25%"><strong>Décidé par</strong></td>
+                            <td><span t-field="doc.decided_by_id.name"/></td>
+                            <td style="width:25%"><strong>Date</strong></td>
+                            <td><span t-field="doc.decision_date"/></td>
+                        </tr>
+                        <tr t-if="hide_evaluators">
+                            <td style="width:25%"><strong>Date de la décision</strong></td>
+                            <td colspan="3"><span t-field="doc.decision_date"/></td>
+                        </tr>
+                        <tr t-if="doc.refuse_reason_id">
+                            <td><strong>Motif au dossier</strong></td>
+                            <td colspan="3"><span t-field="doc.refuse_reason_id.name"/></td>
+                        </tr>
+                    </table>
+                    <p t-field="doc.decision_note"/>
+                </div>
+
+                <p class="text-muted mt-5" style="font-size: 9px;" t-if="not hide_evaluators">
+                    Ce cahier contient des renseignements personnels. La personne qui a postulé a
+                    un droit d'accès aux renseignements que nous détenons sur elle, appréciations
+                    comprises.
+                </p>
+                <p class="text-muted mt-5" style="font-size: 9px;" t-if="hide_evaluators">
+                    Copie remise à la personne évaluée, en réponse à une demande d'accès. Le nom
+                    des personnes qui ont évalué et de celle qui a décidé est retiré : il s'agit
+                    de renseignements portant sur des tiers.
+                </p>
+            </div>
+        </t>
+    </template>
+
+    <template id="report_interview_book">
+        <t t-call="web.html_container">
+            <t t-set="hide_evaluators" t-value="False"/>
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="bf_recruitment.report_interview_book_document"/>
+            </t>
+        </t>
+    </template>
+
+    <!--
+      La copie remise à la personne évaluée quand elle exerce son droit d'accès.
+      Même contenu, sans le nom des personnes qui ont évalué ni de celle qui a
+      décidé : ce sont des renseignements portant sur des tiers.
+    -->
+    <template id="report_interview_book_candidate">
+        <t t-call="web.html_container">
+            <t t-set="hide_evaluators" t-value="True"/>
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="bf_recruitment.report_interview_book_document"/>
+            </t>
+        </t>
+    </template>
+
+</odoo>

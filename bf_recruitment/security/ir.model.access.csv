@@ -1,0 +1,12 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_guide_interviewer,Grille (lecture),model_bf_interview_guide,hr_recruitment.group_hr_recruitment_interviewer,1,0,0,0
+access_guide_officer,Grille (recruteur),model_bf_interview_guide,hr_recruitment.group_hr_recruitment_user,1,1,1,0
+access_guide_manager,Grille (administrateur),model_bf_interview_guide,hr_recruitment.group_hr_recruitment_manager,1,1,1,1
+access_criterion_interviewer,Critère (lecture),model_bf_interview_criterion,hr_recruitment.group_hr_recruitment_interviewer,1,0,0,0
+access_criterion_officer,Critère (recruteur),model_bf_interview_criterion,hr_recruitment.group_hr_recruitment_user,1,1,1,1
+access_anchor_interviewer,Ancrage (lecture),model_bf_interview_anchor,hr_recruitment.group_hr_recruitment_interviewer,1,0,0,0
+access_anchor_officer,Ancrage (recruteur),model_bf_interview_anchor,hr_recruitment.group_hr_recruitment_user,1,1,1,1
+access_interview_interviewer,Séance (panel),model_bf_interview,hr_recruitment.group_hr_recruitment_interviewer,1,1,0,0
+access_interview_officer,Séance (recruteur),model_bf_interview,hr_recruitment.group_hr_recruitment_user,1,1,1,1
+access_rating_interviewer,Notation (panel),model_bf_interview_rating,hr_recruitment.group_hr_recruitment_interviewer,1,1,0,0
+access_rating_officer,Notation (recruteur),model_bf_interview_rating,hr_recruitment.group_hr_recruitment_user,1,1,1,1

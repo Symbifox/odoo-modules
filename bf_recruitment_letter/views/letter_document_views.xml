@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_letter_document_form_applicant" model="ir.ui.view">
+        <field name="name">letter.document.form.applicant</field>
+        <field name="model">letter.document</field>
+        <field name="inherit_id" ref="bf_letter_writer.letter_document_view_form"/>
+        <field name="arch" type="xml">
+            <field name="partner_id" position="after">
+                <field name="applicant_id"
+                       groups="hr_recruitment.group_hr_recruitment_user"
+                       options="{'no_create': True}"/>
+            </field>
+        </field>
+    </record>
+
+</odoo>

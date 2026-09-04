@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_interview_aggregate_list" model="ir.ui.view">
+        <field name="name">bf.interview.aggregate.list</field>
+        <field name="model">bf.interview.aggregate</field>
+        <field name="arch" type="xml">
+            <list string="Agrégats d'entrevues" create="0">
+                <field name="year"/>
+                <field name="guide_id"/>
+                <field name="job_id"/>
+                <field name="interviews" sum="Séances"/>
+                <field name="candidates" sum="Personnes"/>
+                <field name="evaluators"/>
+                <field name="ratings" sum="Notations"/>
+                <field name="score_pct_mean"/>
+                <field name="score_pct_stddev"/>
+                <field name="knockout_interviews"/>
+                <field name="computed_on"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_interview_aggregate_form" model="ir.ui.view">
+        <field name="name">bf.interview.aggregate.form</field>
+        <field name="model">bf.interview.aggregate</field>
+        <field name="arch" type="xml">
+            <form string="Agrégat d'entrevues" create="0">
+                <header>
+                    <button name="action_recompute" type="object"
+                            string="Recalculer" class="btn-primary"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="display_name" readonly="1"/></h1>
+                    </div>
+                    <div class="alert alert-info" role="status">
+                        Cet agrégat ne contient aucun nom, ni de candidat, ni
+                        d'évaluateur. Il est écrit pour survivre à la destruction
+                        des séances : une fois les notations détruites, il ne se
+                        reconstitue pas.
+                    </div>
+                    <group>
+                        <group string="Portée">
+                            <field name="year"/>
+                            <field name="guide_id"/>
+                            <field name="job_id"/>
+                            <field name="guide_name"/>
+                            <field name="job_name"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                        <group string="Volumes">
+                            <field name="interviews"/>
+                            <field name="candidates"/>
+                            <field name="evaluators"/>
+                            <field name="ratings"/>
+                            <field name="knockout_interviews"/>
+                            <field name="computed_on"/>
+                            <field name="source_interview_count"/>
+                        </group>
+                    </group>
+                    <group string="Score de la séance">
+                        <group>
+                            <field name="score_pct_mean"/>
+                            <field name="score_pct_stddev"/>
+                        </group>
+                        <group>
+                            <field name="score_pct_min"/>
+                            <field name="score_pct_max"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Par critère" name="criteria">
+                            <field name="criterion_ids" readonly="1">
+                                <list>
+                                    <field name="criterion_name"/>
+                                    <field name="weight"/>
+                                    <field name="is_knockout"/>
+                                    <field name="ratings"/>
+                                    <field name="score_mean"/>
+                                    <field name="score_stddev"/>
+                                    <field name="score_min"/>
+                                    <field name="score_max"/>
+                                    <field name="rater_spread_mean"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_interview_aggregate" model="ir.actions.act_window">
+        <field name="name">Mesure des grilles (anonymisé)</field>
+        <field name="res_model">bf.interview.aggregate</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Aucun agrégat calculé</p>
+            <p>
+                L'agrégat garde, par grille, par poste et par année, ce que les
+                entrevues ont mesuré : combien de personnes, quel score moyen,
+                quel écart, et quel critère sépare vraiment les candidats. Sans
+                aucun nom.
+            </p>
+            <p>
+                Il se calcule chaque nuit. Une campagne de destruction refuse
+                d'effacer une candidature dont l'année n'a pas encore été
+                agrégée : une fois les notations parties, la mesure ne se
+                reconstitue pas.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_interview_aggregate_build" model="ir.actions.server">
+        <field name="name">Agréger toutes les entrevues</field>
+        <field name="model_id" ref="model_bf_interview_aggregate"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_build_all()</field>
+        <!--
+            Rattachée au modèle : elle apparaît dans le menu « Action » de la
+            liste. Sans ce rattachement, l'action existe et n'est atteignable
+            de nulle part, et le seul chemin vers un agrégat serait d'attendre
+            le cron de la nuit.
+        -->
+        <field name="binding_model_id" ref="model_bf_interview_aggregate"/>
+        <field name="binding_view_types">list</field>
+    </record>
+
+    <menuitem id="menu_interview_aggregate"
+              name="Mesure des grilles"
+              parent="bf_recruitment.menu_interview_root"
+              action="action_interview_aggregate"
+              sequence="5"
+              groups="hr_recruitment.group_hr_recruitment_user"/>
+
+</odoo>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="action_report_interview_book" model="ir.actions.report">
+        <field name="name">Cahier d'entrevues</field>
+        <field name="model">hr.applicant</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">bf_recruitment.report_interview_book</field>
+        <field name="report_file">bf_recruitment.report_interview_book</field>
+        <field name="print_report_name">'Cahier d entrevues - %s' % (object.partner_name or object.id)</field>
+        <field name="binding_model_id" ref="hr_recruitment.model_hr_applicant"/>
+        <field name="binding_type">report</field>
+        <field name="groups_id" eval="[(4, ref('hr_recruitment.group_hr_recruitment_user'))]"/>
+    </record>
+
+    <record id="action_report_interview_book_candidate" model="ir.actions.report">
+        <field name="name">Cahier remis à la personne évaluée</field>
+        <field name="model">hr.applicant</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">bf_recruitment.report_interview_book_candidate</field>
+        <field name="report_file">bf_recruitment.report_interview_book_candidate</field>
+        <field name="print_report_name">'Cahier remis - %s' % (object.partner_name or object.id)</field>
+        <field name="binding_model_id" ref="hr_recruitment.model_hr_applicant"/>
+        <field name="binding_type">report</field>
+        <field name="groups_id" eval="[(4, ref('hr_recruitment.group_hr_recruitment_user'))]"/>
+    </record>
+
+    <record id="action_report_interview_comparison" model="ir.actions.report">
+        <field name="name">Grille comparative des candidats</field>
+        <field name="model">hr.job</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">bf_recruitment.report_interview_comparison</field>
+        <field name="report_file">bf_recruitment.report_interview_comparison</field>
+        <field name="print_report_name">'Grille comparative - %s' % (object.name)</field>
+        <field name="binding_model_id" ref="hr.model_hr_job"/>
+        <field name="binding_type">report</field>
+        <field name="groups_id" eval="[(4, ref('hr_recruitment.group_hr_recruitment_user'))]"/>
+    </record>
+
+</odoo>

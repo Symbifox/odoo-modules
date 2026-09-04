@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+
+        <!--
+          🔴 Le problème que ce module CRÉERAIT sans ces deux règles.
+
+          `bf_letter_writer` donne `letter.document` en lecture ET en écriture à
+          `base.group_user` : tout employé voit toutes les lettres. Or le coeur
+          réserve `hr.applicant.salary_proposed` à
+          `hr_recruitment.group_hr_recruitment_user`. Écrire l'offre dans une
+          lettre ferait donc sortir, en clair et pour tout le monde, le montant
+          que le coeur protège.
+
+          Les règles de GROUPE se combinent en OU. Un recruteur, qui est aussi
+          `base.group_user`, obtient donc la première OU la seconde, c'est-à-dire
+          tout ; un employé ordinaire n'obtient que la première.
+
+          ⚠️ Conséquence assumée : un gestionnaire de lettres qui n'est PAS
+          recruteur perd l'accès aux lettres de recrutement, y compris le droit
+          de les supprimer. C'est voulu : le montant qu'elles portent ne le
+          regarde pas plus qu'un autre employé.
+        -->
+
+        <record id="rule_letter_document_not_recruitment" model="ir.rule">
+            <field name="name">Lettre : les offres de recrutement sont hors de vue</field>
+            <field name="model_id" ref="bf_letter_writer.model_letter_document"/>
+            <field name="domain_force">[('applicant_id', '=', False)]</field>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+
+        <record id="rule_letter_document_recruiter" model="ir.rule">
+            <field name="name">Lettre : le recruteur voit aussi les offres</field>
+            <field name="model_id" ref="bf_letter_writer.model_letter_document"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('hr_recruitment.group_hr_recruitment_user'))]"/>
+        </record>
+
+    </data>
+</odoo>

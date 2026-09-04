@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <record id="purpose_recruitment_evaluation" model="privacy.purpose">
+            <field name="code">recruitment_evaluation</field>
+            <field name="name">Évaluation d'une candidature</field>
+            <field name="plain_language_summary"><![CDATA[
+                <p>Quand vous postulez, nous gardons votre candidature, votre CV
+                et les pièces que vous nous transmettez. Si vous passez une
+                entrevue, nous gardons aussi la grille utilisée, les notes
+                attribuées par chaque personne du panel, et ce qu'elles ont
+                écrit.</p>
+                <p>Ces appréciations sont écrites en sachant que vous avez le
+                droit de les lire. Sur demande, nous vous remettons le cahier
+                complet de vos entrevues, sans le nom des personnes qui vous ont
+                évaluée : leur identité est un renseignement qui porte sur
+                elles.</p>
+                <p>Aucune décision n'est prise automatiquement. Le score aide
+                une personne à trancher, il n'écarte personne à sa place, et un
+                refus qui suit une entrevue tenue porte un motif écrit et le nom
+                de la personne qui a décidé.</p>
+                <p>Le dossier est conservé selon le calendrier de conservation,
+                puis détruit. Une fois détruit, il n'en reste qu'une mesure par
+                grille, par poste et par année, sans aucun nom.</p>
+            ]]></field>
+            <!--
+                Pas de consentement à demander, et c'est délibéré. Examiner une
+                candidature est l'exécution de la démarche que la personne a
+                elle-même entreprise. Un consentement qui, refusé, arrêterait
+                l'examen n'en est pas un : le présenter comme tel vicie tous les
+                autres.
+            -->
+            <field name="requires_consent" eval="False"/>
+            <field name="requires_express_opt_in" eval="False"/>
+            <field name="default_validity_days">0</field>
+            <!--
+                « general » et non un scope RH : la sélection de
+                `privacy.purpose.context_scope` n'en offre pas. Ajouter une
+                valeur au coeur pour une seule finalité créerait une divergence
+                entre le module et ses ponts.
+            -->
+            <field name="context_scope">general</field>
+            <field name="channel_scope">all</field>
+            <field name="sequence">32</field>
+        </record>
+
+        <!--
+            ⚠️ Aucune `privacy.retention.policy` attachée à cette finalité, et
+            c'est voulu. Une politique ne se déclenche que sur l'expiration ou le
+            retrait d'un consentement (`trigger_on`), et celle-ci n'en repose sur
+            aucun. Lui en attacher une afficherait un déclencheur qui ne se
+            produira jamais. La durée est portée par la règle RH-REC-1 du
+            calendrier de conservation, qui est l'instrument prévu pour ça.
+        -->
+
+    </data>
+</odoo>

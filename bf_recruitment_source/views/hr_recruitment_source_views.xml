@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- La liste autonome des sources, celle du bouton « Trackers » du poste.
+         Le coeur y montre l'adresse nue ; on y ajoute le lien qui compte, et
+         ce qu'il a rapporté. -->
+    <record id="hr_recruitment_source_tree_stats" model="ir.ui.view">
+        <field name="name">hr.recruitment.source.list.stats</field>
+        <field name="model">hr.recruitment.source</field>
+        <field name="inherit_id" ref="hr_recruitment.hr_recruitment_source_tree"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//field[@name='job_id']" position="after">
+                <field name="tracked_url" string="Lien à publier"
+                       widget="CopyClipboardChar" readonly="1"
+                       optional="show"/>
+                <field name="click_count" readonly="1" optional="show"/>
+                <field name="applicant_count" readonly="1" optional="show"/>
+                <field name="hired_count" readonly="1" optional="hidden"/>
+                <field name="refused_count" readonly="1" optional="hidden"/>
+                <field name="conversion_rate" readonly="1" widget="percentage"
+                       optional="show"/>
+                <field name="hire_rate" readonly="1" widget="percentage"
+                       optional="hidden"/>
+                <field name="stat_is_partial" column_invisible="1"/>
+                <field name="stat_warning" string="À savoir" readonly="1"
+                       optional="hidden" decoration-warning="stat_is_partial"/>
+                <button name="action_create_tracked_link" type="object"
+                        string="Créer le lien tracé" class="btn btn-secondary"
+                        invisible="tracked_url"/>
+                <button name="action_view_source_applicants" type="object"
+                        string="Candidatures" class="btn btn-link"
+                        invisible="applicant_count == 0"/>
+            </xpath>
+
+        </field>
+    </record>
+
+    <record id="hr_recruitment_source_view_search_stats" model="ir.ui.view">
+        <field name="name">hr.recruitment.source.view.search.stats</field>
+        <field name="model">hr.recruitment.source</field>
+        <field name="inherit_id" ref="hr_recruitment.hr_recruitment_source_view_search"/>
+        <field name="arch" type="xml">
+            <field name="job_id" position="after">
+                <!-- ⚠️ Aucun filtre sur les chiffres eux-mêmes : ils ne sont
+                     pas stockés, donc pas cherchables. C'est la contrepartie
+                     assumée du choix de ne rien stocker, la même que dans `bf_recruitment_expense`.
+                     Les deux filtres ci-dessous portent sur des champs réels. -->
+                <filter name="filter_no_link" string="Sans lien tracé"
+                        domain="[('link_tracker_id', '=', False)]"/>
+                <filter name="filter_job_unpublished" string="Poste non publié"
+                        domain="[('job_id.is_published', '=', False)]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="group_job" string="Poste"
+                            context="{'group_by': 'job_id'}"/>
+                    <filter name="group_source" string="Site"
+                            context="{'group_by': 'source_id'}"/>
+                </group>
+            </field>
+        </field>
+    </record>
+
+</odoo>
