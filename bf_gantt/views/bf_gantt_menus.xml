@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <menuitem id="menu_bf_gantt_root" name="Échéancier"
+              web_icon="bf_gantt,static/description/icon.png"
+              sequence="66"
+              groups="bf_gantt.group_bf_gantt_user"/>
+
+    <menuitem id="menu_bf_gantt_view" name="Échéancier"
+              parent="menu_bf_gantt_root"
+              action="action_bf_gantt" sequence="1"/>
+
+    <menuitem id="menu_bf_gantt_plans" name="Échéanciers autonomes"
+              parent="menu_bf_gantt_root"
+              action="action_bf_gantt_plan" sequence="10"/>
+
+    <!-- Aussi joignable depuis l'app Projets, là où on le cherche d'abord. -->
+    <menuitem id="menu_bf_gantt_in_project" name="Échéancier"
+              parent="project.menu_main_pm"
+              action="action_bf_gantt" sequence="55"
+              groups="bf_gantt.group_bf_gantt_user"/>
+
+</odoo>

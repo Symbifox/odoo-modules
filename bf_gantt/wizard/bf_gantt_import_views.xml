@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_bf_gantt_import_form" model="ir.ui.view">
+        <field name="name">bf.gantt.import.form</field>
+        <field name="model">bf.gantt.import</field>
+        <field name="arch" type="xml">
+            <form string="Importer un échéancier">
+                <field name="state" invisible="1"/>
+                <group invisible="state != 'choix'">
+                    <field name="fichier" filename="nom_fichier"
+                           string="Fichier (.xml MS Project ou .xlsx)"/>
+                    <field name="nom_fichier" invisible="1"/>
+                    <field name="plan_id"
+                           options="{'no_create': True}"/>
+                    <field name="remplacer" invisible="not plan_id"/>
+                </group>
+                <div class="alert alert-info" role="status" invisible="state != 'choix'">
+                    Deux formats sont lus : le <b>.xml</b> de Microsoft Project (MSPDI),
+                    que produit aussi OpenProject, et le <b>classeur</b> exporté d'ici.
+                    Le <b>.mpp</b> binaire n'est pas lu : dans Project, faites
+                    « Enregistrer sous » puis « XML ».
+                </div>
+
+                <div invisible="state != 'apercu'">
+                    <field name="resume" readonly="1"/>
+                    <field name="ligne_ids" readonly="0">
+                        <list editable="bottom" create="false" delete="false"
+                              decoration-muted="not retenue">
+                            <field name="retenue" widget="boolean_toggle"/>
+                            <field name="lane"/>
+                            <field name="name"/>
+                            <field name="date_start"/>
+                            <field name="date_end"/>
+                            <field name="is_milestone"/>
+                            <field name="progress"/>
+                            <field name="assignee" optional="hide"/>
+                            <field name="depends_on_names" optional="hide"/>
+                        </list>
+                    </field>
+                </div>
+
+                <footer>
+                    <button name="action_lire" type="object" string="Lire le fichier"
+                            class="btn-primary" invisible="state != 'choix'"/>
+                    <button name="action_ecrire" type="object" string="Importer"
+                            class="btn-primary" invisible="state != 'apercu'"/>
+                    <button string="Annuler" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_bf_gantt_import" model="ir.actions.act_window">
+        <field name="name">Importer un échéancier</field>
+        <field name="res_model">bf.gantt.import</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="menu_bf_gantt_import" name="Importer"
+              parent="bf_gantt.menu_bf_gantt_root"
+              action="action_bf_gantt_import" sequence="20"
+              groups="bf_gantt.group_bf_gantt_manager"/>
+
+</odoo>

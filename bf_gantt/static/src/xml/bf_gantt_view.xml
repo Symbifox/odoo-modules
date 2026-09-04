@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+<t t-name="bf_gantt.Vue">
+    <div class="o_bf_gantt o_action">
+
+        <!-- Barre de contrôle. Tout ce qui change l'affichage est ici, et rien
+             d'autre : ce composant ne modifie aucune donnée. -->
+        <div class="o_bf_gantt_barre d-flex flex-wrap align-items-center gap-2 p-2">
+
+            <div class="btn-group btn-group-sm" role="group">
+                <button type="button"
+                        t-attf-class="btn {{ state.kind === 'project' ? 'btn-primary' : 'btn-secondary' }}"
+                        t-on-click="() => this.onChangerGenre('project')">Projets</button>
+                <button type="button"
+                        t-attf-class="btn {{ state.kind === 'plan' ? 'btn-primary' : 'btn-secondary' }}"
+                        t-on-click="() => this.onChangerGenre('plan')">Autonomes</button>
+            </div>
+
+            <select class="form-select form-select-sm o_bf_gantt_cible"
+                    t-on-change="onChangerCible">
+                <t t-foreach="cibles" t-as="cible" t-key="cible.id">
+                    <option t-att-value="cible.id" t-att-selected="cible.id === state.resId">
+                        <t t-esc="cible.name"/>
+                        <t t-if="cible.partner_name"> · <t t-esc="cible.partner_name"/></t>
+                    </option>
+                </t>
+            </select>
+
+            <select class="form-select form-select-sm w-auto" t-on-change="onChangerGrouping">
+                <t t-foreach="groupings" t-as="g" t-key="g.key">
+                    <option t-att-value="g.key" t-att-selected="g.key === state.grouping">
+                        Regrouper : <t t-esc="g.label"/>
+                    </option>
+                </t>
+            </select>
+
+            <div class="btn-group btn-group-sm" role="group">
+                <t t-foreach="echelles" t-as="e" t-key="e.key">
+                    <button type="button"
+                            t-attf-class="btn {{ state.echelle === e.key ? 'btn-primary' : 'btn-secondary' }}"
+                            t-on-click="() => this.onChangerEchelle(e.key)"
+                            t-esc="e.label"/>
+                </t>
+            </div>
+
+            <select class="form-select form-select-sm w-auto" t-on-change="onChangerZoom"
+                    title="Taille d'affichage (Ctrl + molette sur le dessin)">
+                <t t-foreach="zooms" t-as="z" t-key="z.value">
+                    <option t-att-value="z.value" t-att-selected="z.value === state.zoom"
+                            t-esc="z.label"/>
+                </t>
+            </select>
+
+            <button class="btn btn-sm btn-secondary" t-on-click="onActualiser"
+                    title="Recharger depuis le serveur">
+                <i class="fa fa-refresh"/>
+            </button>
+
+            <div class="ms-auto d-flex align-items-center gap-2">
+                <div class="btn-group btn-group-sm" role="group">
+                    <button class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                        <i class="fa fa-download me-1"/>Exporter
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-end">
+                        <h6 class="dropdown-header">Télécharger</h6>
+                        <button class="dropdown-item" t-on-click="() => this.onExporter('pdf')">PDF</button>
+                        <button class="dropdown-item" t-on-click="() => this.onExporter('png')">PNG</button>
+                        <button class="dropdown-item" t-on-click="() => this.onExporter('svg')">SVG</button>
+                        <button class="dropdown-item" t-on-click="() => this.onExporter('xlsx')">Excel</button>
+                        <button class="dropdown-item" t-on-click="() => this.onExporter('mspdi')">MS Project (.xml)</button>
+                        <div class="dropdown-divider"/>
+                        <h6 class="dropdown-header">Déposer au dossier</h6>
+                        <button class="dropdown-item" t-on-click="() => this.onJoindre('pdf')">PDF en pièce jointe</button>
+                        <button class="dropdown-item" t-on-click="() => this.onJoindre('xlsx')">Excel en pièce jointe</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chargement -->
+        <div t-if="state.loading" class="text-center p-5 text-muted">
+            <i class="fa fa-circle-o-notch fa-spin fa-2x"/>
+            <p class="mt-2">Lecture de l'échéancier…</p>
+        </div>
+
+        <!-- Refus ou panne -->
+        <div t-elif="state.erreur" class="alert alert-danger m-3">
+            <t t-esc="state.erreur"/>
+        </div>
+
+        <!-- Rien à montrer -->
+        <div t-elif="vide" class="o_view_nocontent">
+            <div class="o_nocontent_help">
+                <p class="o_view_nocontent_smiling_face">Rien à placer sur l'échéancier</p>
+                <p t-if="state.kind === 'project'">
+                    Ce projet n'a aucune tâche, ou aucune n'a de date. Une tâche apparaît
+                    dès qu'elle a une échéance ; donnez-lui un <b>début planifié</b> pour
+                    que sa barre dise la vérité plutôt qu'une approximation.
+                </p>
+                <p t-else="">
+                    Cet échéancier autonome n'a pas encore de lignes. Ajoutez-les à la main,
+                    ou importez un fichier MS Project ou Excel.
+                </p>
+            </div>
+        </div>
+
+        <!-- Le dessin -->
+        <div t-else="" class="o_bf_gantt_cadre" t-on-wheel="onMolette">
+            <div t-if="geo.tronque" class="alert alert-warning py-2 m-2">
+                Plus de <t t-esc="geo.compte"/> lignes : l'affichage s'arrête là.
+                Filtrez le projet ou découpez-le.
+            </div>
+
+            <svg class="o_bf_gantt_svg"
+                 t-att-width="boite.w" t-att-height="boite.h"
+                 t-attf-viewBox="0 0 {{ geo.largeur }} {{ geo.hauteur }}"
+                 xmlns="http://www.w3.org/2000/svg">
+
+                <!-- Le serveur coupe déjà les libellés pour le PDF et le SVG, à
+                     la mesure de SA police. Le navigateur a la sienne : on lui
+                     donne donc le nom entier et on le rogne au cadre, ce qui
+                     évite qu'un titre long parte en travers des barres. -->
+                <defs>
+                    <clipPath id="bf_gantt_cadre_libelles">
+                        <rect x="28" y="0" t-att-width="geo.largeur_libelles - 8"
+                              t-att-height="geo.hauteur"/>
+                    </clipPath>
+                </defs>
+
+                <!-- Fins de semaine -->
+                <t t-foreach="geo.bandes" t-as="bande" t-key="bande_index">
+                    <rect t-att-x="bande.x" t-att-y="geo.y_axe"
+                          t-att-width="bande.largeur"
+                          t-att-height="geo.y_fin_lignes - geo.y_axe"
+                          fill="#F4F6F8"/>
+                </t>
+
+                <!-- Graduations -->
+                <t t-foreach="geo.graduations.haut" t-as="h" t-key="h_index">
+                    <text t-att-x="h.x + 3" t-att-y="geo.y_axe + 11"
+                          class="o_bf_gantt_grad_haut" t-esc="h.texte"/>
+                </t>
+                <t t-foreach="geo.graduations.bas" t-as="b" t-key="b_index">
+                    <line t-att-x1="b.x" t-att-y1="geo.y_axe + 16"
+                          t-att-x2="b.x" t-att-y2="geo.y_fin_lignes"
+                          stroke="#D8DCDF" stroke-width="0.4"/>
+                    <text t-if="b.largeur >= 12" t-att-x="b.x + 2"
+                          t-att-y="geo.y_axe + 28"
+                          class="o_bf_gantt_grad" t-esc="b.texte"/>
+                </t>
+
+                <!-- Couloirs -->
+                <t t-foreach="geo.couloirs" t-as="couloir" t-key="couloir.key">
+                    <rect t-att-x="28" t-att-y="couloir.y"
+                          t-att-width="geo.largeur - 56"
+                          t-att-height="couloir.hauteur" fill="#F4F6F8"/>
+                    <text t-att-x="34" t-att-y="couloir.y + 17"
+                          clip-path="url(#bf_gantt_cadre_libelles)"
+                          class="o_bf_gantt_couloir" t-esc="couloir.name"/>
+                    <text t-att-x="28 + geo.largeur_libelles - 8"
+                          t-att-y="couloir.y + 17" text-anchor="end"
+                          class="o_bf_gantt_couloir_pct">
+                        <t t-esc="couloir.done"/>/<t t-esc="couloir.total"/> ·
+                        <t t-esc="couloir.pct"/> %
+                    </text>
+                </t>
+
+                <!-- Flèches, sous les barres -->
+                <g fill="none" stroke="#6B7379" stroke-width="0.6">
+                    <t t-foreach="geo.fleches" t-as="fleche" t-key="fleche_index">
+                        <path t-att-d="cheminFleche(fleche)"/>
+                    </t>
+                </g>
+                <t t-foreach="geo.fleches" t-as="fleche" t-key="'p' + fleche_index">
+                    <path t-att-d="pointeFleche(fleche)" fill="#6B7379"/>
+                </t>
+
+                <!-- Lignes -->
+                <t t-foreach="geo.lignes" t-as="ligne" t-key="ligne.ref">
+                    <g class="o_bf_gantt_ligne"
+                       t-on-click="() => this.onOuvrir(ligne.ref)"
+                       t-on-mouseenter="(ev) => this.onSurvol(ligne, ev)"
+                       t-on-mouseleave="onQuitter">
+
+                        <rect t-att-x="28" t-att-y="ligne.y"
+                              t-att-width="geo.largeur - 56" t-att-height="ligne.hauteur"
+                              class="o_bf_gantt_zone"/>
+
+                        <text t-att-x="42" t-att-y="ligne.y + 15"
+                              clip-path="url(#bf_gantt_cadre_libelles)"
+                              class="o_bf_gantt_libelle" t-esc="ligne.name"/>
+                        <text t-if="ligne.assignee"
+                              t-att-x="28 + geo.largeur_libelles - 8"
+                              t-att-y="ligne.y + 15" text-anchor="end"
+                              class="o_bf_gantt_responsable" t-esc="ligne.assignee"/>
+
+                        <t t-if="ligne.is_milestone">
+                            <path t-att-d="diamant(ligne)" t-att-fill="ligne.couleur_plein"/>
+                        </t>
+                        <t t-else="">
+                            <rect t-att-x="ligne.bar_x" t-att-y="ligne.bar_y"
+                                  t-att-width="ligne.bar_w" t-att-height="ligne.bar_h"
+                                  rx="2.5" t-att-fill="ligne.couleur_fond"/>
+                            <rect t-if="ligne.fill_w > 0.5"
+                                  t-att-x="ligne.bar_x" t-att-y="ligne.bar_y"
+                                  t-att-width="ligne.fill_w" t-att-height="ligne.bar_h"
+                                  rx="2.5" t-att-fill="ligne.couleur_plein"/>
+                            <line t-if="ligne.approx"
+                                  t-att-x1="ligne.bar_x" t-att-y1="ligne.bar_y"
+                                  t-att-x2="ligne.bar_x"
+                                  t-att-y2="ligne.bar_y + ligne.bar_h"
+                                  stroke="#6B7379" stroke-width="1"
+                                  stroke-dasharray="1.5 1.5"/>
+                        </t>
+                    </g>
+                </t>
+
+                <!-- Aujourd'hui -->
+                <t t-if="geo.x_aujourdhui !== null">
+                    <line t-att-x1="geo.x_aujourdhui" t-att-y1="geo.y_lignes"
+                          t-att-x2="geo.x_aujourdhui" t-att-y2="geo.y_fin_lignes"
+                          stroke="#C0392B" stroke-width="0.9" stroke-dasharray="3 2"/>
+                    <text t-att-x="geo.x_aujourdhui + 2" t-att-y="geo.y_axe - 3"
+                          class="o_bf_gantt_aujourdhui">aujourd'hui</text>
+                </t>
+            </svg>
+        </div>
+
+        <!-- Infobulle -->
+        <div t-if="state.survol" class="o_bf_gantt_bulle"
+             t-attf-style="left: {{ state.survol.x + 14 }}px; top: {{ state.survol.y + 14 }}px;">
+            <div class="fw-bold" t-esc="state.survol.ligne.name"/>
+            <div class="text-muted small">
+                <t t-esc="state.survol.ligne.start"/> au <t t-esc="state.survol.ligne.end"/>
+                <t t-if="!state.survol.ligne.is_milestone">
+                    · <t t-esc="state.survol.ligne.progress"/> %
+                </t>
+            </div>
+            <div t-if="state.survol.ligne.assignee" class="small">
+                <t t-esc="state.survol.ligne.assignee"/>
+            </div>
+            <div t-if="state.survol.detail and state.survol.detail.allocated_hours"
+                 class="small text-muted">
+                <t t-esc="state.survol.detail.effective_hours"/> h faites sur
+                <t t-esc="state.survol.detail.allocated_hours"/> h prévues
+            </div>
+            <div t-if="state.survol.ligne.approx" class="small text-warning">
+                Début approximatif : aucun début planifié sur cette tâche.
+            </div>
+        </div>
+    </div>
+</t>
+
+</templates>

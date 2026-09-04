@@ -1,0 +1,80 @@
+// L'échéancier dans le back-office.
+//
+// Le SVG porte déjà ses couleurs et ses positions : cette feuille ne s'occupe
+// que du cadre, du défilement et de ce qui n'existe pas dans le dessin, comme
+// le survol et l'infobulle.
+
+.o_bf_gantt {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+    background: var(--o-view-background-color, #ffffff);
+
+    .o_bf_gantt_barre {
+        border-bottom: 1px solid var(--o-gray-300, #dee2e6);
+        background: var(--o-gray-100, #f8f9fa);
+        flex: 0 0 auto;
+    }
+
+    .o_bf_gantt_cible {
+        width: auto;
+        min-width: 18rem;
+        max-width: 32rem;
+    }
+
+    .o_bf_gantt_cadre {
+        flex: 1 1 auto;
+        overflow: auto;
+        padding-bottom: 1rem;
+    }
+
+    .o_bf_gantt_svg {
+        display: block;
+        // La largeur est celle du dessin : c'est le cadre qui défile, pas la
+        // page. Un échéancier de six mois au jour fait plusieurs milliers de
+        // pixels et c'est normal.
+        max-width: none;
+        font-family: Lexend, Inter, system-ui, sans-serif;
+        user-select: none;
+    }
+
+    // --- Textes du dessin ---------------------------------------------------
+    .o_bf_gantt_grad_haut { font-size: 7.5px; font-weight: 600; fill: #6B7379; }
+    .o_bf_gantt_grad      { font-size: 6.8px; fill: #6B7379; }
+    .o_bf_gantt_couloir   { font-size: 8.5px; font-weight: 600; fill: #2D3031; }
+    .o_bf_gantt_couloir_pct { font-size: 7.5px; fill: #6B7379; }
+    .o_bf_gantt_libelle   { font-size: 8px; fill: #2D3031; }
+    .o_bf_gantt_responsable { font-size: 7px; fill: #6B7379; }
+    .o_bf_gantt_aujourdhui { font-size: 6.5px; fill: #C0392B; }
+
+    // --- Survol -------------------------------------------------------------
+    .o_bf_gantt_ligne {
+        cursor: pointer;
+
+        .o_bf_gantt_zone {
+            fill: transparent;
+        }
+
+        &:hover .o_bf_gantt_zone {
+            fill: rgba(41, 171, 225, 0.08);
+        }
+
+        &:hover .o_bf_gantt_libelle {
+            font-weight: 600;
+        }
+    }
+
+    // --- Infobulle ----------------------------------------------------------
+    .o_bf_gantt_bulle {
+        position: fixed;
+        z-index: 1080;
+        max-width: 22rem;
+        padding: 0.5rem 0.75rem;
+        border-radius: 6px;
+        border: 1px solid var(--o-gray-300, #dee2e6);
+        background: #ffffff;
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+        pointer-events: none;
+    }
+}

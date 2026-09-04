@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- La page publique. Elle n'a ni menu, ni formulaire, ni bouton d'action :
+         c'est une affiche. Le SVG est inséré tel quel, ce qui la rend lisible
+         sans une ligne de JavaScript et imprimable telle qu'à l'écran. -->
+    <template id="portail_echeancier" name="Échéancier au portail">
+        <t t-call="web.frontend_layout">
+            <t t-set="no_header" t-value="True"/>
+            <t t-set="no_footer" t-value="True"/>
+            <t t-set="title"><t t-out="payload['title']"/></t>
+
+            <div id="wrap" class="o_bf_gantt_portail">
+                <div class="container-fluid py-4">
+
+                    <div class="d-flex flex-wrap align-items-start justify-content-between mb-3">
+                        <div>
+                            <h1 class="h3 mb-1" t-out="payload['title']"/>
+                            <p class="text-muted mb-0">
+                                <t t-if="payload['subtitle']">
+                                    <span t-out="payload['subtitle']"/> ·
+                                </t>
+                                <span t-out="payload['company']['name']"/>
+                                ·
+                                <span t-out="payload['range']['min']"/> au
+                                <span t-out="payload['range']['max']"/>
+                            </p>
+                        </div>
+                        <div class="text-end">
+                            <div class="btn-group btn-group-sm mb-2" role="group"
+                                 aria-label="Échelle de temps">
+                                <t t-foreach="[('day', 'Jour'), ('week', 'Semaine'), ('month', 'Mois')]"
+                                   t-as="ech">
+                                    <a t-attf-class="btn #{echelle == ech[0] and 'btn-primary' or 'btn-outline-secondary'}"
+                                       t-attf-href="/mon/echeancier/#{kind}/#{enregistrement.id}?access_token=#{access_token}&amp;echelle=#{ech[0]}&amp;zoom=#{zoom}"
+                                       t-out="ech[1]"/>
+                                </t>
+                            </div>
+                            <!-- La taille d'affichage voyage dans l'adresse : le
+                                 lien partagé s'ouvre réglé comme on l'a laissé. -->
+                            <div class="btn-group btn-group-sm mb-2 ms-2" role="group"
+                                 aria-label="Taille d'affichage">
+                                <t t-foreach="zooms" t-as="z">
+                                    <a t-attf-class="btn #{zoom == z[0] and 'btn-primary' or 'btn-outline-secondary'}"
+                                       t-attf-href="/mon/echeancier/#{kind}/#{enregistrement.id}?access_token=#{access_token}&amp;echelle=#{echelle}&amp;zoom=#{z[0]}"
+                                       t-out="z[1]"/>
+                                </t>
+                            </div>
+                            <div class="btn-group btn-group-sm d-block" role="group"
+                                 aria-label="Téléchargements">
+                                <t t-foreach="formats" t-as="fmt">
+                                    <a class="btn btn-outline-secondary"
+                                       t-attf-href="/mon/echeancier/#{kind}/#{enregistrement.id}/#{fmt[0]}?access_token=#{access_token}&amp;echelle=#{echelle}&amp;zoom=#{zoom}"
+                                       t-out="fmt[1]"/>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div t-if="payload.get('truncated')" class="alert alert-warning py-2">
+                        Cet échéancier dépasse <span t-out="payload.get('limit')"/> lignes.
+                        Seules les premières sont affichées.
+                    </div>
+
+                    <div class="o_bf_gantt_dessin">
+                        <t t-out="dessin"/>
+                    </div>
+
+                    <!-- La légende dit ce que les couleurs veulent dire. Sans elle,
+                         un lecteur qui n'est pas du métier lit un dégradé de gris. -->
+                    <div class="o_bf_gantt_legende mt-3 d-flex flex-wrap gap-3 small text-muted">
+                        <span><i class="o_pastille" style="background:#4C9A4C"/> Terminé</span>
+                        <span><i class="o_pastille" style="background:#1F7CB4"/> En cours</span>
+                        <span><i class="o_pastille" style="background:#C0392B"/> En retard</span>
+                        <span><i class="o_pastille" style="background:#7A868F"/> À venir</span>
+                        <span><i class="o_pastille" style="background:#9A9A9A"/> Annulé</span>
+                        <span>◆ Jalon</span>
+                        <span>Trait pointillé au bord d'une barre : début approximatif.</span>
+                    </div>
+
+                    <p class="text-muted small mt-4 mb-0">
+                        Page en lecture seule, servie par
+                        <span t-out="payload['company']['name']"/>.
+                        Elle reflète l'état au moment de l'affichage.
+                    </p>
+                </div>
+            </div>
+        </t>
+    </template>
+
+</odoo>

@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_bf_gantt_plan_form" model="ir.ui.view">
+        <field name="name">bf.gantt.plan.form</field>
+        <field name="model">bf.gantt.plan</field>
+        <field name="arch" type="xml">
+            <form string="Échéancier">
+                <header>
+                    <button name="action_bf_gantt" type="object" string="Ouvrir l'échéancier"
+                            class="btn-primary" icon="fa-bar-chart"/>
+                    <button name="action_bf_gantt_importer" type="object"
+                            string="Importer un fichier" icon="fa-upload"
+                            groups="bf_gantt.group_bf_gantt_manager"/>
+                    <button name="action_bf_gantt_publier" type="object"
+                            string="Publier au portail" icon="fa-globe"
+                            invisible="portal_published"
+                            groups="bf_gantt.group_bf_gantt_manager"/>
+                    <button name="action_bf_gantt_depublier" type="object"
+                            string="Retirer du portail" icon="fa-eye-slash"
+                            invisible="not portal_published"
+                            groups="bf_gantt.group_bf_gantt_manager"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,active,done"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_bf_gantt" type="object"
+                                class="oe_stat_button" icon="fa-tasks">
+                            <field name="item_count" widget="statinfo" string="Lignes"/>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Publié" bg_color="text-bg-success"
+                            invisible="not portal_published"/>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="Implantation chez…"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="partner_id"/>
+                            <field name="project_id"
+                                   help="Lien de courtoisie. Aucune tâche n'est créée ni touchée."/>
+                            <field name="user_id"/>
+                        </group>
+                        <group>
+                            <field name="date_start"/>
+                            <field name="date_end"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="portal_published" readonly="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Lignes" name="lignes">
+                            <field name="item_ids">
+                                <list editable="bottom" decoration-muted="state == 'cancel'"
+                                      decoration-success="state == 'done'">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="lane" optional="show"/>
+                                    <field name="name"/>
+                                    <field name="assignee" optional="show"/>
+                                    <field name="date_start"/>
+                                    <field name="date_end"
+                                           column_invisible="0"
+                                           readonly="is_milestone"/>
+                                    <field name="is_milestone" optional="show"/>
+                                    <field name="progress" widget="integer" optional="show"/>
+                                    <field name="allocated_hours" optional="hide"/>
+                                    <field name="depend_on_ids" widget="many2many_tags"
+                                           optional="hide"
+                                           domain="[('plan_id', '=', parent.id), ('id', '!=', id)]"/>
+                                    <field name="state"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Notes" name="notes">
+                            <field name="note" placeholder="Hypothèses, réserves, ce qui reste à trancher…"/>
+                        </page>
+                        <page string="Partage" name="partage"
+                              groups="bf_gantt.group_bf_gantt_manager">
+                            <group>
+                                <field name="access_url" widget="url" readonly="1"
+                                       string="Adresse du portail"/>
+                                <field name="access_token" readonly="1" string="Token"/>
+                            </group>
+                            <button name="action_bf_gantt_regenerer_token" type="object"
+                                    string="Régénérer le token" class="btn-secondary"
+                                    confirm="Les adresses déjà distribuées cesseront de fonctionner. Continuer ?"/>
+                            <div class="text-muted mt-2">
+                                Tant que « Publier au portail » n'a pas été cliqué, l'adresse
+                                répond « accès refusé » même avec le bon token.
+                            </div>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_bf_gantt_plan_list" model="ir.ui.view">
+        <field name="name">bf.gantt.plan.list</field>
+        <field name="model">bf.gantt.plan</field>
+        <field name="arch" type="xml">
+            <list string="Échéanciers">
+                <field name="name"/>
+                <field name="partner_id" optional="show"/>
+                <field name="project_id" optional="hide"/>
+                <field name="user_id" optional="show" widget="many2one_avatar_user"/>
+                <field name="date_start"/>
+                <field name="date_end"/>
+                <field name="item_count" string="Lignes"/>
+                <field name="portal_published" string="Portail" optional="show"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'done'"
+                       decoration-info="state == 'active'"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_bf_gantt_plan_search" model="ir.ui.view">
+        <field name="name">bf.gantt.plan.search</field>
+        <field name="model">bf.gantt.plan</field>
+        <field name="arch" type="xml">
+            <search string="Échéanciers">
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="project_id"/>
+                <filter name="mine" string="Les miens"
+                        domain="[('user_id', '=', uid)]"/>
+                <filter name="publies" string="Publiés au portail"
+                        domain="[('portal_published', '=', True)]"/>
+                <separator/>
+                <filter name="actifs" string="En cours"
+                        domain="[('state', '=', 'active')]"/>
+                <filter name="archives" string="Archivés"
+                        domain="[('active', '=', False)]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="par_client" string="Client"
+                            context="{'group_by': 'partner_id'}"/>
+                    <filter name="par_responsable" string="Responsable"
+                            context="{'group_by': 'user_id'}"/>
+                    <filter name="par_etat" string="État"
+                            context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_bf_gantt_plan" model="ir.actions.act_window">
+        <field name="name">Échéanciers autonomes</field>
+        <field name="res_model">bf.gantt.plan</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_bf_gantt_plan_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Dessinez un échéancier sans créer de tâches</p>
+            <p>
+                Un échéancier autonome sert à montrer un calendrier : dans un devis,
+                dans un plan d'implantation, devant un comité. Il ne crée aucune tâche,
+                ne touche à aucun projet et ne compte pas d'heures.
+            </p>
+            <p>
+                Vous pouvez aussi partir d'un fichier existant : un
+                <b>.xml de Microsoft Project</b> ou un classeur Excel exporté d'ici.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_bf_gantt" model="ir.actions.client">
+        <field name="name">Échéancier</field>
+        <field name="tag">bf_gantt</field>
+    </record>
+
+</odoo>

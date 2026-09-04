@@ -13,7 +13,7 @@ modules — the UI fixes, the shared helpers, the Nextcloud integrations, the
 productivity pack. They are free because they are more useful to us being
 widely used than being held.
 
-**86 modules are BUSL-1.1.** The source is published and auditable, and **you
+**87 modules are BUSL-1.1.** The source is published and auditable, and **you
 may run them in production for your own internal business operations** — as a
 company, as a freelancer, as one person on a laptop. What needs an agreement is
 using them to provide a product or service to someone else: hosting them for a
@@ -37,13 +37,14 @@ We license individually and we are not difficult about it.
 
 ### Bundled typefaces
 
-Four modules self-host fonts rather than calling a font CDN, so no visitor IP ever reaches a third party. All are under the SIL Open Font License 1.1, which is **not** the licence covering the module around them — each carries a `THIRD-PARTY.md` and the full licence text beside the files:
+Five modules self-host fonts rather than calling a font CDN, so no visitor IP ever reaches a third party. All are under the SIL Open Font License 1.1, which is **not** the licence covering the module around them — each carries a `THIRD-PARTY.md` and the full licence text beside the files:
 
 | Module | Typefaces |
 |---|---|
 | `bf_sign` | Caveat, Dancing Script, Great Vibes |
 | `bf_lexend` | Lexend |
 | `bf_process` | Lexend |
+| `bf_gantt` | Lexend |
 | `bf_sms_archive` | Noto Emoji |
 
 `bf_process` bundles Lexend for a stricter reason than rendering: its glyph
@@ -133,6 +134,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_fundraising_core` | Levée de fonds — Cœur | 18.0.1.0.0 | AGPL-3 | Donor management and fundraising structure (Funds / Campaigns / Appeals / Packages) on top of the Donation module — comparable to Raiser's Edge |
 | `bf_fundraising_web` | Levée de fonds — Web & Portail donateur | 18.0.1.0.2 | AGPL-3 | Public website donation form + donor portal (giving history and official receipt download) |
 | `bf_gamification` | Fox Quest | 18.0.2.5.1 | BUSL-1.1 | Gamification system with XP, levels, badges, and rewards |
+| `bf_gantt` | Échéancier | 18.0.1.4.2 | BUSL-1.1 | Gantt schedules for Odoo Community, on a project or standalone, shareable on the portal without a seat, exportable to branded PDF, PNG, SVG, XLSX and MS Project |
 | `bf_helpdesk` | Symbifox — Helpdesk | 18.0.4.4.4 | AGPL-3 | Branded helpdesk extension: per-team public form, hour-bank ribbon, waiting states, ntfy critical hook, persona panel, knowledge-matrix link, ticket→meeting, IA triage via Gen, CSAT on close, branded portal, dashboard tile, IMAP gateway hardening, SLA + macros + auto-tag + auto-ack, ticket timesheets (hour-bank deduction), branded client updates |
 | `bf_home` | Accueil Symbifox | 18.0.2.0.0 | BUSL-1.1 | Home screen replacing the app grid, ordered by who is blocked: your day, what waits on others, money, risk — every figure opens its filtered list |
 | `bf_hosting_patch` | Hébergement — Mises à jour du système | 18.0.4.2.0 | LGPL-3 | Fleet update state per installed system — pending packages, kernel, reboots — and applies updates on command via a queue the machines poll |
@@ -145,7 +147,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_mail_import` | BF Import courriel (.eml) | 18.0.1.4.0 | LGPL-3 | Import .eml files into the Odoo chatter |
 | `bf_mail_subject_clean` | BF Nettoyage des sujets de courriel | 18.0.1.1.0 | LGPL-3 | Prevents "Re: Re: Re:" stacking on subjects sent through the chatter |
 | `bf_mail_vigie` | BF Vigie courriels (re-router) | 18.0.2.3.0 | BUSL-1.1 | "Re-route" button on `bf.email` to move a misrouted email to the correct chatter |
-| `bf_mailing_signup` | Inscription publique à une liste d'envoi | 18.0.1.2.0 | LGPL-3 | Formulaire d'infolettre en HTML pur, à double consentement, sans reCaptcha ni ressource tierce |
+| `bf_mailing_signup` | Inscription publique à une liste d'envoi | 18.0.1.2.0 | LGPL-3 | Plain-HTML newsletter sign-up form with double opt-in, no reCaptcha and no third-party asset |
 | `bf_mass_notes` | Symbifox — Notes en lot | 18.0.1.0.0 | LGPL-3 | List-view Action to post a chatter note (or message) to many selected records at once; binds to all `mail.thread` models |
 | `bf_meeting` | Rencontres | 18.0.3.52.0 | BUSL-1.1 | Agendas, meeting records, and discussion items unified around `calendar.event` with automatic reminders |
 | `bf_meeting_call_archive` | Rencontres ↔ Archive d'appels | 18.0.1.0.0 | BUSL-1.1 | Optional link between a meeting record and an archived call |
@@ -163,14 +165,14 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_process` | Cartographie de processus | 18.0.5.0.1 | BUSL-1.1 | Living process maps stored as records, not files: BPMN 2.0 and diagrams.net export, an in-app SVG viewer and editor, per-activity validation sign-off, versioning with freeze and diff, BPMN re-import, an assembled deliverable (cover, contents, appendices), and a target process whose gap to the current state is seeded, owned and tracked |
 | `bf_project_merge` | Symbifox — Regroupement de tâches | 18.0.1.0.0 | LGPL-3 | Merge tasks by reassigning their content (messages, activities, hours, dependencies) to the kept task, then archive the rest. |
 | `bf_receipt_ca` | Reçus de dons — Canada (ARC + Revenu Québec) | 18.0.1.0.4 | AGPL-3 | CRA + Revenu Québec compliant official donation receipts, in French — eligible amount, advantage, in-kind gifts, void/reissue |
-| `bf_recruitment` | Recrutement : cahier d'entrevues | 18.0.1.1.1 | BUSL-1.1 | Role-specific interview scorecards, multiple rounds, blind panel scoring and a consolidated interview book, grafted onto Odoo recruitment |
-| `bf_recruitment_expense` | Recrutement : dépenses et coût par embauche | 18.0.1.0.1 | BUSL-1.1 | Attach recruitment spend to the job, price the panel time the interview book already measures, and state what a hire cost while owning up to what the figure is missing |
+| `bf_recruitment` | Recrutement : cahier d'entrevues | 18.0.1.1.2 | BUSL-1.1 | Role-specific interview scorecards, multiple rounds, blind panel scoring and a consolidated interview book, grafted onto Odoo recruitment |
+| `bf_recruitment_expense` | Recrutement : dépenses et coût par embauche | 18.0.1.0.2 | BUSL-1.1 | Attach recruitment spend to the job, price the panel time the interview book already measures, and state what a hire cost while owning up to what the figure is missing |
 | `bf_recruitment_letter` | Recrutement : l'offre d'emploi | 18.0.1.0.1 | BUSL-1.1 | Draft the job offer from the application, on the company letterhead, with the terms already on file rather than retyped |
 | `bf_recruitment_mail` | Recrutement : courriels au candidat | 18.0.1.2.0 | BUSL-1.1 | Rewrites the four emails a candidate receives: a subject that tells them apart, a decision stated plainly, and the company's brand |
 | `bf_recruitment_portal` | Recrutement : portail du candidat | 18.0.2.0.0 | BUSL-1.1 | Lets the person who applied follow their file and obtain their own interview book, once the decision is taken |
 | `bf_recruitment_privacy` | Recrutement : pont vie privée (Loi 25) | 18.0.1.2.0 | BUSL-1.1 | Declares what an application file collects, sets a retention period, destroys for real, and keeps the scorecard measurement when the ratings go |
 | `bf_recruitment_sign` | Recrutement : l'offre part en signature | 18.0.1.0.1 | BUSL-1.1 | The offer letter becomes signable, with the branded letterhead under the signature rather than the bare body, and the application records the candidate's answer |
-| `bf_recruitment_source` | Recrutement : statistiques par source d'affichage | 18.0.1.0.0 | BUSL-1.1 | One tracked link per job board, the clicks and applications it brings in, and a conversion rate that states which share of applications it covers |
+| `bf_recruitment_source` | Recrutement : statistiques par source d'affichage | 18.0.1.0.1 | BUSL-1.1 | One tracked link per job board, the clicks and applications it brings in, and a conversion rate that states which share of applications it covers |
 | `bf_recruitment_source_expense` | Recrutement : ce que chaque site d'emploi coûte | 18.0.1.0.0 | BUSL-1.1 | Attribute a posting outlay to the board that billed it, and give the cost per application while saying which share of the job's spend it covers |
 | `bf_recurrence` | Symbifox — Ancrage de la récurrence | 18.0.1.0.0 | LGPL-3 | Choose, per recurring series, whether the next deadline is measured from the old deadline or from the actual completion date |
 | `bf_securetransfer` | Transfert sécurisé (Secure Transfer) | 18.0.1.21.0 | BUSL-1.1 | Secure file transfer and secure messaging: browser-direct S3 uploads (presigned, multipart, ETag-pinned integrity), tokenized links with expiry, download budget, password, recipient and sender OTP (email or SMS), burn-after-download, download notification; message-only mode; personal drop pages `/to/<slug>` with per-employee auto-provisioning; backend secure-send wizard; sender/recipient allowlists, abuse reporting with automatic suspension, IP and sender quotas, rate limiting, hardened headers and CSP; hash-chained tamper-evident access log with CSV export and integrity verification (Law 25); auto-purge and GC crons; multi-brand skinning by host with free/paid tiers and white-label toggle; dashboard; guided S3 bucket setup with data-residency probe; open-audience data rooms where a link names nobody and each visitor self-declares an email or mobile, confirms a one-time code on that channel, and gets a per-person download budget and watermark |
@@ -231,7 +233,7 @@ Three regimes — see [Licensing](#licensing) above for the details, and the
 `License` column of the table for the module you care about. The `LICENSE`
 file inside each module governs and carries its exact parameters.
 
-- **86 modules: BUSL-1.1.** Production use for your own internal business
+- **87 modules: BUSL-1.1.** Production use for your own internal business
   operations is permitted; providing them as a product or service to third
   parties requires an agreement. Each version converts to
   **LGPL-3.0-or-later four years after its release**.

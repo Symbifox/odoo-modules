@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- La page du projet, côté client connecté. Le bouton n'apparaît que si
+         l'échéancier est publié : un client ne doit pas découvrir une page qu'on
+         a délibérément refermée. -->
+    <template id="portail_projet_bouton" name="Échéancier sur la page du projet"
+              inherit_id="project.portal_my_project" priority="40">
+        <xpath expr="//t[@t-call='portal.portal_searchbar']" position="before">
+            <div t-if="project.bf_gantt_published"
+                 class="alert alert-info d-flex flex-wrap align-items-center gap-2 mb-3"
+                 role="status">
+                <i class="fa fa-bar-chart" aria-hidden="true"/>
+                <span class="flex-grow-1">
+                    L'échéancier de ce projet est disponible en lecture.
+                </span>
+                <a class="btn btn-primary btn-sm"
+                   t-attf-href="/mon/echeancier/project/#{project.id}?access_token=#{project.access_token}">
+                    Voir l'échéancier
+                </a>
+            </div>
+        </xpath>
+    </template>
+
+    <!-- L'accueil du portail : une carte pour les échéanciers autonomes, qui
+         n'ont pas de page à eux dans `/my`. Les projets en ont déjà une. -->
+    <template id="portail_accueil" name="Échéanciers au portail"
+              customize_show="True" inherit_id="portal.portal_my_home" priority="45">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="before">
+            <t t-set="portal_service_category_enable" t-value="True"/>
+        </xpath>
+        <div id="portal_service_category" position="inside">
+            <t t-call="portal.portal_docs_entry">
+                <t t-set="icon" t-value="'/bf_gantt/static/description/icon.png'"/>
+                <t t-set="title">Échéanciers</t>
+                <t t-set="url" t-value="'/my/echeanciers'"/>
+                <t t-set="text">Les chronologies qui vous ont été partagées</t>
+                <t t-set="placeholder_count" t-value="'bf_gantt_plan_count'"/>
+            </t>
+        </div>
+    </template>
+
+    <template id="portail_mes_echeanciers" name="Mes échéanciers">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">Échéanciers</t>
+            </t>
+            <div t-if="not plans" class="alert alert-warning" role="alert">
+                Aucun échéancier ne vous a été partagé pour l'instant.
+            </div>
+            <t t-if="plans" t-call="portal.portal_table">
+                <tbody>
+                    <tr t-foreach="plans" t-as="plan">
+                        <td>
+                            <a t-attf-href="/mon/echeancier/plan/#{plan.id}?access_token=#{plan.access_token}">
+                                <span t-field="plan.name"/>
+                            </a>
+                        </td>
+                        <td class="text-muted">
+                            <span t-if="plan.date_start" t-field="plan.date_start"/>
+                            <t t-if="plan.date_start and plan.date_end"> au </t>
+                            <span t-if="plan.date_end" t-field="plan.date_end"/>
+                        </td>
+                        <td class="text-end">
+                            <t t-out="plan.item_count"/> lignes
+                        </td>
+                    </tr>
+                </tbody>
+            </t>
+        </t>
+    </template>
+
+</odoo>

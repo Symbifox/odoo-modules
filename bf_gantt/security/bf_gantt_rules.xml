@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- Multi-société. Un échéancier appartient à une société et ne se lit
+             que depuis les sociétés autorisées de l'usager.
+             🔴 `company_id` est obligatoire sur le plan, donc pas de clause
+             `= False` : une ligne sans société serait un trou. -->
+        <record id="rule_bf_gantt_plan_company" model="ir.rule">
+            <field name="name">Échéancier : société</field>
+            <field name="model_id" ref="model_bf_gantt_plan"/>
+            <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+            <field name="global" eval="True"/>
+        </record>
+
+        <record id="rule_bf_gantt_item_company" model="ir.rule">
+            <field name="name">Ligne d'échéancier : société</field>
+            <field name="model_id" ref="model_bf_gantt_item"/>
+            <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+            <field name="global" eval="True"/>
+        </record>
+
+        <!-- Le portail. Un usager du portail a désormais un accès en LECTURE au
+             modèle : sans règle, cet accès porterait sur tout. Ces deux règles
+             le ramènent à ce qui le concerne, et elles ne s'appliquent qu'à lui.
+             🔴 Le filtre porte sur le partenaire COMMERCIAL, pas sur le contact :
+             un client dont trois personnes ont un compte doit voir le même
+             échéancier depuis les trois. -->
+        <record id="rule_bf_gantt_plan_portal" model="ir.rule">
+            <field name="name">Échéancier : le portail ne voit que ce qui lui est publié</field>
+            <field name="model_id" ref="model_bf_gantt_plan"/>
+            <field name="domain_force">[('portal_published', '=', True), ('partner_id', 'child_of', [user.partner_id.commercial_partner_id.id])]</field>
+            <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="rule_bf_gantt_item_portal" model="ir.rule">
+            <field name="name">Ligne d'échéancier : le portail suit son échéancier</field>
+            <field name="model_id" ref="model_bf_gantt_item"/>
+            <field name="domain_force">[('plan_id.portal_published', '=', True), ('plan_id.partner_id', 'child_of', [user.partner_id.commercial_partner_id.id])]</field>
+            <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- ⚠️ Les groupes internes n'ont AUCUNE règle propre : la règle globale
+             de société suffit, et un `ir.rule` par groupe s'ajouterait en OU,
+             donc élargirait au lieu de restreindre. -->
+
+    </data>
+</odoo>

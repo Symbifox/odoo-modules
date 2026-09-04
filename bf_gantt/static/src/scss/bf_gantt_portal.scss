@@ -1,0 +1,36 @@
+// Le portail. Volontairement sobre : la page n'a qu'un travail, montrer le
+// dessin, et le dessin porte déjà ses couleurs.
+.o_bf_gantt_portail {
+    background: #ffffff;
+
+    .o_bf_gantt_dessin {
+        // Un échéancier est large par nature. On le laisse défiler dans son
+        // cadre plutôt que de faire défiler la page entière de travers.
+        overflow-x: auto;
+        overflow-y: hidden;
+        border: 1px solid #E4E7E9;
+        border-radius: 6px;
+        background: #ffffff;
+
+        svg {
+            display: block;
+            // Hauteur intrinsèque respectée, largeur libre de dépasser.
+            max-width: none;
+        }
+    }
+
+    .o_pastille {
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        border-radius: 2px;
+        margin-right: 4px;
+        vertical-align: middle;
+        font-style: normal;
+    }
+
+    @media print {
+        .btn-group { display: none !important; }
+        .o_bf_gantt_dessin { border: 0; overflow: visible; }
+    }
+}

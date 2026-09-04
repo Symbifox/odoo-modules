@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_project_form_bf_gantt" model="ir.ui.view">
+        <field name="name">project.project.form.bf.gantt</field>
+        <field name="model">project.project</field>
+        <field name="inherit_id" ref="project.edit_project"/>
+        <field name="arch" type="xml">
+            <div name="button_box" position="inside">
+                <button name="action_bf_gantt" type="object"
+                        class="oe_stat_button" icon="fa-bar-chart">
+                    <div class="o_stat_info">
+                        <span class="o_stat_text">Échéancier</span>
+                    </div>
+                </button>
+            </div>
+            <xpath expr="//notebook" position="inside">
+                <page string="Échéancier" name="bf_gantt">
+                    <group>
+                        <group string="Affichage">
+                            <field name="bf_gantt_grouping"/>
+                        </group>
+                        <group string="Portail" groups="bf_gantt.group_bf_gantt_manager">
+                            <field name="bf_gantt_published"/>
+                            <field name="access_url" widget="url" readonly="1"
+                                   string="Adresse" invisible="not bf_gantt_published"/>
+                        </group>
+                    </group>
+                    <div groups="bf_gantt.group_bf_gantt_manager">
+                        <button name="action_bf_gantt_publier" type="object"
+                                string="Publier au portail" class="btn-primary"
+                                invisible="bf_gantt_published"/>
+                        <button name="action_bf_gantt_depublier" type="object"
+                                string="Retirer du portail" class="btn-secondary"
+                                invisible="not bf_gantt_published"/>
+                        <button name="action_bf_gantt_copier_lien" type="object"
+                                string="Afficher l'adresse complète" class="btn-link"
+                                invisible="not bf_gantt_published"/>
+                        <button name="action_bf_gantt_regenerer_token" type="object"
+                                string="Régénérer le token" class="btn-link"
+                                confirm="Les adresses déjà distribuées cesseront de fonctionner. Continuer ?"/>
+                    </div>
+                    <div class="text-muted mt-3">
+                        Publier ouvre une page en lecture seule, sans compte et sans siège.
+                        Elle montre les noms des tâches, leurs dates et leurs responsables :
+                        à relire avant de la donner à un large public.
+                    </div>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- La date qui manquait, posée à côté de l'échéance : c'est le seul endroit
+         où on la cherche. L'origine, elle, ne se dit plus dans le volet principal :
+         elle encombrait toutes les tâches sans début planifié, c'est-à-dire presque
+         toutes. Elle descend auprès de la date d'assignation, en mode développeur,
+         là où on va quand une barre de l'échéancier surprend. Le Gantt et le portail
+         continuent de l'annoncer eux-mêmes : `bf.gantt.source` la recalcule. -->
+    <record id="view_task_form_bf_gantt" model="ir.ui.view">
+        <field name="name">project.task.form.bf.gantt</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="project.view_task_form2"/>
+        <field name="arch" type="xml">
+            <field name="date_deadline" position="before">
+                <field name="planned_date_begin"/>
+            </field>
+            <field name="date_assign" position="after">
+                <field name="bf_gantt_start_origin" string="Début affiché"
+                       groups="base.group_no_one"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_task_list_bf_gantt" model="ir.ui.view">
+        <field name="name">project.task.list.bf.gantt</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="project.view_task_tree2"/>
+        <field name="arch" type="xml">
+            <field name="date_deadline" position="before">
+                <field name="planned_date_begin" optional="hide"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_task_search_bf_gantt" model="ir.ui.view">
+        <field name="name">project.task.search.bf.gantt</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="project.view_task_search_form"/>
+        <field name="arch" type="xml">
+            <filter name="my_tasks" position="after">
+                <separator/>
+                <filter name="bf_gantt_sans_debut" string="Sans début planifié"
+                        domain="[('planned_date_begin', '=', False)]"/>
+            </filter>
+        </field>
+    </record>
+
+</odoo>

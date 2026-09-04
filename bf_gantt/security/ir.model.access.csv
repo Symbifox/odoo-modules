@@ -1,0 +1,9 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_bf_gantt_plan_user,bf.gantt.plan lecture,model_bf_gantt_plan,bf_gantt.group_bf_gantt_user,1,0,0,0
+access_bf_gantt_plan_manager,bf.gantt.plan gestion,model_bf_gantt_plan,bf_gantt.group_bf_gantt_manager,1,1,1,1
+access_bf_gantt_item_user,bf.gantt.item lecture,model_bf_gantt_item,bf_gantt.group_bf_gantt_user,1,0,0,0
+access_bf_gantt_item_manager,bf.gantt.item gestion,model_bf_gantt_item,bf_gantt.group_bf_gantt_manager,1,1,1,1
+access_bf_gantt_import_manager,bf.gantt.import,model_bf_gantt_import,bf_gantt.group_bf_gantt_manager,1,1,1,1
+access_bf_gantt_import_line_manager,bf.gantt.import.line,model_bf_gantt_import_line,bf_gantt.group_bf_gantt_manager,1,1,1,1
+access_bf_gantt_plan_portal,bf.gantt.plan portail,model_bf_gantt_plan,base.group_portal,1,0,0,0
+access_bf_gantt_item_portal,bf.gantt.item portail,model_bf_gantt_item,base.group_portal,1,0,0,0
