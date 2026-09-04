@@ -125,16 +125,22 @@ class BfProcess(models.Model):
             rec.taux_validation = (len(validees) / len(activites) * 100
                                    if activites else 0.0)
 
-    def name_get(self):
+    @api.depends("name", "version", "nature")
+    def _compute_display_name(self):
         """La nature se lit dans le nom : deux cartes portent le même titre.
 
         Sans elle, une liste déroulante offrirait deux « Tenir la comptabilité
         v1.0 » impossibles à départager, et le mauvais serait choisi une fois
         sur deux.
+
+        ⚠️ C'était un `name_get`, et Odoo 18 ne l'appelle plus : la méthode
+        restait là, juste, et sans effet. Le nom affiché avait perdu son numéro
+        de version sans que rien ne le signale. Un remplacement qui ne casse
+        rien est le plus difficile à voir.
         """
-        return [(r.id, f"{r.name} v{r.version}"
-                 + (" (souhaité)" if r.nature == "cible" else ""))
-                for r in self]
+        for rec in self:
+            rec.display_name = (f"{rec.name} v{rec.version}"
+                                + (" (souhaité)" if rec.nature == "cible" else ""))
 
     # --- gel ------------------------------------------------------------------
     MODIFIABLE_APRES_VALIDATION = {
@@ -428,8 +434,17 @@ class BfProcessDiagram(models.Model):
         for rec in self:
             rec.parent_count = len(rec.parent_node_ids)
 
-    def name_get(self):
-        return [(r.id, " — ".join(filter(None, (r.level, r.title)))) for r in self]
+    @api.depends("level", "title")
+    def _compute_display_name(self):
+        """🔴 Un niveau s'affichait « bf.process.diagram,90 ».
+
+        Le modèle n'a pas de champ `name` et son `name_get` n'est plus appelé
+        depuis Odoo 18 : le repli est alors le couple modèle-identifiant, servi
+        tel quel dans les fils d'Ariane et les listes déroulantes. Le calcul
+        est ce qu'Odoo 18 lit vraiment.
+        """
+        for rec in self:
+            rec.display_name = " · ".join(x for x in (rec.level, rec.title) if x)
 
     def to_dict(self, teintes=None):
         """Rend le niveau sous la forme que les générateurs attendent.

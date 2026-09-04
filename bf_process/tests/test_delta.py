@@ -91,6 +91,27 @@ class TestDelta(TransactionCase):
                 "name": "Confus", "nature": "actuel",
                 "origine_id": self.actuel.id, "pool_name": "Blue Fox"})
 
+    def test_le_nom_affiche_distingue_les_deux_branches(self):
+        """🔴 C'était un `name_get`, qu'Odoo 18 n'appelle plus.
+
+        Le nom affiché retombait sur le seul champ `name`, donc l'état actuel
+        et le processus souhaité étaient rigoureusement indiscernables dans
+        toute liste déroulante, et le numéro de version avait disparu sans
+        que rien ne le dise.
+        """
+        cible = self._cible()
+        self.assertEqual(self.actuel.display_name,
+                         f"{self.actuel.name} v{self.actuel.version}")
+        self.assertEqual(cible.display_name,
+                         f"{cible.name} v{cible.version} (souhaité)")
+        self.assertNotEqual(cible.display_name, self.actuel.display_name)
+
+    def test_un_niveau_ne_s_affiche_pas_comme_modele_et_identifiant(self):
+        """🔴 Un niveau s'affichait « bf.process.diagram,90 »."""
+        niveau = self.actuel.diagram_ids[0]
+        self.assertNotIn("bf.process.diagram,", niveau.display_name)
+        self.assertIn(niveau.title, niveau.display_name)
+
     def test_une_cible_ne_se_dessine_pas_d_apres_une_cible(self):
         cible = self._cible()
         with self.assertRaises(UserError):

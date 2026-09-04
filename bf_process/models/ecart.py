@@ -123,8 +123,10 @@ class BfProcessEcart(models.Model):
          "Cet écart est déjà consigné pour ce processus souhaité."),
     ]
 
-    def name_get(self):
-        return [(r.id, r.libelle or r.cle) for r in self]
+    @api.depends("libelle", "cle")
+    def _compute_display_name(self):
+        for rec in self:
+            rec.display_name = rec.libelle or rec.cle
 
     def _porte_du_travail(self):
         """Quelqu'un a-t-il écrit sur cet écart ?

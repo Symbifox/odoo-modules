@@ -194,8 +194,11 @@ class BfProcessNode(models.Model):
                 raise ValidationError(
                     _("Le ton ne s'applique qu'aux annotations."))
 
-    def name_get(self):
-        return [(r.id, r.name or r.code) for r in self]
+    @api.depends("name", "code")
+    def _compute_display_name(self):
+        """Une passerelle n'a pas toujours de libellé : son code la nomme."""
+        for rec in self:
+            rec.display_name = rec.name or rec.code
 
     def to_dict(self, teinte=None):
         """La forme d'échange. `teinte` n'existe que pour la vue delta.
