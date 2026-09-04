@@ -5,6 +5,8 @@ que c'est là que vivent le décorateur d'authentification, la traduction des
 erreurs en codes, et la garde anti-redirection ouverte — dont aucune n'est
 visible depuis l'ORM.
 """
+import base64
+import hashlib
 import json
 
 from odoo.tests import HttpCase, tagged
@@ -12,6 +14,12 @@ from odoo.tests import HttpCase, tagged
 from .common import build_rfc822
 
 BASE = "/bf_email_management/mobile/v1"
+
+# Un défi PKCE valide : celui du vérificateur ci-dessous. La route ne vérifie
+# que sa présence et sa méthode ; c'est le modèle qui le confronte à l'échange.
+VERIFICATEUR = "verificateur-de-banc-assez-long-pour-passer"
+DEFI = base64.urlsafe_b64encode(
+    hashlib.sha256(VERIFICATEUR.encode("utf-8")).digest()).decode().rstrip("=")
 
 
 @tagged("post_install", "-at_install")
@@ -136,13 +144,45 @@ class TestMobileHttp(HttpCase):
             "bf_email_management.mobile_redirect_schemes", "odooinbox://")
         self.authenticate("mobile.http@test.invalid", "mobile.http@test.invalid")
         response = self.url_open(
-            BASE + "/auth/start?redirect=odooinbox://auth&state=abc",
+            BASE + "/auth/start?redirect=odooinbox://auth&state=abc"
+                   "&code_challenge=" + DEFI + "&code_challenge_method=S256",
             timeout=30, allow_redirects=False)
         self.assertEqual(response.status_code, 302)
         location = response.headers.get("Location", "")
         self.assertTrue(location.startswith("odooinbox://auth"))
         self.assertIn("code=", location)
         self.assertIn("state=abc", location)
+
+    # ------------------------------------------------------------- PKCE
+    def test_auth_start_refuses_a_pairing_without_a_challenge(self):
+        """Le refus revient par le lien profond, pas par une page.
+
+        L'application enchaîne les deux modules dans une seule session de
+        navigateur : une page d'erreur sans issue sur la première étape
+        arrêterait toute la connexion au lieu de désactiver un onglet.
+        """
+        self.env["ir.config_parameter"].sudo().set_param(
+            "bf_email_management.mobile_redirect_schemes", "odooinbox://")
+        self.authenticate("mobile.http@test.invalid", "mobile.http@test.invalid")
+        response = self.url_open(
+            BASE + "/auth/start?redirect=odooinbox://auth&state=abc",
+            timeout=30, allow_redirects=False)
+        self.assertEqual(response.status_code, 302)
+        location = response.headers.get("Location", "")
+        self.assertIn("error=pkce_required", location)
+        self.assertNotIn("code=", location)
+
+    def test_auth_start_refuses_the_plain_method(self):
+        """« plain » laisserait passer un défi égal à son vérificateur."""
+        self.env["ir.config_parameter"].sudo().set_param(
+            "bf_email_management.mobile_redirect_schemes", "odooinbox://")
+        self.authenticate("mobile.http@test.invalid", "mobile.http@test.invalid")
+        response = self.url_open(
+            BASE + "/auth/start?redirect=odooinbox://auth&state=abc"
+                   "&code_challenge=" + DEFI + "&code_challenge_method=plain",
+            timeout=30, allow_redirects=False)
+        self.assertIn("error=pkce_required",
+                      response.headers.get("Location", ""))
 
     # -------------------------------------------------------- push endpoint
     def test_private_push_endpoints_are_refused(self):

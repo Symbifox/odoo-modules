@@ -64,7 +64,7 @@ function tomorrow8AmIso() {
 // `browser` n'expose PAS `prompt` : la liste de @web/core/browser/browser est
 // explicite et s'arrête aux méthodes qu'un test a besoin de remplacer. Le
 // bouton « Autre… » levait donc un TypeError à chaque clic depuis sa mise en
-// service — il n'a jamais fonctionné. `window.prompt` réparerait
+// service — il n'a jamais fonctionné, tâche #25195. `window.prompt` réparerait
 // l'appel, mais il gèle le fil d'exécution — donc le bus — tant que la boîte
 // native est ouverte, et il ignore le thème.
 //

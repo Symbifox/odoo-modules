@@ -3,7 +3,8 @@
 `calendar_nextcloud_sync` traite une série récurrente en la RASANT : dès que le
 `.ics` réimporté porte un `RRULE`, la récurrence et toutes ses occurrences sont
 supprimées puis recréées avec des `id` neufs. La fiche participant part avec, et
-avec elle le `bf_dismissed_at` qui empêchait le rappel de repartir.
+avec elle le `bf_dismissed_at` qui empêchait le rappel de repartir. Tâche BF
+#25127.
 
 ⚠️ Chaque cas porte son contre-épreuve : sans elle, un test qui passe ne dit pas
 si la porte discrimine ou si elle laisse tout passer.

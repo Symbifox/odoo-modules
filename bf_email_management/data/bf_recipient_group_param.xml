@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- La fonction arrive DORMANTE (napkin #25278).
+
+         `noupdate="1"` : le paramètre est posé une seule fois, à
+         l'installation. Une fois qu'un humain l'a mis à « 1 », aucune montée
+         de version ne le rééteint. C'est ce qui permet de déployer en
+         production, de regarder l'écran, puis d'allumer, sans fenêtre pendant
+         laquelle un groupe pourrait partir. -->
+    <data noupdate="1">
+        <record id="param_recipient_group_enabled" model="ir.config_parameter">
+            <field name="key">bf_email_management.recipient_group_enabled</field>
+            <field name="value">0</field>
+        </record>
+    </data>
+</odoo>

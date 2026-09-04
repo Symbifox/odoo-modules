@@ -4,6 +4,97 @@ All notable changes to `bf_email_management` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This module follows Odoo's `MAJOR.MINOR.PATCH` convention prefixed with the Odoo series (`18.0.X.Y.Z`).
 
+## [18.0.11.21.0] — 2026-09-03
+
+### Added
+
+- **Recipient groups in the composer**, the way Outlook distribution lists work.
+  A group carries hand-picked members, an optional filter over contacts, an
+  owner, a "shared" flag, and the field its members land in (To, Cc or Bcc). It
+  also owns a **contact record with no email address**, which is what lets you
+  type its name straight into "To": the `onchange` replaces it with its members
+  **on screen**, before anything is sent. That record is kept out of name search
+  everywhere else in the instance, and only surfaces under the context flag the
+  composer sets.
+  Expansion has four entry points, deliberately: the `onchange`, so the list is
+  visible while you write; the `partner_ids` and `partner_cc_ids` computes,
+  because clearing a template resets them; and the send itself, as the last net
+  against an RPC call that goes through no screen at all. A cap of 50 recipients
+  applies **per group and to the union**, adjustable through a system parameter,
+  with a warning past 10 since the composer sends one message in which every
+  recipient reads the others' addresses.
+  The feature ships **switched off**: `bf_email_management.recipient_group_enabled`
+  is written as `0` with `noupdate` on install, and an administrator turns it on.
+  On mobile, `mobile_search_contacts(include_groups=True)` and
+  `/contacts?groups=1` return groups with their members already expanded; the
+  flag is explicit so existing clients see no change.
+
+## [18.0.11.19.0] — 2026-09-03
+
+### Fixed
+
+- **Changing the "From" now swaps the signature in the body.** The hook had been
+  removed in 18.0.11.9.0, when the composer opened bare and the signature was
+  added at send time, so there was nothing to swap. 18.0.11.13.0 put it back in
+  the draft and the hook was never restored: since then, switching address
+  changed the "From" and left the previous address's signature underneath. The
+  replacement locates the block by its **CSS class** and compares normalised
+  text only. It stands down in three cases: the signature lives at send time,
+  the marker is missing or duplicated, or the block's text matches no identity's
+  signature, meaning the writer edited it and a silent swap would destroy their
+  work.
+
+## [18.0.11.18.0] — 2026-09-03
+
+### Fixed
+
+- 🔴 **The sending-address selector was invisible to everyone since it shipped.**
+  Its compute declared only `@api.depends_context("uid")`. With no FIELD
+  dependency, Odoo never runs the compute during an `onchange`: the client
+  received `bf_identity_count = 0` and `invisible="bf_identity_count < 2"` hid
+  the row. Nothing showed server-side, since `get_view` listed the field and a
+  direct read returned three identities; only the `onchange` path lied. Now
+  anchored on `composition_mode`, and the field is renamed to "From".
+
+## [18.0.11.17.0] — 2026-09-03
+
+### Fixed
+
+- **The signature follows the sending address.** All three paths (mailbox draft,
+  composer preview, send) go through one cascade, `_signature_for_identity`: the
+  identity's own signature, else the rendered signature of the company owning
+  the identity's account, else the user's signature. The draft used to sign with
+  the main company hard-coded, and since the body wins at send time the right
+  signature never got its chance.
+
+## [18.0.11.16.0] — 2026-09-03
+
+### Security
+
+- **Mobile pairing now requires PKCE.** An application scheme is not exclusive
+  on Android: another app can declare the same return link, receive the pairing
+  code instead of ours, and trade it for a bearer token on the person's mailbox.
+  The `mobile_redirect_schemes` allowlist does not cover this; it closes the
+  open redirect on the server, not the local interception of the code on the
+  device. `bf.email.mobile.device` gains `pkce_challenge`; `/auth/start` refuses
+  a pairing with no challenge and bounces back through the deep link with
+  `error=pkce_required` rather than a dead-end page, because the app chains two
+  modules in a single browser session; `/auth/exchange` requires the verifier and
+  compares it in constant time. The pending row is **discarded** on either
+  refusal, otherwise an intercepted code replays until the right app shows up.
+  No grace period: already-paired devices keep their token and never come back
+  through the exchange.
+
+## [18.0.11.15.0] — 2026-09-03
+
+### Added
+
+- **One inbox per account, in its company's colour.** `bf.email.account` gains
+  `company_id` (stamped on ingested rows, it restricts NOTHING) and `own_inbox`.
+  Those entries are **children** of the shared inbox: mail born inside Odoo
+  belongs to no account, and top-level per-account inboxes would leave it
+  homeless.
+
 ## [18.0.11.14.2] — 2026-09-01
 
 ### Fixed
@@ -121,7 +212,7 @@ across a reconnection.
   on every workstation. The key therefore hangs on no id at all: it is the
   series' CalDAV UID, which the `.ics` preserves from one import to the next,
   plus the occurrence's start time. Measured on a production database: two
-  recurring series each had their 719 occurrences destroyed and recreated an
+  recurring series each had several hundred occurrences destroyed and recreated an
   hour apart, each time followed by a push carrying a negative `timer`.
 
   ⚠️ The key is deliberately a string and not a typed link: this module does

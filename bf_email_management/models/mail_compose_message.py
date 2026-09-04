@@ -13,8 +13,11 @@ Cc with the other thread participants.
 """
 
 from dateutil.relativedelta import relativedelta
+from lxml import html
 
 from odoo import _, api, exceptions, fields, models
+
+from .bf_recipient_group import PARAM_ENABLED
 
 
 class MailComposeMessage(models.TransientModel):
@@ -83,7 +86,10 @@ class MailComposeMessage(models.TransientModel):
     # ------------------------------------------------------------------
     bf_identity_id = fields.Many2one(
         "bf.email.identity",
-        string="Envoyer en tant que",
+        # « De » et non « Envoyer en tant que » : c'est le nom que la
+        # personne cherche des yeux, et Odoo cache son propre `email_from` en
+        # mode commentaire, donc la place est libre.
+        string="De",
         domain="[('id', 'in', bf_identity_allowed_ids)]",
         help="L'adresse qui apparaîtra dans le « De ». Seules vos identités "
              "vérifiées sont proposées.",
@@ -102,6 +108,18 @@ class MailComposeMessage(models.TransientModel):
         compute="_compute_bf_identity_allowed_ids",
         string="Nombre d'identités disponibles",
     )
+    # ⚠️ `depends_context` NE SUFFIT PAS, et le défaut est silencieux.
+    # Un calcul sans AUCUNE dépendance de champ n'est jamais déclenché pendant
+    # un `onchange` : le client reçoit la valeur par défaut, zéro. La condition
+    # `invisible="bf_identity_count < 2"` était donc vraie à l'ouverture du
+    # composeur, et le sélecteur « Envoyer en tant que » restait invisible pour
+    # tout le monde, depuis qu'il existe. Rien ne se voyait côté serveur : une
+    # lecture directe et un `new()` rendent le bon compte, seul le chemin
+    # `onchange` mentait. Mesuré le 2026-09-03 : lecture 3, onchange 0.
+    # `composition_mode` est le porteur choisi parce qu'il est toujours dans la
+    # vue et toujours renseigné ; la valeur ne dépend pas de lui, c'est
+    # l'accroche qui fait courir le calcul.
+    @api.depends("composition_mode")
     @api.depends_context("uid")
     def _compute_bf_identity_allowed_ids(self):
         usable = self.env["bf.email.identity"]._usable_for(self.env.user)
@@ -164,27 +182,105 @@ class MailComposeMessage(models.TransientModel):
                 if not identity and Identity is not None:
                     identity = Identity.sudo()._for_sender(
                         composer.email_from, self.env.user)
-                if identity and (identity.signature_html or "").strip():
-                    signature = identity.signature_html
-                else:
-                    signature = self.env.user.signature or ""
+                # Même cascade que le brouillon et que l'envoi : identité,
+                # puis société du compte de l'identité, puis la signature de
+                # la société principale.
+                signature = self.env["bf.email"]._signature_for_identity(
+                    identity)
             if not (signature or "").strip():
                 signature = repli
             composer.bf_signature_preview = signature or False
 
     @api.onchange("bf_identity_id")
     def _onchange_bf_identity_id(self):
-        """Suivre l'identité choisie : le « De ».
+        """Suivre l'identité choisie : le « De », et la signature du corps.
 
-        Il n'y a plus de signature à échanger dans le corps — elle n'y entre
-        jamais, elle est posée à l'envoi et suit l'identité à ce moment-là
-        (voir ``mail_thread._notify_by_email_prepare_rendering_context``).
-        C'est ce qui a supprimé la substitution fragile qui vivait ici : elle
-        devait retrouver dans un corps assaini le bloc exact qu'elle avait
-        posé non assaini, et renonçait dès que la personne y avait touché.
+        ⚠️ **L'hypothèse d'hier n'est plus vraie.** Ce raccord avait été retiré
+        en 18.0.11.9.0, quand le composeur s'ouvrait nu : la signature n'entrait
+        pas dans le corps, elle était posée à l'envoi, donc rien n'était à
+        échanger ici. La 18.0.11.13.0 l'a **remise dans le brouillon** et ce
+        raccord n'a jamais été rétabli : depuis, changer d'adresse changeait le
+        « De » et laissait la signature de l'adresse précédente juste en
+        dessous.
+
+        La substitution d'alors était dite fragile parce qu'elle cherchait dans
+        un corps **assaini** le bloc exact qu'elle avait posé **non assaini**.
+        Celle-ci ne compare plus des chaînes : elle localise le bloc par sa
+        **classe** et ne remplace que du texte à texte.
         """
-        if self.bf_identity_id:
-            self.email_from = self.bf_identity_id.email_formatted
+        if not self.bf_identity_id:
+            return
+        self.email_from = self.bf_identity_id.email_formatted
+        self._bf_swap_body_signature()
+
+    @staticmethod
+    def _bf_signature_text(el):
+        """Le texte d'un bloc, espaces normalisés — insensible à l'assainissement."""
+        return " ".join((el.text_content() or "").split())
+
+    def _bf_swap_body_signature(self):
+        """Remplacer le bloc signature du corps par celui de l'identité choisie.
+
+        Ne fait rien, et c'est voulu, dans trois cas :
+
+        - la signature ne vit pas dans le corps (réglage « à l'envoi ») ;
+        - le corps ne porte pas le marqueur, ou en porte plusieurs — on ne
+          devine pas lequel est le bon ;
+        - le texte du bloc ne correspond à la signature d'**aucune** des
+          identités de la personne, ce qui veut dire qu'elle l'a modifié. Un
+          échange silencieux effacerait alors son travail : mieux vaut laisser
+          une signature à corriger à la main qu'en emporter une réécrite.
+        """
+        self.ensure_one()
+        Bf = self.env["bf.email"]
+        if Bf._signature_placement() != "brouillon":
+            return
+        corps = self.body or ""
+        if Bf.SIGNATURE_MARKER not in corps:
+            return
+        try:
+            racine = html.fragment_fromstring(corps, create_parent="div")
+        except Exception:  # pragma: no cover - corps illisible, on s'abstient
+            return
+        blocs = racine.find_class(Bf.SIGNATURE_MARKER)
+        if len(blocs) != 1:
+            return
+        bloc = blocs[0]
+
+        connus = set()
+        for ident in self.bf_identity_allowed_ids | self.bf_identity_id:
+            brut = Bf._compose_signature_block_for_user(identity=ident)
+            if not brut:
+                continue
+            try:
+                connus.add(self._bf_signature_text(
+                    html.fragment_fromstring(brut, create_parent="div")))
+            except Exception:  # pragma: no cover
+                continue
+        # La signature de la personne, sans identité : c'est celle qu'un
+        # composeur ouvert avant tout choix a pu poser.
+        brut_defaut = Bf._compose_signature_block_for_user()
+        if brut_defaut:
+            try:
+                connus.add(self._bf_signature_text(
+                    html.fragment_fromstring(brut_defaut, create_parent="div")))
+            except Exception:  # pragma: no cover
+                pass
+        if self._bf_signature_text(bloc) not in connus:
+            return
+
+        neuf_brut = Bf._compose_signature_block_for_user(
+            identity=self.bf_identity_id)
+        parent = bloc.getparent()
+        if not neuf_brut:
+            parent.remove(bloc)
+        else:
+            neuf = html.fragment_fromstring(neuf_brut)
+            parent.replace(bloc, neuf)
+        self.body = "".join(
+            [racine.text or ""]
+            + [html.tostring(enfant, encoding="unicode") for enfant in racine]
+        )
 
     def _prepare_mail_values(self, res_ids):
         """Faire descendre l'identité jusqu'au message, après la fusion.
@@ -220,6 +316,11 @@ class MailComposeMessage(models.TransientModel):
 
     def _action_send_mail(self, auto_commit=False):
         self._bf_check_identity()
+        # ⚠️ AVANT le re-ciblage : celui-ci relit et réécrit les destinataires,
+        # et une fiche-groupe qui lui échapperait partirait telle quelle, sans
+        # adresse, donc à personne. Le dépliage applique aussi le plafond, la
+        # seule barrière contre l'envoi de masse involontaire.
+        self._bf_expand_recipient_groups()
         self._bf_retarget_to_chatter()
         return super()._action_send_mail(auto_commit=auto_commit)
 
@@ -247,6 +348,9 @@ class MailComposeMessage(models.TransientModel):
         # Le report lit lui aussi `model` / `res_ids` pour bâtir la
         # mail.scheduled.message : sans ce crochet, un envoi programmé
         # atterrirait sur le brouillon et non sur la fiche choisie.
+        # Et le dépliage doit avoir lieu MAINTENANT : la programmation fige les
+        # destinataires, un groupe non déplié partirait vide dans trois jours.
+        self._bf_expand_recipient_groups()
         self._bf_retarget_to_chatter()
         return super().action_schedule_message(scheduled_date=scheduled_date)
 
@@ -301,5 +405,168 @@ class MailComposeMessage(models.TransientModel):
                     composer.partner_cc_ids = cc_default
                 if bcc_default is not None:
                     composer.partner_bcc_ids = bcc_default
+            self._bf_restore_groups(("cc", "bcc"))
             return
-        return super()._compute_partner_cc_bcc_ids()
+        res = super()._compute_partner_cc_bcc_ids()
+        # Même raison que pour `partner_ids` : ce calcul se redéclenche au
+        # choix d'un gabarit et remet les listes à leur valeur de société.
+        self._bf_restore_groups(("cc", "bcc"))
+        return res
+
+    # ==================================================================
+    # Groupes de destinataires (napkin #25278)
+    # ==================================================================
+    # Le geste visé : taper « Équipe Écolaction » dans « À » et voir les vingt
+    # personnes apparaître, comme une liste de distribution Outlook. Trois
+    # chemins mènent au même endroit, et c'est voulu :
+    #
+    #   1. l'onchange, pour que le dépliage se voie À L'ÉCRAN (on ne signe pas
+    #      un envoi dont on ne connaît pas les destinataires) ;
+    #   2. les calculs de `partner_ids` et `partner_cc_ids`, parce qu'un
+    #      gabarit choisi APRÈS le groupe les remet à zéro — le champ
+    #      `bf_recipient_group_ids` n'est PAS calculé, il sert de mémoire ;
+    #   3. l'envoi, dernier filet : un appel RPC ne passe ni par l'écran ni
+    #      par l'onchange, et une fiche-groupe restée dans la liste écrirait
+    #      à personne.
+    _BF_GROUP_FIELD = {
+        "to": "partner_ids",
+        "cc": "partner_cc_ids",
+        "bcc": "partner_bcc_ids",
+    }
+
+    bf_recipient_group_ids = fields.Many2many(
+        "bf.recipient.group",
+        "bf_compose_recipient_group_rel", "wizard_id", "group_id",
+        string="Groupes de destinataires",
+    )
+    # ⚠️ Ancré sur `composition_mode` et non sur le seul `depends_context` :
+    # un calcul sans AUCUNE dépendance de champ n'est jamais déclenché pendant
+    # un `onchange`, le client reçoit le défaut (faux) et la ligne reste
+    # cachée pour tout le monde. C'est exactement ce qui est arrivé au
+    # sélecteur « De » en 11.18.0.
+    bf_recipient_groups_enabled = fields.Boolean(
+        string="Groupes en service",
+        compute="_compute_bf_recipient_groups_enabled",
+    )
+
+    @api.depends("composition_mode")
+    def _compute_bf_recipient_groups_enabled(self):
+        enabled = self.env["bf.recipient.group"]._groups_enabled()
+        for composer in self:
+            composer.bf_recipient_groups_enabled = enabled
+
+    def _bf_expand_recipient_groups(self):
+        """Remplacer les fiches-groupes par leurs membres. Plafond appliqué.
+
+        Rend le nombre total de destinataires, pour que l'appelant puisse
+        avertir quand la liste devient grande.
+
+        ⚠️ Ne pas essayer de compter les AJOUTS pour ne prévenir qu'une fois :
+        la première lecture de ``partner_ids`` déclenche son calcul, donc
+        ``_bf_restore_groups``, donc le dépliage a DÉJÀ eu lieu quand on
+        mesure. Le compte d'ajouts rend zéro et l'avertissement ne part
+        jamais. Mesuré le 2026-09-03, deux tests rouges.
+        """
+        Group = self.env["bf.recipient.group"]
+        total = 0
+        for composer in self:
+            if not Group._groups_enabled():
+                # Fonction dormante : on ne déplie pas, et surtout on ne
+                # laisse pas passer une fiche-groupe qui partirait sans
+                # adresse. Le refus est explicite, il ne se devine pas.
+                if composer.bf_recipient_group_ids or (
+                        composer.partner_ids | composer.partner_cc_ids
+                        | composer.partner_bcc_ids).filtered(
+                            "bf_recipient_group_id"):
+                    raise exceptions.UserError(_(
+                        "Les groupes de destinataires ne sont pas encore en "
+                        "service sur cette instance. Un administrateur les "
+                        "active dans les paramètres système "
+                        "(%s).", PARAM_ENABLED))
+                continue
+            buckets = {
+                key: composer[field]
+                for key, field in self._BF_GROUP_FIELD.items()
+            }
+            groups = composer.bf_recipient_group_ids
+            # Une fiche-groupe déposée dans « À », « Cc » ou « Cci » vaut
+            # sélection du groupe : c'est le geste Outlook.
+            for key, recs in list(buckets.items()):
+                proxies = recs.filtered("bf_recipient_group_id")
+                if proxies:
+                    buckets[key] = recs - proxies
+                    groups |= proxies.bf_recipient_group_id
+            if not groups:
+                continue
+            if composer.composition_mode == "mass_mail":
+                raise exceptions.UserError(_(
+                    "Les groupes de destinataires ne servent pas à l'envoi de "
+                    "masse : celui-ci écrit à chaque personne séparément et "
+                    "n'a pas besoin d'eux. Passez par Marketing par courriel."))
+
+            resolved = self.env["res.partner"].browse()
+            for group in groups:
+                members = group._resolve_partners()
+                resolved |= members
+                buckets[group.recipient_field] |= members
+            # ⚠️ Le plafond vaut aussi pour l'UNION : trois groupes de
+            # quarante passent chacun leur contrôle et font cent vingt
+            # destinataires.
+            maximum = Group._max_recipients()
+            if len(resolved) > maximum:
+                raise exceptions.UserError(_(
+                    "Ces groupes désignent ensemble %(nb)s destinataires, "
+                    "au-delà de la limite de %(max)s.",
+                    nb=len(resolved), max=maximum))
+
+            composer.bf_recipient_group_ids = groups
+            for key, field in self._BF_GROUP_FIELD.items():
+                if composer[field] != buckets[key]:
+                    composer[field] = buckets[key]
+            total = max(total, len(
+                composer.partner_ids | composer.partner_cc_ids
+                | composer.partner_bcc_ids))
+        return total
+
+    def _bf_restore_groups(self, keys):
+        """Recoller les membres après un recalcul qui a vidé les destinataires.
+
+        ⚠️ Appelé depuis un CALCUL : il ne doit rien lever. Un groupe devenu
+        trop gros est laissé de côté ici, et c'est l'envoi qui refusera, avec
+        son message. Taire l'erreur ne fait donc jamais partir un courriel.
+        """
+        if not self.env["bf.recipient.group"]._groups_enabled():
+            return
+        for composer in self:
+            for group in composer.bf_recipient_group_ids:
+                if group.recipient_field not in keys:
+                    continue
+                try:
+                    members = group._resolve_partners()
+                except (exceptions.UserError, exceptions.ValidationError):
+                    continue
+                field = self._BF_GROUP_FIELD[group.recipient_field]
+                composer[field] |= members
+
+    @api.onchange("bf_recipient_group_ids", "partner_ids",
+                  "partner_cc_ids", "partner_bcc_ids")
+    def _onchange_bf_recipient_groups(self):
+        total = self._bf_expand_recipient_groups()
+        seuil = self.env["bf.recipient.group"]._confirm_above()
+        if self.bf_recipient_group_ids and total > seuil:
+            # Pas une erreur : un avertissement, au moment où la liste vient
+            # d'apparaître et où la corriger ne coûte rien. Le composeur envoie
+            # UN courriel, où chaque destinataire lit l'adresse des autres.
+            return {"warning": {
+                "title": _("Beaucoup de destinataires"),
+                "message": _(
+                    "Ce courriel partira à %(nb)s personnes, et chacune verra "
+                    "l'adresse de toutes les autres. Relisez la liste, ou "
+                    "versez le groupe en Cci.", nb=total),
+            }}
+
+    @api.depends("composition_mode", "model", "parent_id", "res_domain",
+                 "res_ids", "template_id")
+    def _compute_partner_ids(self):
+        super()._compute_partner_ids()
+        self._bf_restore_groups(("to",))

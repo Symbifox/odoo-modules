@@ -7,7 +7,7 @@
 
          Sans elle, les boutons « Traité » et « Remettre en boîte » du menu
          du message s'affichaient tous les deux en permanence, sans dire
-         lequel avait du sens. -->
+         lequel avait du sens. Tâche #24628. -->
     <t t-name="bf_email_management.MessageBfEmailBadge"
        t-inherit="mail.Message" t-inherit-mode="extension">
         <xpath expr="//div[@name='header']" position="inside">

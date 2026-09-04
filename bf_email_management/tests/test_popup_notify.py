@@ -1,4 +1,4 @@
-"""Avis à l'arrivée d'un courriel, dans Odoo.
+"""Avis à l'arrivée d'un courriel, dans Odoo (tâche #25069).
 
 Ce que ces tests éprouvent vraiment, dans l'ordre où ça peut casser :
 

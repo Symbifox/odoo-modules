@@ -44,7 +44,8 @@
                             <i t-att-class="state.expandedFolders[f.key] ? 'fa fa-caret-down' : 'fa fa-caret-right'"/>
                         </span>
                         <span t-else="" style="width: 14px; display: inline-block;"/>
-                        <i t-att-class="'fa ' + f.icon + ' me-2'"/>
+                        <i t-att-class="'fa ' + f.icon + ' me-2'"
+                           t-att-style="f.colour and f.key !== state.currentFolder ? 'color: ' + f.colour + ';' : ''"/>
                         <span class="text-truncate flex-grow-1" t-esc="f.label"/>
                         <span t-if="f.unread_count" class="badge ms-2"
                               t-att-class="f.key === state.currentFolder ? 'bg-light text-dark' : 'bg-secondary'">
@@ -403,6 +404,9 @@
                                     <td t-if="cols.date" class="small"><t t-esc="formatDate(m.date)"/></td>
                                     <td t-if="cols.correspondent" class="text-truncate"
                                         t-att-title="m.direction === 'out' ? m.to : m.from">
+                                        <span t-if="m.colour" class="d-inline-block rounded-circle me-1"
+                                              t-att-style="'width: 7px; height: 7px; vertical-align: middle; background-color: ' + m.colour + ';'"
+                                              t-att-title="m.company_name"/>
                                         <i t-att-class="m.direction === 'out' ? 'fa fa-arrow-right text-success me-1' : 'fa fa-arrow-left text-info me-1'"
                                            t-att-title="m.direction === 'out' ? 'Sortant' : 'Entrant'"/>
                                         <t t-esc="senderCell(m)"/>

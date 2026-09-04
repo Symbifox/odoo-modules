@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="bf_recipient_group_view_list" model="ir.ui.view">
+        <field name="name">bf.recipient.group.list</field>
+        <field name="model">bf.recipient.group</field>
+        <field name="arch" type="xml">
+            <list string="Groupes de destinataires">
+                <field name="name"/>
+                <field name="recipient_field"/>
+                <field name="member_count" string="Membres"/>
+                <field name="filter_domain" optional="hide"/>
+                <field name="user_id" widget="many2one_avatar_user"/>
+                <field name="is_shared" widget="boolean_toggle"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_recipient_group_view_form" model="ir.ui.view">
+        <field name="name">bf.recipient.group.form</field>
+        <field name="model">bf.recipient.group</field>
+        <field name="arch" type="xml">
+            <form string="Groupe de destinataires">
+                <sheet>
+                    <widget name="web_ribbon" title="Archivé" bg_color="text-bg-danger"
+                            invisible="active"/>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="Équipe Écolaction"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="recipient_field"/>
+                            <field name="member_count" string="Membres résolus"/>
+                            <field name="active" invisible="1"/>
+                        </group>
+                        <group>
+                            <field name="user_id" options="{'no_create': True}"/>
+                            <field name="is_shared"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Membres" name="membres">
+                            <field name="partner_ids" widget="many2many_tags_email"
+                                   context="{'show_email': True}"
+                                   options="{'no_quick_create': True}"/>
+                        </page>
+                        <page string="Filtre dynamique" name="filtre">
+                            <div class="alert alert-info" role="alert">
+                                Les contacts trouvés par le filtre s'ajoutent aux membres
+                                choisis. Le filtre s'évalue avec vos droits, et un groupe
+                                qui dépasse la limite de destinataires est refusé à l'envoi
+                                plutôt que tronqué.
+                            </div>
+                            <field name="filter_domain" widget="domain"
+                                   options="{'model': 'res.partner'}"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="bf_recipient_group_view_search" model="ir.ui.view">
+        <field name="name">bf.recipient.group.search</field>
+        <field name="model">bf.recipient.group</field>
+        <field name="arch" type="xml">
+            <search string="Groupes de destinataires">
+                <field name="name"/>
+                <field name="partner_ids"/>
+                <filter name="mine" string="Les miens"
+                        domain="[('user_id', '=', uid)]"/>
+                <filter name="shared" string="Partagés"
+                        domain="[('is_shared', '=', True)]"/>
+                <separator/>
+                <filter name="inactive" string="Archivés"
+                        domain="[('active', '=', False)]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="group_by_owner" string="Propriétaire"
+                            context="{'group_by': 'user_id'}"/>
+                    <filter name="group_by_field" string="Verser dans"
+                            context="{'group_by': 'recipient_field'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_bf_recipient_group" model="ir.actions.act_window">
+        <field name="name">Groupes de destinataires</field>
+        <field name="res_model">bf.recipient.group</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="bf_recipient_group_view_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Créer un groupe de destinataires</p>
+            <p>
+                Comme une liste de distribution Outlook, mais dans le composeur :
+                tapez le nom du groupe dans « À » et ses membres apparaissent.
+            </p>
+        </field>
+    </record>
+
+    <!-- Le carnet d'adresses garde une entrée par groupe, pour que le nom se
+         tape dans « À ». Ce filtre permet de les mettre de côté quand on
+         travaille dans Contacts. -->
+    <record id="res_partner_view_search_bf_groups" model="ir.ui.view">
+        <field name="name">res.partner.search.bf.recipient.groups</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_res_partner_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='type_person']" position="before">
+                <filter name="bf_hide_recipient_groups"
+                        string="Sans les groupes de destinataires"
+                        domain="[('bf_recipient_group_id', '=', False)]"/>
+                <separator/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

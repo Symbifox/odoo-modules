@@ -4,7 +4,7 @@
     <!-- Champ « Classer dans » sur le composeur, visible uniquement quand la
          fenêtre vient du bouton « Composer » de la boîte de réception. Ailleurs
          dans l'instance le composeur s'ouvre déjà sur une fiche : la question
-         ne se pose pas, et le champ resterait du bruit. -->
+         ne se pose pas, et le champ resterait du bruit. Tâche #24628. -->
     <record id="mail_compose_message_bf_target_form" model="ir.ui.view">
         <field name="name">mail.compose.message.form.bf.chatter.target</field>
         <field name="model">mail.compose.message</field>
@@ -26,7 +26,7 @@
          dans le corps — elle est ajoutée une seule fois au rendu du courriel —
          et rien ne le disait à l'écran : le composeur s'ouvrait nu et donnait
          à croire que le courriel partirait non signé. Ce bloc le dit, en
-         lecture seule. -->
+         lecture seule. Tâche #25093. -->
     <record id="mail_compose_message_bf_signature_form" model="ir.ui.view">
         <field name="name">mail.compose.message.form.bf.signature</field>
         <field name="model">mail.compose.message</field>
@@ -50,7 +50,7 @@
     <!-- « Envoyer en tant que » : l'adresse qui portera le « De ». Le champ
          ne s'affiche que si la personne a plus d'une identité vérifiée —
          avec une seule, il n'y a rien à choisir et la ligne serait du bruit
-         sur chaque composeur de l'instance. -->
+         sur chaque composeur de l'instance. Tâche #24937. -->
     <record id="mail_compose_message_bf_identity_form" model="ir.ui.view">
         <field name="name">mail.compose.message.form.bf.identity</field>
         <field name="model">mail.compose.message</field>
@@ -72,7 +72,7 @@
          pour garder un courriel inachevé il fallait le PROGRAMMER et saisir une
          date lointaine à la main. Le bouton fait ce geste en un clic. Mêmes
          conditions de visibilité que le menu « Programmer » du noyau, qui est
-         le mécanisme qu'il emprunte. -->
+         le mécanisme qu'il emprunte. Napkin #25125. -->
     <record id="mail_compose_message_bf_draft_form" model="ir.ui.view">
         <field name="name">mail.compose.message.form.bf.save.as.draft</field>
         <field name="model">mail.compose.message</field>
@@ -84,6 +84,53 @@
                         type="object"
                         class="btn-secondary w-auto"
                         invisible="composition_batch or composition_mode != 'comment'"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Groupes de destinataires (#25278).
+
+         Deux gestes pour un même résultat : taper le nom du groupe dans « À »
+         comme une liste de distribution Outlook, ou le choisir dans le champ
+         « Groupes ». Dans les deux cas le dépliage a lieu À L'ÉCRAN, par
+         l'onchange, et non à l'envoi : on ne signe pas un courriel dont on ne
+         voit pas les destinataires.
+
+         ⚠️ Le témoin `bf_show_recipient_groups` est ce qui rend les fiches de
+         groupe visibles à la recherche. Sans lui, `_search_display_name` les
+         écarte partout ailleurs dans l'instance. -->
+    <record id="mail_compose_message_bf_recipient_groups_form" model="ir.ui.view">
+        <field name="name">mail.compose.message.form.bf.recipient.groups</field>
+        <field name="model">mail.compose.message</field>
+        <field name="inherit_id" ref="mail.email_compose_message_wizard_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='partner_ids']" position="attributes">
+                <attribute name="context">{'show_email': True, 'bf_show_recipient_groups': True, 'form_view_ref': 'base.view_partner_simple_form'}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='partner_ids']/.." position="inside">
+                <field name="bf_recipient_group_ids"
+                       widget="many2many_tags"
+                       options="{'no_quick_create': True, 'no_create_edit': True}"
+                       placeholder="Groupes de destinataires…"
+                       invisible="composition_mode != 'comment' or subtype_is_log or not bf_recipient_groups_enabled"/>
+                <field name="bf_recipient_groups_enabled" invisible="1"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Cc et Cci viennent de `mail_composer_cc_bcc` : on hérite de SA vue,
+         pas de celle du noyau, sinon l'xpath tomberait sur des champs pas
+         encore posés. -->
+    <record id="mail_compose_message_bf_recipient_groups_ccbcc" model="ir.ui.view">
+        <field name="name">mail.compose.message.form.bf.recipient.groups.ccbcc</field>
+        <field name="model">mail.compose.message</field>
+        <field name="inherit_id" ref="mail_composer_cc_bcc.email_compose_message_wizard_inherit_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='partner_cc_ids']" position="attributes">
+                <attribute name="context">{'force_email': True, 'show_email': True, 'bf_show_recipient_groups': True}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='partner_bcc_ids']" position="attributes">
+                <attribute name="context">{'force_email': True, 'show_email': True, 'bf_show_recipient_groups': True}</attribute>
             </xpath>
         </field>
     </record>

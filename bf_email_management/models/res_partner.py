@@ -1,4 +1,5 @@
 from odoo import api, fields, models
+from odoo.osv import expression
 
 
 class ResPartner(models.Model):
@@ -35,3 +36,33 @@ class ResPartner(models.Model):
             "domain": [("partner_id", "=", self.id)],
             "context": {"default_partner_id": self.id},
         }
+
+
+class ResPartnerRecipientGroup(models.Model):
+    """La fiche contact qui représente un groupe de destinataires (#25278).
+
+    Elle existe pour une seule raison : permettre de taper le nom du groupe
+    directement dans « À », comme une liste de distribution Outlook. Partout
+    ailleurs elle est du bruit, et un carnet d'adresses de production se
+    compte en dizaines de milliers de fiches : elle est donc retirée de la
+    recherche par nom, sauf quand le composeur pose explicitement le témoin
+    ``bf_show_recipient_groups``.
+    """
+
+    _inherit = "res.partner"
+
+    bf_recipient_group_id = fields.Many2one(
+        "bf.recipient.group", string="Groupe de destinataires",
+        ondelete="cascade", index=True, copy=False,
+        help="Renseigné sur la fiche qui représente un groupe. Une telle fiche "
+             "ne porte jamais d'adresse et se déplie en ses membres avant tout "
+             "envoi.",
+    )
+
+    @api.model
+    def _search_display_name(self, operator, value):
+        domain = super()._search_display_name(operator, value)
+        if self.env.context.get("bf_show_recipient_groups") and self.env[
+                "bf.recipient.group"]._groups_enabled():
+            return domain
+        return expression.AND([domain, [("bf_recipient_group_id", "=", False)]])

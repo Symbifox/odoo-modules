@@ -1,4 +1,4 @@
-"""Ce que les brouillons et le réacheminement ajoutent à la boîte OWL.
+"""Ce que la tâche #24649 ajoute à la boîte de réception OWL.
 
 Trois choses s'y jouent, et chacune a un mode de panne bien à elle :
 
@@ -426,7 +426,7 @@ class TestComposeClosingKeepsAParkedDraft(InboxExtrasCase):
     La coquille était donc effacée, et ``mail_thread.unlink`` supprime en
     cascade les envois programmés de la fiche. Le brouillon partait avec elle,
     sans erreur ni trace au journal. Reproduit sur la production le
-    2026-08-31, sur une coquille et un brouillon d'essai.
+    2026-08-31 (napkin #25125), sur une coquille et un brouillon d'essai.
 
     Ça ne mordait que sur le composeur de la boîte SANS cible : « Classer
     dans » est facultatif, et c'est exactement le chemin qu'emprunte un
@@ -493,7 +493,7 @@ class TestComposeClosingKeepsAParkedDraft(InboxExtrasCase):
 
 
 # ----------------------------------------------------------------------
-# « Enregistrer comme brouillon » — le bouton
+# « Enregistrer comme brouillon » — le bouton du napkin #25125
 # ----------------------------------------------------------------------
 @tagged("post_install", "-at_install")
 class TestSaveAsDraftButton(InboxExtrasCase):

@@ -7,7 +7,7 @@
  * que les préférences, le format de date, le rendu de l'expéditeur et le
  * gabarit d'aperçu vivaient en double, ils divergeaient à chaque retouche.
  * Les préférences partagent aussi leur clé de stockage : régler la densité
- * d'un côté la règle des deux côtés.
+ * d'un côté la règle des deux côtés. Tâche #24628.
  */
 
 const FRENCH_WEEKDAY = ["dim.", "lun.", "mar.", "mer.", "jeu.", "ven.", "sam."];
@@ -45,7 +45,7 @@ export const DEFAULT_SETTINGS = {
     columnsBrowser: { date: true, sender: true, state: true },
     // Ruban d'actions de l'aperçu replié en une ligne d'icônes. L'en-tête
     // (objet, De, À, date, dossier, pièces jointes) reste visible dans les
-    // deux états : c'est le contexte, pas une option.
+    // deux états : c'est le contexte, pas une option. Tâche #24976.
     ribbonCollapsed: false,
 };
 
@@ -250,7 +250,7 @@ export function flattenTree(items, expanded = {}) {
  * Un seul endroit décide de la mise en page des deux actions clientes :
  * tant que chacune portait ses propres `flex: 1 1 50%` en dur, changer l'une
  * ne changeait pas l'autre, et c'est exactement ce qui a fait diverger les
- * deux écrans la dernière fois.
+ * deux écrans la dernière fois. Tâche #24649.
  */
 export function paneStyles(settings) {
     const layout = settings.paneLayout === "right" ? "right" : "bottom";

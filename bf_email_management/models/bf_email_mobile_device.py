@@ -19,6 +19,8 @@ the same protection with nothing to get wrong.
 ``push_endpoint`` is a UnifiedPush (ntfy) endpoint — see push_transport.py.
 No FCM field: the app carries no Google dependency.
 """
+import base64
+import hashlib
 import logging
 import secrets
 from datetime import timedelta
@@ -70,6 +72,21 @@ class BfEmailMobileDevice(models.Model):
         groups="bf_email_management.group_email_admin",
     )
     pending_code_expiry = fields.Datetime()
+    # The PKCE challenge, and the whole reason this mechanism exists: a custom
+    # app scheme is NOT exclusive on Android. Another app may declare the same
+    # ``…://auth`` link and receive the pairing code instead of ours. Without
+    # PKCE it would trade that code for a bearer token, hence for the person's
+    # mailbox. With it, an intercepted code is worth nothing: the exchange
+    # demands a verifier only the app that started the pairing holds, and that
+    # never left it.
+    #
+    # The redirect-scheme allowlist does not cover this: it closes the open
+    # redirect on the SERVER, not the local interception of the code on the
+    # device.
+    pkce_challenge = fields.Char(
+        string="Défi PKCE", copy=False,
+        groups="bf_email_management.group_email_admin",
+    )
 
     _sql_constraints = [
         ("device_token_uniq", "unique(device_token)",
@@ -87,7 +104,8 @@ class BfEmailMobileDevice(models.Model):
         })
 
     @api.model
-    def _issue_pending(self, user_id, name=None, platform="android"):
+    def _issue_pending(self, user_id, name=None, platform="android",
+                       challenge=None):
         """Create a device row and return its single-use exchange code.
 
         Only the code is handed to the browser; the bearer token is revealed
@@ -99,19 +117,57 @@ class BfEmailMobileDevice(models.Model):
             "pending_code": code,
             "pending_code_expiry":
                 fields.Datetime.now() + timedelta(minutes=CODE_TTL_MINUTES),
+            "pkce_challenge": challenge or False,
         })
         return code
 
     @api.model
-    def _exchange(self, code):
-        """Consume a live exchange code, returning its device (or empty)."""
+    def _verifie_pkce(self, attendu, verificateur):
+        """True when the verifier matches the stored challenge.
+
+        The challenge is the SHA-256 of the verifier, base64url without
+        padding. The standard's ``plain`` method is not accepted here: it would
+        let a challenge equal to its verifier through, and protect nothing.
+        """
+        if not verificateur:
+            return False
+        condense = hashlib.sha256(verificateur.encode("utf-8")).digest()
+        calcule = base64.urlsafe_b64encode(condense).decode().rstrip("=")
+        # Constant time: a challenge compares like a secret.
+        return secrets.compare_digest(calcule, (attendu or "").strip())
+
+    @api.model
+    def _exchange(self, code, verificateur=None):
+        """Consume a live exchange code, returning its device (or empty).
+
+        The code alone is NOT enough: the PKCE verifier decides. A custom app
+        scheme not being exclusive on Android, it is the only thing telling the
+        app that started the pairing from the one that intercepted its answer.
+        """
         if not code:
             return self.browse()
         device = self.sudo().search([("pending_code", "=", code)], limit=1)
-        if not device or not device.pending_code_expiry \
-                or device.pending_code_expiry < fields.Datetime.now():
+        if not device:
             return self.browse()
-        device.write({"pending_code": False, "pending_code_expiry": False})
+        # The pending row is DROPPED, not left in place, on both refusals: its
+        # bearer token was never revealed — only the exchange hands it out —
+        # and a code replayed until the right app shows up would give the one
+        # that intercepted it a second chance.
+        if not device.pending_code_expiry \
+                or device.pending_code_expiry < fields.Datetime.now():
+            device.unlink()
+            return self.browse()
+        if not self._verifie_pkce(device.pkce_challenge, verificateur):
+            _logger.warning(
+                "Mobile mail API: exchange refused, PKCE verifier missing or "
+                "wrong")
+            device.unlink()
+            return self.browse()
+        device.write({
+            "pending_code": False,
+            "pending_code_expiry": False,
+            "pkce_challenge": False,
+        })
         return device
 
     @api.model

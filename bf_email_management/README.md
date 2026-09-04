@@ -379,6 +379,37 @@ The fast path now verifies the UID (`UID FETCH … BODY.PEEK[HEADER.FIELDS (MESS
 ### One definition of "inbox" (11.3+)
 It used to live in six copies — folder rail, mobile SQL filter, dashboard action, list-view search filter, window action domain, and the systray badge in JavaScript (`bf_email_systray`) — each carrying a comment asking the other five to stay in step. `bf.email._inbox_domain()` is now the source. The Python copies derive from it; the two that cannot are pinned by tests — the mobile SQL is compared to the domain **over the same rows** (not over its text), and the badge's JavaScript is read off disk and checked for every leaf.
 
+### Recipient groups (11.21+)
+
+Outlook-style distribution lists, inside the composer. A `bf.recipient.group`
+carries hand-picked members plus an optional domain over `res.partner`; the two
+are unioned, de-duplicated, and filtered down to active contacts that actually
+have an address. The domain is evaluated with the reader's own rights, never
+`sudo`, so a shared group is not a way to reach contacts you cannot see.
+
+Each group owns a `res.partner` proxy **with no email address**. That is what
+lets its name be typed into "To" like a distribution list, and it is also the
+safety property: an expansion that failed to happen sends to nobody rather than
+to a phantom address. The proxy is filtered out of `_search_display_name`
+everywhere except under the `bf_show_recipient_groups` context flag the composer
+sets.
+
+Expansion runs from four places on purpose: the `onchange` (so the members
+appear on screen while you write), the `partner_ids` and `partner_cc_ids`
+computes (clearing a template resets them, and `bf_recipient_group_ids` is the
+uncomputed memory that survives), and `_action_send_mail` as the last net for
+callers that go through no screen. A cap, `recipient_group_max` (default 50),
+applies per group **and** to the union; past `recipient_group_confirm_above`
+(default 10) the composer warns, because one message is sent and every recipient
+reads the others' addresses. Groups are refused outright in mass-mail mode.
+
+Groups are personal and shareable: two record rules, one for read
+(`owner OR shared`) and a narrower one for write (`owner`).
+
+The feature ships disabled. `recipient_group_enabled` is written as `0` with
+`noupdate` at install; set it to `1` to turn it on, and no later upgrade will
+switch it back off.
+
 ### Mobile API (6.8+)
 A REST/JSON surface under `/bf_email_management/mobile/v1/`, consumed by the **Odoo Inbox** Android app (the client is not part of this repository). Full contract in [MOBILE_API.md](MOBILE_API.md); the shape in brief:
 

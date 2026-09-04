@@ -70,8 +70,17 @@ class MailThread(models.AbstractModel):
         email_from = (msg_vals or {}).get("email_from") or message.email_from
         identity = self.env["bf.email.identity"].sudo()._for_sender(
             email_from, author_user)
-        if identity and (identity.signature_html or "").strip():
-            values["signature"] = identity.signature_html
+        if not identity:
+            return values
+        # Même cascade que le brouillon et que l'aperçu du composeur : la
+        # signature de l'identité, puis celle de la société de son COMPTE,
+        # puis rien (Odoo pose alors `res.users.signature`). Sans le deuxième
+        # temps, une identité d'une autre société sans signature propre
+        # repartait signée de la société principale de la personne.
+        signature = self.env["bf.email"].with_user(
+            author_user)._signature_for_identity(identity)
+        if (signature or "").strip():
+            values["signature"] = signature
         return values
 
     # Ce qui ouvre une citation, dans les trois chemins du module : la réponse

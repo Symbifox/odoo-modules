@@ -9,10 +9,9 @@ participant part avec, et son ``bf_dismissed_at`` aussi. Le rappel déjà écart
 repart alors sur tous les postes, et comme sa charge utile ``bus.bus`` porte
 un ``timer`` négatif, il repart immédiatement.
 
-Mesuré le 2026-08-31 sur une base de production : deux séries récurrentes ont
-vu chacune leurs 719 occurrences détruites puis recréées, à une heure
-d'intervalle, chaque fois suivies d'une poussée portant un ``timer`` négatif
-(``-212``, puis ``-215``).
+Mesuré sur une base réelle : deux séries de rendez-vous récurrents ont vu
+plusieurs centaines d'occurrences détruites puis recréées en bloc, chaque fois
+suivies d'une poussée portant un ``timer`` négatif. Tâche BF #25127.
 
 La clé retenue ne tient donc à aucun ``id`` : c'est l'UID CalDAV de la série,
 que le ``.ics`` conserve d'un import à l'autre, plus l'heure de début de

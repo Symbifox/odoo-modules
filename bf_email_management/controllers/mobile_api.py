@@ -188,8 +188,24 @@ class BfEmailMobileApi(http.Controller):
         if not has_account:
             return bounce(error="no_mailbox")
 
+        # PKCE is mandatory. A custom app scheme is not exclusive on Android:
+        # without a challenge, a code intercepted by another app would be
+        # traded for a bearer token on the person's mailbox.
+        #
+        # No grace period, deliberately (napkin #25275): devices already paired
+        # keep their token and never come back through the exchange. Only a NEW
+        # login started from a pre-lot APK breaks, and it breaks loudly, here,
+        # with a readable reason.
+        defi = (kw.get("code_challenge") or "").strip()
+        methode = (kw.get("code_challenge_method") or "S256").upper()
+        if not defi or methode != "S256":
+            _logger.info(
+                "Mobile mail API: pairing refused, PKCE challenge missing or "
+                "method %s not accepted", methode)
+            return bounce(error="pkce_required")
+
         code = request.env["bf.email.mobile.device"]._issue_pending(
-            user.id, name=kw.get("device_name"))
+            user.id, name=kw.get("device_name"), challenge=defi)
         return bounce(code=code)
 
     @http.route(f"{BASE}/auth/exchange", type="http", auth="public",
@@ -197,7 +213,8 @@ class BfEmailMobileApi(http.Controller):
     def auth_exchange(self, **kw):
         data = _body(**kw)
         device = request.env["bf.email.mobile.device"]._exchange(
-            (data.get("code") or "").strip())
+            (data.get("code") or "").strip(),
+            (data.get("code_verifier") or "").strip())
         if not device:
             return _json({"error": "invalid_or_expired_code"}, 401)
         request.update_env(user=device.user_id.id)
@@ -409,9 +426,16 @@ class BfEmailMobileApi(http.Controller):
                 csrf=False, save_session=False)
     @_authed
     def contacts(self, device, **kw):
-        """Address-book completion for the composer's To/Cc fields."""
+        """Address-book completion for the composer's To/Cc fields.
+
+        ``groups=1`` ajoute les groupes de destinataires, chacun portant ses
+        membres dépliés (napkin #25278). Le drapeau est explicite pour que le
+        client 2.37, qui attend une adresse par entrée, ne change pas de
+        comportement sans mise à jour.
+        """
         return _json(request.env["bf.email"].mobile_search_contacts(
-            kw.get("q") or "", limit=int(kw.get("limit") or 20)))
+            kw.get("q") or "", limit=int(kw.get("limit") or 20),
+            include_groups=str(kw.get("groups") or "") in ("1", "true", "True")))
 
     @http.route(f"{BASE}/records", type="http", auth="public", methods=["GET"],
                 csrf=False, save_session=False)

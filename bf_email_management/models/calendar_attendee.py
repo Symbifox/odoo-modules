@@ -82,7 +82,8 @@ class CalendarAttendee(models.Model):
         réimporte la série récurrente : elle rase la récurrence et toutes ses
         occurrences avant de les recréer avec des ``id`` neufs. L'accusé, lui,
         est classé sous l'UID CalDAV de la série et l'heure de l'occurrence,
-        que le ``.ics`` conserve. Voir ``bf_calendar_reminder_ack.py``.
+        que le ``.ics`` conserve. Voir ``bf_calendar_reminder_ack.py`` et la
+        tâche BF #25127.
         """
         for attendee in self:
             if not attendee.partner_id or not attendee.event_id:
@@ -208,7 +209,7 @@ class CalendarAttendee(models.Model):
         now = fields.Datetime.now()
         # The cron fires a reminder up to PUSH_LEAD *before* notify_at, so the
         # de-dup guards below must allow for that lead. Keeping the two in one
-        # constant is what stops them drifting apart again.
+        # constant is what stops them drifting apart again. BF task #25045.
         PUSH_LEAD = timedelta(seconds=70)
         horizon = now + PUSH_LEAD  # cron runs every minute
         # Catch alarms that fire in the next ~70s OR fired up to 60s ago

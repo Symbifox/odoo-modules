@@ -6,7 +6,7 @@ JSON simples — pour que les deux actions clientes partagent la même mise en
 page, les mêmes préférences et les mêmes raccourcis clavier.
 
 Rien ici n'est en ``sudo`` : la portée est toujours l'usager courant, et les
-règles d'enregistrement restent l'autorité.
+règles d'enregistrement restent l'autorité. Voir tâche #24628.
 """
 
 import email.utils
@@ -26,10 +26,10 @@ MAX_PAGE = 500
 # envoi programmé n'est pas encore un courriel, il n'a ni Message-ID ni
 # contrepartie IMAP, et lui fabriquer une ligne bf.email juste pour qu'il
 # s'affiche ici en ferait un faux courriel dans tous les comptages. La liste
-# bascule donc de source selon le dossier ouvert.
+# bascule donc de source selon le dossier ouvert. Tâche #24649.
 DRAFTS_FOLDER = "drafts"
 
-# Dossiers IMAP réels dans l'arbre de gauche. L'arborescence
+# Dossiers IMAP réels dans l'arbre de gauche (tâche #24976). L'arborescence
 # vient du serveur (cache `bf.email.account.folder_cache`) mais le CONTENU
 # reste des lignes `bf.email` : ouvrir « Archives/2026 » montre les lignes
 # Odoo classées là, avec Traité / Router / Ajouter et le lien vers le
@@ -39,6 +39,11 @@ DRAFTS_FOLDER = "drafts"
 IMAP_GROUP = "imapfolders"
 IMAP_ACCOUNT_PREFIX = "imapacct:"
 IMAP_FOLDER_PREFIX = "imapf:"
+
+# Une boîte de réception par compte, enfant de la boîte commune (#25273).
+# Préfixe distinct de IMAP_ACCOUNT_PREFIX : celui-là navigue dans les dossiers
+# du serveur, celui-ci filtre la boîte de travail.
+INBOX_ACCOUNT_PREFIX = "inboxacct:"
 
 # Réglage administrateur : `bf_email.show_imap_folders` à « 0 » retire le
 # groupe pour tout le monde.
@@ -151,6 +156,20 @@ class BfEmail(models.Model):
                 "icon": "fa-tags", "parent": False, "domain": None,
             },
         ]
+        # Une boîte par compte, enfants de la boîte commune (tâche #25273).
+        # Enfants et non remplaçants : le courrier né dans Odoo (chatter,
+        # passerelle) n'appartient à AUCUN compte, et une réponse fraîche reste
+        # sans compte jusqu'à ce que le miroir IMAP la reconnaisse. Des boîtes
+        # par compte au premier niveau laisseraient ce courrier sans domicile ;
+        # ici le parent reste l'union, donc rien ne disparaît jamais.
+        account_defs = self._inbox_account_defs()
+        if account_defs:
+            at = next(
+                (i + 1 for i, d in enumerate(defs) if d["key"] == "inbox"),
+                len(defs),
+            )
+            defs[at:at] = account_defs
+
         # Les vrais dossiers du serveur, juste sous la boîte de réception.
         # Repliés par défaut : la colonne de gauche ne change pour personne
         # tant que le groupe n'est pas ouvert.
@@ -216,7 +235,7 @@ class BfEmail(models.Model):
            Ce troisième cas naît quand une remise en boîte échoue parce que le
            dossier a été renommé ou vidé au webmail. Sans lui, la ligne
            quittait « Traités » sans jamais réapparaître dans la boîte : elle
-           tombait hors de toute liste de travail, en silence.
+           tombait hors de toute liste de travail, en silence. Tâche #24976.
         """
         return [
             ("is_handled", "=", False),
@@ -224,6 +243,40 @@ class BfEmail(models.Model):
             ("source", "in", ("chatter", "gateway")),
             ("imap_folder", "=", False),
         ]
+
+    @api.model
+    def _inbox_account_defs(self):
+        """Une boîte de réception par compte qui en demande une.
+
+        Cocher « Boîte de réception distincte » sur un compte lui donne son
+        entrée, à la couleur de sa société. Les comptes qui ne la demandent
+        pas n'apparaissent pas : une boîte de service comme ``bonjour@`` n'a
+        pas à occuper une ligne du panneau pour être relevée.
+
+        Aucune de ces entrées ne CACHE quoi que ce soit : ce sont des filtres
+        sur la boîte commune, pas des cloisons. Deux sociétés cohabitent ici
+        sans qu'on ait à choisir laquelle est active.
+        """
+        accounts = self._inbox_imap_accounts().filtered("own_inbox")
+        if len(accounts) < 1:
+            return []
+        inbox_domain = self._inbox_domain()
+        out = []
+        for account in accounts:
+            domain = inbox_domain + [("account_id", "=", account.id)]
+            out.append({
+                "key": "%s%s" % (INBOX_ACCOUNT_PREFIX, account.id),
+                "label": account.name or account.login,
+                "icon": "fa-inbox",
+                "parent": "inbox",
+                "colour": account._brand_colour(),
+                "title": _("%(name)s — %(company)s",
+                           name=account.login or "",
+                           company=account.company_id.name or _("sans société")),
+                "domain": domain,
+                "unread_domain": domain + [("status", "=", "new")],
+            })
+        return out
 
     @api.model
     def _inbox_imap_folders_enabled(self):
@@ -294,7 +347,7 @@ class BfEmail(models.Model):
             # sont pas perdues (« Tous les courriels », catégories, recherche
             # les gardent) mais elles disparaissent de cet axe de navigation
             # sans un mot. Les montrer rend la dérive visible au lieu de la
-            # cacher.
+            # cacher. Tâche #24976.
             orphans = [
                 {"name": name, "delimiter": "", "has_children": False,
                  "noselect": False, "stale": True}
@@ -473,6 +526,7 @@ class BfEmail(models.Model):
                 out.append({
                     "key": d["key"], "label": d["label"], "icon": d["icon"],
                     "title": d.get("title") or d["label"],
+                    "colour": d.get("colour") or False,
                     "parent": d["parent"], "selectable": False,
                     "count": 0, "unread_count": 0,
                 })
@@ -483,6 +537,7 @@ class BfEmail(models.Model):
                 out.append({
                     "key": d["key"], "label": d["label"], "icon": d["icon"],
                     "title": d.get("title") or d["label"],
+                    "colour": d.get("colour") or False,
                     "parent": d["parent"], "selectable": True,
                     "count": count,
                     "unread_count": imap_unread.get(imap_key, 0),
@@ -499,6 +554,7 @@ class BfEmail(models.Model):
             out.append({
                 "key": d["key"], "label": d["label"], "icon": d["icon"],
                 "title": d.get("title") or d["label"],
+                "colour": d.get("colour") or False,
                 "parent": d["parent"], "selectable": True,
                 "count": count, "unread_count": unread,
             })
@@ -577,6 +633,16 @@ class BfEmail(models.Model):
             "record_name": self.record_name or "",
             "is_to_me": self.is_to_me,
             "is_question": self.is_question,
+            # Couleur de la société du compte (#25273). C'est dans la boîte
+            # COMMUNE qu'elle sert : deux sociétés y cohabitent et rien
+            # d'autre ne dit laquelle est laquelle. Vide pour le courrier né
+            # dans Odoo, qui n'a pas de compte, et la pastille disparaît.
+            # ``account_id`` puis ``company_id`` sont lus par lot grâce au
+            # préchargement : deux requêtes par page, pas deux par ligne.
+            "colour": (
+                self.account_id._brand_colour() if self.account_id else False
+            ),
+            "company_name": self.company_id.display_name or "",
         }
         if with_thread:
             row["thread_count"] = self.thread_count
@@ -922,7 +988,7 @@ class BfEmail(models.Model):
             # coquille l'emporterait EN CASCADE — ``mail_thread.unlink``
             # supprime les envois programmés de la fiche — et le brouillon
             # disparaîtrait sans un mot, ni à l'écran ni au journal. Reproduit
-            # le 2026-08-31 : coquille et brouillon créés,
+            # le 2026-08-31 (napkin #25125) : coquille et brouillon créés,
             # composeur refermé, les deux évanouis de la table.
             #
             # La coquille reste donc en vie tant qu'un brouillon s'y appuie,

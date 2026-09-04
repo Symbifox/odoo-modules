@@ -1,4 +1,4 @@
-"""Surface RPC de l'action cliente « Boîte de réception ».
+"""Surface RPC de l'action cliente « Boîte de réception » (tâche #24628).
 
 Ce que ces tests gardent : la portée (jamais la boîte d'un collègue), la
 liste blanche d'actions (le nom de la méthode vient du navigateur, donc du

@@ -26,7 +26,7 @@ Quatre niveaux de réglage, du plus large au plus fin :
   tient les trente secondes pleines ; le reste passe en huit.
 - ``bf.email.account.popup_snooze_minutes`` — le report du bouton « Reporter ».
 
-LE PLAFOND DE TRENTE SECONDES
+LE PLAFOND DE TRENTE SECONDES (tâche #25069)
 --------------------------------------------
 
 Un avis ne doit pas occuper l'écran plus de trente secondes, **toutes fenêtres

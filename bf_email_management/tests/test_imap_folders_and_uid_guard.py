@@ -511,7 +511,7 @@ class TestSweepAcrossMailboxes(MobileApiCase):
     boîte de la LIGNE, n'y trouve rien, et rend la main. Le message restait
     dans l'INBOX du compte A pour toujours, rejoué toutes les heures sans
     effet et sans avertissement. Constaté en production BF le 2026-08-26 sur
-    trois courriels.
+    trois courriels. Tâche #24976.
     """
 
     def setUp(self):

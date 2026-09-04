@@ -51,6 +51,9 @@
                         <group string="Identité">
                             <field name="user_id" readonly="1"/>
                             <field name="active" invisible="1"/>
+                            <field name="company_id"
+                                   options="{'no_create': True}"/>
+                            <field name="own_inbox"/>
                             <field name="email_aliases"
                                    placeholder="bonjour@…, info@…"/>
                         </group>

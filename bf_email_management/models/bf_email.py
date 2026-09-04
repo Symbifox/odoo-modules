@@ -1033,7 +1033,8 @@ class BfEmail(models.Model):
         quiconque ait ouvert le message, et chaque client ouvert écrivait la
         même ligne au même instant — six écritures concurrentes par courriel
         entrant, donc autant d'échecs de sérialisation rejoués par Odoo.
-        
+        Tâche #25003.
+
         Le drapeau de contexte réserve le marquage au chargement d'un vrai
         formulaire, qui appelle ``web_read`` directement.
 
@@ -1518,7 +1519,7 @@ class BfEmail(models.Model):
 
         On ne ment pas dans l'autre sens non plus : ``imap_in_inbox`` reste
         faux, parce que le message n'est pas dans l'INBOX du serveur — il
-        n'est nulle part que nous sachions.
+        n'est nulle part que nous sachions. Tâche #24976.
         """
         self.write({"imap_uid": False, "imap_folder": False,
                     "imap_in_inbox": False})
@@ -1586,7 +1587,7 @@ class BfEmail(models.Model):
         and leaves the observed copy in the INBOX **for ever** — silently,
         once an hour. Measured on BF 2026-08-26: three mails handled since
         the day before, still in the other mailbox's INBOX, replayed hourly
-        with no effect and no warning.
+        with no effect and no warning. Task #24976.
 
         ⚠️ When acting on a foreign mailbox the row is **not** rewritten:
         its ``imap_uid`` / ``imap_folder`` describe *its own* copy, in *its
@@ -2246,13 +2247,52 @@ class BfEmail(models.Model):
         reprend alors la main et signe à l'envoi. C'est voulu.
         """
         self.ensure_one()
-        return self._compose_signature_block_for_user()
+        return self._compose_signature_block_for_user(
+            identity=self._compose_identity())
 
     @api.model
-    def _compose_signature_block_for_user(self):
-        """Le même bloc, sans rangée sous la main (app mobile, réglages)."""
-        signature = self.env.user.signature or ""
-        if not signature.strip():
+    def _signature_for_identity(self, identity=None):
+        """La signature qui va avec l'adresse d'expédition, en trois temps.
+
+        ⚠️ Ce chemin-ci signait ``self.env.user.signature`` en dur, c'est-à-dire
+        la signature de la société PRINCIPALE de la personne, quelle que soit
+        l'adresse choisie. Répondre depuis une identité d'une autre société
+        posait donc la mauvaise signature dans le brouillon — et en mode
+        « brouillon » c'est le corps qui gagne : ``mail_thread`` voit le
+        marqueur et n'en ajoute pas une seconde. La bonne signature de l'envoi
+        n'avait alors jamais sa chance.
+
+        L'ordre, le même que celui de l'envoi et de l'aperçu du composeur, pour
+        que les trois disent la même chose :
+
+        1. la signature propre de l'identité ;
+        2. à défaut, le rendu de la société du COMPTE de l'identité
+           (``bf_signature_rendered`` de ``bf_multi_company_email``, qui est
+           ``company_dependent``, d'où le ``with_company``) ;
+        3. à défaut, ``res.users.signature``, celle de la société principale.
+        """
+        user = self.env.user
+        if identity and (identity.signature_html or "").strip():
+            return identity.signature_html
+        company = identity.account_id.company_id if identity else None
+        if company and "bf_signature_rendered" in user._fields:
+            rendered = user.with_company(company).bf_signature_rendered or ""
+            if rendered.strip():
+                return rendered
+        return user.signature or ""
+
+    @api.model
+    def _compose_signature_block_for_user(self, identity=None):
+        """Le même bloc, sans rangée sous la main (app mobile, réglages).
+
+        Sans identité explicite, celle par défaut de la personne : le
+        téléphone n'a pas de sélecteur d'adresse, il doit quand même signer
+        comme signerait le bureau.
+        """
+        if identity is None:
+            identity = self.env["bf.email.identity"]._default_for(self.env.user)
+        signature = self._signature_for_identity(identity)
+        if not (signature or "").strip():
             return ""
         return f'<div class="{self.SIGNATURE_MARKER}">{signature}</div>'
 
@@ -2767,7 +2807,7 @@ class BfEmail(models.Model):
         doublon à écarter au hasard. On déplace donc le message : c'est le même
         courriel qui change de dossier, pas un nouveau.
 
-        Retourne le ``mail.message`` déplacé.
+        Retourne le ``mail.message`` déplacé. Tâche #24649.
         """
         self.ensure_one()
         target.ensure_one()
@@ -3104,8 +3144,8 @@ class BfEmail(models.Model):
         Excludes portal/share users, inactive users, OdooBot and the uids
         listed in ICP ``bf_email.route_exclude_user_ids`` (comma-separated
         — service accounts like the meeting-processor API user shouldn't
-        accumulate inbox rows nobody reads; same knob name as the reference
-        copy of this module).
+        accumulate inbox rows nobody reads; same knob name as the other
+        tenants' copies of this module).
 
         When no internal user is *notified* — the classic case being an
         inbound customer reply that Odoo logs on a record as a bare "Note"
@@ -3349,8 +3389,8 @@ class BfEmail(models.Model):
     def imap_wake(self, reason=False):
         """Run the IMAP ingestion now instead of waiting for the 5-minute cron.
 
-        Called over XML-RPC by an external IMAP IDLE watcher, which holds one
-        IMAP IDLE connection per active account and fires this
+        Called over XML-RPC by the ``symbifox-imap-idle`` companion container,
+        which holds one IMAP IDLE connection per active account and fires this
         the moment the server announces an arrival. All it does is ask the
         scheduler to run
         ``ir_cron_sync_imap`` immediately: ``_trigger`` writes an
@@ -3482,7 +3522,8 @@ class BfEmail(models.Model):
         # allowed_company_ids is *replaced*, not with_company()'d — see the
         # note in _cron_sync_emails.
         owner_env = self.with_user(account.user_id).with_context(
-            allowed_company_ids=account.user_id.company_id.ids
+            allowed_company_ids=(
+                account.company_id or account.user_id.company_id).ids
         ).env
         BfEmail = owner_env["bf.email"]
         try:
@@ -3541,7 +3582,8 @@ class BfEmail(models.Model):
 
             # Owner environment so any new row inherits user_id / company_id.
             owner_env = self.with_user(account.user_id).with_context(
-                allowed_company_ids=account.user_id.company_id.ids
+                allowed_company_ids=(
+                account.company_id or account.user_id.company_id).ids
             ).env
             BfEmail = owner_env["bf.email"]
 
@@ -3632,7 +3674,7 @@ class BfEmail(models.Model):
             # Le report ne vaut que s'il RAPPELLE. Un courriel qui rentre en
             # boîte sans rien dire, c'est un courriel qu'on ne reverra qu'au
             # prochain coup d'oeil à la liste — et le bouton « Reporter » de
-            # l'avis aurait alors servi à faire disparaître,
+            # l'avis (tâche #25069) aurait alors servi à faire disparaître,
             # pas à différer. L'avis repart donc avec lui, à cinq minutes
             # près, marqué comme un réveil plutôt qu'une arrivée.
             #
@@ -3935,7 +3977,7 @@ class BfEmail(models.Model):
                     "imap_folder": folder,
                     "user_id": account.user_id.id,
                     "account_id": account.id,
-                    "company_id": account.user_id.company_id.id,
+                    "company_id": (account.company_id or account.user_id.company_id).id,
                 })
                 if not existing_msg.body:
                     # « L'interne gagne » suppose que la copie d'Odoo porte le
@@ -4020,7 +4062,7 @@ class BfEmail(models.Model):
             "author_id": author.id if author else False,
             "has_attachments": bool(attachments),
             "attachment_count": len(attachments),
-            "company_id": account.user_id.company_id.id,
+            "company_id": (account.company_id or account.user_id.company_id).id,
             "user_id": account.user_id.id,
             "account_id": account.id,
             "imap_uid": str(uid),
@@ -4661,8 +4703,13 @@ class BfEmail(models.Model):
         if not raw:
             raise UserError(_("Impossible de récupérer le UID %s.", uid))
         # Ingest in the account owner's environment so user_id/company_id
-        # are derived correctly.
-        owner_env = self.with_user(account.user_id)
+        # are derived correctly. ``allowed_company_ids`` comme les deux crons :
+        # sans lui, une ingestion manuelle depuis le navigateur IMAP écrirait
+        # la société principale de la personne au lieu de celle du compte.
+        owner_env = self.with_user(account.user_id).with_context(
+            allowed_company_ids=(
+                account.company_id or account.user_id.company_id).ids
+        )
         owner_env._ingest_rfc822(raw, int(uid), folder, account)
         # Look up the resulting row (may have existed already via dedup).
         msg = bf_email_imap.parse_rfc822(raw)

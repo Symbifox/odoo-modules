@@ -8,7 +8,7 @@
              serveur repart vers Archives/{YYYY}. Sans lui, une recopie ratée
              (réseau, quota, dossier absent) ou un chemin de code qui pose
              is_handled sans passer par action_archive laisse le message dans
-             l'INBOX pour toujours, et rien ne le signale. -->
+             l'INBOX pour toujours, et rien ne le signale. Tâche #24628. -->
         <record id="ir_cron_imap_writeback_sweep" model="ir.cron">
             <field name="name">Courriels : recopie IMAP des traités (balayage)</field>
             <field name="model_id" ref="model_bf_email"/>

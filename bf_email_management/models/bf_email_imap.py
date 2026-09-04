@@ -1,7 +1,7 @@
 """IMAP fetch and RFC 2822 parsing helpers for bf_email_management.
 
 Used by ``bf.email._cron_sync_imap`` and the reroute / backfill wizards.
-Mirrors the logic of the personal-email import so the IMAP
+Mirrors the logic of ``scripts/import_personal_email.py`` so the IMAP
 ingestion path on the Odoo side stays consistent with the CLI tool.
 """
 
@@ -339,7 +339,7 @@ def attachment_to_b64(content_bytes):
 def unwrap_double_encoded_html(stored_body):
     """Reverse double-HTML-escape if the chatter stored ``&lt;p&gt;…``.
 
-    Mirrors the post-fix in the personal-email import.
+    Mirrors the post-fix in scripts/import_personal_email.py:264.
     """
     if not stored_body:
         return stored_body
@@ -352,7 +352,7 @@ def unwrap_double_encoded_html(stored_body):
 
 
 # ----------------------------------------------------------------------
-# Vérification d'UID et découverte des dossiers
+# Vérification d'UID et découverte des dossiers (tâche #24976)
 # ----------------------------------------------------------------------
 
 def normalize_message_id(value):

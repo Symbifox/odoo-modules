@@ -1,7 +1,7 @@
 /** @odoo-module **/
 
 /*
- * Avis à l'arrivée d'un courriel.
+ * Avis à l'arrivée d'un courriel — tâche #25069.
  *
  * Le serveur pousse un identifiant sur `bf_email/popup` (voir
  * models/popup_transport.py) et c'est ici qu'on décide de l'afficher.

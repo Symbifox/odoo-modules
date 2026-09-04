@@ -166,4 +166,10 @@
               action="action_bf_email_imap_backfill"
               sequence="15"/>
 
+    <menuitem id="menu_bf_recipient_group"
+              name="Groupes de destinataires"
+              parent="menu_bf_email_config"
+              action="action_bf_recipient_group"
+              sequence="3"/>
+
 </odoo>

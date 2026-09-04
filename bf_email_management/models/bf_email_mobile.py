@@ -37,7 +37,7 @@ from datetime import datetime, time, timedelta
 import pytz
 
 from odoo import _, api, fields, models, tools
-from odoo.exceptions import AccessError, UserError
+from odoo.exceptions import AccessError, UserError, ValidationError
 
 from . import bf_email_imap
 from .subject_utils import dedup_subject_prefix
@@ -167,7 +167,7 @@ class BfEmailMobile(models.Model):
             ("push_endpoint", "!=", False),
         ]))
         # Second transport, le même relevé. ⚠️ Le test du push ne suffit plus
-        # à décider : depuis l'avis dans Odoo, une personne peut le vouloir
+        # à décider : depuis la tâche #25069, une personne peut vouloir l'avis
         # dans Odoo sans avoir d'appareil inscrit — c'est même le cas normal
         # depuis que bf_email.push_enabled est à 0. Sortir sur le seul
         # `wants_push` sautait alors le relevé, donc l'avis, sans rien dire.
@@ -1143,7 +1143,7 @@ class BfEmailMobile(models.Model):
     # Odoo-side actions
     # ------------------------------------------------------------------
     @api.model
-    def mobile_search_contacts(self, term, limit=20):
+    def mobile_search_contacts(self, term, limit=20, include_groups=False):
         """Address-book lookup for the To/Cc fields.
 
         Separate from ``mobile_search_records`` because that one answers "which
@@ -1165,18 +1165,65 @@ class BfEmailMobile(models.Model):
         partners = self.env["res.partner"].search(
             [
                 ("email", "!=", False),
+                # La fiche d'un groupe de destinataires n'a pas d'adresse et
+                # tombe donc d'elle-même ; la condition est explicite pour que
+                # personne ne la retire en croyant élargir la recherche.
+                ("bf_recipient_group_id", "=", False),
                 "|", ("name", "ilike", term), ("email", "ilike", term),
             ],
             limit=min(int(limit or 20), 30),
             order="name",
         )
-        return {"contacts": [{
+        contacts = [{
             "id": partner.id,
             "name": partner.display_name or "",
             "email": partner.email or "",
             # A company's people are worth telling apart from the company.
             "company": partner.parent_id.display_name or "",
-        } for partner in partners]}
+        } for partner in partners]
+        if include_groups:
+            contacts = self._mobile_recipient_groups(term) + contacts
+        return {"contacts": contacts}
+
+    @api.model
+    def _mobile_recipient_groups(self, term):
+        """Les groupes de destinataires, sous forme de contacts dépliables.
+
+        ⚠️ Derrière ``include_groups`` et pas dans la réponse par défaut : le
+        client 2.37 attend une adresse par entrée et afficherait un contact
+        vide. L'application les demandera quand elle saura les déplier
+        (napkin #25278, appli 2.38).
+
+        Un groupe trop gros n'est pas rendu tronqué, il n'est pas rendu du
+        tout : une liste amputée en silence est pire qu'une liste absente.
+        """
+        Group = self.env["bf.recipient.group"]
+        if not Group._groups_enabled():
+            return []
+        groups = Group.search(
+            [("name", "ilike", term)], limit=10, order="name")
+        out = []
+        for group in groups:
+            try:
+                members = group._resolve_partners()
+            except (UserError, ValidationError):
+                continue
+            if not members:
+                continue
+            out.append({
+                "id": group.proxy_ids[:1].id or 0,
+                "name": group.name,
+                "email": "",
+                "company": "",
+                "is_group": True,
+                "field": group.recipient_field,
+                "members": [{
+                    "id": partner.id,
+                    "name": partner.display_name or "",
+                    "email": partner.email or "",
+                } for partner in members],
+            })
+        return out
 
     @api.model
     def mobile_search_records(self, model, term, limit=20):
