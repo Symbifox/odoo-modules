@@ -10,3 +10,10 @@ from . import test_privacy_destruction_campaign
 from . import test_privacy_anonymization_assessment
 from . import test_privacy_destruction_document_workflow
 from . import test_privacy_framework
+from . import test_notice_version_integrity
+from . import test_destruction_certificate_truth
+from . import test_mail_template_cta
+
+from . import test_portal_renewal_http
+from . import test_refusal_closes_link
+from . import test_destruction_really_destroys

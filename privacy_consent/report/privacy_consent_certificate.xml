@@ -4,12 +4,19 @@
     <template id="report_consent_certificate_document">
         <t t-call="web.html_container">
             <t t-foreach="docs" t-as="o">
+                <t t-set="co" t-value="o.consent_id.company_id or env.company"/>
+                <t t-set="_wlf" t-value="co._fields"/>
+                <t t-set="brand_primary" t-value="('report_brand_primary' in _wlf and co.report_brand_primary) or '#32373c'"/>
+                <t t-set="brand_dark" t-value="('report_brand_dark' in _wlf and co.report_brand_dark) or '#32373c'"/>
                 <t t-set="framework" t-value="o.consent_id.get_framework()"/>
                 <div class="article" style="font-family: 'Segoe UI', Arial, sans-serif; color: #1a1a1a;">
                     <!-- En-t&#234;te brand&#233; -->
-                    <div style="text-align: center; margin-bottom: 24px; border-bottom: 3px solid #32373c; padding-bottom: 16px;">
-                        <div style="font-size: 28px; font-weight: 700; color: #32373c; letter-spacing: 1px;">
-                            CONSENTEMENT.QUEBEC
+                    <div t-attf-style="text-align: center; margin-bottom: 24px; border-bottom: 3px solid {{ brand_primary }}; padding-bottom: 16px;">
+                        <div t-if="co.logo" style="margin-bottom: 8px;">
+                            <img t-attf-src="/web/image/res.company/{{ co.id }}/logo" style="max-height: 56px; width: auto;"/>
+                        </div>
+                        <div t-attf-style="font-size: 28px; font-weight: 700; color: {{ brand_dark }}; letter-spacing: 1px;">
+                            <t t-esc="co.name"/>
                         </div>
                         <div style="font-size: 11px; color: #6B7280; margin-top: 4px; letter-spacing: 0.5px;">
                             CERTIFICAT DE CONSENTEMENT &#8212; <t t-esc="framework.law_short_label"/>
@@ -38,7 +45,7 @@
                     <div style="text-align: center; margin-bottom: 24px;">
                         <div style="display: inline-block; background-color: #f3f4f6; padding: 10px 20px; border-radius: 6px; border: 1px solid #e5e7eb;">
                             <span style="font-size: 11px; color: #6B7280;">R&#233;f&#233;rence :</span>
-                            <span style="font-size: 14px; font-weight: 600; color: #32373c;">
+                            <span t-attf-style="font-size: 14px; font-weight: 600; color: {{ brand_dark }};">
                                 CONS-<t t-esc="o.consent_id.id"/>-<t t-esc="o.id"/>
                             </span>
                         </div>
@@ -46,7 +53,7 @@
 
                     <!-- Personne concern&#233;e -->
                     <div style="margin-bottom: 20px;">
-                        <h4 style="font-size: 13px; font-weight: 700; color: #32373c; border-bottom: 2px solid #32373c; padding-bottom: 6px; margin-bottom: 12px;">
+                        <h4 t-attf-style="font-size: 13px; font-weight: 700; color: {{ brand_primary }}; border-bottom: 2px solid {{ brand_primary }}; padding-bottom: 6px; margin-bottom: 12px;">
                             PERSONNE CONCERN&#201;E / DATA SUBJECT
                         </h4>
                         <table style="width: 100%; border-collapse: collapse;">
@@ -75,7 +82,7 @@
 
                     <!-- D&#233;tails du consentement -->
                     <div style="margin-bottom: 20px;">
-                        <h4 style="font-size: 13px; font-weight: 700; color: #32373c; border-bottom: 2px solid #32373c; padding-bottom: 6px; margin-bottom: 12px;">
+                        <h4 t-attf-style="font-size: 13px; font-weight: 700; color: {{ brand_primary }}; border-bottom: 2px solid {{ brand_primary }}; padding-bottom: 6px; margin-bottom: 12px;">
                             D&#201;TAILS DU CONSENTEMENT / CONSENT DETAILS
                         </h4>
                         <table style="width: 100%; border-collapse: collapse;">
@@ -133,7 +140,7 @@
 
                     <!-- Donn&#233;es probantes -->
                     <div style="margin-bottom: 20px;">
-                        <h4 style="font-size: 13px; font-weight: 700; color: #32373c; border-bottom: 2px solid #32373c; padding-bottom: 6px; margin-bottom: 12px;">
+                        <h4 t-attf-style="font-size: 13px; font-weight: 700; color: {{ brand_primary }}; border-bottom: 2px solid {{ brand_primary }}; padding-bottom: 6px; margin-bottom: 12px;">
                             DONN&#201;ES PROBANTES / FORENSIC DATA
                         </h4>
                         <table style="width: 100%; border-collapse: collapse; font-size: 11px;">
@@ -158,7 +165,7 @@
 
                     <!-- Empreinte d'int&#233;grit&#233; -->
                     <div style="margin-bottom: 20px;" t-if="o.evidence_hash">
-                        <h4 style="font-size: 13px; font-weight: 700; color: #32373c; border-bottom: 2px solid #32373c; padding-bottom: 6px; margin-bottom: 12px;">
+                        <h4 t-attf-style="font-size: 13px; font-weight: 700; color: {{ brand_primary }}; border-bottom: 2px solid {{ brand_primary }}; padding-bottom: 6px; margin-bottom: 12px;">
                             INT&#201;GRIT&#201; / INTEGRITY
                         </h4>
                         <div style="background-color: #f3f4f6; padding: 10px; border-radius: 6px; font-family: monospace; font-size: 9px; word-break: break-all; border: 1px solid #e5e7eb;">
@@ -167,8 +174,8 @@
                     </div>
 
                     <!-- Avis juridique -->
-                    <div style="margin-top: 24px; background-color: #f0f4f8; padding: 14px; border-radius: 6px; border-left: 4px solid #32373c;">
-                        <p style="font-size: 10px; font-weight: 700; color: #32373c; margin: 0 0 6px 0;">
+                    <div t-attf-style="margin-top: 24px; background-color: #f0f4f8; padding: 14px; border-radius: 6px; border-left: 4px solid {{ brand_primary }};">
+                        <p t-attf-style="font-size: 10px; font-weight: 700; color: {{ brand_primary }}; margin: 0 0 6px 0;">
                             AVIS JURIDIQUE / LEGAL NOTICE
                         </p>
                         <p style="font-size: 9px; color: #374151; line-height: 14px; margin: 0 0 6px 0;">
@@ -186,9 +193,8 @@
 
                 <!-- Pied de page -->
                 <div class="footer" style="font-size: 9px; color: #9CA3AF; text-align: center; border-top: 1px solid #e5e7eb; padding-top: 6px;">
-                    <span style="font-weight: 600; color: #32373c;">CONSENTEMENT.QUEBEC</span>
-                    &#160;&#8212;&#160;
-                    Propuls&#233; par Your Company Name &#160;|&#160;
+                    <span t-attf-style="font-weight: 600; color: {{ brand_dark }};" t-esc="co.name"/>
+                    &#160;|&#160;
                     R&#233;f. CONS-<t t-esc="o.consent_id.id"/>-<t t-esc="o.id"/>
                     &#160;|&#160;
                     <t t-esc="o.collected_at" t-options="{'widget': 'date'}"/>

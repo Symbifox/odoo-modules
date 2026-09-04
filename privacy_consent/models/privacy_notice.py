@@ -1,4 +1,7 @@
+from datetime import timedelta
+
 from odoo import api, fields, models
+from odoo.exceptions import UserError
 
 
 class PrivacyNotice(models.Model):
@@ -123,6 +126,48 @@ class PrivacyNotice(models.Model):
                 if record.purpose_id:
                     record.purpose_id.name = vals["name"]
         return res
+
+    def _body_for_current_lang(self):
+        """Le corps du modèle dans la langue de l'utilisateur, français par défaut."""
+        self.ensure_one()
+        lang = self.env.user.lang or "fr_CA"
+        return self.body_fr if lang.startswith("fr") else (self.body_en or self.body_fr)
+
+    def _ensure_current_version(self):
+        """La version courante du modèle, créée en v1.0 si elle n'existe pas.
+
+        ⚠ Le portail et les courriels rendent ``notice_version_id.body``, jamais
+        ``body_fr`` : sans version, le texte juridique n'est visible d'aucun
+        client. Tout chemin qui crée un consentement doit passer par ici.
+        """
+        self.ensure_one()
+        version = self.current_version_id
+        if version:
+            return version
+        body = self._body_for_current_lang()
+        if not body:
+            raise UserError(
+                f"Le modèle « {self.name} » n'a pas de contenu. "
+                "Veuillez ajouter du contenu avant de demander le consentement."
+            )
+        return self.env["privacy.notice.version"].create({
+            "notice_id": self.id,
+            "version": "1.0",
+            "body": body,
+            "effective_date": fields.Date.today(),
+        })
+
+    def _expiry_from_now(self):
+        """Date d'expiration déduite de la validité par défaut du modèle.
+
+        Partagée par l'assistant de demande et par le parcours : les deux
+        doivent la calculer pareil.
+        """
+        self.ensure_one()
+        validity_days = self.default_validity_days
+        if validity_days and validity_days > 0:
+            return fields.Datetime.now() + timedelta(days=validity_days)
+        return False
 
     def action_create_version(self):
         """Open wizard to create a new version of this notice."""

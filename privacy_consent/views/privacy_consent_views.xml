@@ -35,9 +35,17 @@
                             string="Renouveler" class="btn-secondary"
                             icon="fa-refresh"
                             invisible="status not in ('granted', 'expired') or renewed_to_id"/>
+                    <!-- Décision de gouvernance du 2026-08-03 : un refus ferme le
+                         lien d'origine. Redonner l'occasion de consentir passe par une
+                         DEMANDE DISTINCTE — nouvel identifiant, nouveau jeton — et
+                         jamais par une remise en brouillon du refus. -->
+                    <button name="action_new_request_after_refusal" type="object"
+                            string="Renvoyer une nouvelle demande" class="btn-primary"
+                            icon="fa-paper-plane"
+                            invisible="status != 'refused' or renewed_to_id"/>
                     <button name="action_reset_to_draft" type="object"
                             string="Remettre en brouillon"
-                            invisible="status in ('granted', 'withdrawn')"
+                            invisible="status in ('granted', 'withdrawn', 'refused')"
                             groups="privacy_consent.group_privacy_manager"/>
                     <field name="status" widget="statusbar"
                            statusbar_visible="draft,pending,granted"/>

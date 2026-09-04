@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from unittest.mock import patch
 
 from odoo import fields
 from odoo.exceptions import ValidationError
@@ -135,3 +136,64 @@ class TestPrivacyDocumentClassification(TransactionCase):
         action = cls_record.action_view_source_record()
         self.assertEqual(action["res_model"], "res.partner")
         self.assertEqual(action["res_id"], self.partner.id)
+
+    # === Point d'extension (#24851) ===
+
+    def test_classifiable_models_defaults_to_constant(self):
+        """Sans surcharge, le point d'extension rend la constante."""
+        Classification = self.env["privacy.document.classification"]
+        self.assertEqual(
+            Classification._privacy_classifiable_models(),
+            set(Classification.ALLOWED_MODELS),
+        )
+
+    def test_enterprise_only_models_are_not_classifiable(self):
+        """Les modèles Odoo Enterprise absents d'ici ne sont plus offerts.
+
+        `sign`, `documents` et `hr_payroll` ne sont installés sur aucun de nos
+        locataires : les lister laissait croire qu'une demande d'effacement
+        pouvait les atteindre. Notre module de signature est `bf_sign`, dont
+        le modèle est `bf.sign.request` — ajouté par le pont, pas ici.
+        """
+        allowed = self.env["privacy.document.classification"]._privacy_classifiable_models()
+        for model in ("sign.request", "sign.request.item",
+                      "documents.document", "hr.payslip"):
+            self.assertNotIn(model, allowed)
+
+    def test_override_extends_allowed_models(self):
+        """Une surcharge du point d'extension rend un modèle classifiable.
+
+        C'est le contrat sur lequel s'appuient les ponts vie privée : la
+        contrainte doit lire la méthode, pas la constante.
+        """
+        Classification = self.env["privacy.document.classification"]
+        base = Classification._privacy_classifiable_models()
+        self.assertNotIn("res.country", base)
+
+        with patch.object(
+            type(Classification),
+            "_privacy_classifiable_models",
+            lambda self: base | {"res.country"},
+        ):
+            record = Classification.create({
+                "res_model": "res.country",
+                "res_id": self.env.ref("base.ca").id,
+                "pi_category": "other",
+            })
+            self.assertTrue(record.id)
+
+    def test_constraint_still_refuses_outside_the_override(self):
+        """La surcharge n'ouvre que ce qu'elle nomme, pas le reste."""
+        Classification = self.env["privacy.document.classification"]
+        base = Classification._privacy_classifiable_models()
+        with patch.object(
+            type(Classification),
+            "_privacy_classifiable_models",
+            lambda self: base | {"res.country"},
+        ):
+            with self.assertRaises(ValidationError):
+                Classification.create({
+                    "res_model": "ir.module.module",
+                    "res_id": 1,
+                    "pi_category": "other",
+                })

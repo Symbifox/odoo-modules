@@ -7,6 +7,10 @@ from odoo.exceptions import UserError
 
 _logger = logging.getLogger(__name__)
 
+# Les méthodes qui affirment que l'enregistrement a DISPARU. « anonymize » et
+# « archive » disent l'inverse : la ligne survit, neutralisée ou mise de côté.
+_REMOVAL_METHODS = ("delete", "secure_wipe")
+
 
 class PrivacyDestructionRegister(models.Model):
     """Registre de destruction immuable (Art. 3.2 LPRPSP).
@@ -111,6 +115,46 @@ class PrivacyDestructionRegister(models.Model):
         readonly=True,
     )
 
+    # Portée — ce que l'entrée affirme avoir détruit DANS l'enregistrement visé.
+    #
+    # ⚠ Sans ce champ, le registre n'a aucune place pour dire « j'ai détruit une
+    # PARTIE de cet enregistrement », et trois ponts en production écrivent
+    # pourtant exactement cela : un pont qui purge les fichiers d'un transfert en
+    # laissant le transfert debout, un autre qui efface les événements d'un profil
+    # en gardant le profil, un troisième qui efface la transcription brute d'une
+    # rencontre en conservant le compte rendu. Leur triplet
+    # res_model / res_id / méthode « Suppression » se lit « cet enregistrement a
+    # été supprimé » alors que la description dit le contraire.
+    #
+    # La garde de `create()` ne peut donc pas se contenter du triplet : elle lit
+    # la portée d'abord. Une destruction partielle DOIT le déclarer ici, et
+    # nommer dans `res_field` ce qui est parti.
+    destruction_scope = fields.Selection(
+        selection=[
+            ("full", "Enregistrement entier"),
+            ("partial", "Partie de l'enregistrement"),
+        ],
+        string="Portée de la destruction",
+        default="full",
+        required=True,
+        readonly=True,
+        help=(
+            "« Enregistrement entier » affirme que l'enregistrement visé n'existe "
+            "plus. « Partie de l'enregistrement » affirme qu'il subsiste, amputé "
+            "de ce que nomme le champ « Éléments détruits »."
+        ),
+    )
+    res_field = fields.Char(
+        string="Éléments détruits",
+        readonly=True,
+        help=(
+            "Ce qui a été détruit à l'intérieur de l'enregistrement, quand la "
+            "portée est partielle : noms techniques des champs, ou description "
+            "courte du sous-ensemble (« fichiers déposés », « événements de "
+            "campagne »). Vide lorsque la portée est « Enregistrement entier »."
+        ),
+    )
+
     # Legal
     legal_basis = fields.Text(
         string="Base légale",
@@ -200,6 +244,7 @@ class PrivacyDestructionRegister(models.Model):
         for vals in vals_list:
             vals.pop("verification_hash", None)
             vals.pop("previous_hash", None)
+            self._assert_destruction_really_happened(vals)
             if not vals.get("register_number"):
                 vals["register_number"] = self.env["ir.sequence"].next_by_code(
                     "privacy.destruction.register"
@@ -225,6 +270,75 @@ class PrivacyDestructionRegister(models.Model):
                 "verification_hash": hash_val,
             })
         return records
+
+    @api.model
+    def _assert_destruction_really_happened(self, vals):
+        """Refuse une entrée qui affirme la disparition d'un enregistrement vivant.
+
+        🔴 **Pourquoi cette garde vit ICI et pas seulement dans les exécuteurs.**
+        `_execute_destruction` est surchargeable, et cinq ponts le surchargent
+        déjà. Chacun ne protège la chaîne que tant qu'il relaie à `super()` : un
+        pont chargé après les autres qui oublie le relais fait taire toutes les
+        gardes en amont, en silence, et la campagne se remet à archiver en
+        certifiant « Suppression ». Aucun essai qui ne charge qu'un pont à la
+        fois ne le voit.
+
+        La garde est donc posée sur une méthode DIFFÉRENTE, celle par laquelle
+        toute certification doit passer quel que soit le chemin d'exécution.
+        Un pont qui ne relaie pas casse la destruction ; il ne pourra pas en
+        plus la faire certifier.
+
+        ⚠ Elle se tait dans quatre cas, et chacun est une affirmation moins
+        forte, pas une exception de complaisance :
+
+        * portée « partielle » — l'entrée dit elle-même que l'enregistrement
+          survit, et `res_field` nomme ce qui est parti ;
+        * méthode qui n'affirme pas la disparition (`anonymize`, `archive`,
+          `manual`) ;
+        * pas de `res_id` — entrée de lot, il n'y a pas d'enregistrement
+          précis à contredire ;
+        * modèle absent du registre ORM — le module qui le portait a été
+          désinstallé, on ne peut rien vérifier.
+        """
+        method = vals.get("destruction_method")
+        res_model = vals.get("res_model")
+        res_id = vals.get("res_id")
+        if method not in _REMOVAL_METHODS:
+            return
+        if vals.get("destruction_scope") == "partial":
+            return
+        if not res_model or not res_id:
+            return
+        if res_model not in self.env:
+            return
+        # `active_test=False` : un enregistrement ARCHIVÉ est précisément le cas
+        # qu'on cherche — sans ce contexte, `exists()` le voit et `search()` non,
+        # et la garde passerait à côté du défaut qu'elle est là pour attraper.
+        survivor = self.env[res_model].with_context(
+            active_test=False
+        ).sudo().browse(res_id).exists()
+        if not survivor:
+            return
+        still_active = getattr(survivor, "active", None)
+        _logger.error(
+            "privacy_consent: refus d'inscrire au registre la destruction de "
+            "%s,%s — l'enregistrement existe toujours (actif=%s). La "
+            "destruction a été contournée, ou l'entrée devrait déclarer une "
+            "portée partielle.",
+            res_model, res_id, still_active,
+        )
+        raise UserError(
+            f"L'enregistrement « {vals.get('res_name') or res_id} » "
+            f"({res_model},{res_id}) existe toujours : le registre ne peut pas "
+            f"attester sa destruction.\n\n"
+            f"Deux causes possibles.\n"
+            f"• La destruction a été contournée — un module qui surcharge "
+            f"« _execute_destruction » sans relayer à super() neutralise les "
+            f"gardes des autres.\n"
+            f"• La destruction est PARTIELLE et ne le déclare pas. Dans ce cas "
+            f"l'entrée doit porter une portée « Partie de l'enregistrement » et "
+            f"nommer les éléments détruits."
+        )
 
     def _compute_verification_hash(self, previous_hash=None):
         """Compute chained SHA-256 hash for tamper detection.
@@ -253,6 +367,21 @@ class PrivacyDestructionRegister(models.Model):
             "certificate_number": self.certificate_number or "",
             "previous_hash": previous_hash,
         }
+        # ⚠ Les clés de portée n'entrent dans l'empreinte QUE lorsqu'elles
+        # portent autre chose que le défaut. C'est ce qui permet d'ajouter
+        # `destruction_scope` / `res_field` à un registre déjà scellé sans
+        # invalider une seule entrée : une entrée d'avant le champ est
+        # « complète » et sans élément nommé, donc sa charge à hacher reste
+        # identique au byte près, et la chaîne tient sans rescellement.
+        #
+        # La portée n'échappe pas pour autant au sceau : sur une entrée
+        # partielle la clé EST présente, donc la basculer vers « complète »
+        # après coup — ou l'inverse sur une entrée ancienne — casse l'empreinte
+        # et le cron d'intégrité le voit.
+        if self.destruction_scope and self.destruction_scope != "full":
+            data["destruction_scope"] = self.destruction_scope
+        if self.res_field:
+            data["res_field"] = self.res_field
         content = json.dumps(data, sort_keys=True, ensure_ascii=False)
         return hashlib.sha256(content.encode("utf-8")).hexdigest()
 
@@ -299,11 +428,19 @@ class PrivacyDestructionRegister(models.Model):
             record.display_name = record.register_number or f"Entrée #{record.id}"
 
     @api.model
-    def create_from_destruction_request(self, request):
+    def create_from_destruction_request(self, request, consent_snapshot=None):
         """Create a register entry from an executed destruction request.
 
         Args:
             request: privacy.destruction.request record (executed state)
+            consent_snapshot: ``(id, display_name)`` du consentement TEL QU'IL
+                ÉTAIT avant l'exécution. ⚠ Obligatoire depuis que « Suppression »
+                supprime vraiment : cette méthode est appelée APRÈS l'exécution,
+                donc `request.consent_id` rend un recordset vide dès que le
+                consentement a été détruit pour de bon, et l'entrée perdait
+                silencieusement le nom de ce qu'elle certifiait. Sans instantané,
+                on retombe sur le consentement encore lié — le comportement des
+                méthodes qui, elles, le laissent debout.
 
         Returns:
             Created privacy.destruction.register record
@@ -326,26 +463,45 @@ class PrivacyDestructionRegister(models.Model):
         }
 
         # Add consent record info if present
-        if request.consent_id:
+        snapshot = consent_snapshot or ({
+            "id": request.consent_id.id,
+            "name": request.consent_id.display_name,
+            "pi_categories": request.purpose_id.name or "",
+        } if request.consent_id else None)
+        if snapshot:
             vals.update({
                 "res_model": "privacy.consent",
-                "res_id": request.consent_id.id,
-                "res_name": request.consent_id.display_name,
-                "pi_categories": request.purpose_id.name or "",
+                "res_id": snapshot["id"],
+                "res_name": snapshot["name"],
+                "pi_categories": snapshot["pi_categories"],
             })
 
         # Add partner subject count
         if request.partner_id:
             vals["subject_count"] = 1
 
-        # Add classification info for document-type requests
-        if hasattr(request, "classification_ids") and request.classification_ids:
+        # Add classification info for document-type requests.
+        # ⚠ On lit `destroyed_classification_ids`, JAMAIS `classification_ids` :
+        # une destruction réussie archive la classification, donc le many2many des
+        # cibles est vide au moment où le registre se construit (il est appelé
+        # APRÈS l'exécution). Résultat historique : `pi_categories` restait vide
+        # sur toute destruction documentaire réussie, et rempli seulement quand
+        # elle avait échoué. Repli sur les cibles pour les demandes antérieures à
+        # 18.0.4.10.0, qui n'ont pas le champ de résultat.
+        destroyed = request.destroyed_classification_ids if hasattr(
+            request, "destroyed_classification_ids"
+        ) else request.browse()
+        source = destroyed or (
+            request.with_context(active_test=False).classification_ids
+            if hasattr(request, "classification_ids") else request.browse()
+        )
+        if source:
             categories = set()
-            for cls in request.classification_ids:
+            for cls in source:
                 categories.add(cls.pi_category)
-            vals["pi_categories"] = ", ".join(sorted(categories))
+            vals["pi_categories"] = ", ".join(sorted(c for c in categories if c))
             vals["subject_count"] = len(
-                set(request.classification_ids.mapped("subject_partner_id").ids)
+                set(source.mapped("subject_partner_id").ids)
             ) or 1
 
         # Add retention calendar if present

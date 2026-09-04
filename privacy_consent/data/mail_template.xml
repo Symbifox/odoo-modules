@@ -8,10 +8,11 @@
         <field name="partner_to">{{ object.subject_partner_id.id }}</field>
         <field name="subject">Demande de consentement / Consent Request - {{ object.purpose_id.name }}</field>
         <field name="body_html" type="html">
-
 <t t-set="company" t-value="('company_id' in object._fields and object.company_id) or user.company_id"/>
-<t t-set="brand_primary" t-value="(company and company.report_brand_primary) or '#714B67'"/>
-<t t-set="brand_dark" t-value="(company and company.report_brand_dark) or '#212529'"/>
+<t t-set="_wlf" t-value="company._fields"/>
+<t t-set="brand_primary" t-value="('report_brand_primary' in _wlf and company.report_brand_primary) or '#714B67'"/>
+<t t-set="brand_dark" t-value="('report_brand_dark' in _wlf and company.report_brand_dark) or '#212529'"/>
+
 <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#F8FAFC; padding:0; margin:0;">
     <tr>
         <td align="center" style="padding:24px;">
@@ -19,12 +20,12 @@
                 <tbody>
                     <!-- Header -->
                     <tr>
-                        <td style="background-color:#000000; padding:16px 24px; border-radius:12px 12px 0 0;">
+                        <td t-attf-style="background-color:{{ brand_dark }}; padding:16px 24px; border-radius:12px 12px 0 0;">
                             <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
                                 <tr>
                                     <td align="left">
-                                        <a href="https://crm.example.com" style="text-decoration:none;">
-                                            <img src="/web/image/website/1/logo" alt="Your Company" style="height:48px; width:auto; display:block;" height="48"/>
+                                        <a t-attf-href="{{ company.website or object.get_base_url() }}" style="text-decoration:none;">
+                                            <img t-attf-src="/web/image/res.company/{{ company.id }}/{{ 'report_brand_logo' in _wlf and company.report_brand_logo and 'report_brand_logo' or 'logo' }}" t-att-alt="company.name" style="height:48px; width:auto; display:block;" height="48"/>
                                         </a>
                                     </td>
                                     <td align="right" style="color:#ffffff; font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:18px; font-weight:700;">
@@ -36,7 +37,7 @@
                     </tr>
                     <!-- Accent Line -->
                     <tr>
-                        <td style="height:4px; line-height:4px; background-color:#32373c;">&#160;</td>
+                        <td t-attf-style="height:4px; line-height:4px; background-color:{{ brand_primary }};">&#160;</td>
                     </tr>
                     <!-- Main Content -->
                     <tr>
@@ -171,12 +172,11 @@
                                 <tr>
                                     <td style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:12px; color:#6B7280;">
                                         <strong style="color:#000000;"><t t-out="object.company_id.name"/></strong><br/>
-                                        Solutions éthiques et souveraines pour vos données.
+                                        <t t-out="('brand_email_tagline' in _wlf and company.brand_email_tagline) or ''"/>
                                     </td>
                                     <td align="right" style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:12px; color:#9CA3AF;">
-                                        <a href="/my/privacy/preferences" style="color:#32373c; text-decoration:underline;">Préférences</a>
-                                        <span style="color:#9CA3AF;"> | </span>
-                                        <a href="https://crm.example.com/r/politique-de-confidentialite" style="color:#9CA3AF; text-decoration:underline;">Confidentialité</a>
+                                        <a t-attf-href="{{ object.get_base_url() }}/my/privacy/preferences" t-attf-style="color:{{ brand_primary }}; text-decoration:underline;">Préférences</a>
+                                        <t t-if="('brand_privacy_url' in _wlf and company.brand_privacy_url) or company.website"><span style="color:#9CA3AF;"> | </span><a t-att-href="('brand_privacy_url' in _wlf and company.brand_privacy_url) or company.website" style="color:#9CA3AF; text-decoration:underline;">Confidentialité</a></t>
                                     </td>
                                 </tr>
                             </table>
@@ -187,8 +187,8 @@
             <!-- Bottom Accent -->
             <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="max-width:600px; margin-top:12px;">
                 <tr>
-                    <td style="height:3px; line-height:3px; background-color:#32373c; width:50%;">&#160;</td>
-                    <td style="height:3px; line-height:3px; background-color:#000000; width:50%;">&#160;</td>
+                    <td t-attf-style="height:3px; line-height:3px; background-color:{{ brand_primary }}; width:50%;">&#160;</td>
+                    <td t-attf-style="height:3px; line-height:3px; background-color:{{ brand_dark }}; width:50%;">&#160;</td>
                 </tr>
             </table>
         </td>
@@ -206,10 +206,11 @@
         <field name="partner_to">{{ object.subject_partner_id.id }}</field>
         <field name="subject">Votre consentement expire bientôt / Your consent is expiring soon</field>
         <field name="body_html" type="html">
-
 <t t-set="company" t-value="('company_id' in object._fields and object.company_id) or user.company_id"/>
-<t t-set="brand_primary" t-value="(company and company.report_brand_primary) or '#714B67'"/>
-<t t-set="brand_dark" t-value="(company and company.report_brand_dark) or '#212529'"/>
+<t t-set="_wlf" t-value="company._fields"/>
+<t t-set="brand_primary" t-value="('report_brand_primary' in _wlf and company.report_brand_primary) or '#714B67'"/>
+<t t-set="brand_dark" t-value="('report_brand_dark' in _wlf and company.report_brand_dark) or '#212529'"/>
+
 <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#F8FAFC; padding:0; margin:0;">
     <tr>
         <td align="center" style="padding:24px;">
@@ -217,12 +218,12 @@
                 <tbody>
                     <!-- Header -->
                     <tr>
-                        <td style="background-color:#000000; padding:16px 24px; border-radius:12px 12px 0 0;">
+                        <td t-attf-style="background-color:{{ brand_dark }}; padding:16px 24px; border-radius:12px 12px 0 0;">
                             <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
                                 <tr>
                                     <td align="left">
-                                        <a href="https://crm.example.com" style="text-decoration:none;">
-                                            <img src="/web/image/website/1/logo" alt="Your Company" style="height:48px; width:auto; display:block;" height="48"/>
+                                        <a t-attf-href="{{ company.website or object.get_base_url() }}" style="text-decoration:none;">
+                                            <img t-attf-src="/web/image/res.company/{{ company.id }}/{{ 'report_brand_logo' in _wlf and company.report_brand_logo and 'report_brand_logo' or 'logo' }}" t-att-alt="company.name" style="height:48px; width:auto; display:block;" height="48"/>
                                         </a>
                                     </td>
                                     <td align="right" style="color:#ffffff; font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:18px; font-weight:700;">
@@ -276,7 +277,7 @@
                             <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:24px 0;">
                                 <tr>
                                     <td align="left">
-                                        <a t-attf-href="/my/privacy/consent/{{ object.id }}/renew" style="display:inline-block; background-color:#32373c; color:#ffffff; font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:14px; font-weight:600; padding:12px 18px; border-radius:8px; text-decoration:none;">
+                                        <a t-attf-href="/privacy/consent/{{ object.id }}/{{ object.access_token }}" style="display:inline-block; background-color:#32373c; color:#ffffff; font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:14px; font-weight:600; padding:12px 18px; border-radius:8px; text-decoration:none;">
                                             Renouveler mon consentement
                                         </a>
                                     </td>
@@ -316,12 +317,11 @@
                                 <tr>
                                     <td style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:12px; color:#6B7280;">
                                         <strong style="color:#000000;"><t t-out="object.company_id.name"/></strong><br/>
-                                        Solutions éthiques et souveraines pour vos données.
+                                        <t t-out="('brand_email_tagline' in _wlf and company.brand_email_tagline) or ''"/>
                                     </td>
                                     <td align="right" style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:12px; color:#9CA3AF;">
-                                        <a href="/my/privacy/preferences" style="color:#32373c; text-decoration:underline;">Préférences</a>
-                                        <span style="color:#9CA3AF;"> | </span>
-                                        <a href="https://crm.example.com/r/politique-de-confidentialite" style="color:#9CA3AF; text-decoration:underline;">Confidentialité</a>
+                                        <a t-attf-href="{{ object.get_base_url() }}/my/privacy/preferences" t-attf-style="color:{{ brand_primary }}; text-decoration:underline;">Préférences</a>
+                                        <t t-if="('brand_privacy_url' in _wlf and company.brand_privacy_url) or company.website"><span style="color:#9CA3AF;"> | </span><a t-att-href="('brand_privacy_url' in _wlf and company.brand_privacy_url) or company.website" style="color:#9CA3AF; text-decoration:underline;">Confidentialité</a></t>
                                     </td>
                                 </tr>
                             </table>
@@ -332,8 +332,8 @@
             <!-- Bottom Accent -->
             <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="max-width:600px; margin-top:12px;">
                 <tr>
-                    <td style="height:3px; line-height:3px; background-color:#32373c; width:50%;">&#160;</td>
-                    <td style="height:3px; line-height:3px; background-color:#000000; width:50%;">&#160;</td>
+                    <td t-attf-style="height:3px; line-height:3px; background-color:{{ brand_primary }}; width:50%;">&#160;</td>
+                    <td t-attf-style="height:3px; line-height:3px; background-color:{{ brand_dark }}; width:50%;">&#160;</td>
                 </tr>
             </table>
         </td>

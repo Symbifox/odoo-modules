@@ -270,10 +270,36 @@
                     </div>
                 </t>
 
+                <!-- ⚠ Message distinct de « cannot_renew » : un refus n'est pas
+                     un empêchement passager, c'est une réponse enregistrée. Le
+                     lien reste lisible, mais il ne peut plus rien accorder. -->
+                <t t-if="request.params.get('error') == 'refused_link_closed'">
+                    <div class="alert alert-secondary">
+                        Vous avez refusé cette demande. Ce lien ne permet plus d'accorder le
+                        consentement.<br/>
+                        <em class="text-muted">You refused this request. This link can no longer be used to
+                        grant consent.</em>
+                    </div>
+                </t>
+
                 <t t-if="request.params.get('error') == 'renewal_failed'">
                     <div class="alert alert-danger">
                         Une erreur s'est produite lors du renouvellement. Veuillez réessayer ou nous contacter.<br/>
                         <em class="text-muted">An error occurred while renewing your consent. Please try again or contact support.</em>
+                    </div>
+                </t>
+
+                <t t-if="request.params.get('error') == 'notice_not_read'">
+                    <t t-call="privacy_consent.portal_consent_alert_notice_not_read"/>
+                </t>
+
+                <t t-if="request.params.get('error') == 'notice_unavailable'">
+                    <div class="alert alert-warning">
+                        Le texte de l'avis rattaché à ce consentement n'est pas disponible pour le moment.
+                        Nous ne pouvons pas vous demander de le relire, et donc pas renouveler votre
+                        consentement. Veuillez nous contacter.<br/>
+                        <em class="text-muted">The notice text attached to this consent is currently unavailable.
+                        We cannot ask you to read it, and therefore cannot renew your consent. Please contact us.</em>
                     </div>
                 </t>
 
@@ -306,10 +332,10 @@
 
                             <t t-if="consent.purpose_id.plain_language_summary">
                                 <dt class="col-sm-4">Description</dt>
-                                <!-- t-out, pas t-raw (déprécié depuis la 17) : le champ
-                                     est un fields.Html, donc l'ORM le rend en Markup et
-                                     la sortie est identique, mais la règle « échappé sauf
-                                     Markup » redevient vraie sur une page publique. -->
+                                                                <!-- t-out, pas t-raw (déprécié depuis la 17) : ces champs sont des
+                                     fields.Html, donc l'ORM les rend en Markup et la sortie est
+                                     identique, mais la règle « échappé sauf Markup » redevient
+                                     vraie sur une page publique. -->
                                 <dd class="col-sm-8"><t t-out="consent.purpose_id.plain_language_summary"/></dd>
                             </t>
 
@@ -340,6 +366,31 @@
                                 <dd class="col-sm-8"><t t-esc="consent.project_id.name"/></dd>
                             </t>
                         </dl>
+
+                        <!-- Parcours par étape : où en est le client, et ce que
+                             l'organisation détient déjà de lui (décisions 10 et 20
+                             d'une décision de gouvernance antérieure). -->
+                        <!-- ⚠ Garde de présence du parcours : les champs `journey_*`
+                             viennent du lot « parcours séquentiel » (cq_consent 4.7.0),
+                             absent de cette copie. Sans ce test, QWeb lève sur un champ
+                             inconnu et la page de détail ne rend plus du tout. Le bloc
+                             s'allumera de lui-même si le parcours est porté un jour. -->
+                        <t t-if="'journey_id' in consent._fields and consent.journey_id">
+                            <hr/>
+                            <div class="d-flex align-items-center mb-2">
+                                <span class="badge bg-secondary me-2">
+                                    <t t-esc="consent.journey_position"/>
+                                </span>
+                                <span class="text-muted small">
+                                    <t t-esc="consent.journey_id.name"/>
+                                </span>
+                            </div>
+                            <t t-if="consent.journey_held_html">
+                                <div class="alert alert-info" role="alert">
+                                    <t t-out="consent.journey_held_html"/>
+                                </div>
+                            </t>
+                        </t>
 
                         <!-- Notice content: prefer notice version, fallback to purpose summary -->
                         <t t-set="notice_html" t-value="consent.notice_version_id.body if consent.notice_version_id and consent.notice_version_id.body else consent.purpose_id.plain_language_summary"/>
@@ -396,25 +447,51 @@
                             </form>
                         </t>
 
+                        <!-- Refus : fin de parcours pour CE lien.
+                             ⚠ Décision de gouvernance du 2026-08-03 : un
+                             consentement refusé annule le lien d'origine. Le
+                             bouton « Accorder maintenant » qui se trouvait ici
+                             permettait de retourner un refus en octroi d'un
+                             clic depuis la boîte de réception, indéfiniment.
+                             La page reste lisible — la personne doit pouvoir
+                             constater ce qu'elle a refusé et quand — mais elle
+                             n'accorde plus rien. -->
+                        <t t-if="consent.status == 'refused' and not consent.renewed_to_id">
+                            <hr/>
+                            <h6>Vous avez refusé cette demande / You refused this request</h6>
+                            <div class="alert alert-secondary mb-0">
+                                <p class="mb-2">
+                                    Votre refus a été enregistré<t t-if="consent.refused_at"> le
+                                    <strong><t t-esc="consent.refused_at" t-options="{'widget': 'date'}"/></strong></t>.
+                                    Ce lien ne permet plus d'accorder le consentement.
+                                </p>
+                                <p class="mb-2">
+                                    Si vous changez d'avis, communiquez avec
+                                    <strong><t t-esc="consent.company_id.name"/></strong> : une nouvelle
+                                    demande vous sera envoyée, avec son propre lien.
+                                </p>
+                                <p class="mb-0 text-muted">
+                                    <em>Your refusal was recorded<t t-if="consent.refused_at"> on
+                                    <t t-esc="consent.refused_at" t-options="{'widget': 'date'}"/></t>. This link can no
+                                    longer be used to grant consent. If you change your mind, contact
+                                    <t t-esc="consent.company_id.name"/> and a new request will be sent to you.</em>
+                                </p>
+                            </div>
+                        </t>
+
                         <!-- Renewal/Re-consent button for various statuses -->
-                        <t t-if="consent.status in ('granted', 'expired', 'refused', 'withdrawn') and not consent.renewed_to_id">
-                            <t t-set="show_renew" t-value="consent.status in ('expired', 'refused', 'withdrawn') or (consent.status == 'granted' and consent.expires_at and (consent.expires_at - datetime.datetime.now()).days &lt;= 90)"/>
+                        <t t-if="consent.status in ('granted', 'expired', 'withdrawn') and not consent.renewed_to_id">
+                            <t t-set="show_renew" t-value="consent.status in ('expired', 'withdrawn') or (consent.status == 'granted' and consent.expires_at and (consent.expires_at - datetime.datetime.now()).days &lt;= 90)"/>
                             <t t-if="show_renew">
                                 <hr/>
                                 <h6>
-                                    <t t-if="consent.status in ('refused', 'withdrawn')">Changer d'avis / Change Your Mind</t>
+                                    <t t-if="consent.status == 'withdrawn'">Changer d'avis / Change Your Mind</t>
                                     <t t-else="">Renouveler votre consentement / Renew Your Consent</t>
                                 </h6>
                                 <t t-if="consent.status == 'expired'">
                                     <p class="text-danger">
                                         <i class="fa fa-exclamation-circle"/> Ce consentement a expiré. Cliquez ci-dessous pour le renouveler.<br/>
                                         <em class="text-muted">This consent has expired. Click below to renew it.</em>
-                                    </p>
-                                </t>
-                                <t t-elif="consent.status == 'refused'">
-                                    <p class="text-info">
-                                        <i class="fa fa-info-circle"/> Vous avez précédemment refusé ce consentement. Vous pouvez l'accorder maintenant si vous avez changé d'avis.<br/>
-                                        <em class="text-muted">You previously refused this consent. You can grant it now if you changed your mind.</em>
                                     </p>
                                 </t>
                                 <t t-elif="consent.status == 'withdrawn'">
@@ -430,34 +507,48 @@
                                         <em class="text-muted">Your consent will expire on <t t-esc="consent.expires_at" t-options="{'widget': 'date'}"/>. You can renew it now to continue receiving this service.</em>
                                     </p>
                                 </t>
+                                <!-- ⚠ Le bouton mène à l'écran de confirmation (GET sur la
+                                     même URL), il ne poste plus directement : la personne
+                                     doit d'abord voir l'avis COURANT et attester l'avoir lu.
+                                     La même ligne sert les deux variantes, publique et
+                                     authentifiée. -->
                                 <t t-set="renew_url" t-value="'/privacy/consent/%s/%s/renew' % (consent.id, access_token) if is_public else '/my/privacy/consent/%s/renew' % consent.id"/>
-                                <form t-att-action="renew_url" method="post" class="d-inline">
-                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
-                                    <button type="submit" class="btn btn-primary">
-                                        <t t-if="consent.status in ('refused', 'withdrawn')">
-                                            <i class="fa fa-check"/> Accorder maintenant / Grant Consent Now
-                                        </t>
-                                        <t t-else="">
-                                            <i class="fa fa-refresh"/> Renouveler / Renew Consent
-                                        </t>
-                                    </button>
-                                </form>
+                                <a t-att-href="renew_url" class="btn btn-primary">
+                                    <t t-if="consent.status == 'withdrawn'">
+                                        <i class="fa fa-check"/> Accorder maintenant / Grant Consent Now
+                                    </t>
+                                    <t t-else="">
+                                        <i class="fa fa-refresh"/> Renouveler / Renew Consent
+                                    </t>
+                                </a>
                             </t>
                         </t>
 
-                        <!-- Show link to renewed consent if already renewed -->
+                        <!-- Show link to renewed consent if already renewed.
+                             ⚠ Après un refus, ce n'est pas un renouvellement
+                             mais une NOUVELLE demande : le dire autrement,
+                             sinon la page annonce que le refus a été renouvelé. -->
                         <t t-if="consent.renewed_to_id">
                             <hr/>
                             <div class="alert alert-info">
-                                <i class="fa fa-info-circle"/> Ce consentement a été renouvelé. / This consent has been renewed.
+                                <i class="fa fa-info-circle"/>
+                                <t t-if="consent.status == 'refused'">
+                                    Une nouvelle demande de consentement a été émise à la suite de ce refus.
+                                    / A new consent request was issued following this refusal.
+                                </t>
+                                <t t-else="">
+                                    Ce consentement a été renouvelé. / This consent has been renewed.
+                                </t>
+                                <t t-set="suivant_libelle_fr" t-value="'Voir la nouvelle demande' if consent.status == 'refused' else 'Voir le consentement renouvelé'"/>
+                                <t t-set="suivant_libelle_en" t-value="'View the new request' if consent.status == 'refused' else 'View the renewed consent'"/>
                                 <t t-if="is_public and consent.renewed_to_id.access_token">
                                     <a t-attf-href="/privacy/consent/#{consent.renewed_to_id.id}/#{consent.renewed_to_id.access_token}" class="alert-link">
-                                        Voir le consentement renouvelé / View the renewed consent
+                                        <t t-esc="suivant_libelle_fr"/> / <t t-esc="suivant_libelle_en"/>
                                     </a>
                                 </t>
                                 <t t-elif="not is_public">
                                     <a t-attf-href="/my/privacy/consent/#{consent.renewed_to_id.id}" class="alert-link">
-                                        Voir le consentement renouvelé / View the renewed consent
+                                        <t t-esc="suivant_libelle_fr"/> / <t t-esc="suivant_libelle_en"/>
                                     </a>
                                 </t>
                             </div>
@@ -467,7 +558,14 @@
                         <t t-if="consent.renewed_from_id">
                             <hr/>
                             <div class="alert alert-secondary">
-                                <i class="fa fa-history"/> Ce consentement a été renouvelé à partir d'un précédent. / This consent was renewed from a previous one.
+                                <i class="fa fa-history"/>
+                                <t t-if="consent.renewed_from_id.status == 'refused'">
+                                    Cette demande fait suite à une demande précédente que vous aviez refusée.
+                                    / This request follows a previous one you had refused.
+                                </t>
+                                <t t-else="">
+                                    Ce consentement a été renouvelé à partir d'un précédent. / This consent was renewed from a previous one.
+                                </t>
                                 <t t-if="is_public and consent.renewed_from_id.access_token">
                                     <a t-attf-href="/privacy/consent/#{consent.renewed_from_id.id}/#{consent.renewed_from_id.access_token}" class="alert-link">
                                         Voir le consentement original / View original consent
@@ -480,6 +578,222 @@
                                 </t>
                             </div>
                         </t>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- Alerte partagée : la case « J'ai lu l'avis » n'a pas été cochée.
+         Un seul endroit pour le texte, appelé depuis l'écran de confirmation
+         et depuis la page de détail. -->
+    <template id="portal_consent_alert_notice_not_read" name="Consent Notice Not Read Alert">
+        <div class="alert alert-warning">
+            Vous devez confirmer avoir lu l'avis ci-dessus avant de renouveler votre consentement.<br/>
+            <em class="text-muted">You must confirm that you have read the notice above before renewing your consent.</em>
+        </div>
+    </template>
+
+    <!-- Consent Renewal Confirmation Page (étape « geste éclairé »)
+         Affiche la version COURANTE de l'avis, signale qu'elle a changé le cas
+         échéant, et exige une attestation de lecture avant tout octroi. -->
+    <template id="portal_consent_renew_confirm" name="Consent Renewal Confirmation">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="False"/>
+
+            <div class="mb-4 p-3 rounded" style="background-color:var(--brand-dark, #212529); border-bottom:4px solid var(--brand-primary, #714B67);">
+                <h4 class="mb-0" style="color:#ffffff; font-weight:600;">
+                    <t t-if="consent.status == 'withdrawn'">
+                        Accorder votre consentement / Grant Your Consent
+                    </t>
+                    <t t-else="">
+                        Renouveler votre consentement / Renew Your Consent
+                    </t>
+                </h4>
+            </div>
+
+            <div class="container mt-4">
+                <div class="mb-3">
+                    <t t-if="is_public">
+                        <a t-attf-href="/privacy/consent/#{consent.id}/#{access_token}" class="btn btn-outline-secondary">
+                            Retour au consentement / Back to Consent
+                        </a>
+                    </t>
+                    <t t-else="">
+                        <a t-attf-href="/my/privacy/consent/#{consent.id}" class="btn btn-outline-secondary">
+                            Retour au consentement / Back to Consent
+                        </a>
+                    </t>
+                </div>
+
+                <t t-if="request.params.get('error') == 'notice_not_read'">
+                    <t t-call="privacy_consent.portal_consent_alert_notice_not_read"/>
+                </t>
+
+                <div class="card">
+                    <div class="card-header" style="background-color:var(--brand-dark, #212529);">
+                        <h5 class="mb-0" style="color:#ffffff;"><t t-esc="consent.purpose_id.name"/></h5>
+                    </div>
+                    <div class="card-body">
+                        <!-- ⚠ Le libellé change quand le texte affiché n'est PAS la version
+                             en vigueur : annoncer « l'avis en vigueur aujourd'hui » devant un
+                             texte de repli (l'ancienne version épinglée, ou le résumé de la
+                             finalité) ferait dire à la page le contraire de ce que le
+                             contrôleur sait. Une seule variable, quatre formulations. -->
+                        <t t-set="notice_label_fr"
+                           t-value="'l\'avis rattaché à votre consentement' if notice_is_fallback else 'l\'avis en vigueur aujourd\'hui'"/>
+                        <t t-set="notice_label_en"
+                           t-value="'the notice attached to your consent' if notice_is_fallback else 'the notice currently in effect'"/>
+
+                        <!-- Pourquoi cet écran, selon l'état de départ -->
+                        <t t-if="consent.status == 'expired'">
+                            <p>
+                                Votre consentement a expiré. Avant de le renouveler, veuillez prendre
+                                connaissance de <t t-esc="notice_label_fr"/>.<br/>
+                                <em class="text-muted">Your consent has expired. Before renewing it, please read
+                                <t t-esc="notice_label_en"/>.</em>
+                            </p>
+                        </t>
+                        <!-- ⚠ Pas de branche « refused » ici : cet écran n'est plus
+                             atteignable depuis un consentement refusé (décision 50 du CR
+                             PMEC #139). La laisser en place aurait décrit à un futur
+                             lecteur un chemin qui n'existe plus. -->
+                        <t t-elif="consent.status == 'withdrawn'">
+                            <p>
+                                Vous aviez révoqué ce consentement. Vous pouvez l'accorder de nouveau si vous
+                                avez changé d'avis. Veuillez d'abord prendre connaissance de
+                                <t t-esc="notice_label_fr"/>.<br/>
+                                <em class="text-muted">You previously withdrew this consent. You can grant it
+                                again if you have changed your mind. Please first read
+                                <t t-esc="notice_label_en"/>.</em>
+                            </p>
+                        </t>
+                        <t t-else="">
+                            <p>
+                                Avant de renouveler votre consentement, veuillez prendre connaissance de
+                                <t t-esc="notice_label_fr"/>.<br/>
+                                <em class="text-muted">Before renewing your consent, please read
+                                <t t-esc="notice_label_en"/>.</em>
+                            </p>
+                        </t>
+
+                        <!-- Mention discrète : le texte montré n'est pas la version en vigueur -->
+                        <t t-if="notice_is_fallback">
+                            <p class="small text-muted">
+                                <i class="fa fa-info-circle"/>
+                                <t t-if="notice_state == 'summary'">
+                                    Aucune version d'avis n'est rattachée à ce consentement : le texte
+                                    ci-dessous est le résumé en langage clair de la finalité.<br/>
+                                    <em>No notice version is attached to this consent: the text below is the
+                                    plain-language summary of the purpose.</em>
+                                </t>
+                                <t t-else="">
+                                    Nous n'avons pas pu confirmer qu'une version plus récente de l'avis est
+                                    en vigueur : le texte ci-dessous est celui déjà rattaché à votre
+                                    consentement.<br/>
+                                    <em>We could not confirm that a more recent version of the notice is in
+                                    effect: the text below is the one already attached to your consent.</em>
+                                </t>
+                            </p>
+                        </t>
+
+                        <!-- L'avis a changé depuis le consentement précédent -->
+                        <t t-if="notice_changed">
+                            <div class="alert alert-warning">
+                                <i class="fa fa-exclamation-circle"/>
+                                <strong>L'avis a changé depuis votre consentement précédent.</strong><br/>
+                                Vous aviez consenti à la version <strong><t t-esc="previous_version.version"/></strong>
+                                <t t-if="previous_version.effective_date">
+                                    (en vigueur le <t t-esc="previous_version.effective_date" t-options="{'widget': 'date'}"/>)
+                                </t>.
+                                Le texte ci-dessous est la version <strong><t t-esc="current_version.version"/></strong>
+                                <t t-if="current_version.effective_date">
+                                    (en vigueur le <t t-esc="current_version.effective_date" t-options="{'widget': 'date'}"/>)
+                                </t>.
+                                Veuillez le relire avant de confirmer.<br/>
+                                <em class="text-muted">The notice has changed since your previous consent. You consented
+                                to version <t t-esc="previous_version.version"/>; the text below is version
+                                <t t-esc="current_version.version"/>. Please read it again before confirming.</em>
+                            </div>
+                        </t>
+
+                        <!-- Identification de la version soumise.
+                             ⚠ Sur un repli, « En vigueur depuis » se lisait comme « c'est la
+                             version en vigueur » : on nomme alors la version pour ce qu'elle
+                             est, la version rattachée au consentement. -->
+                        <t t-if="current_version">
+                            <dl class="row mb-0">
+                                <dt class="col-sm-4">
+                                    <t t-if="notice_is_fallback">Version rattachée à votre consentement / Version attached to your consent</t>
+                                    <t t-else="">Version de l'avis / Notice version</t>
+                                </dt>
+                                <dd class="col-sm-8"><t t-esc="current_version.version"/></dd>
+
+                                <t t-if="current_version.effective_date">
+                                    <dt class="col-sm-4">
+                                        <t t-if="notice_is_fallback">Entrée en vigueur de cette version / This version's effective date</t>
+                                        <t t-else="">En vigueur depuis / In effect since</t>
+                                    </dt>
+                                    <dd class="col-sm-8">
+                                        <t t-esc="current_version.effective_date" t-options="{'widget': 'date'}"/>
+                                    </dd>
+                                </t>
+                            </dl>
+                        </t>
+
+                        <!-- Texte de l'avis : même présentation que la page de détail.
+                             Le contrôleur garantit qu'il y a un texte — sans texte, l'écran
+                             n'est pas rendu du tout. -->
+                        <t t-if="notice_html">
+                            <hr/>
+                            <h6 style="color:var(--brand-primary, #714B67); font-weight:600;">
+                                <t t-if="notice_state == 'summary'">Résumé de la finalité / Purpose Summary</t>
+                                <t t-else="">Modèle de consentement / Consent Notice</t>
+                            </h6>
+                            <div class="p-3 rounded" style="background-color:var(--brand-dark, #212529); color:#ffffff; max-height:400px; overflow-y:auto; border-left:4px solid var(--brand-primary, #714B67);">
+                                <t t-out="notice_html"/>
+                            </div>
+                        </t>
+
+                        <hr/>
+                        <form t-att-action="renew_url" method="post">
+                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                            <div class="form-check mb-3">
+                                <input class="form-check-input" type="checkbox" id="notice_read"
+                                       name="notice_read" value="1" required="required"/>
+                                <label class="form-check-label" for="notice_read">
+                                    <!-- Sans version d'avis, ce n'est pas « l'avis » qu'on a fait
+                                         lire : la case ne doit pas attester plus que ce qui a
+                                         été montré. -->
+                                    <t t-if="notice_state == 'summary'">
+                                        J'ai lu le texte ci-dessus et je consens à ce qu'il décrit.<br/>
+                                        <em class="text-muted">I have read the text above and I consent to what it describes.</em>
+                                    </t>
+                                    <t t-else="">
+                                        J'ai lu l'avis ci-dessus et je consens à ce qu'il décrit.<br/>
+                                        <em class="text-muted">I have read the notice above and I consent to what it describes.</em>
+                                    </t>
+                                </label>
+                            </div>
+                            <button type="submit" class="btn btn-primary">
+                                <t t-if="consent.status == 'withdrawn'">
+                                    <i class="fa fa-check"/> Accorder maintenant / Grant Consent Now
+                                </t>
+                                <t t-else="">
+                                    <i class="fa fa-refresh"/> Confirmer le renouvellement / Confirm Renewal
+                                </t>
+                            </button>
+                            <t t-if="is_public">
+                                <a t-attf-href="/privacy/consent/#{consent.id}/#{access_token}" class="btn btn-outline-secondary ms-2">
+                                    Annuler / Cancel
+                                </a>
+                            </t>
+                            <t t-else="">
+                                <a t-attf-href="/my/privacy/consent/#{consent.id}" class="btn btn-outline-secondary ms-2">
+                                    Annuler / Cancel
+                                </a>
+                            </t>
+                        </form>
                     </div>
                 </div>
             </div>

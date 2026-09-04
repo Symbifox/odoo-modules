@@ -3,7 +3,19 @@ import logging
 from odoo import api, fields, models
 from odoo.exceptions import UserError
 
+from . import privacy_destruction_ops as destruction_ops
+
 _logger = logging.getLogger(__name__)
+
+
+class _LineNotCertifiable(Exception):
+    """La ligne ne s'est pas détruite : rien ne doit être inscrit au registre.
+
+    Interne à ``action_execute``. Elle sert à sortir du point de sauvegarde
+    sans laisser passer la création de l'entrée, tout en distinguant ce cas
+    d'une vraie erreur — l'exécuteur s'est déjà expliqué dans l'état de la
+    ligne, il n'y a pas de trace de pile à produire.
+    """
 
 
 class PrivacyDestructionCampaign(models.Model):
@@ -221,42 +233,85 @@ class PrivacyDestructionCampaign(models.Model):
             Register = self.env["privacy.destruction.register"]
 
             for line in campaign.line_ids.filtered(lambda l: l.state == "pending"):
+                # 🔴 Ce qu'il faut savoir avant de toucher à cette boucle.
+                #
+                # 1. `_execute_destruction` NE LÈVE PAS toujours quand il
+                #    échoue : plusieurs de ses sorties écrivent « échec » ou
+                #    « ignoré » dans l'état de la ligne et rendent la main
+                #    normalement. La version d'avant #24897 enchaînait alors sur
+                #    la création de l'entrée de registre et RÉÉCRIVAIT l'état à
+                #    « fait ». Une ligne sautée était donc certifiée détruite.
+                #    On relit donc l'état après l'appel, et on refuse de
+                #    certifier ce que l'exécuteur vient de dire non fait.
+                #
+                # 2. Le point de sauvegarde n'est pas un ornement. Un `unlink`
+                #    sur un enregistrement retenu par une clé étrangère lève une
+                #    `IntegrityError` qui AVORTE la transaction : sans
+                #    savepoint, l'`except` attrapait bien l'erreur mais toutes
+                #    les instructions suivantes — y compris l'écriture de
+                #    l'état d'échec — mouraient sur « current transaction is
+                #    aborted », et la campagne entière tombait sur sa première
+                #    ligne récalcitrante.
+                #
+                # 3. Ce que le savepoint garantit en plus : ou bien la ligne est
+                #    détruite ET certifiée, ou bien ni l'un ni l'autre. Une
+                #    destruction à moitié faite ne peut plus survivre à
+                #    l'échec de sa certification.
+                outcome = {"state": "failed", "error": "", "entry": False}
                 try:
-                    line._execute_destruction()
-                    # Create register entry
-                    register_vals = {
-                        "campaign_id": campaign.id,
-                        "destruction_date": fields.Datetime.now(),
-                        "destroyed_by_id": self.env.user.id,
-                        "approved_by_id": campaign.approved_by_id.id,
-                        "res_model": line.res_model,
-                        "res_id": line.res_id,
-                        "res_name": line.res_name,
-                        "document_description": (
-                            f"Destruction par campagne « {campaign.name} ». "
-                            f"Document : {line.res_name}."
-                        ),
-                        "pi_categories": line.classification_id.pi_category if line.classification_id else "",
-                        "subject_count": 1,
-                        "destruction_method": line.destruction_method,
-                        "legal_basis": self._build_line_legal_basis(line),
-                        "retention_calendar_id": line.retention_calendar_id.id if line.retention_calendar_id else False,
-                        "company_id": campaign.company_id.id or self.env.company.id,
-                    }
-                    entry = Register.create(register_vals)
-                    line.write({
-                        "state": "done",
-                        "register_entry_id": entry.id,
-                    })
+                    with self.env.cr.savepoint():
+                        line._execute_destruction()
+                        if line.state != "pending":
+                            # L'exécuteur s'est marqué lui-même. On garde SON
+                            # verdict et son message, on annule le reste.
+                            outcome["state"] = line.state
+                            outcome["error"] = line.error_message or ""
+                            raise _LineNotCertifiable()
+                        # Create register entry
+                        register_vals = {
+                            "campaign_id": campaign.id,
+                            "destruction_date": fields.Datetime.now(),
+                            "destroyed_by_id": self.env.user.id,
+                            "approved_by_id": campaign.approved_by_id.id,
+                            "res_model": line.res_model,
+                            "res_id": line.res_id,
+                            "res_name": line.res_name,
+                            "document_description": (
+                                f"Destruction par campagne « {campaign.name} ». "
+                                f"Document : {line.res_name}."
+                            ),
+                            "pi_categories": line.classification_id.pi_category if line.classification_id else "",
+                            "subject_count": 1,
+                            "destruction_method": line.destruction_method,
+                            "legal_basis": self._build_line_legal_basis(line),
+                            "retention_calendar_id": line.retention_calendar_id.id if line.retention_calendar_id else False,
+                            "company_id": campaign.company_id.id or self.env.company.id,
+                        }
+                        entry = Register.create(register_vals)
+                        outcome["state"] = "done"
+                        outcome["entry"] = entry.id
+                except _LineNotCertifiable:
+                    _logger.info(
+                        "Campaign %s: line %s (%s,%s) not certified — executor "
+                        "reported state %s",
+                        campaign.name, line.id, line.res_model, line.res_id,
+                        outcome["state"],
+                    )
                 except Exception as e:
                     _logger.exception(
                         "Campaign %s: failed to destroy line %s (%s,%s): %s",
                         campaign.name, line.id, line.res_model, line.res_id, e
                     )
-                    line.write({
-                        "state": "failed",
-                        "error_message": str(e),
-                    })
+                    outcome["state"] = "failed"
+                    outcome["error"] = str(e)
+                # ⚠ HORS du point de sauvegarde : une écriture faite dedans
+                # serait annulée avec lui, et la ligne resterait « en attente »
+                # à jamais, prête à être rejouée par la campagne suivante.
+                line.write({
+                    "state": outcome["state"],
+                    "error_message": outcome["error"] or False,
+                    "register_entry_id": outcome["entry"] or False,
+                })
 
             campaign.write({
                 "state": "completed",
@@ -360,6 +415,13 @@ class PrivacyDestructionCampaignLine(models.Model):
 
         Handles the actual record modification/deletion based on method.
         Validates access rights before using sudo() for the actual operation.
+
+        ⚠ Un pont qui surcharge cette méthode DOIT relayer à ``super()`` pour
+        les modèles qu'il ne possède pas. Cinq ponts la surchargent déjà et ne
+        cohabitent que par ce relais ; un sixième qui l'oublierait ferait taire
+        les gardes de tous les autres, en silence. La garde de
+        ``privacy.destruction.register.create()`` est la seconde ligne, posée
+        exprès sur une méthode que ce contournement n'atteint pas.
         """
         self.ensure_one()
         if not self.res_model or not self.res_id:
@@ -395,32 +457,11 @@ class PrivacyDestructionCampaignLine(models.Model):
             self.write({"state": "failed", "error_message": f"Accès refusé : {e}"})
             return
 
-        method = self.destruction_method
-
-        if method == "anonymize":
-            # Try to clear personal data fields
-            if hasattr(record, "active"):
-                record.sudo().write({"active": False})
-            if hasattr(record, "notes"):
-                record.sudo().write({
-                    "notes": f"[ANONYMISÉ le {fields.Date.today()}]"
-                })
-
-        elif method == "delete":
-            if hasattr(record, "active"):
-                record.sudo().write({"active": False})
-            else:
-                record.sudo().unlink()
-
-        elif method == "secure_wipe":
-            # For attachments: clear binary data then archive
-            if self.res_model == "ir.attachment":
-                record.sudo().write({
-                    "datas": False,
-                    "description": f"[EFFACÉ le {fields.Date.today()}]",
-                })
-            if hasattr(record, "active"):
-                record.sudo().write({"active": False})
+        # 🔴 Ce bloc portait le défaut de la tâche #24897 : « Suppression » se
+        # contentait d'archiver dès que le modèle avait un champ `active`. La
+        # primitive partagée supprime pour de bon, contrôle après coup, et lève
+        # si l'enregistrement survit. Voir models/privacy_destruction_ops.py.
+        destruction_ops.destroy_record(record, self.destruction_method)
 
         # Deactivate the classification
         if self.classification_id:

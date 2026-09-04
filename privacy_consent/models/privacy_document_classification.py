@@ -20,13 +20,16 @@ class PrivacyDocumentClassification(models.Model):
     # Models that may contain personal information and can be classified.
     # System models (res.users, ir.*, etc.) are excluded to prevent
     # accidental destruction of Odoo infrastructure.
+    #
+    # Cette constante ne couvre que les modèles Odoo standards. Un module
+    # maison n'a pas à être listé ici : il ajoute les siens en surchargeant
+    # `_privacy_classifiable_models()`.
     ALLOWED_MODELS = {
         "res.partner",
         "project.project",
         "project.task",
         "hr.employee",
         "hr.contract",
-        "hr.payslip",
         "account.move",
         "account.move.line",
         "sale.order",
@@ -40,9 +43,6 @@ class PrivacyDocumentClassification(models.Model):
         "survey.user_input",
         "survey.user_input.line",
         "project.credential",
-        "documents.document",
-        "sign.request",
-        "sign.request.item",
     }
 
     # Generic reference (like mail.activity)
@@ -160,6 +160,25 @@ class PrivacyDocumentClassification(models.Model):
         ),
     ]
 
+    def _privacy_classifiable_models(self):
+        """Modèles qu'on accepte de classifier.
+
+        Point d'extension : un pont vie privée ajoute les modèles de son
+        propre module en surchargeant cette méthode, plutôt qu'en rouvrant
+        `ALLOWED_MODELS`. La surcharge compose, donc plusieurs ponts
+        peuvent cohabiter ::
+
+            def _privacy_classifiable_models(self):
+                return super()._privacy_classifiable_models() | {
+                    "secure.transfer", "secure.transfer.file",
+                }
+
+        Redéfinir `ALLOWED_MODELS` fonctionne aussi, mais remplace la liste
+        au lieu de s'y ajouter : le dernier module chargé gagne, et les
+        autres perdent leurs modèles sans le dire.
+        """
+        return set(self.ALLOWED_MODELS)
+
     @api.constrains("res_model")
     def _check_allowed_model(self):
         """Restrict classification to models that may contain personal data.
@@ -167,8 +186,9 @@ class PrivacyDocumentClassification(models.Model):
         Prevents classification (and therefore potential destruction) of
         system-critical models like res.users, ir.module.module, etc.
         """
+        allowed = self._privacy_classifiable_models()
         for record in self:
-            if record.res_model and record.res_model not in self.ALLOWED_MODELS:
+            if record.res_model and record.res_model not in allowed:
                 raise ValidationError(
                     f"Le modèle « {record.res_model} » ne peut pas être classifié. "
                     f"Seuls les modèles pouvant contenir des renseignements personnels "

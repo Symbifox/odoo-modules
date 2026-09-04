@@ -17,11 +17,25 @@ class TestPrivacyDestructionCampaign(TransactionCase):
         cls.Register = cls.env["privacy.destruction.register"]
 
         cls.officer_group = cls.env.ref("privacy_consent.group_privacy_officer")
+        # ⚠ `base.group_partner_manager` n'est PAS décoratif. `_execute_destruction`
+        # contrôle les droits d'écriture sur la cible AVANT d'escalader en sudo —
+        # c'est ce qui empêche le circuit de destruction de servir d'élévation de
+        # privilèges. Sans ce groupe, le responsable vie privée n'a pas le droit
+        # d'écrire sur `res.partner` et chaque ligne échoue.
+        #
+        # 🔴 Le harnais ne le donnait pas, et ce test passait tout de même : la
+        # boucle d'exécution créait l'entrée de registre SANS relire l'état que
+        # `_execute_destruction` venait d'écrire, puis réécrivait « fait ». Les
+        # deux lignes refusées ressortaient certifiées détruites. C'est le défaut
+        # de la tâche #24897, et il rendait ce test vert pour la mauvaise raison.
         cls.officer = cls.env["res.users"].create({
             "name": "Campaign Officer",
             "login": "test_campaign_officer",
             "email": "camp-officer@example.com",
-            "groups_id": [(4, cls.officer_group.id)],
+            "groups_id": [
+                (4, cls.officer_group.id),
+                (4, cls.env.ref("base.group_partner_manager").id),
+            ],
         })
 
         cls.calendar = cls.env["privacy.retention.calendar"].create({

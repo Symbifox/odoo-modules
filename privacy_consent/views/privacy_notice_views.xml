@@ -131,8 +131,19 @@
                         <group>
                             <field name="hash" readonly="1"/>
                             <field name="created_by_id" readonly="1"/>
+                            <field name="hash_resealed_at" readonly="1"
+                                   invisible="not hash_resealed_at"/>
                         </group>
                     </group>
+                    <!-- ⚠ Un sceau recalculé ne doit jamais pouvoir se lire comme
+                         un sceau contemporain du consentement. Le bandeau ne
+                         s'affiche que sur les versions effectivement reprises. -->
+                    <div class="alert alert-warning" role="alert"
+                         invisible="not hash_resealed_at">
+                        <strong>Empreinte rescellée.</strong>
+                        <field name="hash_reseal_note" readonly="1" nolabel="1"
+                               class="oe_inline"/>
+                    </div>
                     <separator string="Contenu"/>
                     <field name="body" readonly="consent_count > 0"/>
                 </sheet>

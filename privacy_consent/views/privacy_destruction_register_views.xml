@@ -27,6 +27,9 @@
                             <field name="res_model"/>
                             <field name="res_id"/>
                             <field name="res_name"/>
+                            <field name="destruction_scope"/>
+                            <field name="res_field"
+                                   invisible="destruction_scope != 'partial'"/>
                         </group>
                     </group>
                     <group>
@@ -74,6 +77,10 @@
                        decoration-warning="destruction_method == 'delete'"
                        decoration-info="destruction_method == 'anonymize'"
                        decoration-success="destruction_method == 'archive'"/>
+                <field name="destruction_scope" widget="badge"
+                       decoration-warning="destruction_scope == 'partial'"
+                       decoration-muted="destruction_scope == 'full'"/>
+                <field name="res_field" string="Éléments détruits" optional="show"/>
                 <field name="destroyed_by_id"/>
                 <field name="approved_by_id"/>
                 <field name="certificate_number" optional="show"/>
@@ -101,6 +108,11 @@
                 <filter string="Effacement sécurisé" name="secure_wipe"
                         domain="[('destruction_method', '=', 'secure_wipe')]"/>
                 <separator/>
+                <filter string="Enregistrement entier" name="scope_full"
+                        domain="[('destruction_scope', '=', 'full')]"/>
+                <filter string="Destruction partielle" name="scope_partial"
+                        domain="[('destruction_scope', '=', 'partial')]"/>
+                <separator/>
                 <filter string="Ce mois" name="this_month"
                         domain="[('destruction_date', '>=', (context_today().replace(day=1)).strftime('%Y-%m-%d'))]"/>
                 <filter string="Ce trimestre" name="this_quarter"
@@ -109,6 +121,8 @@
                 <group expand="0" string="Regrouper par">
                     <filter string="Méthode" name="group_by_method"
                             context="{'group_by': 'destruction_method'}"/>
+                    <filter string="Portée" name="group_by_scope"
+                            context="{'group_by': 'destruction_scope'}"/>
                     <filter string="Mois" name="group_by_month"
                             context="{'group_by': 'destruction_date:month'}"/>
                     <filter string="Détruit par" name="group_by_user"

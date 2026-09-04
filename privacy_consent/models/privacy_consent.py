@@ -4,6 +4,22 @@ from datetime import timedelta
 from odoo import api, fields, models
 from odoo.exceptions import UserError
 
+# Les états depuis lesquels le lien reçu par la personne peut encore produire
+# un consentement (écran de reconsentement du portail).
+#
+# ⚠ `refused` en est EXCLU — décision de gouvernance du 2026-08-03 : « un consentement refusé doit annuler le lien d'origine ;
+# impossible de le transformer en accordé, il faut renvoyer une nouvelle
+# demande ». Un refus est une réponse, pas un brouillon : le lien qui l'a
+# recueilli est consommé. Rouvrir la porte se fait par une NOUVELLE demande,
+# avec son propre identifiant et son propre jeton, émise par l'organisation
+# (`action_new_request_after_refusal`) — de sorte que le refus garde son
+# enregistrement, sa date et sa preuve, et qu'on ne perde jamais la trace de
+# ce qui a été refusé, ni QUAND.
+#
+# `withdrawn` y reste : le retrait est un droit exercé sur un consentement
+# déjà accordé, et son retour en arrière passe par l'écran de reconsentement.
+PORTAL_RENEWABLE_STATES = ("granted", "expired", "withdrawn")
+
 
 class PrivacyConsent(models.Model):
     _name = "privacy.consent"
@@ -432,8 +448,23 @@ class PrivacyConsent(models.Model):
         }
 
     def action_reset_to_draft(self):
-        """Reset to draft status (for correction)."""
+        """Reset to draft status (for correction).
+
+        ⚠ Un consentement REFUSÉ ne se réinitialise pas. La remise en brouillon
+        rendait le bouton « Accorder » au même enregistrement : le refus était
+        écrasé sur place, sans nouvel identifiant ni nouveau jeton, et plus rien
+        n'attestait qu'il avait eu lieu. Décision de gouvernance du 2026-08-03.
+        Le chemin sanctionné est `action_new_request_after_refusal`.
+        """
         for consent in self:
+            if consent.status == "refused":
+                raise UserError(
+                    "Un consentement refusé ne peut pas être remis en brouillon : "
+                    "le refus serait écrasé et sa trace perdue.\n\n"
+                    "Pour redonner l'occasion de consentir, utilisez « Renvoyer "
+                    "une nouvelle demande » : une demande distincte est créée, "
+                    "avec son propre lien, et le refus reste au dossier."
+                )
             if consent.status in ("granted", "withdrawn"):
                 raise UserError("Impossible de réinitialiser les consentements accordés ou révoqués.")
             consent.write({"status": "draft"})
@@ -637,11 +668,21 @@ class PrivacyConsent(models.Model):
         if not mail.exists():
             return
 
-        # Rediriger vers le contact cible
+        # Rediriger vers le contact cible.
+        #
+        # ATTENTION : ne JAMAIS renseigner `email_to` ET `recipient_ids` en meme
+        # temps. `mail.mail._prepare_outgoing_list()` produit alors DEUX
+        # livraisons pour un seul enregistrement — une pour l'adresse brute, une
+        # pour le partenaire — avec le meme Message-ID. Le destinataire recevait
+        # la demande de consentement en double, a une seconde d'intervalle.
+        # Mesure en boite reelle au QA du 2026-08-01 : 8 cas sur 8, et
+        # 4 courriels pour un mineur a deux responsables legaux.
+        # Le defaut etait invisible cote Odoo, parce que cette methode supprime
+        # ensuite son propre `mail.mail` (cascade via `mail_message_id`).
         child = self.subject_partner_id
         mail.write({
             "email_to": contact.email,
-            "recipient_ids": [(6, 0, [contact.id])],
+            "recipient_ids": [(5, 0, 0)],
         })
 
         # Pour les mineurs : personnaliser la salutation
@@ -840,6 +881,104 @@ class PrivacyConsent(models.Model):
         return {
             "type": "ir.actions.act_window",
             "name": "Consentement renouvelé",
+            "res_model": "privacy.consent",
+            "view_mode": "form",
+            "res_id": new_consent.id,
+        }
+
+    def action_new_request_after_refusal(self):
+        """Émettre une NOUVELLE demande après un refus.
+
+        C'est le seul chemin qui rouvre la porte une fois le consentement
+        refusé — décision de gouvernance du 2026-08-03 : « un consentement
+        refusé doit annuler le lien d'origine ; il faut renvoyer une nouvelle
+        demande ». Le lien reçu par la personne ne produit donc plus rien, et
+        c'est l'organisation qui décide de redemander.
+
+        ⚠ Un NOUVEL enregistrement, jamais une remise à zéro de celui-ci. Le
+        refus garde son identifiant, sa date, son jeton et sa preuve ; le
+        nouveau porte les siens. Sans cette séparation, un « oui » plus tard
+        effacerait le fait qu'un « non » a été exprimé, et le registre ne
+        pourrait plus dire ce qui a été refusé ni quand.
+
+        ⚠ La chaîne passe par `renewed_from_id` / `renewed_to_id`, comme un
+        renouvellement — volontairement le MÊME chaînage, celui que parcourt
+        déjà `action_view_renewal_history`.
+        """
+        self.ensure_one()
+
+        if self.status != "refused":
+            raise UserError(
+                "Cette action ne vaut que pour un consentement refusé. "
+                "Pour un consentement accordé ou expiré, utilisez « Renouveler »."
+            )
+        if self.renewed_to_id:
+            raise UserError(
+                f"Une nouvelle demande a déjà été émise pour ce refus "
+                f"(consentement #{self.renewed_to_id.id})."
+            )
+
+        # La version EN VIGUEUR, pas celle figée sur le consentement refusé :
+        # la personne doit se prononcer sur le texte d'aujourd'hui.
+        # ⚠ `notice_version_id` est `copy=True`, donc sans valeur explicite la
+        # copie hériterait de la version épinglée sur le refus.
+        current_version = self.notice_id.current_version_id if self.notice_id else False
+
+        new_consent = self.copy({
+            "status": "draft",
+            "requested_at": False,
+            "granted_at": False,
+            "refused_at": False,
+            "withdrawn_at": False,
+            "expires_at": False,
+            "docuseal_submission_id": False,
+            "docuseal_status": False,
+            "docuseal_sent_at": False,
+            "docuseal_completed_at": False,
+            "libresign_file_uuid": False,
+            "libresign_status": False,
+            "libresign_sent_at": False,
+            "libresign_completed_at": False,
+            "last_reminder_sent_at": False,
+            "reminder_count": 0,
+            "renewed_from_id": self.id,
+            "notes": (
+                f"Nouvelle demande émise après le refus du consentement "
+                f"#{self.id} le {fields.Date.today()}"
+            ),
+            **({"notice_version_id": current_version.id} if current_version else {}),
+        })
+
+        self.renewed_to_id = new_consent.id
+
+        self.message_post(
+            body=(
+                f"Nouvelle demande de consentement émise à la suite de ce refus. "
+                f"Nouveau consentement : #{new_consent.id}. Le lien d'origine "
+                f"reste sans effet."
+            ),
+            message_type="notification",
+        )
+
+        new_consent.action_send_request()
+        if new_consent._get_email_recipient().email:
+            new_consent._send_consent_request_email()
+        else:
+            # ⚠ `_send_consent_request_email` sort en silence sans adresse.
+            # Sans cette note, la demande resterait « En attente » avec une
+            # date d'envoi, sans que rien ne soit parti.
+            new_consent.message_post(
+                body=(
+                    "Aucune adresse courriel disponible : la demande a été "
+                    "créée mais AUCUN courriel n'a été envoyé. Transmettre le "
+                    "lien par un autre canal."
+                ),
+                message_type="notification",
+            )
+
+        return {
+            "type": "ir.actions.act_window",
+            "name": "Nouvelle demande de consentement",
             "res_model": "privacy.consent",
             "view_mode": "form",
             "res_id": new_consent.id,

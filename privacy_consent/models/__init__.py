@@ -13,6 +13,7 @@ from . import privacy_contact_preference
 from . import privacy_dashboard
 from . import privacy_retention
 from . import privacy_retention_calendar
+from . import privacy_destruction_ops
 from . import privacy_document_classification
 from . import privacy_destruction
 from . import privacy_destruction_register

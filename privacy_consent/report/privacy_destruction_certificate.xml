@@ -131,11 +131,18 @@
                     </div>
                 </div>
 
-                <!-- Documents détruits (pour destructions documentaires) -->
-                <div class="row mb-4" t-if="o.request_type in ('document', 'erasure_right', 'campaign') and o.classification_ids">
+                <!-- Documents détruits (pour destructions documentaires)
+                     ⚠ La source est `destroyed_classification_ids`, PAS
+                     `classification_ids`. Une destruction réussie archive la
+                     classification : le many2many des cibles ne rendait donc que
+                     les documents SAUTÉS, et le certificat les présentait comme
+                     détruits. Le `t-if` sur ce même many2many escamotait en prime
+                     toute la section quand l'exécution avait parfaitement réussi. -->
+                <div class="row mb-4" t-if="o.state == 'executed' and o.destroyed_classification_ids">
                     <div class="col-12">
                         <h5 style="border-bottom: 2px solid #32373c; padding-bottom: 5px;">
                             Documents détruits / Destroyed Documents
+                            (<t t-esc="o.destroyed_count"/>)
                         </h5>
                         <table class="table table-sm">
                             <thead>
@@ -146,9 +153,47 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <t t-foreach="o.classification_ids" t-as="cls">
+                                <t t-foreach="o.destroyed_classification_ids" t-as="cls">
                                     <tr>
                                         <td><t t-esc="cls.res_name or 'N/A'"/></td>
+                                        <td><t t-esc="cls.pi_category"/></td>
+                                        <td><t t-esc="cls.sensitivity_level"/></td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Documents NON détruits : une destruction partielle doit se lire
+                     sur la pièce qu'on oppose, pas seulement dans le journal du
+                     serveur. -->
+                <div class="row mb-4" t-if="o.state == 'executed' and o.skipped_classification_ids">
+                    <div class="col-12">
+                        <h5 style="border-bottom: 2px solid #c0392b; padding-bottom: 5px; color: #c0392b;">
+                            Documents NON détruits / Documents NOT destroyed
+                            (<t t-esc="o.skipped_count"/>)
+                        </h5>
+                        <p style="font-size: 11px;">
+                            Les documents ci-dessous étaient ciblés par la demande mais
+                            <strong>n'ont pas été détruits</strong>. /
+                            The documents below were targeted but <strong>were not destroyed</strong>.
+                        </p>
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Document</th>
+                                    <th>Catégorie de RP / PI Category</th>
+                                    <th>Sensibilité / Sensitivity</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="o.skipped_classification_ids" t-as="cls">
+                                    <tr>
+                                        <!-- ⚠ Repli sur display_name : quand la cible a disparu
+                                             (module désinstallé), res_name est vide et la ligne
+                                             qui compte le plus s'affichait « N/A ». -->
+                                        <td><t t-esc="cls.res_name or cls.display_name or 'N/A'"/></td>
                                         <td><t t-esc="cls.pi_category"/></td>
                                         <td><t t-esc="cls.sensitivity_level"/></td>
                                     </tr>
@@ -175,7 +220,12 @@
                     </div>
                 </div>
 
-                <!-- Vérification -->
+                <!-- Vérification
+                     ⚠ L'empreinte seule ne prouve rien si le contenu haché n'est
+                     stocké nulle part. `certificate_content` le persiste depuis
+                     18.0.4.10.0 ; avant, le contenu embarquait l'heure courante,
+                     donc l'empreinte n'était rejouable par personne. On distingue
+                     les deux cas au lieu de promettre uniformément un contrôle. -->
                 <div class="row mb-4" t-if="o.verification_hash">
                     <div class="col-12">
                         <h5 style="border-bottom: 2px solid #32373c; padding-bottom: 5px;">
@@ -184,6 +234,28 @@
                         <div style="background-color: #f8f9fa; padding: 10px; border-radius: 5px; font-family: monospace; font-size: 10px; word-break: break-all;">
                             <strong>SHA256:</strong> <t t-esc="o.verification_hash"/>
                         </div>
+                        <p t-if="o.certificate_content" style="font-size: 10px; margin-top: 5px;">
+                            Empreinte calculée sur le contenu certifié conservé avec la
+                            demande, et rejouable à tout moment. /
+                            Hash computed over the certified content retained with the
+                            request, and replayable at any time.
+                        </p>
+                        <p t-else="" style="font-size: 10px; margin-top: 5px; color: #c0392b;">
+                            ⚠ Certificat antérieur à la conservation du contenu certifié :
+                            l'empreinte ne peut pas être rejouée. /
+                            ⚠ Certificate predates retention of the certified content:
+                            this hash cannot be replayed.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Journal d'exécution : ce qui a réellement été fait. -->
+                <div class="row mb-4" t-if="o.execution_log">
+                    <div class="col-12">
+                        <h5 style="border-bottom: 2px solid #32373c; padding-bottom: 5px;">
+                            Journal d'exécution / Execution Log
+                        </h5>
+                        <div style="background-color: #f8f9fa; padding: 10px; border-radius: 5px; font-family: monospace; font-size: 10px; white-space: pre-wrap;"><t t-esc="o.execution_log"/></div>
                     </div>
                 </div>
 
