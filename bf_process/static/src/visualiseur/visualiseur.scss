@@ -105,3 +105,15 @@
 .o_bf_process_choix {
     max-width: 22rem;
 }
+
+// La légende de la vue delta. Elle n'apparaît que si des teintes sont
+// posées : une légende sur une carte sans delta ferait chercher des couleurs
+// qui n'y sont pas.
+.o_bf_process_delta {
+    font-size: 11px;
+    color: #73787A;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 34ch;
+}

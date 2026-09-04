@@ -23,6 +23,8 @@
                       title="Une version validée ne se modifie plus. Rouvrez-la, ou créez la suivante.">
                     Version validée · lecture seule
                 </span>
+                <span t-if="state.donnees.delta" class="o_bf_process_delta"
+                      t-esc="state.donnees.delta"/>
                 <span class="flex-grow-1"/>
                 <div t-if="state.donnees.modifiable" class="btn-group btn-group-sm"
                      role="group" aria-label="Outils d'édition">

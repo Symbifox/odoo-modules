@@ -22,10 +22,10 @@ class BfProcessChargement(models.Model):
     _inherit = "bf.process"
 
     # ------------------------------------------------------------------ lire
-    def to_dicts(self):
+    def to_dicts(self, teintes=None):
         """Rend les niveaux dans l'ordre, sous la forme attendue par le rendu."""
         self.ensure_one()
-        return [d.to_dict() for d in self.diagram_ids]
+        return [d.to_dict(teintes) for d in self.diagram_ids]
 
     def _prefixes(self):
         self.ensure_one()
@@ -81,6 +81,57 @@ class BfProcessChargement(models.Model):
     @refus_lisible
     def action_telecharger_pdf(self):
         return self._telecharger(self._pdf_octets(), "pdf", "application/pdf")
+
+    # ------------------------------------------------------------ vue delta
+    #: Ce que les teintes veulent dire, écrit sur la page plutôt que promis
+    #: dans un courriel : le PDF circule seul, et une couleur sans légende se
+    #: fait interpréter à l'envers une fois sur deux.
+    LEGENDE_DELTA = ("Vue delta : vert = étape ajoutée, rouge = étape retirée,"
+                     " ambre = étape modifiée. Les écarts mis de côté ne sont"
+                     " pas teintés.")
+
+    def _pages_delta(self):
+        """Les deux cartes à la suite, chacune teintée de son côté du delta.
+
+        Deux cartes plutôt qu'une seule carte fusionnée, et c'est un choix de
+        géométrie autant que de lecture : une étape retirée n'a aucune case
+        dans la grille de la cible, et lui en inventer une ferait entrer en
+        collision des cases que le modèle a placées. Chaque carte garde donc sa
+        propre disposition, et c'est la teinte qui les raccorde.
+        """
+        self.ensure_one()
+        pages = []
+        for cote, carte, etiquette in (
+                ("avant", self.origine_id, _("État actuel")),
+                ("apres", self, _("Processus souhaité"))):
+            for d in carte.to_dicts(self._teintes(cote)):
+                d["level"] = " · ".join(
+                    x for x in (etiquette, d.get("level")) if x)
+                pages.append(d)
+        return pages
+
+    def _exiger_cible(self):
+        self.ensure_one()
+        if self.nature != "cible" or not self.origine_id:
+            raise UserError(_(
+                "La vue delta compare un processus souhaité à l'état actuel"
+                " dont il est tiré. « %s » décrit l'état actuel : dessinez"
+                " d'abord ce qu'on voudrait à la place.") % self.display_name)
+
+    def _pdf_delta_octets(self):
+        self.ensure_one()
+        self._exiger_cible()
+        from ..generateur import pdf as gen_pdf
+        return gen_pdf.to_pdf(
+            self._pages_delta(),
+            titre=f"{self.name} · {self.origine_id.version} vers {self.version}",
+            sous_titre=self.LEGENDE_DELTA,
+            pied=(self.partner_id.display_name or ""))
+
+    @refus_lisible
+    def action_telecharger_pdf_delta(self):
+        return self._telecharger(self._pdf_delta_octets(), "pdf",
+                                 "application/pdf", suffixe="-delta")
 
     def _telecharger(self, contenu, extension, mimetype, suffixe=""):
         self.ensure_one()
@@ -269,6 +320,10 @@ class BfProcessDiagramRendu(models.Model):
         # de quoi rendre le tracé navigable : chaque forme sait quel
         # enregistrement elle représente, et quelle page elle ouvre
         par_code = {n.code: n for n in self.node_ids}
+        # la vue delta à l'écran. Les quatre coins d'une case sont déjà pris
+        # (validation, fil, ressources, traçabilité) : la teinte passe donc
+        # par le fond et le contour, pas par une cinquième pastille.
+        teintes = self.process_id.teintes_de_la_carte()
         noeuds_rendus = []
         for n in d["nodes"]:
             rec = par_code.get(n["id"])
@@ -285,6 +340,7 @@ class BfProcessDiagramRendu(models.Model):
                 # QR et la pastille de validation occupent à l'impression.
                 ressources=len(rec.resource_ids) if rec else 0,
                 traces=len(rec.knowledge_item_ids) if rec else 0,
+                teinte=teintes.get((self.code, n["id"]), ""),
                 **boite(n["id"])))
 
         flux = []
@@ -320,6 +376,10 @@ class BfProcessDiagramRendu(models.Model):
             "modifiable": self._modifiable(),
             "gele": self.process_id.state == "valide",
             "pas": self.pas_grille or 0.05,
+            # de quoi légender les teintes, et seulement quand il y en a :
+            # une légende affichée sur une carte sans delta ferait chercher
+            # des couleurs qui n'y sont pas
+            "delta": self.process_id._legende_delta() if teintes else "",
             "col_w": self.col_w or 168.0,
             "row_h": self.row_h or 100.0,
             "palette": self._palette(),

@@ -49,6 +49,19 @@ BLUE = (0.161, 0.671, 0.882)
 BLUE_SOFT = (0.918, 0.969, 0.992)
 AMBER = (0.84, 0.60, 0.13)
 AMBER_SOFT = (0.996, 0.965, 0.902)
+GREEN = (0.106, 0.541, 0.294)
+GREEN_SOFT = (0.906, 0.965, 0.925)
+RED = (0.753, 0.227, 0.169)
+RED_SOFT = (0.996, 0.925, 0.914)
+
+#: La vue delta : (fond, contour) par teinte. Une carte hors vue delta ne
+#: porte aucune teinte et retombe sur le blanc et l'encre habituels, donc
+#: rien ne change pour les cartes qui ne se comparent à rien.
+TEINTES = {
+    "vert": (GREEN_SOFT, GREEN),
+    "rouge": (RED_SOFT, RED),
+    "ambre": (AMBER_SOFT, AMBER),
+}
 
 MARGE = geo.MARGE
 BANDEAU = 34.0          # au-dessus de la marge de la carte : le titre
@@ -253,29 +266,41 @@ def _bonhomme(t, cx, cy):
             (cx + 5.4, cy + 6)], fill=WHITE, w=0.8)
 
 
+def _teinte(n):
+    """(fond, contour) d'un nœud : sa teinte de delta, ou le rendu habituel.
+
+    Les annotations gardent leur ton (piste d'amélioration, fragilité) : il
+    dit ce que l'annotation VEUT dire, alors que la teinte ne dit que ce qui a
+    bougé. Les écraser ferait perdre le plus utile des deux.
+    """
+    return TEINTES.get(n.get("teinte"), (WHITE, INK))
+
+
 def dessiner_noeud(t, n, cx, cy):
     k, nom = n["kind"], n.get("name") or ""
     w, h = geo.node_box(n)
     x0, y0, x1, y1 = cx - w / 2, cy - h / 2, cx + w / 2, cy + h / 2
+    fond, bord = _teinte(n)
 
     if k in ("start", "msgStart"):
-        t.circle(cx, cy, geo.EV_R, fill=WHITE, w=1.1)
+        t.circle(cx, cy, geo.EV_R, fill=fond, color=bord, w=1.1)
         if k == "msgStart":
             _enveloppe(t, cx, cy, 15)
         t.bloc(cx, y1 + 22, nom, size=8.8, largeur=150, color=INK)
     elif k in ("timerCatch", "msgCatch"):
-        t.circle(cx, cy, geo.EV_R, fill=WHITE, w=1.1)
-        t.circle(cx, cy, geo.EV_R - 3.4, fill=None, w=1.0)
+        t.circle(cx, cy, geo.EV_R, fill=fond, color=bord, w=1.1)
+        t.circle(cx, cy, geo.EV_R - 3.4, fill=None, color=bord, w=1.0)
         if k == "timerCatch":
             _horloge(t, cx, cy, 10)
         else:
             _enveloppe(t, cx, cy, 14)
         t.bloc(cx, y1 + 22, nom, size=8.8, largeur=150)
     elif k == "end":
-        t.circle(cx, cy, geo.EV_R, fill=WHITE, w=2.6)
+        t.circle(cx, cy, geo.EV_R, fill=fond, color=bord, w=2.6)
         t.bloc(cx, y1 + 22, nom, size=8.8, largeur=150, gras=True)
     elif k in PASSERELLES:
-        t.poly([(cx, y0), (x1, cy), (cx, y1), (x0, cy)], fill=WHITE, w=1.0)
+        t.poly([(cx, y0), (x1, cy), (cx, y1), (x0, cy)], fill=fond,
+               color=bord, w=1.0)
         if k == "or":
             t.circle(cx, cy, 12, fill=None, w=2.0)
         elif k == "and":
@@ -300,11 +325,12 @@ def dessiner_noeud(t, n, cx, cy):
             t.text(x0 + 14, yy, ligne, size=mesure.NOTE_SZ, align=0, color=couleur)
             yy += mesure.NOTE_SZ * mesure.NOTE_INTER
     elif k == "store":
-        t.rect(x0, y0 + 6, x1, y1 - 4, fill=WHITE, w=0.9)
+        t.rect(x0, y0 + 6, x1, y1 - 4, fill=fond, color=bord, w=0.9)
         t.line([(x0, y0 + 6), (x1, y0 + 6)], w=0.9)
         t.bloc(cx, y1 + 14, nom, size=8.6, largeur=120, color=GREY)
     else:
-        t.rect(x0, y0, x1, y1, fill=WHITE, w=1.0, radius=9)
+        t.rect(x0, y0, x1, y1, fill=fond, color=bord,
+               w=1.6 if n.get("teinte") else 1.0, radius=9)
         if k in ("send", "receive"):
             _enveloppe(t, x0 + 15, y0 + 13, 13, plein=(k == "send"))
         elif k == "user":

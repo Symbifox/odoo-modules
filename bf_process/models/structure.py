@@ -197,7 +197,13 @@ class BfProcessNode(models.Model):
     def name_get(self):
         return [(r.id, r.name or r.code) for r in self]
 
-    def to_dict(self):
+    def to_dict(self, teinte=None):
+        """La forme d'échange. `teinte` n'existe que pour la vue delta.
+
+        Elle ne se stocke pas : elle se calcule au moment du tracé, depuis les
+        écarts. Une teinte enregistrée sur le nœud aurait vieilli en silence
+        dès qu'un écart change d'état.
+        """
         self.ensure_one()
         d = {"id": self.code, "kind": self.kind, "name": self.name or "",
              "col": self.col, "row": self.row}
@@ -209,4 +215,6 @@ class BfProcessNode(models.Model):
             d["w"] = self.width
         if self.height:
             d["h"] = self.height
+        if teinte:
+            d["teinte"] = teinte
         return d

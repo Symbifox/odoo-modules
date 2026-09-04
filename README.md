@@ -13,7 +13,7 @@ modules — the UI fixes, the shared helpers, the Nextcloud integrations, the
 productivity pack. They are free because they are more useful to us being
 widely used than being held.
 
-**78 modules are BUSL-1.1.** The source is published and auditable, and **you
+**77 modules are BUSL-1.1.** The source is published and auditable, and **you
 may run them in production for your own internal business operations** — as a
 company, as a freelancer, as one person on a laptop. What needs an agreement is
 using them to provide a product or service to someone else: hosting them for a
@@ -110,7 +110,6 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_cx_subscription` | Expérience client : revenu récurrent à risque | 18.0.1.0.1 | BUSL-1.1 | Recurring revenue at risk on the Customer Experience dashboard tile |
 | `bf_cx_website` | Expérience client : témoignages sur le site web | 18.0.1.1.0 | BUSL-1.1 | Public /temoignages page rendered dynamically from published testimonials |
 | `bf_dark_mode` | Symbifox Dark Mode | 18.0.1.1.1 | LGPL-3 | Dark mode for Odoo using the Symbifox palette |
-| `bf_dashboard` | Tableau de bord Symbifox | 18.0.1.2.0 | BUSL-1.1 | Unified dashboard aggregating billing, hosting, knowledge and privacy |
 | `bf_default_all_companies` | BF Default All Companies | 18.0.1.0.0 | LGPL-3 | Pre-selects every allowed company in the multi-company switcher on first login |
 | `bf_document_approval` | Documents — Approbation à plusieurs | 18.0.1.0.0 | BUSL-1.1 | A policy is published only once everyone who had to weigh in has done so, and its distribution follows the RACI recorded in the knowledge matrix |
 | `bf_document_nextcloud_sync` | Document Nextcloud Sync | 18.0.1.4.1 | LGPL-3 | Document sync between Odoo and Nextcloud via WebDAV |
@@ -121,7 +120,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_editorial_linkedin` | Atelier éditorial — LinkedIn | 18.0.1.0.1 | BUSL-1.1 | Post to LinkedIn from the editorial workshop, over the versioned API with a member token |
 | `bf_editorial_manual` | Atelier éditorial — canal manuel | 18.0.1.1.1 | BUSL-1.1 | A channel fed by hand: the text is written and proofread in Odoo, the posting happens on the network |
 | `bf_editorial_social` | Atelier éditorial — réseaux sociaux | 18.0.1.5.0 | BUSL-1.1 | Deferred distribution to social networks from the editorial workshop, with a no-duplicate guarantee and measurement coming back |
-| `bf_email_management` | Gestion des courriels | 18.0.11.14.2 | BUSL-1.1 | Unified IMAP inbox + Odoo chatter projection, two-pane OWL folder browser (Apple Mail / Thunderbird), bulk per-row target inference |
+| `bf_email_management` | Gestion des courriels | 18.0.11.21.0 | BUSL-1.1 | Unified IMAP inbox + Odoo chatter projection, two-pane OWL folder browser (Apple Mail / Thunderbird), bulk per-row target inference |
 | `bf_email_systray` | Boîte de réception bf.email — barre Odoo | 18.0.2.0.0 | LGPL-3 | Systray button opening the bf.email inbox with a (read + unread) counter |
 | `bf_employee_experience` | Expérience employé | 18.0.1.0.0 | LGPL-3 | Benefits catalogue, rule-based eligibility, usage register and retention indicators |
 | `bf_employee_experience_dashboard` | Expérience employé — tuile tableau de bord | 18.0.1.0.1 | LGPL-3 | Benefits take-up, and a count of paid benefits nobody claims |
@@ -134,7 +133,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_fundraising_core` | Levée de fonds — Cœur | 18.0.1.0.0 | AGPL-3 | Donor management and fundraising structure (Funds / Campaigns / Appeals / Packages) on top of the Donation module — comparable to Raiser's Edge |
 | `bf_fundraising_web` | Levée de fonds — Web & Portail donateur | 18.0.1.0.2 | AGPL-3 | Public website donation form + donor portal (giving history and official receipt download) |
 | `bf_gamification` | Fox Quest | 18.0.2.5.1 | BUSL-1.1 | Gamification system with XP, levels, badges, and rewards |
-| `bf_helpdesk` | Symbifox — Helpdesk | 18.0.4.3.3 | AGPL-3 | Branded helpdesk extension: per-team public form, hour-bank ribbon, waiting states, ntfy critical hook, persona panel, knowledge-matrix link, ticket→meeting, IA triage via Gen, CSAT on close, branded portal, dashboard tile, IMAP gateway hardening, SLA + macros + auto-tag + auto-ack, ticket timesheets (hour-bank deduction), branded client updates |
+| `bf_helpdesk` | Symbifox — Helpdesk | 18.0.4.4.4 | AGPL-3 | Branded helpdesk extension: per-team public form, hour-bank ribbon, waiting states, ntfy critical hook, persona panel, knowledge-matrix link, ticket→meeting, IA triage via Gen, CSAT on close, branded portal, dashboard tile, IMAP gateway hardening, SLA + macros + auto-tag + auto-ack, ticket timesheets (hour-bank deduction), branded client updates |
 | `bf_home` | Accueil Symbifox | 18.0.2.0.0 | BUSL-1.1 | Home screen replacing the app grid, ordered by who is blocked: your day, what waits on others, money, risk — every figure opens its filtered list |
 | `bf_hosting_patch` | Hébergement — Mises à jour du système | 18.0.4.2.0 | LGPL-3 | Fleet update state per installed system — pending packages, kernel, reboots — and applies updates on command via a queue the machines poll |
 | `bf_hour_bank` | Banque d'heures | 18.0.1.15.0 | BUSL-1.1 | Automated tracking of client hour banks with threshold-based proactive notifications (unbilled hours, % of allocated budget, balance floor) |
@@ -161,13 +160,13 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_outreach_call` | Démarchage — appels journalisés | 18.0.1.0.0 | BUSL-1.1 | Reconciles the calls actually placed with the outreach targets, duration included |
 | `bf_outreach_email` | Démarchage — réponses courriel | 18.0.1.0.0 | BUSL-1.1 | Recognises replies from outreach targets in the received-email archive |
 | `bf_persona` | Persona des contacts | 18.0.2.2.0 | BUSL-1.1 | Active relationship intelligence: composer hint with auto-cc, monthly auto-seed from email signals, weekly degradation detector with optional ntfy alert, kanban dashboard |
-| `bf_process` | Cartographie de processus | 18.0.4.3.0 | BUSL-1.1 | Living AS-IS process maps stored as records, not files: BPMN 2.0 and diagrams.net export, an in-app SVG viewer, per-activity validation sign-off, versioning with freeze and diff, and BPMN re-import |
+| `bf_process` | Cartographie de processus | 18.0.5.0.0 | BUSL-1.1 | Living process maps stored as records, not files: BPMN 2.0 and diagrams.net export, an in-app SVG viewer and editor, per-activity validation sign-off, versioning with freeze and diff, BPMN re-import, an assembled deliverable (cover, contents, appendices), and a target process whose gap to the current state is seeded, owned and tracked |
 | `bf_project_merge` | Symbifox — Regroupement de tâches | 18.0.1.0.0 | LGPL-3 | Merge tasks by reassigning their content (messages, activities, hours, dependencies) to the kept task, then archive the rest. |
 | `bf_receipt_ca` | Reçus de dons — Canada (ARC + Revenu Québec) | 18.0.1.0.4 | AGPL-3 | CRA + Revenu Québec compliant official donation receipts, in French — eligible amount, advantage, in-kind gifts, void/reissue |
 | `bf_recurrence` | Symbifox — Ancrage de la récurrence | 18.0.1.0.0 | LGPL-3 | Choose, per recurring series, whether the next deadline is measured from the old deadline or from the actual completion date |
 | `bf_securetransfer` | Transfert sécurisé (Secure Transfer) | 18.0.1.21.0 | BUSL-1.1 | Secure file transfer and secure messaging: browser-direct S3 uploads (presigned, multipart, ETag-pinned integrity), tokenized links with expiry, download budget, password, recipient and sender OTP (email or SMS), burn-after-download, download notification; message-only mode; personal drop pages `/to/<slug>` with per-employee auto-provisioning; backend secure-send wizard; sender/recipient allowlists, abuse reporting with automatic suspension, IP and sender quotas, rate limiting, hardened headers and CSP; hash-chained tamper-evident access log with CSV export and integrity verification (Law 25); auto-purge and GC crons; multi-brand skinning by host with free/paid tiers and white-label toggle; dashboard; guided S3 bucket setup with data-residency probe; open-audience data rooms where a link names nobody and each visitor self-declares an email or mobile, confirms a one-time code on that channel, and gets a per-person download budget and watermark |
 | `bf_securetransfer_sign` | Symbifox — Transfert sécurisé : entente de confidentialité | 18.0.1.1.0 | BUSL-1.1 | Bridge between bf_securetransfer and bf_sign: require each visitor to sign a confidentiality agreement, in the identity they just confirmed, before the content of a transfer opens; gated on the download page and on the direct file route alike |
-| `bf_security_awareness` | Security Awareness | 18.0.1.9.1 | BUSL-1.1 | KnowBe4/Terranova-style platform: phishing simulations (open/click/submit, QR, attachments), per-person risk profiles, eLearning remediation, OWL dashboards, a Phish Alert Button with sim-aware triage, and email clawback (PhishRIP-style) to pull a confirmed malicious email from every mailbox (M365 app-only XOAUTH2 or per-mailbox IMAP) into reversible quarantine — see `SECURITY.md` |
+| `bf_security_awareness` | Security Awareness | 18.0.1.9.2 | BUSL-1.1 | KnowBe4/Terranova-style platform: phishing simulations (open/click/submit, QR, attachments), per-person risk profiles, eLearning remediation, OWL dashboards, a Phish Alert Button with sim-aware triage, and email clawback (PhishRIP-style) to pull a confirmed malicious email from every mailbox (M365 app-only XOAUTH2 or per-mailbox IMAP) into reversible quarantine — see `SECURITY.md` |
 | `bf_session_cookie_domain` | BF Session Cookie Domain | 18.0.2.0.0 | LGPL-3 | Share the session cookie across the subdomains of one configured apex domain |
 | `bf_sign` | Symbifox — Signature électronique | 18.0.3.23.0 | BUSL-1.1 | Native electronic signature (SES): parallel or sequential multi-signer requests, drag-and-drop pad placement on the PDF with reusable layout templates, draw/type/upload signature and initials with embedded handwriting fonts, signer-fillable text and date fields, optional email OTP identity verification of signers, refusal flow with reason, branded public signing pages and transactional emails, completion certificate, optional PAdES cryptographic seal (pyHanko) with in-app certificate generation, optional RFC 3161 trusted timestamping, hash-chained tamper-evident audit trail with one-click integrity verification, a public verification page (optional QR stamped on the document) where any holder can drop their own copy and have it hashed in-browser to confirm it matches, link expiry cron, manager-gated link reveal, and a mixin to send any Odoo record for signature with post-back of the signed document |
 | `bf_sign_account` | Symbifox — Signature pour la comptabilité | 18.0.1.0.1 | BUSL-1.1 | Send a customer invoice / vendor bill for electronic signature (bf_sign). |
@@ -223,7 +222,7 @@ Three regimes — see [Licensing](#licensing) above for the details, and the
 `License` column of the table for the module you care about. The `LICENSE`
 file inside each module governs and carries its exact parameters.
 
-- **78 modules: BUSL-1.1.** Production use for your own internal business
+- **77 modules: BUSL-1.1.** Production use for your own internal business
   operations is permitted; providing them as a product or service to third
   parties requires an agreement. Each version converts to
   **LGPL-3.0-or-later four years after its release**.

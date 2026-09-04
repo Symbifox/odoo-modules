@@ -40,6 +40,28 @@ class BfProcess(models.Model):
     version_suivante_ids = fields.One2many(
         "bf.process", "version_precedente_id", string="Versions suivantes")
 
+    # --- état actuel ou processus souhaité -----------------------------------
+    # Deux branches, pas une ligne. Une lignée de versions dit « la réalité a
+    # changé » ; un processus souhaité dit « on veut qu'elle change ». Les
+    # confondre ferait qu'un état actuel recartographié après coup ne se
+    # comparerait plus à rien de cohérent, et la carte cesserait d'être le
+    # référentiel de l'état actuel, ce qui est sa raison d'être.
+    nature = fields.Selection(
+        [("actuel", "État actuel"), ("cible", "Processus souhaité")],
+        string="Nature", default="actuel", required=True, tracking=True,
+        help="Ce que la carte décrit : ce qui se passe aujourd'hui, ou ce"
+             " qu'on veut qu'il se passe.")
+    origine_id = fields.Many2one(
+        "bf.process", string="Dessinée d'après", ondelete="restrict",
+        copy=False, index=True,
+        help="La version de l'état actuel dont ce processus souhaité est"
+             " tiré. C'est contre elle que les écarts se calculent, et elle"
+             " ne bouge pas quand l'état actuel est recartographié : la cible"
+             " a été dessinée d'après cette photo-là.")
+    cible_ids = fields.One2many(
+        "bf.process", "origine_id", string="Processus souhaités")
+    cible_count = fields.Integer(compute="_compute_cible_count")
+
     # --- registre de validation ---------------------------------------------
     activite_count = fields.Integer(compute="_compute_validation")
     validee_count = fields.Integer(compute="_compute_validation")
@@ -48,10 +70,41 @@ class BfProcess(models.Model):
         help="Part des activités validées par le propriétaire ET par un exécutant.")
     conteste_count = fields.Integer(compute="_compute_validation")
 
+    # `nature` entre dans la clé : l'état actuel et le processus souhaité
+    # portent le même nom de processus, et chacun a sa propre suite de
+    # versions. Sans elle, dessiner une cible obligerait à inventer un numéro
+    # de version qui ne veut rien dire.
     _sql_constraints = [
-        ("name_version_uniq", "unique (name, version)",
+        ("name_version_uniq", "unique (name, nature, version)",
          "Cette version de ce processus existe déjà."),
     ]
+
+    @api.constrains("nature", "origine_id")
+    def _check_origine(self):
+        """Une cible sait d'où elle part ; un état actuel ne part de rien."""
+        for rec in self:
+            if rec.nature == "cible" and not rec.origine_id:
+                raise ValidationError(_(
+                    "Un processus souhaité se dessine d'après un état actuel."
+                    " Sans lui, il n'y a pas d'écart à montrer, juste une"
+                    " deuxième carte."))
+            if rec.nature == "actuel" and rec.origine_id:
+                raise ValidationError(_(
+                    "Une carte de l'état actuel ne se dessine d'après rien :"
+                    " elle décrit ce qui se passe."))
+            if rec.origine_id == rec:
+                raise ValidationError(_(
+                    "Une carte ne se dessine pas d'après elle-même."))
+            if rec.origine_id and rec.origine_id.nature != "actuel":
+                raise ValidationError(_(
+                    "« %s » est déjà un processus souhaité : une cible se"
+                    " dessine d'après l'état actuel, pas d'après une autre"
+                    " cible.") % rec.origine_id.display_name)
+
+    @api.depends("cible_ids")
+    def _compute_cible_count(self):
+        for rec in self:
+            rec.cible_count = len(rec.cible_ids)
 
     @api.depends("diagram_ids", "diagram_ids.node_ids")
     def _compute_counts(self):
@@ -73,7 +126,15 @@ class BfProcess(models.Model):
                                    if activites else 0.0)
 
     def name_get(self):
-        return [(r.id, f"{r.name} v{r.version}") for r in self]
+        """La nature se lit dans le nom : deux cartes portent le même titre.
+
+        Sans elle, une liste déroulante offrirait deux « Tenir la comptabilité
+        v1.0 » impossibles à départager, et le mauvais serait choisi une fois
+        sur deux.
+        """
+        return [(r.id, f"{r.name} v{r.version}"
+                 + (" (souhaité)" if r.nature == "cible" else ""))
+                for r in self]
 
     # --- gel ------------------------------------------------------------------
     MODIFIABLE_APRES_VALIDATION = {
@@ -131,7 +192,8 @@ class BfProcess(models.Model):
         """
         self.ensure_one()
         prises = set(self.env["bf.process"].search(
-            [("name", "=", self.name)]).mapped("version"))
+            [("name", "=", self.name),
+             ("nature", "=", self.nature)]).mapped("version"))
         morceaux = (self.version or "1.0").split(".")
         if not morceaux[-1].isdigit():
             candidate, n = f"{self.version}-bis", 2
@@ -158,6 +220,10 @@ class BfProcess(models.Model):
             "version": self._version_suivante(),
             "state": "brouillon",
             "version_precedente_id": self.id,
+            # `origine_id` ne se recopie pas (copy=False) : sans ce report, la
+            # version suivante d'un processus souhaité perdrait la photo dont
+            # il est tiré et la contrainte la refuserait, sans dire laquelle.
+            "origine_id": self.origine_id.id or False,
             "diagram_ids": [],
         })
         nouvelle._charger_niveaux(self.to_dicts())
@@ -174,16 +240,94 @@ class BfProcess(models.Model):
             "target": "current",
         }
 
+    def action_dessiner_cible(self):
+        """Ouvre une branche : le processus souhaité, dessiné d'après celle-ci.
+
+        Même mécanique que la version suivante, et pour la même raison : le
+        contenu repasse par la forme d'échange, donc mêmes codes et mêmes
+        identifiants BPMN, donc les écarts se calculent étape par étape plutôt
+        que de conclure que tout a disparu et que tout est apparu.
+
+        Ce qui ne suit pas, et c'est délibéré : le registre de validation (une
+        cible ne s'est pas encore produite, personne ne peut certifier qu'elle
+        se passe comme ça) et la prose du livrable (les constats de l'état
+        actuel ne sont pas ceux de la cible ; les recopier ferait signer à la
+        cible des observations qu'on n'a pas faites sur elle).
+        """
+        self.ensure_one()
+        if self.nature != "actuel":
+            raise UserError(_(
+                "« %s » est déjà un processus souhaité. Une cible se dessine"
+                " d'après l'état actuel.") % self.display_name)
+        if not self.diagram_ids:
+            raise UserError(_(
+                "« %s » n'a aucun niveau : il n'y a rien à reprendre pour"
+                " dessiner ce qu'on voudrait à la place.") % self.name)
+        cible = self.copy({
+            "name": self.name,
+            "nature": "cible",
+            "origine_id": self.id,
+            "version": self._version_cible(),
+            "state": "brouillon",
+            "version_precedente_id": False,
+            "diagram_ids": [],
+            "section_ids": [],
+        })
+        cible._charger_niveaux(self.to_dicts())
+        cible.message_post(body=_(
+            "Processus souhaité dessiné d'après <b>%s</b> : %d niveaux, %d "
+            "nœuds, identiques pour l'instant. Les écarts apparaissent à "
+            "mesure que la cible est retouchée."
+        ) % (self.display_name, len(cible.diagram_ids), cible.node_count))
+        self.message_post(body=_(
+            "Un processus souhaité a été dessiné d'après cette version : "
+            "<b>%s</b>.") % cible.display_name)
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Processus souhaité"),
+            "res_model": "bf.process",
+            "res_id": cible.id,
+            "view_mode": "form",
+            "target": "current",
+        }
+
+    def _version_cible(self):
+        """Le premier numéro libre dans la branche souhaitée de ce processus.
+
+        Les deux branches ont chacune leur suite : une cible repart à 1.0
+        même si l'état actuel en est à sa v3. Le numéro dit l'âge de la
+        cible, pas celui de la photo dont elle est tirée.
+        """
+        self.ensure_one()
+        prises = set(self.env["bf.process"].search(
+            [("name", "=", self.name), ("nature", "=", "cible")]).mapped("version"))
+        n = 1
+        while f"{n}.0" in prises:
+            n += 1
+        return f"{n}.0"
+
+    def action_ouvrir_cibles(self):
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Processus souhaités"),
+            "res_model": "bf.process",
+            "view_mode": "list,form",
+            "domain": [("origine_id", "=", self.id)],
+        }
+
     def action_comparer(self):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": _("Comparer deux versions"),
+            "name": _("Comparer deux cartes"),
             "res_model": "bf.process.compare.wizard",
             "view_mode": "form",
             "target": "new",
             "context": {"default_source_id": self.id,
-                        "default_cible_id": self.version_precedente_id.id or False},
+                        "default_cible_id": (self.origine_id.id
+                                             or self.version_precedente_id.id
+                                             or False)},
         }
 
     def action_fusionner(self):
@@ -287,9 +431,15 @@ class BfProcessDiagram(models.Model):
     def name_get(self):
         return [(r.id, " — ".join(filter(None, (r.level, r.title)))) for r in self]
 
-    def to_dict(self):
-        """Rend le niveau sous la forme que les générateurs attendent."""
+    def to_dict(self, teintes=None):
+        """Rend le niveau sous la forme que les générateurs attendent.
+
+        `teintes` est indexé par (code du niveau, code du nœud) : la même
+        table sert à toutes les pages, et un code de nœud n'est unique que
+        dans son niveau.
+        """
         self.ensure_one()
+        teintes = teintes or {}
         d = {
             "title": self.title,
             "pool": self.pool_name or self.process_id.pool_name,
@@ -299,7 +449,8 @@ class BfProcessDiagram(models.Model):
             "ext_header": self.ext_header,
             "lanes": [ln.to_dict() for ln in self.lane_ids],
             "ext": [p.to_dict() for p in self.pool_ids],
-            "nodes": [n.to_dict() for n in self.node_ids],
+            "nodes": [n.to_dict(teintes.get((self.code, n.code)))
+                      for n in self.node_ids],
             "flows": [f.to_dict() for f in self.flow_ids],
             "msgs": [m.to_dict() for m in self.message_ids],
         }

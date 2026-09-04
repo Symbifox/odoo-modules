@@ -134,14 +134,19 @@ class BfProcessDocument(models.Model):
         # adressée au lecteur.
         etat = {"brouillon": "projet, à valider", "valide": "validée",
                 "obsolete": "version obsolète"}.get(self.state, "")
+        # Le bandeau disait « (AS-IS) » en dur. Sur une carte du processus
+        # souhaité, c'était faux à chaque page : le lecteur aurait pris la
+        # cible pour un relevé de ce qui se fait aujourd'hui, ce qui est
+        # exactement l'inverse de ce que le document raconte.
+        genre = ("Cartographie des processus (AS-IS)" if self.nature == "actuel"
+                 else "Processus souhaité (TO-BE)")
         return {
             "titre": self.name,
             "sous_titre": self.sous_titre or client,
             "ligne_source": " · ".join(x for x in (
                 client, "v%s" % self.version, etat, date) if x),
             "droite": " · ".join(x for x in (
-                client, "Cartographie des processus (AS-IS)",
-                "v%s" % self.version) if x),
+                client, genre, "v%s" % self.version) if x),
             "meta": date,
             "pied": self._pied(),
         }
@@ -154,6 +159,36 @@ class BfProcessDocument(models.Model):
             groupes[genre] = [(s.name, s.body or "")
                               for s in self._sections(genre)]
         return groupes
+
+    def _document_plan(self):
+        """Le plan de transformation, mis en mots pour l'impression.
+
+        Les écarts mis de côté n'y sont pas : un plan dit ce qu'on va faire.
+        Les écarts caducs non plus, pour la même raison. Ce qui reste est
+        trié comme au tableau, c'est-à-dire par niveau puis par ordre de
+        semis, si bien que le document suit la carte.
+        """
+        self.ensure_one()
+        if self.nature != "cible":
+            return []
+        from .ecart import ETATS, INTENTIONS
+        intentions, etats = dict(INTENTIONS), dict(ETATS)
+        efforts = {"faible": "Faible", "moyen": "Moyen", "eleve": "Élevé"}
+        lignes = []
+        for e in self.ecart_ids.sorted(
+                key=lambda e: (e.diagram_code or "", e.sequence, e.id)):
+            if e.etat == "ecarte" or e.caduc:
+                continue
+            lignes.append({
+                "niveau": e.diagram_titre or "",
+                "ecart": e.libelle or "",
+                "intention": intentions.get(e.intention, ""),
+                "gain": e.gain or "",
+                "effort": efforts.get(e.effort, ""),
+                "responsable": e.responsable_id.name or "",
+                "etat": etats.get(e.etat, ""),
+            })
+        return lignes
 
     @refus_lisible
     def exporter_document_pdf(self):
@@ -169,7 +204,8 @@ class BfProcessDocument(models.Model):
                 " mettre dans un document.") % self.name)
         from ..generateur import document as gen_doc
         return gen_doc.to_document(self.to_dicts(), self._document_meta(),
-                                   self._document_sections())
+                                   self._document_sections(),
+                                   self._document_plan())
 
     @refus_lisible
     def action_telecharger_document(self):

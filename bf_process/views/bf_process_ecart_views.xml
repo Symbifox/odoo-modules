@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_bf_process_ecart_list" model="ir.ui.view">
+        <field name="name">bf.process.ecart.list</field>
+        <field name="model">bf.process.ecart</field>
+        <field name="arch" type="xml">
+            <!-- `editable` : l'intention et le gain se remplissent en série,
+                 une ligne après l'autre, en relisant la carte. Ouvrir une
+                 fiche pour chaque écart ferait abandonner au troisième. -->
+            <list string="Écarts" editable="bottom"
+                  decoration-muted="caduc or etat == 'ecarte'"
+                  decoration-success="etat == 'fait'"
+                  decoration-bf="etat == 'retenu'">
+                <field name="sequence" widget="handle"/>
+                <field name="diagram_titre" string="Niveau" readonly="1"
+                       optional="show"/>
+                <field name="genre" readonly="1" optional="show"/>
+                <field name="libelle" readonly="1"/>
+                <field name="intention"/>
+                <field name="gain"/>
+                <field name="effort" optional="show"/>
+                <field name="responsable_id" optional="show"/>
+                <field name="etat" widget="badge"
+                       decoration-success="etat == 'fait'"
+                       decoration-info="etat == 'retenu'"
+                       decoration-muted="etat == 'ecarte'"/>
+                <field name="task_id" optional="hide"/>
+                <field name="source" optional="hide" readonly="1"/>
+                <field name="caduc" optional="hide" readonly="1"/>
+                <button name="action_creer_tache" type="object" icon="fa-tasks"
+                        title="Créer la tâche qui porte ce changement"
+                        invisible="task_id"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_bf_process_ecart_form" model="ir.ui.view">
+        <field name="name">bf.process.ecart.form</field>
+        <field name="model">bf.process.ecart</field>
+        <field name="arch" type="xml">
+            <form string="Écart">
+                <header>
+                    <button name="action_creer_tache" type="object"
+                            string="Créer la tâche" class="btn-primary"
+                            invisible="task_id"/>
+                    <field name="etat" widget="statusbar"
+                           statusbar_visible="a_decider,retenu,fait"/>
+                </header>
+                <sheet>
+                    <div class="alert alert-warning" role="alert"
+                         invisible="not caduc">
+                        Les cartes ne montrent plus cet écart. Il est gardé
+                        parce que quelqu'un a écrit dessus : tranchez, puis
+                        retirez-le.
+                    </div>
+                    <div class="oe_title">
+                        <h1><field name="libelle" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group string="Ce que les cartes disent">
+                            <field name="cible_id" readonly="1"/>
+                            <field name="origine_id" readonly="1"/>
+                            <field name="diagram_titre" readonly="1"/>
+                            <field name="genre" readonly="1"/>
+                            <field name="portee" readonly="1"/>
+                            <field name="source" readonly="1"/>
+                            <field name="node_actuel_id" readonly="1"
+                                   invisible="not node_actuel_id"/>
+                            <field name="node_cible_id" readonly="1"
+                                   invisible="not node_cible_id"/>
+                            <field name="cle" readonly="1" groups="base.group_no_one"/>
+                        </group>
+                        <group string="Ce qu'on en fait">
+                            <field name="intention"/>
+                            <field name="effort"/>
+                            <field name="responsable_id"/>
+                            <field name="task_id" readonly="1"
+                                   invisible="not task_id"/>
+                        </group>
+                    </group>
+                    <group string="Gain attendu">
+                        <field name="gain" nolabel="1"
+                               placeholder="Ce que le changement rapporte, en délai, en coût, en risque ou en conformité. Un écart sans gain est une préférence."/>
+                    </group>
+                    <group string="Remarque">
+                        <field name="note" nolabel="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_bf_process_ecart_search" model="ir.ui.view">
+        <field name="name">bf.process.ecart.search</field>
+        <field name="model">bf.process.ecart</field>
+        <field name="arch" type="xml">
+            <search string="Écarts">
+                <field name="libelle"/>
+                <field name="cible_id"/>
+                <field name="partner_id"/>
+                <field name="responsable_id"/>
+                <filter name="a_decider" string="À décider"
+                        domain="[('etat', '=', 'a_decider')]"/>
+                <filter name="retenus" string="Retenus"
+                        domain="[('etat', '=', 'retenu')]"/>
+                <filter name="faits" string="Faits"
+                        domain="[('etat', '=', 'fait')]"/>
+                <separator/>
+                <filter name="sans_gain" string="Sans gain écrit"
+                        domain="[('gain', '=', False)]"
+                        help="Les écarts qui ne disent pas encore ce qu'ils rapportent."/>
+                <filter name="caducs" string="Caducs"
+                        domain="[('caduc', '=', True)]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="par_cible" string="Processus souhaité"
+                            context="{'group_by': 'cible_id'}"/>
+                    <filter name="par_niveau" string="Niveau"
+                            context="{'group_by': 'diagram_titre'}"/>
+                    <filter name="par_intention" string="Intention"
+                            context="{'group_by': 'intention'}"/>
+                    <filter name="par_etat" string="État"
+                            context="{'group_by': 'etat'}"/>
+                    <filter name="par_responsable" string="Responsable"
+                            context="{'group_by': 'responsable_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_bf_process_ecart" model="ir.actions.act_window">
+        <field name="name">Écarts</field>
+        <field name="res_model">bf.process.ecart</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Aucun écart</p>
+            <p>Dessinez un processus souhaité d'après une carte de l'état
+               actuel, retouchez-le, puis semez les écarts.</p>
+        </field>
+    </record>
+</odoo>

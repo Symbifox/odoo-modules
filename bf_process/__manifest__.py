@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     "name": "Cartographie de processus",
-    "version": "18.0.4.3.0",
+    "version": "18.0.5.0.0",
     "category": "Services/Project",
     "summary": "Cartographies BPMN vivantes : le modèle est la vérité, le PDF et"
                " les deux XML n'en sont que des rendus",
@@ -44,6 +44,16 @@ Fonctionnalités
   est propriétaire, l'importe aussi mais vient au second rang.
 * Mise en page calculée, avec surcharge par nœud : un ajustement humain
   survit à la régénération.
+* **L'état actuel et le processus souhaité, et l'écart entre les deux.** Une
+  cible se dessine d'après une version de l'état actuel, dans une branche à
+  elle : l'état actuel peut être recartographié sans que la cible se détache.
+  Les écarts se sèment depuis la même comparaison que l'assistant, puis chacun
+  reçoit ce qu'aucun calcul ne peut deviner : l'intention, le gain attendu,
+  l'effort, un responsable, un état et la tâche qui fait le travail. Resemer
+  reconnaît les écarts déjà consignés au lieu d'en créer des jumeaux, et
+  n'écrase jamais ce qu'une personne a écrit. Le delta se lit sur deux cartes
+  teintées, à l'écran comme au PDF, et le livrable de la cible porte son plan
+  de transformation.
 
 Limites assumées
 ----------------
@@ -60,6 +70,12 @@ Limites assumées
   C'est la géométrie du générateur, et l'éditeur la montre telle quelle.
 * La mesure du texte couvre les caractères que Lexend porte. Un caractère hors
   table — un émoji, par exemple — fait refuser la mesure plutôt que deviner.
+* La vue delta trace deux cartes plutôt qu'une seule carte fusionnée : une
+  étape retirée n'a pas de case dans la grille de la cible, et lui en inventer
+  une ferait entrer en collision des cases que le modèle a placées.
+* Sur une carte de l'état actuel, les teintes ne s'affichent que s'il n'existe
+  qu'un seul processus souhaité. Avec deux, choisir en silence ferait lire un
+  plan qui n'est pas celui qu'on regarde.
     """,
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",
@@ -75,6 +91,7 @@ Limites assumées
         "views/bf_process_resource_views.xml",
         "views/bf_process_portal_templates.xml",
         "views/bf_process_document_views.xml",
+        "views/bf_process_ecart_views.xml",
         "views/bf_process_wizard_views.xml",
         "views/menu_views.xml",
     ],

@@ -4,9 +4,12 @@
         <field name="name">bf.process.list</field>
         <field name="model">bf.process</field>
         <field name="arch" type="xml">
-            <list string="Cartographies">
+            <list string="Cartographies"
+                  decoration-info="nature == 'cible'">
                 <field name="name"/>
                 <field name="version"/>
+                <field name="nature" widget="badge"
+                       decoration-info="nature == 'cible'"/>
                 <field name="partner_id"/>
                 <field name="project_id" optional="show"/>
                 <field name="diagram_count" string="Niveaux"/>
@@ -47,6 +50,22 @@
                     <button name="action_nouvelle_version" type="object"
                             string="Nouvelle version"
                             invisible="diagram_count == 0"/>
+                    <button name="action_dessiner_cible" type="object"
+                            string="Dessiner le processus souhaité"
+                            invisible="diagram_count == 0 or nature != 'actuel'"
+                            help="Ouvre une branche : la même carte, à
+                                  retoucher pour dire ce qu'on voudrait à la
+                                  place. L'état actuel n'est pas touché."/>
+                    <button name="action_semer_ecarts" type="object"
+                            string="Semer les écarts" class="btn-primary"
+                            invisible="nature != 'cible'"
+                            help="Rejoue la comparaison avec l'état actuel.
+                                  Ce qui a été écrit sur un écart (intention,
+                                  gain, responsable, état) n'est jamais
+                                  écrasé."/>
+                    <button name="action_telecharger_pdf_delta" type="object"
+                            string="Vue delta (PDF)"
+                            invisible="nature != 'cible' or ecart_count == 0"/>
                     <button name="action_comparer" type="object"
                             string="Comparer" invisible="not version_precedente_id"/>
                     <button name="action_fusionner" type="object"
@@ -62,6 +81,12 @@
                             <field name="diagram_count" widget="statinfo"
                                    string="Niveaux"/>
                         </button>
+                        <button name="action_ouvrir_cibles" type="object"
+                                class="oe_stat_button" icon="fa-bullseye"
+                                invisible="cible_count == 0">
+                            <field name="cible_count" widget="statinfo"
+                                   string="Souhaités"/>
+                        </button>
                     </div>
                     <div class="oe_title">
                         <h1><field name="name" placeholder="Nom du processus"/></h1>
@@ -74,6 +99,19 @@
                     </div>
                     <group>
                         <group>
+                            <field name="nature" widget="radio"
+                                   options="{'horizontal': true}"
+                                   readonly="diagram_count > 0"/>
+                            <!-- modifiable tant que la carte est vide :
+                                 une cible créée à la main doit pouvoir dire
+                                 d'où elle part, sinon la contrainte la
+                                 refuse sans offrir de champ pour répondre -->
+                            <field name="origine_id"
+                                   invisible="nature != 'cible'"
+                                   required="nature == 'cible'"
+                                   readonly="diagram_count > 0"
+                                   domain="[('nature', '=', 'actuel'),
+                                            ('id', '!=', id)]"/>
                             <field name="pool_name"
                                    placeholder="L'organisation qui exécute"/>
                             <field name="partner_id"/>
@@ -119,7 +157,25 @@
                                     décision consignée
                                 </span>
                             </div>
+                            <label for="taux_transformation"
+                                   invisible="nature != 'cible'"/>
+                            <div invisible="nature != 'cible'">
+                                <field name="taux_transformation" digits="[3,0]"
+                                       class="oe_inline" readonly="1"/><span
+                                       class="oe_inline"> %</span>
+                                <span class="text-muted">
+                                    · <field name="ecart_fait_count"
+                                             class="oe_inline" readonly="1"/> fait(s)
+                                    sur <field name="ecart_retenu_count"
+                                               class="oe_inline" readonly="1"/>
+                                    retenu(s), <field name="ecart_a_decider_count"
+                                                      class="oe_inline" readonly="1"/>
+                                    encore à décider
+                                </span>
+                            </div>
                             <field name="active" invisible="1"/>
+                            <field name="ecart_count" invisible="1"/>
+                            <field name="cible_count" invisible="1"/>
                         </group>
                     </group>
                     <notebook>
@@ -138,6 +194,11 @@
                                     <field name="node_count" string="Nœuds"/>
                                 </list>
                             </field>
+                        </page>
+                        <page string="Écarts" name="ecarts"
+                              invisible="nature != 'cible'">
+                            <field name="ecart_ids" nolabel="1"
+                                   context="{'default_cible_id': id}"/>
                         </page>
                         <page string="Source" name="source">
                             <field name="source" nolabel="1"
@@ -162,11 +223,18 @@
                         domain="[('state', '=', 'valide')]"/>
                 <filter name="brouillons" string="Brouillons"
                         domain="[('state', '=', 'brouillon')]"/>
+                <separator/>
+                <filter name="etat_actuel" string="État actuel"
+                        domain="[('nature', '=', 'actuel')]"/>
+                <filter name="souhaites" string="Processus souhaités"
+                        domain="[('nature', '=', 'cible')]"/>
                 <group expand="0" string="Regrouper par">
                     <filter name="par_client" string="Client"
                             context="{'group_by': 'partner_id'}"/>
                     <filter name="par_etat" string="État"
                             context="{'group_by': 'state'}"/>
+                    <filter name="par_nature" string="Nature"
+                            context="{'group_by': 'nature'}"/>
                 </group>
             </search>
         </field>

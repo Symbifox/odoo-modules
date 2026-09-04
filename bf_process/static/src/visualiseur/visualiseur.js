@@ -47,6 +47,19 @@ const BLEU = "#29ABE1";
 const AMBRE = "#D69921";
 const BLEU_DOUX = "#EAF7FD";
 const AMBRE_DOUX = "#FEF6E6";
+const VERT = "#1B8A4B";
+const VERT_DOUX = "#E7F6EC";
+const ROUGE = "#C0392B";
+const ROUGE_DOUX = "#FEECE9";
+
+// La vue delta : [fond, contour] par teinte. Les quatre coins d'une case
+// portent déjà la validation, le fil, les ressources et la traçabilité ; il
+// ne restait que le fond et le contour pour dire ce qui change.
+const TEINTES = {
+    vert: [VERT_DOUX, VERT],
+    rouge: [ROUGE_DOUX, ROUGE],
+    ambre: [AMBRE_DOUX, AMBRE],
+};
 const POOL_HDR = "#ECEFF1";
 const LANE_BG = "#F9FAFB";
 const HAIR = "#B8BCBE";
@@ -593,12 +606,15 @@ export class VisualiseurCartographie extends Component {
         const cx = n.x + n.w / 2;
         const cy = n.y + n.h / 2;
         const out = [];
+        // une annotation garde son ton : il dit ce qu'elle VEUT dire, la
+        // teinte ne dit que ce qui a bougé
+        const [fond, bord] = TEINTES[n.teinte] || ["#FFFFFF", INK];
         if (EVENEMENTS.includes(n.genre)) {
-            out.push({ t: "cercle", cx, cy, r: EV_R, fill: "#FFFFFF",
-                       stroke: INK, sw: n.genre === "end" ? 2.6 : 1.1 });
+            out.push({ t: "cercle", cx, cy, r: EV_R, fill: fond,
+                       stroke: bord, sw: n.genre === "end" ? 2.6 : 1.1 });
             if (n.genre === "timerCatch" || n.genre === "msgCatch") {
                 out.push({ t: "cercle", cx, cy, r: EV_R - 3.4, fill: "none",
-                           stroke: INK, sw: 1 });
+                           stroke: bord, sw: 1 });
             }
             if (n.genre === "msgStart" || n.genre === "msgCatch") {
                 out.push(...this.enveloppe(cx, cy, 15, false));
@@ -617,7 +633,7 @@ export class VisualiseurCartographie extends Component {
         } else if (PASSERELLES.includes(n.genre)) {
             out.push({ t: "poly", pts: [[cx, n.y], [n.x + n.w, cy],
                                         [cx, n.y + n.h], [n.x, cy]],
-                       fill: "#FFFFFF", stroke: INK, sw: 1, ferme: true });
+                       fill: fond, stroke: bord, sw: 1, ferme: true });
             if (n.genre === "and") {
                 out.push({ t: "ligne", pts: [[cx - 11, cy], [cx + 11, cy]],
                            stroke: INK, sw: 1.7 });
@@ -651,14 +667,14 @@ export class VisualiseurCartographie extends Component {
                        haut: true });
         } else if (n.genre === "store") {
             out.push({ t: "rect", x: n.x, y: n.y + 6, w: n.w, h: n.h - 10,
-                       fill: "#FFFFFF", stroke: INK, sw: 0.9 });
+                       fill: fond, stroke: bord, sw: 0.9 });
             out.push({ t: "ligne", pts: [[n.x, n.y + 6], [n.x + n.w, n.y + 6]],
                        stroke: INK, sw: 0.9 });
             out.push({ t: "bloc", x: cx, y: n.y + n.h + 14, s: n.nom,
                        taille: 8.6, couleur: GRIS, max: 120, ancre: "middle" });
         } else {
             out.push({ t: "rect", x: n.x, y: n.y, w: n.w, h: n.h, r: 9,
-                       fill: "#FFFFFF", stroke: INK, sw: 1 });
+                       fill: fond, stroke: bord, sw: n.teinte ? 1.6 : 1 });
             if (n.genre === "send" || n.genre === "receive") {
                 out.push(...this.enveloppe(n.x + 15, n.y + 13, 13,
                                            n.genre === "send"));

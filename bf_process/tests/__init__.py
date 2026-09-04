@@ -7,3 +7,4 @@ from . import test_fusion
 from . import test_ressources
 from . import test_atelier
 from . import test_document
+from . import test_delta

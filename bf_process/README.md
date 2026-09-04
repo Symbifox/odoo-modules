@@ -52,6 +52,14 @@ a file.
 - **Version comparison**: a wizard lists what was added, removed, renamed, or
   moved between lane, kind, or annotation tone between two versions — matched
   by the stable per-process node codes, not by guesswork
+- **Target process and the gap to it**: a map is either the current state or a
+  wanted one. A wanted process is a *branch* off a current-state version rather
+  than the next version of it, so the current state can be re-surveyed without
+  detaching the target. The gap is seeded from the same diff the comparison
+  wizard uses, then each gap record carries what no calculation can infer:
+  intention, expected gain, effort, owner, state, and the task that does the
+  work. Re-seeding reconciles on a stable key, so nothing written by hand is
+  ever overwritten. See [Target process and gaps](#target-process-and-gaps)
 - **Merging re-import**: a file retouched in a third-party BPMN editor comes
   back **into the map it came from**, instead of landing beside it as a copy.
   Levels and nodes are matched by their BPMN identifier — never by name — so a
@@ -202,6 +210,53 @@ those, in that order. It needs the codes to be stable across versions, which
 `action_nouvelle_version()` guarantees by copying the source's node dicts
 (via `to_dicts()`) straight into the new process.
 
+## Target process and gaps
+
+`nature` splits `bf.process` in two: `actuel` (what happens) and `cible` (what
+should). A target is created by `action_dessiner_cible()` on a current-state
+version, which copies the map the way `action_nouvelle_version()` does, so node
+codes and BPMN ids match on both sides and the diff can say "this step was
+renamed" instead of "everything vanished and everything appeared". The target
+keeps `origine_id` pointing at the version it was drawn from, and that photo
+does not move when the current state is re-surveyed later.
+
+Why a branch and not the next version: a version lineage says *reality
+changed*, a target says *we want it to change*. Merging the two would leave a
+re-surveyed current state with nothing coherent to compare against, and the map
+would stop being the reference for what happens today, which is its whole
+purpose. The unique constraint is therefore `(name, nature, version)`: both
+branches carry the same process name and each runs its own version series.
+
+`action_semer_ecarts()` runs `calculer_ecarts()` (the same function the
+comparison wizard uses, so the two can never diverge) and reconciles the result
+against existing `bf.process.ecart` records by their stable `cle`:
+
+- a key already present has its mechanical half refreshed, and only that half;
+- a new key creates a record with `source = seme`;
+- a key that disappeared is deleted **only if nobody wrote on it**; otherwise it
+  stays, flagged `caduc`, so a gap someone reasoned about never leaves in
+  silence;
+- records with `source = manuel` are never touched.
+
+Gaps deliberately do **not** freeze with a validated version, and that is the
+module's only exception to the freeze. The map is the dated artefact; the
+transformation plan is what lives on after it.
+
+Two renderings come out of this. `action_telecharger_pdf_delta()` prints both
+maps in one file: the current state tinted with what disappears and what
+changes, the target with what appears and what changes. Two tinted maps rather
+than one merged map is a geometry decision, not a stylistic one — a removed step
+has no cell in the target's grid, and inventing one would collide with cells the
+model placed. The same tints reach the built-in editor through `rendu()`, on the
+shape's fill and border, because a node's four corners already carry validation,
+thread, resources and traceability. A target's deliverable also gains a
+**Transformation plan** table listing every gap that is neither set aside nor
+stale, with its intention, gain, effort, owner and state.
+
+On a current-state map the tints appear only when there is exactly one target:
+picking one of several plans in silence would have the reader looking at a plan
+that is not the one on screen.
+
 ## BPMN import
 
 The wizard reads `<bpmndi:BPMNShape>`/`<BPMNEdge>` bounds and reconstructs the
@@ -295,6 +350,13 @@ constraint (must be `assoc`-linked to a note), a shared sub-process resolving
 to more than one caller, and text measurement: an annotation loaded without a
 height gets measured, a longer one gets taller, a carried height still wins,
 and a character outside the table is refused by name.
+`tests/test_delta.py` covers the target branch (its own version series, the
+same name and number allowed on both sides, and the refusals for a target
+without an origin, a current state with one, and a target of a target), the
+seeding (what it finds, refreshes, deletes and keeps as stale, and that a
+hand-written gap survives every pass), the tints on both sides including the
+two-target ambiguity, the delta PDF, and the transformation plan reaching the
+deliverable.
 `tests/test_edition.py` covers the pixels→grid inversion (one column width
 advances exactly one column), the snap, the lane change, dense sequences after
 create and delete, links and their refusals, and the freeze closing the editor

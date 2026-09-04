@@ -302,6 +302,61 @@ def _registre(sections, styles):
     return [titre, intro, table], hauteur + 46
 
 
+# ------------------------------------------------- plan de transformation --
+#: Combien de lignes tiennent sur une page de plan. Mesuré sur le tabloïd
+#: paysage avec le corps 8,6 : au-delà, `shrink` réduirait le tableau jusqu'à
+#: l'illisible plutôt que de passer à la page suivante.
+PLAN_PAR_PAGE = 16
+
+
+def _pages_plan(plan):
+    """Découpe le plan en pages. Une liste vide ne produit aucune page."""
+    if not plan:
+        return []
+    return [plan[i:i + PLAN_PAR_PAGE]
+            for i in range(0, len(plan), PLAN_PAR_PAGE)]
+
+
+def _table_plan(lignes, styles):
+    """Le plan de transformation, en tableau.
+
+    Un écart mécanique (« l'étape X est retirée ») ne se défend pas devant un
+    comité. Ce sont l'intention et le gain qui le font, et ce sont les deux
+    colonnes qu'une personne remplit à la main : le tableau les met au même
+    rang que l'écart lui-même plutôt que de les reléguer en note.
+    """
+    entete = ParagraphStyle("th_plan", parent=styles["p"], fontName=GRAS,
+                            fontSize=8.6, spaceAfter=0)
+    cellule = ParagraphStyle("td_plan", parent=styles["p"], fontSize=8.6,
+                             spaceAfter=0)
+    rangs = [[Paragraph(t, entete) for t in
+              ("Niveau", "Écart", "Intention", "Gain attendu", "Effort",
+               "Responsable", "État")]]
+    for l in lignes:
+        rangs.append([
+            Paragraph(_fr(l.get("niveau") or ""), cellule),
+            Paragraph(_fr(l.get("ecart") or ""), cellule),
+            Paragraph(_fr(l.get("intention") or ""), cellule),
+            Paragraph(_fr(l.get("gain") or ""), cellule),
+            Paragraph(_fr(l.get("effort") or ""), cellule),
+            Paragraph(_fr(l.get("responsable") or ""), cellule),
+            Paragraph(_fr(l.get("etat") or ""), cellule),
+        ])
+    largeur = PAGE[0] - 2 * MARGE
+    table = Table(rangs, colWidths=[largeur * x for x in
+                                    (0.14, 0.26, 0.10, 0.24, 0.07, 0.11, 0.08)],
+                  repeatRows=1)
+    table.setStyle(TableStyle([
+        ("GRID", (0, 0), (-1, -1), 0.5, FILET),
+        ("VALIGN", (0, 0), (-1, -1), "TOP"),
+        ("LEFTPADDING", (0, 0), (-1, -1), 5),
+        ("RIGHTPADDING", (0, 0), (-1, -1), 5),
+        ("TOPPADDING", (0, 0), (-1, -1), 4),
+        ("BOTTOMPADDING", (0, 0), (-1, -1), 4),
+    ]))
+    return table
+
+
 # --------------------------------------------------------------- assemblage --
 def _genres_presents(diagrammes):
     genres = set()
@@ -336,7 +391,7 @@ def _config_depliee(diagrammes):
     return couloirs, externes
 
 
-def _plan(diagrammes, sections, avec_depliee):
+def _plan(diagrammes, sections, avec_depliee, pages_plan=0):
     """Le sommaire, calculé avant de dessiner : les numéros de page en dépendent."""
     entrees, no = [], 2
     for d in diagrammes:
@@ -349,6 +404,10 @@ def _plan(diagrammes, sections, avec_depliee):
     if sections.get("constat"):
         entrees.append((no, "Constats et pistes", "Annexe"))
         no += 1
+    for i in range(pages_plan):
+        entrees.append((no, "Plan de transformation"
+                        + (" (suite)" if i else ""), "Annexe"))
+        no += 1
     for titre, _corps in sections.get("annexe") or []:
         entrees.append((no, titre, "Annexe"))
         no += 1
@@ -358,12 +417,16 @@ def _plan(diagrammes, sections, avec_depliee):
     return entrees, no - 1
 
 
-def to_document(diagrammes, meta, sections):
+def to_document(diagrammes, meta, sections, plan=None):
     """Le livrable complet, en octets.
 
     `sections` groupe la prose par genre : `couverture` et `annexe` portent
     des couples (titre, HTML), `hypothese`, `question` et `constat` aussi,
     `validation` porte des couples (rôle, nom).
+
+    `plan` est le plan de transformation d'un processus souhaité : une liste
+    de lignes déjà mises en mots par le modèle. Vide ou absent sur une carte
+    de l'état actuel, qui n'a rien à transformer.
     """
     _polices()
     styles = _styles()
@@ -383,7 +446,9 @@ def to_document(diagrammes, meta, sections):
             # `aplatir`, il ne se devine pas ici.
             depliee = None
 
-    sommaire, total = _plan(diagrammes, sections, bool(depliee))
+    pages_plan = _pages_plan(plan)
+    sommaire, total = _plan(diagrammes, sections, bool(depliee),
+                            len(pages_plan))
     tampon = io.BytesIO()
     c = rl_canvas.Canvas(tampon, pagesize=PAGE)
     c.setTitle(meta.get("titre") or "Cartographie de processus")
@@ -434,6 +499,17 @@ def to_document(diagrammes, meta, sections):
                     [_liste(constats[:moitie], TITRES_ANNEXES["constat"], styles),
                      _liste(constats[moitie:], " ", styles, depart=moitie + 1)],
                     no, total, meta.get("pied"))
+        c.showPage()
+        no += 1
+
+    for i, lignes in enumerate(pages_plan):
+        _page_texte(c, "Plan de transformation" + (" (suite)" if i else ""),
+                    "Ce qui sépare l’état actuel du processus souhaité, "
+                    "et ce que chaque changement rapporte",
+                    {"droite": droite, "meta": meta.get("meta", "")},
+                    [], no, total, meta.get("pied"),
+                    bas=[_table_plan(lignes, styles)],
+                    hauteur_bas=PAGE[1] - HAUT - BAS - 36)
         c.showPage()
         no += 1
 

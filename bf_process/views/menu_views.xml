@@ -12,6 +12,9 @@
     <menuitem id="menu_bf_process_import" name="Importer un BPMN"
               parent="menu_bf_process_root" action="action_bf_process_import"
               sequence="40" groups="bf_process.group_bf_process_manager"/>
+    <menuitem id="menu_bf_process_ecart" name="Écarts"
+              parent="menu_bf_process_root" action="action_bf_process_ecart"
+              sequence="25"/>
     <menuitem id="menu_bf_process_resource" name="Ressources"
               parent="menu_bf_process_root"
               action="action_bf_process_resource" sequence="35"/>
