@@ -3,7 +3,7 @@
     "summary": "Un lien tracé par site d'emploi, les clics et les candidatures "
                "qu'il rapporte, et un taux de conversion qui dit sur quelle "
                "part des candidatures il porte",
-    "version": "18.0.1.0.0",
+    "version": "18.0.1.0.1",
     "category": "Human Resources/Recruitment",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",

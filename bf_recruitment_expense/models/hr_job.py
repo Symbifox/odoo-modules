@@ -25,6 +25,14 @@ class HrJob(models.Model):
     _name = "hr.job"
     _inherit = ["hr.job", "analytic.mixin"]
 
+    # ⚠️ Le mixin nomme son champ « Analytic Distribution », et la traduction
+    # française du coeur ne couvre que les modèles où le coeur pose lui-même le
+    # mixin (`hr.expense`, par exemple). Sur `hr.job`, qui le reçoit de NOUS,
+    # l'étiquette restait en anglais au milieu d'un écran français. On la pose
+    # donc ici : redéclarer un champ hérité en ne donnant qu'un attribut fusionne
+    # avec la définition amont, le calcul et le stockage sont conservés.
+    analytic_distribution = fields.Json(string="Répartition analytique")
+
     # `hr.job` ne porte aucune devise. Les champs monétaires en exigent une.
     currency_id = fields.Many2one(
         related="company_id.currency_id", string="Devise", readonly=True,

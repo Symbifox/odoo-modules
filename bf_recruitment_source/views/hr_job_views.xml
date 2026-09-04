@@ -30,7 +30,7 @@
                     <group>
                         <field name="untracked_applicant_count"
                                decoration-warning="untracked_applicant_count > 0"/>
-                        <field name="source_coverage_rate" widget="percentage"/>
+                        <field name="source_coverage_rate"/>
                     </group>
 
                     <field name="source_ids" nolabel="1" colspan="2">
@@ -44,10 +44,8 @@
                             <field name="applicant_count" readonly="1"/>
                             <field name="hired_count" readonly="1" optional="show"/>
                             <field name="refused_count" readonly="1" optional="hidden"/>
-                            <field name="conversion_rate" readonly="1"
-                                   widget="percentage"/>
-                            <field name="hire_rate" readonly="1"
-                                   widget="percentage" optional="hidden"/>
+                            <field name="conversion_rate" readonly="1"/>
+                            <field name="hire_rate" readonly="1" optional="hidden"/>
                             <field name="stat_is_partial" column_invisible="1"/>
                             <field name="stat_warning" string="À savoir"
                                    readonly="1" optional="show"

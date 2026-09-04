@@ -3,7 +3,7 @@
     "summary": "Rattacher les débours de recrutement au poste, valoriser le temps "
                "de panel que le cahier d'entrevues mesure déjà, et dire ce que "
                "coûte une embauche, en avouant ce qui manque au chiffre",
-    "version": "18.0.1.0.1",
+    "version": "18.0.1.0.2",
     "category": "Human Resources/Recruitment",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",

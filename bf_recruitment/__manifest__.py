@@ -2,7 +2,7 @@
     "name": "Recrutement : cahier d'entrevues",
     "summary": "Grilles d'entrevue par rôle, entrevues multiples, notation en panel "
                "à l'aveugle et cahier consolidé, greffés sur le recrutement d'Odoo",
-    "version": "18.0.1.1.1",
+    "version": "18.0.1.1.2",
     "category": "Human Resources/Recruitment",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",
