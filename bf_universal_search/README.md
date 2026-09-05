@@ -52,6 +52,19 @@ A single query searches across all configured models simultaneously. Results are
 
 Each result shows the record name plus a context line built from the config's `detail_fields` (project · stage, customer · state, date…). Clicking a result opens the record's form view; `Ctrl`+`Enter` opens it in a new browser tab.
 
+### Ctrl+K Opens the Universal Search by Default
+
+Out of the box the palette opens on Odoo's own commands and you type `*` to switch to the universal search. Two settings turn that around, so that `Ctrl+K` lands directly on the `*` namespace and the first keystroke is already the query:
+
+- **Settings → General Settings → Recherche universelle → « Ctrl+K ouvre la recherche universelle »** — the instance default, for every user who has not chosen. Off after install and after upgrade, so nobody's habit changes until an administrator decides.
+- **Preferences → « Ctrl+K ouvre »** — each user's own choice: *Selon le réglage de l'instance* (the default), *La recherche universelle (\*)* or *Les commandes Odoo*. A user's choice always beats the instance default, both ways.
+
+The effective value travels with `session_info`, so opening the palette costs no extra request; saving the preferences dialog reloads the page, which is how the change takes effect.
+
+What does not change: `Backspace` on the empty field brings the native command list back, `/` `@` `#` still switch namespaces, the systray magnifier still opens the `*` search whatever the setting, and the **Shortcuts** entry of the user menu still opens the native command list (it asks for its own footer, so it is left alone). An empty `*` palette now says « Tapez au moins deux caractères pour chercher partout » instead of « Aucun résultat trouvé ».
+
+Implementation: `static/src/js/command_palette_patch.js` patches `CommandPalette.setCommandPaletteConfig` and pre-fills `searchValue: "*"` when the config carries no search value, lists the `*` provider, and uses the main palette's default footer. `Ctrl+K` inside the HTML editor and in a chat window call the same `openMainPalette()`, so they follow the setting too.
+
 ### Search by Number
 
 Configs with **search_by_id** enabled also match a numeric query against the record id — typing `142` or `#142` jumps straight to that task. Enabled on tasks and tickets by default. A bare number needs at least 2 characters (the palette's floor); the `#` prefix reaches a single-digit id.
@@ -264,17 +277,25 @@ bf_universal_search/
 │   ├── __init__.py
 │   ├── bf_universal_search.py              # Virtual model with search_all()
 │   ├── bf_universal_search_config.py       # Config model
-│   └── onboarding_onboarding.py            # Onboarding panel hook
+│   ├── ir_http.py                          # Ctrl+K setting in session_info
+│   ├── onboarding_onboarding.py            # Onboarding panel hook
+│   ├── res_config_settings.py              # Instance default for Ctrl+K
+│   └── res_users.py                        # Per-user Ctrl+K preference
 ├── security/
 │   └── ir.model.access.csv
 ├── tests/
 │   ├── __init__.py
+│   ├── test_ctrl_k_default.py
 │   └── test_universal_search.py
+├── views/
+│   ├── res_config_settings_views.xml       # Settings block
+│   └── res_users_views.xml                 # User form + Preferences
 └── static/
     ├── description/
     │   └── index.html
     └── src/
         ├── js/
+        │   ├── command_palette_patch.js      # Ctrl+K opens on the * namespace
         │   ├── universal_search_provider.js  # Namespace, categories, provider, item
         │   └── universal_search_systray.js   # Systray magnifying glass
         ├── xml/
@@ -292,6 +313,12 @@ Three approaches were evaluated:
 3. **Inline navbar search bar** — Permanent search field in the top bar. Rejected: consumes scarce navbar space, responsive issues, requires building dropdown + keyboard navigation from scratch.
 
 ## Changelog
+
+### 18.0.2.1.0
+
+- **`Ctrl+K` can open the universal search directly** — a per-user preference (*Ctrl+K ouvre*) and an instance default (Settings → Recherche universelle). The user's choice wins over the instance default in both directions; both are off after install and after upgrade, so no existing habit changes.
+- The effective value is delivered through `session_info`, so the palette reads it without an extra request.
+- An empty `*` palette now invites a longer query instead of reporting no results.
 
 ### 18.0.2.0.1
 

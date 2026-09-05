@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="res_config_settings_view_form_bf_universal_search" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.bf.universal.search</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base_setup.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//block[@name='users_setting_container']" position="after">
+                <block title="Recherche universelle" name="bf_universal_search_setting_container">
+                    <setting id="bf_universal_search_ctrl_k_setting"
+                             string="Ctrl+K ouvre la recherche universelle"
+                             help="La palette de commandes s'ouvre avec le préfixe * déjà en place : on tape directement ce qu'on cherche. Backspace sur le champ vide ramène aux commandes Odoo. Chaque usager peut choisir autrement dans ses préférences.">
+                        <field name="bf_universal_search_ctrl_k_star"/>
+                    </setting>
+                </block>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

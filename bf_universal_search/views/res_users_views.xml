@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Full backend user form (admins): set the choice for someone else -->
+    <record id="view_users_form_bf_universal_search" model="ir.ui.view">
+        <field name="name">res.users.form.bf.universal.search</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_form"/>
+        <field name="arch" type="xml">
+            <field name="tz" position="after">
+                <field name="bf_universal_search_ctrl_k"/>
+            </field>
+        </field>
+    </record>
+
+    <!-- Preferences dialog (each user editing their own profile) -->
+    <record id="view_users_form_simple_modif_bf_universal_search" model="ir.ui.view">
+        <field name="name">res.users.preferences.bf.universal.search</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_form_simple_modif"/>
+        <field name="arch" type="xml">
+            <field name="tz" position="after">
+                <field name="bf_universal_search_ctrl_k"/>
+            </field>
+        </field>
+    </record>
+
+</odoo>
