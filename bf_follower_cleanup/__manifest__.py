@@ -1,7 +1,9 @@
 {
-    "name": "BF — Nettoyage des abonnés (followers internes uniquement)",
-    "summary": "Cron qui retire toute personne non-employée des abonnés des chatters",
-    "version": "18.0.2.0.0",
+    "name": "BF — Hygiène des notifications (abonnés et activités internes)",
+    "summary": "Crons qui retirent les abonnés non-employés et les abonnements "
+               "aux pistes qu'on ne vend pas, et garde-fou qui n'envoie jamais "
+               "une notification d'activité à un compte portail",
+    "version": "18.0.2.1.0",
     "category": "Tools",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",
