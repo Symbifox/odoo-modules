@@ -1,6 +1,8 @@
 import base64
+import re
 
-from odoo import fields, models
+from odoo import api, fields, models
+from odoo.http import request
 from odoo.tools.mimetypes import guess_mimetype
 
 # Formats a PWA manifest may list in `icons`. An .ico is a perfectly good tab
@@ -66,6 +68,41 @@ class ResCompany(models.Model):
             "l'onglet et l'icône Odoo reste celle de l'application installée."
         ),
     )
+
+    # -- Which company the page is wearing -----------------------------------
+
+    @api.model
+    def _brand_active_company(self):
+        """The company whose colours this HTTP response should wear.
+
+        ⚠️ **`env.company` is the wrong answer here, and looks like the right
+        one.** The company switcher lives entirely in the browser: it writes a
+        `cids` cookie and passes `allowed_company_ids` in the *RPC* context, so
+        `env.company` follows the switcher on `call_kw` but never on a
+        server-rendered page. Nothing in `odoo.http` reads that cookie; only a
+        handful of `mail` endpoints do it by hand, with the parsing copied
+        below. A template that reads `env.company` therefore paints the user's
+        *main* company for ever, whichever company they picked, and the symptom
+        is a page that simply never changes colour.
+
+        Defensive on purpose: outside a request (cron, tests, report rendering)
+        and on a malformed or unauthorised cookie, this falls back to
+        `env.company` rather than raising. A brand colour is never worth a
+        traceback on a page load.
+        """
+        company = self.env.company
+        if not request:
+            return company
+        raw = request.httprequest.cookies.get("cids") or ""
+        # `-` since 17.0; older cookies used `,` and may still be in a browser.
+        first = re.split(r"[-,]", raw)[0].strip()
+        if not first.isdigit():
+            return company
+        allowed = self.env.user._get_company_ids()
+        chosen = int(first)
+        if chosen not in allowed:
+            return company
+        return self.browse(chosen)
 
     # -- Brand icon ---------------------------------------------------------
     # One field feeds three surfaces (tab, apple-touch, PWA manifest); the URL

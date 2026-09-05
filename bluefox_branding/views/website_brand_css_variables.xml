@@ -13,7 +13,7 @@
               inherit_id="portal.frontend_layout"
               name="Brand CSS variables (portal)">
         <xpath expr="//head" position="inside">
-            <t t-set="_brand_co" t-value="request and request.env and request.env.company"/>
+            <t t-set="_brand_co" t-value="request and request.env and request.env['res.company']._brand_active_company()"/>
             <t t-if="_brand_co">
                 <style>
                     :root {

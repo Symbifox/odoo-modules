@@ -36,8 +36,10 @@ next outgoing email.
 
 Navbar, menus, buttons, badges, progress bars, links and kanban accents
 re-skin via CSS variables (`var(--brand-primary, …)`, `var(--brand-dark, …)`)
-populated at request time from `request.env.company`. See
-`static/src/scss/branding.scss`.
+populated at request time from the **company selected in the switcher**, not
+`env.company` alone: on a server-rendered page the switcher only writes a `cids`
+cookie, so the variables are resolved by `res.company._brand_active_company`
+(v18.0.3.8.0). See `static/src/scss/branding.scss`.
 
 ### Application icon (tab, home screen, installed PWA)
 
@@ -109,9 +111,17 @@ self-contained ones (followups, calendar, survey) and the late-invoice notice
 (stock template 141, no XML ID) read **all** identity from `res.company` — no
 hardcoded brand values — so they follow whichever company owns the record.
 
-> Note: followup / calendar / survey templates are sent via
-> `mail.template.send_mail()`, which does not apply `email_layout_xmlid`
-> wrapping, so they remain self-contained rather than reusing `bf_mail_layout`.
+The **portal invitation** (`portal.mail_template_data_portal_welcome`) is also
+rewritten here since v18.0.3.9.0: the stock template embeds its own Odoo layout
+(grey table, purple button, "Powered by" footer), so it is replaced by a short
+French body carrying its own "Activate my account" button and
+`email_layout_xmlid = bluefox_branding.bf_mail_layout`. A migration replays the
+hook so the template is written in every active language.
+
+> Note: `mail.template.send_mail()` does apply the template's own
+> `email_layout_xmlid` (that is how the portal invitation gets its frame). The
+> followup / calendar / survey templates predate that and stay self-contained,
+> with their header and footer inlined, rather than reusing `bf_mail_layout`.
 
 ### Legacy Odoo purple sweep
 
