@@ -13,7 +13,9 @@ import threading
 from odoo.exceptions import UserError
 from odoo.tests.common import TransactionCase, tagged
 
-from ..models.bf_ai_bridge import LEGACY_PARAMS, SOCKET_PARAM
+from ..models.bf_ai_bridge import (
+    LEGACY_PARAMS, LEGACY_TENANT_PARAMS, SOCKET_PARAM, TENANT_PARAM,
+)
 from ..tools import transport
 
 
@@ -236,3 +238,58 @@ class TestModeleAbstrait(TransactionCase):
             self.ICP.set_param(ancien, False)
         self.assertFalse(self.pont._adopt_legacy_param())
         self.assertEqual(self.pont.socket_path(), transport.DEFAULT_SOCKET)
+
+    # ── Le locataire ──────────────────────────────────────────────────────
+
+    def _oublier_le_locataire(self):
+        self.ICP.set_param(TENANT_PARAM, False)
+        for ancien in LEGACY_TENANT_PARAMS:
+            self.ICP.set_param(ancien, False)
+
+    def test_le_locataire_pose_est_rendu(self):
+        self.ICP.set_param(TENANT_PARAM, "pme")
+        self.assertEqual(self.pont.tenant(), "pme")
+
+    def test_sans_locataire_l_appel_leve_au_lieu_de_deviner(self):
+        """Le coeur de la chose : pas de défaut. Un défaut serait juste chez
+        celui qui l'a écrit et servirait les données d'un autre client
+        ailleurs, sans que rien ne le signale."""
+        self._oublier_le_locataire()
+        with self.assertRaises(UserError) as piege:
+            self.pont.tenant()
+        self.assertIn(TENANT_PARAM, str(piege.exception))
+
+    def test_l_ancien_parametre_est_relu_a_chaud(self):
+        """Ce module s'installe AVANT celui qui portait la valeur : l'ordre
+        d'installation ne doit pas décider si un appel part bien locataire."""
+        self.ICP.set_param(TENANT_PARAM, False)
+        self.ICP.set_param(LEGACY_TENANT_PARAMS[0], "pme")
+        self.assertEqual(self.pont.tenant(), "pme")
+
+    def test_le_nouveau_parametre_prime_sur_l_ancien(self):
+        self.ICP.set_param(LEGACY_TENANT_PARAMS[0], "bf")
+        self.ICP.set_param(TENANT_PARAM, "pme")
+        self.assertEqual(self.pont.tenant(), "pme")
+
+    def test_un_locataire_tout_en_espaces_ne_compte_pas(self):
+        self._oublier_le_locataire()
+        self.ICP.set_param(TENANT_PARAM, "   ")
+        with self.assertRaises(UserError):
+            self.pont.tenant()
+
+    def test_la_reprise_ecrit_le_locataire_sous_le_nouveau_nom(self):
+        self.ICP.set_param(TENANT_PARAM, False)
+        self.ICP.set_param(LEGACY_TENANT_PARAMS[0], "pme")
+        self.assertTrue(self.pont._adopt_legacy_tenant())
+        self.assertEqual(self.ICP.get_param(TENANT_PARAM), "pme")
+
+    def test_la_reprise_n_ecrase_jamais_un_locataire_deja_pose(self):
+        self.ICP.set_param(TENANT_PARAM, "pme")
+        self.ICP.set_param(LEGACY_TENANT_PARAMS[0], "bf")
+        self.assertFalse(self.pont._adopt_legacy_tenant())
+        self.assertEqual(self.pont.tenant(), "pme")
+
+    def test_sans_rien_a_reprendre_la_reprise_ne_pose_rien(self):
+        self._oublier_le_locataire()
+        self.assertFalse(self.pont._adopt_legacy_tenant())
+        self.assertFalse(self.ICP.get_param(TENANT_PARAM))

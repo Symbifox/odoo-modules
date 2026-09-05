@@ -41,7 +41,7 @@ Exceptions are not wrapped. `socket.timeout`, `ConnectionRefusedError`,
 `FileNotFoundError` and `ValueError` reach the caller as they are, exactly as
 they did before the transport was unified.
 
-## The parameter
+## The socket parameter
 
 `bf_ai_bridge.socket`, default `/run/claude-bridge/bridge.sock`, which is the
 path **as seen from inside the Odoo container**. The host keeps the socket
@@ -58,6 +58,26 @@ lose it.
 module. On a tenant where the assistant is **not** installed, that migration
 never runs: remove the stale key by hand after the switch, or it stays there
 reading as though it still drove something.
+
+## The tenant parameter
+
+`bf_ai_bridge.tenant`, **no default**, read through
+`env["bf.ai.bridge"].tenant()`. It says which system is calling the bridge, and
+the module that owns the connection owns that answer too.
+
+The absence of a default is the point. A hardcoded default is right for
+whoever wrote it and wrong everywhere else, without saying so: a module
+installed on a second system would announce the first, and the bridge would
+serve it another customer's data. A call that fails beats a call that succeeds
+against the wrong account, so `tenant()` raises a `UserError` naming the
+parameter to set rather than guess.
+
+An older per-module key is read **at runtime**, not only carried over on
+install: this module installs *before* the one that used to hold the value, and
+an installation order must not decide whether a call goes out under the right
+tenant. The 18.0.1.1.0 migration writes the value under the new name on a
+system that already has the module, so Settings shows one truth instead of two
+keys saying the same thing.
 
 ## Why a leaf module rather than a model inside the assistant
 

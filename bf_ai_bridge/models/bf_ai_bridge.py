@@ -25,6 +25,17 @@ SOCKET_PARAM = "bf_ai_bridge.socket"
 #: ``bf_meeting.bridge_socket`` n'existait sur aucun locataire.
 LEGACY_PARAMS = ("bf_claude_chat.bridge_socket", "bf_meeting.bridge_socket")
 
+#: Le locataire que ce système déclare au pont. Même raisonnement que pour la
+#: socket : le module qui possède la relation au pont possède aussi le seul
+#: paramètre qui dit QUI appelle. Un module qui écrit son locataire en dur ne se
+#: repose pas ailleurs sans être réécrit.
+TENANT_PARAM = "bf_ai_bridge.tenant"
+
+#: Où était déclaré le locataire avant que ce module existe. Repris à
+#: l'installation, et relu à chaud tant que le nouveau n'est pas posé : l'ordre
+#: d'installation ne doit pas décider si un appel part avec le bon locataire.
+LEGACY_TENANT_PARAMS = ("bf_claude_chat.tenant",)
+
 
 class BfAiBridge(models.AbstractModel):
     _name = "bf.ai.bridge"
@@ -38,6 +49,36 @@ class BfAiBridge(models.AbstractModel):
         return self.env["ir.config_parameter"].sudo().get_param(
             SOCKET_PARAM, transport.DEFAULT_SOCKET
         )
+
+    @api.model
+    def tenant(self):
+        """Le locataire que ce système déclare au pont.
+
+        ⚠️ **Aucun défaut, et c'est le point.** Un défaut codé en dur est juste
+        chez celui qui l'a écrit et faux partout ailleurs, sans rien dire : un
+        module posé sur un deuxième locataire annonce alors le premier, et le
+        pont lui sert les données d'un client qui n'est pas le sien. Un appel
+        qui échoue vaut mieux qu'un appel qui réussit chez le mauvais.
+
+        L'ancien paramètre est relu à chaud, pas seulement repris à
+        l'installation : ce module s'installe AVANT celui qui portait la valeur,
+        et un ordre d'installation ne doit pas décider de ça.
+        """
+        ICP = self.env["ir.config_parameter"].sudo()
+        valeur = (ICP.get_param(TENANT_PARAM) or "").strip()
+        if not valeur:
+            for ancien in LEGACY_TENANT_PARAMS:
+                valeur = (ICP.get_param(ancien) or "").strip()
+                if valeur:
+                    break
+        if not valeur:
+            raise UserError(_(
+                "Le locataire de ce système n'est pas déclaré : poser le "
+                "paramètre système %(param)s (« bf », « pme »…). Sans lui, un "
+                "appel au pont irait chercher les données d'un autre client.",
+                param=TENANT_PARAM,
+            ))
+        return valeur
 
     @api.model
     def available(self):
@@ -113,4 +154,30 @@ class BfAiBridge(models.AbstractModel):
                     SOCKET_PARAM, ancien, valeur,
                 )
                 return True
+        return False
+
+    @api.model
+    def _adopt_legacy_tenant(self):
+        """Écrit le locataire sous le nouveau nom, s'il n'y est pas déjà.
+
+        ``tenant()`` sait déjà relire l'ancien paramètre, donc rien ne casse
+        sans cette reprise : elle sert à ce que les Paramètres affichent une
+        seule vérité plutôt que deux clés qui disent la même chose.
+        """
+        ICP = self.env["ir.config_parameter"].sudo()
+        if (ICP.get_param(TENANT_PARAM) or "").strip():
+            return False
+        for ancien in LEGACY_TENANT_PARAMS:
+            valeur = (ICP.get_param(ancien) or "").strip()
+            if valeur:
+                ICP.set_param(TENANT_PARAM, valeur)
+                _logger.info(
+                    "bf_ai_bridge : %s repris depuis %s (%s)",
+                    TENANT_PARAM, ancien, valeur,
+                )
+                return True
+        _logger.warning(
+            "bf_ai_bridge : aucun locataire déclaré. Poser %s avant d'appeler "
+            "le pont, sinon l'appel sera refusé.", TENANT_PARAM,
+        )
         return False
