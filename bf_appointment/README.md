@@ -70,6 +70,8 @@ Public self-service booking pages, extending *Resource Booking* (OCA).
   explicit choice always wins over a browser header.
 - **Automatic task/project creation** at booking time.
 - **Branded emails** with per-company header, brand colours and footer.
+- **Portal home tile.** The Bookings tile on the customer portal home carries the
+  app's own icon, served at 64 × 64 like its neighbours (v18.0.2.54.2).
 - **Onboarding wizard** (`bf_onboarding_base`) to configure booking types.
 
 ## Notes on the confirmation links

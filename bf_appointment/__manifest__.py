@@ -297,7 +297,17 @@
     #   automatique : même gabarit brandé, même pièce jointe, langue et fuseau du
     #   lecteur. `_bf_resend_invitations()` est le point d'extension pour les
     #   réservations à plusieurs destinataires (le sondage de disponibilités).
-    "version": "18.0.2.53.0",
+    # 18.0.2.54.0: la tuile « Bookings » de l'accueil du portail prend l'icône de
+    #   l'application Rendez-vous (`static/description/icon.png`) au lieu de l'icône
+    #   générique de resource_booking. Gabarit hérité `portal_my_home_rendez_vous_icon`,
+    #   un seul attribut change. Demandé le 2026-09-04 en relisant l'aperçu du portail
+    #   d'un client.
+    # 18.0.2.54.1: correctif de 2.54.0. Le sélecteur du gabarit hérité s'évaluait sur la
+    #   page d'accueil combinée et repeignait la tuile « Vos commandes » au lieu de
+    #   « Bookings ». Ancré sur le compteur des réservations (booking_count), unique.
+    # 18.0.2.54.2: l'icône de la tuile « Bookings » passe en 64 x 64 (static/src/img/portal_icon.png),
+    #   la taille déclarée des icônes voisines ; l'icône d'application sortait trop grande.
+    "version": "18.0.2.54.2",
     "category": "Appointments",
     "summary": "Public self-service booking pages extending Resource Booking",
     'author': 'Les services de consultation Blue Fox, Inc.',
@@ -318,6 +328,7 @@
         "views/res_config_settings_views.xml",
         "views/appointment_onetime_wizard_views.xml",
         "views/mail_compose_message_views.xml",
+        "views/portal_home_templates.xml",
     ],
     "assets": {
         "web.assets_frontend": [

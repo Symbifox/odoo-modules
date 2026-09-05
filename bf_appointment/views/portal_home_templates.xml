@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- La tuile « Bookings » de l'accueil du portail (resource_booking) prend l'icône
+         de l'application Rendez-vous, la même que dans le menu des applications.
+         Demandé le 2026-09-04 en relisant l'aperçu du portail d'un client.
+         2.54.2 : la tuile n'impose aucune taille à l'image et les icônes voisines sont des
+         SVG déclarés 64 x 64 ; l'icône d'application (140 x 129) sortait trop grande. On sert
+         une déclinaison 64 x 64 de la même image.
+
+         ⚠️ Le sélecteur s'évalue sur la page d'accueil COMBINÉE (portal.portal_my_home
+         avec tous ses héritiers déjà appliqués), pas sur le seul gabarit de
+         resource_booking : `//t[@t-set='icon']` tout court a repeint la tuile
+         « Vos commandes », première tuile à icône dans l'ordre du document (vécu en
+         2.54.0, corrigé en 2.54.1). On ancre donc sur le compteur des réservations,
+         unique dans la page, et on remonte à l'icône de la même entrée. -->
+    <template id="portal_my_home_rendez_vous_icon"
+              inherit_id="resource_booking.portal_my_home"
+              name="Portail : icône Rendez-vous sur la tuile des réservations">
+        <xpath expr="//t[@t-set='placeholder_count'][contains(@t-value, 'booking_count')]/preceding-sibling::t[@t-set='icon']"
+               position="attributes">
+            <attribute name="t-value">'/bf_appointment/static/src/img/portal_icon.png'</attribute>
+        </xpath>
+    </template>
+</odoo>
