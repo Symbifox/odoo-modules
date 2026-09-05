@@ -68,9 +68,9 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 |---|---|---|---|---|
 | `audit_ti` | Audit TI - Loi 25 | 18.0.1.17.1 | BUSL-1.1 | IT security audit management for Quebec's Loi 25 compliance |
 | `bf_activity_calendar_link` | BF Activités - Lien Calendrier | 18.0.1.1.0 | LGPL-3 | Link existing calendar events to activities |
-| `bf_ai_bridge` | AI Bridge (socket transport) | 18.0.1.0.1 | LGPL-3 | The single transport to the AI bridge service |
+| `bf_ai_bridge` | AI Bridge (socket transport) | 18.0.1.1.0 | LGPL-3 | The single transport to the AI bridge service |
 | `bf_appointment` | Symbifox Appointment | 18.0.2.54.2 | BUSL-1.1 | Self-service public booking pages (extends `resource_booking`) |
-| `bf_appointment_poll` | Symbifox Appointment Polls | 18.0.1.13.0 | BUSL-1.1 | Availability polling: propose slots, collect answers, book the meeting |
+| `bf_appointment_poll` | Symbifox Appointment Polls | 18.0.1.14.0 | BUSL-1.1 | Availability polling: propose slots, collect answers, book the meeting |
 | `bf_apps_menu` | Menu des applications cherchable | 18.0.1.0.0 | LGPL-3 | The apps menu becomes a keyboard-searchable grid of icons |
 | `bf_attachment_version` | Versionnement des pièces jointes | 18.0.1.1.0 | BUSL-1.1 | Keeps the previous content whenever an attachment is overwritten |
 | `bf_bloc_notes` | BF Bloc-notes | 18.0.2.9.0 | LGPL-3 | Rich quick notes with multi-record links, one-click activity conversion, keyboard shortcuts, and systray icon (Alt+N) |
@@ -130,7 +130,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_employee_experience_health` | Expérience employé — allergies | 18.0.1.2.0 | LGPL-3 | Allergies and food allergies, readable only by the person and by whoever organises |
 | `bf_employee_experience_health_privacy` | Expérience employé — allergies, pont vie privée (Loi 25) | 18.0.1.0.0 | LGPL-3 | Express consent, retention tied to the employment relationship, destruction on departure |
 | `bf_employee_experience_privacy` | Expérience employé — pont vie privée (Loi 25) | 18.0.1.1.0 | LGPL-3 | Declare what the usage register collects, set a retention rule, keep the measurement when the lines go |
-| `bf_follower_cleanup` | BF — Nettoyage des abonnés (followers internes uniquement) | 18.0.2.0.0 | LGPL-3 | Cron that removes all non-employee followers from chatters |
+| `bf_follower_cleanup` | BF — Hygiène des notifications (abonnés et activités internes) | 18.0.2.1.0 | LGPL-3 | Crons that remove non-employee followers and unsubscribe users from the leads they do not sell, plus a guard that never emails an activity notification to a portal account |
 | `bf_fundraising_core` | Levée de fonds — Cœur | 18.0.1.0.0 | AGPL-3 | Donor management and fundraising structure (Funds / Campaigns / Appeals / Packages) on top of the Donation module — comparable to Raiser's Edge |
 | `bf_fundraising_web` | Levée de fonds — Web & Portail donateur | 18.0.1.0.2 | AGPL-3 | Public website donation form + donor portal (giving history and official receipt download) |
 | `bf_gamification` | Fox Quest | 18.0.2.5.1 | BUSL-1.1 | Gamification system with XP, levels, badges, and rewards |
@@ -185,7 +185,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_sign_privacy` | Symbifox — Signature des consentements (Loi 25) | 18.0.1.1.0 | BUSL-1.1 | Sign Loi 25 consents with the native bf_sign engine (instead of external DocuSeal / LibreSign). |
 | `bf_sign_purchase` | Symbifox — Signature pour les achats | 18.0.1.0.1 | BUSL-1.1 | Send a purchase order for electronic signature (bf_sign). |
 | `bf_sign_sale` | Symbifox — Signature pour les ventes | 18.0.2.0.0 | BUSL-1.1 | Send a quotation / sales order for electronic signature (bf_sign). |
-| `bf_sms_archive` | SMS & Calls | 18.0.5.11.1 | BUSL-1.1 | Two-way live SMS/MMS messaging via VOIP.ms (chat workspace + systray) plus Android SMS/call-log archiving, search, PDF/CSV export and task linking |
+| `bf_sms_archive` | SMS & Calls | 18.0.5.12.0 | BUSL-1.1 | Two-way live SMS/MMS messaging via VOIP.ms (chat workspace + systray) plus Android SMS/call-log archiving, search, PDF/CSV export and task linking |
 | `bf_stepbystep_clients` | Step-by-Step — Suivi d'accompagnement client | 18.0.2.2.1 | BUSL-1.1 | Internal dashboard tracking each client mandate's linear step-by-step progression: current step, hours budget, timeline. |
 | `bf_studio_light` | Symbifox — Studio Light | 18.0.7.0.0 | BUSL-1.1 | Field builder for Odoo Community: add custom fields (incl. polymorphic reference with model whitelist), smart buttons (count via JSON controller, no compute Python), and inject them in views without writing a module — survives `-u all` upgrades |
 | `bf_subscription` | Abonnements | 18.0.1.4.1 | BUSL-1.1 | Paid subscription management with correlation to vendor bills |
@@ -201,7 +201,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_timezone` | Symbifox Timezone Utilities | 18.0.1.1.0 | LGPL-3 | Shared timezone helpers and a configurable default timezone for Symbifox modules |
 | `bf_universal_search` | BF Recherche universelle | 18.0.2.0.2 | LGPL-3 | Cross-module search through the command palette |
 | `bluefox_branding` | Symbifox Branding | 18.0.3.9.0 | BUSL-1.1 | Per-company brand color + email layout overrides driven by `bf_lexend` company fields (CSS variables injected via QWeb layout — no SCSS recompile) |
-| `calendar_nextcloud_sync` | Calendar Nextcloud Sync | 18.0.2.14.0 | LGPL-3 | Bidirectional calendar synchronization between Odoo and Nextcloud over CalDAV, and Google Calendar (API v3/OAuth2) |
+| `calendar_nextcloud_sync` | Calendar Nextcloud Sync | 18.0.2.15.0 | LGPL-3 | Bidirectional calendar synchronization between Odoo and Nextcloud over CalDAV, and Google Calendar (API v3/OAuth2) |
 | `contacts_nextcloud_sync` | Contacts Nextcloud Sync | 18.0.1.2.0 | LGPL-3 | Sync Odoo contacts with a Nextcloud address book via CardDAV |
 | `daily_todo_digest` | Daily To-Do Digest | 18.0.2.1.0 | LGPL-3 | Daily email digest with activities, overdue tasks, and a week-ahead view |
 | `hosting_management` | Gestion d'hébergement | 18.0.2.51.1 | BUSL-1.1 | Manage hosting services, client computer parks (endpoints, BitLocker, Action1 sync) and software license pools |

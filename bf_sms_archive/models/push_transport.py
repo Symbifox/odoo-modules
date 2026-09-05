@@ -29,6 +29,10 @@ class SmsUnifiedPush(models.AbstractModel):
 
     @api.model
     def _devices(self, owner):
+        # Même interrupteur que côté courriel — voir bf_email_management.
+        if self.env["ir.config_parameter"].sudo().get_param(
+                "bf_sms_archive.push_enabled", "1") != "1":
+            return self.env["sms.archive.mobile.device"]
         return self.env["sms.archive.mobile.device"].sudo().search([
             ("user_id", "=", owner.id), ("active", "=", True),
             ("push_endpoint", "!=", False),

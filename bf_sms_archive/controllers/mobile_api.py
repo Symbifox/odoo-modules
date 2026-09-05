@@ -343,12 +343,33 @@ class BfSmsMobileApi(http.Controller):
             return request.make_response(
                 "Ce compte n'a pas accès à la messagerie SMS.", status=403,
                 headers=[("Content-Type", "text/plain; charset=utf-8")])
-        code = request.env["sms.archive.mobile.device"]._issue_pending(
-            user.id, name=kw.get("device_name"))
+
         sep = "&" if "?" in redirect else "?"
-        target = "%s%scode=%s&state=%s" % (
-            redirect, sep, urllib.parse.quote(code), urllib.parse.quote(state))
-        return wz_redirect(target, code=302)
+
+        def rebondir(**params):
+            query = urllib.parse.urlencode({**params, "state": state})
+            return wz_redirect(f"{redirect}{sep}{query}", code=302)
+
+        # 🔴 PKCE obligatoire. Un schéma d'application personnalisé n'est pas
+        # exclusif sur Android : sans défi, un code intercepté par une autre
+        # application s'échangerait contre un jeton porteur sur la messagerie
+        # SMS de la personne.
+        #
+        # ⚠️ Aucune période de grâce, et c'est délibéré : les
+        # appareils déjà appariés gardent leur jeton et ne repassent jamais par
+        # l'échange. Seule une NOUVELLE connexion lancée depuis un APK d'avant
+        # le lot casse, et elle casse bruyamment, ici, avec un motif lisible.
+        defi = (kw.get("code_challenge") or "").strip()
+        methode = (kw.get("code_challenge_method") or "S256").upper()
+        if not defi or methode != "S256":
+            _logger.info(
+                "Mobile API : appariement refusé, défi PKCE absent ou méthode "
+                "%s non acceptée", methode)
+            return rebondir(error="pkce_required")
+
+        code = request.env["sms.archive.mobile.device"]._issue_pending(
+            user.id, name=kw.get("device_name"), challenge=defi)
+        return rebondir(code=code)
 
     @http.route(f"{BASE}/auth/exchange", type="http", auth="public",
                 methods=["POST"], csrf=False, save_session=False)
@@ -357,7 +378,8 @@ class BfSmsMobileApi(http.Controller):
         porteur durable, sur HTTPS."""
         data = _body()
         device = request.env["sms.archive.mobile.device"]._exchange(
-            (data.get("code") or "").strip())
+            (data.get("code") or "").strip(),
+            (data.get("code_verifier") or "").strip())
         if not device:
             return _json({"error": "invalid_or_expired_code"}, 401)
         if data.get("fcm_token"):

@@ -87,12 +87,26 @@ class SmsArchiveVoipms(models.AbstractModel):
             "method": method,
             **params,
         }
+        # ⚠️ VoIP.ms REFUSE le User-Agent par défaut de `requests` par un 403,
+        # AVANT toute vérification d'identifiants : le même 403 sort avec un
+        # mot de passe bidon et avec un usager inexistant. Sans cet en-tête,
+        # chaque appel échoue et l'archive s'arrête en silence — elle l'a fait
+        # le 2026-07-17 et personne ne l'a vu pendant sept semaines.
+        entetes = {
+            "User-Agent": (
+                "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
+                "(KHTML, like Gecko) Chrome/128.0 Safari/537.36"
+            ),
+            "Accept": "application/json",
+        }
         for attempt in range(3):
             try:
                 if _http_method == "POST":
-                    r = requests.post(VOIPMS_API_URL, data=all_params, timeout=90)
+                    r = requests.post(VOIPMS_API_URL, data=all_params,
+                                      headers=entetes, timeout=90)
                 else:
-                    r = requests.get(VOIPMS_API_URL, params=all_params, timeout=90)
+                    r = requests.get(VOIPMS_API_URL, params=all_params,
+                                     headers=entetes, timeout=90)
                 r.raise_for_status()
                 return r.json()
             except (requests.RequestException, ValueError) as e:

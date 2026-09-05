@@ -293,13 +293,30 @@ Message access is deliberately scoped by the **message's** line rather than the 
 
 ### Public HTTP endpoints
 
-This module exposes two `auth="public"` controllers. Both are unauthenticated at the
-Odoo session level and rely on a per-request secret:
+Everything the phone talks to is declared `auth="public"` — bar `…/auth/start`,
+which is `auth="user"` on purpose — because none of it rides an Odoo session.
+That is the routing declaration, not the access model: each request carries its
+own secret and is refused without it.
 
 | Endpoint | Auth | Purpose |
 |----------|------|---------|
 | `POST /bf_sms_archive/api/ingest` | `Authorization: Bearer <device token>` | Live push from the Android companion app (`sms.archive.device`) |
 | `GET/POST /bf_sms_archive/api/voipms/sms` | `?token=<per-line webhook token>` | VOIP.ms SMS/MMS URL Callback (inbound messages) |
+| `/bf_sms_archive/mobile/v1/*` (the whole mobile API: threads, conversation, send, contacts, push registration…) | `Authorization: Bearer <device token>` | The companion app's read/write surface |
+
+Three routes of that mobile API are the pairing path and therefore carry no
+token yet: `GET …/ping` returns liveness and no data; `POST …/login` is the
+legacy password path, capped per IP and per login, answering with a **uniform**
+failure so it cannot be used as a credential oracle, and refusing outright any
+account with TOTP enabled; `POST …/auth/exchange` trades a one-time pairing
+code for a device token and requires the PKCE verifier. The recommended path is
+`…/auth/start`, which delegates to `/web/login` and therefore inherits SSO and
+the second factor.
+
+Three more routes are public metadata the platform must read while signed out:
+`/bf_sms_archive/push-sw.js` and `/bf_sms_archive/manifest.webmanifest` (Web
+Push service worker and PWA manifest), and `/.well-known/assetlinks.json`
+(Android Digital Asset Links, so the app can claim its own HTTPS links).
 
 The webhook callback URL embeds the line's secret token (VOIP.ms offers no signature),
 so the URL must be treated as a secret and kept out of access logs. Inbound MMS media
@@ -469,6 +486,40 @@ curl -X POST https://odoo.example.com/bf_sms_archive/api/ingest \
 `bf-sms-relay` (LGPL-3, F-Droid-friendly): foreground service when charging (30s tick), WorkManager when on battery (15 min tick), BroadcastReceiver for incoming SMS (real-time). Distribution: signed APK direct, not Play Store (READ_SMS / READ_CALL_LOG are blocked by Play policy).
 
 ## Changelog
+
+### Version 18.0.5.12.0
+
+- **SECURITY:** Device pairing now requires **PKCE** (`code_challenge` +
+  `code_challenge_method=S256` on `/auth/start`, `code_verifier` on the
+  exchange). A custom app scheme is not exclusive on Android: another
+  application can declare the same scheme and receive the pairing code instead
+  of yours. Without PKCE that intercepted code would be exchanged for a bearer
+  token — that is, for someone's whole SMS mailbox. With it, a code intercepted
+  from someone else's pairing is worth nothing: the exchange demands a verifier
+  that never left the app that started that pairing, and the pending row is
+  destroyed on a wrong one rather than left open to a second try.
+  The redirect-scheme allowlist does not cover this: it closes the open
+  redirect **server-side**, not the local interception of the code on the
+  device. No grace period, deliberately: already-paired devices keep their
+  token and never go through the exchange again, so only a *new* pairing
+  started from an older APK breaks — loudly, with a readable reason.
+- **FIX:** Every VOIP.ms API call now sends an explicit `User-Agent`. The
+  provider answers `403` to `requests`' default one **before** checking
+  credentials, so the same 403 comes back with a bogus password and with a
+  user that does not exist. Without the header every call failed and the
+  archive stopped in silence — it did, for seven weeks, before anyone noticed.
+- **NEW:** `bf_sms_archive.push_enabled` (default `1`) switches native push
+  off without uninstalling anything, mirroring the email side's own switch.
+- **NEW:** `bf_assetlinks.extra_statements` carries additional Android
+  Digital Asset Links statements as raw JSON. Only one route in an Odoo
+  installation can serve `/.well-known/assetlinks.json`, so a second app has
+  to go through this one; a setting beats a deployment. The content is checked
+  for shape before being served — it must parse, and be an object or a list of
+  objects — and anything else is logged and dropped rather than left to make
+  the whole file unreadable to Android, which would silently cost the
+  **existing** app its link verification. The check is structural, not
+  semantic: a well-formed object that is not a valid statement still reaches
+  the file.
 
 ### Version 18.0.5.11.1
 

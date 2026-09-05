@@ -114,6 +114,32 @@ class BfSmsPushController(http.Controller):
                     "sha256_cert_fingerprints": fps,
                 },
             }]
+        # ⚠️ Une seule route peut servir ce chemin dans tout Odoo, donc les
+        # autres applications maison doivent passer par ici. Plutôt que de
+        # modifier ce code à chaque fois, un paramètre porte des déclarations
+        # supplémentaires en JSON brut : ajouter une application devient un
+        # réglage, pas un déploiement.
+        #
+        # 🔴 Le contenu est validé avant d'être servi. Un JSON mal formé rendrait
+        # le fichier entier illisible pour Android, et l'application EXISTANTE
+        # perdrait sa vérification de lien sans que rien ne le signale ici.
+        extra = (ICP.get_param("bf_assetlinks.extra_statements") or "").strip()
+        if extra:
+            try:
+                supplement = json.loads(extra)
+                if isinstance(supplement, dict):
+                    supplement = [supplement]
+                if isinstance(supplement, list):
+                    statements.extend(
+                        d for d in supplement if isinstance(d, dict))
+                else:
+                    _logger.warning(
+                        "assetlinks : bf_assetlinks.extra_statements n'est ni "
+                        "un objet ni une liste, ignoré")
+            except ValueError:
+                _logger.warning(
+                    "assetlinks : bf_assetlinks.extra_statements n'est pas du "
+                    "JSON valide, ignoré pour ne pas casser le fichier")
         return request.make_response(
             json.dumps(statements),
             headers=[("Content-Type", "application/json; charset=utf-8")],
