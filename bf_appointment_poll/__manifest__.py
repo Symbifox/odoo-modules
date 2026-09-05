@@ -119,7 +119,21 @@
     # 18.0.1.13.0: « Renvoyer les invitations » sert TOUS les participants du
     #   sondage, pas le seul demandeur — le parent renvoie à `partner_id`,
     #   parce qu'une réservation publique n'a qu'une personne.
-    "version": "18.0.1.13.0",
+    # 18.0.1.14.0: fixer la plage finale pose les participants sur
+    #   l'ÉVÉNEMENT d'agenda, pas seulement sur la réservation. 🔴 En
+    #   production, une rencontre est sortie avec un seul `calendar.attendee`,
+    #   celui de l'organisateur, alors que la réservation portait bien les
+    #   trois personnes : l'agenda ne disait pas qui était attendu et le
+    #   bouton d'invitation d'Odoo ne s'adressait à personne. Douze des vingt
+    #   dernières réservations, sondage ou page publique, montrent la même
+    #   perte. Le parent a pourtant TROIS mécaniques qui posent cette liste
+    #   (`_prepare_meeting_vals`, `_bf_ensure_meeting_attendees`,
+    #   `action_confirm` d'OCA) et les trois tiennent sur banc propre — la
+    #   cause en production reste à trouver. On cesse d'en dépendre : la
+    #   clôture relit la BASE une fois la création terminée, ajoute qui manque
+    #   en SILENCE (la confirmation brandée porte déjà le `.ics`), et
+    #   journalise si l'ajout ne prend pas.
+    "version": "18.0.1.14.0",
     "category": "Appointments",
     "summary": "Proposer plusieurs créneaux, récolter les disponibilités, "
                "puis fixer la rencontre",

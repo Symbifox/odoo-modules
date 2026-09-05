@@ -57,6 +57,12 @@ click.
 - **Everyone is told when it is set.** Each participant gets their own branded
   confirmation with the `.ics` attached, in their own time zone. The same mail
   is what the "Resend invitations" button sends.
+- **The poll's participants land on the calendar event itself**, not only on
+  the booking. Closing re-reads the database once the creation is over and
+  adds whoever is missing, silently — the branded confirmation already carries
+  the `.ics`, so Odoo's own invitation would be a second email for one
+  meeting. The addition is purely additive: anyone added by hand on the event
+  stays, and if the write does not take, it is logged rather than swallowed.
 
 ## The scheduled job ships disabled
 

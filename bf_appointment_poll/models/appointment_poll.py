@@ -492,6 +492,20 @@ class AppointmentPoll(models.Model):
                 "bf_source_ref": "appointment.poll,%d" % self.id,
             },
         )
+        # 🔴 L'événement d'agenda naît parfois avec le seul organisateur.
+        # `_prepare_meeting_vals` du module parent construit pourtant la bonne
+        # liste, et sa garde `_bf_ensure_meeting_attendees` la rejoue — les
+        # deux tournent AU MILIEU de la cascade de recalculs de la création,
+        # et sur banc propre elles suffisent. En production, non : une
+        # rencontre est sortie avec un seul `calendar.attendee`, celui de
+        # l'organisateur, alors que la réservation portait bien les trois
+        # personnes. Douze des vingt dernières réservations, sondage ou page
+        # publique, montrent la même perte.
+        #
+        # On repose donc la question ICI, une fois la création terminée et la
+        # transaction à plat : c'est le premier endroit où la liste ne peut
+        # plus être un artefact de cache.
+        self._ensure_meeting_attendees(booking)
         # Les autres, une fois la rencontre acquise.
         self.slot_ids._release_hold()
         self.booking_id = booking
@@ -503,6 +517,53 @@ class AppointmentPoll(models.Model):
         # acquise, l'agenda est écrit, et c'est seulement là qu'on annonce.
         self.participant_ids._send_scheduled_notice()
         return booking
+
+    def _ensure_meeting_attendees(self, booking):
+        """Pose les participants du sondage sur l'événement d'agenda.
+
+        Purement additif : ce que quelqu'un a ajouté à la main sur l'événement
+        reste en place, et un participant déjà présent n'est pas retouché.
+
+        L'ajout est SILENCIEUX. La confirmation brandée du module part déjà
+        avec son `.ics` ; l'invitation d'agenda d'Odoo ferait doublon, et c'est
+        à l'organisateur de décider de l'envoyer depuis la rencontre. Deux
+        courriels pour une rencontre, c'est un de trop.
+        """
+        self.ensure_one()
+        meeting = booking.meeting_id
+        attendus = self.participant_ids.mapped("partner_id")
+        if not (meeting and attendus):
+            return meeting
+        # ⚠️ Lire la BASE, pas le cache. La liste vient d'être écrite au milieu
+        # d'une cascade de recalculs, et c'est précisément là que l'ajout se
+        # perd : un contrôle qui relit le cache reproduirait l'erreur qu'il
+        # est censé attraper, et se déclarerait vert.
+        meeting.env.flush_all()
+        meeting.invalidate_recordset(["partner_ids", "attendee_ids"])
+        manquants = attendus - meeting.partner_ids
+        if manquants:
+            meeting.sudo().with_context(
+                no_mail_to_attendees=True,
+                dont_notify=True,
+            ).write({
+                "partner_ids": [(4, partner.id, 0) for partner in manquants],
+            })
+            meeting.env.flush_all()
+            meeting.invalidate_recordset(["partner_ids", "attendee_ids"])
+        # Le contrôle qui tranche : ce que la base rend APRÈS l'écriture. Une
+        # garde qui ne peut pas échouer bruyamment ne garde rien.
+        reste = attendus - meeting.partner_ids
+        if reste:
+            # Ne pas défaire la clôture pour autant : la rencontre est acquise,
+            # l'agenda est écrit, et personne n'est mieux servi par un
+            # rollback. Mais le dire, sinon l'absence se découvre le jour où on
+            # cherche à qui on a donné rendez-vous.
+            _logger.warning(
+                "Sondage %s : %s participant(s) toujours absent(s) de "
+                "l'événement %s après ajout (%s)",
+                self.id, len(reste), meeting.id, reste.mapped("email"),
+            )
+        return meeting
 
     def action_view_booking(self):
         self.ensure_one()
