@@ -60,6 +60,21 @@ class CalendarEvent(models.Model):
         help="Color index for calendar views",
     )
 
+    def _bf_odoo_owns_attendees(self):
+        """Odoo est-il la source des participants de cet événement ?
+
+        Vrai pour les événements adossés à une `resource.booking`. Ce prédicat
+        est employé aux DEUX bouts de l'aller-retour, et c'est le point : la
+        poussée retire les participants pour ces événements-là, donc
+        l'ingestion ne doit jamais les remettre en cause. Deux copies du même
+        test finissent toujours par diverger.
+        """
+        self.ensure_one()
+        return bool(
+            "resource_booking_ids" in self._fields
+            and self.resource_booking_ids
+        )
+
     def _get_sync_payload(self, action):
         """Prepare payload for n8n webhook.
 
@@ -83,10 +98,7 @@ class CalendarEvent(models.Model):
         # reintroducing the Cal.com no-show problem seen in production.
         # The event itself still syncs to the organizer's calendar as a busy
         # block; only the invitee list is withheld.
-        is_booking_event = bool(
-            "resource_booking_ids" in self._fields
-            and self.resource_booking_ids
-        )
+        is_booking_event = self._bf_odoo_owns_attendees()
         attendees = []
         if not is_booking_event:
             for attendee in self.attendee_ids:
@@ -748,7 +760,29 @@ class CalendarEvent(models.Model):
                     "Attendee email %s not found in Odoo partners", email
                 )
         if partner_ids:
-            vals["partner_ids"] = [(6, 0, list(partner_ids))]
+            # 🔴 L'aller-retour était ASYMÉTRIQUE. `_get_sync_payload` pousse
+            # volontairement les événements de réservation SANS participants
+            # (sinon le greffon de planification de Nextcloud émet une seconde
+            # invitation iMIP, en concurrence avec notre confirmation brandée —
+            # voir son commentaire). La copie Nextcloud n'en porte donc jamais,
+            # et un `(6, 0, …)` au retour ne peut que les PERDRE : l'événement
+            # se réduit au propriétaire du calendrier.
+            #
+            # Mesuré en production sur une réservation : sept lignes
+            # `calendar.attendee` créées puis détruites, un seul participant
+            # survivant. L'agenda ne disait plus qui était attendu, et le
+            # bouton d'invitation d'Odoo ne s'adressait à personne.
+            #
+            # Pour ces événements l'ingestion est donc ADDITIVE : elle complète,
+            # elle ne remplace pas. Retirer quelqu'un se fait dans Odoo, qui est
+            # la source pour eux. Partout ailleurs, Nextcloud reste la source et
+            # le remplacement est le bon comportement.
+            if existing and existing._bf_odoo_owns_attendees():
+                nouveaux = set(partner_ids) - set(existing.partner_ids.ids)
+                if nouveaux:
+                    vals["partner_ids"] = [(4, pid, 0) for pid in nouveaux]
+            else:
+                vals["partner_ids"] = [(6, 0, list(partner_ids))]
 
         # Statut de la rencontre (STATUS du VEVENT). Écrit seulement quand le
         # .ics en porte un ET que le champ existe dans cette base : un .ics
