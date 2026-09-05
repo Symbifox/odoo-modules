@@ -415,11 +415,12 @@
                         <ul class="bfm-list">
                             <li t-foreach="doc['actions']" t-as="a">
                                 <t t-out="a['name']"/>
-                                <t t-if="a['who'] or a['deadline']">
+                                <t t-if="a['who'] or a['deadline'] or a['done']">
                                     <span class="bfm-note">
                                         <t t-if="a['who']"><t t-out="a['who']"/></t>
                                         <t t-if="a['who'] and a['deadline']"> • </t>
                                         <t t-if="a['deadline']">échéance <t t-out="a['deadline']"/></t>
+                                        <t t-if="a['done']"> • fait</t>
                                     </span>
                                 </t>
                             </li>

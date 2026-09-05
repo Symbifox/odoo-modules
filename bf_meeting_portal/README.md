@@ -72,8 +72,9 @@ They will return once `bf_meeting` carries a reliable sent marker.
 ## What is exposed, and what never is
 
 Displayed: summary, topics and their points, decisions (with decision-maker and
-linked item), action items (assignee, deadline), open questions, deliverables,
-attendance. The page draws these sections from
+linked item), action items (assignee, deadline shown as a date; cancelled tasks
+and the report's own task are left out, completed ones are marked *done*, since
+v18.0.2.0.2), open questions, deliverables, attendance. The page draws these sections from
 `meeting.record._get_report_data()`, the method feeding the client report, so it
 stays at parity with it.
 

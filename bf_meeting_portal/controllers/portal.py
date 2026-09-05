@@ -191,11 +191,32 @@ class PortalMeeting(CustomerPortal):
                 {
                     'name': t.name or '',
                     'who': ', '.join(u.name for u in t.user_ids),
-                    'deadline': str(t.date_deadline) if t.date_deadline else '',
+                    'deadline': _fmt_date(t.date_deadline),
+                    'done': t.state == '1_done',
                 }
-                for t in rec.task_ids
+                for t in rec.task_ids if self._is_action_item(rec, t)
             ],
         }
+
+    @staticmethod
+    def _is_action_item(rec, task):
+        """Ce qui vaut « élément d'action » aux yeux du client.
+
+        Deux exclusions, constatées le 2026-09-04 sur l'aperçu du portail
+        d'un client (compte rendu de statutaire) :
+        - une tâche annulée n'est plus un engagement : le Meeting Processor en
+          dépose parfois qui sont ensuite recadrées au verbatim et annulées, et le
+          client les voyait encore listées comme actions à faire ;
+        - la tâche qui porte le compte rendu lui-même (même nom que la rencontre,
+          elle reçoit le temps de la séance) n'a jamais été une action.
+        Les tâches terminées restent listées, marquées « fait » : elles disent ce
+        qui a été livré depuis la rencontre.
+        """
+        if task.state == '1_canceled':
+            return False
+        if (task.name or '').strip() == (rec.name or '').strip():
+            return False
+        return True
 
     def _attendance_ctx(self, rec):
         """Présences telles qu'un client doit les lire.

@@ -1,6 +1,10 @@
 {
     'name': 'Rencontres - Portail client',
-    'version': '18.0.2.0.1',
+    # 18.0.2.0.2 (2026-09-05) : les « Éléments d'action » d'un compte rendu excluent les
+    #   tâches annulées et la tâche du compte rendu lui-même, marquent « fait » les
+    #   tâches terminées, et affichent l'échéance en date lisible plutôt qu'en
+    #   datetime brut. Vu à l'aperçu du portail d'un client le 2026-09-04.
+    'version': '18.0.2.0.2',
     'category': 'Services/Project',
     'summary': "Accès portail aux comptes rendus de rencontre déjà envoyés",
     'description': """
