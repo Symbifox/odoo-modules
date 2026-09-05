@@ -128,6 +128,7 @@ proven is that its files enter the asset bundle and that the stylesheet compiles
 
 | Version | Notes |
 |---|---|
+| 18.0.1.5.4 | The planned start date gets its own row and label on the task form. It used to be inserted inside the deadline's inline block, where the form draws no label: it showed as a second, blank date box under "Deadline", ahead of the real deadline, which it squeezed and truncated. |
 | 18.0.1.5.3 | Copying a schedule's private address now needs the same right as publishing one. The method is callable over RPC and mints the token as it goes, so hiding its button was never enough: anyone who could read the project could mint a link and hand it out. |
 | 18.0.1.5.2 | Field labels that were falling back to their technical English names now read properly in the interface. |
 | 18.0.1.5.1 | Several assignees on one task read as `Jane D. +2` instead of two full names side by side, which overflowed the label column and ran under the task name. Shortened at the source, so all five outputs agree. |
