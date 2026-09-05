@@ -54,14 +54,16 @@ Each result shows the record name plus a context line built from the config's `d
 
 ### Ctrl+K Opens the Universal Search by Default
 
-Out of the box the palette opens on Odoo's own commands and you type `*` to switch to the universal search. Two settings turn that around, so that `Ctrl+K` lands directly on the `*` namespace and the first keystroke is already the query:
+From 18.0.2.2.0 `Ctrl+K` lands directly on the `*` namespace and the first keystroke is already the query. Two settings govern it, and either can put the native command list back:
 
-- **Settings → General Settings → Recherche universelle → « Ctrl+K ouvre la recherche universelle »** — the instance default, for every user who has not chosen. Off after install and after upgrade, so nobody's habit changes until an administrator decides.
+- **Settings → General Settings → Recherche universelle → « Ctrl+K ouvre la recherche universelle »** — the instance default, for every user who has not chosen. **Seeded on** at install, and turned on for existing databases by the 18.0.2.2.0 migration.
 - **Preferences → « Ctrl+K ouvre »** — each user's own choice: *Selon le réglage de l'instance* (the default), *La recherche universelle (\*)* or *Les commandes Odoo*. A user's choice always beats the instance default, both ways.
 
 The effective value travels with `session_info`, so opening the palette costs no extra request; saving the preferences dialog reloads the page, which is how the change takes effect.
 
 What does not change: `Backspace` on the empty field brings the native command list back, `/` `@` `#` still switch namespaces, the systray magnifier still opens the `*` search whatever the setting, and the **Shortcuts** entry of the user menu still opens the native command list (it asks for its own footer, so it is left alone). An empty `*` palette now says « Tapez au moins deux caractères pour chercher partout » instead of « Aucun résultat trouvé ».
+
+The instance default is a **seeded** parameter, not an absent one read as on. A `Boolean` with `config_parameter` on `res.config.settings` does not store `False` — unchecking DELETES the key. Were absence read as on, unchecking would silently revert on the next page load and there would be no way to turn the feature off at all. Seeding keeps absence meaning off, so the checkbox works in both directions, and neither the install hook nor the migration ever overwrites a key that is already there.
 
 Implementation: `static/src/js/command_palette_patch.js` patches `CommandPalette.setCommandPaletteConfig` and pre-fills `searchValue: "*"` when the config carries no search value, lists the `*` provider, and uses the main palette's default footer. `Ctrl+K` inside the HTML editor and in a chat window call the same `openMainPalette()`, so they follow the setting too.
 
@@ -271,8 +273,10 @@ bf_universal_search/
 │   └── fr_CA.po
 ├── migrations/
 │   ├── 18.0.1.1.0/ … 18.0.1.3.0/           # Earlier config-seeding migrations
-│   └── 18.0.2.0.0/
-│       └── post-migrate.py                 # Widens scope, backfills new fields
+│   ├── 18.0.2.0.0/
+│   │   └── post-migrate.py                 # Widens scope, backfills new fields
+│   └── 18.0.2.2.0/
+│       └── post-migrate.py                 # Turns the Ctrl+K default on
 ├── models/
 │   ├── __init__.py
 │   ├── bf_universal_search.py              # Virtual model with search_all()
@@ -313,6 +317,10 @@ Three approaches were evaluated:
 3. **Inline navbar search bar** — Permanent search field in the top bar. Rejected: consumes scarce navbar space, responsive issues, requires building dropdown + keyboard navigation from scratch.
 
 ## Changelog
+
+### 18.0.2.2.0
+
+- **On by default.** `Ctrl+K` now opens the universal search out of the box: the install hook seeds the instance setting and a migration turns it on for databases upgraded from an earlier release. A user who prefers the native command list still wins from their own preferences, and an administrator who has already made a choice keeps it.
 
 ### 18.0.2.1.0
 

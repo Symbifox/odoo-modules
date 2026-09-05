@@ -273,6 +273,34 @@ def create_search_configs(env, specs=None):
     return created
 
 
+def enable_ctrl_k_star_default(env):
+    """Turn the instance default for Ctrl+K on, once, without ever overruling
+    a choice an administrator has already made.
+
+    Seeding the parameter is deliberate, and the obvious alternative is wrong:
+    a Boolean with `config_parameter` on res.config.settings does NOT store
+    False, it DELETES the key when unchecked. Were "missing" read as "on",
+    unchecking the box would silently revert at the next page load and the
+    administrator would have no way to turn the feature off at all. Seeding
+    keeps "missing" meaning off, so the checkbox works in both directions.
+
+    Returns True when it wrote the parameter, False when a value was already
+    there — including the empty string a previous uncheck may have left.
+    """
+    from .models.res_users import PARAM_CTRL_K_STAR
+
+    ICP = env["ir.config_parameter"].sudo()
+    if ICP.search_count([("key", "=", PARAM_CTRL_K_STAR)]):
+        _logger.info(
+            "Universal search: Ctrl+K instance default already set, left alone"
+        )
+        return False
+    ICP.set_param(PARAM_CTRL_K_STAR, "True")
+    _logger.info("Universal search: Ctrl+K now opens the universal search by default")
+    return True
+
+
 def post_init_hook(env):
     """Create search config records for all installed models."""
     create_search_configs(env)
+    enable_ctrl_k_star_default(env)

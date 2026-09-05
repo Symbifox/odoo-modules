@@ -3,6 +3,7 @@ import json
 from odoo.exceptions import AccessError
 from odoo.tests import HttpCase, TransactionCase, tagged
 
+from odoo.addons.bf_universal_search.hooks import enable_ctrl_k_star_default
 from odoo.addons.bf_universal_search.models.res_users import PARAM_CTRL_K_STAR
 
 FIELD = "bf_universal_search_ctrl_k"
@@ -33,7 +34,7 @@ class TestCtrlKDefault(TransactionCase):
 
     # --- defaults ---
 
-    def test_fresh_user_follows_instance_and_instance_is_off(self):
+    def test_absent_parameter_reads_as_off_and_user_follows_instance(self):
         self.assertEqual(self.user[FIELD], "instance")
         self.assertFalse(self.env["res.users"]._bf_universal_search_instance_ctrl_k_star())
         self.assertFalse(self.user._bf_universal_search_ctrl_k_star())
@@ -115,3 +116,54 @@ class TestCtrlKSessionInfo(HttpCase):
         user.sudo().write({FIELD: "instance"})
         self.env["ir.config_parameter"].sudo().set_param(PARAM_CTRL_K_STAR, "True")
         self.assertTrue(self._session_info()["bf_universal_search_ctrl_k_star"])
+
+
+@tagged("bf_universal_search", "universal_search", "ctrl_k")
+class TestCtrlKSeededDefault(TransactionCase):
+    """18.0.2.2.0 ships the feature ON. The value is SEEDED, never inferred from
+    the parameter's absence — see enable_ctrl_k_star_default for why that
+    distinction is the whole design."""
+
+    def setUp(self):
+        super().setUp()
+        self.Param = self.env["ir.config_parameter"].sudo()
+
+    def _drop(self):
+        self.Param.search([("key", "=", PARAM_CTRL_K_STAR)]).unlink()
+
+    def test_seeds_true_on_a_database_that_never_had_the_key(self):
+        self._drop()
+        self.assertTrue(enable_ctrl_k_star_default(self.env))
+        self.assertEqual(self.Param.get_param(PARAM_CTRL_K_STAR), "True")
+
+    def test_a_seeded_default_opens_the_star_for_a_user_who_never_chose(self):
+        self._drop()
+        enable_ctrl_k_star_default(self.env)
+        user = _make_user(self.env, "ctrlk_seeded")
+        self.assertEqual(user[FIELD], "instance")
+        self.assertTrue(user._bf_universal_search_ctrl_k_star())
+
+    def test_never_overrules_an_administrator_who_switched_it_on(self):
+        self.Param.set_param(PARAM_CTRL_K_STAR, "True")
+        self.assertFalse(enable_ctrl_k_star_default(self.env))
+
+    def test_never_overrules_an_administrator_who_switched_it_off(self):
+        # A stored falsy value is what an explicit "off" looks like when it was
+        # written by anything other than the settings checkbox.
+        self.Param.set_param(PARAM_CTRL_K_STAR, "False")
+        self.assertFalse(enable_ctrl_k_star_default(self.env))
+        self.assertEqual(self.Param.get_param(PARAM_CTRL_K_STAR), "False")
+
+    def test_is_idempotent(self):
+        self._drop()
+        self.assertTrue(enable_ctrl_k_star_default(self.env))
+        self.assertFalse(enable_ctrl_k_star_default(self.env))
+        self.assertEqual(
+            self.Param.search_count([("key", "=", PARAM_CTRL_K_STAR)]), 1)
+
+    def test_a_user_who_chose_the_commands_still_wins_over_the_seed(self):
+        self._drop()
+        enable_ctrl_k_star_default(self.env)
+        user = _make_user(self.env, "ctrlk_seeded_optout")
+        user.write({FIELD: "default"})
+        self.assertFalse(user._bf_universal_search_ctrl_k_star())

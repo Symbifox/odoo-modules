@@ -1,6 +1,6 @@
 {
     "name": "BF Recherche universelle",
-    "version": "18.0.2.1.0",
+    "version": "18.0.2.2.0",
     "category": "Productivity",
     "summary": "Recherche transversale dans tous les modules via la palette de commandes",
     'author': 'Les services de consultation Blue Fox, Inc.',
