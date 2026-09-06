@@ -4,6 +4,20 @@ All notable changes to `bf_email_management` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This module follows Odoo's `MAJOR.MINOR.PATCH` convention prefixed with the Odoo series (`18.0.X.Y.Z`).
 
+## [18.0.11.21.1] — 2026-09-05
+
+### Fixed
+
+- **The reading pane no longer throws "Cannot read properties of undefined
+  (reading 'isDirty')" while the list is loading.** The controller subscribes to
+  the `bf_email/changed` bus channel in `setup()`, which runs before the first
+  list load has returned; a tick arriving in that window called `_busRefresh`
+  500 ms later, and `this.model.root` only exists once `load()` has resolved —
+  `RelationalModel` assigns it at the very end. The window reopens every time the
+  list is opened, and a failed initial load leaves it open for good. The refresh
+  now waits for the list to exist (retrying for 10 s, then giving up), and the
+  post-load check reads the fresh root instead of assuming one is there.
+
 ## [18.0.11.21.0] — 2026-09-03
 
 ### Added

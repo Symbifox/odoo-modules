@@ -14,6 +14,9 @@ import { onWillUnmount, useState, useSubEnv } from "@odoo/owl";
 const STORAGE_KEY = "bf_email.preview_pane";
 const SIZE_KEY = "bf_email.preview_size";
 const DEFAULT_SIZE = { right: 50, bottom: 55 };
+// Nombre de reprises accordées à un tick arrivé avant que la liste ait fini de
+// charger : au-delà (10 s), le chargement a échoué et rien ne viendra.
+const BUS_ROOT_MAX_WAITS = 20;
 
 const PREVIEW_FIELDS = [
     "subject",
@@ -74,6 +77,7 @@ export class BfEmailPreviewListController extends ListController {
         this._previewResizeObserver = null;
         this.busService = useService("bus_service");
         this._busRefreshTimer = null;
+        this._busRootWaits = 0;
         // La référence est gardée : sans elle on ne peut pas se
         // désabonner, et chaque ouverture de la liste laisserait un abonné
         // derrière qui rappelle `load()` sur un modèle détaché.
@@ -318,11 +322,26 @@ export class BfEmailPreviewListController extends ListController {
     }
 
     async _busRefresh() {
+        // `root` n'existe qu'une fois le premier chargement de la liste revenu
+        // (RelationalModel ne l'affecte qu'à la fin de `load()`). Un tick reçu
+        // dans cette fenêtre — ou après un chargement initial en échec —
+        // tombait ici sur `undefined`. On repasse plus tard, parce que la
+        // donnée de ce chargement peut être antérieure au tick, mais pas
+        // indéfiniment : sans liste, il n'y a rien à rafraîchir.
+        const root = this.model.root;
+        if (!root) {
+            if (this._busRootWaits < BUS_ROOT_MAX_WAITS) {
+                this._busRootWaits++;
+                this._busRefreshSoon();
+            }
+            return;
+        }
+        this._busRootWaits = 0;
         // Ne pas recharger sous une sélection en cours d'édition ni pendant
         // qu'on redimensionne le panneau : `load()` reconstruit les
         // datapoints, ce qui ferait sauter la ligne active sous le curseur.
         if (this.previewState.dragging || this.previewState.loading
-                || this.model.root.isDirty || this.model.root.editedRecord) {
+                || root.isDirty || root.editedRecord) {
             this._busRefreshSoon();
             return;
         }
@@ -335,7 +354,8 @@ export class BfEmailPreviewListController extends ListController {
         }
         // Si la ligne affichée a quitté la liste, l'aperçu ne pointe plus sur
         // rien : le fermer vaut mieux que de montrer un courriel fantôme.
-        if (keptId && !this.model.root.records.some((r) => r.resId === keptId)) {
+        const newRoot = this.model.root;
+        if (keptId && newRoot && !newRoot.records.some((r) => r.resId === keptId)) {
             this.previewState.record = null;
             this._previewDatapoint = null;
         }
