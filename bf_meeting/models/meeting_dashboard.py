@@ -24,7 +24,7 @@ class MeetingDashboard(models.AbstractModel):
     # il entrait dans `Registry.check_tables_exist()`, qui ne dispense que
     # `_abstract` et les modèles à `_table_query` — d'où un `ERROR
     # odoo.modules.registry: Model <ce modèle> has no table.` journalisé à chaque
-    # passe du chargeur sur une base neuve (BF #24867).
+    # passe du chargeur sur une base neuve.
 
     @api.model
     def get_dashboard_data(self, limit=60):

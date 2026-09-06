@@ -1,6 +1,6 @@
 """La primitive de destruction, en un seul endroit.
 
-🔴 **Le défaut que ce fichier corrige** (tâche BF #24897). Les deux exécuteurs du
+🔴 **Le défaut que ce fichier corrige.** Les deux exécuteurs du
 module — la ligne de campagne et la demande de destruction documentaire —
 portaient chacun leur copie de ceci ::
 

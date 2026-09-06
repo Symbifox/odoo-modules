@@ -4,7 +4,7 @@
 > *"what does this do today?"*, the audit answers *"why is it safe?"*,
 > and this file answers *"what would it take to make it a real Studio?"*
 >
-> Origin: BF task #22439 — *"Make a real 'Studio'. What is the gap? To
+> Origin: an internal request — *"Make a real 'Studio'. What is the gap? To
 > make it truly fully featured."*
 
 ## 1. Method

@@ -145,7 +145,7 @@ class TestDestructionCertificateTruth(TransactionCase):
         demande = self._executer(self._demande("erasure_right", classification))
 
         self.assertEqual(demande.state, "executed")
-        # ⚠ Le contrôle a DURCI avec la 18.0.5.0.0 (tâche #24897). Il portait
+        # ⚠ Le contrôle a DURCI avec la 18.0.5.0.0. Il portait
         # sur `piece.datas`, parce que la méthode « Suppression » du socle se
         # contentait d'effacer la charge utile puis d'archiver la pièce. Elle
         # supprime désormais pour de bon : on contrôle donc l'ABSENCE de la

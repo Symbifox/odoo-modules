@@ -4,7 +4,7 @@
     "name": "Symbifox Timezone Utilities",
     # 18.0.1.1.0: la table Windows->IANA couvre l'Asie-Pacifique. Un TZID
     #   « New Zealand Standard Time » ne s'y résolvait pas et une invitation
-    #   arrivait décalée de douze heures. Tâche BF #25173.
+    #   arrivait décalée de douze heures.
     "version": "18.0.1.1.0",
     "summary": "Shared timezone helpers and a configurable default timezone "
                "for Blue Fox modules",

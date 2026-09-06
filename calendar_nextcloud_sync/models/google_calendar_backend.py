@@ -51,7 +51,7 @@ class GoogleCalendarBackend(models.AbstractModel):
     _name = "calendar.google.backend"
     _description = "Google Calendar API Backend"
 
-    # 2026-07-25 (tache #23886) — nombre d'echecs consecutifs sur un meme
+    # 2026-07-25 — nombre d'echecs consecutifs sur un meme
     # evenement Google avant de cesser de le reessayer a chaque passe.
     # 3 laisse la place a un echec transitoire (verrou, timeout) sans laisser
     # un evenement durablement invalide inonder les journaux pendant des jours.
@@ -162,7 +162,7 @@ class GoogleCalendarBackend(models.AbstractModel):
         errors = 0
         quarantined = 0
         CalendarEvent = self.env["calendar.event"]
-        # 2026-07-25 (tache #23886) — mise en quarantaine.
+        # 2026-07-25 — mise en quarantaine.
         # Sans ce garde-fou, un evenement qui ne passe pas la validation Odoo
         # (contrainte resource_booking par exemple) est reessaye a CHAQUE passe,
         # toutes les 7 minutes, indefiniment. Constate en juillet : deux
@@ -283,7 +283,7 @@ class GoogleCalendarBackend(models.AbstractModel):
         if partner_ids:
             vals["partner_ids"] = [(6, 0, list(partner_ids))]
 
-        # 2026-07-25 (tache #23886) — rapprochement robuste.
+        # 2026-07-25 — rapprochement robuste.
         # Deux defauts corriges ici :
         #  1) la recherche ignorait les evenements ARCHIVES (active_test par
         #     defaut). Un doublon archive a la main etait donc recree au pull

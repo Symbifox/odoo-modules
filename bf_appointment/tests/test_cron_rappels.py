@@ -1,7 +1,7 @@
 """Le cron des rappels (2.53.0) : isolation par réservation, fenêtre bornée.
 
 Deux propriétés, toutes deux tirées d'une panne réelle en production les
-2026-08-30 et 2026-08-31 (tâche BF #24896) :
+2026-08-30 et 2026-08-31 :
 
 1. **Une réservation fautive ne doit pas emporter la run.** Là-bas, l'écriture
    de `sent_schedule_ids` sur UNE réservation faisait lever `_check_scheduling`

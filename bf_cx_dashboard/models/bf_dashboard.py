@@ -17,7 +17,7 @@ class BfDashboard(models.AbstractModel):
     _inherit = "bf.dashboard"
     # `AbstractModel` obligatoire : `bf.dashboard` est abstrait (aucune table),
     # et `BaseModel._build_model_check_base` lève `TypeError` dès qu'une classe
-    # concrète l'étend — le registre ne charge plus du tout (BF #24867).
+    # concrète l'étend — le registre ne charge plus du tout.
 
     @api.model
     def get_dashboard_data(self):

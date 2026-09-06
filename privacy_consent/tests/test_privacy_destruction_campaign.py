@@ -27,7 +27,7 @@ class TestPrivacyDestructionCampaign(TransactionCase):
         # boucle d'exécution créait l'entrée de registre SANS relire l'état que
         # `_execute_destruction` venait d'écrire, puis réécrivait « fait ». Les
         # deux lignes refusées ressortaient certifiées détruites. C'est le défaut
-        # de la tâche #24897, et il rendait ce test vert pour la mauvaise raison.
+        # corrigé en 18.0.5.0.0, et il rendait ce test vert pour la mauvaise raison.
         cls.officer = cls.env["res.users"].create({
             "name": "Campaign Officer",
             "login": "test_campaign_officer",

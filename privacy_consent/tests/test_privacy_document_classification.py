@@ -137,7 +137,7 @@ class TestPrivacyDocumentClassification(TransactionCase):
         self.assertEqual(action["res_model"], "res.partner")
         self.assertEqual(action["res_id"], self.partner.id)
 
-    # === Point d'extension (#24851) ===
+    # === Point d'extension ===
 
     def test_classifiable_models_defaults_to_constant(self):
         """Sans surcharge, le point d'extension rend la constante."""

@@ -166,7 +166,7 @@ class ProjectCredential(models.Model):
     # champs disent seulement OÙ et CHEZ QUI. Aucun d'eux ne contient de secret,
     # et `_check_no_otp_secret` refuse ce qui ressemble à une graine : mettre le
     # mot de passe et son deuxième facteur dans la même base laisserait UN
-    # facteur au client, pas deux. Napkin BF #25077.
+    # facteur au client, pas deux.
     # -------------------------------------------------------------------------
 
     mfa_type = fields.Selection([

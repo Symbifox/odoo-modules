@@ -3,13 +3,13 @@
 
 ⚠️ `bf.dashboard` est un `AbstractModel` (aucune table). L'étendre par une
 classe CONCRÈTE fait lever `TypeError` à `_build_model_check_base` et le
-registre ne charge plus du tout (BF #24867). D'où `models.AbstractModel`.
+registre ne charge plus du tout. D'où `models.AbstractModel`.
 
 ⚠️ La carte elle-même n'est pas posée ici. Au 2026-08-31, deux satellites du
 tableau de bord (`bf_subscription_dashboard`, `bf_hour_bank_dashboard`)
 importent encore `@bf_dashboard/js/bf_dashboard`, un chemin qu'aucun module
-installé ne fournit depuis l'absorption de `bf_dashboard` dans `bf_home`
-(#25065). Ajouter un troisième client à cette surface avant que ce soit réglé
+installé ne fournit depuis l'absorption de `bf_dashboard` dans `bf_home`.
+Ajouter un troisième client à cette surface avant que ce soit réglé
 reviendrait à empiler sur du cassé. Les données sont donc prêtes, la carte
 attend.
 """

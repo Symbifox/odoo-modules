@@ -32,7 +32,7 @@ NES_ICI = {
     # hérite de la sienne.
     'project_view_form_inherit_credentials',
 
-    # Registre du deuxième facteur, 18.0.2.0.0 (napkin BF #25077). Le socle
+    # Registre du deuxième facteur, 18.0.2.0.0. Le socle
     # n'a jamais rien porté de tout ça : le lot est né dans ce module.
     'vault_password_manager', 'vault_authenticator', 'vault_personal_device',
     'vault_hardware_token', 'vault_offline',

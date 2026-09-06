@@ -238,7 +238,7 @@ class PrivacyDestructionCampaign(models.Model):
                 # 1. `_execute_destruction` NE LÈVE PAS toujours quand il
                 #    échoue : plusieurs de ses sorties écrivent « échec » ou
                 #    « ignoré » dans l'état de la ligne et rendent la main
-                #    normalement. La version d'avant #24897 enchaînait alors sur
+                #    normalement. La version d'avant la 18.0.5.0.0 enchaînait alors sur
                 #    la création de l'entrée de registre et RÉÉCRIVAIT l'état à
                 #    « fait ». Une ligne sautée était donc certifiée détruite.
                 #    On relit donc l'état après l'appel, et on refuse de
@@ -457,7 +457,7 @@ class PrivacyDestructionCampaignLine(models.Model):
             self.write({"state": "failed", "error_message": f"Accès refusé : {e}"})
             return
 
-        # 🔴 Ce bloc portait le défaut de la tâche #24897 : « Suppression » se
+        # 🔴 Ce bloc portait le même défaut : « Suppression » se
         # contentait d'archiver dès que le modèle avait un champ `active`. La
         # primitive partagée supprime pour de bon, contrôle après coup, et lève
         # si l'enregistrement survit. Voir models/privacy_destruction_ops.py.

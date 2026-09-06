@@ -8,8 +8,6 @@ Odoo upstream omits ``mail_notify_force_send=True`` in
 mail.mail waits up to 5 minutes for the ``Mail: Email Queue Manager`` cron.
 The same model's daily cron ``_post_messages_cron`` already injects this
 flag — this module restores parity for the UI button.
-
-BF tâche #22327 fallout.
     """,
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",

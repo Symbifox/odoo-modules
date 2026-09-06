@@ -1,6 +1,6 @@
 """Post-migration — le registre dit ce qu'il ne peut plus corriger.
 
-Tâche BF #24897. Jusqu'ici, « Suppression » se contentait d'archiver dès que le
+Jusqu'ici, « Suppression » se contentait d'archiver dès que le
 modèle visé portait un champ ``active``, et l'entrée de registre affirmait
 pourtant la destruction. Le code est corrigé ; les entrées déjà écrites, elles,
 ne le sont pas — le registre refuse ``write`` et ``unlink``, c'est tout son
@@ -69,15 +69,15 @@ def _rejouer(cr, version, nom):
         nom, "post-migrate.py",
     )
     if not os.path.isfile(chemin):
-        _logger.warning("privacy_consent #24897 : reprise %s introuvable.", nom)
+        _logger.warning("privacy_consent 18.0.5.0.0 : reprise %s introuvable.", nom)
         return
     spec = importlib.util.spec_from_file_location(f"pc_reprise_{nom.replace('.', '_')}", chemin)
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
-    _logger.info("privacy_consent #24897 : rejeu de la reprise %s.", nom)
+    _logger.info("privacy_consent 18.0.5.0.0 : rejeu de la reprise %s.", nom)
     module.migrate(cr, version)
 
-_MARKER = "[#24897]"
+_MARKER = "[privacy_consent 18.0.5.0.0]"
 _REMOVAL_METHODS = ("delete", "secure_wipe")
 
 _NOTE = (
@@ -115,7 +115,7 @@ def migrate(cr, version):
         ("res_id", "!=", 0),
     ])
     if not entries:
-        _logger.info("privacy_consent #24897 : aucune entrée de registre à contrôler.")
+        _logger.info("privacy_consent 18.0.5.0.0 : aucune entrée de registre à contrôler.")
         return
 
     today = fields.Date.to_string(fields.Date.today())
@@ -154,13 +154,13 @@ def migrate(cr, version):
         })
         annotated += 1
         _logger.warning(
-            "privacy_consent #24897 : %s atteste la destruction de %s,%s qui "
+            "privacy_consent 18.0.5.0.0 : %s atteste la destruction de %s,%s qui "
             "existe toujours — note de rectification ajoutée.",
             entry.register_number, entry.res_model, entry.res_id,
         )
 
     _logger.info(
-        "privacy_consent #24897 : %s entrée(s) contrôlée(s), %s annotée(s), "
+        "privacy_consent 18.0.5.0.0 : %s entrée(s) contrôlée(s), %s annotée(s), "
         "%s modèle(s) absent(s) du registre ORM (%s).",
         checked, annotated, len(unknown_models),
         ", ".join(sorted(unknown_models)) or "aucun",

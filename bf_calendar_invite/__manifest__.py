@@ -10,7 +10,7 @@
     #   property), tags and reminders are set on the quick-create dialog
     #   itself; the status is also settable from the event popover, next to
     #   core's Yes/No/Maybe group. Adds a POKE button that opens a short
-    #   "are we still meeting?" draft in the guest's language. Task #25173.
+    #   "are we still meeting?" draft in the guest's language.
     "version": "18.0.3.1.0",
     "category": "Productivity",
     "website": "https://symbifox.com",

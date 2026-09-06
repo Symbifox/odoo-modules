@@ -102,7 +102,7 @@ def _redirect_uri():
     """Build the absolute redirect URI from web.base.url.
 
     Avoids the reverse-proxy Werkzeug bug that plagues Odoo's native
-    `google_calendar` module (issue #25189) — we explicitly read the
+    `google_calendar` module — we explicitly read the
     stored system parameter rather than relying on the request host.
 
     HTTPS is enforced. Localhost / 127.0.0.1 are allowed over HTTP for

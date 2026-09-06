@@ -12,8 +12,8 @@ de contact en ont besoin. Sur symbifox.com, charger le reCaptcha de Google
 contredirait la promesse écrite en tête de la configuration du proxy, *aucune
 page de ce site ne charge de ressource tierce*, qui est aussi un argument de
 vente et que la CSP du domaine impose. Le désactiver globalement affaiblirait des
-formulaires en production sur un autre domaine. Troisième voie, recommandée dans
-la tâche BF #24557 : ce module.
+formulaires en production sur un autre domaine. Troisième voie, retenue à
+l'analyse : ce module.
 
 ## Le double consentement n'est pas un raffinement
 

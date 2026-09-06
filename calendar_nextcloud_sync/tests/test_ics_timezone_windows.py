@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Fuseaux d'un .ics écrit par Outlook ou Calendly (2.14.0, tâche #25173).
+"""Fuseaux d'un .ics écrit par Outlook ou Calendly (2.14.0).
 
 🔴 Incident du 2026-09-01. Une invitation Calendly d'une recruteuse
 néo-zélandaise, tirée de Nextcloud, est arrivée dans Odoo **douze heures trop

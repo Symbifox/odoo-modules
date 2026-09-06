@@ -2,18 +2,18 @@
     "name": "Symbifox Appointment",
     # 18.0.2.32.0: availability fix — attended events marked show_as='free' no longer block the slot picker (Google all-day "Bureau"/working-location sync events blanked every morning; signalé par un locataire)
     # 18.0.2.33.0: localisation FR — (1) picker: jours/mois via babel au lieu de strftime %A/%B (locale C = anglais); (2) tous les libellés backend francisés à la source (le fr.po ne se chargeait jamais — mauvais format de référence), incl. champs de base OCA relabellés via override incrémental; (3) ventilation du « Modifications Deadline » OCA en 2 réglages : modifications_deadline = « Préavis minimum avant réservation » (plancher dispo, inchangé) + nouveau modification_lock_hours = « Délai limite de modification/annulation » (verrou, via _compute_is_overdue). Demandé par un locataire.
-    # 18.0.2.40.0: lot d'ouverture — surface stable pour les modules satellites (tâche #24672).
+    # 18.0.2.40.0: lot d'ouverture — surface stable pour les modules satellites.
     #   (1) resource.booking.type._bf_candidate_slots() : grille de créneaux d'un TYPE sans réservation persistée;
     #   (2) resource.booking.type._bf_create_booking() : fabrique de réservation depuis une source externe;
     #   (3) bf_source / bf_source_ref sur resource.booking : provenance NON typée (une chaîne « modele,id »
     #       résolue au clic) — un m2o vers un modèle satellite rendrait celui-ci obligatoire, défaut visible
     #       uniquement en installation neuve; (4) bf_rate_limit() : seau de limitation nommé, réutilisable par
     #       un satellite qui ouvre ses propres routes publiques. Les 3 limiteurs existants restent intacts.
-        # 18.0.2.41.0: _bf_create_booking refuse une heure hors disponibilités AVANT de créer (QA #24672).
+        # 18.0.2.41.0: _bf_create_booking refuse une heure hors disponibilités AVANT de créer.
     #   Sans ce contrôle, OCA n'affecte aucune ressource, la réservation naît corrompue en silence, et
     #   l'erreur surgit plus tard sur une opération sans rapport. Vérifier après création est impossible :
     #   lire combination_id déclenche la validation OCA, qui lève avant qu'on puisse intervenir.
-    # 18.0.2.42.0: liens de réservation personnels (« one-time booking », tâche #24672). Assistant
+    # 18.0.2.42.0: liens de réservation personnels (« one-time booking »). Assistant
     #   « Créer un lien de réservation » (2 écrans : réglage, puis lien copiable), expiration, usage
     #   unique, invités additionnels. Le mécanisme existait déjà — une réservation en attente porte un
     #   jeton et sa page de choix de créneau; ce lot ajoute la durée de vie, le verrou d'usage, et
@@ -41,7 +41,7 @@
     #   activation récente par l'usager, et une copie après aller-retour serveur est bloquée en silence
     #   par Safari et certaines versions de Chrome. Le clic sur le bouton natif garde le geste.
     # 18.0.2.45.0: champ « autres invités » sur le formulaire public, avec DOUBLE CONFIRMATION du
-    #   demandeur (tâche #24672, 1re puce). Les adresses saisies restent en attente; un courriel dédié
+    #   demandeur. Les adresses saisies restent en attente; un courriel dédié
     #   part au demandeur une fois son créneau choisi, et seul un POST depuis cette page envoie les
     #   invitations. 🔴 Le GET ne décide rien : les antivirus de messagerie suivent les liens, un GET
     #   qui confirmerait produirait exactement le pourriel que ce dispositif existe pour empêcher.
@@ -69,7 +69,7 @@
     #   (« Invités additionnels »). Odoo ne le signale qu'au chargement d'un
     #   registre NEUF, donc jamais sur un locataire déjà monté.
     # 18.0.2.47.0: trois défauts du lien de réservation personnel, signalés en
-    #   production le 2026-08-20 (tâche #24695).
+    #   production le 2026-08-20.
     #   (1) ⚠️ La description de l'événement d'agenda ne retombe PLUS sur le
     #       conseil au demandeur. Un lien personnel ne passe par aucun
     #       formulaire d'accueil : le repli se déclenchait donc à tous les
@@ -123,7 +123,7 @@
     #       aussi — trouve par le harnais de QA « visiteur externe virtuel »
     #       (scripts/_qa_bf_appointment_visitor_lang_20260821.py), pas a l'oeil.
     # 18.0.2.49.0: les consentements cessent d'etre l'affaire du seul
-    #   formulaire d'accueil (tache #24737).
+    #   formulaire d'accueil.
     #   ⚠️ Le constat : TOUTE la validation vivait dans le POST de
     #   `/appointment/<slug>/book`. Les trois autres chemins de creation —
     #   lien personnel, `_bf_create_booking()` d'un satellite, saisie au

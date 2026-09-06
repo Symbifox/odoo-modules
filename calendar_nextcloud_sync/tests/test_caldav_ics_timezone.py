@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Fuseau de l'ICS poussé vers Nextcloud (2.12.0).
 
-Signalé en production le 2026-08-20 (tâche #24695) : Nextcloud titrait la
+Signalé en production le 2026-08-20 : Nextcloud titrait la
 fiche d'un rendez-vous « 20 août 2026 21:00 UTC » et reléguait « 09:00 heure
 locale » en seconde ligne. L'instant était juste; c'est le fuseau qui manquait,
 et il manquait parce que nous poussions ``DTSTART:…Z``.

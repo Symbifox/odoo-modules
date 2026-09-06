@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""STATUS du VEVENT, dans les deux sens (2.13.0, tâche #25173).
+"""STATUS du VEVENT, dans les deux sens (2.13.0).
 
 Le champ lui-même vit dans ``bf_calendar_invite``; ce module ne fait que le
 transporter, et le lien est MOU (``in self._fields``). Les tests portent donc

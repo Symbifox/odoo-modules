@@ -7,7 +7,7 @@ d'authentification, sur le téléphone d'une personne, sur un jeton matériel.
 Ce modèle nomme ces endroits. Il ne contient aucun secret et n'en contiendra
 jamais : le registre sait où chercher et qui peut produire un code, le coffre
 garde. C'est la règle qui a fait écarter l'idée de ranger des graines TOTP dans
-Odoo (napkin BF #25077).
+Odoo.
 """
 
 from odoo import api, fields, models

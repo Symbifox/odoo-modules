@@ -1,6 +1,6 @@
 """« Suppression » doit supprimer, et le registre ne doit certifier que le vrai.
 
-Tâche BF #24897. Le module portait le même bloc à trois endroits ::
+Le module portait le même bloc à trois endroits ::
 
     elif method == "delete":
         if hasattr(record, "active"):
@@ -164,7 +164,7 @@ class TestDestructionReallyDestroys(TransactionCase):
         self.assertFalse(
             survivant,
             "La fiche existe toujours après une campagne « Suppression ». "
-            "C'est le défaut de #24897 : archivée, pas supprimée.",
+            "C'est le défaut corrigé en 18.0.5.0.0 : archivée, pas supprimée.",
         )
 
     def test_campaign_delete_writes_a_truthful_entry(self):
@@ -429,7 +429,7 @@ class TestDestructionReallyDestroys(TransactionCase):
     # ------------------------------------------------------------------
 
     def _charge_heritee(self, entree, previous_hash=""):
-        """La charge à hacher TELLE QU'ELLE ÉTAIT avant #24897.
+        """La charge à hacher TELLE QU'ELLE ÉTAIT avant la 18.0.5.0.0.
 
         Recopiée à la main, exprès : si un jour quelqu'un ajoute une clé
         inconditionnelle à `_compute_verification_hash`, ce test tombe, et il

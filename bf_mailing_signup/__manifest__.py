@@ -25,7 +25,7 @@ ressource tierce*. Cette promesse est aussi un argument de vente, et la CSP du
 domaine l'impose. Désactiver le reCaptcha globalement affaiblirait les
 formulaires de contact d'un autre domaine pour débloquer une infolettre.
 
-D'où une troisième voie, recommandée dans la tâche BF #24557 : un contrôleur
+D'où une troisième voie, retenue à l'analyse : un contrôleur
 maison, un pot de miel, une limitation de débit, et rien qui sorte vers un tiers.
 
 Double consentement, et pourquoi il n'est pas négociable ici

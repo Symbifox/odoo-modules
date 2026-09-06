@@ -46,7 +46,7 @@ class PrivacyDestructionRequest(models.Model):
         required=False,
         # 🔴 `set null`, PAS `cascade`. Tant que « Suppression » se contentait
         # d'archiver, le consentement n'était jamais supprimé et la cascade ne
-        # se déclenchait pas. Depuis #24897 elle se déclencherait, et elle
+        # se déclenchait pas. Depuis la 18.0.5.0.0 elle se déclencherait, et elle
         # emporterait la demande de destruction elle-même — au beau milieu de
         # `action_execute`, donc AVANT l'écriture de l'état, la génération du
         # certificat et l'entrée au registre. La destruction aurait lieu et
@@ -353,7 +353,7 @@ class PrivacyDestructionRequest(models.Model):
                 method = "anonymize"
 
             # ⚠ Instantané AVANT l'exécution. Depuis que « Suppression »
-            # supprime vraiment (tâche #24897), `request.consent_id` rend un
+            # supprime vraiment, `request.consent_id` rend un
             # recordset vide dès que le consentement a été détruit — et
             # l'entrée de registre, construite APRÈS, perdait en silence le
             # nom et l'identifiant de ce qu'elle certifiait.
@@ -444,7 +444,7 @@ class PrivacyDestructionRequest(models.Model):
                     })
 
             elif method in ("delete", "secure_wipe"):
-                # 🔴 Troisième copie du défaut #24897, sur l'objet le plus
+                # 🔴 Troisième copie du même défaut, sur l'objet le plus
                 # sensible du module : `privacy.consent` porte un champ `active`,
                 # donc « Suppression » l'archivait — preuve, notes et pièces
                 # comprises — pendant que le registre certifiait sa destruction.
@@ -553,7 +553,7 @@ class PrivacyDestructionRequest(models.Model):
                 )
                 continue
 
-            # 🔴 Ce bloc portait le défaut de la tâche #24897, dans sa seconde
+            # 🔴 Ce bloc portait le même défaut, dans sa seconde
             # copie : `delete` et `secure_wipe` archivaient dès que le modèle
             # avait un champ `active`, et le certificat annonçait « détruit ».
             # La primitive partagée supprime vraiment et contrôle après coup.

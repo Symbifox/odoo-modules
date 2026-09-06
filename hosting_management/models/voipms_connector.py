@@ -28,7 +28,7 @@ _logger = logging.getLogger(__name__)
 VOIPMS_API_URL = "https://voip.ms/api/v1/rest.php"
 
 # Liste blanche : uniquement des méthodes GET de lecture. Ne JAMAIS y ajouter
-# une méthode d'écriture sans repasser par la décision « lecture seule » (#23192).
+# une méthode d'écriture sans repasser par la décision « lecture seule ».
 VOIPMS_ALLOWED_METHODS = frozenset({
     "getBalance",
     "getDIDsInfo",
