@@ -11,7 +11,7 @@ un ``timer`` négatif, il repart immédiatement.
 
 Mesuré sur une base réelle : deux séries de rendez-vous récurrents ont vu
 plusieurs centaines d'occurrences détruites puis recréées en bloc, chaque fois
-suivies d'une poussée portant un ``timer`` négatif. Tâche BF #25127.
+suivies d'une poussée portant un ``timer`` négatif.
 
 La clé retenue ne tient donc à aucun ``id`` : c'est l'UID CalDAV de la série,
 que le ``.ics`` conserve d'un import à l'autre, plus l'heure de début de

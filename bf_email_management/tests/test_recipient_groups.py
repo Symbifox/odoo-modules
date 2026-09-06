@@ -1,4 +1,4 @@
-"""Groupes de destinataires : bornes, dépliage, portée (napkin BF #25278).
+"""Groupes de destinataires : bornes, dépliage, portée.
 
 L'ordre des classes suit le risque, pas la fonctionnalité. Ce qui peut faire
 partir un courriel à des gens qui ne devaient pas le recevoir passe en premier :

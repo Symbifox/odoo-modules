@@ -167,8 +167,8 @@ class BfEmailMobile(models.Model):
             ("push_endpoint", "!=", False),
         ]))
         # Second transport, le même relevé. ⚠️ Le test du push ne suffit plus
-        # à décider : depuis la tâche #25069, une personne peut vouloir l'avis
-        # dans Odoo sans avoir d'appareil inscrit — c'est même le cas normal
+        # à décider : depuis l'arrivée de l'avis dans Odoo, une personne peut le
+        # vouloir sans avoir d'appareil inscrit — c'est même le cas normal
         # depuis que bf_email.push_enabled est à 0. Sortir sur le seul
         # `wants_push` sautait alors le relevé, donc l'avis, sans rien dire.
         wants_popup = self.env["bf.email.popup"]._watching(account.user_id)
@@ -1192,7 +1192,7 @@ class BfEmailMobile(models.Model):
         ⚠️ Derrière ``include_groups`` et pas dans la réponse par défaut : le
         client 2.37 attend une adresse par entrée et afficherait un contact
         vide. L'application les demandera quand elle saura les déplier
-        (napkin #25278, appli 2.38).
+        (appli 2.38).
 
         Un groupe trop gros n'est pas rendu tronqué, il n'est pas rendu du
         tout : une liste amputée en silence est pire qu'une liste absente.

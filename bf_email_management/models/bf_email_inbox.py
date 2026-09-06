@@ -6,7 +6,7 @@ JSON simples — pour que les deux actions clientes partagent la même mise en
 page, les mêmes préférences et les mêmes raccourcis clavier.
 
 Rien ici n'est en ``sudo`` : la portée est toujours l'usager courant, et les
-règles d'enregistrement restent l'autorité. Voir tâche #24628.
+règles d'enregistrement restent l'autorité.
 """
 
 import email.utils
@@ -26,10 +26,10 @@ MAX_PAGE = 500
 # envoi programmé n'est pas encore un courriel, il n'a ni Message-ID ni
 # contrepartie IMAP, et lui fabriquer une ligne bf.email juste pour qu'il
 # s'affiche ici en ferait un faux courriel dans tous les comptages. La liste
-# bascule donc de source selon le dossier ouvert. Tâche #24649.
+# bascule donc de source selon le dossier ouvert.
 DRAFTS_FOLDER = "drafts"
 
-# Dossiers IMAP réels dans l'arbre de gauche (tâche #24976). L'arborescence
+# Dossiers IMAP réels dans l'arbre de gauche. L'arborescence
 # vient du serveur (cache `bf.email.account.folder_cache`) mais le CONTENU
 # reste des lignes `bf.email` : ouvrir « Archives/2026 » montre les lignes
 # Odoo classées là, avec Traité / Router / Ajouter et le lien vers le
@@ -40,7 +40,7 @@ IMAP_GROUP = "imapfolders"
 IMAP_ACCOUNT_PREFIX = "imapacct:"
 IMAP_FOLDER_PREFIX = "imapf:"
 
-# Une boîte de réception par compte, enfant de la boîte commune (#25273).
+# Une boîte de réception par compte, enfant de la boîte commune.
 # Préfixe distinct de IMAP_ACCOUNT_PREFIX : celui-là navigue dans les dossiers
 # du serveur, celui-ci filtre la boîte de travail.
 INBOX_ACCOUNT_PREFIX = "inboxacct:"
@@ -156,7 +156,7 @@ class BfEmail(models.Model):
                 "icon": "fa-tags", "parent": False, "domain": None,
             },
         ]
-        # Une boîte par compte, enfants de la boîte commune (tâche #25273).
+        # Une boîte par compte, enfants de la boîte commune.
         # Enfants et non remplaçants : le courrier né dans Odoo (chatter,
         # passerelle) n'appartient à AUCUN compte, et une réponse fraîche reste
         # sans compte jusqu'à ce que le miroir IMAP la reconnaisse. Des boîtes
@@ -235,7 +235,7 @@ class BfEmail(models.Model):
            Ce troisième cas naît quand une remise en boîte échoue parce que le
            dossier a été renommé ou vidé au webmail. Sans lui, la ligne
            quittait « Traités » sans jamais réapparaître dans la boîte : elle
-           tombait hors de toute liste de travail, en silence. Tâche #24976.
+           tombait hors de toute liste de travail, en silence.
         """
         return [
             ("is_handled", "=", False),
@@ -347,7 +347,7 @@ class BfEmail(models.Model):
             # sont pas perdues (« Tous les courriels », catégories, recherche
             # les gardent) mais elles disparaissent de cet axe de navigation
             # sans un mot. Les montrer rend la dérive visible au lieu de la
-            # cacher. Tâche #24976.
+            # cacher.
             orphans = [
                 {"name": name, "delimiter": "", "has_children": False,
                  "noselect": False, "stale": True}
@@ -633,7 +633,7 @@ class BfEmail(models.Model):
             "record_name": self.record_name or "",
             "is_to_me": self.is_to_me,
             "is_question": self.is_question,
-            # Couleur de la société du compte (#25273). C'est dans la boîte
+            # Couleur de la société du compte. C'est dans la boîte
             # COMMUNE qu'elle sert : deux sociétés y cohabitent et rien
             # d'autre ne dit laquelle est laquelle. Vide pour le courrier né
             # dans Odoo, qui n'a pas de compte, et la pastille disparaît.
@@ -988,7 +988,7 @@ class BfEmail(models.Model):
             # coquille l'emporterait EN CASCADE — ``mail_thread.unlink``
             # supprime les envois programmés de la fiche — et le brouillon
             # disparaîtrait sans un mot, ni à l'écran ni au journal. Reproduit
-            # le 2026-08-31 (napkin #25125) : coquille et brouillon créés,
+            # le 2026-08-31 : coquille et brouillon créés,
             # composeur refermé, les deux évanouis de la table.
             #
             # La coquille reste donc en vie tant qu'un brouillon s'y appuie,

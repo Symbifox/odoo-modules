@@ -48,7 +48,7 @@ class BfEmailAccount(models.Model):
     active = fields.Boolean(string="Actif", default=True)
 
     # ------------------------------------------------------------------
-    # Société et boîte propre (tâche #25273)
+    # Société et boîte propre
     # ------------------------------------------------------------------
     company_id = fields.Many2one(
         comodel_name="res.company",
@@ -152,7 +152,7 @@ class BfEmailAccount(models.Model):
     )
 
     # ------------------------------------------------------------------
-    # Avis à l'arrivée (tâche #25069)
+    # Avis à l'arrivée
     # ------------------------------------------------------------------
     # Le compte appartient à une personne, donc régler ici, c'est régler pour
     # elle. Un second champ sur res.users dirait la même chose deux fois et
@@ -218,7 +218,7 @@ class BfEmailAccount(models.Model):
     last_sync_date = fields.Datetime(string="Dernière synchro", readonly=True)
 
     # ------------------------------------------------------------------
-    # Cache de l'arborescence IMAP (tâche #24976)
+    # Cache de l'arborescence IMAP
     # ------------------------------------------------------------------
     # L'arbre de gauche de la boîte de réception se recharge à chaque
     # ouverture et après chaque action. Un `LIST` par affichage ferait payer
@@ -443,7 +443,7 @@ class BfEmailAccount(models.Model):
         ``ensure_one()`` ne vérifie aucun droit, aucun champ n'est lu avant,
         et le ``sudo().write()`` passe outre la règle d'enregistrement. On
         pouvait donc empoisonner l'arborescence affichée à quelqu'un d'autre.
-        Éprouvé par un test qui échouait avant ce renommage. Tâche #24976.
+        Éprouvé par un test qui échouait avant ce renommage.
 
         Le tiret bas ferme la porte RPC, pas la méthode : appelée depuis du
         code Python elle écrirait toujours n'importe où. D'où le contrôle de

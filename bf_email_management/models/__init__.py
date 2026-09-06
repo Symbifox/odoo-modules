@@ -24,7 +24,7 @@ from . import bf_calendar_reminder_ack
 # contexte `bf_email_reroute_search`, que seule l'ancienne liste déroulante du
 # sorcier de re-routage posait. Le sélecteur `bf_chatter_target` ne passe plus
 # par `name_search` sur la cible : les trois surcharges étaient devenues mortes.
-# Groupes de destinataires (#25278). Avant le composeur : celui-ci
+# Groupes de destinataires. Avant le composeur : celui-ci
 # référence le modèle dans un Many2many.
 from . import bf_recipient_group
 from . import mail_compose_message

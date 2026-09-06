@@ -414,7 +414,7 @@ class MailComposeMessage(models.TransientModel):
         return res
 
     # ==================================================================
-    # Groupes de destinataires (napkin #25278)
+    # Groupes de destinataires
     # ==================================================================
     # Le geste visé : taper « Équipe projet » dans « À » et voir les vingt
     # personnes apparaître, comme une liste de distribution Outlook. Trois

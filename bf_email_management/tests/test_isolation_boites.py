@@ -11,10 +11,9 @@ Le contrat que ce module doit tenir :
 * et la boîte de réception de chacun reste la sienne, y compris pour un
   administrateur : voir tout ne veut pas dire compter tout dans SON écran.
 
-Les deux dernières classes éprouvent la surface ajoutée par la tâche #24976
-(arbre des dossiers IMAP), parce qu'une méthode publique sur un modèle est
-appelable par `call_kw` depuis la console du navigateur de n'importe quel
-usager interne.
+Les deux dernières classes éprouvent la surface de l'arbre des dossiers IMAP,
+parce qu'une méthode publique sur un modèle est appelable par `call_kw` depuis
+la console du navigateur de n'importe quel usager interne.
 """
 import json
 
@@ -130,7 +129,7 @@ class TestEmailAdmin(IsolationCase):
 
 @tagged("post_install", "-at_install")
 class TestImapFolderTreeIsolation(IsolationCase):
-    """L'arbre des dossiers IMAP (#24976) ne doit rien laisser filtrer."""
+    """L'arbre des dossiers IMAP ne doit rien laisser filtrer."""
 
     def setUp(self):
         super().setUp()

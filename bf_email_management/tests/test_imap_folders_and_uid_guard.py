@@ -1,4 +1,4 @@
-"""Dossiers IMAP dans la boîte, et garde sur l'UID de la recopie (#24976).
+"""Dossiers IMAP dans la boîte, et garde sur l'UID de la recopie.
 
 Deux sujets, une même cause profonde : un UID IMAP n'a de sens que dans SA
 boîte. La recopie s'en servait sans le vérifier, ce qui produisait des
@@ -511,7 +511,7 @@ class TestSweepAcrossMailboxes(MobileApiCase):
     boîte de la LIGNE, n'y trouve rien, et rend la main. Le message restait
     dans l'INBOX du compte A pour toujours, rejoué toutes les heures sans
     effet et sans avertissement. Constaté en production BF le 2026-08-26 sur
-    trois courriels. Tâche #24976.
+    trois courriels.
     """
 
     def setUp(self):

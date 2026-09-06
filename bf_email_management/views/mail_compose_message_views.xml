@@ -4,7 +4,7 @@
     <!-- Champ « Classer dans » sur le composeur, visible uniquement quand la
          fenêtre vient du bouton « Composer » de la boîte de réception. Ailleurs
          dans l'instance le composeur s'ouvre déjà sur une fiche : la question
-         ne se pose pas, et le champ resterait du bruit. Tâche #24628. -->
+         ne se pose pas, et le champ resterait du bruit. -->
     <record id="mail_compose_message_bf_target_form" model="ir.ui.view">
         <field name="name">mail.compose.message.form.bf.chatter.target</field>
         <field name="model">mail.compose.message</field>
@@ -26,7 +26,7 @@
          dans le corps — elle est ajoutée une seule fois au rendu du courriel —
          et rien ne le disait à l'écran : le composeur s'ouvrait nu et donnait
          à croire que le courriel partirait non signé. Ce bloc le dit, en
-         lecture seule. Tâche #25093. -->
+         lecture seule. -->
     <record id="mail_compose_message_bf_signature_form" model="ir.ui.view">
         <field name="name">mail.compose.message.form.bf.signature</field>
         <field name="model">mail.compose.message</field>
@@ -50,7 +50,7 @@
     <!-- « Envoyer en tant que » : l'adresse qui portera le « De ». Le champ
          ne s'affiche que si la personne a plus d'une identité vérifiée —
          avec une seule, il n'y a rien à choisir et la ligne serait du bruit
-         sur chaque composeur de l'instance. Tâche #24937. -->
+         sur chaque composeur de l'instance. -->
     <record id="mail_compose_message_bf_identity_form" model="ir.ui.view">
         <field name="name">mail.compose.message.form.bf.identity</field>
         <field name="model">mail.compose.message</field>
@@ -72,7 +72,7 @@
          pour garder un courriel inachevé il fallait le PROGRAMMER et saisir une
          date lointaine à la main. Le bouton fait ce geste en un clic. Mêmes
          conditions de visibilité que le menu « Programmer » du noyau, qui est
-         le mécanisme qu'il emprunte. Napkin #25125. -->
+         le mécanisme qu'il emprunte. -->
     <record id="mail_compose_message_bf_draft_form" model="ir.ui.view">
         <field name="name">mail.compose.message.form.bf.save.as.draft</field>
         <field name="model">mail.compose.message</field>
@@ -88,7 +88,7 @@
         </field>
     </record>
 
-    <!-- Groupes de destinataires (#25278).
+    <!-- Groupes de destinataires.
 
          Deux gestes pour un même résultat : taper le nom du groupe dans « À »
          comme une liste de distribution Outlook, ou le choisir dans le champ

@@ -186,7 +186,7 @@ class BfEmailReroute(models.TransientModel):
         # Le fil passe avant le contact. Une réponse appartient là où vit le
         # reste de sa conversation, et c'est un signal bien plus sûr que
         # « ce contact n'a qu'une tâche ouverte » : le contact peut en avoir
-        # trois demain, le fil ne change pas de dossier. Tâche #24649.
+        # trois demain, le fil ne change pas de dossier.
         threaded = self._suggest_from_thread(bf_emails, model_hint=model_hint)
         if threaded:
             return threaded
@@ -299,7 +299,7 @@ class BfEmailReroute(models.TransientModel):
             # chatter n'est pas supporté », ce qui rendait la seule erreur de
             # classement qu'on fait vraiment — s'apercevoir après coup que le
             # courriel est dans la mauvaise tâche — impossible à corriger
-            # autrement qu'à la main en base. Tâche #24649.
+            # autrement qu'à la main en base.
             moved = bf._move_chatter_message(target)
             extra_vals = {}
             if self.mark_replied and bf.direction == "in" and bf.status in ("new", "read"):
@@ -334,7 +334,7 @@ class BfEmailReroute(models.TransientModel):
         # sortait la ligne de TOUTES les vues sans jamais poser is_handled ni
         # déclencher la recopie IMAP : le courriel restait indéfiniment dans
         # l'INBOX du serveur et la ligne devenait introuvable dans Odoo pour
-        # rattraper le coup. Voir tâche #24628.
+        # rattraper le coup.
         if self.archive_after:
             bf.action_archive()
 

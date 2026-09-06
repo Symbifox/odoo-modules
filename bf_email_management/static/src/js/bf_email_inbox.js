@@ -13,7 +13,7 @@
  *
  * Tout l'accès aux données passe par les méthodes inbox_* de bf.email, qui
  * restent dans l'environnement de l'usager : aucune ligne d'un collègue ne
- * peut apparaître ici. Tâche #24628.
+ * peut apparaître ici.
  */
 
 import { registry } from "@web/core/registry";
@@ -50,7 +50,7 @@ const DROP_ACTIONS = {
 };
 
 // Dossier des envois programmés. Sa source n'est pas ``bf.email`` : la liste
-// et l'aperçu changent d'appel serveur quand il est ouvert. Tâche #24649.
+// et l'aperçu changent d'appel serveur quand il est ouvert.
 const DRAFTS_FOLDER = "drafts";
 
 export class BfEmailInbox extends Component {
@@ -91,7 +91,7 @@ export class BfEmailInbox extends Component {
             syncing: false,
             searchQuery: "",
             // « inbox » ouvert d'entrée : ses enfants sont les boîtes par
-            // compte (#25273), et une boîte qu'il faut déplier pour voir
+            // compte, et une boîte qu'il faut déplier pour voir
             // n'existe pas. « categories » reste replié, il l'a toujours été.
             expandedFolders: { categories: false, inbox: true },
             dragId: null,
@@ -976,7 +976,7 @@ export class BfEmailInbox extends Component {
      * quand il l'est déjà. Le geste diffère : le premier ajoute le courriel à
      * un chatter, le second le DÉPLACE et le retire de là où il était. Un seul
      * libellé pour les deux laissait croire au second qu'il faisait le
-     * premier. Tâche #24649.
+     * premier.
      */
     get isRouted() {
         const ids = this.actionTargets;
@@ -1093,7 +1093,7 @@ export class BfEmailInbox extends Component {
     }
 
     // ------------------------------------------------------------------
-    // Ruban d'actions de l'aperçu (tâche #24976)
+    // Ruban d'actions de l'aperçu
     // ------------------------------------------------------------------
     /**
      * Replié, le ruban devient une seule ligne d'icônes : sur un aperçu placé

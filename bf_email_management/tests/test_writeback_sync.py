@@ -1,4 +1,4 @@
-"""Boucle Odoo → IMAP et indicateur de chatter (tâche #24628).
+"""Boucle Odoo → IMAP et indicateur de chatter.
 
 Le défaut couvert ici a laissé des courriels dans l'INBOX du serveur pour de
 bon : le re-routage avec « archiver après » écrivait ``active=False`` à la

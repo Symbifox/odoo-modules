@@ -352,7 +352,7 @@ def unwrap_double_encoded_html(stored_body):
 
 
 # ----------------------------------------------------------------------
-# Vérification d'UID et découverte des dossiers (tâche #24976)
+# Vérification d'UID et découverte des dossiers
 # ----------------------------------------------------------------------
 
 def normalize_message_id(value):

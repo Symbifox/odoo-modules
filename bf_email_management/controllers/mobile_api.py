@@ -192,7 +192,7 @@ class BfEmailMobileApi(http.Controller):
         # without a challenge, a code intercepted by another app would be
         # traded for a bearer token on the person's mailbox.
         #
-        # No grace period, deliberately (napkin #25275): devices already paired
+        # No grace period, deliberately: devices already paired
         # keep their token and never come back through the exchange. Only a NEW
         # login started from a pre-lot APK breaks, and it breaks loudly, here,
         # with a readable reason.
@@ -429,7 +429,7 @@ class BfEmailMobileApi(http.Controller):
         """Address-book completion for the composer's To/Cc fields.
 
         ``groups=1`` ajoute les groupes de destinataires, chacun portant ses
-        membres dépliés (napkin #25278). Le drapeau est explicite pour que le
+        membres dépliés. Le drapeau est explicite pour que le
         client 2.37, qui attend une adresse par entrée, ne change pas de
         comportement sans mise à jour.
         """

@@ -92,7 +92,7 @@ class TestMobileThreads(MobileApiCase):
                          "le compteur doit déjà tenir compte de l'archivage")
 
     def test_counts_match_the_number_of_rows_the_list_shows(self):
-        """🔴 Napkin BF #25096 — « Image : totaux inexacts ».
+        """🔴 Défaut rapporté : « Image : totaux inexacts ».
 
         La pastille comptait des MESSAGES pendant que la liste affichait des
         FILS : le fil de deux messages faisait dire « Boîte de réception · 3 »

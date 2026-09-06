@@ -1,4 +1,4 @@
-"""Ce que la tâche #24649 ajoute à la boîte de réception OWL.
+"""Ce qui s'ajoute à la boîte de réception OWL.
 
 Trois choses s'y jouent, et chacune a un mode de panne bien à elle :
 
@@ -426,7 +426,7 @@ class TestComposeClosingKeepsAParkedDraft(InboxExtrasCase):
     La coquille était donc effacée, et ``mail_thread.unlink`` supprime en
     cascade les envois programmés de la fiche. Le brouillon partait avec elle,
     sans erreur ni trace au journal. Reproduit sur la production le
-    2026-08-31 (napkin #25125), sur une coquille et un brouillon d'essai.
+    2026-08-31, sur une coquille et un brouillon d'essai.
 
     Ça ne mordait que sur le composeur de la boîte SANS cible : « Classer
     dans » est facultatif, et c'est exactement le chemin qu'emprunte un
@@ -493,7 +493,7 @@ class TestComposeClosingKeepsAParkedDraft(InboxExtrasCase):
 
 
 # ----------------------------------------------------------------------
-# « Enregistrer comme brouillon » — le bouton du napkin #25125
+# « Enregistrer comme brouillon » — le bouton
 # ----------------------------------------------------------------------
 @tagged("post_install", "-at_install")
 class TestSaveAsDraftButton(InboxExtrasCase):
@@ -601,7 +601,7 @@ class TestSaveAsDraftButton(InboxExtrasCase):
             "brouillons ne doit pas arrêter le cron pour tout le monde")
 
     def test_the_shell_survives_so_the_draft_keeps_its_thread(self):
-        """Le bouton emprunte le chemin qui perdait le courriel (cf. #25125)."""
+        """Le bouton emprunte le chemin qui perdait le courriel."""
         composer, shell_id = self._composer()
         composer.action_bf_save_as_draft()
         self.env["bf.email"].with_user(self.owner).inbox_close_compose(

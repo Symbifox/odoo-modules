@@ -1033,7 +1033,6 @@ class BfEmail(models.Model):
         quiconque ait ouvert le message, et chaque client ouvert écrivait la
         même ligne au même instant — six écritures concurrentes par courriel
         entrant, donc autant d'échecs de sérialisation rejoués par Odoo.
-        Tâche #25003.
 
         Le drapeau de contexte réserve le marquage au chargement d'un vrai
         formulaire, qui appelle ``web_read`` directement.
@@ -1519,7 +1518,7 @@ class BfEmail(models.Model):
 
         On ne ment pas dans l'autre sens non plus : ``imap_in_inbox`` reste
         faux, parce que le message n'est pas dans l'INBOX du serveur — il
-        n'est nulle part que nous sachions. Tâche #24976.
+        n'est nulle part que nous sachions.
         """
         self.write({"imap_uid": False, "imap_folder": False,
                     "imap_in_inbox": False})
@@ -1587,7 +1586,7 @@ class BfEmail(models.Model):
         and leaves the observed copy in the INBOX **for ever** — silently,
         once an hour. Measured on BF 2026-08-26: three mails handled since
         the day before, still in the other mailbox's INBOX, replayed hourly
-        with no effect and no warning. Task #24976.
+        with no effect and no warning.
 
         ⚠️ When acting on a foreign mailbox the row is **not** rewritten:
         its ``imap_uid`` / ``imap_folder`` describe *its own* copy, in *its
@@ -1646,7 +1645,7 @@ class BfEmail(models.Model):
                         # copier (RFC 3501), `STORE \Deleted` ne marque rien,
                         # et la ligne enregistre un archivage qui n'a pas eu
                         # lieu : le message reste en INBOX pendant qu'Odoo le
-                        # dit traité. C'est la dérive rapportée en #24976.
+                        # dit traité. C'est la dérive qui a été rapportée.
                         verdict = bf_email_imap.uid_carries_message_id(
                             conn, rec.imap_uid, rec.message_id_header,
                         )
@@ -2807,7 +2806,7 @@ class BfEmail(models.Model):
         doublon à écarter au hasard. On déplace donc le message : c'est le même
         courriel qui change de dossier, pas un nouveau.
 
-        Retourne le ``mail.message`` déplacé. Tâche #24649.
+        Retourne le ``mail.message`` déplacé.
         """
         self.ensure_one()
         target.ensure_one()
@@ -3057,8 +3056,8 @@ class BfEmail(models.Model):
         # ``>=`` (not ``>``): create_date is not unique. A bulk import can
         # insert a whole thread at one identical timestamp; with strict ``>``,
         # once the watermark lands on that exact second every sibling message
-        # is skipped *permanently* (never retried) — the cause of the missing
-        # task #6557 cluster. ``>=`` re-scans the boundary timestamp each run;
+        # is skipped *permanently* (never retried) — the cause of a missing
+        # cluster of messages. ``>=`` re-scans the boundary timestamp each run;
         # _should_sync dedups by (message_id, user) so no duplicate is created,
         # and the cluster size is always far below batch_size in practice.
         messages = self.env["mail.message"].sudo().search(
@@ -3674,12 +3673,12 @@ class BfEmail(models.Model):
             # Le report ne vaut que s'il RAPPELLE. Un courriel qui rentre en
             # boîte sans rien dire, c'est un courriel qu'on ne reverra qu'au
             # prochain coup d'oeil à la liste — et le bouton « Reporter » de
-            # l'avis (tâche #25069) aurait alors servi à faire disparaître,
+            # l'avis aurait alors servi à faire disparaître,
             # pas à différer. L'avis repart donc avec lui, à cinq minutes
             # près, marqué comme un réveil plutôt qu'une arrivée.
             #
             # Seule la popup est rappelée : la poussée vers le téléphone a son
-            # propre interrupteur, éteint depuis #25045, et la rallumer par
+            # propre interrupteur, éteint de longue date, et la rallumer par
             # cette porte serait une décision prise ailleurs.
             self.env["bf.email.popup"]._notify_new_emails(woken, wake=True)
 

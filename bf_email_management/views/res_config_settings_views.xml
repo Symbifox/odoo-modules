@@ -11,7 +11,7 @@
         <field name="context">{'default_user_id': uid}</field>
     </record>
 
-    <!-- Réglages d'organisation (#24976). Le reste de la configuration du
+    <!-- Réglages d'organisation. Le reste de la configuration du
          module est par usager et vit sous Courriels → Configuration ; ce qui
          est ici engage toute la base, donc `base.group_system`. -->
     <record id="res_config_settings_view_form_bf_email" model="ir.ui.view">

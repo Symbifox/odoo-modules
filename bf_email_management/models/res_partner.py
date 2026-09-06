@@ -39,7 +39,7 @@ class ResPartner(models.Model):
 
 
 class ResPartnerRecipientGroup(models.Model):
-    """La fiche contact qui représente un groupe de destinataires (#25278).
+    """La fiche contact qui représente un groupe de destinataires.
 
     Elle existe pour une seule raison : permettre de taper le nom du groupe
     directement dans « À », comme une liste de distribution Outlook. Partout

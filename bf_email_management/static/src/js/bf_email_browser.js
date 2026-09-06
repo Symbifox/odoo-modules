@@ -783,7 +783,7 @@ export class BfEmailBrowser extends Component {
     }
 
     // ------------------------------------------------------------------
-    // Ruban d'actions de l'aperçu (tâche #24976)
+    // Ruban d'actions de l'aperçu
     // ------------------------------------------------------------------
     /**
      * Replié, le ruban devient une seule ligne d'icônes : sur un aperçu placé
