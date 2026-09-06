@@ -25,6 +25,8 @@ import logging
 import secrets
 from datetime import timedelta
 
+from psycopg2 import OperationalError
+
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
 
@@ -37,6 +39,12 @@ CODE_TTL_MINUTES = 3  # single-use exchange code lifetime
 # does. The point is to bound the damage window, not to police normal use —
 # and to keep the sending domain off blocklists while somebody notices.
 SEND_PER_HOUR = 100
+
+# Fraîcheur en deçà de laquelle « vu la dernière fois » n'est pas réécrit.
+# Voir ``_touch_last_seen`` : un battement par minute suffit à une liste
+# d'appareils, et c'est ce qui laisse deux appels simultanés du même
+# téléphone sans rien à se disputer.
+HEARTBEAT_SECONDS = 60
 
 
 class BfEmailMobileDevice(models.Model):
@@ -193,6 +201,63 @@ class BfEmailMobileDevice(models.Model):
             )
             return self.browse()
         return device
+
+    def _touch_last_seen(self):
+        """Note que l'appareil vient de parler — hors de la transaction de la requête.
+
+        🔴 Écrire ``last_seen`` par l'ORM à chaque appel authentifié posait un
+        UPDATE de la ligne d'appareil dans la transaction de CHAQUE requête.
+        Deux appels simultanés du même téléphone — un archivage et la relecture
+        de la liste, deux archivages rapprochés, la liste et ses compteurs —
+        écrivaient donc la même ligne en même temps, et sous REPEATABLE READ
+        le second échoue : « could not serialize access due to concurrent
+        update ». L'erreur sortait au ``flush`` des compteurs, c'est-à-dire
+        APRÈS que ``action_archive`` eut déplacé le message côté IMAP ; la
+        transaction Odoo était annulée, pas le déplacement. Le téléphone
+        recevait un 500, remettait la ligne en boîte, et le miroir IMAP la
+        marquait traitée cinq minutes plus tard. an internal report: « some come back for a time ».
+
+        Deux règles règlent le conflit :
+
+        - **Un battement par minute**, pas par requête. Une liste d'appareils
+          n'a pas besoin de la seconde près.
+        - **Dans son propre curseur, validé sur-le-champ.** La transaction de
+          la requête ne touche plus jamais la ligne d'appareil, donc n'a rien
+          à y perdre ; et deux battements qui se croisent malgré tout se
+          règlent ici, en silence : celui de l'autre appel vaut le nôtre.
+
+        Retourne True si le battement a été écrit.
+        """
+        self.ensure_one()
+        now = fields.Datetime.now()
+        seen = self.sudo().last_seen
+        if seen and (now - seen) < timedelta(seconds=HEARTBEAT_SECONDS):
+            return False
+        stale_before = now - timedelta(seconds=HEARTBEAT_SECONDS)
+        try:
+            with self.env.registry.cursor() as cr:
+                # SKIP LOCKED : un battement déjà en cours dans un autre
+                # appel n'est ni attendu ni disputé, on passe. Le curseur est
+                # neuf, donc son instantané date de cette ligne : un battement
+                # déjà validé se lit dans ``last_seen`` et le seuil le filtre.
+                cr.execute(
+                    "UPDATE bf_email_mobile_device SET last_seen = %s "
+                    "WHERE id = (SELECT id FROM bf_email_mobile_device "
+                    "            WHERE id = %s "
+                    "              AND (last_seen IS NULL OR last_seen < %s) "
+                    "            FOR UPDATE SKIP LOCKED)",
+                    (now, self.id, stale_before),
+                    log_exceptions=False,
+                )
+                written = cr.rowcount == 1
+        except OperationalError:
+            # Il reste la fenêtre entre l'instantané et le verrou : l'autre
+            # battement vaut le nôtre, on se tait.
+            return False
+        # Le cache de la requête garde l'ancienne valeur ; personne ne la
+        # relit dans la même requête, mais autant ne pas mentir.
+        self.invalidate_recordset(["last_seen"])
+        return written
 
     def _check_send_quota(self, limit=SEND_PER_HOUR):
         """Consume one send from this device's hourly allowance.

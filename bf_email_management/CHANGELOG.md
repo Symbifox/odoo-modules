@@ -4,6 +4,26 @@ All notable changes to `bf_email_management` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This module follows Odoo's `MAJOR.MINOR.PATCH` convention prefixed with the Odoo series (`18.0.X.Y.Z`).
 
+## [18.0.11.21.2] — 2026-09-06
+
+### Fixed
+
+- **Archiver plusieurs courriels d'affilée depuis le téléphone n'en perd
+  plus.** Chaque appel authentifié de l'API mobile réécrivait « vu la
+  dernière fois » sur la ligne d'appareil, dans la transaction de la
+  requête. Deux appels simultanés du même téléphone — deux archivages
+  rapprochés, ou un archivage pendant que la liste se relit — écrivaient la
+  même ligne en même temps, et PostgreSQL refusait le second (`could not
+  serialize access due to concurrent update`). Le refus sortait au moment de
+  compter les pastilles, donc APRÈS le déplacement IMAP : le message quittait
+  la boîte du serveur, la transaction Odoo était annulée, le téléphone
+  recevait un 500 et remettait la ligne en boîte, et le miroir IMAP la
+  marquait traitée cinq minutes plus tard. Onze occurrences dans les
+  journaux de la seule nuit du 6 septembre. Le battement s'écrit désormais
+  dans son propre curseur, au plus une fois la minute, et un conflit
+  d'écriture qui surviendrait ailleurs dans la requête n'est plus converti en
+  500 : il remonte à Odoo, qui rejoue la requête.
+
 ## [18.0.11.21.1] — 2026-09-05
 
 ### Fixed

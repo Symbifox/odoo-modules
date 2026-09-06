@@ -8,12 +8,25 @@ visible depuis l'ORM.
 import base64
 import hashlib
 import json
+from datetime import timedelta
+from unittest.mock import patch
 
+from psycopg2 import errors as pg_errors
+
+from odoo import fields
 from odoo.tests import HttpCase, tagged
 
 from .common import build_rfc822
 
 BASE = "/bf_email_management/mobile/v1"
+
+
+class ConflitSimule(pg_errors.SerializationFailure):
+    """Ce que PostgreSQL lève sous REPEATABLE READ quand deux transactions
+    écrivent la même ligne. Le code SQLSTATE est en lecture seule sur
+    l'exception réelle ; la sous-classe le porte pour que
+    ``service.model.retrying`` le reconnaisse."""
+    pgcode = "40001"
 
 # Un défi PKCE valide : celui du vérificateur ci-dessous. La route ne vérifie
 # que sa présence et sa méthode ; c'est le modèle qui le confronte à l'échange.
@@ -202,3 +215,82 @@ class TestMobileHttp(HttpCase):
     def test_upload_requires_a_file(self):
         self.assertEqual(
             self._post("/attachment/upload", {}, self._auth()).status_code, 400)
+
+    # ------------------------------------------ conflits d'écriture
+    def test_a_write_conflict_is_replayed_not_reported(self):
+        """Un conflit d'écriture ne sort jamais en 500 : Odoo rejoue.
+
+        C'est le défaut de la internal report : deux archivages rapprochés
+        depuis le téléphone, le second refusé par PostgreSQL au ``flush``,
+        attrapé par le décorateur en « unexpected error », rendu en 500 — et
+        l'app remettait le courriel en boîte. L'exception doit remonter à
+        ``service.model.retrying``, qui rejoue la requête entière.
+        """
+        Email = type(self.env["bf.email"])
+        original = Email._mobile_counts
+        calls = []
+
+        def flaky(model, *args, **kwargs):
+            calls.append(1)
+            if len(calls) == 1:
+                raise ConflitSimule(
+                    "could not serialize access due to concurrent update")
+            return original(model, *args, **kwargs)
+
+        with patch.object(Email, "_mobile_counts", flaky):
+            response = self._get("/counts", headers=self._auth())
+        self.assertEqual(response.status_code, 200, response.text)
+        self.assertEqual(len(calls), 2, "la requête devait être rejouée une fois")
+
+    def test_an_ordinary_failure_is_still_a_500(self):
+        """Le rejeu ne vaut que pour les conflits : une vraie erreur reste un
+        500 — sinon l'app réessaierait sans fin un appel qui ne peut réussir."""
+        Email = type(self.env["bf.email"])
+
+        def broken(model, *args, **kwargs):
+            raise RuntimeError("banc : panne ordinaire")
+
+        with patch.object(Email, "_mobile_counts", broken), \
+                self.assertLogs("odoo.addons.bf_email_management.controllers.mobile_api",
+                                level="ERROR"):
+            response = self._get("/counts", headers=self._auth())
+        self.assertEqual(response.status_code, 500)
+        self.assertEqual(response.json()["error"], "server_error")
+
+    # ---------------------------------------------------- battement
+    def test_heartbeat_is_one_write_a_minute(self):
+        """« Vu la dernière fois » s'écrit au premier appel, puis au plus une
+        fois la minute, hors de la transaction de la requête.
+
+        ⚠️ Éprouvé par HTTP et non depuis un ``TransactionCase`` : le
+        battement ouvre son propre curseur, et hors d'une requête de banc ce
+        curseur est une vraie connexion, qui ne voit pas la ligne d'appareil
+        encore non validée du test. Sous ``HttpCase`` la requête tourne sur
+        le curseur de test, et le battement avec elle.
+        """
+        device = self.device.sudo()
+        now = fields.Datetime.now()
+
+        # Jamais vu : le premier appel écrit.
+        device.write({"last_seen": False})
+        self.env.cr.flush()
+        self.assertEqual(self._get("/counts", headers=self._auth()).status_code, 200)
+        device.invalidate_recordset(["last_seen"])
+        self.assertTrue(device.last_seen)
+        self.assertLess(now - device.last_seen, timedelta(seconds=10))
+
+        # Vu il y a trente secondes : rien à réécrire, donc rien qu'un appel
+        # simultané pourrait nous disputer.
+        recent = now - timedelta(seconds=30)
+        device.write({"last_seen": recent})
+        self.env.cr.flush()
+        self.assertEqual(self._get("/counts", headers=self._auth()).status_code, 200)
+        device.invalidate_recordset(["last_seen"])
+        self.assertEqual(device.last_seen, recent)
+
+        # Vu il y a cinq minutes : on réécrit.
+        device.write({"last_seen": now - timedelta(minutes=5)})
+        self.env.cr.flush()
+        self.assertEqual(self._get("/counts", headers=self._auth()).status_code, 200)
+        device.invalidate_recordset(["last_seen"])
+        self.assertLess(fields.Datetime.now() - device.last_seen, timedelta(seconds=10))
