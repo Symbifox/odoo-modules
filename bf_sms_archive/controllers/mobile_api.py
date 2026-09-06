@@ -26,6 +26,7 @@ from werkzeug.utils import redirect as wz_redirect
 from odoo import fields, http
 from odoo.exceptions import AccessDenied, UserError
 from odoo.http import request
+from odoo.service.model import PG_CONCURRENCY_EXCEPTIONS_TO_RETRY
 
 from .voipms_webhook import _safe_media_url
 
@@ -186,10 +187,18 @@ def _authed(fn):
         device = request.env["sms.archive.mobile.device"]._resolve(token)
         if not device:
             return _json({"error": "unauthorized"}, 401)
-        device.sudo().write({"last_seen": fields.Datetime.now()})
+        # Hors transaction et au plus une fois la minute : voir le modèle.
+        device._touch_last_seen()
         request.update_env(user=device.user_id.id)
         try:
             return fn(self, device, *args, **kw)
+        except PG_CONCURRENCY_EXCEPTIONS_TO_RETRY:
+            # ⚠️ Pas à nous. Sur un conflit d'écriture, Odoo rejoue la requête
+            # entière (``service.model.retrying``, jusqu'à cinq fois) — mais
+            # seulement si l'exception lui parvient. L'attraper ci-dessous en
+            # « erreur inattendue » changeait un conflit d'une milliseconde en
+            # 500 définitif, et l'app annulait le geste.
+            raise
         except UserError as exc:
             return _json({"error": str(exc)}, 400)
         except Exception:  # noqa: BLE001

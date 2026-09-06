@@ -487,6 +487,17 @@ curl -X POST https://odoo.example.com/bf_sms_archive/api/ingest \
 
 ## Changelog
 
+### Version 18.0.5.12.1
+
+- **FIX:** archiving several conversations from the phone no longer loses some
+  of them. Every authenticated mobile call rewrote the device's "last seen"
+  inside the request transaction; two simultaneous calls from the same phone
+  (archiving a selection is one request per thread) made PostgreSQL refuse the
+  second one (`could not serialize access due to concurrent update`), which
+  came back as a 500 and an undone gesture. The heartbeat now runs in its own
+  cursor, at most once a minute, and a write conflict elsewhere in the request
+  is handed back to Odoo, which replays the request.
+
 ### Version 18.0.5.12.0
 
 - **SECURITY:** Device pairing now requires **PKCE** (`code_challenge` +

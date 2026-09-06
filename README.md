@@ -86,7 +86,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_chatter_send_now_force` | BF Chatter — Force Send on Scheduled Send Now | 18.0.1.0.0 | LGPL-3 | The "Send Now" button on a scheduled chatter message sends immediately instead of waiting up to 5 min for the mail queue cron (restores parity with the daily auto-send cron) |
 | `bf_chatter_target` | BF Cible de chatter | 18.0.1.0.0 | LGPL-3 | One search box to pick the record an importer posts onto: every chatter-bearing model at once, no model or project to choose first, pasted Odoo URLs and shorthands resolved inline |
 | `bf_chatter_timesheet` | Symbifox — Feuille de temps depuis le chatter | 18.0.1.2.0 | LGPL-3 | Checkbox in the chatter composer to log a timesheet entry alongside an internal note. |
-| `bf_claude_chat` | Gen | 18.0.1.17.1 | BUSL-1.1 | Chat with Gen, the AI assistant, directly inside Odoo |
+| `bf_claude_chat` | Gen | 18.0.1.18.0 | BUSL-1.1 | Chat with Gen, the AI assistant, directly inside Odoo |
 | `bf_claude_chat_cockpit` | Gen — Cockpit | 18.0.1.0.1 | BUSL-1.1 | Vue d'administration des sessions Gen : pannes de flux et consommation |
 | `bf_collabora_online` | Collabora Online, correctifs Blue Fox | 18.0.1.3.0 | BUSL-1.1 | Five fixes layered on the upstream Collabora connector, without forking it |
 | `bf_contact_enrichment` | Enrichissement de contacts | 18.0.1.2.1 | BUSL-1.1 | Business cards (OCR) from the desktop or an installable mobile page, email signatures, vCard import, duplicate detection and completeness scoring, powered by Gen |
@@ -121,7 +121,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_editorial_linkedin` | Atelier éditorial — LinkedIn | 18.0.1.0.1 | BUSL-1.1 | Post to LinkedIn from the editorial workshop, over the versioned API with a member token |
 | `bf_editorial_manual` | Atelier éditorial — canal manuel | 18.0.1.1.1 | BUSL-1.1 | A channel fed by hand: the text is written and proofread in Odoo, the posting happens on the network |
 | `bf_editorial_social` | Atelier éditorial — réseaux sociaux | 18.0.1.5.0 | BUSL-1.1 | Deferred distribution to social networks from the editorial workshop, with a no-duplicate guarantee and measurement coming back |
-| `bf_email_management` | Gestion des courriels | 18.0.11.21.1 | BUSL-1.1 | Unified IMAP inbox + Odoo chatter projection, two-pane OWL folder browser (Apple Mail / Thunderbird), bulk per-row target inference |
+| `bf_email_management` | Gestion des courriels | 18.0.11.21.2 | BUSL-1.1 | Unified IMAP inbox + Odoo chatter projection, two-pane OWL folder browser (Apple Mail / Thunderbird), bulk per-row target inference |
 | `bf_email_systray` | Boîte de réception bf.email — barre Odoo | 18.0.2.0.0 | LGPL-3 | Systray button opening the bf.email inbox with a (read + unread) counter |
 | `bf_employee_experience` | Expérience employé | 18.0.1.0.0 | LGPL-3 | Benefits catalogue, rule-based eligibility, usage register and retention indicators |
 | `bf_employee_experience_dashboard` | Expérience employé — tuile tableau de bord | 18.0.1.0.1 | LGPL-3 | Benefits take-up, and a count of paid benefits nobody claims |
@@ -185,7 +185,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_sign_privacy` | Symbifox — Signature des consentements (Loi 25) | 18.0.1.1.0 | BUSL-1.1 | Sign Loi 25 consents with the native bf_sign engine (instead of external DocuSeal / LibreSign). |
 | `bf_sign_purchase` | Symbifox — Signature pour les achats | 18.0.1.0.1 | BUSL-1.1 | Send a purchase order for electronic signature (bf_sign). |
 | `bf_sign_sale` | Symbifox — Signature pour les ventes | 18.0.2.0.0 | BUSL-1.1 | Send a quotation / sales order for electronic signature (bf_sign). |
-| `bf_sms_archive` | SMS & Calls | 18.0.5.12.0 | BUSL-1.1 | Two-way live SMS/MMS messaging via VOIP.ms (chat workspace + systray) plus Android SMS/call-log archiving, search, PDF/CSV export and task linking |
+| `bf_sms_archive` | SMS & Calls | 18.0.5.12.1 | BUSL-1.1 | Two-way live SMS/MMS messaging via VOIP.ms (chat workspace + systray) plus Android SMS/call-log archiving, search, PDF/CSV export and task linking |
 | `bf_stepbystep_clients` | Step-by-Step — Suivi d'accompagnement client | 18.0.2.2.1 | BUSL-1.1 | Internal dashboard tracking each client mandate's linear step-by-step progression: current step, hours budget, timeline. |
 | `bf_studio_light` | Symbifox — Forge | 18.0.7.1.0 | BUSL-1.1 | Field builder for Odoo Community: add custom fields (incl. polymorphic reference with model whitelist), smart buttons (count via JSON controller, no compute Python), and inject them in views without writing a module — survives `-u all` upgrades |
 | `bf_subscription` | Abonnements | 18.0.1.4.1 | BUSL-1.1 | Paid subscription management with correlation to vendor bills |

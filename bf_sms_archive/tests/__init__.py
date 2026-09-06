@@ -5,3 +5,4 @@ from . import test_partner_phone_sync
 from . import test_mms_upload_guard
 from . import test_mobile_send_media
 from . import test_mobile_pkce
+from . import test_mobile_heartbeat

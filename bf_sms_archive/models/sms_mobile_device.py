@@ -11,11 +11,19 @@ import logging
 import secrets
 from datetime import timedelta
 
+from psycopg2 import OperationalError
+
 from odoo import api, fields, models
 
 _logger = logging.getLogger(__name__)
 
 CODE_TTL_MINUTES = 3  # durée de vie du code d'échange unique
+
+# Fraîcheur en deçà de laquelle « vu la dernière fois » n'est pas réécrit.
+# Voir ``_touch_last_seen`` : un battement par minute suffit, et c'est ce
+# qui laisse deux appels simultanés du même téléphone sans rien à se
+# disputer.
+HEARTBEAT_SECONDS = 60
 
 
 class SmsMobileDevice(models.Model):
@@ -142,6 +150,52 @@ class SmsMobileDevice(models.Model):
             "pkce_challenge": False,
         })
         return device
+
+    def _touch_last_seen(self):
+        """Note que l'appareil vient de parler — hors de la transaction de la requête.
+
+        🔴 Même défaut que ``bf.email.mobile.device`` (internal report) :
+        réécrire ``last_seen`` par l'ORM à chaque appel authentifié posait un
+        UPDATE de la ligne d'appareil dans la transaction de CHAQUE requête,
+        et deux appels simultanés du même téléphone — archiver toute une
+        sélection, c'est UNE requête par fil — faisaient échouer le second
+        sous REPEATABLE READ (« could not serialize access due to concurrent
+        update »), donc un 500 et un geste annulé.
+
+        Un battement par minute, dans son propre curseur validé sur-le-champ :
+        la transaction de la requête ne touche plus la ligne d'appareil, et
+        deux battements qui se croisent se règlent ici, en silence.
+
+        Retourne True si le battement a été écrit.
+        """
+        self.ensure_one()
+        now = fields.Datetime.now()
+        seen = self.sudo().last_seen
+        if seen and (now - seen) < timedelta(seconds=HEARTBEAT_SECONDS):
+            return False
+        stale_before = now - timedelta(seconds=HEARTBEAT_SECONDS)
+        try:
+            with self.env.registry.cursor() as cr:
+                # SKIP LOCKED : un battement déjà en cours dans un autre
+                # appel n'est ni attendu ni disputé, on passe. Le curseur est
+                # neuf, donc son instantané date de cette ligne : un battement
+                # déjà validé se lit dans ``last_seen`` et le seuil le filtre.
+                cr.execute(
+                    "UPDATE sms_archive_mobile_device SET last_seen = %s "
+                    "WHERE id = (SELECT id FROM sms_archive_mobile_device "
+                    "            WHERE id = %s "
+                    "              AND (last_seen IS NULL OR last_seen < %s) "
+                    "            FOR UPDATE SKIP LOCKED)",
+                    (now, self.id, stale_before),
+                    log_exceptions=False,
+                )
+                written = cr.rowcount == 1
+        except OperationalError:
+            # Il reste la fenêtre entre l'instantané et le verrou : l'autre
+            # battement vaut le nôtre, on se tait.
+            return False
+        self.invalidate_recordset(["last_seen"])
+        return written
 
     @api.model
     def _resolve(self, token):
