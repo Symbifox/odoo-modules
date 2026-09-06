@@ -1,0 +1,1408 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="tmpl_vente" model="bf.interview.guide.template">
+        <field name="name">Vente et développement des affaires</field>
+        <field name="code">ENT-VEN-01</field>
+        <field name="sequence">100</field>
+        <field name="category">metier</field>
+        <field name="role_family">Vente</field>
+        <field name="round_type">technique</field>
+        <field name="duration_minutes">60</field>
+        <field name="scale_max">5</field>
+        <field name="summary">Pour un poste qui porte un chiffre : prospection, qualification, négociation et tenue du dossier après la signature.</field>
+        <field name="instructions_html"><![CDATA[<p>Posez les mêmes questions, dans le même ordre, à toutes les personnes reçues : c'est ce qui rend deux entrevues comparables.</p><ul><li>Notez des faits observés, pas des impressions. La personne évaluée peut demander à lire ce qui a été écrit sur elle.</li><li>Relancez : « Que faisiez-vous exactement ? », « Qu'est-ce qui est arrivé ensuite ? ». Une réponse au conditionnel n'est pas un exemple vécu.</li><li>Déposez votre notation avant d'en discuter avec le reste du panel.</li><li>Ne posez aucune question sur l'âge, la santé, la situation familiale, l'origine, la religion ou une autre caractéristique protégée. On interroge les exigences du poste, jamais leurs causes.</li></ul><p>Demandez des chiffres, et demandez d'où ils viennent. Un vendeur qui ne connaît pas son propre taux de conversion ne l'a jamais regardé.</p><p><em>Durée prévue : 60 minutes.</em></p>]]></field>
+    </record>
+
+    <record id="tmpl_vente_c1" model="bf.interview.guide.template.criterion">
+        <field name="template_id" ref="tmpl_vente"/>
+        <field name="sequence">10</field>
+        <field name="name">Résultats et manière de les mesurer</field>
+        <field name="weight">3.0</field>
+        <field name="description">Le chiffre atteint, la cible, et surtout comment la personne suit sa propre performance.</field>
+        <field name="question_html"><![CDATA[<p>Quel était votre objectif l'an dernier, où avez-vous atterri, et comment suiviez-vous votre avancement en cours d'année ?</p>]]></field>
+    </record>
+    <record id="tmpl_vente_c1_a1" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_vente_c1"/>
+        <field name="score">1</field>
+        <field name="label">Aucun chiffre</field>
+        <field name="description">Ne connaît ni sa cible ni son résultat.</field>
+    </record>
+    <record id="tmpl_vente_c1_a3" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_vente_c1"/>
+        <field name="score">3</field>
+        <field name="label">Chiffre et cible</field>
+        <field name="description">Donne les deux, sans suivi en cours d'année.</field>
+    </record>
+    <record id="tmpl_vente_c1_a5" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_vente_c1"/>
+        <field name="score">5</field>
+        <field name="label">Chiffre, cible et pilotage</field>
+        <field name="description">Donne les deux, explique son entonnoir, dit ce qu'elle a corrigé en cours de route.</field>
+    </record>
+
+    <record id="tmpl_vente_c2" model="bf.interview.guide.template.criterion">
+        <field name="template_id" ref="tmpl_vente"/>
+        <field name="sequence">20</field>
+        <field name="name">Prospection</field>
+        <field name="weight">2.5</field>
+        <field name="description">Ce que la personne fait quand personne ne lui donne de pistes.</field>
+        <field name="question_html"><![CDATA[<p>Décrivez-moi comment vous avez trouvé votre dernier client, du premier contact à la première rencontre.</p>]]></field>
+    </record>
+    <record id="tmpl_vente_c2_a1" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_vente_c2"/>
+        <field name="score">1</field>
+        <field name="label">Attend les pistes</field>
+        <field name="description">N'a prospecté que sur des pistes fournies.</field>
+    </record>
+    <record id="tmpl_vente_c2_a3" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_vente_c2"/>
+        <field name="score">3</field>
+        <field name="label">Prospecte de façon régulière</field>
+        <field name="description">Une méthode et un rythme, sur une seule voie.</field>
+    </record>
+    <record id="tmpl_vente_c2_a5" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_vente_c2"/>
+        <field name="score">5</field>
+        <field name="label">Prospecte et cible</field>
+        <field name="description">Choisit ses cibles, personnalise l'approche, mesure son taux de réponse et l'ajuste.</field>
+    </record>
+
+    <record id="tmpl_vente_c3" model="bf.interview.guide.template.criterion">
+        <field name="template_id" ref="tmpl_vente"/>
+        <field name="sequence">30</field>
+        <field name="name">Qualification et refus</field>
+        <field name="weight">2.0</field>
+        <field name="description">La capacité à écarter tôt une occasion qui ne se fermera pas. Un entonnoir propre vaut mieux qu'un entonnoir gros.</field>
+        <field name="question_html"><![CDATA[<p>Parlez-moi d'une occasion que vous avez décidé d'abandonner. Sur quoi vous êtes-vous appuyée ?</p>]]></field>
+    </record>
+    <record id="tmpl_vente_c3_a1" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_vente_c3"/>
+        <field name="score">1</field>
+        <field name="label">N'abandonne jamais</field>
+        <field name="description">Garde tout ouvert, ne sait pas dire ce qui disqualifie.</field>
+    </record>
+    <record id="tmpl_vente_c3_a3" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_vente_c3"/>
+        <field name="score">3</field>
+        <field name="label">Abandonne quand le client se tait</field>
+        <field name="description">Ferme les dossiers restés sans réponse.</field>
+    </record>
+    <record id="tmpl_vente_c3_a5" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_vente_c3"/>
+        <field name="score">5</field>
+        <field name="label">Qualifie tôt et par critères</field>
+        <field name="description">Nomme ses critères : besoin, budget, décideur, échéance, et les applique avant d'investir.</field>
+    </record>
+
+    <record id="tmpl_vente_c4" model="bf.interview.guide.template.criterion">
+        <field name="template_id" ref="tmpl_vente"/>
+        <field name="sequence">40</field>
+        <field name="name">Découverte du besoin</field>
+        <field name="weight">2.5</field>
+        <field name="description">L'équilibre entre parler et écouter. Une démonstration lancée trop tôt est la faute la plus fréquente.</field>
+        <field name="question_html"><![CDATA[<p>Un client vous dit qu'il veut le produit A. Comment se déroulent les dix premières minutes ?</p>]]></field>
+    </record>
+    <record id="tmpl_vente_c4_a1" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_vente_c4"/>
+        <field name="score">1</field>
+        <field name="label">Présente le produit</field>
+        <field name="description">Enchaîne sur la présentation.</field>
+    </record>
+    <record id="tmpl_vente_c4_a3" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_vente_c4"/>
+        <field name="score">3</field>
+        <field name="label">Pose des questions</field>
+        <field name="description">Interroge le besoin avant de présenter.</field>
+    </record>
+    <record id="tmpl_vente_c4_a5" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_vente_c4"/>
+        <field name="score">5</field>
+        <field name="label">Reformule et vérifie</field>
+        <field name="description">Interroge, reformule le besoin, fait confirmer, et propose seulement ensuite, quitte à dire que le produit A n'est pas la réponse.</field>
+    </record>
+
+    <record id="tmpl_vente_c5" model="bf.interview.guide.template.criterion">
+        <field name="template_id" ref="tmpl_vente"/>
+        <field name="sequence">50</field>
+        <field name="name">Négociation et prix</field>
+        <field name="weight">2.0</field>
+        <field name="description">Ce que la personne concède quand on lui demande un rabais.</field>
+        <field name="question_html"><![CDATA[<p>Un client demande 20 % de rabais pour signer aujourd'hui. Que faites-vous ?</p>]]></field>
+    </record>
+    <record id="tmpl_vente_c5_a1" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_vente_c5"/>
+        <field name="score">1</field>
+        <field name="label">Accorde</field>
+        <field name="description">Donne le rabais pour signer.</field>
+    </record>
+    <record id="tmpl_vente_c5_a3" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_vente_c5"/>
+        <field name="score">3</field>
+        <field name="label">Défend le prix</field>
+        <field name="description">Explique la valeur et tient le prix.</field>
+    </record>
+    <record id="tmpl_vente_c5_a5" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_vente_c5"/>
+        <field name="score">5</field>
+        <field name="label">Échange la concession</field>
+        <field name="description">Ne donne rien sans contrepartie : volume, durée, échéance de paiement, référence.</field>
+    </record>
+
+    <record id="tmpl_vente_c6" model="bf.interview.guide.template.criterion">
+        <field name="template_id" ref="tmpl_vente"/>
+        <field name="sequence">60</field>
+        <field name="name">Après la signature</field>
+        <field name="weight">1.5</field>
+        <field name="description">Ce qui arrive au client une fois le contrat signé : la source des renouvellements et des références.</field>
+        <field name="question_html"><![CDATA[<p>Que faites-vous dans les 30 jours qui suivent une signature ?</p>]]></field>
+    </record>
+    <record id="tmpl_vente_c6_a1" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_vente_c6"/>
+        <field name="score">1</field>
+        <field name="label">Passe au suivant</field>
+        <field name="description">Le dossier change de mains, la personne n'y revient pas.</field>
+    </record>
+    <record id="tmpl_vente_c6_a3" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_vente_c6"/>
+        <field name="score">3</field>
+        <field name="label">Assure la transition</field>
+        <field name="description">Présente l'équipe de livraison et reste joignable.</field>
+    </record>
+    <record id="tmpl_vente_c6_a5" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_vente_c6"/>
+        <field name="score">5</field>
+        <field name="label">Assure et vérifie le résultat</field>
+        <field name="description">Transmet le contexte par écrit, fixe un point de contrôle, revient chercher le résultat obtenu et la référence.</field>
+    </record>
+
+    <record id="tmpl_service_client" model="bf.interview.guide.template">
+        <field name="name">Service à la clientèle</field>
+        <field name="code">ENT-SER-01</field>
+        <field name="sequence">110</field>
+        <field name="category">metier</field>
+        <field name="role_family">Service à la clientèle</field>
+        <field name="round_type">technique</field>
+        <field name="duration_minutes">45</field>
+        <field name="scale_max">5</field>
+        <field name="summary">Pour un poste de première ligne : téléphone, courriel ou comptoir. Le tour porte sur l'écoute, la tenue sous pression et ce que la personne fait de ce qu'elle ne peut pas régler.</field>
+        <field name="instructions_html"><![CDATA[<p>Posez les mêmes questions, dans le même ordre, à toutes les personnes reçues : c'est ce qui rend deux entrevues comparables.</p><ul><li>Notez des faits observés, pas des impressions. La personne évaluée peut demander à lire ce qui a été écrit sur elle.</li><li>Relancez : « Que faisiez-vous exactement ? », « Qu'est-ce qui est arrivé ensuite ? ». Une réponse au conditionnel n'est pas un exemple vécu.</li><li>Déposez votre notation avant d'en discuter avec le reste du panel.</li><li>Ne posez aucune question sur l'âge, la santé, la situation familiale, l'origine, la religion ou une autre caractéristique protégée. On interroge les exigences du poste, jamais leurs causes.</li></ul><p>Faites faire une mise en situation à voix haute : on entend en deux minutes ce qu'un curriculum ne dit pas.</p><p><em>Durée prévue : 45 minutes.</em></p>]]></field>
+    </record>
+
+    <record id="tmpl_service_client_c1" model="bf.interview.guide.template.criterion">
+        <field name="template_id" ref="tmpl_service_client"/>
+        <field name="sequence">10</field>
+        <field name="name">Client mécontent</field>
+        <field name="weight">3.0</field>
+        <field name="description">Ce que la personne fait des cinq premières minutes d'un appel qui commence mal.</field>
+        <field name="question_html"><![CDATA[<p>Un client vous appelle en colère parce que sa commande a trois jours de retard. Faites-le devant nous : les cinq premières phrases.</p>]]></field>
+    </record>
+    <record id="tmpl_service_client_c1_a1" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_service_client_c1"/>
+        <field name="score">1</field>
+        <field name="label">Se défend</field>
+        <field name="description">Explique pourquoi ce n'est pas sa faute.</field>
+    </record>
+    <record id="tmpl_service_client_c1_a3" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_service_client_c1"/>
+        <field name="score">3</field>
+        <field name="label">Écoute et s'excuse</field>
+        <field name="description">Laisse parler, reconnaît le désagrément, cherche la commande.</field>
+    </record>
+    <record id="tmpl_service_client_c1_a5" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_service_client_c1"/>
+        <field name="score">5</field>
+        <field name="label">Écoute, reconnaît, reprend la main</field>
+        <field name="description">Laisse finir, reformule le problème, dit ce qu'elle fait maintenant et quand elle rappelle.</field>
+    </record>
+
+    <record id="tmpl_service_client_c2" model="bf.interview.guide.template.criterion">
+        <field name="template_id" ref="tmpl_service_client"/>
+        <field name="sequence">20</field>
+        <field name="name">Résolution au premier contact</field>
+        <field name="weight">2.5</field>
+        <field name="description">La part de dossiers réglés sans transfert, et ce que la personne fait pour l'augmenter.</field>
+        <field name="question_html"><![CDATA[<p>Quelle proportion de vos dossiers régliez-vous sans transférer ? Comment le saviez-vous ?</p>]]></field>
+    </record>
+    <record id="tmpl_service_client_c2_a1" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_service_client_c2"/>
+        <field name="score">1</field>
+        <field name="label">Transfère vite</field>
+        <field name="description">Passe au niveau suivant dès que c'est inhabituel.</field>
+    </record>
+    <record id="tmpl_service_client_c2_a3" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_service_client_c2"/>
+        <field name="score">3</field>
+        <field name="label">Règle l'ordinaire</field>
+        <field name="description">Règle ce qui est prévu par la procédure.</field>
+    </record>
+    <record id="tmpl_service_client_c2_a5" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_service_client_c2"/>
+        <field name="score">5</field>
+        <field name="label">Cherche à régler</field>
+        <field name="description">Règle au-delà de la procédure quand elle le peut, connaît son taux, sait ce qui le fait baisser.</field>
+    </record>
+
+    <record id="tmpl_service_client_c3" model="bf.interview.guide.template.criterion">
+        <field name="template_id" ref="tmpl_service_client"/>
+        <field name="sequence">30</field>
+        <field name="name">Ce qu'on ne peut pas donner</field>
+        <field name="weight">2.0</field>
+        <field name="description">Annoncer un refus sans perdre le client : la compétence la plus rare de la première ligne.</field>
+        <field name="question_html"><![CDATA[<p>Un client demande un remboursement auquel il n'a pas droit. Que lui dites-vous ?</p>]]></field>
+    </record>
+    <record id="tmpl_service_client_c3_a1" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_service_client_c3"/>
+        <field name="score">1</field>
+        <field name="label">Renvoie à la politique</field>
+        <field name="description">Cite la politique et met fin à l'échange.</field>
+    </record>
+    <record id="tmpl_service_client_c3_a3" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_service_client_c3"/>
+        <field name="score">3</field>
+        <field name="label">Explique le refus</field>
+        <field name="description">Dit non, explique pourquoi.</field>
+    </record>
+    <record id="tmpl_service_client_c3_a5" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_service_client_c3"/>
+        <field name="score">5</field>
+        <field name="label">Refuse et offre ce qui est possible</field>
+        <field name="description">Dit non clairement, explique, et propose la meilleure chose qu'elle peut faire.</field>
+    </record>
+
+    <record id="tmpl_service_client_c4" model="bf.interview.guide.template.criterion">
+        <field name="template_id" ref="tmpl_service_client"/>
+        <field name="sequence">40</field>
+        <field name="name">Tenue du dossier</field>
+        <field name="weight">1.5</field>
+        <field name="description">Ce que le prochain intervenant trouvera dans la fiche.</field>
+        <field name="question_html"><![CDATA[<p>Que notez-vous dans un dossier après un appel de dix minutes ?</p>]]></field>
+    </record>
+    <record id="tmpl_service_client_c4_a1" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_service_client_c4"/>
+        <field name="score">1</field>
+        <field name="label">Rien ou presque</field>
+        <field name="description">Une ligne, ou rien.</field>
+    </record>
+    <record id="tmpl_service_client_c4_a3" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_service_client_c4"/>
+        <field name="score">3</field>
+        <field name="label">Le résumé</field>
+        <field name="description">Le motif de l'appel et la solution.</field>
+    </record>
+    <record id="tmpl_service_client_c4_a5" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_service_client_c4"/>
+        <field name="score">5</field>
+        <field name="label">De quoi reprendre sans rappeler le client</field>
+        <field name="description">Motif, ce qui a été promis, l'échéance, et ce qui reste à faire, en termes qu'un collègue comprend.</field>
+    </record>
+
+    <record id="tmpl_service_client_c5" model="bf.interview.guide.template.criterion">
+        <field name="template_id" ref="tmpl_service_client"/>
+        <field name="sequence">50</field>
+        <field name="name">Tenue sous volume</field>
+        <field name="weight">2.0</field>
+        <field name="description">Ce qui arrive quand la file s'allonge : la qualité ou la vitesse.</field>
+        <field name="question_html"><![CDATA[<p>La file d'attente monte à quinze appels et vous êtes seule. Que faites-vous ?</p>]]></field>
+    </record>
+    <record id="tmpl_service_client_c5_a1" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_service_client_c5"/>
+        <field name="score">1</field>
+        <field name="label">Se fige ou expédie</field>
+        <field name="description">Écourte les appels sans régler, ou reste bloquée sur un dossier.</field>
+    </record>
+    <record id="tmpl_service_client_c5_a3" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_service_client_c5"/>
+        <field name="score">3</field>
+        <field name="label">Priorise</field>
+        <field name="description">Traite au plus vite, remet les dossiers longs à plus tard.</field>
+    </record>
+    <record id="tmpl_service_client_c5_a5" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_service_client_c5"/>
+        <field name="score">5</field>
+        <field name="label">Priorise et fait savoir</field>
+        <field name="description">Trie ce qui est court, rappelle les dossiers longs, et prévient l'équipe que la file monte.</field>
+    </record>
+
+    <record id="tmpl_service_client_c6" model="bf.interview.guide.template.criterion">
+        <field name="template_id" ref="tmpl_service_client"/>
+        <field name="sequence">60</field>
+        <field name="name">Connaissance du produit</field>
+        <field name="weight">1.5</field>
+        <field name="description">Ce que la personne fait pour apprendre ce qu'elle vend ou soutient.</field>
+        <field name="question_html"><![CDATA[<p>Comment avez-vous appris les produits de votre dernier employeur ?</p>]]></field>
+    </record>
+    <record id="tmpl_service_client_c6_a1" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_service_client_c6"/>
+        <field name="score">1</field>
+        <field name="label">Sur le tas seulement</field>
+        <field name="description">A appris au fil des appels, sans démarche.</field>
+    </record>
+    <record id="tmpl_service_client_c6_a3" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_service_client_c6"/>
+        <field name="score">3</field>
+        <field name="label">La formation reçue</field>
+        <field name="description">A suivi la formation donnée.</field>
+    </record>
+    <record id="tmpl_service_client_c6_a5" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_service_client_c6"/>
+        <field name="score">5</field>
+        <field name="label">A cherché plus loin</field>
+        <field name="description">A utilisé le produit, parlé aux équipes, tenu ses propres notes.</field>
+    </record>
+
+    <record id="tmpl_marketing" model="bf.interview.guide.template">
+        <field name="name">Marketing et communications</field>
+        <field name="code">ENT-MKT-01</field>
+        <field name="sequence">120</field>
+        <field name="category">metier</field>
+        <field name="role_family">Marketing</field>
+        <field name="round_type">technique</field>
+        <field name="duration_minutes">60</field>
+        <field name="scale_max">5</field>
+        <field name="summary">Pour un poste de contenu, de campagne ou de marque. Le tour cherche la mesure derrière les publications et la capacité d'écrire pour quelqu'un.</field>
+        <field name="instructions_html"><![CDATA[<p>Posez les mêmes questions, dans le même ordre, à toutes les personnes reçues : c'est ce qui rend deux entrevues comparables.</p><ul><li>Notez des faits observés, pas des impressions. La personne évaluée peut demander à lire ce qui a été écrit sur elle.</li><li>Relancez : « Que faisiez-vous exactement ? », « Qu'est-ce qui est arrivé ensuite ? ». Une réponse au conditionnel n'est pas un exemple vécu.</li><li>Déposez votre notation avant d'en discuter avec le reste du panel.</li><li>Ne posez aucune question sur l'âge, la santé, la situation familiale, l'origine, la religion ou une autre caractéristique protégée. On interroge les exigences du poste, jamais leurs causes.</li></ul><p>Demandez à voir. Un portfolio se commente en entrevue ; un plan de campagne se juge sur son résultat, pas sur sa mise en page.</p><p><em>Durée prévue : 60 minutes.</em></p>]]></field>
+    </record>
+
+    <record id="tmpl_marketing_c1" model="bf.interview.guide.template.criterion">
+        <field name="template_id" ref="tmpl_marketing"/>
+        <field name="sequence">10</field>
+        <field name="name">Résultat d'une campagne</field>
+        <field name="weight">3.0</field>
+        <field name="description">Le lien entre ce qui a été fait et ce qui a changé.</field>
+        <field name="question_html"><![CDATA[<p>Prenez la campagne dont vous êtes le plus fière. Quel était l'objectif chiffré, qu'avez-vous obtenu, et qu'en avez-vous conclu ?</p>]]></field>
+    </record>
+    <record id="tmpl_marketing_c1_a1" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_marketing_c1"/>
+        <field name="score">1</field>
+        <field name="label">Décrit l'exécution</field>
+        <field name="description">Raconte ce qui a été produit, sans résultat.</field>
+    </record>
+    <record id="tmpl_marketing_c1_a3" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_marketing_c1"/>
+        <field name="score">3</field>
+        <field name="label">Donne des chiffres d'audience</field>
+        <field name="description">Portée, clics, abonnés.</field>
+    </record>
+    <record id="tmpl_marketing_c1_a5" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_marketing_c1"/>
+        <field name="score">5</field>
+        <field name="label">Relie au résultat d'affaires</field>
+        <field name="description">Nomme l'objectif d'affaires, le résultat obtenu, et ce qu'elle a changé ensuite.</field>
+    </record>
+
+    <record id="tmpl_marketing_c2" model="bf.interview.guide.template.criterion">
+        <field name="template_id" ref="tmpl_marketing"/>
+        <field name="sequence">20</field>
+        <field name="name">Écriture</field>
+        <field name="weight">2.5</field>
+        <field name="description">La capacité d'écrire clairement pour un public donné, sans jargon.</field>
+        <field name="question_html"><![CDATA[<p>Expliquez-nous notre produit en cinq phrases, pour un client qui n'a jamais entendu parler de nous.</p>]]></field>
+    </record>
+    <record id="tmpl_marketing_c2_a1" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_marketing_c2"/>
+        <field name="score">1</field>
+        <field name="label">Jargon</field>
+        <field name="description">Reprend le vocabulaire interne, ou noie le message.</field>
+    </record>
+    <record id="tmpl_marketing_c2_a3" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_marketing_c2"/>
+        <field name="score">3</field>
+        <field name="label">Clair</field>
+        <field name="description">Se comprend, un peu long.</field>
+    </record>
+    <record id="tmpl_marketing_c2_a5" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_marketing_c2"/>
+        <field name="score">5</field>
+        <field name="label">Clair et orienté</field>
+        <field name="description">Dit à qui ça s'adresse, quel problème ça règle, et ce qu'on fait ensuite.</field>
+    </record>
+
+    <record id="tmpl_marketing_c3" model="bf.interview.guide.template.criterion">
+        <field name="template_id" ref="tmpl_marketing"/>
+        <field name="sequence">30</field>
+        <field name="name">Choix du public</field>
+        <field name="weight">2.0</field>
+        <field name="description">La capacité de renoncer à parler à tout le monde.</field>
+        <field name="question_html"><![CDATA[<p>Vous avez 5 000 $ et un mois. Qui visez-vous et pourquoi pas les autres ?</p>]]></field>
+    </record>
+    <record id="tmpl_marketing_c3_a1" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_marketing_c3"/>
+        <field name="score">1</field>
+        <field name="label">Vise tout le monde</field>
+        <field name="description">Ne tranche pas.</field>
+    </record>
+    <record id="tmpl_marketing_c3_a3" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_marketing_c3"/>
+        <field name="score">3</field>
+        <field name="label">Vise un segment</field>
+        <field name="description">Choisit un public, sans justifier le renoncement.</field>
+    </record>
+    <record id="tmpl_marketing_c3_a5" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_marketing_c3"/>
+        <field name="score">5</field>
+        <field name="label">Vise et justifie</field>
+        <field name="description">Choisit, explique pourquoi ce public d'abord, et dit ce qu'elle abandonne.</field>
+    </record>
+
+    <record id="tmpl_marketing_c4" model="bf.interview.guide.template.criterion">
+        <field name="template_id" ref="tmpl_marketing"/>
+        <field name="sequence">40</field>
+        <field name="name">Mesure et outils</field>
+        <field name="weight">2.0</field>
+        <field name="description">Ce que la personne installe pour savoir si ça marche, avant de lancer.</field>
+        <field name="question_html"><![CDATA[<p>Comment saviez-vous, dans votre dernier emploi, qu'une action avait fonctionné ?</p>]]></field>
+    </record>
+    <record id="tmpl_marketing_c4_a1" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_marketing_c4"/>
+        <field name="score">1</field>
+        <field name="label">Au ressenti</field>
+        <field name="description">Aucune mesure, ou seulement les mentions positives.</field>
+    </record>
+    <record id="tmpl_marketing_c4_a3" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_marketing_c4"/>
+        <field name="score">3</field>
+        <field name="label">Rapports d'outils</field>
+        <field name="description">Lit les tableaux de bord fournis.</field>
+    </record>
+    <record id="tmpl_marketing_c4_a5" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_marketing_c4"/>
+        <field name="score">5</field>
+        <field name="label">Mesure décidée d'avance</field>
+        <field name="description">Pose l'indicateur avant de lancer, sépare ce qui vient de la campagne du reste.</field>
+    </record>
+
+    <record id="tmpl_marketing_c5" model="bf.interview.guide.template.criterion">
+        <field name="template_id" ref="tmpl_marketing"/>
+        <field name="sequence">50</field>
+        <field name="name">Travail avec la vente</field>
+        <field name="weight">1.5</field>
+        <field name="description">Le marketing qui ne parle pas à la vente produit des pistes que personne n'appelle.</field>
+        <field name="question_html"><![CDATA[<p>Comment travailliez-vous avec l'équipe des ventes ?</p>]]></field>
+    </record>
+    <record id="tmpl_marketing_c5_a1" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_marketing_c5"/>
+        <field name="score">1</field>
+        <field name="label">Séparément</field>
+        <field name="description">Deux mondes, aucune boucle.</field>
+    </record>
+    <record id="tmpl_marketing_c5_a3" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_marketing_c5"/>
+        <field name="score">3</field>
+        <field name="label">Transmet les pistes</field>
+        <field name="description">Envoie les pistes et reçoit des retours ponctuels.</field>
+    </record>
+    <record id="tmpl_marketing_c5_a5" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_marketing_c5"/>
+        <field name="score">5</field>
+        <field name="label">Boucle fermée</field>
+        <field name="description">Rencontre régulière, définition commune d'une piste qualifiée, retour sur ce que la vente en a fait.</field>
+    </record>
+
+    <record id="tmpl_marketing_c6" model="bf.interview.guide.template.criterion">
+        <field name="template_id" ref="tmpl_marketing"/>
+        <field name="sequence">60</field>
+        <field name="name">Marque et retenue</field>
+        <field name="weight">1.5</field>
+        <field name="description">Le jugement quand une occasion de visibilité met la marque en risque.</field>
+        <field name="question_html"><![CDATA[<p>Une publication de la marque suscite des commentaires hostiles. Que faites-vous dans l'heure ?</p>]]></field>
+    </record>
+    <record id="tmpl_marketing_c6_a1" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_marketing_c6"/>
+        <field name="score">1</field>
+        <field name="label">Efface ou répond du tac au tac</field>
+        <field name="description">Supprime, ou entre dans la dispute.</field>
+    </record>
+    <record id="tmpl_marketing_c6_a3" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_marketing_c6"/>
+        <field name="score">3</field>
+        <field name="label">Escalade</field>
+        <field name="description">Prévient et attend une décision.</field>
+    </record>
+    <record id="tmpl_marketing_c6_a5" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_marketing_c6"/>
+        <field name="score">5</field>
+        <field name="label">Contient et documente</field>
+        <field name="description">Prévient, propose une réponse écrite, garde la trace, et fixe le moment de rouvrir.</field>
+    </record>
+
+    <record id="tmpl_ressources_humaines" model="bf.interview.guide.template">
+        <field name="name">Ressources humaines</field>
+        <field name="code">ENT-RH-01</field>
+        <field name="sequence">130</field>
+        <field name="category">metier</field>
+        <field name="role_family">Ressources humaines</field>
+        <field name="round_type">technique</field>
+        <field name="duration_minutes">60</field>
+        <field name="scale_max">5</field>
+        <field name="summary">Pour un poste de conseil ou de généraliste RH : dossiers d'employés, relations de travail, dotation, et la discrétion que tout cela suppose.</field>
+        <field name="instructions_html"><![CDATA[<p>Posez les mêmes questions, dans le même ordre, à toutes les personnes reçues : c'est ce qui rend deux entrevues comparables.</p><ul><li>Notez des faits observés, pas des impressions. La personne évaluée peut demander à lire ce qui a été écrit sur elle.</li><li>Relancez : « Que faisiez-vous exactement ? », « Qu'est-ce qui est arrivé ensuite ? ». Une réponse au conditionnel n'est pas un exemple vécu.</li><li>Déposez votre notation avant d'en discuter avec le reste du panel.</li><li>Ne posez aucune question sur l'âge, la santé, la situation familiale, l'origine, la religion ou une autre caractéristique protégée. On interroge les exigences du poste, jamais leurs causes.</li></ul><p>Un poste RH voit passer des situations personnelles. Les critères de discrétion et de courage se notent ici, pas dans un tour de culture.</p><p><em>Durée prévue : 60 minutes.</em></p>]]></field>
+    </record>
+
+    <record id="tmpl_ressources_humaines_c1" model="bf.interview.guide.template.criterion">
+        <field name="template_id" ref="tmpl_ressources_humaines"/>
+        <field name="sequence">10</field>
+        <field name="name">Dossier délicat</field>
+        <field name="weight">3.0</field>
+        <field name="description">La conduite d'une situation qui met en jeu une personne et son emploi.</field>
+        <field name="question_html"><![CDATA[<p>Racontez-moi le dossier d'employé le plus difficile que vous ayez porté. Quelles ont été vos étapes ?</p>]]></field>
+    </record>
+    <record id="tmpl_ressources_humaines_c1_a1" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_ressources_humaines_c1"/>
+        <field name="score">1</field>
+        <field name="label">Récit sans méthode</field>
+        <field name="description">Raconte l'anecdote, sans démarche.</field>
+    </record>
+    <record id="tmpl_ressources_humaines_c1_a3" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_ressources_humaines_c1"/>
+        <field name="score">3</field>
+        <field name="label">Suit la procédure</field>
+        <field name="description">Documente, avise, applique les étapes prévues.</field>
+    </record>
+    <record id="tmpl_ressources_humaines_c1_a5" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_ressources_humaines_c1"/>
+        <field name="score">5</field>
+        <field name="label">Méthode et proportion</field>
+        <field name="description">Documente, entend les deux versions, gradue les mesures, et dit ce qu'elle a fait pour préserver la personne.</field>
+    </record>
+
+    <record id="tmpl_ressources_humaines_c2" model="bf.interview.guide.template.criterion">
+        <field name="template_id" ref="tmpl_ressources_humaines"/>
+        <field name="sequence">20</field>
+        <field name="name">Discrétion</field>
+        <field name="weight">2.5</field>
+        <field name="description">Ce que la personne fait de ce qu'elle sait, notamment devant un gestionnaire qui insiste.</field>
+        <field name="question_html"><![CDATA[<p>Un gestionnaire vous demande pourquoi un de ses employés est en arrêt. Que lui répondez-vous ?</p>]]></field>
+    </record>
+    <record id="tmpl_ressources_humaines_c2_a1" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_ressources_humaines_c2"/>
+        <field name="score">1</field>
+        <field name="label">Répond</field>
+        <field name="description">Donne l'information.</field>
+    </record>
+    <record id="tmpl_ressources_humaines_c2_a3" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_ressources_humaines_c2"/>
+        <field name="score">3</field>
+        <field name="label">Refuse</field>
+        <field name="description">Dit qu'elle ne peut pas répondre.</field>
+    </record>
+    <record id="tmpl_ressources_humaines_c2_a5" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_ressources_humaines_c2"/>
+        <field name="score">5</field>
+        <field name="label">Refuse et rend service autrement</field>
+        <field name="description">Refuse, explique la règle en une phrase, et aide le gestionnaire sur ce qu'il a vraiment besoin de savoir : la durée prévue et le remplacement.</field>
+    </record>
+
+    <record id="tmpl_ressources_humaines_c3" model="bf.interview.guide.template.criterion">
+        <field name="template_id" ref="tmpl_ressources_humaines"/>
+        <field name="sequence">30</field>
+        <field name="name">Conseil au gestionnaire</field>
+        <field name="weight">2.5</field>
+        <field name="description">La capacité de dire non à un gestionnaire pressé, sans se contenter de citer la règle.</field>
+        <field name="question_html"><![CDATA[<p>Un directeur veut congédier quelqu'un vendredi, sans dossier écrit. Que faites-vous ?</p>]]></field>
+    </record>
+    <record id="tmpl_ressources_humaines_c3_a1" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_ressources_humaines_c3"/>
+        <field name="score">1</field>
+        <field name="label">Exécute</field>
+        <field name="description">Prépare le congédiement.</field>
+    </record>
+    <record id="tmpl_ressources_humaines_c3_a3" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_ressources_humaines_c3"/>
+        <field name="score">3</field>
+        <field name="label">Refuse et cite le risque</field>
+        <field name="description">Dit non, explique le risque juridique.</field>
+    </record>
+    <record id="tmpl_ressources_humaines_c3_a5" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_ressources_humaines_c3"/>
+        <field name="score">5</field>
+        <field name="label">Refuse et propose un chemin</field>
+        <field name="description">Dit non, nomme le risque, et propose la démarche qui mène au même résultat en tenant la route.</field>
+    </record>
+
+    <record id="tmpl_ressources_humaines_c4" model="bf.interview.guide.template.criterion">
+        <field name="template_id" ref="tmpl_ressources_humaines"/>
+        <field name="sequence">40</field>
+        <field name="name">Dotation</field>
+        <field name="weight">2.0</field>
+        <field name="description">La manière de mener un recrutement, du profil au choix.</field>
+        <field name="question_html"><![CDATA[<p>Comment vous y prenez-vous pour ouvrir un poste que vous ne connaissez pas ?</p>]]></field>
+    </record>
+    <record id="tmpl_ressources_humaines_c4_a1" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_ressources_humaines_c4"/>
+        <field name="score">1</field>
+        <field name="label">Reprend l'ancien affichage</field>
+        <field name="description">Republie tel quel.</field>
+    </record>
+    <record id="tmpl_ressources_humaines_c4_a3" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_ressources_humaines_c4"/>
+        <field name="score">3</field>
+        <field name="label">Rencontre le gestionnaire</field>
+        <field name="description">Refait le profil avec le gestionnaire.</field>
+    </record>
+    <record id="tmpl_ressources_humaines_c4_a5" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_ressources_humaines_c4"/>
+        <field name="score">5</field>
+        <field name="label">Profil, critères et grille</field>
+        <field name="description">Fait nommer les exigences réelles, pose des critères observables, prépare la grille et le panel avant de publier.</field>
+    </record>
+
+    <record id="tmpl_ressources_humaines_c5" model="bf.interview.guide.template.criterion">
+        <field name="template_id" ref="tmpl_ressources_humaines"/>
+        <field name="sequence">50</field>
+        <field name="name">Droit du travail appliqué</field>
+        <field name="weight">2.0</field>
+        <field name="description">La connaissance pratique des règles qui encadrent l'emploi, sans prétendre au rôle d'avocat.</field>
+        <field name="question_html"><![CDATA[<p>Nommez trois situations où vous appelez un conseiller juridique plutôt que de décider seule.</p>]]></field>
+    </record>
+    <record id="tmpl_ressources_humaines_c5_a1" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_ressources_humaines_c5"/>
+        <field name="score">1</field>
+        <field name="label">N'appelle jamais</field>
+        <field name="description">Tranche seule sur tout.</field>
+    </record>
+    <record id="tmpl_ressources_humaines_c5_a3" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_ressources_humaines_c5"/>
+        <field name="score">3</field>
+        <field name="label">Appelle en cas de litige</field>
+        <field name="description">Consulte quand un recours est déposé.</field>
+    </record>
+    <record id="tmpl_ressources_humaines_c5_a5" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_ressources_humaines_c5"/>
+        <field name="score">5</field>
+        <field name="label">Sait où est sa limite</field>
+        <field name="description">Nomme des situations précises, et ce qu'elle prépare avant d'appeler.</field>
+    </record>
+
+    <record id="tmpl_ressources_humaines_c6" model="bf.interview.guide.template.criterion">
+        <field name="template_id" ref="tmpl_ressources_humaines"/>
+        <field name="sequence">60</field>
+        <field name="name">Données et dossiers</field>
+        <field name="weight">1.5</field>
+        <field name="description">La tenue des dossiers d'employés, leur accès et leur durée de conservation.</field>
+        <field name="question_html"><![CDATA[<p>Qui avait accès aux dossiers d'employés chez votre dernier employeur, et combien de temps les gardiez-vous ?</p>]]></field>
+    </record>
+    <record id="tmpl_ressources_humaines_c6_a1" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_ressources_humaines_c6"/>
+        <field name="score">1</field>
+        <field name="label">Ne sait pas</field>
+        <field name="description">Aucune règle connue.</field>
+    </record>
+    <record id="tmpl_ressources_humaines_c6_a3" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_ressources_humaines_c6"/>
+        <field name="score">3</field>
+        <field name="label">Accès limité</field>
+        <field name="description">Dossiers sous clé, accès restreint.</field>
+    </record>
+    <record id="tmpl_ressources_humaines_c6_a5" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_ressources_humaines_c6"/>
+        <field name="score">5</field>
+        <field name="label">Accès limité et durée décidée</field>
+        <field name="description">Accès nominatif, durée de conservation écrite, et destruction faite pour vrai.</field>
+    </record>
+
+    <record id="tmpl_comptabilite" model="bf.interview.guide.template">
+        <field name="name">Comptabilité et finance</field>
+        <field name="code">ENT-CPT-01</field>
+        <field name="sequence">140</field>
+        <field name="category">metier</field>
+        <field name="role_family">Comptabilité et finance</field>
+        <field name="round_type">technique</field>
+        <field name="duration_minutes">60</field>
+        <field name="scale_max">5</field>
+        <field name="summary">Pour un poste de tenue de livres, de cycle comptable ou d'analyse. Le tour porte sur la rigueur, la fermeture de période et ce que la personne fait d'un écart.</field>
+        <field name="instructions_html"><![CDATA[<p>Posez les mêmes questions, dans le même ordre, à toutes les personnes reçues : c'est ce qui rend deux entrevues comparables.</p><ul><li>Notez des faits observés, pas des impressions. La personne évaluée peut demander à lire ce qui a été écrit sur elle.</li><li>Relancez : « Que faisiez-vous exactement ? », « Qu'est-ce qui est arrivé ensuite ? ». Une réponse au conditionnel n'est pas un exemple vécu.</li><li>Déposez votre notation avant d'en discuter avec le reste du panel.</li><li>Ne posez aucune question sur l'âge, la santé, la situation familiale, l'origine, la religion ou une autre caractéristique protégée. On interroge les exigences du poste, jamais leurs causes.</li></ul><p>Faites poser un cas chiffré. Une conciliation se raconte mieux qu'elle ne se résume.</p><p><em>Durée prévue : 60 minutes.</em></p>]]></field>
+    </record>
+
+    <record id="tmpl_comptabilite_c1" model="bf.interview.guide.template.criterion">
+        <field name="template_id" ref="tmpl_comptabilite"/>
+        <field name="sequence">10</field>
+        <field name="name">Fermeture de période</field>
+        <field name="weight">3.0</field>
+        <field name="description">La capacité de mener une fin de mois complète, et de dire ce qui la retarde.</field>
+        <field name="question_html"><![CDATA[<p>Décrivez votre dernière fermeture de mois : les étapes, dans l'ordre, et le délai entre la fin du mois et les états.</p>]]></field>
+    </record>
+    <record id="tmpl_comptabilite_c1_a1" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_comptabilite_c1"/>
+        <field name="score">1</field>
+        <field name="label">Ne l'a jamais menée</field>
+        <field name="description">A participé sans en connaître la suite.</field>
+    </record>
+    <record id="tmpl_comptabilite_c1_a3" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_comptabilite_c1"/>
+        <field name="score">3</field>
+        <field name="label">Mène la fermeture</field>
+        <field name="description">Décrit les étapes principales et un délai raisonnable.</field>
+    </record>
+    <record id="tmpl_comptabilite_c1_a5" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_comptabilite_c1"/>
+        <field name="score">5</field>
+        <field name="label">Mène et raccourcit</field>
+        <field name="description">Décrit les étapes, nomme le goulot, dit ce qu'elle a changé pour gagner des jours.</field>
+    </record>
+
+    <record id="tmpl_comptabilite_c2" model="bf.interview.guide.template.criterion">
+        <field name="template_id" ref="tmpl_comptabilite"/>
+        <field name="sequence">20</field>
+        <field name="name">Écart et conciliation</field>
+        <field name="weight">3.0</field>
+        <field name="description">Ce que la personne fait d'un écart qu'elle n'explique pas.</field>
+        <field name="question_html"><![CDATA[<p>Votre conciliation bancaire laisse un écart de 42 $. Que faites-vous ?</p>]]></field>
+    </record>
+    <record id="tmpl_comptabilite_c2_a1" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_comptabilite_c2"/>
+        <field name="score">1</field>
+        <field name="label">L'écrit en écart</field>
+        <field name="description">Passe une écriture pour équilibrer.</field>
+    </record>
+    <record id="tmpl_comptabilite_c2_a3" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_comptabilite_c2"/>
+        <field name="score">3</field>
+        <field name="label">Cherche puis régularise</field>
+        <field name="description">Cherche un moment, régularise si elle ne trouve pas.</field>
+    </record>
+    <record id="tmpl_comptabilite_c2_a5" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_comptabilite_c2"/>
+        <field name="score">5</field>
+        <field name="label">Cherche la cause</field>
+        <field name="description">Remonte à la source, corrige à la source, et dit pourquoi l'écart est apparu.</field>
+    </record>
+
+    <record id="tmpl_comptabilite_c3" model="bf.interview.guide.template.criterion">
+        <field name="template_id" ref="tmpl_comptabilite"/>
+        <field name="sequence">30</field>
+        <field name="name">Contrôles internes</field>
+        <field name="weight">2.0</field>
+        <field name="description">La séparation des tâches, surtout dans une petite équipe où tout le monde touche à tout.</field>
+        <field name="question_html"><![CDATA[<p>Dans une équipe de trois personnes, qui saisit un fournisseur, qui approuve et qui paie ?</p>]]></field>
+    </record>
+    <record id="tmpl_comptabilite_c3_a1" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_comptabilite_c3"/>
+        <field name="score">1</field>
+        <field name="label">Une seule personne</field>
+        <field name="description">Ne voit pas le problème.</field>
+    </record>
+    <record id="tmpl_comptabilite_c3_a3" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_comptabilite_c3"/>
+        <field name="score">3</field>
+        <field name="label">Sépare saisie et paiement</field>
+        <field name="description">Deux personnes distinctes.</field>
+    </record>
+    <record id="tmpl_comptabilite_c3_a5" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_comptabilite_c3"/>
+        <field name="score">5</field>
+        <field name="label">Sépare et compense</field>
+        <field name="description">Sépare ce qui peut l'être et compense le reste par une revue documentée du propriétaire.</field>
+    </record>
+
+    <record id="tmpl_comptabilite_c4" model="bf.interview.guide.template.criterion">
+        <field name="template_id" ref="tmpl_comptabilite"/>
+        <field name="sequence">40</field>
+        <field name="name">Taxes et obligations</field>
+        <field name="weight">2.0</field>
+        <field name="description">La maîtrise des remises et des déclarations qui ne pardonnent pas le retard.</field>
+        <field name="question_html"><![CDATA[<p>Quelles remises et déclarations aviez-vous à votre charge, à quelle fréquence, et comment suiviez-vous les échéances ?</p>]]></field>
+    </record>
+    <record id="tmpl_comptabilite_c4_a1" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_comptabilite_c4"/>
+        <field name="score">1</field>
+        <field name="label">Ne s'en occupait pas</field>
+        <field name="description">Aucune expérience des remises.</field>
+    </record>
+    <record id="tmpl_comptabilite_c4_a3" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_comptabilite_c4"/>
+        <field name="score">3</field>
+        <field name="label">Les faisait</field>
+        <field name="description">Nomme les remises et leur fréquence.</field>
+    </record>
+    <record id="tmpl_comptabilite_c4_a5" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_comptabilite_c4"/>
+        <field name="score">5</field>
+        <field name="label">Les faisait et ne les ratait pas</field>
+        <field name="description">Nomme les remises, le calendrier, et le rappel qui empêche l'oubli.</field>
+    </record>
+
+    <record id="tmpl_comptabilite_c5" model="bf.interview.guide.template.criterion">
+        <field name="template_id" ref="tmpl_comptabilite"/>
+        <field name="sequence">50</field>
+        <field name="name">Outil comptable</field>
+        <field name="weight">2.0</field>
+        <field name="description">L'aisance dans le logiciel, y compris quand il faut sortir un chiffre que le rapport standard ne donne pas.</field>
+        <field name="question_html"><![CDATA[<p>Comment sortez-vous la liste des factures ouvertes de plus de 60 jours pour un seul vendeur ?</p>]]></field>
+    </record>
+    <record id="tmpl_comptabilite_c5_a1" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_comptabilite_c5"/>
+        <field name="score">1</field>
+        <field name="label">Ne saurait pas</field>
+        <field name="description">Attend qu'on lui donne le rapport.</field>
+    </record>
+    <record id="tmpl_comptabilite_c5_a3" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_comptabilite_c5"/>
+        <field name="score">3</field>
+        <field name="label">Rapport standard</field>
+        <field name="description">Utilise un rapport existant et filtre.</field>
+    </record>
+    <record id="tmpl_comptabilite_c5_a5" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_comptabilite_c5"/>
+        <field name="score">5</field>
+        <field name="label">Sait chercher</field>
+        <field name="description">Construit le filtre ou l'exportation, vérifie le total contre le grand livre.</field>
+    </record>
+
+    <record id="tmpl_comptabilite_c6" model="bf.interview.guide.template.criterion">
+        <field name="template_id" ref="tmpl_comptabilite"/>
+        <field name="sequence">60</field>
+        <field name="name">Confidentialité de la paie</field>
+        <field name="weight">1.5</field>
+        <field name="description">Ce que la personne fait de ce qu'elle voit : salaires, saisies, avances.</field>
+        <field name="question_html"><![CDATA[<p>Un collègue vous demande combien gagne un autre employé. Que dites-vous ?</p>]]></field>
+        <field name="is_knockout" eval="True"/>
+        <field name="knockout_min">3</field>
+    </record>
+    <record id="tmpl_comptabilite_c6_a1" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_comptabilite_c6"/>
+        <field name="score">1</field>
+        <field name="label">Répond ou laisse deviner</field>
+        <field name="description">Donne l'information, ou la laisse comprendre.</field>
+    </record>
+    <record id="tmpl_comptabilite_c6_a3" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_comptabilite_c6"/>
+        <field name="score">3</field>
+        <field name="label">Refuse</field>
+        <field name="description">Dit qu'elle ne peut pas.</field>
+    </record>
+    <record id="tmpl_comptabilite_c6_a5" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_comptabilite_c6"/>
+        <field name="score">5</field>
+        <field name="label">Refuse et ferme la porte</field>
+        <field name="description">Refuse, sans commentaire ni sous-entendu, et le signale si la demande insiste.</field>
+    </record>
+
+    <record id="tmpl_soutien_administratif" model="bf.interview.guide.template">
+        <field name="name">Soutien administratif</field>
+        <field name="code">ENT-ADM-01</field>
+        <field name="sequence">150</field>
+        <field name="category">metier</field>
+        <field name="role_family">Administration</field>
+        <field name="round_type">technique</field>
+        <field name="duration_minutes">45</field>
+        <field name="scale_max">5</field>
+        <field name="summary">Pour un poste d'adjointe, de réception ou de soutien : l'ordre, les priorités qui changent, et la représentation de l'organisation auprès de qui appelle.</field>
+        <field name="instructions_html"><![CDATA[<p>Posez les mêmes questions, dans le même ordre, à toutes les personnes reçues : c'est ce qui rend deux entrevues comparables.</p><ul><li>Notez des faits observés, pas des impressions. La personne évaluée peut demander à lire ce qui a été écrit sur elle.</li><li>Relancez : « Que faisiez-vous exactement ? », « Qu'est-ce qui est arrivé ensuite ? ». Une réponse au conditionnel n'est pas un exemple vécu.</li><li>Déposez votre notation avant d'en discuter avec le reste du panel.</li><li>Ne posez aucune question sur l'âge, la santé, la situation familiale, l'origine, la religion ou une autre caractéristique protégée. On interroge les exigences du poste, jamais leurs causes.</li></ul><p>Faites faire une tâche concrète : trier cinq demandes, ou rédiger un courriel de trois lignes. C'est plus instructif que toutes les questions du monde.</p><p><em>Durée prévue : 45 minutes.</em></p>]]></field>
+    </record>
+
+    <record id="tmpl_soutien_administratif_c1" model="bf.interview.guide.template.criterion">
+        <field name="template_id" ref="tmpl_soutien_administratif"/>
+        <field name="sequence">10</field>
+        <field name="name">Priorités qui changent</field>
+        <field name="weight">2.5</field>
+        <field name="description">La façon de trancher quand trois personnes veulent la même heure.</field>
+        <field name="question_html"><![CDATA[<p>Il est 9 h. La direction veut un document pour midi, un client attend un retour depuis hier, et la salle de réunion de 10 h n'est pas prête. Dans quel ordre, et pourquoi ?</p>]]></field>
+    </record>
+    <record id="tmpl_soutien_administratif_c1_a1" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_soutien_administratif_c1"/>
+        <field name="score">1</field>
+        <field name="label">Fige ou fait au hasard</field>
+        <field name="description">Ne tranche pas, ou fait au premier arrivé.</field>
+    </record>
+    <record id="tmpl_soutien_administratif_c1_a3" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_soutien_administratif_c1"/>
+        <field name="score">3</field>
+        <field name="label">Ordonne raisonnablement</field>
+        <field name="description">Trie selon l'urgence.</field>
+    </record>
+    <record id="tmpl_soutien_administratif_c1_a5" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_soutien_administratif_c1"/>
+        <field name="score">5</field>
+        <field name="label">Ordonne et prévient</field>
+        <field name="description">Trie, dit à chacun quand il sera servi, et règle en dix minutes ce qui peut l'être tout de suite.</field>
+    </record>
+
+    <record id="tmpl_soutien_administratif_c2" model="bf.interview.guide.template.criterion">
+        <field name="template_id" ref="tmpl_soutien_administratif"/>
+        <field name="sequence">20</field>
+        <field name="name">Écrit soigné</field>
+        <field name="weight">2.5</field>
+        <field name="description">La qualité de l'écrit sortant, qui porte l'image de l'organisation.</field>
+        <field name="question_html"><![CDATA[<p>Rédigez devant nous un courriel de trois lignes qui reporte une rencontre avec un client important.</p>]]></field>
+    </record>
+    <record id="tmpl_soutien_administratif_c2_a1" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_soutien_administratif_c2"/>
+        <field name="score">1</field>
+        <field name="label">Fautes et ton bancal</field>
+        <field name="description">Fautes visibles, ou ton inadapté.</field>
+    </record>
+    <record id="tmpl_soutien_administratif_c2_a3" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_soutien_administratif_c2"/>
+        <field name="score">3</field>
+        <field name="label">Correct</field>
+        <field name="description">Sans faute, message clair.</field>
+    </record>
+    <record id="tmpl_soutien_administratif_c2_a5" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_soutien_administratif_c2"/>
+        <field name="score">5</field>
+        <field name="label">Correct et bien tourné</field>
+        <field name="description">Sans faute, va droit au but, propose déjà une nouvelle date.</field>
+    </record>
+
+    <record id="tmpl_soutien_administratif_c3" model="bf.interview.guide.template.criterion">
+        <field name="template_id" ref="tmpl_soutien_administratif"/>
+        <field name="sequence">30</field>
+        <field name="name">Fiabilité du détail</field>
+        <field name="weight">2.5</field>
+        <field name="description">L'endroit où un poste de soutien se juge : ce qui n'est pas oublié.</field>
+        <field name="question_html"><![CDATA[<p>Comment faisiez-vous pour que rien ne se perde entre une demande reçue et son exécution ?</p>]]></field>
+    </record>
+    <record id="tmpl_soutien_administratif_c3_a1" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_soutien_administratif_c3"/>
+        <field name="score">1</field>
+        <field name="label">De mémoire</field>
+        <field name="description">Se fie à sa mémoire.</field>
+    </record>
+    <record id="tmpl_soutien_administratif_c3_a3" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_soutien_administratif_c3"/>
+        <field name="score">3</field>
+        <field name="label">Une liste</field>
+        <field name="description">Tient une liste ou un agenda.</field>
+    </record>
+    <record id="tmpl_soutien_administratif_c3_a5" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_soutien_administratif_c3"/>
+        <field name="score">5</field>
+        <field name="label">Un système qui relance</field>
+        <field name="description">Une liste, des rappels datés, et une revue en fin de journée de ce qui reste ouvert.</field>
+    </record>
+
+    <record id="tmpl_soutien_administratif_c4" model="bf.interview.guide.template.criterion">
+        <field name="template_id" ref="tmpl_soutien_administratif"/>
+        <field name="sequence">40</field>
+        <field name="name">Discrétion au poste</field>
+        <field name="weight">2.0</field>
+        <field name="description">Ce qui passe par un poste de soutien : dossiers, appels, visiteurs.</field>
+        <field name="question_html"><![CDATA[<p>Un fournisseur vous demande si l'entreprise change de banque. Que répondez-vous ?</p>]]></field>
+    </record>
+    <record id="tmpl_soutien_administratif_c4_a1" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_soutien_administratif_c4"/>
+        <field name="score">1</field>
+        <field name="label">Répond</field>
+        <field name="description">Confirme ou infirme.</field>
+    </record>
+    <record id="tmpl_soutien_administratif_c4_a3" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_soutien_administratif_c4"/>
+        <field name="score">3</field>
+        <field name="label">Ne sait pas</field>
+        <field name="description">Répond qu'elle ne sait pas.</field>
+    </record>
+    <record id="tmpl_soutien_administratif_c4_a5" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_soutien_administratif_c4"/>
+        <field name="score">5</field>
+        <field name="label">Renvoie proprement</field>
+        <field name="description">Ne confirme rien, renvoie à la bonne personne, et signale la question.</field>
+    </record>
+
+    <record id="tmpl_soutien_administratif_c5" model="bf.interview.guide.template.criterion">
+        <field name="template_id" ref="tmpl_soutien_administratif"/>
+        <field name="sequence">50</field>
+        <field name="name">Outils bureautiques</field>
+        <field name="weight">1.5</field>
+        <field name="description">Le niveau réel dans les outils du poste, au-delà de la mention au curriculum.</field>
+        <field name="question_html"><![CDATA[<p>Comment fusionnez-vous une lettre pour 200 destinataires, chacun avec son solde ?</p>]]></field>
+    </record>
+    <record id="tmpl_soutien_administratif_c5_a1" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_soutien_administratif_c5"/>
+        <field name="score">1</field>
+        <field name="label">Ne saurait pas</field>
+        <field name="description">Le ferait à la main.</field>
+    </record>
+    <record id="tmpl_soutien_administratif_c5_a3" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_soutien_administratif_c5"/>
+        <field name="score">3</field>
+        <field name="label">Connaît la fonction</field>
+        <field name="description">Nomme le publipostage.</field>
+    </record>
+    <record id="tmpl_soutien_administratif_c5_a5" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_soutien_administratif_c5"/>
+        <field name="score">5</field>
+        <field name="label">L'a déjà fait</field>
+        <field name="description">Décrit la source de données, la vérification avant envoi, et le contrôle après.</field>
+    </record>
+
+    <record id="tmpl_soutien_administratif_c6" model="bf.interview.guide.template.criterion">
+        <field name="template_id" ref="tmpl_soutien_administratif"/>
+        <field name="sequence">60</field>
+        <field name="name">Accueil</field>
+        <field name="weight">1.5</field>
+        <field name="description">La première impression donnée à qui entre ou appelle.</field>
+        <field name="question_html"><![CDATA[<p>Un visiteur arrive en avance pour une rencontre et la personne attendue est en retard. Que faites-vous ?</p>]]></field>
+    </record>
+    <record id="tmpl_soutien_administratif_c6_a1" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_soutien_administratif_c6"/>
+        <field name="score">1</field>
+        <field name="label">Le laisse attendre</field>
+        <field name="description">L'installe et n'y revient pas.</field>
+    </record>
+    <record id="tmpl_soutien_administratif_c6_a3" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_soutien_administratif_c6"/>
+        <field name="score">3</field>
+        <field name="label">L'installe et prévient</field>
+        <field name="description">L'installe, offre à boire, prévient la personne attendue.</field>
+    </record>
+    <record id="tmpl_soutien_administratif_c6_a5" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_soutien_administratif_c6"/>
+        <field name="score">5</field>
+        <field name="label">Le tient informé</field>
+        <field name="description">L'installe, prévient, revient lui dire où en est l'attente, et propose une option si ça s'allonge.</field>
+    </record>
+
+    <record id="tmpl_achats_logistique" model="bf.interview.guide.template">
+        <field name="name">Achats et logistique</field>
+        <field name="code">ENT-LOG-01</field>
+        <field name="sequence">160</field>
+        <field name="category">metier</field>
+        <field name="role_family">Achats et logistique</field>
+        <field name="round_type">technique</field>
+        <field name="duration_minutes">45</field>
+        <field name="scale_max">5</field>
+        <field name="summary">Pour un poste d'approvisionnement, d'entrepôt ou de coordination du transport : les délais, les inventaires et ce qui se passe quand un fournisseur manque à sa parole.</field>
+        <field name="instructions_html"><![CDATA[<p>Posez les mêmes questions, dans le même ordre, à toutes les personnes reçues : c'est ce qui rend deux entrevues comparables.</p><ul><li>Notez des faits observés, pas des impressions. La personne évaluée peut demander à lire ce qui a été écrit sur elle.</li><li>Relancez : « Que faisiez-vous exactement ? », « Qu'est-ce qui est arrivé ensuite ? ». Une réponse au conditionnel n'est pas un exemple vécu.</li><li>Déposez votre notation avant d'en discuter avec le reste du panel.</li><li>Ne posez aucune question sur l'âge, la santé, la situation familiale, l'origine, la religion ou une autre caractéristique protégée. On interroge les exigences du poste, jamais leurs causes.</li></ul><p>Demandez des chiffres d'inventaire et de délai. Ce métier se raconte avec des unités et des jours.</p><p><em>Durée prévue : 45 minutes.</em></p>]]></field>
+    </record>
+
+    <record id="tmpl_achats_logistique_c1" model="bf.interview.guide.template.criterion">
+        <field name="template_id" ref="tmpl_achats_logistique"/>
+        <field name="sequence">10</field>
+        <field name="name">Rupture de fournisseur</field>
+        <field name="weight">3.0</field>
+        <field name="description">La réaction à un manquement qui bloque la production ou la livraison.</field>
+        <field name="question_html"><![CDATA[<p>Votre fournisseur principal annonce trois semaines de retard sur une pièce critique. Que faites-vous dans les 48 heures ?</p>]]></field>
+    </record>
+    <record id="tmpl_achats_logistique_c1_a1" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_achats_logistique_c1"/>
+        <field name="score">1</field>
+        <field name="label">Attend</field>
+        <field name="description">Relance et attend la livraison.</field>
+    </record>
+    <record id="tmpl_achats_logistique_c1_a3" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_achats_logistique_c1"/>
+        <field name="score">3</field>
+        <field name="label">Cherche une solution de rechange</field>
+        <field name="description">Appelle d'autres fournisseurs.</field>
+    </record>
+    <record id="tmpl_achats_logistique_c1_a5" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_achats_logistique_c1"/>
+        <field name="score">5</field>
+        <field name="label">Contient et informe</field>
+        <field name="description">Mesure l'impact sur les commandes, cherche une source de rechange, prévient la production et les clients touchés, et note la défaillance au dossier du fournisseur.</field>
+    </record>
+
+    <record id="tmpl_achats_logistique_c2" model="bf.interview.guide.template.criterion">
+        <field name="template_id" ref="tmpl_achats_logistique"/>
+        <field name="sequence">20</field>
+        <field name="name">Exactitude des inventaires</field>
+        <field name="weight">2.5</field>
+        <field name="description">L'écart entre le système et l'étagère, et ce que la personne fait pour le réduire.</field>
+        <field name="question_html"><![CDATA[<p>Quel était votre taux d'exactitude d'inventaire, et comment le mesuriez-vous ?</p>]]></field>
+    </record>
+    <record id="tmpl_achats_logistique_c2_a1" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_achats_logistique_c2"/>
+        <field name="score">1</field>
+        <field name="label">Inconnu</field>
+        <field name="description">Aucune mesure, inventaire annuel seulement.</field>
+    </record>
+    <record id="tmpl_achats_logistique_c2_a3" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_achats_logistique_c2"/>
+        <field name="score">3</field>
+        <field name="label">Mesuré</field>
+        <field name="description">Décompte périodique, écart connu.</field>
+    </record>
+    <record id="tmpl_achats_logistique_c2_a5" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_achats_logistique_c2"/>
+        <field name="score">5</field>
+        <field name="label">Mesuré et corrigé à la source</field>
+        <field name="description">Décomptes tournants, écarts analysés par cause, correction du processus fautif.</field>
+    </record>
+
+    <record id="tmpl_achats_logistique_c3" model="bf.interview.guide.template.criterion">
+        <field name="template_id" ref="tmpl_achats_logistique"/>
+        <field name="sequence">30</field>
+        <field name="name">Négociation fournisseur</field>
+        <field name="weight">2.0</field>
+        <field name="description">La façon d'obtenir mieux qu'un prix : délai, quantité minimale, conditions de paiement.</field>
+        <field name="question_html"><![CDATA[<p>Sur quoi avez-vous obtenu votre dernier gain auprès d'un fournisseur ?</p>]]></field>
+    </record>
+    <record id="tmpl_achats_logistique_c3_a1" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_achats_logistique_c3"/>
+        <field name="score">1</field>
+        <field name="label">Aucun gain</field>
+        <field name="description">N'a jamais négocié.</field>
+    </record>
+    <record id="tmpl_achats_logistique_c3_a3" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_achats_logistique_c3"/>
+        <field name="score">3</field>
+        <field name="label">Un rabais</field>
+        <field name="description">A obtenu un prix.</field>
+    </record>
+    <record id="tmpl_achats_logistique_c3_a5" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_achats_logistique_c3"/>
+        <field name="score">5</field>
+        <field name="label">Plus que le prix</field>
+        <field name="description">A obtenu un délai, un stock de sécurité ou des conditions, et l'a mis au contrat.</field>
+    </record>
+
+    <record id="tmpl_achats_logistique_c4" model="bf.interview.guide.template.criterion">
+        <field name="template_id" ref="tmpl_achats_logistique"/>
+        <field name="sequence">40</field>
+        <field name="name">Coût total</field>
+        <field name="weight">2.0</field>
+        <field name="description">La capacité de voir au-delà du prix unitaire : transport, douane, rebuts, immobilisation de stock.</field>
+        <field name="question_html"><![CDATA[<p>Un fournisseur est 8 % moins cher mais livre en six semaines au lieu de deux. Comment tranchez-vous ?</p>]]></field>
+    </record>
+    <record id="tmpl_achats_logistique_c4_a1" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_achats_logistique_c4"/>
+        <field name="score">1</field>
+        <field name="label">Prend le moins cher</field>
+        <field name="description">Décide sur le prix.</field>
+    </record>
+    <record id="tmpl_achats_logistique_c4_a3" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_achats_logistique_c4"/>
+        <field name="score">3</field>
+        <field name="label">Pèse le délai</field>
+        <field name="description">Reconnaît le risque de délai.</field>
+    </record>
+    <record id="tmpl_achats_logistique_c4_a5" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_achats_logistique_c4"/>
+        <field name="score">5</field>
+        <field name="label">Chiffre le coût total</field>
+        <field name="description">Chiffre le stock supplémentaire, le risque de rupture et le transport avant de trancher.</field>
+    </record>
+
+    <record id="tmpl_achats_logistique_c5" model="bf.interview.guide.template.criterion">
+        <field name="template_id" ref="tmpl_achats_logistique"/>
+        <field name="sequence">50</field>
+        <field name="name">Sécurité et manutention</field>
+        <field name="weight">1.5</field>
+        <field name="description">Les règles du plancher, quand le poste touche à l'entrepôt.</field>
+        <field name="question_html"><![CDATA[<p>Que faites-vous si un chariot élévateur circule sans que son conducteur porte sa ceinture ?</p>]]></field>
+    </record>
+    <record id="tmpl_achats_logistique_c5_a1" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_achats_logistique_c5"/>
+        <field name="score">1</field>
+        <field name="label">Rien</field>
+        <field name="description">N'intervient pas.</field>
+    </record>
+    <record id="tmpl_achats_logistique_c5_a3" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_achats_logistique_c5"/>
+        <field name="score">3</field>
+        <field name="label">Le mentionne</field>
+        <field name="description">Le dit à la personne.</field>
+    </record>
+    <record id="tmpl_achats_logistique_c5_a5" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_achats_logistique_c5"/>
+        <field name="score">5</field>
+        <field name="label">Arrête et rapporte</field>
+        <field name="description">Fait cesser sur-le-champ, le rapporte, et vérifie que la formation a été donnée.</field>
+    </record>
+
+    <record id="tmpl_achats_logistique_c6" model="bf.interview.guide.template.criterion">
+        <field name="template_id" ref="tmpl_achats_logistique"/>
+        <field name="sequence">60</field>
+        <field name="name">Suivi des expéditions</field>
+        <field name="weight">1.5</field>
+        <field name="description">Ce que le client apprend, et quand, sur sa commande.</field>
+        <field name="question_html"><![CDATA[<p>Comment vos clients savaient-ils où en était leur commande ?</p>]]></field>
+    </record>
+    <record id="tmpl_achats_logistique_c6_a1" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_achats_logistique_c6"/>
+        <field name="score">1</field>
+        <field name="label">Sur appel</field>
+        <field name="description">Répond quand on demande.</field>
+    </record>
+    <record id="tmpl_achats_logistique_c6_a3" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_achats_logistique_c6"/>
+        <field name="score">3</field>
+        <field name="label">Confirmation d'expédition</field>
+        <field name="description">Envoie un avis à l'expédition.</field>
+    </record>
+    <record id="tmpl_achats_logistique_c6_a5" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_achats_logistique_c6"/>
+        <field name="score">5</field>
+        <field name="label">Avise avant qu'on demande</field>
+        <field name="description">Confirme l'expédition, prévient d'un retard avant la date promise, et donne une nouvelle date.</field>
+    </record>
+
+    <record id="tmpl_commerce_detail" model="bf.interview.guide.template">
+        <field name="name">Commerce de détail</field>
+        <field name="code">ENT-DET-01</field>
+        <field name="sequence">170</field>
+        <field name="category">metier</field>
+        <field name="role_family">Commerce de détail</field>
+        <field name="round_type">technique</field>
+        <field name="duration_minutes">30</field>
+        <field name="scale_max">5</field>
+        <field name="summary">Pour un poste en magasin : conseil, caisse, étalage et vol à l'étalage. Court, concret, avec des mises en situation sur le plancher.</field>
+        <field name="instructions_html"><![CDATA[<p>Posez les mêmes questions, dans le même ordre, à toutes les personnes reçues : c'est ce qui rend deux entrevues comparables.</p><ul><li>Notez des faits observés, pas des impressions. La personne évaluée peut demander à lire ce qui a été écrit sur elle.</li><li>Relancez : « Que faisiez-vous exactement ? », « Qu'est-ce qui est arrivé ensuite ? ». Une réponse au conditionnel n'est pas un exemple vécu.</li><li>Déposez votre notation avant d'en discuter avec le reste du panel.</li><li>Ne posez aucune question sur l'âge, la santé, la situation familiale, l'origine, la religion ou une autre caractéristique protégée. On interroge les exigences du poste, jamais leurs causes.</li></ul><p>Une mise en situation debout, devant un présentoir, vaut mieux qu'une entrevue assise pour ce métier.</p><p><em>Durée prévue : 30 minutes.</em></p>]]></field>
+    </record>
+
+    <record id="tmpl_commerce_detail_c1" model="bf.interview.guide.template.criterion">
+        <field name="template_id" ref="tmpl_commerce_detail"/>
+        <field name="sequence">10</field>
+        <field name="name">Approche du client</field>
+        <field name="weight">2.5</field>
+        <field name="description">Les premières secondes : ni sauter dessus, ni ignorer.</field>
+        <field name="question_html"><![CDATA[<p>Un client tourne depuis cinq minutes dans votre rayon. Que faites-vous, et que dites-vous exactement ?</p>]]></field>
+    </record>
+    <record id="tmpl_commerce_detail_c1_a1" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_commerce_detail_c1"/>
+        <field name="score">1</field>
+        <field name="label">Attend ou récite</field>
+        <field name="description">Attend qu'on lui parle, ou lance « je peux vous aider ? » et s'arrête au non.</field>
+    </record>
+    <record id="tmpl_commerce_detail_c1_a3" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_commerce_detail_c1"/>
+        <field name="score">3</field>
+        <field name="label">Aborde et écoute</field>
+        <field name="description">Aborde avec une question ouverte.</field>
+    </record>
+    <record id="tmpl_commerce_detail_c1_a5" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_commerce_detail_c1"/>
+        <field name="score">5</field>
+        <field name="label">Aborde et fait avancer</field>
+        <field name="description">Aborde, cerne le besoin en deux questions, montre deux options et laisse choisir.</field>
+    </record>
+
+    <record id="tmpl_commerce_detail_c2" model="bf.interview.guide.template.criterion">
+        <field name="template_id" ref="tmpl_commerce_detail"/>
+        <field name="sequence">20</field>
+        <field name="name">Connaissance du produit</field>
+        <field name="weight">2.0</field>
+        <field name="description">Ce que la personne sait du produit, et ce qu'elle fait quand elle ne sait pas.</field>
+        <field name="question_html"><![CDATA[<p>Un client vous pose une question technique dont vous ignorez la réponse. Que faites-vous ?</p>]]></field>
+    </record>
+    <record id="tmpl_commerce_detail_c2_a1" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_commerce_detail_c2"/>
+        <field name="score">1</field>
+        <field name="label">Invente</field>
+        <field name="description">Donne une réponse approximative.</field>
+    </record>
+    <record id="tmpl_commerce_detail_c2_a3" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_commerce_detail_c2"/>
+        <field name="score">3</field>
+        <field name="label">Va chercher quelqu'un</field>
+        <field name="description">Trouve un collègue.</field>
+    </record>
+    <record id="tmpl_commerce_detail_c2_a5" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_commerce_detail_c2"/>
+        <field name="score">5</field>
+        <field name="label">Trouve et retient</field>
+        <field name="description">Trouve la réponse, la donne, et va l'apprendre pour la prochaine fois.</field>
+    </record>
+
+    <record id="tmpl_commerce_detail_c3" model="bf.interview.guide.template.criterion">
+        <field name="template_id" ref="tmpl_commerce_detail"/>
+        <field name="sequence">30</field>
+        <field name="name">Caisse et exactitude</field>
+        <field name="weight">2.0</field>
+        <field name="description">Le maniement de la caisse, des rendus et des écarts de fin de journée.</field>
+        <field name="question_html"><![CDATA[<p>Votre caisse ferme avec 20 $ de moins. Que faites-vous ?</p>]]></field>
+        <field name="is_knockout" eval="True"/>
+        <field name="knockout_min">3</field>
+    </record>
+    <record id="tmpl_commerce_detail_c3_a1" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_commerce_detail_c3"/>
+        <field name="score">1</field>
+        <field name="label">Comble ou se tait</field>
+        <field name="description">Met de sa poche, ou ne dit rien.</field>
+    </record>
+    <record id="tmpl_commerce_detail_c3_a3" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_commerce_detail_c3"/>
+        <field name="score">3</field>
+        <field name="label">Le déclare</field>
+        <field name="description">Le signale au gérant.</field>
+    </record>
+    <record id="tmpl_commerce_detail_c3_a5" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_commerce_detail_c3"/>
+        <field name="score">5</field>
+        <field name="label">Le déclare et cherche</field>
+        <field name="description">Le signale tout de suite, revoit les transactions annulées et les rendus, et propose ce qui l'expliquerait.</field>
+    </record>
+
+    <record id="tmpl_commerce_detail_c4" model="bf.interview.guide.template.criterion">
+        <field name="template_id" ref="tmpl_commerce_detail"/>
+        <field name="sequence">40</field>
+        <field name="name">Vol à l'étalage</field>
+        <field name="weight">1.5</field>
+        <field name="description">La conduite devant un vol : la sécurité des personnes passe avant la marchandise.</field>
+        <field name="question_html"><![CDATA[<p>Vous voyez quelqu'un glisser un article dans son manteau. Que faites-vous ?</p>]]></field>
+    </record>
+    <record id="tmpl_commerce_detail_c4_a1" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_commerce_detail_c4"/>
+        <field name="score">1</field>
+        <field name="label">Intervient physiquement</field>
+        <field name="description">Poursuit ou retient la personne.</field>
+    </record>
+    <record id="tmpl_commerce_detail_c4_a3" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_commerce_detail_c4"/>
+        <field name="score">3</field>
+        <field name="label">Prévient</field>
+        <field name="description">Avise le gérant ou la sécurité.</field>
+    </record>
+    <record id="tmpl_commerce_detail_c4_a5" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_commerce_detail_c4"/>
+        <field name="score">5</field>
+        <field name="label">Prévient et reste présente</field>
+        <field name="description">Avise, reste visible dans le rayon sans confrontation, note le signalement.</field>
+    </record>
+
+    <record id="tmpl_commerce_detail_c5" model="bf.interview.guide.template.criterion">
+        <field name="template_id" ref="tmpl_commerce_detail"/>
+        <field name="sequence">50</field>
+        <field name="name">Tenue du plancher</field>
+        <field name="weight">1.5</field>
+        <field name="description">L'état du rayon quand personne ne regarde.</field>
+        <field name="question_html"><![CDATA[<p>Le magasin est vide un mardi après-midi. Que faites-vous de cette heure-là ?</p>]]></field>
+    </record>
+    <record id="tmpl_commerce_detail_c5_a1" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_commerce_detail_c5"/>
+        <field name="score">1</field>
+        <field name="label">Attend</field>
+        <field name="description">Attend le prochain client.</field>
+    </record>
+    <record id="tmpl_commerce_detail_c5_a3" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_commerce_detail_c5"/>
+        <field name="score">3</field>
+        <field name="label">Range</field>
+        <field name="description">Replace la marchandise.</field>
+    </record>
+    <record id="tmpl_commerce_detail_c5_a5" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_commerce_detail_c5"/>
+        <field name="score">5</field>
+        <field name="label">Prépare la suite</field>
+        <field name="description">Réétiquette, remplit, monte l'étalage de la promotion à venir, note les ruptures.</field>
+    </record>
+
+    <record id="tmpl_commerce_detail_c6" model="bf.interview.guide.template.criterion">
+        <field name="template_id" ref="tmpl_commerce_detail"/>
+        <field name="sequence">60</field>
+        <field name="name">Horaire du commerce</field>
+        <field name="weight">1.0</field>
+        <field name="description">Le poste exige des soirs et des fins de semaine : autant le dire tout de suite.</field>
+        <field name="question_html"><![CDATA[<p>Le poste demande deux soirs et une fin de semaine sur deux. Est-ce que ça vous convient ?</p>]]></field>
+        <field name="is_knockout" eval="True"/>
+        <field name="knockout_min">2</field>
+    </record>
+    <record id="tmpl_commerce_detail_c6_a1" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_commerce_detail_c6"/>
+        <field name="score">1</field>
+        <field name="label">Non</field>
+        <field name="description">Ne peut pas couvrir l'horaire du poste.</field>
+    </record>
+    <record id="tmpl_commerce_detail_c6_a3" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_commerce_detail_c6"/>
+        <field name="score">3</field>
+        <field name="label">En partie</field>
+        <field name="description">Peut couvrir la plus grande part, avec une contrainte nommée.</field>
+    </record>
+    <record id="tmpl_commerce_detail_c6_a5" model="bf.interview.guide.template.anchor">
+        <field name="criterion_id" ref="tmpl_commerce_detail_c6"/>
+        <field name="score">5</field>
+        <field name="label">Oui</field>
+        <field name="description">Disponible pour l'horaire demandé.</field>
+    </record>
+</odoo>

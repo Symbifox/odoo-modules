@@ -19,6 +19,13 @@
               sequence="2"
               groups="hr_recruitment.group_hr_recruitment_user"/>
 
+    <menuitem id="menu_interview_guide_template"
+              name="Modèles de grilles"
+              parent="hr_recruitment.menu_hr_recruitment_configuration"
+              action="action_interview_guide_template"
+              sequence="26"
+              groups="hr_recruitment.group_hr_recruitment_user"/>
+
     <menuitem id="menu_interview_guide"
               name="Grilles d'entrevue"
               parent="hr_recruitment.menu_hr_recruitment_configuration"

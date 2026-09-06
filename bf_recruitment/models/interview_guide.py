@@ -77,6 +77,13 @@ class InterviewGuide(models.Model):
         "bf.interview.guide", string="Version précédente", readonly=True, copy=False,
         ondelete="set null",
     )
+    source_template_id = fields.Many2one(
+        "bf.interview.guide.template", string="Tirée du modèle", readonly=True,
+        ondelete="set null",
+        help="Le modèle du catalogue d'où cette grille a été tirée. "
+             "La grille est autonome dès sa création : le modèle peut changer, "
+             "elle ne bouge pas.",
+    )
     criterion_ids = fields.One2many(
         "bf.interview.criterion", "guide_id", string="Critères", copy=True,
     )

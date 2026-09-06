@@ -2,7 +2,7 @@
     "name": "Recrutement : cahier d'entrevues",
     "summary": "Grilles d'entrevue par rôle, entrevues multiples, notation en panel "
                "à l'aveugle et cahier consolidé, greffés sur le recrutement d'Odoo",
-    "version": "18.0.1.1.2",
+    "version": "18.0.1.2.0",
     "category": "Human Resources/Recruitment",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",
@@ -36,6 +36,22 @@ Ce qu'il ajoute
   pas celle des autres. C'est ce qui distingue un panel d'une chambre d'écho.
 * **Deux rapports** : le cahier d'un candidat (toutes ses séances) et la grille
   comparative d'un poste (les candidats en colonnes).
+* **Un catalogue de 32 modèles de grilles** prêts à servir, tirés des pratiques
+  d'entrevue structurée : cinq grilles transversales (présélection, culture et
+  valeurs, entrevue finale, travail à distance, intégrité), dix-sept familles de
+  rôles et dix grilles sectorielles. Chaque modèle porte ses critères pondérés,
+  la question posée mot pour mot, et ce que vaut chaque note en comportements
+  observables.
+
+Le catalogue et les grilles
+---------------------------
+
+Un modèle n'est pas une grille : on ne note personne dessus. Il sert à déposer
+une grille en brouillon, dans la société courante, qu'on adapte à son poste
+avant de la publier. Les deux restent séparés pour deux raisons : la liste des
+grilles reste celle de l'organisation, et une mise à jour du module peut
+corriger une question mal tournée du catalogue sans jamais toucher aux grilles
+déjà tirées.
 
 Ce qu'il ne fait pas
 --------------------
@@ -62,7 +78,12 @@ notée. Sans ça, un dossier d'entrevue ne prouve rien.
     "data": [
         "security/recrutement_security.xml",
         "security/ir.model.access.csv",
+        "data/interview_guide_templates_transversales.xml",
+        "data/interview_guide_templates_metiers_affaires.xml",
+        "data/interview_guide_templates_metiers_techniques.xml",
+        "data/interview_guide_templates_secteurs.xml",
         "views/interview_guide_views.xml",
+        "views/interview_guide_template_views.xml",
         "views/interview_views.xml",
         "views/hr_applicant_views.xml",
         "report/interview_reports.xml",

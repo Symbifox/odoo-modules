@@ -57,6 +57,43 @@ application that went through no interview stays frictionless.
 **4. The book is computed, not stored.** Two QWeb reports, no extra model: a
 candidate's book (`hr.applicant`) and a job's comparison grid (`hr.job`).
 
+## The starter catalogue: 32 scorecard templates
+
+An empty scorecard model is a blank page, and a blank page gets filled with
+whatever comes to mind on the day, which is exactly what structured
+interviewing exists to prevent. The module therefore ships a catalogue of **32
+templates**, as module data:
+
+| Category | Count | What it covers |
+|---|---|---|
+| Cross-cutting | 5 | Phone screen, values, final interview, remote work, integrity and privileged access |
+| Role families | 17 | Sales, customer service, marketing, HR, accounting, administration, purchasing and logistics, retail, software, IT infrastructure, data, project management, people management, executive, production and trades, entry level, training |
+| Sectors | 10 | Health and social services, education, food service, construction, non-profit, municipal, transport, food processing, hospitality, professional services |
+
+Each template carries weighted criteria (**193** in total), the question asked
+**word for word**, what the interviewer is actually looking for, and **579
+anchors** describing in observable behaviour what a 1, a 3 and a 5 are worth.
+Twenty-eight criteria are knock-outs (a licence, an availability, a safety
+refusal) and they **flag** a session without discarding anyone. Every template's
+instructions repeat the four rules that make the practice work: same questions
+in the same order, facts rather than impressions, submit before discussing, and
+no question touching a protected characteristic.
+
+**A template is not a scorecard.** Nobody is scored on a template. It is used to
+drop a **draft scorecard** into the current company, which the organisation then
+adapts to its own job before publishing it. The two stay separate for two
+reasons: the scorecard list stays the organisation's own, and a module update
+can fix a badly worded question in the catalogue without ever touching the
+scorecards already drawn from it. A template archived by a tenant stays archived
+across updates: `active` is not in the XML definition, so the update does not
+rewrite it.
+
+| Model | Role |
+|---|---|
+| `bf.interview.guide.template` | One catalogue entry, read-only, delivered by the module |
+| `bf.interview.guide.template.criterion` | Its criteria, weights and knock-out thresholds |
+| `bf.interview.guide.template.anchor` | What each score means, in observable behaviour |
+
 ## What the module does not do
 
 - **It ranks nobody automatically.** The weighted score helps a person decide;
@@ -76,9 +113,13 @@ No new group. The three groups of `hr_recruitment` already describe the roles:
 
 | Group | What it can do |
 |---|---|
-| `group_hr_recruitment_interviewer` | Reads scorecards, sees the sessions it sits on, writes **its own** rating |
-| `group_hr_recruitment_user` | Sees everything, creates scorecards and sessions, prints books |
-| `group_hr_recruitment_manager` | Deletes a scorecard that was never published |
+| `group_hr_recruitment_interviewer` | Reads scorecards and the catalogue, sees the sessions it sits on, writes **its own** rating |
+| `group_hr_recruitment_user` | Sees everything, creates scorecards and sessions, draws scorecards from the catalogue, prints books |
+| `group_hr_recruitment_manager` | Deletes a scorecard that was never published, archives a catalogue template |
+
+The catalogue itself is **read-only**, for the manager as well: a local edit
+would be silently overwritten by the next module update. Drawing a scorecard
+from it is what everybody does instead.
 
 A rating belongs to the person who wrote it: the recruiter can see it, but does
 not score in their place. A submitted rating can no longer be rewritten.
@@ -96,6 +137,16 @@ not score in their place. A submitted rating can no longer be rewritten.
 - **A mutation placed on the blind-submission rule**: replace its domain with
   `[(1, '=', 1)]` and the panel member then sees the other's rating. The rule is
   indeed what hides it, and the test would have failed without it.
+- **The catalogue is tested as a deliverable**, not only as data that loads:
+  every template would pass `action_publish` (criteria present, all weights
+  positive), every criterion carries its question and anchors at 1 and at the
+  scale maximum, and every code is unique. A template with a missing anchor
+  fails the suite here rather than at a client.
+- **Two mutations on the catalogue path**: dropping the deep copy of the anchors
+  makes the fidelity test fail, and granting the recruiter write access on the
+  catalogue makes the read-only test fail.
+- **The upgrade path**: installed at the previous version, then upgraded. A
+  template archived by the tenant survives the upgrade, criteria intact.
 
 ## Companion modules
 

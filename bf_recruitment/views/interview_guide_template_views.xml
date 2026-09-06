@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_interview_guide_template_form" model="ir.ui.view">
+        <field name="name">bf.interview.guide.template.form</field>
+        <field name="model">bf.interview.guide.template</field>
+        <field name="arch" type="xml">
+            <form string="Modèle de grille" create="false" edit="false" delete="false">
+                <header>
+                    <button name="action_create_guide" type="object" class="oe_highlight"
+                            string="Créer une grille depuis ce modèle"
+                            groups="hr_recruitment.group_hr_recruitment_user"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_guides" type="object" class="oe_stat_button"
+                                icon="fa-list-alt" invisible="not guide_count">
+                            <field name="guide_count" widget="statinfo" string="Grilles tirées"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="code"/>
+                            <field name="category"/>
+                            <field name="role_family"/>
+                        </group>
+                        <group>
+                            <field name="round_type"/>
+                            <field name="duration_minutes"/>
+                            <field name="scale_max"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="summary" nolabel="1"/>
+                    </group>
+                    <notebook>
+                        <page string="Critères" name="criteria">
+                            <field name="criterion_ids" readonly="1">
+                                <list>
+                                    <field name="sequence" column_invisible="1"/>
+                                    <field name="name"/>
+                                    <field name="description" optional="show"/>
+                                    <field name="weight"/>
+                                    <field name="is_knockout" widget="boolean_toggle"/>
+                                </list>
+                                <form string="Critère">
+                                    <sheet>
+                                        <group>
+                                            <group>
+                                                <field name="name"/>
+                                                <field name="weight"/>
+                                            </group>
+                                            <group>
+                                                <field name="is_knockout"/>
+                                                <field name="knockout_min" invisible="not is_knockout"/>
+                                            </group>
+                                        </group>
+                                        <group string="Ce qu'on cherche">
+                                            <field name="description" nolabel="1"/>
+                                        </group>
+                                        <group string="Question à poser">
+                                            <field name="question_html" nolabel="1"/>
+                                        </group>
+                                        <group string="Ancrages">
+                                            <field name="anchor_ids" nolabel="1" colspan="2">
+                                                <list>
+                                                    <field name="score"/>
+                                                    <field name="label"/>
+                                                    <field name="description"/>
+                                                </list>
+                                            </field>
+                                        </group>
+                                    </sheet>
+                                </form>
+                            </field>
+                        </page>
+                        <page string="Consignes" name="instructions">
+                            <field name="instructions_html" readonly="1"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_interview_guide_template_list" model="ir.ui.view">
+        <field name="name">bf.interview.guide.template.list</field>
+        <field name="model">bf.interview.guide.template</field>
+        <field name="arch" type="xml">
+            <list string="Modèles de grilles" create="false" edit="false" delete="false">
+                <field name="sequence" column_invisible="1"/>
+                <field name="name"/>
+                <field name="code" optional="show"/>
+                <field name="category"/>
+                <field name="role_family" optional="show"/>
+                <field name="round_type"/>
+                <field name="criterion_count" string="Critères"/>
+                <field name="duration_minutes" optional="hide"/>
+                <field name="guide_count" string="Grilles tirées" optional="hide"/>
+                <button name="action_create_guide" type="object" string="Créer une grille"
+                        icon="fa-plus-square-o"
+                        groups="hr_recruitment.group_hr_recruitment_user"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_interview_guide_template_search" model="ir.ui.view">
+        <field name="name">bf.interview.guide.template.search</field>
+        <field name="model">bf.interview.guide.template</field>
+        <field name="arch" type="xml">
+            <search string="Modèles de grilles">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="role_family"/>
+                <field name="criterion_ids" string="Critère"/>
+                <filter name="transversale" string="Transversales"
+                        domain="[('category', '=', 'transversale')]"/>
+                <filter name="metier" string="Familles de rôles"
+                        domain="[('category', '=', 'metier')]"/>
+                <filter name="secteur" string="Secteurs"
+                        domain="[('category', '=', 'secteur')]"/>
+                <separator/>
+                <filter name="inactive" string="Archivés" domain="[('active', '=', False)]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="group_category" string="Catégorie"
+                            context="{'group_by': 'category'}"/>
+                    <filter name="group_family" string="Famille de rôles"
+                            context="{'group_by': 'role_family'}"/>
+                    <filter name="group_round" string="Tour"
+                            context="{'group_by': 'round_type'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_interview_guide_template" model="ir.actions.act_window">
+        <field name="name">Modèles de grilles</field>
+        <field name="res_model">bf.interview.guide.template</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_group_category': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Le catalogue est vide</p>
+            <p>
+                Les modèles sont livrés avec le module. Chacun donne des critères
+                pondérés, une question posée mot pour mot et ce que vaut chaque note
+                en comportements observables. On en tire une grille, qu'on adapte à
+                son poste avant de la publier.
+            </p>
+        </field>
+    </record>
+
+</odoo>
