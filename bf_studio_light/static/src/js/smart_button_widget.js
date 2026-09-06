@@ -1,6 +1,6 @@
 /** @odoo-module **/
 //
-// Studio Light — Smart button widget.
+// Forge — Smart button widget.
 //
 // View widget rendered in place of a server-computed count. Receives the
 // smart-button id, label, icon, color and open-on-click flag as static

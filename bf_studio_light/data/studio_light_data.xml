@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <record id="cron_studio_light_integrity" model="ir.cron">
-        <field name="name">Studio Light: integrity check</field>
+        <field name="name">Forge: integrity check</field>
         <field name="model_id" ref="model_studio_light_field"/>
         <field name="state">code</field>
         <field name="code">model._ensure_all_provisioned()</field>

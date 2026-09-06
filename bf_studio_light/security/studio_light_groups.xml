@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <record id="module_category_studio_light" model="ir.module.category">
-        <field name="name">Studio Light</field>
+        <field name="name">Forge</field>
         <field name="sequence">20</field>
     </record>
 
     <record id="group_studio_light_admin" model="res.groups">
-        <field name="name">Studio Light: Administrator</field>
+        <field name="name">Forge: Administrator</field>
         <field name="category_id" ref="module_category_studio_light"/>
         <field name="implied_ids" eval="[(4, ref('base.group_system'))]"/>
-        <field name="comment">Can create custom fields and view injections via Studio Light, scoped to non-locked models.</field>
+        <field name="comment">Can create custom fields and view injections via Forge, scoped to non-locked models.</field>
     </record>
 
     <!-- Granted ONLY to a true sysadmin who explicitly accepts the risk of
          touching locked models (res.users, account.move, etc.). NOT implied
          by the regular admin group. -->
     <record id="group_studio_light_unlocked" model="res.groups">
-        <field name="name">Studio Light: Bypass model lock</field>
+        <field name="name">Forge: Bypass model lock</field>
         <field name="category_id" ref="module_category_studio_light"/>
-        <field name="comment">Allows creating Studio Light fields on locked models (res.users, payment.*, ir.*, mail.*, account.*, etc.). Grant manually with extreme caution — bypasses the safety net designed to prevent accidental modification of authentication, financial, and infrastructure tables.</field>
+        <field name="comment">Allows creating Forge fields on locked models (res.users, payment.*, ir.*, mail.*, account.*, etc.). Grant manually with extreme caution — bypasses the safety net designed to prevent accidental modification of authentication, financial, and infrastructure tables.</field>
     </record>
 </odoo>

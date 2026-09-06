@@ -4,7 +4,7 @@
         <field name="name">studio.light.field.list</field>
         <field name="model">studio.light.field</field>
         <field name="arch" type="xml">
-            <list string="Studio Light fields">
+            <list string="Forge fields">
                 <field name="model_name"/>
                 <field name="name"/>
                 <field name="label"/>
@@ -19,7 +19,7 @@
         <field name="name">studio.light.field.form</field>
         <field name="model">studio.light.field</field>
         <field name="arch" type="xml">
-            <form string="Studio Light field">
+            <form string="Forge field">
                 <sheet>
                     <div class="oe_button_box" name="button_box">
                         <button name="action_toggle_active"

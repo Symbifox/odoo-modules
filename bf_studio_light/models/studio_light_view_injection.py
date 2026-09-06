@@ -109,7 +109,7 @@ def _validate_arch_snippet(snippet, allow_trusted=False):
 
 
 class StudioLightViewInjection(models.Model):
-    """Persisted view inheritance for Studio Light fields.
+    """Persisted view inheritance for Forge fields.
 
     Each row generates one ``ir.ui.view`` (mode='extension'). On uninstall
     of the parent module the ir.ui.view may disappear; we recreate it from
@@ -117,10 +117,10 @@ class StudioLightViewInjection(models.Model):
     """
 
     _name = "studio.light.view.injection"
-    _description = "Studio Light — View injection"
+    _description = "Forge — View injection"
     _order = "model_name, view_type, sequence"
 
-    name = fields.Char(required=True, default="Studio Light injection")
+    name = fields.Char(required=True, default="Forge injection")
     studio_field_id = fields.Many2one(
         "studio.light.field",
         ondelete="cascade",
@@ -344,7 +344,7 @@ class StudioLightViewInjection(models.Model):
                 view = Views.create(vals)
                 rec.ir_view_id = view.id
                 _logger.info(
-                    "Studio Light: created ir.ui.view for %s on %s",
+                    "Forge: created ir.ui.view for %s on %s",
                     rec.model_name,
                     parent.name,
                 )
@@ -390,7 +390,7 @@ class StudioLightViewInjection(models.Model):
                     rec.ir_view_id.sudo().unlink()
                 except Exception as e:
                     _logger.warning(
-                        "Studio Light: could not unlink ir.ui.view %s: %s",
+                        "Forge: could not unlink ir.ui.view %s: %s",
                         rec.ir_view_id.id,
                         e,
                     )
@@ -410,7 +410,7 @@ class StudioLightViewInjection(models.Model):
                 rec.failed_count = (rec.failed_count or 0) + 1
                 rec.last_failure_message = str(e)[:512]
                 _logger.error(
-                    "Studio Light: integrity provisioning failed for view "
+                    "Forge: integrity provisioning failed for view "
                     "injection %s (attempt %s): %s",
                     rec.id,
                     rec.failed_count,
@@ -421,7 +421,7 @@ class StudioLightViewInjection(models.Model):
                         studio_light_skip_provision=True
                     ).active = False
                     _logger.warning(
-                        "Studio Light: auto-deactivated view injection %s "
+                        "Forge: auto-deactivated view injection %s "
                         "after 3 failures",
                         rec.id,
                     )
@@ -447,12 +447,12 @@ class StudioLightViewInjection(models.Model):
         if not orphans:
             return
         _logger.info(
-            "Studio Light: cleaning %s orphan ir.ui.view rows: %s",
+            "Forge: cleaning %s orphan ir.ui.view rows: %s",
             len(orphans), orphans.ids,
         )
         try:
             orphans.unlink()
         except Exception as e:
             _logger.warning(
-                "Studio Light: orphan view cleanup failed: %s", e,
+                "Forge: orphan view cleanup failed: %s", e,
             )

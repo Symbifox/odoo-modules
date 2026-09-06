@@ -68,7 +68,7 @@ class StudioLightSmartButton(models.Model):
     """
 
     _name = "studio.light.smart.button"
-    _description = "Studio Light — Smart button"
+    _description = "Forge — Smart button"
     _order = "source_model_name, sequence, id"
 
     name = fields.Char(required=True, default="Smart button")
@@ -177,7 +177,7 @@ class StudioLightSmartButton(models.Model):
             if is_model_locked(rec.source_model_name) and not rec._is_unlocked():
                 raise ValidationError(
                     _(
-                        "Source model %s is locked. The 'Studio Light: Bypass "
+                        "Source model %s is locked. The 'Forge: Bypass "
                         "model lock' group is required to override."
                     )
                     % rec.source_model_name
@@ -189,7 +189,7 @@ class StudioLightSmartButton(models.Model):
             if is_model_locked(rec.target_model_name) and not rec._is_unlocked():
                 raise ValidationError(
                     _(
-                        "Target model %s is locked. The 'Studio Light: Bypass "
+                        "Target model %s is locked. The 'Forge: Bypass "
                         "model lock' group is required to override."
                     )
                     % rec.target_model_name
@@ -354,7 +354,7 @@ class StudioLightSmartButton(models.Model):
             if not has_box:
                 box_vals = dict(
                     base_vals,
-                    name=f"Studio Light box for {rec.name}",
+                    name=f"Forge box for {rec.name}",
                     custom_xpath="//sheet",
                     position="before",
                     arch_snippet=(
@@ -378,7 +378,7 @@ class StudioLightSmartButton(models.Model):
             # 2) Mandatory button row.
             btn_vals = dict(
                 base_vals,
-                name=f"Studio Light button {rec.name}",
+                name=f"Forge button {rec.name}",
                 custom_xpath="//div[@name='button_box']",
                 position="inside",
                 arch_snippet=arch,
@@ -437,7 +437,7 @@ class StudioLightSmartButton(models.Model):
                         inj.unlink()
                     except Exception as e:
                         _logger.warning(
-                            "Studio Light: could not unlink injection "
+                            "Forge: could not unlink injection "
                             "%s: %s",
                             inj.id,
                             e,
@@ -458,7 +458,7 @@ class StudioLightSmartButton(models.Model):
                 rec.failed_count = (rec.failed_count or 0) + 1
                 rec.last_failure_message = str(e)[:512]
                 _logger.error(
-                    "Studio Light: smart-button provisioning failed for "
+                    "Forge: smart-button provisioning failed for "
                     "%s (attempt %s): %s",
                     rec.id,
                     rec.failed_count,
@@ -469,7 +469,7 @@ class StudioLightSmartButton(models.Model):
                         studio_light_skip_provision=True
                     ).active = False
                     _logger.warning(
-                        "Studio Light: auto-deactivated smart button %s "
+                        "Forge: auto-deactivated smart button %s "
                         "after 3 failures",
                         rec.id,
                     )

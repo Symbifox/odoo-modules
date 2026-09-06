@@ -100,30 +100,29 @@ msgstr "Échec de la création du champ %s sur %s : %s"
 #. module: bf_studio_light
 #: code:addons/bf_studio_light/models/studio_light_field.py:0
 msgid ""
-"Model %s is locked by Studio Light. The dedicated 'Studio Light: Bypass "
+"Model %s is locked by Forge. The dedicated 'Forge: Bypass "
 "model lock' group is required to override (and must be granted by a "
 "sysadmin)."
 msgstr ""
-"Le modèle %s est verrouillé par Studio Light. Le groupe dédié « Studio "
-"Light : Bypass du verrou modèle » est requis pour passer outre (et doit "
+"Le modèle %s est verrouillé par Forge. Le groupe dédié « Forge : Bypass du verrou modèle » est requis pour passer outre (et doit "
 "être accordé par un sysadmin)."
 
 #. module: bf_studio_light
 #: code:addons/bf_studio_light/models/studio_light_smart_button.py:0
 msgid ""
-"Source model %s is locked. The 'Studio Light: Bypass model lock' group "
+"Source model %s is locked. The 'Forge: Bypass model lock' group "
 "is required to override."
 msgstr ""
-"Le modèle source %s est verrouillé. Le groupe « Studio Light : Bypass "
+"Le modèle source %s est verrouillé. Le groupe « Forge : Bypass "
 "du verrou modèle » est requis pour passer outre."
 
 #. module: bf_studio_light
 #: code:addons/bf_studio_light/models/studio_light_smart_button.py:0
 msgid ""
-"Target model %s is locked. The 'Studio Light: Bypass model lock' group "
+"Target model %s is locked. The 'Forge: Bypass model lock' group "
 "is required to override."
 msgstr ""
-"Le modèle cible %s est verrouillé. Le groupe « Studio Light : Bypass "
+"Le modèle cible %s est verrouillé. Le groupe « Forge : Bypass "
 "du verrou modèle » est requis pour passer outre."
 
 #. module: bf_studio_light
@@ -284,11 +283,11 @@ msgstr "Choisissez d'abord un modèle."
 #. module: bf_studio_light
 #: code:addons/bf_studio_light/wizards/studio_light_wizard.py:0
 msgid ""
-"Model %s is locked. Ask a sysadmin to grant you the 'Studio Light: "
+"Model %s is locked. Ask a sysadmin to grant you the 'Forge: "
 "Bypass model lock' group if you really need to extend this model."
 msgstr ""
 "Le modèle %s est verrouillé. Demandez à un sysadmin de vous accorder "
-"le groupe « Studio Light : Bypass du verrou modèle » si vous devez "
+"le groupe « Forge : Bypass du verrou modèle » si vous devez "
 "vraiment étendre ce modèle."
 
 #. module: bf_studio_light
@@ -298,23 +297,19 @@ msgstr "Choisissez le modèle lié pour le champ Many2one."
 
 #. module: bf_studio_light
 #: model:ir.module.category,name:bf_studio_light.module_category_studio_light
-msgid "Studio Light"
-msgstr "Studio Light"
+#: model:ir.ui.menu,name:bf_studio_light.menu_studio_light_root
+msgid "Forge"
+msgstr "Forge"
 
 #. module: bf_studio_light
 #: model:res.groups,name:bf_studio_light.group_studio_light_admin
-msgid "Studio Light: Administrator"
-msgstr "Studio Light : Administrateur"
+msgid "Forge: Administrator"
+msgstr "Forge : Administrateur"
 
 #. module: bf_studio_light
 #: model:res.groups,name:bf_studio_light.group_studio_light_unlocked
-msgid "Studio Light: Bypass model lock"
-msgstr "Studio Light : Bypass du verrou modèle"
-
-#. module: bf_studio_light
-#: model:ir.ui.menu,name:bf_studio_light.menu_studio_light_root
-msgid "Customization"
-msgstr "Personnalisation"
+msgid "Forge: Bypass model lock"
+msgstr "Forge : Bypass du verrou modèle"
 
 #. module: bf_studio_light
 #: model:ir.ui.menu,name:bf_studio_light.menu_studio_light_new

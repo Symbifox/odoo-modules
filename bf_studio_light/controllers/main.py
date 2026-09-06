@@ -66,7 +66,7 @@ class StudioLightSmartButtonController(http.Controller):
             return _envelope(error="timeout")
         except Exception:
             _logger.exception(
-                "Studio Light: smart_button_count failed "
+                "Forge: smart_button_count failed "
                 "(sb_id=%s, src_id=%s)",
                 sb_id,
                 src_id,

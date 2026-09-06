@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo noupdate="1">
     <record id="bf_onb_step_groups" model="onboarding.onboarding.step">
-        <field name="title">Assigner les accès Studio Light</field>
-        <field name="description">[action:base.action_res_users] Donnez le groupe « Studio Light » aux administrateurs autorisés à modifier les modèles. Ne pas distribuer ce groupe à toute l'équipe par défaut.</field>
+        <field name="title">Assigner les accès Forge</field>
+        <field name="description">[action:base.action_res_users] Donnez le groupe « Forge » aux administrateurs autorisés à modifier les modèles. Ne pas distribuer ce groupe à toute l'équipe par défaut.</field>
         <field name="button_text">Gérer les utilisateurs</field>
         <field name="done_text">Accès restreints</field>
         <field name="panel_step_open_action_name">bf_open_action</field>
@@ -17,7 +17,7 @@
         <field name="sequence">2</field>
     </record>
     <record id="bf_onboarding_panel" model="onboarding.onboarding">
-        <field name="name">Studio Light</field>
+        <field name="name">Forge</field>
         <field name="route_name">bf_studio_light_onboarding</field>
         <field name="panel_close_action_name">action_close_panel_bf_studio_light</field>
         <field name="step_ids" eval="[

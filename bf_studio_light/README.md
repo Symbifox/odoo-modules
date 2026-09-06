@@ -1,4 +1,4 @@
-# Studio Light
+# Forge
 
 Field builder for Odoo 18 Community. Add custom fields, related/computed
 fields, and inject them into existing views without writing a module — and
@@ -88,8 +88,8 @@ This module exposes admin-level capabilities. Two groups are involved:
 
 | Group                                      | Capability                                                      |
 | ------------------------------------------ | --------------------------------------------------------------- |
-| **Studio Light: Administrator**            | Create fields and view injections on non-locked models.         |
-| **Studio Light: Bypass model lock**        | (Sysadmin only) Allow operating on locked models.               |
+| **Forge: Administrator**            | Create fields and view injections on non-locked models.         |
+| **Forge: Bypass model lock**        | (Sysadmin only) Allow operating on locked models.               |
 
 **Locked models** (refused by default): `ir.*`, `base.*`, `bus.*`,
 `mail.*`, `account.*`, `payment.*`, `auth.*`, `auth_*`,

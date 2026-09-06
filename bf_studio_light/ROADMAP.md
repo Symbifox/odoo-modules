@@ -30,7 +30,7 @@ flagged as future work.
    assembled server-side from already-validated parts. Reuse would
    re-open the server-action `code` chain.
 
-These three constraints are what make Studio Light *Studio Light*
+These three constraints are what make Forge *Forge*
 rather than Studio. They also mean a small handful of Studio
 Enterprise features will never have an equivalent here. That's a
 feature, not a bug — see §5.
@@ -68,7 +68,7 @@ restriction in a tightly-scoped way.
 
 | # | Feature | Notes |
 | - | --- | --- |
-| B1 | **Studio Customizations export** ("Extract to module") | Wizard that reads every `studio.light.field`, `studio.light.view.injection`, `studio.light.smart.button` on a given model (or all) and emits a real installable `.zip`: `__manifest__.py`, `models.py`, `views.xml`, `security/ir.model.access.csv`. This is the **portability unlock** — once it exists, anything built in Studio Light can be promoted to a versioned, code-reviewable module. Should land before B2 because B2's output also benefits from being exportable. |
+| B1 | **Studio Customizations export** ("Extract to module") | Wizard that reads every `studio.light.field`, `studio.light.view.injection`, `studio.light.smart.button` on a given model (or all) and emits a real installable `.zip`: `__manifest__.py`, `models.py`, `views.xml`, `security/ir.model.access.csv`. This is the **portability unlock** — once it exists, anything built in Forge can be promoted to a versioned, code-reviewable module. Should land before B2 because B2's output also benefits from being exportable. |
 | B2 | **New full models** | `studio.light.model` table → creates a new `models.Model` at install/upgrade time via `_inherit = 'ir.model'` machinery (similar to how Studio's `studio_customization` module works). Auto-creates default form/list/kanban views and a baseline ACL row. Locked-model denylist still applies — you can't create a model named `account.invoice2`. |
 | B3 | **New apps / menus** | Builds on B2: pick icon (from a curated FontAwesome + SVG pack), color, parent menu (or top-level). Generates `ir.ui.menu` + `ir.actions.act_window` records, never `ir.module.module` rows. |
 | B4 | **Statusbar / stage editor** | Currently `<header>` and `<statusbar>` are blacklisted from the arch whitelist (S12 in the security audit). Introduce a **constrained variant**: a wizard that emits exactly one `<header><field name="..." widget="statusbar"/></header>` block, fully server-templated, with no user-supplied attributes other than the field name. The wizard validates the target field is a `selection` or `many2one` on the host model. |
@@ -86,7 +86,7 @@ re-litigate the question.
 | # | Feature | Verdict | Why |
 | - | --- | --- | --- |
 | C1 | **QWeb PDF report editor** | Permanent out-of-scope | Studio's marquee feature, single biggest engineering line item. Building a safe QWeb editor (templating, sandbox, preview pipeline, asset bundling) is comparable in effort to the rest of this roadmap combined. Recommend customers needing PDF customization either pay for Studio or have a dev write the QWeb directly. |
-| C2 | **Full drag-and-drop OWL view designer** | Defer indefinitely | The JS effort approaches Studio itself. The wizard-driven UX in Studio Light is intentionally less flashy but covers 80% of the daily ask. Revisit only if a customer specifically pays for it. |
+| C2 | **Full drag-and-drop OWL view designer** | Defer indefinitely | The JS effort approaches Studio itself. The wizard-driven UX in Forge is intentionally less flashy but covers 80% of the daily ask. Revisit only if a customer specifically pays for it. |
 | C3 | **Selection extension on core fields** | Blocked by Odoo core | `ir.model.fields.selection.create()` refuses non-manual fields with *"Properties of base fields cannot be altered in this manner!"*. Tier 2.3 was abandoned in v18.0.3 for exactly this reason. No safe workaround. |
 | C4 | **Python `compute=` / `code=` server actions** | Blocked by §1.1 | Direct RCE. Not negotiable. A86 (declarative computed) and B6 (declarative automations) cover the legitimate use cases. |
 | C5 | **`ir.rule` / record-rule editor** | Deferred behind a new dedicated group | A single bad rule opens the whole DB to every authenticated user. Possible eventually, but only behind a separate `group_studio_light_acl_editor` group with the same opt-in posture as `group_studio_light_unlocked`. Until then, ACL changes go through a developer. |
@@ -159,5 +159,5 @@ Light. Better options:
 3. Use OCA's `report_qweb_*` modules for report tweaks rather than a
    full editor.
 
-The function of Studio Light is to make the 80% case fast and
+The function of Forge is to make the 80% case fast and
 self-service, not to replicate every paid feature.

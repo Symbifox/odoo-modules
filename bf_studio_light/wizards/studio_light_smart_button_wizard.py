@@ -6,7 +6,7 @@ from ..models.studio_light_smart_button import COLOR_CHOICES
 
 class StudioLightSmartButtonWizard(models.TransientModel):
     _name = "studio.light.smart.button.wizard"
-    _description = "Studio Light — Add smart button wizard"
+    _description = "Forge — Add smart button wizard"
 
     source_model_id = fields.Many2one(
         "ir.model",

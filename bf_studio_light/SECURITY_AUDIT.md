@@ -13,7 +13,7 @@ findings should be appended; resolved findings stay for traceability.
 
 The module exposes admin-level capabilities — creating database fields,
 modifying views, registering inheriting `ir.ui.view` records — to users
-in the `Studio Light: Administrator` group. The threat model assumes:
+in the `Forge: Administrator` group. The threat model assumes:
 
 - The group is granted only to trusted admins.
 - All other users are NOT in the group.

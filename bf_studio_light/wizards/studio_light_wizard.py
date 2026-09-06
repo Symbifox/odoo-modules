@@ -10,7 +10,7 @@ from ..models.studio_light_field import (
 
 class StudioLightWizard(models.TransientModel):
     _name = "studio.light.wizard"
-    _description = "Studio Light — New custom field"
+    _description = "Forge — New custom field"
 
     # Step 1 — pick the target
     model_id = fields.Many2one(
@@ -113,7 +113,7 @@ class StudioLightWizard(models.TransientModel):
             raise UserError(
                 _(
                     "Model %s is locked. Ask a sysadmin to grant you the "
-                    "'Studio Light: Bypass model lock' group if you really "
+                    "'Forge: Bypass model lock' group if you really "
                     "need to extend this model."
                 )
                 % self.model_id.model

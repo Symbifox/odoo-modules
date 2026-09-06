@@ -1,7 +1,7 @@
 {
-    "name": "Symbifox — Studio Light",
+    "name": "Symbifox — Forge",
     "summary": "Field builder for Odoo Community: add custom fields, smart buttons and inject them in views without writing a module. Survives -u all upgrades.",
-    "version": "18.0.7.0.0",
+    "version": "18.0.7.1.0",
     "category": "Customization",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",

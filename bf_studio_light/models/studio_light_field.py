@@ -28,7 +28,7 @@ SUPPORTED_TYPES = [
     ("image", "Image"),
 ]
 
-# Studio Light surfaces ``image`` as a separate user-facing type, but at
+# Forge surfaces ``image`` as a separate user-facing type, but at
 # the ir.model.fields level Odoo only accepts ttype='binary' — ``image``
 # is a Python-side ``fields.Image`` wrapper around binary plus a
 # widget="image" hint at display time. Anywhere we hit the schema we
@@ -193,7 +193,7 @@ def slugify_field_name(label):
 
 class StudioLightFieldSelection(models.Model):
     _name = "studio.light.field.selection"
-    _description = "Studio Light — Selection value"
+    _description = "Forge — Selection value"
     _order = "sequence, id"
 
     field_id = fields.Many2one(
@@ -229,14 +229,14 @@ class StudioLightFieldSelection(models.Model):
 
 
 class StudioLightField(models.Model):
-    """Persistent metadata for a custom field added through Studio Light.
+    """Persistent metadata for a custom field added through Forge.
 
     The corresponding ``ir.model.fields`` record is recreated on demand
     (post_init, integrity cron) so the field survives ``-u all`` upgrades.
     """
 
     _name = "studio.light.field"
-    _description = "Studio Light — Custom field"
+    _description = "Forge — Custom field"
     _order = "model_id, name"
 
     name = fields.Char(
@@ -294,7 +294,7 @@ class StudioLightField(models.Model):
     invisible_expr = fields.Char(
         string="Invisible when",
         help="Python-style expression: when truthy, the field is hidden in "
-        "every Studio Light view injection. Example: state == 'draft'.",
+        "every Forge view injection. Example: state == 'draft'.",
     )
     required_expr = fields.Char(
         string="Required when",
@@ -365,8 +365,8 @@ class StudioLightField(models.Model):
             if is_model_locked(rec.model_name) and not rec._is_unlocked():
                 raise ValidationError(
                     _(
-                        "Model %s is locked by Studio Light. The dedicated "
-                        "'Studio Light: Bypass model lock' group is required "
+                        "Model %s is locked by Forge. The dedicated "
+                        "'Forge: Bypass model lock' group is required "
                         "to override (and must be granted by a sysadmin)."
                     )
                     % rec.model_name
@@ -384,7 +384,7 @@ class StudioLightField(models.Model):
             ):
                 raise ValidationError(
                     _(
-                        "Target model %s is locked by Studio Light. "
+                        "Target model %s is locked by Forge. "
                         "Relational fields cannot point at locked models "
                         "without the 'Bypass model lock' group."
                     )
@@ -586,13 +586,13 @@ class StudioLightField(models.Model):
                 rec.failed_count = 0
                 rec.last_failure_message = False
                 _logger.info(
-                    "Studio Light: created ir.model.fields %s on %s",
+                    "Forge: created ir.model.fields %s on %s",
                     rec.name,
                     rec.model_name,
                 )
             except Exception as e:
                 _logger.exception(
-                    "Studio Light: failed to create field %s on %s",
+                    "Forge: failed to create field %s on %s",
                     rec.name,
                     rec.model_name,
                 )
@@ -690,7 +690,7 @@ class StudioLightField(models.Model):
                     rec.ir_model_field_id.sudo().unlink()
                 except Exception as e:
                     _logger.warning(
-                        "Studio Light: could not unlink ir.model.fields %s: %s",
+                        "Forge: could not unlink ir.model.fields %s: %s",
                         rec.name,
                         e,
                     )
@@ -714,7 +714,7 @@ class StudioLightField(models.Model):
                 rec.failed_count = (rec.failed_count or 0) + 1
                 rec.last_failure_message = str(e)[:512]
                 _logger.error(
-                    "Studio Light: integrity provisioning failed for %s.%s "
+                    "Forge: integrity provisioning failed for %s.%s "
                     "(attempt %s): %s",
                     rec.model_name,
                     rec.name,
@@ -724,7 +724,7 @@ class StudioLightField(models.Model):
                 if rec.failed_count >= 3:
                     rec.active = False
                     _logger.warning(
-                        "Studio Light: auto-deactivated %s.%s after 3 failures",
+                        "Forge: auto-deactivated %s.%s after 3 failures",
                         rec.model_name,
                         rec.name,
                     )
