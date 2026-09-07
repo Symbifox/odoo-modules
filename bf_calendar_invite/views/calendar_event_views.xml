@@ -40,6 +40,20 @@
             <xpath expr="//field[@name='current_status']" position="before">
                 <field name="bf_event_status" readonly="not user_can_edit"/>
             </xpath>
+            <!--
+              L'emplacement d'une rencontre est une URL dans la grande majorité
+              des cas où il est rempli : c'est le lien de la salle, et il fallait
+              le sélectionner à la main pour le suivre. Le widget ne touche qu'à
+              l'affichage — le champ reste un `Char` libre, et une valeur sans
+              URL se rend exactement comme avant.
+
+              Posé en `position="attributes"` sur le champ du cœur plutôt qu'en
+              le remplaçant : on garde son `placeholder` et son `readonly`, qui
+              sont ceux du cœur et peuvent changer d'une version à l'autre.
+            -->
+            <xpath expr="//field[@name='location']" position="attributes">
+                <attribute name="widget">bf_location_link</attribute>
+            </xpath>
             <xpath expr="//div[@name='send_buttons']" position="inside">
                 <button name="action_bf_poke" type="object"
                         string=" POKE" icon="fa-hand-o-right"

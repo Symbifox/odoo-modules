@@ -17,6 +17,90 @@
     opacity: 0.7;
 }
 
+// Une rencontre TENTATIVE, dans la grille du calendrier.
+//
+// 🔴 Ni un fond plus pâle ni une opacité réduite : la place était prise.
+// `o_attendee_status_needsAction` du cœur pose déjà `--o-bg-opacity: .5`, et
+// sur un calendrier réel la quasi-totalité des rencontres sont à « nécessite
+// une action ». Une tentative peinte plus pâle serait donc identique à presque
+// toute la grille — mesuré avant d'écrire une ligne, et c'est ce qui a écarté
+// la première idée.
+//
+// Ce qui reste libre, c'est la TEXTURE. Des hachures à 45° sur toute la
+// vignette : le cœur s'en sert déjà pour `o_event_hatched`, donc le vocabulaire
+// est celui d'Odoo et pas une invention maison, et une texture se lit par
+// dessus n'importe quelle opacité.
+//
+// ⚠️ Les hachures sont en `currentColor` et non dans la couleur du calendrier.
+// La règle du cœur les recompose pour chacune des 56 entrées de la palette,
+// dans une boucle Sass où l'on ne peut pas entrer. `currentColor` est la
+// couleur du TEXTE de la vignette, que le cœur a déjà calculée pour contraster
+// avec son fond (`color-contrast($color-subtle)`) : elle se voit donc sur les
+// 56 fonds, en clair comme en sombre, sans recopier une seule valeur.
+.fc-event.bf_event_tentative {
+    // Le contour tireté, qui répond à la seconde moitié de la demande. Il tient
+    // même là où la texture ne prend pas (vignettes d'un seul pixel de haut).
+    border-style: dashed !important;
+
+    .fc-event-main::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        // ⚠️ Sous la « C » et sous le texte : `z-index: 0` et non `auto`, sinon
+        // la texture se peint par-dessus le titre sur les vignettes que
+        // FullCalendar empile.
+        z-index: 0;
+        pointer-events: none;
+        opacity: 0.18;
+        background: repeating-linear-gradient(
+            45deg,
+            currentColor 0 3px,
+            transparent 3px 8px
+        );
+    }
+}
+
+// Une rencontre CONFIRMÉE : la lettre « C » dans le coin haut droit.
+//
+// ⚠️ Portée par `.fc-event-main::after` et surtout PAS par `.fc-event::after` :
+// le cœur y a déjà posé le voile des rencontres passées
+// (`&.o_past_event::after`, un `position: absolute` sur les quatre côtés). Deux
+// règles sur le même pseudo-élément ne cohabitent pas — la seconde remplace la
+// première — et la marque aurait donc effacé le grisé du passé, ou l'inverse,
+// selon l'ordre de compilation des feuilles. Sur `.fc-event-main`, les deux
+// vivent ensemble : le « C » se retrouve sous le voile d'une rencontre passée,
+// ce qui est exactement ce qu'on veut.
+//
+// L'ancrage marche dans les deux dispositions de FullCalendar sans rien y
+// changer : en grille horaire `.fc-event-main` est déjà positionné et sert
+// lui-même de repère, en grille mensuelle il ne l'est pas et le repère devient
+// `.fc-event`, que le cœur positionne pour son propre voile. Le coin est le
+// même dans les deux cas.
+.fc-event.bf_event_confirmed {
+    .fc-event-main::after {
+        content: "C";
+        position: absolute;
+        top: 0;
+        right: 2px;
+        z-index: 1;
+        font-size: 0.72em;
+        font-weight: 700;
+        line-height: 1.15;
+        // Discret, comme demandé : la marque dit « rien à faire ici », donc
+        // elle ne doit pas attirer l'œil autant que ce qui reste à faire.
+        opacity: 0.5;
+        pointer-events: none;
+    }
+
+    // La place que la marque occupe, rendue au titre. Sans ça, le « C » se
+    // superpose à la dernière lettre d'un titre long au lieu de le faire
+    // tronquer — et en vue mois, où la vignette n'a qu'une ligne, c'est le cas
+    // ordinaire et non le cas limite.
+    .o_event_title {
+        padding-right: 0.9em;
+    }
+}
+
 // Le pied de la bulle d'un événement, sur deux rangées.
 //
 // Mesuré : la bulle fait 448 px, son pied en réclamait 676 en `nowrap`. « Oui /

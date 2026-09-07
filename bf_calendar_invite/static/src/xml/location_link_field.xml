@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <!--
+      Hérité en mode `primary` de `web.CharField` plutôt que réécrit : la
+      branche « en modification » du cœur porte le bouton de traduction, la
+      longueur maximale, l'invite dynamique et le `t-ref="input"` dont dépend
+      `useInputField`. Recopier tout ça pour ajouter un lien reviendrait à en
+      hériter les corrections de personne.
+
+      Deux points de greffe seulement : ce qu'on voit en lecture, et le groupe
+      de boutons déjà prévu par le cœur à droite du champ.
+    -->
+    <t t-name="bf_calendar_invite.LocationLinkField"
+       t-inherit="web.CharField"
+       t-inherit-mode="primary">
+
+        <!--
+          En lecture : le texte, avec ses portions d'URL en liens. `t-esc` sur
+          chaque segment, donc rien de ce que porte la valeur n'est interprété.
+        -->
+        <xpath expr="//span[@t-esc='formattedValue']" position="replace">
+            <span class="o_field_widget">
+                <t t-foreach="segments" t-as="segment" t-key="segment_index">
+                    <a t-if="segment.href"
+                       t-att-href="segment.href"
+                       target="_blank"
+                       rel="noreferrer noopener"
+                       class="o_form_uri"
+                       t-on-click.stop=""
+                       t-esc="segment.text"/>
+                    <t t-else="" t-esc="segment.text"/>
+                </t>
+            </span>
+        </xpath>
+
+        <!--
+          En modification : le champ reste un champ de saisie ordinaire — on
+          doit pouvoir corriger une adresse — et le lien devient un bouton à
+          côté, exactement comme le cœur le fait pour son widget `form.url`.
+
+          ⚠️ `position="inside"` sur `o_field_input_buttons` : le cœur y range
+          déjà le bouton de traduction et celui de l'invite dynamique. Poser le
+          lien ailleurs le sortirait de l'alignement du groupe.
+        -->
+        <xpath expr="//div[hasclass('o_field_input_buttons')]" position="inside">
+            <a t-if="premierLien"
+               t-att-href="premierLien"
+               target="_blank"
+               rel="noreferrer noopener"
+               class="btn m-0 py-0 px-2"
+               t-att-title="titreLien"
+               t-att-aria-label="titreLien">
+                <i class="fa fa-external-link" role="img"/>
+            </a>
+        </xpath>
+    </t>
+
+</templates>

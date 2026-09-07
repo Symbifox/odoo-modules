@@ -174,18 +174,6 @@ class TestCalendarPoke(TransactionCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        # ⚠️ `_activate_lang` bascule le drapeau `active` du `res.lang` et
-        # RIEN d'autre : les `.po` d'un module ne sont importés qu'à son
-        # installation, pour les langues actives à ce moment-là. Sur une base
-        # neuve où seul l'anglais l'est — la CI en fabrique une par lot — le
-        # corps sortait en anglais et les assertions de langue tombaient, alors
-        # que le code visé était bon. Sur les bases où le français était déjà
-        # installé, personne ne le voyait.
-        cls.env["res.lang"]._activate_lang("fr_CA")
-        cls.env["res.lang"]._activate_lang("en_US")
-        cls.env["ir.module.module"]._load_module_terms(
-            ["bf_calendar_invite"], ["fr_CA"])
-        cls.env.registry.clear_cache()
         cls.organiser = cls.env["res.users"].create({
             "name": "Organiser",
             "login": "bf_poke_organiser",
@@ -267,3 +255,118 @@ class TestCalendarPoke(TransactionCase):
         body = self._composer(event).body
         self.assertNotIn("Just checking that we are still meeting", body,
                          "a French guest was poked in English")
+
+
+@tagged("post_install", "-at_install")
+class TestCalendarGridMarks(TransactionCase):
+    """The marks the grid puts on a meeting, and the clickable location.
+
+    None of this can be asserted by looking at pixels from Python. What these
+    hold is the chain each mark hangs from — the class the renderer pushes, the
+    pseudo-element the stylesheet paints it on, the widget the form asks for,
+    and the asset entries that ship them. Every one of those links can be cut
+    without raising anything at all; the mark simply stops appearing.
+    """
+
+    def _source(self, relative):
+        import pathlib
+        from odoo.modules.module import get_module_path
+        return (pathlib.Path(get_module_path("bf_calendar_invite")) / relative
+                ).read_text(encoding="utf-8")
+
+    # --- the two new marks ---------------------------------------------
+
+    def test_the_grid_derives_its_class_from_the_status(self):
+        """One class per status actually set — and none when there is none.
+
+        The tempting shortcut is `status === "tentative" ? … : "confirmed"`,
+        which reads the absence of a status as a confirmation. It is wrong on
+        this database and not by a little: `bf_event_status` was deliberately
+        never back-filled (see `create`), so 224 of 249 meetings carry no
+        status at all. Painting those as confirmed would put the mark on
+        almost everything, which informs nobody, and would claim a
+        confirmation no one ever gave.
+        """
+        source = self._source("static/src/js/calendar_status_popover.js")
+        self.assertIn("classes.push(`bf_event_${statut}`)", source,
+                      "the grid no longer derives its class from the status "
+                      "itself: the tentative and confirmed marks are gone")
+        self.assertNotIn('"confirmed";', source,
+                         "a literal fallback to confirmed is back: an event "
+                         "with no status would be marked as confirmed")
+
+    def test_the_confirmed_mark_avoids_the_pseudo_element_core_owns(self):
+        """🔴 `.fc-event::after` is already taken, and by something that matters.
+
+        Core paints the veil over a past meeting with
+        `&.o_past_event::after { position: absolute; inset: 0 }`. A second rule
+        on that same pseudo-element does not coexist with the first — it
+        replaces it. Putting the "C" there would have erased the grey of past
+        meetings, or been erased by it, depending on which stylesheet compiled
+        last. Verified on the bench: on a past AND confirmed meeting, both are
+        present today, the "C" under the veil.
+        """
+        scss = self._source("static/src/scss/calendar_status.scss")
+        self.assertIn(".fc-event-main::after", scss,
+                      "the confirmed mark left `.fc-event-main::after`")
+        self.assertNotIn(".fc-event.bf_event_confirmed::after", scss,
+                         "the confirmed mark is back on `.fc-event::after`, "
+                         "which core already uses for the past-event veil")
+
+    def test_the_tentative_mark_is_a_texture_not_an_opacity(self):
+        """Opacity was taken too, and that is why this is a hatch.
+
+        `o_attendee_status_needsAction` already sets `--o-bg-opacity: .5`, and
+        it applies to 229 of the 249 meetings on this database. A tentative
+        meeting painted paler would have been indistinguishable from nearly
+        every other chip in the grid.
+        """
+        scss = self._source("static/src/scss/calendar_status.scss")
+        self.assertIn("bf_event_tentative", scss)
+        self.assertIn("repeating-linear-gradient", scss,
+                      "the tentative hatch is gone; a plain opacity change "
+                      "cannot be told apart from `needsAction`")
+
+    # --- the clickable location ----------------------------------------
+
+    def test_the_location_field_carries_the_link_widget(self):
+        arch = self.env["calendar.event"].get_view(
+            self.env.ref("calendar.view_calendar_event_form").id, "form",
+        )["arch"]
+        from lxml import etree
+        node = etree.fromstring(arch.encode("utf-8")).xpath(
+            '//field[@name="location"]')
+        self.assertTrue(node, "the location field left the form")
+        self.assertEqual(node[0].get("widget"), "bf_location_link",
+                         "the location no longer renders its links")
+
+    def test_the_widget_ships_its_three_files(self):
+        """A widget whose stylesheet is missing is worse than none at all.
+
+        Without the SCSS the open button is still in the DOM — with the right
+        href — but core leaves it `visibility: hidden` and anchored to a
+        distant ancestor, because it only makes the wrapper `position:
+        relative` for translatable fields. Measured on the bench before the
+        fix: 32 px wide, 778 px tall, and `elementFromPoint` at its centre
+        returned the surrounding group. Present, invisible, unclickable.
+        """
+        manifest = self._source("__manifest__.py")
+        for path in ("static/src/js/location_link_field.js",
+                     "static/src/xml/location_link_field.xml",
+                     "static/src/scss/location_link_field.scss"):
+            self.assertIn(path, manifest,
+                          f"{path} is no longer served: the location widget "
+                          f"is incomplete")
+
+    def test_only_a_real_scheme_becomes_a_link(self):
+        """The regex demands `http(s)://`, and that is the security boundary.
+
+        A location is free text that also arrives from outside, over CalDAV.
+        Matching a bare `word:` would let `javascript:` or `data:` reach an
+        `href`. The href is never composed here — it is copied verbatim from
+        what the pattern matched — so the pattern is what keeps it safe.
+        """
+        source = self._source("static/src/js/location_link_field.js")
+        self.assertIn("https?:\\/\\/", source,
+                      "the URL pattern no longer requires an http(s) scheme: "
+                      "a `javascript:` location could reach an href")

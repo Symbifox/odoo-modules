@@ -94,8 +94,23 @@ patch(AttendeeCalendarCommonRenderer.prototype, {
     eventClassNames(info) {
         const classes = super.eventClassNames(info);
         const record = this.props.model.records[info.event.id];
-        if (record?.rawRecord?.bf_event_status === "cancelled") {
-            classes.push("bf_event_cancelled");
+        /**
+         * Une classe par statut RÉELLEMENT posé, et rien quand il n'y en a pas.
+         *
+         * ⚠️ Pas de `else` qui traiterait l'absence comme une confirmation.
+         * `bf_event_status` n'a jamais été rétro-rempli, délibérément (voir le
+         * `create()` du modèle) : sur un calendrier existant, la plupart des
+         * rencontres n'en portent aucun. Peindre l'absence en « confirmée » afficherait la
+         * marque sur presque tout, donc n'informerait plus de rien — et
+         * surtout, ça affirmerait une confirmation que personne n'a donnée,
+         * ce que tout le reste du module refuse de faire.
+         *
+         * L'absence reste donc neutre. Les rencontres créées depuis naissent
+         * « confirmée », donc l'écart se referme de lui-même.
+         */
+        const statut = record?.rawRecord?.bf_event_status;
+        if (statut) {
+            classes.push(`bf_event_${statut}`);
         }
         return classes;
     },

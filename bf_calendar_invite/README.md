@@ -41,7 +41,25 @@ The SMS button opens the composer with an empty body.
   from it, so it survives a round trip through a calendar client. Only the
   three values RFC 5545 §3.8.1.11 defines for a VEVENT exist: a status a
   client invented is not silently promoted to "confirmed". Shown on a popover
-  in the calendar view.
+  in the calendar view, and — from **v18.0.3.2.0** — on the tile itself: a
+  tentative meeting is hatched at 45°, the texture core already uses for
+  `o_event_hatched`. Not a paler fill or a lower opacity: core already dims
+  every meeting awaiting an answer, which on a real calendar is nearly all of
+  them, so a paler tentative would have been invisible. The hatching is drawn
+  in `currentColor` — the tile's own text colour, which core has already
+  contrasted against each of its 56 palette entries — so it reads on all of
+  them, in light and dark alike, without restating a single value. A meeting
+  with no status set stays unmarked: the field was deliberately never
+  backfilled, and painting absence as "confirmed" would assert a confirmation
+  nobody gave.
+- **A clickable location.** Where a meeting's location is a room URL — which is
+  most of them, once one is filled in — following it took selecting the text by
+  hand. The field stays a free `Char`; only the part actually recognised as a
+  URL becomes a link, the text around it stays text, and a value with no URL
+  renders exactly as before. Core's `url` widget was not the one-line answer it
+  looks like: it turns the *whole* value into a link and prefixes anything
+  without a scheme, so a street address would have become a dead hyperlink —
+  worse than no link at all, because it offers itself and leads nowhere.
 - **A POKE button** — a short "are we still meeting?" note to the guests, in
   their own language. No `.ics` is attached: the event has not changed, and
   re-attaching one reads as a reschedule. The message repeats where to join

@@ -11,7 +11,7 @@
     #   itself; the status is also settable from the event popover, next to
     #   core's Yes/No/Maybe group. Adds a POKE button that opens a short
     #   "are we still meeting?" draft in the guest's language.
-    "version": "18.0.3.1.0",
+    "version": "18.0.3.2.0",
     "category": "Productivity",
     "website": "https://symbifox.com",
     "author": "Les services de consultation Blue Fox, Inc.",
@@ -33,6 +33,9 @@
             "bf_calendar_invite/static/src/scss/calendar_status.scss",
             "bf_calendar_invite/static/src/js/calendar_status_popover.js",
             "bf_calendar_invite/static/src/xml/calendar_status_popover.xml",
+            "bf_calendar_invite/static/src/scss/location_link_field.scss",
+            "bf_calendar_invite/static/src/js/location_link_field.js",
+            "bf_calendar_invite/static/src/xml/location_link_field.xml",
         ],
     },
     "installable": True,

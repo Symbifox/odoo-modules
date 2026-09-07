@@ -1,0 +1,40 @@
+// Le bouton d'ouverture du widget « emplacement cliquable ».
+//
+// 🔴 Deux mécanismes du cœur se liguent pour rendre ce bouton inutile, et
+// aucun des deux ne se voit dans le DOM — mesuré au banc, pas déduit : le lien
+// était bien là, `display: block`, avec le bon `href`, et pourtant
+// `elementFromPoint` en son centre rendait le `<div class="o_group">`. Autrement
+// dit : invisible, et inatteignable au clic.
+//
+// 1. `.o_field_input_buttons` est en `position: absolute; right: 0; height:
+//    100%`, mais le cœur ne pose `position: relative` sur l'enveloppe du champ
+//    que dans un cas très précis :
+//        .o_field_widget:has(.o_field_translate + .o_field_input_buttons)
+//    c'est-à-dire seulement quand le champ est TRADUISIBLE. `location` ne l'est
+//    pas. Sans repère, le bouton se calait sur un ancêtre lointain : mesuré à
+//    778 px de haut, ancré au bord droit du groupe entier.
+//
+// 2. Le conteneur est `visibility: hidden` et ne se révèle qu'au `:hover` /
+//    `:focus-within` du champ. C'est le comportement voulu pour le bouton de
+//    traduction, qui est une commande d'expert. Ici c'est l'inverse : la
+//    demande était « si l'emplacement porte un lien, il doit être cliquable »,
+//    donc l'affordance doit se voir sans qu'on ait à deviner qu'elle existe.
+//    Le widget `form.url` du cœur, lui, montre son globe en permanence — c'est
+//    la bonne référence.
+//
+// ⚠️ Les deux règles sont portées par `.o_field_bf_location_link`, la classe
+// que le cœur dérive du nom du widget. Rien d'autre dans Odoo ne les reçoit :
+// le bouton de traduction des autres champs garde son comportement.
+.o_field_widget.o_field_bf_location_link {
+    position: relative;
+
+    .o_field_input_buttons {
+        visibility: visible;
+    }
+
+    // La place du bouton, rendue au champ de saisie : sans ça la fin d'une
+    // longue URL passe DERRIÈRE le pictogramme au lieu de s'arrêter avant.
+    > .o_input {
+        padding-right: 2rem;
+    }
+}
