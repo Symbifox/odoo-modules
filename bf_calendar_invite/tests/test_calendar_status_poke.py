@@ -280,11 +280,11 @@ class TestCalendarGridMarks(TransactionCase):
         """One class per status actually set — and none when there is none.
 
         The tempting shortcut is `status === "tentative" ? … : "confirmed"`,
-        which reads the absence of a status as a confirmation. It is wrong on
-        this database and not by a little: `bf_event_status` was deliberately
-        never back-filled (see `create`), so 224 of 249 meetings carry no
-        status at all. Painting those as confirmed would put the mark on
-        almost everything, which informs nobody, and would claim a
+        which reads the absence of a status as a confirmation. On an existing
+        calendar that is wrong, and not by a little: `bf_event_status` is
+        deliberately never back-filled (see `create`), so the great majority of
+        meetings carry no status at all. Painting those as confirmed would put
+        the mark on almost everything, which informs nobody, and would claim a
         confirmation no one ever gave.
         """
         source = self._source("static/src/js/calendar_status_popover.js")
@@ -317,7 +317,7 @@ class TestCalendarGridMarks(TransactionCase):
         """Opacity was taken too, and that is why this is a hatch.
 
         `o_attendee_status_needsAction` already sets `--o-bg-opacity: .5`, and
-        it applies to 229 of the 249 meetings on this database. A tentative
+        on a typical calendar it applies to almost every meeting. A tentative
         meeting painted paler would have been indistinguishable from nearly
         every other chip in the grid.
         """
