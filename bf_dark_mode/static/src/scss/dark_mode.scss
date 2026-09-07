@@ -538,7 +538,55 @@ body.bf_dark_mode {
     &:hover { background-color: $dk-surface-alt; }
   }
   .o-mail-Message-body { color: $dk-text; }
+
+  // Un message ordinaire (note, commentaire) est rendu dans le DOM CLAIR, avec
+  // les styles en ligne de son auteur : la signature courriel collée dans le
+  // composeur, un gabarit de courriel posté au chatter, un bloc de code. Ces
+  // couleurs-là sont dessinées pour du papier blanc. On les aplatit comme le
+  // cœur le fait pour les courriels — un style en ligne ne cède qu'à
+  // `!important`.
+  .o-mail-Message-body {
+    [style*="color"], [style*="background"] {
+      background-color: transparent !important;
+      color: $dk-text !important;
+      border-color: $dk-border !important;
+    }
+    a, a * { color: #54bfe8 !important; }
+  }
+
+  // La bulle du message est un bloc peint DERRIÈRE le contenu
+  // (`position-absolute`, frère du corps) : elle n'est pas un ancêtre, donc
+  // aucune règle de couleur de texte ne la contredit. Odoo la teinte en pastel
+  // clair pour tout message qui n'est pas une note — bleu pour autrui, vert
+  // pour soi, orangé quand on est mentionné — et le texte clair du thème
+  // sombre s'y efface. Mêmes teintes, calculées sur la surface sombre.
+  .o-mail-Message-bubble {
+    &.o-blue {
+      background-color: #2b3f43 !important;
+      border-color: #3a565c !important;
+      &.o-muted { background-color: #334a4e !important; }
+    }
+    &.o-green {
+      background-color: #2d4034 !important;
+      border-color: #3c5646 !important;
+      &.o-muted { background-color: #354a3c !important; }
+    }
+    &.o-orange {
+      background-color: #48432d !important;
+      border-color: #625a39 !important;
+      &.o-muted { background-color: #514c35 !important; }
+    }
+  }
+  .o-mail-Message.o-card { background-color: $dk-raised; }
+  .o-mail-MessageInReply-bubble {
+    &.o-blue { background-color: #2b3f43 !important; }
+    &.o-green { background-color: #2d4034 !important; }
+    &.o-orange { background-color: #48432d !important; }
+  }
   .o-mail-Message-header { color: $dk-text-muted; }
+  // La bulle est plus claire que la surface : le gris « discret » du thème y
+  // tombe à 3,6:1, sous le seuil. Ligne de sujet et mentions comprises.
+  .o-mail-Message-body .text-muted { color: #a9b0b2 !important; }
   .o-mail-Message-author { color: $dk-text-bright; }
   .o-mail-Message-actions button:hover { background-color: $dk-hover !important; }
 

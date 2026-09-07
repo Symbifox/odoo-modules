@@ -23,6 +23,23 @@ LGPL-3 — see the repository [LICENSE](../LICENSE) and `__manifest__.py` for de
 - On load, the session preference is the source of truth and seeds the local
   cookie/toggle; toggling persists back to `res.users`
 
+### Readable chatter, emails included
+- Odoo paints a light pastel **bubble** behind every chatter message that is not
+  an internal note (blue for someone else's, green for your own). The dark theme
+  tints those bubbles, instead of leaving light text on a light ground
+- Odoo 18 renders every email body inside a **shadow root**, which no page
+  stylesheet can reach. The core has a flattening stylesheet for exactly this,
+  but injects it only for the Enterprise dark mode's own cookie; this module
+  injects its own, in the Symbifox palette
+- Inline colours written for white paper — an email signature pasted into the
+  composer, a template posted to the chatter, a code block — are flattened in
+  ordinary message bodies too
+- Added and removed live, so the systray toggle stays instantaneous on a chatter
+  that is already on screen
+- Measured on two real threads before the fix: 55–57 % of the text elements of
+  email bodies fell below a 3:1 contrast ratio, some at 1.1:1 (invisible). After:
+  none. The one exception CSS cannot reach is inline `!important` from a sender
+
 ### Symbifox Brand Palette
 - Surfaces use the BF dark gray (#2E3132) instead of generic navy/black
 - Accent color is BF blue (#29ABE2)

@@ -5,16 +5,17 @@ import { cookie } from "@web/core/browser/cookie";
 import { useService } from "@web/core/utils/hooks";
 import { user } from "@web/core/user";
 import { session } from "@web/session";
+import { setBfDarkEnabled } from "./dark_mode_state";
 
 class BFDarkModeSystray extends Component {
     static props = {};
 
     _applyTheme() {
-        if (this.state.color_scheme === "dark") {
-            document.body.classList.add("bf_dark_mode");
-        } else {
-            document.body.classList.remove("bf_dark_mode");
-        }
+        const dark = this.state.color_scheme === "dark";
+        document.body.classList.toggle("bf_dark_mode", dark);
+        // Tell the JS that cannot see a class — the chatter renders email
+        // bodies in a shadow root, out of reach of the stylesheet.
+        setBfDarkEnabled(dark);
     }
 
     _onClick() {
