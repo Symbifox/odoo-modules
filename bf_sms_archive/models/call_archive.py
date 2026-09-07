@@ -117,9 +117,38 @@ class CallArchiveCall(models.Model):
         help="Lien interne Nextcloud vers le fichier audio de l'appel",
     )
 
+    link_ids = fields.One2many(
+        comodel_name="sms.archive.link",
+        inverse_name="call_id",
+        string="Rattachements",
+        help="Les fiches sur le chatter desquelles cet appel a été posé.",
+    )
+    link_count = fields.Integer(
+        string="Fiches",
+        compute="_compute_link_count",
+        store=True,
+    )
+
     display_name = fields.Char(
         compute="_compute_display_name",
     )
+
+    @api.depends("link_ids")
+    def _compute_link_count(self):
+        for call in self:
+            call.link_count = len(call.link_ids)
+
+    def _post_to_record(self, record):
+        """Pose ces appels sur le chatter de `record` et enregistre le rattachement."""
+        if not self or not record:
+            return record
+        note = record.message_post(
+            body=self._render_task_post_body(),
+            message_type="comment",
+            subtype_xmlid="mail.mt_note",
+        )
+        self.env["sms.archive.link"]._register_links(self, record, note=note)
+        return record
 
     def action_post_to_task(self):
         """Open the wizard to post the selected call(s) to a project task."""

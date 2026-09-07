@@ -62,10 +62,18 @@ class SmsMessenger extends Component {
             taskPickerOpen: false,
             taskTargets: [],
             taskSearch: "",
-            taskResults: [],
+            taskGroups: [],
             taskPosting: false,
-            autoTaskId: false,
-            autoTaskName: "",
+            // Suivi automatique : une LISTE de tâches depuis la 5.13.0. Un fil
+            // peut nourrir plusieurs dossiers à la fois.
+            autoTaskIds: [],
+            autoTaskNames: [],
+            // Rattachement d'une bulle : le message dont le sélecteur est ouvert,
+            // et les fiches proposées (toute fiche à chatter, pas que les tâches).
+            bubbleLinkFor: null,
+            bubbleSearch: "",
+            bubbleGroups: [],
+            bubbleBusy: false,
             // link unknown number to an Odoo contact
             linkMode: false,
             linkSearch: "",
@@ -164,6 +172,7 @@ class SmsMessenger extends Component {
         this.state.msgSelectMode = false;
         this.state.selectedMsgIds = [];
         this.state.taskPickerOpen = false;
+        this.closeBubbleLink();
         this.state.loadingConv = true;
         try {
             const res = await this.orm.call(MODEL, "get_conversation", [threadId], {
@@ -192,12 +201,12 @@ class SmsMessenger extends Component {
                 this.state.activeThreadId,
             ]);
             this.state.taskTargets = res.tasks || [];
-            this.state.autoTaskId = res.auto_post_task_id || false;
-            this.state.autoTaskName = res.auto_post_task_name || "";
+            this.state.autoTaskIds = res.auto_task_ids || [];
+            this.state.autoTaskNames = res.auto_task_names || [];
         } catch {
             this.state.taskTargets = [];
-            this.state.autoTaskId = false;
-            this.state.autoTaskName = "";
+            this.state.autoTaskIds = [];
+            this.state.autoTaskNames = [];
         }
     }
 
@@ -356,8 +365,8 @@ class SmsMessenger extends Component {
                 this.state.activeThreadId,
             ]);
             this.state.taskTargets = res.tasks || [];
-            this.state.autoTaskId = res.auto_post_task_id || false;
-            this.state.autoTaskName = res.auto_post_task_name || "";
+            this.state.autoTaskIds = res.auto_task_ids || [];
+            this.state.autoTaskNames = res.auto_task_names || [];
             // Une seule tâche déjà rattachée : c'est de très loin le cas courant, on poste
             // sans rien demander. Le sélecteur ne sert qu'aux cas ambigus.
             if (this.state.taskTargets.length === 1) {
@@ -365,7 +374,7 @@ class SmsMessenger extends Component {
                 return;
             }
             this.state.taskSearch = "";
-            this.state.taskResults = [];
+            this.state.taskGroups = [];
             this.state.taskPickerOpen = true;
             if (!this.state.taskTargets.length) {
                 await this._searchTasks("");
@@ -384,18 +393,44 @@ class SmsMessenger extends Component {
         await this._searchTasks(this.state.taskSearch);
     }
 
+    /** Le sélecteur cherche désormais TOUTE fiche à chatter, pas seulement les
+     *  tâches : le sorcier le fait depuis la 5.8.0, et les deux chemins qui ne
+     *  visaient pas le même ensemble était la première source de « pourquoi je
+     *  ne trouve pas mon ticket ici ». Sous deux caractères on retombe sur les
+     *  tâches récentes, que `messenger_search_targets` ne renvoie pas. */
     async _searchTasks(term) {
+        const query = (term || "").trim();
         try {
-            this.state.taskResults = await this.orm.call(MODEL, "messenger_search_tasks", [
-                term || "",
-            ]);
+            if (query.length < 2) {
+                const tasks = await this.orm.call(MODEL, "messenger_search_tasks", [query]);
+                this.state.taskGroups = tasks.length
+                    ? [{
+                          model: "project.task",
+                          model_label: "Tâches récentes",
+                          icon: "fa fa-tasks",
+                          results: tasks.map((t) => ({
+                              id: t.id, name: t.name, detail: t.project_name || "",
+                          })),
+                      }]
+                    : [];
+                return;
+            }
+            this.state.taskGroups = await this.orm.call(
+                MODEL, "messenger_search_targets", [query]
+            );
         } catch (e) {
-            this.state.taskResults = [];
+            this.state.taskGroups = [];
             this.notification.add(this._rpcError(e), { type: "danger" });
         }
     }
 
     async postToTask(taskId) {
+        return this.postToTarget("project.task", taskId);
+    }
+
+    /** Poste la sélection courante (ou tout le fil) sur n'importe quelle fiche
+     *  à chatter, et rafraîchit les badges des bulles concernées. */
+    async postToTarget(resModel, resId) {
         if (!this.state.activeThreadId || this.state.taskPosting) {
             return;
         }
@@ -403,21 +438,138 @@ class SmsMessenger extends Component {
         try {
             const res = await this.orm.call(
                 MODEL,
-                "messenger_post_to_task",
-                [this.state.activeThreadId, taskId],
+                "messenger_post_to_target",
+                [this.state.activeThreadId, resModel, resId],
                 { message_ids: this.postScopeIds }
             );
+            this._applyLinks(res.links);
             this.notification.add(
-                `${res.count} message(s) posté(s) sur « ${res.task_name} »`,
+                `${res.count} message(s) posté(s) sur « ${res.name} »`,
                 { type: "success" }
             );
             this.state.taskPickerOpen = false;
             this.state.msgSelectMode = false;
             this.state.selectedMsgIds = [];
+            // Rattacher à une tâche l'ajoute aux tâches du fil : le libellé du
+            // bouton « → Tâche » deviendrait faux sans ce rechargement.
+            if (resModel === "project.task") {
+                this._loadTaskTargets();
+            }
         } catch (e) {
             this.notification.add(this._rpcError(e), { type: "danger" });
         } finally {
             this.state.taskPosting = false;
+        }
+    }
+
+    /** Recopie dans les bulles chargées les rattachements renvoyés par le serveur.
+     *  Recharger la conversation entière ferait sauter le défilement. */
+    _applyLinks(linkMap) {
+        if (!linkMap) {
+            return;
+        }
+        for (const msg of this.state.conversation) {
+            if (Object.prototype.hasOwnProperty.call(linkMap, msg.id)) {
+                msg.links = linkMap[msg.id];
+            }
+        }
+    }
+
+    // ── Rattachement depuis une bulle ──────────────────────────
+
+    openBubbleLink(msg) {
+        this.state.bubbleLinkFor = msg.id;
+        this.state.bubbleSearch = "";
+        // Les fiches déjà rattachées au fil sont le premier réflexe : les
+        // proposer d'emblée évite de retaper un nom qu'on vient de choisir.
+        this.state.bubbleGroups = this.state.taskTargets.length
+            ? [{
+                  model: "project.task",
+                  model_label: "Tâches de cette conversation",
+                  icon: "fa fa-tasks",
+                  results: this.state.taskTargets.map((t) => ({
+                      id: t.id,
+                      name: t.name,
+                      detail: t.project_name || "",
+                  })),
+              }]
+            : [];
+    }
+
+    closeBubbleLink() {
+        this.state.bubbleLinkFor = null;
+        this.state.bubbleSearch = "";
+        this.state.bubbleGroups = [];
+    }
+
+    async onBubbleSearchInput(ev) {
+        this.state.bubbleSearch = ev.target.value;
+        const term = this.state.bubbleSearch.trim();
+        if (term.length < 2) {
+            this.openBubbleLink({ id: this.state.bubbleLinkFor });
+            return;
+        }
+        try {
+            this.state.bubbleGroups = await this.orm.call(
+                MODEL, "messenger_search_targets", [term]
+            );
+        } catch (e) {
+            this.state.bubbleGroups = [];
+            this.notification.add(this._rpcError(e), { type: "danger" });
+        }
+    }
+
+    /** Rattache UN message, celui de la bulle, sans toucher à la sélection. */
+    async linkBubbleTo(resModel, resId) {
+        const messageId = this.state.bubbleLinkFor;
+        if (!messageId || this.state.bubbleBusy) {
+            return;
+        }
+        this.state.bubbleBusy = true;
+        try {
+            const res = await this.orm.call(
+                MODEL,
+                "messenger_post_to_target",
+                [this.state.activeThreadId, resModel, resId],
+                { message_ids: [messageId] }
+            );
+            this._applyLinks(res.links);
+            this.notification.add(`Message rattaché à « ${res.name} »`, {
+                type: "success",
+            });
+            this.closeBubbleLink();
+            if (resModel === "project.task") {
+                this._loadTaskTargets();
+            }
+        } catch (e) {
+            this.notification.add(this._rpcError(e), { type: "danger" });
+        } finally {
+            this.state.bubbleBusy = false;
+        }
+    }
+
+    async unlinkBubble(msg, link) {
+        if (this.state.bubbleBusy) {
+            return;
+        }
+        this.state.bubbleBusy = true;
+        try {
+            const res = await this.orm.call(
+                MODEL,
+                "messenger_unlink_message",
+                [this.state.activeThreadId, msg.id, link.link_id]
+            );
+            msg.links = res.links || [];
+            this.notification.add(
+                res.note_removed
+                    ? `Rattachement retiré, et la note du chatter avec lui.`
+                    : `Rattachement retiré. La note reste dans le chatter.`,
+                { type: "success" }
+            );
+        } catch (e) {
+            this.notification.add(this._rpcError(e), { type: "danger" });
+        } finally {
+            this.state.bubbleBusy = false;
         }
     }
 
@@ -441,36 +593,64 @@ class SmsMessenger extends Component {
         });
     }
 
-    async toggleAutoTask() {
+    isFollowed(taskId) {
+        return this.state.autoTaskIds.includes(taskId);
+    }
+
+    /** Branche ou débranche UNE tâche du suivi. Sans argument : coupe tout,
+     *  ce qui garde « arrêter de suivre » à un clic quand plusieurs dossiers
+     *  sont branchés. */
+    async toggleAutoTask(taskId) {
         if (!this.state.activeThreadId) {
             return;
         }
         try {
-            const next = this.state.autoTaskId
-                ? false
-                : (this.state.taskTargets[0] && this.state.taskTargets[0].id);
-            if (!next && !this.state.autoTaskId) {
-                this.notification.add(
-                    "Rattachez d'abord la conversation à une tâche.",
-                    { type: "warning" }
-                );
-                return;
+            let target = taskId;
+            if (target === undefined) {
+                target = this.state.autoTaskIds.length
+                    ? false
+                    : (this.state.taskTargets[0] && this.state.taskTargets[0].id);
+                if (!target) {
+                    this.notification.add(
+                        "Rattachez d'abord la conversation à une tâche.",
+                        { type: "warning" }
+                    );
+                    return;
+                }
             }
+            const before = this.state.autoTaskIds.slice();
             const res = await this.orm.call(MODEL, "messenger_set_auto_task", [
                 this.state.activeThreadId,
-                next,
+                target,
             ]);
-            this.state.autoTaskId = res.auto_post_task_id || false;
-            this.state.autoTaskName = res.auto_post_task_name || "";
+            this.state.autoTaskIds = res.auto_task_ids || [];
+            this.state.autoTaskNames = res.auto_task_names || [];
+            const added = this.state.autoTaskIds.filter((id) => !before.includes(id));
             this.notification.add(
-                this.state.autoTaskId
-                    ? `Les prochains messages iront dans « ${this.state.autoTaskName} »`
-                    : "Suivi automatique désactivé",
+                this.state.autoTaskIds.length === 0
+                    ? "Suivi automatique désactivé"
+                    : added.length
+                    ? `Les prochains messages iront aussi dans « ${
+                          this.state.autoTaskNames[
+                              this.state.autoTaskIds.indexOf(added[0])
+                          ]
+                      } »`
+                    : `Suivi maintenu sur ${this.state.autoTaskIds.length} tâche(s)`,
                 { type: "success" }
             );
         } catch (e) {
             this.notification.add(this._rpcError(e), { type: "danger" });
         }
+    }
+
+    get autoTaskLabel() {
+        const n = this.state.autoTaskIds.length;
+        if (!n) {
+            return "";
+        }
+        return n === 1
+            ? this.state.autoTaskNames[0]
+            : `${n} tâches`;
     }
 
     // ── Contact linking / opening ──────────────────────────────

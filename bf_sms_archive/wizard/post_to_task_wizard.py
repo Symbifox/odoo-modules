@@ -90,9 +90,10 @@ class SmsPostToTaskWizard(models.TransientModel):
         vals = super().default_get(fields_list)
         threads = self._threads_from_context()
         tasks = threads.task_ids.filtered(lambda t: t.active)
-        if len(threads) == 1 and threads.auto_post_task_id:
+        followed = threads.auto_post_task_ids.filtered(lambda t: t.active)
+        if len(threads) == 1 and followed:
             vals.setdefault("follow_thread", True)
-            tasks = threads.auto_post_task_id | tasks
+            tasks = followed | tasks
         if tasks:
             vals.setdefault("target_reference", f"project.task,{tasks[0].id}")
         return vals
@@ -170,15 +171,24 @@ class SmsPostToTaskWizard(models.TransientModel):
             raise UserError("Aucun élément sélectionné.")
         target = self._get_chatter_target("write")
 
-        target.message_post(
+        note = target.message_post(
             body=self._render_post_body(),
             message_type="comment",
             subtype_xmlid="mail.mt_note",
         )
 
+        # Le registre des rattachements, lui, vaut pour TOUTE fiche : c'est ce
+        # qui permet ensuite de dire « ce SMS est déjà parti là-bas », et de
+        # défaire l'envoi sans retrouver la note à la main.
+        Link = self.env["sms.archive.link"]
+        if self.message_ids:
+            Link._register_links(self.message_ids, target, note=note)
+        if self.call_ids:
+            Link._register_links(self.call_ids, target, note=note)
+
         # Rattacher la conversation et relayer les messages suivants n'a de sens
         # que vers une tâche : la relation `sms.archive.thread.task_ids` et le
-        # champ `auto_post_task_id` ne connaissent que `project.task`.
+        # champ `auto_post_task_ids` ne connaissent que `project.task`.
         threads = self.message_ids.thread_id | self.call_ids.thread_id
         task = self.task_id
         if task:
@@ -186,11 +196,14 @@ class SmsPostToTaskWizard(models.TransientModel):
                 for thread in threads:
                     if task.id not in thread.task_ids.ids:
                         thread.write({"task_ids": [(4, task.id, 0)]})
-            if self.follow_thread and len(threads) == 1:
-                threads.write({"auto_post_task_id": task.id})
-            elif (not self.follow_thread and len(threads) == 1
-                  and threads.auto_post_task_id):
-                threads.write({"auto_post_task_id": False})
+            # Le suivi est une liste : cocher la case AJOUTE cette tâche au lieu
+            # de remplacer celle qui y était, sinon brancher un deuxième dossier
+            # débrancherait le premier sans le dire.
+            if len(threads) == 1:
+                if self.follow_thread:
+                    threads.write({"auto_post_task_ids": [(4, task.id, 0)]})
+                elif task.id in threads.auto_post_task_ids.ids:
+                    threads.write({"auto_post_task_ids": [(3, task.id, 0)]})
 
         detail = ""
         if task and task.project_id:

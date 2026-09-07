@@ -72,7 +72,9 @@ A two-way SMS/MMS messaging and archiving module for Odoo 18. Send and receive l
 ### Posting onto a record
 - **Post to any record (5.8+)** -- Select messages or calls and post them as one consolidated chatter note. The destination is picked through [`bf_chatter_target`](../bf_chatter_target): a single search box over every chatter-bearing model, with no project and no object type to choose first. Before 5.8 the wizard asked for a project, then a task, and could reach nothing else.
 - **Thread <> Task linking** -- Many2many relationship between conversations and project tasks. Linking the conversation and relaying its later messages are task-only by construction, so those two options appear only when the chosen destination *is* a task.
-- **Auto-follow** -- A conversation can be pinned to a task so subsequent messages relay to its chatter on their own.
+- **Auto-follow, several tasks (5.13+)** -- A conversation can be pinned to as many tasks as it concerns, and every subsequent message relays to each of their chatters. An archived task is skipped without being dropped from the list.
+- **One message, several records (5.13+)** -- `sms.archive.link` records where each message or call was posted. The same SMS can be attached to two tasks, a task and a ticket, or anything else carrying a chatter; each destination gets its own note, and the message keeps the trace of all of them. Reposting the same selection to the same record refreshes the existing link instead of piling up duplicates.
+- **Chips and undo (5.13+)** -- Every bubble in the messenger names the records it has already been posted to, with an inline picker to add another. Removing a link removes its chatter note too, but only when no other link still points at that note: a consolidated note covering five messages survives until the fifth is detached.
 - **MCP tools** -- 9 tools for searching, browsing, and linking SMS and call data programmatically
 
 ## Installation
@@ -151,7 +153,12 @@ ZIP files containing both SMS and call log XML files are imported in a single pa
 
 **From messages or calls:**
 - Select them in the list and use **Action -> Poster sur une fiche**. Search the destination by name, by number, by a shorthand (`task:22299`) or by pasting an Odoo URL; the wizard previews the note before it is posted.
-- Linking the conversation and relaying later messages are offered only when the destination is a task.
+- Linking the conversation and relaying later messages are offered only when the destination is a task. Ticking "follow" ADDS that task to the list rather than replacing what was there.
+
+**From a single bubble (5.13+):**
+- In the messenger, the chips under a message name where it has already gone. The **+** beside them opens a picker over every chatter-bearing model; the **x** on a chip undoes that attachment.
+- A task's form shows an "SMS rattaches" counter beside "Conversations". The two answer different questions: the first counts messages posted on that task, the second the conversations attached to it, and they rarely agree.
+- The conversation form gains a "Rattachements" tab listing which message went where, and the app gains a "Rattachements" menu over the whole registry.
 
 ### MCP Tools
 
@@ -179,6 +186,7 @@ When `HAS_SMS_ARCHIVE=true` is set in the org `.env`, 9 tools are available:
 | `sms.archive.message` | Individual SMS/MMS message |
 | `sms.archive.mms.part` | MMS attachment (image, video, audio) linked to a message |
 | `call.archive.call` | Individual call log entry |
+| `sms.archive.link` | Where a message or call was posted (destination + the chatter note it produced) |
 | `sms.archive.dashboard` | Dashboard data aggregation (no table, SQL queries) |
 | `sms.archive.import.wizard` | TransientModel for file upload and import |
 
@@ -486,6 +494,44 @@ curl -X POST https://odoo.example.com/bf_sms_archive/api/ingest \
 `bf-sms-relay` (LGPL-3, F-Droid-friendly): foreground service when charging (30s tick), WorkManager when on battery (15 min tick), BroadcastReceiver for incoming SMS (real-time). Distribution: signed APK direct, not Play Store (READ_SMS / READ_CALL_LOG are blocked by Play policy).
 
 ## Changelog
+
+### Version 18.0.5.13.0
+
+- **NEW:** `sms.archive.link` -- a per-message registry of where each SMS or call has
+  been posted. A message can be attached to several records at once (two tasks, a task
+  and a ticket, any model carrying a chatter), and the registry keeps the posted
+  `mail.message` so an attachment can be undone. Before this, posting was a one-way
+  copy: the note landed in the chatter and nothing on the message recorded where it
+  went, so the same SMS on two tasks produced two notes that knew nothing of each other.
+- **NEW:** Per-bubble chips and an inline picker in the messenger, searching across
+  every chatter-bearing model through `bf_chatter_target` (a pasted Odoo URL,
+  `task:22299`, `INV/2026/00017`). The selection-mode picker searches the same set
+  instead of tasks only.
+- **NEW:** "Undo" removes the chatter note along with the link, but only when no other
+  link still points at that note. It needs write access on the destination; without it
+  the link goes, the note stays, and the messenger says so.
+- **NEW:** `project.task.sms_link_count` stat button, an `sms.archive.link` list and
+  search view, a "Rattachements" tab on the conversation form and a menu entry.
+- **CHANGE:** `sms.archive.thread.auto_post_task_id` (Many2one) becomes
+  `auto_post_task_ids` (Many2many): a conversation relays its new messages to *every*
+  listed task. The wizard's "follow" checkbox adds to that list instead of replacing it,
+  so pinning a second file no longer silently unpins the first.
+- **CHANGE:** `sms.archive.message._post_to_task()` becomes `_post_to_record()`, which
+  takes any chatter-bearing record; the old name stays as a thin alias.
+- **NEW RPC:** `messenger_post_to_target`, `messenger_search_targets`,
+  `messenger_unlink_message`. `messenger_post_to_task` delegates to the first and keeps
+  its old return shape, so a browser still holding a cached bundle keeps working.
+- **FIX:** RPC returns key their link maps by *string* message id. Integer dictionary
+  keys survive JSON-RPC but make XML-RPC fail at serialisation, and these entry points
+  are called from both.
+- **FIX (dark mode):** `.text-muted` inside the destination picker was Bootstrap's
+  light-mode grey, measured at 1.23:1 against the raised dark background -- the group
+  labels and the context line under each result were effectively invisible. Now 4.91:1.
+  `!important` is required, because Bootstrap 5.3 declares `.text-muted` with it.
+- **MIGRATION:** `post-migrate` copies each thread's former `auto_post_task_id` into the
+  new relation and drops the old column. The link registry itself starts empty: nothing
+  in the history says which message produced which chatter note, and inventing links
+  from the existing notes would produce data nobody could check.
 
 ### Version 18.0.5.12.1
 

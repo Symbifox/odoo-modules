@@ -126,6 +126,48 @@
                                     <field name="stage_id" string="Étape"/>
                                 </list>
                             </field>
+                            <separator string="Suivi automatique"/>
+                            <div class="text-muted small mb-2">
+                                Chaque nouveau message de cette conversation part
+                                dans le chatter de ces tâches. Sans effet sur les
+                                messages déjà archivés.
+                            </div>
+                            <field name="auto_post_task_ids" nolabel="1"
+                                   widget="many2many_tags"
+                                   options="{'no_create': True}"/>
+                        </page>
+                        <page string="Rattachements" name="links">
+                            <div class="text-muted small mb-2">
+                                Où chaque message est parti. Un même message peut
+                                viser plusieurs fiches ; « Défaire » retire le
+                                rattachement, et la note du chatter avec lui
+                                lorsque plus aucun message ne la vise.
+                            </div>
+                            <field name="link_ids" nolabel="1" readonly="1">
+                                <!-- La fiche d'abord : c'est la colonne qu'on lit.
+                                     Mise après le message, elle se faisait écraser
+                                     par le nom long de celui-ci et se réduisait à
+                                     « Renouvelle… », ce qui ne distingue plus rien. -->
+                                <list create="false" default_order="create_date desc">
+                                    <field name="res_name" string="Fiche"/>
+                                    <field name="res_model_label" string="Type"/>
+                                    <field name="message_id" string="Message"
+                                           optional="show"/>
+                                    <field name="call_id" string="Appel"
+                                           optional="hide"/>
+                                    <field name="is_auto" string="Auto"
+                                           widget="boolean_toggle" readonly="1"/>
+                                    <field name="user_id" string="Par"
+                                           optional="hide"/>
+                                    <field name="create_date" string="Le"/>
+                                    <button name="action_open_target" type="object"
+                                            icon="fa-external-link"
+                                            title="Ouvrir la fiche"/>
+                                    <button name="action_undo" type="object"
+                                            icon="fa-chain-broken" title="Défaire"
+                                            confirm="Retirer ce rattachement ? La note du chatter part avec lui si plus aucun message ne la vise."/>
+                                </list>
+                            </field>
                         </page>
                     </notebook>
                 </sheet>

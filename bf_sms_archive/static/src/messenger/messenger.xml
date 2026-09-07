@@ -259,12 +259,12 @@
                                         <DropdownItem onSelected.bind="openTaskWizard">
                                             <i class="fa fa-tasks fa-fw me-2"/>Poster sur une fiche (options)
                                         </DropdownItem>
-                                        <DropdownItem t-if="state.taskTargets.length or state.autoTaskId"
-                                                      onSelected.bind="toggleAutoTask">
+                                        <DropdownItem t-if="state.taskTargets.length or state.autoTaskIds.length"
+                                                      onSelected.bind="() => this.toggleAutoTask()">
                                             <i class="fa fa-fw me-2"
-                                               t-att-class="state.autoTaskId ? 'fa-bell-slash-o' : 'fa-bell-o'"/>
-                                            <t t-esc="state.autoTaskId
-                                                ? 'Arrêter le suivi dans « ' + state.autoTaskName + ' »'
+                                               t-att-class="state.autoTaskIds.length ? 'fa-bell-slash-o' : 'fa-bell-o'"/>
+                                            <t t-esc="state.autoTaskIds.length
+                                                ? 'Arrêter le suivi (' + autoTaskLabel + ')'
                                                 : 'Suivre dans la tâche'"/>
                                         </DropdownItem>
                                         <DropdownItem onSelected.bind="togglePin">
@@ -344,19 +344,36 @@
                         <div t-if="state.taskTargets.length" class="o_sms_task_group">
                             <div class="text-muted small mb-1">Déjà liées à cette conversation</div>
                             <div t-foreach="state.taskTargets" t-as="tk" t-key="'l' + tk.id"
-                                 class="o_sms_task_item" t-on-click="() => this.postToTask(tk.id)">
-                                <div class="text-truncate" t-esc="tk.name"/>
-                                <small class="text-muted" t-esc="tk.project_name"/>
+                                 class="o_sms_task_item d-flex align-items-center">
+                                <div class="flex-grow-1 overflow-hidden"
+                                     t-on-click="() => this.postToTask(tk.id)">
+                                    <div class="text-truncate" t-esc="tk.name"/>
+                                    <small class="text-muted" t-esc="tk.project_name"/>
+                                </div>
+                                <button class="btn btn-sm btn-link p-0 ms-1 o_sms_follow_btn"
+                                        t-on-click.stop="() => this.toggleAutoTask(tk.id)"
+                                        t-att-title="isFollowed(tk.id)
+                                            ? 'Ne plus relayer les prochains messages ici'
+                                            : 'Relayer aussi les prochains messages ici'">
+                                    <i class="fa" t-att-class="isFollowed(tk.id) ? 'fa-bell' : 'fa-bell-o'"/>
+                                </button>
                             </div>
                         </div>
                         <input type="text" class="form-control form-control-sm mt-1"
-                               placeholder="Rechercher une tâche…"
+                               placeholder="Tâche, ticket, contact, URL collée…"
                                t-att-value="state.taskSearch" t-on-input="onTaskSearchInput"/>
-                        <div t-if="state.taskResults.length" class="o_sms_task_results">
-                            <div t-foreach="state.taskResults" t-as="tk" t-key="'s' + tk.id"
-                                 class="o_sms_task_item" t-on-click="() => this.postToTask(tk.id)">
-                                <div class="text-truncate" t-esc="tk.name"/>
-                                <small class="text-muted" t-esc="tk.project_name"/>
+                        <div t-if="state.taskGroups.length" class="o_sms_task_results">
+                            <div t-foreach="state.taskGroups" t-as="grp" t-key="'g' + grp_index">
+                                <div class="text-muted small mt-1">
+                                    <i t-att-class="grp.icon || 'fa fa-circle-o'" class="me-1"/>
+                                    <t t-esc="grp.model_label"/>
+                                </div>
+                                <div t-foreach="grp.results" t-as="tk" t-key="grp.model + tk.id"
+                                     class="o_sms_task_item"
+                                     t-on-click="() => this.postToTarget(grp.model, tk.id)">
+                                    <div class="text-truncate" t-esc="tk.name"/>
+                                    <small class="text-muted" t-esc="tk.detail"/>
+                                </div>
                             </div>
                         </div>
                         <button class="btn btn-sm btn-link p-0 mt-1" t-on-click="openTaskWizard">
@@ -434,6 +451,63 @@
                                         </span>
                                     </div>
                                     <div t-if="msg.error" class="o_sms_errmsg small" t-esc="msg.error"/>
+                                    <!-- Rattachements : où ce message précis est
+                                         déjà parti, et de quoi en ajouter un.
+                                         Masqué en mode sélection, où le clic sur
+                                         la bulle sert à cocher. -->
+                                    <div t-if="!state.msgSelectMode" class="o_sms_links">
+                                        <span t-foreach="msg.links or []" t-as="lk"
+                                              t-key="lk.link_id" class="o_sms_linkchip"
+                                              t-att-title="lk.model_label + (lk.is_auto ? ' · suivi automatique' : '')">
+                                            <i class="fa fa-paperclip"/>
+                                            <span class="o_sms_linkname" t-esc="lk.name"/>
+                                            <i class="fa fa-times o_sms_linkx"
+                                               title="Défaire ce rattachement"
+                                               t-on-click.stop="() => this.unlinkBubble(msg, lk)"/>
+                                        </span>
+                                        <button class="o_sms_linkadd"
+                                                t-on-click.stop="() => this.openBubbleLink(msg)"
+                                                title="Rattacher ce message à une fiche">
+                                            <i class="fa fa-plus"/>
+                                            <t t-if="!(msg.links or []).length"> Rattacher</t>
+                                        </button>
+                                    </div>
+                                    <!-- Sélecteur inline, ancré sous la bulle -->
+                                    <div t-if="state.bubbleLinkFor === msg.id"
+                                         class="o_sms_bubblepicker" t-on-click.stop="() => {}">
+                                        <div class="d-flex align-items-center mb-1">
+                                            <strong class="flex-grow-1 small">Rattacher ce message à…</strong>
+                                            <button class="btn btn-sm btn-light py-0 px-1"
+                                                    t-on-click.stop="closeBubbleLink">
+                                                <i class="fa fa-times"/>
+                                            </button>
+                                        </div>
+                                        <input type="text" class="form-control form-control-sm"
+                                               placeholder="Tâche, ticket, contact, URL collée…"
+                                               t-att-value="state.bubbleSearch"
+                                               t-on-input="onBubbleSearchInput"
+                                               t-on-click.stop="() => {}"/>
+                                        <div class="o_sms_task_results">
+                                            <div t-foreach="state.bubbleGroups" t-as="grp"
+                                                 t-key="'bg' + grp_index">
+                                                <div class="text-muted small mt-1">
+                                                    <i t-att-class="grp.icon || 'fa fa-circle-o'" class="me-1"/>
+                                                    <t t-esc="grp.model_label"/>
+                                                </div>
+                                                <div t-foreach="grp.results" t-as="tk"
+                                                     t-key="grp.model + tk.id"
+                                                     class="o_sms_task_item"
+                                                     t-on-click.stop="() => this.linkBubbleTo(grp.model, tk.id)">
+                                                    <div class="text-truncate" t-esc="tk.name"/>
+                                                    <small class="text-muted" t-esc="tk.detail"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div t-if="!state.bubbleGroups.length"
+                                             class="text-muted small mt-1">
+                                            Tapez au moins deux caractères.
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </t>

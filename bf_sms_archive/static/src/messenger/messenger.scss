@@ -145,6 +145,82 @@
             & + .o_sms_task_item { border-top: 1px solid #f0f0f0; }
         }
     }
+
+    // ── Rattachements d'une bulle ────────────────────────────
+    // Une pastille par fiche visée. Le pari est qu'un message rattaché est
+    // l'exception : le bouton « Rattacher » ne porte son mot que tant qu'il
+    // n'y a rien, et se réduit à un « + » dès qu'une pastille l'annonce.
+    .o_sms_links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px;
+        margin-top: 4px;
+    }
+    .o_sms_linkchip {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        max-width: 200px;
+        padding: 1px 6px;
+        border-radius: 10px;
+        background: rgba(0, 0, 0, 0.06);
+        font-size: 10.5px;
+        line-height: 1.5;
+
+        .o_sms_linkname {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .o_sms_linkx {
+            cursor: pointer;
+            opacity: 0.5;
+            &:hover { opacity: 1; }
+        }
+    }
+    .o_sms_bubble.o_out .o_sms_linkchip {
+        background: rgba(255, 255, 255, 0.22);
+    }
+    .o_sms_linkadd {
+        border: 0;
+        background: transparent;
+        padding: 1px 4px;
+        border-radius: 10px;
+        font-size: 10.5px;
+        opacity: 0.55;
+        color: inherit;
+        &:hover { opacity: 1; background: rgba(0, 0, 0, 0.06); }
+    }
+    .o_sms_bubble.o_out .o_sms_linkadd:hover { background: rgba(255, 255, 255, 0.22); }
+
+    // Sélecteur ancré sous la bulle. Il vit DANS la bulle pour rester collé au
+    // message dont il parle ; sa largeur est donc bornée à la main, sinon une
+    // bulle de trois mots donnerait un champ de recherche de trois mots.
+    .o_sms_bubblepicker {
+        margin-top: 6px;
+        padding: 6px 8px;
+        min-width: 260px;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        background: #fff;
+        color: #212529;
+        text-align: left;
+        cursor: default;
+
+        .o_sms_task_results {
+            max-height: 200px;
+            overflow-y: auto;
+            margin-top: 4px;
+        }
+        .o_sms_task_item {
+            padding: 4px 6px;
+            border-radius: 4px;
+            cursor: pointer;
+            &:hover { background: #e6f4fb; }
+        }
+    }
+    .o_sms_follow_btn { line-height: 1; }
+
     .o_sms_row.o_selectable {
         cursor: pointer;
         align-items: center;
@@ -373,6 +449,7 @@ $sms-dk-border:      #4a5153;   // bordures & séparateurs
 $sms-dk-text:        #d1d5d8;   // texte principal
 $sms-dk-text-bright: #e8eaec;   // texte accentué
 $sms-dk-text-muted:  #8e9496;   // texte secondaire
+$sms-dk-text-soft:   #b0b6b9;   // secondaire sur fond levé (contraste AA)
 $sms-dk-hover:       #414849;   // survols
 $sms-dk-accent:      #29ABE1;   // bleu Blue Fox (bulle sortante, avatar)
 $sms-dk-accent-dim:  rgba(41, 171, 226, 0.16);
@@ -425,6 +502,28 @@ body.bf_dark_mode .o_sms_messenger {
         &:hover { background: $sms-dk-hover; }
         & + .o_sms_task_item { border-top-color: $sms-dk-border; }
     }
+
+    .o_sms_linkchip { background: rgba(255, 255, 255, 0.10); }
+    .o_sms_bubble.o_out .o_sms_linkchip { background: rgba(0, 0, 0, 0.22); }
+    .o_sms_linkadd:hover { background: rgba(255, 255, 255, 0.10); }
+    .o_sms_bubble.o_out .o_sms_linkadd:hover { background: rgba(0, 0, 0, 0.22); }
+    .o_sms_bubblepicker {
+        background: $sms-dk-raised;
+        border-color: $sms-dk-border;
+        color: $sms-dk-text;
+
+        .o_sms_task_item:hover { background: $sms-dk-hover; }
+    }
+
+    // `.text-muted` de Bootstrap est un gris de mode CLAIR : sur le fond levé
+    // du sélecteur il tombe à 1,2:1, c'est-à-dire illisible. Mesuré au navigateur
+    // sur les intitulés de groupe et les lignes de contexte, qui portent tout ce
+    // qui distingue deux tâches au nom voisin.
+    // ⚠️ `!important` obligatoire : Bootstrap 5.3 déclare lui-même
+    // `.text-muted { color: var(--bs-secondary-color) !important }`. Une règle
+    // plus spécifique ne suffit pas : vérifié, elle perdait quand même.
+    .o_sms_bubblepicker .text-muted,
+    .o_sms_taskpicker .text-muted { color: $sms-dk-text-soft !important; }
 
     .o_sms_link_box .o_sms_link_results,
     .o_sms_newconv_results {

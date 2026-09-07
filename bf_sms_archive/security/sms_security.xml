@@ -80,6 +80,30 @@
         <field name="groups" eval="[(4, ref('group_sms_manager'))]"/>
     </record>
 
+    <!-- Record Rules: Rattachement.
+         Calquées sur celles du message : l'accès d'un collègue passe par la
+         LIGNE sur laquelle le message a voyagé, jamais par le fil — un fil
+         mélange les lignes, et une règle au fil aurait ouvert tout l'historique
+         importé du propriétaire. Un rattachement d'APPEL ne se partage pas :
+         le journal d'appels ne porte pas de ligne. -->
+    <record id="sms_link_rule_user" model="ir.rule">
+        <field name="name">Rattachement SMS : propriétaire ou ligne partagée</field>
+        <field name="model_id" ref="model_sms_archive_link"/>
+        <field name="domain_force">['|', ('owner_id', '=', user.id), '&amp;', '&amp;', ('call_id', '=', False), ('message_id.line_id.user_ids', 'in', [user.id]), ('message_id.thread_id.is_hidden', '=', False)]</field>
+        <field name="groups" eval="[(4, ref('group_sms_user'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <record id="sms_link_rule_manager" model="ir.rule">
+        <field name="name">Rattachement SMS : gestionnaire voit tout</field>
+        <field name="model_id" ref="model_sms_archive_link"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('group_sms_manager'))]"/>
+    </record>
+
     <!-- Record Rules: Call -->
     <!-- Un appel archivé ne porte pas de ligne (il vient du journal Android) :
          partager un numéro ne donne donc aucun accès au journal d'appels. -->

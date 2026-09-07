@@ -7,6 +7,7 @@ from . import sms_mobile_device
 from . import fcm_transport
 from . import push_transport
 from . import sms_mms_part
+from . import sms_link
 from . import sms_line
 from . import call_archive
 from . import sms_dashboard

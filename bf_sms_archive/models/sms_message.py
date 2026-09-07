@@ -134,6 +134,18 @@ class SmsArchiveMessage(models.Model):
         inverse_name="message_id",
         string="Pièces jointes MMS",
     )
+    link_ids = fields.One2many(
+        comodel_name="sms.archive.link",
+        inverse_name="message_id",
+        string="Rattachements",
+        help="Les fiches sur le chatter desquelles ce message a été posé. "
+             "Un même message peut en viser plusieurs.",
+    )
+    link_count = fields.Integer(
+        string="Fiches",
+        compute="_compute_link_count",
+        store=True,
+    )
 
     display_name = fields.Char(
         compute="_compute_display_name",
@@ -146,6 +158,11 @@ class SmsArchiveMessage(models.Model):
             "Ce message existe déjà (hash dupliqué).",
         ),
     ]
+
+    @api.depends("link_ids")
+    def _compute_link_count(self):
+        for msg in self:
+            msg.link_count = len(msg.link_ids)
 
     @api.depends("direction", "thread_id.contact_name", "date_sent", "body")
     def _compute_display_name(self):
@@ -225,38 +242,59 @@ class SmsArchiveMessage(models.Model):
         # données est déjà passé par markupsafe.escape juste au-dessus.
         return markupsafe.Markup(header + "".join(rows))
 
-    def _post_to_task(self, task, link_threads=True):
-        """Post these messages on ``task``'s chatter as one note. Returns the task."""
-        if not self or not task:
-            return task
-        task.message_post(
+    def _post_to_record(self, record, link_threads=True, is_auto=False):
+        """Pose ces messages sur le chatter de `record`, en une note, et enregistre
+        le rattachement de chacun. Renvoie la fiche.
+
+        Le rattachement est ce qui distingue ce geste d'une simple copie : le
+        même message peut ensuite partir vers une deuxième fiche sans que la
+        première perde sa trace, et la Messagerie sait dire où il est déjà passé.
+        """
+        if not self or not record:
+            return record
+        note = record.message_post(
             body=self._render_task_post_body(),
             message_type="comment",
             subtype_xmlid="mail.mt_note",
         )
-        if link_threads:
+        self.env["sms.archive.link"]._register_links(self, record, note=note, is_auto=is_auto)
+        # Le lien fil ↔ tâche répond à une autre question que le registre (« de
+        # quoi parle cette conversation » plutôt que « où est parti ce message »),
+        # et il ne connaît que `project.task`.
+        if link_threads and record._name == "project.task":
             for thread in self.thread_id:
-                if task.id not in thread.task_ids.ids:
-                    thread.write({"task_ids": [(4, task.id, 0)]})
-        return task
+                if record.id not in thread.task_ids.ids:
+                    thread.write({"task_ids": [(4, record.id, 0)]})
+        return record
+
+    def _post_to_task(self, task, link_threads=True):
+        """Compatibilité : le nom d'avant la 5.13.0, quand la cible ne pouvait
+        être qu'une tâche. Conservé parce que d'autres modules l'appellent."""
+        return self._post_to_record(task, link_threads=link_threads)
 
     def _auto_post_to_task(self):
-        """Relay a live message to the task the thread is set to follow, if any.
+        """Relaie un message live vers chaque tâche que le fil suit.
 
-        Deliberately called from the live paths only (webhook, poller, outbound send) and
-        never from ``create``: an Android backup import replays thousands of old messages,
-        and a ``create`` hook would dump every one of them into a task chatter."""
+        Appelé depuis les chemins live seulement (webhook, sondeur, envoi
+        sortant) et jamais depuis ``create`` : un import de sauvegarde Android
+        rejoue des milliers de vieux messages, et un crochet sur ``create`` les
+        déverserait tous dans un chatter.
+
+        Une tâche archivée est sautée sans bruit : on ne réveille pas une fiche
+        fermée, et la retirer du suivi à la place ferait perdre le réglage si
+        elle est rouverte."""
         for msg in self:
-            task = msg.thread_id.auto_post_task_id
-            if not task or not task.exists():
-                continue
-            try:
-                msg._post_to_task(task, link_threads=False)
-            except Exception:  # noqa: BLE001 — un relais ne casse jamais la réception
-                _logger.exception(
-                    "Suivi automatique vers la tâche %s échoué (message %s)",
-                    task.id, msg.id,
-                )
+            tasks = msg.thread_id.auto_post_task_ids.filtered(
+                lambda t: t.exists() and t.active
+            )
+            for task in tasks:
+                try:
+                    msg._post_to_record(task, link_threads=False, is_auto=True)
+                except Exception:  # noqa: BLE001 — un relais ne casse jamais la réception
+                    _logger.exception(
+                        "Suivi automatique vers la tâche %s échoué (message %s)",
+                        task.id, msg.id,
+                    )
 
     def action_export_csv(self):
         """Export the selected messages as a single CSV file."""
@@ -700,8 +738,12 @@ class SmsArchiveMessage(models.Model):
         rec._auto_post_to_task()
         return rec.id
 
-    def _messenger_dict(self):
-        """Sérialisation d'un message pour la SPA « Messagerie »."""
+    def _messenger_dict(self, link_map=None):
+        """Sérialisation d'un message pour la SPA « Messagerie ».
+
+        `link_map` est le résultat de ``sms.archive.link._targets_for`` pour tout
+        le lot : le calculer ici, message par message, ferait autant de requêtes
+        que de bulles à l'ouverture d'une conversation."""
         self.ensure_one()
         media = []
         if self.is_mms:
@@ -746,6 +788,7 @@ class SmsArchiveMessage(models.Model):
             "delivery_state": self.delivery_state or "",
             "error": self.error or "",
             "media": media,
+            "links": (link_map or {}).get(self.id, []),
         }
 
     def _notify_users(self):

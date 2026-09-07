@@ -58,7 +58,7 @@ class TestPostToTarget(TransactionCase):
         wizard.action_post()
         self.assertEqual(self._message_count(self.task), before + 1)
         self.assertIn(self.task, self.thread.task_ids)
-        self.assertEqual(self.thread.auto_post_task_id, self.task)
+        self.assertEqual(self.thread.auto_post_task_ids, self.task)
 
     def test_post_on_a_contact_posts_without_touching_the_task_plumbing(self):
         """Le gain de la 5.8.0 : une cible qui n'est pas une tâche."""
@@ -67,7 +67,7 @@ class TestPostToTarget(TransactionCase):
         wizard.action_post()
         self.assertEqual(self._message_count(self.partner), before + 1)
         self.assertFalse(self.thread.task_ids)
-        self.assertFalse(self.thread.auto_post_task_id)
+        self.assertFalse(self.thread.auto_post_task_ids)
 
     def test_post_without_a_target_is_refused(self):
         with self.assertRaises(UserError):

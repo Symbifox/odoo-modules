@@ -20,6 +20,7 @@
                 <field name="line_id" string="Ligne" optional="show"/>
                 <field name="sent_by_id" string="Envoyé par" optional="hide"/>
                 <field name="is_mms" string="MMS" optional="hide"/>
+                <field name="link_count" string="Fiches" optional="show"/>
             </list>
         </field>
     </record>
@@ -54,6 +55,23 @@
                     </group>
                     <separator string="Contenu"/>
                     <field name="body" nolabel="1" readonly="1"/>
+                    <separator string="Rattachements" invisible="link_count == 0"/>
+                    <field name="link_ids" nolabel="1" readonly="1"
+                           invisible="link_count == 0">
+                        <list create="false">
+                            <field name="res_model_label" string="Type"/>
+                            <field name="res_name" string="Fiche"/>
+                            <field name="is_auto" string="Suivi auto"
+                                   widget="boolean_toggle" readonly="1"/>
+                            <field name="create_date" string="Le"/>
+                            <button name="action_open_target" type="object"
+                                    icon="fa-external-link" title="Ouvrir la fiche"/>
+                            <button name="action_undo" type="object"
+                                    icon="fa-chain-broken" title="Défaire"
+                                    confirm="Retirer ce rattachement ? La note du chatter part avec lui si plus aucun message ne la vise."/>
+                        </list>
+                    </field>
+                    <field name="link_count" invisible="1"/>
                     <separator string="Pièces jointes MMS" invisible="not is_mms"/>
                     <field name="mms_part_ids" nolabel="1" readonly="1"
                            invisible="not is_mms">

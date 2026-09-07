@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="sms_link_view_list" model="ir.ui.view">
+        <field name="name">sms.archive.link.list</field>
+        <field name="model">sms.archive.link</field>
+        <field name="arch" type="xml">
+            <list string="Rattachements" create="false"
+                  default_order="create_date desc">
+                <field name="res_name" string="Fiche"/>
+                <field name="res_model_label" string="Type de fiche"/>
+                <field name="thread_id" string="Conversation"/>
+                <field name="message_id" string="Message" optional="show"/>
+                <field name="call_id" string="Appel" optional="hide"/>
+                <field name="create_date" string="Le"/>
+                <field name="is_auto" string="Suivi auto" widget="boolean_toggle"
+                       readonly="1"/>
+                <field name="user_id" string="Rattaché par" optional="hide"/>
+                <field name="owner_id" string="Propriétaire" optional="hide"/>
+                <button name="action_open_target" type="object"
+                        icon="fa-external-link" title="Ouvrir la fiche"/>
+                <button name="action_undo" type="object" icon="fa-chain-broken"
+                        title="Défaire"
+                        confirm="Retirer ce rattachement ? La note du chatter part avec lui si plus aucun message ne la vise."/>
+            </list>
+        </field>
+    </record>
+
+    <record id="sms_link_view_search" model="ir.ui.view">
+        <field name="name">sms.archive.link.search</field>
+        <field name="model">sms.archive.link</field>
+        <field name="arch" type="xml">
+            <search string="Rattachements">
+                <field name="res_name" string="Fiche"/>
+                <field name="thread_id" string="Conversation"/>
+                <field name="res_model" string="Modèle"/>
+                <filter name="manual" string="Posés à la main"
+                        domain="[('is_auto', '=', False)]"/>
+                <filter name="auto" string="Suivi automatique"
+                        domain="[('is_auto', '=', True)]"/>
+                <separator/>
+                <filter name="messages" string="SMS"
+                        domain="[('message_id', '!=', False)]"/>
+                <filter name="calls" string="Appels"
+                        domain="[('call_id', '!=', False)]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="group_model" string="Type de fiche"
+                            context="{'group_by': 'res_model'}"/>
+                    <filter name="group_thread" string="Conversation"
+                            context="{'group_by': 'thread_id'}"/>
+                    <filter name="group_owner" string="Propriétaire"
+                            context="{'group_by': 'owner_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_sms_links" model="ir.actions.act_window">
+        <field name="name">Rattachements</field>
+        <field name="res_model">sms.archive.link</field>
+        <field name="view_mode">list</field>
+        <field name="search_view_id" ref="sms_link_view_search"/>
+        <field name="context">{'create': False}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Aucun rattachement</p>
+            <p>
+                Un rattachement se crée en posant un SMS ou un appel sur le
+                chatter d'une fiche, depuis la Messagerie ou depuis la liste
+                des messages. Le même message peut viser plusieurs fiches.
+            </p>
+        </field>
+    </record>
+
+</odoo>

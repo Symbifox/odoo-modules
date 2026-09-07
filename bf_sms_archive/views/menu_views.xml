@@ -40,6 +40,14 @@
         action="sms_message_action"
         sequence="20"/>
 
+    <!-- Rattachements -->
+    <menuitem
+        id="sms_archive_menu_links"
+        name="Rattachements"
+        parent="sms_archive_menu_root"
+        action="action_sms_links"
+        sequence="25"/>
+
     <!-- Import -->
     <menuitem
         id="sms_archive_menu_import"

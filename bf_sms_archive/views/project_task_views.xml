@@ -14,6 +14,16 @@
                     <field name="sms_thread_count" widget="statinfo"
                            string="Conversations"/>
                 </button>
+                <!-- Compteur distinct de celui des conversations : il compte les
+                     messages posés sur CETTE tâche, pas les fils qui la
+                     concernent. Les deux se recoupent rarement. -->
+                <button name="action_open_sms_links" type="object"
+                        class="oe_stat_button" icon="fa-commenting-o"
+                        invisible="sms_link_count == 0"
+                        groups="bf_sms_archive.group_sms_user">
+                    <field name="sms_link_count" widget="statinfo"
+                           string="SMS rattachés"/>
+                </button>
             </div>
         </field>
     </record>

@@ -81,17 +81,31 @@ class SmsArchiveThread(models.Model):
         column2="task_id",
         string="Tâches liées",
     )
-    auto_post_task_id = fields.Many2one(
+    # Pluriel depuis la 5.13.0 : une conversation peut concerner plusieurs
+    # dossiers à la fois (le même client écrit pour deux mandats en cours), et
+    # le suivi ne pouvait en nourrir qu'un seul. Chaque nouveau message part
+    # dans le chatter de CHACUNE des tâches listées ici.
+    auto_post_task_ids = fields.Many2many(
         comodel_name="project.task",
-        string="Suivi dans la tâche",
-        help="Quand c'est renseigné, chaque nouveau message de cette conversation est "
-             "relayé automatiquement au chatter de cette tâche. Ne s'applique qu'aux "
+        relation="sms_thread_auto_task_rel",
+        column1="thread_id",
+        column2="task_id",
+        string="Suivi dans les tâches",
+        help="Chaque nouveau message de cette conversation est relayé "
+             "automatiquement au chatter de ces tâches. Ne s'applique qu'aux "
              "messages qui arrivent ensuite, jamais à un import rétroactif.",
     )
     call_ids = fields.One2many(
         comodel_name="call.archive.call",
         inverse_name="thread_id",
         string="Appels",
+    )
+    link_ids = fields.One2many(
+        comodel_name="sms.archive.link",
+        inverse_name="thread_id",
+        string="Rattachements",
+        help="Quel message (ou quel appel) de cette conversation est parti "
+             "sur quelle fiche.",
     )
 
     message_count = fields.Integer(
@@ -1027,7 +1041,8 @@ class SmsArchiveThread(models.Model):
         if before_id:
             domain.append(("id", "<", int(before_id)))
         found = Msg.search(domain, order="id desc", limit=limit)
-        messages = [m._messenger_dict() for m in found.sorted("id")]
+        link_map = self.env["sms.archive.link"]._targets_for(found)
+        messages = [m._messenger_dict(link_map=link_map) for m in found.sorted("id")]
         # Marque les entrants comme lus à l'ouverture
         unread = found.filtered(lambda m: m.direction == "in" and not m.is_read)
         if unread:
@@ -1122,13 +1137,15 @@ class SmsArchiveThread(models.Model):
         thread = self.with_context(active_test=False).browse(int(thread_id))
         thread._check_messenger_access()
         linked = thread.task_ids.filtered(lambda t: t.active)
+        followed = thread.auto_post_task_ids.filtered(lambda t: t.active)
         return {
-            "auto_post_task_id": thread.auto_post_task_id.id or False,
-            "auto_post_task_name": thread.auto_post_task_id.name or "",
+            "auto_task_ids": followed.ids,
+            "auto_task_names": [t.name or "" for t in followed],
             "tasks": [{
                 "id": t.id,
                 "name": t.name,
                 "project_name": t.project_id.name or "",
+                "followed": t.id in followed.ids,
             } for t in linked],
         }
 
@@ -1147,24 +1164,63 @@ class SmsArchiveThread(models.Model):
     def messenger_post_to_task(self, thread_id, task_id, message_ids=None, call_ids=None):
         """Poste une sélection (ou toute la conversation chargée) sur une tâche.
 
-        ``message_ids``/``call_ids`` vides = tout le fil. Les identifiants reçus du client
-        sont réduits au fil visé avant tout envoi : on ne poste jamais un message qu'un
-        appelant aurait glissé dans la liste."""
-        thread = self.with_context(active_test=False).browse(int(thread_id))
-        thread._check_messenger_access()
+        Délègue à `messenger_post_to_target`, qui vise n'importe quelle fiche.
+        Ce point d'entrée-ci reste parce que la Messagerie déployée chez un
+        locataire dont les assets sont encore en cache l'appelle toujours, et
+        parce que « tâche » est le cas courant."""
         task = self.env["project.task"].browse(int(task_id)).exists()
         if not task:
             raise UserError("Tâche introuvable.")
+        res = self.messenger_post_to_target(
+            thread_id, "project.task", task.id,
+            message_ids=message_ids, call_ids=call_ids,
+        )
+        res["task_name"] = task.name
+        res["project_name"] = task.project_id.name or ""
+        return res
 
-        if message_ids:
-            messages = thread.message_ids.filtered(lambda m: m.id in set(message_ids))
-        elif call_ids:
-            messages = self.env["sms.archive.message"]
-        else:
-            messages = thread.message_ids
-        calls = (thread.call_ids.filtered(lambda c: c.id in set(call_ids))
-                 if call_ids else self.env["call.archive.call"])
+    # ── Rattachement d'un message à n'importe quelle fiche ─────────
 
+    @api.model
+    def messenger_search_targets(self, term, limit=5):
+        """Fiches proposables pour rattacher un message, groupées par modèle.
+
+        Délègue au socle `bf.chatter.target`, le même résolveur que le sorcier :
+        donc une URL collée, `task:42` ou `INV/2026/00017` fonctionnent
+        depuis la bulle comme depuis le sorcier."""
+        return self.env["bf.chatter.target"].search_targets(term, limit=limit)
+
+    @api.model
+    def messenger_post_to_target(self, thread_id, res_model, res_id,
+                                 message_ids=None, call_ids=None):
+        """Poste une sélection sur n'importe quelle fiche à chatter, et enregistre
+        le rattachement de chaque élément.
+
+        Un seul point d'entrée sert la bulle (un message) et le mode sélection
+        (plusieurs) : deux chemins auraient fini par produire deux notes de
+        formes différentes selon le geste, ce que `_render_task_post_body` avait
+        justement été remonté sur le modèle pour éviter.
+
+        Les identifiants reçus du client sont réduits au fil visé avant tout
+        envoi : on ne poste jamais un message qu'un appelant aurait glissé dans
+        la charge utile."""
+        thread = self.with_context(active_test=False).browse(int(thread_id))
+        thread._check_messenger_access()
+        record = self.env["bf.chatter.target"]._browse_if_allowed(
+            str(res_model), int(res_id),
+        )
+        if not record:
+            raise UserError("Fiche introuvable ou inaccessible.")
+        # `_browse_if_allowed` ne garantit que la LECTURE ; poser une note dans
+        # un chatter est une écriture, et le sorcier exige déjà ce droit-là.
+        try:
+            record.check_access("write")
+        except AccessError as exc:
+            raise UserError(
+                f"Accès refusé sur {res_model} #{res_id} : {exc}"
+            ) from exc
+
+        messages, calls = thread._messenger_selection(message_ids, call_ids)
         if not messages and not calls:
             raise UserError("Rien à poster.")
 
@@ -1173,28 +1229,85 @@ class SmsArchiveThread(models.Model):
             bodies.append(messages._render_task_post_body())
         if calls:
             bodies.append(calls._render_task_post_body())
-        task.message_post(
+        note = record.message_post(
             body=Markup("").join(b for b in bodies if b),
             message_type="comment",
             subtype_xmlid="mail.mt_note",
         )
-        if task.id not in thread.task_ids.ids:
-            thread.write({"task_ids": [(4, task.id, 0)]})
+        Link = self.env["sms.archive.link"]
+        if messages:
+            Link._register_links(messages, record, note=note)
+        if calls:
+            Link._register_links(calls, record, note=note)
+        if record._name == "project.task" and record.id not in thread.task_ids.ids:
+            thread.write({"task_ids": [(4, record.id, 0)]})
         return {
             "count": len(messages) + len(calls),
-            "task_name": task.name,
-            "project_name": task.project_id.name or "",
+            "name": record.display_name,
+            # Clés en CHAÎNES : un dictionnaire à clés entières traverse JSON-RPC
+            # (le navigateur les relit indifféremment) mais fait échouer XML-RPC
+            # à la sérialisation, et ce même point d'entrée sert les deux.
+            "links": Link._targets_for_rpc(messages) if messages else {},
         }
 
+    def _messenger_selection(self, message_ids=None, call_ids=None):
+        """Réduit au fil courant les identifiants venus du client.
+
+        Listes vides = tout le fil, comme `messenger_post_to_task` l'a toujours
+        fait : le bouton « → Tâche » hors mode sélection poste la conversation
+        chargée."""
+        self.ensure_one()
+        if message_ids:
+            messages = self.message_ids.filtered(lambda m: m.id in set(message_ids))
+        elif call_ids:
+            messages = self.env["sms.archive.message"]
+        else:
+            messages = self.message_ids
+        calls = (self.call_ids.filtered(lambda c: c.id in set(call_ids))
+                 if call_ids else self.env["call.archive.call"])
+        return messages, calls
+
     @api.model
-    def messenger_set_auto_task(self, thread_id, task_id):
-        """Active ou coupe le suivi automatique du fil vers une tâche."""
+    def messenger_unlink_message(self, thread_id, message_id, link_id):
+        """Défait un rattachement : la ligne s'en va, et la note du chatter avec
+        elle quand plus aucun rattachement ne la vise."""
         thread = self.with_context(active_test=False).browse(int(thread_id))
         thread._check_messenger_access()
-        thread.write({"auto_post_task_id": int(task_id) if task_id else False})
+        message = thread.message_ids.filtered(lambda m: m.id == int(message_id))
+        if not message:
+            raise UserError("Message introuvable dans cette conversation.")
+        link = message.link_ids.filtered(lambda l: l.id == int(link_id))
+        if not link:
+            raise UserError("Rattachement introuvable.")
+        removed = link.action_undo()
         return {
-            "auto_post_task_id": thread.auto_post_task_id.id or False,
-            "auto_post_task_name": thread.auto_post_task_id.name or "",
+            "links": self.env["sms.archive.link"]._targets_for(message).get(message.id, []),
+            "note_removed": bool(removed),
+        }
+
+
+    @api.model
+    def messenger_set_auto_task(self, thread_id, task_id, follow=None):
+        """Ajoute ou retire une tâche du suivi automatique du fil.
+
+        `follow` à None = bascule. `task_id` à faux coupe tout le suivi, ce qui
+        garde le geste « arrêter de suivre » accessible en un clic quand
+        plusieurs tâches sont branchées."""
+        thread = self.with_context(active_test=False).browse(int(thread_id))
+        thread._check_messenger_access()
+        if not task_id:
+            thread.write({"auto_post_task_ids": [(5, 0, 0)]})
+        else:
+            task_id = int(task_id)
+            already = task_id in thread.auto_post_task_ids.ids
+            add = (not already) if follow is None else bool(follow)
+            thread.write({
+                "auto_post_task_ids": [(4 if add else 3, task_id, 0)],
+            })
+        followed = thread.auto_post_task_ids.filtered(lambda t: t.active)
+        return {
+            "auto_task_ids": followed.ids,
+            "auto_task_names": [t.name or "" for t in followed],
         }
 
     @api.model
