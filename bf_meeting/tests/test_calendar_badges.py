@@ -164,6 +164,66 @@ class TestCalendarBadges(TransactionCase):
                       content,
                       "les pastilles n'héritent plus du gabarit que le "
                       "renderer des participants rend réellement")
+    def test_les_pastilles_sont_posees_dans_le_titre_et_non_avant(self):
+        """🔴 Un défaut qui ne se voit qu'à l'œil.
+
+        Les pastilles étaient insérées AVANT `<div class="o_event_title">`,
+        donc avant un élément de type bloc : elles s'octroyaient une ligne
+        entière et repoussaient le titre d'autant. Sur une vignette d'une
+        demi-heure, le titre passait sous le bord et disparaissait.
+
+        Aucune assertion Python ne peut voir une hauteur de vignette. Ce qui
+        se tient, c'est l'ANCRE : tant qu'elle vise le texte du titre, les
+        pastilles restent dans le flux. Si quelqu'un la ramène sur le `<div>`,
+        ce test le nomme.
+        """
+        import pathlib
+        from odoo.modules.module import get_module_path
+
+        tpl = pathlib.Path(get_module_path('bf_meeting')) / \
+            'static/src/xml/calendar_event_badges.xml'
+        contenu = tpl.read_text(encoding='utf-8')
+        self.assertIn("""<xpath expr="//span[@t-esc='title']" position="before">""",
+                      contenu,
+                      "les pastilles ne sont plus ancrées dans le titre : "
+                      "posées avant le div, elles reprennent une ligne entière "
+                      "et repoussent le titre hors de la vignette")
+
+    def test_les_champs_de_preparation_ne_sont_pas_dans_le_titre(self):
+        """🔴 Six champs sans étiquette, et rien n'avait bronché.
+
+        Ils étaient posés `position="after"` sur le champ `name`, qui vit dans
+        le `<h1>` du bloc `oe_title` du cœur. Un champ placé là ne reçoit
+        aucune étiquette — c'est le `<group>` qui rend le `string` — et hérite
+        de la typographie du titre. Résultat à l'écran : deux `Many2one`
+        réduits à leur texte d'invite en corps de titre, deux cases nues, et
+        deux fois le même avatar sans rien pour les distinguer.
+
+        Le test lit l'arch RÉSOLUE, donc il éprouve le placement tel que le
+        formulaire l'expose vraiment, pas tel que notre fichier le demande.
+        """
+        from lxml import etree
+
+        arch = self.env['calendar.event'].get_view(
+            self.env.ref('calendar.view_calendar_event_form').id, 'form',
+        )['arch']
+        arbre = etree.fromstring(arch.encode('utf-8'))
+
+        for champ in ('meeting_agenda_id', 'meeting_record_id',
+                      'bf_skip_agenda', 'bf_skip_dashboard',
+                      'bf_agenda_responsible_id', 'bf_minutes_responsible_id'):
+            noeuds = arbre.xpath(f'//field[@name="{champ}"]')
+            self.assertTrue(noeuds, f"{champ} a disparu du formulaire")
+            noeud = noeuds[0]
+            self.assertFalse(
+                noeud.xpath('ancestor::h1'),
+                f"{champ} est de retour dans le <h1> du titre : il s'affichera "
+                f"sans étiquette et en corps de titre")
+            self.assertTrue(
+                noeud.xpath('ancestor::group'),
+                f"{champ} n'est pas dans un <group> : seul un groupe rend le "
+                f"`string` d'un champ, donc il s'affichera anonyme")
+
     def test_la_vue_calendrier_declare_les_deux_champs(self):
         """Sans eux dans l'arch, les pastilles s'éteignent sans erreur.
 

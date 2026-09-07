@@ -37,19 +37,49 @@
                     « Sans ordre du jour formel » si non requis.
                 </div>
             </xpath>
-            <xpath expr="//field[@name='name']" position="after">
-                <field name="meeting_agenda_id"
-                       options="{'no_create': True}"
-                       placeholder="Lier un ordre du jour existant..."/>
-                <field name="meeting_record_id"
-                       options="{'no_create': True}"
-                       placeholder="Lier un compte rendu existant..."/>
-                <field name="bf_skip_agenda"/>
-                <field name="bf_skip_dashboard"/>
-                <field name="bf_agenda_responsible_id"
-                       widget="many2one_avatar_user"/>
-                <field name="bf_minutes_responsible_id"
-                       widget="many2one_avatar_user"/>
+            <!--
+              🔴 Ces six champs étaient posés `position="after"` sur le champ
+              `name`. Or `name` ne vit pas dans un groupe : le cœur le met dans
+              le `<h1>` du bloc `oe_title`. Un champ placé là ne reçoit AUCUNE
+              étiquette — un `<h1>` n'est pas un `<group>`, et c'est le groupe
+              qui rend le `string` d'un champ — et il hérite en prime de la
+              typographie du titre.
+
+              Ce que ça donnait à l'écran : deux `Many2one` réduits à leur
+              texte d'invite en corps de titre, deux cases à cocher nues, et
+              deux fois le même avatar sans rien pour dire lequel est le
+              responsable de l'OdJ et lequel celui du compte rendu. Six
+              contrôles anonymes.
+
+              ⚠️ L'ancre est `//notebook` et non `//sheet/group` : huit vues
+              héritent de ce formulaire, et l'une d'elles peut ajouter un
+              second groupe sous le `<sheet>`. `//sheet/group` correspondrait
+              alors à deux nœuds et la vue mourrait pour tout le monde. Le
+              `<notebook>` est unique et le reste (vérifié sur l'arch résolue).
+
+              Le groupe porte un titre parce que la question posée n'était pas
+              « où sont ces champs » mais « on ne comprend pas ce qu'ils sont ».
+            -->
+            <xpath expr="//notebook" position="before">
+                <group string="Préparation de la rencontre" name="bf_meeting_prep">
+                    <group name="bf_meeting_prep_agenda">
+                        <field name="meeting_agenda_id"
+                               options="{'no_create': True}"
+                               placeholder="Lier un ordre du jour existant..."/>
+                        <field name="bf_agenda_responsible_id"
+                               widget="many2one_avatar_user"/>
+                        <field name="bf_skip_agenda"/>
+                    </group>
+                    <group name="bf_meeting_prep_minutes">
+                        <field name="meeting_record_id"
+                               options="{'no_create': True}"
+                               placeholder="Lier un compte rendu existant..."/>
+                        <field name="bf_minutes_responsible_id"
+                               widget="many2one_avatar_user"/>
+                        <field name="bf_skip_dashboard"/>
+                    </group>
+                </group>
+                <!-- Lu par l'encart d'avertissement posé avant le `<sheet>`. -->
                 <field name="bf_needs_agenda" invisible="1"/>
             </xpath>
         </field>

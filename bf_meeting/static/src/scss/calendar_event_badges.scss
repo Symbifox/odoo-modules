@@ -12,6 +12,12 @@
 // ⚠️ `currentColor` et non une couleur fixe : la vignette prend la couleur du
 // participant (`color="partner_ids"` dans l'arch), donc un fond arbitraire.
 // Une pastille peinte en gris disparaît sur la moitié des palettes.
+// ⚠️ Les pastilles vivent DANS `.o_event_title`, plus
+// avant lui : elles ne prennent plus de hauteur, elles prennent de la largeur.
+// `flex: 0 0 auto` n'est donc plus décoratif — `.o_event_title` est un conteneur
+// flex sous `lg`, et sans cette ligne les pictogrammes se feraient comprimer à
+// zéro par le titre au lieu de le faire tronquer, ce qui les effacerait
+// exactement sur les vignettes étroites où ils servent le plus.
 .bf_meeting_badge {
     display: inline-flex;
     align-items: center;
@@ -19,6 +25,13 @@
     line-height: 1;
     flex: 0 0 auto;
     color: currentColor;
+
+    // Le titre est en `text-truncate` : `white-space: nowrap` s'hérite et
+    // collerait les deux pictogrammes l'un à l'autre sur certains rendus.
+    // La marge ci-dessus tient, mais l'alignement vertical, lui, doit être
+    // repris — un `<i>` FontAwesome inline retombe sinon sur la ligne de base
+    // du texte et pend sous les majuscules.
+    vertical-align: text-bottom;
 
     // Absent. Présent quand même, et c'est voulu : l'absence d'un ordre du jour
     // est justement ce qu'on veut voir d'un coup d'œil, et une pastille qui
