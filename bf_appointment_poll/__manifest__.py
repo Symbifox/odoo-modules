@@ -133,7 +133,15 @@
     #   clôture relit la BASE une fois la création terminée, ajoute qui manque
     #   en SILENCE (la confirmation brandée porte déjà le `.ics`), et
     #   journalise si l'ajout ne prend pas.
-    "version": "18.0.1.14.0",
+    # 18.0.1.15.0: une retenue de sondage naît « tentative » et non
+    #   « confirmée ». Le créneau est soumis au vote et quatre sur cinq seront
+    #   libérés à la clôture : c'est mot pour mot STATUS:TENTATIVE
+    #   (RFC 5545 §3.8.1.11). Elle héritait du « confirmée » que
+    #   `bf_calendar_invite` stampe sur tout nouvel événement, et cette valeur
+    #   partait déjà dans le `STATUS` de l'ICS. Posé sous condition : ce module
+    #   ne dépend pas de `bf_calendar_invite`, et une clé inconnue passée à
+    #   `create()` lève.
+    "version": "18.0.1.15.0",
     "category": "Appointments",
     "summary": "Proposer plusieurs créneaux, récolter les disponibilités, "
                "puis fixer la rencontre",

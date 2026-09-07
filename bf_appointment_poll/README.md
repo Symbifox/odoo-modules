@@ -23,7 +23,13 @@ click.
   hours. The `blocking` level really does close the slot, and is never the
   default. A hold is placed slot by slot, as each one is picked; in `blocking`
   mode, expect every picked slot to leave your public booking page for the
-  duration of the poll, bounded by the per-poll slot ceiling.
+  duration of the poll, bounded by the per-poll slot ceiling. From
+  **v18.0.1.15.0** a hold is created **tentative**, not confirmed: it is a slot
+  put to a vote, and four out of five will be released when the poll closes —
+  which is what `STATUS:TENTATIVE` means in RFC 5545 §3.8.1.11. The value also
+  travels in the `.ics`, so a hold no longer announces itself as a settled
+  meeting to whatever calendar reads it. Set only where a meeting-status field
+  exists; this module does not depend on the one that provides it.
 - **A public voting page** built for a phone, one tap per slot, rendered in the
   **respondent's own time zone** — taken from their browser, overridable from a
   dropdown above the slots, and falling back to the timezone configured in

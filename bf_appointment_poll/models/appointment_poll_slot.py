@@ -174,6 +174,24 @@ class AppointmentPollSlot(models.Model):
           pour ça que ce n'est jamais le défaut.
         """
         Event = self.env["calendar.event"]
+        # Une retenue de sondage est une PROPOSITION : le créneau est soumis au
+        # vote, et quatre des cinq qu'on pose seront libérés à la clôture.
+        # C'est mot pour mot ce que veut dire STATUS:TENTATIVE (RFC 5545 §3.8.1.11).
+        #
+        # 🔴 Sans cette ligne elles naissaient « confirmée », parce que le
+        # `create()` de `bf_calendar_invite` stampe tout nouvel événement ainsi.
+        # Le défaut ne s'est vu que le jour où la grille s'est mise à afficher
+        # le statut : les retenues d'un sondage portaient la marque des
+        # rencontres confirmées alors qu'aucune date n'était arrêtée.
+        # La marque n'a pas créé l'erreur, elle l'a rendue lisible — et cette
+        # valeur partait déjà vers Nextcloud dans le `STATUS` de l'ICS.
+        #
+        # ⚠️ Posé sous condition parce que ce module ne dépend PAS de
+        # `bf_calendar_invite` (`depends` n'a que `bf_appointment`) : passer une
+        # clé inconnue à `create()` lève. Là où le champ n'existe pas, la
+        # retenue se crée comme avant.
+        extra = ({"bf_event_status": "tentative"}
+                 if "bf_event_status" in Event._fields else {})
         for slot in self.filtered(lambda s: not s.hold_event_id):
             poll = slot.poll_id
             if poll.hold_mode == "none":
@@ -192,6 +210,7 @@ class AppointmentPollSlot(models.Model):
                     "Créneau soumis au vote. Cet événement se libère tout seul "
                     "à la clôture du sondage."
                 ),
+                **extra,
             })
         return True
 

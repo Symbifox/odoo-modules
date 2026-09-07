@@ -191,6 +191,36 @@ class TestAppointmentPoll(TransactionCase):
         for slot in slots:
             self.assertEqual(slot.hold_event_id.show_as, "free")
 
+    def test_a_hold_is_tentative_not_confirmed(self):
+        """🔴 Des retenues affichées « confirmée » alors que rien ne l'était.
+
+        `bf_calendar_invite` stampe tout nouvel événement en « confirmée » dans
+        son `create()`. Une retenue de sondage héritait donc de ce défaut, alors
+        qu'elle est exactement le contraire : un créneau soumis au vote, dont
+        quatre sur cinq seront libérés à la clôture. STATUS:TENTATIVE, au sens
+        littéral de la RFC 5545.
+
+        Resté invisible tant que la grille n'affichait pas le statut, et sorti
+        le jour où elle s'est mise à le faire : les retenues d'un sondage
+        portaient la marque des rencontres confirmées.
+        La valeur partait déjà dans le `STATUS` de l'ICS poussé vers Nextcloud,
+        donc l'erreur avait déjà quitté Odoo.
+
+        ⚠️ Le test se saute là où `bf_calendar_invite` n'est pas installé : le
+        module n'en dépend pas, et le champ n'existe alors pas.
+        """
+        if "bf_event_status" not in self.env["calendar.event"]._fields:
+            self.skipTest("bf_calendar_invite n'est pas installé sur ce locataire")
+        self.poll.hold_mode = "visible"
+        slots = self._add_slots(2)
+        slots._create_hold()
+        for slot in slots:
+            self.assertEqual(
+                slot.hold_event_id.bf_event_status, "tentative",
+                "une retenue de sondage se présente comme une rencontre "
+                "confirmée : la grille lui pose la marque « C » et l'ICS "
+                "annonce STATUS:CONFIRMED pour une date que personne n'a arrêtée")
+
     def test_required_no_releases_hold_immediately(self):
         self.poll.hold_mode = "visible"
         slots = self._add_slots(1)
