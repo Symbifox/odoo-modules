@@ -121,7 +121,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_editorial_linkedin` | Atelier éditorial — LinkedIn | 18.0.1.0.1 | BUSL-1.1 | Post to LinkedIn from the editorial workshop, over the versioned API with a member token |
 | `bf_editorial_manual` | Atelier éditorial — canal manuel | 18.0.1.1.1 | BUSL-1.1 | A channel fed by hand: the text is written and proofread in Odoo, the posting happens on the network |
 | `bf_editorial_social` | Atelier éditorial — réseaux sociaux | 18.0.1.5.0 | BUSL-1.1 | Deferred distribution to social networks from the editorial workshop, with a no-duplicate guarantee and measurement coming back |
-| `bf_email_management` | Gestion des courriels | 18.0.11.21.2 | BUSL-1.1 | Unified IMAP inbox + Odoo chatter projection, two-pane OWL folder browser (Apple Mail / Thunderbird), bulk per-row target inference |
+| `bf_email_management` | Gestion des courriels | 18.0.11.22.1 | BUSL-1.1 | Unified IMAP inbox + Odoo chatter projection, two-pane OWL folder browser (Apple Mail / Thunderbird), bulk per-row target inference |
 | `bf_email_systray` | Boîte de réception bf.email — barre Odoo | 18.0.2.0.0 | LGPL-3 | Systray button opening the bf.email inbox with a (read + unread) counter |
 | `bf_employee_experience` | Expérience employé | 18.0.1.0.0 | LGPL-3 | Benefits catalogue, rule-based eligibility, usage register and retention indicators |
 | `bf_employee_experience_dashboard` | Expérience employé — tuile tableau de bord | 18.0.1.0.1 | LGPL-3 | Benefits take-up, and a count of paid benefits nobody claims |

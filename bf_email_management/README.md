@@ -48,6 +48,7 @@ A centralized email management module for Odoo 18 that provides a single, dedupl
   | out       | yes       | source record (chatter)       |
   | out       | no        | own res.partner (orphan IMAP) |
   Forward attaches original RFC 2822 attachments for orphan rows.
+- **Attachments tab (11.22+)** — the tab shows the attachments of the linked `mail.message` for chattered rows, and the materialized parts for orphan IMAP rows. Until they are materialized, a notice lists what the raw RFC 2822 actually holds — name, MIME type and size — and an **Extract attachments** button turns those parts into `ir.attachment` records on demand. Opening a message never writes any: that is the same rule the mobile API already follows when it enumerates MIME parts without touching the attachment table. Extracted parts are tagged `bf.email:part`, so a downloaded `.eml` or a file posted in the record's own chatter — both bound to the same record — is never mistaken for an attachment of the email; a second click, or a forward after extraction, reuses what is already there instead of stacking copies.
 - **Snooze (2.0+)** — defer rows out of inbox until a chosen datetime. The IMAP mirror cron flips them back automatically.
 - **Bilateral IMAP archive (2.0+, opt-in)** — set `writeback_archive=True` on the account and Archive in the UI also `UID COPY` + `EXPUNGE` from the IMAP INBOX.
 - **Auto mark-as-read** — opening an email in the form automatically transitions the row. Reading the underlying `mail.message` in any chatter also flips status (via `mail.notification` override).

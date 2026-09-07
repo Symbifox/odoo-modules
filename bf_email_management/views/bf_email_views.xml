@@ -291,6 +291,14 @@
                         </page>
                         <page string="Pi&#232;ces jointes" name="attachments"
                               invisible="not has_attachments">
+                            <div invisible="not raw_attachment_summary">
+                                <field name="raw_attachment_summary"
+                                       nolabel="1" readonly="1"/>
+                                <button name="action_extract_attachments"
+                                        type="object" class="btn-primary mt-2"
+                                        icon="fa-download"
+                                        string="Extraire les pi&#232;ces jointes"/>
+                            </div>
                             <field name="attachment_ids" nolabel="1" readonly="1">
                                 <list>
                                     <field name="name"/>

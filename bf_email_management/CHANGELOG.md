@@ -4,6 +4,65 @@ All notable changes to `bf_email_management` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This module follows Odoo's `MAJOR.MINOR.PATCH` convention prefixed with the Odoo series (`18.0.X.Y.Z`).
 
+## [18.0.11.22.1] — 2026-09-06
+
+### Fixed
+
+- 🔴 **La fiche d'un courriel classé pouvait refuser de s'ouvrir.** Passer
+  `attachment_ids` de `related` à calculé avait fait perdre le `sudo`
+  implicite : `related_sudo` vaut `True` par défaut. Un `mail.message`
+  accroché à un enregistrement que le lecteur ne peut pas voir levait donc une
+  `AccessError`, et comme le champ est dans le formulaire, ce n'était plus un
+  onglet vide mais la fiche entière qui échouait.
+- **L'encadré ne décode plus les pièces jointes pour en prendre la taille.**
+  Il décodait chaque pièce, à chaque ouverture de fiche, uniquement pour en
+  mesurer la longueur : vingt mégaoctets décodés en mémoire pour afficher
+  « 20 Mo ». La taille d'une partie base64 se calcule exactement depuis la
+  charge encodée ; les autres encodages, qui portent des pièces courtes,
+  restent décodés.
+- **Deux pièces jointes du même nom ne fusionnent plus.** Le dédoublonnage à
+  l'extraction indexait par nom. Un message portant deux fois
+  `image001.png` — ce qu'Outlook fait couramment — voyait le second transfert
+  rendre deux fois le même fichier et perdre l'autre. Le suivi se fait
+  désormais par file d'occurrences.
+
+### Known limitation
+
+- Les pièces matérialisées par un transfert **antérieur** à la 11.22.0 n'ont
+  pas la marque `bf.email:part` et restent donc hors de l'onglet. Une
+  migration qui marquerait toutes les pièces accrochées à une ligne `bf.email`
+  serait pire que le mal : elle étiquetterait aussi les exports `.eml` et les
+  fichiers postés dans le chatter de la fiche, ce que la marque existe
+  précisément pour écarter. Une nouvelle extraction produit des pièces
+  correctement marquées.
+
+## [18.0.11.22.0] — 2026-09-06
+
+### Fixed
+
+- **L'onglet « Pièces jointes » ne montrait rien sur un courriel venu
+  directement d'IMAP.** Le champ affiché était un `related` sur
+  `mail_message_id.attachment_ids` : une ligne IMAP n'a pas de `mail.message`,
+  donc la liste était vide — pendant que `has_attachments` et
+  `attachment_count`, écrits à la collecte depuis l'analyse MIME, faisaient
+  apparaître l'onglet et annonçaient le bon nombre. Le compteur et la liste
+  venaient de deux sources qui ne parlaient pas de la même chose. Le champ est
+  désormais calculé : les pièces du `mail.message` pour une ligne née du
+  chatter, les pièces matérialisées pour une ligne IMAP.
+
+### Added
+
+- **Un encadré liste ce que le message brut contient**, nom, type et taille,
+  tant que les pièces n'ont pas été matérialisées, et un bouton « Extraire les
+  pièces jointes » les transforme en fichiers Odoo à la demande. L'extraction
+  reste un geste explicite : ouvrir un courriel ne doit pas semer des
+  `ir.attachment`, ce que l'API mobile respectait déjà en énumérant les parties
+  MIME sans rien écrire. Un second clic, ou un transfert après extraction,
+  réutilise les pièces existantes au lieu d'empiler des copies.
+- Les pièces extraites portent la marque `bf.email:part`. Sans elle, l'export
+  `.eml` et les fichiers postés dans le chatter de la fiche, accrochés au même
+  enregistrement, passeraient pour des pièces jointes du courriel.
+
 ## [18.0.11.21.2] — 2026-09-06
 
 ### Fixed

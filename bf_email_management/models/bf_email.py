@@ -23,6 +23,40 @@ from .subject_utils import dedup_subject_prefix
 
 _logger = logging.getLogger(__name__)
 
+# Marque posée sur les ``ir.attachment`` extraites du RFC 2822 d'une ligne
+# IMAP. Une ligne née du chatter porte ses pièces sur son ``mail.message`` ;
+# une ligne IMAP n'a que les octets de ``raw_rfc822``, qu'on ne matérialise
+# qu'à la demande. La marque sépare ces pièces des AUTRES fichiers accrochés
+# à la même fiche — l'export .eml, ou une pièce postée dans son chatter —
+# qui ne sont pas des pièces jointes du courriel.
+ATTACHMENT_PART_MARKER = "bf.email:part"
+
+
+def _human_bytes(size):
+    """Taille lisible, sans d\u00e9pendre d'une API Odoo qui bouge de version en
+    version."""
+    if size < 1024:
+        return "%s o" % size
+    if size < 1024 * 1024:
+        return "%.1f ko" % (size / 1024.0)
+    return "%.1f Mo" % (size / (1024.0 * 1024.0))
+
+
+def _taille_partie_mime(part):
+    """Taille d\u00e9cod\u00e9e d'une partie MIME, sans la d\u00e9coder quand c'est du base64.
+
+    Le base64 porte les gros fichiers, et sa taille se calcule exactement
+    depuis la charge encod\u00e9e. D\u00e9coder vingt m\u00e9gaoctets pour en prendre une
+    longueur, \u00e0 chaque ouverture de fiche, ne se justifie pas. Les autres
+    encodages restent d\u00e9cod\u00e9s : ils portent des pi\u00e8ces courtes.
+    """
+    cte = str(part.get("Content-Transfer-Encoding", "")).strip().lower()
+    if cte == "base64":
+        brut = re.sub(r"\s", "", part.get_payload(decode=False) or "")
+        return max(len(brut) * 3 // 4 - brut.count("="), 0)
+    return len(part.get_payload(decode=True) or b"")
+
+
 # Canal de rafraîchissement de la boîte. Un tick, jamais de contenu — voir
 # ``_notify_inbox_changed``.
 BUS_CHANNEL = "bf_email/changed"
@@ -275,9 +309,129 @@ class BfEmail(models.Model):
     attachment_ids = fields.Many2many(
         comodel_name="ir.attachment",
         string="Fichiers joints",
-        related="mail_message_id.attachment_ids",
+        compute="_compute_attachment_ids",
         readonly=True,
     )
+    raw_attachment_summary = fields.Html(
+        string="Pi\u00e8ces du message brut",
+        compute="_compute_raw_attachment_summary",
+        sanitize=False,
+        readonly=True,
+    )
+
+    @api.depends("mail_message_id.attachment_ids")
+    def _compute_attachment_ids(self):
+        """Les fichiers \u00e0 montrer dans l'onglet « Pi\u00e8ces jointes ».
+
+        Une ligne n\u00e9e du chatter porte ses pi\u00e8ces sur son ``mail.message``.
+        Une ligne IMAP n'en a pas : ses octets dorment dans ``raw_rfc822`` et
+        ne deviennent des ``ir.attachment`` que sur demande — transfert, ou le
+        bouton d'extraction. On ne liste alors que les pi\u00e8ces PORTANT LA
+        MARQUE : un export .eml ou une pi\u00e8ce post\u00e9e dans le chatter est
+        accroch\u00e9 \u00e0 la m\u00eame fiche sans \u00eatre une pi\u00e8ce jointe du courriel.
+        """
+        marked = {}
+        orphans = self.filtered(
+            lambda r: not r.mail_message_id and isinstance(r.id, int)
+        )
+        if orphans:
+            found = self.env["ir.attachment"].sudo().search([
+                ("res_model", "=", self._name),
+                ("res_id", "in", orphans.ids),
+                ("description", "=", ATTACHMENT_PART_MARKER),
+            ])
+            for att in found:
+                marked.setdefault(att.res_id, []).append(att.id)
+        for rec in self:
+            if rec.mail_message_id:
+                # ⚠️ ``sudo`` restitue ce que le ``related`` faisait tout seul :
+                # ``related_sudo`` vaut True par défaut. Sans lui, un
+                # ``mail.message`` accroché à un enregistrement que le lecteur ne
+                # peut pas voir lève une ``AccessError`` — et comme le champ est
+                # dans le formulaire, ce n'est plus un onglet vide, c'est la
+                # fiche qui refuse de s'ouvrir.
+                rec.attachment_ids = rec.mail_message_id.sudo().attachment_ids
+            else:
+                rec.attachment_ids = [(6, 0, marked.get(rec.id, []))]
+
+    @api.depends("raw_rfc822", "has_attachments", "mail_message_id",
+                 "attachment_ids")
+    def _compute_raw_attachment_summary(self):
+        """Ce que le message brut contient, avant toute mat\u00e9rialisation.
+
+        Sans \u00e7a, une ligne IMAP annonce « 1 pi\u00e8ce jointe » et montre une
+        liste vide : le compteur vient de l'analyse MIME faite \u00e0 la collecte,
+        la liste vient d'``ir.attachment``, et les deux ne parlent pas encore
+        de la m\u00eame chose. Rendu vide d\u00e8s que les pi\u00e8ces sont extraites.
+        """
+        for rec in self:
+            rec.raw_attachment_summary = False
+            if rec.mail_message_id or not rec.has_attachments:
+                continue
+            if not rec.raw_rfc822 or rec.attachment_ids:
+                continue
+            parts = rec._raw_attachment_listing()
+            if not parts:
+                continue
+            rows = Markup("").join(
+                Markup('<li><strong>%s</strong> '
+                       '<span class="text-muted">\u2014 %s, %s</span></li>')
+                % (name, mimetype, _human_bytes(size))
+                for name, mimetype, size in parts
+            )
+            rec.raw_attachment_summary = Markup(
+                '<div class="alert alert-info mb-0" role="status">'
+                '<p class="mb-2">Ce courriel vient directement d\'IMAP : ses '
+                'pi\u00e8ces jointes vivent dans le message brut et ne sont pas '
+                'encore des fichiers Odoo.</p><ul class="mb-0">%s</ul></div>'
+            ) % rows
+
+    def _raw_attachment_listing(self):
+        """[(nom, type MIME, taille)] tir\u00e9 de ``raw_rfc822``, sans les octets.
+
+        ``_raw_attachment_parts`` rend les charges utiles, ce dont l'onglet n'a
+        pas besoin : il n'affiche qu'un nom et une taille. Rend une liste vide
+        plut\u00f4t que de lever \u2014 le champ est dans le formulaire, un message
+        illisible ne doit pas emp\u00eacher la fiche de s'ouvrir.
+        """
+        self.ensure_one()
+        if not self.raw_rfc822:
+            return []
+        try:
+            raw = base64.b64decode(self.raw_rfc822)
+            parsed = email_mod.message_from_bytes(raw, policy=email.policy.default)
+        except Exception:  # noqa: BLE001
+            _logger.warning(
+                "bf.email #%s: message brut illisible pour le listing des "
+                "pi\u00e8ces jointes", self.id, exc_info=True,
+            )
+            return []
+        out = []
+        for part in parsed.walk():
+            if "attachment" not in str(part.get("Content-Disposition", "")):
+                continue
+            nom = part.get_filename()
+            if not nom:
+                continue
+            nom = str(nom)
+            out.append((
+                nom,
+                mimetypes.guess_type(nom)[0] or "application/octet-stream",
+                _taille_partie_mime(part),
+            ))
+        return out
+
+    def action_extract_attachments(self):
+        """Mat\u00e9rialiser les pi\u00e8ces du message brut en ``ir.attachment``.
+
+        Geste explicite : la plupart des lignes IMAP ne seront jamais
+        ouvertes, et ouvrir un courriel ne doit pas semer des pi\u00e8ces
+        jointes dans ``ir.attachment``.
+        """
+        for rec in self:
+            rec._extract_orphan_attachments()
+        self.invalidate_recordset(["attachment_ids", "raw_attachment_summary"])
+        return True
 
     # ------------------------------------------------------------------
     # Operational
@@ -2408,14 +2562,32 @@ class BfEmail(models.Model):
         if not items:
             return []
         Attachment = self.env["ir.attachment"].sudo()
+        # Un deuxième transfert, ou un deuxième clic sur le bouton, ne doit
+        # pas empiler des copies : on réutilise ce qui porte déjà la marque.
+        # ⚠️ Une file par nom, pas un identifiant : Outlook envoie couramment
+        # deux « image001.png » dans le même message. Un dict écrase — le
+        # deuxième transfert rendait alors deux fois le même fichier et perdait
+        # l'autre.
+        existing = {}
+        for att in Attachment.search([
+            ("res_model", "=", self._name),
+            ("res_id", "=", self.id),
+            ("description", "=", ATTACHMENT_PART_MARKER),
+        ]):
+            existing.setdefault(att.name, []).append(att.id)
         ids = []
         for filename, payload in items:
+            deja = existing.get(filename)
+            if deja:
+                ids.append(deja.pop(0))
+                continue
             try:
                 att = Attachment.create({
                     "name": filename,
                     "datas": base64.b64encode(payload).decode("ascii"),
                     "res_model": self._name,
                     "res_id": self.id,
+                    "description": ATTACHMENT_PART_MARKER,
                 })
                 ids.append(att.id)
             except Exception:
