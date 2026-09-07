@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     "name": "Atelier éditorial",
-    "version": "18.0.1.8.1",
+    "version": "18.0.1.9.0",
     "category": "Marketing",
     "summary": "Calendrier éditorial, cadence mesurée et contrôles de publication"
                " pour le blogue — l'état se calcule, seules les décisions se stockent",
@@ -26,6 +26,9 @@ Fonctionnalités
 * **Créneaux de langue** : une entrée porte une version par langue, avec son
   état, ses mots et son slug figé. Une entrée reste incomplète tant que toutes
   ses langues requises ne sont pas sorties, et ce comportement se règle.
+  Les cases « Toutes les langues relues » et « Toutes les langues livrées »
+  se calculent depuis les créneaux et se cochent aussi : cocher prend la
+  décision pour tous les créneaux exigés d'un coup.
 * **Proposition du prochain article** : cadence, ratio par pilier, dépendances
   et blocages sont évalués en base, pas dans une note. La recommandation
   s'explique, ligne par ligne.

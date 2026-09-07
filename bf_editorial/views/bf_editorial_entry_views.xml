@@ -117,8 +117,14 @@
                                 </list>
                             </field>
                             <group>
-                                <field name="langs_complete" readonly="1"/>
-                                <field name="langs_ready" readonly="1"/>
+                                <!-- Cochables : cocher écrit l'état sur chaque
+                                     créneau exigé ci-dessus. « Livrées » est un
+                                     geste de publication, donc le groupe qui publie. -->
+                                <field name="langs_ready"/>
+                                <field name="langs_complete"
+                                       groups="bf_editorial.group_editorial_manager"/>
+                                <field name="langs_complete" readonly="1"
+                                       groups="!bf_editorial.group_editorial_manager"/>
                                 <field name="word_count" readonly="1"/>
                                 <field name="word_floor" readonly="1"/>
                             </group>

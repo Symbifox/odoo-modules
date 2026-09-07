@@ -201,16 +201,29 @@ class EditorialEntry(models.Model):
     word_floor = fields.Integer(
         string="Plancher", related="calendar_id.word_floor", readonly=True,
     )
+    # Ces deux cases se calculent depuis les créneaux, et se COCHENT aussi :
+    # cocher écrit la décision sur chaque créneau exigé (relue, ou publiée),
+    # décocher la retire. Une case qui se calcule sans se cocher est une
+    # case que personne ne peut cocher, et c'est ce qu'on a vécu.
     langs_complete = fields.Boolean(
         string="Toutes les langues livrées", compute="_compute_language_state",
-        search="_search_langs_complete",
+        inverse="_inverse_langs_complete", search="_search_langs_complete",
+        help="Vrai quand chaque langue exigée porte un créneau publié."
+             " Cocher passe tous les créneaux exigés à « Publiée » et fige"
+             " leur slug, sans publier le billet : c'est le geste de"
+             " rattrapage d'un article sorti hors de l'atelier. Réservé à la"
+             " Direction éditoriale, comme publier. Décocher ramène les"
+             " créneaux publiés à « Relue ».",
     )
     langs_ready = fields.Boolean(
         string="Toutes les langues relues", compute="_compute_language_state",
-        search="_search_langs_ready",
+        inverse="_inverse_langs_ready", search="_search_langs_ready",
         help="Vrai quand chaque langue exigée porte un créneau relu ou déjà"
              " publié. C'est cet état que la garde de pré-vol contrôle :"
-             " exiger « publiée » AVANT de publier ne se satisfait jamais.",
+             " exiger « publiée » AVANT de publier ne se satisfait jamais."
+             " Cocher passe à « Relue » chaque créneau exigé qui ne l'est"
+             " pas encore, et crée ceux qui manquent. Décocher ramène les"
+             " créneaux relus à « Traduite » ; un créneau publié ne bouge pas.",
     )
     language_summary = fields.Text(
         string="État des langues", compute="_compute_language_state",
@@ -414,6 +427,100 @@ class EditorialEntry(models.Model):
             entry.langs_complete = not missing
             entry.langs_ready = not not_ready
             entry.language_summary = "\n".join(lines)
+
+    # --- cocher les cases de langue --------------------------------------
+    # Les deux booléens ci-dessus sont des dérivés, mais un dérivé qu'on ne
+    # peut pas cocher oblige à ouvrir chaque créneau l'un après l'autre.
+    # Cocher, c'est prendre la décision pour tous les créneaux exigés d'un
+    # coup ; la case se recalcule ensuite depuis eux, et rien n'est stocké
+    # sur l'entrée.
+    def _required_langs(self):
+        self.ensure_one()
+        if not self.calendar_id:
+            return self.env["res.lang"].browse()
+        return self.calendar_id._required_langs()
+
+    def _ensure_required_slots(self, required):
+        """Créer les créneaux exigés qui manquent, sans toucher aux autres."""
+        self.ensure_one()
+        if self.post_id:
+            # Le billet donne le compte de mots et la langue source.
+            self.env["bf.editorial.version"]._sync_from_post(self)
+        present = self.version_ids.mapped("lang_id")
+        for lang in required - present:
+            self.env["bf.editorial.version"].create({
+                "entry_id": self.id, "lang_id": lang.id, "state": "todo",
+            })
+
+    def _move_required_slots(self, state, leaving):
+        """Passer à ``state`` les créneaux exigés dont l'état est dans ``leaving``.
+
+        Rend les créneaux déplacés, pour le journal.
+        """
+        self.ensure_one()
+        required = self._required_langs()
+        slots = self.version_ids.filtered(
+            lambda v: v.lang_id in required and v.state in leaving
+        )
+        if slots:
+            slots.write({"state": state})
+        return slots
+
+    def _log_slot_move(self, slots, state):
+        """Une trace au chatter, sans notifier personne.
+
+        ``_message_log`` plutôt que ``message_post`` : un journal interne ne
+        réclame pas d'adresse d'expéditeur, et un compte sans courriel doit
+        pouvoir cocher la case quand même.
+        """
+        if not slots:
+            return
+        label = dict(slots._fields["state"].selection).get(state, state)
+        self._message_log(body=_(
+            "Créneaux passés à « %(etat)s » d'un geste : %(langues)s.",
+            etat=label,
+            langues=", ".join(slots.mapped("lang_id.name")),
+        ))
+
+    def _inverse_langs_ready(self):
+        for entry in self:
+            if entry.langs_ready:
+                required = entry._required_langs()
+                if not required:
+                    continue
+                entry._ensure_required_slots(required)
+                moved = entry._move_required_slots(
+                    "reviewed", ("todo", "translated"),
+                )
+                entry._log_slot_move(moved, "reviewed")
+            else:
+                # Un créneau publié ne se « dé-relit » pas : l'article est
+                # sorti. Si tous le sont, la case se recoche d'elle-même.
+                moved = entry._move_required_slots("translated", ("reviewed",))
+                entry._log_slot_move(moved, "translated")
+
+    def _inverse_langs_complete(self):
+        # Déclarer une langue livrée, c'est un geste de publication : le
+        # même groupe que le bouton, et une phrase propre à cette garde.
+        if not self.env.user.has_group("bf_editorial.group_editorial_manager"):
+            raise AccessError(_(
+                "Cocher « Toutes les langues livrées » demande le groupe"
+                " « Direction éditoriale »."
+            ))
+        for entry in self:
+            if entry.langs_complete:
+                required = entry._required_langs()
+                if not required:
+                    continue
+                entry._ensure_required_slots(required)
+                moved = entry.version_ids.filtered(
+                    lambda v: v.lang_id in required and v.state != "published"
+                )
+                entry._release_versions()
+                entry._log_slot_move(moved, "published")
+            else:
+                moved = entry._move_required_slots("reviewed", ("published",))
+                entry._log_slot_move(moved, "reviewed")
 
     @api.depends(
         "langs_complete", "open_checklist_count", "qa_state", "is_blocked",

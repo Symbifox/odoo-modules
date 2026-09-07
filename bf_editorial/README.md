@@ -32,7 +32,12 @@ pre-flight gate.
   angle, the promise, the audience, the target keyword, sources, checked claims
   and the list of outstanding human steps.
 - **Language slots**: one version per language with its own state, word count
-  and slug frozen at publication.
+  and slug frozen at publication. The "All languages reviewed" and "All
+  languages delivered" boxes are computed from those slots, and can be
+  ticked too: ticking takes the decision for every required slot at once
+  ("Reviewed", or "Published" for the editorial management group),
+  unticking withdraws it, and a slot already published never steps back
+  through that gesture.
 - **Next-article proposal**: cadence, ratio, dependencies and readiness are all
   evaluated against the database, and every point in the ranking is explained.
 - **Deterministic checks**, with no AI involved: em dashes, banned house
