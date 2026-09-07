@@ -1,6 +1,6 @@
 {
     'name': "Abonnements",
-    'version': '18.0.1.4.1',
+    'version': '18.0.1.5.0',
     'category': 'Accounting/Accounting',
     'summary': "Gestion des abonnements payants et corrélation avec la facturation fournisseur",
     'description': """
@@ -39,6 +39,7 @@ Fonctionnalités:
         # Data
         'data/subscription_sequence.xml',
         'data/subscription_tag_data.xml',
+        'data/subscription_activity_data.xml',
         'data/subscription_cron.xml',
         'data/subscription_digest_data.xml',
         'data/bf_onboarding.xml',

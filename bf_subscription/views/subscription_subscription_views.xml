@@ -21,6 +21,12 @@
                     <button name="action_set_draft" type="object"
                             string="Repasser en brouillon"
                             invisible="state == 'draft'"/>
+                    <button name="action_confirm_renewal" type="object"
+                            string="Renouvellement confirmé" class="btn-primary"
+                            invisible="not renewal_decision_needed"/>
+                    <button name="action_reopen_renewal" type="object"
+                            string="Revenir sur la décision"
+                            invisible="renewal_decision_needed or not renewal_decision_date"/>
                     <field name="state" widget="statusbar"
                            statusbar_visible="draft,active,paused,cancelled"/>
                 </header>
@@ -92,6 +98,8 @@
                                     <field name="next_billing_date" readonly="1"/>
                                     <field name="auto_renew"/>
                                     <field name="notice_period_days"/>
+                                    <field name="renewal_decision_date"/>
+                                    <field name="renewal_decision_needed" invisible="1"/>
                                     <field name="price_alert_threshold_pct"/>
                                     <field name="last_vendor_bill_date" readonly="1"/>
                                     <field name="is_dormant" readonly="1"/>

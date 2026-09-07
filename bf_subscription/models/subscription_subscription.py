@@ -7,6 +7,8 @@ from odoo.exceptions import UserError
 _logger = logging.getLogger(__name__)
 
 
+RENEWAL_ACTIVITY_XMLID = 'bf_subscription.mail_activity_type_renewal'
+
 CYCLE_MONTHS = {
     'monthly': 1,
     'quarterly': 3,
@@ -114,6 +116,16 @@ class Subscription(models.Model):
     notice_period_days = fields.Integer(
         string="Préavis (jours)", default=30,
         help="Combien de jours d'avance pour annuler avant le renouvellement automatique.",
+    )
+    renewal_decision_date = fields.Date(
+        string="Renouvellement confirmé pour le", copy=False, readonly=True, tracking=True,
+        help="Renouvellement pour lequel la décision « on garde » a été prise. Tant qu'elle "
+             "vise le prochain renouvellement, aucune relance n'est levée ; au cycle suivant "
+             "la question se repose d'elle-même.",
+    )
+    renewal_decision_needed = fields.Boolean(
+        compute='_compute_renewal_decision_needed',
+        string="Décision de renouvellement attendue",
     )
 
     # ---- Rebilling ----
@@ -269,6 +281,16 @@ class Subscription(models.Model):
             else:
                 rec.next_billing_date = nbd
 
+    @api.depends('state', 'auto_renew', 'next_billing_date', 'renewal_decision_date')
+    def _compute_renewal_decision_needed(self):
+        for rec in self:
+            rec.renewal_decision_needed = bool(
+                rec.state == 'active'
+                and rec.auto_renew
+                and rec.next_billing_date
+                and rec.renewal_decision_date != rec.next_billing_date
+            )
+
     @api.depends('vendor_bill_ids', 'customer_invoice_ids')
     def _compute_invoice_counts(self):
         for rec in self:
@@ -394,6 +416,33 @@ class Subscription(models.Model):
         return True
 
     # ------------------------------------------------------------------
+    # Renewal decision
+    # ------------------------------------------------------------------
+
+    def action_confirm_renewal(self):
+        """Noter « on garde » pour le renouvellement en cours et fermer sa relance.
+
+        La décision porte sur UNE date, pas sur l'abonnement : au cycle suivant,
+        `next_billing_date` avance, la décision ne le vise plus, et la relance se
+        réarme toute seule.
+        """
+        for rec in self:
+            if not rec.next_billing_date:
+                raise UserError(
+                    _("L'abonnement « %s » n'a pas de prochain renouvellement à confirmer.") % rec.name
+                )
+            rec.renewal_decision_date = rec.next_billing_date
+        self.activity_feedback(
+            [RENEWAL_ACTIVITY_XMLID], feedback=_("Renouvellement confirmé."),
+        )
+        return True
+
+    def action_reopen_renewal(self):
+        """Revenir sur la décision : la relance repart au prochain passage du cron."""
+        self.write({'renewal_decision_date': False})
+        return True
+
+    # ------------------------------------------------------------------
     # Actions
     # ------------------------------------------------------------------
 
@@ -488,17 +537,20 @@ class Subscription(models.Model):
     # ------------------------------------------------------------------
 
     @api.model
-    def _cron_renewal_alerts(self, horizon_days=30, lookback_days=14):
+    def _cron_renewal_alerts(self, horizon_days=30):
         """Create a "Renouvellement à venir" activity on subscriptions whose
         next_billing_date - notice_period_days falls within `horizon_days`.
 
-        Idempotent: skips if a same-type activity was created within `lookback_days`.
+        Two things keep it quiet, and neither is a rolling window:
+        * a live alert of the same type already standing on the record;
+        * a renewal decision (`renewal_decision_date`) naming the cycle in flight.
         """
         today = fields.Date.context_today(self)
         Activity = self.env['mail.activity']
-        ActivityType = self.env.ref('mail.mail_activity_data_todo', raise_if_not_found=False)
+        ActivityType = self.env.ref(RENEWAL_ACTIVITY_XMLID, raise_if_not_found=False) \
+            or self.env.ref('mail.mail_activity_data_todo', raise_if_not_found=False)
         if not ActivityType:
-            _logger.warning("bf_subscription: mail.mail_activity_data_todo not found, skipping cron")
+            _logger.warning("bf_subscription: no activity type available, skipping cron")
             return 0
 
         subs = self.search([
@@ -520,14 +572,19 @@ class Subscription(models.Model):
             cutoff = sub.next_billing_date - relativedelta(days=sub.notice_period_days or 0)
             if cutoff > today + relativedelta(days=horizon_days):
                 continue
-            # Idempotence: skip if recent activity exists
-            recent = Activity.search([
+            # The decision names a date, so it expires by itself: once the cycle
+            # rolls over, `next_billing_date` moves and the alert comes back.
+            if sub.renewal_decision_date and sub.renewal_decision_date == sub.next_billing_date:
+                continue
+            # A live alert already holds the file. Deduplicating on existence
+            # rather than on a 14-day window is what stops a second copy from
+            # appearing beside an alert nobody has answered yet.
+            standing = Activity.search([
                 ('res_model', '=', 'subscription.subscription'),
                 ('res_id', '=', sub.id),
                 ('activity_type_id', '=', ActivityType.id),
-                ('create_date', '>=', fields.Datetime.now() - relativedelta(days=lookback_days)),
             ], limit=1)
-            if recent:
+            if standing:
                 continue
             try:
                 sub.activity_schedule(
@@ -538,7 +595,10 @@ class Subscription(models.Model):
                         "L'abonnement <b>%(name)s</b> chez <b>%(vendor)s</b> "
                         "se renouvelle le <b>%(date)s</b> (préavis : %(notice)d jours, "
                         "à décider avant <b>%(cutoff)s</b>).<br/>"
-                        "Montant cycle : %(amount)s %(currency)s."
+                        "Montant cycle : %(amount)s %(currency)s.<br/><br/>"
+                        "On garde ? Bouton <b>Renouvellement confirmé</b> sur la fiche : "
+                        "la relance se tait jusqu'au cycle suivant. On coupe ? Décocher "
+                        "<b>Renouvellement automatique</b>."
                     ) % {
                         'name': sub.name,
                         'vendor': sub.vendor_id.name,

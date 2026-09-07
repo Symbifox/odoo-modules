@@ -10,7 +10,8 @@ infrastructure, certificates, domain names, recurring professional services.
 - Manual and automatic correlation with vendor bills (`account.move`).
 - Rebilling to the client in 3 modes: at cost / with a margin (%) / fixed
   amount.
-- Automatic reminders ahead of renewal (Odoo activity).
+- Automatic reminders ahead of renewal (Odoo activity), which a **renewal
+  decision** puts to rest until the next cycle.
 - Dashboard view: monthly-equivalent cost, upcoming renewals, consolidated MRR.
 - Smart buttons on the partner record (managed / billed subscriptions).
 
@@ -43,6 +44,18 @@ Distributed under the **Business Source License 1.1** (BUSL-1.1). See the
   **LGPL-3.0-or-later**.
 
 ## Changelog
+
+### 18.0.1.5.0
+
+- Added: a renewal decision. "Renewal confirmed" records the date the *keep it*
+  call was made and closes the standing alert; while that decision covers the
+  next renewal no new one is raised, and at the following cycle the question
+  asks itself again. "Reconsider" reverses it. Until now the only way to stop
+  an alert was to answer it, so a decision taken in a meeting left the record
+  looking undecided.
+- Added: renewal alerts now carry their own activity type, so the confirm
+  button closes exactly those and leaves the record's other to-dos alone. A
+  migration re-points alerts already standing.
 
 ### 18.0.1.4.0
 
