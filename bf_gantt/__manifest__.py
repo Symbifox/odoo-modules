@@ -49,7 +49,7 @@ seule bibliothèque capable de lire le ``.mpp`` exige une machine virtuelle Java
     "version": "18.0.1.5.4",
     "category": "Services/Project",
     "website": "https://symbifox.com",
-    "author": "Blue Fox Inc.",
+    "author": "Les services de consultation Blue Fox, Inc.",
     "license": "Other proprietary",
     "application": True,
     "installable": True,
