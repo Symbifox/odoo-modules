@@ -29,8 +29,10 @@ on a Nextcloud instance — without leaving Odoo.
   external read-only with expiry and optional password).
 - **Knowledge integration** — link a file to a Knowledge Matrix item
   (`project.knowledge.item`) or, where available, an Odoo Knowledge article.
-- **Systray launcher** — a toggleable button that opens the full Nextcloud web
-  app in a large popup window.
+- **Systray launcher** — a toggleable button, carrying the Nextcloud logo,
+  that slides the file browser open over the record you are already on. A
+  second click, or a click outside, closes it; a button in its header hands the
+  same folder over to the standalone app.
 
 ## Security model
 
@@ -74,13 +76,15 @@ and see the systray launcher.
 
 - **Embedded:** open a project or task → *Fichiers Nextcloud* tab.
 - **Standalone:** menu **Nextcloud → Fichiers Nextcloud**.
-- **Launcher:** the folder icon in the systray opens Nextcloud in a window.
+- **Launcher:** the Nextcloud logo in the systray opens the file panel over
+  the current page.
 
 ## Limitations
 
 - Uploads are sent base64-encoded over RPC; very large files are not suitable.
-- The standalone app cannot embed Nextcloud in an iframe (Nextcloud sends
-  `X-Frame-Options: SAMEORIGIN`); the systray launcher opens a real window
-  instead.
+- Nextcloud cannot be embedded in an iframe (it sends
+  `X-Frame-Options: SAMEORIGIN`), so the browser reads the files over WebDAV
+  and renders them itself. Reaching the real Nextcloud is a per-file escape
+  hatch — *Open in Nextcloud*, and office documents, which open in a tab.
 - Odoo Knowledge article linking is only available when the Knowledge app is
   installed; otherwise files link to the Knowledge Matrix.

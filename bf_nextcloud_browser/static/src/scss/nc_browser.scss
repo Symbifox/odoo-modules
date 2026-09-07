@@ -292,6 +292,22 @@
 }
 
 // Le bouton de la barre systeme reste allume tant que le panneau est ouvert.
-.o_nc_systray.o_nc_systray_open > .btn {
-    color: #29ABE1;
+//
+// Le `!important` n'est pas de la coquetterie : `bluefox_branding` peint la
+// barre d'un bloc, `color: #ffffff !important` sur ses `button` et
+// `color`/`fill: #ffffff !important` sur ses `svg`. Sans repondre sur le meme
+// ton, l'accent d'etat ouvert n'apparaissait sur aucun locataire habille. Le
+// selecteur est plus specifique que celui du branding, donc c'est lui qui
+// tranche. Le trace du logo etant en `currentColor`, teindre le `color` du
+// `svg` suffit a faire virer le nuage.
+.o_nc_systray.o_nc_systray_open > .btn,
+.o_nc_systray.o_nc_systray_open .o_nc_systray_logo {
+    color: #29ABE1 !important;
+}
+
+// Le nuage Nextcloud est deux fois plus large que haut : on ne fixe que la
+// hauteur, calee sur celle des pictogrammes voisins, et la largeur suit.
+.o_nc_systray_logo {
+    height: 1.15em;
+    width: auto;
 }
