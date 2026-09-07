@@ -70,7 +70,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_activity_calendar_link` | BF Activités - Lien Calendrier | 18.0.1.1.0 | LGPL-3 | Link existing calendar events to activities |
 | `bf_ai_bridge` | AI Bridge (socket transport) | 18.0.1.1.0 | LGPL-3 | The single transport to the AI bridge service |
 | `bf_appointment` | Symbifox Appointment | 18.0.2.54.2 | BUSL-1.1 | Self-service public booking pages (extends `resource_booking`) |
-| `bf_appointment_poll` | Symbifox Appointment Polls | 18.0.1.14.0 | BUSL-1.1 | Availability polling: propose slots, collect answers, book the meeting |
+| `bf_appointment_poll` | Symbifox Appointment Polls | 18.0.1.15.0 | BUSL-1.1 | Availability polling: propose slots, collect answers, book the meeting |
 | `bf_apps_menu` | Menu des applications cherchable | 18.0.1.0.0 | LGPL-3 | The apps menu becomes a keyboard-searchable grid of icons |
 | `bf_attachment_version` | Versionnement des pièces jointes | 18.0.1.1.0 | BUSL-1.1 | Keeps the previous content whenever an attachment is overwritten |
 | `bf_bloc_notes` | BF Bloc-notes | 18.0.2.9.0 | LGPL-3 | Rich quick notes with multi-record links, one-click activity conversion, keyboard shortcuts, and systray icon (Alt+N) |
@@ -80,7 +80,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_budget_forecast_subscription` | Prévision glissante — amorce par les engagements datés | 18.0.1.0.0 | LGPL-3 | Seeds the forecast from the dated renewal calendar instead of a flat average |
 | `bf_budget_subscription` | Budgets opérationnels — engagements récurrents | 18.0.1.0.1 | LGPL-3 | Subscriptions become a calendar of dated commitments the budget can count early |
 | `bf_bureau` | BF Bureau — vues multi-panneaux | 18.0.3.2.0 | LGPL-3 | User-configurable dashboards ("desks") with multi-pane Odoo actions, six layouts, keyboard shortcuts, time slots, and a sidebar |
-| `bf_calendar_invite` | BF Calendar — usable invitations | 18.0.3.1.0 | LGPL-3 | Branded calendar invitations written in the guests' language, carrying the .ics and a link to the attendee's invitation page, plus a prefilled SMS body. |
+| `bf_calendar_invite` | BF Calendar — usable invitations | 18.0.3.2.0 | LGPL-3 | Branded calendar invitations written in the guests' language, carrying the .ics and a link to the attendee's invitation page, plus a prefilled SMS body. |
 | `bf_calendar_nc_talk` | BF Calendar — Nextcloud Talk button | 18.0.1.1.0 | LGPL-3 | Adds a '+ Nextcloud Talk' button next to '+ Odoo meeting' on calendar events. Creates a public Talk conversation via the Spreed OCS API and writes the room URL into videocall_location. |
 | `bf_chatter_chronological` | BF Chatter Chronological View | 18.0.4.1.0 | LGPL-3 | Sort the chatter feed by the email's original Date header instead of insertion id (Python `_order` + `_message_fetch` + JS `Thread.fetch*` patch); cogwheel action to re-parse lost Date headers from quoted body content |
 | `bf_chatter_send_now_force` | BF Chatter — Force Send on Scheduled Send Now | 18.0.1.0.0 | LGPL-3 | The "Send Now" button on a scheduled chatter message sends immediately instead of waiting up to 5 min for the mail queue cron (restores parity with the daily auto-send cron) |
@@ -149,7 +149,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_mail_vigie` | BF Vigie courriels (re-router) | 18.0.2.3.0 | BUSL-1.1 | "Re-route" button on `bf.email` to move a misrouted email to the correct chatter |
 | `bf_mailing_signup` | Inscription publique à une liste d'envoi | 18.0.1.2.0 | LGPL-3 | Plain-HTML newsletter sign-up form with double opt-in, no reCaptcha and no third-party asset |
 | `bf_mass_notes` | Symbifox — Notes en lot | 18.0.1.0.0 | LGPL-3 | List-view Action to post a chatter note (or message) to many selected records at once; binds to all `mail.thread` models |
-| `bf_meeting` | Rencontres | 18.0.3.52.0 | BUSL-1.1 | Agendas, meeting records, and discussion items unified around `calendar.event` with automatic reminders |
+| `bf_meeting` | Rencontres | 18.0.3.53.0 | BUSL-1.1 | Agendas, meeting records, and discussion items unified around `calendar.event` with automatic reminders |
 | `bf_meeting_call_archive` | Rencontres ↔ Archive d'appels | 18.0.1.0.0 | BUSL-1.1 | Optional link between a meeting record and an archived call |
 | `bf_meeting_portal` | Rencontres - Portail client | 18.0.2.0.2 | BUSL-1.1 | Portal read access to meeting reports that were already emailed to the client |
 | `bf_music_licensing` | Licences musicales : conformité en établissement | 18.0.1.2.0 | BUSL-1.1 | Tracks the SOCAN and Re:Sound royalties an establishment owes, holding the proposed rate beside the certified one so a retroactive Copyright Board ruling is priced, not discovered |
@@ -188,7 +188,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_sms_archive` | SMS & Calls | 18.0.5.12.1 | BUSL-1.1 | Two-way live SMS/MMS messaging via VOIP.ms (chat workspace + systray) plus Android SMS/call-log archiving, search, PDF/CSV export and task linking |
 | `bf_stepbystep_clients` | Step-by-Step — Suivi d'accompagnement client | 18.0.2.2.1 | BUSL-1.1 | Internal dashboard tracking each client mandate's linear step-by-step progression: current step, hours budget, timeline. |
 | `bf_studio_light` | Symbifox — Forge | 18.0.7.1.0 | BUSL-1.1 | Field builder for Odoo Community: add custom fields (incl. polymorphic reference with model whitelist), smart buttons (count via JSON controller, no compute Python), and inject them in views without writing a module — survives `-u all` upgrades |
-| `bf_subscription` | Abonnements | 18.0.1.4.1 | BUSL-1.1 | Paid subscription management with correlation to vendor bills |
+| `bf_subscription` | Abonnements | 18.0.1.5.0 | BUSL-1.1 | Paid subscription management with correlation to vendor bills |
 | `bf_subscription_daily_digest` | Abonnements — section du digest quotidien | 18.0.1.0.2 | BUSL-1.1 | Adds an 'Upcoming renewals' section to the daily digest |
 | `bf_subscription_dashboard` | Abonnements — carte du tableau de bord | 18.0.1.0.3 | BUSL-1.1 | Adds a subscription summary card to the Symbifox home screen |
 | `bf_subscription_hosting` | Hébergement — pont vers les abonnements | 18.0.1.0.0 | BUSL-1.1 | Create a subscription from a hosting domain (avoids double-entering recurring costs). |
