@@ -48,7 +48,13 @@ search).
      personalised is ever cached; the authenticated page always goes to the
      network.
 5. **Quick wins**
-   - **vCard import** (`.vcf`) — built-in parser, no external dependency.
+   - **vCard import** (`.vcf`) — built-in parser, no external dependency. It
+     reads the dialects real exports actually produce: Apple's group prefixes
+     (`item1.TEL`), `QUOTED-PRINTABLE` accents from Android and Outlook 2.1,
+     RFC 6350 escaping from Google, base64 photos. A work email wins over a
+     personal one, a fax is not mistaken for a phone number, and a company
+     already on file becomes the contact's parent instead of inheriting its
+     employee's details.
    - **Duplicate detector** — by email and by normalised name; opens the subset
      for merging through the native Contacts action.
    - **Domain enrichment** — an "Enrich (website)" button: agentic web search
@@ -77,6 +83,17 @@ address) and ignore quoted history in emails. The content being read (cards,
 emails) is treated as untrusted DATA, never as instructions.
 
 ## Changelog
+
+- **18.0.1.2.2** — Rewrote the vCard parser. Apple exports lost their email,
+  work phone, address and website, all of them carried under `item1.`-style
+  group prefixes; Android and Outlook 2.1 exports wrote `Fran=C3=A7ois`
+  straight into the name; Google exports kept their RFC 6350 escaping and
+  preferred a personal address over a work one. The parser now handles group
+  prefixes, quoted-printable including its trailing-`=` line folding, RFC 6350
+  escaping, `TYPE` parameters, base64 photos, notes, and UTF-16 or CP1252
+  files, and an unreadable card is counted and skipped instead of aborting the
+  whole file. A company already on file now becomes the imported contact's
+  parent rather than inheriting its employee's email and job title. Nine tests.
 
 - **18.0.1.2.1** — Added the installable mobile scan page at `/scan`: a
   standalone portal template (no `website` dependency, no backend chrome), two

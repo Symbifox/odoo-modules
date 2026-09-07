@@ -3,7 +3,7 @@
     "summary": "Cartes d'affaires (OCR, avec page mobile installable), signatures "
                "courriel, import vCard, détection de doublons et score de "
                "complétude — via la passerelle bf_llm",
-    "version": "18.0.1.2.1",
+    "version": "18.0.1.2.2",
     "category": "Contacts",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",

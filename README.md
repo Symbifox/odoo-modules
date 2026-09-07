@@ -89,7 +89,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_claude_chat` | Gen | 18.0.1.18.0 | BUSL-1.1 | Chat with Gen, the AI assistant, directly inside Odoo |
 | `bf_claude_chat_cockpit` | Gen — Cockpit | 18.0.1.0.1 | BUSL-1.1 | Vue d'administration des sessions Gen : pannes de flux et consommation |
 | `bf_collabora_online` | Collabora Online, correctifs Blue Fox | 18.0.1.3.0 | BUSL-1.1 | Five fixes layered on the upstream Collabora connector, without forking it |
-| `bf_contact_enrichment` | Enrichissement de contacts | 18.0.1.2.1 | BUSL-1.1 | Business cards (OCR) from the desktop or an installable mobile page, email signatures, vCard import, duplicate detection and completeness scoring, powered by Gen |
+| `bf_contact_enrichment` | Enrichissement de contacts | 18.0.1.2.2 | BUSL-1.1 | Business cards (OCR) from the desktop or an installable mobile page, email signatures, vCard import, duplicate detection and completeness scoring, powered by Gen |
 | `bf_corporate_governance` | Symbifox Corporate Governance | 18.0.1.0.0 | LGPL-3 | The minute book of a share corporation kept in Odoo: resolutions, registers and a compliance calendar |
 | `bf_credentials` | Symbifox Credentials | 18.0.2.0.0 | LGPL-3 | Encrypted per-project credential vault, with rotation, expiry and a second-factor register |
 | `bf_cx` | Expérience client | 18.0.1.8.1 | BUSL-1.1 | Customer experience measurement: NPS programs, continuous feedback, complaints and consent-tracked testimonials |
