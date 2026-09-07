@@ -5,7 +5,7 @@
     "summary": "La prévision s'amorce sur le calendrier des abonnements, pas sur une moyenne plate",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",
-    "license": "LGPL-3",
+    "license": "Other proprietary",
     "application": False,
     "installable": True,
     "auto_install": True,
