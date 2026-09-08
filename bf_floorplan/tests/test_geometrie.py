@@ -35,6 +35,15 @@ class TestGeometrie(CasPlan):
         self.poste.write({"x": 700.0, "y": 600.0})  # sous le local technique : rien
         self.assertFalse(self.poste.zone_id)
 
+    def test_c_est_le_centre_qui_compte(self):
+        """Le coin haut-gauche est hors du local, le centre dedans : l'élément
+        est dans le local."""
+        el = self.Element.create({"plan_id": self.plan.id, "genre": "poste",
+                                  "x": 560.0, "y": 100.0})  # 560 + 80 = 640 > 600
+        self.assertEqual(el.zone_id, self.z_tech)
+        el.write({"x": 440.0})  # centre 520 : aire ouverte
+        self.assertEqual(el.zone_id, self.z_ouvert)
+
     def test_zone_la_plus_petite_gagne(self):
         bureau = self.Zone.create({
             "plan_id": self.plan.id, "name": "Bureau dans l'aire", "genre": "bureau",

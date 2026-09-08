@@ -61,6 +61,22 @@ class TestEdition(CasPlan):
         d = self.plan.poser("element", "poste", 500.0, 600.0)
         self.assertEqual(self.Element.browse(d["neuf"]["id"]).name, "Poste de travail 3")
 
+    def test_poser_ne_fait_pas_renaitre_un_nom(self):
+        a = self.Element.browse(self.plan.poser("element", "poste", 500.0, 300.0)["neuf"]["id"])
+        b = self.Element.browse(self.plan.poser("element", "poste", 500.0, 600.0)["neuf"]["id"])
+        self.assertEqual((a.name, b.name), ("Poste de travail 2", "Poste de travail 3"))
+        a.unlink()
+        c = self.Element.browse(self.plan.poser("element", "poste", 500.0, 300.0)["neuf"]["id"])
+        self.assertEqual(c.name, "Poste de travail 4")
+
+    def test_coordonnees_invalides_refusees_lisiblement(self):
+        with self.assertRaises(UserError):
+            self.plan.deplacer("element", self.poste.id, "abc", 0)
+        with self.assertRaises(UserError):
+            self.plan.redimensionner("zone", self.z_tech.id, None, 10)
+        with self.assertRaises(UserError):
+            self.plan.poser("element", "poste", "x", 1)
+
     def test_poser_refuse_l_inconnu(self):
         with self.assertRaises(UserError):
             self.plan.poser("element", "licorne", 1, 1)

@@ -155,9 +155,13 @@
         <field name="arch" type="xml">
             <kanban>
                 <field name="verrouille"/>
+                <field name="fond_128"/>
                 <templates>
                     <t t-name="card">
                         <div class="d-flex flex-column p-2">
+                            <field name="fond_128" widget="image" class="o_bf_floorplan_vignette mb-1"
+                                   options="{'size': [200, 120], 'zoom': false}"
+                                   invisible="not fond_128"/>
                             <strong class="o_kanban_record_title"><field name="name"/></strong>
                             <div class="text-muted">
                                 <field name="batiment"/>

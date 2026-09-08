@@ -32,10 +32,14 @@ class BfFloorplan(models.Model):
     # Le fond est une image, jamais un SVG : un SVG tiers servi tel quel
     # emporte son script. fields.Image refuse tout ce qui n'est pas une
     # image matricielle, et plafonne la résolution.
-    fond = fields.Image(string="Fond de plan", attachment=True,
+    # copy=True : un étage sert de gabarit au suivant, fond compris (un Binary
+    # ne se copie pas par défaut)
+    fond = fields.Image(string="Fond de plan", attachment=True, copy=True,
                         help="PNG ou JPEG. Il est étiré aux dimensions du plan : "
                              "donnez au plan la largeur et la profondeur réelles "
                              "de ce que l'image montre.")
+    fond_128 = fields.Image(string="Vignette", related="fond", max_width=256,
+                            max_height=256, store=True)
     largeur = fields.Float(string="Largeur (cm)", default=2000.0, required=True)
     profondeur = fields.Float(string="Profondeur (cm)", default=1500.0, required=True)
     pas = fields.Float(string="Pas de la grille (cm)", default=25.0, required=True,

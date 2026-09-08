@@ -41,6 +41,23 @@ class BfFloorplanEdition(models.Model):
         return rec
 
     @staticmethod
+    def _flottant(valeur):
+        try:
+            return float(valeur)
+        except (TypeError, ValueError):
+            raise UserError(_("Coordonnée invalide : %s") % (valeur,))
+
+    def _nom_libre(self, sorte, base, n):
+        """« Poste de travail 3 », et 4 si le 3 existe déjà : un retrait ne
+        doit pas faire renaître un nom déjà pris."""
+        pris = set((self.zone_ids if sorte == "zone" else self.element_ids).mapped("name"))
+        nom = _("%(nature)s %(n)s") % {"nature": base, "n": n}
+        while nom in pris:
+            n += 1
+            nom = _("%(nature)s %(n)s") % {"nature": base, "n": n}
+        return nom
+
+    @staticmethod
     def _entier(valeur):
         try:
             return int(valeur)
@@ -54,6 +71,7 @@ class BfFloorplanEdition(models.Model):
         self.ensure_one()
         self._exiger_modifiable()
         rec = self._enregistrement(sorte, rid)
+        x, y = self._flottant(x), self._flottant(y)
         x, y, _w, _h = self._borner(self._caler(x), self._caler(y), rec.w, rec.h)
         rec.write({"x": x, "y": y})
         return self.rendu()
@@ -62,7 +80,7 @@ class BfFloorplanEdition(models.Model):
         self.ensure_one()
         self._exiger_modifiable()
         rec = self._enregistrement(sorte, rid)
-        w, h = self._caler(w), self._caler(h)
+        w, h = self._caler(self._flottant(w)), self._caler(self._flottant(h))
         pas = self.pas or 25.0
         w = min(max(w, pas), self.largeur - rec.x)
         h = min(max(h, pas), self.profondeur - rec.y)
@@ -83,18 +101,17 @@ class BfFloorplanEdition(models.Model):
             if genre not in dict(selection_zones()):
                 raise UserError(_("Nature de zone inconnue : %s") % genre)
             w, h = 400.0, 300.0
-            nom = _("%(nature)s %(n)s") % {
-                "nature": libelle_zone(genre),
-                "n": len(self.zone_ids.filtered(lambda z: z.genre == genre)) + 1}
+            nom = self._nom_libre("zone", libelle_zone(genre),
+                                  len(self.zone_ids.filtered(lambda z: z.genre == genre)) + 1)
         elif sorte == "element":
             if genre not in dict(selection_elements()):
                 raise UserError(_("Nature d'élément inconnue : %s") % genre)
             w, h = taille_element(genre)
-            nom = _("%(nature)s %(n)s") % {
-                "nature": libelle_element(genre),
-                "n": len(self.element_ids.filtered(lambda e: e.genre == genre)) + 1}
+            nom = self._nom_libre("element", libelle_element(genre),
+                                  len(self.element_ids.filtered(lambda e: e.genre == genre)) + 1)
         else:
             raise UserError(_("Sorte de forme inconnue : %s") % sorte)
+        cx, cy = self._flottant(cx), self._flottant(cy)
         x, y, w, h = self._borner(self._caler(cx - w / 2.0),
                                   self._caler(cy - h / 2.0), w, h)
         vals = {"plan_id": self.id, "name": nom, "genre": genre,

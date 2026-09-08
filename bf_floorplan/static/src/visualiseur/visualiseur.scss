@@ -55,7 +55,9 @@
 .o_bf_floorplan_visualiseur.o_bf_floorplan_plein {
     position: fixed;
     inset: 0;
-    z-index: 1055;
+    // sous les dialogues (1050 / 1055), au-dessus de la barre de navigation
+    // (1030) : la confirmation de retrait doit rester visible en plein écran
+    z-index: 1040;
     background: #FFFFFF;
 
     .o_bf_floorplan_toile {
@@ -101,6 +103,33 @@
 
 .o_bf_floorplan_lien {
     cursor: default;
+}
+
+// ce que la recherche a trouvé : un contour ambre, plus épais
+.o_bf_floorplan_forme.o_bf_floorplan_trouve {
+    stroke: #D69921;
+    stroke-width: 5;
+}
+
+.o_bf_floorplan_recherche {
+    display: inline-flex;
+    align-items: center;
+    gap: .35rem;
+
+    input {
+        width: 14rem;
+    }
+}
+
+.o_bf_floorplan_trouves {
+    font-size: .8rem;
+    color: #73787A;
+    white-space: nowrap;
+}
+
+.o_bf_floorplan_vignette img {
+    max-height: 120px;
+    object-fit: contain;
 }
 
 .o_bf_floorplan_poignee {

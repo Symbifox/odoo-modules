@@ -5,6 +5,10 @@
         <field name="model">bf.floorplan.zone</field>
         <field name="arch" type="xml">
             <form string="Zone">
+                <header>
+                    <button name="action_ouvrir_plan" type="object" string="Sur le plan"
+                            class="btn-primary" icon="fa-map-marker"/>
+                </header>
                 <sheet>
                     <div class="oe_title">
                         <label for="name"/>

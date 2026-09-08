@@ -24,6 +24,13 @@ class TestCopie(CasPlan):
         self.assertEqual(len(self.plan.lien_ids), 1)
         self.assertEqual(self.plan.lien_ids.src_id, self.commutateur)
 
+    def test_le_fond_suit_la_copie(self):
+        self.plan.fond = self.fond_b64()
+        self.assertTrue(self.plan.fond_128)
+        copie = self.plan.copy()
+        self.assertTrue(copie.fond)
+        self.assertTrue(copie.fond_128)
+
     def test_un_element_archive_ne_casse_pas_la_copie(self):
         self.borne.active = False
         copie = self.plan.copy()

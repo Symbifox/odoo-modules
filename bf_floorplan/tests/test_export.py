@@ -64,6 +64,16 @@ class TestExport(CasPlan):
         b64 = fond.get("style").split("image=data:image/png,")[1].rstrip(";")
         self.assertEqual(base64.b64decode(b64)[:8], b"\x89PNG\r\n\x1a\n")
 
+    def test_l_export_du_jour_se_remplace(self):
+        self.plan.action_telecharger_mxgraph()
+        self.poste.name = "P-01 bis"
+        self.plan.action_telecharger_mxgraph()
+        pieces = self.env["ir.attachment"].search([
+            ("res_model", "=", "bf.floorplan"), ("res_id", "=", self.plan.id),
+            ("name", "like", "%.drawio")])
+        self.assertEqual(len(pieces), 1)
+        self.assertIn(b"P-01 bis", pieces.raw)
+
     def test_le_lecteur_exporte_aussi(self):
         """Qui peut lire le plan peut l'emporter : la pièce se joint sans
         exiger le droit d'écrire sur le plan."""

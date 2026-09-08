@@ -67,6 +67,19 @@ class TestRendu(CasPlan):
         d = self.plan.with_context(bf_floorplan_surligne=self.poste.id).rendu()
         self.assertEqual(d["surligne"], self.poste.id)
 
+    def test_zone_surlignee_depuis_sa_fiche(self):
+        action = self.z_tech.action_ouvrir_plan()
+        self.assertEqual(action["res_id"], self.plan.id)
+        d = self.plan.with_context(**action["context"]).rendu()
+        self.assertEqual(d["surligne_zone"], self.z_tech.id)
+        self.assertFalse(d["surligne"])
+
+    def test_contexte_malforme_ne_casse_pas_le_rendu(self):
+        d = self.plan.with_context(bf_floorplan_surligne="abc",
+                                   bf_floorplan_surligne_zone=None).rendu()
+        self.assertFalse(d["surligne"])
+        self.assertFalse(d["surligne_zone"])
+
     def test_message_du_plan_vide(self):
         nu = self.Plan.create({"name": "Nu"})
         self.assertIn("fond de plan", nu.rendu()["vide"])

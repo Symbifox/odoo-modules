@@ -83,17 +83,26 @@ class BfFloorplanRendu(models.Model):
             zones=zones, elements=elements, liens=liens, legende=legende,
         )
 
+    def _entier_du_contexte(self, cle):
+        """Un identifiant passé par le contexte, ou False : un contexte
+        malformé ne fait pas échouer le tracé."""
+        valeur = self.env.context.get(cle)
+        try:
+            return int(valeur) if valeur else False
+        except (TypeError, ValueError):
+            return False
+
     def rendu(self):
         """Surface RPC volontaire : c'est ce que le composant OWL appelle."""
         self.ensure_one()
         d = self.to_dict()
-        surligne = self.env.context.get("bf_floorplan_surligne")
         d.update(
             # le composant lit le gel AVANT d'offrir une poignée
             modifiable=self._modifiable(),
             fige=self.verrouille,
             fond=self._url_fond(),
-            surligne=int(surligne) if surligne else False,
+            surligne=self._entier_du_contexte("bf_floorplan_surligne"),
+            surligne_zone=self._entier_du_contexte("bf_floorplan_surligne_zone"),
             palette=dict(
                 zones=[dict(code=c, nom=n) for c, n, _f in GENRES_ZONE],
                 elements=[dict(code=c, nom=n, w=w, h=h) for c, n, w, h in GENRES_ELEMENT],

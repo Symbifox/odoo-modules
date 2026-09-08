@@ -10,7 +10,7 @@
  *
  * Le gel se lit AVANT d'offrir une poignée. Sans bibliothèque tierce.
  */
-import { Component, onMounted, onWillStart, useState, useRef } from "@odoo/owl";
+import { Component, onMounted, onWillStart, useExternalListener, useState, useRef } from "@odoo/owl";
 import { registry } from "@web/core/registry";
 import { useService } from "@web/core/utils/hooks";
 import { _t } from "@web/core/l10n/translation";
@@ -53,7 +53,11 @@ export class VisualiseurPlan extends Component {
             donnees: null, erreur: null, zoom: 0.5, plein: false,
             outil: "consulter", sorte: "element", genre: "poste",
             genreLien: "reseau", depuis: null, fantome: null, occupe: false,
+            recherche: "",
         });
+        // Échap : lâcher ce qu'on tient, sortir du plein écran, vider la
+        // recherche — dans cet ordre, une chose à la fois
+        useExternalListener(window, "keydown", (ev) => this.surTouche(ev));
         this.svgRef = useRef("svg");
         this.toileRef = useRef("toile");
         this.glisse = null;
@@ -69,10 +73,18 @@ export class VisualiseurPlan extends Component {
         return this.props.record ? this.props.record.resId : this.props.resId;
     }
 
-    /** Le poste à surligner, quand on arrive depuis une fiche. */
-    get surligne() {
+    /** Ce qu'il faut surligner quand on arrive depuis une fiche : un élément
+     *  ou une zone. Les deux clés voyagent dans le contexte de l'action, et
+     *  repartent telles quelles vers le serveur à chaque appel. */
+    get contexteSurligne() {
         const ctx = this.props.record?.context || {};
-        return ctx.bf_floorplan_surligne || false;
+        const out = {};
+        for (const cle of ["bf_floorplan_surligne", "bf_floorplan_surligne_zone"]) {
+            if (ctx[cle]) {
+                out[cle] = ctx[cle];
+            }
+        }
+        return Object.keys(out).length ? { context: out } : {};
     }
 
     async charger() {
@@ -82,12 +94,43 @@ export class VisualiseurPlan extends Component {
             return;
         }
         try {
-            const kwargs = this.surligne
-                ? { context: { bf_floorplan_surligne: this.surligne } } : {};
-            this.state.donnees = await this.orm.call("bf.floorplan", "rendu", [id], kwargs);
+            this.state.donnees = await this.orm.call("bf.floorplan", "rendu", [id], this.contexteSurligne);
         } catch (e) {
             this.state.erreur = messageDe(e);
         }
+    }
+
+    surTouche(ev) {
+        if (ev.key !== "Escape") {
+            return;
+        }
+        if (this.deplacement || this.redimension || this.state.depuis || this.state.fantome) {
+            this.annulerGlisse();
+            this.state.depuis = null;
+        } else if (this.state.plein) {
+            this.plein_ecran();
+        } else if (this.state.recherche) {
+            this.state.recherche = "";
+        }
+    }
+
+    // --- recherche --------------------------------------------------------------
+
+    /** « Trouver quelqu'un ou quelque chose » : l'étiquette, l'occupant, la
+     *  nature, la zone ou la cible d'un élément ; le nom ou le code d'une zone. */
+    correspond(f) {
+        const q = this.state.recherche.trim().toLowerCase();
+        if (!q) {
+            return false;
+        }
+        const champs = f.sorte === "zone"
+            ? [f.nom, f.code, f.genre_nom]
+            : [f.nom, f.occupant, f.info, f.zone, f.cible && f.cible.nom];
+        return champs.some((c) => c && String(c).toLowerCase().includes(q));
+    }
+
+    get nbTrouves() {
+        return this.zones.concat(this.elements).filter((f) => this.correspond(f)).length;
     }
 
     // --- cadre ----------------------------------------------------------------
@@ -229,10 +272,8 @@ export class VisualiseurPlan extends Component {
         }
         this.state.occupe = true;
         try {
-            const kwargs = this.surligne
-                ? { context: { bf_floorplan_surligne: this.surligne } } : {};
             this.state.donnees = await this.orm.call(
-                "bf.floorplan", methode, [this.resId, ...args], kwargs);
+                "bf.floorplan", methode, [this.resId, ...args], this.contexteSurligne);
             return true;
         } catch (e) {
             this.notification.add(messageDe(e), { type: "warning", sticky: false });

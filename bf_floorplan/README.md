@@ -35,7 +35,12 @@ your own internal use, reverting to LGPL-3 four years after each release.
   SVG from the screen (background embedded), and **diagrams.net** (`.drawio`)
   using the shapes of its "Floorplans" library and one layer per kind, so the
   drawing can be finished (walls, doors, windows) where that is best done.
-* From an employee's form, "On the plan" jumps to their desk, highlighted.
+* **Find someone or something**: a search box above the plan highlights every
+  zone or element whose label, occupant, kind, zone or linked record matches.
+  Escape clears the search, drops a half-done gesture, or leaves full screen.
+* From an employee's form, "On the plan" jumps to their desk, highlighted; from a
+  zone's form, "On the plan" highlights the room. Plan cards show a thumbnail
+  of the background.
   The button is also on the public employee profile, so people without HR
   rights can find a colleague too.
 
@@ -67,6 +72,18 @@ hosting management module, placed on the plan.
   uploading it: serving a third-party SVG as-is would serve its scripts too.
 * Zones and elements are rectangles, rotated by quarter turns. An L-shaped
   room is two zones.
+
+## Changelog
+
+* **18.0.1.1.0** — search box with highlighting, Escape key, zone highlight
+  from its form, background thumbnails on plan cards, background copied with
+  the plan, the day's diagrams.net export replaces the previous one instead
+  of piling up, unique names when placing shapes, readable errors on
+  malformed coordinates or identifiers.
+* **18.0.1.0.2** — copy of a plan tolerates archived elements; export
+  available to readers; link kind validated.
+* **18.0.1.0.1** — "On the plan" also on the public employee profile.
+* **18.0.1.0.0** — first release.
 
 ## Language
 

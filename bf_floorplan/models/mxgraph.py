@@ -128,10 +128,17 @@ class BfFloorplanExport(models.Model):
         # en sudo : Odoo exige le droit d'ÉCRIRE sur le plan pour y joindre un
         # fichier, et l'export est offert à qui peut le lire. La lecture de la
         # pièce, elle, reste gardée par le droit de lire le plan.
-        piece = self.env["ir.attachment"].sudo().create({
-            "name": nom, "raw": contenu.encode("utf-8") if isinstance(contenu, str) else contenu,
-            "mimetype": mimetype, "res_model": self._name, "res_id": self.id,
-        })
+        octets = contenu.encode("utf-8") if isinstance(contenu, str) else contenu
+        Piece = self.env["ir.attachment"].sudo()
+        # l'export du jour remplace celui du jour : sinon chaque clic empile
+        # un fichier sur le plan, sans borne
+        piece = Piece.search([("res_model", "=", self._name), ("res_id", "=", self.id),
+                              ("name", "=", nom)], limit=1)
+        if piece:
+            piece.write({"raw": octets, "mimetype": mimetype})
+        else:
+            piece = Piece.create({"name": nom, "raw": octets, "mimetype": mimetype,
+                                  "res_model": self._name, "res_id": self.id})
         return {
             "type": "ir.actions.act_url",
             "url": f"/web/content/{piece.id}?download=true",

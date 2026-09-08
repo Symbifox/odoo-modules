@@ -71,6 +71,17 @@ class BfFloorplanZone(models.Model):
             if zone.capacite < 0:
                 raise ValidationError(_("La capacité n'est pas négative."))
 
+    def action_ouvrir_plan(self):
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "res_model": "bf.floorplan",
+            "res_id": self.plan_id.id,
+            "views": [[False, "form"]],
+            "target": "current",
+            "context": {"bf_floorplan_surligne_zone": self.id},
+        }
+
     def _contient(self, cx, cy):
         self.ensure_one()
         return self.x <= cx <= self.x + self.w and self.y <= cy <= self.y + self.h
