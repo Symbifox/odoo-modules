@@ -307,7 +307,14 @@
     #   « Bookings ». Ancré sur le compteur des réservations (booking_count), unique.
     # 18.0.2.54.2: l'icône de la tuile « Bookings » passe en 64 x 64 (static/src/img/portal_icon.png),
     #   la taille déclarée des icônes voisines ; l'icône d'application sortait trop grande.
-    "version": "18.0.2.54.2",
+    # 18.0.2.55.0: 🔴 la salle Nextcloud Talk d'un rendez-vous naissait avec le SEUL robot pour
+    #   participant. L'hôte y entrait par le lien public comme un invité : aucun droit de
+    #   modération, aucune notification, et la salle n'apparaissait nulle part dans sa liste.
+    #   Nouveau paramètre `bf_appointment.nc_talk_moderators` — entrées « compte_nc » ou
+    #   « login_odoo=compte_nc », séparées par des virgules — dont les comptes sont ajoutés
+    #   puis PROMUS modérateurs après la création. Vide = comportement d'avant. La pose ne
+    #   bloque jamais : une salle sans modérateur reste une salle joignable.
+    "version": "18.0.2.55.0",
     "category": "Appointments",
     "summary": "Public self-service booking pages extending Resource Booking",
     'author': 'Les services de consultation Blue Fox, Inc.',

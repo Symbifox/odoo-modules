@@ -1,5 +1,6 @@
 import base64
 import logging
+import re
 import uuid
 from datetime import datetime, timedelta
 
@@ -839,10 +840,144 @@ class ResourceBooking(models.Model):
             response.raise_for_status()
             data = response.json()
             room_token = data["ocs"]["data"]["token"]
+            self._nc_talk_grant_moderation(base_url, (user, password), room_token)
             return f"{base_url.rstrip('/')}/index.php/call/{room_token}"
         except Exception as e:
             _logger.error("Failed to create Nextcloud Talk room: %s", e)
             return False
+
+    def _nc_talk_moderator_logins(self):
+        """Comptes Nextcloud à installer comme modérateurs de la salle.
+
+        Lus depuis `bf_appointment.nc_talk_moderators`, une liste séparée par
+        des virgules (ou des sauts de ligne) dont chaque entrée est soit
+
+        * `compte_nc` — modérateur de toutes les salles du locataire ;
+        * `login_odoo=compte_nc` — modérateur des seules salles dont
+          `login_odoo` est l'organisateur.
+
+        La forme appariée est celle qui compte dès qu'un locataire a plus d'un
+        hôte : deux personnes qui reçoivent chacune leurs rendez-vous ne
+        doivent pas se retrouver modératrices de ceux de l'autre.
+
+        ⚠️ On découpe sur la virgule et le saut de ligne, jamais sur l'espace :
+        un identifiant Nextcloud peut en contenir (« Jean Tremblay » est un
+        `user_id` parfaitement valide).
+        """
+        self.ensure_one()
+        brut = (
+            self.env["ir.config_parameter"]
+            .sudo()
+            .get_param("bf_appointment.nc_talk_moderators", "")
+        )
+        organisateur = (self.user_id.login or "").strip().lower()
+        logins = []
+        for entree in re.split(r"[,\n;]", brut or ""):
+            entree = entree.strip()
+            if not entree:
+                continue
+            if "=" in entree:
+                login_odoo, _sep, compte_nc = entree.partition("=")
+                if login_odoo.strip().lower() != organisateur:
+                    continue
+                entree = compte_nc.strip()
+            if entree and entree not in logins:
+                logins.append(entree)
+        return logins
+
+    def _nc_talk_grant_moderation(self, base_url, auth, room_token):
+        """Poser les modérateurs humains sur une salle fraîchement créée.
+
+        Sans cette passe, la salle n'a qu'un participant : le robot qui l'a
+        créée. L'hôte doit entrer par le lien public comme un invité — aucun
+        droit de modération, aucune notification, et la salle n'apparaît nulle
+        part dans sa liste Talk. Défaut corrigé en 18.0.2.55.0, découvert à
+        l'heure d'un rendez-vous.
+
+        Trois appels par modérateur, et il en faut trois : la création de salle
+        ne prend pas de participants, l'ajout ne rend pas l'`attendeeId`, et
+        c'est cet identifiant — pas le nom d'utilisateur — que la promotion
+        demande.
+
+        ⚠️ Jamais bloquant. Une salle sans modérateur reste une salle
+        joignable ; un rendez-vous ne doit pas tomber parce que Nextcloud a
+        hoqueté. Les échecs partent en WARNING et la salle est rendue quand
+        même.
+
+        Retourne la liste des comptes réellement promus (pour les tests et le
+        rattrapage).
+        """
+        self.ensure_one()
+        logins = self._nc_talk_moderator_logins()
+        if not logins:
+            return []
+        import requests
+
+        racine = "%s/ocs/v2.php/apps/spreed/api/v4/room/%s" % (
+            base_url.rstrip("/"), room_token)
+        entetes = {"OCS-APIRequest": "true", "Accept": "application/json"}
+        poses = []
+        for login in logins:
+            try:
+                reponse = requests.post(
+                    racine + "/participants",
+                    auth=auth,
+                    headers=entetes,
+                    data={"newParticipant": login, "source": "users"},
+                    timeout=10,
+                )
+                if reponse.status_code >= 400:
+                    _logger.warning(
+                        "bf_appointment: Nextcloud refuse d'ajouter %s à la salle %s (%s %s)",
+                        login, room_token, reponse.status_code, reponse.text[:200],
+                    )
+                    continue
+                attendee_id = self._nc_talk_attendee_id(racine, auth, entetes, login)
+                if not attendee_id:
+                    _logger.warning(
+                        "bf_appointment: %s ajouté à la salle %s mais introuvable "
+                        "dans ses participants — pas de promotion",
+                        login, room_token,
+                    )
+                    continue
+                reponse = requests.post(
+                    racine + "/moderators",
+                    auth=auth,
+                    headers=entetes,
+                    data={"attendeeId": attendee_id},
+                    timeout=10,
+                )
+                if reponse.status_code >= 400:
+                    _logger.warning(
+                        "bf_appointment: promotion de %s refusée sur la salle %s (%s %s)",
+                        login, room_token, reponse.status_code, reponse.text[:200],
+                    )
+                    continue
+                poses.append(login)
+            except Exception:
+                _logger.exception(
+                    "bf_appointment: échec de la modération de %s sur la salle %s",
+                    login, room_token,
+                )
+        return poses
+
+    def _nc_talk_attendee_id(self, racine, auth, entetes, login):
+        """L'`attendeeId` d'un compte dans une salle, ou False.
+
+        Distinct du nom d'utilisateur : la promotion en modération ne prend que
+        cet entier, et l'ajout de participant rend un corps vide.
+        """
+        import requests
+
+        reponse = requests.get(
+            racine + "/participants", auth=auth, headers=entetes, timeout=10)
+        if reponse.status_code >= 400:
+            return False
+        for participant in reponse.json()["ocs"]["data"]:
+            if (participant.get("actorType") == "users"
+                    and participant.get("actorId") == login):
+                return participant.get("attendeeId")
+        return False
 
     def _decrypt_nc_talk_password(self, encrypted_value):
         """Decrypt Nextcloud Talk password using Fernet.

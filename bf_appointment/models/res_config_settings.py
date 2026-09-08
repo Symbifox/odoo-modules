@@ -42,6 +42,17 @@ class ResConfigSettings(models.TransientModel):
         config_parameter="bf_appointment.nc_talk_user",
         help="Utilisateur Nextcloud pour l'authentification à l'API Talk.",
     )
+    bf_appointment_nc_talk_moderators = fields.Char(
+        string="Modérateurs des salles Talk",
+        config_parameter="bf_appointment.nc_talk_moderators",
+        help=(
+            "Comptes Nextcloud promus modérateurs de chaque salle de rendez-vous. "
+            "Séparés par des virgules. Une entrée « compte » vaut pour toutes les "
+            "salles ; une entrée « login_odoo=compte » ne vaut que pour les "
+            "rendez-vous dont ce login est l'organisateur. Laissé vide, la salle "
+            "n'a que le robot pour participant et l'hôte y entre comme invité."
+        ),
+    )
     # ⚠️ NON STOCKÉ, délibérément. `res.config.settings` est un modèle
     # transitoire, c'est-à-dire une VRAIE table : un Char ordinaire y aurait
     # déposé le mot de passe d'application Nextcloud EN CLAIR, où il serait
