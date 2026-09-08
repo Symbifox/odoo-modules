@@ -30,14 +30,20 @@ class BfFloorplanElement(models.Model):
 
     @api.model_create_multi
     def create(self, vals_list):
-        # le nom se recopie comme un fait, avec ou sans droits sur le parc
-        Endpoint = self.env["hosting.endpoint"].sudo()
-        Server = self.env["hosting.server"].sudo()
+        # le nom se recopie seulement si on a le droit de lire la fiche :
+        # sinon la création serait un moyen d'apprendre le nom d'un appareil
+        # par son identifiant
+        Endpoint = self.env["hosting.endpoint"]
+        Server = self.env["hosting.server"]
         for vals in vals_list:
             if vals.get("endpoint_id") and not vals.get("name"):
-                vals["name"] = Endpoint.browse(vals["endpoint_id"]).name
+                ep = Endpoint.browse(vals["endpoint_id"])
+                if ep.has_access("read"):
+                    vals["name"] = ep.name
             if vals.get("server_id") and not vals.get("name"):
-                vals["name"] = Server.browse(vals["server_id"]).name
+                srv = Server.browse(vals["server_id"])
+                if srv.has_access("read"):
+                    vals["name"] = srv.name
         return super().create(vals_list)
 
     @api.onchange("endpoint_id")
@@ -98,7 +104,9 @@ class BfFloorplanElement(models.Model):
         infos = super()._infos()
         ep = self.endpoint_id.sudo()
         if ep:
-            if ep.assigned_display:
+            # la personne est une donnée nominative : seulement avec le droit
+            # de lire l'appareil. L'état et le système, eux, s'affichent.
+            if ep.assigned_display and self.endpoint_id.has_access("read"):
                 infos.append(ep.assigned_display)
             if ep.os:
                 infos.append(dict(ep._fields["os"].selection).get(ep.os, ep.os))

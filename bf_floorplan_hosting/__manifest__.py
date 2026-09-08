@@ -3,7 +3,7 @@
     "name": "Plans d'étage : hébergement",
     "summary": "Les appareils et les serveurs de la gestion d'hébergement, "
                "posés sur le plan d'étage",
-    "version": "18.0.1.0.0",
+    "version": "18.0.1.1.0",
     "category": "Services",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",

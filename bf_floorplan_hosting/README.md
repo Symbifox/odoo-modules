@@ -17,8 +17,18 @@ Odoo 18.0 Community. LGPL-3. Installs itself when both modules are present.
 * From the endpoint's or the server's form, "On the plan" jumps to its place,
   or offers to choose one if it has none yet.
 * A device is placed in one spot only (unique constraint).
+* Endpoint and server lists gain the filters "Not placed on a plan" and
+  "On a plan", so the devices still to be placed are one click away.
+* The assigned person is shown only to users allowed to read the device; the
+  device's state and system are shown to everyone who can read the plan.
 
 The plan stores no fact about the device: it reads the form, and the form
 stays the truth.
 
 The user interface is in French; the strings are translatable.
+
+## Changelog
+
+* **18.0.1.1.0** — placement filters on endpoints and servers; the assigned
+  person and the copied name require read access to the device.
+* **18.0.1.0.0** — first release.

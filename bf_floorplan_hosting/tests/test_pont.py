@@ -114,6 +114,32 @@ class TestPont(CasPlan):
         e = next(e for e in d["elements"] if e["id"] == self.poste.id)
         self.assertEqual((e["teinte"], e["cible"]), ("alerte", False))
 
+    def test_sans_acces_la_personne_reste_privee(self):
+        self.poste.endpoint_id = self.appareil
+        self.env.invalidate_all()
+        infos = " ".join(self.poste.with_user(self.lecteur)._infos())
+        self.assertNotIn("Personne du parc", infos)
+        self.assertIn("Windows 11", infos)
+        self.assertIn("Personne du parc", " ".join(self.poste._infos()))
+
+    def test_sans_acces_la_creation_ne_copie_pas_le_nom(self):
+        plans_seul = self.env["res.users"].with_context(no_reset_password=True).create({
+            "name": "Plans seulement", "login": "plans_seul", "email": "plans@banc.test",
+            "groups_id": [(6, 0, [self.env.ref("base.group_user").id,
+                                  self.env.ref("bf_floorplan.group_bf_floorplan_manager").id])],
+        })
+        el = self.Element.with_user(plans_seul).create({
+            "plan_id": self.plan.id, "endpoint_id": self.appareil.id, "x": 0, "y": 0})
+        self.assertFalse(el.name)
+        self.assertEqual(el.display_name, "Poste de travail")
+
+    def test_filtre_sans_place(self):
+        Endpoint = self.env["hosting.endpoint"]
+        self.assertIn(self.appareil, Endpoint.search([("floorplan_element_ids", "=", False)]))
+        self.poste.endpoint_id = self.appareil
+        self.assertNotIn(self.appareil, Endpoint.search([("floorplan_element_ids", "=", False)]))
+        self.assertIn(self.appareil, Endpoint.search([("floorplan_element_ids", "!=", False)]))
+
     def test_retirer_l_appareil_garde_la_forme(self):
         self.poste.endpoint_id = self.appareil
         self.appareil.unlink()

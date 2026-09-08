@@ -29,4 +29,31 @@
             </div>
         </field>
     </record>
+    <record id="hosting_endpoint_view_search_floorplan" model="ir.ui.view">
+        <field name="name">hosting.endpoint.search.floorplan</field>
+        <field name="model">hosting.endpoint</field>
+        <field name="inherit_id" ref="hosting_management.hosting_endpoint_view_search"/>
+        <field name="arch" type="xml">
+            <filter name="filter_os_eol" position="after">
+                <separator/>
+                <filter name="filter_sans_plan" string="Sans place sur un plan"
+                        domain="[('floorplan_element_ids', '=', False)]"/>
+                <filter name="filter_sur_plan" string="Sur un plan"
+                        domain="[('floorplan_element_ids', '!=', False)]"/>
+            </filter>
+        </field>
+    </record>
+
+    <record id="hosting_server_view_search_floorplan" model="ir.ui.view">
+        <field name="name">hosting.server.search.floorplan</field>
+        <field name="model">hosting.server</field>
+        <field name="inherit_id" ref="hosting_management.hosting_server_view_search"/>
+        <field name="arch" type="xml">
+            <filter name="filter_decommissioned" position="after">
+                <separator/>
+                <filter name="filter_sans_plan" string="Sans place sur un plan"
+                        domain="[('floorplan_element_ids', '=', False)]"/>
+            </filter>
+        </field>
+    </record>
 </odoo>
