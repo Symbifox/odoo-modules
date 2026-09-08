@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- ==========================================================
+             L'invitation. Elle demande, elle n'informe pas d'un fait
+             accompli : c'est la différence entre un consentement et un
+             avis. Elle dit aussi comment dire non, dans le même écran.
+             ========================================================== -->
+        <record id="mail_template_invitation" model="mail.template">
+            <field name="name">Célébrations : invitation à répondre</field>
+            <field name="model_id" ref="model_bf_celebration_profile"/>
+            <field name="subject">Souhaitez-vous qu'on souligne votre fête ?</field>
+            <field name="email_from">{{ (object.company_id.email_formatted or user.email_formatted) }}</field>
+            <field name="email_to">{{ object.employee_id.work_email }}</field>
+            <field name="auto_delete" eval="False"/>
+            <field name="body_html" type="html">
+<div style="font-family:Lexend,Segoe UI,Arial,sans-serif;font-size:14px;color:#2D3031;line-height:1.6">
+    <p>Bonjour <t t-out="object.employee_id.name or ''"/>,</p>
+    <p>On aimerait pouvoir souligner les fêtes au bureau, et pour ça il faut
+       vous demander ce que vous en pensez. Vous décidez, et vous pouvez
+       changer d'idée quand vous voulez.</p>
+    <p>Quatre réponses possibles :</p>
+    <ul style="padding-left:18px">
+        <li><strong>Oui, avec une carte</strong> signée par les collègues</li>
+        <li><strong>Oui, mais sans carte</strong> : la date paraît, personne
+            n'organise rien</li>
+        <li><strong>Non merci</strong> : vous êtes retiré de tout, et on ne
+            vous le redemande plus</li>
+        <li>Ne rien faire, et il ne se passe rien</li>
+    </ul>
+    <p>On vous demande le <strong>jour et le mois</strong> seulement. Votre
+       date de naissance dans le dossier RH n'est pas lue, pas copiée, pas
+       affichée.</p>
+    <p style="margin:24px 0">
+        <a t-att-href="'%s/odoo/action-bf_celebrations.action_mon_profil' % (object.env['ir.config_parameter'].sudo().get_param('web.base.url') or '')"
+           style="background:#29ABE1;color:#ffffff;padding:11px 20px;border-radius:6px;text-decoration:none;display:inline-block">
+            Répondre</a>
+    </p>
+    <p style="color:#6b7280;font-size:12px">Personne d'autre que vous ne voit
+       votre réponse, pas même les ressources humaines.</p>
+</div>
+            </field>
+        </record>
+
+        <!-- ==========================================================
+             Le rappel à qui organise. Il porte le lien, parce qu'un
+             rappel sans bouton ne produit rien.
+             ========================================================== -->
+        <record id="mail_template_rappel_organisateur" model="mail.template">
+            <field name="name">Célébrations : rappel à qui organise</field>
+            <field name="model_id" ref="model_bf_celebration_occasion"/>
+            <field name="subject">{{ object.person_name }} : une carte à ouvrir avant le {{ object.date }}</field>
+            <field name="email_from">{{ (object.company_id.email_formatted or user.email_formatted) }}</field>
+            <field name="auto_delete" eval="False"/>
+            <field name="body_html" type="html">
+<div style="font-family:Lexend,Segoe UI,Arial,sans-serif;font-size:14px;color:#2D3031;line-height:1.6">
+    <p>Bonjour,</p>
+    <p><t t-out="object.name or ''"/>, le
+       <strong t-out="object.date and object.date.strftime('%d/%m/%Y') or ''"/>.</p>
+    <p>Rien n'est encore ouvert. Un tableau de vœux se crée en un clic, et le
+       lien se partage ensuite comme vous voulez : courriel, canal d'équipe,
+       ou un code QR imprimé.</p>
+    <p style="margin:24px 0">
+        <a t-att-href="'%s/odoo/bf.celebration.occasion/%s' % (object.env['ir.config_parameter'].sudo().get_param('web.base.url') or '', object.id)"
+           style="background:#29ABE1;color:#ffffff;padding:11px 20px;border-radius:6px;text-decoration:none;display:inline-block">
+            Ouvrir la carte</a>
+    </p>
+    <p style="color:#6b7280;font-size:12px">Cette personne a accepté qu'on
+       souligne sa fête. Elle ne verra rien avant la livraison.</p>
+</div>
+            </field>
+        </record>
+
+        <!-- ========================================================== -->
+        <record id="mail_template_tableau_mince" model="mail.template">
+            <field name="name">Célébrations : le tableau est mince</field>
+            <field name="model_id" ref="model_bf_celebration_board"/>
+            <field name="subject">La carte de {{ object.recipient_name }} est encore bien vide</field>
+            <field name="email_from">{{ (object.company_id.email_formatted or user.email_formatted) }}</field>
+            <field name="auto_delete" eval="False"/>
+            <field name="body_html" type="html">
+<div style="font-family:Lexend,Segoe UI,Arial,sans-serif;font-size:14px;color:#2D3031;line-height:1.6">
+    <p>Bonjour,</p>
+    <p>La carte de <strong t-out="object.recipient_name or ''"/> part bientôt
+       et elle porte
+       <strong t-out="object.published_post_count"/> message(s).</p>
+    <p>Le lien à repartager :</p>
+    <p><a t-att-href="object.contribution_url" t-out="object.contribution_url"/></p>
+    <p style="color:#6b7280;font-size:12px">Une carte vide n'est pas livrée :
+       elle est retenue et vous êtes prévenu.</p>
+</div>
+            </field>
+        </record>
+
+        <!-- ==========================================================
+             La livraison. Elle part à la personne fêtée, et c'est le
+             seul courriel du module qui lui soit adressé.
+             ========================================================== -->
+        <record id="mail_template_livraison" model="mail.template">
+            <field name="name">Célébrations : livraison du tableau</field>
+            <field name="model_id" ref="model_bf_celebration_board"/>
+            <field name="subject">{{ object.name }}</field>
+            <field name="email_from">{{ (object.company_id.email_formatted or user.email_formatted) }}</field>
+            <field name="email_to">{{ object.recipient_email }}</field>
+            <field name="auto_delete" eval="False"/>
+            <field name="body_html" type="html">
+<div style="font-family:Lexend,Segoe UI,Arial,sans-serif;font-size:14px;color:#2D3031;line-height:1.6">
+    <p>Bonjour <t t-out="object.recipient_name or ''"/>,</p>
+    <p>Vos collègues vous ont écrit.
+       <strong t-out="object.published_post_count"/> message(s) vous
+       attendent sur une page qui restera à vous.</p>
+    <p style="margin:24px 0">
+        <a t-att-href="object.board_url"
+           style="background:#29ABE1;color:#ffffff;padding:11px 20px;border-radius:6px;text-decoration:none;display:inline-block">
+            Ouvrir la carte</a>
+    </p>
+    <p style="color:#6b7280;font-size:12px">Le lien reste valide : revenez-y
+       quand vous voulez.</p>
+</div>
+            </field>
+        </record>
+
+    </data>
+</odoo>

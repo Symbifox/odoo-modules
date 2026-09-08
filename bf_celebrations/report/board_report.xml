@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="action_report_board" model="ir.actions.report">
+        <field name="name">Carte souvenir</field>
+        <field name="model">bf.celebration.board</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">bf_celebrations.report_board</field>
+        <field name="report_file">bf_celebrations.report_board</field>
+        <field name="binding_model_id" ref="model_bf_celebration_board"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="report_board">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.basic_layout">
+                    <div class="page"
+                         style="font-family: Lexend, 'Segoe UI', Arial, sans-serif; color:#2D3031;">
+
+                        <h1 style="color:#2D3031; font-size:24px; margin:0 0 4px;">
+                            <t t-esc="doc.name"/>
+                        </h1>
+                        <p style="color:#6b7280; font-size:12px; margin:0 0 22px;">
+                            <t t-esc="doc.published_post_count"/> mot(s)
+                            <t t-if="doc.delivered_date">
+                                — livrée le
+                                <t t-esc="doc.delivered_date"
+                                   t-options="{'widget': 'date'}"/>
+                            </t>
+                        </p>
+
+                        <div t-if="doc.intro_html"
+                             style="background:#F4F6F8; border-radius:8px; padding:12px 14px; margin-bottom:20px;"
+                             t-out="doc.intro_html"/>
+
+                        <t t-foreach="doc.post_ids.filtered(lambda p: p.state == 'published')"
+                           t-as="mot">
+                            <!-- ⚠️ `page-break-inside` évite qu'un mot se coupe
+                                 entre deux pages : une signature séparée de son
+                                 message se lit comme une autre personne. -->
+                            <div style="border:1px solid #E3E7EA; border-radius:10px; padding:14px 16px; margin-bottom:12px; page-break-inside:avoid;">
+                                <img t-if="mot.image"
+                                     t-att-src="image_data_uri(mot.image)"
+                                     style="max-width:220px; max-height:220px; display:block; margin-bottom:10px; border-radius:6px;"/>
+                                <div t-out="mot.body"/>
+                                <p style="margin:8px 0 0; font-weight:600; color:#29ABE1;">
+                                    — <t t-esc="mot.author_name"/>
+                                </p>
+                            </div>
+                        </t>
+
+                        <p t-if="not doc.published_post_count"
+                           style="color:#6b7280; text-align:center; padding:30px 0;">
+                            Personne n'a encore signé cette carte.
+                        </p>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+</odoo>

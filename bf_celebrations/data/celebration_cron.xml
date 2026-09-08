@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- Génère les occasions à partir des consentements. Ne lit jamais
+             hr.employee.birthday. -->
+        <record id="cron_generer" model="ir.cron">
+            <field name="name">Célébrations : poser les occasions à venir</field>
+            <field name="model_id" ref="model_bf_celebration_occasion"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_generer()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <!-- Le rappel qui fait exister la fonction. -->
+        <record id="cron_rappeler" model="ir.cron">
+            <field name="name">Célébrations : prévenir qui organise</field>
+            <field name="model_id" ref="model_bf_celebration_occasion"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_rappeler()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <!-- La livraison. Toutes les heures, parce que l'heure choisie
+             compte : une carte qui arrive à 3 h du matin se lit le soir. -->
+        <record id="cron_livrer" model="ir.cron">
+            <field name="name">Célébrations : livrer les tableaux dus</field>
+            <field name="model_id" ref="model_bf_celebration_board"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_livrer()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">hours</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="cron_relancer_minces" model="ir.cron">
+            <field name="name">Célébrations : relancer les tableaux minces</field>
+            <field name="model_id" ref="model_bf_celebration_board"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_relancer_tableaux_minces()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <!-- ⚠️ ÉTEINT à l'installation, volontairement. Ce cron écrit à des
+             personnes réelles pour leur demander une donnée personnelle. Il
+             s'allume quand l'entreprise a décidé du texte et du moment, pas
+             parce qu'un module vient d'être installé. -->
+        <record id="cron_inviter" model="ir.cron">
+            <field name="name">Célébrations : inviter à répondre</field>
+            <field name="model_id" ref="model_bf_celebration_profile"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_inviter()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="active" eval="False"/>
+        </record>
+
+    </data>
+</odoo>

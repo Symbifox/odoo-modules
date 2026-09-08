@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.celebrations</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app data-string="Célébrations" string="Célébrations"
+                     name="bf_celebrations"
+                     groups="bf_celebrations.group_manager">
+                    <block title="Le rappel" name="celebrations_rappel">
+                        <setting string="Prévenir d'avance"
+                                 help="Le nombre de jours avant l'occasion où la personne qui organise reçoit son rappel.">
+                            <field name="celebration_reminder_days"/>
+                        </setting>
+                        <setting string="Horizon du calendrier"
+                                 help="Jusqu'où les occasions sont posées à l'avance.">
+                            <field name="celebration_horizon_days"/>
+                        </setting>
+                        <setting string="Relancer une carte trop mince"
+                                 help="Une carte vide n'est jamais livrée : elle est retenue et la personne qui organise est prévenue.">
+                            <field name="celebration_thin_threshold"/>
+                            <field name="celebration_thin_days"/>
+                        </setting>
+                    </block>
+                    <block title="Diffusion" name="celebrations_diffusion">
+                        <setting string="Personne qui organise par défaut">
+                            <field name="celebration_default_organizer_id"/>
+                        </setting>
+                        <setting string="Canal où annoncer les cartes"
+                                 help="Un lien qui dort dans un courriel ne récolte pas de signatures.">
+                            <field name="celebration_discuss_channel_id"/>
+                        </setting>
+                        <setting string="Poser les célébrations dans l'agenda"
+                                 help="Éteint par défaut : une entrée d'agenda part vers les téléphones et le CalDAV, hors de portée d'un retrait fait plus tard. Seules les personnes qui ont accepté une carte y paraissent.">
+                            <field name="celebration_calendar_mirror"/>
+                        </setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+</odoo>

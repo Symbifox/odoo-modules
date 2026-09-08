@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ==============================================================
+         La page « Mes célébrations ». Elle explique avant de demander :
+         un consentement obtenu sans dire ce qu'on en fait n'en est pas un.
+         ============================================================== -->
+    <record id="view_celebration_profile_self_form" model="ir.ui.view">
+        <field name="name">bf.celebration.profile.self.form</field>
+        <field name="model">bf.celebration.profile</field>
+        <field name="arch" type="xml">
+            <form string="Mes célébrations">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>Mes célébrations</h1>
+                    </div>
+                    <div class="alert alert-info" role="status">
+                        Votre réponse n'est visible que par vous. Elle ne
+                        touche pas votre date de naissance au dossier RH,
+                        qui n'est ni lue ni affichée par ce module.
+                        Vous pouvez changer d'idée à tout moment, et le
+                        retrait est immédiat.
+                    </div>
+                    <group>
+                        <group string="Ce que je souhaite">
+                            <field name="consent" widget="radio"
+                                   nolabel="1"/>
+                        </group>
+                        <group string="La date à souligner"
+                               invisible="consent in ('pending', 'none')">
+                            <label for="celebration_day" string="Jour et mois"/>
+                            <div class="o_row">
+                                <field name="celebration_day"
+                                       required="consent in ('full','quiet')"
+                                       class="oe_inline" style="max-width:70px"/>
+                                <field name="celebration_month"
+                                       required="consent in ('full','quiet')"
+                                       class="oe_inline"/>
+                            </div>
+                            <field name="share_work_anniversary"/>
+                        </group>
+                    </group>
+                    <group invisible="consent != 'none'">
+                        <div class="text-muted">
+                            Vous ne paraîtrez nulle part, et vous ne recevrez
+                            plus d'invitation à répondre.
+                        </div>
+                    </group>
+                    <field name="employee_id" invisible="1"/>
+                    <field name="consent_date" invisible="1"/>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Vue technique, réservée au groupe système : elle ne sert qu'au
+         dépannage, la règle globale la vide pour tout le monde d'autre. -->
+    <record id="view_celebration_profile_list" model="ir.ui.view">
+        <field name="name">bf.celebration.profile.list</field>
+        <field name="model">bf.celebration.profile</field>
+        <field name="arch" type="xml">
+            <list string="Profils">
+                <field name="employee_id"/>
+                <field name="consent"/>
+                <field name="celebration_day"/>
+                <field name="celebration_month"/>
+                <field name="consent_date"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_mon_profil" model="ir.actions.server">
+        <field name="name">Mes célébrations</field>
+        <field name="model_id" ref="model_bf_celebration_profile"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_mon_profil()</field>
+    </record>
+
+    <record id="action_celebration_profile_admin" model="ir.actions.act_window">
+        <field name="name">Profils de célébration</field>
+        <field name="res_model">bf.celebration.profile</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Rien à voir ici, et c'est voulu</p>
+            <p>La règle d'enregistrement globale limite la lecture à son
+               propre profil. Cette liste ne se remplit que pour le
+               superutilisateur, en dépannage.</p>
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_celebration_occasion_list" model="ir.ui.view">
+        <field name="name">bf.celebration.occasion.list</field>
+        <field name="model">bf.celebration.occasion</field>
+        <field name="arch" type="xml">
+            <list string="Célébrations" default_order="date">
+                <field name="date"/>
+                <field name="person_name"/>
+                <field name="occasion_type"/>
+                <field name="years" optional="show"/>
+                <field name="organizer_id" optional="show"/>
+                <field name="board_count" string="Cartes"/>
+                <field name="allow_board" optional="hide"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'upcoming'"
+                       decoration-muted="state == 'done'"/>
+                <field name="company_id" groups="base.group_multi_company"
+                       optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_celebration_occasion_calendar" model="ir.ui.view">
+        <field name="name">bf.celebration.occasion.calendar</field>
+        <field name="model">bf.celebration.occasion</field>
+        <field name="arch" type="xml">
+            <calendar string="Calendrier des célébrations" date_start="date"
+                      color="occasion_type" mode="month" quick_create="0">
+                <field name="person_name"/>
+                <field name="occasion_type"/>
+            </calendar>
+        </field>
+    </record>
+
+    <record id="view_celebration_occasion_form" model="ir.ui.view">
+        <field name="name">bf.celebration.occasion.form</field>
+        <field name="model">bf.celebration.occasion</field>
+        <field name="arch" type="xml">
+            <form string="Occasion">
+                <header>
+                    <button name="action_creer_tableau" type="object"
+                            string="Créer la carte" class="btn-primary"
+                            invisible="not allow_board or state != 'upcoming'"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="upcoming,done"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_voir_tableaux" type="object"
+                                class="oe_stat_button" icon="fa-envelope-open-o"
+                                invisible="board_count == 0">
+                            <field name="board_count" widget="statinfo"
+                                   string="Cartes"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="occasion_type"/>
+                            <field name="date"/>
+                            <field name="years"
+                                   invisible="occasion_type != 'work_anniversary'"/>
+                        </group>
+                        <group>
+                            <field name="employee_id"/>
+                            <field name="partner_id"/>
+                            <field name="organizer_id"/>
+                            <field name="company_id"
+                                   groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="allow_board" readonly="1"/>
+                        <div class="text-muted" invisible="allow_board">
+                            Cette personne a demandé qu'on souligne la date
+                            sans monter de carte collective.
+                        </div>
+                    </group>
+                    <field name="reminder_sent" invisible="1"/>
+                    <field name="person_name" invisible="1"/>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_celebration_occasion_search" model="ir.ui.view">
+        <field name="name">bf.celebration.occasion.search</field>
+        <field name="model">bf.celebration.occasion</field>
+        <field name="arch" type="xml">
+            <search string="Célébrations">
+                <field name="person_name"/>
+                <field name="organizer_id"/>
+                <filter name="a_venir" string="À venir"
+                        domain="[('state', '=', 'upcoming')]"/>
+                <filter name="sans_carte" string="Sans carte encore"
+                        domain="[('board_ids', '=', False), ('allow_board', '=', True), ('state', '=', 'upcoming')]"/>
+                <separator/>
+                <filter name="mes_occasions" string="Que j'organise"
+                        domain="[('organizer_id', '=', uid)]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="par_type" string="Type"
+                            context="{'group_by': 'occasion_type'}"/>
+                    <filter name="par_mois" string="Mois"
+                            context="{'group_by': 'date:month'}"/>
+                    <filter name="par_organisateur" string="Qui organise"
+                            context="{'group_by': 'organizer_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_celebration_occasion" model="ir.actions.act_window">
+        <field name="name">Calendrier des célébrations</field>
+        <field name="res_model">bf.celebration.occasion</field>
+        <field name="view_mode">calendar,list,form</field>
+        <field name="context">{'search_default_a_venir': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Rien au calendrier pour l'instant</p>
+            <p>Les occasions naissent des réponses que les gens donnent
+               eux-mêmes dans « Mes célébrations ». Aucune date n'est prise
+               dans le dossier RH.</p>
+        </field>
+    </record>
+
+</odoo>

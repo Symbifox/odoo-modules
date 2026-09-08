@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+
+        <record id="module_category_celebrations" model="ir.module.category">
+            <field name="name">Célébrations</field>
+            <field name="description">Cartes collectives et calendrier des occasions</field>
+            <field name="sequence">42</field>
+        </record>
+
+        <record id="group_organizer" model="res.groups">
+            <field name="name">Organiser des cartes</field>
+            <field name="category_id" ref="module_category_celebrations"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+            <field name="comment">Crée les tableaux de vœux, partage les liens
+                et modère les messages. Ne donne AUCUN accès aux réponses de
+                consentement des collègues.</field>
+        </record>
+
+        <record id="group_manager" model="res.groups">
+            <field name="name">Configurer les célébrations</field>
+            <field name="category_id" ref="module_category_celebrations"/>
+            <field name="implied_ids" eval="[(4, ref('bf_celebrations.group_organizer'))]"/>
+            <field name="users" eval="[(4, ref('base.user_admin'))]"/>
+        </record>
+
+        <!-- ==========================================================
+             Le profil appartient à la personne, et à personne d'autre.
+
+             Règle GLOBALE, sans groupe : elle s'applique donc aussi aux
+             organisateurs, aux RH et aux administrateurs. Seul `sudo` la
+             traverse, ce qui est le cas des crons et de rien d'autre.
+
+             C'est le cœur du module. Un organisateur qui pourrait lire
+             `consent` saurait qui a refusé, et « pourquoi il n'y a pas eu
+             de carte pour X » cesserait d'être une question sans réponse.
+             ========================================================== -->
+        <record id="rule_profile_self" model="ir.rule">
+            <field name="name">Célébrations : chacun son profil</field>
+            <field name="model_id" ref="model_bf_celebration_profile"/>
+            <field name="global" eval="True"/>
+            <field name="domain_force">[('employee_id.user_id', '=', user.id)]</field>
+        </record>
+
+        <!-- ==========================================================
+             La surprise, posée dans la règle plutôt que dans l'écran.
+
+             Une liste, un export, un rapport ou une recherche universelle
+             contourneraient un simple `invisible` de vue. Ici la personne
+             fêtée n'a tout simplement pas l'enregistrement tant qu'il
+             n'est pas livré.
+             ========================================================== -->
+        <record id="rule_board_hide_from_recipient" model="ir.rule">
+            <field name="name">Célébrations : cacher le tableau à la personne fêtée</field>
+            <field name="model_id" ref="model_bf_celebration_board"/>
+            <field name="global" eval="True"/>
+            <field name="domain_force">['|', ('state', '=', 'delivered'), ('recipient_user_id', '!=', user.id)]</field>
+        </record>
+
+        <record id="rule_post_follows_board" model="ir.rule">
+            <field name="name">Célébrations : les messages suivent leur tableau</field>
+            <field name="model_id" ref="model_bf_celebration_post"/>
+            <field name="global" eval="True"/>
+            <field name="domain_force">['|', ('board_id.state', '=', 'delivered'), ('board_id.recipient_user_id', '!=', user.id)]</field>
+        </record>
+
+        <record id="rule_board_company" model="ir.rule">
+            <field name="name">Célébrations : tableaux par société</field>
+            <field name="model_id" ref="model_bf_celebration_board"/>
+            <field name="global" eval="True"/>
+            <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        </record>
+
+        <record id="rule_occasion_company" model="ir.rule">
+            <field name="name">Célébrations : occasions par société</field>
+            <field name="model_id" ref="model_bf_celebration_occasion"/>
+            <field name="global" eval="True"/>
+            <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+        </record>
+
+    </data>
+</odoo>

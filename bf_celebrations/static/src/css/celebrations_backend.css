@@ -1,0 +1,5 @@
+/* Le lien public est long et se copie souvent : on lui laisse la place de
+ * s'afficher en entier plutôt que de le tronquer dans une alerte. */
+.o_form_view .o_field_widget[name="contribution_url"] {
+    word-break: break-all;
+}

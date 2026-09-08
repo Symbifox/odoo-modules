@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ==============================================================
+         ⚠️ Ces pages ne s'appuient sur AUCUN gabarit du site. Le corps du
+         site public de Blue Fox est sombre avec un texte blanc, et une
+         carte blanche qui hérite de cette couleur rend du blanc sur blanc :
+         le contenu disparaît sans qu'aucune erreur ne soit levée. Chaque
+         surface déclare donc son fond ET sa couleur de texte.
+         ============================================================== -->
+
+    <template id="style_commun" name="Célébrations : variables de thème">
+        <style>
+            :root {
+                --cel-fond: <t t-esc="palette.get('fond', '#FDF6EC')"/>;
+                --cel-surface: <t t-esc="palette.get('surface', '#FFFFFF')"/>;
+                --cel-texte: <t t-esc="palette.get('texte', '#2D3031')"/>;
+                --cel-accent: <t t-esc="palette.get('accent', '#E8632B')"/>;
+                --cel-accent-texte: <t t-esc="palette.get('accent_texte', '#BA4514')"/>;
+                --cel-bouton-fond: <t t-esc="palette.get('bouton_fond', '#BA4514')"/>;
+                --cel-bouton-texte: <t t-esc="palette.get('bouton_texte', '#FFFFFF')"/>;
+                --cel-entete: <t t-esc="palette.get('entete', '#2D3031')"/>;
+            }
+        </style>
+    </template>
+
+    <template id="page_signature" name="Célébrations : signer la carte">
+        <t t-out="doctype"/>
+        <html lang="fr">
+            <head>
+                <meta charset="utf-8"/>
+                <meta name="viewport" content="width=device-width, initial-scale=1"/>
+                <meta name="robots" content="noindex, nofollow"/>
+                <title>Signer la carte de <t t-esc="board.recipient_name"/></title>
+                <link rel="stylesheet" href="/bf_celebrations/static/src/css/celebrations_public.css"/>
+                <t t-call="bf_celebrations.style_commun"/>
+            </head>
+            <body class="cel-body">
+                <main class="cel-wrap">
+                    <header class="cel-header">
+                        <h1 class="cel-title"><t t-esc="board.name"/></h1>
+                        <p class="cel-subtitle" t-if="not ferme">
+                            Ajoutez un mot. Aucun compte n'est demandé, et
+                            <t t-esc="board.recipient_name"/> ne verra rien
+                            avant la livraison.
+                        </p>
+                        <p class="cel-subtitle" t-else="">
+                            Cette carte est livrée. Elle se lit encore, mais
+                            elle ne se signe plus.
+                        </p>
+                    </header>
+
+                    <div t-if="board.intro_html" class="cel-intro"
+                         t-out="board.intro_html"/>
+
+                    <div t-if="merci" class="cel-alerte cel-alerte-ok">
+                        Merci, votre mot est sur la carte.
+                    </div>
+                    <div t-if="en_attente" class="cel-alerte cel-alerte-info">
+                        Merci. Votre mot attend le feu vert de la personne qui
+                        organise avant de paraître.
+                    </div>
+                    <div t-if="request.params.get('erreur') == 'nom'"
+                         class="cel-alerte cel-alerte-avis">
+                        Signez votre mot : la carte a besoin de savoir de qui
+                        il vient.
+                    </div>
+                    <div t-if="request.params.get('erreur') == 'vide'"
+                         class="cel-alerte cel-alerte-avis">
+                        Écrivez un mot ou ajoutez une image.
+                    </div>
+                    <div t-if="request.params.get('erreur') == 'image'"
+                         class="cel-alerte cel-alerte-avis">
+                        Cette image n'a pas été retenue. Formats acceptés :
+                        PNG, JPEG, GIF, WebP, jusqu'à 8 Mo.
+                    </div>
+
+                    <section class="cel-carte cel-formulaire" t-if="not ferme">
+                        <form method="post"
+                              t-attf-action="/celebration/#{token}/signer"
+                              enctype="multipart/form-data">
+                            <label class="cel-label" for="author_name">
+                                Votre nom
+                            </label>
+                            <input class="cel-input" type="text" id="author_name"
+                                   name="author_name" maxlength="80" required="required"
+                                   placeholder="Comment vous signez"/>
+
+                            <label class="cel-label" for="body">Votre mot</label>
+                            <textarea class="cel-input cel-textarea" id="body"
+                                      name="body" rows="5" maxlength="1200"
+                                      placeholder="Ce que vous auriez écrit dans la carte de papier."/>
+
+                            <t t-if="board.allow_images">
+                                <label class="cel-label" for="image">
+                                    Une image ou un GIF, si le cœur vous en dit
+                                </label>
+                                <input class="cel-input cel-file" type="file"
+                                       id="image" name="image"
+                                       accept="image/png,image/jpeg,image/gif,image/webp"/>
+                            </t>
+
+                            <button class="cel-bouton" type="submit">
+                                Ajouter à la carte
+                            </button>
+                        </form>
+                    </section>
+
+                    <section class="cel-mur">
+                        <h2 class="cel-mur-titre" t-if="messages">
+                            Déjà sur la carte
+                        </h2>
+                        <div class="cel-grille">
+                            <article class="cel-carte cel-mot"
+                                     t-foreach="messages" t-as="mot">
+                                <img class="cel-mot-image" t-if="mot.image"
+                                     t-attf-src="/celebration/#{token}/image/#{mot.id}"
+                                     t-attf-alt="Image de #{mot.author_name}"/>
+                                <div class="cel-mot-corps" t-out="mot.body"/>
+                                <p class="cel-mot-signature">
+                                    — <t t-esc="mot.author_name"/>
+                                </p>
+                            </article>
+                        </div>
+                        <p class="cel-vide" t-if="not messages">
+                            Personne n'a encore signé. Vous pouvez être la
+                            première personne.
+                        </p>
+                    </section>
+
+                    <footer class="cel-pied">
+                        <p>Cette page est privée : elle n'est pas indexée et
+                           n'existe que pour qui a le lien.</p>
+                    </footer>
+                </main>
+            </body>
+        </html>
+    </template>
+
+    <template id="page_tableau" name="Célébrations : la carte">
+        <t t-out="doctype"/>
+        <html lang="fr">
+            <head>
+                <meta charset="utf-8"/>
+                <meta name="viewport" content="width=device-width, initial-scale=1"/>
+                <meta name="robots" content="noindex, nofollow"/>
+                <title><t t-esc="board.name"/></title>
+                <link rel="stylesheet" href="/bf_celebrations/static/src/css/celebrations_public.css"/>
+                <t t-call="bf_celebrations.style_commun"/>
+            </head>
+            <body class="cel-body">
+                <main class="cel-wrap">
+                    <header class="cel-header">
+                        <h1 class="cel-title"><t t-esc="board.name"/></h1>
+                        <p class="cel-subtitle">
+                            <t t-esc="len(messages)"/> mot(s) de vos collègues.
+                        </p>
+                        <p class="cel-actions">
+                            <a class="cel-bouton cel-bouton-secondaire"
+                               t-attf-href="/celebration/#{token}/diaporama">
+                                Voir en diaporama</a>
+                        </p>
+                    </header>
+
+                    <div t-if="board.intro_html" class="cel-intro"
+                         t-out="board.intro_html"/>
+
+                    <section class="cel-mur">
+                        <div class="cel-grille">
+                            <article class="cel-carte cel-mot"
+                                     t-foreach="messages" t-as="mot">
+                                <img class="cel-mot-image" t-if="mot.image"
+                                     t-attf-src="/celebration/#{token}/image/#{mot.id}"
+                                     t-attf-alt="Image de #{mot.author_name}"/>
+                                <div class="cel-mot-corps" t-out="mot.body"/>
+                                <p class="cel-mot-signature">
+                                    — <t t-esc="mot.author_name"/>
+                                </p>
+                            </article>
+                        </div>
+                        <p class="cel-vide" t-if="not messages">
+                            La carte est vide.
+                        </p>
+                    </section>
+                </main>
+            </body>
+        </html>
+    </template>
+
+    <template id="page_diaporama" name="Célébrations : diaporama">
+        <t t-out="doctype"/>
+        <html lang="fr">
+            <head>
+                <meta charset="utf-8"/>
+                <meta name="viewport" content="width=device-width, initial-scale=1"/>
+                <meta name="robots" content="noindex, nofollow"/>
+                <title>Diaporama — <t t-esc="board.name"/></title>
+                <link rel="stylesheet" href="/bf_celebrations/static/src/css/celebrations_public.css"/>
+                <t t-call="bf_celebrations.style_commun"/>
+            </head>
+            <body class="cel-body cel-diapo-body">
+                <div class="cel-diapo">
+                    <h1 class="cel-diapo-titre"><t t-esc="board.name"/></h1>
+                    <div class="cel-diapo-scene">
+                        <article class="cel-diapo-mot" t-foreach="messages"
+                                 t-as="mot" t-att-data-index="mot_index">
+                            <img class="cel-diapo-image" t-if="mot.image"
+                                 t-attf-src="/celebration/#{token}/image/#{mot.id}"
+                                 t-attf-alt="Image de #{mot.author_name}"/>
+                            <div class="cel-diapo-corps" t-out="mot.body"/>
+                            <p class="cel-diapo-signature">
+                                — <t t-esc="mot.author_name"/>
+                            </p>
+                        </article>
+                        <p class="cel-vide" t-if="not messages">
+                            Rien à montrer pour l'instant.
+                        </p>
+                    </div>
+                    <p class="cel-diapo-aide">
+                        Espace met en pause, les flèches avancent et reculent.
+                    </p>
+                </div>
+                <script type="text/javascript"
+                        src="/bf_celebrations/static/src/js/diaporama.js"/>
+            </body>
+        </html>
+    </template>
+
+    <template id="page_indisponible" name="Célébrations : lien inutilisable">
+        <t t-out="doctype"/>
+        <html lang="fr">
+            <head>
+                <meta charset="utf-8"/>
+                <meta name="viewport" content="width=device-width, initial-scale=1"/>
+                <meta name="robots" content="noindex, nofollow"/>
+                <title>Lien indisponible</title>
+                <link rel="stylesheet" href="/bf_celebrations/static/src/css/celebrations_public.css"/>
+            </head>
+            <body class="cel-body cel-body-neutre">
+                <main class="cel-wrap">
+                    <section class="cel-carte">
+                        <h1 class="cel-title">Ce lien ne mène nulle part</h1>
+                        <p class="cel-mot-corps"><t t-esc="motif"/></p>
+                    </section>
+                </main>
+            </body>
+        </html>
+    </template>
+
+</odoo>

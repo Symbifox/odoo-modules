@@ -1,0 +1,9 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_profile_self,Profil de célébration (soi),model_bf_celebration_profile,base.group_user,1,1,0,0
+access_profile_manager,Profil de célébration (système),model_bf_celebration_profile,base.group_system,1,1,1,1
+access_occasion_user,Occasions (lecture),model_bf_celebration_occasion,base.group_user,1,0,0,0
+access_occasion_organizer,Occasions (organisation),model_bf_celebration_occasion,bf_celebrations.group_organizer,1,1,1,1
+access_board_user,Tableaux (lecture),model_bf_celebration_board,base.group_user,1,0,0,0
+access_board_organizer,Tableaux (organisation),model_bf_celebration_board,bf_celebrations.group_organizer,1,1,1,1
+access_post_user,Messages (lecture),model_bf_celebration_post,base.group_user,1,0,1,0
+access_post_organizer,Messages (modération),model_bf_celebration_post,bf_celebrations.group_organizer,1,1,1,1

@@ -13,7 +13,7 @@ modules — the UI fixes, the shared helpers, the Nextcloud integrations, the
 productivity pack. They are free because they are more useful to us being
 widely used than being held.
 
-**99 modules are BUSL-1.1.** The source is published and auditable, and **you
+**100 modules are BUSL-1.1.** The source is published and auditable, and **you
 may run them in production for your own internal business operations** — as a
 company, as a freelancer, as one person on a laptop. What needs an agreement is
 using them to provide a product or service to someone else: hosting them for a
@@ -74,14 +74,15 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_apps_menu` | Menu des applications cherchable | 18.0.1.0.0 | LGPL-3 | The apps menu becomes a keyboard-searchable grid of icons |
 | `bf_attachment_version` | Versionnement des pièces jointes | 18.0.1.1.0 | BUSL-1.1 | Keeps the previous content whenever an attachment is overwritten |
 | `bf_bloc_notes` | BF Bloc-notes | 18.0.2.9.0 | LGPL-3 | Rich quick notes with multi-record links, one-click activity conversion, keyboard shortcuts, and systray icon (Alt+N) |
-| `bf_budget` | Budgets opérationnels | 18.0.1.0.1 | LGPL-3 | Operating budget by ledger position, compared against actual and committed spend |
-| `bf_budget_campaign` | Budgets opérationnels — campagnes | 18.0.1.1.0 | LGPL-3 | Ties a campaign to an analytic account: it knew what it earned, now it knows what it spent |
-| `bf_budget_forecast` | Budgets opérationnels — prévision glissante | 18.0.1.0.0 | LGPL-3 | A forecast re-made every month over 12 to 18 months, with comparable vintages |
-| `bf_budget_forecast_subscription` | Prévision glissante — amorce par les engagements datés | 18.0.1.0.0 | LGPL-3 | Seeds the forecast from the dated renewal calendar instead of a flat average |
-| `bf_budget_subscription` | Budgets opérationnels — engagements récurrents | 18.0.1.0.1 | LGPL-3 | Subscriptions become a calendar of dated commitments the budget can count early |
+| `bf_budget` | Budgets opérationnels | 18.0.1.0.1 | BUSL-1.1 | Operating budget by ledger position, compared against actual and committed spend |
+| `bf_budget_campaign` | Budgets opérationnels — campagnes | 18.0.1.1.0 | BUSL-1.1 | Ties a campaign to an analytic account: it knew what it earned, now it knows what it spent |
+| `bf_budget_forecast` | Budgets opérationnels — prévision glissante | 18.0.1.0.0 | BUSL-1.1 | A forecast re-made every month over 12 to 18 months, with comparable vintages |
+| `bf_budget_forecast_subscription` | Prévision glissante — amorce par les engagements datés | 18.0.1.0.0 | BUSL-1.1 | Seeds the forecast from the dated renewal calendar instead of a flat average |
+| `bf_budget_subscription` | Budgets opérationnels — engagements récurrents | 18.0.1.0.1 | BUSL-1.1 | Subscriptions become a calendar of dated commitments the budget can count early |
 | `bf_bureau` | BF Bureau — vues multi-panneaux | 18.0.3.2.0 | LGPL-3 | User-configurable dashboards ("desks") with multi-pane Odoo actions, six layouts, keyboard shortcuts, time slots, and a sidebar |
 | `bf_calendar_invite` | BF Calendar — usable invitations | 18.0.3.2.0 | LGPL-3 | Branded calendar invitations written in the guests' language, carrying the .ics and a link to the attendee's invitation page, plus a prefilled SMS body. |
 | `bf_calendar_nc_talk` | BF Calendar — Nextcloud Talk button | 18.0.1.1.0 | LGPL-3 | Adds a '+ Nextcloud Talk' button next to '+ Odoo meeting' on calendar events. Creates a public Talk conversation via the Spreed OCS API and writes the room URL into videocall_location. |
+| `bf_celebrations` | Célébrations | 18.0.1.0.2 | BUSL-1.1 | Tableaux de vœux collectifs, calendrier des occasions, et le consentement de la personne qu'on souligne |
 | `bf_chatter_chronological` | BF Chatter Chronological View | 18.0.4.1.0 | LGPL-3 | Sort the chatter feed by the email's original Date header instead of insertion id (Python `_order` + `_message_fetch` + JS `Thread.fetch*` patch); cogwheel action to re-parse lost Date headers from quoted body content |
 | `bf_chatter_send_now_force` | BF Chatter — Force Send on Scheduled Send Now | 18.0.1.0.0 | LGPL-3 | The "Send Now" button on a scheduled chatter message sends immediately instead of waiting up to 5 min for the mail queue cron (restores parity with the daily auto-send cron) |
 | `bf_chatter_target` | BF Cible de chatter | 18.0.1.0.0 | LGPL-3 | One search box to pick the record an importer posts onto: every chatter-bearing model at once, no model or project to choose first, pasted Odoo URLs and shorthands resolved inline |
@@ -114,7 +115,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_default_all_companies` | BF Default All Companies | 18.0.1.0.0 | LGPL-3 | Pre-selects every allowed company in the multi-company switcher on first login |
 | `bf_document_approval` | Documents — Approbation à plusieurs | 18.0.1.0.0 | BUSL-1.1 | A policy is published only once everyone who had to weigh in has done so, and its distribution follows the RACI recorded in the knowledge matrix |
 | `bf_document_nextcloud_sync` | Document Nextcloud Sync | 18.0.1.4.1 | LGPL-3 | Document sync between Odoo and Nextcloud via WebDAV |
-| `bf_editorial` | Atelier éditorial | 18.0.1.8.1 | BUSL-1.1 | Editorial calendar, measured cadence and publication gates for the blog: state is derived, only decisions are stored |
+| `bf_editorial` | Atelier éditorial | 18.0.1.9.0 | BUSL-1.1 | Editorial calendar, measured cadence and publication gates for the blog: state is derived, only decisions are stored |
 | `bf_editorial_audience` | Atelier éditorial — audience | 18.0.1.2.0 | BUSL-1.1 | An article's readership once the crawlers Odoo does not recognise are taken out, recorded daily before the visitor purge takes the trace away |
 | `bf_editorial_bluesky` | Atelier éditorial — Bluesky | 18.0.1.0.0 | BUSL-1.1 | Post to Bluesky from the editorial workshop, over the AT protocol with an app password |
 | `bf_editorial_genfox` | Atelier éditorial — Gen | 18.0.1.4.1 | BUSL-1.1 | Article suggestion, review and expansion by Gen, as proposals a human reads before applying |
@@ -123,13 +124,13 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_editorial_social` | Atelier éditorial — réseaux sociaux | 18.0.1.5.0 | BUSL-1.1 | Deferred distribution to social networks from the editorial workshop, with a no-duplicate guarantee and measurement coming back |
 | `bf_email_management` | Gestion des courriels | 18.0.11.22.1 | BUSL-1.1 | Unified IMAP inbox + Odoo chatter projection, two-pane OWL folder browser (Apple Mail / Thunderbird), bulk per-row target inference |
 | `bf_email_systray` | Boîte de réception bf.email — barre Odoo | 18.0.2.0.0 | LGPL-3 | Systray button opening the bf.email inbox with a (read + unread) counter |
-| `bf_employee_experience` | Expérience employé | 18.0.1.0.0 | LGPL-3 | Benefits catalogue, rule-based eligibility, usage register and retention indicators |
-| `bf_employee_experience_dashboard` | Expérience employé — tuile tableau de bord | 18.0.1.0.1 | LGPL-3 | Benefits take-up, and a count of paid benefits nobody claims |
-| `bf_employee_experience_digest` | Expérience employé — digest quotidien | 18.0.1.0.1 | LGPL-3 | "Benefits" digest section: pending claims, usages with no entitlement, benefits nobody takes |
-| `bf_employee_experience_expense` | Expérience employé — notes de frais | 18.0.1.0.0 | LGPL-3 | An approved expense becomes a benefit usage, at real cost |
-| `bf_employee_experience_health` | Expérience employé — allergies | 18.0.1.2.0 | LGPL-3 | Allergies and food allergies, readable only by the person and by whoever organises |
-| `bf_employee_experience_health_privacy` | Expérience employé — allergies, pont vie privée (Loi 25) | 18.0.1.0.0 | LGPL-3 | Express consent, retention tied to the employment relationship, destruction on departure |
-| `bf_employee_experience_privacy` | Expérience employé — pont vie privée (Loi 25) | 18.0.1.1.0 | LGPL-3 | Declare what the usage register collects, set a retention rule, keep the measurement when the lines go |
+| `bf_employee_experience` | Expérience employé | 18.0.1.0.0 | BUSL-1.1 | Benefits catalogue, rule-based eligibility, usage register and retention indicators |
+| `bf_employee_experience_dashboard` | Expérience employé — tuile tableau de bord | 18.0.1.0.1 | BUSL-1.1 | Benefits take-up, and a count of paid benefits nobody claims |
+| `bf_employee_experience_digest` | Expérience employé — digest quotidien | 18.0.1.0.1 | BUSL-1.1 | "Benefits" digest section: pending claims, usages with no entitlement, benefits nobody takes |
+| `bf_employee_experience_expense` | Expérience employé — notes de frais | 18.0.1.0.0 | BUSL-1.1 | An approved expense becomes a benefit usage, at real cost |
+| `bf_employee_experience_health` | Expérience employé — allergies | 18.0.1.2.0 | BUSL-1.1 | Allergies and food allergies, readable only by the person and by whoever organises |
+| `bf_employee_experience_health_privacy` | Expérience employé — allergies, pont vie privée (Loi 25) | 18.0.1.0.0 | BUSL-1.1 | Express consent, retention tied to the employment relationship, destruction on departure |
+| `bf_employee_experience_privacy` | Expérience employé — pont vie privée (Loi 25) | 18.0.1.1.0 | BUSL-1.1 | Declare what the usage register collects, set a retention rule, keep the measurement when the lines go |
 | `bf_follower_cleanup` | BF — Hygiène des notifications (abonnés et activités internes) | 18.0.2.1.0 | LGPL-3 | Crons that remove non-employee followers and unsubscribe users from the leads they do not sell, plus a guard that never emails an activity notification to a portal account |
 | `bf_fundraising_core` | Levée de fonds — Cœur | 18.0.1.0.0 | AGPL-3 | Donor management and fundraising structure (Funds / Campaigns / Appeals / Packages) on top of the Donation module — comparable to Raiser's Edge |
 | `bf_fundraising_web` | Levée de fonds — Web & Portail donateur | 18.0.1.0.2 | AGPL-3 | Public website donation form + donor portal (giving history and official receipt download) |
@@ -233,11 +234,11 @@ Three regimes — see [Licensing](#licensing) above for the details, and the
 `License` column of the table for the module you care about. The `LICENSE`
 file inside each module governs and carries its exact parameters.
 
-- **87 modules: BUSL-1.1.** Production use for your own internal business
+- **100 modules: BUSL-1.1.** Production use for your own internal business
   operations is permitted; providing them as a product or service to third
   parties requires an agreement. Each version converts to
   **LGPL-3.0-or-later four years after its release**.
-- **56 modules: LGPL-3.** Use, modify and redistribute them freely. The
+- **44 modules: LGPL-3.** Use, modify and redistribute them freely. The
   repository-root [`LICENSE`](LICENSE) carries the LGPL-3 text.
 - **5 modules: AGPL-3**, inherited rather than chosen: they extend Odoo
   Community Association code that is itself AGPL-3. Four are the fundraising

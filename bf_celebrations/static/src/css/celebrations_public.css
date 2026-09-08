@@ -1,0 +1,229 @@
+/* Célébrations — pages publiques.
+ *
+ * ⚠️ Chaque surface déclare son fond ET sa couleur de texte. Une carte qui
+ * hérite de la couleur du corps rend du blanc sur blanc sur un site sombre,
+ * et rien ne le signale : ni erreur, ni avertissement, seulement du contenu
+ * invisible. Le repli du `var()` existe pour la même raison : la page doit
+ * rester lisible même si le bloc de thème ne s'est pas rendu.
+ */
+
+.cel-body {
+    margin: 0;
+    padding: 0;
+    background: var(--cel-fond, #FDF6EC);
+    color: var(--cel-texte, #2D3031);
+    font-family: Lexend, "Segoe UI", system-ui, -apple-system, Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+}
+
+.cel-body-neutre { background: #F4F6F8; color: #2D3031; }
+
+.cel-wrap {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 32px 20px 64px;
+}
+
+.cel-header { text-align: center; margin-bottom: 28px; }
+
+.cel-title {
+    color: var(--cel-entete, #2D3031);
+    font-size: 30px;
+    font-weight: 700;
+    margin: 0 0 8px;
+    line-height: 1.25;
+}
+
+.cel-subtitle {
+    color: var(--cel-texte, #2D3031);
+    opacity: .82;
+    margin: 0;
+    font-size: 15px;
+}
+
+.cel-actions { margin-top: 18px; }
+
+.cel-intro {
+    background: var(--cel-surface, #FFFFFF);
+    color: var(--cel-texte, #2D3031);
+    border-radius: 12px;
+    padding: 18px 20px;
+    margin-bottom: 22px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .08);
+}
+
+.cel-carte {
+    background: var(--cel-surface, #FFFFFF);
+    color: var(--cel-texte, #2D3031);
+    border-radius: 14px;
+    padding: 20px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .1);
+}
+
+.cel-formulaire { margin-bottom: 34px; }
+
+.cel-label {
+    display: block;
+    font-weight: 600;
+    font-size: 14px;
+    margin: 14px 0 6px;
+    color: var(--cel-texte, #2D3031);
+}
+
+.cel-input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 11px 13px;
+    border: 1px solid rgba(127, 127, 127, .45);
+    border-radius: 8px;
+    background: #FFFFFF;
+    color: #2D3031;
+    font: inherit;
+}
+
+.cel-input:focus {
+    outline: 2px solid var(--cel-accent-texte, #BA4514);
+    outline-offset: 1px;
+}
+
+.cel-textarea { resize: vertical; min-height: 110px; }
+.cel-file { padding: 9px; background: #FFFFFF; color: #2D3031; }
+
+.cel-bouton {
+    display: inline-block;
+    margin-top: 18px;
+    padding: 12px 22px;
+    border: none;
+    border-radius: 8px;
+    background: var(--cel-bouton-fond, #BA4514);
+    color: var(--cel-bouton-texte, #FFFFFF);
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.cel-bouton:hover { filter: brightness(.93); }
+
+.cel-bouton-secondaire {
+    background: transparent;
+    color: var(--cel-entete, #2D3031);
+    border: 1px solid currentColor;
+}
+
+.cel-alerte {
+    border-radius: 10px;
+    padding: 13px 16px;
+    margin-bottom: 18px;
+    font-size: 15px;
+}
+
+.cel-alerte-ok    { background: #E4F5EA; color: #1E5B36; }
+.cel-alerte-info  { background: #E6F1FB; color: #17456E; }
+.cel-alerte-avis  { background: #FDF0DC; color: #7A4C10; }
+
+.cel-mur-titre {
+    color: var(--cel-entete, #2D3031);
+    font-size: 19px;
+    margin: 34px 0 16px;
+}
+
+.cel-grille {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(255px, 1fr));
+    gap: 18px;
+}
+
+.cel-mot { display: flex; flex-direction: column; }
+
+.cel-mot-image {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+    margin-bottom: 12px;
+    display: block;
+}
+
+.cel-mot-corps { flex: 1 1 auto; }
+.cel-mot-corps p { margin: 0 0 8px; }
+
+.cel-mot-signature {
+    margin: 12px 0 0;
+    font-weight: 600;
+    /* 🔴 Le ton de marque échoue en TEXTE : #29ABE1 rend 2,62:1 sur blanc.
+       C'est la variante mesurée qui sert ici. */
+    color: var(--cel-accent-texte, #BA4514);
+}
+
+.cel-vide { opacity: .75; text-align: center; padding: 26px 0; }
+
+.cel-pied {
+    margin-top: 44px;
+    text-align: center;
+    font-size: 13px;
+    opacity: .7;
+}
+
+/* ---------------------------------------------------------------- */
+/* Diaporama                                                         */
+/* ---------------------------------------------------------------- */
+
+.cel-diapo-body { min-height: 100vh; display: flex; }
+
+.cel-diapo {
+    margin: auto;
+    width: min(1100px, 92vw);
+    text-align: center;
+    padding: 30px 0;
+}
+
+.cel-diapo-titre {
+    color: var(--cel-entete, #2D3031);
+    font-size: 34px;
+    margin: 0 0 26px;
+}
+
+.cel-diapo-scene { position: relative; min-height: 46vh; }
+
+.cel-diapo-mot {
+    display: none;
+    background: var(--cel-surface, #FFFFFF);
+    color: var(--cel-texte, #2D3031);
+    border-radius: 18px;
+    padding: 40px 34px;
+    box-shadow: 0 6px 22px rgba(0, 0, 0, .14);
+    font-size: 22px;
+}
+
+.cel-diapo-mot.cel-actif { display: block; }
+
+.cel-diapo-image {
+    max-height: 42vh;
+    width: auto;
+    max-width: 100%;
+    border-radius: 12px;
+    margin-bottom: 18px;
+}
+
+.cel-diapo-signature {
+    margin: 20px 0 0;
+    font-weight: 600;
+    color: var(--cel-accent-texte, #BA4514);
+}
+
+.cel-diapo-aide {
+    margin-top: 24px;
+    font-size: 13px;
+    opacity: .65;
+}
+
+@media (max-width: 560px) {
+    .cel-title { font-size: 25px; }
+    .cel-diapo-titre { font-size: 26px; }
+    .cel-diapo-mot { font-size: 18px; padding: 26px 20px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .cel-diapo-mot { transition: none; }
+}

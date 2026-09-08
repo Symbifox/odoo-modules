@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <menuitem id="menu_celebrations_root" name="Célébrations"
+              web_icon="bf_celebrations,static/description/icon.png"
+              sequence="86"/>
+
+    <menuitem id="menu_celebrations_calendrier" name="Calendrier"
+              parent="menu_celebrations_root"
+              action="action_celebration_occasion" sequence="10"/>
+
+    <menuitem id="menu_celebrations_cartes" name="Cartes collectives"
+              parent="menu_celebrations_root"
+              action="action_celebration_board" sequence="20"/>
+
+    <menuitem id="menu_celebrations_moi" name="Mes célébrations"
+              parent="menu_celebrations_root"
+              action="action_mon_profil" sequence="30"/>
+
+    <menuitem id="menu_celebrations_config" name="Configuration"
+              parent="menu_celebrations_root" sequence="90"
+              groups="bf_celebrations.group_manager"/>
+
+    <menuitem id="menu_celebrations_profils" name="Profils (dépannage)"
+              parent="menu_celebrations_config" sequence="10"
+              action="action_celebration_profile_admin"
+              groups="base.group_system"/>
+
+</odoo>
