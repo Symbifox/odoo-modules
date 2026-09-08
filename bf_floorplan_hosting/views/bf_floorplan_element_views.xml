@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="bf_floorplan_element_view_form_hosting" model="ir.ui.view">
+        <field name="name">bf.floorplan.element.form.hosting</field>
+        <field name="model">bf.floorplan.element</field>
+        <field name="inherit_id" ref="bf_floorplan.bf_floorplan_element_view_form"/>
+        <field name="arch" type="xml">
+            <field name="employee_id" position="after">
+                <field name="endpoint_id"/>
+                <field name="server_id"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="bf_floorplan_element_view_list_hosting" model="ir.ui.view">
+        <field name="name">bf.floorplan.element.list.hosting</field>
+        <field name="model">bf.floorplan.element</field>
+        <field name="inherit_id" ref="bf_floorplan.bf_floorplan_element_view_list"/>
+        <field name="arch" type="xml">
+            <field name="employee_id" position="after">
+                <field name="endpoint_id" optional="show"/>
+                <field name="server_id" optional="hide"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="bf_floorplan_element_view_search_hosting" model="ir.ui.view">
+        <field name="name">bf.floorplan.element.search.hosting</field>
+        <field name="model">bf.floorplan.element</field>
+        <field name="inherit_id" ref="bf_floorplan.bf_floorplan_element_view_search"/>
+        <field name="arch" type="xml">
+            <field name="employee_id" position="after">
+                <field name="endpoint_id"/>
+                <field name="server_id"/>
+            </field>
+            <filter name="reseau" position="after">
+                <filter name="appareils" string="Appareils du parc"
+                        domain="['|', ('endpoint_id', '!=', False), ('server_id', '!=', False)]"/>
+            </filter>
+        </field>
+    </record>
+</odoo>
