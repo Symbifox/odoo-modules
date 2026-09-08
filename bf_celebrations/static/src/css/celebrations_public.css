@@ -269,6 +269,23 @@
 
 .cel-vide { opacity: .75; text-align: center; padding: 26px 0; }
 
+/* Le merci de la personne fêtée : une carte à part, bordée de l'accent,
+   au-dessus du mur. Le texte reste dans la couleur du thème. */
+.cel-merci {
+    margin-bottom: 24px;
+    border-left: 5px solid var(--cel-accent, #E8632B);
+}
+.cel-merci-etiquette {
+    margin: 0 0 8px;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    opacity: .75;
+}
+.cel-merci-corps .cel-mot-corps { font-size: 1.45em; line-height: 1.3; }
+.cel-merci-formulaire { margin-bottom: 24px; }
+.cel-merci-formulaire p { margin: 0 0 8px; }
+
 .cel-souvenir { margin-top: 36px; }
 .cel-souvenir-titre { margin: 0 0 8px; font-size: 19px; color: var(--cel-entete, #2D3031); }
 .cel-souvenir p { margin: 0 0 8px; }

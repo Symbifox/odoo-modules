@@ -156,6 +156,27 @@ class CelebrationBoard(models.Model):
     contribution_url = fields.Char(
         string="Lien à partager", compute="_compute_urls")
     board_url = fields.Char(string="Lien du tableau", compute="_compute_urls")
+    # ------------------------------------------------------------------
+    # Le merci de la personne fêtée
+    # ------------------------------------------------------------------
+    # ⚠️ La page du tableau est publique pour qui a le lien : n'importe qui
+    # pourrait y « remercier » au nom de la personne fêtée. D'où une SECONDE
+    # clé, née à la livraison, qui ne voyage que dans le courriel adressé à
+    # elle. Le formulaire de merci n'apparaît que si la page est ouverte avec
+    # cette clé, et le merci ne se dit qu'une fois.
+    thanks_token = fields.Char(
+        string="Clé du merci", copy=False,
+        groups="bf_celebrations.group_organizer")
+    recipient_url = fields.Char(
+        string="Lien de la personne fêtée", compute="_compute_urls",
+        help="Le lien du tableau, avec la clé qui lui permet de remercier. "
+             "Il ne va qu'à elle.")
+    thanks_html = fields.Html(
+        string="Merci de la personne fêtée", sanitize=True, readonly=True,
+        copy=False)
+    thanks_date = fields.Datetime(string="Merci reçu le", readonly=True,
+                                  copy=False)
+
     qr_image = fields.Binary(
         string="Code QR", compute="_compute_qr_image",
         help="Le code QR du lien à partager, à imprimer et coller dans la "
@@ -237,7 +258,7 @@ class CelebrationBoard(models.Model):
             board.published_post_count = len(
                 messages.filtered(lambda p: p.state == "published"))
 
-    @api.depends("access_token")
+    @api.depends("access_token", "thanks_token")
     def _compute_urls(self):
         base = self.env["ir.config_parameter"].sudo().get_param(
             "web.base.url")
@@ -248,6 +269,10 @@ class CelebrationBoard(models.Model):
             board.board_url = (
                 "%s/celebration/%s/tableau" % (base, jeton)
                 if jeton else False)
+            cle = board.sudo().thanks_token
+            board.recipient_url = (
+                "%s?cle=%s" % (board.board_url, cle)
+                if board.board_url and cle else board.board_url)
 
     @api.depends("contribution_url")
     def _compute_qr_image(self):
@@ -316,10 +341,13 @@ class CelebrationBoard(models.Model):
             board.state = "open"
         self._diffuser_le_lien()
         # Ouvrir aux signatures, c'est tendre la carte : les groupes déjà
-        # choisis reçoivent le lien tout de suite.
+        # choisis reçoivent le lien tout de suite. ⚠️ Sans garde sur NOS
+        # champs : un module pont peut apporter des signataires d'une autre
+        # source (les groupes du composeur), et une garde qui ne connaît que
+        # `signer_group_ids` les aurait ignorés en silence. Sans personne à
+        # écrire, l'appel ne fait rien.
         for board in self:
-            if board.sudo().signer_group_ids or board.sudo().signer_partner_ids:
-                board._inviter_signataires()
+            board._inviter_signataires()
         return True
 
     def action_livrer_maintenant(self):
@@ -348,6 +376,10 @@ class CelebrationBoard(models.Model):
                     "Célébrations : tableau %s sans courriel de livraison.",
                     board.id)
                 continue
+            # La clé du merci est posée AVANT le rendu du courriel, qui la
+            # porte dans son lien. Elle n'existe nulle part ailleurs.
+            if not board.sudo().thanks_token:
+                board.sudo().thanks_token = secrets.token_urlsafe(18)
             # Le souvenir part AVEC la carte : un PDF et une page autonome,
             # que la personne garde hors du système. Le lien, lui, meurt
             # avec le compte ou avec la purge de rétention.
@@ -556,12 +588,12 @@ class CelebrationBoard(models.Model):
         gabarit = self.env.ref(
             "bf_celebrations.mail_template_invitation_signataire",
             raise_if_not_found=False)
-        destinataires = board.signer_group_ids._resoudre()
-        for partenaire in board.signer_partner_ids.filtered("active"):
-            if partenaire.email:
-                destinataires.setdefault(
-                    partenaire.email.strip().lower(),
-                    (partenaire.name, partenaire.email.strip()))
+        # ⚠️ Résolu sur `self`, pas sur `board` : un module pont qui lit
+        # d'autres sources (les groupes de destinataires du composeur, par
+        # exemple) doit le faire avec les droits de la personne qui invite,
+        # jamais en sudo, sinon un groupe partagé par quelqu'un d'autre
+        # deviendrait un moyen d'écrire à des gens qu'on ne voit pas.
+        destinataires = self._destinataires_signataires()
         exclus = board._emails_du_destinataire()
         try:
             deja = set(json.loads(board.invited_keys or "[]"))
@@ -603,6 +635,110 @@ class CelebrationBoard(models.Model):
                     nb=len(nouveaux)),
                 message_type="comment", subtype_xmlid="mail.mt_note")
         return len(nouveaux)
+
+    def _destinataires_signataires(self):
+        """Les adresses à qui tendre la carte : ``minuscule -> (nom, adresse)``.
+
+        Point d'extension : un module pont ajoute ses sources en appelant
+        ``super()`` puis en complétant le dictionnaire avec ``setdefault``,
+        pour que la première source qui nomme une adresse garde le nom.
+        """
+        self.ensure_one()
+        board = self.sudo()
+        destinataires = board.signer_group_ids._resoudre()
+        for partenaire in board.signer_partner_ids.filtered("active"):
+            if partenaire.email:
+                destinataires.setdefault(
+                    partenaire.email.strip().lower(),
+                    (partenaire.name, partenaire.email.strip()))
+        return destinataires
+
+    # ------------------------------------------------------------------
+    # Le merci
+    # ------------------------------------------------------------------
+
+    def _adresses_des_signataires(self):
+        """À qui porter le merci : les gens invités par courriel, et ceux qui
+        ont signé connectés. Jamais la personne fêtée. Les gens qui ont
+        signé par le code QR sans compte le liront sur la page : on n'a
+        pas leur adresse, et c'est très bien."""
+        self.ensure_one()
+        board = self.sudo()
+        adresses = {}
+        try:
+            for cle in json.loads(board.invited_keys or "[]"):
+                adresses.setdefault(cle, cle)
+        except ValueError:
+            pass
+        for mot in board.post_ids.filtered(lambda p: p.state == "published"):
+            for brut in (mot.author_user_id.email,
+                         mot.author_partner_id.email):
+                if brut and "@" in brut:
+                    adresses.setdefault(brut.strip().lower(), brut.strip())
+        for exclue in board._emails_du_destinataire():
+            adresses.pop(exclue, None)
+        return list(adresses.values())
+
+    def _remercier(self, corps_html):
+        """Enregistre le merci, une seule fois, et le porte aux signataires.
+
+        Rend False si un merci existe déjà : la page l'affiche alors en
+        lecture. Le texte arrive du public (par la clé de la personne fêtée)
+        déjà remis en paragraphes par le contrôleur ; le champ l'assainit
+        encore.
+        """
+        self.ensure_one()
+        board = self.sudo()
+        if board.state != "delivered" or board.thanks_html:
+            return False
+        board.write({
+            "thanks_html": corps_html,
+            "thanks_date": fields.Datetime.now(),
+        })
+        board.message_post(
+            body=Markup("<p><strong>%s</strong></p>%s") % (
+                _("Merci de %(nom)s", nom=board.recipient_name or ""),
+                Markup(board.thanks_html or "")),
+            message_type="comment", subtype_xmlid="mail.mt_note")
+        gabarit = self.env.ref(
+            "bf_celebrations.mail_template_merci",
+            raise_if_not_found=False)
+        adresses = board._adresses_des_signataires()
+        organisateur = board.organizer_id.email_formatted
+        if organisateur and organisateur.lower() not in [
+                a.lower() for a in adresses]:
+            adresses.append(organisateur)
+        if gabarit:
+            for adresse in adresses:
+                gabarit.send_mail(
+                    board.id,
+                    email_values={"email_to": adresse,
+                                  "recipient_ids": []},
+                    email_layout_xmlid="mail.mail_notification_light",
+                )
+        board._diffuser_le_merci()
+        return True
+
+    def _diffuser_le_merci(self):
+        """Le merci va aussi là où le lien avait été annoncé."""
+        self.ensure_one()
+        param = self.env["ir.config_parameter"].sudo()
+        try:
+            canal_id = int(param.get_param(
+                "bf_celebrations.discuss_channel_id") or 0)
+        except (TypeError, ValueError):
+            canal_id = 0
+        if not canal_id:
+            return
+        canal = self.env["discuss.channel"].sudo().browse(canal_id).exists()
+        if not canal:
+            return
+        canal.message_post(
+            body=Markup("<p>%s</p>%s") % (
+                _("%(nom)s a reçu sa carte et vous remercie :",
+                  nom=self.recipient_name or ""),
+                Markup(self.sudo().thanks_html or "")),
+            message_type="comment", subtype_xmlid="mail.mt_comment")
 
     @api.model
     def _plafond_invitations(self):

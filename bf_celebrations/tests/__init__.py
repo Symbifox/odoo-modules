@@ -7,3 +7,4 @@ from . import test_sans_date
 from . import test_encre
 from . import test_souvenir
 from . import test_signataires
+from . import test_merci

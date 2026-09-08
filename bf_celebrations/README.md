@@ -134,6 +134,26 @@ A setting, **off by default**, deletes delivered cards after N months
 (`bf_celebrations.retention_months`, daily job). 0 is the state of absence,
 and the state of absence is "keep".
 
+## The recipient's thank-you (2.1)
+
+From their card, the recipient writes a note to the signers. It appears on the
+card and on the closed signing page, and it is emailed **once**: to the people
+invited by email and to those who signed while logged in, plus the organiser,
+never to the recipient. People who came through the QR code without an account
+read it on the page: we do not hold their address, and that is fine.
+
+The board page is public to anyone with the link, so anyone could "thank" in
+the recipient's name. Hence a **second key** (`thanks_token`), created at
+delivery, that travels only in the email addressed to the recipient
+(`recipient_url`). The form only appears with that key, compared in constant
+time, and the thank-you can be said once. The delivery template is `noupdate`:
+the 2.1.0 migration swaps `object.board_url` for `object.recipient_url` in
+templates already installed.
+
+A bridge module, `bf_celebrations_email`, adds the mail composer's **recipient
+groups** as a source of signers, resolved with the inviting user's own rights.
+It installs itself when `bf_email_management` is present.
+
 ## The opening (2.0)
 
 On a delivered card: an envelope in the theme's colours whose flap lifts, the
@@ -199,6 +219,7 @@ after its release — see `LICENSE` for the exact parameters.
 
 | Version | Notes |
 |---|---|
+| 18.0.2.1.0 | Recipient thank-you (keyed link, once, emailed to signers); signer-source hook for the `bf_celebrations_email` bridge |
 | 18.0.2.0.0 | Handwriting (font, style, vector ink), signer groups, delivery opening animation, PDF + self-contained HTML keepsakes, personal keepsake address, optional retention purge, dateless occasions; four 1.0 fixes (UTC delivery hour, missing QR, hourly activity, image MIME type) |
 | 18.0.1.0.2 | Board title placeholder no longer suggests a person's first name |
 | 18.0.1.0.1 | Icon titles for screen readers; consent changes are now tracked on the profile itself |

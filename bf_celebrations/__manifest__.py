@@ -3,7 +3,7 @@
     "name": "Célébrations",
     "summary": "Tableaux de vœux collectifs, calendrier des occasions, et le "
                "consentement de la personne qu'on souligne",
-    "version": "18.0.2.0.0",
+    "version": "18.0.2.1.0",
     "category": "Human Resources",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",
@@ -70,6 +70,10 @@ Le tableau de vœux
 * **L'ouverture** : une enveloppe qui se soulève, les mots qui arrivent un à
   un, des confettis aux couleurs du thème. Coupée par un clic, jouée une
   fois, absente quand le système demande moins de mouvement.
+* **Le merci** : depuis sa carte, par un lien qui n'est qu'à elle, la
+  personne fêtée écrit un mot aux signataires. Il paraît sur la carte et il
+  leur est envoyé une fois, aux gens invités et à ceux qui ont signé
+  connectés.
 * Un diaporama en fondu pour l'écran du bureau.
 
 Ce qui reste quand la base n'a plus rien

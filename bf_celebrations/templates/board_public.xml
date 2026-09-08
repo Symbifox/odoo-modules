@@ -24,6 +24,19 @@
         </style>
     </template>
 
+    <!-- Le merci de la personne fêtée, tel que les signataires le lisent. -->
+    <template id="bloc_merci" name="Célébrations : le merci">
+        <section class="cel-carte cel-merci" t-if="board.thanks_html">
+            <p class="cel-merci-etiquette">
+                <t t-esc="board.recipient_name"/> vous remercie
+            </p>
+            <div class="cel-merci-corps cel-manuscrit">
+                <div class="cel-mot-corps" t-out="board.thanks_html"/>
+            </div>
+            <p class="cel-mot-signature">— <t t-esc="board.recipient_name"/></p>
+        </section>
+    </template>
+
     <template id="page_signature" name="Célébrations : signer la carte">
         <t t-out="doctype"/>
         <html lang="fr">
@@ -57,6 +70,8 @@
 
                     <div t-if="board.intro_html" class="cel-intro"
                          t-out="board.intro_html"/>
+
+                    <t t-if="ferme" t-call="bf_celebrations.bloc_merci"/>
 
                     <div t-if="merci" class="cel-alerte cel-alerte-ok">
                         Merci, votre mot est sur la carte.
@@ -242,6 +257,32 @@
 
                     <div t-if="board.intro_html" class="cel-intro"
                          t-out="board.intro_html"/>
+
+                    <div t-if="merci_envoye" class="cel-alerte cel-alerte-ok">
+                        Votre merci est parti à celles et ceux qui ont signé.
+                    </div>
+                    <div t-if="request.params.get('erreur') == 'vide'"
+                         class="cel-alerte cel-alerte-avis">
+                        Écrivez un mot avant d'envoyer.
+                    </div>
+
+                    <t t-call="bf_celebrations.bloc_merci"/>
+
+                    <!-- Le formulaire de merci : seulement avec la clé qui n'est
+                         que dans le courriel de la personne fêtée, et une fois. -->
+                    <section class="cel-carte cel-merci-formulaire" t-if="peut_remercier">
+                        <h2 class="cel-souvenir-titre">Dire merci</h2>
+                        <p>Un mot pour celles et ceux qui ont signé. Il paraîtra
+                           ici, et il leur sera envoyé une fois.</p>
+                        <form method="post" t-attf-action="/celebration/#{token}/merci">
+                            <input type="hidden" name="cle" t-att-value="cle"/>
+                            <label class="cel-label" for="cel-merci-body">Votre mot</label>
+                            <textarea class="cel-input cel-textarea" id="cel-merci-body"
+                                      name="body" rows="4" maxlength="1200"
+                                      placeholder="Merci à vous toutes et tous…"/>
+                            <button class="cel-bouton" type="submit">Envoyer le merci</button>
+                        </form>
+                    </section>
 
                     <section class="cel-mur">
                         <div class="cel-grille">

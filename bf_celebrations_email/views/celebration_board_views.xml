@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_celebration_board_form_recipient_groups" model="ir.ui.view">
+        <field name="name">bf.celebration.board.form.recipient.groups</field>
+        <field name="model">bf.celebration.board</field>
+        <field name="inherit_id" ref="bf_celebrations.view_celebration_board_form"/>
+        <field name="arch" type="xml">
+            <field name="signer_partner_ids" position="after">
+                <field name="recipient_group_ids" widget="many2many_tags"
+                       options="{'no_quick_create': true}"
+                       context="{'bf_show_recipient_groups': True}"/>
+            </field>
+        </field>
+    </record>
+</odoo>

@@ -100,6 +100,12 @@
                                    groups="base.group_multi_company"/>
                         </group>
                     </group>
+                    <div class="alert alert-success" role="status"
+                         invisible="not thanks_html">
+                        <p class="mb-1"><strong>Merci de la personne fêtée</strong>,
+                           reçu le <field name="thanks_date" readonly="1" class="oe_inline"/></p>
+                        <field name="thanks_html" readonly="1" nolabel="1"/>
+                    </div>
                     <notebook>
                         <page string="Signataires" name="signataires"
                               groups="bf_celebrations.group_organizer">

@@ -18,6 +18,14 @@ class TestSouvenir(TransactionCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
+        # ⚠️ Les tests qui livrent rendent un PDF, et wkhtmltopdf va chercher
+        # les feuilles de style à `report.url` ou `web.base.url`. Sur un banc
+        # où cette adresse est le serveur de test lui-même, la requête attend
+        # le curseur que le test tient : blocage mutuel, « Request timed out »,
+        # et une passe qui ne finit jamais. Une adresse fermée fait échouer la
+        # récupération tout de suite ; le PDF sort quand même, sans styles.
+        cls.env["ir.config_parameter"].sudo().set_param(
+            "report.url", "http://127.0.0.1:9")
         cls.usager = cls.env["res.users"].create({
             "name": "Rosalie Vachon", "login": "cel_sv@example.test",
             "email": "cel_sv@example.test",
@@ -177,6 +185,14 @@ class TestSouvenirPublic(HttpCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
+        # ⚠️ Les tests qui livrent rendent un PDF, et wkhtmltopdf va chercher
+        # les feuilles de style à `report.url` ou `web.base.url`. Sur un banc
+        # où cette adresse est le serveur de test lui-même, la requête attend
+        # le curseur que le test tient : blocage mutuel, « Request timed out »,
+        # et une passe qui ne finit jamais. Une adresse fermée fait échouer la
+        # récupération tout de suite ; le PDF sort quand même, sans styles.
+        cls.env["ir.config_parameter"].sudo().set_param(
+            "report.url", "http://127.0.0.1:9")
         cls.employe = cls.env["hr.employee"].create({
             "name": "Rosalie Vachon", "work_email": "cel_svp@example.test",
         })

@@ -272,12 +272,28 @@ class CelebrationController(Controller):
     # Le tableau, et le diaporama
     # ------------------------------------------------------------------
 
+    def _cle_du_merci_valide(self, board, cle):
+        """La clé qui n'est que dans le courriel de la personne fêtée.
+
+        Comparée en temps constant, comme le jeton. Un essai raté compte
+        dans le même seau que les jetons ratés : c'est du tâtonnement.
+        """
+        if not cle or len(cle) > 64 or board.state != "delivered":
+            return False
+        attendue = board.sudo().thanks_token or ""
+        if not attendue or not hmac.compare_digest(attendue, cle):
+            _compter_echec("cel_token", _TOKEN_WINDOW)
+            return False
+        return True
+
     @route("/celebration/<string:token>/tableau", type="http", auth="public",
            methods=["GET"], csrf=False, sitemap=False)
     def page_tableau(self, token, **kw):
         board = self._tableau(token)
         if not board:
             return self._indisponible()
+        cle = (kw.get("cle") or "").strip()
+        peut_remercier = self._cle_du_merci_valide(board, cle)
         return self._rendre(
             "bf_celebrations.page_tableau",
             {
@@ -286,9 +302,39 @@ class CelebrationController(Controller):
                 "token": token,
                 "livre": board.state == "delivered",
                 "rejouer": "ouvrir" in request.params,
+                # Le formulaire de merci : seulement avec la clé, seulement
+                # tant qu'aucun merci n'a été dit.
+                "peut_remercier": peut_remercier and not board.thanks_html,
+                "cle": cle if peut_remercier else "",
+                "merci_envoye": "merci" in request.params,
             },
             board,
         )
+
+    @route("/celebration/<string:token>/merci", type="http", auth="public",
+           methods=["POST"], csrf=False, sitemap=False)
+    def remercier(self, token, **post):
+        board = self._tableau(token)
+        if not board:
+            return self._indisponible()
+        cle = (post.get("cle") or "").strip()
+        if not self._cle_du_merci_valide(board, cle):
+            return self._indisponible(_(
+                "Ce lien ne permet pas de remercier."))
+        if not _plafond("cel_sign", _SIGN_MAX, _SIGN_WINDOW):
+            return self._indisponible(_(
+                "Réessayez dans quelques minutes."))
+        corps = (post.get("body") or "").strip()
+        if not html2plaintext(corps).strip():
+            return request.redirect(
+                "/celebration/%s/tableau?cle=%s&erreur=vide" % (token, cle))
+        if len(corps) > 1200:
+            corps = corps[:1200]
+        # Même traitement que les mots : du texte remis en paragraphes,
+        # jamais du HTML fourni depuis une page publique.
+        board._remercier(self._en_paragraphes(corps))
+        return request.redirect(
+            "/celebration/%s/tableau?cle=%s&merci=1" % (token, cle))
 
     @route("/celebration/<string:token>/diaporama", type="http",
            auth="public", methods=["GET"], csrf=False, sitemap=False)

@@ -111,14 +111,42 @@
        <strong t-out="object.published_post_count"/> message(s) vous
        attendent. Ouvrez l'enveloppe.</p>
     <p style="margin:24px 0">
-        <a t-att-href="object.board_url"
+        <a t-att-href="object.recipient_url"
            style="background:#177AA3;color:#ffffff;padding:11px 20px;border-radius:6px;text-decoration:none;display:inline-block">
             Ouvrir la carte</a>
     </p>
     <p style="color:#6b7280;font-size:12px">En pièces jointes, la carte à
        garder : en PDF, et en page complète où les images animées bougent
        encore. Le lien, lui, ne durera pas toujours ; ces deux fichiers
-       sont à vous.</p>
+       sont à vous. Depuis la carte, vous pouvez dire merci à celles et ceux
+       qui ont signé : ce lien est le vôtre, ne le transférez pas.</p>
+</div>
+            </field>
+        </record>
+
+        <!-- ==========================================================
+             Le merci. Il part une fois, aux gens invités par courriel et à
+             ceux qui ont signé connectés, quand la personne fêtée l'a écrit
+             depuis sa carte.
+             ========================================================== -->
+        <record id="mail_template_merci" model="mail.template">
+            <field name="name">Célébrations : le merci de la personne fêtée</field>
+            <field name="model_id" ref="model_bf_celebration_board"/>
+            <field name="subject">{{ object.recipient_name }} vous remercie</field>
+            <field name="email_from">{{ (object.company_id.email_formatted or user.email_formatted) }}</field>
+            <field name="auto_delete" eval="False"/>
+            <field name="body_html" type="html">
+<div style="font-family:Lexend,Segoe UI,Arial,sans-serif;font-size:14px;color:#2D3031;line-height:1.6">
+    <p>Bonjour,</p>
+    <p><strong t-out="object.recipient_name or ''"/> a reçu sa carte,
+       <t t-out="object.name or ''"/>, et a écrit un mot pour celles et ceux
+       qui l'ont signée :</p>
+    <blockquote style="margin:16px 0;padding:12px 16px;border-left:4px solid #177AA3;background:#F4F6F8" t-out="object.thanks_html"/>
+    <p style="margin:24px 0">
+        <a t-att-href="object.board_url"
+           style="background:#177AA3;color:#ffffff;padding:11px 20px;border-radius:6px;text-decoration:none;display:inline-block">
+            Revoir la carte</a>
+    </p>
 </div>
             </field>
         </record>
