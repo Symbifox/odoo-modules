@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="bf_floorplan_element_view_form" model="ir.ui.view">
+        <field name="name">bf.floorplan.element.form</field>
+        <field name="model">bf.floorplan.element</field>
+        <field name="arch" type="xml">
+            <form string="Élément">
+                <header>
+                    <button name="action_ouvrir_plan" type="object" string="Sur le plan"
+                            class="btn-primary" icon="fa-map-marker"/>
+                    <button name="action_tourner" type="object" string="Tourner d'un quart"
+                            icon="fa-rotate-right"
+                            groups="bf_floorplan.group_bf_floorplan_manager"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="Ex. : P-12"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="plan_id"/>
+                            <field name="genre"/>
+                            <field name="zone_id"/>
+                            <field name="employee_id"/>
+                        </group>
+                        <group string="Géométrie (cm)">
+                            <field name="x"/>
+                            <field name="y"/>
+                            <field name="w"/>
+                            <field name="h"/>
+                            <field name="rotation"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Notes" name="notes">
+                            <field name="notes" nolabel="1"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="bf_floorplan_element_view_list" model="ir.ui.view">
+        <field name="name">bf.floorplan.element.list</field>
+        <field name="model">bf.floorplan.element</field>
+        <field name="arch" type="xml">
+            <list string="Éléments">
+                <field name="plan_id"/>
+                <field name="name"/>
+                <field name="genre"/>
+                <field name="zone_id"/>
+                <field name="employee_id"/>
+                <field name="rotation" optional="hide"/>
+                <field name="lien_count" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_floorplan_element_view_search" model="ir.ui.view">
+        <field name="name">bf.floorplan.element.search</field>
+        <field name="model">bf.floorplan.element</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="plan_id"/>
+                <field name="zone_id"/>
+                <field name="employee_id"/>
+                <filter name="postes" string="Postes de travail" domain="[('genre', '=', 'poste')]"/>
+                <filter name="libres" string="Postes libres"
+                        domain="[('genre', '=', 'poste'), ('employee_id', '=', False)]"/>
+                <filter name="reseau" string="Équipement réseau"
+                        domain="[('genre', 'in', ('commutateur', 'borne', 'serveur', 'baie', 'prise'))]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="par_plan" string="Plan" context="{'group_by': 'plan_id'}"/>
+                    <filter name="par_zone" string="Zone" context="{'group_by': 'zone_id'}"/>
+                    <filter name="par_genre" string="Nature" context="{'group_by': 'genre'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_bf_floorplan_element" model="ir.actions.act_window">
+        <field name="name">Éléments</field>
+        <field name="res_model">bf.floorplan.element</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_par_plan': 1}</field>
+    </record>
+</odoo>

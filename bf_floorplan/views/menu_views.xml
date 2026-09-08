@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_bf_floorplan_root" name="Plans d'étage"
+              web_icon="bf_floorplan,static/description/icon.png" sequence="62"/>
+    <menuitem id="menu_bf_floorplan_plans" name="Plans" parent="menu_bf_floorplan_root"
+              action="action_bf_floorplan" sequence="10"/>
+    <menuitem id="menu_bf_floorplan_zones" name="Zones" parent="menu_bf_floorplan_root"
+              action="action_bf_floorplan_zone" sequence="20"/>
+    <menuitem id="menu_bf_floorplan_elements" name="Éléments" parent="menu_bf_floorplan_root"
+              action="action_bf_floorplan_element" sequence="30"/>
+    <menuitem id="menu_bf_floorplan_liens" name="Liens" parent="menu_bf_floorplan_root"
+              action="action_bf_floorplan_lien" sequence="40"/>
+</odoo>

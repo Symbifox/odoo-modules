@@ -1,0 +1,9 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_bf_floorplan_user,bf.floorplan user,model_bf_floorplan,base.group_user,1,0,0,0
+access_bf_floorplan_manager,bf.floorplan manager,model_bf_floorplan,bf_floorplan.group_bf_floorplan_manager,1,1,1,1
+access_bf_floorplan_zone_user,bf.floorplan.zone user,model_bf_floorplan_zone,base.group_user,1,0,0,0
+access_bf_floorplan_zone_manager,bf.floorplan.zone manager,model_bf_floorplan_zone,bf_floorplan.group_bf_floorplan_manager,1,1,1,1
+access_bf_floorplan_element_user,bf.floorplan.element user,model_bf_floorplan_element,base.group_user,1,0,0,0
+access_bf_floorplan_element_manager,bf.floorplan.element manager,model_bf_floorplan_element,bf_floorplan.group_bf_floorplan_manager,1,1,1,1
+access_bf_floorplan_lien_user,bf.floorplan.lien user,model_bf_floorplan_lien,base.group_user,1,0,0,0
+access_bf_floorplan_lien_manager,bf.floorplan.lien manager,model_bf_floorplan_lien,bf_floorplan.group_bf_floorplan_manager,1,1,1,1

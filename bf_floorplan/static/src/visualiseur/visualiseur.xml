@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+<t t-name="bf_floorplan.Visualiseur">
+    <div class="o_bf_floorplan_visualiseur"
+         t-att-class="{ 'o_bf_floorplan_plein': state.plein }">
+        <div t-if="state.erreur" class="alert alert-info m-2" role="status">
+            <t t-esc="state.erreur"/>
+        </div>
+        <t t-elif="state.donnees">
+            <div class="o_bf_floorplan_barre">
+                <span class="o_bf_floorplan_titre" t-esc="state.donnees.titre"/>
+                <span t-if="state.donnees.fige" class="badge text-bg-secondary"
+                      title="Un plan figé ne se modifie plus. Rouvrez-le.">
+                    Figé · lecture seule
+                </span>
+                <span class="flex-grow-1"/>
+                <div t-if="state.donnees.modifiable" class="btn-group btn-group-sm"
+                     role="group" aria-label="Outils d'édition">
+                    <button t-foreach="outils" t-as="o" t-key="o.code"
+                            type="button" class="btn"
+                            t-att-class="state.outil === o.code ? 'btn-primary' : 'btn-light'"
+                            t-att-title="o.aide"
+                            t-att-disabled="state.occupe"
+                            t-on-click="() => this.choisirOutil(o.code)"
+                            t-esc="o.nom"/>
+                </div>
+                <t t-if="state.donnees.modifiable and state.outil === 'poser'">
+                    <select class="form-select form-select-sm o_bf_floorplan_sorte"
+                            t-on-change="choisirSorte">
+                        <option value="element" t-att-selected="state.sorte === 'element'">Élément</option>
+                        <option value="zone" t-att-selected="state.sorte === 'zone'">Zone</option>
+                    </select>
+                    <select class="form-select form-select-sm o_bf_floorplan_genre"
+                            t-model="state.genre">
+                        <option t-foreach="palette" t-as="g" t-key="g.code"
+                                t-att-value="g.code" t-esc="g.nom"/>
+                    </select>
+                </t>
+                <select t-if="state.donnees.modifiable and state.outil === 'lier'"
+                        class="form-select form-select-sm o_bf_floorplan_genre"
+                        t-model="state.genreLien">
+                    <option t-foreach="state.donnees.palette.liens" t-as="g" t-key="g.code"
+                            t-att-value="g.code" t-esc="g.nom"/>
+                </select>
+                <button class="btn btn-sm btn-light" t-on-click="() => this.zoomer(-0.2)"
+                        title="Réduire">−</button>
+                <span class="o_bf_floorplan_zoom"
+                      t-esc="Math.round(state.zoom * 100) + ' %'"/>
+                <button class="btn btn-sm btn-light" t-on-click="() => this.zoomer(0.2)"
+                        title="Agrandir (Ctrl + molette)">+</button>
+                <button class="btn btn-sm btn-light" t-on-click="() => this.ajuster()"
+                        title="Ajuster à la largeur">Ajuster</button>
+                <button class="btn btn-sm btn-light" t-on-click="() => this.telecharger()"
+                        title="Télécharger le plan en SVG">SVG</button>
+                <button class="btn btn-sm btn-primary" t-on-click="() => this.plein_ecran()"
+                        t-att-title="state.plein ? 'Quitter le plein écran' : 'Plein écran'">
+                    <t t-esc="state.plein ? 'Réduire' : 'Plein écran'"/>
+                </button>
+            </div>
+            <div t-if="state.donnees.modifiable and state.outil !== 'consulter'"
+                 class="o_bf_floorplan_aide">
+                <t t-esc="aideOutil"/>
+                <t t-if="state.depuis">
+                    <t t-esc="' — origine prise : ' + state.depuis.nom"/>
+                </t>
+            </div>
+            <div t-if="state.donnees.vide" class="o_bf_floorplan_aide">
+                <t t-esc="state.donnees.vide"/>
+            </div>
+            <div class="o_bf_floorplan_toile" t-ref="toile"
+                 t-att-class="'o_bf_floorplan_outil_' + state.outil"
+                 t-on-wheel="surMolette"
+                 t-on-mousedown="debutGlisse"
+                 t-on-mousemove="surGlisse"
+                 t-on-mouseup="finGlisse"
+                 t-on-mouseleave="annulerGlisse"
+                 t-on-click="surClicFond">
+                <svg t-ref="svg"
+                     t-att-width="state.donnees.largeur * state.zoom"
+                     t-att-height="state.donnees.hauteur * state.zoom"
+                     t-att-viewBox="'0 0 ' + state.donnees.largeur + ' ' + state.donnees.hauteur"
+                     xmlns="http://www.w3.org/2000/svg">
+                    <!-- la feuille : blanche, quel que soit le thème -->
+                    <rect x="0" y="0" t-att-width="state.donnees.largeur"
+                          t-att-height="state.donnees.hauteur"
+                          fill="#FFFFFF" stroke="#2D3031" stroke-width="3"/>
+                    <image t-if="state.donnees.fond" x="0" y="0"
+                           t-att-width="state.donnees.largeur"
+                           t-att-height="state.donnees.hauteur"
+                           preserveAspectRatio="none"
+                           t-att-href="state.donnees.fond"/>
+                    <!-- les zones, sous tout le reste -->
+                    <t t-foreach="zones" t-as="z" t-key="'z' + z.id">
+                        <rect t-att-x="z.x" t-att-y="z.y" t-att-width="z.w" t-att-height="z.h"
+                              t-att-fill="z.couleur" fill-opacity="0.75"
+                              stroke="#2D3031" stroke-width="2"
+                              class="o_bf_floorplan_forme" data-rid="zone"
+                              t-on-mousedown="(ev) => this.debutDeplacement(z, ev)"
+                              t-on-click="(ev) => this.surClicForme(z, ev)">
+                            <title t-esc="this.infobulle(z)"/>
+                        </rect>
+                        <text t-att-x="z.x + 8" t-att-y="z.y + 26" font-size="22"
+                              font-weight="600" fill="#2D3031" pointer-events="none"
+                              font-family="Lexend, sans-serif">
+                            <t t-esc="z.nom"/><t t-if="z.capacite" t-esc="' (' + z.occupes + '/' + z.capacite + ')'"/>
+                        </text>
+                    </t>
+                    <!-- les liens, entre les zones et les éléments -->
+                    <t t-foreach="liens" t-as="li" t-key="'l' + li.id">
+                        <line t-att-x1="li.points[0][0]" t-att-y1="li.points[0][1]"
+                              t-att-x2="li.points[1][0]" t-att-y2="li.points[1][1]"
+                              t-att-stroke="couleurLien(li)" stroke-width="2"
+                              stroke-dasharray="8 6" pointer-events="none"/>
+                        <line t-att-x1="li.points[0][0]" t-att-y1="li.points[0][1]"
+                              t-att-x2="li.points[1][0]" t-att-y2="li.points[1][1]"
+                              stroke="transparent" t-att-stroke-width="14 / state.zoom"
+                              data-rid="lien" class="o_bf_floorplan_lien"
+                              t-on-click="(ev) => this.surClicLien(li, ev)">
+                            <title t-esc="(li.genre_nom || '') + (li.etiquette ? ' · ' + li.etiquette : '')"/>
+                        </line>
+                        <text t-if="li.etiquette"
+                              t-att-x="(li.points[0][0] + li.points[1][0]) / 2"
+                              t-att-y="(li.points[0][1] + li.points[1][1]) / 2 - 6"
+                              text-anchor="middle" font-size="11" fill="#73787A"
+                              pointer-events="none" font-family="Lexend, sans-serif"
+                              t-esc="li.etiquette"/>
+                    </t>
+                    <!-- les éléments -->
+                    <t t-foreach="elements" t-as="e" t-key="'e' + e.id">
+                        <g t-att-transform="transform(e)">
+                            <rect t-att-x="e.x" t-att-y="e.y" t-att-width="e.w" t-att-height="e.h"
+                                  t-att-rx="rayon(e)" t-att-fill="fond(e)"
+                                  t-att-stroke="contour(e)"
+                                  t-att-stroke-width="e.teinte ? 4 : 2"
+                                  t-att-stroke-dasharray="e.genre === 'autre' ? '6 4' : undefined"
+                                  class="o_bf_floorplan_forme"
+                                  t-att-class="{ 'o_bf_floorplan_pris': state.depuis and state.depuis.id === e.id and state.depuis.sorte === 'element',
+                                                 'o_bf_floorplan_surligne': state.donnees.surligne === e.id }"
+                                  data-rid="element"
+                                  t-on-mousedown="(ev) => this.debutDeplacement(e, ev)"
+                                  t-on-click="(ev) => this.surClicForme(e, ev)">
+                                <title t-esc="this.infobulle(e)"/>
+                            </rect>
+                            <!-- le glyphe : l'écran d'un poste, les rails d'une baie,
+                                 les fentes d'un serveur, l'onde d'une borne -->
+                            <rect t-if="e.genre === 'poste'" t-att-x="e.x + e.w * 0.3"
+                                  t-att-y="e.y + 4" t-att-width="e.w * 0.4" height="8"
+                                  fill="#2D3031" pointer-events="none"/>
+                            <t t-if="e.genre === 'baie'">
+                                <line t-att-x1="e.x + 8" t-att-y1="e.y + 6" t-att-x2="e.x + 8"
+                                      t-att-y2="e.y + e.h - 6" stroke="#73787A" stroke-width="3"
+                                      pointer-events="none"/>
+                                <line t-att-x1="e.x + e.w - 8" t-att-y1="e.y + 6"
+                                      t-att-x2="e.x + e.w - 8" t-att-y2="e.y + e.h - 6"
+                                      stroke="#73787A" stroke-width="3" pointer-events="none"/>
+                            </t>
+                            <t t-if="e.genre === 'serveur'">
+                                <line t-att-x1="e.x + 8" t-att-y1="e.y + e.h * 0.35"
+                                      t-att-x2="e.x + e.w - 8" t-att-y2="e.y + e.h * 0.35"
+                                      stroke="#73787A" stroke-width="2" pointer-events="none"/>
+                                <line t-att-x1="e.x + 8" t-att-y1="e.y + e.h * 0.65"
+                                      t-att-x2="e.x + e.w - 8" t-att-y2="e.y + e.h * 0.65"
+                                      stroke="#73787A" stroke-width="2" pointer-events="none"/>
+                            </t>
+                            <circle t-if="e.genre === 'borne'" t-att-cx="e.x + e.w / 2"
+                                    t-att-cy="e.y + e.h / 2" t-att-r="e.w / 6"
+                                    fill="#29ABE1" pointer-events="none"/>
+                        </g>
+                        <t t-set="et" t-value="etiquette(e)"/>
+                        <text t-att-x="et.x" t-att-y="et.y"
+                              text-anchor="middle" t-att-font-size="et.taille" fill="#2D3031"
+                              pointer-events="none" font-family="Lexend, sans-serif"
+                              t-esc="e.nom"/>
+                        <text t-if="e.occupant and et.occupant" t-att-x="et.x"
+                              t-att-y="et.y + et.taille * 1.1"
+                              text-anchor="middle" t-att-font-size="et.taille * 0.85" fill="#73787A"
+                              pointer-events="none" font-family="Lexend, sans-serif"
+                              t-esc="e.occupant"/>
+                    </t>
+                    <!-- les poignées, quand on déplace -->
+                    <t t-if="state.donnees.modifiable and state.outil === 'deplacer'">
+                        <t t-foreach="zones.concat(elements)" t-as="f" t-key="'p' + f.sorte + f.id">
+                            <rect t-att-x="poignee(f).x" t-att-y="poignee(f).y"
+                                  t-att-width="poignee(f).c" t-att-height="poignee(f).c"
+                                  fill="#29ABE1" stroke="#FFFFFF" t-att-stroke-width="1.5 / state.zoom"
+                                  class="o_bf_floorplan_poignee" data-rid="poignee"
+                                  t-on-mousedown="(ev) => this.debutRedimension(f, ev)"
+                                  t-on-click="(ev) => ev.stopPropagation()">
+                                <title>Redimensionner</title>
+                            </rect>
+                        </t>
+                    </t>
+                    <rect t-if="state.fantome" t-att-x="state.fantome.x" t-att-y="state.fantome.y"
+                          t-att-width="state.fantome.w" t-att-height="state.fantome.h"
+                          fill="none" stroke="#29ABE1" t-att-stroke-width="2 / state.zoom"
+                          t-att-stroke-dasharray="(8 / state.zoom) + ' ' + (5 / state.zoom)"
+                          pointer-events="none"/>
+                </svg>
+            </div>
+        </t>
+    </div>
+</t>
+
+</templates>

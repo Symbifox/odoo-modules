@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="paperformat_plan_lettre_paysage" model="report.paperformat">
+        <field name="name">Lettre paysage (plan d'étage)</field>
+        <field name="format">Letter</field>
+        <field name="orientation">Landscape</field>
+        <field name="margin_top">14</field>
+        <field name="margin_bottom">12</field>
+        <field name="margin_left">8</field>
+        <field name="margin_right">8</field>
+        <field name="header_spacing">6</field>
+        <field name="dpi">96</field>
+    </record>
+
+    <record id="action_report_plan" model="ir.actions.report">
+        <field name="name">Plan d'étage</field>
+        <field name="model">bf.floorplan</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">bf_floorplan.report_plan</field>
+        <field name="report_file">bf_floorplan.report_plan</field>
+        <field name="print_report_name">object.display_name</field>
+        <field name="binding_model_id" ref="model_bf_floorplan"/>
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="paperformat_plan_lettre_paysage"/>
+    </record>
+
+    <!-- Le même tracé que l'écran, dessiné par le serveur depuis to_dict().
+         ⚠️ wkhtmltopdf rend un SVG en ligne sans width/height à ZÉRO, sans un
+         mot : les deux attributs sont posés explicitement. -->
+    <template id="report_plan">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <!-- mise en page de base : le plan est un dessin, pas une lettre ;
+                     l'en-tête d'entreprise de la mise en page externe chevauche
+                     le titre sur une lettre paysage aux marges étroites -->
+                <t t-call="web.basic_layout">
+                    <t t-set="d" t-value="o.to_dict()"/>
+                    <!-- les étiquettes se lisent à l'échelle du plan : plus le plan
+                         est large, plus le texte en unités du plan doit l'être -->
+                    <t t-set="fz" t-value="max(14.0, d['largeur'] / 90.0)"/>
+                    <t t-set="fzz" t-value="max(22.0, d['largeur'] / 55.0)"/>
+                    <!-- 960 px de large tient dans une lettre paysage ; un plan
+                         plus profond que large se cale sur la hauteur. -->
+                    <t t-set="ratio" t-value="d['hauteur'] / d['largeur']"/>
+                    <t t-set="lg" t-value="960 if ratio &lt;= 0.66 else int(640 / ratio)"/>
+                    <t t-set="ht" t-value="int(lg * ratio)"/>
+                    <div class="page o_bf_floorplan_page" style="font-family: Lexend, sans-serif; color: #2D3031;">
+                        <div style="display: flex; justify-content: space-between; align-items: baseline;">
+                            <h2 style="margin: 0 0 2px 0;"><t t-out="d['titre']"/></h2>
+                            <span style="font-size: 10px; color: #73787A;">
+                                <t t-out="o.company_id.name"/> · <t t-out="time.strftime('%Y-%m-%d')"/>
+                            </span>
+                        </div>
+                        <div style="font-size: 10px; color: #73787A; margin-bottom: 6px;">
+                            <t t-out="int(d['largeur'])"/> × <t t-out="int(d['hauteur'])"/> cm ·
+                            <t t-out="len(d['zones'])"/> zones ·
+                            <t t-out="len(d['elements'])"/> éléments ·
+                            <t t-out="d['occupes']"/>/<t t-out="d['places']"/> places
+                            <t t-if="o.partner_id"> · <t t-out="o.partner_id.display_name"/></t>
+                        </div>
+                        <svg xmlns="http://www.w3.org/2000/svg"
+                             xmlns:xlink="http://www.w3.org/1999/xlink"
+                             t-att-width="lg" t-att-height="ht"
+                             t-attf-style="width: {{lg}}px; height: {{ht}}px; display: block;"
+                             t-attf-viewBox="0 0 {{d['largeur']}} {{d['hauteur']}}">
+                            <rect x="0" y="0" t-att-width="d['largeur']" t-att-height="d['hauteur']"
+                                  fill="#FFFFFF" stroke="#2D3031" stroke-width="3"/>
+                            <image t-if="o.fond" x="0" y="0"
+                                   t-att-width="d['largeur']" t-att-height="d['hauteur']"
+                                   preserveAspectRatio="none"
+                                   t-att="{'href': image_data_uri(o.fond), 'xlink:href': image_data_uri(o.fond)}"/>
+                            <t t-foreach="d['zones']" t-as="z">
+                                <rect t-att-x="z['x']" t-att-y="z['y']" t-att-width="z['w']"
+                                      t-att-height="z['h']" t-att-fill="z['couleur']"
+                                      fill-opacity="0.75" stroke="#2D3031" stroke-width="2"/>
+                                <text t-att-x="z['x'] + 8" t-att-y="z['y'] + fzz + 4"
+                                      t-att-font-size="fzz" font-weight="600" fill="#2D3031"
+                                      font-family="Lexend, sans-serif">
+                                    <t t-out="z['nom']"/><t t-if="z['capacite']"> (<t t-out="z['occupes']"/>/<t t-out="z['capacite']"/>)</t>
+                                </text>
+                            </t>
+                            <t t-foreach="d['liens']" t-as="li">
+                                <line t-att-x1="li['points'][0][0]" t-att-y1="li['points'][0][1]"
+                                      t-att-x2="li['points'][1][0]" t-att-y2="li['points'][1][1]"
+                                      t-att-stroke="{'reseau': '#73787A', 'fibre': '#D69921', 'electrique': '#C0392B'}.get(li['genre'], '#2D3031')"
+                                      stroke-width="2" stroke-dasharray="8 6"/>
+                            </t>
+                            <t t-foreach="d['elements']" t-as="e">
+                                <t t-set="cx" t-value="e['x'] + e['w'] / 2.0"/>
+                                <t t-set="cy" t-value="e['y'] + e['h'] / 2.0"/>
+                                <g t-attf-transform="rotate({{e['rot']}} {{cx}} {{cy}})">
+                                    <rect t-att-x="e['x']" t-att-y="e['y']" t-att-width="e['w']"
+                                          t-att-height="e['h']"
+                                          t-att-rx="e['w'] / 2.0 if e['genre'] in ('borne', 'telephone', 'camera') else 3"
+                                          t-att-fill="{'poste': '#FFFFFF', 'table': '#FFFFFF', 'serveur': '#ECEFF1', 'baie': '#DDE3E6', 'borne': '#EAF7FD'}.get(e['genre'], '#FFFFFF')"
+                                          t-att-stroke="{'alerte': '#C0392B', 'attention': '#D69921', 'ok': '#1B8A4B'}.get(e['teinte'], '#2D3031')"
+                                          t-att-stroke-width="4 if e['teinte'] else 2"
+                                          t-att-stroke-dasharray="'6 4' if e['genre'] == 'autre' else None"/>
+                                    <rect t-if="e['genre'] == 'poste'" t-att-x="e['x'] + e['w'] * 0.3"
+                                          t-att-y="e['y'] + 4" t-att-width="e['w'] * 0.4" height="8"
+                                          fill="#2D3031"/>
+                                </g>
+                                <!-- l'étiquette tient dans la forme, ou se pose dessous -->
+                                <t t-set="dedans" t-value="e['h'] >= fz * 1.6 and len(e['nom']) * fz * 0.58 &lt;= e['w'] - 6"/>
+                                <text t-att-x="cx" t-att-y="cy + fz / 3 if dedans else e['y'] + e['h'] + fz"
+                                      text-anchor="middle" t-att-font-size="fz" fill="#2D3031"
+                                      font-family="Lexend, sans-serif">
+                                    <t t-out="e['nom']"/>
+                                </text>
+                                <text t-if="e['occupant'] and dedans and e['h'] >= fz * 3.2" t-att-x="cx" t-att-y="cy + fz / 3 + fz * 1.1"
+                                      text-anchor="middle" t-att-font-size="fz * 0.85" fill="#73787A"
+                                      font-family="Lexend, sans-serif">
+                                    <t t-out="e['occupant']"/>
+                                </text>
+                            </t>
+                        </svg>
+                        <div style="font-size: 10px; color: #73787A; margin-top: 6px;">
+                            <t t-foreach="d['legende']['zones']" t-as="lz">
+                                <span t-attf-style="display:inline-block;width:10px;height:10px;border:1px solid #2D3031;background:{{lz['couleur']}};margin-right:3px;"/>
+                                <span style="margin-right: 10px;"><t t-out="lz['nom']"/></span>
+                            </t>
+                            <t t-if="d['legende']['liens']">
+                                <span style="margin-left: 8px;">Liens :
+                                    <t t-foreach="d['legende']['liens']" t-as="ll"><t t-out="ll['nom']"/><t t-if="not ll_last">, </t></t>
+                                </span>
+                            </t>
+                        </div>
+                        <t t-if="d['elements']">
+                            <h3 style="page-break-before: always; margin: 0 0 6px 0;">Inventaire par zone</h3>
+                            <table class="table table-sm" style="font-size: 11px;">
+                                <thead>
+                                    <tr>
+                                        <th>Zone</th><th>Élément</th><th>Nature</th>
+                                        <th>Occupant</th><th>Détail</th><th>Liens</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-foreach="sorted(d['elements'], key=lambda e: (e['zone'] or '~', e['genre_nom'], e['nom']))" t-as="e">
+                                        <tr>
+                                            <td><t t-out="e['zone'] or '—'"/></td>
+                                            <td><t t-out="e['nom']"/></td>
+                                            <td><t t-out="e['genre_nom']"/></td>
+                                            <td><t t-out="e['occupant']"/></td>
+                                            <td><t t-out="e['cible']['nom'] if e['cible'] else ''"/></td>
+                                            <td><t t-out="e['liens'] or ''"/></td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+                        </t>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="demo_emp_1" model="hr.employee">
+            <field name="name">Amélie Tremblay</field>
+        </record>
+        <record id="demo_emp_2" model="hr.employee">
+            <field name="name">Yanis Belkacem</field>
+        </record>
+        <record id="demo_emp_3" model="hr.employee">
+            <field name="name">Léa Fortin</field>
+        </record>
+        <record id="demo_emp_4" model="hr.employee">
+            <field name="name">Mathieu Bélanger</field>
+        </record>
+
+        <record id="demo_plan_rdc" model="bf.floorplan">
+            <field name="name">Bureau de démonstration</field>
+            <field name="batiment">Siège social</field>
+            <field name="etage">RDC</field>
+            <field name="largeur">1800</field>
+            <field name="profondeur">1200</field>
+            <field name="pas">25</field>
+            <field name="fond" type="base64" file="bf_floorplan/demo/fond_demo.png"/>
+            <field name="notes"><![CDATA[<p>Plan de démonstration : un étage de 18 m × 12 m, sept zones, une aire ouverte de huit postes, un local technique câblé.</p>]]></field>
+        </record>
+
+        <record id="demo_zone_accueil" model="bf.floorplan.zone">
+            <field name="plan_id" ref="demo_plan_rdc"/>
+            <field name="name">Accueil</field>
+            <field name="code">A-1</field>
+            <field name="genre">accueil</field>
+            <field name="x">25</field><field name="y">25</field>
+            <field name="w">375</field><field name="h">300</field>
+            <field name="capacite">1</field>
+            <field name="sequence">1</field>
+        </record>
+        <record id="demo_zone_reunion" model="bf.floorplan.zone">
+            <field name="plan_id" ref="demo_plan_rdc"/>
+            <field name="name">Salle Fleuve</field>
+            <field name="code">R-1</field>
+            <field name="genre">reunion</field>
+            <field name="x">425</field><field name="y">25</field>
+            <field name="w">450</field><field name="h">300</field>
+            <field name="capacite">8</field>
+            <field name="sequence">2</field>
+        </record>
+        <record id="demo_zone_direction" model="bf.floorplan.zone">
+            <field name="plan_id" ref="demo_plan_rdc"/>
+            <field name="name">Direction</field>
+            <field name="code">B-1</field>
+            <field name="genre">bureau</field>
+            <field name="x">1200</field><field name="y">25</field>
+            <field name="w">575</field><field name="h">350</field>
+            <field name="capacite">2</field>
+            <field name="sequence">3</field>
+        </record>
+        <record id="demo_zone_ouvert" model="bf.floorplan.zone">
+            <field name="plan_id" ref="demo_plan_rdc"/>
+            <field name="name">Aire ouverte</field>
+            <field name="code">O-1</field>
+            <field name="genre">ouvert</field>
+            <field name="x">25</field><field name="y">350</field>
+            <field name="w">1150</field><field name="h">825</field>
+            <field name="capacite">8</field>
+            <field name="sequence">4</field>
+        </record>
+        <record id="demo_zone_technique" model="bf.floorplan.zone">
+            <field name="plan_id" ref="demo_plan_rdc"/>
+            <field name="name">Local technique</field>
+            <field name="code">T-1</field>
+            <field name="genre">technique</field>
+            <field name="x">1200</field><field name="y">400</field>
+            <field name="w">275</field><field name="h">300</field>
+            <field name="sequence">5</field>
+        </record>
+        <record id="demo_zone_cuisine" model="bf.floorplan.zone">
+            <field name="plan_id" ref="demo_plan_rdc"/>
+            <field name="name">Cuisine</field>
+            <field name="code">C-1</field>
+            <field name="genre">repos</field>
+            <field name="x">1500</field><field name="y">400</field>
+            <field name="w">275</field><field name="h">300</field>
+            <field name="sequence">6</field>
+        </record>
+        <record id="demo_zone_entreposage" model="bf.floorplan.zone">
+            <field name="plan_id" ref="demo_plan_rdc"/>
+            <field name="name">Entreposage</field>
+            <field name="code">E-1</field>
+            <field name="genre">entreposage</field>
+            <field name="x">1200</field><field name="y">725</field>
+            <field name="w">575</field><field name="h">450</field>
+            <field name="sequence">7</field>
+        </record>
+
+        <!-- huit postes en deux rangées -->
+        <record id="demo_el_p1" model="bf.floorplan.element">
+            <field name="plan_id" ref="demo_plan_rdc"/><field name="name">P-01</field>
+            <field name="genre">poste</field><field name="x">100</field><field name="y">450</field>
+            <field name="w">160</field><field name="h">80</field>
+            <field name="employee_id" ref="demo_emp_1"/>
+        </record>
+        <record id="demo_el_p2" model="bf.floorplan.element">
+            <field name="plan_id" ref="demo_plan_rdc"/><field name="name">P-02</field>
+            <field name="genre">poste</field><field name="x">325</field><field name="y">450</field>
+            <field name="w">160</field><field name="h">80</field>
+            <field name="employee_id" ref="demo_emp_2"/>
+        </record>
+        <record id="demo_el_p3" model="bf.floorplan.element">
+            <field name="plan_id" ref="demo_plan_rdc"/><field name="name">P-03</field>
+            <field name="genre">poste</field><field name="x">550</field><field name="y">450</field>
+            <field name="w">160</field><field name="h">80</field>
+            <field name="employee_id" ref="demo_emp_3"/>
+        </record>
+        <record id="demo_el_p4" model="bf.floorplan.element">
+            <field name="plan_id" ref="demo_plan_rdc"/><field name="name">P-04</field>
+            <field name="genre">poste</field><field name="x">775</field><field name="y">450</field>
+            <field name="w">160</field><field name="h">80</field>
+        </record>
+        <record id="demo_el_p5" model="bf.floorplan.element">
+            <field name="plan_id" ref="demo_plan_rdc"/><field name="name">P-05</field>
+            <field name="genre">poste</field><field name="x">100</field><field name="y">725</field>
+            <field name="w">160</field><field name="h">80</field><field name="rotation">180</field>
+        </record>
+        <record id="demo_el_p6" model="bf.floorplan.element">
+            <field name="plan_id" ref="demo_plan_rdc"/><field name="name">P-06</field>
+            <field name="genre">poste</field><field name="x">325</field><field name="y">725</field>
+            <field name="w">160</field><field name="h">80</field><field name="rotation">180</field>
+        </record>
+        <record id="demo_el_p7" model="bf.floorplan.element">
+            <field name="plan_id" ref="demo_plan_rdc"/><field name="name">P-07</field>
+            <field name="genre">poste</field><field name="x">550</field><field name="y">725</field>
+            <field name="w">160</field><field name="h">80</field><field name="rotation">180</field>
+        </record>
+        <record id="demo_el_p8" model="bf.floorplan.element">
+            <field name="plan_id" ref="demo_plan_rdc"/><field name="name">P-08</field>
+            <field name="genre">poste</field><field name="x">775</field><field name="y">725</field>
+            <field name="w">160</field><field name="h">80</field><field name="rotation">180</field>
+        </record>
+        <record id="demo_el_dir1" model="bf.floorplan.element">
+            <field name="plan_id" ref="demo_plan_rdc"/><field name="name">D-01</field>
+            <field name="genre">poste</field><field name="x">1275</field><field name="y">100</field>
+            <field name="w">160</field><field name="h">80</field>
+            <field name="employee_id" ref="demo_emp_4"/>
+        </record>
+        <record id="demo_el_dir2" model="bf.floorplan.element">
+            <field name="plan_id" ref="demo_plan_rdc"/><field name="name">D-02</field>
+            <field name="genre">poste</field><field name="x">1525</field><field name="y">100</field>
+            <field name="w">160</field><field name="h">80</field>
+        </record>
+        <record id="demo_el_table" model="bf.floorplan.element">
+            <field name="plan_id" ref="demo_plan_rdc"/><field name="name">Table Fleuve</field>
+            <field name="genre">table</field><field name="x">500</field><field name="y">125</field>
+            <field name="w">300</field><field name="h">120</field>
+        </record>
+        <record id="demo_el_ecran" model="bf.floorplan.element">
+            <field name="plan_id" ref="demo_plan_rdc"/><field name="name">Écran Fleuve</field>
+            <field name="genre">ecran</field><field name="x">575</field><field name="y">300</field>
+            <field name="w">150</field><field name="h">15</field>
+        </record>
+        <record id="demo_el_imprimante" model="bf.floorplan.element">
+            <field name="plan_id" ref="demo_plan_rdc"/><field name="name">Imprimante RH</field>
+            <field name="genre">imprimante</field><field name="x">1050</field><field name="y">400</field>
+            <field name="w">60</field><field name="h">60</field>
+        </record>
+        <record id="demo_el_baie" model="bf.floorplan.element">
+            <field name="plan_id" ref="demo_plan_rdc"/><field name="name">Baie A</field>
+            <field name="genre">baie</field><field name="x">1225</field><field name="y">425</field>
+            <field name="w">60</field><field name="h">100</field>
+        </record>
+        <record id="demo_el_commutateur" model="bf.floorplan.element">
+            <field name="plan_id" ref="demo_plan_rdc"/><field name="name">SW-01</field>
+            <field name="genre">commutateur</field><field name="x">1225</field><field name="y">550</field>
+            <field name="w">45</field><field name="h">25</field>
+        </record>
+        <record id="demo_el_serveur" model="bf.floorplan.element">
+            <field name="plan_id" ref="demo_plan_rdc"/><field name="name">SRV-01</field>
+            <field name="genre">serveur</field><field name="x">1325</field><field name="y">425</field>
+            <field name="w">60</field><field name="h">80</field>
+        </record>
+        <record id="demo_el_borne1" model="bf.floorplan.element">
+            <field name="plan_id" ref="demo_plan_rdc"/><field name="name">AP-01</field>
+            <field name="genre">borne</field><field name="x">600</field><field name="y">600</field>
+            <field name="w">30</field><field name="h">30</field>
+        </record>
+        <record id="demo_el_borne2" model="bf.floorplan.element">
+            <field name="plan_id" ref="demo_plan_rdc"/><field name="name">AP-02</field>
+            <field name="genre">borne</field><field name="x">1475</field><field name="y">925</field>
+            <field name="w">30</field><field name="h">30</field>
+        </record>
+        <record id="demo_el_prise" model="bf.floorplan.element">
+            <field name="plan_id" ref="demo_plan_rdc"/><field name="name">A-12</field>
+            <field name="genre">prise</field><field name="x">100</field><field name="y">375</field>
+            <field name="w">15</field><field name="h">15</field>
+        </record>
+        <record id="demo_el_camera" model="bf.floorplan.element">
+            <field name="plan_id" ref="demo_plan_rdc"/><field name="name">CAM-01</field>
+            <field name="genre">camera</field><field name="x">50</field><field name="y">50</field>
+            <field name="w">20</field><field name="h">20</field>
+        </record>
+        <record id="demo_el_telephone" model="bf.floorplan.element">
+            <field name="plan_id" ref="demo_plan_rdc"/><field name="name">Accueil</field>
+            <field name="genre">telephone</field><field name="x">200</field><field name="y">150</field>
+            <field name="w">20</field><field name="h">20</field>
+        </record>
+
+        <record id="demo_lien_1" model="bf.floorplan.lien">
+            <field name="plan_id" ref="demo_plan_rdc"/>
+            <field name="src_id" ref="demo_el_baie"/><field name="dst_id" ref="demo_el_commutateur"/>
+            <field name="genre">fibre</field><field name="name">Liaison montante</field>
+        </record>
+        <record id="demo_lien_2" model="bf.floorplan.lien">
+            <field name="plan_id" ref="demo_plan_rdc"/>
+            <field name="src_id" ref="demo_el_commutateur"/><field name="dst_id" ref="demo_el_borne1"/>
+            <field name="genre">reseau</field><field name="name">Cat6 · port 3</field>
+        </record>
+        <record id="demo_lien_3" model="bf.floorplan.lien">
+            <field name="plan_id" ref="demo_plan_rdc"/>
+            <field name="src_id" ref="demo_el_commutateur"/><field name="dst_id" ref="demo_el_imprimante"/>
+            <field name="genre">reseau</field><field name="name">Cat6 · port 7</field>
+        </record>
+        <record id="demo_lien_4" model="bf.floorplan.lien">
+            <field name="plan_id" ref="demo_plan_rdc"/>
+            <field name="src_id" ref="demo_el_commutateur"/><field name="dst_id" ref="demo_el_prise"/>
+            <field name="genre">reseau</field><field name="name">Cat6 · port 12</field>
+        </record>
+        <record id="demo_lien_5" model="bf.floorplan.lien">
+            <field name="plan_id" ref="demo_plan_rdc"/>
+            <field name="src_id" ref="demo_el_baie"/><field name="dst_id" ref="demo_el_serveur"/>
+            <field name="genre">electrique</field><field name="name">20 A</field>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,117 @@
+.o_bf_floorplan_visualiseur {
+    display: flex;
+    flex-direction: column;
+    min-height: 320px;
+
+    .o_bf_floorplan_barre {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: .35rem;
+        padding: .35rem .5rem;
+        border-bottom: 1px solid #DEE2E6;
+    }
+
+    .o_bf_floorplan_titre {
+        font-weight: 600;
+    }
+
+    .o_bf_floorplan_zoom {
+        min-width: 3.5rem;
+        text-align: center;
+        color: #73787A;
+        font-variant-numeric: tabular-nums;
+    }
+
+    // le plan déborde volontiers : il défile dans son cadre, jamais la page.
+    // La toile est une feuille : blanche, quel que soit le thème.
+    .o_bf_floorplan_toile {
+        overflow: auto;
+        background: #F4F5F6;
+        padding: .5rem;
+    }
+
+    .o_bf_floorplan_aide {
+        padding: .25rem .6rem;
+        font-size: .82rem;
+        color: #73787A;
+        background: #F5FBFE;
+        border-bottom: 1px solid #DEE2E6;
+    }
+
+    .o_bf_floorplan_sorte {
+        max-width: 8rem;
+    }
+
+    .o_bf_floorplan_genre {
+        max-width: 13rem;
+    }
+
+    svg text {
+        user-select: none;
+    }
+}
+
+.o_bf_floorplan_visualiseur.o_bf_floorplan_plein {
+    position: fixed;
+    inset: 0;
+    z-index: 1055;
+    background: #FFFFFF;
+
+    .o_bf_floorplan_toile {
+        height: calc(100vh - 3rem);
+    }
+}
+
+.o_bf_floorplan_toile {
+    min-height: 26rem;
+    cursor: grab;
+
+    &.o_bf_floorplan_glisse {
+        cursor: grabbing;
+        user-select: none;
+    }
+}
+
+.o_bf_floorplan_forme {
+    cursor: pointer;
+
+    &:hover {
+        stroke: #29ABE1;
+    }
+
+    &.o_bf_floorplan_pris {
+        stroke: #29ABE1;
+        stroke-width: 3;
+        stroke-dasharray: 4 3;
+    }
+
+    // le poste qu'on est venu chercher : un halo qui respire
+    &.o_bf_floorplan_surligne {
+        stroke: #29ABE1;
+        stroke-width: 6;
+        animation: o_bf_floorplan_halo 1.4s ease-in-out infinite;
+    }
+}
+
+@keyframes o_bf_floorplan_halo {
+    0%, 100% { stroke-opacity: 1; }
+    50% { stroke-opacity: .25; }
+}
+
+.o_bf_floorplan_lien {
+    cursor: default;
+}
+
+.o_bf_floorplan_poignee {
+    cursor: nwse-resize;
+}
+
+.o_bf_floorplan_toile.o_bf_floorplan_outil_deplacer .o_bf_floorplan_forme { cursor: move; }
+.o_bf_floorplan_toile.o_bf_floorplan_outil_poser { cursor: crosshair; }
+.o_bf_floorplan_toile.o_bf_floorplan_outil_tourner .o_bf_floorplan_forme { cursor: alias; }
+.o_bf_floorplan_toile.o_bf_floorplan_outil_lier .o_bf_floorplan_forme { cursor: alias; }
+.o_bf_floorplan_toile.o_bf_floorplan_outil_retirer .o_bf_floorplan_forme,
+.o_bf_floorplan_toile.o_bf_floorplan_outil_retirer .o_bf_floorplan_lien {
+    cursor: not-allowed;
+}
