@@ -13,6 +13,11 @@
               parent="menu_celebrations_root"
               action="action_celebration_board" sequence="20"/>
 
+    <menuitem id="menu_celebrations_signataires" name="Groupes de signataires"
+              parent="menu_celebrations_root"
+              action="action_celebration_signer_group" sequence="25"
+              groups="bf_celebrations.group_organizer"/>
+
     <menuitem id="menu_celebrations_moi" name="Mes célébrations"
               parent="menu_celebrations_root"
               action="action_mon_profil" sequence="30"/>

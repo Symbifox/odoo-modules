@@ -46,6 +46,17 @@
                             plus d'invitation à répondre.
                         </div>
                     </group>
+                    <group string="Garder mes cartes" invisible="consent == 'none'">
+                        <field name="keepsake_email" widget="email"
+                               placeholder="vous@exemple.com"/>
+                        <div class="text-muted" colspan="2">
+                            Facultatif. Une carte livrée dans le système disparaît
+                            avec votre compte, puis avec la purge prévue par la
+                            politique de conservation. À cette adresse arrive la
+                            même livraison, en PDF et en page à garder. Personne
+                            d'autre ne voit cette adresse.
+                        </div>
+                    </group>
                     <field name="employee_id" invisible="1"/>
                     <field name="consent_date" invisible="1"/>
                 </sheet>

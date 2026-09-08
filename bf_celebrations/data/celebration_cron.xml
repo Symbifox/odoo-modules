@@ -47,6 +47,18 @@
             <field name="active" eval="True"/>
         </record>
 
+        <!-- La purge de rétention. Inerte tant que le nombre de mois n'est
+             pas réglé (0, l'état de l'absence, veut dire « on garde »). -->
+        <record id="cron_purger" model="ir.cron">
+            <field name="name">Célébrations : effacer les cartes livrées échues</field>
+            <field name="model_id" ref="model_bf_celebration_board"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_purger_livres()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="active" eval="True"/>
+        </record>
+
         <!-- ⚠️ ÉTEINT à l'installation, volontairement. Ce cron écrit à des
              personnes réelles pour leur demander une donnée personnelle. Il
              s'allume quand l'entreprise a décidé du texte et du moment, pas

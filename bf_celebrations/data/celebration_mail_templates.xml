@@ -34,7 +34,7 @@
        affichée.</p>
     <p style="margin:24px 0">
         <a t-att-href="'%s/odoo/action-bf_celebrations.action_mon_profil' % (object.env['ir.config_parameter'].sudo().get_param('web.base.url') or '')"
-           style="background:#29ABE1;color:#ffffff;padding:11px 20px;border-radius:6px;text-decoration:none;display:inline-block">
+           style="background:#177AA3;color:#ffffff;padding:11px 20px;border-radius:6px;text-decoration:none;display:inline-block">
             Répondre</a>
     </p>
     <p style="color:#6b7280;font-size:12px">Personne d'autre que vous ne voit
@@ -63,7 +63,7 @@
        ou un code QR imprimé.</p>
     <p style="margin:24px 0">
         <a t-att-href="'%s/odoo/bf.celebration.occasion/%s' % (object.env['ir.config_parameter'].sudo().get_param('web.base.url') or '', object.id)"
-           style="background:#29ABE1;color:#ffffff;padding:11px 20px;border-radius:6px;text-decoration:none;display:inline-block">
+           style="background:#177AA3;color:#ffffff;padding:11px 20px;border-radius:6px;text-decoration:none;display:inline-block">
             Ouvrir la carte</a>
     </p>
     <p style="color:#6b7280;font-size:12px">Cette personne a accepté qu'on
@@ -109,14 +109,50 @@
     <p>Bonjour <t t-out="object.recipient_name or ''"/>,</p>
     <p>Vos collègues vous ont écrit.
        <strong t-out="object.published_post_count"/> message(s) vous
-       attendent sur une page qui restera à vous.</p>
+       attendent. Ouvrez l'enveloppe.</p>
     <p style="margin:24px 0">
         <a t-att-href="object.board_url"
-           style="background:#29ABE1;color:#ffffff;padding:11px 20px;border-radius:6px;text-decoration:none;display:inline-block">
+           style="background:#177AA3;color:#ffffff;padding:11px 20px;border-radius:6px;text-decoration:none;display:inline-block">
             Ouvrir la carte</a>
     </p>
-    <p style="color:#6b7280;font-size:12px">Le lien reste valide : revenez-y
-       quand vous voulez.</p>
+    <p style="color:#6b7280;font-size:12px">En pièces jointes, la carte à
+       garder : en PDF, et en page complète où les images animées bougent
+       encore. Le lien, lui, ne durera pas toujours ; ces deux fichiers
+       sont à vous.</p>
+</div>
+            </field>
+        </record>
+
+        <!-- ==========================================================
+             L'invitation à signer. Elle part aux groupes de signataires,
+             une fois par adresse, jamais à la personne fêtée. Le prénom
+             vient du contexte (`cel_invite_nom`), posé par le tableau au
+             moment de l'envoi.
+             ========================================================== -->
+        <record id="mail_template_invitation_signataire" model="mail.template">
+            <field name="name">Célébrations : invitation à signer</field>
+            <field name="model_id" ref="model_bf_celebration_board"/>
+            <field name="subject">Une carte à signer pour {{ object.recipient_name }}</field>
+            <field name="email_from">{{ (object.company_id.email_formatted or user.email_formatted) }}</field>
+            <field name="auto_delete" eval="False"/>
+            <field name="body_html" type="html">
+<div style="font-family:Lexend,Segoe UI,Arial,sans-serif;font-size:14px;color:#2D3031;line-height:1.6">
+    <p>Bonjour <t t-out="ctx.get('cel_invite_nom') or ''"/>,</p>
+    <p>Une carte collective est ouverte pour
+       <strong t-out="object.recipient_name or ''"/> :
+       <t t-out="object.name or ''"/>.</p>
+    <p>Un mot, une photo, un tracé à la main : ce que vous auriez écrit
+       dans la carte de papier. Aucun compte n'est demandé.</p>
+    <p style="margin:24px 0">
+        <a t-att-href="object.contribution_url"
+           style="background:#177AA3;color:#ffffff;padding:11px 20px;border-radius:6px;text-decoration:none;display:inline-block">
+            Signer la carte</a>
+    </p>
+    <p t-if="object.delivery_date">La carte part le
+       <strong t-out="format_datetime(object.delivery_date, tz=user.tz or 'UTC', dt_format='long')"/>.</p>
+    <p style="color:#6b7280;font-size:12px">La personne fêtée ne voit rien
+       avant la livraison : gardez-lui la surprise, et ne lui transférez pas
+       ce message.</p>
 </div>
             </field>
         </record>

@@ -57,7 +57,14 @@ class CelebrationOccasion(models.Model):
     name = fields.Char(string="Intitulé", compute="_compute_name", store=True)
     occasion_type = fields.Selection(
         TYPES, string="Type", required=True, default="birthday", index=True)
-    date = fields.Date(string="Date", required=True, index=True, tracking=True)
+    # ⚠️ Facultative depuis la 2.0. Une promotion, un rétablissement ou des
+    # condoléances n'ont pas de date au dossier, et forcer une date fictive
+    # pour passer la contrainte fabriquait un faux au calendrier. Sans date,
+    # l'occasion reste « à venir » jusqu'à ce qu'une carte soit livrée ou
+    # qu'on la ferme à la main : le cron de clôture ne la touche jamais, et
+    # ni le rappel ni l'agenda ne la voient, puisqu'ils n'ont rien à quoi se
+    # rapporter. Les occasions que le cron fabrique en portent toujours une.
+    date = fields.Date(string="Date", index=True, tracking=True)
 
     employee_id = fields.Many2one(
         "hr.employee", string="Personne soulignée", ondelete="cascade",
@@ -171,9 +178,10 @@ class CelebrationOccasion(models.Model):
             mail_notrack=True,
         )
         for occ in self:
-            if occ.calendar_event_id or not occ.allow_board:
+            if occ.calendar_event_id or not occ.allow_board or not occ.date:
                 # « Sans tableau » veut dire discret : discret ne va pas
-                # dans un agenda qui se synchronise ailleurs.
+                # dans un agenda qui se synchronise ailleurs. Et sans date,
+                # il n'y a rien à poser.
                 continue
             proprietaire = occ.organizer_id or occ._organisateur_par_defaut()
             if not proprietaire:
@@ -434,6 +442,12 @@ class CelebrationOccasion(models.Model):
 
     def _valeurs_tableau(self):
         self.ensure_one()
+        Board = self.env["bf.celebration.board"]
+        # Sans date au dossier, la carte part dans une semaine : le temps
+        # de récolter des signatures, et une date que l'organisateur peut
+        # déplacer d'un clic.
+        jour = self.date or (
+            fields.Date.context_today(self) + relativedelta(days=7))
         return {
             "name": self.name,
             "occasion_id": self.id,
@@ -441,10 +455,21 @@ class CelebrationOccasion(models.Model):
             "recipient_partner_id": self.partner_id.id,
             "organizer_id": (
                 self.organizer_id.id or self.env.user.id),
-            "delivery_date": fields.Datetime.to_datetime(
-                "%s 13:00:00" % self.date),
+            "delivery_date": Board._a_treize_heures(
+                jour, self.organizer_id or self.env.user),
             "company_id": self.company_id.id,
         }
+
+    def action_cloturer(self):
+        """Ferme à la main une occasion que le temps ne fermera pas.
+
+        Le cron ne clôture que ce qui porte une date passée. Une occasion
+        sans date, une fois la carte livrée ou l'idée abandonnée, se ferme
+        ici, sinon elle resterait « à venir » pour toujours.
+        """
+        self.filtered(lambda o: o.state == "upcoming").write(
+            {"state": "done"})
+        return True
 
     def action_voir_tableaux(self):
         self.ensure_one()

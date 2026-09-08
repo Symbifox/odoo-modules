@@ -100,6 +100,20 @@ class CelebrationProfile(models.Model):
              "« Non merci » n'est jamais relancée.",
     )
 
+    # Une carte de départ arrive le jour où l'adresse de travail se ferme,
+    # et une carte livrée dans Odoo disparaît avec le compte, puis avec la
+    # purge de rétention. L'adresse personnelle reçoit la même livraison :
+    # le PDF et la page souvenir, à garder hors du système. Elle appartient
+    # au profil, donc à la personne : la règle globale la cache à tout le
+    # monde d'autre, et la livraison la lit en sudo sans jamais l'afficher.
+    keepsake_email = fields.Char(
+        string="Adresse personnelle où garder mes cartes",
+        help="Facultative. Les cartes livrées y sont aussi envoyées, en PDF "
+             "et en page à conserver, pour qu'elles vous restent après votre "
+             "départ ou après la purge prévue par la politique de "
+             "conservation. Personne d'autre ne voit cette adresse.",
+    )
+
     _sql_constraints = [
         (
             "employee_uniq",

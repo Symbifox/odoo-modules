@@ -24,6 +24,16 @@
                             <field name="celebration_thin_days"/>
                         </setting>
                     </block>
+                    <block title="Conservation" name="celebrations_conservation">
+                        <setting string="Effacer les cartes livrées"
+                                 help="0 : on garde tout. Sinon, une carte livrée depuis plus de N mois est effacée avec ses mots, ses images et ses pièces jointes. La personne fêtée a reçu la sienne en PDF et en page souvenir à la livraison.">
+                            <field name="celebration_retention_months"/>
+                        </setting>
+                        <setting string="Plafond d'invitations par envoi"
+                                 help="Au-delà, l'envoi aux signataires est refusé plutôt que de saturer la file de courriels.">
+                            <field name="celebration_invite_cap"/>
+                        </setting>
+                    </block>
                     <block title="Diffusion" name="celebrations_diffusion">
                         <setting string="Personne qui organise par défaut">
                             <field name="celebration_default_organizer_id"/>

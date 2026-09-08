@@ -3,3 +3,15 @@
 .o_form_view .o_field_widget[name="contribution_url"] {
     word-break: break-all;
 }
+
+.o_form_view .o_field_widget[name="board_url"] {
+    word-break: break-all;
+}
+
+/* Le code QR à côté du lien : blanc autour, quel que soit le thème du client
+   web, parce qu'un QR sur fond sombre se lit mal à la caméra. */
+.o_form_view .o_cel_qr img {
+    background: #FFFFFF;
+    padding: 6px;
+    border-radius: 6px;
+}

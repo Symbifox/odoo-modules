@@ -72,7 +72,90 @@ chatter at creation.
   15, 20, 25, 30, 35, 40 years), welcome, farewell, retirement,
   congratulations, get-well, condolences.
 * Optional calendar mirror, announcement to a Discuss channel, PDF keepsake and
-  a slideshow mode for the office screen.
+  a cross-fading slideshow for the office screen.
+* **Occasions with or without a date** (2.0). A promotion or a recovery is
+  celebrated when it happens; a dateless occasion stays "upcoming" until its
+  card is delivered, or until someone marks it past. No reminder and no
+  calendar entry, since there is no day to attach them to.
+
+## Handwriting (2.0)
+
+Three degrees, from the lightest to the most committed:
+
+1. **Signatures are handwritten everywhere**, in Caveat (SIL OFL, bundled and
+   served locally; no remote font is ever loaded). Signing a card is a gesture
+   of the hand.
+2. **A message can be shown in handwriting**: a checkbox on the public page, a
+   `style` field on the message.
+3. **Draw with a finger, a stylus or a mouse** on a canvas in the public page.
+   The strokes are stored as **vectors** (`ink_strokes`, JSON of bounded
+   coordinates), never as an image: they are redrawn in `currentColor`, so in
+   the text colour of whatever theme the card wears, they weigh a few
+   kilobytes, and they stay crisp in the PDF. The server keeps numbers only;
+   no markup supplied by an anonymous visitor ever reaches the page.
+
+`touch-action: none` on the canvas: without it, a finger scrolls the page
+instead of writing.
+
+## Signer groups (2.0)
+
+`bf.celebration.signer.group`: people, departments and contacts, resolved **at
+send time** (someone who joined the department since gets the link, someone who
+left does not). The link goes out once per address, when the card opens and on
+every "Invite signers", and the recipient is removed by **all** their known
+addresses, not only by their record: a department necessarily contains them.
+
+What a group does **not** do: say who has signed. Signing is free and
+account-less, so "who has not signed yet" is not data we hold. The chatter gets
+a count, never names, because the recipient reads it after delivery. The fields
+are reserved to the organiser group for the same reason.
+
+## What remains when the database has nothing left (2.0)
+
+A card delivered inside Odoo disappears with the account, then with the
+retention purge. Delivery therefore ships **with its keepsakes**, attached to
+the email and downloadable from the delivered page:
+
+* a **PDF** (the `report_board` report, in Caveat for handwritten messages);
+* a **self-contained HTML page**: stylesheet, font and images inlined, no
+  script, no link back to the server. It opens from disk ten years from now,
+  and animated GIFs still move in it, which a PDF cannot do.
+
+Above 15 MB an attachment is held back and the chatter says so: a mail server
+that bounces silently is worth less than a link.
+
+The person can add a **personal address** (`keepsake_email`) under **My
+celebrations**: it belongs to their profile, the global rule hides it from
+everyone else, and delivery reads it with sudo without ever displaying it. A
+farewell card arrives the day the work address closes; that is precisely the
+case it exists for.
+
+A setting, **off by default**, deletes delivered cards after N months
+(`bf_celebrations.retention_months`, daily job). 0 is the state of absence,
+and the state of absence is "keep".
+
+## The opening (2.0)
+
+On a delivered card: an envelope in the theme's colours whose flap lifts, the
+card sliding out, then the messages arriving one by one under a fall of
+confetti. All CSS; the script only orchestrates. Three restraints, because an
+animation you cannot cut short is a nuisance: `prefers-reduced-motion` removes
+it, a click skips it, and it plays once per browser ("Replay the opening"
+brings it back).
+
+## Four 1.0 defects fixed in 2.0
+
+* **The default delivery time was read as UTC**: 13:00 became 09:00 in
+  Montreal. It is now 13:00 in the organiser's timezone.
+* **The QR code was announced on the form and never shown.** A computed
+  `qr_image` displays it.
+* **A due, empty board scheduled one activity per hour** (the delivery job is
+  hourly). An `empty_notified` flag warns once.
+* **Every image was served as `image/png`** under `X-Content-Type-Options:
+  nosniff`, GIFs included. The type now comes from the bytes.
+* Email buttons painted `#29ABE1` under white text (2.62:1) move to a measured
+  `#177AA3`. The templates are `noupdate`: the 2.0.0 migration recolours the
+  ones already installed, only if they still carry the old colour.
 
 ### Work anniversaries without assuming `hr_contract`
 
@@ -116,6 +199,7 @@ after its release — see `LICENSE` for the exact parameters.
 
 | Version | Notes |
 |---|---|
+| 18.0.2.0.0 | Handwriting (font, style, vector ink), signer groups, delivery opening animation, PDF + self-contained HTML keepsakes, personal keepsake address, optional retention purge, dateless occasions; four 1.0 fixes (UTC delivery hour, missing QR, hourly activity, image MIME type) |
 | 18.0.1.0.2 | Board title placeholder no longer suggests a person's first name |
 | 18.0.1.0.1 | Icon titles for screen readers; consent changes are now tracked on the profile itself |
 | 18.0.1.0.0 | First release |

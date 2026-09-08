@@ -21,8 +21,9 @@ import time
 from collections import defaultdict
 
 from odoo import _, fields, http
-from odoo.http import Controller, request, route
+from odoo.http import Controller, content_disposition, request, route
 from odoo.tools import html2plaintext
+from odoo.tools.mimetypes import guess_mimetype
 
 _logger = logging.getLogger(__name__)
 
@@ -37,6 +38,10 @@ _CSP = (
     "base-uri 'self'; "
     "form-action 'self'"
 )
+
+from markupsafe import Markup
+
+DOCTYPE = Markup("<!DOCTYPE html>")
 
 _bucket_lock = threading.Lock()
 _bucket_data = defaultdict(list)
@@ -137,12 +142,17 @@ class CelebrationController(Controller):
     def _rendre(self, gabarit, valeurs, board=None):
         valeurs.setdefault("palette", board.palette() if board else {})
         valeurs.setdefault("board", board)
+        # ⚠️ `doctype` n'est fourni par personne : sans lui, `t-out="doctype"`
+        # rend vide et la page s'affiche en mode « quirks », où la grille et
+        # les rapports d'aspect ne se comportent plus comme écrit.
+        valeurs.setdefault("doctype", DOCTYPE)
         return _entetes(request.render(gabarit, valeurs))
 
     def _indisponible(self, motif=None):
         return _entetes(request.render(
             "bf_celebrations.page_indisponible",
-            {"motif": motif or _("Ce lien n'est plus valide.")}))
+            {"motif": motif or _("Ce lien n'est plus valide."),
+             "doctype": DOCTYPE}))
 
     # ------------------------------------------------------------------
     # La page où l'on signe
@@ -193,7 +203,17 @@ class CelebrationController(Controller):
                 return request.redirect(
                     "/celebration/%s?erreur=image" % token)
 
-        if not html2plaintext(corps).strip() and not image_b64:
+        # L'encre : des traits tracés au doigt ou à la souris, relus par le
+        # modèle qui n'en garde que des nombres bornés. Une charge tordue
+        # est refusée poliment, jamais stockée.
+        Post = request.env["bf.celebration.post"].sudo()
+        try:
+            encre = Post._normaliser_encre(post.get("ink") or "")
+        except ValueError:
+            return request.redirect("/celebration/%s?erreur=encre" % token)
+
+        if (not html2plaintext(corps).strip() and not image_b64
+                and not encre):
             return request.redirect("/celebration/%s?erreur=vide" % token)
 
         etat = "pending" if board.moderation else "published"
@@ -205,15 +225,18 @@ class CelebrationController(Controller):
             # sur une page que tout le bureau ouvrira serait une porte, même
             # avec l'assainissement d'Odoo derrière.
             "body": self._en_paragraphes(corps),
+            "style": "hand" if post.get("style") == "hand" else "typed",
             "state": etat,
             "create_ip": _ip(),
         }
         if image_b64:
             valeurs["image"] = image_b64
+        if encre:
+            valeurs["ink_strokes"] = encre
         if not request.env.user._is_public():
             valeurs["author_user_id"] = request.env.user.id
             valeurs["author_partner_id"] = request.env.user.partner_id.id
-        request.env["bf.celebration.post"].sudo().create(valeurs)
+        Post.create(valeurs)
         suite = "attente" if etat == "pending" else "merci"
         return request.redirect("/celebration/%s?%s=1" % (token, suite))
 
@@ -262,6 +285,7 @@ class CelebrationController(Controller):
                     lambda p: p.state == "published"),
                 "token": token,
                 "livre": board.state == "delivered",
+                "rejouer": "ouvrir" in request.params,
             },
             board,
         )
@@ -298,8 +322,12 @@ class CelebrationController(Controller):
             return request.not_found()
         import base64
         contenu = base64.b64decode(message.image)
+        # ⚠️ Le type est celui des OCTETS, pas un « image/png » posé
+        # d'office : sous `X-Content-Type-Options: nosniff`, un GIF annoncé
+        # PNG est un mensonge, et c'est justement le GIF qu'on veut voir
+        # bouger.
         return _entetes(request.make_response(contenu, headers=[
-            ("Content-Type", "image/png"),
+            ("Content-Type", guess_mimetype(contenu, default="image/png")),
             ("Content-Length", str(len(contenu))),
             ("Cache-Control", "private, max-age=600"),
         ]))
@@ -313,9 +341,48 @@ class CelebrationController(Controller):
         import base64
         contenu = base64.b64decode(board.background_image)
         return _entetes(request.make_response(contenu, headers=[
-            ("Content-Type", "image/png"),
+            ("Content-Type", guess_mimetype(contenu, default="image/png")),
             ("Content-Length", str(len(contenu))),
             ("Cache-Control", "private, max-age=600"),
+        ]))
+
+    # ------------------------------------------------------------------
+    # Le souvenir, à garder hors du système
+    # ------------------------------------------------------------------
+    # Servis seulement une fois la carte livrée : avant, la page se signe
+    # et rien n'est fini. Après, le lien mourra un jour (compte fermé,
+    # purge de rétention) et ces deux fichiers sont ce qui reste.
+
+    @route("/celebration/<string:token>/pdf", type="http", auth="public",
+           methods=["GET"], csrf=False, sitemap=False)
+    def souvenir_pdf(self, token, **kw):
+        board = self._tableau(token)
+        if not board or board.state != "delivered":
+            return self._indisponible(_(
+                "La carte n'est pas encore livrée."))
+        contenu = board._pdf_souvenir()
+        nom = "Carte - %s.pdf" % (board.recipient_name or board.name)
+        return _entetes(request.make_response(contenu, headers=[
+            ("Content-Type", "application/pdf"),
+            ("Content-Length", str(len(contenu))),
+            ("Content-Disposition", content_disposition(nom)),
+        ]))
+
+    @route("/celebration/<string:token>/souvenir", type="http",
+           auth="public", methods=["GET"], csrf=False, sitemap=False)
+    def souvenir_html(self, token, **kw):
+        board = self._tableau(token)
+        if not board or board.state != "delivered":
+            return self._indisponible(_(
+                "La carte n'est pas encore livrée."))
+        contenu = board._html_souvenir()
+        nom = "Carte - %s.html" % (board.recipient_name or board.name)
+        # ⚠️ En pièce à télécharger, jamais affichée depuis notre origine :
+        # une page autonome est faite pour être ouverte depuis le disque.
+        return _entetes(request.make_response(contenu, headers=[
+            ("Content-Type", "text/html; charset=utf-8"),
+            ("Content-Length", str(len(contenu))),
+            ("Content-Disposition", content_disposition(nom)),
         ]))
 
     @route("/celebration/<string:token>/qr", type="http", auth="public",

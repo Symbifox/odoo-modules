@@ -1,0 +1,12 @@
+/* Célébrations — la police manuscrite dans le PDF souvenir.
+ *
+ * wkhtmltopdf (Qt WebKit) ne lit pas le woff2 : d'où un TTF statique, la
+ * graisse 400 de Caveat (OFL, voir static/fonts/Caveat.OFL.txt). Le fichier
+ * est repris par le paquet `web.report_assets_common`, donc l'URL relative
+ * se résout depuis l'adresse absolue du paquet, comme celle de Lexend. */
+@font-face {
+    font-family: "Caveat";
+    src: url("/bf_celebrations/static/fonts/Caveat-Regular.ttf") format("truetype");
+    font-weight: 400;
+    font-style: normal;
+}

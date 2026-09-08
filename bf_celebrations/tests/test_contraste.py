@@ -12,7 +12,8 @@ Un thème ajouté plus tard tombera dans le même piège. Ce test le rattrape.
 
 from odoo.tests import TransactionCase, tagged
 
-from odoo.addons.bf_celebrations.models.celebration_board import PALETTES
+from odoo.addons.bf_celebrations.models.celebration_board import (
+    BOUTON_COURRIEL, PALETTES)
 
 AA_TEXTE = 4.5   # texte courant
 AA_OBJET = 3.0   # frontière d'un objet d'interface, et gros titre
@@ -60,6 +61,14 @@ class TestContraste(TransactionCase):
                         % (nom, libelle, mesure, seuil))
         self.assertFalse(echecs, "Contrastes insuffisants :\n  " +
                          "\n  ".join(echecs))
+
+    def test_le_bouton_des_courriels_est_lisible(self):
+        """🔴 La 1.0 peignait les boutons en #29ABE1 sous du blanc : 2,62:1.
+        La migration 2.0.0 recolore les gabarits déjà installés."""
+        self.assertGreaterEqual(contraste("#FFFFFF", BOUTON_COURRIEL), AA_TEXTE)
+        self.assertLess(contraste("#FFFFFF", "#29ABE1"), AA_TEXTE,
+                        "Si le bleu de marque passait, ce test n'aurait "
+                        "plus de raison d'être.")
 
     def test_toutes_les_cles_sont_la(self):
         """Une palette incomplète rendrait le repli du `var()`, donc la

@@ -48,6 +48,11 @@
                             Cette carte est livrée. Elle se lit encore, mais
                             elle ne se signe plus.
                         </p>
+                        <p class="cel-actions" t-if="ferme and board.state == 'delivered'">
+                            <a class="cel-bouton cel-bouton-secondaire"
+                               t-attf-href="/celebration/#{token}/tableau">
+                                Voir la carte</a>
+                        </p>
                     </header>
 
                     <div t-if="board.intro_html" class="cel-intro"
@@ -67,12 +72,17 @@
                     </div>
                     <div t-if="request.params.get('erreur') == 'vide'"
                          class="cel-alerte cel-alerte-avis">
-                        Écrivez un mot ou ajoutez une image.
+                        Écrivez un mot, tracez quelque chose ou ajoutez une image.
                     </div>
                     <div t-if="request.params.get('erreur') == 'image'"
                          class="cel-alerte cel-alerte-avis">
                         Cette image n'a pas été retenue. Formats acceptés :
                         PNG, JPEG, GIF, WebP, jusqu'à 8 Mo.
+                    </div>
+                    <div t-if="request.params.get('erreur') == 'encre'"
+                         class="cel-alerte cel-alerte-avis">
+                        Le tracé n'a pas été retenu. Réessayez, avec un peu
+                        moins de traits.
                     </div>
 
                     <section class="cel-carte cel-formulaire" t-if="not ferme">
@@ -86,10 +96,47 @@
                                    name="author_name" maxlength="80" required="required"
                                    placeholder="Comment vous signez"/>
 
-                            <label class="cel-label" for="body">Votre mot</label>
-                            <textarea class="cel-input cel-textarea" id="body"
-                                      name="body" rows="5" maxlength="1200"
-                                      placeholder="Ce que vous auriez écrit dans la carte de papier."/>
+                            <div class="cel-onglets" role="tablist" aria-label="Comment écrire">
+                                <button type="button" class="cel-onglet cel-onglet-actif"
+                                        role="tab" aria-selected="true"
+                                        data-cel-onglet="clavier">Écrire</button>
+                                <button type="button" class="cel-onglet" role="tab"
+                                        aria-selected="false"
+                                        data-cel-onglet="main">À la main</button>
+                            </div>
+
+                            <div data-cel-volet="clavier">
+                                <label class="cel-label" for="body">Votre mot</label>
+                                <textarea class="cel-input cel-textarea" id="body"
+                                          name="body" rows="5" maxlength="1200"
+                                          placeholder="Ce que vous auriez écrit dans la carte de papier."/>
+                                <label class="cel-case">
+                                    <input type="checkbox" name="style" value="hand"/>
+                                    Afficher mon mot en écriture manuscrite
+                                </label>
+                            </div>
+
+                            <div data-cel-volet="main" hidden="hidden">
+                                <label class="cel-label" for="cel-encre">
+                                    Tracez votre mot ou votre signature
+                                </label>
+                                <!-- ⚠️ `touch-action: none` est dans la feuille :
+                                     sans lui, le doigt fait défiler la page au
+                                     lieu d'écrire. -->
+                                <canvas id="cel-encre" class="cel-encre cel-encre-vide"
+                                        width="800" height="320"
+                                        aria-label="Zone pour écrire à la main"
+                                        role="img"/>
+                                <div class="cel-encre-outils">
+                                    <button type="button" class="cel-bouton cel-bouton-secondaire cel-bouton-petit"
+                                            id="cel-encre-annuler">Annuler le dernier trait</button>
+                                    <button type="button" class="cel-bouton cel-bouton-secondaire cel-bouton-petit"
+                                            id="cel-encre-effacer">Tout effacer</button>
+                                </div>
+                                <input type="hidden" name="ink" id="cel-encre-donnees"/>
+                                <p class="cel-aide">Au doigt, au stylet ou à la souris.
+                                   Le trait prend la couleur de la carte.</p>
+                            </div>
 
                             <t t-if="board.allow_images">
                                 <label class="cel-label" for="image">
@@ -111,11 +158,13 @@
                             Déjà sur la carte
                         </h2>
                         <div class="cel-grille">
-                            <article class="cel-carte cel-mot"
-                                     t-foreach="messages" t-as="mot">
+                            <article t-foreach="messages" t-as="mot"
+                                     t-attf-class="cel-carte cel-mot #{'cel-manuscrit' if mot.style == 'hand' else ''}">
                                 <img class="cel-mot-image" t-if="mot.image"
                                      t-attf-src="/celebration/#{token}/image/#{mot.id}"
                                      t-attf-alt="Image de #{mot.author_name}"/>
+                                <div class="cel-mot-encre" t-if="mot.has_ink"
+                                     t-out="mot.ink_svg()"/>
                                 <div class="cel-mot-corps" t-out="mot.body"/>
                                 <p class="cel-mot-signature">
                                     — <t t-esc="mot.author_name"/>
@@ -133,6 +182,8 @@
                            n'existe que pour qui a le lien.</p>
                     </footer>
                 </main>
+                <script t-if="not ferme" type="text/javascript"
+                        src="/bf_celebrations/static/src/js/encre.js"/>
             </body>
         </html>
     </template>
@@ -149,6 +200,30 @@
                 <t t-call="bf_celebrations.style_commun"/>
             </head>
             <body class="cel-body">
+                <!-- L'ouverture : une enveloppe, seulement quand la carte est
+                     livrée et qu'il y a des mots. Cachée d'office ; le script
+                     décide de la montrer (jamais si la personne a demandé
+                     moins de mouvement, ni une seconde fois sans « Rejouer »). -->
+                <div t-if="livre and messages" id="cel-ouverture"
+                     class="cel-ouverture" hidden="hidden"
+                     t-att-data-token="token"
+                     t-att-data-rejouer="'1' if rejouer else '0'"
+                     role="button" tabindex="0"
+                     aria-label="Ouvrir la carte">
+                    <div class="cel-enveloppe" aria-hidden="true">
+                        <div class="cel-enveloppe-dos"/>
+                        <div class="cel-enveloppe-carte">
+                            <span class="cel-enveloppe-pour">Pour</span>
+                            <strong t-esc="board.recipient_name"/>
+                        </div>
+                        <div class="cel-enveloppe-poche"/>
+                        <div class="cel-enveloppe-rabat"/>
+                    </div>
+                    <p class="cel-ouverture-aide">Touchez pour ouvrir</p>
+                </div>
+                <div id="cel-confettis" class="cel-confettis" hidden="hidden"
+                     aria-hidden="true"/>
+
                 <main class="cel-wrap">
                     <header class="cel-header">
                         <h1 class="cel-title"><t t-esc="board.name"/></h1>
@@ -159,6 +234,9 @@
                             <a class="cel-bouton cel-bouton-secondaire"
                                t-attf-href="/celebration/#{token}/diaporama">
                                 Voir en diaporama</a>
+                            <a t-if="livre" class="cel-bouton cel-bouton-secondaire"
+                               t-attf-href="/celebration/#{token}/tableau?ouvrir=1">
+                                Rejouer l'ouverture</a>
                         </p>
                     </header>
 
@@ -167,11 +245,13 @@
 
                     <section class="cel-mur">
                         <div class="cel-grille">
-                            <article class="cel-carte cel-mot"
-                                     t-foreach="messages" t-as="mot">
+                            <article t-foreach="messages" t-as="mot"
+                                     t-attf-class="cel-carte cel-mot #{'cel-manuscrit' if mot.style == 'hand' else ''}">
                                 <img class="cel-mot-image" t-if="mot.image"
                                      t-attf-src="/celebration/#{token}/image/#{mot.id}"
                                      t-attf-alt="Image de #{mot.author_name}"/>
+                                <div class="cel-mot-encre" t-if="mot.has_ink"
+                                     t-out="mot.ink_svg()"/>
                                 <div class="cel-mot-corps" t-out="mot.body"/>
                                 <p class="cel-mot-signature">
                                     — <t t-esc="mot.author_name"/>
@@ -182,6 +262,83 @@
                             La carte est vide.
                         </p>
                     </section>
+
+                    <!-- Ce qui reste quand le lien ne mènera plus nulle part :
+                         un compte fermé, une purge de rétention. Les deux
+                         fichiers sont aussi partis en pièces jointes du
+                         courriel de livraison. -->
+                    <section class="cel-carte cel-souvenir" t-if="livre">
+                        <h2 class="cel-souvenir-titre">Garder cette carte</h2>
+                        <p>Ce lien ne durera pas toujours. Téléchargez la carte
+                           pour la garder : en PDF, ou en page complète qui
+                           s'ouvre sans rien d'autre, où les images animées
+                           bougent encore.</p>
+                        <p class="cel-actions cel-actions-gauche">
+                            <a class="cel-bouton" t-attf-href="/celebration/#{token}/pdf">
+                                Télécharger en PDF</a>
+                            <a class="cel-bouton cel-bouton-secondaire"
+                               t-attf-href="/celebration/#{token}/souvenir">
+                                Télécharger la page</a>
+                        </p>
+                    </section>
+                </main>
+                <script t-if="livre and messages" type="text/javascript"
+                        src="/bf_celebrations/static/src/js/livraison.js"/>
+            </body>
+        </html>
+    </template>
+
+    <!-- ==============================================================
+         La page souvenir : la carte entière dans UN fichier. Feuille de
+         style, police et images sont dedans ; aucun script, aucun lien vers
+         nous. Elle s'ouvre depuis le disque dans dix ans.
+         ============================================================== -->
+    <template id="page_souvenir" name="Célébrations : page souvenir">
+        <t t-out="doctype"/>
+        <html lang="fr">
+            <head>
+                <meta charset="utf-8"/>
+                <meta name="viewport" content="width=device-width, initial-scale=1"/>
+                <meta name="robots" content="noindex, nofollow"/>
+                <title><t t-esc="board.name"/></title>
+                <t t-call="bf_celebrations.style_commun"/>
+                <style t-out="css"/>
+            </head>
+            <body class="cel-body">
+                <main class="cel-wrap">
+                    <header class="cel-header">
+                        <h1 class="cel-title"><t t-esc="board.name"/></h1>
+                        <p class="cel-subtitle">
+                            <t t-esc="len(messages)"/> mot(s) de vos collègues<t
+                                t-if="board.delivered_date">, livrés le <t
+                                t-esc="board.delivered_date"
+                                t-options="{'widget': 'date'}"/></t>.
+                        </p>
+                    </header>
+                    <div t-if="board.intro_html" class="cel-intro"
+                         t-out="board.intro_html"/>
+                    <section class="cel-mur">
+                        <div class="cel-grille">
+                            <article t-foreach="messages" t-as="mot"
+                                     t-attf-class="cel-carte cel-mot #{'cel-manuscrit' if mot.style == 'hand' else ''}">
+                                <img class="cel-mot-image"
+                                     t-if="images.get(mot.id)"
+                                     t-att-src="images.get(mot.id)"
+                                     t-attf-alt="Image de #{mot.author_name}"/>
+                                <div class="cel-mot-encre" t-if="mot.has_ink"
+                                     t-out="mot.ink_svg()"/>
+                                <div class="cel-mot-corps" t-out="mot.body"/>
+                                <p class="cel-mot-signature">
+                                    — <t t-esc="mot.author_name"/>
+                                </p>
+                            </article>
+                        </div>
+                    </section>
+                    <footer class="cel-pied">
+                        <p>Carte gardée depuis <t t-esc="board.company_id.name"/>.
+                           Cette page est complète : elle n'a besoin de rien
+                           d'autre pour s'ouvrir.</p>
+                    </footer>
                 </main>
             </body>
         </html>
@@ -202,11 +359,14 @@
                 <div class="cel-diapo">
                     <h1 class="cel-diapo-titre"><t t-esc="board.name"/></h1>
                     <div class="cel-diapo-scene">
-                        <article class="cel-diapo-mot" t-foreach="messages"
-                                 t-as="mot" t-att-data-index="mot_index">
+                        <article t-foreach="messages" t-as="mot"
+                                 t-attf-class="cel-diapo-mot #{'cel-manuscrit' if mot.style == 'hand' else ''}"
+                                 t-att-data-index="mot_index">
                             <img class="cel-diapo-image" t-if="mot.image"
                                  t-attf-src="/celebration/#{token}/image/#{mot.id}"
                                  t-attf-alt="Image de #{mot.author_name}"/>
+                            <div class="cel-diapo-encre" t-if="mot.has_ink"
+                                 t-out="mot.ink_svg()"/>
                             <div class="cel-diapo-corps" t-out="mot.body"/>
                             <p class="cel-diapo-signature">
                                 — <t t-esc="mot.author_name"/>

@@ -34,10 +34,15 @@
                     <button name="action_diaporama" type="object"
                             string="Diaporama" class="btn-secondary"
                             invisible="state == 'draft'"/>
+                    <button name="action_inviter_signataires" type="object"
+                            string="Inviter les signataires" class="btn-secondary"
+                            invisible="state != 'open'"
+                            groups="bf_celebrations.group_organizer"
+                            help="Envoie le lien aux groupes et aux autres signataires qui ne l'ont pas encore reçu. La personne fêtée n'est jamais écrite."/>
                     <button name="action_livrer_maintenant" type="object"
                             string="Livrer maintenant"
                             invisible="state != 'open'"
-                            confirm="La personne fêtée recevra la carte tout de suite. Continuer ?"/>
+                            confirm="La personne fêtée recevra la carte tout de suite, avec le PDF et la page souvenir en pièces jointes. Continuer ?"/>
                     <button name="action_regenerer_jeton" type="object"
                             string="Couper le lien" invisible="state != 'open'"
                             confirm="L'ancien lien cessera de fonctionner pour tout le monde. Continuer ?"/>
@@ -51,16 +56,32 @@
                         <label for="name"/>
                         <h1><field name="name" placeholder="Bonne fête !"/></h1>
                     </div>
-                    <div class="alert alert-info" role="status"
+                    <div class="alert alert-info o_cel_lien" role="status"
                          invisible="state == 'draft'">
-                        <p class="mb-1"><strong>Le lien à partager</strong></p>
-                        <field name="contribution_url" widget="CopyClipboardChar"
-                               nolabel="1"/>
-                        <p class="mb-0 mt-2">
-                            Aucun compte n'est demandé. Le code QR de la même
-                            page :
-                            <field name="access_token" invisible="1"/>
-                        </p>
+                        <div class="d-flex flex-wrap align-items-start gap-3">
+                            <div class="flex-grow-1">
+                                <p class="mb-1"><strong>Le lien à partager</strong></p>
+                                <field name="contribution_url" widget="CopyClipboardChar"
+                                       nolabel="1"/>
+                                <p class="mb-1 mt-2">
+                                    Aucun compte n'est demandé. Le code QR mène à
+                                    la même page : imprimez-le, collez-le dans la
+                                    cuisine.
+                                </p>
+                                <p class="mb-0" invisible="state != 'delivered'">
+                                    <strong>La carte livrée :</strong>
+                                    <field name="board_url" widget="CopyClipboardChar"
+                                           nolabel="1"/>
+                                </p>
+                                <field name="access_token" invisible="1"/>
+                            </div>
+                            <!-- ⚠️ La 1.0 annonçait le code QR ici et ne
+                                 l'affichait pas : la phrase finissait sur un
+                                 champ invisible. -->
+                            <field name="qr_image" widget="image" nolabel="1"
+                                   class="o_cel_qr"
+                                   options="{'size': [140, 140], 'zoom': true}"/>
+                        </div>
                     </div>
                     <group>
                         <group string="Pour qui">
@@ -80,6 +101,24 @@
                         </group>
                     </group>
                     <notebook>
+                        <page string="Signataires" name="signataires"
+                              groups="bf_celebrations.group_organizer">
+                            <p class="text-muted">
+                                À qui l'on tend la carte. Le lien part une seule
+                                fois par adresse, à l'ouverture puis à chaque
+                                « Inviter les signataires ». La personne fêtée est
+                                retirée par toutes ses adresses, même si elle
+                                fait partie du service.
+                            </p>
+                            <group>
+                                <field name="signer_group_ids" widget="many2many_tags"
+                                       options="{'no_quick_create': true}"/>
+                                <field name="signer_partner_ids" widget="many2many_tags"
+                                       options="{'no_quick_create': true}"/>
+                                <field name="invited_count" readonly="1"/>
+                            </group>
+                            <field name="invited_keys" invisible="1"/>
+                        </page>
                         <page string="Mot d'introduction" name="intro">
                             <field name="intro_html"
                                    placeholder="Ce que les gens lisent en arrivant sur la page."/>
@@ -91,6 +130,8 @@
                                 <list>
                                     <field name="author_name"/>
                                     <field name="body" widget="html"/>
+                                    <field name="style" optional="show"/>
+                                    <field name="has_ink" string="Tracé" optional="show"/>
                                     <field name="image" widget="image"
                                            options="{'size': [60, 60]}"/>
                                     <field name="state" widget="badge"
@@ -110,6 +151,7 @@
                     <field name="published_post_count" invisible="1"/>
                     <field name="recipient_name" invisible="1"/>
                     <field name="recipient_user_id" invisible="1"/>
+                    <field name="empty_notified" invisible="1"/>
                 </sheet>
                 <chatter/>
             </form>

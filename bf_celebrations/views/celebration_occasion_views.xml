@@ -43,6 +43,10 @@
                     <button name="action_creer_tableau" type="object"
                             string="Créer la carte" class="btn-primary"
                             invisible="not allow_board or state != 'upcoming'"/>
+                    <button name="action_cloturer" type="object"
+                            string="Marquer passée"
+                            invisible="state != 'upcoming' or date"
+                            help="Une occasion sans date ne se ferme pas toute seule."/>
                     <field name="state" widget="statusbar"
                            statusbar_visible="upcoming,done"/>
                 </header>
@@ -62,6 +66,11 @@
                         <group>
                             <field name="occasion_type"/>
                             <field name="date"/>
+                            <div class="text-muted" colspan="2" invisible="date">
+                                Sans date : l'occasion reste « à venir » jusqu'à
+                                ce que sa carte soit livrée ou qu'on la marque
+                                passée. Ni rappel ni agenda, faute de jour.
+                            </div>
                             <field name="years"
                                    invisible="occasion_type != 'work_anniversary'"/>
                         </group>
@@ -99,6 +108,8 @@
                         domain="[('state', '=', 'upcoming')]"/>
                 <filter name="sans_carte" string="Sans carte encore"
                         domain="[('board_ids', '=', False), ('allow_board', '=', True), ('state', '=', 'upcoming')]"/>
+                <filter name="sans_date" string="Sans date"
+                        domain="[('date', '=', False)]"/>
                 <separator/>
                 <filter name="mes_occasions" string="Que j'organise"
                         domain="[('organizer_id', '=', uid)]"/>
@@ -123,7 +134,8 @@
             <p class="o_view_nocontent_smiling_face">Rien au calendrier pour l'instant</p>
             <p>Les occasions naissent des réponses que les gens donnent
                eux-mêmes dans « Mes célébrations ». Aucune date n'est prise
-               dans le dossier RH.</p>
+               dans le dossier RH. Une promotion, un rétablissement, un
+               départ se créent ici, avec ou sans date.</p>
         </field>
     </record>
 

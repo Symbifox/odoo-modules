@@ -36,6 +36,26 @@ class ResConfigSettings(models.TransientModel):
         default=2,
         config_parameter="bf_celebrations.thin_days",
     )
+    # ⚠️ Un entier `config_parameter` absent se lit 0 par `int(False)`, et
+    # 0 est ici l'état sûr : « ne rien effacer ». La purge ne s'allume qu'en
+    # posant un nombre de mois. Voir `_cron_purger_livres`.
+    celebration_retention_months = fields.Integer(
+        string="Effacer les cartes livrées après (mois)",
+        default=0,
+        config_parameter="bf_celebrations.retention_months",
+        help="0 : on garde tout. Sinon, une carte livrée depuis plus de N "
+             "mois est effacée avec ses mots, ses images et ses pièces "
+             "jointes. La personne fêtée a reçu la sienne en PDF et en page "
+             "souvenir à la livraison : ce qui s'efface ici est la copie du "
+             "système, pas la sienne.",
+    )
+    celebration_invite_cap = fields.Integer(
+        string="Plafond d'invitations par envoi",
+        default=300,
+        config_parameter="bf_celebrations.invite_cap",
+        help="Au-delà, l'envoi est refusé plutôt que de saturer la file de "
+             "courriels. Découpez le groupe.",
+    )
     celebration_calendar_mirror = fields.Boolean(
         string="Poser les célébrations dans l'agenda Odoo",
         config_parameter="bf_celebrations.calendar_mirror",

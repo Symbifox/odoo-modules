@@ -7,6 +7,17 @@
  * rester lisible même si le bloc de thème ne s'est pas rendu.
  */
 
+/* La police manuscrite. Caveat, sous licence OFL (static/fonts/Caveat.OFL.txt),
+   servie par nous : `font-src 'self'` dans la CSP, aucune police distante.
+   La page souvenir remplace cette URL par la police en data: URI. */
+@font-face {
+    font-family: "Caveat";
+    src: url("/bf_celebrations/static/fonts/Caveat.woff2") format("woff2");
+    font-weight: 400 700;
+    font-style: normal;
+    font-display: swap;
+}
+
 .cel-body {
     margin: 0;
     padding: 0;
@@ -42,7 +53,9 @@
     font-size: 15px;
 }
 
-.cel-actions { margin-top: 18px; }
+.cel-actions { margin-top: 18px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+.cel-actions .cel-bouton { margin-top: 0; }
+.cel-actions-gauche { justify-content: flex-start; }
 
 .cel-intro {
     background: var(--cel-surface, #FFFFFF);
@@ -138,10 +151,11 @@
 .cel-mot { display: flex; flex-direction: column; }
 
 .cel-mot-image {
-    width: 100%;
+    max-width: 100%;
+    width: auto;
     height: auto;
     border-radius: 10px;
-    margin-bottom: 12px;
+    margin: 0 auto 12px;
     display: block;
 }
 
@@ -151,12 +165,113 @@
 .cel-mot-signature {
     margin: 12px 0 0;
     font-weight: 600;
+    /* La signature est manuscrite partout : c'est le geste de signer une
+       carte. Un peu plus grande, parce que Caveat est fine à taille égale. */
+    font-family: Caveat, "Segoe Script", "Bradley Hand", cursive;
+    font-size: 1.35em;
+    line-height: 1.2;
     /* 🔴 Le ton de marque échoue en TEXTE : #29ABE1 rend 2,62:1 sur blanc.
        C'est la variante mesurée qui sert ici. */
     color: var(--cel-accent-texte, #BA4514);
 }
 
+/* Le mot « manuscrit » : la même police, plus grande, et un léger penché
+   d'écriture. Le corps du texte reste dans la couleur du thème. */
+.cel-manuscrit .cel-mot-corps,
+.cel-manuscrit .cel-diapo-corps {
+    font-family: Caveat, "Segoe Script", "Bradley Hand", cursive;
+    font-size: 1.45em;
+    line-height: 1.3;
+}
+
+/* L'encre rendue : le SVG hérite `currentColor`, donc la couleur de texte
+   du thème. Recadré côté serveur ; ici on borne seulement la hauteur. */
+.cel-mot-encre { margin-bottom: 10px; color: var(--cel-texte, #2D3031); }
+.cel-encre-rendu { display: block; width: 100%; height: auto; max-height: 260px; }
+.cel-diapo-encre { margin: 0 auto 14px; max-width: 720px; color: var(--cel-texte, #2D3031); }
+.cel-diapo-encre .cel-encre-rendu { max-height: 34vh; }
+
+/* ---------------------------------------------------------------- */
+/* Écrire à la main                                                  */
+/* ---------------------------------------------------------------- */
+
+.cel-onglets {
+    display: flex;
+    gap: 6px;
+    margin: 18px 0 0;
+    border-bottom: 1px solid rgba(127, 127, 127, .35);
+}
+
+.cel-onglet {
+    background: transparent;
+    border: none;
+    border-bottom: 3px solid transparent;
+    padding: 8px 14px;
+    font: inherit;
+    font-weight: 600;
+    color: var(--cel-texte, #2D3031);
+    opacity: .7;
+    cursor: pointer;
+}
+
+.cel-onglet-actif {
+    opacity: 1;
+    border-bottom-color: var(--cel-accent-texte, #BA4514);
+}
+
+.cel-onglet:focus-visible {
+    outline: 2px solid var(--cel-accent-texte, #BA4514);
+    outline-offset: 2px;
+}
+
+.cel-case {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 10px 0 0;
+    font-size: 14px;
+    color: var(--cel-texte, #2D3031);
+}
+
+.cel-encre {
+    display: block;
+    width: 100%;
+    /* Le rapport 800 × 320 est celui des coordonnées logiques : on le garde
+       à l'écran pour que rien ne se déforme. */
+    aspect-ratio: 800 / 320;
+    height: auto;
+    box-sizing: border-box;
+    border: 1.5px dashed rgba(127, 127, 127, .55);
+    border-radius: 10px;
+    background: var(--cel-surface, #FFFFFF);
+    color: var(--cel-texte, #2D3031);
+    cursor: crosshair;
+    /* ⚠️ Sans `touch-action: none`, le doigt fait défiler la page au lieu
+       d'écrire : le navigateur gagne le geste avant nous. */
+    touch-action: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+.cel-encre-vide {
+    background-image: linear-gradient(
+        to right, transparent 0, transparent 100%),
+        repeating-linear-gradient(
+        to bottom, transparent 0, transparent 62px,
+        rgba(127, 127, 127, .18) 62px, rgba(127, 127, 127, .18) 63px);
+}
+
+.cel-encre-outils { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 8px; }
+
+.cel-bouton-petit { margin-top: 0; padding: 8px 14px; font-size: 14px; font-weight: 500; }
+
+.cel-aide { font-size: 13px; opacity: .72; margin: 8px 0 0; }
+
 .cel-vide { opacity: .75; text-align: center; padding: 26px 0; }
+
+.cel-souvenir { margin-top: 36px; }
+.cel-souvenir-titre { margin: 0 0 8px; font-size: 19px; color: var(--cel-entete, #2D3031); }
+.cel-souvenir p { margin: 0 0 8px; }
 
 .cel-pied {
     margin-top: 44px;
@@ -184,19 +299,32 @@
     margin: 0 0 26px;
 }
 
-.cel-diapo-scene { position: relative; min-height: 46vh; }
+.cel-diapo-scene { position: relative; min-height: 46vh; display: grid; }
 
+/* Les mots sont tous empilés dans la même cellule de grille ; seul l'actif
+   est visible. Le fondu croise le sortant et l'entrant, au lieu du
+   claquement d'un `display: none`. */
 .cel-diapo-mot {
-    display: none;
+    grid-area: 1 / 1;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(14px) scale(.985);
+    transition: opacity .75s ease, transform .75s ease, visibility 0s linear .75s;
     background: var(--cel-surface, #FFFFFF);
     color: var(--cel-texte, #2D3031);
     border-radius: 18px;
     padding: 40px 34px;
     box-shadow: 0 6px 22px rgba(0, 0, 0, .14);
     font-size: 22px;
+    align-self: center;
 }
 
-.cel-diapo-mot.cel-actif { display: block; }
+.cel-diapo-mot.cel-actif {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    transition: opacity .75s ease, transform .75s ease, visibility 0s;
+}
 
 .cel-diapo-image {
     max-height: 42vh;
@@ -224,6 +352,144 @@
     .cel-diapo-mot { font-size: 18px; padding: 26px 20px; }
 }
 
+/* ---------------------------------------------------------------- */
+/* L'ouverture de la carte livrée                                    */
+/* ---------------------------------------------------------------- */
+
+.cel-ouverture {
+    position: fixed;
+    inset: 0;
+    z-index: 20;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 26px;
+    background: var(--cel-fond, #FDF6EC);
+    color: var(--cel-texte, #2D3031);
+    cursor: pointer;
+    transition: opacity .6s ease;
+}
+
+.cel-ouverture-finie { opacity: 0; pointer-events: none; }
+
+.cel-ouverture-aide { margin: 0; font-size: 15px; opacity: .75; }
+
+.cel-enveloppe {
+    position: relative;
+    width: min(420px, 82vw);
+    aspect-ratio: 3 / 2;
+    perspective: 900px;
+    filter: drop-shadow(0 14px 30px rgba(0, 0, 0, .18));
+}
+
+.cel-enveloppe-dos,
+.cel-enveloppe-poche,
+.cel-enveloppe-rabat,
+.cel-enveloppe-carte {
+    position: absolute;
+    left: 0;
+    right: 0;
+}
+
+.cel-enveloppe-dos {
+    top: 0; bottom: 0;
+    background: var(--cel-accent, #E8632B);
+    border-radius: 10px;
+}
+
+/* La carte, glissée dans l'enveloppe. Elle sort par le haut. */
+.cel-enveloppe-carte {
+    top: 10%; bottom: 8%;
+    left: 6%; right: 6%;
+    background: var(--cel-surface, #FFFFFF);
+    color: var(--cel-texte, #2D3031);
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    font-size: clamp(20px, 5vw, 30px);
+    font-family: Caveat, "Segoe Script", "Bradley Hand", cursive;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, .12);
+    transition: transform 1s cubic-bezier(.2, .7, .2, 1) .55s;
+}
+
+.cel-enveloppe-pour { font-size: .6em; opacity: .7; }
+
+/* La poche avant : un rectangle à encoche en V. ⚠️ La pointe du V est à la
+   MÊME hauteur que la pointe du rabat (52 %) : fermé, le rabat couvre
+   l'encoche et la carte reste invisible ; ouvert, la carte sort par là. */
+.cel-enveloppe-poche {
+    top: 0; bottom: 0;
+    background: var(--cel-accent, #E8632B);
+    clip-path: polygon(0 0, 50% 52%, 100% 0, 100% 100%, 0 100%);
+    filter: brightness(.92);
+    border-radius: 10px;
+    z-index: 2;
+}
+
+/* Le rabat, qui tourne autour de son bord haut. */
+.cel-enveloppe-rabat {
+    top: 0;
+    height: 52%;
+    background: var(--cel-accent, #E8632B);
+    clip-path: polygon(0 0, 100% 0, 50% 100%);
+    transform-origin: top center;
+    transform: rotateX(0deg);
+    transition: transform .8s cubic-bezier(.4, 0, .2, 1);
+    filter: brightness(1.06);
+    z-index: 3;
+}
+
+.cel-ouvre .cel-enveloppe-rabat { transform: rotateX(178deg); z-index: 0; filter: brightness(.85); }
+.cel-ouvre .cel-enveloppe-carte { transform: translateY(-58%) scale(1.06); z-index: 4; }
+.cel-ouvre .cel-ouverture-aide { opacity: 0; transition: opacity .3s; }
+
+/* Les mots qui arrivent un à un. */
+.cel-mot.cel-attend { opacity: 0; }
+.cel-mot.cel-apparait {
+    animation: cel-arrivee .7s ease both;
+    animation-delay: calc(var(--i, 0) * 110ms);
+}
+
+@keyframes cel-arrivee {
+    from { opacity: 0; transform: translateY(18px) scale(.97); }
+    to   { opacity: 1; transform: none; }
+}
+
+/* Les confettis : des morceaux de papier qui tombent, aux couleurs du
+   thème. Semés par le script, animés ici. */
+.cel-confettis {
+    position: fixed;
+    inset: 0;
+    z-index: 30;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.cel-confetti {
+    position: absolute;
+    top: -6vh;
+    left: var(--x, 50vw);
+    width: var(--w, 9px);
+    height: calc(var(--w, 9px) * 1.6);
+    background: var(--c, #F2C14E);
+    border-radius: 2px;
+    opacity: .95;
+    animation: cel-tomber var(--t, 3.6s) linear var(--d, 0s) both;
+}
+
+@keyframes cel-tomber {
+    0%   { transform: translate3d(0, 0, 0) rotate(0deg); opacity: 1; }
+    100% { transform: translate3d(calc(var(--w, 9px) * 4), 112vh, 0) rotate(var(--r, 540deg)); opacity: .85; }
+}
+
 @media (prefers-reduced-motion: reduce) {
     .cel-diapo-mot { transition: none; }
+    .cel-mot.cel-apparait { animation: none; }
+    .cel-mot.cel-attend { opacity: 1; }
+    .cel-confetti { animation: none; display: none; }
+    .cel-enveloppe-rabat, .cel-enveloppe-carte, .cel-ouverture { transition: none; }
 }
