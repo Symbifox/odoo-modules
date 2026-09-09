@@ -711,7 +711,7 @@ class HostingService(models.Model):
             )
             record.maintenance_schedule_count = len(active_schedules)
             # Comparer next_due directement : is_overdue est un calculé stocké
-            # que seul le cron quotidien rafraîchit, donc s'y fier ici ferait
+            # que seul le cron de rafraîchissement réécrit, donc s'y fier ici ferait
             # afficher 0 tant que la tâche n'a pas été remarquée faite.
             record.maintenance_overdue_count = len(
                 active_schedules.filtered(
@@ -1141,7 +1141,7 @@ class HostingService(models.Model):
                 for attempt in range(1, retry_count):
                     time.sleep(retry_delay)
                     r_status, r_time, r_code, r_err = self._do_health_check(
-                        requests, service.server_url,
+                        requests, service.server_url, accepted_codes or None,
                     )
                     if r_status == "up":
                         _logger.info(

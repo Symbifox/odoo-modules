@@ -622,6 +622,7 @@ The module includes several automated jobs:
 | Health Check | Every 30 minutes | Checks health of all active services |
 | Version Check | Daily | Checks for new software versions |
 | Send Digests | Daily | Sends scheduled email digests |
+| Refresh Due Indicators | Hourly | Recomputes the maintenance `days_until_due` and `is_overdue` fields, which are stored and would otherwise stay frozen at their last write as the calendar advances |
 
 ## Menu Structure
 
@@ -656,6 +657,15 @@ Hosting
 ```
 
 ## Changelog
+
+### Version 18.0.2.51.2
+- Fix: the maintenance due indicators (`days_until_due`, `is_overdue`) are stored computed fields whose value depends on today's date, so the calendar advancing is not a dependency and they freeze at their last write. The refresh job introduced in 18.0.2.51.1 ran once a day at whatever time Odoo anchored it on install, which left the values a full day stale for most of the day; it now runs hourly, which bounds the error to an hour whatever the server timezone. A migration re-cadences the job on existing databases, since the cron data file is `noupdate="1"`.
+- Fix: the refresh now marks the fields for recomputation and lets the flush write them, instead of calling the compute methods directly. A direct call assigns to a stored field on unprotected records, which Odoo routes through a single-record `write()` per field, once per record.
+- Fix: a health-check retry did not carry the service's accepted HTTP codes, so a service whose expected status is an error code (for example 401) passed the first probe and failed every retry.
+
+### Version 18.0.2.51.1
+- `hosting.dashboard` is tableless and is now declared abstract.
+- Added the scheduled job that refreshes the maintenance due indicators, and moved the overdue filters, the dedicated action and the service counter off the stored flag onto the `next_due` date, so a missed refresh costs the colour and never the row.
 
 ### Version 18.0.2.50.1
 - Security: `/backup/report` authenticated with an `api_key`, which only proves *who* the caller is, and any internal user can mint one for themselves. Backup telemetry is written as sudo, so any user could forge successful or failed runs and trigger the report emails and ntfy notifications. The route now requires `hosting_management.group_hosting_manager`; backup agents keep using `/report/public` with the `X-Backup-Token`.

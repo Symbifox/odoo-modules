@@ -203,15 +203,25 @@ class HostingMaintenanceSchedule(models.Model):
         ``next_due``. Odoo ne les réécrit donc qu'au moment où l'échéance bouge,
         c'est-à-dire quand la tâche est marquée faite : entre deux exécutions le
         calendrier avance et les valeurs restent figées à ce qu'elles valaient ce
-        jour-là. Sans ce passage quotidien, ``days_until_due`` affiche en
+        jour-là. Sans ce passage périodique, ``days_until_due`` affiche en
         permanence la longueur du cycle et ``is_overdue`` ne devient jamais vrai.
+
+        ⚠️ Le recalcul passe par ``add_to_compute`` et non par un appel direct
+        aux méthodes ``_compute_*``. Affecter un champ stocké sur des fiches
+        réelles NON protégées prend le chemin « logique métier complète » de
+        ``Field.__set__`` : chaque affectation devient un ``write()`` d'une seule
+        fiche, qui traverse ``mail.thread.write`` et émet son propre UPDATE. Un
+        appel direct coûte donc deux ``write()`` par planification à chaque
+        passage. ``add_to_compute`` marque les champs à recalculer et laisse
+        ``flush_all`` le faire dans le contexte protégé, ce qui groupe l'écriture
+        et n'active aucune logique de suivi.
         """
         schedules = self.with_context(active_test=False).search([])
         if not schedules:
             return
-        schedules._compute_days_until_due()
-        schedules._compute_is_overdue()
-        schedules.flush_recordset(["days_until_due", "is_overdue"])
+        for fname in ("days_until_due", "is_overdue"):
+            self.env.add_to_compute(self._fields[fname], schedules)
+        self.env.flush_all()
 
     def action_mark_done(self):
         """Marquer la tâche de maintenance comme complétée et recalculer la prochaine échéance."""

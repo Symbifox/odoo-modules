@@ -162,14 +162,32 @@
              days_until_due et is_overdue sont des calculés STOCKÉS qui ne
              dépendent que de next_due : Odoo ne les réécrit qu'au moment où
              l'échéance bouge. Le temps qui passe n'étant pas une dépendance,
-             il faut ce passage quotidien pour qu'ils restent vrais. -->
+             il faut ce passage pour qu'ils restent vrais.
+
+             ⚠️ La CADENCE compte autant que l'existence du passage. Les deux
+             champs se comparent à fields.Date.today(), qui bascule à minuit
+             dans le fuseau du SERVEUR : beaucoup d'images Odoo tournent en UTC,
+             d'autres portent un fuseau local, et le module ne peut rien en
+             supposer. Odoo ancre par ailleurs nextcall à l'heure d'INSTALLATION,
+             qui peut tomber n'importe où dans la journée. Un passage quotidien
+             ancré après minuit local n'est donc juste que de son heure de
+             passage jusqu'à minuit, et faux tout le reste du temps.
+
+             Caler l'heure ne règle rien de portable : nextcall n'avance que par
+             pas de 24 h UTC, il glisse donc d'une heure à chaque changement
+             d'heure et peut repasser du mauvais côté de minuit. Un passage
+             HORAIRE supprime la question, l'écart restant borné à une heure quel
+             que soit le fuseau. Le coût est un UPDATE groupé par heure sur une
+             table déjà réécrite chaque jour.
+             ⚠️ Ce fichier est noupdate="1" : sur une base déjà installée, le
+             record existant n'est PAS réécrit. Voir migrations/18.0.2.51.2. -->
         <record id="ir_cron_hosting_maintenance_refresh_due" model="ir.cron">
             <field name="name">Hébergement : Rafraîchir les indicateurs d'échéance</field>
             <field name="model_id" ref="model_hosting_maintenance_schedule"/>
             <field name="state">code</field>
             <field name="code">model._cron_refresh_due_indicators()</field>
             <field name="interval_number">1</field>
-            <field name="interval_type">days</field>
+            <field name="interval_type">hours</field>
             <field name="active">True</field>
         </record>
 
