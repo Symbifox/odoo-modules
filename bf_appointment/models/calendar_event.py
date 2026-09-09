@@ -1,4 +1,5 @@
 import logging
+from email.utils import parseaddr
 
 from odoo import api, fields, models
 
@@ -95,16 +96,28 @@ class CalendarEvent(models.Model):
                 vevent = cal.vevent
 
                 organizer_partner = event.user_id.partner_id or event.partner_id
-                if organizer_partner and organizer_partner.email:
+                # ⚠️ `partner.email` is not guaranteed to hold a BARE address,
+                # and `"mailto:" + <whatever is in the field>` is what made the
+                # line invalid in production: a partner carrying a FORMATTED
+                # address (`"A display name" <mailbox@example.com>`) made every
+                # ICS it organised go out as
+                # `ORGANIZER:mailto:"A display name" <…>`. A `mailto:` URI takes
+                # an address and nothing else (RFC 6068), and a client that
+                # rejects the URI rejects the whole VEVENT. Parsed, not
+                # repaired: the field's value may well be wanted for what it is,
+                # and an ICS generator is not the place to rule on that.
+                _cn, organizer_email = parseaddr(
+                    (organizer_partner.email or "") if organizer_partner else ""
+                )
+                if organizer_email:
                     # Replace any existing organizer line so we control params
                     if hasattr(vevent, "organizer"):
                         del vevent.contents["organizer"]
                     organizer = vevent.add("organizer")
-                    organizer.value = "mailto:" + organizer_partner.email
-                    if organizer_partner.name:
-                        organizer.params["CN"] = [
-                            organizer_partner.name.replace('"', "'")
-                        ]
+                    organizer.value = "mailto:" + organizer_email
+                    display = organizer_partner.name or _cn
+                    if display:
+                        organizer.params["CN"] = [display.replace('"', "'")]
 
                 # Replace plain ATTENDEE:MAILTO lines with fully-parameterized
                 # ATTENDEE entries that carry CN / role / RSVP — required for

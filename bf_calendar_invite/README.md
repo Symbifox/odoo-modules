@@ -68,6 +68,73 @@ The SMS button opens the composer with an empty body.
 
 Both remain drafts: the composer opens, the user edits and sends.
 
+## The `.ics` identity — what makes an update an update
+
+Odoo's "date updated" mail already went out on every reschedule. What it carried
+updated nothing.
+
+`calendar.event._get_ics_file()` builds the calendar with `vobject.iCalendar()`
+and **sets no UID**. vobject therefore invents one at every serialization, out
+of a timestamp, a random number and the container hostname — two serializations
+of the same event fifty minutes apart carry two different UIDs. A calendar
+client receiving a `METHOD:REQUEST` under an unknown UID **adds an entry**; it
+cannot move the one it holds. That is why a meeting moved in Odoo only ever
+reached a guest's calendar through the remote calendar's own iMIP plugin: the
+identity of the meeting lived there, not in Odoo.
+
+This module therefore puts three things on the event:
+
+| Field | Role |
+|---|---|
+| `bf_ics_uid` | the RFC 5545 identity, reused by every later `.ics` |
+| `bf_ics_sequence` | the revision (`SEQUENCE`, RFC 5545 §3.8.7.4) |
+| `bf_ics_recurrence_id` | for an occurrence pulled out of its series, the slot it used to hold |
+
+⚠️ **`x_nc_uid` wins where it exists.** That field belongs to
+`calendar_nextcloud_sync` and holds the UID the remote calendar already knows;
+minting a second one beside it would give one meeting two identities. The link
+is **soft** (`in self._fields`) — this module also runs on tenants with no
+calendar sync at all.
+
+⚠️ **The revision only moves on a material change** — start, stop, title,
+location. Not on the description: a typo fixed in the notes is not a reschedule,
+and bumping `SEQUENCE` for it would train clients to re-ask guests for nothing.
+The comparison is made on **normalised** values: the web client posts `start` as
+a string while the record holds a `datetime`, and a raw `!=` would find them
+different at every save.
+
+### Recurrence
+
+Core copies the `RRULE` onto **every** occurrence, so the `.ics` for a single
+moved Thursday describes a whole weekly series. Three shapes here:
+
+- a plain meeting: its own UID, no `RECURRENCE-ID`, no `RRULE`;
+- the **base** event of a series: the series UID and the `RRULE`;
+- **any other occurrence**: the series UID plus a `RECURRENCE-ID` naming the
+  slot, and no `RRULE`.
+
+⚠️ The `RECURRENCE-ID` is the **original** slot, not the new one — it answers
+"which occurrence moved". It is captured **before** the write: once `start` is
+overwritten, the slot the occurrence used to hold is gone. An occurrence
+detached before the field existed therefore has no anchor, and falls back to an
+identity of its own. Standing alone is wrong in the small; rewriting the series
+is wrong in the large.
+
+### Organiser and description
+
+`ORGANIZER` is built from a **parsed** address. `res.partner.email` is not
+guaranteed to hold a bare address, and `"mailto:" + email` then produces a URI
+that is invalid under RFC 6068 — a client that rejects the URI rejects the whole
+VEVENT. The field is not repaired: its value may well be wanted as it stands,
+and an ICS generator is not the place to rule on that.
+
+The description loses its `text/html,…` wrapper. Events pulled in over CalDAV
+can carry a description shaped as `text/html,<percent-encoded html>":<the same
+text, in plain>` — a `data:` URI that lost its scheme on the way in. The plain
+half is taken as it stands; it comes from the producer, not from us. ⚠️ Only the
+**outgoing copy** is repaired: the field itself keeps its value, and the next
+event ingested arrives the same way.
+
 ## Changing the language of one message
 
 The body is rendered once, when the template is picked, so the language cannot

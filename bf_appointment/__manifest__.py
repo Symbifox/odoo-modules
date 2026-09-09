@@ -314,7 +314,13 @@
     #   « login_odoo=compte_nc », séparées par des virgules — dont les comptes sont ajoutés
     #   puis PROMUS modérateurs après la création. Vide = comportement d'avant. La pose ne
     #   bloque jamais : une salle sans modérateur reste une salle joignable.
-    "version": "18.0.2.55.0",
+    # 18.0.2.55.1: 🔴 the .ics ORGANIZER is built from a PARSED address.
+    #   `"mailto:" + partner.email` assumed a field holding nothing but an
+    #   address. A partner carrying a FORMATTED one (`"A name"
+    #   <mailbox@example.com>`) produced `ORGANIZER:mailto:"…" <…>`, which is
+    #   not a valid URI under RFC 6068: a client that rejects the URI rejects
+    #   the whole VEVENT.
+    "version": "18.0.2.55.1",
     "category": "Appointments",
     "summary": "Public self-service booking pages extending Resource Booking",
     'author': 'Les services de consultation Blue Fox, Inc.',

@@ -11,7 +11,16 @@
     #   itself; the status is also settable from the event popover, next to
     #   core's Yes/No/Maybe group. Adds a POKE button that opens a short
     #   "are we still meeting?" draft in the guest's language.
-    "version": "18.0.3.2.0",
+    # 18.0.4.0.0: the .ics Odoo sends finally carries an identity. Core sets no
+    #   UID at all, so vobject invents one at every serialization — a client
+    #   receiving a METHOD:REQUEST under an unknown UID ADDS an entry instead of
+    #   moving the one it holds, and a meeting moved in Odoo therefore never
+    #   reached the guests' calendars from Odoo itself. Adds a stable UID, a
+    #   SEQUENCE (RFC 5545 §3.8.7.4), a RECURRENCE-ID on an occurrence pulled
+    #   out of its series and the removal of the RRULE core copied onto every
+    #   occurrence, an ORGANIZER built from a parsed address, and a description
+    #   freed of its `text/html,…` wrapper.
+    "version": "18.0.4.0.0",
     "category": "Productivity",
     "website": "https://symbifox.com",
     "author": "Les services de consultation Blue Fox, Inc.",

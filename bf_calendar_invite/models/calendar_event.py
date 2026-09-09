@@ -14,15 +14,23 @@ This module points EMAIL at a template that carries both the link and the
 `.ics`, and prefills the SMS body.
 """
 
+import logging
+import uuid
+from email.utils import parseaddr
+from urllib.parse import unquote
+
 import pytz
 
 from odoo import _, api, fields, models
+from odoo.tools import html2plaintext
 from odoo.tools.misc import format_time
 
 # Core's public invitation page. It authenticates the visitor as one specific
 # attendee (`auth="calendar"` resolves the token to a calendar.attendee), which
 # is why it is only ever safe to put in a message with a single recipient.
 _INVITATION_PATH = "/calendar/meeting/view"
+
+_logger = logging.getLogger(__name__)
 
 
 class CalendarEvent(models.Model):
@@ -408,3 +416,298 @@ class CalendarEvent(models.Model):
         if self.location and self.location.startswith(("http://", "https://")):
             return self.location
         return False
+
+
+    # ------------------------------------------------------------
+    # ICS identity — what makes an update an update
+    # ------------------------------------------------------------
+
+    bf_ics_uid = fields.Char(
+        string="ICS UID",
+        copy=False,
+        index=True,
+        help="Stable RFC 5545 identity of this meeting, reused by every .ics "
+             "Odoo ever emits for it. Without one, each mail names a different "
+             "meeting and the recipient's calendar gains a copy instead of "
+             "moving the entry it already has.",
+    )
+    bf_ics_sequence = fields.Integer(
+        string="ICS revision",
+        default=0,
+        copy=False,
+        help="RFC 5545 SEQUENCE. Incremented whenever the time, place or title "
+             "changes, so a calendar client can tell which .ics is the newer "
+             "one when two arrive out of order.",
+    )
+    bf_ics_recurrence_id = fields.Datetime(
+        string="Original occurrence start",
+        copy=False,
+        help="For an occurrence pulled out of its series, the slot it used to "
+             "occupy. That instant is the RECURRENCE-ID: it is how a client "
+             "knows WHICH occurrence moved, rather than being handed a second "
+             "series.",
+    )
+
+    # Changing any of these is a new revision of the meeting in the eyes of a
+    # calendar client. `description` is deliberately absent: a typo fixed in the
+    # notes is not a reschedule, and bumping SEQUENCE for it would train clients
+    # to re-prompt guests over nothing.
+    _BF_ICS_MATERIAL_FIELDS = (
+        "start", "stop", "allday", "start_date", "stop_date",
+        "name", "location", "videocall_location",
+    )
+
+    def _bf_ics_domain(self):
+        """Right-hand side of the UID. Cosmetic, but it must be stable.
+
+        RFC 5545 §3.8.4.7 only asks for global uniqueness; the host part is
+        convention. It is taken from `web.base.url` rather than the container
+        hostname, which is what vobject uses when left to itself — a hostname
+        would change at every image rebuild.
+        """
+        base = self.env["ir.config_parameter"].sudo().get_param("web.base.url", "")
+        host = (base or "").split("//")[-1].split("/")[0].split(":")[0]
+        return host or "odoo"
+
+    def _bf_ics_uid_get(self):
+        """The stable UID of this event, minted and stored on first use.
+
+        ⚠️ `x_nc_uid` wins when it exists. That field belongs to
+        `calendar_nextcloud_sync` and holds the UID the remote calendar already
+        knows; minting our own next to it would give one meeting two identities
+        and put Odoo's mail and the CalDAV copy back in different worlds. The
+        link is **soft** (`in self._fields`), because this module also runs on
+        tenants with no calendar sync at all.
+        """
+        self.ensure_one()
+        if "x_nc_uid" in self._fields and self.x_nc_uid:
+            return self.x_nc_uid
+        if self.bf_ics_uid:
+            return self.bf_ics_uid
+        uid = "%s@%s" % (uuid.uuid4(), self._bf_ics_domain())
+        # sudo: the identity has to survive being read by someone who cannot
+        # write the event — a portal guest opening the invitation page, the
+        # mail layer rendering a template. It is bookkeeping, not content.
+        self.sudo().write({"bf_ics_uid": uid})
+        return uid
+
+    def _bf_ics_identity(self):
+        """(uid, recurrence_id, keep_rrule) for this event's VEVENT.
+
+        Three shapes, and the third is the one core gets wrong:
+
+        - a plain meeting: its own UID, no RECURRENCE-ID, no RRULE;
+        - the **base** event of a series: the series UID and the RRULE;
+        - **any other occurrence**: the series UID plus a RECURRENCE-ID naming
+          the slot, and NO RRULE.
+
+        Core emits the RRULE on every occurrence, so the `.ics` for one moved
+        Thursday describes a whole weekly Thursday series. Measured on a weekly
+        statutory meeting: the single occurrence moved to the Thursday went out
+        carrying `RRULE:FREQ=WEEKLY;UNTIL=20261030T170000Z`.
+
+        ⚠️ A detached occurrence with no recorded original slot falls back to
+        an identity of its own. We know it left the series but not which slot
+        it left, and claiming the series UID without a RECURRENCE-ID would
+        rewrite the whole series in the guest's calendar. Standing alone is
+        wrong in the small; rewriting the series is wrong in the large.
+        """
+        self.ensure_one()
+        recurrence = self.recurrence_id
+        if not recurrence:
+            return self._bf_ics_uid_get(), None, bool(self.rrule)
+
+        base = recurrence.base_event_id
+        if base and base == self:
+            return base._bf_ics_uid_get(), None, True
+
+        anchor = self.bf_ics_recurrence_id or (
+            self.start if self.follow_recurrence else None
+        )
+        if not anchor or not base:
+            return self._bf_ics_uid_get(), None, False
+        return base._bf_ics_uid_get(), anchor, False
+
+    _BF_ICS_DATETIME_FIELDS = ("start", "stop")
+    _BF_ICS_DATE_FIELDS = ("start_date", "stop_date")
+
+    def _bf_ics_changed(self, fname, value):
+        """Does writing `value` into `fname` actually change this event?
+
+        ⚠️ Compared on normalised values, not raw ones. A write coming from the
+        web client carries `start` as the string `"2026-09-17 18:00:00"` while
+        the record holds a `datetime`; a raw `!=` finds them different every
+        time and would bump the revision on every save, including saves that
+        changed only a tag. A revision that moves for nothing teaches calendar
+        clients to re-ask guests for nothing.
+        """
+        self.ensure_one()
+        current = self[fname]
+        if fname in self._BF_ICS_DATETIME_FIELDS:
+            return fields.Datetime.to_datetime(current) != fields.Datetime.to_datetime(value)
+        if fname in self._BF_ICS_DATE_FIELDS:
+            return fields.Date.to_date(current) != fields.Date.to_date(value)
+        return (current or False) != (value or False)
+
+    def _bf_ics_bump(self, vals):
+        """Record a new revision, and the slot an occurrence is leaving.
+
+        Both are captured **before** `super().write()`, because both are
+        statements about the value that is about to be replaced. The anchor in
+        particular is only knowable now: once `start` is overwritten, the slot
+        the occurrence used to hold is gone from the database.
+        """
+        touched = [f for f in self._BF_ICS_MATERIAL_FIELDS if f in vals]
+        if not touched:
+            return
+        for event in self:
+            if not any(event._bf_ics_changed(f, vals[f]) for f in touched):
+                continue
+            patch = {"bf_ics_sequence": (event.bf_ics_sequence or 0) + 1}
+            leaving_series = (
+                event.recurrence_id
+                and event.follow_recurrence
+                and not event.bf_ics_recurrence_id
+                and ("start" in vals or "start_date" in vals)
+                and event.recurrence_id.base_event_id != event
+            )
+            if leaving_series:
+                patch["bf_ics_recurrence_id"] = event.start
+            super(CalendarEvent, event.sudo()).write(patch)
+
+    def write(self, vals):
+        # ⚠️ Guarded against its own writes: `_bf_ics_bump` writes through
+        # `super()` precisely so it cannot come back through here and count a
+        # revision as a second revision.
+        if not self.env.context.get("bf_ics_skip_bump"):
+            self._bf_ics_bump(vals)
+        return super().write(vals)
+
+    def _bf_ics_organizer(self):
+        """(address, display name) of the organiser, from a parsed address.
+
+        ⚠️ `res.partner.email` is not guaranteed to hold a bare address. A
+        partner holding a FORMATTED address (`"A display name"
+        <mailbox@example.com>`) is enough: both core and `bf_appointment` build
+        the ICS line as `"mailto:" + partner.email`, which then yields a
+        `mailto:` URI carrying a display name and angle brackets inside it.
+        That is not a valid URI, and a client that rejects it rejects the whole
+        VEVENT. Measured on an automation user that organises most of a
+        calendar.
+
+        Parsing rather than repairing the field is deliberate: the value may be
+        deliberate, and an ICS generator is not the place to decide.
+        """
+        self.ensure_one()
+        partner = self.user_id.partner_id or self.partner_id
+        if not partner:
+            return None, None
+        name, address = parseaddr(partner.email or "")
+        if not address:
+            return None, None
+        return address, (partner.name or name or "").replace('"', "'")
+
+    _BF_ICS_DATA_URI_PREFIX = "text/html,"
+
+    def _bf_ics_description(self):
+        """Plain-text description, with the data-URI wrapper peeled off.
+
+        ⚠️ A large share of the events pulled in over CalDAV carry a
+        description of the shape
+
+            text/html,<percent-encoded html>":<the same text, in plain>
+
+        — a `data:` URI that lost its scheme somewhere in the CalDAV ingestion,
+        followed by the plain-text alternative the same producer wrote. Left
+        alone it reaches the guest as `text/html,Lien%20pour%20la%20rencontre…`.
+
+        The tail after `":` is taken when there is one, because it is the
+        producer's own plain rendering — not our guess at one. Failing that the
+        encoded half is decoded. Anything not starting with the marker is
+        passed through untouched: reshaping a description someone actually
+        wrote would be a worse defect than the one being fixed.
+
+        ⚠️ This repairs the OUTGOING copy only. The field itself stays mangled,
+        and so does the next event the sync pulls in; the ingestion is where
+        that gets fixed.
+        """
+        self.ensure_one()
+        raw = html2plaintext(self.description or "").strip()
+        if not raw.startswith(self._BF_ICS_DATA_URI_PREFIX):
+            return raw
+        body = raw[len(self._BF_ICS_DATA_URI_PREFIX):]
+        head, sep, tail = body.partition('":')
+        if sep and tail.strip():
+            return tail.strip()
+        return html2plaintext(unquote(head)).strip()
+
+    def _get_ics_file(self):
+        """Give every emitted `.ics` an identity, a revision and a slot.
+
+        Post-processing rather than a rewrite, for the same reason
+        `bf_appointment` post-processes: core's builder carries rules we do not
+        want to restate. What is added here is what core never writes at all.
+
+        ⚠️ Core sets **no UID**. `vobject.iCalendar()` then invents one at each
+        serialization, from the timestamp, a random number and the container
+        hostname. Two serializations of the same event fifty minutes apart gave
+        `20260909T220108Z - 57646@<container>` and
+        `20260909T225231Z - 96877@<container>`. A client receiving
+        `METHOD:REQUEST` under an unknown UID **adds a second entry**; it cannot
+        move the one it holds. That is the whole reason a meeting moved in Odoo
+        only ever landed in a guest's calendar through Nextcloud.
+        """
+        result = super()._get_ics_file()
+        try:
+            import vobject
+        except ImportError:  # pragma: no cover - vobject ships with Odoo
+            return result
+
+        for event in self:
+            ics = result.get(event.id)
+            if not ics:
+                continue
+            try:
+                cal = vobject.readOne(ics.decode("utf-8"))
+                vevent = cal.vevent
+
+                uid, recurrence_id, keep_rrule = event._bf_ics_identity()
+                if hasattr(vevent, "uid"):
+                    del vevent.contents["uid"]
+                vevent.add("uid").value = uid
+
+                if hasattr(vevent, "sequence"):
+                    del vevent.contents["sequence"]
+                vevent.add("sequence").value = str(event.bf_ics_sequence or 0)
+
+                if not keep_rrule and hasattr(vevent, "rrule"):
+                    del vevent.contents["rrule"]
+                if recurrence_id:
+                    if hasattr(vevent, "recurrence_id"):
+                        del vevent.contents["recurrence-id"]
+                    vevent.add("recurrence-id").value = pytz.utc.localize(
+                        fields.Datetime.to_datetime(recurrence_id)
+                    )
+
+                address, cn = event._bf_ics_organizer()
+                if address:
+                    if hasattr(vevent, "organizer"):
+                        del vevent.contents["organizer"]
+                    organizer = vevent.add("organizer")
+                    organizer.value = "mailto:" + address
+                    if cn:
+                        organizer.params["CN"] = [cn]
+
+                description = event._bf_ics_description()
+                if hasattr(vevent, "description"):
+                    del vevent.contents["description"]
+                if description:
+                    vevent.add("description").value = description
+
+                result[event.id] = cal.serialize().encode("utf-8")
+            except Exception:  # pragma: no cover - never lose the invitation
+                _logger.exception(
+                    "bf_calendar_invite: could not stamp the ICS of event %s; "
+                    "the unstamped file is sent as-is.", event.id,
+                )
+        return result

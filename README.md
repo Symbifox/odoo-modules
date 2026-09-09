@@ -69,7 +69,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `audit_ti` | Audit TI - Loi 25 | 18.0.1.17.1 | BUSL-1.1 | IT security audit management for Quebec's Loi 25 compliance |
 | `bf_activity_calendar_link` | BF Activités - Lien Calendrier | 18.0.1.1.0 | LGPL-3 | Link existing calendar events to activities |
 | `bf_ai_bridge` | AI Bridge (socket transport) | 18.0.1.1.0 | LGPL-3 | The single transport to the AI bridge service |
-| `bf_appointment` | Symbifox Appointment | 18.0.2.54.2 | BUSL-1.1 | Self-service public booking pages (extends `resource_booking`) |
+| `bf_appointment` | Symbifox Appointment | 18.0.2.55.1 | BUSL-1.1 | Self-service public booking pages (extends `resource_booking`) |
 | `bf_appointment_poll` | Symbifox Appointment Polls | 18.0.1.15.0 | BUSL-1.1 | Availability polling: propose slots, collect answers, book the meeting |
 | `bf_apps_menu` | Menu des applications cherchable | 18.0.1.0.0 | LGPL-3 | The apps menu becomes a keyboard-searchable grid of icons |
 | `bf_attachment_version` | Versionnement des pièces jointes | 18.0.1.1.0 | BUSL-1.1 | Keeps the previous content whenever an attachment is overwritten |
@@ -80,7 +80,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_budget_forecast_subscription` | Prévision glissante — amorce par les engagements datés | 18.0.1.0.0 | BUSL-1.1 | Seeds the forecast from the dated renewal calendar instead of a flat average |
 | `bf_budget_subscription` | Budgets opérationnels — engagements récurrents | 18.0.1.0.1 | BUSL-1.1 | Subscriptions become a calendar of dated commitments the budget can count early |
 | `bf_bureau` | BF Bureau — vues multi-panneaux | 18.0.3.2.0 | LGPL-3 | User-configurable dashboards ("desks") with multi-pane Odoo actions, six layouts, keyboard shortcuts, time slots, and a sidebar |
-| `bf_calendar_invite` | BF Calendar — usable invitations | 18.0.3.2.0 | LGPL-3 | Branded calendar invitations written in the guests' language, carrying the .ics and a link to the attendee's invitation page, plus a prefilled SMS body. |
+| `bf_calendar_invite` | BF Calendar — usable invitations | 18.0.4.0.0 | LGPL-3 | Branded calendar invitations written in the guests' language, carrying the .ics and a link to the attendee's invitation page, plus a prefilled SMS body. |
 | `bf_calendar_nc_talk` | BF Calendar — Nextcloud Talk button | 18.0.1.1.0 | LGPL-3 | Adds a '+ Nextcloud Talk' button next to '+ Odoo meeting' on calendar events. Creates a public Talk conversation via the Spreed OCS API and writes the room URL into videocall_location. |
 | `bf_celebrations` | Célébrations | 18.0.2.1.0 | BUSL-1.1 | Tableaux de vœux collectifs, calendrier des occasions, et le consentement de la personne qu'on souligne |
 | `bf_celebrations_email` | Célébrations : groupes de destinataires | 18.0.1.0.0 | LGPL-3 | Tend une carte de fête aux groupes de destinataires du composeur de courriels |
