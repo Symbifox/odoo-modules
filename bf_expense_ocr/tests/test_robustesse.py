@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Une passerelle muette ne doit jamais coûter sa photo à l'utilisateur."""
+"""Un pont muet ne doit jamais coûter sa photo à l'utilisateur."""
 
 from odoo.exceptions import UserError
 from odoo.tests import tagged
@@ -10,29 +10,45 @@ from .common import BancLecture, PNG_1x1
 @tagged("post_install", "-at_install", "bf_expense_ocr")
 class TestRobustesse(BancLecture):
 
-    def test_une_passerelle_non_configuree_ne_casse_rien(self):
-        """`bf.llm` lève un UserError quand aucun fournisseur n'existe."""
+    def test_un_pont_injoignable_ne_casse_rien(self):
+        """La socket absente remonte en FileNotFoundError depuis le transport."""
         d = self._depense_vierge()
-        with self._passerelle(leve=UserError("Aucun fournisseur LLM configuré")):
+        with self._passerelle(leve=FileNotFoundError("/run/claude-bridge/bridge.sock")):
             self.assertFalse(d.action_ocr_scan())
         self.assertEqual(d.ocr_state, "error")
-        self.assertIn("fournisseur", d.ocr_error_message)
+        self.assertIn("bridge.sock", d.ocr_error_message)
         self.assertAlmostEqual(d.total_amount_currency, 0.0, places=2)
 
-    def test_une_erreur_de_modele_revient_dans_l_enveloppe(self):
+    def test_un_locataire_non_declare_ne_casse_rien(self):
+        """`bf.ai.bridge.tenant()` lève plutôt que de deviner — et c'est voulu.
+
+        Un défaut codé en dur enverrait le reçu sur l'abonnement d'un autre
+        client. L'appel doit échouer, pas réussir ailleurs.
+        """
         d = self._depense_vierge()
-        env_err = {"ok": False, "error": "rate limited", "data": None, "raw": {"x": 1}}
-        with self._passerelle(enveloppe=env_err):
+        with self._passerelle(leve=UserError("Le locataire n'est pas déclaré")):
             self.assertFalse(d.action_ocr_scan())
         self.assertEqual(d.ocr_state, "error")
-        self.assertEqual(d.ocr_error_message, "rate limited")
+        self.assertIn("locataire", d.ocr_error_message)
 
-    def test_un_json_illisible_revient_en_erreur(self):
+    def test_une_erreur_de_lecture_revient_dans_l_enveloppe(self):
         d = self._depense_vierge()
-        env_err = {"ok": False, "error": "LLM did not return valid JSON",
-                   "data": None, "raw": {}}
-        with self._passerelle(enveloppe=env_err):
-            d.action_ocr_scan()
+        with self._passerelle(enveloppe={"data": None, "error": "Receipt scan timed out (90s)"}):
+            self.assertFalse(d.action_ocr_scan())
+        self.assertEqual(d.ocr_state, "error")
+        self.assertEqual(d.ocr_error_message, "Receipt scan timed out (90s)")
+
+    def test_une_enveloppe_vide_revient_en_erreur(self):
+        d = self._depense_vierge()
+        with self._passerelle(enveloppe={"data": None, "error": None}):
+            self.assertFalse(d.action_ocr_scan())
+        self.assertEqual(d.ocr_state, "error")
+
+    def test_une_reponse_qui_n_est_pas_un_dict_revient_en_erreur(self):
+        """Le transport rend ce que le service a écrit ; il peut mentir."""
+        d = self._depense_vierge()
+        with self._passerelle(enveloppe="pas du JSON"):
+            self.assertFalse(d.action_ocr_scan())
         self.assertEqual(d.ocr_state, "error")
 
     def test_sans_piece_jointe_on_le_dit(self):
@@ -61,7 +77,7 @@ class TestRobustesse(BancLecture):
             "name": "recu.png", "res_model": "hr.expense", "res_id": d.id,
             "datas": PNG_1x1, "mimetype": "image/png",
         })
-        with self._passerelle(leve=ValueError("la passerelle explose")):
+        with self._passerelle(leve=ValueError("le pont explose")):
             d.attach_document(attachment_ids=[piece.id])  # ne doit pas lever
         self.assertEqual(d.message_main_attachment_id, piece,
                          "la photo est restée attachée")

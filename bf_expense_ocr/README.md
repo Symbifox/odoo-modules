@@ -5,10 +5,22 @@ taxes and tip.
 
 ## What it is built on
 
-Not on `bf_invoice_ocr`. Four fifths of that module match a vendor and build
-invoice lines, neither of which a restaurant receipt asks for. The shared base
-is **`bf_llm`**: the gateway, its normalised envelope and its Tesseract
-fallback. This module contributes an extraction schema and an arithmetic guard.
+**`bf_ai_bridge`** — the local `claude-chatbot-bridge` service and, behind it,
+`claude -p` running on the **tenant's own Claude subscription**. The bridge
+picks the credentials directory from the tenant a system declares, so a system
+announcing `bsi` is read on BSI's subscription, and a tenant whose session is
+not open fails loudly rather than being billed to someone else's.
+
+⚠️ **It is deliberately not `bf_llm`.** That gateway only speaks HTTP APIs with
+a key (`anthropic`, `openai`, `openai_compatible`), which is exactly why its
+provider record ships disabled and keyless: nobody pays per token when the
+subscription is already there. An extraction module built on it cannot work in
+this house, however green its test suite looks — 1.0.0 of this module made that
+mistake and could never have run.
+
+The extraction schema lives on the bridge side, at `/ocr/receipt`, with its
+prompt-injection guardrails. This module contributes the arithmetic guard,
+which is what decides whether anything gets written at all.
 
 What *is* reused from `bf_invoice_ocr` is the vocabulary — `ocr_state`,
 `ocr_scanned_date`, `ocr_confidence`, `ocr_raw_response`, `ocr_error_message`.
@@ -58,9 +70,10 @@ Both upload doors: `create_expense_from_attachments` (the phone gesture — a
 photo *creates* the expense) and `attach_document` (a photo added to an existing
 one). Images as well as PDFs, since a phone is what feeds this.
 
-An unconfigured gateway raises `UserError`; a model failure comes back inside
-the envelope. Neither must cost the user their photo, so the automatic path
-swallows both and records them on the record.
+An undeclared tenant raises `UserError`, a missing socket surfaces as
+`FileNotFoundError` from the transport, and a failed read comes back inside the
+bridge's envelope. None of it must cost the user their photo, so the automatic
+path swallows all three and records them on the record.
 
 ## What it deliberately does not guess
 
@@ -72,13 +85,18 @@ a meal miscategorised *automatically* is fixed whenever someone notices.
 * **Calendar correlation.** Once the date and time are read, one could find the
   overlapping event and propose its analytic distribution. That is a second
   storey, not a condition of the first.
-* **Anonymise.** The receipt goes as-is to whichever provider `bf_llm` is
-  configured with. Choosing the provider *is* the privacy decision.
+* **Anonymise.** The receipt goes as-is to the bridge, which reads it on the
+  tenant's subscription. Choosing the subscription *is* the privacy decision.
 
 ## Tests
 
-32 tests, `--test-tags '/bf_expense_ocr'`. None of them calls the real gateway:
-`for_feature` is replaced by a spy that returns the envelope under test, so what
-is exercised is the guard and the mapping, not the language model. The spy also
-asserts on what would have been *sent* — that is how the "off by default" tests
-prove nothing left the instance.
+34 tests, `--test-tags '/bf_expense_ocr'`. None of them calls the real bridge:
+`bf.ai.bridge.call` is replaced by a spy that returns the envelope under test,
+so what is exercised is the guard and the mapping, not `claude -p` — and a test
+pass does not consume anyone's subscription.
+
+The spy also asserts on what would have been *sent*. That is how the
+"off by default" tests prove nothing left the instance, and how one test pins
+the `org` field: a wrong tenant does not make the call fail, it makes it
+succeed **on somebody else's subscription**, so the check has to be on the way
+out, not on the way back.

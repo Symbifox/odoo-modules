@@ -51,14 +51,23 @@ class TestLecture(BancLecture):
         self.assertEqual(d.ocr_state, "done")
         self.assertAlmostEqual(d.total_amount_currency, 26.30, places=2)
 
-    def test_la_photo_part_avec_son_type(self):
-        """La passerelle doit recevoir le mimetype, sinon elle le renifle."""
-        d = self._depense_vierge(mimetype="image/jpeg")
+    def test_la_photo_part_au_pont_avec_le_bon_locataire(self):
+        """Le pont choisit l'abonnement d'après `org` : c'est tout l'enjeu.
+
+        🔴 Un `org` faux ne fait pas échouer l'appel, il le fait réussir sur
+        l'abonnement de quelqu'un d'autre. Le contrôle porte donc sur ce qui
+        PART, pas sur ce qui revient.
+        """
+        d = self._depense_vierge(nom_piece="IMG_4821.jpeg", mimetype="image/jpeg")
         with self._passerelle(self.RECU_JUSTE) as espion:
             d.action_ocr_scan()
         self.assertEqual(len(espion.appels), 1)
-        self.assertEqual(espion.appels[0]["mime"], "image/jpeg")
-        self.assertIn("untrusted DATA", espion.appels[0]["prompt"])
+        appel = espion.appels[0]
+        self.assertEqual(appel["endpoint"], "/ocr/receipt")
+        self.assertEqual(appel["charge"]["org"],
+                         self.env["bf.ai.bridge"].tenant())
+        self.assertEqual(appel["charge"]["filename"], "IMG_4821.jpeg")
+        self.assertTrue(appel["charge"]["image_base64"])
 
     def test_l_extraction_brute_est_conservee(self):
         d = self._depense_vierge()

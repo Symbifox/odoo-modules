@@ -3,7 +3,7 @@
     "name": "Lecture des reçus",
     "summary": "Photographier un reçu de repas et laisser l'extraction "
                "remplir le total, les taxes et le pourboire",
-    "version": "18.0.1.0.0",
+    "version": "18.0.2.0.0",
     "category": "Human Resources/Expenses",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",
@@ -43,6 +43,15 @@ déduit alors : `total − (sous-total + taxes)`. Le résidu n'est accepté que 
 est positif et plausible — sous 40 % du sous-total. Au-delà, c'est que la
 lecture s'est trompée ailleurs, et le champ reste vide.
 
+Par le pont, sur l'abonnement du locataire
+------------------------------------------
+
+La lecture passe par `bf_ai_bridge`, donc par `claude -p` et l'abonnement
+Claude du locataire — pas par une API facturée au jeton. Le pont choisit le
+répertoire d'identifiants d'après le locataire déclaré : un système qui annonce
+`bsi` est lu sur l'abonnement de BSI, et un locataire dont la session n'est pas
+ouverte échoue franchement plutôt que d'être facturé ailleurs en silence.
+
 Rien ne part sans qu'on l'ait décidé
 ------------------------------------
 
@@ -77,13 +86,13 @@ Ce qu'il ne fait pas
 * **Recouper avec l'agenda.** Une fois la date et l'heure lues, on pourrait
   chercher l'événement qui les recouvre et proposer sa distribution
   analytique. C'est un deuxième étage, pas une condition du premier.
-* **Anonymiser.** Le reçu part tel quel vers le fournisseur configuré dans
-  `bf_llm`. Le choix du fournisseur EST le choix de vie privée.
+* **Anonymiser.** Le reçu part tel quel au pont, qui le lit avec l'abonnement
+  du locataire. Le choix de l'abonnement EST le choix de vie privée.
 """,
     "depends": [
         "hr_expense",
         "bf_expense_tip",
-        "bf_llm",
+        "bf_ai_bridge",
     ],
     "data": [
         "data/ocr_cron.xml",
