@@ -57,4 +57,16 @@
               groups="group_meeting_user"
               sequence="30"/>
 
+    <!-- Posé ici et non dans meeting_exchange_views.xml : ce fichier-là est
+         chargé AVANT menu_views.xml, donc `menu_meeting_records` n'existe pas
+         encore quand il est lu. Le défaut ne se voit qu'à l'INSTALLATION
+         neuve : sur une base déjà montée, le menu parent est en base et la
+         mise à jour passe. -->
+    <menuitem id="menu_meeting_exchange_import"
+              name="Importer un compte rendu"
+              parent="menu_meeting_records"
+              action="meeting_exchange_import_action"
+              groups="group_meeting_manager"
+              sequence="90"/>
+
 </odoo>

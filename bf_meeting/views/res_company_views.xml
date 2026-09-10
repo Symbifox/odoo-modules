@@ -8,6 +8,7 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name='logo']" position="after">
                 <field name="meeting_logo" widget="image" class="oe_avatar"/>
+                <field name="meeting_exchange_default"/>
             </xpath>
         </field>
     </record>

@@ -1,6 +1,8 @@
 import json
 import logging
+import re
 import threading
+import unicodedata
 from datetime import timedelta
 
 from markupsafe import Markup, escape
@@ -285,6 +287,42 @@ class MeetingRecord(models.Model):
         for rec in self:
             rec.partner_to_ids = ','.join(str(pid) for pid in rec.report_recipient_ids.ids)
 
+    # Échange entre locataires Symbifox
+    exchange_include_json = fields.Boolean(
+        string='Joindre la copie lisible par la machine',
+        # 🔴 Défaut CONSTANT, et c'est délibéré. Un `default=lambda self:
+        # self.env.company.meeting_exchange_default` fait lire `res_company`
+        # au moment où Odoo pose la colonne sur les lignes EXISTANTES, et à
+        # cet instant la colonne de `res.company` livrée par ce même module
+        # n'existe pas encore : `column res_company.meeting_exchange_default
+        # does not exist`, registre refusé, mise à jour avortée. Invisible sur
+        # une base neuve, où la table est vide et où aucun défaut n'est calculé.
+        # La préférence de société est appliquée dans `create` à la place.
+        default=False,
+        copy=False,
+        help="Joint au courriel du compte rendu un fichier .json portant "
+             "exactement ce que montre le PDF. Un destinataire qui a lui aussi "
+             "Symbifox peut le reprendre dans ses propres Rencontres sans "
+             "retaper. Il ne contient ni transcription, ni notes de révision, "
+             "ni pièce jointe.",
+    )
+    exchange_source_ref = fields.Char(
+        string="Provenance de l'échange",
+        readonly=True,
+        copy=False,
+        index=True,
+        help="Base et identifiant d'origine d'un compte rendu repris d'un "
+             "autre locataire. Vide pour un compte rendu rédigé ici.",
+    )
+    exchange_received_html = fields.Html(
+        string='Copie reçue',
+        readonly=True,
+        copy=False,
+        sanitize=False,
+        help="Provenance de la copie, et ce que le modèle local n'a pas su "
+             "reprendre : éléments d'action et participants non appariés.",
+    )
+
     # Raffinage GenFox (/refine-meeting)
     # L'ordre du jour porte le même indicateur (`meeting.agenda.refine_state`).
     # Ici il est indispensable : côté compte rendu, le pont rend la main DÈS le
@@ -437,7 +475,12 @@ class MeetingRecord(models.Model):
                 continue
             try:
                 data = json.loads(rec.structured_notes_json)
-            except (json.JSONDecodeError, TypeError):
+            except (json.JSONDecodeError, TypeError, ValueError):
+                data = None
+            # `json.loads('"bonjour"')` réussit et rend une chaîne : sans ce
+            # contrôle, le `.get` d'après lève AttributeError DANS un calcul
+            # stocké, et la fiche devient illisible en entier.
+            if not isinstance(data, dict):
                 rec.notes_html = False
                 rec.open_questions_html = False
                 continue
@@ -445,27 +488,49 @@ class MeetingRecord(models.Model):
             rec.notes_html = rec._render_notes_html(data)
             rec.open_questions_html = rec._render_open_questions_html(data)
 
+    @staticmethod
+    def _iter_entries(value):
+        """Parcourir une valeur du JSON structuré en n'admettant qu'une liste.
+
+        Ces deux gabarits ont été écrits pour du JSON que nous produisons
+        nous-mêmes. Depuis l'échange entre locataires, la même
+        colonne peut recevoir un fichier venu d'ailleurs, et les formes
+        tordues font mal de deux façons mesurées :
+
+        * une chaîne là où une liste est attendue s'itère **caractère par
+          caractère** — 100 ko de texte rendaient 1 Mo de HTML, un facteur 10,
+          dans un calculé STOCKÉ ;
+        * un dictionnaire ou une chaîne à la place de la liste de sujets lève
+          `AttributeError` dans le calcul, ce qui rend la fiche entièrement
+          illisible tant que la colonne n'est pas réparée à la main.
+
+        Une valeur qui n'est pas une liste est donc ignorée, pas devinée.
+        """
+        return value if isinstance(value, list) else []
+
     def _render_notes_html(self, data):
         """Render structured notes JSON to HTML. User-supplied strings are
         escaped to prevent XSS via crafted verbatims / structured notes."""
         parts = []
 
-        topics = data.get('topics', [])
-        for topic in topics:
+        for topic in self._iter_entries(data.get('topics')):
+            if not isinstance(topic, dict):
+                continue
             title = escape(topic.get('title', ''))
             parts.append(f'<h3>{title}</h3>')
-            points = topic.get('points', [])
+            points = self._iter_entries(topic.get('points'))
             if points:
                 parts.append('<ul>')
                 for point in points:
                     parts.append(f'<li>{escape(point)}</li>')
                 parts.append('</ul>')
 
-        deliverables = data.get('deliverables', [])
+        deliverables = self._iter_entries(data.get('deliverables'))
         if deliverables:
             parts.append('<h3>Livrables</h3><ul>')
             for d in deliverables:
-                desc = d if isinstance(d, str) else d.get('description', str(d))
+                desc = d if isinstance(d, str) else (
+                    d.get('description', str(d)) if isinstance(d, dict) else str(d))
                 parts.append(f'<li>{escape(desc)}</li>')
             parts.append('</ul>')
 
@@ -473,12 +538,13 @@ class MeetingRecord(models.Model):
 
     def _render_open_questions_html(self, data):
         """Render open questions from JSON (escaped)."""
-        questions = data.get('open_questions', [])
+        questions = self._iter_entries(data.get('open_questions'))
         if not questions:
             return False
         parts = ['<ul>']
         for q in questions:
-            text = q if isinstance(q, str) else q.get('question', str(q))
+            text = q if isinstance(q, str) else (
+                q.get('question', str(q)) if isinstance(q, dict) else str(q))
             parts.append(f'<li>{escape(text)}</li>')
         parts.append('</ul>')
         return Markup(''.join(parts))
@@ -529,6 +595,24 @@ class MeetingRecord(models.Model):
                 ]
                 if cmds:
                     rec.attendance_ids = cmds
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        """Appliquer la préférence de société sur la copie d'échange.
+
+        Le défaut du champ ne peut pas la lire (voir le commentaire sur
+        `exchange_include_json`), et `default_get` ne servirait que la saisie à
+        l'écran : un compte rendu créé par le meeting-processor ou par XML-RPC
+        n'y passe pas. C'est donc ici, où la colonne existe forcément.
+        """
+        vals_list = [dict(vals) for vals in vals_list]
+        for vals in vals_list:
+            if 'exchange_include_json' in vals:
+                continue
+            company = self.env['res.company'].browse(vals['company_id']) \
+                if vals.get('company_id') else self.env.company
+            vals['exchange_include_json'] = bool(company.meeting_exchange_default)
+        return super().create(vals_list)
 
     def write(self, vals):
         """Cascade `project_id` change to linked action-item tasks.
@@ -606,6 +690,13 @@ class MeetingRecord(models.Model):
         }
         if template:
             ctx['default_template_id'] = template.id
+        attachment = self._bf_exchange_attachment()
+        if attachment:
+            # `default_attachment_ids` ne survit pas : `_compute_attachment_ids`
+            # du composeur se déclenche sur `template_id` et ÉCRASE la valeur
+            # par défaut par les pièces du gabarit. D'où la clé de contexte, que
+            # `mail.compose.message` relit après le calcul d'origine.
+            ctx['bf_meeting_exchange_attachment_id'] = attachment.id
         return {
             'type': 'ir.actions.act_window',
             'name': 'Envoyer le rapport',
@@ -650,9 +741,17 @@ class MeetingRecord(models.Model):
         # small worker pool, stalled every other request. The mail is queued
         # (state « outgoing ») and the scheduler cron is triggered so it leaves
         # within seconds without holding an HTTP worker.
+        email_values = {}
+        attachment = self._bf_exchange_attachment()
+        if attachment:
+            # `send_mail_batch` écrase `attachment_ids` avec `email_values`,
+            # mais le PDF du compte rendu ne passe PAS par là : il arrive en
+            # `attachments` (nom, données), sorti du dictionnaire après la mise
+            # à jour. Le rapport survit donc à cette ligne — vérifié au banc.
+            email_values['attachment_ids'] = [(4, attachment.id)]
         template.with_company(target_company).with_context(
             allowed_company_ids=list(allowed_ids),
-        ).send_mail(self.id, force_send=False)
+        ).send_mail(self.id, force_send=False, email_values=email_values or None)
         self.env.ref('mail.ir_cron_mail_scheduler_action')._trigger()
         self.write({
             'report_state': 'sent',
@@ -904,22 +1003,66 @@ class MeetingRecord(models.Model):
                 'views': [[False, 'form']],
             }
 
+    def _bf_exchange_slug(self):
+        """Fragment de nom de fichier, sûr sur les trois systèmes de fichiers."""
+        self.ensure_one()
+        base = self.room_name or self.name or 'compte-rendu'
+        base = unicodedata.normalize('NFKD', base).encode('ascii', 'ignore').decode()
+        base = re.sub(r'[^A-Za-z0-9]+', '-', base).strip('-').lower()
+        return (base or 'compte-rendu')[:60]
+
+    def _bf_exchange_attachment(self):
+        """Pièce jointe portant la copie lisible par la machine, ou rien.
+
+        Rattachée au compte rendu, pas au courriel : elle reste consultable
+        après coup, et un renvoi la régénère plutôt que d'en empiler une
+        deuxième.
+        """
+        self.ensure_one()
+        if not self.exchange_include_json:
+            return self.env['ir.attachment']
+        payload = self.env['meeting.exchange'].build_payload(self)
+        raw = json.dumps(payload, ensure_ascii=False, indent=2, sort_keys=False)
+        date_part = (self.date or fields.Datetime.now()).strftime('%Y-%m-%d')
+        name = f"compte-rendu-{self._bf_exchange_slug()}-{date_part}.json"
+        existing = self.env['ir.attachment'].search([
+            ('res_model', '=', 'meeting.record'),
+            ('res_id', '=', self.id),
+            ('name', '=', name),
+        ], limit=1)
+        values = {
+            'name': name,
+            'raw': raw.encode('utf-8'),
+            'mimetype': 'application/json',
+            'res_model': 'meeting.record',
+            'res_id': self.id,
+            'type': 'binary',
+        }
+        if existing:
+            existing.write(values)
+            return existing
+        return self.env['ir.attachment'].create(values)
+
     def _get_report_data(self):
         """Prepare data for the PDF report template."""
         self.ensure_one()
         data = {}
         if self.structured_notes_json:
             try:
-                data = json.loads(self.structured_notes_json)
-            except (json.JSONDecodeError, TypeError):
-                pass
+                loaded = json.loads(self.structured_notes_json)
+            except (json.JSONDecodeError, TypeError, ValueError):
+                loaded = None
+            if isinstance(loaded, dict):
+                data = loaded
 
         return {
             'today': fields.Date.context_today(self).strftime('%Y-%m-%d'),
             'date_display': _format_meeting_date_display(self),
-            'topics': data.get('topics', []),
-            'deliverables': data.get('deliverables', []),
-            'open_questions': data.get('open_questions', []),
+            # Le gabarit PDF fait `t-foreach` là-dessus : une chaîne s'y
+            # itérerait caractère par caractère.
+            'topics': self._iter_entries(data.get('topics')),
+            'deliverables': self._iter_entries(data.get('deliverables')),
+            'open_questions': self._iter_entries(data.get('open_questions')),
             'decision_count': len(self.decision_ids),
             'task_count': len(self.task_ids),
             'participant_count': len(self.attendance_ids) or len(self.participant_ids),

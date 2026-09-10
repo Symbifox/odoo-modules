@@ -132,6 +132,12 @@
                     <field name="report_state" widget="statusbar"
                            statusbar_visible="draft,reviewed,sent"/>
                 </header>
+                <div class="oe_edit_only" invisible="report_state == 'sent'">
+                    <field name="exchange_include_json"
+                           groups="bf_meeting.group_meeting_manager"/>
+                    <label for="exchange_include_json"
+                           groups="bf_meeting.group_meeting_manager"/>
+                </div>
                 <sheet>
                     <div class="oe_button_box" name="button_box">
                         <button name="action_view_tasks" type="object"
@@ -350,6 +356,11 @@
                                     <field name="mimetype" optional="hide"/>
                                 </list>
                             </field>
+                        </page>
+                        <page string="Copie reçue" name="exchange"
+                              invisible="not exchange_received_html">
+                            <field name="exchange_source_ref" readonly="1"/>
+                            <field name="exchange_received_html" nolabel="1" readonly="1"/>
                         </page>
                         <page string="Technique" name="technical">
                             <group>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="meeting_exchange_import_wizard_view_form" model="ir.ui.view">
+        <field name="name">meeting.exchange.import.wizard.form</field>
+        <field name="model">meeting.exchange.import.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Importer un compte rendu">
+                <field name="state" invisible="1"/>
+                <field name="duplicate_id" invisible="1"/>
+                <div class="alert alert-info" role="alert">
+                    Reprend un compte rendu <strong>rédigé dans un autre Symbifox</strong>,
+                    à partir du fichier <code>.json</code> joint au courriel du compte rendu.
+                    <br/>
+                    L'import ne crée <strong>que le compte rendu</strong> : aucune fiche
+                    contact, aucune tâche, aucun projet. Il entre en
+                    <strong>brouillon</strong>, sans destinataire : c'est une copie reçue,
+                    pas un envoi à refaire.
+                </div>
+                <group>
+                    <field name="file" filename="filename"/>
+                    <field name="filename" invisible="1"/>
+                    <field name="project_id" invisible="state != 'preview'"/>
+                </group>
+                <div invisible="state != 'preview'">
+                    <separator string="Ce que contient le fichier"/>
+                    <field name="preview_html" nolabel="1" readonly="1"/>
+                </div>
+                <footer>
+                    <button name="action_check" type="object" class="btn-primary"
+                            string="Vérifier le fichier" invisible="state == 'preview'"/>
+                    <button name="action_import" type="object" class="btn-primary"
+                            string="Importer" invisible="state != 'preview' or duplicate_id"/>
+                    <button name="action_import" type="object" class="btn-secondary"
+                            string="Importer quand même"
+                            invisible="state != 'preview' or not duplicate_id"
+                            confirm="Ce compte rendu a déjà été importé. Créer une seconde copie ?"/>
+                    <button string="Annuler" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="meeting_exchange_import_action" model="ir.actions.act_window">
+        <field name="name">Importer un compte rendu</field>
+        <field name="res_model">meeting.exchange.import.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+</odoo>

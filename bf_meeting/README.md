@@ -28,6 +28,9 @@ tracking decisions as knowledge matrix lines.
 - **Smart buttons** — next meeting on the task, reports and agendas on the project and on the calendar event, tasks to discuss on the agenda
 - **Emails** — templates for sending the agenda and the report, with a dedicated section for tasks to discuss
 - **PDF report** — branded rendering of the agenda with an "Action items to discuss" section
+- **Exchange between tenants** — the report email can carry a machine-readable
+  copy (a `.json` file) that another Symbifox tenant imports into its own
+  Meetings app without retyping. Off by default, per company and per report
 - **Unifying agenda ↔ report ↔ calendar event** — one `calendar.event` can carry both an agenda and a report; creating a report from an event that already has an agenda links the two automatically (`meeting.agenda.meeting_record_id`) and propagates the project
 - **"Needs an agenda" flag** — on `calendar.event`, a computed `bf_needs_agenda` field (true when the meeting is upcoming, has no agenda and is not exempted); an alert banner on the form and a dedicated filter in the search view
 - **Per-meeting opt-out** — a `bf_skip_agenda` checkbox on `calendar.event` for short or recurring internal meetings
@@ -64,6 +67,8 @@ tracking decisions as knowledge matrix lines.
 | `bf.meeting.document.mixin` | Shared **Documents** tab: computed One2many over `ir.attachment` (`res_model`/`res_id`), with the inverse that materialises new lines and deletes removed ones |
 | `meeting.dashboard` | RPC entry point for the OWL dashboard — an `AbstractModel`: no field, no table, no SQL view, methods only |
 | `meeting.dashboard.line` | SQL view aggregating the agendas and reports to follow up; the source of every dashboard row |
+| `meeting.exchange` | Builds, validates and applies the portable copy of a report (`AbstractModel`: no field, no table) |
+| `meeting.exchange.import.wizard` | Upload, check and import a report exported by another tenant (manager group only) |
 
 ### Dependencies
 
@@ -105,6 +110,36 @@ render with the company's palette, or with Odoo's default colours
 The structured JSON notes (topic title, points, open questions) are rendered to
 HTML through `markupsafe.escape()` before concatenation, to prevent injection
 when the content comes from an external source (AI transcription, user paste).
+
+### Exchange between tenants
+
+Two Symbifox tenants that meet each other exchange an email and a PDF: readable,
+but not reusable. The report email can therefore carry a machine-readable copy of
+itself, and the receiving tenant imports it in one step. Three rules hold the
+whole design:
+
+- **The payload carries only what the PDF already shows.** The exchange is not a
+  new disclosure, it is the same content in another shape. The raw transcript,
+  the review notes, the refine state and the attachments stay with the sender.
+- **The payload carries no markup at all.** Topic bullets are reduced to text
+  lines on export and re-rendered on import through the module's own escaped
+  template, so no tag coming from a file ever reaches the importer's browser.
+  This removes the whole question of sanitising imported HTML.
+- **The payload carries no reusable identifier.** The two databases are separate
+  and their ids overlap; people travel as a name and an email address.
+
+The importer matches **existing** contacts only, by normalised email: it never
+creates a contact from a file received by email, and anyone it cannot match is
+named in a "Received copy" panel on the report, so nothing is lost and nothing is
+invented. Action items are imported as text, not as tasks. The copy lands in
+**draft**, with no recipient and no sent date, because the portal opens a report
+to a client as soon as it is marked sent — a copy that inherited the sender's
+state would surface in the importer's own client portal.
+
+The file is untrusted input: it is refused above 512 kB (a real report weighs
+around 5 kB), refused outright on a structural mismatch rather than repaired
+silently, capped on every list and string, and the import itself is restricted to
+the manager group.
 
 ### Public contributions — security
 
