@@ -130,7 +130,7 @@ class BfProcessDocument(models.Model):
         date = fields.Date.to_string(self.date_document) if self.date_document else ""
         # « Brouillon » sur la couverture d'un livrable client se lit comme un
         # défaut de la carte, alors qu'il ne dit que l'état du modèle. Le
-        # document BSI disait « projet, à valider » : la même chose, mais
+        # document d'un client disait « projet, à valider » : la même chose, mais
         # adressée au lecteur.
         etat = {"brouillon": "projet, à valider", "valide": "validée",
                 "obsolete": "version obsolète"}.get(self.state, "")
