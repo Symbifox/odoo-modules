@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Le pourboire se saisit juste avant les taxes : on lit le total, on
+         retire ce qui n'est pas taxable, on voit ce qui reste de taxes. -->
+    <record id="hr_expense_view_form_tip" model="ir.ui.view">
+        <field name="name">hr.expense.view.form.pourboire</field>
+        <field name="model">hr.expense</field>
+        <field name="inherit_id" ref="hr_expense.hr_expense_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//label[@for='tax_ids']" position="before">
+                <label for="tip_amount_currency" invisible="product_has_cost"/>
+                <div class="o_row" invisible="product_has_cost">
+                    <field name="tip_amount_currency" widget="monetary"
+                           options="{'currency_field': 'currency_id'}"
+                           readonly="not is_editable" class="oe_inline mw-50 me-0"/>
+                    <span class="text-muted d-flex" invisible="not tip_amount_currency">
+                        hors taxes
+                    </span>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- ⚠️ La liste servie par défaut est `hr_expense_view_expenses_analysis_tree`,
+         pas `view_expenses_tree` : cette dernière est une vue PRIMAIRE qui hérite
+         de la première et n'ajoute qu'un `js_class`. S'y greffer pose la colonne
+         sur une vue que personne n'ouvre. Les vues primaires filles héritent de
+         celle-ci, donc la colonne se propage partout. -->
+    <record id="view_expenses_tree_tip" model="ir.ui.view">
+        <field name="name">hr.expense.list.pourboire</field>
+        <field name="model">hr.expense</field>
+        <field name="inherit_id" ref="hr_expense.hr_expense_view_expenses_analysis_tree"/>
+        <field name="arch" type="xml">
+            <field name="total_amount_currency" position="after">
+                <field name="tip_amount_currency" optional="hide" sum="Pourboire"/>
+            </field>
+        </field>
+    </record>
+
+</odoo>
