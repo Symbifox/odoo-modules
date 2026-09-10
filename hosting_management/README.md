@@ -658,6 +658,9 @@ Hosting
 
 ## Changelog
 
+### Version 18.0.2.51.3
+- Fix: the test that guards the refresh cadence no longer requires the scheduled job to be enabled. A database may switch its scheduled actions off deliberately (a demo, a bench, a restored clone), and the test turned that operating choice into a failure. What the module guarantees is the cadence, not the activation.
+
 ### Version 18.0.2.51.2
 - Fix: the maintenance due indicators (`days_until_due`, `is_overdue`) are stored computed fields whose value depends on today's date, so the calendar advancing is not a dependency and they freeze at their last write. The refresh job introduced in 18.0.2.51.1 ran once a day at whatever time Odoo anchored it on install, which left the values a full day stale for most of the day; it now runs hourly, which bounds the error to an hour whatever the server timezone. A migration re-cadences the job on existing databases, since the cron data file is `noupdate="1"`.
 - Fix: the refresh now marks the fields for recomputation and lets the flush write them, instead of calling the compute methods directly. A direct call assigns to a stored field on unprotected records, which Odoo routes through a single-record `write()` per field, once per record.

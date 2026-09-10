@@ -134,8 +134,10 @@ class TestMaintenanceDueIndicators(TransactionCase):
         cron = self.env.ref(
             "hosting_management.ir_cron_hosting_maintenance_refresh_due"
         )
-        self.assertTrue(cron.active, "le cron de rafraîchissement est désactivé")
-
+        # ⚠️ Ne PAS exiger que le cron soit actif : une base peut couper ses
+        # tâches planifiées volontairement (démonstration, banc, base clonée), et
+        # ce test échouerait alors sur un choix d'exploitation plutôt que sur un
+        # défaut. Ce que le module garantit, c'est la CADENCE du passage.
         period = periods[cron.interval_type] * cron.interval_number
         self.assertLessEqual(
             period,
