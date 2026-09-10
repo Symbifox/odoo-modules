@@ -62,11 +62,92 @@ patch(AttendeeCalendarCommonPopover.prototype, {
         if (record.rawRecord.bf_event_status === status) {
             return this.props.close();
         }
+        /**
+         * 🔴 « Annulée » du groupe de statuts et « Annuler » du pied disaient
+         * la même chose et ne faisaient pas la même chose : le premier écrivait
+         * le mot, le second rendait le créneau et proposait de prévenir les
+         * invités. Vu côte à côte dans la bulle, au banc navigateur, à deux
+         * pouces l'un de l'autre.
+         *
+         * Le couplage statut/disponibilité vit maintenant dans `write()` côté
+         * Python, donc les deux rendent le créneau. Ce détour-ci ajoute la
+         * seconde moitié : l'avis d'annulation, qu'un simple champ ne peut pas
+         * proposer.
+         */
+        if (status === "cancelled") {
+            return this.bfOnClickCancel();
+        }
         await this.orm.write(this.props.model.resModel, [record.id], {
             bf_event_status: status,
         });
         await this.props.model.load();
         this.props.close();
+    },
+
+    /**
+     * Une rencontre qui n'a pas encore été annulée peut l'être d'ici.
+     *
+     * Masqué sur une série, pour la même raison que les boutons de statut
+     * au-dessus : écrire sur une occurrence pose la question « cette
+     * rencontre / celle-ci et les suivantes / toute la série », et une bulle
+     * qui ne sait pas la montrer y répondrait toute seule — sur une série
+     * entière, et par courriel.
+     */
+    get bfDisplayCancel() {
+        return (
+            this.isEventEditable &&
+            !this.props.record.rawRecord.recurrency &&
+            this.bfEventStatus !== undefined &&
+            this.bfEventStatus !== "cancelled"
+        );
+    },
+
+    /**
+     * ⚠️ « Supprimer » ne survit que sur une rencontre DÉJÀ annulée.
+     *
+     * C'est tout le lot : supprimer était la seule action offerte, et elle
+     * efface la rencontre sans que personne n'en soit averti — `unlink()` du
+     * cœur ne prévient aucun participant, il ne fait que rafraîchir les
+     * rappels. Le ménage reste possible, mais après coup : on annule d'abord,
+     * ce qui prévient qui de droit et rend le créneau, et on supprime ensuite
+     * si on veut vraiment que la trace disparaisse.
+     *
+     * Deux échappatoires, et aucune n'est un oubli :
+     *
+     * - `undefined` veut dire que `bf_event_status` n'est pas déclaré dans
+     *   l'arch de CETTE vue calendrier, donc que la bulle ne peut rien savoir
+     *   du statut. Retirer « Supprimer » sur cette foi-là laisserait une vue
+     *   sans aucune action destructive, en silence.
+     * - sur une série, « Annuler » n'est pas offert (voir ci-dessus) :
+     *   retirer aussi « Supprimer » ne laisserait plus rien du tout.
+     */
+    get isEventDeletable() {
+        if (!super.isEventDeletable) {
+            return false;
+        }
+        if (this.bfEventStatus === undefined) {
+            return true;
+        }
+        if (this.props.record.rawRecord.recurrency) {
+            return true;
+        }
+        return this.bfEventStatus === "cancelled";
+    },
+
+    async bfOnClickCancel() {
+        const action = await this.orm.call("calendar.event", "action_bf_cancel", [
+            [this.props.record.id],
+        ]);
+        this.props.close();
+        /**
+         * ⚠️ `onClose` et pas un `await` : la boîte est un `target: "new"`,
+         * `doAction` rend la main dès qu'elle est ouverte. Sans ce rappel, la
+         * grille garde la vignette non barrée jusqu'au prochain rafraîchissement,
+         * et l'annulation a l'air de n'avoir rien fait.
+         */
+        this.actionService.doAction(action, {
+            onClose: () => this.props.model.load(),
+        });
     },
 
     async bfOnClickPoke() {

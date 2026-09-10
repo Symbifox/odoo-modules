@@ -57,7 +57,7 @@ class TestCalendarStatus(TransactionCase):
 
         Un `default=` sur le champ est écrit dans TOUTES les lignes existantes
         au moment où la colonne est créée. Mesuré sur une copie de la
-        production : la première version stampait « confirmée » sur les 15 464
+        production : la première version stampait « confirmée » sur TOUTES les
         rencontres de l'historique, dont aucune n'avait été confirmée par qui
         que ce soit, et la première repoussée de l'agenda aurait porté
         `STATUS:CONFIRMED` vers Nextcloud pour toutes.

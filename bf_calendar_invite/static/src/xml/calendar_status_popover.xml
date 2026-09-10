@@ -31,6 +31,15 @@
             <a t-if="isEventEditable" href="#"
                class="btn btn-secondary o_cw_popover_bf_poke"
                t-on-click.prevent="bfOnClickPoke">Poke</a>
+            <!--
+              « Annuler » prend la place que « Supprimer » occupait, au sens
+              propre : même rang dans le pied, même allure, et « Supprimer »
+              ne revient que sur une rencontre déjà annulée (voir
+              `isEventDeletable` dans le .js).
+            -->
+            <a t-if="bfDisplayCancel" href="#"
+               class="btn btn-secondary o_cw_popover_bf_cancel"
+               t-on-click.prevent="bfOnClickCancel">Cancel</a>
         </xpath>
     </t>
 

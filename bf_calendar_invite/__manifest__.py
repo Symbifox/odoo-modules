@@ -20,7 +20,19 @@
     #   out of its series and the removal of the RRULE core copied onto every
     #   occurrence, an ORGANIZER built from a parsed address, and a description
     #   freed of its `text/html,…` wrapper.
-    "version": "18.0.4.0.0",
+    # 18.0.5.0.0: 🔴 "Delete" was not merely the only action a meeting offered
+    #   from the calendar grid — it is SILENT. Core's `calendar.event.unlink()`
+    #   notifies nobody (it only refreshes alarms): the meeting leaves Odoo's
+    #   calendar and stays in the guests' own, for good. The popover now offers
+    #   "Cancel", which (1) strikes the meeting through instead of erasing it,
+    #   (2) puts its time back to Available — `show_as` alone governs whether a
+    #   booking slot is blocked, and meetings already marked cancelled had all
+    #   stayed "busy" — and (3) offers a cancellation notice, unticked by
+    #   default, written in the guests' language and carrying a
+    #   `METHOD:CANCEL` .ics that really removes the entry. "Delete" comes back
+    #   only on a meeting that is already cancelled. Also adds `STATUS` to every
+    #   emitted .ics: the field existed and only the CalDAV push read it.
+    "version": "18.0.5.0.0",
     "category": "Productivity",
     "website": "https://symbifox.com",
     "author": "Les services de consultation Blue Fox, Inc.",
@@ -32,9 +44,11 @@
         "bf_onboarding_base",
     ],
     "data": [
+        "security/ir.model.access.csv",
         "data/report_ics.xml",
         "data/mail_body.xml",
         "data/mail_template.xml",
+        "views/calendar_event_cancel_views.xml",
         "views/calendar_event_views.xml",
     ],
     "assets": {

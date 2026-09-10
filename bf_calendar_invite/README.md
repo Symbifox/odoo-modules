@@ -52,6 +52,43 @@ The SMS button opens the composer with an empty body.
   with no status set stays unmarked: the field was deliberately never
   backfilled, and painting absence as "confirmed" would assert a confirmation
   nobody gave.
+- **Cancelling a meeting instead of deleting it** — from **v18.0.5.0.0**. The
+  calendar popover's "Delete" is replaced by "Cancel", and the reason is under
+  the button rather than on it: core's `calendar.event.unlink()` notifies
+  nobody. It refreshes alarms and returns; the `calendar` module ships an
+  invitation template and a date-change template, and **no cancellation
+  template at all**. Deleting a meeting from the grid therefore removes it from
+  Odoo and leaves it in every guest's own calendar, for good.
+
+  "Cancel" does three things instead. It marks the meeting cancelled, so the
+  tile is struck through and stays where it is — the slot was held, and an
+  agenda that loses the entry cannot answer "what was I supposed to be doing at
+  10?" a week later. It sets `show_as` to *free*, which is what actually gives
+  the time back: the booking slot generator counts an event as busy on
+  `show_as == "busy"` alone, so this line, and only this line, is what makes a
+  kept meeting harmless to the slot picker. And it offers a cancellation
+  notice — **unticked by default**, because a message that leaves the building
+  cannot be recalled — written in the guests' language and carrying a
+  `cancellation.ics` with `METHOD:CANCEL`, `STATUS:CANCELLED` and a bumped
+  `SEQUENCE`, which is what makes a calendar client *remove* the entry rather
+  than redraw it. The dialog names the guests who would be written to, and
+  drops the organiser and anyone with no address, so the choice is made
+  against a list rather than against an idea of one.
+
+  "Delete" comes back on a meeting that is **already cancelled**: the cleanup
+  is still available, just after the fact. It also stays on a recurring
+  meeting, where "Cancel" is not offered — writing on one occurrence raises
+  core's "this event / this and following / all events" question, and a dialog
+  that cannot show that choice would answer it silently, on a whole series, by
+  email.
+
+  Writing the status by hand does the same thing. The coupling between the
+  status and `show_as` lives in `write()`, not in the cancel path, which makes
+  it true for every writer: the form's radio, the popover, a data import, and
+  the CalDAV pull that turns an incoming `STATUS:CANCELLED` into this field —
+  someone who cancels a meeting in their own calendar client has freed their
+  time there, and Odoo now agrees. An explicit `show_as` in the same write
+  still wins; the coupling is a default, not a lock.
 - **A clickable location.** Where a meeting's location is a room URL — which is
   most of them, once one is filled in — following it took selecting the text by
   hand. The field stays a free `Char`; only the part actually recognised as a
@@ -154,7 +191,12 @@ the English source, while `format_datetime` resolves its locale among the
 
 - The `.ics` carries no `METHOD:REQUEST`, matching what core sends. Mail clients
   offer "add to calendar" rather than treating it as an RSVP invitation, which
-  keeps Odoo's own accept/decline links authoritative.
+  keeps Odoo's own accept/decline links authoritative. The one exception is a
+  cancellation, which carries `METHOD:CANCEL` — without it a client redraws the
+  entry instead of removing it, and the notice does nothing but inform. The
+  value is set on that path only: another module post-processes the same
+  builder, and writing a `METHOD` on every path would make the winner depend on
+  module load order.
 - **Hours carry the company's timezone, not the sender's.** Core's
   `_get_mail_tz()` ends at `env.user.tz`, so an organiser writing from New
   Zealand announces 7 a.m. to a client in Montreal. The chain is `event_tz`

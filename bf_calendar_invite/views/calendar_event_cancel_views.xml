@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+      The cancellation dialog. Short on purpose: it is opened from a popover,
+      by someone who has already decided, and every field it adds is one more
+      thing between that decision and the guests being told.
+
+      The guest list is shown read-only rather than made editable. Choosing WHO
+      hears about a cancellation is a different job — it is the composer's —
+      and a dialog that let you drop one name would quietly become the place
+      where a guest is left out of a cancellation.
+    -->
+    <record id="bf_calendar_event_cancel_view_form" model="ir.ui.view">
+        <field name="name">bf.calendar.event.cancel.form</field>
+        <field name="model">bf.calendar.event.cancel</field>
+        <field name="arch" type="xml">
+            <form string="Cancel the meeting">
+                <field name="blocker" invisible="1"/>
+                <field name="recipient_warning" invisible="1"/>
+                <div class="alert alert-warning" role="alert" invisible="not blocker">
+                    <field name="blocker" nolabel="1" readonly="1"/>
+                </div>
+                <group invisible="blocker">
+                    <field name="event_ids" widget="many2many_tags" readonly="1"
+                           options="{'no_create': True}"/>
+                    <field name="notify"/>
+                    <field name="recipient_ids" widget="many2many_tags" readonly="1"
+                           invisible="not notify or not recipient_ids"
+                           options="{'no_create': True}"/>
+                    <div class="text-muted" colspan="2"
+                         invisible="not notify or not recipient_warning">
+                        <field name="recipient_warning" nolabel="1" readonly="1"/>
+                    </div>
+                    <field name="reason" placeholder="Optional — e.g. postponed, client unavailable…"/>
+                </group>
+                <footer>
+                    <button name="action_apply" type="object" string="Cancel the meeting"
+                            class="btn-primary" invisible="blocker"/>
+                    <button string="Close" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

@@ -39,6 +39,24 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name='current_status']" position="before">
                 <field name="bf_event_status" readonly="not user_can_edit"/>
+                <field name="bf_cancellation_reason" readonly="1"
+                       invisible="bf_event_status != 'cancelled' or not bf_cancellation_reason"/>
+            </xpath>
+            <!--
+              Le bandeau et le bouton, posés dans un `header` que le cœur n'a
+              pas : le formulaire des rencontres n'en déclare aucun, donc il
+              est ajouté ici plutôt que complété.
+            -->
+            <xpath expr="//sheet" position="before">
+                <header>
+                    <button name="action_bf_cancel" type="object"
+                            string="Cancel the meeting" class="btn-secondary"
+                            invisible="not user_can_edit or bf_event_status == 'cancelled'"/>
+                </header>
+            </xpath>
+            <xpath expr="//widget[@name='web_ribbon']" position="before">
+                <widget name="web_ribbon" title="Cancelled" bg_color="text-bg-danger"
+                        invisible="bf_event_status != 'cancelled'"/>
             </xpath>
             <!--
               L'emplacement d'une rencontre est une URL dans la grande majorité

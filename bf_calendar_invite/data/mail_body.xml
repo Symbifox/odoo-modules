@@ -219,4 +219,130 @@
             </table>
         </div>
     </template>
+
+    <!--
+      The cancellation notice. Same brand shell, and deliberately the shortest
+      body of the three: there is nothing to prepare for and nothing to click.
+
+      What it does carry, and why each line earns its place:
+
+      * the meeting NAMED and DATED. A guest with a full calendar cannot act on
+        "your meeting is cancelled"; the whole value of the message is telling
+        them WHICH slot just came back.
+      * the reason, only when one was given. An empty "Reason:" line reads as
+        a reason withheld.
+      * a line about the attachment. Most clients act on the `.ics` without
+        being asked, but the ones that do not leave a ghost entry, and a guest
+        who sees the entry still there assumes the message was a mistake.
+
+      It does not apologise and it does not propose a new date. An apology
+      written by a mail template is not one, and a new date belongs in a
+      message someone actually wrote.
+    -->
+    <template id="mail_body_calendar_cancellation" name="Calendar cancellation email body">
+        <t t-set="brand" t-value="object._bf_mail_brand()"/>
+        <t t-set="mail_tz" t-value="object._bf_mail_tz()"/>
+        <t t-set="guest_name" t-value="object._bf_guest_name()"/>
+        <div>
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#F8FAFC;">
+                <tbody>
+                    <tr>
+                        <td align="center" style="padding:24px;">
+                            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px; max-width:600px; margin:0 auto; background-color:#FFFFFF; border-radius:12px; border:1px solid #E5E7EB; border-collapse:collapse;">
+                                <tbody>
+                                    <tr>
+                                        <td t-attf-style="background-color:{{ brand['dark'] }}; padding:16px 24px; border-radius:12px 12px 0 0;">
+                                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                                                <tbody>
+                                                    <tr>
+                                                        <td align="left">
+                                                            <img t-att-src="brand['logo_src']" t-att-alt="brand['company'].name" style="height:40px; width:auto; display:block; border:0;"/>
+                                                        </td>
+                                                        <td align="right" style="color:#E6EDF3; font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:22px; font-weight:800; letter-spacing:0.2px;">
+                                                            Cancelled
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td t-attf-style="height:4px; line-height:4px; background-color:{{ brand['primary'] }};">&#160;</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding:24px; font-family:'Lexend','Segoe UI',Arial,sans-serif;">
+                                            <p style="margin:0 0 12px 0;font-size:16px;line-height:26px;color:#374151;font-weight:300;">
+                                                <t t-if="guest_name">Hello <t t-out="guest_name"/>,</t>
+                                                <t t-else="">Hello,</t>
+                                            </p>
+                                            <!--
+                                              ⚠️ La phrase et la date sont SÉPARÉES, et c'est une
+                                              contrainte de traduction, pas de mise en page. Une phrase
+                                              qui enjambe un `t-out` s'exporte en morceaux — « on »,
+                                              « at », « is cancelled. » — et une langue qui ordonne
+                                              autrement ne peut plus rien en faire. Ici la phrase est une
+                                              unité, la date en est une autre.
+                                            -->
+                                            <p style="margin:0 0 16px 0;font-size:15px;line-height:24px;color:#374151;font-weight:300;">
+                                                The meeting below is cancelled.
+                                            </p>
+
+                                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 16px 0;">
+                                                <tbody>
+                                                    <tr>
+                                                        <td t-attf-style="background-color:#F5F7FA;border-left:3px solid {{ brand['primary'] }};padding:12px 16px;font-family:'Lexend','Segoe UI',Arial,sans-serif;">
+                                                            <div t-attf-style="font-size:16px;font-weight:600;color:{{ brand['dark'] }};text-decoration:line-through;" t-out="object.name or ''">Meeting</div>
+                                                            <div style="font-size:14px;color:#6B7280;margin-top:4px;">
+                                                                <t t-if="not object.allday">
+                                                                    <t t-out="format_datetime(dt=object.start, tz=mail_tz, dt_format='EEEE d MMMM y', lang_code=object.env.lang) or ''">Tuesday 4 May 2021</t>,
+                                                                    <t t-out="format_time(time=object.start, tz=mail_tz, time_format='short', lang_code=object.env.lang) or ''">11:00 AM</t>
+                                                                    (<t t-out="mail_tz"/>)
+                                                                </t>
+                                                                <t t-else="">
+                                                                    <t t-out="format_date(value=object.start_date, lang_code=object.env.lang) or ''">4 May 2021</t>
+                                                                </t>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+
+                                            <table t-if="object.bf_cancellation_reason" role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 16px 0;">
+                                                <tbody>
+                                                    <tr>
+                                                        <td t-attf-style="background-color:#F5F7FA;border-left:3px solid {{ brand['primary'] }};padding:12px 16px;font-size:14px;line-height:22px;color:#374151;">
+                                                            <t t-out="object.bf_cancellation_reason or ''">The room is unavailable.</t>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+
+                                            <p style="margin:0 0 16px 0;font-size:13px;line-height:21px;color:#6B7280;font-weight:300;">
+                                                The attached file removes the meeting from your calendar. If your
+                                                calendar still shows it after opening the file, delete the entry by hand.
+                                            </p>
+
+                                            <p style="margin:20px 0 0 0;font-size:15px;line-height:24px;color:#374151;font-weight:300;">
+                                                Thanks,<br/>
+                                                <t t-if="object.user_id.signature" data-o-mail-quote-container="1"><t t-out="object.user_id.signature or ''" data-o-mail-quote="1"/></t>
+                                                <t t-else=""><strong t-attf-style="color:{{ brand['dark'] }};"><t t-out="object.user_id.partner_id.name or user.name"/></strong></t>
+                                            </p>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px; max-width:600px; margin:12px auto 0;">
+                                <tbody>
+                                    <tr>
+                                        <td t-attf-style="height:3px; line-height:3px; background-color:{{ brand['primary'] }}; width:50%;">&#160;</td>
+                                        <td t-attf-style="height:3px; line-height:3px; background-color:{{ brand['dark'] }}; width:50%;">&#160;</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </template>
 </odoo>

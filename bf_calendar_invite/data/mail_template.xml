@@ -108,4 +108,55 @@
             <t t-call="bf_calendar_invite.mail_body_calendar_poke"/>
         </field>
     </record>
+
+    <!--
+      The cancellation notice. Three records and one body again, same language
+      switch, and `report_template_ids` back on — unlike the poke, this message
+      MUST carry an `.ics`. The body tells a human the meeting is off; the
+      attachment, carrying the same UID with `METHOD:CANCEL` and a bumped
+      SEQUENCE, is what takes the entry out of their calendar.
+
+      No `email_to`: the recipients are decided at send time by
+      `calendar.event._bf_send_cancellation_notice`, which drops the organiser
+      and anyone with no address. Freezing a recipient expression here would
+      re-add the organiser to their own cancellation.
+    -->
+    <record id="mail_template_calendar_cancellation" model="mail.template">
+        <field name="name">Calendar: Meeting cancelled (with .ics)</field>
+        <field name="model_id" ref="calendar.model_calendar_event"/>
+        <field name="subject">Cancelled: {{ object.name }}</field>
+        <field name="email_from">{{ (object.user_id.email_formatted or user.email_formatted or '') }}</field>
+        <field name="lang">{{ object.bf_mail_lang }}</field>
+        <field name="description">Tells the guests the meeting is off and carries the .ics that removes it — written in the guests' language</field>
+        <field name="report_template_ids" eval="[Command.set([ref('bf_calendar_invite.report_calendar_event_ics')])]"/>
+        <field name="body_html" type="html">
+            <t t-call="bf_calendar_invite.mail_body_calendar_cancellation"/>
+        </field>
+    </record>
+
+    <record id="mail_template_calendar_cancellation_fr" model="mail.template">
+        <field name="name">Calendar: Meeting cancelled (with .ics) — Français</field>
+        <field name="model_id" ref="calendar.model_calendar_event"/>
+        <field name="subject">Annulée : {{ object.name }}</field>
+        <field name="email_from">{{ (object.user_id.email_formatted or user.email_formatted or '') }}</field>
+        <field name="lang">{{ object.bf_mail_lang_fr }}</field>
+        <field name="description">The same notice, forced to French</field>
+        <field name="report_template_ids" eval="[Command.set([ref('bf_calendar_invite.report_calendar_event_ics')])]"/>
+        <field name="body_html" type="html">
+            <t t-call="bf_calendar_invite.mail_body_calendar_cancellation"/>
+        </field>
+    </record>
+
+    <record id="mail_template_calendar_cancellation_en" model="mail.template">
+        <field name="name">Calendar: Meeting cancelled (with .ics) — English</field>
+        <field name="model_id" ref="calendar.model_calendar_event"/>
+        <field name="subject">Cancelled: {{ object.name }}</field>
+        <field name="email_from">{{ (object.user_id.email_formatted or user.email_formatted or '') }}</field>
+        <field name="lang">{{ object.bf_mail_lang_en }}</field>
+        <field name="description">The same notice, forced to English</field>
+        <field name="report_template_ids" eval="[Command.set([ref('bf_calendar_invite.report_calendar_event_ics')])]"/>
+        <field name="body_html" type="html">
+            <t t-call="bf_calendar_invite.mail_body_calendar_cancellation"/>
+        </field>
+    </record>
 </odoo>

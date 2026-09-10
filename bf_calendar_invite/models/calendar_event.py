@@ -22,6 +22,7 @@ from urllib.parse import unquote
 import pytz
 
 from odoo import _, api, fields, models
+from odoo.exceptions import UserError
 from odoo.tools import html2plaintext
 from odoo.tools.misc import format_time
 
@@ -343,8 +344,8 @@ class CalendarEvent(models.Model):
         ⚠️ Posed here and NOT as `default="confirmed"` on the field, and the
         difference is the entire history of this database. A field default is
         written into every existing row when the column is created: measured on
-        a copy of production, `default=` stamped **15 464 meetings** — every
-        meeting ever held — as "confirmed". That is precisely the claim
+        a copy of a real calendar, `default=` stamped **every meeting ever
+        held** as "confirmed". That is precisely the claim
         `_bf_ics_status` refuses to make, and the first re-push of the calendar
         would have carried `STATUS:CONFIRMED` to Nextcloud for all of them.
 
@@ -377,6 +378,200 @@ class CalendarEvent(models.Model):
         """
         reverse = {v: k for k, v in self._BF_ICS_STATUS.items()}
         return reverse.get((value or "").strip().upper(), False)
+
+    # ------------------------------------------------------------
+    # Cancelling a meeting, without erasing it
+    # ------------------------------------------------------------
+
+    bf_cancellation_reason = fields.Text(
+        string="Cancellation reason",
+        copy=False,
+        tracking=True,
+        help="Why the meeting is not happening. Optional, and shown to the "
+             "guests only when a cancellation notice is actually sent.",
+    )
+
+    def action_bf_cancel(self):
+        """Open the cancellation dialog on this meeting.
+
+        A dialog rather than an immediate write, because two of the three
+        decisions a cancellation carries cannot be guessed: whether anyone is
+        told, and what they are told. Doing it silently and offering to notify
+        afterwards would lose the notice the moment the tab is closed, and
+        leave no room for a reason.
+        """
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Cancel the meeting"),
+            "res_model": "bf.calendar.event.cancel",
+            "view_mode": "form",
+            # 🔴 `views` et pas seulement `view_mode`. Le client web
+            # préprocesse toute action par `action.views.map(...)` :
+            # un dictionnaire bâti à la main qui n'a que `view_mode`
+            # fait « Cannot read properties of undefined (reading
+            # 'map') » et rend la boîte « Oups ! » à la place. Aucun
+            # test Python ne peut le voir — l'action est bien formée
+            # côté serveur, elle meurt à l'ouverture.
+            "views": [(False, "form")],
+            "target": "new",
+            "context": {"default_event_ids": [(6, 0, self.ids)]},
+        }
+
+    def _bf_cancel_blocker(self):
+        """Why this meeting cannot be cancelled from here, or False.
+
+        ⚠️ A recurring meeting is refused rather than handled. Writing on one
+        occurrence of a series raises core's "this event / this and following /
+        all events" question, and a dialog that does not show that choice would
+        answer it silently — on a whole series of meetings, and by email. The
+        popover hides the button for the same reason; this is the guard for
+        every other way in.
+        """
+        self.ensure_one()
+        if self.recurrency or self.recurrence_id:
+            return _(
+                "This meeting is part of a series. Cancel it from the form, "
+                "where Odoo can ask whether you mean this occurrence, the "
+                "following ones, or the whole series."
+            )
+        return False
+
+    def _bf_cancel(self, reason=None, notify=False):
+        """Mark these meetings cancelled, free their slot, keep them in place.
+
+        The three halves of what "cancel" means here, and why each one:
+
+        * `bf_event_status = "cancelled"` is what the grid reads to strike the
+          title out, and what the CalDAV push turns into `STATUS:CANCELLED`.
+        * `show_as = "free"` is what actually gives the time back. It is not
+          cosmetic: `resource_calendar._get_bookable_intervals` counts an event
+          as busy only when `show_as == "busy"`, so a cancelled meeting left at
+          "busy" keeps blocking the slot picker for a meeting that is not
+          happening. Measured on a real calendar before writing this: the
+          handful of events already carrying the cancelled status were all
+          still `busy`.
+        * the event is NOT unlinked. The slot was held, and an agenda that
+          silently loses the entry cannot answer "what was I supposed to be
+          doing at 10?" a week later.
+
+        Idempotent: a meeting already cancelled is left alone and no second
+        notice goes out. Cancelling twice is a double booking of the guests'
+        attention, and the commonest way to do it is a double click.
+        """
+        to_cancel = self.filtered(lambda e: e.bf_event_status != "cancelled")
+        for event in to_cancel:
+            blocker = event._bf_cancel_blocker()
+            if blocker:
+                raise UserError(blocker)
+        if not to_cancel:
+            return self.env["calendar.event"]
+
+        vals = {"bf_event_status": "cancelled", "show_as": "free"}
+        if reason:
+            vals["bf_cancellation_reason"] = reason
+        to_cancel.write(vals)
+
+        # RFC 5545 §3.8.7.4. A `METHOD:CANCEL` carrying the same SEQUENCE as
+        # the invitation the client already holds is, by the letter of the
+        # spec, not newer than it — and clients do drop it. The material-field
+        # bump in `write()` cannot cover this: nothing material changed.
+        for event in to_cancel:
+            super(CalendarEvent, event.sudo()).write(
+                {"bf_ics_sequence": (event.bf_ics_sequence or 0) + 1}
+            )
+
+        # A meeting that belongs to a booking is the booking. Leaving the
+        # booking live under a cancelled meeting would keep it in the "to
+        # confirm" lists and let a reminder go out for a meeting that is
+        # struck out on the calendar.
+        to_cancel._bf_cancel_linked_bookings()
+
+        if notify:
+            to_cancel._bf_send_cancellation_notice()
+        return to_cancel
+
+    def _bf_cancel_linked_bookings(self):
+        """Cancel the `resource.booking` behind these meetings, if any.
+
+        Guarded on the model being present: `bf_appointment` is an optional
+        neighbour, and this module is installed on databases that do not carry
+        it.
+
+        ⚠️ No flag needed to stop the two modules from undoing each other.
+        `resource.booking.action_cancel` marks its own meeting cancelled and
+        keeps it, which lands on the same values this method has just written;
+        writing them twice is a wasted UPDATE, not a loop. Cancelling a meeting
+        is not itself a trigger for anything.
+        """
+        if "resource.booking" not in self.env:
+            return False
+        bookings = self.env["resource.booking"].sudo().browse()
+        for event in self:
+            bookings |= event.sudo().resource_booking_ids.filtered("active")
+        if bookings:
+            bookings.with_context(
+                no_mail_to_attendees=True,
+                tracking_disable=True,
+                mail_notrack=True,
+            ).action_cancel()
+        return bookings
+
+    def _bf_cancellation_recipients(self):
+        """Partners a cancellation notice would go to.
+
+        Everyone invited except the organiser, who is the one cancelling and
+        does not need to be told by email. Attendees with no address are
+        dropped here rather than silently at send time, so the dialog can say
+        how many people will actually hear about it.
+        """
+        self.ensure_one()
+        # 🔴 `_origin` des deux côtés, et ce n'est pas une précaution de style.
+        # Quand la boîte de dialogue n'est pas encore enregistrée — c'est-à-dire
+        # TOUJOURS, au moment où quelqu'un la lit — le client web calcule ce
+        # champ sur un enregistrement neuf, et les participants remontent alors
+        # en `NewId(origin=3)`. La soustraction compare les identifiants :
+        # `NewId(origin=3) != 3`, donc elle ne retire rien, et l'organisateur
+        # se retrouve dans la liste des gens à prévenir de sa propre annulation.
+        #
+        # ⚠️ Aucun test Python ne voyait ça : un assistant CRÉÉ dans un test
+        # porte de vrais identifiants et la soustraction marche. C'est le banc
+        # navigateur qui l'a sorti, en lisant la boîte telle qu'elle s'affiche.
+        organiser = (self.user_id.partner_id | self.env.user.partner_id)._origin
+        return (self.partner_ids._origin - organiser).filtered("email")
+
+    def _bf_send_cancellation_notice(self):
+        """Send the branded cancellation notice, in the guests' language.
+
+        One message to the whole list, like the invitation: the `.ics` it
+        carries is the cancellation, and a per-guest send would put one
+        `METHOD:CANCEL` per recipient on the same UID for no gain.
+
+        ⚠️ `force_send=False`. The notice goes through the outgoing queue like
+        every other message, so a mail server that is down delays it instead of
+        raising inside the dialog and rolling the cancellation back with it.
+        """
+        template = self.env.ref(
+            "bf_calendar_invite.mail_template_calendar_cancellation",
+            raise_if_not_found=False,
+        )
+        if not template:
+            _logger.warning(
+                "bf_calendar_invite: cancellation template missing; "
+                "no notice sent for %s.", self.ids,
+            )
+            return False
+        sent = self.env["mail.mail"].sudo().browse()
+        for event in self:
+            recipients = event._bf_cancellation_recipients()
+            if not recipients:
+                continue
+            mail_id = template.sudo().send_mail(
+                event.id,
+                force_send=False,
+                email_values={"recipient_ids": [(6, 0, recipients.ids)]},
+            )
+            sent |= self.env["mail.mail"].sudo().browse(mail_id)
+        return sent
 
     # ------------------------------------------------------------
     # Poke
@@ -463,6 +658,7 @@ class CalendarEvent(models.Model):
         RFC 5545 §3.8.4.7 only asks for global uniqueness; the host part is
         convention. It is taken from `web.base.url` rather than the container
         hostname, which is what vobject uses when left to itself — a hostname
+        that changes at every image rebuild, and did: the UIDs Odoo emitted
         would change at every image rebuild.
         """
         base = self.env["ir.config_parameter"].sudo().get_param("web.base.url", "")
@@ -581,7 +777,39 @@ class CalendarEvent(models.Model):
         # revision as a second revision.
         if not self.env.context.get("bf_ics_skip_bump"):
             self._bf_ics_bump(vals)
+        self._bf_couple_show_as(vals)
         return super().write(vals)
+
+    def _bf_couple_show_as(self, vals):
+        """Cancelling a meeting frees its time, whoever wrote the status.
+
+        🔴 Written after seeing the two paths side by side in the popover: the
+        footer offers "Cancel", which frees the slot and offers a notice, and
+        the status group two inches away offers "Cancelled", which until now
+        wrote the word and left the time booked. Two controls, the same claim,
+        two different outcomes — and the wrong one is the one that looks like a
+        plain field.
+
+        Putting the rule in `write` rather than in the cancel path is what
+        makes it true for every writer: the form's radio, the popover, a data
+        import, and the CalDAV pull that turns an incoming `STATUS:CANCELLED`
+        into this field. Someone who cancels a meeting in Nextcloud has freed
+        their time there; Odoo now agrees.
+
+        An explicit `show_as` in the same write always wins: the coupling is a
+        default, not a lock.
+        """
+        if "bf_event_status" not in vals or "show_as" in vals:
+            return
+        cible = vals["bf_event_status"]
+        if cible == "cancelled":
+            vals["show_as"] = "free"
+            return
+        # Le retour en arrière, et il compte autant : décocher « annulée »
+        # sur une rencontre qui redevient vraie doit lui rendre son créneau,
+        # sinon elle reste invisible aux réservations pour toujours.
+        if any(event.bf_event_status == "cancelled" for event in self):
+            vals["show_as"] = "busy"
 
     def _bf_ics_organizer(self):
         """(address, display name) of the organiser, from a parsed address.
@@ -679,6 +907,27 @@ class CalendarEvent(models.Model):
                 if hasattr(vevent, "sequence"):
                     del vevent.contents["sequence"]
                 vevent.add("sequence").value = str(event.bf_ics_sequence or 0)
+
+                # RFC 5545 §3.8.1.11. Written here rather than only on the
+                # CalDAV push, because a cancellation notice whose attachment
+                # does not say CANCELLED is a paragraph of text: the guest
+                # reads it, and the entry stays in their calendar.
+                status = event._bf_ics_status()
+                if hasattr(vevent, "status"):
+                    del vevent.contents["status"]
+                if status:
+                    vevent.add("status").value = status
+
+                # ⚠️ `METHOD` is set for a cancellation and left alone
+                # otherwise. `METHOD:CANCEL` is what makes a client REMOVE the
+                # entry instead of redrawing it; on every other path the value
+                # core (or `bf_appointment`) already chose is none of this
+                # method's business, and overwriting it would change what an
+                # ordinary invitation does on databases that never asked.
+                if event.bf_event_status == "cancelled":
+                    if hasattr(cal, "method"):
+                        del cal.contents["method"]
+                    cal.add("method").value = "CANCEL"
 
                 if not keep_rrule and hasattr(vevent, "rrule"):
                     del vevent.contents["rrule"]
