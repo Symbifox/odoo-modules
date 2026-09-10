@@ -1,23 +1,23 @@
 # Contact enrichment (`bf_contact_enrichment`)
 
 Cuts down manual data entry on `res.partner` records by enriching them
-automatically from four sources. Reading business cards and email signatures
-goes through the **`bf_llm`** gateway (provider configurable in *Settings ▸
-Technical ▸ LLM Providers*); domain enrichment stays on the Claude bridge (web
-search).
+automatically from four sources. Every AI call goes through the **`bf_ai_bridge`**
+gateway — the local `claude-chatbot-bridge` socket, and behind it `claude -p`,
+which means the tenant's own Claude subscription rather than a per-token API
+key.
 
 ## Features
 
 1. **Business card (OCR)** — *Contacts ▸ Enrichment ▸ Scan a card*, or the
    "Scan a card" button on a record. The image (JPG/PNG/PDF) is passed to
-   `bf_llm` (`extract()`, vision), which reads the card and returns the contact
-   details. The module detects an existing contact (email, name, domain) and
+   the bridge (`/ocr/business-card`), which reads the card and returns the
+   contact details. The module detects an existing contact (email, name, domain) and
    offers to create or update; the card is attached to the record.
 2. **Email signatures** — two buttons on the record: "Enrich now (signatures)"
    applies directly (fills blanks, one click), while "Enrich (review)" opens a
    field-by-field comparison. Both concatenate the correspondent's most recent
    incoming emails (`bf.email`, which mirrors IMAP, the gateway and the
-   chatters) and send them to `bf_llm` (`chat()`, text). **In bulk**: *Contacts
+   chatters) and send them to the bridge (`/enrich/signature`). **In bulk**: *Contacts
    ▸ (list) ▸ Action ▸ Enrich from email signatures* queues the selected
    contacts, and a cron processes them in the background in batches (confidence
    threshold, never overwriting). A missing or misconfigured gateway degrades
@@ -58,10 +58,7 @@ search).
    - **Duplicate detector** — by email and by normalised name; opens the subset
      for merging through the native Contacts action.
    - **Domain enrichment** — an "Enrich (website)" button: agentic web search
-     (`/enrich/company`, WebFetch/WebSearch) that fills in the company. **The
-     only feature still served by the bridge**: it requires autonomous web
-     browsing, which is outside the scope of `bf_llm` v1 (single
-     request/response). A future gateway version may absorb it.
+     (`/enrich/company`, WebFetch/WebSearch) that fills in the company.
    - **Completeness score** — a computed field plus an "Incomplete contacts"
      filter.
 
@@ -71,18 +68,31 @@ record's chatter.
 
 ## Dependencies
 
-`base`, `contacts`, `mail`, `bf_email_management`, `bf_llm`. Domain enrichment
-additionally requires the bridge service (the `bf_claude_chat.bridge_socket`
-socket).
+`base`, `contacts`, `mail`, `bf_email_management`, `bf_ai_bridge`. Every AI
+feature needs the bridge service to be running and its socket
+(`bf_ai_bridge.socket`) mounted in the Odoo container, plus the system parameter
+`bf_ai_bridge.tenant` naming this tenant. Without that parameter the call is
+refused rather than guessed: a wrong tenant does not fail, it succeeds on
+somebody else's subscription.
 
 ## Privacy
 
-The prompts (`CARD_PROMPT`, `SIGNATURE_PROMPT_HEADER`, supplied by `bf_llm`)
-extract only what is actually present (never a surname guessed from the email
+The prompts live on the bridge side, next to each endpoint, and extract only
+what is actually present (never a surname guessed from the email
 address) and ignore quoted history in emails. The content being read (cards,
 emails) is treated as untrusted DATA, never as instructions.
 
 ## Changelog
+
+- **18.0.2.0.0** — Moved the card and signature reading off `bf_llm` and onto
+  the `bf_ai_bridge` gateway, so extraction runs on the tenant's Claude
+  subscription instead of an HTTP API key. `bf_llm` only speaks to keyed HTTP
+  APIs, no tenant holds such a key, and its seeded provider ships disabled —
+  so the `/scan` page and the enrichment buttons could not work anywhere. The
+  tenant is now stamped by `call_bridge` from `bf_ai_bridge.tenant` and is no
+  longer an argument a call site can get wrong: a wrong `org` does not fail the
+  call, it bills it to another tenant's subscription. Test control moved down
+  to the transport, and asserts on what leaves rather than on what comes back.
 
 - **18.0.1.2.2** — Rewrote the vCard parser. Apple exports lost their email,
   work phone, address and website, all of them carried under `item1.`-style

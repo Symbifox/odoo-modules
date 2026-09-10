@@ -5,25 +5,25 @@ page y vit : le décorateur d'authentification, la garde de groupe, la mise en
 forme des erreurs pour un téléphone, et les deux en-têtes sans lesquelles la
 page n'est pas installable.
 
-L'extraction est simulée. Aucun fournisseur n'est configuré sur un banc, et de
-toute façon ce n'est pas la passerelle qu'on éprouve ici : ce qui compte, c'est
-que la page traverse l'assistant sans rien réimplémenter.
+L'extraction est simulée au niveau du TRANSPORT du pont, et pas plus haut :
+tout ce qui est au-dessus — l'assistant, le raccourci ``call_bridge`` et
+l'estampille du locataire — tourne donc pour de vrai, et la charge envoyée est
+observable. C'est elle qui porte l'information qu'une réponse ne montre jamais :
+sur quel abonnement l'appel sera facturé.
 """
 import base64
 import json
-from unittest.mock import Mock, patch
+from unittest.mock import patch
 
 from odoo.tests import HttpCase, tagged
 
-# La lecture de carte passe par la passerelle. On la remplace à sa frontière,
-# pas plus bas : ce qu'on éprouve ici, c'est la page, et la page ne connaît
-# que l'assistant. ``for_feature`` rend un objet, d'où le mandataire.
-GATEWAY = "odoo.addons.bf_llm.models.bf_llm.BfLlm.for_feature"
+# La lecture de carte part sur la socket du pont. On remplace l'envoi lui-même,
+# donc le dernier geste avant le réseau : ce qui est au-dessus est éprouvé, et
+# ``called.call_args`` donne la charge telle qu'elle serait partie.
+GATEWAY = "odoo.addons.bf_ai_bridge.tools.transport.post"
 
-
-def _gateway_reads(payload):
-    """Mandataire de passerelle dont ``extract`` rend l'enveloppe donnée."""
-    return Mock(extract=Mock(return_value=payload))
+#: Position de ``payload`` dans ``transport.post(socket, endpoint, payload, …)``.
+_CHARGE = 2
 
 # 1x1 PNG — le contenu n'a aucune importance, la validité du base64 en a une :
 # il finit dans une pièce jointe.
@@ -91,6 +91,10 @@ class TestPortalCard(HttpCase):
             "groups_id": [(6, 0, [cls.env.ref("base.group_user").id])],
         })
         cls.Partner = cls.env["res.partner"]
+        # Sans locataire déclaré, le pont refuse de partir plutôt que de deviner
+        # — c'est voulu, et ça rendrait toute lecture impossible sur un banc.
+        cls.env["ir.config_parameter"].sudo().set_param(
+            "bf_ai_bridge.tenant", "banc")
 
     # ── Outils ──────────────────────────────────────────────────────
 
@@ -121,8 +125,7 @@ class TestPortalCard(HttpCase):
         return result
 
     def _extract(self, card=None):
-        with patch(GATEWAY, return_value=_gateway_reads(
-                {"ok": True, "data": dict(card or CARD)})):
+        with patch(GATEWAY, return_value={"data": dict(card or CARD)}):
             return self._rpc("/scan/extract",
                              {"image_b64": PIXEL, "filename": "carte.png"})["result"]
 
@@ -255,11 +258,10 @@ class TestPortalCard(HttpCase):
 
     def test_a_gateway_failure_reaches_the_phone_as_a_sentence(self):
         self.authenticate("scan.member@test.invalid", "scan.member@test.invalid")
-        # La passerelle ne lève pas sur une panne de transport : elle rend une
-        # enveloppe portant ``error``. C'est ce cas-là qu'il faut simuler, pas
-        # une exception, sans quoi le test éprouverait un chemin qui n'existe pas.
-        with patch(GATEWAY, return_value=_gateway_reads(
-                {"error": "fournisseur injoignable"})):
+        # Le pont ne lève pas sur une lecture ratée : il rend une enveloppe
+        # portant ``error``. C'est ce cas-là qu'il faut simuler, pas une
+        # exception, sans quoi le test éprouverait un chemin qui n'existe pas.
+        with patch(GATEWAY, return_value={"error": "lecture impossible"}):
             payload = self._rpc("/scan/extract",
                                 {"image_b64": PIXEL, "filename": "carte.png"})
         error = payload["result"]["error"]
@@ -269,6 +271,24 @@ class TestPortalCard(HttpCase):
         self.assertIsInstance(error, str)
         self.assertNotIn("Traceback", error)
         self.assertIn("Lecture impossible", error)
+
+    def test_the_call_leaves_under_the_tenant_this_database_declares(self):
+        """🔴 Un ``org`` faux ne fait pas échouer l'appel : il le fait réussir
+        sur l'abonnement de quelqu'un d'autre, sans rien dire. Le contrôle porte
+        donc sur ce qui PART, et il tombe dès qu'un site d'appel écrit un
+        locataire en dur.
+        """
+        self.env["ir.config_parameter"].sudo().set_param(
+            "bf_ai_bridge.tenant", "locataire-du-banc")
+        self.authenticate("scan.member@test.invalid", "scan.member@test.invalid")
+        with patch(GATEWAY, return_value={"data": dict(CARD)}) as called:
+            self._rpc("/scan/extract",
+                      {"image_b64": PIXEL, "filename": "carte.png"})
+        called.assert_called_once()
+        args = called.call_args.args
+        self.assertEqual(args[1], "/ocr/business-card")
+        self.assertEqual(args[_CHARGE].get("org"), "locataire-du-banc",
+                         "la carte est partie sur l'abonnement d'un autre")
 
     def test_an_empty_image_is_refused_before_the_gateway(self):
         self.authenticate("scan.member@test.invalid", "scan.member@test.invalid")

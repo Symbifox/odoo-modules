@@ -1,11 +1,7 @@
-import base64
-
 from odoo import _, fields, models
 from odoo.exceptions import UserError
 
-from odoo.addons.bf_llm.models.bf_llm import CARD_PROMPT
-
-from ..tools import matching
+from ..tools import bridge, matching
 
 
 class BfContactCardWizard(models.TransientModel):
@@ -55,20 +51,24 @@ class BfContactCardWizard(models.TransientModel):
         if not self.image:
             raise UserError(_("Veuillez téléverser une image de carte d'affaires."))
         image_b64 = self.image.decode() if isinstance(self.image, bytes) else self.image
-        img_bytes = base64.b64decode(image_b64)
-        ext = (self.image_filename or "card.jpg").rsplit(".", 1)[-1].lower()
-        mime = {
-            "jpg": "image/jpeg", "jpeg": "image/jpeg", "png": "image/png",
-            "gif": "image/gif", "webp": "image/webp", "pdf": "application/pdf",
-        }.get(ext, "image/jpeg")
-        # for_feature("vision") raises UserError if no provider is configured →
-        # surfaces as a clean popup (graceful, no traceback).
-        res = self.env["bf.llm"].for_feature("vision").extract(
-            img_bytes, CARD_PROMPT, mime=mime)
-        if res.get("error") or not res.get("ok"):
-            raise UserError(
-                _("Lecture impossible : %s") % (res.get("error") or _("données vides")))
-        data = res.get("data") or {}
+        # Le schéma d'extraction vit côté pont (``/ocr/business-card``), avec ses
+        # garde-fous d'injection : une carte est une image fournie par un tiers.
+        payload = {
+            "image_base64": image_b64,
+            "filename": self.image_filename or "card.jpg",
+        }
+        try:
+            result = bridge.call_bridge(
+                self.env, "/ocr/business-card", payload, timeout=100)
+        except UserError:
+            # Locataire non déclaré, socket absente : le message est déjà écrit
+            # pour un humain, il ne gagne rien à être enrobé.
+            raise
+        except Exception as exc:  # noqa: BLE001 — jamais de trace sur un téléphone
+            raise UserError(_("Échec de la lecture de la carte : %s") % exc)
+        if result.get("error"):
+            raise UserError(_("Lecture impossible : %s") % result["error"])
+        data = result.get("data") or {}
 
         vals = {
             "state": "review",

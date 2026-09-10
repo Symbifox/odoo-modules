@@ -4,7 +4,7 @@ from odoo import _, api, fields, models
 from odoo.exceptions import AccessError
 from odoo.tools import html2plaintext
 
-from odoo.addons.bf_llm.models.bf_llm import SIGNATURE_PROMPT_HEADER
+from ..tools import bridge
 
 _logger = logging.getLogger(__name__)
 
@@ -165,29 +165,26 @@ class ResPartner(models.Model):
         return "\n\n".join(blocks)[:12000]
 
     def _bf_enrich_from_signature(self, min_confidence=60):
-        """Resolve this partner's signature data via bf.llm and blank-fill it.
+        """Fetch this partner's signature data from the bridge and blank-fill it.
 
         Returns a status: enriched | nothing_new | no_email | low_confidence |
         error. Never clobbers populated fields; logs applied fields to chatter.
-        Runs in a batch/cron context, so it must NEVER raise — a missing or
-        misconfigured provider (for_feature/chat UserError) degrades to "error".
+        Runs in a batch/cron context, so it must NEVER raise — an undeclared
+        tenant or an unreachable socket degrades to "error".
         """
         self.ensure_one()
         text = self._bf_signature_text()
         if not text.strip():
             return "no_email"
-        # Signature parsing is a TEXT call → chat(). Header is concatenated, not
-        # .format-ed (email bodies may contain braces).
-        prompt = SIGNATURE_PROMPT_HEADER + (text or "")[:12000] + "\n"
         try:
-            res = self.env["bf.llm"].for_feature("chat").chat(
-                messages=[{"role": "user", "content": prompt}])
+            result = bridge.call_bridge(
+                self.env, "/enrich/signature", {"text": text}, timeout=90)
         except Exception:  # noqa: BLE001 — surface as a status, never raise in batch
-            _logger.exception("Signature enrichment LLM call failed for partner %s", self.id)
+            _logger.exception("Signature enrichment bridge call failed for partner %s", self.id)
             return "error"
-        if res.get("error"):
+        if result.get("error"):
             return "error"
-        data = self.env["bf.llm"]._parse_json(res.get("text") or "") or {}
+        data = result.get("data") or {}
         if (data.get("confidence") or 0) < min_confidence:
             return "low_confidence"
 

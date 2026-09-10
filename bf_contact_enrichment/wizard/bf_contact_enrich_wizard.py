@@ -1,8 +1,6 @@
 from odoo import _, fields, models
 from odoo.exceptions import UserError
 
-from odoo.addons.bf_llm.models.bf_llm import SIGNATURE_PROMPT_HEADER
-
 from ..tools import bridge, matching
 
 
@@ -87,15 +85,11 @@ class BfContactEnrichWizard(models.TransientModel):
         text = self.partner_id._bf_signature_text()
         if not text.strip():
             raise UserError(_("Aucun courriel entrant exploitable pour ce contact."))
-        # Signature parsing is a TEXT call (no document) → chat(), not extract().
-        # SIGNATURE_PROMPT_HEADER is concatenated (never .format-ed): email text
-        # may contain braces. for_feature raises UserError if no provider → popup.
-        prompt = SIGNATURE_PROMPT_HEADER + (text or "")[:12000] + "\n"
-        res = self.env["bf.llm"].for_feature("chat").chat(
-            messages=[{"role": "user", "content": prompt}])
-        if res.get("error"):
-            raise UserError(_("Analyse impossible : %s") % res["error"])
-        return self.env["bf.llm"]._parse_json(res.get("text") or "") or {}
+        result = bridge.call_bridge(
+            self.env, "/enrich/signature", {"text": text}, timeout=90)
+        if result.get("error"):
+            raise UserError(_("Analyse impossible : %s") % result["error"])
+        return result.get("data") or {}
 
     def _fetch_web(self):
         partner = self.partner_id
@@ -105,7 +99,7 @@ class BfContactEnrichWizard(models.TransientModel):
             raise UserError(
                 _("Aucun domaine d'entreprise exploitable (courriel ou site web)."))
         result = bridge.call_bridge(
-            self.env, "/enrich/company", {"org": "bf", "domain": domain}, timeout=135)
+            self.env, "/enrich/company", {"domain": domain}, timeout=135)
         if result.get("error"):
             raise UserError(_("Enrichissement impossible : %s") % result["error"])
         return result.get("data") or {}

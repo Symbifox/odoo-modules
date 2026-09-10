@@ -1,80 +1,29 @@
-"""Thin client for the GenFox bridge Unix socket.
+"""Accès au pont IA pour l'enrichissement de contacts.
 
-Uses the established Blue Fox bridge pattern: a hand-rolled HTTP/1.1 request
-over an ``AF_UNIX`` stream socket, so we depend on nothing beyond the
-standard library inside the Odoo container. The bridge wraps ``claude -p``.
+Le transport vit dans ``bf_ai_bridge`` : socket ``AF_UNIX``, service
+``claude-chatbot-bridge``, et derrière lui ``claude -p`` — donc **l'abonnement
+Claude du locataire**, pas une API facturée au jeton. Ce fichier n'est qu'un
+raccourci de nommage vers ce modèle, gardé parce que les sites d'appel et les
+tests le visent par ce nom.
 
-As of 18.0.1.2.0 only the **company/domain** enrichment path uses this shim
-(``/enrich/company`` — agentic web research, out of scope for bf_llm v1). The
-business-card and signature paths now go through the ``bf.llm`` gateway.
+Points de terminaison servis ici : ``/ocr/business-card``, ``/enrich/signature``
+et ``/enrich/company``.
+
+🔴 **Le locataire n'est pas un argument.** Il est estampé ici, à partir de
+``bf.ai.bridge.tenant()``, et un appelant ne peut pas le choisir. Un ``org``
+faux ne fait pas échouer l'appel : il le fait réussir sur l'abonnement de
+quelqu'un d'autre, en silence. Aucun site d'appel n'a donc de raison de porter
+le nom d'un locataire, et aucun ne peut se tromper.
 """
-import json
-import socket
-
-_DEFAULT_SOCKET = "/run/claude-bridge/bridge.sock"
-
-
-def _raw_call(endpoint, payload, socket_path, timeout):
-    body = json.dumps(payload).encode()
-    sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
-    sock.settimeout(timeout)
-    try:
-        sock.connect(socket_path)
-        req = (
-            f"POST {endpoint} HTTP/1.1\r\n"
-            f"Host: localhost\r\n"
-            f"Content-Type: application/json\r\n"
-            f"Content-Length: {len(body)}\r\n"
-            f"Connection: close\r\n"
-            f"\r\n"
-        ).encode() + body
-        sock.sendall(req)
-
-        chunks = []
-        while True:
-            chunk = sock.recv(8192)
-            if not chunk:
-                break
-            chunks.append(chunk)
-        raw = b"".join(chunks).decode()
-
-        header_end = raw.find("\r\n\r\n")
-        if header_end == -1:
-            raise ValueError("Malformed HTTP response from bridge")
-        status_line = raw[:raw.find("\r\n")]
-        status_code = int(status_line.split(" ", 2)[1])
-        resp_body = raw[header_end + 4:]
-
-        # Handle chunked transfer encoding
-        headers_block = raw[:header_end].lower()
-        if "transfer-encoding: chunked" in headers_block:
-            decoded = []
-            pos = 0
-            while pos < len(resp_body):
-                nl = resp_body.find("\r\n", pos)
-                if nl == -1:
-                    break
-                size = int(resp_body[pos:nl], 16)
-                if size == 0:
-                    break
-                decoded.append(resp_body[nl + 2:nl + 2 + size])
-                pos = nl + 2 + size + 2
-            resp_body = "".join(decoded)
-
-        if status_code >= 400:
-            raise ValueError(f"Bridge HTTP {status_code}: {resp_body[:200]}")
-        return json.loads(resp_body)
-    finally:
-        sock.close()
 
 
 def call_bridge(env, endpoint, payload, timeout=100):
-    """POST to a bridge endpoint, reading the socket path from Odoo config.
+    """POST sur un point de terminaison du pont, rend la réponse décodée.
 
-    The socket path is configurable via the ``bf_claude_chat.bridge_socket``
-    system parameter (shared with bf_invoice_ocr / bf_claude_chat).
+    ``payload["org"]`` est réécrit avec le locataire déclaré par CETTE base.
+    ``tenant()`` lève si le paramètre système n'est pas posé, plutôt que de
+    deviner.
     """
-    socket_path = env["ir.config_parameter"].sudo().get_param(
-        "bf_claude_chat.bridge_socket", _DEFAULT_SOCKET
-    )
-    return _raw_call(endpoint, payload, socket_path, timeout)
+    charge = dict(payload or {})
+    charge["org"] = env["bf.ai.bridge"].tenant()
+    return env["bf.ai.bridge"].call(endpoint, charge, timeout=timeout)
