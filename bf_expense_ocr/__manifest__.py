@@ -49,7 +49,7 @@ Par le pont, sur l'abonnement du locataire
 La lecture passe par `bf_ai_bridge`, donc par `claude -p` et l'abonnement
 Claude du locataire — pas par une API facturée au jeton. Le pont choisit le
 répertoire d'identifiants d'après le locataire déclaré : un système qui annonce
-`bsi` est lu sur l'abonnement de BSI, et un locataire dont la session n'est pas
+`acme` est lu sur l'abonnement d'Acme, et un locataire dont la session n'est pas
 ouverte échoue franchement plutôt que d'être facturé ailleurs en silence.
 
 Rien ne part sans qu'on l'ait décidé

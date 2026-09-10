@@ -8,7 +8,7 @@ taxes and tip.
 **`bf_ai_bridge`** — the local `claude-chatbot-bridge` service and, behind it,
 `claude -p` running on the **tenant's own Claude subscription**. The bridge
 picks the credentials directory from the tenant a system declares, so a system
-announcing `bsi` is read on BSI's subscription, and a tenant whose session is
+announcing `acme` is read on Acme's subscription, and a tenant whose session is
 not open fails loudly rather than being billed to someone else's.
 
 ⚠️ **It is deliberately not `bf_llm`.** That gateway only speaks HTTP APIs with

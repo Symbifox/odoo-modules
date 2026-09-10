@@ -5,7 +5,7 @@ Le socle est **`bf_ai_bridge`**, c'est-à-dire le service local
 `claude-chatbot-bridge` et, derrière lui, `claude -p` sur l'**abonnement Claude
 du locataire**. C'est le chemin réellement câblé dans cette maison : le pont
 choisit le répertoire d'identifiants d'après le locataire déclaré, de sorte
-qu'un système annonçant `bsi` est lu sur l'abonnement de BSI.
+qu'un système annonçant `acme` est lu sur l'abonnement d'Acme.
 
 ⚠️ Ce n'est PAS `bf_llm`. Cette passerelle-là ne parle qu'à des API HTTP avec
 clé (`anthropic`, `openai`, `openai_compatible`), et c'est exactement pourquoi
