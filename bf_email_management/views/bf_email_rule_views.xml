@@ -58,6 +58,7 @@
                 <field name="route_user_id" optional="hide"/>
                 <field name="forward_to" optional="show"/>
                 <field name="set_handled" optional="hide"/>
+                <field name="set_no_popup" optional="hide"/>
                 <field name="stop_processing" optional="hide"/>
                 <field name="active" widget="boolean_toggle"/>
             </list>
@@ -178,6 +179,7 @@
                                            placeholder="Copie conforme, Archives/{YYYY}…"/>
                                     <field name="set_handled"/>
                                     <field name="snooze_hours"/>
+                                    <field name="set_no_popup"/>
                                 </group>
                             </group>
                             <group string="Confier">
@@ -268,6 +270,8 @@
                         domain="[('set_handled', '=', True)]"/>
                 <filter name="with_folder" string="Rangent dans un dossier"
                         domain="[('set_folder', '!=', False)]"/>
+                <filter name="set_no_popup" string="Sans avis à l'écran"
+                        domain="[('set_no_popup', '=', True)]"/>
                 <filter name="forwarding" string="Réacheminent"
                         domain="[('forward_to', '!=', False)]"/>
                 <group expand="0" string="Grouper par">

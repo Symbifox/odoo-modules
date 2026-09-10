@@ -14,7 +14,7 @@ lire ne produit tout simplement pas d'avis. C'est le même raisonnement que
 ``bf.email._broadcast_change``, et c'est la raison pour laquelle le canal
 ``bf_email/changed`` existant ne transporte qu'un ``reason``.
 
-Quatre niveaux de réglage, du plus large au plus fin :
+Sept niveaux de réglage, du plus large au plus fin :
 
 - ``bf_email.popup_enabled`` (ir.config_parameter) — l'instance. Absent vaut
   **non** : un locataire qui reçoit ce code au prochain ``-u`` ne change pas de
@@ -25,21 +25,49 @@ Quatre niveaux de réglage, du plus large au plus fin :
 - ``bf.email.account.popup_sticky_folders`` — le dossier. Ce qui atterrit là
   tient les trente secondes pleines ; le reste passe en huit.
 - ``bf.email.account.popup_snooze_minutes`` — le report du bouton « Reporter ».
+- ``bf.email.account.popup_skip_bulk`` — le genre. Un courriel portant
+  ``List-Unsubscribe`` ou venu d'un domaine d'envoi connu (``is_bulk``) reste
+  dans la boîte et ne fait pas surface. Mesuré sur une boîte réelle : un peu
+  plus d'un entrant sur cinq porte ce signal. Le critère est l'en-tête et non
+  la catégorie ``marketing``, qui se corrige à la main et se tromperait sur un
+  vrai client.
+- ``bf.email.account.popup_color`` — la teinte de la barre, pour reconnaître la
+  boîte d'arrivée sans lire le nom du compte.
+- ``bf.email.bf_no_popup`` — la ligne. Posé par une règle qui a reconnu un
+  émetteur dont les avis n'ont jamais rien à dire.
 
-LE PLAFOND DE TRENTE SECONDES
---------------------------------------------
+Et par-dessus tous, le mode « ne pas déranger » (``bf.dnd``),
+qui ne fait pas taire mais RETIENT : ce qui n'a pas fait surface est noté dans
+``bf.dnd.held`` et rendu en un seul résumé à la fin du mode.
 
-Un avis ne doit pas occuper l'écran plus de trente secondes, **toutes fenêtres
-confondues**. Deux conséquences, toutes deux portées par la charge utile :
+LE PLAFOND DE TRENTE SECONDES, ET SON RENVERSEMENT
+--------------------------------------------------
 
-- ``sent_ms`` — l'horloge du serveur au moment de l'envoi. Le client compte
-  le temps restant depuis là, pas depuis son propre affichage : ouvrir une
-  quatrième fenêtre ne rallonge donc rien, et les fenêtres déjà ouvertes
-  s'éteignent toutes au même instant.
+⚠️ Le contrat a changé, et ce qui suit décrit ce qui reste vrai côté serveur.
+La règle d'origine était « un avis n'occupe pas l'écran plus de trente
+secondes, toutes fenêtres confondues » ; elle interdisait donc au survol de
+geler le décompte, puisque geler c'est allonger. Arbitré depuis : **pointer
+un avis est un geste délibéré**, il gèle et remet le décompte à neuf sans
+limite, et le minuteur ne court que sur la tête de file.
+Le plafond est désormais « ``ttl_ms`` par avis, quand c'est son tour », et il
+est tenu par le client.
+
+Ce que le serveur garde, et qui n'a rien à voir avec le survol :
+
+- ``sent_ms`` — l'horloge du serveur au moment de l'envoi. Elle sert de **date
+  de péremption à l'arrivée** : un avis reçu plus de ``ttl_ms`` après son envoi
+  ne s'affiche jamais. C'est ce qui jette les rejeux du bus, et rien d'autre.
 - ``ttl_ms`` — la durée accordée à cet avis-ci, plafonnée à
-  ``POPUP_TTL_MAX_MS``.
+  ``POPUP_TTL_MAX_MS``. Le client la consomme quand l'avis atteint la tête de
+  file, pas à l'affichage.
 
-⚠️ Ce couple règle aussi un défaut que le premier lot avait laissé passer :
+⚠️ Ce que le nouveau contrat abandonne, en toute connaissance : deux fenêtres
+ouvertes n'éteignent plus le même avis au même instant. Chacune a sa propre
+file et son propre survol, donc sa propre horloge. C'était le prix du gel au
+survol ; le rejeu, lui, reste couvert par ``sent_ms``.
+
+Le couple portait aussi ceci, qui ne bouge pas :
+
 ``bus.bus`` conserve ses messages **24 heures** (``bus.gc_retention_seconds``)
 et les rejoue à la reconnexion, ``last_notification_id`` survivant en
 localStorage. Un navigateur rouvert le lendemain matin recevait donc d'un coup
@@ -156,15 +184,52 @@ class BfEmailPopup(models.AbstractModel):
 
     @api.model
     def _mode_for(self, rec):
-        """« aucune », « transient » ou « sticky » pour cette ligne-ci."""
+        """« aucune », « transient » ou « sticky » pour cette ligne-ci.
+
+        ⚠️ ``bf_no_popup`` est posé par une règle (``bf.email.rule``), donc
+        dans ``create()``, avant que ``_sync_account`` ne relève les lignes
+        fraîches. C'est un « pas d'avis », pas un « traité » : la ligne reste
+        dans la boîte, elle ne fait simplement pas surface. Cinquième niveau
+        de réglage, le seul qui regarde le CONTENU.
+        """
+        if rec.bf_no_popup:
+            return "none"
         account = rec.account_id
         mode = account.popup_mode if account else "none"
         if mode not in ("transient", "sticky"):
+            return "none"
+        # Le genre, avant le dossier : une infolettre tombée dans un dossier
+        # suivi n'a pas plus besoin d'interrompre qu'ailleurs. ``is_bulk`` est
+        # un signal d'EN-TÊTE (``List-Unsubscribe``, domaine d'envoi connu),
+        # donc il ne se corrige pas à la main comme ``category`` — c'est
+        # exactement pourquoi c'est lui qu'on lit.
+        if rec.is_bulk and account.popup_skip_bulk:
             return "none"
         folders = account._popup_sticky_folder_set()
         if folders and (rec.imap_folder or "").strip().lower() in folders:
             return "sticky"
         return mode
+
+    @api.model
+    def _notify_seen(self, emails):
+        """Dire aux autres fenêtres d'écarter ces avis-ci.
+
+        Groupé par propriétaire : une ligne s'annonce au partenaire de son
+        ``user_id``, jamais ailleurs. Le canal est le même que les avis, avec
+        un ``kind`` distinct — un second canal voudrait un second abonnement,
+        et le client n'en tirerait rien de plus.
+
+        ⚠️ Pas de contrôle d'``_instance_enabled`` ici : écarter un avis déjà
+        affiché doit marcher même si quelqu'un vient d'éteindre le paramètre
+        d'instance. Un interrupteur qui empêche de FERMER serait pire que pas
+        d'interrupteur.
+        """
+        by_owner = {}
+        for rec in emails:
+            if rec.user_id and rec.user_id.partner_id:
+                by_owner.setdefault(rec.user_id.partner_id, []).append(rec.id)
+        for partner, ids in by_owner.items():
+            self._sendone(partner, {"kind": "seen", "email_ids": ids})
 
     @api.model
     def _notify_new_emails(self, emails, wake=False):
@@ -193,9 +258,17 @@ class BfEmailPopup(models.AbstractModel):
             by_owner.setdefault(rec.user_id, {"sticky": [], "transient": []})
             by_owner[rec.user_id][mode].append(rec)
 
+        Dnd = self.env["bf.dnd"]
         for owner, groups in by_owner.items():
             partner = owner.partner_id
             if not partner:
+                continue
+            # ⚠️ La garde est posée ICI, pas dans `_mode_for` : ce qui est tu
+            # doit être NOTÉ, pas oublié. Le résumé de sortie n'a rien d'autre
+            # pour savoir ce qu'il rend.
+            if Dnd._active_for(owner):
+                Dnd._hold_mail(
+                    owner, groups["sticky"] + groups["transient"])
                 continue
             for mode in ("sticky", "transient"):
                 group = groups[mode]
@@ -249,6 +322,62 @@ class BfEmail(models.Model):
     téléphone.
     """
     _inherit = "bf.email"
+
+    # ⚠️ Un champ à part, et pas une réutilisation d'`is_handled`. « Traité »
+    # sort la ligne de la boîte et recopie le message vers les archives IMAP ;
+    # ici on veut juste qu'elle n'interrompe pas. Le battement d'un service de
+    # surveillance reste à lire, il ne mérite simplement pas de surgir sur un
+    # écran partagé. Mesuré le 2026-09-09 : sur 107 courriels annoncés en
+    # 24 h, 19 venaient d'un seul service qui alternait « Warning » et
+    # « Recovered ».
+    bf_no_popup = fields.Boolean(
+        string="Pas d'avis à l'écran",
+        default=False,
+        index=True,
+        help="La ligne reste dans la boîte de réception mais ne produit aucun "
+             "avis. Posé par une règle automatique, ou à la main sur une "
+             "ligne.",
+    )
+
+    # La teinte de la barre, lue par le client dans la MÊME lecture ORM que
+    # l'objet et l'expéditeur. Un `related` plutôt qu'une clé de plus dans la
+    # charge utile : le bus ne consulte aucune règle d'enregistrement, et un
+    # réglage d'affichage n'est pas une raison de rouvrir ce chemin-là.
+    popup_color = fields.Selection(
+        related="account_id.popup_color",
+        string="Couleur de l'avis",
+        readonly=True,
+    )
+
+    @api.model
+    def popup_mark_seen(self, email_ids):
+        """« Vu » : écarter l'avis partout, sans toucher au message.
+
+        Ce que le X du coin ne sait pas faire. Un avis s'affiche dans TOUTES
+        les fenêtres ouvertes de la personne — le bus diffuse au partenaire —
+        et le X n'en ferme qu'une. « Vu » repasse par le serveur pour que les
+        autres l'entendent.
+
+        ⚠️ Aucune écriture sur la ligne : ni ``is_handled``, ni ``status``, ni
+        recopie IMAP. La ligne reste exactement où elle était, non lue et non
+        traitée. Rien à persister non plus pour qu'elle ne revienne pas :
+        ``_sync_account`` n'annonce que les lignes dont l'``id`` dépasse le
+        repère de la passe, donc un courriel n'est annoncé qu'une fois. La
+        seule réannonce possible est le réveil d'un report, et « Vu » ne
+        reporte rien.
+        """
+        if isinstance(email_ids, int):
+            email_ids = [email_ids]
+        email_ids = list(email_ids or [])
+        # ⚠️ Le contrôle vient AVANT ``_mobile_browse``, qui lève un
+        # ``UserError`` sur une liste vide. Écarter un avis qui ne porte aucune
+        # ligne — un résumé de lot — n'est pas une erreur, c'est un geste qui
+        # n'a rien à demander au serveur.
+        if not email_ids:
+            return {"email_ids": [], "seen": True}
+        records = self._mobile_browse(email_ids)
+        self.env["bf.email.popup"]._notify_seen(records)
+        return {"email_ids": records.ids, "seen": True}
 
     @api.model
     def popup_snooze(self, email_id, minutes=None):

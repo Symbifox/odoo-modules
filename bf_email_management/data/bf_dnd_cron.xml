@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!--
+          Le battement du mode « ne pas déranger ».
+
+          L'interrupteur manuel s'annonce lui-même à l'écriture. Le début et
+          la fin d'une rencontre, et les bornes des heures calmes, n'ont
+          personne pour les annoncer : c'est ce cron qui les voit passer,
+          pousse `bf_dnd/state` au navigateur et rend le résumé de sortie.
+
+          À la minute, comme le rejeu des reports de rappel juste à côté : une
+          bascule qui arriverait cinq minutes en retard laisserait passer
+          justement les avis du début de rencontre, ceux qu'on veut taire.
+
+          ⚠️ La première chose que fait la méthode est de lire
+          `bf_email.dnd_enabled`. Chez un locataire qui ne s'en sert pas, le
+          battement coûte une lecture de paramètre par minute et rien d'autre.
+
+          ⚠️ `noupdate="1"`, comme les deux crons voisins : un locataire qui
+          coupe ce battement doit le retrouver coupé au prochain `-u`.
+        -->
+        <record id="ir_cron_bf_dnd_tick" model="ir.cron">
+            <field name="name">Ne pas d&#233;ranger : reconna&#238;tre les bascules</field>
+            <field name="model_id" ref="model_bf_dnd"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_bf_dnd_tick()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">minutes</field>
+            <field name="active">True</field>
+            <!-- 🔴 `base.user_root`, pas `base.user_admin`. `ir.actions.server.run()`
+                 appelle `check_access("write")` sur le modèle de l'action AVANT
+                 d'exécuter le code, et `bf.dnd` est ABSTRAIT : il n'a pas de
+                 table, donc pas d'`ir.model.access`, donc personne n'y a le
+                 droit d'écrire. Sous un usager ordinaire le battement mourait
+                 chaque minute sur une `AccessError`, et le mode n'aurait jamais
+                 basculé tout seul. Vu en production le 2026-09-09, dix minutes
+                 après la montée : les tests appellent la méthode directement et
+                 ne passent jamais par le contrôle du serveur d'actions. -->
+            <field name="user_id" ref="base.user_root"/>
+        </record>
+
+    </data>
+</odoo>

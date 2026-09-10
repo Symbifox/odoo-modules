@@ -185,6 +185,34 @@ class BfEmailAccount(models.Model):
              "l'attention, il ne rallume rien.",
     )
 
+    popup_skip_bulk = fields.Boolean(
+        string="Taire les envois en masse",
+        default=True,
+        help="Un courriel portant `List-Unsubscribe`, ou venu d'un domaine "
+             "d'envoi connu, reste dans la boîte de réception mais ne fait pas "
+             "surface à l'écran.\n\n"
+             "Mesuré sur une boîte réelle : un peu plus d'un entrant sur cinq "
+             "porte ce signal. Une infolettre n'a jamais besoin "
+             "d'interrompre.\n\n"
+             "Le critère est l'en-tête, pas la catégorie : `Marketing` se "
+             "corrige à la main et se tromperait sur un vrai client.",
+    )
+    popup_color = fields.Selection(
+        selection=[
+            ("blue", "Bleu"),
+            ("slate", "Ardoise"),
+            ("green", "Vert"),
+            ("violet", "Violet"),
+            ("amber", "Ambre"),
+            ("rose", "Rose"),
+        ],
+        string="Couleur de l'avis",
+        help="La couleur de la barre à gauche de l'avis, pour reconnaître la "
+             "boîte d'arrivée d'un coup d'oeil sans lire le nom du compte.\n\n"
+             "Vide : la teinte neutre d'Odoo. Un report échu garde l'orange, "
+             "il passe devant la couleur du compte.",
+    )
+
     popup_snooze_minutes = fields.Integer(
         string="Report rapide (minutes)",
         default=60,

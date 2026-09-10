@@ -10,6 +10,8 @@ import re
 import time
 import unicodedata
 from datetime import datetime, timedelta, timezone
+
+import pytz
 from email.utils import getaddresses, parseaddr
 
 from markupsafe import Markup
@@ -602,7 +604,8 @@ class BfEmail(models.Model):
         string="Hors heures",
         compute="_compute_signals",
         store=True,
-        help="Heure ∉ [8..18] ou fin de semaine. Kooti et al. 2015 — "
+        help="Heure ∉ [8..18] dans le fuseau du propriétaire, ou fin de "
+             "semaine. Kooti et al. 2015 — "
              "courriels hors heures penchent vers moins urgents.",
     )
     is_likely_thread = fields.Boolean(
@@ -923,9 +926,14 @@ class BfEmail(models.Model):
         target = user or self.env.user
         return target.partner_id or self.env["res.partner"].browse()
 
+    # ⚠️ ``user_id`` fait partie des dépendances, et il y manquait : la moitié
+    # de ces signaux se lisent du point de vue du PROPRIÉTAIRE — ses adresses
+    # pour « à moi » et « en copie », son fuseau pour « hors heures » depuis
+    # ce lot. Re-router une ligne vers quelqu'un d'autre doit donc les
+    # recalculer, sinon la ligne garde les réponses de l'ancien propriétaire.
     @api.depends(
         "subject", "body_preview", "email_to", "email_cc", "date",
-        "raw_headers", "email_from", "thread_root_id",
+        "raw_headers", "email_from", "thread_root_id", "user_id",
     )
     def _compute_signals(self):
         # Group records by owner so each user's self-address set is fetched
@@ -935,6 +943,23 @@ class BfEmail(models.Model):
             if user.id not in addr_cache:
                 addr_cache[user.id] = self._get_self_addresses(user=user)
             return addr_cache[user.id]
+
+        # ⚠️ `rec.date` est un datetime NAÏF en UTC. En lire le `.hour`
+        # comme une heure de bureau marquait « hors heures » tout ce qui entre
+        # après 14 h heure locale — 08–18 UTC valent 04–14 sur la côte est —
+        # soit les trois quarts des entrants mesurés. Le fuseau est celui du
+        # PROPRIÉTAIRE de la ligne : c'est sa journée de travail qu'on
+        # qualifie, pas celle du serveur.
+        tz_cache = {}
+
+        def get_tz(user):
+            key = user.tz or ""
+            if key not in tz_cache:
+                try:
+                    tz_cache[key] = pytz.timezone(key or "America/Montreal")
+                except pytz.UnknownTimeZoneError:
+                    tz_cache[key] = pytz.timezone("America/Montreal")
+            return tz_cache[key]
         for rec in self:
             self_addrs = get_addrs(rec.user_id or self.env.user)
             preview = (rec.body_preview or "").strip()
@@ -963,9 +988,13 @@ class BfEmail(models.Model):
             rec.is_from_me = any(addr in from_addrs for addr in self_addrs)
 
             if rec.date:
-                hour = rec.date.hour
-                weekday = rec.date.weekday()
-                rec.is_late_night = hour < 8 or hour >= 18 or weekday >= 5
+                local = pytz.utc.localize(rec.date).astimezone(
+                    get_tz(rec.user_id or self.env.user))
+                rec.is_late_night = (
+                    local.hour < 8
+                    or local.hour >= 18
+                    or local.weekday() >= 5
+                )
             else:
                 rec.is_late_night = False
 

@@ -284,6 +284,7 @@
                                     <field name="handled_at" readonly="1"
                                            invisible="not is_handled"/>
                                     <field name="snoozed_until"/>
+                                    <field name="bf_no_popup"/>
                                     <field name="imap_in_inbox" readonly="1"
                                            invisible="source != 'imap'"/>
                                 </group>

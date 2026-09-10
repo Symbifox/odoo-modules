@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!--
+      Mode « ne pas déranger ».
+
+      Les réglages vivent dans les PRÉFÉRENCES, pas dans un écran à part : ce
+      sont des préférences, et une personne qui cherche à se faire taire
+      ouvre son propre compte avant d'ouvrir l'application Courriels. Le menu
+      plus bas n'est qu'un raccourci depuis là où le silence se remarque.
+    -->
+    <record id="view_users_form_simple_modif_bf_dnd" model="ir.ui.view">
+        <field name="name">res.users.preferences.form.bf.dnd</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_form_simple_modif"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='preferences_page']" position="after">
+                <page string="Ne pas d&#233;ranger" name="bf_dnd_page">
+                    <field name="bf_dnd_active" invisible="1"/>
+                    <div class="alert alert-info" role="status"
+                         invisible="not bf_dnd_active">
+                        <b>Le mode est actif</b>
+                        (<field name="bf_dnd_reason" readonly="1" class="oe_inline"/>)
+                        <span invisible="not bf_dnd_until">
+                            jusqu'&#224;
+                            <field name="bf_dnd_until" readonly="1" class="oe_inline"/>.
+                        </span>
+                        Les avis de courriel et les rappels d'agenda sont
+                        retenus, et rendus en un seul r&#233;sum&#233; &#224; la sortie.
+                    </div>
+                    <div class="o_row mb-3">
+                        <button name="action_bf_dnd_for_minutes" type="object"
+                                string="15 minutes" class="btn btn-secondary"
+                                context="{'minutes': 15}"/>
+                        <button name="action_bf_dnd_for_minutes" type="object"
+                                string="30 minutes" class="btn btn-secondary"
+                                context="{'minutes': 30}"/>
+                        <button name="action_bf_dnd_for_minutes" type="object"
+                                string="1 heure" class="btn btn-secondary"
+                                context="{'minutes': 60}"/>
+                        <button name="action_bf_dnd_forever" type="object"
+                                string="Ind&#233;finiment" class="btn btn-secondary"/>
+                        <button name="action_bf_dnd_until_meeting_end"
+                                type="object" class="btn btn-secondary"
+                                string="Jusqu'&#224; la fin de la rencontre"/>
+                        <button name="action_bf_dnd_off" type="object"
+                                string="Me d&#233;ranger quand m&#234;me"
+                                class="btn btn-link"/>
+                    </div>
+                    <group>
+                        <group string="Ce qui arme le mode">
+                            <field name="bf_dnd_meetings" readonly="0"/>
+                            <field name="bf_dnd_manual_forever" readonly="0"/>
+                            <field name="bf_dnd_manual_until" readonly="0"
+                                   invisible="bf_dnd_manual_forever"/>
+                            <field name="bf_dnd_manual_off_until" readonly="0"/>
+                        </group>
+                        <group string="Heures calmes">
+                            <field name="bf_dnd_quiet_enabled" readonly="0"/>
+                            <field name="bf_dnd_quiet_tz" readonly="0"
+                                   required="bf_dnd_quiet_enabled"
+                                   invisible="not bf_dnd_quiet_enabled"/>
+                            <field name="bf_dnd_quiet_start" readonly="0"
+                                   widget="float_time"
+                                   invisible="not bf_dnd_quiet_enabled"/>
+                            <field name="bf_dnd_quiet_end" readonly="0"
+                                   widget="float_time"
+                                   invisible="not bf_dnd_quiet_enabled"/>
+                        </group>
+                    </group>
+                    <div class="text-muted small">
+                        Une rencontre est un &#233;v&#233;nement <b>occup&#233;</b>, &#224;
+                        <b>plus d'un participant</b>, qui n'occupe pas la
+                        journ&#233;e enti&#232;re. &#171;&#160;Occup&#233;&#160;&#187; seul ne suffit pas&#160;:
+                        c'est ainsi qu'on se bloque un cr&#233;neau, et &#231;a ne dit
+                        rien de la pr&#233;sence de quelqu'un d'autre.
+                        <br/>
+                        Le fuseau des heures calmes est
+                        <b>volontairement distinct</b> de celui de la fiche
+                        contact&#160;: il suit le lieu de travail r&#233;el.
+                    </div>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Ce qui a été retenu — zone admin courriel, pour le dépannage. -->
+    <record id="view_bf_dnd_held_list" model="ir.ui.view">
+        <field name="name">bf.dnd.held.list</field>
+        <field name="model">bf.dnd.held</field>
+        <field name="arch" type="xml">
+            <list string="Avis retenus" create="false" edit="false">
+                <field name="held_at"/>
+                <field name="user_id"/>
+                <field name="kind"/>
+                <field name="email_id"/>
+                <field name="event_name"/>
+                <field name="occurrence_start"/>
+                <field name="released_at"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_bf_dnd_held" model="ir.actions.act_window">
+        <field name="name">Avis retenus</field>
+        <field name="res_model">bf.dnd.held</field>
+        <field name="view_mode">list</field>
+    </record>
+
+    <menuitem id="menu_bf_dnd_held"
+              name="Avis retenus (ne pas d&#233;ranger)"
+              parent="menu_bf_email_config"
+              action="action_bf_dnd_held"
+              groups="group_email_admin"
+              sequence="11"/>
+
+    <menuitem id="menu_bf_dnd_prefs"
+              name="Ne pas d&#233;ranger"
+              parent="menu_bf_email_config"
+              action="base.action_res_users_my"
+              sequence="4"/>
+
+</odoo>

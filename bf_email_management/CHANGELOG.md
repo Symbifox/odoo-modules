@@ -4,6 +4,196 @@ All notable changes to `bf_email_management` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This module follows Odoo's `MAJOR.MINOR.PATCH` convention prefixed with the Odoo series (`18.0.X.Y.Z`).
 
+## [18.0.11.30.0] — 2026-09-09
+
+### Changed
+
+- 🔴 **Les avis d'arrivée forment une file, et le survol gèle le décompte.**
+  Renversement assumé du plafond de trente secondes. Avant : un minuteur par
+  avis, tous partis en même temps, et l'avis déclaré `sticky` précisément pour
+  que le `freeze`/`refresh` d'Odoo ne puisse pas l'étirer à la souris. Cinq
+  courriels arrivés dans la même passe s'effaçaient donc tous les cinq huit
+  secondes plus tard, alors qu'on ne peut en traiter qu'un.
+  Maintenant : **un seul minuteur, celui du plus ancien avis affiché**. Les
+  autres attendent leur tour, barre pleine et immobile, et chaque courriel a
+  ses huit secondes à lui. Et **pointer n'importe quel avis de la pile arrête
+  le décompte et le remet à neuf** : à la sortie de la souris il repart en
+  entier, pas là où il en était.
+  Le prix, payé en connaissance de cause : deux fenêtres ouvertes n'éteignent
+  plus le même avis au même instant — chacune a sa file et son survol, donc son
+  horloge. `sent_ms` reste lu, mais comme **date de péremption à l'arrivée**
+  seulement : c'est encore lui qui jette les avis rejoués par le bus au réveil
+  du navigateur, et il ne touche plus au décompte.
+  Le survol passe par un écouteur `mouseover` à nous : le `props.freeze` du
+  gabarit standard est branché sur `freezeAll`, et pour un avis `sticky` c'est
+  une fonction vide. Impossible de s'y greffer.
+  La pile est bornée à huit avis ; au-delà, le plus ancien cède sa place —
+  c'est celui qui décomptait, donc celui qui allait partir.
+
+- 🔴 **« Hors heures » se calculait en UTC.** `is_late_night` lisait
+  `rec.date.hour`, et `date` est un datetime naïf en UTC : 08 h-18 h UTC valent
+  04 h-14 h sur la côte est, donc **tout courriel reçu après 14 h était marqué
+  « hors heures »**. Mesuré sur une boîte réelle avant correction : trois
+  entrants sur quatre. Le calcul passe dans le fuseau du **propriétaire de la
+  ligne** — c'est sa journée de travail qu'on qualifie — et une migration
+  recalcule le champ stocké en SQL, un `UPDATE` par fuseau distinct.
+  Le drapeau n'est affiché que sur le formulaire : il ne pondère aucun tri,
+  aucune recherche, aucun score. Ce qui se répare est un affichage, pas une
+  décision qui aurait été prise de travers.
+
+### Added
+
+- **Un bouton « Vu »**, quatrième de l'avis. Le X du coin ferme déjà l'avis
+  sans toucher au message, mais seulement dans la fenêtre où on clique — un
+  avis s'affiche dans TOUTES les fenêtres ouvertes, puisque le bus diffuse au
+  partenaire. « Vu » repasse par le serveur (`popup_mark_seen`), qui rediffuse
+  un `kind: "seen"` sur le même canal, et les autres fenêtres l'écartent.
+  ⚠️ **Aucune écriture sur la ligne** : ni `is_handled`, ni `status`, ni recopie
+  IMAP. Rien à persister non plus pour qu'elle ne revienne pas — `_sync_account`
+  n'annonce que les lignes dont l'`id` dépasse le repère de la passe, donc un
+  courriel n'est annoncé qu'une fois, et « Vu » ne reporte rien.
+
+- **Une teinte de barre par compte** (`bf.email.account.popup_color`, six
+  choix). Reconnaître que ça atterrit dans la boîte générale plutôt que dans la
+  nominative, sans lire le nom du compte. La couleur voyage par un `related`
+  lu dans la même lecture ORM que l'objet — pas par une clé de plus dans la
+  charge utile, que le bus livre sans consulter aucune règle. Un report échu
+  garde son orange : il passe devant la couleur du compte.
+
+- **`popup_skip_bulk`** (défaut **oui**), par compte : un courriel portant
+  `List-Unsubscribe` ou venu d'un domaine d'envoi connu (`is_bulk`) reste dans
+  la boîte et ne fait pas surface. Mesuré sur une boîte réelle : un peu plus
+  d'un entrant sur cinq porte ce signal. Le critère est l'en-tête et non la
+  catégorie `marketing`, qui se corrige à la main et se tromperait sur un vrai
+  client.
+
+- **Cliquer le corps de l'avis vaut « Ouvrir ».** Les boutons, la croix et les
+  liens gardent leur rôle, et un clic qui termine une sélection de texte
+  n'ouvre rien.
+
+- **Deux arrivées d'un même fil ne font qu'un avis** (« 2 dans ce fil »).
+  Regroupé sur `thread_root_id`, dans la rafale d'une même passe : sans ça deux
+  messages se volent leur tour de file pour dire deux fois la même chose. Les
+  boutons agissent sur le plus récent ; « Vu » écarte le groupe entier. La
+  rafale coûte désormais **une** lecture ORM au lieu d'une par message, et
+  c'est un `searchRead` : une ligne effacée entre l'envoi et l'affichage
+  disparaît du résultat au lieu de faire taire tout le lot.
+
+## [18.0.11.29.0] — 2026-09-09
+
+### Added
+
+- **Le mode « ne pas déranger » se voit sans cliquer.** Tant qu'il est armé, la
+  photo de profil porte un **cerne ambre** et une petite pastille **« zzz »**,
+  avec en infobulle la raison et l'heure de fin. Il ne se voyait jusque-là que
+  dans les Préférences et dans le menu déroulant, donc seulement quand on allait
+  le chercher : un silence qu'on a oublié d'éteindre ne se remarque pas, c'est
+  exactement son problème.
+  ⚠️ Une héritée `t-inherit` sur la balise `<img>` de `web.UserMenu`, jamais
+  une redéfinition : redéfinir emporterait la barre de navigation entière au
+  prochain changement d'Odoo, alors qu'un `xpath` sur `o_user_avatar` casse
+  **bruyamment** à la montée si la classe disparaît.
+  ⚠️ `useState` sur l'état partagé et non une simple lecture : sans lui le
+  cerne n'apparaîtrait qu'au prochain rendu de la barre, c'est-à-dire au
+  rechargement de la page, et un mode armé par l'agenda passerait inaperçu.
+  ⚠️ Ambre et non le bleu de la marque : le bleu dit « nous », pas
+  « attention », et il ne tient pas sur les deux thèmes.
+  ⚠️ `box-shadow` et non `border` : une bordure changerait la taille de
+  l'image et ferait sauter la barre d'un pixel à chaque bascule.
+
+## [18.0.11.28.0] — 2026-09-09
+
+### Added
+
+- **Les quatre durées dans le menu de la photo de profil** : 15 minutes,
+  30 minutes, 1 heure, indéfiniment.
+  ⚠️ `web.UserMenu` ne connaît que `item`, `switch` et `separator` : il n'a
+  pas de volet déroulant, et le menu « Plus » d'Odoo lui-même aplatit plutôt
+  que d'en faire un. Les durées sont donc quatre entrées, montrées
+  **seulement quand le mode est éteint**. Armé, le menu retombe à une seule
+  ligne, celle qui l'éteint, et elle dit la raison et l'heure de fin.
+  ⚠️ L'heure de fin est convertie avant d'être affichée : le serveur rend de
+  l'UTC, et la découper afficherait Greenwich, soit plusieurs heures d'écart
+  selon le fuseau.
+
+- **« Indéfiniment »** (`res.users.bf_dnd_manual_forever`), aussi dans les
+  Préférences.
+  ⚠️ Un **booléen**, pas une date lointaine : une échéance en 2099 se lirait
+  comme un réglage accidentel, et le résumé de sortie n'arriverait jamais.
+  Poser une durée l'efface, et l'éteindre le lève : les deux réglages ne
+  coexistent jamais.
+
+## [18.0.11.26.0] — 2026-09-09
+
+### Fixed
+
+- 🔴 **La page des Préférences ne s'ouvrait plus du tout.** La sélection de
+  fuseau des heures calmes appelait `self.env["res.partner"]._tz_get()`, or
+  `_tz_get` est une **fonction de module** d'
+  `odoo.addons.base.models.res_partner`, pas une méthode de modèle :
+  `AttributeError`. Et comme une sélection appelable n'est évaluée qu'au
+  `fields_get`, ce n'est pas ce champ-là qui tombait, c'est **toute la page**,
+  avec un `RPC_ERROR` sur `res.users`.
+  ⚠️ Ni la montée ni un `get_view` (singulier) ne le voyaient : seul
+  `get_views` (pluriel) passe par `fields_get`, et c'est ce que le client
+  appelle. Un test emprunte désormais ce chemin-là.
+
+### Added
+
+- **La bascule « ne pas déranger » dans le menu de la photo de profil**, au
+  premier rang, sous forme d'interrupteur. Un clic pose une heure de silence,
+  un second le lève. L'état vient de `res.users.bf_dnd_state()` et suit le
+  canal `bf_dnd/state`, donc un mode armé par l'agenda ou dans une autre
+  fenêtre s'y voit aussi.
+  ⚠️ L'entrée **ne s'affiche pas** chez un locataire qui n'a pas allumé
+  `bf_email.dnd_enabled` : montrer un interrupteur inerte à qui n'a rien
+  demandé serait pire que de ne rien montrer.
+  ⚠️ `getElements()` du menu rappelle chaque entrée à chaque ouverture, mais de
+  façon **synchrone** : l'état est donc gardé côté client, chargé une fois au
+  démarrage et tenu à jour par le canal.
+
+## [18.0.11.25.0] — 2026-09-09
+
+### Added
+
+- **Mode « ne pas déranger ».** Trois entrées qui s'additionnent — une
+  rencontre en cours, un interrupteur manuel avec une durée, des heures calmes
+  — et deux sources qui se taisent : l'avis d'arrivée de courriel et le rappel
+  d'agenda.
+  **Rien n'est jeté et rien n'est poussé vers le téléphone à la place** : ce qui
+  n'a pas fait surface est noté dans `bf.dnd.held` et rendu en un seul résumé à
+  la sortie, les rencontres en première ligne.
+  ⚠️ « Occupé » ne veut pas dire « en rencontre ». Mesuré sur trente jours d'un
+  agenda réel, `show_as = busy` seul vaut trois fois plus d'heures, parce qu'il
+  avale les plages qu'on se réserve pour soi. La règle retenue est **occupé +
+  plus d'un participant + hors journée entière**. Deux filtres qui paraissent
+  évidents ont été écartés à la mesure : le RSVP accepté (la grande majorité
+  des lignes restent à `needsAction`, un agenda CalDAV n'apportant aucun RSVP)
+  et le lien de visioconférence (présent sur moins de la moitié des
+  rencontres).
+  ⚠️ Les heures calmes ont leur **propre fuseau**, distinct de celui de la fiche
+  contact : ce champ-là suit souvent le lieu de résidence, et une fenêtre de
+  22 h à 8 h lue dans un fuseau lointain vaut une journée de travail entière
+  passée sous silence.
+  🔴 **Le garde serveur ne suffisait pas côté agenda.** `get_next_notif` rend
+  les alarmes des 24 **prochaines heures** et le client les arme avec un
+  `setTimeout` : mesuré, des poussées portant un `timer` de plus de 72 000
+  secondes, soit un rappel armé vingt heures à l'avance, qu'aucun garde serveur
+  ne peut plus retenir. Le canal `bf_dnd/state` fait rejouer
+  `/calendar/notify` au client à chaque bascule, ce qui efface ses minuteurs à
+  l'entrée et les repose à la sortie — et le réarmement est aussi nécessaire
+  que l'effacement, puisqu'après un sondage vide `lastNotifTimer` vaut 0 et le
+  client ne reprogramme plus rien.
+  **Défaut éteint à l'instance** (`bf_email.dnd_enabled` absent = non) : un
+  `-u` ne doit changer le comportement de personne.
+
+- **Une règle peut faire taire une ligne** : l'action *Pas d'avis à l'écran*
+  pose `bf_no_popup`, et le courriel reste dans la boîte de réception sans
+  surgir. Pour les émetteurs qui battent — un service de surveillance qui
+  alterne « Warning » et « Recovered » produit deux courriels par cycle, et
+  aucun des deux ne mérite d'interrompre une rencontre. À ne pas confondre avec
+  *Sortir de la boîte de réception*, qui, lui, archive.
+
 ## [18.0.11.24.0] — 2026-09-09
 
 ### Added

@@ -1,7 +1,7 @@
 {
     "name": "Gestion des courriels",
     "summary": "Inbox unifiée IMAP + chatters Odoo, avec re-routage UI",
-    "version": "18.0.11.24.0",
+    "version": "18.0.11.30.0",
     "category": "Productivity",
     'website': 'https://symbifox.com',
     "author": "Les services de consultation Blue Fox, Inc.",
@@ -36,6 +36,7 @@
         "data/bf_email_rule_default.xml",
         "data/bf_recipient_group_param.xml",
         "data/calendar_reminder_cron.xml",
+        "data/bf_dnd_cron.xml",
         "data/bf_onboarding.xml",
         "wizard/bf_email_initial_sync_views.xml",
         "wizard/bf_email_reroute_views.xml",
@@ -55,6 +56,7 @@
         "views/mail_scheduled_message_views.xml",
         "views/res_config_settings_views.xml",
         "views/bf_email_menu.xml",
+        "views/bf_dnd_views.xml",
         "views/res_partner_views.xml",
     ],
     "assets": {
@@ -72,6 +74,11 @@
             # Arrival notice. After the calendar reminder and unrelated to
             # it: this service replaces nothing, it sits alongside.
             "bf_email_management/static/src/js/bf_email_popup.js",
+            # Do-not-disturb toggle in the user menu. After the popup:
+            # the service reads the same `bf_dnd/state` channel.
+            "bf_email_management/static/src/js/bf_dnd_usermenu.js",
+            "bf_email_management/static/src/xml/bf_dnd_usermenu.xml",
+            "bf_email_management/static/src/scss/bf_dnd_usermenu.scss",
             "bf_email_management/static/src/scss/bf_email_popup.scss",
             "bf_email_management/static/src/js/bf_email_browser.js",
             "bf_email_management/static/src/js/bf_email_inbox.js",

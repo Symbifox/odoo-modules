@@ -22,6 +22,12 @@
         white-space: nowrap;
     }
 
+    // Cliquer le corps vaut « Ouvrir ». Le curseur doit le dire,
+    // sinon personne ne l'essaie. Les boutons gardent le leur.
+    .o_notification_content {
+        cursor: pointer;
+    }
+
     .o_bf_email_popup_subject {
         font-weight: 600;
         // Deux lignes d'objet, pas plus : au-delà, l'aperçu et la ligne de
@@ -133,8 +139,37 @@
     }
 }
 
+// La teinte de la boîte d'arrivée. Réglée par compte
+// (`bf.email.account.popup_color`) : reconnaître d'un coup d'oeil que ça
+// atterrit dans la boîte générale plutôt que dans la nominative vaut mieux que
+// lire le nom du compte dans la ligne de repères.
+//
+// Des couleurs pleines et sombres, pas des teintes de marque en avant-plan :
+// la barre est un fond de 4 px, et le bleu Blue Fox n'est jamais du texte.
+// Elles tiennent sur les deux thèmes sans se dédoubler.
+$o-bf-email-popup-colors: (
+    "blue":   #29abe1,
+    "slate":  #64748b,
+    "green":  #16a34a,
+    "violet": #7c3aed,
+    "amber":  #d97706,
+    "rose":   #e11d48,
+);
+
+@each $name, $color in $o-bf-email-popup-colors {
+    .o_notification.o_bf_email_popup_c_#{$name} {
+        .o_notification_bar {
+            background-color: $color !important;
+        }
+    }
+}
+
 // Un report échu n'est pas une arrivée : c'est un courriel qu'on a déjà vu et
 // choisi de repousser. La barre de couleur du toast le dit, discrètement.
+//
+// ⚠️ Cette règle vient APRÈS les teintes de compte, et c'est ce qui la fait
+// gagner : même spécificité, même `!important`, donc c'est l'ordre qui tranche.
+// Un report échu doit passer devant la boîte d'où il vient.
 .o_notification.o_bf_email_popup_wake {
     .o_notification_bar {
         background-color: var(--warning, #f0ad4e) !important;

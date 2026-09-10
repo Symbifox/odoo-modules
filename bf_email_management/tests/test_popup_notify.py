@@ -508,3 +508,152 @@ class TestPopupNotify(MobileApiCase):
         rec.invalidate_recordset()
         self.assertFalse(rec.is_handled)
         self.assertFalse(self._popups())
+
+    # ------------------------------------------------------------------
+    # 6. Le genre : les envois en masse ne font pas surface
+    # ------------------------------------------------------------------
+    def _bulk_inbound(self, offset=900):
+        """Un entrant qui porte `List-Unsubscribe`, donc `is_bulk`.
+
+        L'en-tête plutôt que la catégorie : `category` est un calculé
+        `readonly=False`, il se corrige à la main et se tromperait sur un vrai
+        client. `is_bulk`, lui, lit ce que l'expéditeur a écrit.
+        """
+        rec = self._new_inbound(offset=offset)
+        rec.sudo().write({
+            "raw_headers": "List-Unsubscribe: <mailto:stop@infolettre.test>",
+        })
+        rec.invalidate_recordset()
+        self.assertTrue(rec.is_bulk, "le socle du test doit poser `is_bulk`")
+        return rec
+
+    def test_envoi_en_masse_ne_fait_pas_surface(self):
+        rec = self._bulk_inbound()
+        self.assertTrue(self.account.popup_skip_bulk,
+                        "le réglage doit être à oui par défaut")
+        self.Popup._notify_new_emails(rec)
+        self.assertFalse(self._popups())
+
+    def test_envoi_en_masse_annonce_si_le_compte_le_veut(self):
+        """Le réglage est par compte, pas en dur : décoché, l'avis revient."""
+        self.account.popup_skip_bulk = False
+        rec = self._bulk_inbound(offset=902)
+        self.Popup._notify_new_emails(rec)
+        payloads = [p for _c, p in self._popups()]
+        self.assertEqual(len(payloads), 1)
+        self.assertEqual(payloads[0]["email_id"], rec.id)
+
+    def test_envoi_en_masse_muet_meme_dans_un_dossier_suivi(self):
+        """Le genre passe AVANT le dossier.
+
+        Une infolettre tombée dans un dossier à avis persistant n'a pas plus
+        besoin d'interrompre qu'ailleurs — et elle tiendrait trente secondes.
+        """
+        self.account.popup_sticky_folders = "INBOX"
+        rec = self._bulk_inbound(offset=904)
+        self.Popup._notify_new_emails(rec)
+        self.assertFalse(self._popups())
+
+    def test_envoi_en_masse_ordinaire_toujours_annonce(self):
+        """Contrôle négatif : sans l'en-tête, rien ne change."""
+        rec = self._new_inbound(offset=906)
+        self.assertFalse(rec.is_bulk)
+        self.Popup._notify_new_emails(rec)
+        self.assertEqual(len([p for _c, p in self._popups()]), 1)
+
+    # ------------------------------------------------------------------
+    # 7. « Vu » : écarter l'avis partout, sans toucher au message
+    # ------------------------------------------------------------------
+    def test_vu_diffuse_un_ecart(self):
+        rec = self._new_inbound(offset=910)
+        result = self.env["bf.email"].with_user(self.owner).popup_mark_seen(
+            rec.id)
+        self.assertEqual(result["email_ids"], [rec.id])
+        payloads = [p for _c, p in self._popups()]
+        self.assertEqual(len(payloads), 1)
+        self.assertEqual(payloads[0]["kind"], "seen")
+        self.assertEqual(payloads[0]["email_ids"], [rec.id])
+
+    def test_vu_va_au_partenaire_du_proprietaire(self):
+        rec = self._new_inbound(offset=912)
+        self.env["bf.email"].with_user(self.owner).popup_mark_seen([rec.id])
+        channels = [c for c, _p in self._popups()]
+        self.assertEqual(
+            channels,
+            [[self.env.cr.dbname, "res.partner", self.owner.partner_id.id]])
+
+    def test_vu_n_ecrit_rien_sur_la_ligne(self):
+        """C'est toute la différence avec « Traité ».
+
+        La ligne reste dans la boîte, non lue et non traitée : « Vu » ne parle
+        que de l'avis à l'écran.
+        """
+        rec = self._new_inbound(offset=914)
+        avant = {
+            "is_handled": rec.is_handled,
+            "status": rec.status,
+            "snoozed_until": rec.snoozed_until,
+            "imap_in_inbox": rec.imap_in_inbox,
+            "write_date": rec.write_date,
+        }
+        self.env["bf.email"].with_user(self.owner).popup_mark_seen(rec.id)
+        rec.invalidate_recordset()
+        for champ, valeur in avant.items():
+            self.assertEqual(rec[champ], valeur,
+                             "« Vu » ne doit pas toucher `%s`" % champ)
+
+    def test_vu_refuse_la_ligne_d_autrui(self):
+        """Publique, donc appelable par RPC avec n'importe quel identifiant."""
+        rec = self._new_inbound(offset=916)
+        rec.sudo().write({"user_id": self.stranger.id})
+        self.env.invalidate_all()
+        with self.assertRaises(AccessError):
+            self.env["bf.email"].with_user(self.owner).popup_mark_seen(rec.id)
+
+    def test_vu_accepte_un_groupe_de_fil(self):
+        """Un avis peut porter plusieurs courriels d'un même fil."""
+        recs = self._new_inbound(count=3, offset=920)
+        result = self.env["bf.email"].with_user(self.owner).popup_mark_seen(
+            recs.ids)
+        self.assertEqual(sorted(result["email_ids"]), sorted(recs.ids))
+        payloads = [p for _c, p in self._popups()]
+        self.assertEqual(len(payloads), 1, "un seul message, pas un par ligne")
+        self.assertEqual(sorted(payloads[0]["email_ids"]), sorted(recs.ids))
+
+    def test_vu_marche_meme_si_l_instance_est_eteinte(self):
+        """Un interrupteur qui empêche de FERMER serait pire que rien."""
+        rec = self._new_inbound(offset=926)
+        self.param.set_param("bf_email.popup_enabled", "0")
+        self.env["bf.email"].with_user(self.owner).popup_mark_seen(rec.id)
+        payloads = [p for _c, p in self._popups()]
+        self.assertEqual(len(payloads), 1)
+        self.assertEqual(payloads[0]["kind"], "seen")
+
+    def test_vu_sur_une_liste_vide_ne_diffuse_rien(self):
+        self.env["bf.email"].with_user(self.owner).popup_mark_seen([])
+        self.assertFalse(self._popups())
+
+    # ------------------------------------------------------------------
+    # 8. La couleur voyage par l'ORM, pas par la charge utile
+    # ------------------------------------------------------------------
+    def test_couleur_du_compte_lisible_sur_la_ligne(self):
+        self.account.popup_color = "slate"
+        rec = self._new_inbound(offset=930)
+        self.assertEqual(
+            rec.with_user(self.owner).popup_color, "slate",
+            "le client lit la teinte dans la même lecture que l'objet")
+
+    def test_couleur_absente_du_message_de_bus(self):
+        """La charge utile ne gagne pas une clé au passage.
+
+        Le bus diffuse au partenaire sans consulter la moindre règle
+        d'enregistrement : tout ce qui n'est pas un identifiant se lit par
+        l'ORM, y compris un réglage d'affichage.
+        """
+        self.account.popup_color = "violet"
+        rec = self._new_inbound(offset=932)
+        self.Popup._notify_new_emails(rec)
+        payloads = [p for _c, p in self._popups()]
+        self.assertEqual(len(payloads), 1)
+        self.assertNotIn("color", payloads[0])
+        self.assertNotIn("popup_color", payloads[0])

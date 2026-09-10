@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates xml:space="preserve">
+
+    <!--
+      Le témoin du mode « ne pas déranger » sur la photo de profil.
+
+      Le mode se voyait dans les Préférences et dans le menu déroulant, donc
+      seulement quand on allait le chercher. Ce qu'il fallait, c'est le voir
+      SANS cliquer : un silence qu'on a oublié d'éteindre ne se remarque pas,
+      c'est justement son problème.
+
+      ⚠️ On greffe sur la balise `<img>` du gabarit du cœur plutôt que de
+      redéfinir `web.UserMenu` : redéfinir emporterait la barre entière au
+      prochain changement d'Odoo. Un `xpath` sur une classe stable
+      (`o_user_avatar`) casse BRUYAMMENT à la montée si elle disparaît, ce qui
+      est exactement ce qu'on veut.
+    -->
+    <t t-name="bf_email_management.UserMenuDnd" t-inherit="web.UserMenu"
+       t-inherit-mode="extension">
+        <xpath expr="//img[hasclass('o_user_avatar')]" position="attributes">
+            <!-- Owl combine le `class` statique et le `t-att-class` dynamique :
+                 on n'ajoute que la classe d'état, sans recopier les trois
+                 autres, qui resteraient alors à retenir d'accord avec le cœur. -->
+            <attribute name="t-att-class">bfDnd.active ? 'o_bf_dnd_on' : ''</attribute>
+        </xpath>
+        <xpath expr="//img[hasclass('o_user_avatar')]" position="after">
+            <span t-if="bfDnd.active" class="o_bf_dnd_badge"
+                  t-att-title="bfDndTitle">zzz</span>
+        </xpath>
+    </t>
+
+</templates>

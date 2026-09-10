@@ -86,6 +86,10 @@
                                    invisible="popup_mode == 'none'"/>
                             <field name="popup_snooze_minutes"
                                    invisible="popup_mode == 'none'"/>
+                            <field name="popup_skip_bulk"
+                                   invisible="popup_mode == 'none'"/>
+                            <field name="popup_color"
+                                   invisible="popup_mode == 'none'"/>
                         </group>
                     </group>
                     <group string="Dernière erreur" invisible="not last_error">

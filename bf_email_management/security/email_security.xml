@@ -346,4 +346,26 @@
         <field name="perm_unlink" eval="True"/>
     </record>
 
+    <!--
+      Ne pas déranger — la file de retenue.
+
+      Lecture seule pour tout le monde : les lignes sont écrites en `sudo` par
+      les deux gardes et par le cron, jamais par un geste d'usager. On borne
+      donc la LECTURE à la sienne, et on ne donne l'écriture qu'à la zone
+      admin courriel, pour les besoins de dépannage.
+    -->
+    <record id="bf_dnd_held_rule_owner" model="ir.rule">
+        <field name="name">Ne pas déranger : ce que j'ai laissé passer</field>
+        <field name="model_id" ref="model_bf_dnd_held"/>
+        <field name="domain_force">[('user_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="bf_dnd_held_rule_admin" model="ir.rule">
+        <field name="name">Ne pas déranger : tout (admin courriel)</field>
+        <field name="model_id" ref="model_bf_dnd_held"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('group_email_admin'))]"/>
+    </record>
+
 </odoo>

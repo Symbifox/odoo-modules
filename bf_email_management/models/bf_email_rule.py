@@ -371,6 +371,16 @@ class BfEmailRule(models.Model):
         help="Marque le courriel comme traité. Sans dossier de destination, "
              "la copie IMAP part vers le dossier d'archives du compte.",
     )
+    set_no_popup = fields.Boolean(
+        string="Pas d'avis à l'écran",
+        help="Le courriel reste dans la boîte de réception, mais il ne fait "
+             "surgir aucun avis. Pour les émetteurs qui battent : un service "
+             "de surveillance qui alterne « alerte » et « rétabli » produit "
+             "deux courriels par cycle, et aucun des deux ne mérite "
+             "d'interrompre une rencontre.\n\n"
+             "À ne pas confondre avec « Sortir de la boîte de réception », "
+             "qui, lui, archive.",
+    )
     snooze_hours = fields.Integer(
         string="Reporter de (heures)",
         help="Sort le courriel de la boîte et l'y ramène après ce délai.",
@@ -468,7 +478,7 @@ class BfEmailRule(models.Model):
 
     @api.depends("set_category", "set_priority", "set_partner_id",
                  "set_status", "set_folder", "set_handled", "snooze_hours",
-                 "route_user_id", "forward_to")
+                 "route_user_id", "forward_to", "set_no_popup")
     def _compute_action_summary(self):
         """One readable sentence for what the rule does, for the list view."""
         categories = dict(
@@ -496,13 +506,16 @@ class BfEmailRule(models.Model):
                 parts.append(_("reporte de %s h", rule.snooze_hours))
             elif rule.set_handled:
                 parts.append(_("sort de la boîte"))
+            if rule.set_no_popup:
+                parts.append(_("sans avis à l'écran"))
             if rule.route_user_id:
                 parts.append(_("confie à %s", rule.route_user_id.name))
             if rule.forward_to:
                 parts.append(_("réachemine à %s", rule.forward_to))
             rule.action_summary = " · ".join(parts) or _("aucune action")
 
-    @api.depends("condition_ids", "set_category", "set_priority",
+    @api.depends("condition_ids", "set_no_popup",
+                 "set_category", "set_priority",
                  "set_partner_id", "set_status", "set_folder", "set_handled",
                  "snooze_hours", "route_user_id", "forward_to")
     def _compute_is_noop(self):
@@ -516,6 +529,7 @@ class BfEmailRule(models.Model):
             rule.is_noop = bool(rule.condition_ids) and not any([
                 rule.set_category, rule.set_priority, rule.set_partner_id,
                 rule.set_status, rule.set_folder, rule.set_handled,
+                rule.set_no_popup,
                 rule.snooze_hours, rule.route_user_id, rule.forward_to,
             ])
 
@@ -690,6 +704,12 @@ class BfEmailRule(models.Model):
         if self.set_handled and not record.is_handled and claim("handled"):
             vals["is_handled"] = True
             vals["handled_at"] = fields.Datetime.now()
+        # Pas de `claim` : faire taire n'est pas un réglage exclusif. Deux
+        # règles qui disent « pas d'avis » pour des raisons différentes
+        # doivent toutes deux pouvoir le dire, et la seconde ne prive
+        # personne en le répétant.
+        if self.set_no_popup and not record.bf_no_popup:
+            vals["bf_no_popup"] = True
         if self.set_folder and claim("folder"):
             extras["folder"] = self._resolve_folder(record)
         if self.forward_to:

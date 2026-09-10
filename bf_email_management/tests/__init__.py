@@ -25,3 +25,5 @@ from . import test_default_alarms
 from . import test_recipient_groups
 from . import test_mobile_tokens
 from . import test_chatter_reply_all
+from . import test_bf_dnd
+from . import test_signaux_fuseau

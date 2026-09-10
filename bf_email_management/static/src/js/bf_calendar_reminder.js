@@ -164,6 +164,35 @@ export const bfCalendarNotificationService = {
                 }
             }
         });
+        // ---------------------------------------------------------------
+        // 🔴 Ne pas déranger — le seul chemin qui DÉSARME
+        // ---------------------------------------------------------------
+        // `get_next_notif` rend les alarmes des 24 PROCHAINES HEURES et on
+        // les arme ci-dessous avec un `setTimeout` de la durée restante.
+        // Mesuré : des poussées portant un `timer` de plus de 72 000
+        // secondes, soit un rappel armé vingt heures à l'avance. Un
+        // garde posé côté serveur filtre donc ce qui est DISTRIBUÉ, jamais ce
+        // qui est déjà ARMÉ : sans ce qui suit, le mode ne ferait pas taire le
+        // rappel de la rencontre suivante, qui est précisément celui qui
+        // surgit sur l'écran partagé.
+        //
+        // Rejouer le SONDAGE est ce qui efface : `displayCalendarNotification`
+        // vide `calendarNotifTimeouts` avant de réarmer, et un sondage rendu
+        // vide ne réarme rien.
+        //
+        // ⚠️ Pousser une charge utile vide sur `calendar.alarm` ne marcherait
+        // PAS : le chemin bus retourne tôt sur `if (!fresh.length)` et garde
+        // l'horaire déjà armé. C'est délibéré là-bas, et c'est pourquoi la
+        // bascule passe par un canal à elle.
+        //
+        // ⚠️ Le réarmement à la SORTIE est tout aussi nécessaire : après un
+        // sondage vide, `lastNotifTimer` vaut 0, donc aucun sondage suivant
+        // n'est reprogrammé et le client se tairait jusqu'au prochain
+        // rechargement de page.
+        bus_service.subscribe("bf_dnd/state", () => {
+            getNextCalendarNotif();
+        });
+
         bus_service.start();
 
         // On service start, proactively pull any pending alarms via

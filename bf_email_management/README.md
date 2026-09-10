@@ -30,7 +30,7 @@ A centralized email management module for Odoo 18 that provides a single, dedupl
   - **read** — the user (or chatter) opened it. Auto-flips on bf.email form open AND when the underlying mail.message is read in any chatter (via `mail.notification` override).
   - **replied** — an outbound message with matching `In-Reply-To` was sent.
   - **handled** — `is_handled=True`. Removed from the Inbox view, but `status` (and history) preserved.
-- **Heuristic signals (2.0+)** — 8 stored booleans/floats per row, evidence-based. See §Research.
+- **Heuristic signals (2.0+)** — 8 stored booleans/floats per row, evidence-based. See §Research. `is_late_night` is computed in the **row owner's** timezone since 11.30, not the server's.
 - **Response time** — automatically computed delta between an inbound row and the first outbound reply matching its Message-ID.
 
 ### RFC 2822 Thread Tracking
@@ -97,12 +97,12 @@ The list view is still there under **Boîte de réception (liste)**: filters, gr
 ### Chatter handled indicator (9.0+)
 Every chatter message carries a badge — **À traiter**, **Traité** or **Reporté** — reflecting the current user's `bf.email` mirror. `mail.message._to_store` joins `bfEmailState` in one query per rendered batch, and only on the `for_current_user` path: the state is strictly personal and must never ride along in a broadcast. The message actions follow the same state, so « Traité » disappears once the mail is out of the inbox and « Remettre en boîte » only shows where it means something.
 
-### Arrival notice (11.5+, buttons and 30 s cap in 11.6)
+### Arrival notice (11.5+, buttons and 30 s cap in 11.6, a queue in 11.30)
 A mail lands, a toast shows up in the open tab. This is the **second transport for
 the same news**, alongside the mobile push in `push_transport.py`; both are fed by
 the *same* sweep of fresh rows inside `_sync_account`, so they cannot drift apart.
 
-Three levels of setting, widest to finest:
+Seven levels of setting, widest to finest:
 
 - `ir.config_parameter` **`bf_email.popup_enabled`** — the instance, with a
   checkbox under Settings → Gestion des courriels. **Absent means no**, so a
@@ -118,6 +118,25 @@ Three levels of setting, widest to finest:
 - **`bf.email.account.popup_snooze_minutes`** (default 60) — what the *Reporter*
   button does. Bounded to `[1, 43200]`: zero would mean a deadline already in the
   past, which `mobile_snooze` refuses.
+- **`bf.email.account.popup_skip_bulk`** (11.30+, default **yes**) — the kind. A
+  mail carrying `List-Unsubscribe`, or sent from a known bulk-sending domain
+  (`is_bulk`), stays in the inbox and never surfaces. Measured on a real mailbox,
+  a little over one inbound in five carries that signal. The criterion is the
+  **header**, not the `marketing` category: a category is a computed field with
+  `readonly=False`, it gets corrected by hand and would eventually be wrong about
+  a real client.
+- **`bf.email.account.popup_color`** (11.30+, six choices) — the tint of the bar
+  on the left of the notice, so you can tell the shared mailbox from the personal
+  one without reading the account name. The colour travels as a `related` field
+  read in the same ORM call as the subject, **not** as one more key in the bus
+  payload. An expired snooze keeps its orange: it comes ahead of the account
+  colour.
+- **`bf.email.bf_no_popup`** (11.25+) — the row. Set by a routing rule that
+  recognised a sender whose notices never have anything to say: a monitoring
+  service alternating *Warning* and *Recovered* produces two mails per cycle and
+  neither deserves to interrupt. The mail still lands in the inbox; it just does
+  not surface. The rule action is *Pas d'avis à l'écran* — not to be confused
+  with *Sortir de la boîte de réception*, which archives.
 
 Past five notices of one kind in a single pass, a summary replaces the pile — a
 catch-up after downtime must not stack the mailbox on screen. Sticky and transient
@@ -150,6 +169,30 @@ row, and it is reused as-is rather than duplicated: a `group_email_admin` member
 can read every mailbox, and a second check written apart would end up saying
 something different from the first.
 
+**A fourth button, *Vu* (11.30)** — the `×` in the corner already closes a
+notice without touching the mail, but only in the window you click in: a notice
+shows up in **every** open window, since the bus broadcasts to the partner.
+*Vu* goes back through the server (`popup_mark_seen`), which re-broadcasts a
+`kind: "seen"` on the same channel, and the other windows drop it.
+
+⚠️ **It writes nothing on the row** — not `is_handled`, not `status`, no IMAP
+write-back. Nothing needs persisting for the row to stay gone either:
+`_sync_account` only announces rows whose `id` is past the sweep's marker, so a
+mail is announced once. The one possible re-announcement is a snooze waking up,
+and *Vu* snoozes nothing.
+
+**Clicking the body counts as *Ouvrir* (11.30)** — the buttons, the close cross
+and any links keep their own role, and a click that ends a text selection opens
+nothing.
+
+**Two arrivals in one thread make one notice (11.30)** — grouped on
+`thread_root_id`, within a single sweep's burst ("2 dans ce fil"); without it two
+messages steal each other's turn in the queue to say the same thing twice. The
+buttons act on the most recent one, *Vu* drops the whole group. The burst now
+costs **one** ORM read instead of one per message, and it is a `searchRead`: a row
+deleted between send and display simply falls out of the result instead of
+silencing the whole batch.
+
 **Snoozing re-announces (11.6)** — `_cron_imap_mirror` already woke rows whose
 `snoozed_until` had passed; it now asks for the notice again, flagged `wake`, so
 the toast reads "report échu" rather than announcing an arrival. Without it,
@@ -165,10 +208,28 @@ pointer enters the stack and `refresh` when it leaves, and `refresh` RESTARTS th
 delay in full — a "30000 ms" stretches indefinitely under the mouse. The notice is
 declared `sticky` (which neutralises that) and our own timer decides.
 
-The countdown starts from `sent_ms`, the **server** clock at send time, never from
-display. Two open windows show the same notice and extinguish it at the same
-instant; opening a third lengthens nothing. Measured in a browser: 29 800 ms in
-both windows, 11 ms apart at both ends.
+**One timer, the one at the head of the queue (11.30)** — a deliberate reversal of
+the cap above. One timer per notice meant five mails arriving in the same sweep
+all faded eight seconds later, when only one of them can be dealt with. Notices
+now form a **queue**: only the oldest one on screen counts down, the others wait
+their turn with a full, motionless bar, so every mail gets its own eight seconds.
+And **pointing at any notice in the stack stops the countdown and resets it** — on
+mouse-out it starts again in full, not where it left off. Pointing at a notice is
+a deliberate gesture; freezing it is what the reader asked for.
+
+The stack is bounded to eight notices; past that the oldest gives up its place,
+which is the one that was counting down and therefore the one about to go.
+
+The hover listener is our own `mouseover`. The stock template's `props.freeze` is
+wired to `freezeAll`, and for a `sticky` notice that is an empty function: there is
+nothing to hook into.
+
+⚠️ **What the reversal gives up, knowingly**: two open windows no longer
+extinguish the same notice at the same instant. Each has its own queue and its own
+hover, hence its own clock.
+
+`sent_ms`, the **server** clock at send time, is still read — but as an
+**expiry date on arrival** only, and it no longer touches the countdown.
 
 The same arithmetic fixes an 11.5.0 defect: `bus.bus` keeps its messages for **24
 hours** (`bus.gc_retention_seconds`) and replays them on reconnect, with
@@ -184,6 +245,67 @@ one `console.warn` at the fifth if none was ever displayed.
 **Known limit** — the notice only covers mail ingested **over IMAP**. A row coming
 from a chatter or the mail gateway has no `account_id`, hence no setting to read,
 hence no notice.
+
+### Do not disturb (11.25+)
+Off by default, at the instance: `ir.config_parameter` **`bf_email.dnd_enabled`**
+is absent on a fresh install and an absent key means no, so a database that
+receives this version at its next `-u` does not start silencing anybody. There is
+a checkbox for it under Settings → Gestion des courriels.
+
+Once it is on, each person arms it from their own Preferences, and **three inputs
+add up**:
+
+1. **during meetings** — a meeting is an event that is *busy*, has **more than one
+   attendee**, and does not span the whole day. "Busy" alone is not enough: that is
+   how you block out a slot for yourself, and it says nothing about anyone else
+   being there. Measured over thirty days of a real calendar, `show_as = busy`
+   alone is worth three times the hours, because it swallows the slots you keep
+   for yourself. Two filters that look obvious were dropped at measurement and
+   should not come back: `calendar.attendee.state = accepted` (most rows sit at
+   `needsAction`, since events coming from a CalDAV calendar carry no RSVP) and
+   `videocall_location` (present on fewer than half of real meetings).
+2. **a manual switch with a duration** — 15 minutes, 30 minutes, an hour, or
+   indefinitely, from Preferences or from the user menu. It forces in **both**
+   directions: "leave me alone" beats the calendar, and "disturb me anyway" beats
+   everything.
+3. **quiet hours** — a window read in **its own timezone**, deliberately distinct
+   from `res.partner.tz`. That field tends to follow where somebody *lives*: on an
+   account set to `Pacific/Auckland`, a 22:00–08:00 window read there lands on
+   06:00–16:00 on the east coast, which is a whole working day spent in silence.
+
+**Nothing is thrown away, and nothing is pushed to the phone instead.** What did
+not surface is recorded in `bf.dnd.held` and handed back as a **single summary**
+when the mode ends, meetings named first. A notice that was forgotten rather than
+held would never be noticed at all — the summary would simply come back empty.
+
+Two sources go quiet: the mail arrival notice above, and the calendar reminder.
+
+🔴 **A server-side guard is not enough for the calendar**, and this is the part
+worth reading before touching it. `calendar.alarm_manager.get_next_notif` returns
+the alarms for the **next 24 hours** (`time_limit = 3600 * 24`) and the client arms
+each one with a `setTimeout`. Measured: pushes carrying a `timer` of more than
+72 000 seconds — a reminder armed twenty hours ahead. A mode that arms itself in
+the meantime is never consulted, because the timer was set the day before.
+
+Hence the `bf_dnd/state` bus channel. On **every** toggle, in both directions, the
+client replays `/calendar/notify`:
+
+- going in, the poll returns an empty list and the client clears all its timers.
+  ⚠️ An empty bus push would not do: `displayCalendarNotification` returns early
+  on `if (!fresh.length)` and keeps the schedule already armed. Only the **poll**
+  path clears.
+- coming out, the poll returns the alarms again and the client re-arms. ⚠️ This is
+  not optional: after an empty poll `lastNotifTimer` is 0, so the client schedules
+  no further poll and would stay silent until the page is reloaded.
+
+⚠️ Nothing is keyed on a `calendar.event.id`: a CalDAV sync that razes a recurring
+series and recreates it hands back brand-new ids. The held queue is keyed the way
+`bf.calendar.reminder.ack` is — CalDAV UID plus occurrence time.
+
+**The mode shows without clicking (11.29+)** — while it is armed the user avatar
+carries an amber ring and a small *zzz* badge, with the reason and the end time in
+its tooltip. A silence you forgot to switch off does not get noticed; that is
+exactly its problem.
 
 ### Where the signature lives (11.13+)
 One setting, `bf_email.signature_placement`, decides where the signature is put,

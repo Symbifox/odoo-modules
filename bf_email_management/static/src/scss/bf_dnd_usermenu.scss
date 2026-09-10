@@ -1,0 +1,41 @@
+// Témoin du mode « ne pas déranger » sur la photo de profil.
+//
+// ⚠️ Ambre et non le bleu de la marque. Le bleu Blue Fox dit « nous », pas
+// « attention » ; un état qu'on a oublié d'éteindre doit se lire comme un
+// avertissement. Et il tient sur les deux thèmes, clair et sombre, ce qui
+// n'est pas le cas du bleu de marque sur fond foncé.
+$o-bf-dnd-teinte: #f0ad4e;
+
+.o_user_menu {
+    // Le conteneur du bouton porte déjà `position: relative` ? Non : on le
+    // pose ici, sinon la pastille se place par rapport à la barre entière et
+    // atterrit à l'autre bout de l'écran.
+    button {
+        position: relative;
+    }
+
+    .o_user_avatar.o_bf_dnd_on {
+        // `box-shadow` plutôt que `border` : une bordure change la taille de
+        // l'image et fait sauter la barre d'un pixel quand le mode s'arme.
+        box-shadow: 0 0 0 2px $o-bf-dnd-teinte;
+    }
+
+    .o_bf_dnd_badge {
+        position: absolute;
+        right: -2px;
+        bottom: -2px;
+        // La pastille est décorative : le titre du `<span>` porte le texte
+        // utile, et le menu déroulant dit la même chose en toutes lettres.
+        pointer-events: none;
+        background: $o-bf-dnd-teinte;
+        color: #2d3031;
+        font-size: 8px;
+        font-weight: 700;
+        line-height: 1;
+        letter-spacing: -0.5px;
+        padding: 2px 3px;
+        border-radius: 6px;
+        // Détache la pastille de la photo quel que soit le thème.
+        border: 1px solid var(--NavBar-bg, #2d3031);
+    }
+}

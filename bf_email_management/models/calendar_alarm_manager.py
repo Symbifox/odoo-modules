@@ -17,6 +17,21 @@ elle-même appelée par le sondage ``/calendar/notify`` et par
 ⚠️ Le garde-fou du point 2 s'arrête à la fin de la rencontre, pas à son début :
 ouvrir son portable à 08h55 pour une rencontre de 09h00 doit encore afficher le
 rappel de 08h45.
+
+3. celles qu'un mode « ne pas déranger » retient (``bf.dnd``).
+
+   🔴 Ce garde-ci ne suffit PAS à lui seul, et c'est le défaut qui a été
+   relevé à l'arbitrage. Il filtre ce qui est DISTRIBUÉ, pas ce qui est déjà
+   AFFICHÉ : ``get_next_notif`` rend les alarmes des 24 prochaines heures
+   (``time_limit = 3600 * 24``) et le client arme chacune avec un
+   ``setTimeout``. Mesuré : des poussées portant un ``timer`` de plus de
+   72 000 secondes, soit un rappel armé vingt heures à l'avance. Un mode qui
+   s'arme entre-temps n'est jamais consulté.
+
+   C'est le canal ``bf_dnd/state`` qui ferme le trou : à chaque bascule, le
+   client rejoue ``/calendar/notify``, ce qui efface ses minuteurs à l'entrée
+   et les repose à la sortie. Voir ``bf_dnd.py`` et
+   ``static/src/js/bf_calendar_reminder.js``.
 """
 
 import time
@@ -51,6 +66,17 @@ class AlarmManager(models.AbstractModel):
             if dismissed_at and notify_at and dismissed_at >= notify_at:
                 continue
             filtered.append(alert)
+        if filtered and self.env["bf.dnd"]._active_for(self.env.user):
+            # ⚠️ On ne note que ce qui SERAIT SORTI. `get_next_notif` rend les
+            # alarmes des 24 prochaines heures, et un rappel de demain n'a rien
+            # à faire dans le résumé d'une rencontre qui finit dans dix
+            # minutes. Les autres sont écartées sans trace : le client rejoue
+            # `/calendar/notify` à la sortie du mode et les récupère telles
+            # quelles, avec leurs boutons de report.
+            if any(a.get("notify_at") and a["notify_at"] <= now
+                   for a in filtered):
+                self.env["bf.dnd"]._hold_reminder(self.env.user, event)
+            return []
         return filtered
 
     def _bf_reminder_state(self, event, partner):

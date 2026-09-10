@@ -64,6 +64,21 @@ class ResConfigSettings(models.TransientModel):
              "vers le téléphone est un transport distinct.",
     )
 
+    bf_email_dnd_enabled = fields.Boolean(
+        string="Mode « ne pas déranger »",
+        default=False,
+        help="Autorise le mode qui retient les avis pendant les rencontres, "
+             "pour toute la base. Chacun choisit ensuite ce qui l'arme : ses "
+             "rencontres, un interrupteur manuel avec une durée, des heures "
+             "calmes.\n\n"
+             "Le mode ne jette rien et ne pousse rien vers le téléphone : ce "
+             "qui n'a pas fait surface est rendu en un seul résumé à la "
+             "sortie.\n\n"
+             "Décoché par défaut, y compris sur une base qui vient de "
+             "recevoir la mise à jour : personne ne découvre un silence qu'il "
+             "n'a pas demandé.",
+    )
+
     # ------------------------------------------------------------------
     # ⚠️ Lecture et écriture explicites plutôt que `config_parameter`.
     #
@@ -92,6 +107,7 @@ class ResConfigSettings(models.TransientModel):
         res["bf_email_popup_enabled"] = (
             self.env["bf.email.popup"]._instance_enabled()
         )
+        res["bf_email_dnd_enabled"] = self.env["bf.dnd"]._instance_enabled()
         return res
 
     def set_values(self):
@@ -115,6 +131,10 @@ class ResConfigSettings(models.TransientModel):
         ICP.set_param(
             "bf_email.popup_enabled",
             "1" if self.bf_email_popup_enabled else "0",
+        )
+        ICP.set_param(
+            "bf_email.dnd_enabled",
+            "1" if self.bf_email_dnd_enabled else "0",
         )
 
     def action_bf_email_refresh_imap_folders(self):
