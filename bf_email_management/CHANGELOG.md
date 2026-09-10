@@ -4,6 +4,64 @@ All notable changes to `bf_email_management` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This module follows Odoo's `MAJOR.MINOR.PATCH` convention prefixed with the Odoo series (`18.0.X.Y.Z`).
 
+## [18.0.11.24.0] — 2026-09-09
+
+### Added
+
+- **« Répondre à tous » dans le menu « ... » du chatter.** Le chatter n'offrait
+  que « Répondre », qui n'adresse que l'expéditeur : répondre à un fil de quatre
+  personnes voulait dire retaper trois adresses, ou sortir d'Odoo. La nouvelle
+  entrée met l'expéditeur dans « À » et le reste du fil en « Cc ». Elle
+  n'apparaît que sur les messages qui sont des courriels, jamais sur une note
+  interne ni sur une notification système.
+- Les trois sources de destinataires s'**additionnent** au lieu de s'exclure :
+  le miroir `bf.email`, les champs `email_to` / `email_cc` de `mail.message`
+  quand `mail_tracking` est installé, et les `partner_ids` / `recipient_cc_ids`
+  du message. Élire la mieux fournie perdait les destinataires que les autres
+  connaissaient seules.
+- Quand le calcul ne trouve personne, le bouton le dit au lieu d'ouvrir un
+  composeur vide : un composeur sans destinataire poste un message qui ne
+  notifie personne, sans que rien ne le signale.
+
+### Fixed
+
+- 🔴 **Un « Répondre à tous » ne met plus la passerelle en copie.** L'exclusion
+  du catchall, du bounce et du « De » par défaut lisait trois clés
+  d'`ir.config_parameter` qu'Odoo 18 a déménagées vers `mail.alias.domain`, et
+  qui de toute façon portaient une partie locale comparée à une adresse
+  complète : elle ne pouvait pas correspondre. Le catchall d'une instance étant
+  le `To:` de tout courriel entrant, la réponse repartait vers la passerelle,
+  qui l'aurait repostée dans le chatter d'où elle venait. Les alias de modèle
+  (`mail.alias`) sont écartés pour la même raison. Vaut aussi pour le
+  « Répondre à tous » de la boîte de réception, qui portait le même trou.
+- **Un nom affiché qui contient une virgule ne compte plus pour deux
+  destinataires.** `"Nom, Prénom" <adresse>` était coupé par un `split(",")` en
+  deux adresses dont aucune n'existait ; le découpage passe désormais par
+  `email.utils.getaddresses`.
+- L'entrée voisine « Répondre » s'affichait en anglais même en français : le
+  module tiers passe une chaîne nue, sans `_t()`. Elle est ré-enregistrée avec
+  un titre traduisible et une place fixe dans le menu.
+
+## [18.0.11.23.0] — 2026-09-08
+
+### Security
+
+- **Le jeton d'un appareil mobile n'est plus conservé en clair.** Seule son
+  empreinte SHA-256 reste en base ; le jeton lui-même ne vit que le temps de
+  parvenir à l'application. Une copie de la base ne remet donc plus un jeton
+  utilisable entre les mains de qui la lit. Migration incluse : les lignes
+  existantes sont converties sans que les téléphones s'en aperçoivent.
+- **Le jeton de publication ntfy ne part plus vers n'importe quel hôte.** Il
+  n'accompagne un envoi que si le point de terminaison est bien celui du serveur
+  ntfy configuré. C'est un secret de serveur, et il suivait jusque-là le point
+  de terminaison que l'appareil avait enregistré.
+- **Le jeton et le propriétaire d'un appareil ne se modifient plus à la main.**
+  Une écriture hors `sudo` sur ces champs est refusée : sans ça, un accès en
+  écriture suffisait à forger un jeton ou à déplacer un appareil vers un autre
+  usager.
+- **Un appareil silencieux depuis quatre-vingt-dix jours perd son jeton.** Un
+  téléphone perdu ou remplacé ne garde pas une porte ouverte indéfiniment.
+
 ## [18.0.11.22.1] — 2026-09-06
 
 ### Fixed

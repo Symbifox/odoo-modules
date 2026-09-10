@@ -1,4 +1,4 @@
-"""Ce qui s'ajoute à la boîte de réception OWL.
+"""Ce que ce lot ajoute à la boîte de réception OWL.
 
 Trois choses s'y jouent, et chacune a un mode de panne bien à elle :
 

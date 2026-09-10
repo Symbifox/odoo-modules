@@ -220,7 +220,7 @@ class TestMobileHttp(HttpCase):
     def test_a_write_conflict_is_replayed_not_reported(self):
         """Un conflit d'écriture ne sort jamais en 500 : Odoo rejoue.
 
-        C'est le défaut de la internal report : deux archivages rapprochés
+        C'est le défaut relevé en production : deux archivages rapprochés
         depuis le téléphone, le second refusé par PostgreSQL au ``flush``,
         attrapé par le décorateur en « unexpected error », rendu en 500 — et
         l'app remettait le courriel en boîte. L'exception doit remonter à

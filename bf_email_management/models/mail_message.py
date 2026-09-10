@@ -3,6 +3,7 @@ import logging
 
 from odoo import _, fields, models
 
+from .bf_email import split_address_list
 from .subject_utils import dedup_subject_prefix
 
 _logger = logging.getLogger(__name__)
@@ -282,6 +283,147 @@ class MailMessage(models.Model):
             _("« %(subject)s » est de retour dans votre boîte de réception.",
               subject=mirror.subject or mirror.display_name),
         )
+
+    # ------------------------------------------------------------------
+    # « Répondre à tous » depuis le chatter
+    # ------------------------------------------------------------------
+    def _bf_reply_all_addresses(self):
+        """Retourne ``(direction, email_from, to_addrs, cc_addrs)``.
+
+        🔴 **Le chatter d'Odoo ne garde pas les en-têtes ``To:`` et ``Cc:``
+        d'un courriel entrant.** ``_message_route_process`` ne conserve que
+        les ``partner_ids`` que ``_mail_find_partner_from_emails`` a su
+        reconnaître, et il écarte les adresses de l'instance : un
+        courriel adressé au seul catchall repart avec une liste vide. Mesuré
+        sur une base réelle : la grande majorité des messages de type
+        ``email`` n'y portent ni ``To:`` ni ``Cc:``.
+
+        Trois sources, et on les **additionne** au lieu d'en élire une :
+
+        1. **le miroir ``bf.email``** : la projection de la passerelle garde
+           les en-têtes tels quels, et tout courriel routé par la passerelle
+           en a un ;
+        2. **``mail.message.email_to`` / ``email_cc``** (ajoutés par
+           ``mail_tracking``), remplis de façon irrégulière ;
+        3. **``partner_ids`` et ``recipient_cc_ids``**, fidèles pour ce que
+           NOUS avons envoyé, puisque c'est Odoo qui a composé la liste.
+
+        ⚠️ Élire une seule source perd des gens, et le premier essai le
+        faisait : un message sortant porte des partenaires en
+        ``recipient_cc_ids`` que son miroir, projeté depuis le chatter, ne
+        connaît pas, parce que ``_prepare_email_vals`` ne lit pas ce champ.
+        Préférer le miroir « parce qu'il a des en-têtes » supprimait donc des
+        destinataires sans rien dire. Le dédoublonnage se fait plus loin, par
+        partenaire, ce qui rend l'union sans danger.
+
+        Le miroir est cherché en ``sudo`` et sans filtre d'usager : ce qu'on y
+        lit, ce sont les en-têtes d'un message que l'usager a déjà sous les
+        yeux dans ce chatter, jamais l'état personnel d'une boîte.
+        """
+        self.ensure_one()
+        BfEmail = self.env["bf.email"]
+
+        mirror = BfEmail.browse()
+        if self.message_id:
+            mirror = BfEmail.sudo().with_context(active_test=False).search(
+                [("message_id_header", "=", self.message_id)], order="id asc",
+            ).filtered(lambda r: r.email_to or r.email_cc)[:1]
+
+        # ⚠️ ``email_to`` / ``email_cc`` sur mail.message viennent de
+        # ``mail_tracking`` (OCA), qui n'est PAS une dépendance de ce module :
+        # ils existent sur certaines instances et manquent ailleurs. Y toucher
+        # sans garde lève un AttributeError là où le module n'est pas installé.
+        # C'est une base neuve, sans mail_tracking, qui l'a attrapé.
+        to_addrs = (split_address_list(self.email_to)
+                    if "email_to" in self._fields else [])
+        cc_addrs = (split_address_list(self.email_cc)
+                    if "email_cc" in self._fields else [])
+        if mirror:
+            to_addrs += split_address_list(mirror.email_to)
+            cc_addrs += split_address_list(mirror.email_cc)
+        to_addrs += [(p.name or "", p.email) for p in self.partner_ids if p.email]
+        if "recipient_cc_ids" in self._fields:
+            cc_addrs += [
+                (p.name or "", p.email)
+                for p in self.recipient_cc_ids if p.email
+            ]
+
+        direction = mirror.direction if mirror else BfEmail._detect_direction(self)
+        email_from = self.email_from or (mirror.email_from if mirror else "") or ""
+        return direction, email_from, to_addrs, cc_addrs
+
+    def _bf_reply_all_recipients(self):
+        """Retourne ``(to_ids, cc_ids)`` pour un « Répondre à tous ».
+
+        Même partage que ``bf.email`` : « À » = qui a écrit (ou, sur un
+        message sortant, qui on visait), « Cc » = tout le reste du fil, moins
+        nos propres adresses et celles qui reviennent dans cet Odoo.
+        """
+        self.ensure_one()
+        BfEmail = self.env["bf.email"]
+        direction, email_from, to_addrs, cc_addrs = self._bf_reply_all_addresses()
+
+        if direction == "in":
+            to_source = split_address_list(email_from)
+            rest = to_addrs + cc_addrs
+        else:
+            to_source = to_addrs
+            rest = cc_addrs
+
+        # 🔴 Deux ensembles, pas un. Celui du « À » n'écarte que nos propres
+        # adresses et celles qui reviennent dans cet Odoo ; celui du « Cc » y
+        # ajoute l'expéditeur, qu'on vient de mettre dans le « À ». Confondre
+        # les deux vide la ligne « À » d'un entrant (l'expéditeur s'excluait
+        # lui-même), et le repli sur l'auteur adressait alors OdooBot.
+        exclude_to = BfEmail._bf_reply_exclusion_set()
+        exclude_cc = set(exclude_to)
+        for _display_name, bare in to_source:
+            if bare:
+                exclude_cc.add(bare.lower())
+
+        to_ids = BfEmail._bf_partner_ids_from_addresses(to_source, exclude_to)
+        # ⚠️ Le repli sur l'auteur ne vaut QUE pour un entrant. Sur un message
+        # que nous avons envoyé, l'auteur c'est nous : le repli ouvrirait un
+        # composeur adressé à soi-même, ce qui a l'air de marcher et ne
+        # prévient personne.
+        if not to_ids and direction == "in" and self.author_id.email:
+            to_ids = [self.author_id.id]
+        cc_ids = BfEmail._bf_partner_ids_from_addresses(
+            rest, exclude_cc, skip_ids=to_ids,
+        )
+        return to_ids, cc_ids
+
+    def action_bf_reply_all(self):
+        """Bouton « Répondre à tous » du menu « … » du chatter.
+
+        Le corps cité, l'objet dédoublonné et le traitement de la signature
+        viennent de ``reply_message``, celui de ``mail_quoted_reply``, déjà
+        rectifié plus haut dans ce fichier. Ce qui change ici, et seulement
+        ça : la liste des destinataires.
+        """
+        self.ensure_one()
+        self.check_access_rule("read")
+        to_ids, cc_ids = self._bf_reply_all_recipients()
+        # 🔴 Un composeur ouvert sans un seul destinataire part « à personne » :
+        # le message naît bien dans le chatter, visible comme n'importe quel
+        # envoi, sans un seul mail.notification. Le module a déjà payé ce
+        # défaut une fois (voir _bf_retarget_to_chatter). On le dit tout haut
+        # plutôt que d'ouvrir une fenêtre qui ment.
+        if not to_ids and not cc_ids:
+            return self._bf_chatter_notification(
+                _("Personne à qui répondre"),
+                _("Ce message ne porte aucun destinataire hors de l'instance. "
+                  "Le bouton « Envoyer un message » du chatter écrit aux "
+                  "abonnés de la fiche."),
+                "warning",
+            )
+        action = self.reply_message()
+        ctx = dict(action.get("context") or {})
+        ctx["default_partner_ids"] = [(6, 0, to_ids)]
+        ctx["default_partner_cc_ids"] = [(6, 0, cc_ids)]
+        ctx["default_partner_bcc_ids"] = [(6, 0, [])]
+        action["context"] = ctx
+        return action
 
     def _eml_filename_from_message(self):
         """Filename for direct mail.message downloads (no bf.email mirror)."""

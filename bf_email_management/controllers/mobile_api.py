@@ -226,9 +226,12 @@ class BfEmailMobileApi(http.Controller):
             (data.get("code_verifier") or "").strip())
         if not device:
             return _json({"error": "invalid_or_expired_code"}, 401)
+        # Handed out once, then sealed: only the hash stays in the database.
+        jeton = device.sudo().device_token
+        device._seal()
         request.update_env(user=device.user_id.id)
         return _json({
-            "token": device.sudo().device_token,
+            "token": jeton,
             "user_id": device.user_id.id,
             "config": request.env["bf.email"].get_mobile_config(),
         })

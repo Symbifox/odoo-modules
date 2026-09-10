@@ -167,8 +167,8 @@ class BfEmailMobile(models.Model):
             ("push_endpoint", "!=", False),
         ]))
         # Second transport, le même relevé. ⚠️ Le test du push ne suffit plus
-        # à décider : depuis l'arrivée de l'avis dans Odoo, une personne peut le
-        # vouloir sans avoir d'appareil inscrit — c'est même le cas normal
+        # à décider : depuis ce lot, une personne peut vouloir l'avis
+        # dans Odoo sans avoir d'appareil inscrit — c'est même le cas normal
         # depuis que bf_email.push_enabled est à 0. Sortir sur le seul
         # `wants_push` sautait alors le relevé, donc l'avis, sans rien dire.
         wants_popup = self.env["bf.email.popup"]._watching(account.user_id)

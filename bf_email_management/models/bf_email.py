@@ -10,7 +10,7 @@ import re
 import time
 import unicodedata
 from datetime import datetime, timedelta, timezone
-from email.utils import parseaddr
+from email.utils import getaddresses, parseaddr
 
 from markupsafe import Markup
 
@@ -30,6 +30,28 @@ _logger = logging.getLogger(__name__)
 # à la même fiche — l'export .eml, ou une pièce postée dans son chatter —
 # qui ne sont pas des pièces jointes du courriel.
 ATTACHMENT_PART_MARKER = "bf.email:part"
+
+
+def split_address_list(raw):
+    """Découpe un en-tête To:/Cc: brut en paires ``(nom affiché, adresse)``.
+
+    ⚠️ Un ``split(",")`` naïf coupe en deux ``"Béland, François" <f@x.ca>``
+    et produit deux destinataires dont aucun n'existe. ``getaddresses``
+    respecte les guillemets.
+
+    ⚠️ On rend des PAIRES, pas des chaînes reformatées. Repasser par
+    ``formataddr`` puis ``parseaddr`` encode le nom en RFC 2047 dès qu'il
+    porte un accent, et le partenaire créé à la volée s'appelle alors
+    ``=?utf-8?b?QsOpbGFuZA…?=``. Attrapé au banc, sur ce même Béland.
+    """
+    if not raw:
+        return []
+    out = []
+    for display_name, addr in getaddresses([raw]):
+        addr = (addr or "").strip()
+        if addr:
+            out.append(((display_name or "").strip(), addr))
+    return out
 
 
 def _human_bytes(size):
@@ -1188,6 +1210,7 @@ class BfEmail(models.Model):
         même ligne au même instant — six écritures concurrentes par courriel
         entrant, donc autant d'échecs de sérialisation rejoués par Odoo.
 
+
         Le drapeau de contexte réserve le marquage au chargement d'un vrai
         formulaire, qui appelle ``web_read`` directement.
 
@@ -2085,80 +2108,153 @@ class BfEmail(models.Model):
         action["context"] = ctx
         return action
 
+    # ------------------------------------------------------------------
+    # Les adresses qu'une réponse ne doit jamais viser
+    # ------------------------------------------------------------------
+    @api.model
+    def _bf_routing_addresses(self):
+        """Adresses qui REVIENNENT dans cet Odoo, en minuscules.
+
+        🔴 Odoo 18 a déménagé le catchall, le bounce et le « De » par défaut
+        d'``ir.config_parameter`` vers ``mail.alias.domain``. Les trois clés
+        que ce module lisait (``mail.catchall.alias``, ``mail.bounce.alias``,
+        ``mail.default.from``) n'existent plus ; et quand elles existaient,
+        elles portaient une PARTIE LOCALE (« bonjour »), jamais une adresse
+        complète, donc la comparaison à un ``user@hôte`` analysé ne pouvait
+        pas correspondre. L'exclusion était doublement inerte.
+
+        Ce que ça coûte : le catchall d'une instance est littéralement le
+        ``To:`` de tout courriel entrant. Un « Répondre à tous » qui ne
+        l'écarte pas met la passerelle en copie : le message part, revient par
+        la passerelle, et se reposte tout seul dans le chatter d'où il vient.
+
+        On ajoute les alias de modèle (``mail.alias``) pour la même raison :
+        écrire à ``depenses@`` ou ``bsi-voc@`` crée une fiche, ça ne prévient
+        personne.
+        """
+        addrs = set()
+        for domain in self.env["mail.alias.domain"].sudo().search([]):
+            host = (domain.name or "").strip().lower()
+            if not host:
+                continue
+            for local in (domain.catchall_alias, domain.bounce_alias,
+                          domain.default_from):
+                local = (local or "").strip().lower()
+                if not local:
+                    continue
+                addrs.add(local if "@" in local else f"{local}@{host}")
+        for alias in self.env["mail.alias"].sudo().search(
+                [("alias_name", "!=", False)]):
+            local = (alias.alias_name or "").strip().lower()
+            host = (alias.alias_domain_id.name or "").strip().lower()
+            if local and host:
+                addrs.add(f"{local}@{host}")
+        # Les clés d'avant la 18 restent lues pour les bases qui les portent
+        # encore ; une partie locale seule y est recollée au domaine catchall.
+        Param = self.env["ir.config_parameter"].sudo()
+        legacy_host = (Param.get_param("mail.catchall.domain") or "").strip().lower()
+        for key in ("mail.bounce.alias", "mail.catchall.alias",
+                    "mail.default.from"):
+            val = (Param.get_param(key) or "").strip().lower()
+            if not val:
+                continue
+            if "@" in val:
+                addrs.add(val)
+            elif legacy_host:
+                addrs.add(f"{val}@{legacy_host}")
+        return addrs
+
+    def _bf_reply_exclusion_set(self, user=None, owner=None, sender=None):
+        """Ensemble des adresses à retirer d'une réponse.
+
+        ``user``   : qui répond (par défaut ``env.user``) ;
+        ``owner``  : le propriétaire de la boîte, quand il diffère ;
+        ``sender`` : le ``From:`` d'origine, déjà placé dans « À ».
+        """
+        user = user or self.env.user
+        exclude = set(self._bf_routing_addresses())
+        for addr in (user.partner_id.email, user.email, user.company_id.email):
+            if addr:
+                exclude.add(addr.strip().lower())
+        exclude |= self._get_self_addresses(user=owner or user)
+        if sender:
+            _display_name, bare = parseaddr(sender)
+            if bare:
+                exclude.add(bare.strip().lower())
+        return exclude
+
+    @staticmethod
+    def _bf_split_one(addr):
+        """``(nom, adresse)``, à partir d'une paire déjà découpée ou d'une chaîne."""
+        if isinstance(addr, (tuple, list)):
+            display_name, bare = (addr + ("", ""))[:2]
+        else:
+            display_name, bare = parseaddr(addr or "")
+            bare = bare or addr or ""
+        return (display_name or "").strip(), (bare or "").strip()
+
+    def _bf_partner_for_address(self, addr):
+        """Le ``res.partner`` qui porte ``addr``, créé s'il n'existe pas.
+
+        Extrait de ``_build_reply_recipients`` et ``_build_reply_all_recipients``,
+        qui en portaient deux copies identiques.
+        """
+        Partner = self.env["res.partner"].sudo()
+        display_name, bare = self._bf_split_one(addr)
+        if not bare:
+            return Partner
+        partner = Partner.search([("email", "=ilike", bare)], limit=1)
+        if not partner:
+            partner = Partner.search(
+                [("email_normalized", "=", bare.lower())], limit=1,
+            )
+        if not partner:
+            try:
+                partner = Partner.create({
+                    "name": display_name or bare,
+                    "email": bare,
+                })
+            except Exception:
+                return Partner
+        return partner
+
+    def _bf_partner_ids_from_addresses(self, addresses, exclude, skip_ids=()):
+        """Résout une liste d'adresses en ids de partenaires, sans doublon."""
+        ids = []
+        skip = set(skip_ids or ())
+        for addr in addresses:
+            _display_name, bare = self._bf_split_one(addr)
+            if not bare or bare.lower() in exclude:
+                continue
+            partner = self._bf_partner_for_address(addr)
+            if not partner:
+                continue
+            if partner.id not in ids and partner.id not in skip:
+                ids.append(partner.id)
+        return ids
+
     def _build_reply_all_recipients(self):
         """Return (to_ids, cc_ids) for Reply-All.
 
         TO = original sender (or original recipients if outbound).
         CC = every other address in the thread's To+Cc, minus:
              * the current user's own emails,
-             * the tenant's bounce + catchall aliases,
-             * the company's noreply alias.
+             * every address that routes back into this Odoo
+               (catchall, bounce, « De » par défaut, alias de modèle),
+             * the original sender, already in TO.
         """
         self.ensure_one()
-        Partner = self.env["res.partner"].sudo()
         to_partners = self._build_reply_recipients()
-
-        # Collect candidate Cc addresses from the source.
-        cc_candidates = []
-        if self.email_to:
-            cc_candidates.extend(
-                a.strip() for a in self.email_to.split(",") if a.strip()
-            )
-        if self.email_cc:
-            cc_candidates.extend(
-                a.strip() for a in self.email_cc.split(",") if a.strip()
-            )
-
-        # Build the exclusion set.
-        exclude = set()
-        user = self.env.user
-        if user.partner_id.email:
-            exclude.add(user.partner_id.email.lower())
-        if user.email:
-            exclude.add(user.email.lower())
-        if user.company_id.email:
-            exclude.add(user.company_id.email.lower())
-        Param = self.env["ir.config_parameter"].sudo()
-        for key in (
-            "mail.bounce.alias",
-            "mail.catchall.alias",
-            "mail.default.from",
-        ):
-            val = Param.get_param(key)
-            if val:
-                exclude.add(str(val).lower())
-        # Also exclude the row owner's own IMAP account logins.
-        exclude |= self._get_self_addresses(user=self.user_id or user)
-        # Also exclude the original sender (already in TO).
-        if self.email_from:
-            _name, bare = parseaddr(self.email_from)
-            if bare:
-                exclude.add(bare.lower())
-
-        cc_ids = []
-        for addr in cc_candidates:
-            _name, bare = parseaddr(addr)
-            bare = (bare or addr).strip()
-            if not bare or bare.lower() in exclude:
-                continue
-            partner = Partner.search(
-                [("email", "=ilike", bare)], limit=1,
-            )
-            if not partner:
-                partner = Partner.search(
-                    [("email_normalized", "=", bare.lower())], limit=1,
-                )
-            if not partner:
-                try:
-                    partner = Partner.create({
-                        "name": _name or bare,
-                        "email": bare,
-                    })
-                except Exception:
-                    continue
-            if (partner.id not in cc_ids
-                    and partner.id not in to_partners):
-                cc_ids.append(partner.id)
+        cc_candidates = (
+            split_address_list(self.email_to)
+            + split_address_list(self.email_cc)
+        )
+        exclude = self._bf_reply_exclusion_set(
+            owner=self.user_id or None, sender=self.email_from,
+        )
+        cc_ids = self._bf_partner_ids_from_addresses(
+            cc_candidates, exclude, skip_ids=to_partners,
+        )
         return to_partners, cc_ids
 
     def _composer_target(self):
@@ -2296,39 +2392,22 @@ class BfEmail(models.Model):
         """Return [partner_id, ...] for a Reply.
 
         Inbound: the original sender. Outbound: the original To: recipients.
-        Creates a transient res.partner for unknown emails so the composer
-        can render the recipient chip.
+        Creates a res.partner for unknown emails so the composer can render
+        the recipient chip.
         """
         self.ensure_one()
-        Partner = self.env["res.partner"].sudo()
         addrs = []
         if self.direction == "in" and self.email_from:
-            addrs = [self.email_from.strip()]
+            addrs = split_address_list(self.email_from)
         elif self.direction == "out" and self.email_to:
-            addrs = [a.strip() for a in self.email_to.split(",") if a.strip()]
+            addrs = split_address_list(self.email_to)
         elif self.partner_id:
             return [self.partner_id.id]
 
         ids = []
         for addr in addrs:
-            display_name, bare = parseaddr(addr)
-            bare = (bare or addr).strip()
-            if not bare:
-                continue
-            partner = Partner.search([("email", "=ilike", bare)], limit=1)
-            if not partner:
-                partner = Partner.search(
-                    [("email_normalized", "=", bare.lower())], limit=1,
-                )
-            if not partner:
-                try:
-                    partner = Partner.create({
-                        "name": display_name or bare,
-                        "email": bare,
-                    })
-                except Exception:
-                    continue
-            if partner.id not in ids:
+            partner = self._bf_partner_for_address(addr)
+            if partner and partner.id not in ids:
                 ids.append(partner.id)
         return ids
 
@@ -3228,8 +3307,8 @@ class BfEmail(models.Model):
         # ``>=`` (not ``>``): create_date is not unique. A bulk import can
         # insert a whole thread at one identical timestamp; with strict ``>``,
         # once the watermark lands on that exact second every sibling message
-        # is skipped *permanently* (never retried) — the cause of a missing
-        # cluster of messages. ``>=`` re-scans the boundary timestamp each run;
+        # is skipped *permanently* (never retried) — the cause of the missing
+        # Grouped-thread cluster. ``>=`` re-scans the boundary timestamp each run;
         # _should_sync dedups by (message_id, user) so no duplicate is created,
         # and the cluster size is always far below batch_size in practice.
         messages = self.env["mail.message"].sudo().search(

@@ -29,7 +29,24 @@ from odoo import _, api, models
 _logger = logging.getLogger(__name__)
 
 NTFY_TOKEN_PARAM = "bf_email_management.ntfy_publish_token"
+# The ntfy server is one per tenant; its address lives with the SMS half, the
+# first module to have needed it. Read here only to gate the bearer token.
+NTFY_BASE_PARAM = "bf_sms_archive.ntfy_base_url"
 POST_TIMEOUT = 8
+
+
+def ntfy_auth_allowed(endpoint, base_url):
+    """True when ``endpoint`` is on the configured ntfy server's host.
+
+    🔴 The publish token is a SERVER secret. Attached to whatever endpoint the
+    device registered, it left for any public host the caller chose. It only
+    goes to our ntfy. Pure: the bench drives it. Audit 2026-09-08 (S-M3).
+    """
+    try:
+        e, b = urlparse(endpoint or ""), urlparse(base_url or "")
+    except ValueError:
+        return False
+    return bool(e.hostname and b.hostname and e.hostname.lower() == b.hostname.lower())
 # Longest push body worth sending: ntfy relays it as one message and the
 # phone truncates in the shade anyway.
 BODY_MAX = 180
@@ -99,13 +116,18 @@ class BfEmailUnifiedPush(models.AbstractModel):
         ])
 
     @api.model
-    def _post(self, endpoint, payload):
-        token = self.env["ir.config_parameter"].sudo().get_param(NTFY_TOKEN_PARAM)
+    def _auth_headers(self, endpoint):
+        icp = self.env["ir.config_parameter"].sudo()
         headers = {"Content-Type": "application/json"}
-        if token:
+        token = icp.get_param(NTFY_TOKEN_PARAM)
+        if token and ntfy_auth_allowed(endpoint, icp.get_param(NTFY_BASE_PARAM)):
             headers["Authorization"] = "Bearer %s" % token
+        return headers
+
+    @api.model
+    def _post(self, endpoint, payload):
         return requests.post(
-            endpoint, data=json.dumps(payload), headers=headers,
+            endpoint, data=json.dumps(payload), headers=self._auth_headers(endpoint),
             timeout=POST_TIMEOUT,
             # The endpoint was vetted as public; a 30x would send this POST —
             # bearer token included — somewhere that never was. Redirects are

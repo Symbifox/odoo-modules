@@ -23,3 +23,5 @@ from . import test_thread_anchor
 from . import test_calendar_reminder_ack
 from . import test_default_alarms
 from . import test_recipient_groups
+from . import test_mobile_tokens
+from . import test_chatter_reply_all

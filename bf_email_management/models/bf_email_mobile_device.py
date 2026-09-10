@@ -28,11 +28,14 @@ from datetime import timedelta
 from psycopg2 import OperationalError
 
 from odoo import _, api, fields, models
-from odoo.exceptions import UserError
+from odoo.exceptions import AccessError, UserError
 
 _logger = logging.getLogger(__name__)
 
 CODE_TTL_MINUTES = 3  # single-use exchange code lifetime
+# A device that made no call for this long loses its token: a lost or replaced
+# phone does not keep a door open forever. Audit 2026-09-08 (S-M2).
+TOKEN_IDLE_DAYS = 90
 
 # Sends allowed per device per hour. A person answering mail on a phone does
 # not approach this; a stolen token trying to use the tenant's SMTP as a relay
@@ -58,8 +61,16 @@ class BfEmailMobileDevice(models.Model):
         index=True,
     )
     name = fields.Char(string="Appareil", default="Appareil Android")
+    # ⚠️ Since 11.23.0 the token is no longer kept in clear. ``device_token``
+    # only carries it until the app has received it (``_seal`` clears it right
+    # after the response); ``token_hash`` is what recognises the device. A
+    # database dump no longer hands out a usable token. Audit 2026-09-08 (S-M2).
     device_token = fields.Char(
-        string="Jeton d'appareil", required=True, index=True, copy=False,
+        string="Jeton d'appareil", index=True, copy=False,
+        groups="bf_email_management.group_email_admin",
+    )
+    token_hash = fields.Char(
+        string="Empreinte du jeton", index=True, copy=False,
         groups="bf_email_management.group_email_admin",
     )
     push_endpoint = fields.Char(
@@ -101,15 +112,41 @@ class BfEmailMobileDevice(models.Model):
          "Ce jeton d'appareil existe déjà."),
     ]
 
+    # Fields no non-sudo write may set: otherwise anyone with write access
+    # could mint a token, or move a device to another user. Audit 2026-09-08.
+    _PROTECTED_FIELDS = ("device_token", "token_hash", "pending_code",
+                         "pending_code_expiry", "pkce_challenge", "user_id")
+
+    def write(self, vals):
+        if not self.env.su and any(f in vals for f in self._PROTECTED_FIELDS):
+            raise AccessError(
+                _("Le jeton et l'usager d'un appareil ne se modifient pas à la main."))
+        return super().write(vals)
+
+    @staticmethod
+    def _hash_token(raw):
+        """SHA-256 (hex) of a bearer token. Unsalted: the token is 256 bits of
+        randomness, a rainbow table has nothing to bite on."""
+        return hashlib.sha256((raw or "").encode("utf-8")).hexdigest()
+
     @api.model
     def _issue(self, user_id, name=None, platform="android"):
-        """Create a device row carrying a fresh bearer token."""
+        """Create a device row carrying a fresh bearer token.
+
+        The clear token stays in ``device_token`` until ``_seal``: the
+        controller hands it to the app, then seals."""
+        raw = secrets.token_urlsafe(32)
         return self.sudo().create({
             "user_id": user_id,
             "name": (name or "Appareil Android")[:80],
-            "device_token": secrets.token_urlsafe(32),
+            "device_token": raw,
+            "token_hash": self._hash_token(raw),
             "platform": platform,
         })
+
+    def _seal(self):
+        """Clear the token in the clear: the app has it, the hash suffices."""
+        self.sudo().write({"device_token": False})
 
     @api.model
     def _issue_pending(self, user_id, name=None, platform="android",
@@ -191,14 +228,36 @@ class BfEmailMobileDevice(models.Model):
         """
         if not token:
             return self.browse()
-        device = self.sudo().search(
-            [("device_token", "=", token), ("active", "=", True)], limit=1,
-        )
-        if device and (not device.user_id.active or device.user_id.share):
+        Device = self.sudo()
+        # Recognised by its HASH. A row from before 11.23.0 still carries the
+        # clear token and no hash: accept it once, hash it, clear the token —
+        # the phone never has to pair again.
+        device = Device.search(
+            [("token_hash", "=", self._hash_token(token)), ("active", "=", True)],
+            limit=1)
+        if not device:
+            legacy = Device.search(
+                [("device_token", "=", token), ("token_hash", "=", False),
+                 ("active", "=", True)], limit=1)
+            if legacy:
+                legacy.write({"token_hash": self._hash_token(token),
+                              "device_token": False})
+                device = legacy
+        if not device:
+            return self.browse()
+        if not device.user_id.active or device.user_id.share:
             _logger.info(
                 "bf.email mobile: jeton refusé — l'utilisateur %s n'est plus "
                 "un interne actif.", device.user_id.login,
             )
+            return self.browse()
+        # And it expires: TOKEN_IDLE_DAYS without a single call, the device is
+        # deactivated (still listed, revoked, in « Mes appareils »).
+        vu = device.last_seen or device.create_date
+        if vu and vu < fields.Datetime.now() - timedelta(days=TOKEN_IDLE_DAYS):
+            _logger.info("bf.email mobile: jeton expiré après %s jours sans appel "
+                         "(appareil %s), révoqué.", TOKEN_IDLE_DAYS, device.id)
+            device.write({"active": False})
             return self.browse()
         return device
 
@@ -215,7 +274,8 @@ class BfEmailMobileDevice(models.Model):
         APRÈS que ``action_archive`` eut déplacé le message côté IMAP ; la
         transaction Odoo était annulée, pas le déplacement. Le téléphone
         recevait un 500, remettait la ligne en boîte, et le miroir IMAP la
-        marquait traitée cinq minutes plus tard. an internal report: « some come back for a time ».
+        marquait traitée cinq minutes plus tard, ce que le rapport interne
+        résumait par « some come back for a time ».
 
         Deux règles règlent le conflit :
 

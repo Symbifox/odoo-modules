@@ -50,6 +50,41 @@ function bfEmailState(component) {
     return component.props.message?.bfEmailState;
 }
 
+// ---------------------------------------------------------------------------
+// « Répondre à tous »
+// ---------------------------------------------------------------------------
+// Le chatter offrait déjà « Reply », celui de mail_quoted_reply, qui n'adresse
+// que l'expéditeur d'origine. Répondre à un fil de quatre personnes obligeait
+// donc à retaper trois adresses, ou à quitter Odoo pour son client courriel.
+//
+// L'entrée voisine s'appelle « Reply » en toutes lettres, même en français :
+// mail_quoted_reply passe une chaîne nue, sans `_t()`, donc aucune traduction
+// ne s'y applique. On la ré-enregistre avec un titre traduisible et une place
+// fixe, sinon « Répondre à tous » se retrouve à côté d'un mot anglais et le
+// menu a l'air à moitié fini. `sequence` manquait aussi : la comparaison
+// `a.sequence - b.sequence` rend NaN et l'ordre devenait celui de la
+// déclaration.
+if (messageActionsRegistry.contains("reply")) {
+    const reply = messageActionsRegistry.get("reply");
+    messageActionsRegistry.add(
+        "reply",
+        { ...reply, title: _t("Répondre"), sequence: 20 },
+        { force: true }
+    );
+}
+
+messageActionsRegistry.add("bf-email-reply-all", {
+    // Une réponse a besoin d'une fiche où se poser : sans `res_id`, le
+    // composeur n'a pas de fil. Les messages de la boîte de réception
+    // (mail.box) n'en ont pas.
+    condition: (component) =>
+        bfEmailishCondition(component) && Boolean(component.props.message.res_id),
+    icon: "fa fa-reply-all",
+    title: _t("Répondre à tous"),
+    onClick: bfCallMessageAction("action_bf_reply_all"),
+    sequence: 21,
+});
+
 messageActionsRegistry.add("bf-email-mark-handled", {
     // Un courriel déjà sorti de la boîte n'a pas besoin qu'on le retraite.
     // L'état inconnu (faux) reste offert : le miroir sera créé au clic.
