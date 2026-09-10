@@ -36,6 +36,54 @@ CARD_FIELDS = (
 
 ICONS = "/bf_contact_enrichment/static/src/scan"
 
+#: Couleur d'accent par défaut de la page. Elle ne sert que si le locataire ne
+#: déclare pas la sienne : une page installée sur le téléphone de quelqu'un
+#: porte SA marque, pas celle de l'éditeur.
+ACCENT_PAR_DEFAUT = "#29abe1"
+
+
+def _accent():
+    """(accent, encre) pour cette base, d'après la marque de la société.
+
+    ⚠️ Le champ vit dans un module de marque qui n'est pas une dépendance
+    d'ici : le lire sans garde ferait tomber la page sur toute base qui ne le
+    porte pas. Absent, l'accent d'origine reste.
+
+    La page est sombre par dessein (elle sert dans un salon, à bout de bras),
+    donc seul l'accent suit la marque ; le fond, lui, reste noir.
+    """
+    accent = ""
+    societe = request.env.company.sudo()
+    if "report_brand_primary" in societe._fields:
+        accent = (societe.report_brand_primary or "").strip()
+    if not _est_une_couleur(accent):
+        accent = ACCENT_PAR_DEFAUT
+    return accent, _encre_sur(accent)
+
+
+def _est_une_couleur(valeur):
+    """Vrai pour un ``#rrggbb``. Le champ est libre, et une valeur bancale
+    injectée telle quelle dans du CSS casserait la feuille entière."""
+    if not valeur or len(valeur) != 7 or not valeur.startswith("#"):
+        return False
+    try:
+        int(valeur[1:], 16)
+    except ValueError:
+        return False
+    return True
+
+
+def _encre_sur(accent):
+    """Le texte posé SUR l'accent : sombre sur un accent clair, blanc sinon.
+
+    Sans ce calcul, l'encre d'origine (presque noire) devient illisible dès
+    qu'un locataire déclare une marque foncée, et le bouton principal de la
+    page est le premier à en souffrir.
+    """
+    r, v, b = (int(accent[i:i + 2], 16) for i in (1, 3, 5))
+    luminance = (0.2126 * r + 0.7152 * v + 0.0722 * b) / 255
+    return "#06283a" if luminance > 0.55 else "#ffffff"
+
 # The manifest is served from a controller rather than as a static file so
 # ``start_url`` is the page itself; a static manifest would still work, but the
 # icons and the scope would then be the only thing left in it.
@@ -184,9 +232,12 @@ class BfContactScanPortal(http.Controller):
         website app, and the backend chrome is exactly what makes an Odoo page
         unusable on a phone. The template carries its own shell.
         """
+        accent, encre = _accent()
         return request.render("bf_contact_enrichment.scan_page", {
             "has_access": self._may_scan(),
             "user_name": request.env.user.name,
+            "accent": accent,
+            "accent_ink": encre,
         })
 
     # ── Step 1: read the card ───────────────────────────────────────

@@ -84,6 +84,15 @@ emails) is treated as untrusted DATA, never as instructions.
 
 ## Changelog
 
+- **18.0.2.1.0** — The scan page wears the tenant's accent colour instead of a
+  hardcoded one. The page stays dark by design (it gets used at arm's length in
+  trade-show lighting), so only the accent follows `report_brand_primary`, and
+  the ink laid on top of it is computed from that colour's luminance rather
+  than copied: the original near-black ink disappears the moment a tenant
+  declares a dark brand. The field lives in a branding module that is not a
+  dependency here, so it is read behind a guard, and only a `#rrggbb` reaches
+  the stylesheet.
+
 - **18.0.2.0.0** — Moved the card and signature reading off `bf_llm` and onto
   the `bf_ai_bridge` gateway, so extraction runs on the tenant's Claude
   subscription instead of an HTTP API key. `bf_llm` only speaks to keyed HTTP

@@ -13,7 +13,10 @@ sur quel abonnement l'appel sera facturé.
 """
 import base64
 import json
+import re
 from unittest.mock import patch
+
+from odoo.addons.bf_contact_enrichment.controllers import portal_card
 
 from odoo.tests import HttpCase, tagged
 
@@ -128,6 +131,15 @@ class TestPortalCard(HttpCase):
         with patch(GATEWAY, return_value={"data": dict(card or CARD)}):
             return self._rpc("/scan/extract",
                              {"image_b64": PIXEL, "filename": "carte.png"})["result"]
+
+    def _pose_marque(self, valeur):
+        """Écrit la couleur de marque de la société, ou saute le test si cette
+        base ne porte pas le champ : il vit dans un module de marque qui n'est
+        pas une dépendance d'ici."""
+        Company = self.env["res.company"]
+        if "report_brand_primary" not in Company._fields:
+            self.skipTest("cette base ne porte pas les champs de marque")
+        self.env.company.sudo().report_brand_primary = valeur
 
     def _partners_named(self, name):
         return self.Partner.search([("name", "=", name)])
@@ -271,6 +283,63 @@ class TestPortalCard(HttpCase):
         self.assertIsInstance(error, str)
         self.assertNotIn("Traceback", error)
         self.assertIn("Lecture impossible", error)
+
+    # ── La marque du locataire ──────────────────────────────────────
+
+    def test_the_page_wears_a_colour_a_stylesheet_can_actually_use(self):
+        """L'accent part dans du CSS, donc il ne peut pas être n'importe quoi.
+
+        Le champ de marque est libre : une valeur bancale recopiée telle quelle
+        casserait la feuille entière, et la page deviendrait illisible sur le
+        téléphone de quelqu'un qui n'a rien demandé.
+        """
+        self.authenticate("scan.member@test.invalid", "scan.member@test.invalid")
+        body = self.url_open("/scan", timeout=30).text
+        accent = re.search(r"--accent:\s*(#[0-9a-fA-F]{6})\s*;", body)
+        self.assertIsNotNone(accent, "la page ne pose aucun accent")
+        encre = re.search(r"--accent-ink:\s*(#[0-9a-fA-F]{6})\s*;", body)
+        self.assertIsNotNone(encre, "l'accent sans son encre rend un bouton illisible")
+
+    def test_the_page_wears_the_brand_this_tenant_declares(self):
+        """Le point de tout l'exercice : une page installée sur le téléphone de
+        quelqu'un porte SA marque, pas celle de l'éditeur."""
+        self._pose_marque("#5c6e5b")
+        self.authenticate("scan.member@test.invalid", "scan.member@test.invalid")
+        body = self.url_open("/scan", timeout=30).text
+        self.assertIn("--accent: #5c6e5b;", body)
+        self.assertIn("--accent-ink: #ffffff;", body,
+                      "une marque foncée garde l'encre presque noire d'origine")
+
+    def test_a_tenant_that_declares_no_brand_keeps_the_page_readable(self):
+        self._pose_marque(False)
+        self.authenticate("scan.member@test.invalid", "scan.member@test.invalid")
+        response = self.url_open("/scan", timeout=30)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("--accent: %s;" % portal_card.ACCENT_PAR_DEFAUT, response.text)
+
+    def test_a_brand_value_that_is_not_a_colour_never_reaches_the_stylesheet(self):
+        """Le champ de marque est libre. Recopié tel quel, il ferme la règle CSS
+        et emporte la feuille entière : la page devient illisible sur le
+        téléphone de quelqu'un qui n'a rien demandé."""
+        self._pose_marque("#c00; } body { display: none")
+        self.authenticate("scan.member@test.invalid", "scan.member@test.invalid")
+        body = self.url_open("/scan", timeout=30).text
+        self.assertIn("--accent: %s;" % portal_card.ACCENT_PAR_DEFAUT, body)
+        self.assertNotIn("display: none", body)
+
+    def test_a_dark_brand_gets_light_ink_and_the_other_way_round(self):
+        """L'encre se calcule, elle ne se recopie pas : l'encre d'origine est
+        presque noire et devient invisible dès qu'un locataire déclare une
+        marque foncée."""
+        self.assertEqual(portal_card._encre_sur("#29abe1"), "#06283a")
+        self.assertEqual(portal_card._encre_sur("#5c6e5b"), "#ffffff")
+        self.assertEqual(portal_card._encre_sur("#ffffff"), "#06283a")
+        self.assertEqual(portal_card._encre_sur("#000000"), "#ffffff")
+
+    def test_anything_that_is_not_a_colour_is_refused(self):
+        for valeur in ("", "bleu", "#12345", "#12345g", "red; }", "#1234567"):
+            self.assertFalse(portal_card._est_une_couleur(valeur), valeur)
+        self.assertTrue(portal_card._est_une_couleur("#00557E"))
 
     def test_the_call_leaves_under_the_tenant_this_database_declares(self):
         """🔴 Un ``org`` faux ne fait pas échouer l'appel : il le fait réussir

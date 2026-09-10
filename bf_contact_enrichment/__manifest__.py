@@ -6,7 +6,7 @@
     # 2.0.0 : la lecture ne passe plus par bf_llm (API HTTP + clé, qu'aucun
     # locataire n'a) mais par le pont, donc par l'abonnement Claude du
     # locataire. Changement de dépendance, donc changement majeur.
-    "version": "18.0.2.0.0",
+    "version": "18.0.2.1.0",
     "category": "Contacts",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",

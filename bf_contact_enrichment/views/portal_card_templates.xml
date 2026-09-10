@@ -23,6 +23,10 @@
                       href="/bf_contact_enrichment/static/src/scan/icon-192.png"/>
                 <link rel="stylesheet"
                       href="/bf_contact_enrichment/static/src/scan/scan.css"/>
+                <!-- L'accent de la marque du locataire, posé APRÈS la feuille
+                     pour la surcharger. Le contrôleur ne laisse passer qu'un
+                     #rrggbb, donc rien d'arbitraire n'atterrit dans du CSS. -->
+                <style t-if="accent">:root { --accent: <t t-esc="accent"/>; --accent-ink: <t t-esc="accent_ink"/>; }</style>
             </head>
             <body>
                 <t t-if="not has_access">
