@@ -35,14 +35,14 @@ ATTACHMENT_PART_MARKER = "bf.email:part"
 def split_address_list(raw):
     """Découpe un en-tête To:/Cc: brut en paires ``(nom affiché, adresse)``.
 
-    ⚠️ Un ``split(",")`` naïf coupe en deux ``"Béland, François" <f@x.ca>``
+    ⚠️ Un ``split(",")`` naïf coupe en deux ``"Tremblay, Noémie" <n@x.ca>``
     et produit deux destinataires dont aucun n'existe. ``getaddresses``
     respecte les guillemets.
 
     ⚠️ On rend des PAIRES, pas des chaînes reformatées. Repasser par
     ``formataddr`` puis ``parseaddr`` encode le nom en RFC 2047 dès qu'il
     porte un accent, et le partenaire créé à la volée s'appelle alors
-    ``=?utf-8?b?QsOpbGFuZA…?=``. Attrapé au banc, sur ce même Béland.
+    ``=?utf-8?b?VHJlbWJsYX…?=``. Attrapé au banc, sur ce même nom.
     """
     if not raw:
         return []
@@ -2129,7 +2129,7 @@ class BfEmail(models.Model):
         la passerelle, et se reposte tout seul dans le chatter d'où il vient.
 
         On ajoute les alias de modèle (``mail.alias``) pour la même raison :
-        écrire à ``depenses@`` ou ``bsi-voc@`` crée une fiche, ça ne prévient
+        écrire à ``depenses@`` ou ``soutien@`` crée une fiche, ça ne prévient
         personne.
         """
         addrs = set()

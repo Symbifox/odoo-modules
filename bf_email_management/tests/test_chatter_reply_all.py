@@ -236,14 +236,14 @@ class ChatterReplyAllCase(TransactionCase):
             "message_id_header": "<virgule@test.invalid>",
             "direction": "in",
             "email_from": "cliente@dehors.test",
-            "email_to": '"Béland, François" <fbeland@dehors.test>',
+            "email_to": '"Tremblay, Noémie" <ntremblay@dehors.test>',
             "subject": "Sujet",
             "user_id": self.replier.id,
         })
         _to_ids, cc_ids = msg.with_user(self.replier)._bf_reply_all_recipients()
-        self.assertEqual(self._emails(cc_ids), ["fbeland@dehors.test"])
+        self.assertEqual(self._emails(cc_ids), ["ntremblay@dehors.test"])
         partner = self.env["res.partner"].browse(cc_ids)
-        self.assertEqual(partner.name, "Béland, François")
+        self.assertEqual(partner.name, "Tremblay, Noémie")
 
     def test_un_destinataire_ne_figure_pas_deux_fois(self):
         msg = self._message(
