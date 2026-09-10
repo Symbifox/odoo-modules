@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="bf_appointment_cancel_view_form" model="ir.ui.view">
+        <field name="name">bf.appointment.cancel.form</field>
+        <field name="model">bf.appointment.cancel</field>
+        <field name="arch" type="xml">
+            <form string="Annuler le rendez-vous">
+                <group>
+                    <field name="booking_ids" widget="many2many_tags" readonly="1"
+                           options="{'no_create': True}"/>
+                    <field name="notify"/>
+                    <field name="recipient_summary" string="Sera prévenu"
+                           readonly="1" invisible="not notify"/>
+                    <field name="notify_organizer"/>
+                    <field name="reason"
+                           placeholder="Facultative — p. ex. reporté par téléphone"/>
+                </group>
+                <!--
+                  Dit à l'écran plutôt que laissé à deviner : le lot change ce
+                  que « Annuler » fait à l'agenda, et quelqu'un qui a l'habitude
+                  de l'ancien comportement doit pouvoir le lire ici.
+                -->
+                <div class="text-muted">
+                    La rencontre reste au calendrier, barrée, et son créneau
+                    redevient « Disponible ».
+                </div>
+                <footer>
+                    <button name="action_apply" type="object" string="Annuler le rendez-vous"
+                            class="btn-primary"/>
+                    <button string="Fermer" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!--
+      Les deux boutons « Annuler » d'OCA passent par la boîte de dialogue.
+
+      Ils sont remplacés plutôt que masqués : ils portent un `confirm` qui
+      promet « This will remove the associated meeting », ce qui n'est plus vrai
+      depuis ce lot. Une confirmation qui décrit autre chose que ce qui va se
+      passer est pire qu'aucune.
+
+      ⚠️ Deux `xpath` identiques, et ce n'est pas une faute de copie. OCA
+      déclare DEUX boutons `action_cancel` — un pour la réservation sans
+      événement, un pour celle qui en a un, avec le `confirm` — et l'héritage de
+      vues refuse `confirm` comme sélecteur (« View inheritance may not use
+      attribute 'confirm' as a selector »), tout comme `invisible`. Il ne reste
+      donc que l'ordre du document : le premier `xpath` prend le premier bouton
+      et pose le nôtre, le second prend celui qui reste et le retire. Les deux
+      cas d'OCA tiennent dans une seule condition, puisque la boîte de dialogue
+      se comporte pareil qu'il y ait un événement ou non.
+    -->
+    <record id="resource_booking_form_inherit_bf_cancel" model="ir.ui.view">
+        <field name="name">resource.booking.form.bf.cancel</field>
+        <field name="model">resource.booking</field>
+        <field name="inherit_id" ref="resource_booking.resource_booking_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='action_cancel']" position="replace">
+                <button name="action_bf_cancel" string="Annuler" type="object"
+                        help="Annule ce rendez-vous. La rencontre reste au calendrier, barrée, et son créneau redevient « Disponible »."
+                        invisible="not is_modifiable or state == 'canceled'"/>
+            </xpath>
+            <xpath expr="//button[@name='action_cancel']" position="replace"/>
+            <!--
+              ⚠️ « Déprogrammer » disparaît une fois la réservation annulée, et
+              c'est une conséquence directe de garder l'événement : la condition
+              d'OCA est `not meeting_id`, et le `meeting_id` survit maintenant à
+              l'annulation. Sans cette ligne, une réservation annulée affiche un
+              bouton qui effacerait la trace barrée qu'on vient d'y laisser.
+            -->
+            <xpath expr="//button[@name='action_unschedule']" position="attributes">
+                <attribute name="invisible">not is_modifiable or not meeting_id or state == 'canceled'</attribute>
+            </xpath>
+        </field>
+    </record>
+</odoo>

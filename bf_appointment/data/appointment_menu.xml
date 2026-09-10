@@ -6,4 +6,19 @@
         name="Rendez-vous"
         web_icon="bf_appointment,static/description/icon.png"
     />
+
+    <!-- Chemin d'URL de l'action « Bookings » d'OCA.
+
+         La notification organisateur (data/appointment_mail_templates.xml) pointe
+         vers /odoo/all-bookings/<id>. En 18.0, /odoo/<segment> ne résout que si
+         un ir.actions.actions porte ce `path` : sans lui, le client web répond
+         « L'action "all-bookings" n'existe pas. »
+
+         On donne donc le chemin à l'action existante plutôt que de réécrire le
+         gabarit : celui-ci est en noupdate="1", un -u ne le toucherait pas, alors
+         qu'un champ posé ici s'applique à chaque mise à jour, sur chaque locataire.
+         Nommage aligné sur Odoo lui-même (all-tasks, all-timesheets). -->
+    <record id="resource_booking.resource_booking_action" model="ir.actions.act_window">
+        <field name="path">all-bookings</field>
+    </record>
 </odoo>

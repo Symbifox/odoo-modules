@@ -1,7 +1,8 @@
 """La salle Talk d'un rendez-vous, et qui la modère.
 
-Défaut trouvé à l'heure même d'un rendez-vous : la salle avait été créée
-par le robot de service et n'avait que lui pour participant. L'organisateur entrait par le lien public comme un invité —
+Défaut du 2026-09-08, trouvé à l'heure même du rendez-vous : la salle
+`iugc5bn4` avait été créée par le robot `fox-bot` et n'avait que lui pour
+participant. L'organisateur entrait par le lien public comme un invité —
 aucun droit de modération, aucune notification, et la salle n'apparaissait
 nulle part dans sa liste Talk. La création réussissait pourtant, et les
 courriels partaient avec la bonne adresse : rien ne signalait quoi que ce
@@ -12,8 +13,8 @@ Ce que les tests ci-dessous verrouillent, dans l'ordre où ça compte :
 * la salle fraîchement créée reçoit une PROMOTION en modération, pas juste un
   ajout de participant (l'ajout seul laisse l'hôte simple utilisateur) ;
 * la correspondance `login_odoo=compte_nc` n'installe PAS un hôte comme
-  modérateur des rendez-vous d'un autre — le cas d'un locataire à deux
-  hôtes, qui reçoivent chacun leurs propres réservations ;
+  modérateur des rendez-vous d'un autre — le cas d'une base réelle, où `info@` et
+  `coordination@` réservent chacun de leur côté ;
 * un Nextcloud qui hoquette ne fait pas tomber le rendez-vous : la salle est
   rendue quand même.
 
@@ -51,7 +52,7 @@ class TestTalkModeration(TransactionCase):
         cls.env = cls.env(context=dict(cls.env.context, tracking_disable=True))
         ICP = cls.env["ir.config_parameter"].sudo()
         ICP.set_param("bf_appointment.nc_talk_base_url", "https://nc.test.invalid")
-        ICP.set_param("bf_appointment.nc_talk_user", "robot-service")
+        ICP.set_param("bf_appointment.nc_talk_user", "fox-bot")
         ICP.set_param("bf_appointment.nc_talk_password_encrypted", "peu-importe")
         cls.hote = cls.env["res.users"].create({
             "name": "Hôte du rendez-vous",
@@ -86,7 +87,7 @@ class TestTalkModeration(TransactionCase):
         def faux_get(url, **kw):
             traces.append(("GET", url, kw.get("params")))
             return FausseReponse({"ocs": {"data": [
-                {"actorType": "users", "actorId": "robot-service", "attendeeId": 1},
+                {"actorType": "users", "actorId": "fox-bot", "attendeeId": 1},
                 {"actorType": "guests", "actorId": "xyz", "attendeeId": 2},
                 {"actorType": "users", "actorId": "Compte NC", "attendeeId": 42},
             ]}})
@@ -152,16 +153,16 @@ class TestTalkModeration(TransactionCase):
 
     def test_entree_nue_vaut_pour_tous_les_organisateurs(self):
         self.env["ir.config_parameter"].sudo().set_param(
-            "bf_appointment.nc_talk_moderators", "Jean Tremblay")
+            "bf_appointment.nc_talk_moderators", "Jane Doe")
         self.assertEqual(
-            self._booking()._nc_talk_moderator_logins(), ["Jean Tremblay"],
+            self._booking()._nc_talk_moderator_logins(), ["Jane Doe"],
             "un identifiant Nextcloud peut contenir une espace")
         self.assertEqual(
             self._booking(self.autre_hote)._nc_talk_moderator_logins(),
-            ["Jean Tremblay"])
+            ["Jane Doe"])
 
     def test_entree_appariee_ne_vaut_que_pour_son_organisateur(self):
-        """Deux hôtes, deux comptes Nextcloud, aucun mélange."""
+        """Deux hôtes, deux comptes, pas de mélange."""
         self.env["ir.config_parameter"].sudo().set_param(
             "bf_appointment.nc_talk_moderators",
             "hote@test.invalid=Compte A, autre@test.invalid=Compte B")

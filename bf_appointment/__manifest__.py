@@ -320,7 +320,63 @@
     #   <mailbox@example.com>`) produced `ORGANIZER:mailto:"…" <…>`, which is
     #   not a valid URI under RFC 6068: a client that rejects the URI rejects
     #   the whole VEVENT.
-    "version": "18.0.2.55.1",
+    # 18.0.2.56.0: 🔴 la page de créneaux d'un CPE de Montréal proposait des heures de
+    #   PARIS. La chaîne d'affichage côté client lisait `res_partner.tz` EN PREMIER, or
+    #   ce champ n'est pas rempli par la personne qu'il décrit : un lot d'import avait
+    #   posé `Europe/Paris` sur des centaines de fiches québécoises (mesuré en
+    #   production, 2026-09-10).
+    #   La chaîne devient : fuseau du NAVIGATEUR → fenêtre d'affichage du type
+    #   (Montréal) → calendrier de la société → défaut. La fiche du contact en sort.
+    #   Nouveau champ `bf_visitor_tz` sur la réservation : le fuseau détecté suit la
+    #   réservation au lieu de vivre le temps d'une page, donc la grille, la page de
+    #   confirmation, les courriels et le .ics disent tous la même heure. Il est écrit
+    #   au POST (formulaire d'accueil, puis confirmation du créneau), jamais à
+    #   l'affichage — un GET ne doit rien changer, les antivirus de messagerie suivent
+    #   les liens (cf. 2.52.2). La détection est EN LIGNE dans le gabarit, pas dans
+    #   `timezone_detect.js` : ce bundle est paresseux et n'arrive qu'à `load`, donc la
+    #   grille serait déjà affichée dans le mauvais fuseau (cf. 2.52.1). Un visiteur
+    #   déjà dans le bon fuseau ne recharge jamais. Au passage, un `?tz=` illisible est
+    #   jeté avant l'étiquette : la page annonçait une ville qui n'avait pas produit
+    #   les heures affichées.
+    # 18.0.2.57.0: la page publique REPREND le lien de réservation personnel actif de la
+    #   personne au lieu d'ouvrir une réservation neuve à côté. Un lien
+    #   personnel est une réservation en attente, et le titre écrit par l'organisateur vit
+    #   sur cet enregistrement : réserver par la page publique le laissait derrière, avec
+    #   son titre, et l'agenda affichait le calcul par défaut « Type - Organisation x
+    #   Marque ». Ce n'est pas un cas tordu — le courriel qui porte le bouton personnel
+    #   porte AUSSI le lien d'agenda de la signature, sur tous les envois depuis Odoo, donc
+    #   les deux liens arrivent toujours ensemble (mesuré en production, 2026-09-10).
+    #   La reprise garde le titre, l'organisateur et les participants du lien,
+    #   n'écrit que ce que le visiteur vient de choisir (lieu, durée, fuseau), et repart des
+    #   réponses et invités du formulaire courant. Correspondance sur le courriel saisi,
+    #   sans le jeton : un tiers qui connaît l'adresse peut reprendre le lien et lire le
+    #   titre — arbitrage assumé contre la rencontre fantôme que produit un lien orphelin.
+    # 18.0.2.57.1: 🔴 le bouton « Ouvrir dans Odoo » de la notification organisateur
+    #   rendait « L'action “all-bookings” n'existe pas. ». Le gabarit
+    #   pointe vers /odoo/all-bookings/<id> depuis toujours, mais en 18.0 ce segment ne
+    #   se résout que si un `ir.actions.actions` porte ce `path` — aucun ne le portait,
+    #   ni chez OCA ni ici. Le chemin est posé sur `resource_booking.resource_booking_action`
+    #   (data/appointment_menu.xml) plutôt que de réécrire l'URL du gabarit : celui-ci est
+    #   en noupdate="1", donc un -u ne le toucherait pas et il aurait fallu réécrire le
+    #   corps en base sur chaque locataire. Nommage aligné sur Odoo (all-tasks,
+    #   all-timesheets). Un test relit désormais TOUS les liens /odoo/ des gabarits du
+    #   module et exige qu'ils se résolvent comme le fait le routeur.
+    # 18.0.2.58.0: 🔴 cancelling a booking stops ERASING its calendar event.
+    #   Measured before touching it, on a real calendar: EVERY cancelled booking
+    #   had `meeting_id` empty, without exception — the agenda keeps no trace of
+    #   a slot that was held and then lost. What made the erasure necessary was
+    #   slot blocking, and `show_as` alone has settled that since 2.32.0: the
+    #   event therefore stays where it is, struck through (`bf_event_status`) and
+    #   marked Available. Three guards the reversal made necessary: the orphan
+    #   cleanup cron learns not to reclaim the kept trace; its "does a booking
+    #   still point at this?" probe searched with `active_test` on by default, so
+    #   it saw NO cancelled booking — precisely the only ones concerned; and
+    #   `_prepare_meeting_vals` restates the mark, without which OCA's
+    #   `_sync_meeting` — which runs on every write — put the slot back to busy
+    #   under a status still reading "cancelled". Adds the backend cancellation
+    #   dialog: the branded notice existed, but only the public page ever posted
+    #   it — cancelling from Odoo told nobody.
+    "version": "18.0.2.58.0",
     "category": "Appointments",
     "summary": "Public self-service booking pages extending Resource Booking",
     'author': 'Les services de consultation Blue Fox, Inc.',
@@ -340,6 +396,7 @@
         "views/resource_booking_views.xml",
         "views/res_config_settings_views.xml",
         "views/appointment_onetime_wizard_views.xml",
+        "views/appointment_cancel_wizard_views.xml",
         "views/mail_compose_message_views.xml",
         "views/portal_home_templates.xml",
     ],

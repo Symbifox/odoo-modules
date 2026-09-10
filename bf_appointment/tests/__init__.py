@@ -9,3 +9,6 @@ from . import test_video_room
 from . import test_courriels_et_limiteurs
 from . import test_cron_rappels
 from . import test_talk_moderation
+from . import test_fuseau_visiteur
+from . import test_liens_courriels_odoo
+from . import test_annulation_backend

@@ -469,6 +469,47 @@
         <t t-set="start_next" t-value="start + relativedelta(months=1)"/>
         <t t-set="start_previous" t-value="start - relativedelta(months=1)"/>
         <t t-set="tz_param" t-value="'?tz=%s' % visitor_tz if visitor_tz else ''"/>
+
+        <!-- Fuseau du visiteur, détecté ICI. Cette page est souvent la
+             PREMIÈRE du parcours : un lien de réservation personnel reçu par
+             courriel ne passe par aucun formulaire d'accueil, donc rien n'a
+             jamais dit au serveur où se trouve la personne, et la grille
+             retombait sur la fenêtre d'affichage du type. Un CPE de Montréal
+             s'est ainsi vu proposer des heures de Paris, parce que sa fiche
+             de contact — importée — portait `Europe/Paris`.
+
+             Le rechargement n'a lieu que si le fuseau détecté DIFFÈRE de
+             celui déjà appliqué : un visiteur de Montréal ne recharge jamais.
+             Il ne peut pas boucler non plus, puisqu'il ne s'arme que tant que
+             l'adresse ne porte pas `tz` — et le rechargement l'y met.
+
+             Volontairement en ligne, et pas dans `timezone_detect.js` : ce
+             fichier vit dans `web.assets_frontend`, un bundle PARESSEUX
+             qu'Odoo n'injecte qu'à l'événement `load`. La redirection
+             partirait après le rendu complet de la page, c'est-à-dire une
+             grille entière affichée dans le mauvais fuseau avant de sauter. -->
+        <t t-if="detect_tz">
+            <span class="d-none" id="bf-tz-applied" t-att-data-tz="effective_tz"/>
+            <script>
+                (function () {
+                    var url = new URL(window.location.href);
+                    if (url.searchParams.has("tz")) return;
+                    var detecte;
+                    try {
+                        detecte = Intl.DateTimeFormat().resolvedOptions().timeZone;
+                    } catch (e) {
+                        return;  // pas de détection : le serveur garde Montréal
+                    }
+                    // "UTC" est ce que rend la détection quand elle ÉCHOUE,
+                    // pas un endroit où se trouve quelqu'un.
+                    if (!detecte || detecte === "UTC") return;
+                    var applique = document.getElementById("bf-tz-applied");
+                    if (applique &amp;&amp; applique.dataset.tz === detecte) return;
+                    url.searchParams.set("tz", detecte);
+                    window.location.replace(url.toString());
+                })();
+            </script>
+        </t>
         <t t-set="sorted_days" t-value="sorted(d for d in slots if slots[d])"/>
         
 <t t-set="brand_primary" t-value="(env.company and env.company.report_brand_primary) or '#714B67'"/>

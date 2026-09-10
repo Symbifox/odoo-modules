@@ -7,10 +7,34 @@ Public self-service booking pages, extending *Resource Booking* (OCA).
 - **Public booking pages** per booking type, with slots computed from resource
   availability.
 - **Client portal**: self-service confirmation, rescheduling and cancellation.
+- **Cancelling keeps the calendar entry.** A cancelled booking used to have its
+  `calendar.event` deleted, and the reason was real: an event left behind kept
+  blocking the slot, so the same resource combination answered "no availability"
+  on a slot nobody was using. `show_as` settles that on its own — the slot
+  generator counts an event as busy only when it is marked busy — so the event
+  now stays where it is, struck through and marked Available. Measured on a real
+  calendar before the change: *every* cancelled booking had lost its event,
+  without exception, so the agenda kept no trace of a slot that had been held
+  and then fell through.
+
+  Cancelling from the backend also offers the **cancellation notice**. The
+  branded message has always existed, but only the public confirmation page ever
+  sent it: a booking cancelled from Odoo told nobody, and the person who did not
+  show up was the one who never heard. The dialog asks first, unticked by
+  default, and names the address that would be written to — a booking is
+  cancelled both because a client phoned to move it (tell them) and because it
+  was a duplicate or a test (do not). The organiser's own copy is a separate
+  tick, off by default, since from the backend the organiser is usually the one
+  cancelling.
 - **Personal booking links** ("one-time booking"): generate a private link for
   one recipient, with an optional expiry and single-use lock. The link is not
   listed anywhere public. A link that has expired or has already been used says
-  so on a proper page instead of silently redirecting.
+  so on a proper page instead of silently redirecting. **A recipient who books
+  through the public page instead of following their link resumes that link**
+  rather than opening a second booking beside it: the title the organiser wrote
+  stays, and no orphan link is left behind to produce a second meeting. This
+  matters because a personal link never travels alone — the same email usually
+  carries a generic booking link in the signature.
 - **Additional guests, with the requester's confirmation.** The public form can
   offer an "other guests" field. Nothing is sent to those addresses until the
   requester confirms from their own inbox, so the form cannot be used as a
@@ -64,6 +88,11 @@ Public self-service booking pages, extending *Resource Booking* (OCA).
     opened deliberately per database with the `bf_appointment.consent_auto_request`
     system parameter. Asking in place and the consent state do not depend on
     it; neither sends anything.
+- **Visitor time zone.** Slot times follow the browser's own zone, then the
+  booking type's display window, then the company calendar — the contact record
+  is read last, because that field is rarely filled in by the person it
+  describes. The detected zone is stored on the booking, so the picker, the
+  confirmation page, the emails and the `.ics` all state the same hour.
 - **Visitor language.** A booker without an explicit language choice is sent
   once to their own language on the public pages, and the contact record is
   stamped with it at creation, so later correspondence keeps that language. An

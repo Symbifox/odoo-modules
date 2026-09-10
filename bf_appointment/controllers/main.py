@@ -689,7 +689,44 @@ class AppointmentController(Controller):
                     booking_vals["duration"] = duration_hours
             except (ValueError, TypeError):
                 pass
-        booking = Booking.create(booking_vals)
+        # Le fuseau détecté par le navigateur suit la réservation, et pas
+        # seulement la fiche du contact : c'est lui qui pilotera la grille de
+        # créneaux, la page de confirmation, les courriels et le .ics.
+        if tz:
+            booking_vals["bf_visitor_tz"] = tz
+        # Une personne peut détenir un lien personnel actif pour ce type et
+        # réserver quand même par la page publique : les deux liens voyagent
+        # dans le même courriel, celui du bouton et celui de la signature. On
+        # reprend alors sa réservation en attente au lieu d'en ouvrir une
+        # neuve — sinon le titre écrit par l'organisateur disparaît, et le lien
+        # laissé derrière produit une seconde rencontre au premier clic tardif
+        # (cf. `_bf_find_onetime_to_reuse`).
+        reprise = Booking._bf_find_onetime_to_reuse(booking_type, partner)
+        if reprise:
+            booking = reprise
+            _logger.info(
+                "Réservation %s : reprise du lien personnel de %s au lieu "
+                "d'ouvrir une réservation neuve", booking.id, partner.email,
+            )
+            # Le formulaire ne réécrit que ce que le visiteur vient de choisir.
+            # Le titre, l'organisateur et les participants restent ceux du
+            # lien : ils viennent de l'organisateur, pas du formulaire.
+            repris = {
+                cle: valeur
+                for cle, valeur in booking_vals.items()
+                if cle in ("location", "duration", "bf_visitor_tz")
+            }
+            if repris:
+                booking.write(repris)
+            # `_save_intake_answers` et `_bf_save_guests` créent sans jamais
+            # nettoyer. Sur un lien repris deux fois (la personne revient au
+            # formulaire), les réponses s'empileraient et la description de
+            # l'événement les afficherait toutes. On repart de ce qu'elle vient
+            # d'écrire.
+            booking.intake_answer_ids.sudo().unlink()
+            booking.guest_ids.sudo().unlink()
+        else:
+            booking = Booking.create(booking_vals)
         # Save custom field answers
         self._save_intake_answers(booking, booking_type, kwargs)
         # Invités additionnels : enregistrés EN ATTENTE, rien ne leur est
@@ -837,14 +874,28 @@ class AppointmentController(Controller):
                 "bf_appointment.appointment_link_closed",
                 {"booking_sudo": booking_sudo, "access_token": token},
             ))
+        # Un fuseau illisible est jeté ICI. Sinon il ne servait pas à
+        # calculer la grille (le contexte le refusait) mais se rendait quand
+        # même jusqu'à l'étiquette : la page annonçait une ville qui n'avait
+        # pas produit les heures affichées.
         tz = kwargs.get("tz") or ""
-        if tz and tz in pytz.all_timezones_set:
+        if tz not in pytz.all_timezones_set:
+            tz = ""
+        if tz:
             booking_sudo = booking_sudo.with_context(tz=tz)
         calendar_ctx = booking_sudo._get_calendar_context(year, month)
         # Effective TZ for the labels next to the picker. Falls back to the
-        # type's resource calendar tz so we never show an empty TZ next to
-        # the slots.
+        # booker display tz — the visitor's browser tz when we have it, the
+        # type's Montréal display calendar otherwise — so we never show an
+        # empty TZ next to the slots.
         effective_tz = tz or booking_sudo._get_booker_display_tz()
+        # Le sélecteur est bâti sur `common_timezones`. Un fuseau détecté hors
+        # de cette liste — `America/Montreal` en est un, c'est un alias — n'y
+        # figurerait pas, et la liste afficherait autre chose que ce que la
+        # page vient d'appliquer.
+        tz_options = list(pytz.common_timezones)
+        if effective_tz and effective_tz not in tz_options:
+            tz_options.insert(0, effective_tz)
         # Consentements encore à obtenir pour CETTE personne. Calculé au
         # rendu, jamais mis en cache : un consentement accordé ailleurs entre
         # deux chargements doit faire disparaître la case, pas la répéter.
@@ -861,7 +912,12 @@ class AppointmentController(Controller):
             "effective_tz_city": request.env["bf.timezone"].sudo().tz_city(
                 effective_tz
             ),
-            "common_timezones": pytz.common_timezones,
+            # Détection à armer seulement quand l'adresse ne porte pas encore
+            # de fuseau : un lien personnel reçu par courriel n'est passé par
+            # aucun formulaire d'accueil, donc rien n'a jamais dit au serveur
+            # où se trouve la personne.
+            "detect_tz": not tz,
+            "common_timezones": tz_options,
             **calendar_ctx,
         }
         response = request.render(
@@ -892,6 +948,21 @@ class AppointmentController(Controller):
             return request.redirect(
                 f"/appointment/b/{booking_id}/{token}"
             )
+        # Le fuseau du navigateur, tel que la page de créneaux l'a détecté
+        # ou tel que la personne l'a choisi dans le sélecteur. Consigné SUR la
+        # réservation pour que la page de confirmation, les courriels et le
+        # .ics disent la même heure que la bulle cliquée. Écrit sur le POST,
+        # jamais à l'affichage : un GET ne doit rien changer — les antivirus
+        # de messagerie suivent les liens.
+        posted_tz = (kwargs.get("tz") or "").strip()
+        if (
+            posted_tz
+            and posted_tz != "UTC"
+            and posted_tz in pytz.all_timezones_set
+        ):
+            if booking_sudo.bf_visitor_tz != posted_tz:
+                booking_sudo.bf_visitor_tz = posted_tz
+            booking_sudo = booking_sudo.with_context(tz=posted_tz)
         try:
             when_tz_aware = isoparse(when)
             when_naive = datetime.fromtimestamp(
@@ -1103,38 +1174,13 @@ class AppointmentController(Controller):
             mail_notrack=True,
         ).action_cancel()
         # Send our branded cancellation emails (suppress stock Odoo notifications above).
+        # Both copies come from `resource.booking._bf_send_cancellation_notices`,
+        # which is the same path the backend dialog uses: one cancellation, one
+        # letter, whoever pressed the button.
         if not already_cancelled:
-            try:
-                client_template = request.env.ref(
-                    "bf_appointment.mail_template_appointment_cancellation"
-                ).sudo()
-                booking_sudo._send_appointment_email(
-                    client_template, attach_ics=False, recipient="booker"
-                )
-            except Exception as e:
-                _logger.error(
-                    "Failed to send cancellation email for booking %d: %s",
-                    booking_sudo.id, e,
-                )
-            try:
-                organizer_partner = booking_sudo.user_id.partner_id
-                booker_emails = booking_sudo.partner_ids.mapped("email")
-                if (
-                    organizer_partner
-                    and organizer_partner.email
-                    and organizer_partner.email not in booker_emails
-                ):
-                    org_template = request.env.ref(
-                        "bf_appointment.mail_template_organizer_cancellation"
-                    ).sudo()
-                    booking_sudo._send_appointment_email(
-                        org_template, attach_ics=False, recipient="organizer"
-                    )
-            except Exception as e:
-                _logger.error(
-                    "Failed to notify organizer of cancellation for booking %d: %s",
-                    booking_sudo.id, e,
-                )
+            booking_sudo._bf_send_cancellation_notices(
+                to_booker=True, to_organizer=True,
+            )
         response = request.render(
             "bf_appointment.appointment_cancelled", {}
         )

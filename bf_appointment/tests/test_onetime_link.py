@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
-"""Liens de réservation personnels (2.42.0)."""
+"""Liens de réservation personnels (2.42.0), et leur reprise (2.57.0)."""
 
+import re
 from datetime import timedelta
 
 from odoo import Command, fields
 from odoo.exceptions import UserError
-from odoo.tests import TransactionCase, tagged
+from odoo.tests import HttpCase, TransactionCase, tagged
 
 
 @tagged("bf_appointment", "bf_appointment_onetime")
@@ -466,3 +467,179 @@ class TestQuickBookingLink(TransactionCase):
             self.assertEqual(par_assistant[champ], par_courriel[champ], champ)
         self.assertFalse(par_assistant.start)
         self.assertFalse(par_courriel.start)
+
+
+@tagged("bf_appointment", "bf_appointment_reprise")
+class TestRepriseDuLienPersonnel(TransactionCase):
+    """Le lien personnel actif d'une personne est repris, pas doublé (2.57.0).
+
+    Le courriel qui porte un lien personnel porte AUSSI celui de la signature :
+    la personne qui clique le second réservait jusqu'ici à côté de son propre
+    lien, sans le titre écrit pour elle et en laissant le lien ouvert derrière.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.env = cls.env(context=dict(cls.env.context, tracking_disable=True, tz="UTC"))
+        attendances = [
+            Command.create({
+                "name": "j%s" % d, "dayofweek": str(d), "hour_from": 0.0,
+                "hour_to": 24.0, "day_period": "morning",
+            })
+            for d in range(7)
+        ]
+        cls.calendar = cls.env["resource.calendar"].create({
+            "name": "24/7 reprise", "attendance_ids": attendances, "tz": "UTC"})
+        cls.resource = cls.env["resource.resource"].create({
+            "name": "reprise material", "calendar_id": cls.calendar.id,
+            "resource_type": "material", "tz": "UTC"})
+        cls.combination = cls.env["resource.booking.combination"].create({
+            "resource_ids": [Command.set([cls.resource.id])]})
+        cls.booking_type = cls.env["resource.booking.type"].create({
+            "name": "Type reprise", "duration": 1.0, "slot_duration": 1.0,
+            "modifications_deadline": 0.0, "combination_assignment": "sorted",
+            "resource_calendar_id": cls.calendar.id, "is_public": True,
+            "listed_on_landing": False, "video_provider": "none",
+            "combination_rel_ids": [
+                Command.create({"sequence": 0, "combination_id": cls.combination.id})],
+        })
+        cls.autre_type = cls.env["resource.booking.type"].create({
+            "name": "Autre type reprise", "duration": 1.0, "slot_duration": 1.0,
+            "modifications_deadline": 0.0, "combination_assignment": "sorted",
+            "resource_calendar_id": cls.calendar.id, "is_public": True,
+            "listed_on_landing": False, "video_provider": "none",
+            "combination_rel_ids": [
+                Command.create({"sequence": 0, "combination_id": cls.combination.id})],
+        })
+        cls.destinataire = cls.env["res.partner"].create({
+            "name": "Destinataire reprise", "email": "reprise@test.invalid"})
+        cls.etranger = cls.env["res.partner"].create({
+            "name": "Quelqu'un d'autre", "email": "autre@test.invalid"})
+
+    def _reprise(self, booking_type=None, partner=None):
+        return self.env["resource.booking"]._bf_find_onetime_to_reuse(
+            booking_type or self.booking_type, partner or self.destinataire)
+
+    def test_le_lien_actif_est_repris(self):
+        lien = self.booking_type._bf_create_onetime_link(self.destinataire)
+        self.assertEqual(self._reprise(), lien)
+
+    def test_le_plus_recent_prime(self):
+        """L'organisateur qui refait un lien vient de corriger le précédent."""
+        self.booking_type._bf_create_onetime_link(self.destinataire)
+        second = self.booking_type._bf_create_onetime_link(self.destinataire)
+        self.assertEqual(self._reprise(), second)
+
+    def test_le_lien_expire_n_est_pas_repris(self):
+        lien = self.booking_type._bf_create_onetime_link(self.destinataire)
+        lien.link_expires_at = fields.Datetime.now() - timedelta(minutes=1)
+        self.assertFalse(self._reprise())
+
+    def test_le_lien_a_usage_unique_deja_consomme_n_est_pas_repris(self):
+        lien = self.booking_type._bf_create_onetime_link(
+            self.destinataire, single_use=True)
+        lien._mark_link_used()
+        self.assertFalse(self._reprise())
+
+    def test_un_autre_type_ne_donne_rien(self):
+        """Le lien vaut pour SON type : disponibilités, durée, courriels."""
+        self.booking_type._bf_create_onetime_link(self.destinataire)
+        self.assertFalse(self._reprise(booking_type=self.autre_type))
+
+    def test_une_autre_personne_ne_donne_rien(self):
+        self.booking_type._bf_create_onetime_link(self.destinataire)
+        self.assertFalse(self._reprise(partner=self.etranger))
+
+    def test_une_reservation_ordinaire_n_est_jamais_reprise(self):
+        """🔴 L'invariant qui protège l'existant : une réservation prise au
+        formulaire public n'est pas un lien, et ne doit jamais être resservie
+        au visiteur suivant qui donne la même adresse."""
+        self.env["resource.booking"].create({
+            "type_id": self.booking_type.id,
+            "partner_ids": [Command.set([self.destinataire.id])],
+        })
+        self.assertFalse(self._reprise())
+
+    def test_un_lien_deja_planifie_n_est_pas_repris(self):
+        """Une fois le créneau choisi, le lien a produit sa rencontre : la
+        reprendre écraserait un rendez-vous qui existe."""
+        lien = self.booking_type._bf_create_onetime_link(self.destinataire)
+        lien.start = fields.Datetime.now() + timedelta(days=1)
+        self.assertTrue(lien.meeting_id, "un créneau choisi crée l'événement")
+        self.assertFalse(self._reprise())
+
+
+@tagged("post_install", "-at_install", "bf_appointment", "bf_appointment_reprise")
+class TestRepriseParLeFormulairePublic(HttpCase):
+    """Le vrai chemin : un POST sur la page publique, pas un appel de méthode.
+
+    C'est là que le défaut est né — le contrôleur créait sans regarder ce que
+    la personne détenait déjà.
+    """
+
+    def setUp(self):
+        super().setUp()
+        # ⚠️ Routes `website=True` : sans le module `website`, rien n'est routé
+        # et tout rend 404. Le module n'en dépend pas volontairement.
+        if not self.env["ir.module.module"].sudo().search_count(
+                [("name", "=", "website"), ("state", "=", "installed")]):
+            self.skipTest(
+                "module `website` absent : les routes `website=True` ne sont "
+                "pas routées, ce test n'a rien à mesurer")
+        attendances = [
+            Command.create({
+                "name": "j%s" % d, "dayofweek": str(d), "hour_from": 0.0,
+                "hour_to": 24.0, "day_period": "morning",
+            })
+            for d in range(7)
+        ]
+        calendrier = self.env["resource.calendar"].create({
+            "name": "24/7 reprise HTTP", "attendance_ids": attendances, "tz": "UTC"})
+        ressource = self.env["resource.resource"].create({
+            "name": "reprise HTTP material", "calendar_id": calendrier.id,
+            "resource_type": "material", "tz": "UTC"})
+        combinaison = self.env["resource.booking.combination"].create({
+            "resource_ids": [Command.set([ressource.id])]})
+        self.type_rdv = self.env["resource.booking.type"].create({
+            "name": "Type reprise HTTP", "slug": "type-reprise-http",
+            "duration": 1.0, "slot_duration": 1.0,
+            "modifications_deadline": 0.0, "combination_assignment": "sorted",
+            "resource_calendar_id": calendrier.id, "video_provider": "none",
+            "requires_recording_consent": False,
+            "sends_intake_acknowledgement": False,
+            "is_public": True, "listed_on_landing": False,
+            "combination_rel_ids": [
+                Command.create({"sequence": 0, "combination_id": combinaison.id})],
+        })
+        self.destinataire = self.env["res.partner"].create({
+            "name": "Reprise HTTP", "email": "reprise-http@test.invalid"})
+        self.lien = self.type_rdv._bf_create_onetime_link(self.destinataire)
+        self.lien.name = "Revue des principes | Client x Blue Fox"
+        self.env.cr.flush()
+
+    def test_le_formulaire_public_reprend_le_lien_et_garde_le_titre(self):
+        Reservation = self.env["resource.booking"]
+        avant = Reservation.search_count([("type_id", "=", self.type_rdv.id)])
+        page = self.url_open("/appointment/%s" % self.type_rdv.slug)
+        self.assertEqual(page.status_code, 200)
+        jeton = re.search(r'name="csrf_token"[^>]*value="([^"]+)"', page.text)
+        self.assertTrue(jeton, "le formulaire doit porter son jeton CSRF")
+        reponse = self.url_open(
+            "/appointment/%s/book" % self.type_rdv.slug,
+            data={
+                "csrf_token": jeton.group(1),
+                "name": "Reprise HTTP",
+                "email": "reprise-http@test.invalid",
+                "bf_consent": "on",
+            },
+        )
+        self.assertEqual(reponse.status_code, 200)
+        self.assertIn("/appointment/b/%d/" % self.lien.id, reponse.url,
+                      "la page publique doit renvoyer sur le lien détenu")
+        self.assertEqual(
+            avant, Reservation.search_count([("type_id", "=", self.type_rdv.id)]),
+            "aucune réservation neuve à côté du lien")
+        self.lien.invalidate_recordset()
+        self.assertEqual(self.lien.name, "Revue des principes | Client x Blue Fox",
+                         "le titre écrit par l'organisateur survit au formulaire")

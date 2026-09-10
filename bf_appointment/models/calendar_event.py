@@ -25,11 +25,19 @@ class CalendarEvent(models.Model):
           - have already started (so we never touch in-flight bookings)
         """
         cutoff = fields.Datetime.now()
-        candidates = self.search([
+        domain = [
             ("name", "=like", "RDV - %"),
             ("start", "<", cutoff),
             ("resource_booking_ids", "=", False),
-        ])
+        ]
+        # 🔴 A meeting deliberately kept as the record of a cancelled booking
+        # matches every clause above and is NOT an orphan. Since 18.0.2.57.0
+        # `action_cancel` keeps its event, struck out and marked free; without
+        # this clause the cron would delete exactly the trace that lot exists
+        # to leave, quietly, the day after each cancellation.
+        if "bf_event_status" in self._fields:
+            domain.append(("bf_event_status", "!=", "cancelled"))
+        candidates = self.search(domain)
         # Skip events still linked from an *active* booking, that should
         # never happen given the inverse one2many is empty above, but it's a
         # cheap belt-and-suspenders against active_test edge cases.
@@ -37,7 +45,16 @@ class CalendarEvent(models.Model):
         # ondelete=set null, so the booking record stays intact when we
         # unlink its old meeting.
         if candidates:
-            still_active = self.env["resource.booking"].sudo().search([
+            # ⚠️ `active_test=False`, and it is not belt-and-braces: a
+            # cancelled booking is ARCHIVED, so the default search cannot see
+            # it — and neither can the `resource_booking_ids` clause above,
+            # which is why an event still linked from an archived booking
+            # reaches this point looking orphaned. Without the flag the probe
+            # answers "nobody points at it" for precisely the events that are
+            # pointed at.
+            still_active = self.env["resource.booking"].sudo().with_context(
+                active_test=False,
+            ).search([
                 ("meeting_id", "in", candidates.ids),
             ]).mapped("meeting_id")
             to_unlink = candidates - still_active
@@ -51,6 +68,34 @@ class CalendarEvent(models.Model):
                     tracking_disable=True,
                     mail_notrack=True,
                 ).unlink()
+
+    def _bf_mark_cancelled(self):
+        """Strike these meetings out and give their time back.
+
+        Kept on `calendar.event` rather than on the booking because it is a
+        statement about the meeting, and because the booking side already has
+        two callers for it.
+
+        ⚠️ `show_as` is not decoration here. `resource_calendar
+        ._get_bookable_intervals` counts an event as busy on `show_as == "busy"`
+        alone, so this line IS what gives the slot back — without it, keeping
+        the event closes a slot for a meeting that is not happening, which is
+        the very thing the old unlink was there to avoid.
+
+        No-op where `bf_calendar_invite` is not installed: there is then
+        nothing that renders a cancelled meeting, and the caller falls back to
+        deleting it instead.
+        """
+        if "bf_event_status" not in self._fields:
+            return self
+        alive = self.exists()
+        if alive:
+            alive.sudo().with_context(
+                no_mail_to_attendees=True,
+                tracking_disable=True,
+                mail_notrack=True,
+            ).write({"bf_event_status": "cancelled", "show_as": "free"})
+        return alive
 
     def _track_subtype(self, init_values):
         """Suppress tracking notifications on events linked to a booking.
@@ -98,14 +143,16 @@ class CalendarEvent(models.Model):
                 organizer_partner = event.user_id.partner_id or event.partner_id
                 # ⚠️ `partner.email` is not guaranteed to hold a BARE address,
                 # and `"mailto:" + <whatever is in the field>` is what made the
-                # line invalid in production: a partner carrying a FORMATTED
-                # address (`"A display name" <mailbox@example.com>`) made every
-                # ICS it organised go out as
-                # `ORGANIZER:mailto:"A display name" <…>`. A `mailto:` URI takes
-                # an address and nothing else (RFC 6068), and a client that
-                # rejects the URI rejects the whole VEVENT. Parsed, not
-                # repaired: the field's value may well be wanted for what it is,
-                # and an ICS generator is not the place to rule on that.
+                # line invalid in production: the partner behind an automation
+                # user held a FORMATTED address (`"A display name"
+                # <mailbox@example.com>`), so every ICS it organised — most of a
+                # calendar, over months — went out as
+                # `ORGANIZER:mailto:"A display name" <…>`.
+                # A `mailto:` URI takes an address and nothing else (RFC 6068),
+                # and a client that rejects the URI rejects the whole VEVENT.
+                # Parsed, not repaired: the field's value may well be wanted for
+                # what it is, and an ICS generator is not the place to rule on
+                # that. Measured on a real calendar.
                 _cn, organizer_email = parseaddr(
                     (organizer_partner.email or "") if organizer_partner else ""
                 )
