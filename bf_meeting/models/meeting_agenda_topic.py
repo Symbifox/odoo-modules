@@ -72,6 +72,41 @@ class MeetingAgendaTopic(models.Model):
              "dans le PDF ni dans le courriel d'ordre du jour.",
     )
 
+    # Ce que le destinataire n'a PAS dans sa copie ------------------------
+    change_since_sent = fields.Selection(
+        [
+            ('added', "Ajouté depuis l'envoi"),
+            ('modified', "Modifié depuis l'envoi"),
+        ],
+        string="Depuis l'envoi",
+        compute='_compute_change_since_sent',
+        help="Pastille posée à partir du repère figé au dernier envoi de "
+             "l'ordre du jour. Les notes prises en direct n'entrent pas dans "
+             "ce repère : elles ne posent donc jamais de pastille.",
+    )
+
+    def _compute_change_since_sent(self):
+        # Un écart par ORDRE DU JOUR, pas un par sujet : le calcul rebâtit
+        # l'ordre du jour complet à chaque appel.
+        by_agenda = {}
+        for topic in self:
+            topic.change_since_sent = False
+            if topic.agenda_id:
+                bucket = by_agenda.setdefault(
+                    topic.agenda_id, self.env['meeting.agenda.topic'])
+                by_agenda[topic.agenda_id] = bucket | topic
+        for agenda, topics in by_agenda.items():
+            diff = agenda._changes_since_sent()
+            if not diff:
+                continue
+            added = set(diff['ids']['added'])
+            changed = set(diff['ids']['changed'])
+            for topic in topics:
+                if topic.id in added:
+                    topic.change_since_sent = 'added'
+                elif topic.id in changed:
+                    topic.change_since_sent = 'modified'
+
     def action_accept_contribution(self):
         """Accepter un sujet proposé : il rejoint l'ordre du jour officiel."""
         self.write({'moderation_state': 'accepted'})

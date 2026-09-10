@@ -77,6 +77,22 @@
                                     Voici l'ordre du jour pour la rencontre à venir.
                                 </p>
 
+                                <!-- Renvoi : ce qui a changé depuis la copie que
+                                     les destinataires tiennent déjà. Rendu vide
+                                     sur un premier envoi et quand la case est
+                                     décochée, donc rien à masquer ici. -->
+                                <t t-set="agenda_changes" t-value="object.resend_changes_block_html()"/>
+                                <t t-if="agenda_changes">
+                                <div style="margin:0 0 20px 0; padding:14px 16px; background:#FFF8E1; border-left:4px solid #F0B429; border-radius:6px;">
+                                    <p style="font-size:14px; font-weight:600; color:#374151; margin:0 0 8px 0;">
+                                        Ce qui a changé depuis le dernier envoi
+                                    </p>
+                                    <div style="font-size:14px; line-height:22px; color:#374151;">
+                                        <t t-out="agenda_changes"/>
+                                    </div>
+                                </div>
+                                </t>
+
                                 <t t-if="object.participant_ids">
                                 <div style="margin:0 0 20px 0; padding:12px 14px; background:#F5F7FA; border-radius:6px; font-size:13px; color:#374151;">
                                     <strong t-attf-style="color:{{ brand_dark }};">Participants :</strong>

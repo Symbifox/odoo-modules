@@ -11,6 +11,7 @@ from odoo.exceptions import UserError
 
 from odoo.addons.bf_ai_bridge.tools import transport
 
+from .agenda_diff import SNAPSHOT_VERSION, build_snapshot, diff_snapshots
 from .meeting_record import (
     _MAX_REFINE_MESSAGE,
     _REFINE_STALE_MINUTES,
@@ -307,6 +308,64 @@ class MeetingAgenda(models.Model):
                 rec.send_state = 'prepared'
             else:
                 rec.send_state = 'not_sent'
+    # --- Ce qui a changé depuis le dernier envoi -----------------------
+    # Un repère du CONTENU, pas une comparaison d'horodatages : voir
+    # `agenda_diff` pour la mesure qui a écarté la seconde.
+    sent_snapshot_json = fields.Text(
+        string="Repère de l'envoi (technique)",
+        readonly=True,
+        copy=False,
+        groups='bf_meeting.group_meeting_user',
+        help="Ordre du jour figé tel qu'il est parti au dernier envoi réel. "
+             "Ne porte que des empreintes pour les corps de texte : il sait "
+             "dire qu'un contexte a changé, jamais ce qu'il disait.",
+    )
+    sent_snapshot_date = fields.Datetime(
+        string='Repère pris le',
+        readonly=True,
+        copy=False,
+        help="Dernier envoi réel dont le contenu a été figé. Un renvoi "
+             "remet ce repère à neuf : l'écart se lit toujours depuis ce que "
+             "les destinataires ont reçu en DERNIER.",
+    )
+    changes_since_sent_count = fields.Integer(
+        string="Changements depuis l'envoi",
+        compute='_compute_changes_since_sent',
+    )
+    has_changes_since_sent = fields.Boolean(
+        string="Modifié depuis l'envoi",
+        compute='_compute_changes_since_sent',
+        search='_search_has_changes_since_sent',
+    )
+    resend_include_changes = fields.Boolean(
+        string="Dire ce qui a changé depuis le dernier envoi",
+        # 🔴 Défaut CONSTANT, comme `meeting.record.exchange_include_json` et
+        # pour la même raison vécue : un `default=lambda self:
+        # self.env.company.<champ>` fait lire `res_company` au moment où Odoo
+        # pose la colonne sur les lignes EXISTANTES, avant que la colonne de
+        # `res.company` livrée par le MÊME module existe. Registre refusé,
+        # mise à jour avortée, et invisible sur une base neuve. La préférence
+        # de société est appliquée dans `create`.
+        default=False,
+        copy=False,
+        help="Ajoute au courriel de RENVOI un encadré listant ce qui a changé "
+             "depuis le dernier envoi. Sans effet sur un premier envoi, où il "
+             "n'y a rien à comparer. L'encadré nomme les sujets ajoutés, "
+             "retirés et renommés ; les corps de texte n'y paraissent jamais, "
+             "seulement le fait qu'ils ont changé.",
+    )
+    changes_since_sent_html = fields.Html(
+        string="Détail des changements",
+        compute='_compute_changes_since_sent',
+        sanitize=False,
+    )
+    sent_baseline_missing = fields.Boolean(
+        string='Sans repère de comparaison',
+        compute='_compute_changes_since_sent',
+        help="L'ordre du jour est parti, mais avant que le module ne fige un "
+             "repère : l'absence de changement affiché ne prouve rien.",
+    )
+
     recipient_ids = fields.Many2many(
         'res.partner',
         'meeting_agenda_recipient_rel',
@@ -551,15 +610,29 @@ class MeetingAgenda(models.Model):
         for rec in self:
             rec.topic_count = len(rec.topic_ids)
 
+    def _carries_agenda_tasks(self):
+        """Vrai tant que `agenda_task_ids` résout encore des tâches.
+
+        Un seul prédicat pour deux lecteurs : la résolution ci-dessous, et
+        l'écart « depuis l'envoi », qui doit TAIRE la section des éléments
+        d'action dès qu'elle rend une liste vide par construction. Sans ça, la
+        rencontre s'ouvre sur « tous les éléments d'action ont été retirés »,
+        à la minute où la date passe. S'ils divergent, le second ment.
+        """
+        self.ensure_one()
+        return bool(
+            self.state in ACTIVE_AGENDA_STATES
+            and self.date
+            and self.date >= fields.Datetime.now()
+        )
+
     def _compute_agenda_task_ids(self):
         Task = self.env['project.task']
         Agenda = self.env['meeting.agenda']
         now = fields.Datetime.now()
 
         # Partition self: only active/future agendas can carry tasks.
-        active = self.filtered(
-            lambda a: a.state in ACTIVE_AGENDA_STATES and a.date and a.date >= now
-        )
+        active = self.filtered(lambda a: a._carries_agenda_tasks())
         for rec in self - active:
             rec.agenda_task_ids = False
             rec.agenda_task_count = 0
@@ -686,6 +759,18 @@ class MeetingAgenda(models.Model):
 
     @api.model_create_multi
     def create(self, vals_list):
+        # La préférence de société ne peut pas être le défaut du champ (voir le
+        # commentaire sur `resend_include_changes`), et `default_get` ne
+        # servirait que la saisie à l'écran : un ordre du jour créé par le pont
+        # ou par XML-RPC n'y passe pas. C'est donc ici, où la colonne existe.
+        vals_list = [dict(vals) for vals in vals_list]
+        for vals in vals_list:
+            if 'resend_include_changes' in vals:
+                continue
+            company = self.env['res.company'].browse(vals['company_id']) \
+                if vals.get('company_id') else self.env.company
+            vals['resend_include_changes'] = bool(
+                company.meeting_resend_changes_default)
         records = super().create(vals_list)
         ICP = self.env["ir.config_parameter"].sudo()
         auto = ICP.get_param("bf_meeting.agenda_auto_refine", "1") in ("1", "true", "True")
@@ -945,10 +1030,14 @@ class MeetingAgenda(models.Model):
         """
         res = super()._message_post_after_hook(message, msg_values)
         recipients = (msg_values or {}).get('partner_ids') or message.partner_ids
-        if (recipients
-                and message.message_type in ('comment', 'email')
-                and not self.email_sent_date):
-            self.sudo().write({'email_sent_date': fields.Datetime.now()})
+        is_real_send = bool(
+            recipients and message.message_type in ('comment', 'email'))
+        if is_real_send:
+            if not self.email_sent_date:
+                self.sudo().write({'email_sent_date': fields.Datetime.now()})
+            # À chaque départ, pas seulement au premier : c'est la DERNIÈRE
+            # copie reçue qui fait référence pour l'écart.
+            self._capture_sent_snapshot()
         return res
 
     def action_mark_sent_manually(self):
@@ -960,6 +1049,10 @@ class MeetingAgenda(models.Model):
                 'email_sent_date': fields.Datetime.now(),
                 'sent_manually': True,
             })
+            # Ce qui est parti hors Odoo est inconnu ; l'ordre du jour au
+            # moment de la déclaration en est le meilleur témoin disponible,
+            # et c'est tout ce que ce repère prétend être.
+            rec._capture_sent_snapshot()
             rec.message_post(
                 body=Markup(
                     "<p>✉️ Ordre du jour déclaré <strong>envoyé à la main</strong> "
@@ -973,7 +1066,15 @@ class MeetingAgenda(models.Model):
     def action_unmark_sent_manually(self):
         """Retirer une déclaration d'envoi manuel posée par erreur."""
         for rec in self.filtered('sent_manually'):
-            rec.write({'email_sent_date': False, 'sent_manually': False})
+            # Le repère part avec la déclaration qui l'a fait naître : le
+            # garder laisserait un OdJ « non envoyé » comparer son contenu à
+            # une référence fantôme.
+            rec.write({
+                'email_sent_date': False,
+                'sent_manually': False,
+                'sent_snapshot_json': False,
+                'sent_snapshot_date': False,
+            })
             rec.message_post(
                 body=Markup(
                     "<p>↩️ Déclaration d'envoi manuel retirée par %s : "
@@ -983,6 +1084,162 @@ class MeetingAgenda(models.Model):
                 subtype_xmlid='mail.mt_note',
             )
         return True
+
+    # ------------------------------------------------------------------
+    # Ce qui a changé depuis le dernier envoi
+    # ------------------------------------------------------------------
+
+    def _capture_sent_snapshot(self):
+        """Figer l'ordre du jour tel qu'il vient de partir.
+
+        Appelé à CHAQUE départ réel, pas seulement au premier : les
+        destinataires tiennent la dernière copie reçue, donc c'est elle qui
+        fait référence. `email_sent_date` garde son sens d'origine (le premier
+        départ, que lisent le cron de rappel et le tableau de bord) ; c'est
+        `sent_snapshot_date` qui suit les renvois.
+        """
+        now = fields.Datetime.now()
+        for rec in self:
+            rec.sudo().write({
+                'sent_snapshot_json': json.dumps(
+                    build_snapshot(rec), ensure_ascii=False, sort_keys=True),
+                'sent_snapshot_date': now,
+            })
+
+    def _changes_since_sent(self):
+        """Écart entre le repère et l'ordre du jour vivant. None si sans repère.
+
+        Ne lève jamais : un repère illisible ou d'une version antérieure rend
+        None. Un calcul qui lève sur une colonne abîmée rend la fiche entière
+        illisible, et il n'y a plus que du SQL pour la rouvrir.
+        """
+        self.ensure_one()
+        raw = self.sudo().sent_snapshot_json
+        if not raw:
+            return None
+        try:
+            before = json.loads(raw)
+        except (TypeError, ValueError):
+            _logger.warning("Repère d'envoi illisible sur l'OdJ %s", self.id)
+            return None
+        if not isinstance(before, dict) or before.get('v') != SNAPSHOT_VERSION:
+            return None
+        return diff_snapshots(
+            before, build_snapshot(self),
+            include_tasks=self._carries_agenda_tasks(),
+        )
+
+    def _compute_changes_since_sent(self):
+        for rec in self:
+            rec.sent_baseline_missing = bool(
+                rec.send_state in ('sent', 'manual')
+                and not rec.sudo().sent_snapshot_json
+            )
+            diff = rec._changes_since_sent()
+            rec.changes_since_sent_count = diff['count'] if diff else 0
+            rec.has_changes_since_sent = bool(diff and diff['count'])
+            rec.changes_since_sent_html = rec._render_changes_since_sent(diff)
+
+    def _search_has_changes_since_sent(self, operator, value):
+        """Filtre « Modifié depuis l'envoi ».
+
+        L'écart n'est calculable que sur les OdJ qui portent un repère ; on ne
+        parcourt donc pas la table entière, seulement ceux-là.
+        """
+        if operator not in ('=', '!='):
+            return [('id', '=', 0)]
+        want = bool(value) if operator == '=' else not bool(value)
+        candidates = self.sudo().search([('sent_snapshot_json', '!=', False)])
+        hits = candidates.filtered(lambda a: bool(a.has_changes_since_sent)).ids
+        if want:
+            return [('id', 'in', hits)]
+        return [('id', 'not in', hits)]
+
+    def _format_snapshot_date(self, raw):
+        """Une date de repère se lit dans le fuseau du lecteur, pas en UTC."""
+        if not raw:
+            return ''
+        try:
+            stamp = fields.Datetime.to_datetime(raw)
+        except (TypeError, ValueError):
+            return str(raw)
+        if not stamp:
+            return ''
+        return fields.Datetime.context_timestamp(
+            self, stamp).strftime('%Y-%m-%d %H:%M')
+
+    def resend_changes_block_html(self):
+        """L'encadré « depuis le dernier envoi » du courriel de RENVOI.
+
+        Rend une chaîne vide dans tous les cas où il n'a rien à dire : case
+        décochée, aucun repère (donc premier envoi, rien à comparer), ou rien
+        qui ait bougé. Appelé PENDANT le rendu, donc avant que le nouveau
+        repère soit posé : il compare bien à la copie que les destinataires
+        tiennent, pas à celle qu'ils sont en train de recevoir.
+        """
+        self.ensure_one()
+        if not self.resend_include_changes:
+            return ''
+        diff = self._changes_since_sent()
+        if not diff or not diff['count']:
+            return ''
+        return self._render_changes_since_sent(diff) or ''
+
+    def _render_changes_since_sent(self, diff):
+        """Le résumé lisible. Rien à afficher quand rien n'a bougé."""
+        self.ensure_one()
+        if not diff or not diff['count']:
+            return False
+        lines = []
+
+        def add(fragment):
+            lines.append(Markup('<li>%s</li>') % fragment)
+
+        for entry in diff['head']:
+            label = escape(entry['label'])
+            if entry['key'] == 'participants':
+                bits = []
+                if entry['added']:
+                    bits.append(Markup('ajouté%s : %s') % (
+                        's' if len(entry['added']) > 1 else '',
+                        escape(', '.join(entry['added']))))
+                if entry['removed']:
+                    bits.append(Markup('retiré%s : %s') % (
+                        's' if len(entry['removed']) > 1 else '',
+                        escape(', '.join(entry['removed']))))
+                add(Markup('<b>%s</b> : %s') % (label, Markup(' ; ').join(bits)))
+            elif 'from' in entry:
+                old, new = entry['from'], entry['to']
+                if entry['key'] == 'date':
+                    old = self._format_snapshot_date(old)
+                    new = self._format_snapshot_date(new)
+                add(Markup('<b>%s</b> : %s → %s') % (
+                    label, escape(old or '(vide)'), escape(new or '(vide)')))
+            else:
+                add(Markup('<b>%s</b> : modifié') % label)
+
+        for name in diff['topics_added']:
+            add(Markup('Sujet <b>ajouté</b> : « %s »') % escape(name))
+        for name in diff['topics_removed']:
+            add(Markup('Sujet <b>retiré</b> : « %s »') % escape(name))
+        for item in diff['topics_renamed']:
+            add(Markup('Sujet <b>renommé</b> : « %s » → « %s »') % (
+                escape(item['from']), escape(item['to'])))
+        for item in diff['topics_changed']:
+            add(Markup('Sujet « %s » : %s') % (
+                escape(item['name']), escape(', '.join(item['what']))))
+        if diff['topics_reordered']:
+            add(Markup("L'<b>ordre</b> des sujets a changé."))
+        for name in diff['tasks_added']:
+            add(Markup("Élément d'action <b>ajouté</b> : « %s »") % escape(name))
+        for name in diff['tasks_removed']:
+            add(Markup("Élément d'action <b>retiré</b> : « %s »") % escape(name))
+
+        # Style en ligne : le même balisage sert le formulaire ET le
+        # courriel, où aucune feuille de style n'arrive.
+        return Markup(
+            '<ul class="mb-0" style="margin:0; padding-left:18px;">%s</ul>'
+        ) % Markup('').join(lines)
 
     def action_send_agenda(self):
         """Envoyer l'ordre du jour par courriel."""
@@ -1017,6 +1274,7 @@ class MeetingAgenda(models.Model):
             'email_sent_date': fields.Datetime.now(),
             'sent_manually': False,
         })
+        self._capture_sent_snapshot()
 
     def action_send_agenda_wizard(self):
         """Ouvrir l'assistant d'envoi de l'ordre du jour."""
@@ -1218,6 +1476,10 @@ class MeetingAgenda(models.Model):
         topics = []
         for idx, t in enumerate(official_topics, 1):
             topics.append({
+                # `id` ne sert à aucun gabarit : il porte l'IDENTITÉ d'une ligne
+                # pour le repère d'envoi, qui doit distinguer un sujet renommé
+                # d'un sujet retiré puis recréé.
+                'id': t.id,
                 'index': idx,
                 'name': t.name,
                 'duration': t.duration_planned,
@@ -1234,6 +1496,7 @@ class MeetingAgenda(models.Model):
             else:
                 source = ''
             tagged_tasks.append({
+                'id': t.id,
                 'index': idx,
                 'name': t.name,
                 'project': t.project_id.name or '',

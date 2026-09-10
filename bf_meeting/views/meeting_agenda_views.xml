@@ -32,6 +32,10 @@
                        decoration-danger="send_state == 'not_sent'"/>
                 <field name="email_sent_date" optional="show"/>
                 <field name="sent_date" optional="hide"/>
+                <!-- Colonne cachée par défaut : elle rebâtit l'ordre du jour
+                     complet par ligne, ce qui n'a pas sa place dans un
+                     affichage de liste qu'on ouvre cent fois par jour. -->
+                <field name="changes_since_sent_count" optional="hide"/>
             </list>
         </field>
     </record>
@@ -242,6 +246,8 @@
                             vraisemblablement été fermé sans envoyer.
                         </span>
                     </div>
+                    <field name="sent_baseline_missing" invisible="1"/>
+                    <field name="changes_since_sent_count" invisible="1"/>
                     <div class="alert alert-success d-flex align-items-center mb-2"
                          role="status" invisible="send_state not in ('sent', 'manual')">
                         <i class="fa fa-paper-plane me-2" title="Envoyé"/>
@@ -251,7 +257,28 @@
                             <span invisible="send_state != 'manual'">
                                 — envoi déclaré à la main, hors Odoo.
                             </span>
+                            <!-- Sans repère, « rien n'a changé » ne veut rien
+                                 dire : le silence doit se dire. -->
+                            <span invisible="not sent_baseline_missing">
+                                (<b>aucun repère de comparaison</b> : cet
+                                envoi est antérieur au suivi des changements,
+                                les écarts ne peuvent pas être calculés.)
+                            </span>
                         </span>
+                    </div>
+                    <div class="alert alert-warning mb-2" role="alert"
+                         invisible="changes_since_sent_count == 0">
+                        <div class="d-flex align-items-center">
+                            <i class="fa fa-history me-2" title="Modifié"/>
+                            <span>
+                                <b>L'ordre du jour a changé depuis son dernier envoi</b>
+                                (<field name="sent_snapshot_date" readonly="1"
+                                        nolabel="1" class="d-inline"/>).
+                                Les destinataires ont une autre version.
+                            </span>
+                        </div>
+                        <field name="changes_since_sent_html" readonly="1"
+                               nolabel="1" class="mt-2"/>
                     </div>
                     <div class="oe_title">
                         <h1>
@@ -276,6 +303,7 @@
                                    placeholder="Lier un événement calendrier..."/>
                             <field name="auto_send_on_confirm"/>
                             <field name="allow_contributions"/>
+                            <field name="resend_include_changes"/>
                         </group>
                     </group>
                     <field name="contributions_open" invisible="1"/>
@@ -313,6 +341,10 @@
                                            decoration-warning="moderation_state == 'pending'"
                                            decoration-success="moderation_state == 'accepted'"
                                            decoration-danger="moderation_state == 'rejected'"/>
+                                    <field name="change_since_sent" widget="badge"
+                                           optional="show"
+                                           decoration-info="change_since_sent == 'added'"
+                                           decoration-warning="change_since_sent == 'modified'"/>
                                     <button name="action_accept_contribution" type="object"
                                             string="Accepter" icon="fa-check"
                                             invisible="moderation_state == 'accepted'"/>
@@ -437,6 +469,7 @@
                                     <field name="nc_path"/>
                                     <field name="sent_date"/>
                                     <field name="sent_manually"/>
+                                    <field name="sent_snapshot_date" readonly="1"/>
                                     <field name="refine_state" widget="badge"
                                            decoration-info="refine_state == 'queued'"
                                            decoration-success="refine_state == 'done'"
@@ -489,6 +522,8 @@
                         domain="[('send_state', '=', 'prepared')]"/>
                 <filter name="filter_sent" string="Envoyé"
                         domain="[('send_state', 'in', ('sent', 'manual'))]"/>
+                <filter name="filter_changed_since_sent" string="Modifié depuis l'envoi"
+                        domain="[('has_changes_since_sent', '=', True)]"/>
                 <separator/>
                 <filter name="filter_today" string="Aujourd'hui"
                         domain="[('date', '&gt;=', context_today().strftime('%%Y-%%m-%%d 00:00:00')),
