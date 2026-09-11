@@ -6,6 +6,9 @@
             <t t-foreach="docs" t-as="doc">
                 <t t-set="lang" t-value="doc.lang or (doc.partner_id and doc.partner_id.lang) or 'fr_CA'"/>
                 <t t-set="data" t-value="doc.with_context(lang=lang)._get_report_data()"/>
+                <t t-set="brand_company" t-value="doc.company_id or env.company"/>
+                <t t-set="brand_primary" t-value="(brand_company and brand_company.report_brand_primary) or '#714B67'"/>
+                <t t-set="brand_dark" t-value="(brand_company and brand_company.report_brand_dark) or '#212529'"/>
                 <div class="article" style="padding: 0 !important; margin: 0 !important;">
                     <link rel="stylesheet" href="/bf_lexend/static/src/scss/lexend_report.css"/>
                     <style>
@@ -25,11 +28,11 @@
                         .ma-page {
                             font-size: 11pt;
                             line-height: 1.45;
-                            color: <t t-esc="(env.company and env.company.report_brand_dark) or '#212529'"/>;
+                            color: <t t-esc="brand_dark"/>;
                         }
 
                         .ma-banner {
-                            background: <t t-esc="(env.company and env.company.report_brand_dark) or '#212529'"/>;
+                            background: <t t-esc="brand_dark"/>;
                             padding: 20pt 24pt 18pt 24pt;
                             display: table;
                             width: 100%;
@@ -53,7 +56,7 @@
                             font-weight: 600;
                             text-transform: uppercase;
                             letter-spacing: 2pt;
-                            color: #29ABE1;
+                            color: <t t-esc="brand_primary"/>;
                             margin: 0 0 4pt 0;
                         }
                         .ma-banner h1 {
@@ -70,7 +73,7 @@
                         }
                         .ma-accent-bar {
                             height: 3px;
-                            background: #29ABE1;
+                            background: <t t-esc="brand_primary"/>;
                             margin: 0;
                             width: 100%;
                         }
@@ -98,7 +101,7 @@
                         .ma-meta-value {
                             font-size: 12.5pt;
                             font-weight: 600;
-                            color: <t t-esc="(env.company and env.company.report_brand_dark) or '#212529'"/>;
+                            color: <t t-esc="brand_dark"/>;
                         }
 
                         .ma-kpi-grid {
@@ -122,7 +125,7 @@
                             font-size: 22pt;
                             font-weight: 700;
                             line-height: 1.2;
-                            color: <t t-esc="(env.company and env.company.report_brand_dark) or '#212529'"/>;
+                            color: <t t-esc="brand_dark"/>;
                         }
                         .ma-kpi-label {
                             font-size: 9pt;
@@ -138,10 +141,10 @@
                         .ma-section-title {
                             font-size: 13.5pt;
                             font-weight: 600;
-                            color: <t t-esc="(env.company and env.company.report_brand_dark) or '#212529'"/>;
+                            color: <t t-esc="brand_dark"/>;
                             margin: 18pt 0 9pt 0;
                             padding-bottom: 4pt;
-                            border-bottom: 2px solid #29ABE1;
+                            border-bottom: 2px solid <t t-esc="brand_primary"/>;
                             display: inline-block;
                         }
                         .ma-section-title:first-child {
@@ -155,7 +158,7 @@
                             margin-bottom: 8pt;
                         }
                         .ma-table th {
-                            background: <t t-esc="(env.company and env.company.report_brand_dark) or '#212529'"/>;
+                            background: <t t-esc="brand_dark"/>;
                             color: #fff;
                             padding: 6pt 7pt;
                             text-align: left;

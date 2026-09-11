@@ -28,6 +28,7 @@ tracking decisions as knowledge matrix lines.
 - **Smart buttons** — next meeting on the task, reports and agendas on the project and on the calendar event, tasks to discuss on the agenda
 - **Emails** — templates for sending the agenda and the report, with a dedicated section for tasks to discuss
 - **PDF report** — branded rendering of the agenda with an "Action items to discuss" section
+- **Brand colours taken from the company on the document** (v18.0.3.56.0) — the agenda and report PDF templates read `doc.company_id.report_brand_primary` / `report_brand_dark`, as the logo and footer already did. They used to read `env.company`, that is the ACTIVE company of whoever triggers the printing: on a multi-company database, a meeting belonging to a secondary company came out with its own logo but in the main company's colours as soon as the main company sat first in `allowed_company_ids` — which is the case whenever both companies are ticked, and in any printing triggered by an email or a cron. Three CSS rules of the agenda additionally carried a hard-coded blue that no company colour could displace. ⚠️ `env.company` is the **first** of `allowed_company_ids`, not a member: `action_send_report_direct` built that list from a `set()`, which put the main company back in front and silently undid its own `with_company()`
 - **Exchange between tenants** — the report email can carry a machine-readable
   copy (a `.json` file) that another Symbifox tenant imports into its own
   Meetings app without retyping. Off by default, per company and per report

@@ -735,8 +735,15 @@ class MeetingRecord(models.Model):
             or self.sudo().company_id
             or self.env.company
         )
-        allowed_ids = set(self.env.context.get('allowed_company_ids') or [self.env.company.id])
-        allowed_ids.add(target_company.id)
+        # ⚠️ L'ORDRE compte : `env.company` est le PREMIER de
+        # `allowed_company_ids`, pas un simple membre. Un `set()` ici replaçait
+        # la société principale (id 1) devant la société visée et défaisait en
+        # silence le `with_company()` posé plus bas — le PDF du compte rendu
+        # sortait alors aux couleurs de la société principale.
+        context_ids = self.env.context.get('allowed_company_ids') or [self.env.company.id]
+        allowed_ids = [target_company.id] + [
+            cid for cid in context_ids if cid != target_company.id
+        ]
         # force_send=False: the SMTP roundtrip took 13-22s per send and, with a
         # small worker pool, stalled every other request. The mail is queued
         # (state « outgoing ») and the scheduler cron is triggered so it leaves
@@ -749,8 +756,10 @@ class MeetingRecord(models.Model):
             # `attachments` (nom, données), sorti du dictionnaire après la mise
             # à jour. Le rapport survit donc à cette ligne — vérifié au banc.
             email_values['attachment_ids'] = [(4, attachment.id)]
-        template.with_company(target_company).with_context(
-            allowed_company_ids=list(allowed_ids),
+        # Pas de `with_company()` ici : il serait écrasé par le `with_context`
+        # qui suit. La société visée est déjà en tête d'`allowed_ids`.
+        template.with_context(
+            allowed_company_ids=allowed_ids,
         ).send_mail(self.id, force_send=False, email_values=email_values or None)
         self.env.ref('mail.ir_cron_mail_scheduler_action')._trigger()
         self.write({
