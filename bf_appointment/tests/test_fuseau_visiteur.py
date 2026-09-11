@@ -3,8 +3,8 @@
 Ce que ces tests protègent est né d'un défaut en production (
 2026-09-10) : la fiche de contact venait EN PREMIER dans la chaîne, et
 `res_partner.tz` n'est pas rempli par la personne qu'il décrit — un lot
-d'import avait posé `Europe/Paris` sur des centaines de fiches québécoises. Un CPE de
-Montréal s'est donc fait proposer des heures de Paris sur sa page de créneaux.
+d'import avait posé `Europe/Paris` sur des centaines de fiches québécoises. Une
+page de créneaux à Montréal a donc proposé des heures de Paris.
 """
 
 from datetime import timedelta
@@ -48,7 +48,7 @@ class TestFuseauVisiteur(TransactionCase):
         # La fiche porte le fuseau d'import fautif, comme celles d'un lot
         # d'import réel.
         cls.partner = cls.env["res.partner"].create({
-            "name": "CPE d'essai",
+            "name": "Organisation d'essai",
             "email": "fuseau@test.invalid",
             "tz": "Europe/Paris",
         })
