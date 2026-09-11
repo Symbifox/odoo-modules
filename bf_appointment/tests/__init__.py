@@ -12,3 +12,4 @@ from . import test_talk_moderation
 from . import test_fuseau_visiteur
 from . import test_liens_courriels_odoo
 from . import test_annulation_backend
+from . import test_capacite_creneau

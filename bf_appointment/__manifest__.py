@@ -320,7 +320,7 @@
     #   <mailbox@example.com>`) produced `ORGANIZER:mailto:"…" <…>`, which is
     #   not a valid URI under RFC 6068: a client that rejects the URI rejects
     #   the whole VEVENT.
-    # 18.0.2.56.0: 🔴 la page de créneaux d'un CPE de Montréal proposait des heures de
+    # 18.0.2.56.0: 🔴 une page de créneaux à Montréal proposait des heures de
     #   PARIS. La chaîne d'affichage côté client lisait `res_partner.tz` EN PREMIER, or
     #   ce champ n'est pas rempli par la personne qu'il décrit : un lot d'import avait
     #   posé `Europe/Paris` sur des centaines de fiches québécoises (mesuré en
@@ -376,7 +376,20 @@
     #   under a status still reading "cancelled". Adds the backend cancellation
     #   dialog: the branded notice existed, but only the public page ever posted
     #   it — cancelling from Odoo told nobody.
-    "version": "18.0.2.58.0",
+    # 18.0.2.59.0: deux ouvertures pour les satellites qui offrent une page par
+    #   objet réservable (première cliente : les visites de propriétés).
+    #   (1) `_bf_candidate_slots(combination=...)` : la grille d'UNE combinaison,
+    #       au lieu de l'union de toutes celles du type. Sans ce paramètre, une
+    #       page par adresse répond avec les disponibilités de n'importe quelle
+    #       autre adresse du même type.
+    #   (2) `slot_capacity` sur le type : nombre de réservations acceptées sur un
+    #       même créneau. À 1, le défaut, le calcul est bit à bit l'ancien. Au-delà,
+    #       le créneau reste offert jusqu'au plafond, ce qu'exige une visite libre.
+    #       ⚠️ Le contrôle de place est une lecture, et deux lectures simultanées
+    #       voient la même place : `write()` pose un verrou sur la ligne du type
+    #       quand l'heure est écrite sur un type à plusieurs places. La page
+    #       publique, qui ne fait que regarder, n'attend jamais.
+    "version": "18.0.2.59.0",
     "category": "Appointments",
     "summary": "Public self-service booking pages extending Resource Booking",
     'author': 'Les services de consultation Blue Fox, Inc.',

@@ -9,10 +9,14 @@ was silently removed from the public slot picker (reported by a tenant,
 2026-07-03: the "Questionnaire d'audit initial" type only ever offered
 14h/14h30/15h starts Mon-Thu and nothing on Fridays).
 
-Reimplements ``_calendar_event_busy_intervals`` with one change: the attendee
-branch only blocks when the event is marked busy, matching the owner branch
-and the free/busy semantics of mainstream booking tools. Events linked to
-actual resource bookings still always block.
+Reimplements ``_calendar_event_busy_intervals`` with two changes:
+
+1. the attendee branch only blocks when the event is marked busy, matching the
+   owner branch and the free/busy semantics of mainstream booking tools;
+2. a booking whose type carries ``slot_capacity > 1`` only closes the slot once
+   that many bookings sit on it. Below the cap the slot stays on offer, which
+   is what an open house or a group intake needs. With the default capacity of
+   1, the behaviour is bit-for-bit the historical one.
 """
 
 from pytz import UTC
@@ -59,7 +63,11 @@ class ResourceCalendar(models.Model):
                 if resource & event.mapped(
                     "resource_booking_ids.combination_id.resource_ids"
                 ):
-                    raise Busy
+                    if not self._bf_slot_has_room(
+                        event, event.resource_booking_ids, resource,
+                        analyzed_booking_id,
+                    ):
+                        raise Busy
                 # Special cases when the booked resource is a person.
                 # BF change vs upstream: an event marked "free" never blocks,
                 # even when the resource user attends it.
@@ -88,3 +96,37 @@ class ResourceCalendar(models.Model):
                     )
                 )
         return Intervals(intervals)
+
+    @api.model
+    def _bf_slot_has_room(self, event, bookings, resource, analyzed_booking_id):
+        """Reste-t-il de la place sur le créneau que cet événement occupe?
+
+        Faux (donc « occupé ») dans le cas usuel, où une réservation retient le
+        créneau pour elle seule. Vrai tant que le plafond du type n'est pas
+        atteint, quand ce plafond est déclaré au-delà de 1.
+
+        Le plafond est lu sur le TYPE, et le plus petit gagne quand plusieurs
+        types se rencontrent sur un même événement : une place promise par un
+        type ne se prend pas sur le dos d'un autre.
+
+        ⚠️ Le comptage est fait en `sudo()`. Un visiteur anonyme ne peut pas
+        lire les réservations des autres, et sans ça il verrait toujours de la
+        place. Rien de ce qui est lu ne sort d'ici : seul un nombre est comparé
+        au plafond.
+        """
+        types = bookings.mapped("type_id")
+        capacities = [t.slot_capacity or 1 for t in types]
+        capacity = min(capacities) if capacities else 1
+        if capacity <= 1:
+            return False
+        domain = [
+            ("type_id", "in", types.ids),
+            ("state", "!=", "canceled"),
+            ("start", "<", event.stop),
+            ("stop", ">", event.start),
+            ("combination_id.resource_ids", "in", resource.ids),
+        ]
+        if analyzed_booking_id and analyzed_booking_id > 0:
+            domain.append(("id", "!=", analyzed_booking_id))
+        taken = self.env["resource.booking"].sudo().search_count(domain)
+        return taken < capacity

@@ -4,7 +4,7 @@ import unicodedata
 from datetime import timedelta
 
 from odoo import _, api, fields, models
-from odoo.exceptions import UserError
+from odoo.exceptions import UserError, ValidationError
 
 _logger = logging.getLogger(__name__)
 
@@ -119,6 +119,24 @@ class ResourceBookingType(models.Model):
                 label = f"{minutes} min"
             choices.append((hours, label))
         return choices
+    slot_capacity = fields.Integer(
+        string="Personnes par créneau",
+        default=1,
+        help="Nombre de réservations acceptées sur un même créneau. 1 (le "
+             "défaut) donne le comportement habituel : un créneau réservé "
+             "disparaît. Au-delà, le créneau reste offert jusqu'à ce que le "
+             "plafond soit atteint, ce qui est ce qu'il faut pour une visite "
+             "libre ou un accueil de groupe.",
+    )
+
+    @api.constrains("slot_capacity")
+    def _check_slot_capacity(self):
+        for rec in self:
+            if rec.slot_capacity < 1:
+                raise ValidationError(
+                    _("« Personnes par créneau » vaut au moins 1.")
+                )
+
     allow_guests = fields.Boolean(
         string="Permettre d'inviter d'autres personnes",
         default=False,
@@ -357,7 +375,8 @@ class ResourceBookingType(models.Model):
     # `resource_booking.py` (bf_source_ref).
     # ------------------------------------------------------------------
 
-    def _bf_candidate_slots(self, start_dt, end_dt, tz=None, limit=0):
+    def _bf_candidate_slots(self, start_dt, end_dt, tz=None, limit=0,
+                            combination=None):
         """Grille des créneaux libres de CE TYPE, sans réservation persistée.
 
         `resource.booking._get_available_slots` est une méthode d'instance :
@@ -379,6 +398,12 @@ class ResourceBookingType(models.Model):
         :param limit: nombre maximal de créneaux rendus (0 = tous). Les
             créneaux sont rendus en ordre chronologique, donc une limite
             garde les plus proches.
+        :param combination: restreindre le calcul à CETTE combinaison de
+            ressources, au lieu de l'union de toutes celles du type. Un
+            satellite qui offre une page par objet réservable (une adresse à
+            visiter, un local) en a besoin : sans elle, la grille répond pour
+            n'importe laquelle des combinaisons du type, donc pour n'importe
+            quelle autre adresse.
         :return: liste de datetimes aware, triée.
         """
         self.ensure_one()
@@ -386,6 +411,11 @@ class ResourceBookingType(models.Model):
             "type_id": self.id,
             "duration": self.duration,
         })
+        if combination:
+            # `combination_id` sur l'enregistrement en mémoire suffit :
+            # `_get_intervals` le lit avant de retomber sur les combinaisons
+            # du type.
+            booking.combination_id = combination
         if tz:
             booking = booking.with_context(tz=tz)
         grid = booking._get_available_slots(start_dt, end_dt)

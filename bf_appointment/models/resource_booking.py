@@ -173,8 +173,8 @@ class ResourceBooking(models.Model):
     # rempli par des imports et des valeurs par défaut, presque jamais par la
     # personne elle-même. Sur une base réelle, des centaines de fiches
     # québécoises portaient
-    # `Europe/Paris` — un lot importé — et la page de créneaux d'un CPE de
-    # Montréal proposait donc des heures de Paris (mesuré en production, 2026-09-10).
+    # `Europe/Paris` — un lot importé — et une page de créneaux à Montréal
+    # proposait donc des heures de Paris (mesuré en production, 2026-09-10).
     bf_visitor_tz = fields.Char(
         string="Fuseau horaire du visiteur",
         copy=False,
@@ -593,6 +593,32 @@ class ResourceBooking(models.Model):
                     no_mail_to_attendees=True,
                     dont_notify=True,
                 ).partner_ids = [(4, partner.id, 0) for partner in missing]
+
+    def write(self, vals):
+        """Sérialiser les prises de créneau quand un créneau a plusieurs places.
+
+        ⚠️ Le contrôle de disponibilité est une LECTURE, et deux lectures
+        simultanées voient la même place libre. Avec le plafond habituel de 1,
+        c'est sans conséquence : la contrainte d'OCA repose sur l'événement
+        d'agenda déjà écrit, et la deuxième transaction échoue. Au-delà de 1,
+        deux visiteurs peuvent lire « 2 réservations sur 3 » en même temps et
+        écrire tous les deux, ce qui donne 4 personnes pour 3 places.
+
+        On pose donc un verrou sur la LIGNE DU TYPE, et seulement quand l'heure
+        est écrite sur un type à plusieurs places : la page publique, qui ne
+        fait que regarder la grille, n'attend jamais.
+        """
+        if "start" in vals:
+            types = self.mapped("type_id").filtered(
+                lambda t: (t.slot_capacity or 1) > 1
+            )
+            if types:
+                self.env.cr.execute(
+                    "SELECT id FROM resource_booking_type WHERE id IN %s "
+                    "ORDER BY id FOR UPDATE",
+                    (tuple(types.ids),),
+                )
+        return super().write(vals)
 
     def action_confirm(self):
         """Confirmer : salle visio, participants K-of-N, puis consentements.
@@ -1459,8 +1485,8 @@ class ResourceBooking(models.Model):
         field is not filled by the person it describes: imports and defaults
         write it. On a real database, hundreds of Québec contacts carried
         ``Europe/Paris`` from
-        a batch import, so a Montréal CPE was offered Paris hours on its slot
-        picker (mesuré en production, 2026-09-10). The browser says where the reader
+        a batch import, so a Montréal slot picker offered Paris hours
+        (mesuré en production, 2026-09-10). The browser says where the reader
         actually is; the contact record only says what was once typed there.
         """
         self.ensure_one()

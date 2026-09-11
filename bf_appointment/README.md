@@ -102,6 +102,17 @@ Public self-service booking pages, extending *Resource Booking* (OCA).
 - **Portal home tile.** The Bookings tile on the customer portal home carries the
   app's own icon, served at 64 × 64 like its neighbours (v18.0.2.54.2).
 - **Onboarding wizard** (`bf_onboarding_base`) to configure booking types.
+- **Several people on one slot.** A booking type can declare how many bookings a
+  single slot accepts (`slot_capacity`, v18.0.2.59.0). At the default of 1 the
+  availability engine behaves exactly as before; above it, the slot stays on
+  offer until the cap is reached, which is what an open house or a group intake
+  needs. Taking a slot on such a type locks the type row for the duration of the
+  write, so two visitors reading "two of three taken" at the same moment cannot
+  both get in.
+- **Satellite surface.** `_bf_candidate_slots()` accepts a `combination`
+  argument (v18.0.2.59.0), so a companion module that publishes one page per
+  bookable object answers with that object's availability rather than the union
+  of every combination on the type.
 
 ## Notes on the confirmation links
 

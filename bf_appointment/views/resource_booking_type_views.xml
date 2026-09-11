@@ -14,6 +14,7 @@
                  on ajoute juste à côté le nouveau verrou de modification. -->
             <xpath expr="//field[@name='modifications_deadline']" position="after">
                 <field name="modification_lock_hours"/>
+                <field name="slot_capacity"/>
             </xpath>
             <xpath expr="//group[@name='main']" position="after">
                 <group string="Page publique de rendez-vous">
