@@ -274,7 +274,27 @@
                                                     <span t-if="ff.required" style="color:#b3261e;"> *</span>
                                                 </span>
                                             </label>
-                                            <input t-attf-id="field_#{ff.id}" t-attf-name="field_#{ff.id}"
+                                            <!-- A choice pad is a choice, not a text box: offering free
+                                                 text here and refusing it on submit would be a trap. -->
+                                            <select t-if="ff.field_type == 'select'"
+                                                    t-attf-id="field_#{ff.id}" t-attf-name="field_#{ff.id}"
+                                                    t-att-required="ff.required and 'required' or None"
+                                                    style="width:100%; padding:10px; border:1px solid #cfd6dc; border-radius:8px; font:inherit; background:#fff;">
+                                                <option value="">Choisir…</option>
+                                                <t t-foreach="ff._options_list()" t-as="opt">
+                                                    <option t-att-value="opt"><t t-esc="opt"/></option>
+                                                </t>
+                                            </select>
+                                            <!-- Spaced like the printed row it will land in, and capped at
+                                                 the number of boxes so the limit is felt while typing. -->
+                                            <input t-elif="ff.field_type == 'cells'"
+                                                   type="text" class="bf-cells-input"
+                                                   t-attf-id="field_#{ff.id}" t-attf-name="field_#{ff.id}"
+                                                   t-att-maxlength="ff.cell_count or max_field_chars"
+                                                   t-att-required="ff.required and 'required' or None"
+                                                   t-attf-placeholder="#{ff.cell_count and ('%s cases' % ff.cell_count) or ''}"
+                                                   style="width:100%; padding:10px; border:1px solid #cfd6dc; border-radius:8px; font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:16px; letter-spacing:6px;"/>
+                                            <input t-else="" t-attf-id="field_#{ff.id}" t-attf-name="field_#{ff.id}"
                                                    t-att-type="ff.field_type == 'date' and 'date' or (ff.field_type == 'email' and 'email' or (ff.field_type == 'number' and 'number' or 'text'))"
                                                    t-att-step="ff.field_type == 'number' and 'any' or None"
                                                    t-att-maxlength="ff.field_type != 'number' and max_field_chars or None"

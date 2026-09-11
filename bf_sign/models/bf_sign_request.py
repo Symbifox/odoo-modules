@@ -648,6 +648,7 @@ class BfSignRequest(models.Model):
             "field_type": f.field_type, "page": f.page,
             "pos_x": f.pos_x, "pos_y": f.pos_y, "width": f.width, "height": f.height,
             "fill_mode": f.fill_mode, "required": f.required, "value_text": f.value_text,
+            "cell_count": f.cell_count, "option_values": f.option_values,
             "sequence": f.sequence,
         }) for f in self.field_ids]
         tmpl = self.env["bf.sign.field.template"].create({
@@ -680,7 +681,8 @@ class BfSignRequest(models.Model):
                 "pos_x": line.pos_x, "pos_y": line.pos_y,
                 "width": line.width, "height": line.height,
                 "fill_mode": line.fill_mode, "required": line.required,
-                "value_text": line.value_text, "sequence": line.sequence,
+                "value_text": line.value_text, "cell_count": line.cell_count,
+                "option_values": line.option_values, "sequence": line.sequence,
             })
             created += 1
         return {"created": created, "skipped": skipped}
@@ -890,6 +892,17 @@ class BfSignRequest(models.Model):
                     raise UserError(_("Valeur numérique invalide : %s") % raw)
             elif f.field_type == "email" and not EMAIL_RE.match(raw):
                 raise UserError(_("Adresse courriel invalide : %s") % raw)
+            elif f.field_type == "select":
+                # The pad exists to constrain the answer; accepting anything
+                # else would make the constraint decorative.
+                if raw not in f._options_list():
+                    raise UserError(_("Choix invalide pour « %s » : %s")
+                                    % (f._marker_label(), raw))
+            elif f.field_type == "cells" and f.cell_count > 0 \
+                    and len(raw) > f.cell_count:
+                raise UserError(_(
+                    "« %s » compte %s cases, la valeur en demande %s.")
+                    % (f._marker_label(), f.cell_count, len(raw)))
             f.filled_value = raw
 
     def register_signer_signature(self, signer, signature_b64, initials_b64,
@@ -1216,6 +1229,8 @@ class BfSignRequest(models.Model):
                             preserveAspectRatio=True, anchor="sw")
         elif field.field_type == "checkbox":
             self._draw_checkbox(c, field, x, y, w, h)
+        elif field.field_type == "cells" and field.cell_count > 0:
+            self._draw_cells(c, field, x, y, w, h)
         elif field.field_type in VALUE_TYPES:
             val = field._display_value()
             if val:
@@ -1311,6 +1326,32 @@ class BfSignRequest(models.Model):
         c.linkURL(url, (x - pad, y - caption_h, x + size + pad, y + size + pad),
                   relative=0, thickness=0)
         c.restoreState()
+
+    def _draw_cells(self, c, field, x, y, w, h):
+        """One character per pre-printed box, centred in its own box.
+
+        No box outlines are drawn: on an imported form the row of boxes is
+        already printed on the page underneath, and stamping a second grid on
+        top of it is what makes a converted document look forged rather than
+        filled. The pad only contributes the characters.
+
+        A value longer than the row is cut at the last box rather than spilling
+        past it; the signing form already refuses one, so this only guards a
+        fixed value typed by the preparer.
+        """
+        value = field._display_value()
+        if not value:
+            return
+        n = field.cell_count
+        value = value[:n]
+        cw = w / float(n)
+        size = min(max(min(h * 0.62, cw * 0.95), self._TEXT_MIN_SIZE),
+                   self._TEXT_MAX_SIZE)
+        c.setFont(self._TEXT_FONT, size)
+        baseline = y + (h - size * 0.72) / 2.0
+        for i, ch in enumerate(value):
+            cx = x + i * cw + (cw - c.stringWidth(ch, self._TEXT_FONT, size)) / 2.0
+            c.drawString(cx, baseline, ch)
 
     def _draw_checkbox(self, c, field, x, y, w, h):
         """A square box, sized to the pad, ticked when the pad reads as checked."""

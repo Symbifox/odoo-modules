@@ -58,10 +58,12 @@ signed document is then **posted back into the source record's thread**.
 
 ### Signing
 - **Multiple signers**, in parallel or in sequence (the next one is chased automatically in sequential mode).
-- **Visual field placement** (signature / initials / date / text / name / email / number / checkbox) by drag and drop on the document (OWL widget + PDF.js), with coordinates in page fractions, independent of resolution.
+- **Visual field placement** (signature / initials / date / text / name / email / number / checkbox / boxed cells / choice list) by drag and drop on the document (OWL widget + PDF.js), with coordinates in page fractions, independent of resolution.
 - **A magnetic grid** with edge-alignment guides against neighbouring fields, **separate from showing the grid** (the ruling is off by default — Alt suspends the magnetism entirely), continuous placement, keyboard nudge, duplicate, and a properties bar that assigns the signer *after* the field is dropped.
 - **Signer-fillable fields** with a `signer` / `fixed` / `auto` fill mode; `auto` resolves the signing date, the signer's name and their email. Preset values and the required flag are editable on the field itself.
 - **A field order you control**: the sequence the signer is presented with is editable, defaulting to reading order.
+- **Boxed cells for pre-printed forms**: a `cells` field spans a row of printed boxes (a postal code, a licence number, a phone number) and stamps one character per box. The box count drives the spacing, and the signing page caps the entry at that count so the limit is felt while typing. No grid is drawn on top of the document: the boxes already belong to the form underneath.
+- **Choice lists**: a `select` field offers a fixed set of answers, rendered as a real dropdown on the signing page and refused server-side if the submitted value is not one of them.
 - **Reusable field templates** (`bf.sign.field.template`) storing the layout **per signer rank**.
 - **A branded, responsive public signing page**: a rendered preview of the document with **numbered placement markers** (reading order), a live mirror of the signature and fields, explicit timestamped consent, and the option to **refuse**.
 

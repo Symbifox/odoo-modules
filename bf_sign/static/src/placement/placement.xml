@@ -63,6 +63,14 @@
                     <button type="button" class="btn btn-sm btn-secondary me-1"
                             t-att-class="{'active': state.armedType === 'checkbox'}"
                             t-on-click="() => this.arm('checkbox')">Case</button>
+                    <button type="button" class="btn btn-sm btn-secondary me-1"
+                            title="Rangée de cases, un caractère par case"
+                            t-att-class="{'active': state.armedType === 'cells'}"
+                            t-on-click="() => this.arm('cells')">Cases</button>
+                    <button type="button" class="btn btn-sm btn-secondary me-1"
+                            title="Liste de choix imposée au signataire"
+                            t-att-class="{'active': state.armedType === 'select'}"
+                            t-on-click="() => this.arm('select')">Choix</button>
                     <button type="button" class="btn btn-sm btn-light ms-auto"
                             t-on-click="() => this.forceReload()">Recharger</button>
                 </div>
@@ -134,6 +142,20 @@
                                    t-att-value="sel.value_text || ''"
                                    t-att-placeholder="valuePlaceholderFor(sel)"
                                    t-on-change="(ev) => this.setValueText(sel, ev.target.value)"/>
+                        </t>
+                        <t t-if="isCells(sel)">
+                            <span class="bf-props-lbl">Cases</span>
+                            <input type="number" min="0" max="60" step="1"
+                                   class="form-control form-control-sm bf-props-cells"
+                                   t-att-value="sel.cell_count || 0"
+                                   t-on-change="(ev) => this.setCellCount(sel, ev.target.value)"/>
+                        </t>
+                        <t t-if="isSelect(sel)">
+                            <span class="bf-props-lbl">Choix (un par ligne)</span>
+                            <textarea rows="3"
+                                      class="form-control form-control-sm bf-props-options"
+                                      t-on-change="(ev) => this.setOptionValues(sel, ev.target.value)"
+                                      t-esc="sel.option_values || ''"/>
                         </t>
                         <label class="bf-aid" t-if="sel.fill_mode === 'signer'">
                             <input type="checkbox" t-att-checked="sel.required"

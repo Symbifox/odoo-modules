@@ -2,6 +2,35 @@
 
 Versioning follows the Odoo `18.0.MAJOR.MINOR.PATCH` convention.
 
+## 18.0.3.24.0 — Two pad types the imported forms actually need
+
+`cells` and `select` join the eight existing pad types.
+
+**Why now.** Converting a production DocuSeal instance measured 280 pads across
+its live templates: 25 of them, on four templates, had no equivalent here. Two
+of those four carry the bulk of that instance's sends. Without
+these types the conversion degrades a combed postal-code row and a constrained
+job-title list into free text, which is not a migration, it is a downgrade.
+
+**`cells` — one character per pre-printed box.** `cell_count` says how many
+boxes the row holds; the stamp divides the pad width by it and centres one
+character per box. No box outlines are drawn: on an imported form the row is
+already printed on the page underneath, and stamping a second grid over it is
+what makes a filled document look forged. The signing page shows a monospaced,
+letter-spaced input capped at `cell_count`, so the limit is felt while typing
+rather than announced on submit.
+
+**`select` — a choice, not a text box.** `option_values` holds one choice per
+line. The signing page renders a real `<select>`, and `_apply_field_values`
+refuses anything outside the list: a constraint the server does not enforce is
+decorative. A `select` pad with no choices is refused by a model constraint,
+and the placement editor seeds two so a new pad is born usable rather than
+born invalid.
+
+Both types are value-bearing (`VALUE_TYPES`), both travel in
+`bf.sign.field.template` alongside the geometry, and both appear in the
+placement editor toolbar with their own property controls.
+
 ## 18.0.3.23.0 — The company logo comes first on every portal page
 
 The three portal templates each build the header image from the same fallback,

@@ -15,6 +15,8 @@ const TYPE_LABELS = {
     email: "Courriel",
     number: "Nombre",
     checkbox: "Case",
+    cells: "Cases",
+    select: "Choix",
 };
 const DEFAULT_SIZE = {
     signature: { width: 0.28, height: 0.07 },
@@ -25,15 +27,22 @@ const DEFAULT_SIZE = {
     email: { width: 0.26, height: 0.04 },
     number: { width: 0.12, height: 0.04 },
     checkbox: { width: 0.03, height: 0.025 },
+    cells: { width: 0.20, height: 0.025 },
+    select: { width: 0.30, height: 0.04 },
 };
 // Default fill mode per type when a pad is placed. Types the server can resolve
 // on its own start on "auto" so the preparer has nothing to do in the common case.
 const FILL_DEFAULT = {
     date: "auto", name: "auto", email: "auto",
     text: "signer", number: "signer", checkbox: "signer",
+    cells: "signer", select: "signer",
 };
 // Mirrors VALUE_TYPES / AUTO_TYPES in models/bf_sign_field.py.
-const VALUE_TYPES = new Set(["date", "text", "name", "email", "number", "checkbox"]);
+const VALUE_TYPES = new Set(["date", "text", "name", "email", "number", "checkbox",
+                             "cells", "select"]);
+// Default number of boxes for a freshly placed cells pad. Six is a Canadian
+// postal code, the shortest combed row that actually shows up on these forms.
+const DEFAULT_CELL_COUNT = 6;
 const AUTO_TYPES = new Set(["date", "name", "email"]);
 
 const GRID_STEPS = [4, 8, 12, 16, 24]; // px, at the DISPLAY_W render scale
@@ -163,7 +172,8 @@ export class BfSignPlacement extends Component {
         const raw = await this.orm.searchRead(
             "bf.sign.field", [["request_id", "=", id]],
             ["signer_id", "field_type", "page", "pos_x", "pos_y", "width", "height",
-             "fill_mode", "value_text", "required", "sequence"]
+             "fill_mode", "value_text", "required", "sequence",
+             "cell_count", "option_values"]
         );
         this.state.fields = raw.map((f) => ({
             ...f,
@@ -444,6 +454,19 @@ export class BfSignPlacement extends Component {
     async setRequired(f, value) {
         await this._writeField(f, { required: Boolean(value) });
     }
+    isCells(f) {
+        return f.field_type === "cells";
+    }
+    isSelect(f) {
+        return f.field_type === "select";
+    }
+    async setCellCount(f, value) {
+        const n = Math.max(0, Math.min(parseInt(value, 10) || 0, 60));
+        await this._writeField(f, { cell_count: n });
+    }
+    async setOptionValues(f, value) {
+        await this._writeField(f, { option_values: value || false });
+    }
 
     onSignerChange(ev) {
         this.state.activeSignerId = parseInt(ev.target.value, 10);
@@ -637,6 +660,14 @@ export class BfSignPlacement extends Component {
             height: size.height,
             fill_mode: fillMode,
         };
+        // A cells pad is meaningless without a box count and a choice pad
+        // without choices, so both are born usable and edited afterwards
+        // rather than born invalid.
+        if (type === "cells") {
+            vals.cell_count = DEFAULT_CELL_COUNT;
+        } else if (type === "select") {
+            vals.option_values = "Choix 1\nChoix 2";
+        }
 
         // Optimistic pad: visible on the page before the server answers.
         this._tempSeq += 1;
@@ -652,6 +683,8 @@ export class BfSignPlacement extends Component {
             fill_mode: fillMode,
             value_text: false,
             required: true,
+            cell_count: vals.cell_count || 0,
+            option_values: vals.option_values || false,
             signerId: this.state.activeSignerId,
         };
         this.state.fields.push(optimistic);

@@ -51,6 +51,8 @@ class BfSignFieldTemplateLine(models.Model):
             ("email", "Courriel"),
             ("number", "Nombre"),
             ("checkbox", "Case à cocher"),
+            ("cells", "Cases par caractère"),
+            ("select", "Liste de choix"),
         ],
         string="Type", default="signature", required=True)
     page = fields.Integer(string="Page", default=1, required=True)
@@ -67,4 +69,8 @@ class BfSignFieldTemplateLine(models.Model):
         string="Mode de remplissage", default="signer", required=True)
     required = fields.Boolean(string="Obligatoire", default=True)
     value_text = fields.Char(string="Valeur fixe / étiquette")
+    # Carried alongside the geometry: a ``cells`` pad without its box count and a
+    # ``select`` pad without its choices are not the same pad once re-applied.
+    cell_count = fields.Integer(string="Nombre de cases", default=0)
+    option_values = fields.Text(string="Choix offerts")
     sequence = fields.Integer(default=10)

@@ -6,7 +6,8 @@ from odoo.exceptions import UserError, ValidationError
 _PROCESS_FIELDS = frozenset({"filled_value"})
 
 # Pad types that carry a textual value (as opposed to a drawn signature image).
-VALUE_TYPES = frozenset({"date", "text", "number", "email", "name", "checkbox"})
+VALUE_TYPES = frozenset({"date", "text", "number", "email", "name", "checkbox",
+                         "cells", "select"})
 # Pad types the system can resolve on its own when ``fill_mode='auto'``.
 AUTO_TYPES = frozenset({"date", "name", "email"})
 
@@ -40,6 +41,8 @@ class BfSignField(models.Model):
             ("email", "Courriel"),
             ("number", "Nombre"),
             ("checkbox", "Case à cocher"),
+            ("cells", "Cases par caractère"),
+            ("select", "Liste de choix"),
         ],
         string="Type", default="signature", required=True,
     )
@@ -68,6 +71,20 @@ class BfSignField(models.Model):
         string="Obligatoire", default=True,
         help="Pour un champ rempli par le signataire : la saisie est obligatoire.")
     filled_value = fields.Char(string="Valeur saisie", readonly=True, copy=False)
+    # A ``cells`` pad spans a row of pre-printed boxes on the document (a postal
+    # code, a SIN, a phone number). The count is what turns the pad width into a
+    # box width, so one character lands in one box instead of the value being
+    # written as running text across the row.
+    cell_count = fields.Integer(
+        string="Nombre de cases", default=0,
+        help="Pour un pavé « Cases par caractère » : combien de cases la rangée "
+             "imprimée contient. 0 fait retomber le pavé sur du texte suivi.")
+    # One option per line. A Text rather than a related model: the option set
+    # belongs to the pad, is never shared, and is written by the same widget
+    # that places the pad.
+    option_values = fields.Text(
+        string="Choix offerts",
+        help="Un choix par ligne. Le signataire ne peut retenir que l'un d'eux.")
     sequence = fields.Integer(default=10)
 
     @api.constrains("request_id", "signer_id")
@@ -86,6 +103,19 @@ class BfSignField(models.Model):
                     "Le mode automatique n'existe que pour les pavés Date, Nom et "
                     "Courriel. Choisissez « Valeur fixe » ou « Rempli par le "
                     "signataire »."))
+
+    @api.constrains("field_type", "option_values")
+    def _check_select_options(self):
+        for rec in self:
+            if rec.field_type == "select" and not rec._options_list():
+                raise ValidationError(_(
+                    "Un pavé « Liste de choix » doit offrir au moins un choix. "
+                    "Inscrivez-en un par ligne."))
+
+    def _options_list(self):
+        """The offered choices, in order, blank lines dropped."""
+        self.ensure_one()
+        return [o.strip() for o in (self.option_values or "").splitlines() if o.strip()]
 
     # ── Value resolution ───────────────────────────────────────────────────────
     def _auto_value(self):

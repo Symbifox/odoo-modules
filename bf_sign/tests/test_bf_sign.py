@@ -358,6 +358,118 @@ class TestBfSign(BaseNeuve, TransactionCase):
             self._sign(req, s, field_values={str(df.id): "not-a-date"})
         self.assertNotEqual(s.state, "signed")
 
+    # ── cells & select: the two types the imported forms need ──────────────────
+    def _cells_field(self, req, signer, count=6, **kw):
+        f = self._add_fill_field(req, signer, "cells", **kw)
+        f.cell_count = count
+        return f
+
+    def _select_field(self, req, signer, options="Bénévole\nEmployé\nStagiaire"):
+        # Created in one write: the model refuses a choice pad with no choices,
+        # so there is no valid intermediate state to create then fill in.
+        return self.Field.create({
+            "request_id": req.id, "signer_id": signer.id,
+            "field_type": "select", "fill_mode": "signer", "required": True,
+            "page": 1, "pos_x": 0.2, "pos_y": 0.5, "width": 0.3, "height": 0.04,
+            "option_values": options,
+        })
+
+    def test_cells_pad_accepts_a_value_that_fits_its_boxes(self):
+        req = self._new_request(signers=1)
+        s = req.signer_ids[0]
+        cf = self._cells_field(req, s, count=6)
+        req.action_send()
+        with self._mock_cert():
+            self._sign(req, s, field_values={str(cf.id): "J1H5C7"})
+        self.assertEqual(cf.filled_value, "J1H5C7")
+        self.assertEqual(req.state, "signed")
+
+    def test_cells_pad_refuses_a_value_longer_than_its_boxes(self):
+        req = self._new_request(signers=1)
+        s = req.signer_ids[0]
+        cf = self._cells_field(req, s, count=6)
+        req.action_send()
+        with self.assertRaises(UserError):
+            self._sign(req, s, field_values={str(cf.id): "J1H5C7X"})
+        self.assertNotEqual(s.state, "signed")
+
+    def test_cells_pad_without_a_box_count_behaves_like_text(self):
+        """cell_count = 0 is the honest fallback, not a crash: the value is
+        kept and stamped as running text."""
+        req = self._new_request(signers=1)
+        s = req.signer_ids[0]
+        cf = self._cells_field(req, s, count=0)
+        req.action_send()
+        with self._mock_cert():
+            self._sign(req, s, field_values={str(cf.id): "819 555 9876"})
+        self.assertEqual(cf.filled_value, "819 555 9876")
+
+    def test_cells_are_stamped_one_character_per_box(self):
+        """Each character is drawn at its own box, so a combed row on the form
+        underneath is filled rather than written across."""
+        req = self._new_request(signers=1)
+        s = req.signer_ids[0]
+        cf = self._cells_field(req, s, count=6)
+        cf.write({"pos_x": 0.1, "width": 0.6, "height": 0.04})
+        req.action_send()
+        with self._mock_cert():
+            self._sign(req, s, field_values={str(cf.id): "J1H5C7"})
+        page = PdfReader(io.BytesIO(
+            base64.b64decode(req.signed_attachment_id.datas))).pages[0]
+        stream = page.get_contents().get_data().decode("latin-1")
+        # One Tj per character, not a single Tj carrying the whole value.
+        for ch in "J1H5C7":
+            self.assertIn("(%s) Tj" % ch, stream)
+        self.assertNotIn("(J1H5C7) Tj", stream)
+
+    def test_select_pad_accepts_an_offered_choice(self):
+        req = self._new_request(signers=1)
+        s = req.signer_ids[0]
+        sf = self._select_field(req, s)
+        self.assertEqual(sf._options_list(), ["Bénévole", "Employé", "Stagiaire"])
+        req.action_send()
+        with self._mock_cert():
+            self._sign(req, s, field_values={str(sf.id): "Employé"})
+        self.assertEqual(sf.filled_value, "Employé")
+
+    def test_select_pad_refuses_anything_outside_its_choices(self):
+        """A constraint the server does not enforce is decorative."""
+        req = self._new_request(signers=1)
+        s = req.signer_ids[0]
+        sf = self._select_field(req, s, options="Bénévole\nEmployé")
+        req.action_send()
+        with self.assertRaises(UserError):
+            self._sign(req, s, field_values={str(sf.id): "Président"})
+        self.assertNotEqual(s.state, "signed")
+
+    def test_select_pad_without_choices_is_refused_at_creation(self):
+        req = self._new_request(signers=1)
+        with self.assertRaises(ValidationError):
+            self.Field.create({
+                "request_id": req.id, "signer_id": req.signer_ids[0].id,
+                "field_type": "select", "fill_mode": "signer",
+                "page": 1, "pos_x": 0.2, "pos_y": 0.5, "width": 0.3, "height": 0.04,
+            })
+
+    def test_layout_template_carries_boxes_and_choices(self):
+        """A saved layout that loses the box count or the choices is not the
+        same layout when re-applied."""
+        req = self._new_request(signers=1)
+        s = req.signer_ids[0]
+        req.field_ids.unlink()
+        self._cells_field(req, s, count=9)
+        sf = self._select_field(req, s, options="Oui\nNon")
+        tmpl_id = req.save_field_template("QA cases et choix")
+        tmpl = self.env["bf.sign.field.template"].browse(tmpl_id)
+        self.assertEqual(sorted(tmpl.line_ids.mapped("cell_count")), [0, 9])
+
+        other = self._new_request(signers=1, with_fields=False)
+        other.apply_field_template(tmpl_id)
+        cells = other.field_ids.filtered(lambda f: f.field_type == "cells")
+        sel = other.field_ids.filtered(lambda f: f.field_type == "select")
+        self.assertEqual(cells.cell_count, 9)
+        self.assertEqual(sel._options_list(), ["Oui", "Non"])
+
     # ── signer ↔ contact auto-creation ──────────────────────────────────────────
     def test_partner_autocreated_on_send(self):
         req = self._new_request(signers=0, with_fields=False)
