@@ -1,5 +1,5 @@
 // =============================================================================
-// Blue Fox Dark Mode — Odoo 18
+// Blue Fox Dark Mode, Odoo 18
 // Palette based on Blue Fox brand grays (#2E3132, #333738)
 // =============================================================================
 
@@ -12,7 +12,8 @@ $dk-border:      #4a5153;   // borders & separators
 $dk-border-soft: #555c5e;   // subtle borders
 $dk-text:        #d1d5d8;   // main text
 $dk-text-bright: #e8eaec;   // headings, emphasis
-$dk-text-muted:  #8e9496;   // muted / secondary
+$dk-text-muted:  #b6bcbf;   // muted / secondary : >= 4,5:1 sur TOUS les fonds du thème,
+                            // survol compris (6,83 sur la surface, 5,25 sur le surélevé, 4,86 au survol)
 $dk-accent:      #29ABE2;   // Blue Fox blue
 $dk-accent-dim:  rgba(41, 171, 226, 0.12);
 $dk-input-bg:    #2E3132;   // input backgrounds
@@ -143,6 +144,15 @@ body.bf_dark_mode {
   .bg-view, .text-bg-view { background-color: $dk-surface !important; color: $dk-text !important; }
   .bg-100        { background-color: $dk-surface !important; color: $dk-text; }
   .bg-200        { background-color: $dk-surface-alt !important; }
+  // Les utilitaires numérotés d'Odoo sont générés avec `!important` : une règle
+  // du module qui ne le porte pas ne les atteint jamais, quelle que soit sa
+  // spécificité. L'échelle s'arrêtait à 200 ; 300 à 600 restaient donc des gris
+  // CLAIRS sous le texte clair du thème (mesuré : 1,13:1 sur la carte de pièce
+  // jointe, qui porte `bg-300`).
+  .bg-300        { background-color: $dk-raised !important; }
+  .bg-400        { background-color: #454b4c !important; }
+  .bg-500        { background-color: $dk-border !important; }
+  .bg-600        { background-color: $dk-border-soft !important; }
   .bg-info       { background-color: $dk-surface !important; }
   .text-body     { color: $dk-text !important; }
   .text-dark     { color: $dk-text !important; }
@@ -150,7 +160,12 @@ body.bf_dark_mode {
   .text-muted    { color: $dk-text-muted !important; }
   .text-body-secondary { color: $dk-text-muted !important; }
   .text-body-tertiary  { color: $dk-text-muted !important; }
+  .text-600      { color: $dk-text-muted !important; }
   .text-700      { color: $dk-text !important; }
+  // 800 et 900 sont les gris les plus FONCÉS d'Odoo : du quasi-noir sur du
+  // sombre (mesuré 1,14:1 et 1,18:1). Ils servent aux intitulés en évidence.
+  .text-800      { color: $dk-text-bright !important; }
+  .text-900      { color: $dk-text-bright !important; }
   .border        { border-color: $dk-border !important; }
   .border-bottom { border-bottom-color: $dk-border !important; color: inherit; }
   .border-top    { border-top-color: $dk-border !important; }
@@ -543,7 +558,7 @@ body.bf_dark_mode {
   // les styles en ligne de son auteur : la signature courriel collée dans le
   // composeur, un gabarit de courriel posté au chatter, un bloc de code. Ces
   // couleurs-là sont dessinées pour du papier blanc. On les aplatit comme le
-  // cœur le fait pour les courriels — un style en ligne ne cède qu'à
+  // cœur le fait pour les courriels : un style en ligne ne cède qu'à
   // `!important`.
   .o-mail-Message-body {
     [style*="color"], [style*="background"] {
@@ -557,8 +572,8 @@ body.bf_dark_mode {
   // La bulle du message est un bloc peint DERRIÈRE le contenu
   // (`position-absolute`, frère du corps) : elle n'est pas un ancêtre, donc
   // aucune règle de couleur de texte ne la contredit. Odoo la teinte en pastel
-  // clair pour tout message qui n'est pas une note — bleu pour autrui, vert
-  // pour soi, orangé quand on est mentionné — et le texte clair du thème
+  // clair pour tout message qui n'est pas une note (bleu pour autrui, vert
+  // pour soi, orangé quand on est mentionné), et le texte clair du thème
   // sombre s'y efface. Mêmes teintes, calculées sur la surface sombre.
   .o-mail-Message-bubble {
     &.o-blue {
@@ -602,6 +617,28 @@ body.bf_dark_mode {
 
   .o-mail-AttachmentCard { background-color: $dk-raised; border-color: $dk-border; color: $dk-text; }
 
+  // La liste de suggestion du composeur (@personne, #canal, :émoji) peint sa
+  // ligne courante avec un bleu très pâle : `mix($o-view-background-color,
+  // $o-action, 90%)`, soit #EAF7FC chez nous, sous le texte clair du thème :
+  // 1,1:1, la ligne sélectionnée devient invisible. Odoo prévoit deux variables
+  // pour ce cas ; il suffit de les poser.
+  .o-mail-NavigableList {
+    --mail-NavigableList-activeBgColor: #{$dk-hover};
+    --mail-NavigableList-hoverBgColor: #{$dk-surface-alt};
+
+    a { color: $dk-text; }
+    .o-mail-NavigableList-active { color: $dk-text-bright; }
+  }
+
+  // La ligne ACTIVE de la barre latérale est peinte
+  // `var(--mail-DiscussSidebar-itemActiveBgColor, mix($o-view-background-color,
+  // $o-action, 90%)) !important` : un bleu à 90 % de blanc, que la règle du
+  // module ne pouvait pas atteindre. « Boîte de réception » sélectionnée
+  // mesurait 1,35:1. Comme pour la liste navigable, Odoo offre la variable.
+  .o-mail-DiscussSidebar-item {
+    --mail-DiscussSidebar-itemActiveBgColor: #{$dk-hover};
+    --mail-DiscussSidebar-itemActiveOutlineColor: #{rgba($dk-border-soft, 0.5)};
+  }
   .o-mail-DiscussSidebar { background-color: $dk-surface !important; color: $dk-text; }
   .o-mail-DiscussSidebarCategory { background-color: $dk-surface; }
   .o-mail-DiscussSidebar-item { color: $dk-text;
@@ -718,7 +755,7 @@ body.bf_dark_mode {
 }
 
 // =============================================================================
-// 17. TABLE — generic
+// 17. TABLE (generic)
 // =============================================================================
 body.bf_dark_mode {
   .table > :not(caption) > * > * { background-color: $dk-surface; color: $dk-text; border-bottom-color: $dk-border; }
@@ -777,10 +814,19 @@ body.bf_dark_mode {
     }
   }
   .app_settings_block { background-color: $dk-surface; color: $dk-text; }
-  .o_base_settings .o_setting_container .settings { background-color: $dk-surface; }
-  .o_base_settings .o_setting_container .settings_tab { background: $dk-raised; }
-  .o_base_settings .o_setting_container .settings_tab .tab { color: $dk-text; }
-  .o_base_settings .o_setting_container .settings_tab .selected { background-color: $dk-surface-alt; }
+  // ⚠️ Ces quatre règles visaient `.o_base_settings`, une classe qui n'existe
+  // PAS dans Odoo 18 : la vue de configuration porte `o_base_settings_view`.
+  // Elles n'ont donc jamais rien peint : ce que faisait le thème ici venait
+  // des variables `--settings__*` de la section 2.
+  .o_base_settings_view .o_setting_container .settings { background-color: $dk-surface; }
+  .o_base_settings_view .o_setting_container .settings_tab { background: $dk-raised; }
+  .o_base_settings_view .o_setting_container .settings_tab .tab { color: $dk-text; }
+  .o_base_settings_view .o_setting_container .settings_tab .selected { background-color: $dk-surface-alt; }
+  // `.tab:hover, .tab.selected { color: $o-gray-900; }` est écrit en dur dans
+  // le coeur : le nom de l'application choisie sortait en #212529 sur le fond
+  // sombre de son propre onglet, soit 1,36:1.
+  .o_base_settings_view .o_setting_container .settings_tab .tab:hover,
+  .o_base_settings_view .o_setting_container .settings_tab .tab.selected { color: $dk-text-bright; }
   .o_base_settings_view .o_form_renderer .o_setting_container .settings { background-color: $dk-surface; }
   .o_base_settings_view .o_form_renderer .o_setting_container .settings .settingSearchHeader { background-color: $dk-raised !important; }
   .o_web_settings_dashboard { background: $dk-surface; }
@@ -826,7 +872,6 @@ body.bf_dark_mode {
   .oi { color: $dk-text; }
 
   .o_discuss-badge.o-muted { --o-discuss-badge-bg: #{$dk-border-soft}; }
-  .bg-300 { background-color: $dk-border-soft; }
 
   .form-inline { background: $dk-surface; }
   .o_export, .oe_import { background-color: $dk-surface; color: $dk-text; }

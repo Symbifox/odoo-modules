@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Symbifox Dark Mode',
-    'version': '18.0.1.2.0',
+    'version': '18.0.1.3.0',
     'summary': 'Dark mode for the Symbifox Odoo backend, using the BF brand gray palette.',
     'category': 'Tools',
     'author': 'Les services de consultation Blue Fox, Inc.',

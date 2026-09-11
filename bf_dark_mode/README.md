@@ -4,7 +4,7 @@ A dark mode toggle for the Odoo 18 backend, built on the Symbifox brand gray pal
 
 ## License
 
-LGPL-3 — see the repository [LICENSE](../LICENSE) and `__manifest__.py` for details.
+LGPL-3. See the repository [LICENSE](../LICENSE) and `__manifest__.py` for details.
 
 ## Features
 
@@ -31,8 +31,8 @@ LGPL-3 — see the repository [LICENSE](../LICENSE) and `__manifest__.py` for de
   stylesheet can reach. The core has a flattening stylesheet for exactly this,
   but injects it only for the Enterprise dark mode's own cookie; this module
   injects its own, in the Symbifox palette
-- Inline colours written for white paper — an email signature pasted into the
-  composer, a template posted to the chatter, a code block — are flattened in
+- Inline colours written for white paper (an email signature pasted into the
+  composer, a template posted to the chatter, a code block) are flattened in
   ordinary message bodies too
 - Added and removed live, so the systray toggle stays instantaneous on a chatter
   that is already on screen
@@ -48,7 +48,7 @@ LGPL-3 — see the repository [LICENSE](../LICENSE) and `__manifest__.py` for de
 ### Comprehensive Odoo 18 Coverage
 - **Bootstrap 5 CSS variable overrides** -- cards, tables, modals, tooltips, popovers, accordions, list groups, and form controls inherit dark colors automatically
 - **Odoo 18 component variables** -- `--ListRenderer-*`, `--Kanban-*`, `--formView-*`, `--NavBar-*`, `--ControlPanel-*`, `--settings__*`
-- **Bootstrap utility neutralization** -- `.bg-white`, `.bg-light`, `.bg-body`, `.bg-view`, `.text-dark` are all overridden in dark mode context
+- **Bootstrap and Odoo utility neutralization** -- `.bg-white`, `.bg-light`, `.bg-body`, `.bg-view`, `.text-dark`, and the whole numbered Odoo gray scale (`.bg-100` to `.bg-600`, `.text-600` to `.text-900`) are overridden in dark mode context. Those utilities are generated with `!important`, so a rule without it never reaches them, however specific
 - **Views**: Form, List, Kanban (grouped & ungrouped), Calendar (FullCalendar v6), Pivot, Graph, Settings, Activity
 - **Components**: Navbar, Control Panel, Search Panel, Search Bar, Breadcrumbs, Modals, Popovers, DateTimePicker, Dropdowns, Notifications
 - **Chatter & Mail**: Full coverage of Odoo 18 `o-mail-*` classes (Thread, Message, Composer, Activity, Followers, DiscussSidebar, ChatWindow, NotificationItem)
@@ -67,7 +67,7 @@ LGPL-3 — see the repository [LICENSE](../LICENSE) and `__manifest__.py` for de
 | `$dk-border-soft` | `#555c5e` | Subtle borders |
 | `$dk-text` | `#d1d5d8` | Main text |
 | `$dk-text-bright` | `#e8eaec` | Headings, emphasis |
-| `$dk-text-muted` | `#8e9496` | Secondary text |
+| `$dk-text-muted` | `#b6bcbf` | Secondary text |
 | `$dk-accent` | `#29ABE2` | Symbifox blue (links, active states) |
 | `$dk-hover` | `#414849` | Hover highlights |
 
@@ -159,6 +159,37 @@ bf_dark_mode/
   module ships used to match that copy, and the dark grays were baked into the
   message the recipient received. The body class is now dropped for the
   duration of the inlining pass and restored afterwards.
+
+### 18.0.1.2.0
+- Chatter readability: the pastel bubble behind every non-note message is tinted,
+  and each email body's shadow root receives its own flattening stylesheet, added
+  and removed live with the systray toggle.
+
+### 18.0.1.3.0
+- Attachment cards were unreadable. Odoo's attachment card carries the `bg-300`
+  utility, and Odoo generates its numbered gray utilities with `!important`, so
+  the module's own rule never reached them: the card kept its light gray ground
+  (#dee2e6) under the theme's light text (#d1d5d8), i.e. **1.13:1**, at which
+  point the filename is simply not visible. The whole numbered scale is now covered
+  (`.bg-300` to `.bg-600`, `.text-600`, `.text-800`, `.text-900`).
+- The composer's suggestion list (`@person`, `#channel`, `:emoji`) painted its
+  current row in a near-white blue, leaving the selected entry at **1.1:1**. The
+  two CSS variables Odoo provides for that row are now set.
+- `$dk-text-muted` moved from `#8e9496` to `#b6bcbf`: the old value measured
+  **4.26:1** on the main surface, just under the 4.5 AA threshold, and lower on
+  raised surfaces (3.27:1) and on hover (3.04:1). It appeared in every dropdown
+  menu of the backend.
+- The selected row of the Discuss sidebar (Inbox, Starred, each channel) was
+  painted by the core with `!important` in a near-white blue, leaving the label
+  at **1.35:1**. Its CSS variable is now set, as for the suggestion list.
+- Four rules of the Settings section targeted `.o_base_settings`, a class Odoo 18
+  does not have: the configuration view carries `o_base_settings_view`. They had
+  never matched anything. Fixed, along with the selected tab's app name, which
+  the core hard-codes to `$o-gray-900` and which measured **1.36:1**.
+- Measured on whole pages, not only the reported spots: texts below the AA
+  threshold went from 75 to 2 on a Contacts kanban, 80 to 5 in Settings, and 10
+  to 4 in Discuss. Nothing got worse; every remaining item is a brand or core
+  colour that behaves identically in light mode.
 
 ### 18.0.1.0.0
 - Initial release: per-browser cookie systray toggle and Symbifox dark palette.
