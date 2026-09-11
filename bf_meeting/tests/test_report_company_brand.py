@@ -1,14 +1,14 @@
 """Les couleurs du PDF viennent de la société DU DOCUMENT.
 
 Sur un Odoo multi-société, le compte rendu d'une société secondaire sortait aux
-couleurs de la société principale : les gabarits lisaient `env.company` — la
-société ACTIVE de qui déclenche l'impression — alors que le logo et le pied de
+couleurs de la société principale : les gabarits lisaient `env.company`, la
+société ACTIVE de qui déclenche l'impression, alors que le logo et le pied de
 page, eux, lisaient déjà `doc.company_id`. Résultat : le logo d'une marque, le
 bandeau d'une autre.
 
 Le piège est silencieux : rendu depuis l'interface avec la bonne société en
 tête, le rapport sort juste. Il ne dévie que lorsque la société principale
-passe devant dans `allowed_company_ids` — ce qui est le cas dès qu'on coche les
+passe devant dans `allowed_company_ids`, ce qui est le cas dès qu'on coche les
 deux sociétés, et dans toute impression déclenchée par un cron ou un courriel.
 C'est pourquoi ces tests forcent explicitement le MAUVAIS contexte.
 """
@@ -73,7 +73,7 @@ class TestReportCompanyBrand(TransactionCase):
         })
 
     def _render(self, report_xmlid, docid):
-        """Rendre avec la société PRINCIPALE en tête — le cas qui déviait."""
+        """Rendre avec la société PRINCIPALE en tête, le cas qui déviait."""
         html = self.env['ir.actions.report'].with_context(
             allowed_company_ids=[self.maison.id, self.autre.id],
         )._render_qweb_html(report_xmlid, [docid])[0]
@@ -98,8 +98,8 @@ class TestReportCompanyBrand(TransactionCase):
     def test_aucun_bleu_blue_fox_en_dur_dans_les_gabarits(self):
         """Le bleu de la marque maison était écrit en clair dans l'OdJ.
 
-        Trois règles CSS le portaient — filet d'accent, sur-titre, soulignement
-        des sections — et aucune couleur de société ne pouvait les déloger.
+        Trois règles CSS le portaient (filet d'accent, sur-titre, soulignement
+        des sections) et aucune couleur de société ne pouvait les déloger.
         """
         for xmlid, docid in (
             ('bf_meeting.action_report_meeting_record', self.record.id),

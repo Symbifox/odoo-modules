@@ -738,7 +738,7 @@ class MeetingRecord(models.Model):
         # ⚠️ L'ORDRE compte : `env.company` est le PREMIER de
         # `allowed_company_ids`, pas un simple membre. Un `set()` ici replaçait
         # la société principale (id 1) devant la société visée et défaisait en
-        # silence le `with_company()` posé plus bas — le PDF du compte rendu
+        # silence le `with_company()` posé plus bas : le PDF du compte rendu
         # sortait alors aux couleurs de la société principale.
         context_ids = self.env.context.get('allowed_company_ids') or [self.env.company.id]
         allowed_ids = [target_company.id] + [
