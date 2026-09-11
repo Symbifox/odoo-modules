@@ -916,7 +916,12 @@ class NextcloudCalendarSyncConfig(models.Model):
             ("x_nc_uid", "!=", False),
         ])
         existing_etags = {
-            ev.x_nc_uid: ev.x_caldav_etag for ev in existing_events
+            # Normalisé des deux côtés : un etag entré par la porte de la
+            # poussée porte ses guillemets HTTP, un etag entré par la porte
+            # de la lecture ne les porte pas. Comparer les formes brutes
+            # rendait l'événement éternellement « changé ».
+            ev.x_nc_uid: CalendarEvent._normalize_caldav_etag(ev.x_caldav_etag)
+            for ev in existing_events
         }
         existing_by_uid = {ev.x_nc_uid: ev for ev in existing_events}
         target_color = self.odoo_color or 0
@@ -929,7 +934,7 @@ class NextcloudCalendarSyncConfig(models.Model):
             nc_uids_seen.add(uid)
 
             # ETag-based skip: unchanged events
-            new_etag = ev_data.get("etag")
+            new_etag = CalendarEvent._normalize_caldav_etag(ev_data.get("etag"))
             if new_etag and uid in existing_etags:
                 if existing_etags[uid] == new_etag:
                     # Re-process if ICS has RRULE but Odoo event is not recurring
@@ -1036,10 +1041,22 @@ class NextcloudCalendarSyncConfig(models.Model):
         )
         self.update_sync_status(status, msg)
 
-        # After successful full pull, fetch and store sync-token for
-        # subsequent incremental pulls (RFC 6578)
-        if status in ("success", "partial"):
-            self._store_sync_token()
+        # Le jeton se stocke DANS TOUS LES CAS, y compris quand la passe
+        # rapporte des erreurs.
+        #
+        # Chaque erreur est contenue par son propre savepoint : les autres
+        # événements sont bel et bien synchronisés, et le jeton que rend le
+        # serveur décrit donc un état que nous avons atteint. Le refuser ne
+        # protégeait rien et coûtait cher — une seule erreur permanente sur un
+        # agenda donnait `status == "error"`, donc aucun jeton, donc un pull
+        # COMPLET toutes les quinze minutes au lieu d'un delta. Mesuré sur une
+        # base réelle : 837 événements retéléchargés quatre fois par heure,
+        # indéfiniment.
+        #
+        # Le statut, lui, reste `error` : l'avis à l'usager dit toujours que
+        # quelque chose s'est mal passé. C'est la resynchronisation complète
+        # de six heures qui rattrape un événement resté en arrière.
+        self._store_sync_token()
 
         return self._sync_notification(msg, "success" if not errors else "warning")
 

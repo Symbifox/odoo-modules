@@ -46,7 +46,27 @@
     #   événements-là — Odoo est leur source — et le prédicat
     #   `_bf_odoo_owns_attendees` est désormais le MÊME aux deux bouts, pour
     #   que les deux moitiés ne puissent plus diverger.
-    "version": "18.0.2.15.0",
+    # 18.0.2.16.0: 🔴 un ETag entre guillemets tenait tout un agenda en passe
+    #   COMPLÈTE, indéfiniment. Un serveur CalDAV rend son ETag cité (RFC 9110
+    #   §8.8.3) et c'est cette forme que reçoit qui lit l'en-tête d'une réponse;
+    #   la passe de lecture, elle, analysait `<d:getetag>` et retirait les
+    #   guillemets. Les deux écritures du même ETag ne se comparaient donc
+    #   jamais égales : l'événement ratait le saut des événements inchangés à
+    #   CHAQUE passe, se faisait réécrire pour rien, et quand cette réécriture
+    #   butait sur une contrainte, le savepoint annulait l'etag avec le reste.
+    #   La boucle ne se dénouait jamais. L'ETag est désormais normalisé aux
+    #   DEUX bouts — à l'écriture et à la comparaison — ce qui répare du même
+    #   coup les etags déjà stockés sous leur forme citée, sans migration.
+    #   Second défaut, plus coûteux : `_store_sync_token()` n'était appelé que
+    #   si le statut valait `success` ou `partial`. Une seule erreur permanente
+    #   donnait `error`, donc aucun jeton, donc un pull COMPLET toutes les
+    #   quinze minutes au lieu d'un delta. Le jeton se stocke maintenant dans
+    #   tous les cas — chaque erreur étant contenue par son savepoint, le jeton
+    #   décrit un état réellement atteint — et le statut reste `error` pour que
+    #   l'avis à l'usager ne mente pas. Mesuré sur une base réelle : UN
+    #   événement sur 841 tenait 837 événements en retéléchargement quatre fois
+    #   par heure.
+    "version": "18.0.2.16.0",
     "category": "Calendar",
     "website": "https://symbifox.com",
     "author": "Les services de consultation Blue Fox, Inc.",

@@ -60,6 +60,34 @@ class CalendarEvent(models.Model):
         help="Color index for calendar views",
     )
 
+    @api.model
+    def _normalize_caldav_etag(self, etag):
+        """Rendre un ETag comparable, quelle que soit la porte par laquelle il entre.
+
+        Un serveur CalDAV rend son ETag **entre guillemets** (RFC 9110 §8.8.3),
+        et c'est cette forme-là que reçoit quiconque lit l'en-tête `ETag` d'une
+        réponse HTTP. La passe de lecture, elle, analyse `<d:getetag>` et retire
+        les guillemets. Les deux écritures du MÊME ETag ne pouvaient donc jamais
+        se comparer égales.
+
+        Ce n'est pas cosmétique : l'événement dont l'etag stocké porte ses
+        guillemets rate le saut des événements inchangés à CHAQUE passe, se fait
+        réécrire pour rien, et si cette réécriture échoue (une contrainte qui
+        porte sur un enregistrement à moitié écrit, par exemple), le savepoint
+        annule l'etag avec le reste : la boucle ne se dénoue jamais. Mesuré le
+        2026-09-11 sur une base réelle, UN événement sur 841 suffisait à tenir
+        tout l'agenda en passe complète.
+
+        Normaliser aux deux bouts — à l'écriture et à la comparaison — répare
+        aussi les etags déjà stockés sous leur forme citée, sans migration.
+        """
+        if not etag:
+            return etag
+        etag = etag.strip()
+        if etag[:2].upper() == "W/":  # validateur faible, RFC 9110 §8.8.3
+            etag = etag[2:]
+        return etag.strip('"')
+
     def _bf_odoo_owns_attendees(self):
         """Odoo est-il la source des participants de cet événement ?
 
@@ -224,6 +252,7 @@ class CalendarEvent(models.Model):
             return True
 
         href, etag = backend.push(config, event)
+        etag = self._normalize_caldav_etag(etag)
         vals = {"x_last_sync": fields.Datetime.now()}
         if href and href != event.x_caldav_href:
             vals["x_caldav_href"] = href
@@ -923,7 +952,10 @@ class CalendarEvent(models.Model):
         event = self.browse(event_id)
         if event.exists():
             vals = {
-                "x_caldav_etag": etag,
+                # n8n rappelle cette méthode avec l'en-tête `ETag` verbatim,
+                # donc ENTRE GUILLEMETS. C'est par ici que la forme citée
+                # entrait en base et rendait l'événement incomparable.
+                "x_caldav_etag": self._normalize_caldav_etag(etag),
                 "x_last_sync": fields.Datetime.now(),
             }
             if href:
