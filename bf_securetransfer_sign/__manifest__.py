@@ -1,6 +1,6 @@
 {
     'name': 'Symbifox — Transfert sécurisé : entente de confidentialité',
-    'version': '18.0.1.1.0',
+    'version': '18.0.1.2.0',
     'category': 'Website',
     'summary': "Pont bf_securetransfer × bf_sign : exiger la signature d'une "
                "entente de confidentialité avant l'accès au contenu d'un transfert",
@@ -65,5 +65,5 @@ Ce que le pont garantit
     ],
     'installable': True,
     'application': False,
-    'auto_install': False,
+    'auto_install': True,
 }
