@@ -1,6 +1,6 @@
 {
     'name': "Symbifox — Signature pour la comptabilité",
-    'version': '18.0.1.0.1',
+    'version': '18.0.1.1.0',
     'category': 'Accounting/Accounting',
     'summary': "Envoyer une facture client / facture fournisseur pour signature électronique (bf_sign).",
     'description': """
@@ -18,4 +18,5 @@ une fois signé par tous.
     ],
     'installable': True,
     'application': False,
+    'auto_install': True,
 }

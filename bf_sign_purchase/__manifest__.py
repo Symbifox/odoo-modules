@@ -1,6 +1,6 @@
 {
     'name': "Symbifox — Signature pour les achats",
-    'version': '18.0.1.0.1',
+    'version': '18.0.1.1.0',
     'category': 'Inventory/Purchase',
     'summary': "Envoyer un bon de commande fournisseur pour signature électronique (bf_sign).",
     'description': """
@@ -17,4 +17,5 @@ signé est reversé dans le fil du bon de commande une fois signé.
     ],
     'installable': True,
     'application': False,
+    'auto_install': True,
 }
