@@ -1,7 +1,7 @@
 {
     "name": "Expérience client - feedback post-rencontre",
     "summary": "Demande de feedback (3 émojis) après l'envoi d'un compte rendu",
-    "version": "18.0.1.2.0",
+    "version": "18.0.1.2.1",
     "post_init_hook": "post_init_hook",
     "category": "Marketing/Customer Experience",
     "author": "Les services de consultation Blue Fox, Inc.",

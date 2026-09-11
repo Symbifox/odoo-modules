@@ -17,7 +17,7 @@
                     <div t-attf-style="background:#{dark}; padding:18px 24px; border-radius:10px 10px 0 0;">
                         <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;"><tbody><tr>
                             <td align="left" style="vertical-align:middle;">
-                                <img t-attf-src="/web/image/res.company/#{company.id}/#{company.report_brand_logo and 'report_brand_logo' or 'logo'}" t-att-alt="company.name" style="height:36px; display:block; border:0;"/>
+                                <img t-attf-src="/brand/logo/#{company.id}/brand" t-att-alt="company.name" style="height:36px; display:block; border:0;"/>
                             </td>
                             <td align="right" style="vertical-align:middle; color:#ffffff; font-family:Lexend,system-ui,Arial,sans-serif; font-size:20px; font-weight:700;">Signature requise</td>
                         </tr></tbody></table>
@@ -58,7 +58,7 @@
                     <div t-attf-style="background:#{dark}; padding:18px 24px; border-radius:10px 10px 0 0;">
                         <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;"><tbody><tr>
                             <td align="left" style="vertical-align:middle;">
-                                <img t-attf-src="/web/image/res.company/#{company.id}/#{company.report_brand_logo and 'report_brand_logo' or 'logo'}" t-att-alt="company.name" style="height:36px; display:block; border:0;"/>
+                                <img t-attf-src="/brand/logo/#{company.id}/brand" t-att-alt="company.name" style="height:36px; display:block; border:0;"/>
                             </td>
                             <td align="right" style="vertical-align:middle; color:#ffffff; font-family:Lexend,system-ui,Arial,sans-serif; font-size:20px; font-weight:700;">Signature en attente</td>
                         </tr></tbody></table>
@@ -103,7 +103,7 @@
                     <div t-attf-style="background:#{dark}; padding:18px 24px; border-radius:10px 10px 0 0;">
                         <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;"><tbody><tr>
                             <td align="left" style="vertical-align:middle;">
-                                <img t-attf-src="/web/image/res.company/#{company.id}/#{company.report_brand_logo and 'report_brand_logo' or 'logo'}" t-att-alt="company.name" style="height:36px; display:block; border:0;"/>
+                                <img t-attf-src="/brand/logo/#{company.id}/brand" t-att-alt="company.name" style="height:36px; display:block; border:0;"/>
                             </td>
                             <td align="right" style="vertical-align:middle; color:#ffffff; font-family:Lexend,system-ui,Arial,sans-serif; font-size:20px; font-weight:700;">Document signé</td>
                         </tr></tbody></table>
@@ -141,7 +141,7 @@
                     <div t-attf-style="background:#{dark}; padding:18px 24px; border-radius:10px 10px 0 0;">
                         <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;"><tbody><tr>
                             <td align="left" style="vertical-align:middle;">
-                                <img t-attf-src="/web/image/res.company/#{company.id}/#{company.report_brand_logo and 'report_brand_logo' or 'logo'}" t-att-alt="company.name" style="height:36px; display:block; border:0;"/>
+                                <img t-attf-src="/brand/logo/#{company.id}/brand" t-att-alt="company.name" style="height:36px; display:block; border:0;"/>
                             </td>
                             <td align="right" style="vertical-align:middle; color:#ffffff; font-family:Lexend,system-ui,Arial,sans-serif; font-size:20px; font-weight:700;">Signature refusée</td>
                         </tr></tbody></table>

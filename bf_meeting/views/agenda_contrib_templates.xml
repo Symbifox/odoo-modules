@@ -50,7 +50,7 @@
             </head>
             <body>
                 <div class="bf-header">
-                    <img t-attf-src="/meeting/logo/#{company.id}/brand" alt=""/>
+                    <img t-attf-src="/brand/logo/#{company.id}/brand" alt=""/>
                     <span class="t"><t t-esc="company.name"/></span>
                 </div>
                 <div class="bf-accent"/>

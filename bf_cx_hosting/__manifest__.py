@@ -1,7 +1,7 @@
 {
     "name": "Expérience client : CSAT post-maintenance",
     "summary": "Demande de feedback (3 émojis) après une maintenance planifiée",
-    "version": "18.0.1.1.0",
+    "version": "18.0.1.1.1",
     "post_init_hook": "post_init_hook",
     "category": "Marketing/Customer Experience",
     "author": "Les services de consultation Blue Fox, Inc.",

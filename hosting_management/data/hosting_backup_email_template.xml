@@ -33,7 +33,7 @@
                             <tr>
                               <td align="left" style="color:#FFFFFF;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:16px;font-weight:600;">
                                 <a t-attf-href="{{ company.website or 'https://bluefoxconsultant.com' }}" style="text-decoration:none;">
-                                  <img t-attf-src="/web/image/res.company/{{ company.id }}/logo" t-att-alt="company.name or 'Logo'" style="height:48px;width:auto;display:block;" height="48"/>
+                                  <img t-attf-src="/brand/logo/{{ company.id }}" t-att-alt="company.name or 'Logo'" style="height:48px;width:auto;display:block;" height="48"/>
                                 </a>
                               </td>
                               <td align="right" style="color:#E6EDF3;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:22px;font-weight:800;">

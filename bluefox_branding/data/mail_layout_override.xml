@@ -46,7 +46,7 @@
                                                         <td align="left">
                                                             <t t-if="company">
                                                                 <a t-att-href="company.website or '#'" style="text-decoration:none;">
-                                                                    <img t-attf-src="/web/image/res.company/{{ company.id }}/logo" t-att-alt="company.name" style="height:44px;width:auto;display:block;border:0;" height="44"/>
+                                                                    <img t-attf-src="/brand/logo/{{ company.id }}" t-att-alt="company.name" style="height:44px;width:auto;display:block;border:0;" height="44"/>
                                                                 </a>
                                                             </t>
                                                         </td>

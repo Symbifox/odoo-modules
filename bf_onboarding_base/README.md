@@ -10,6 +10,44 @@ Every Symbifox Odoo module that needs an admin onboarding panel ships
 its own `onboarding.onboarding` + `onboarding.onboarding.step` records,
 but reuses generic step actions defined here to avoid boilerplate.
 
+## Public company logo route (v18.0.2.1.0)
+
+`/brand/logo/<company_id>` and `/brand/logo/<company_id>/<variant>` serve a
+company's logo to a reader who has no account. Branded emails and public pages
+across the Blue Fox modules point at it.
+
+**Why it exists.** `/web/image/res.company/<id>/<field>` only serves the real
+image for companies the ANONYMOUS user is allowed to read, that is the single
+company of the website. For any other one, Odoo swallows the AccessError and
+returns its grey placeholder **with an HTTP 200**: no error code, nothing in the
+logs. On a multi-company database the logo of a secondary company therefore
+vanished from every branded email and every public page, while the PDFs,
+rendered server-side with an internal user's rights, stayed correct. That gap
+between two outputs of the same field is what puts you on the trail.
+
+A logo is public branding by nature, and Odoo already serves any company logo in
+sudo on `/logo.png?company=<id>`. This route does the same, and additionally
+knows how to resolve the in-house brand fields that `/logo.png` ignores.
+
+| Variant | Fields, in order | Used by |
+|---|---|---|
+| `logo` (default) | `logo` | most branded emails |
+| `brand` | `report_brand_logo`, `logo` | `privacy_consent`, `bf_sign`, the meeting contribution page |
+| `own` | `logo`, `report_brand_logo` | `bf_sign` portal pages |
+| `meeting` | `meeting_logo`, `logo` | `bf_meeting` emails |
+
+🔴 **A VARIANT travels in the URL, never a field name.** The route reads in
+sudo; without that allowlist it would become an arbitrary read of
+`res.company`. An unknown variant, or an unknown company, returns 404.
+
+⚠️ The variants are not interchangeable, and `own` is not a duplicate of `logo`:
+they only agree as long as no company carries a brand logo without an ordinary
+one. The callers did not share a single order, and merging them would change the
+image served on a tenant that carries both fields.
+
+Images are resized to 120 px high: the source field is an `image_1920` that
+weighed 1.2 MB on one company, which has no place in an email.
+
 ## Integration pattern
 
 In your module's manifest:

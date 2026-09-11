@@ -27,7 +27,7 @@
                                     <tbody>
                                         <tr>
                                             <td align="left" style="color:#FFFFFF; font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:16px; font-weight:600;">
-                                                <img t-att-src="'/meeting/logo/%d' % object.company_id.id" alt="Logo" style="height:40px; width:auto; display:block; border:0;"/>
+                                                <img t-att-src="'/brand/logo/%d/meeting' % object.company_id.id" alt="Logo" style="height:40px; width:auto; display:block; border:0;"/>
                                             </td>
                                             <td align="right" style="color:#E6EDF3; font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:22px; font-weight:800; letter-spacing:0.2px;">
                                                 Compte rendu

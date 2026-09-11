@@ -13,7 +13,7 @@
                     <!-- En-t&#234;te brand&#233; -->
                     <div t-attf-style="text-align: center; margin-bottom: 24px; border-bottom: 3px solid {{ brand_primary }}; padding-bottom: 16px;">
                         <div t-if="co.logo" style="margin-bottom: 8px;">
-                            <img t-attf-src="/web/image/res.company/{{ co.id }}/logo" style="max-height: 56px; width: auto;"/>
+                            <img t-attf-src="/brand/logo/{{ co.id }}" style="max-height: 56px; width: auto;"/>
                         </div>
                         <div t-attf-style="font-size: 28px; font-weight: 700; color: {{ brand_dark }}; letter-spacing: 1px;">
                             <t t-esc="co.name"/>

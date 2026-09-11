@@ -658,6 +658,9 @@ Hosting
 
 ## Changelog
 
+### Version 18.0.2.51.4
+- Fix: on a multi-company database, the logo in branded emails and public pages now goes through `/brand/logo/<company>[/<variant>]` (bf_onboarding_base) instead of `/web/image/res.company/...`. The latter only serves the real image for the company of the website and returns Odoo's grey placeholder **with an HTTP 200** for every other one, so a secondary company's logo vanished from emails with no error code to show for it. No functional change elsewhere.
+
 ### Version 18.0.2.51.3
 - Fix: the test that guards the refresh cadence no longer requires the scheduled job to be enabled. A database may switch its scheduled actions off deliberately (a demo, a bench, a restored clone), and the test turned that operating choice into a failure. What the module guarantees is the cadence, not the activation.
 

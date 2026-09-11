@@ -139,55 +139,6 @@ class MeetingContributionController(Controller):
             'error': error,
         }
 
-    # ── Company logo, readable without an account ─────────────────────────────
-    # ⚠️ `/web/image/res.company/<id>/<champ>` ne sert la vraie image qu'aux
-    # sociétés que l'usager ANONYME a le droit de lire, c'est-à-dire la seule
-    # société du site web. Pour toute autre, Odoo avale l'AccessError et rend
-    # son image grise de remplacement avec un **HTTP 200** : le logo d'une
-    # société secondaire disparaissait donc des courriels et de la page
-    # publique de contribution sans que rien ne le signale.
-    #
-    # Un logo est de la marque publique par nature, et Odoo sert déjà n'importe
-    # quel logo de société en sudo sur `/logo.png?company=<id>`. Cette route
-    # fait la même chose, en sachant résoudre les champs de marque du module,
-    # que `/logo.png` ignore.
-    #
-    # 🔴 C'est la VARIANTE qui voyage dans l'URL, jamais un nom de champ : sans
-    # cette liste blanche, la route deviendrait une lecture arbitraire de
-    # `res.company` en sudo.
-    LOGO_VARIANTS = {
-        'meeting': ('meeting_logo', 'logo'),
-        'brand': ('report_brand_logo', 'logo'),
-    }
-
-    @route(['/meeting/logo/<int:company_id>',
-            '/meeting/logo/<int:company_id>/<string:variant>'],
-           type='http', auth='public', methods=['GET'], csrf=False)
-    def meeting_company_logo(self, company_id, variant='meeting', **kw):
-        """Servir le logo d'une société, quelle que soit celle du site.
-
-        Les deux appelants n'ont PAS le même ordre de résolution et les fondre
-        en un seul changerait le logo de la page publique chez un locataire qui
-        porte les deux champs. D'où la variante.
-        """
-        champs = self.LOGO_VARIANTS.get(variant)
-        if champs is None:
-            return request.not_found()
-        company = request.env['res.company'].sudo().browse(company_id).exists()
-        if not company:
-            return request.not_found()
-        champ = next(
-            (f for f in champs if f in company._fields and company[f]),
-            'logo',
-        )
-        # Redimensionné : le champ source est un `image_1920` et pesait jusqu'à
-        # 1,2 Mo, ce qui n'a pas sa place dans un courriel. 120 px de haut
-        # couvrent les 40 px du courriel et les 34 px de la page, en triple
-        # densité.
-        stream = request.env['ir.binary']._get_image_stream_from(
-            company, champ, height=120, width=0)
-        return stream.get_response()
-
     # ── Contribution page ─────────────────────────────────────────────────────
     @route('/meeting/agenda/<token>', type='http', auth='public',
            methods=['GET'], csrf=False)

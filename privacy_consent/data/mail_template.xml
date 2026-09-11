@@ -25,7 +25,7 @@
                                 <tr>
                                     <td align="left">
                                         <a t-attf-href="{{ company.website or object.get_base_url() }}" style="text-decoration:none;">
-                                            <img t-attf-src="/web/image/res.company/{{ company.id }}/{{ 'report_brand_logo' in _wlf and company.report_brand_logo and 'report_brand_logo' or 'logo' }}" t-att-alt="company.name" style="height:48px; width:auto; display:block;" height="48"/>
+                                            <img t-attf-src="/brand/logo/{{ company.id }}/brand" t-att-alt="company.name" style="height:48px; width:auto; display:block;" height="48"/>
                                         </a>
                                     </td>
                                     <td align="right" style="color:#ffffff; font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:18px; font-weight:700;">
@@ -223,7 +223,7 @@
                                 <tr>
                                     <td align="left">
                                         <a t-attf-href="{{ company.website or object.get_base_url() }}" style="text-decoration:none;">
-                                            <img t-attf-src="/web/image/res.company/{{ company.id }}/{{ 'report_brand_logo' in _wlf and company.report_brand_logo and 'report_brand_logo' or 'logo' }}" t-att-alt="company.name" style="height:48px; width:auto; display:block;" height="48"/>
+                                            <img t-attf-src="/brand/logo/{{ company.id }}/brand" t-att-alt="company.name" style="height:48px; width:auto; display:block;" height="48"/>
                                         </a>
                                     </td>
                                     <td align="right" style="color:#ffffff; font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:18px; font-weight:700;">
