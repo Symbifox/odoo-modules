@@ -1,0 +1,6 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_bf_visit_listing_user,bf.visit.listing.user,model_bf_visit_listing,bf_appointment_visit.group_bf_visit_user,1,1,1,0
+access_bf_visit_listing_manager,bf.visit.listing.manager,model_bf_visit_listing,bf_appointment_visit.group_bf_visit_manager,1,1,1,1
+access_bf_visit_window_user,bf.visit.window.user,model_bf_visit_window,bf_appointment_visit.group_bf_visit_user,1,1,1,1
+access_bf_visit_user,bf.visit.user,model_bf_visit,bf_appointment_visit.group_bf_visit_user,1,1,1,0
+access_bf_visit_manager,bf.visit.manager,model_bf_visit,bf_appointment_visit.group_bf_visit_manager,1,1,1,1

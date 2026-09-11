@@ -1,0 +1,91 @@
+// Les trois pages publiques des visites : décision du vendeur, feuille
+// d'inscription sur place, rétroaction.
+//
+// Toutes les trois se lisent sur un téléphone, debout, dans une entrée de
+// maison. Une colonne, des cibles larges, rien à faire défiler latéralement.
+
+.bf-visit {
+    max-width: 640px;
+    margin: 0 auto;
+
+    // ⚠️ Le corps du site public BF est SOMBRE, texte blanc. Une carte blanche
+    // qui ne déclare pas sa couleur de texte hérite de ce blanc et se vide de
+    // son contenu à l'écran. La couleur se pose sur la SURFACE, pour que ce
+    // qu'on ajoutera plus tard dedans hérite du bon ton sans y penser.
+    .bf-visit-card {
+        background: #fff;
+        color: var(--bf-appt-dark, #212529);
+        border: 1px solid #e5e7eb;
+        border-radius: 10px;
+        padding: 1rem 1.15rem;
+
+        dt {
+            font-weight: 600;
+        }
+
+        dd {
+            margin-bottom: .35rem;
+        }
+    }
+
+    // 🔴 `bf-btn-accent` du socle donne la couleur du TEXTE (#fff) et AUCUN
+    // fond : les pages du socle peignent le leur en style en ligne. Sans ça,
+    // « Je suis arrivé » et « Envoyer » sortaient blanc sur blanc, contraste
+    // 1:1. Mesuré au navigateur le 2026-09-11, invisible autrement : le
+    // balisage est juste, la page est simplement vide à l'œil. Même défaut que
+    // le sondage de disponibilités en 18.0.1.4.2.
+    .btn.bf-btn-accent {
+        background-color: var(--bf-appt-primary, #29ABE1);
+        color: #fff;
+
+        &:hover,
+        &:focus {
+            color: #fff;
+        }
+    }
+
+    // 🔴 Le second choix ne peut PAS s'en remettre au fond de la page. Mesuré
+    // le 2026-09-11 : sur un locataire sans le thème du site Blue Fox, le corps
+    // du portail est BLANC avec texte sombre, et seul l'en-tête de section est
+    // sombre. Un `btn-outline-light` y écrit donc du blanc sur du blanc. Le
+    // bouton porte ses deux couleurs lui-même, comme les cartes : il reste
+    // lisible sur un fond clair comme sur un fond sombre.
+    .btn.bf-visit-btn-second {
+        background-color: #fff;
+        color: var(--bf-appt-dark, #212529);
+        border: 1px solid rgba(0, 0, 0, .25);
+
+        &:hover,
+        &:focus {
+            background-color: #f1f3f5;
+            color: var(--bf-appt-dark, #212529);
+        }
+    }
+
+    .bf-visit-fineprint {
+        font-size: .85rem;
+        opacity: .75;
+    }
+
+    // Les champs du formulaire vivent sur le fond sombre : sans couleur
+    // explicite, un `<select>` rend du texte blanc sur fond blanc dans
+    // plusieurs navigateurs.
+    .form-control,
+    .form-select,
+    textarea {
+        background: #fff;
+        color: var(--bf-appt-dark, #212529);
+    }
+
+    .form-text {
+        opacity: .8;
+    }
+
+    // Sur téléphone, les deux décisions prennent toute la largeur : viser un
+    // bouton de 90 px avec un pouce, dans une entrée, ne marche pas.
+    @media (max-width: 575.98px) {
+        .btn {
+            width: 100%;
+        }
+    }
+}

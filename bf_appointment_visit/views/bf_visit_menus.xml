@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Les visites vivent sous « Rendez-vous » : c'est le même moteur, et un
+         courtier n'a pas besoin d'une deuxième application dans sa barre. -->
+    <menuitem
+        id="menu_bf_visit_root"
+        name="Visites de propriétés"
+        parent="resource_booking.resource_booking_main_menu"
+        sequence="25"
+        groups="bf_appointment_visit.group_bf_visit_user"/>
+
+    <menuitem
+        id="menu_bf_visit_listing"
+        name="Inscriptions"
+        parent="menu_bf_visit_root"
+        action="action_bf_visit_listing"
+        sequence="10"/>
+
+    <menuitem
+        id="menu_bf_visit_register"
+        name="Registre des visites"
+        parent="menu_bf_visit_root"
+        action="action_bf_visit"
+        sequence="20"/>
+</odoo>

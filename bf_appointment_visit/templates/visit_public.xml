@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- La décision du vendeur, sans compte à créer. Un vendeur ne se connectera
+         pas à un logiciel pour dire oui à une visite : le lien du courriel est
+         la seule interface qu'il verra jamais. -->
+    <template id="visit_seller_page" name="Visite : décision du vendeur">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="False"/>
+            <t t-call="bf_appointment.appointment_brand_style"/>
+            <t t-set="additional_title">Demande de visite</t>
+
+            <div class="bf-visit">
+                <div class="bf-section-header mb-4">
+                    <h2>Demande de visite</h2>
+                    <p class="mb-0"><t t-out="visit.listing_id.name"/></p>
+                </div>
+
+                <div t-if="message" t-attf-class="alert alert-{{ message_kind or 'info' }}">
+                    <t t-out="message"/>
+                </div>
+
+                <div class="bf-visit-card">
+                    <dl class="row mb-0">
+                        <dt class="col-sm-5">Quand</dt>
+                        <dd class="col-sm-7">
+                            <t t-out="quand"/>
+                        </dd>
+                        <dt class="col-sm-5">Personnes attendues</dt>
+                        <dd class="col-sm-7"><t t-out="visit.visitor_count or 1"/></dd>
+                        <dt class="col-sm-5">Représentation</dt>
+                        <dd class="col-sm-7">
+                            <t t-if="visit.representation == 'broker'">
+                                Accompagné de son courtier
+                                <t t-if="visit.buyer_broker_name">
+                                    (<t t-out="visit.buyer_broker_name"/>)
+                                </t>
+                            </t>
+                            <t t-elif="visit.representation == 'none'">
+                                La personne n'a pas de courtier
+                            </t>
+                            <t t-else="">Question sans réponse</t>
+                        </dd>
+                        <dt class="col-sm-5">État</dt>
+                        <dd class="col-sm-7"><t t-out="etat_libelle"/></dd>
+                    </dl>
+                </div>
+
+                <form t-if="visit.state == 'requested'" method="post"
+                      t-attf-action="/visite/vendeur/{{ token }}" class="mt-4">
+                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+
+                    <div class="mb-3">
+                        <label class="form-label" for="seller_note">
+                            Un mot pour le visiteur (facultatif)
+                        </label>
+                        <textarea class="form-control" id="seller_note" name="seller_note"
+                                  rows="2" placeholder="Sonnez plutôt à la porte de côté."/>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label" for="proposed_start">
+                            Ou proposez une autre heure
+                        </label>
+                        <input type="datetime-local" class="form-control"
+                               id="proposed_start" name="proposed_start"/>
+                        <div class="form-text">
+                            Laissez vide pour accepter ou refuser l'heure demandée.
+                        </div>
+                    </div>
+
+                    <div class="d-flex flex-wrap gap-2">
+                        <button type="submit" name="decision" value="approve"
+                                class="btn bf-btn-accent">Accepter cette visite</button>
+                        <button type="submit" name="decision" value="decline"
+                                class="btn bf-visit-btn-second">Refuser</button>
+                    </div>
+                </form>
+
+                <p class="mt-4 bf-visit-fineprint">
+                    Ce lien vous est personnel. Il ne donne accès qu'à cette demande.
+                </p>
+            </div>
+        </t>
+    </template>
+
+    <!-- La feuille d'inscription sur place, derrière un code QR. Elle sert
+         pendant une visite libre, à qui se présente sans avoir réservé. -->
+    <template id="visit_walkin_page" name="Visite : feuille d'inscription">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="False"/>
+            <t t-call="bf_appointment.appointment_brand_style"/>
+            <t t-set="additional_title">Inscription à la visite</t>
+
+            <div class="bf-visit">
+                <div class="bf-section-header mb-4">
+                    <h2>Bienvenue</h2>
+                    <p class="mb-0"><t t-out="listing.name"/></p>
+                </div>
+
+                <div t-if="message" t-attf-class="alert alert-{{ message_kind or 'info' }}">
+                    <t t-out="message"/>
+                </div>
+
+                <form t-if="not termine" method="post"
+                      t-attf-action="/visite/accueil/{{ token }}">
+                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label" for="visitor_name">Votre nom</label>
+                            <input type="text" class="form-control" id="visitor_name"
+                                   name="visitor_name" required="required"/>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label" for="visitor_count">
+                                Nombre de personnes
+                            </label>
+                            <input type="number" class="form-control" id="visitor_count"
+                                   name="visitor_count" value="1" min="1" max="20"/>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label" for="visitor_email">Courriel</label>
+                            <input type="email" class="form-control" id="visitor_email"
+                                   name="visitor_email"/>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label" for="visitor_phone">Téléphone</label>
+                            <input type="tel" class="form-control" id="visitor_phone"
+                                   name="visitor_phone"/>
+                        </div>
+                    </div>
+
+                    <div t-if="listing.require_representation" class="bf-visit-card mb-3">
+                        <p class="mb-2">
+                            <strong>Êtes-vous représenté par un courtier immobilier?</strong>
+                        </p>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="representation"
+                                   id="rep_none" value="none" required="required"/>
+                            <label class="form-check-label" for="rep_none">Non</label>
+                        </div>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="radio" name="representation"
+                                   id="rep_broker" value="broker"/>
+                            <label class="form-check-label" for="rep_broker">Oui</label>
+                        </div>
+                        <input type="text" class="form-control" name="buyer_broker_name"
+                               placeholder="Le nom de votre courtier et de son agence"/>
+                        <p class="bf-visit-fineprint mt-2 mb-0">
+                            Le courtier présent représente les intérêts du vendeur.
+                        </p>
+                    </div>
+
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" id="consent"
+                               name="consent" required="required"/>
+                        <label class="form-check-label" for="consent">
+                            J'accepte que mon nom soit inscrit au registre des visites de
+                            cette propriété.
+                        </label>
+                    </div>
+
+                    <button type="submit" class="btn bf-btn-accent">Je suis arrivé</button>
+                </form>
+            </div>
+        </t>
+    </template>
+
+    <!-- Ce que le visiteur en a pensé. Deux questions, pas douze. -->
+    <template id="visit_feedback_page" name="Visite : rétroaction">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="False"/>
+            <t t-call="bf_appointment.appointment_brand_style"/>
+            <t t-set="additional_title">Votre visite</t>
+
+            <div class="bf-visit">
+                <div class="bf-section-header mb-4">
+                    <h2>Votre visite</h2>
+                    <p class="mb-0"><t t-out="visit.listing_id.name"/></p>
+                </div>
+
+                <div t-if="message" t-attf-class="alert alert-{{ message_kind or 'info' }}">
+                    <t t-out="message"/>
+                </div>
+
+                <form t-if="not termine" method="post"
+                      t-attf-action="/visite/retour/{{ token }}">
+                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+
+                    <div class="mb-3">
+                        <label class="form-label" for="feedback_interest">
+                            Votre intérêt pour cette propriété
+                        </label>
+                        <select class="form-select" id="feedback_interest"
+                                name="feedback_interest" required="required">
+                            <option value="">Choisir</option>
+                            <option value="1">Aucun intérêt</option>
+                            <option value="2">Faible</option>
+                            <option value="3">À considérer</option>
+                            <option value="4">Fort</option>
+                            <option value="5">Une offre s'en vient</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label" for="feedback_price">Le prix demandé</label>
+                        <select class="form-select" id="feedback_price" name="feedback_price">
+                            <option value="">Sans opinion</option>
+                            <option value="high">Au-dessus du marché</option>
+                            <option value="fair">Dans le marché</option>
+                            <option value="low">En dessous du marché</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label" for="feedback_comment">
+                            Autre chose à dire? (facultatif)
+                        </label>
+                        <textarea class="form-control" id="feedback_comment"
+                                  name="feedback_comment" rows="3"/>
+                    </div>
+
+                    <button type="submit" class="btn bf-btn-accent">Envoyer</button>
+                    <p class="bf-visit-fineprint mt-3 mb-0">
+                        Votre commentaire n'est transmis au vendeur que si le courtier
+                        juge utile de le faire.
+                    </p>
+                </form>
+            </div>
+        </t>
+    </template>
+
+</odoo>

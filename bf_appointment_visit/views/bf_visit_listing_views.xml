@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_bf_visit_listing_form" model="ir.ui.view">
+        <field name="name">bf.visit.listing.form</field>
+        <field name="model">bf.visit.listing</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_publish" type="object" string="Mettre en ligne"
+                            class="btn-primary" invisible="state == 'published'"/>
+                    <button name="action_suspend" type="object" string="Suspendre"
+                            invisible="state != 'published'"/>
+                    <button name="action_close" type="object" string="Terminer"
+                            invisible="state in ('draft', 'closed')"/>
+                    <button name="action_back_to_draft" type="object" string="Remettre en brouillon"
+                            invisible="state != 'suspended'"/>
+                    <button name="action_open_public_page" type="object"
+                            string="Voir la page de réservation" icon="fa-external-link"
+                            invisible="state != 'published'"/>
+                    <button name="action_open_walkin_sheet" type="object"
+                            string="Feuille d'inscription sur place" icon="fa-qrcode"
+                            invisible="not open_house"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,published,closed"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_visits" type="object"
+                                class="oe_stat_button" icon="fa-users">
+                            <field name="visit_count" widget="statinfo" string="Visites"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="123, rue Principale, Sherbrooke"/></h1>
+                        <field name="reference" placeholder="Numéro d'inscription"/>
+                    </div>
+                    <group>
+                        <group string="La propriété">
+                            <field name="listing_kind"/>
+                            <field name="occupancy"/>
+                            <field name="tenant_id" invisible="occupancy != 'tenant'"
+                                   required="occupancy == 'tenant' and state == 'published'"/>
+                            <field name="tenant_wants_presence" invisible="occupancy != 'tenant'"/>
+                            <field name="seller_ids" widget="many2many_tags"/>
+                            <field name="broker_ids" widget="many2many_tags"/>
+                            <field name="tz"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                        <group string="Adresse">
+                            <field name="street"/>
+                            <field name="street2"/>
+                            <field name="city"/>
+                            <field name="state_id" options="{'no_open': True, 'no_create': True}"/>
+                            <field name="zip"/>
+                            <field name="country_id" options="{'no_open': True, 'no_create': True}"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Plages offertes" name="windows">
+                            <p class="text-muted">
+                                Les moments où le vendeur accepte de faire visiter. Un créneau
+                                n'est offert que si un courtier autorisé est libre en même temps.
+                            </p>
+                            <field name="window_ids">
+                                <list editable="bottom">
+                                    <field name="kind"/>
+                                    <field name="date" invisible="kind != 'once'"
+                                           required="kind == 'once'"/>
+                                    <field name="dayofweek" invisible="kind != 'weekly'"
+                                           required="kind == 'weekly'"/>
+                                    <field name="hour_from" widget="float_time"/>
+                                    <field name="hour_to" widget="float_time"/>
+                                    <field name="source"/>
+                                    <field name="note"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Règles de visite" name="rules">
+                            <group>
+                                <group string="Créneaux">
+                                    <field name="visit_duration" widget="float_time"/>
+                                    <field name="slot_duration" widget="float_time"/>
+                                    <field name="lead_time_hours" widget="float_time"/>
+                                    <div class="text-muted" colspan="2"
+                                         invisible="occupancy != 'tenant'">
+                                        Logement occupé : le préavis ne descend pas sous
+                                        24 heures et les visites tiennent entre 9 h et 21 h
+                                        (art. 1931 du Code civil).
+                                    </div>
+                                </group>
+                                <group string="Confirmation">
+                                    <field name="approval_mode"/>
+                                    <field name="open_house"/>
+                                    <field name="slot_capacity" invisible="not open_house"/>
+                                    <field name="require_identity"/>
+                                    <field name="require_representation"/>
+                                </group>
+                            </group>
+                            <group string="Consignes au visiteur">
+                                <field name="showing_instructions" nolabel="1" colspan="2"/>
+                            </group>
+                            <group string="Accès (transmis à la confirmation seulement)">
+                                <field name="access_instructions" nolabel="1" colspan="2"/>
+                            </group>
+                        </page>
+                        <page string="Notes" name="notes">
+                            <field name="note"/>
+                        </page>
+                        <page string="Technique" name="technical"
+                              groups="bf_appointment_visit.group_bf_visit_manager">
+                            <group>
+                                <field name="booking_type_id"/>
+                                <field name="resource_id"/>
+                                <field name="calendar_id"/>
+                                <field name="public_url" widget="url"/>
+                                <field name="tz_name"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_bf_visit_listing_list" model="ir.ui.view">
+        <field name="name">bf.visit.listing.list</field>
+        <field name="model">bf.visit.listing</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="city" optional="show"/>
+                <field name="listing_kind"/>
+                <field name="occupancy"/>
+                <field name="approval_mode" optional="hide"/>
+                <field name="visit_count"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'published'"
+                       decoration-muted="state in ('draft', 'closed')"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_bf_visit_listing_search" model="ir.ui.view">
+        <field name="name">bf.visit.listing.search</field>
+        <field name="model">bf.visit.listing</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="reference"/>
+                <field name="city"/>
+                <field name="broker_ids"/>
+                <filter name="published" string="En ligne" domain="[('state', '=', 'published')]"/>
+                <filter name="tenant" string="Logement occupé"
+                        domain="[('occupancy', '=', 'tenant')]"/>
+                <filter name="open_house" string="Visite libre" domain="[('open_house', '=', True)]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="group_state" string="État" context="{'group_by': 'state'}"/>
+                    <filter name="group_kind" string="Nature" context="{'group_by': 'listing_kind'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_bf_visit_listing" model="ir.actions.act_window">
+        <field name="name">Inscriptions à visiter</field>
+        <field name="res_model">bf.visit.listing</field>
+        <field name="view_mode">list,form</field>
+        <field name="path">visit-listings</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Monter une première inscription</p>
+            <p>
+                Une adresse, ses vendeurs, les courtiers qui peuvent la montrer et les
+                plages offertes. Le reste se fabrique tout seul : la page de réservation,
+                le calendrier, et le registre des visites.
+            </p>
+        </field>
+    </record>
+
+</odoo>

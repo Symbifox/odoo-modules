@@ -1,0 +1,2125 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_appointment_visit
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-11 11:45+0000\n"
+"PO-Revision-Date: 2026-09-11 11:45+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: bf_appointment_visit
+#: model_terms:ir.ui.view,arch_db:bf_appointment_visit.view_bf_visit_listing_form
+msgid "123, rue Principale, Sherbrooke"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model_terms:ir.ui.view,arch_db:bf_appointment_visit.visit_feedback_page
+msgid ""
+"<select class=\"form-select\" id=\"feedback_interest\" name=\"feedback_interest\" required=\"required\">\n"
+"                            <option value=\"\">Choisir</option>\n"
+"                            <option value=\"1\">Aucun intérêt</option>\n"
+"                            <option value=\"2\">Faible</option>\n"
+"                            <option value=\"3\">À considérer</option>\n"
+"                            <option value=\"4\">Fort</option>\n"
+"                            <option value=\"5\">Une offre s'en vient</option>\n"
+"                        </select>"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model_terms:ir.ui.view,arch_db:bf_appointment_visit.visit_feedback_page
+msgid ""
+"<select class=\"form-select\" id=\"feedback_price\" name=\"feedback_price\">\n"
+"                            <option value=\"\">Sans opinion</option>\n"
+"                            <option value=\"high\">Au-dessus du marché</option>\n"
+"                            <option value=\"fair\">Dans le marché</option>\n"
+"                            <option value=\"low\">En dessous du marché</option>\n"
+"                        </select>"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model_terms:ir.ui.view,arch_db:bf_appointment_visit.visit_walkin_page
+msgid "<strong>Êtes-vous représenté par un courtier immobilier?</strong>"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:mail.template,body_html:bf_appointment_visit.mail_visit_tenant_notice
+msgid ""
+"<t t-set=\"contenu\">\n"
+"                    <p>Bonjour <t t-out=\"object.listing_id.tenant_id.name or ''\"/>,</p>\n"
+"                    <p>\n"
+"                        Le logement que vous occupez sera visité le\n"
+"                        <strong t-out=\"format_datetime(object.start, tz=object.listing_id.tz_name, dt_format='EEEE d MMMM y, HH:mm')\"/>,\n"
+"                        pour une durée d'environ <t t-out=\"int((object.duration or 0.5) * 60)\"/> minutes.\n"
+"                    </p>\n"
+"                    <p>\n"
+"                        Cet avis vous est donné au moins 24 heures à l'avance, et la visite a lieu entre\n"
+"                        9 h et 21 h, comme l'exige l'article 1931 du Code civil du Québec.\n"
+"                    </p>\n"
+"                    <p t-if=\"object.listing_id.tenant_wants_presence\">\n"
+"                        Vous avez demandé la présence du locateur pendant les visites : elle est prévue.\n"
+"                    </p>\n"
+"                    <p style=\"color:#6b7280; font-size:13px;\">\n"
+"                        Si ce moment ne convient pas, répondez à ce courriel.\n"
+"                    </p>\n"
+"                </t>\n"
+"                <t t-call=\"bf_appointment_visit.visit_email_layout\"/>\n"
+"            "
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:mail.template,body_html:bf_appointment_visit.mail_visit_declined
+msgid ""
+"<t t-set=\"contenu\">\n"
+"                    <p>Bonjour <t t-out=\"object.visitor_name or ''\"/>,</p>\n"
+"                    <p>\n"
+"                        L'heure demandée pour visiter le <strong t-out=\"object.listing_id.name\"/> ne peut pas être retenue.\n"
+"                    </p>\n"
+"                    <p t-if=\"object.proposed_start\">\n"
+"                        Une autre heure vous est proposée :\n"
+"                        <strong t-out=\"format_datetime(object.proposed_start, tz=object.listing_id.tz_name, dt_format='EEEE d MMMM y, HH:mm')\"/>.\n"
+"                        Répondez à ce courriel si elle vous convient.\n"
+"                    </p>\n"
+"                    <p t-if=\"object.seller_note\" t-out=\"object.seller_note\"/>\n"
+"                    <p t-if=\"not object.proposed_start\">\n"
+"                        Les autres créneaux offerts restent disponibles sur la page de réservation.\n"
+"                    </p>\n"
+"                </t>\n"
+"                <t t-call=\"bf_appointment_visit.visit_email_layout\"/>\n"
+"            "
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:mail.template,body_html:bf_appointment_visit.mail_visit_feedback_request
+msgid ""
+"<t t-set=\"contenu\">\n"
+"                    <p>Bonjour <t t-out=\"object.visitor_name or ''\"/>,</p>\n"
+"                    <p>\n"
+"                        Merci d'être passé visiter le <strong t-out=\"object.listing_id.name\"/>.\n"
+"                        Deux questions, trente secondes, et le vendeur saura où il en est.\n"
+"                    </p>\n"
+"                </t>\n"
+"                <t t-set=\"bouton_url\" t-value=\"object.url_feedback\"/>\n"
+"                <t t-set=\"bouton_texte\">Donner mon impression</t>\n"
+"                <t t-call=\"bf_appointment_visit.visit_email_layout\"/>\n"
+"            "
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:mail.template,body_html:bf_appointment_visit.mail_visit_pending
+msgid ""
+"<t t-set=\"contenu\">\n"
+"                    <p>Bonjour <t t-out=\"object.visitor_name or ''\"/>,</p>\n"
+"                    <p>\n"
+"                        Votre demande de visite du <strong t-out=\"object.listing_id.name\"/>\n"
+"                        le <strong t-out=\"format_datetime(object.start, tz=object.listing_id.tz_name, dt_format='EEEE d MMMM y, HH:mm')\"/>\n"
+"                        est transmise pour approbation.\n"
+"                    </p>\n"
+"                    <p>Le créneau vous est réservé le temps de la réponse. Vous recevrez un courriel dès qu'elle est donnée.</p>\n"
+"                    <p t-if=\"object.listing_id.occupancy == 'tenant'\">\n"
+"                        Le logement est occupé : la visite est annoncée au locataire au moins 24 heures d'avance.\n"
+"                    </p>\n"
+"                </t>\n"
+"                <t t-call=\"bf_appointment_visit.visit_email_layout\"/>\n"
+"            "
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:mail.template,body_html:bf_appointment_visit.mail_visit_approved
+msgid ""
+"<t t-set=\"contenu\">\n"
+"                    <p>Bonjour <t t-out=\"object.visitor_name or ''\"/>,</p>\n"
+"                    <p>\n"
+"                        Votre visite du <strong t-out=\"object.listing_id.name\"/> est confirmée pour le\n"
+"                        <strong t-out=\"format_datetime(object.start, tz=object.listing_id.tz_name, dt_format='EEEE d MMMM y, HH:mm')\"/>.\n"
+"                    </p>\n"
+"                    <div t-if=\"object.listing_id.showing_instructions\">\n"
+"                        <p style=\"margin-bottom:4px;\"><strong>Avant de venir</strong></p>\n"
+"                        <div t-out=\"object.listing_id.showing_instructions\"/>\n"
+"                    </div>\n"
+"                    <div t-if=\"object.access_released and object.listing_id.access_instructions\" style=\"margin-top:14px; padding:12px 14px; background:#F4F8FB; border-left:4px solid #29ABE1;\">\n"
+"                        <p style=\"margin:0 0 4px 0;\"><strong>Accès</strong></p>\n"
+"                        <div t-out=\"object.listing_id.access_instructions\"/>\n"
+"                    </div>\n"
+"                    <p t-if=\"object.listing_id.require_identity\" style=\"margin-top:14px; color:#6b7280; font-size:13px;\">\n"
+"                        Une pièce d'identité vous sera demandée à l'arrivée. Rien n'en est photocopié ni conservé.\n"
+"                    </p>\n"
+"                </t>\n"
+"                <t t-call=\"bf_appointment_visit.visit_email_layout\"/>\n"
+"            "
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:mail.template,body_html:bf_appointment_visit.mail_visit_seller_request
+msgid ""
+"<t t-set=\"contenu\">\n"
+"                    <p>Bonjour,</p>\n"
+"                    <p>\n"
+"                        Une visite du <strong t-out=\"object.listing_id.name\"/> est demandée pour le\n"
+"                        <strong t-out=\"format_datetime(object.start, tz=object.listing_id.tz_name, dt_format='EEEE d MMMM y, HH:mm')\"/>.\n"
+"                    </p>\n"
+"                    <table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"margin:12px 0; font-size:14px;\">\n"
+"                        <tbody>\n"
+"                            <tr>\n"
+"                                <td style=\"padding:3px 14px 3px 0; color:#6b7280;\">Personnes attendues</td>\n"
+"                                <td style=\"padding:3px 0;\"><t t-out=\"object.visitor_count or 1\"/></td>\n"
+"                            </tr>\n"
+"                            <tr t-if=\"object.representation == 'broker'\">\n"
+"                                <td style=\"padding:3px 14px 3px 0; color:#6b7280;\">Accompagné de son courtier</td>\n"
+"                                <td style=\"padding:3px 0;\"><t t-out=\"object.buyer_broker_name or 'oui'\"/></td>\n"
+"                            </tr>\n"
+"                            <tr t-if=\"object.representation == 'none'\">\n"
+"                                <td style=\"padding:3px 14px 3px 0; color:#6b7280;\">Représentation</td>\n"
+"                                <td style=\"padding:3px 0;\">la personne n'a pas de courtier</td>\n"
+"                            </tr>\n"
+"                        </tbody>\n"
+"                    </table>\n"
+"                    <p>Vous pouvez accepter, refuser, ou proposer une autre heure.</p>\n"
+"                </t>\n"
+"                <t t-set=\"bouton_url\" t-value=\"object.url_decision\"/>\n"
+"                <t t-set=\"bouton_texte\">Répondre à la demande</t>\n"
+"                <t t-call=\"bf_appointment_visit.visit_email_layout\"/>\n"
+"            "
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model_terms:ir.ui.view,arch_db:bf_appointment_visit.view_bf_visit_form
+msgid "Accepter"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model_terms:ir.ui.view,arch_db:bf_appointment_visit.visit_seller_page
+msgid "Accepter cette visite"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model_terms:ir.ui.view,arch_db:bf_appointment_visit.visit_seller_page
+msgid "Accompagné de son courtier"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit__accompanied_by_id
+msgid "Accompagnée par"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model_terms:ir.ui.view,arch_db:bf_appointment_visit.view_bf_visit_listing_form
+msgid "Accès (transmis à la confirmation seulement)"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit__access_released
+msgid "Accès transmis"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit_listing__access_instructions
+msgid "Accès à la propriété"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit__message_needaction
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit_listing__message_needaction
+msgid "Action Needed"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit_listing__active
+msgid "Active"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit_listing__activity_ids
+msgid "Activities"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit_listing__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit_listing__activity_state
+msgid "Activity State"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit_listing__activity_type_icon
+msgid "Activity Type Icon"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit_listing__name
+#: model_terms:ir.ui.view,arch_db:bf_appointment_visit.view_bf_visit_listing_form
+msgid "Adresse"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit_listing__address_display
+msgid "Adresse complète"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit__buyer_broker_agency
+msgid "Agence du courtier"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model_terms:ir.ui.view,arch_db:bf_appointment_visit.view_bf_visit_form
+msgid "Annuler"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields.selection,name:bf_appointment_visit.selection__bf_visit__state__cancelled
+msgid "Annulée"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model,name:bf_appointment_visit.model_appointment_intake_field
+msgid "Appointment Intake Form Field"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model_terms:ir.ui.view,arch_db:bf_appointment_visit.view_bf_visit_form
+msgid "Après la visite"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit__arrived_at
+msgid "Arrivée"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit__message_attachment_count
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit_listing__message_attachment_count
+msgid "Attachment Count"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields.selection,name:bf_appointment_visit.selection__bf_visit__feedback_price__high
+msgid "Au-dessus du marché"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields.selection,name:bf_appointment_visit.selection__bf_visit__feedback_interest__1
+msgid "Aucun intérêt"
+msgstr ""
+
+#. module: bf_appointment_visit
+#. odoo-python
+#: code:addons/bf_appointment_visit/controllers/main.py:0
+#: code:addons/bf_appointment_visit/controllers/main.py:0
+msgid "Aucune décision n'a été lue."
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model_terms:ir.actions.act_window,help:bf_appointment_visit.action_bf_visit
+msgid "Aucune visite au registre"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model_terms:ir.ui.view,arch_db:bf_appointment_visit.visit_feedback_page
+msgid "Autre chose à dire? (facultatif)"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit__proposed_start
+msgid "Autre heure proposée"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields.selection,name:bf_appointment_visit.selection__bf_visit__identity_doc_kind__other
+msgid "Autre pièce officielle"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit__tenant_notice_sent_at
+msgid "Avis au locataire envoyé le"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:mail.template,subject:bf_appointment_visit.mail_visit_tenant_notice
+msgid "Avis de visite : {{ object.listing_id.name }}"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model_terms:ir.ui.view,arch_db:bf_appointment_visit.visit_walkin_page
+msgid "Bienvenue"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields.selection,name:bf_appointment_visit.selection__bf_visit_listing__state__draft
+msgid "Brouillon"
+msgstr ""
+
+#. module: bf_appointment_visit
+#. odoo-python
+#: code:addons/bf_appointment_visit/controllers/main.py:0
+#: code:addons/bf_appointment_visit/controllers/main.py:0
+msgid "C'est accepté. Le visiteur vient d'en être informé."
+msgstr ""
+
+#. module: bf_appointment_visit
+#. odoo-python
+#: code:addons/bf_appointment_visit/controllers/main.py:0
+#: code:addons/bf_appointment_visit/controllers/main.py:0
+msgid ""
+"C'est refusé. Le visiteur vient d'en être informé, et le créneau est rendu "
+"disponible."
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit_listing__calendar_id
+msgid "Calendrier des plages offertes"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields.selection,name:bf_appointment_visit.selection__bf_visit__identity_doc_kind__health
+msgid "Carte d'assurance maladie"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model_terms:ir.ui.view,arch_db:bf_appointment_visit.visit_seller_page
+msgid "Ce lien vous est personnel. Il ne donne accès qu'à cette demande."
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,help:bf_appointment_visit.field_bf_visit_listing__tz_name
+msgid "Ce que le module utilise vraiment, repli compris."
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,help:bf_appointment_visit.field_bf_visit__url_decision
+msgid "Ce que le vendeur reçoit pour trancher, sans compte à créer."
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,help:bf_appointment_visit.field_bf_visit__proposed_start
+msgid "Ce que le vendeur suggère quand l'heure demandée ne va pas."
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,help:bf_appointment_visit.field_bf_visit_listing__name
+msgid "Ce que le visiteur lira en tête de la page de réservation."
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,help:bf_appointment_visit.field_bf_visit_listing__showing_instructions
+msgid ""
+"Ce que le visiteur lit avant de venir : chaussures, animaux, stationnement, "
+"ce qu'il ne faut pas ouvrir."
+msgstr ""
+
+#. module: bf_appointment_visit
+#. odoo-python
+#: code:addons/bf_appointment_visit/models/bf_visit_listing.py:0
+#: code:addons/bf_appointment_visit/models/bf_visit_listing.py:0
+msgid ""
+"Ces visites tombent hors des plages que vous gardez :\n"
+"\n"
+"%s\n"
+"\n"
+"Déplacez-les ou annulez-les d'abord. Retirer la plage sous leurs pieds ne les annule pas, ça les laisse debout sans disponibilité."
+msgstr ""
+
+#. module: bf_appointment_visit
+#. odoo-python
+#: code:addons/bf_appointment_visit/controllers/main.py:0
+#: code:addons/bf_appointment_visit/controllers/main.py:0
+msgid "Cette demande a déjà été tranchée."
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit_listing__zip
+msgid "Code postal"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit__feedback_comment
+msgid "Commentaires"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit_listing__street2
+msgid "Complément"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model_terms:ir.ui.view,arch_db:bf_appointment_visit.view_bf_visit_listing_form
+msgid "Confirmation"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields.selection,name:bf_appointment_visit.selection__bf_visit_listing__approval_mode__auto
+msgid "Confirmation automatique"
+msgstr ""
+
+#. module: bf_appointment_visit
+#. odoo-python
+#: code:addons/bf_appointment_visit/models/resource_booking.py:0
+#: code:addons/bf_appointment_visit/models/resource_booking.py:0
+msgid ""
+"Confirmation automatique retenue : la visite attend la décision du vendeur."
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields.selection,name:bf_appointment_visit.selection__bf_visit__state__approved
+msgid "Confirmée"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model_terms:ir.ui.view,arch_db:bf_appointment_visit.view_bf_visit_form
+msgid "Consigner la vérification"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model_terms:ir.ui.view,arch_db:bf_appointment_visit.view_bf_visit_listing_form
+msgid "Consignes au visiteur"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit_listing__showing_instructions
+msgid "Consignes de visite"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model_terms:ir.ui.view,arch_db:bf_appointment_visit.view_bf_visit_form
+msgid "Constater l'arrivée"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model_terms:ir.ui.view,arch_db:bf_appointment_visit.view_bf_visit_form
+msgid "Constater le départ"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit__visitor_email
+#: model_terms:ir.ui.view,arch_db:bf_appointment_visit.visit_walkin_page
+msgid "Courriel"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit__buyer_broker_email
+msgid "Courriel du courtier"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:res.groups,name:bf_appointment_visit.group_bf_visit_user
+msgid "Courtier"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit__buyer_broker_name
+msgid "Courtier du visiteur"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit_listing__broker_ids
+msgid "Courtiers autorisés"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit__create_uid
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit_listing__create_uid
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit_window__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit__create_date
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit_listing__create_date
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit_window__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model_terms:ir.ui.view,arch_db:bf_appointment_visit.view_bf_visit_listing_form
+msgid "Créneaux"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields.selection,name:bf_appointment_visit.selection__bf_visit__feedback_price__fair
+msgid "Dans le marché"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit_window__date
+msgid "Date"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit_window__hour_from
+msgid "De"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model_terms:ir.ui.view,arch_db:bf_appointment_visit.visit_seller_page
+msgid "Demande de visite"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:mail.template,subject:bf_appointment_visit.mail_visit_seller_request
+msgid "Demande de visite : {{ object.listing_id.name }}"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit_listing__require_representation
+msgid "Demander si la personne est représentée"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields.selection,name:bf_appointment_visit.selection__bf_visit__state__requested
+msgid "Demandée"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields.selection,name:bf_appointment_visit.selection__bf_visit_window__dayofweek__6
+msgid "Dimanche"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit__display_name
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit_listing__display_name
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit_window__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: bf_appointment_visit
+#. odoo-python
+#: code:addons/bf_appointment_visit/models/bf_visit.py:0
+#: code:addons/bf_appointment_visit/models/bf_visit.py:0
+msgid "Dites d'abord comment l'identité a été vérifiée."
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields.selection,name:bf_appointment_visit.selection__bf_visit_window__source__broker
+msgid "Donnée par le courtier"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields.selection,name:bf_appointment_visit.selection__bf_visit_window__source__tenant
+msgid "Donnée par le locataire"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields.selection,name:bf_appointment_visit.selection__bf_visit_window__source__seller
+msgid "Donnée par le vendeur"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit__duration
+msgid "Durée (heures)"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit_listing__visit_duration
+msgid "Durée d'une visite (heures)"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit__start
+msgid "Début"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit__seller_decision_at
+#: model_terms:ir.ui.view,arch_db:bf_appointment_visit.view_bf_visit_form
+msgid "Décision du vendeur"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,help:bf_appointment_visit.field_bf_visit_listing__lead_time_hours
+msgid ""
+"Délai entre la réservation et la visite. Porté à 24 heures d'office pour un "
+"logement occupé par un locataire."
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit__departed_at
+msgid "Départ"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model_terms:ir.ui.view,arch_db:bf_appointment_visit.view_bf_visit_search
+msgid "En attente de décision"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields.selection,name:bf_appointment_visit.selection__bf_visit__feedback_price__low
+msgid "En dessous du marché"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields.selection,name:bf_appointment_visit.selection__bf_visit_listing__state__published
+#: model_terms:ir.ui.view,arch_db:bf_appointment_visit.view_bf_visit_listing_search
+msgid "En ligne"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields.selection,name:bf_appointment_visit.selection__bf_visit__identity_method__in_person
+msgid "En personne, sur pièce officielle"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model_terms:ir.ui.view,arch_db:bf_appointment_visit.visit_feedback_page
+msgid "Envoyer"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields.selection,name:bf_appointment_visit.selection__bf_visit__feedback_interest__2
+msgid "Faible"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.module.category,description:bf_appointment_visit.module_category_bf_visit
+msgid ""
+"Faire visiter une propriété : inscriptions, plages, registre des visites."
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields.selection,name:bf_appointment_visit.selection__bf_visit__state__done
+msgid "Faite"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit__feedback_token
+msgid "Feedback Token"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model_terms:ir.ui.view,arch_db:bf_appointment_visit.view_bf_visit_listing_form
+msgid "Feuille d'inscription sur place"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit__message_follower_ids
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit_listing__message_follower_ids
+msgid "Followers"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit__message_partner_ids
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit_listing__message_partner_ids
+msgid "Followers (Partners)"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,help:bf_appointment_visit.field_bf_visit_listing__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields.selection,name:bf_appointment_visit.selection__bf_visit__feedback_interest__4
+msgid "Fort"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit_listing__tz_name
+msgid "Fuseau appliqué"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit_listing__tz
+msgid "Fuseau horaire"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,help:bf_appointment_visit.field_bf_visit__setup_done
+msgid ""
+"Garde du double envoi, posée sur la fiche : `action_confirm` est appelée "
+"plus d'une fois dans la vie d'une réservation."
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit_window__kind
+msgid "Genre"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:res.groups,name:bf_appointment_visit.group_bf_visit_manager
+msgid "Gestionnaire"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit__has_message
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit_listing__has_message
+msgid "Has Message"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,help:bf_appointment_visit.field_bf_visit__representation_asked_at
+msgid ""
+"Horodatage de la réponse. C'est la pièce qui compte si la rémunération se "
+"discute plus tard."
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit__id
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit_listing__id
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit_window__id
+msgid "ID"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit_listing__activity_exception_icon
+msgid "Icon"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,help:bf_appointment_visit.field_bf_visit_listing__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model_terms:ir.ui.view,arch_db:bf_appointment_visit.view_bf_visit_form
+msgid "Identité et présence"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model_terms:ir.ui.view,arch_db:bf_appointment_visit.view_bf_visit_search
+msgid "Identité non vérifiée"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit__identity_checked
+msgid "Identité vérifiée"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,help:bf_appointment_visit.field_bf_visit__message_needaction
+#: model:ir.model.fields,help:bf_appointment_visit.field_bf_visit_listing__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,help:bf_appointment_visit.field_bf_visit__message_has_error
+#: model:ir.model.fields,help:bf_appointment_visit.field_bf_visit__message_has_sms_error
+#: model:ir.model.fields,help:bf_appointment_visit.field_bf_visit_listing__message_has_error
+#: model:ir.model.fields,help:bf_appointment_visit.field_bf_visit_listing__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr ""
+
+#. module: bf_appointment_visit
+#. odoo-python
+#: code:addons/bf_appointment_visit/controllers/main.py:0
+#: code:addons/bf_appointment_visit/controllers/main.py:0
+msgid "Il manque votre nom, ou votre accord pour le registre."
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields.selection,name:bf_appointment_visit.selection__bf_visit_listing__occupancy__vacant
+msgid "Inoccupée"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit__listing_id
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit_window__listing_id
+#: model_terms:ir.ui.view,arch_db:bf_appointment_visit.view_bf_visit_search
+msgid "Inscription"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model_terms:ir.ui.view,arch_db:bf_appointment_visit.visit_walkin_page
+msgid "Inscription à la visite"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model,name:bf_appointment_visit.model_bf_visit_listing
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_resource_booking_type__visit_listing_id
+msgid "Inscription à visiter"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.ui.menu,name:bf_appointment_visit.menu_bf_visit_listing
+msgid "Inscriptions"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.actions.act_window,name:bf_appointment_visit.action_bf_visit_listing
+msgid "Inscriptions à visiter"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,help:bf_appointment_visit.field_bf_visit__is_walkin
+msgid "Inscrite sur place, pendant une visite libre."
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit_listing__slot_duration
+msgid "Intervalle entre les créneaux (heures)"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit__feedback_interest
+msgid "Intérêt"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit__message_is_follower
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit_listing__message_is_follower
+msgid "Is Follower"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model_terms:ir.ui.view,arch_db:bf_appointment_visit.visit_walkin_page
+msgid ""
+"J'accepte que mon nom soit inscrit au registre des visites de\n"
+"                            cette propriété."
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model_terms:ir.ui.view,arch_db:bf_appointment_visit.visit_walkin_page
+msgid "Je suis arrivé"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit__seller_token
+msgid "Jeton de décision"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit_listing__walkin_token
+msgid "Jeton de la feuille d'inscription"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields.selection,name:bf_appointment_visit.selection__bf_visit_window__dayofweek__3
+msgid "Jeudi"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit_window__dayofweek
+msgid "Jour"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,help:bf_appointment_visit.field_bf_visit_listing__require_identity
+msgid ""
+"L'OACIQ le demande pour la sécurité et la protection de la propriété. On "
+"consigne le type de pièce vue, jamais une copie."
+msgstr ""
+
+#. module: bf_appointment_visit
+#. odoo-python
+#: code:addons/bf_appointment_visit/models/bf_visit.py:0
+#: code:addons/bf_appointment_visit/models/bf_visit.py:0
+msgid "L'arrivée de « %s » est déjà constatée."
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,help:bf_appointment_visit.field_bf_visit_listing__tenant_wants_presence
+msgid ""
+"L'article 1931 lui en donne le droit. Coché, la mention part avec chaque "
+"avis de visite."
+msgstr ""
+
+#. module: bf_appointment_visit
+#. odoo-python
+#: code:addons/bf_appointment_visit/controllers/main.py:0
+#: code:addons/bf_appointment_visit/controllers/main.py:0
+msgid "L'heure proposée n'a pas été comprise."
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,help:bf_appointment_visit.field_bf_visit_listing__approval_mode
+msgid ""
+"La confirmation automatique convient à une propriété inoccupée. Dès qu'il y "
+"a quelqu'un derrière la porte, l'approbation est la règle du métier."
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.constraint,message:bf_appointment_visit.constraint_bf_visit_listing_visit_duration_positive
+msgid "La durée d'une visite doit être supérieure à zéro."
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model_terms:ir.ui.view,arch_db:bf_appointment_visit.visit_seller_page
+msgid "La personne n'a pas de courtier"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model_terms:ir.ui.view,arch_db:bf_appointment_visit.view_bf_visit_listing_form
+msgid "La propriété"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,help:bf_appointment_visit.field_bf_visit__tenant_notice_sent_at
+msgid "La trace du préavis de 24 heures de l'article 1931."
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model_terms:ir.ui.view,arch_db:bf_appointment_visit.visit_seller_page
+msgid "Laissez vide pour accepter ou refuser l'heure demandée."
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit__write_uid
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit_listing__write_uid
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit_window__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit__write_date
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit_listing__write_date
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit_window__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,help:bf_appointment_visit.field_bf_visit__visitor_count
+msgid ""
+"Le conjoint, les parents, un inspecteur : ce que le vendeur veut savoir "
+"avant d'ouvrir sa porte."
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,help:bf_appointment_visit.field_bf_visit_listing__require_representation
+msgid ""
+"Le courtier du vendeur doit poser la question à la première occasion. La "
+"réponse et son heure restent au registre : c'est la pièce qui compte dans un"
+" litige sur la cause efficiente."
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model_terms:ir.ui.view,arch_db:bf_appointment_visit.visit_walkin_page
+msgid "Le courtier présent représente les intérêts du vendeur."
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,help:bf_appointment_visit.field_bf_visit_listing__tz
+msgid ""
+"Le fuseau dans lequel se lisent les plages offertes. 🔴 Il ne se déduit PAS "
+"du calendrier de la société : sur une base neuve, celui-ci est en UTC, et « "
+"samedi 13 h » devenait alors 9 h du matin pour le visiteur. Mesuré au banc "
+"le 2026-09-11."
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit_listing__tenant_wants_presence
+msgid "Le locataire demande la présence du locateur"
+msgstr ""
+
+#. module: bf_appointment_visit
+#. odoo-python
+#: code:addons/bf_appointment_visit/models/bf_visit_listing.py:0
+#: code:addons/bf_appointment_visit/models/bf_visit_listing.py:0
+msgid ""
+"Le logement est occupé : la visite est annoncée au locataire au moins 24 "
+"heures d'avance, entre 9 h et 21 h."
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model_terms:ir.ui.view,arch_db:bf_appointment_visit.visit_walkin_page
+msgid "Le nom de votre courtier et de son agence"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,help:bf_appointment_visit.field_bf_visit_listing__reference
+msgid "Le numéro de la fiche au système de votre chambre, s'il y en a un."
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model_terms:ir.ui.view,arch_db:bf_appointment_visit.visit_feedback_page
+msgid "Le prix demandé"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model_terms:ir.ui.view,arch_db:bf_appointment_visit.view_bf_visit_form
+msgid ""
+"Le registre est fermé depuis l'arrivée. Une correction reste possible\n"
+"                        pour un gestionnaire, et elle laisse une trace au dossier."
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model_terms:ir.ui.view,arch_db:bf_appointment_visit.view_bf_visit_form
+msgid "Le rendez-vous"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model_terms:ir.ui.view,arch_db:bf_appointment_visit.view_bf_visit_form
+msgid "Le visiteur"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,help:bf_appointment_visit.field_bf_visit__access_released
+msgid "Les consignes d'accès ne partent qu'à la confirmation."
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model_terms:ir.ui.view,arch_db:bf_appointment_visit.view_bf_visit_listing_form
+msgid ""
+"Les moments où le vendeur accepte de faire visiter. Un créneau\n"
+"                                n'est offert que si un courtier autorisé est libre en même temps."
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,help:bf_appointment_visit.field_bf_visit_listing__broker_ids
+msgid ""
+"Les personnes qui peuvent faire visiter. Un créneau n'est offert que si "
+"l'une d'elles est libre en même temps que la propriété."
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,help:bf_appointment_visit.field_bf_visit_listing__public_url
+msgid "Lien complet à partager. Actif uniquement quand le type est publié."
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit__url_decision
+msgid "Lien de décision"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit__url_feedback
+msgid "Lien de rétroaction"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit_listing__tenant_id
+msgid "Locataire"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model_terms:ir.ui.view,arch_db:bf_appointment_visit.view_bf_visit_listing_search
+msgid "Logement occupé"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model_terms:ir.ui.view,arch_db:bf_appointment_visit.view_bf_visit_listing_form
+msgid ""
+"Logement occupé : le préavis ne descend pas sous\n"
+"                                        24 heures et les visites tiennent entre 9 h et 21 h\n"
+"                                        (art. 1931 du Code civil)."
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields.selection,name:bf_appointment_visit.selection__bf_visit_window__dayofweek__0
+msgid "Lundi"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields.selection,name:bf_appointment_visit.selection__bf_visit_window__dayofweek__1
+msgid "Mardi"
+msgstr ""
+
+#. module: bf_appointment_visit
+#. odoo-python
+#: code:addons/bf_appointment_visit/controllers/main.py:0
+#: code:addons/bf_appointment_visit/controllers/main.py:0
+msgid "Merci, c'est noté."
+msgstr ""
+
+#. module: bf_appointment_visit
+#. odoo-python
+#: code:addons/bf_appointment_visit/controllers/main.py:0
+#: code:addons/bf_appointment_visit/controllers/main.py:0
+msgid "Merci, vous êtes inscrit. Un courtier vous accueille dans un instant."
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields.selection,name:bf_appointment_visit.selection__bf_visit_window__dayofweek__2
+msgid "Mercredi"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit__message_has_error
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit_listing__message_has_error
+msgid "Message Delivery error"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit__message_ids
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit_listing__message_ids
+msgid "Messages"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model_terms:ir.ui.view,arch_db:bf_appointment_visit.view_bf_visit_listing_form
+msgid "Mettre en ligne"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit_listing__approval_mode
+msgid "Mode de confirmation"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit__identity_method
+msgid "Mode de vérification"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model_terms:ir.ui.view,arch_db:bf_appointment_visit.view_bf_visit_search
+msgid "Mois"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:res.groups,comment:bf_appointment_visit.group_bf_visit_user
+msgid "Monte ses inscriptions, tient le registre, constate les arrivées."
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model_terms:ir.actions.act_window,help:bf_appointment_visit.action_bf_visit_listing
+msgid "Monter une première inscription"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit__seller_note
+msgid "Mot du vendeur"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit_listing__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,help:bf_appointment_visit.field_bf_visit_listing__slot_capacity
+msgid "N'a d'effet qu'en visite libre."
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit_listing__listing_kind
+#: model_terms:ir.ui.view,arch_db:bf_appointment_visit.view_bf_visit_listing_search
+msgid "Nature"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit_listing__activity_calendar_event_id
+msgid "Next Activity Calendar Event"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit_listing__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit_listing__activity_summary
+msgid "Next Activity Summary"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit_listing__activity_type_id
+msgid "Next Activity Type"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields.selection,name:bf_appointment_visit.selection__appointment_intake_field__bf_visit_role__broker_name
+msgid "Nom du courtier du visiteur"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit__visitor_name
+msgid "Nom du visiteur"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit__visitor_count
+#: model_terms:ir.ui.view,arch_db:bf_appointment_visit.visit_walkin_page
+msgid "Nombre de personnes"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit_listing__visit_count
+msgid "Nombre de visites"
+msgstr ""
+
+#. module: bf_appointment_visit
+#. odoo-python
+#: code:addons/bf_appointment_visit/models/bf_visit_listing.py:0
+#: code:addons/bf_appointment_visit/models/bf_visit_listing.py:0
+#: model_terms:ir.ui.view,arch_db:bf_appointment_visit.visit_walkin_page
+msgid "Non"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields.selection,name:bf_appointment_visit.selection__bf_visit__representation__none
+msgid "Non représenté"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit_window__note
+msgid "Note"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model_terms:ir.ui.view,arch_db:bf_appointment_visit.view_bf_visit_listing_form
+msgid "Notes"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit_listing__note
+msgid "Notes internes"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit__message_needaction_counter
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit_listing__message_needaction_counter
+msgid "Number of Actions"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit__message_has_error_counter
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit_listing__message_has_error_counter
+msgid "Number of errors"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,help:bf_appointment_visit.field_bf_visit__message_needaction_counter
+#: model:ir.model.fields,help:bf_appointment_visit.field_bf_visit_listing__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,help:bf_appointment_visit.field_bf_visit__message_has_error_counter
+#: model:ir.model.fields,help:bf_appointment_visit.field_bf_visit_listing__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit__name
+msgid "Numéro"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit_listing__reference
+#: model_terms:ir.ui.view,arch_db:bf_appointment_visit.view_bf_visit_listing_form
+msgid "Numéro d'inscription"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit_listing__occupancy
+msgid "Occupation"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields.selection,name:bf_appointment_visit.selection__bf_visit_listing__occupancy__owner
+msgid "Occupée par le propriétaire"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields.selection,name:bf_appointment_visit.selection__bf_visit_listing__occupancy__tenant
+msgid "Occupée par un locataire"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields.selection,name:bf_appointment_visit.selection__bf_visit__feedback_interest__5
+msgid "Offre à venir"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model_terms:ir.ui.view,arch_db:bf_appointment_visit.visit_seller_page
+msgid "Ou proposez une autre heure"
+msgstr ""
+
+#. module: bf_appointment_visit
+#. odoo-python
+#: code:addons/bf_appointment_visit/models/bf_visit_listing.py:0
+#: code:addons/bf_appointment_visit/models/bf_visit_listing.py:0
+#: model_terms:ir.ui.view,arch_db:bf_appointment_visit.visit_walkin_page
+msgid "Oui"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit_listing__public_url
+msgid "Page de réservation"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit__setup_done
+msgid "Parcours amorcé"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit__feedback_shared
+msgid "Partagée au vendeur"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields.selection,name:bf_appointment_visit.selection__bf_visit__identity_doc_kind__passport
+msgid "Passeport"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit_listing__country_id
+msgid "Pays"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit__feedback_price
+msgid "Perception du prix"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields.selection,name:bf_appointment_visit.selection__bf_visit__identity_doc_kind__licence
+msgid "Permis de conduire"
+msgstr ""
+
+#. module: bf_appointment_visit
+#. odoo-python
+#: code:addons/bf_appointment_visit/models/bf_visit.py:0
+#: code:addons/bf_appointment_visit/models/bf_visit.py:0
+msgid "Personne n'est arrivé : il n'y a pas de départ à constater."
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields.selection,name:bf_appointment_visit.selection__bf_visit__state__no_show
+#: model_terms:ir.ui.view,arch_db:bf_appointment_visit.view_bf_visit_form
+msgid "Personne ne s'est présenté"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model_terms:ir.ui.view,arch_db:bf_appointment_visit.visit_seller_page
+msgid "Personnes attendues"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit_listing__slot_capacity
+msgid "Personnes par créneau"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit__identity_doc_kind
+msgid "Pièce vue"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model,name:bf_appointment_visit.model_bf_visit_window
+msgid "Plage offerte pour une visite"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit_listing__window_ids
+#: model_terms:ir.ui.view,arch_db:bf_appointment_visit.view_bf_visit_listing_form
+msgid "Plages offertes"
+msgstr ""
+
+#. module: bf_appointment_visit
+#. odoo-python
+#: code:addons/bf_appointment_visit/models/bf_visit_listing.py:0
+#: code:addons/bf_appointment_visit/models/bf_visit_listing.py:0
+msgid "Plages offertes — %s"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,help:bf_appointment_visit.field_bf_visit_listing__open_house
+msgid ""
+"Plusieurs personnes sur le même créneau, avec des arrivées échelonnées. ⚠️ "
+"Un courtier doit être présent pendant toute la visite libre, ou s'y faire "
+"remplacer."
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,help:bf_appointment_visit.field_appointment_intake_field__bf_visit_role
+msgid ""
+"Posé par le module de visites. Dit où la réponse se range dans le registre, "
+"quel que soit le libellé de la question."
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit_window__source
+msgid "Provenance"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit_listing__state_id
+msgid "Province"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit_listing__lead_time_hours
+msgid "Préavis minimum (heures)"
+msgstr ""
+
+#. module: bf_appointment_visit
+#. odoo-python
+#: code:addons/bf_appointment_visit/models/bf_visit_listing.py:0
+#: code:addons/bf_appointment_visit/models/bf_visit_listing.py:0
+msgid "Publiez l'inscription d'abord."
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model_terms:ir.ui.view,arch_db:bf_appointment_visit.visit_seller_page
+msgid "Quand"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields.selection,name:bf_appointment_visit.selection__bf_visit__representation__unknown
+msgid "Question non posée"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit__representation_asked_at
+msgid "Question posée le"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model_terms:ir.ui.view,arch_db:bf_appointment_visit.visit_seller_page
+msgid "Question sans réponse"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model_terms:ir.actions.act_window,help:bf_appointment_visit.action_bf_visit
+msgid ""
+"Qui est venu, quand, l'identité vérifiée et la question de la\n"
+"                représentation par un courtier. Une fois l'arrivée constatée, le\n"
+"                registre ne se réécrit plus."
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,help:bf_appointment_visit.field_bf_visit_listing__tenant_id
+msgid "Qui reçoit l'avis de visite de 24 heures."
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,help:bf_appointment_visit.field_bf_visit_listing__seller_ids
+msgid ""
+"Qui reçoit les demandes de visite quand l'inscription est en mode « sur "
+"approbation », et le compte rendu des visites."
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit__rating_ids
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit_listing__rating_ids
+msgid "Ratings"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model_terms:ir.ui.view,arch_db:bf_appointment_visit.view_bf_visit_form
+#: model_terms:ir.ui.view,arch_db:bf_appointment_visit.visit_seller_page
+msgid "Refuser"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields.selection,name:bf_appointment_visit.selection__bf_visit__state__declined
+msgid "Refusée"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.actions.act_window,name:bf_appointment_visit.action_bf_visit
+#: model:ir.ui.menu,name:bf_appointment_visit.menu_bf_visit_register
+msgid "Registre des visites"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model_terms:ir.ui.view,arch_db:bf_appointment_visit.view_bf_visit_listing_search
+#: model_terms:ir.ui.view,arch_db:bf_appointment_visit.view_bf_visit_search
+msgid "Regrouper par"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model_terms:ir.ui.view,arch_db:bf_appointment_visit.view_bf_visit_listing_form
+msgid "Remettre en brouillon"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,help:bf_appointment_visit.field_resource_booking_type__visit_listing_id
+msgid ""
+"Rempli par le module de visites. Un type qui porte une inscription produit "
+"une visite à chaque réservation."
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit__representation
+#: model_terms:ir.ui.view,arch_db:bf_appointment_visit.visit_seller_page
+msgid "Représentation"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model_terms:ir.ui.view,arch_db:bf_appointment_visit.view_bf_visit_form
+msgid "Représentation (à poser à la première occasion)"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields.selection,name:bf_appointment_visit.selection__appointment_intake_field__bf_visit_role__representation
+msgid "Représentation par un courtier"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields.selection,name:bf_appointment_visit.selection__bf_visit__representation__broker
+msgid "Représenté par un courtier"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model,name:bf_appointment_visit.model_resource_booking
+msgid "Resource Booking"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model,name:bf_appointment_visit.model_resource_booking_type
+msgid "Resource Booking Type"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit_listing__activity_user_id
+msgid "Responsible User"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit_listing__resource_id
+msgid "Ressource « propriété »"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit__feedback_received_at
+msgid "Reçue le"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit_listing__street
+msgid "Rue"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model_terms:ir.ui.view,arch_db:bf_appointment_visit.view_bf_visit_listing_form
+msgid "Règles de visite"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit__booking_id
+msgid "Réservation"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_appointment_intake_field__bf_visit_role
+msgid "Rôle dans le registre des visites"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit__message_has_sms_error
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit_listing__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields.selection,name:bf_appointment_visit.selection__bf_visit_window__dayofweek__5
+msgid "Samedi"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit__is_walkin
+msgid "Sans rendez-vous"
+msgstr ""
+
+#. module: bf_appointment_visit
+#. odoo-python
+#: code:addons/bf_appointment_visit/models/bf_visit_listing.py:0
+#: code:addons/bf_appointment_visit/models/bf_visit_listing.py:0
+msgid "Si oui, le nom de votre courtier et de son agence"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit__company_id
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit_listing__company_id
+msgid "Société"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model_terms:ir.ui.view,arch_db:bf_appointment_visit.visit_seller_page
+msgid "Sonnez plutôt à la porte de côté."
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,help:bf_appointment_visit.field_bf_visit_listing__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields.selection,name:bf_appointment_visit.selection__bf_visit_listing__approval_mode__broker
+msgid "Sur approbation du courtier"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields.selection,name:bf_appointment_visit.selection__bf_visit_listing__approval_mode__seller
+msgid "Sur approbation du vendeur"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model_terms:ir.ui.view,arch_db:bf_appointment_visit.view_bf_visit_listing_form
+msgid "Suspendre"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields.selection,name:bf_appointment_visit.selection__bf_visit_listing__state__suspended
+msgid "Suspendue"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model_terms:ir.ui.view,arch_db:bf_appointment_visit.view_bf_visit_listing_form
+msgid "Technique"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model_terms:ir.ui.view,arch_db:bf_appointment_visit.view_bf_visit_listing_form
+msgid "Terminer"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields.selection,name:bf_appointment_visit.selection__bf_visit_listing__state__closed
+msgid "Terminée"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields.selection,name:bf_appointment_visit.selection__bf_visit_window__kind__weekly
+msgid "Toutes les semaines"
+msgstr ""
+
+#. module: bf_appointment_visit
+#. odoo-python
+#: code:addons/bf_appointment_visit/controllers/main.py:0
+#: code:addons/bf_appointment_visit/controllers/main.py:0
+msgid "Trop de tentatives. Reprenez dans une heure."
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit_listing__booking_type_id
+msgid "Type de rendez-vous"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,help:bf_appointment_visit.field_bf_visit_listing__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit__visitor_phone
+#: model_terms:ir.ui.view,arch_db:bf_appointment_visit.visit_walkin_page
+msgid "Téléphone"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit__buyer_broker_phone
+msgid "Téléphone du courtier"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,help:bf_appointment_visit.field_bf_visit__feedback_shared
+msgid ""
+"Un commentaire de visiteur n'est pas toujours bon à transmettre tel quel. "
+"Rien ne part sans cette case."
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model_terms:ir.ui.view,arch_db:bf_appointment_visit.visit_seller_page
+msgid "Un mot pour le visiteur (facultatif)"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model_terms:ir.actions.act_window,help:bf_appointment_visit.action_bf_visit_listing
+msgid ""
+"Une adresse, ses vendeurs, les courtiers qui peuvent la montrer et les\n"
+"                plages offertes. Le reste se fabrique tout seul : la page de réservation,\n"
+"                le calendrier, et le registre des visites."
+msgstr ""
+
+#. module: bf_appointment_visit
+#. odoo-python
+#: code:addons/bf_appointment_visit/models/bf_visit_window.py:0
+#: code:addons/bf_appointment_visit/models/bf_visit_window.py:0
+msgid "Une plage hebdomadaire demande son jour."
+msgstr ""
+
+#. module: bf_appointment_visit
+#. odoo-python
+#: code:addons/bf_appointment_visit/models/bf_visit_window.py:0
+#: code:addons/bf_appointment_visit/models/bf_visit_window.py:0
+msgid "Une plage se termine après avoir commencé (%s à %s)."
+msgstr ""
+
+#. module: bf_appointment_visit
+#. odoo-python
+#: code:addons/bf_appointment_visit/models/bf_visit_window.py:0
+#: code:addons/bf_appointment_visit/models/bf_visit_window.py:0
+msgid "Une plage à date unique demande sa date."
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields.selection,name:bf_appointment_visit.selection__bf_visit_window__kind__once
+msgid "Une seule date"
+msgstr ""
+
+#. module: bf_appointment_visit
+#. odoo-python
+#: code:addons/bf_appointment_visit/models/bf_visit_listing.py:0
+#: code:addons/bf_appointment_visit/models/bf_visit_listing.py:0
+msgid "Une visite libre accueille au moins 2 personnes par créneau."
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,help:bf_appointment_visit.field_bf_visit_window__source
+msgid "Utile quand quelqu'un demande plus tard d'où venait la plage."
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit_listing__seller_ids
+msgid "Vendeurs"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields.selection,name:bf_appointment_visit.selection__bf_visit_window__dayofweek__4
+msgid "Vendredi"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,help:bf_appointment_visit.field_bf_visit__booking_id
+msgid "Vide pour une personne qui s'est présentée sans rendez-vous."
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit_listing__city
+msgid "Ville"
+msgstr ""
+
+#. module: bf_appointment_visit
+#. odoo-python
+#: code:addons/bf_appointment_visit/models/bf_visit.py:0
+#: code:addons/bf_appointment_visit/models/bf_visit.py:0
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_resource_booking__visit_id
+#: model_terms:ir.ui.view,arch_db:bf_appointment_visit.visit_email_layout
+msgid "Visite"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:mail.template,name:bf_appointment_visit.mail_visit_tenant_notice
+msgid "Visite : avis au locataire"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:mail.template,name:bf_appointment_visit.mail_visit_approved
+msgid "Visite : confirmée"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:mail.template,name:bf_appointment_visit.mail_visit_seller_request
+msgid "Visite : demande au vendeur"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:mail.template,name:bf_appointment_visit.mail_visit_feedback_request
+msgid "Visite : demande de rétroaction"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:mail.template,name:bf_appointment_visit.mail_visit_pending
+msgid "Visite : demande transmise"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:mail.template,name:bf_appointment_visit.mail_visit_declined
+msgid "Visite : refusée"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:mail.template,subject:bf_appointment_visit.mail_visit_approved
+msgid "Visite confirmée : {{ object.listing_id.name }}"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model,name:bf_appointment_visit.model_bf_visit
+msgid "Visite d'une propriété"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit_listing__open_house
+#: model_terms:ir.ui.view,arch_db:bf_appointment_visit.view_bf_visit_listing_search
+msgid "Visite libre"
+msgstr ""
+
+#. module: bf_appointment_visit
+#. odoo-python
+#: code:addons/bf_appointment_visit/models/bf_visit_listing.py:0
+#: code:addons/bf_appointment_visit/models/bf_visit_listing.py:0
+msgid "Visite — %s"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit_listing__visit_ids
+#: model_terms:ir.ui.view,arch_db:bf_appointment_visit.view_bf_visit_listing_form
+msgid "Visites"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.actions.server,name:bf_appointment_visit.cron_bf_visit_close_ir_actions_server
+msgid "Visites : fermer celles qui sont passées"
+msgstr ""
+
+#. module: bf_appointment_visit
+#. odoo-python
+#: code:addons/bf_appointment_visit/models/bf_visit_listing.py:0
+#: code:addons/bf_appointment_visit/models/bf_visit_listing.py:0
+msgid "Visites de %s"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.module.category,name:bf_appointment_visit.module_category_bf_visit
+#: model:ir.ui.menu,name:bf_appointment_visit.menu_bf_visit_root
+msgid "Visites de propriétés"
+msgstr ""
+
+#. module: bf_appointment_visit
+#. odoo-python
+#: code:addons/bf_appointment_visit/models/bf_visit_listing.py:0
+#: code:addons/bf_appointment_visit/models/bf_visit_listing.py:0
+msgid "Visites — logement occupé (9 h à 21 h)"
+msgstr ""
+
+#. module: bf_appointment_visit
+#. odoo-python
+#: code:addons/bf_appointment_visit/models/bf_visit_listing.py:0
+#: code:addons/bf_appointment_visit/models/bf_visit_listing.py:0
+msgid "Visites — sans restriction d'heure"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit__visitor_partner_id
+msgid "Visiteur"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model_terms:ir.ui.view,arch_db:bf_appointment_visit.view_bf_visit_listing_form
+msgid "Voir la page de réservation"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:res.groups,comment:bf_appointment_visit.group_bf_visit_manager
+msgid ""
+"Voit toutes les inscriptions de la société, et reste seul à pouvoir corriger"
+" un registre déjà fermé."
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model_terms:ir.ui.view,arch_db:bf_appointment_visit.visit_feedback_page
+msgid ""
+"Votre commentaire n'est transmis au vendeur que si le courtier\n"
+"                        juge utile de le faire."
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:mail.template,subject:bf_appointment_visit.mail_visit_declined
+#: model:mail.template,subject:bf_appointment_visit.mail_visit_pending
+msgid "Votre demande de visite : {{ object.listing_id.name }}"
+msgstr ""
+
+#. module: bf_appointment_visit
+#. odoo-python
+#: code:addons/bf_appointment_visit/models/bf_visit_listing.py:0
+#: code:addons/bf_appointment_visit/models/bf_visit_listing.py:0
+msgid ""
+"Votre demande est transmise pour approbation. Vous recevrez une réponse par "
+"courriel."
+msgstr ""
+
+#. module: bf_appointment_visit
+#. odoo-python
+#: code:addons/bf_appointment_visit/controllers/main.py:0
+#: code:addons/bf_appointment_visit/controllers/main.py:0
+msgid "Votre impression est déjà enregistrée. Merci."
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model_terms:ir.ui.view,arch_db:bf_appointment_visit.visit_feedback_page
+msgid "Votre intérêt pour cette propriété"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model_terms:ir.ui.view,arch_db:bf_appointment_visit.visit_walkin_page
+msgid "Votre nom"
+msgstr ""
+
+#. module: bf_appointment_visit
+#. odoo-python
+#: code:addons/bf_appointment_visit/controllers/main.py:0
+#: code:addons/bf_appointment_visit/controllers/main.py:0
+msgid ""
+"Votre proposition est partie au visiteur, et le créneau demandé est rendu "
+"disponible."
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model_terms:ir.ui.view,arch_db:bf_appointment_visit.visit_feedback_page
+msgid "Votre visite"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:mail.template,subject:bf_appointment_visit.mail_visit_feedback_request
+msgid "Votre visite du {{ object.listing_id.name }}"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit_listing__require_identity
+msgid "Vérifier l'identité des visiteurs"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit__identity_checked_at
+msgid "Vérifiée le"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit__identity_checked_by
+msgid "Vérifiée par"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit__website_message_ids
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit_listing__website_message_ids
+msgid "Website Messages"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,help:bf_appointment_visit.field_bf_visit__website_message_ids
+#: model:ir.model.fields,help:bf_appointment_visit.field_bf_visit_listing__website_message_ids
+msgid "Website communication history"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model_terms:ir.ui.view,arch_db:bf_appointment_visit.visit_email_layout
+msgid "{{ company.appointment_brand_name or company.name }}"
+msgstr ""
+
+#. module: bf_appointment_visit
+#. odoo-python
+#: code:addons/bf_appointment_visit/models/bf_visit_window.py:0
+#: code:addons/bf_appointment_visit/models/bf_visit_window.py:0
+msgid ""
+"« %(adresse)s » est occupée par un locataire : la loi borne les visites à 9 "
+"h et 21 h (art. 1931 du Code civil). La plage %(plage)s déborde."
+msgstr ""
+
+#. module: bf_appointment_visit
+#. odoo-python
+#: code:addons/bf_appointment_visit/models/bf_visit.py:0
+#: code:addons/bf_appointment_visit/models/bf_visit.py:0
+msgid "« %s » est arrivée : elle ne peut pas être absente."
+msgstr ""
+
+#. module: bf_appointment_visit
+#. odoo-python
+#: code:addons/bf_appointment_visit/models/bf_visit.py:0
+#: code:addons/bf_appointment_visit/models/bf_visit.py:0
+msgid ""
+"« %s » est déjà arrivée : ce qui a été constaté ne se réécrit pas. Un "
+"gestionnaire peut corriger une erreur de saisie, et la correction reste au "
+"dossier."
+msgstr ""
+
+#. module: bf_appointment_visit
+#. odoo-python
+#: code:addons/bf_appointment_visit/models/bf_visit_listing.py:0
+#: code:addons/bf_appointment_visit/models/bf_visit_listing.py:0
+msgid ""
+"« %s » est occupée par un locataire : il faut dire QUI, sinon l'avis de 24 "
+"heures que la loi exige ne part nulle part."
+msgstr ""
+
+#. module: bf_appointment_visit
+#. odoo-python
+#: code:addons/bf_appointment_visit/models/bf_visit_listing.py:0
+#: code:addons/bf_appointment_visit/models/bf_visit_listing.py:0
+msgid ""
+"« %s » n'a aucun courtier autorisé. Sans personne pour ouvrir la porte, "
+"aucun créneau n'existe."
+msgstr ""
+
+#. module: bf_appointment_visit
+#. odoo-python
+#: code:addons/bf_appointment_visit/models/bf_visit.py:0
+#: code:addons/bf_appointment_visit/models/bf_visit.py:0
+msgid "« %s » n'est pas en attente d'une décision."
+msgstr ""
+
+#. module: bf_appointment_visit
+#. odoo-python
+#: code:addons/bf_appointment_visit/models/bf_visit.py:0
+#: code:addons/bf_appointment_visit/models/bf_visit.py:0
+msgid "« %s » n'est plus en attente."
+msgstr ""
+
+#. module: bf_appointment_visit
+#. odoo-python
+#: code:addons/bf_appointment_visit/models/bf_visit_listing.py:0
+#: code:addons/bf_appointment_visit/models/bf_visit_listing.py:0
+msgid ""
+"« %s » n'offre aucune plage. Le vendeur doit dire quand il accepte de faire "
+"visiter."
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,help:bf_appointment_visit.field_bf_visit_listing__occupancy
+msgid ""
+"« Occupée par un locataire » impose le préavis de 24 heures et les heures de"
+" 9 h à 21 h de l'article 1931 du Code civil."
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit_window__hour_to
+msgid "À"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields.selection,name:bf_appointment_visit.selection__bf_visit__feedback_interest__3
+msgid "À considérer"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields.selection,name:bf_appointment_visit.selection__bf_visit__identity_method__remote
+msgid "À distance, pièce authentifiée"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields.selection,name:bf_appointment_visit.selection__bf_visit_listing__listing_kind__rental
+msgid "À louer"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields.selection,name:bf_appointment_visit.selection__bf_visit_listing__listing_kind__sale
+msgid "À vendre"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model_terms:ir.ui.view,arch_db:bf_appointment_visit.view_bf_visit_search
+msgid "À venir"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit__state
+#: model:ir.model.fields,field_description:bf_appointment_visit.field_bf_visit_listing__state
+#: model_terms:ir.ui.view,arch_db:bf_appointment_visit.view_bf_visit_listing_search
+#: model_terms:ir.ui.view,arch_db:bf_appointment_visit.view_bf_visit_search
+#: model_terms:ir.ui.view,arch_db:bf_appointment_visit.visit_seller_page
+msgid "État"
+msgstr ""
+
+#. module: bf_appointment_visit
+#. odoo-python
+#: code:addons/bf_appointment_visit/models/bf_visit_listing.py:0
+#: code:addons/bf_appointment_visit/models/bf_visit_listing.py:0
+msgid "Êtes-vous représenté par un courtier immobilier?"
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,help:bf_appointment_visit.field_bf_visit__identity_doc_kind
+msgid ""
+"⚠️ Le type de pièce, et rien d'autre. Une vérification faite en personne ne "
+"garde pas de photocopie : elle se consigne."
+msgstr ""
+
+#. module: bf_appointment_visit
+#: model:ir.model.fields,help:bf_appointment_visit.field_bf_visit_listing__access_instructions
+msgid ""
+"⚠️ Livré SEULEMENT quand la visite est confirmée, et jamais sur la page "
+"publique. Code de boîte à clés, porte à utiliser, système d'alarme."
+msgstr ""
