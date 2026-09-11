@@ -18,6 +18,7 @@
                 <style>
                     :root {
                         <t t-if="_brand_co.report_brand_primary">--brand-primary: <t t-out="_brand_co.report_brand_primary"/>;</t>
+                        <t t-if="_brand_co.report_brand_primary">--brand-primary-on-white: <t t-out="_brand_co._brand_primary_on_white()"/>;</t>
                         <t t-if="_brand_co.report_brand_dark">--brand-dark: <t t-out="_brand_co.report_brand_dark"/>;</t>
                     }
                 </style>

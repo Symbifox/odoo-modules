@@ -1,6 +1,22 @@
 // Blue Fox Inc. Custom Branding
 // Navbar: var(--brand-dark, #2E3132) (Dark Gray)
 // Accent/Buttons: var(--brand-primary, #29ABE2) (Blue)
+//
+// ⚠️ DEUX variables d'accent, et le choix entre elles n'est pas cosmétique.
+// `--brand-primary` est la couleur de la marque : bordures, liens, icônes,
+// anneaux de focus, tout ce qui n'a pas de texte par-dessus.
+// `--brand-primary-on-white` est la même, assombrie juste assez pour porter
+// du TEXTE BLANC (seuil AA 4,5:1). L'accent brut sous du blanc rend 2,62:1
+// sur un bleu clair et 2,96:1 sur un orange ; trois des sept accents en
+// service passent déjà et ne bougent pas. La valeur se calcule par marque,
+// côté serveur, dans `brand_color_mixin.assombrir_pour_texte_blanc`.
+// Règle : si du texte blanc se pose dessus, c'est `-on-white`.
+//
+// ⚠️ Le repli est CHAÎNÉ sur `--brand-primary`, pas sur un hex. Le fichier
+// d'actifs est relu dès qu'il change sur disque, alors que la variable ne
+// paraît qu'après la mise à jour du gabarit : entre les deux, un repli en dur
+// repeindrait toutes les sociétés à la couleur de la première. Chaîné, cet
+// intervalle rend exactement ce que le thème rendait avant.
 
 // Override Odoo brand color variables
 :root {
@@ -61,14 +77,14 @@
     }
 }
 
-// Primary buttons
+// Primary buttons (texte blanc : variante lisible)
 .btn-primary {
-    background-color: var(--brand-primary, #29ABE2) !important;
-    border-color: var(--brand-primary, #29ABE2) !important;
+    background-color: var(--brand-primary-on-white, var(--brand-primary, #29ABE2)) !important;
+    border-color: var(--brand-primary-on-white, var(--brand-primary, #29ABE2)) !important;
 
     &:hover, &:focus, &:active {
-        background-color: color-mix(in srgb, var(--brand-primary, #29ABE2) 80%, black) !important;
-        border-color: color-mix(in srgb, var(--brand-primary, #29ABE2) 80%, black) !important;
+        background-color: color-mix(in srgb, var(--brand-primary-on-white, var(--brand-primary, #29ABE2)) 80%, black) !important;
+        border-color: color-mix(in srgb, var(--brand-primary-on-white, var(--brand-primary, #29ABE2)) 80%, black) !important;
     }
 }
 
@@ -90,10 +106,10 @@ a.text-primary,
     }
 }
 
-// Badge colors
+// Badge colors (un compteur blanc s'écrit dessus)
 .badge-primary,
 .bg-primary {
-    background-color: var(--brand-primary, #29ABE2) !important;
+    background-color: var(--brand-primary-on-white, var(--brand-primary, #29ABE2)) !important;
 }
 
 // Border colors
@@ -101,9 +117,9 @@ a.text-primary,
     border-color: var(--brand-primary, #29ABE2) !important;
 }
 
-// Progress bars
+// Progress bars (Bootstrap y écrit le pourcentage en blanc)
 .progress-bar {
-    background-color: var(--brand-primary, #29ABE2);
+    background-color: var(--brand-primary-on-white, var(--brand-primary, #29ABE2));
 }
 
 // Form elements focus state
@@ -120,9 +136,9 @@ a.text-primary,
     }
 }
 
-// Discuss/Chat notification badge
+// Discuss/Chat notification badge (compteur blanc)
 .o-discuss-badge {
-    --o-discuss-badge-bg: var(--brand-primary, #29ABE2);
+    --o-discuss-badge-bg: var(--brand-primary-on-white, var(--brand-primary, #29ABE2));
 }
 
 // ===========================================
@@ -165,8 +181,8 @@ a.text-primary,
         }
 
         .btn-primary {
-            background-color: var(--brand-primary, #29ABE2) !important;
-            border-color: var(--brand-primary, #29ABE2) !important;
+            background-color: var(--brand-primary-on-white, var(--brand-primary, #29ABE2)) !important;
+            border-color: var(--brand-primary-on-white, var(--brand-primary, #29ABE2)) !important;
         }
     }
 

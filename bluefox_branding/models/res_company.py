@@ -5,6 +5,8 @@ from odoo import api, fields, models
 from odoo.http import request
 from odoo.tools.mimetypes import guess_mimetype
 
+from .brand_color_mixin import assombrir_pour_texte_blanc
+
 # Formats a PWA manifest may list in `icons`. An .ico is a perfectly good tab
 # favicon but Chrome drops manifest entries it cannot decode, so the manifest
 # keeps Odoo's icons rather than shipping a broken list.
@@ -103,6 +105,23 @@ class ResCompany(models.Model):
         if chosen not in allowed:
             return company
         return self.browse(chosen)
+
+    # -- Accent utilisable comme fond sous du texte blanc --------------------
+
+    def _brand_primary_on_white(self):
+        """L'accent, assombri juste assez pour porter du texte blanc.
+
+        Les boutons primaires, les pastilles et les barres de progression
+        peignent l'accent en FOND et écrivent dessus en blanc. Sur les marques
+        claires la paire tombe sous le seuil AA (2,62:1 pour un bleu clair),
+        et rien ne le signale : le bouton s'affiche, son texte est là, il est
+        seulement trop pâle pour une partie des gens.
+
+        Une marque qui passe déjà rend sa propre couleur, inchangée. Voir
+        ``brand_color_mixin.assombrir_pour_texte_blanc``.
+        """
+        self.ensure_one()
+        return assombrir_pour_texte_blanc(self.report_brand_primary or '')
 
     # -- Brand icon ---------------------------------------------------------
     # One field feeds three surfaces (tab, apple-touch, PWA manifest); the URL

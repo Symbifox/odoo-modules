@@ -41,6 +41,42 @@ populated at request time from the **company selected in the switcher**, not
 cookie, so the variables are resolved by `res.company._brand_active_company`
 (v18.0.3.8.0). See `static/src/scss/branding.scss`.
 
+### An accent that can carry white text (v18.0.3.10.0)
+
+The brand accent is used as a **background** under white text on primary
+buttons, badges, progress bars and the Discuss counter. Measured on a live
+instance: a light blue accent under white renders **2.62:1**, well under the
+4.5 AA threshold, and a light orange one 2.96:1. Nothing reports it. The button
+is drawn, the label is there, it is simply too pale for some readers, and the
+same pair behaves identically in light and dark mode.
+
+A blanket darkening would be wrong: three of the seven accents in service
+already pass (Odoo's own purple renders 7.23:1), and darkening them would only
+spoil them. So the variant is computed **per brand**, server side, by
+`brand_color_mixin.assombrir_pour_texte_blanc`: the colour is stepped down by
+1% at a time and the **lightest** version that reaches the threshold wins, so a
+brand stays as close to itself as the threshold allows. One light blue loses
+26% of its lightness, another 7%, and a brand that already passes is returned
+untouched.
+
+The result is published as a second CSS variable, `--brand-primary-on-white`,
+alongside `--brand-primary`. The rule for anything this module styles:
+**if white text sits on it, read `-on-white`; otherwise read the raw accent**,
+which still paints borders, links, icons and focus rings.
+
+The fallback is chained, `var(--brand-primary-on-white, var(--brand-primary,
+…))`, and that is deliberate: the asset bundle is rebuilt as soon as the file
+changes on disk, while the variable only appears once the template is upgraded.
+A hardcoded fallback would repaint every company in the first one's colour
+during that window; chained, the window renders exactly what it rendered
+before.
+
+Six tests cover it, proven by mutation: the seven accents in service, the
+"lightest that passes" property, the untouched-if-already-legible case,
+unreadable input, the company accessor, and the stylesheet itself, because
+the original defect was not a wrong colour: it was the right colour read from
+the wrong variable.
+
 ### Application icon (tab, home screen, installed PWA)
 
 `res.company.favicon` feeds three surfaces at once, so a white-label tenant
