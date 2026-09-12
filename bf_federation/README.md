@@ -68,6 +68,13 @@ a task waiting on the other side simply stays "In progress". Source strings are
 French, with a `fr_CA` catalogue; menus read *Fédération › Pairs*, *Accepter une
 invitation*, *Tâches fédérées*, *Liens*, *Boîte de sortie*.
 
+## Language
+
+Source strings are written in French, and the module ships **no** `fr_CA`
+catalogue: it would have nothing to translate, and an identity catalogue freezes
+one release's labels onto the next. The `i18n/bf_federation.pot` template is
+provided for translating into another language.
+
 ## Tests
 
 `--test-tags federation`: pairing and unexpected types, signature and replay,
