@@ -20,7 +20,7 @@
                                 context="{'search_default_peer_id': id}">
                             <field name="link_count" widget="statinfo" string="Tâches fédérées"/>
                         </button>
-                        <button name="%(bf_federation.action_federation_outbox)d" type="action" class="oe_stat_button" icon="fa-paper-plane"
+                        <button name="%(bf_federation.action_federation_outbox)d" type="action" class="oe_stat_button" icon="fa-paper-plane" groups="base.group_system"
                                 context="{'search_default_peer_id': id, 'search_default_pending': 1}">
                             <field name="outbox_pending" widget="statinfo" string="À envoyer"/>
                         </button>

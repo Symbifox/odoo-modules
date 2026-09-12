@@ -9,6 +9,7 @@
                 <field name="peer_id"/>
                 <field name="kind"/>
                 <field name="link_id"/>
+                <field name="sender_ref" optional="hide"/>
                 <field name="state" widget="badge" decoration-success="state == 'sent'" decoration-warning="state == 'pending'" decoration-danger="state == 'failed'"/>
                 <field name="attempts"/>
                 <field name="next_attempt" optional="hide"/>

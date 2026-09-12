@@ -95,6 +95,42 @@ def is_private(body_html):
     return text.startswith(tuple(m.lower() for m in PRIVATE_MARKERS))
 
 
+def clean_text(value, limit=200):
+    """Une chaîne venue du réseau, réduite à du texte court (jamais rendue telle quelle)."""
+    if not isinstance(value, str):
+        return ""
+    return " ".join(value.split())[:limit]
+
+
+def as_int(value, default=0):
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return default
+
+
+def valid_day(value):
+    if value in (None, False, ""):
+        return False
+    if not isinstance(value, str):
+        return None
+    try:
+        datetime.strptime(value, "%Y-%m-%d")
+    except ValueError:
+        return None
+    return value
+
+
+def valid_datetime(value):
+    if not isinstance(value, str):
+        return False
+    try:
+        datetime.strptime(value, "%Y-%m-%d %H:%M:%S")
+    except ValueError:
+        return False
+    return value
+
+
 def fingerprint(*parts):
     return hashlib.sha1("\x1f".join(str(p) for p in parts).encode("utf-8")).hexdigest()[:16]
 

@@ -5,7 +5,7 @@
         <field name="model">project.project</field>
         <field name="inherit_id" ref="project.edit_project"/>
         <field name="arch" type="xml">
-            <xpath expr="//field[@name='privacy_visibility']" position="after">
+            <xpath expr="//field[@name='privacy_visibility_warning']/parent::span" position="after">
                 <field name="federation_peer_ids" widget="many2many_tags" groups="project.group_project_manager"
                        placeholder="Aucun pair : les tâches de ce projet ne se fédèrent pas"/>
             </xpath>

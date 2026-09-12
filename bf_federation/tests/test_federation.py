@@ -11,6 +11,7 @@ import time
 import requests
 from markupsafe import Markup
 
+from odoo import fields
 from odoo.tests import HttpCase, tagged
 
 from ..models import transport
@@ -22,6 +23,7 @@ class TestFederation(HttpCase):
     def setUp(self):
         super().setUp()
         self.env["ir.config_parameter"].sudo().set_param("web.base.url", self.base_url())
+        self.env["ir.config_parameter"].sudo().set_param("bf_federation.allow_http", "True")
         self.env.company.partner_id.tz = "America/Montreal"
         self.admin = self.env.ref("base.user_admin")
         self.receveur = self.env["res.users"].create({
@@ -42,6 +44,9 @@ class TestFederation(HttpCase):
         self.env.invalidate_all()
         self.peer_b = Peer.search([("name", "=", "Pair B")], limit=1) or Peer.search([("base_url", "=", self.base_url()), ("id", "!=", self.peer_a.id)], limit=1)
         self.project.federation_peer_ids = [(4, self.peer_b.id)]
+        self.admin.partner_id.email = "personne.ici@exemple.test"
+        self.env["federation.peer.identity"].create({"peer_id": self.peer_a.id, "remote_email": "personne.ici@exemple.test",
+                                                     "remote_name": "Personne ici", "local_partner_id": self.admin.partner_id.id})
         self.Outbox = self.env["federation.outbox"]
 
     def _flush(self):
@@ -68,7 +73,11 @@ class TestFederation(HttpCase):
         self.assertTrue(self.peer_a.action_ping())
         # un code périmé ou inconnu est refusé
         resp = requests.post(self.base_url() + "/federation/v1/handshake", data=transport.canonical_body(
-            {"protocol": transport.PROTOCOL, "code": "faux", "secret": "x", "uuid": "y"}), headers={"Content-Type": "application/json"}, timeout=10)
+            {"protocol": transport.PROTOCOL, "code": "faux", "part": "x" * 32, "uuid": "y"}), headers={"Content-Type": "application/json"}, timeout=10)
+        self.assertEqual(resp.status_code, 403)
+        # un type inattendu ne casse rien : 403, pas 500
+        resp = requests.post(self.base_url() + "/federation/v1/handshake", data=transport.canonical_body(
+            {"protocol": transport.PROTOCOL, "code": ["a", "b"], "part": {"x": 1}, "uuid": 5}), headers={"Content-Type": "application/json"}, timeout=10)
         self.assertEqual(resp.status_code, 403)
 
     def test_02_signature_and_replay(self):
@@ -179,7 +188,7 @@ class TestFederation(HttpCase):
         self.assertEqual(carried.attachment_ids.name, "petit.txt")
         self.assertEqual(carried.attachment_ids.res_id, mirror.id)
         self.assertIn("gros.bin (2.0 Mio, restée", carried.body)
-        self.assertEqual(carried.author_id, self.admin.partner_id, "l'auteur est apparié par courriel d'utilisateur interne")
+        self.assertEqual(carried.author_id, self.admin.partner_id, "l'auteur est apparié par la table des personnes")
         self.assertEqual(carried.subtype_id, self.env.ref("mail.mt_comment"))
         # le receveur répond en note : A envoie ses notes (send_notes coché)
         mirror.with_user(self.receveur).message_post(body=Markup("<p>Reçu, je m'en occupe <i>lundi</i></p>"), message_type="comment", subtype_xmlid="mail.mt_note")
@@ -188,7 +197,8 @@ class TestFederation(HttpCase):
         self.assertEqual(len(back), 1)
         self.assertNotIn("<i>", back.body)
         self.assertEqual(back.subtype_id, self.env.ref("mail.mt_note"))
-        self.assertEqual(back.author_id, self.receveur.partner_id)
+        self.assertEqual(back.author_id, self.peer_b.partner_id, "hors table, l'auteur est l'organisation du pair")
+        self.assertIn("Personne du pair", back.body, "et le nom annoncé reste lisible en préfixe")
         inbox = self.env["mail.notification"].search([("mail_message_id", "=", back.id)])
         self.assertTrue(inbox)
         self.assertTrue(all(n.notification_type == "inbox" for n in inbox))
@@ -220,9 +230,11 @@ class TestFederation(HttpCase):
         self._flush()
         self.assertFalse(mirror.active, "retirer le partage archive le miroir")
         self.assertFalse(task._federation_link())
+        task.write({"name": "Renommée pendant le retrait"})
         task.write({"federation_peer_id": self.peer_b.id})
         self._flush()
         self.assertTrue(mirror.active, "re-partager réactive le miroir, sans doublon")
+        self.assertEqual(mirror.name, "Renommée pendant le retrait", "et le miroir est rafraîchi à la remise")
         self.assertEqual(self.env["project.task"].with_context(active_test=False).search_count(
             [("project_id", "=", self.peer_a.mirror_project_id.id)]), 1)
         task.write({"active": False})
@@ -274,3 +286,115 @@ class TestFederation(HttpCase):
         mirror = self._mirror_of(ok)
         self.assertEqual(mirror.federation_peer_id, self.peer_a, "le miroir porte son pair")
         self.assertIn(self.peer_a, mirror.project_id.federation_peer_ids, "le projet miroir autorise le pair")
+
+    def test_11_computed_fields_are_searchable(self):
+        task = self._share()
+        mirror = self._mirror_of(task)
+        Task = self.env["project.task"]
+        self.assertIn(task, Task.search([("federation_origin", "=", "local")]))
+        self.assertNotIn(mirror, Task.search([("federation_origin", "=", "local")]))
+        self.assertIn(mirror, Task.search([("federation_origin", "=", "remote")]))
+        self.assertNotIn(task, Task.search([("federation_origin", "=", "remote")]))
+        hors = Task.create({"name": "Hors", "project_id": self.project_ferme.id})
+        self.assertNotIn(hors, Task.search([("federation_possible", "=", True)]))
+        self.assertIn(task, Task.search([("federation_possible", "=", True)]))
+        self.assertIn(hors, Task.search([("federation_possible", "=", False)]))
+        self.assertIn(task, Task.search([("federation_link_id", "=", task._federation_link().id)]))
+
+    def test_12_simple_user_cannot_federate_by_write(self):
+        from odoo.exceptions import AccessError
+        user = self.env["res.users"].create({"name": "Simple 2", "login": "simple.deux",
+                                             "groups_id": [(6, 0, [self.env.ref("base.group_user").id, self.env.ref("project.group_project_user").id])]})
+        task = self.env["project.task"].create({"name": "T2", "project_id": self.project.id, "user_ids": [(6, 0, [user.id])]})
+        with self.assertRaises(AccessError), self.env.cr.savepoint():
+            task.with_user(user).write({"federation_peer_id": self.peer_b.id})
+        with self.assertRaises(AccessError), self.env.cr.savepoint():
+            self.env["project.task"].with_user(user).create({"name": "T3", "project_id": self.project.id, "federation_peer_id": self.peer_b.id})
+        self.assertFalse(task.federation_peer_id)
+
+    def test_13_deletion_archives_mirror(self):
+        task = self._share()
+        mirror = self._mirror_of(task)
+        task.unlink()
+        self._flush()
+        self.assertFalse(mirror.active, "supprimer la tâche d'origine archive le miroir")
+        self.assertFalse(self.env["federation.link"].with_context(active_test=False).search([("task_id", "=", mirror.id), ("active", "=", True)]))
+
+    def test_14_receiver_cleanup_never_touches_origin(self):
+        from odoo.exceptions import UserError
+        task = self._share()
+        mirror = self._mirror_of(task)
+        # le receveur ne peut pas re-fédérer le miroir ailleurs
+        other = self.env["federation.peer"].create({"name": "Tiers", "mirror_user_id": self.admin.id, "state": "active"})
+        mirror.project_id.federation_peer_ids = [(4, other.id)]
+        with self.assertRaises(UserError), self.env.cr.savepoint():
+            mirror.write({"federation_peer_id": other.id})
+        # le receveur archive son miroir : l'original reste actif, il est averti, le lien se ferme
+        mirror.write({"active": False})
+        self._flush()
+        self.assertTrue(task.active)
+        self.assertFalse(task.federation_peer_id, "l'original n'est plus marqué fédéré")
+        notes = self.env["mail.message"].search([("model", "=", "project.task"), ("res_id", "=", task.id), ("body", "ilike", "miroir de cette tâche")])
+        self.assertEqual(len(notes), 1)
+        self.assertFalse(self.env["federation.link"].search([("task_id", "=", task.id)]), "le lien d'origine est fermé")
+
+    def test_15_stage_change_propagates(self):
+        task = self._share()
+        mirror = self._mirror_of(task)
+        states = dict(self.env["project.task"]._fields["state"].selection)
+        if "05_waiting_client" in states:
+            task.write({"state": "05_waiting_client"})
+            self._flush()
+            self.assertEqual(mirror.state, "01_in_progress")
+            # glisser la carte dans une autre colonne recalcule l'état sans le nommer : ça doit partir quand même
+            stage = self.env["project.task.type"].create({"name": "Autre colonne", "project_ids": [(4, self.project.id)]})
+            task.write({"stage_id": stage.id})
+            self.assertEqual(task.state, "01_in_progress")
+            self._flush()
+            self.assertEqual(mirror.state, "06_waiting_external" if "06_waiting_external" in states else "01_in_progress")
+        # chez le receveur, glisser le miroir dans « Terminé » termine sa part et la tâche revient
+        done = self.peer_a._done_stage()
+        self.assertTrue(done)
+        mirror.write({"stage_id": done.id})
+        self.assertEqual(mirror.state, "1_done")
+        self._flush()
+        self.assertEqual(task.state, "01_in_progress")
+
+    def test_16_outbox_order_and_lost_reply(self):
+        # un message posté pendant que le partage attend ne doit pas partir avant lui, ni être abandonné
+        self.peer_b.base_url = "http://localhost:1/"
+        task = self.env["project.task"].create({"name": "En panne", "project_id": self.project.id, "federation_peer_id": self.peer_b.id})
+        task.with_user(self.admin).message_post(body=Markup("<p>Pendant la panne</p>"), message_type="comment", subtype_xmlid="mail.mt_comment")
+        self.Outbox._cron_send()
+        entries = self.Outbox.search([("link_id.task_id", "=", task.id)], order="id")
+        self.assertEqual([e.kind for e in entries], ["task.share", "message.new"])
+        self.assertEqual(entries[0].attempts, 1)
+        self.assertEqual(entries[1].attempts, 0, "le message attend que le partage passe")
+        # Le partage attend son prochain essai ; le message, lui, est dû tout de suite.
+        # Il ne doit pas partir avant lui, sinon le pair répondrait « lien inconnu ».
+        self.peer_b.base_url = self.base_url()
+        entries[1].write({"next_attempt": fields.Datetime.now()})
+        self.Outbox._cron_send()
+        self.assertEqual(entries[1].state, "pending", "le message attend le partage, même sur une passe suivante")
+        self.assertEqual(entries[1].attempts, 0)
+        entries.write({"next_attempt": fields.Datetime.now()})
+        self._flush()
+        self.assertTrue(all(e.state == "sent" for e in entries))
+        mirror = self._mirror_of(task)
+        msgs = self.env["mail.message"].search([("model", "=", "project.task"), ("res_id", "=", mirror.id), ("body", "ilike", "Pendant la panne")])
+        self.assertEqual(len(msgs), 1)
+        # une réponse perdue fait rejouer le même message : pas de doublon chez le receveur
+        entries[1].write({"state": "pending", "next_attempt": fields.Datetime.now()})
+        self._flush()
+        msgs = self.env["mail.message"].search([("model", "=", "project.task"), ("res_id", "=", mirror.id), ("body", "ilike", "Pendant la panne")])
+        self.assertEqual(len(msgs), 1, "le rejeu est reconnu par la référence du message")
+
+    def test_17_notes_are_escaped(self):
+        task = self._share()
+        mirror = self._mirror_of(task)
+        link = mirror._federation_link()
+        link._apply_archive('<a href="https://hameçon.test">clique</a>')
+        note = self.env["mail.message"].search([("model", "=", "project.task"), ("res_id", "=", mirror.id), ("body", "ilike", "hameçon")], limit=1)
+        self.assertTrue(note)
+        self.assertNotIn("<a ", note.body)
+        self.assertIn("&lt;a", note.body)

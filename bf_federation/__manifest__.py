@@ -1,6 +1,6 @@
 {
     "name": "Fédération",
-    "version": "18.0.1.0.0",
+    "version": "18.0.1.1.0",
     "category": "Project",
     "summary": "Fédérer deux instances : partager des tâches d'un Symbifox à l'autre, "
                "avec l'état, l'échéance, les messages et les pièces jointes qui suivent",

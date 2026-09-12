@@ -10,7 +10,7 @@
         <field name="active" eval="True"/>
     </record>
     <record id="cron_federation_prune" model="ir.cron">
-        <field name="name">Fédération : purger les nonces reçus</field>
+        <field name="name">Fédération : ménage (nonces et envois réussis)</field>
         <field name="model_id" ref="model_federation_nonce"/>
         <field name="state">code</field>
         <field name="code">model._cron_prune()</field>

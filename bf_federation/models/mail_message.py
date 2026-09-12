@@ -1,5 +1,3 @@
-import base64
-
 from odoo import api, models
 
 from . import transport
@@ -12,23 +10,19 @@ class MailMessage(models.Model):
     def create(self, vals_list):
         messages = super().create(vals_list)
         if not self.env.context.get("federation_inbound"):
-            messages.sudo()._federation_forward()
+            candidates = messages.filtered(lambda m: m.model == "project.task" and m.res_id and m.message_type in ("comment", "email"))
+            if candidates:
+                candidates.sudo()._federation_forward()
         return messages
 
     def _federation_forward(self):
-        Task = self.env["project.task"].sudo()
         note_id = self.env.ref("mail.mt_note").id
         comment_id = self.env.ref("mail.mt_comment").id
+        links = self.env["federation.link"].sudo().search([("task_id", "in", list({m.res_id for m in self}))])
+        by_task = {l.task_id.id: l for l in links}
         for msg in self:
-            if msg.model != "project.task" or not msg.res_id or msg.message_type not in ("comment", "email"):
-                continue
-            if msg.subtype_id.id not in (note_id, comment_id):
-                continue
-            task = Task.browse(msg.res_id).exists()
-            if not task:
-                continue
-            link = task._federation_link()
-            if not link:
+            link = by_task.get(msg.res_id)
+            if not link or msg.subtype_id.id not in (note_id, comment_id):
                 continue
             peer = link.peer_id
             if msg.subtype_id.id == note_id and not peer.send_notes:

@@ -1,8 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <record id="rule_federation_peer_company" model="ir.rule">
+        <field name="name">Pairs de fédération : société</field>
+        <field name="model_id" ref="model_federation_peer"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_federation_identity_company" model="ir.rule">
+        <field name="name">Personnes appariées : société</field>
+        <field name="model_id" ref="model_federation_peer_identity"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    </record>
     <record id="rule_federation_link_company" model="ir.rule">
         <field name="name">Liens fédérés : société</field>
         <field name="model_id" ref="model_federation_link"/>
         <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_federation_outbox_company" model="ir.rule">
+        <field name="name">Boîte de sortie : société</field>
+        <field name="model_id" ref="model_federation_outbox"/>
+        <field name="domain_force">['|', ('peer_id.company_id', '=', False), ('peer_id.company_id', 'in', company_ids)]</field>
     </record>
 </odoo>
