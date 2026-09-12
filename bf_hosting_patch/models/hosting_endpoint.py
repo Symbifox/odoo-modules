@@ -196,6 +196,29 @@ class HostingEndpoint(models.Model):
                   name=system.endpoint_id.name, code=system.endpoint_id.code)
             )
 
+        # 🔴 Le même contrôle que ci-dessus, mais pour la MACHINE. Sans lui,
+        # l'écriture de `machine_uuid` plus bas viole la contrainte d'unicité,
+        # et la violation sort de l'API en HTTP 400 au corps non JSON : l'agent
+        # n'a plus qu'un « HTTP 400 » à imprimer, et la personne devant la
+        # machine n'apprend rien. Le cas arrive pour de vrai — machine
+        # réinstallée et réenrôlée sur une fiche neuve, machine virtuelle
+        # clonée, conteneur qui lit le DMI de son hôte.
+        # ⚠️ `active_test=False` : l'index d'unicité couvre AUSSI les fiches
+        # archivées, donc une recherche ordinaire ne verrait pas le jumeau et
+        # laisserait repasser la violation.
+        if machine_uuid:
+            twin = self.with_context(active_test=False).sudo().search(
+                [("machine_uuid", "=", machine_uuid),
+                 ("id", "!=", endpoint.id)], limit=1,
+            )
+            if twin:
+                raise UserError(
+                    _("Cette machine est déjà au parc sous « %(name)s » "
+                      "(%(code)s) : même UUID matériel. L'enrôler ici "
+                      "créerait un doublon.",
+                      name=twin.name, code=twin.code)
+                )
+
         token = system_model._new_token()
         values = {
             "endpoint_id": endpoint.id,

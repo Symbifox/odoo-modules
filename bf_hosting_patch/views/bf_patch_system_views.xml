@@ -64,6 +64,14 @@
                         Le dernier relevé n'a pas pu compter les paquets. Le zéro
                         affiché est un artefact, pas une mesure.
                     </div>
+                    <div class="alert alert-warning" role="status"
+                         invisible="not applied_after_report">
+                        Un ordre a été appliqué le
+                        <field name="applied_after_report" readonly="1"
+                               class="oe_inline"/>, après le dernier relevé :
+                        les compteurs ci-dessous datent d'avant. Ils se
+                        corrigeront au prochain relevé de la machine.
+                    </div>
                     <div class="alert alert-danger" role="status"
                          invisible="not disk_tight">
                         Disque serré : une mise à jour peut échouer à mi-chemin.

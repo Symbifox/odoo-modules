@@ -56,7 +56,7 @@ echo
 echo "Le relevé est en place."
 if [ -e /etc/symbifox/apply-allowed ]; then
     echo "L'application à distance est OUVERTE : l'agent interroge Symbifox"
-    echo "aux 15 minutes. Pour la refermer, sur CETTE machine :"
+    echo "à la minute. Pour la refermer, sur CETTE machine :"
     echo "    rm /etc/symbifox/apply-allowed"
     echo "    systemctl disable --now symbifox-hostd-poll.timer"
 else

@@ -124,6 +124,23 @@ the machine at that moment. The consent itself was already enforced; what the
 history adds is the ability to say **when** it was given, and when it was
 withdrawn.
 
+And a refusal counts as a withdrawal, immediately. When an agent turns an order
+down because the file is gone, the record stops saying "remote application
+allowed" there and then, instead of waiting for the next daily report — up to
+24 hours of a green light that was no longer true. The first report that finds
+the file back sets it again.
+
+### Counters are never quietly rejuvenated
+
+An applied order does not refresh the package counts: the agent reports the
+*outcome of the order*, not a reading. The module refuses to subtract a guess
+from the last count — that is the very lie it exists to prevent — so it says so
+instead: a record whose last successful order is newer than its last reading
+carries the date of that order, and the form warns that the figures below it are
+older. A recent agent files a fresh reading right after applying, which closes
+the gap in seconds; an older agent leaves it open until the next daily run, and
+the warning is what tells you which situation you are in.
+
 ## Installing the agent on a machine
 
 1. Create (or open) the machine's record in **Hosting → Fleet**.
@@ -159,7 +176,7 @@ repository. What holds the line there is the consent file, not the sandbox.
 | Gesture | Cadence |
 |---|---|
 | Report | daily, plus on boot, spread over 15 minutes |
-| Poll for orders | every 15 minutes (only where consent exists) |
+| Poll for orders | every minute (only where consent exists) |
 | Flip to `stale` | 48 h without a report (cron every 4 h) |
 | Purge reports | 90 days |
 | Expire unclaimed orders | 7 days |
@@ -186,10 +203,12 @@ odoo -d <db> -u bf_hosting_patch --test-enable --test-tags=/bf_hosting_patch \
      --stop-after-init --db-filter='^<db>$' --http-port=8169
 ```
 
-71 tests, weighted towards the unhappy paths: missing token, revoked token,
+83 tests, weighted towards the unhappy paths: missing token, revoked token,
 unreadable body, oversized body, invented selection value, duplicate machine-id,
-the flip to `stale` as time passes with nothing written, an order handed to the
-wrong machine, an order without local consent, and a terminal state an agent
+a hardware UUID already carried by another record (archived ones included), the
+flip to `stale` as time passes with nothing written, an order handed to the
+wrong machine, an order without local consent, a refusal that must withdraw the
+consent, counters left behind by an applied order, and a terminal state an agent
 tries to rewrite.
 
 ## Licence

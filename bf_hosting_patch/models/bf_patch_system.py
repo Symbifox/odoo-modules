@@ -169,6 +169,19 @@ class BfPatchSystem(models.Model):
     job_pending_count = fields.Integer(
         string="Ordres en file", compute="_compute_job_pending_count",
     )
+    # 🔴 Un ordre appliqué ne rajeunit PAS les compteurs. L'agent rapporte
+    # l'issue de l'ordre, pas un relevé : « 50 paquets en attente » reste à
+    # l'écran juste après une application réussie, jusqu'au relevé du
+    # lendemain. Le module refuse de deviner le nouveau compte (ce serait
+    # exactement le mensonge qu'il combat) ; il DIT donc que les compteurs
+    # sont antérieurs.
+    applied_after_report = fields.Datetime(
+        string="Ordre appliqué depuis le relevé",
+        compute="_compute_applied_after_report",
+        help="Date du dernier ordre appliqué après le dernier relevé. Tant "
+             "qu'elle est remplie, les compteurs affichés datent d'avant "
+             "cette application.",
+    )
 
     report_ids = fields.One2many(
         comodel_name="bf.patch.report", inverse_name="system_id",
@@ -195,6 +208,18 @@ class BfPatchSystem(models.Model):
         for system in self:
             since = system.reboot_pending_since
             system.reboot_pending_days = (now - since).days if since else 0
+
+    @api.depends("job_ids.state", "job_ids.finished_at", "agent_last_report")
+    def _compute_applied_after_report(self):
+        for system in self:
+            applied = system.job_ids.filtered(
+                lambda job: job.state == "done" and job.finished_at
+                and (not system.agent_last_report
+                     or job.finished_at > system.agent_last_report)
+            )
+            system.applied_after_report = max(
+                applied.mapped("finished_at"), default=False
+            )
 
     @api.depends("job_ids.state")
     def _compute_job_pending_count(self):

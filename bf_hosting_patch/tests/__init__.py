@@ -4,3 +4,4 @@ from . import test_security_audit
 from . import test_maintenance_schedule
 from . import test_cron_wiring
 from . import test_patch_job
+from . import test_validation_terrain

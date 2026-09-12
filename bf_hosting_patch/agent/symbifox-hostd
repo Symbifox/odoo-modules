@@ -744,6 +744,16 @@ def do_poll(conf):
     print(f"ordre {job_id} terminé : code {code}"
           + (f", {changed} paquet(s) en moins" if changed is not None else ""))
 
+    # Un relevé tout de suite après, sinon les compteurs d'Odoo resteraient
+    # ceux d'AVANT l'application jusqu'au relevé du lendemain. Au pire il se
+    # fait refuser par la garde de cadence (429) : c'est sans conséquence, le
+    # serveur sait déjà dire que ses compteurs sont antérieurs à l'ordre.
+    answer = post(conf["url"], "/symbifox/patch/v1/report", collect(),
+                  token=conf["token"])
+    if not answer.get("ok"):
+        print(f"relevé d'après-ordre non pris : {answer.get('error')}",
+              file=sys.stderr)
+
     if code == 0:
         maybe_reboot(job.get("reboot_after"))
     return 0 if code == 0 else 1

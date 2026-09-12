@@ -59,6 +59,11 @@ JOB_STATES = [
 # ordre ne doit pas pouvoir réécrire son issue.
 FINAL_STATES = ("done", "failed", "expired")
 
+# 🔴 Le code que l'agent rend quand il refuse faute de consentement LOCAL
+# (`/etc/symbifox/apply-allowed` effacé sur la machine). C'est un contrat
+# partagé avec l'agent : le changer des deux côtés ou pas du tout.
+LOCAL_CONSENT_REFUSED = 77
+
 
 class BfPatchJob(models.Model):
     _name = "bf.patch.job"
@@ -268,6 +273,15 @@ class BfPatchJob(models.Model):
         if packages_changed is not None:
             values["packages_changed"] = packages_changed
         self.sudo().write(values)
+
+        # 🔴 Un refus local VAUT révocation. La machine vient de prouver que le
+        # consentement n'y est plus ; sans cette ligne, la fiche continuerait
+        # d'afficher « application autorisée » — et de laisser partir des
+        # ordres — jusqu'au relevé du lendemain, soit jusqu'à 24 heures de faux
+        # feu vert. Le champ se remet à vrai tout seul au premier relevé qui
+        # redéclare le fichier.
+        if state == "failed" and exit_code == LOCAL_CONSENT_REFUSED:
+            self.system_id.sudo().write({"apply_allowed": False})
         return True
 
     # ------------------------------------------------------------------
