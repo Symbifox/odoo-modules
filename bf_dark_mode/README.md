@@ -205,3 +205,25 @@ For issues and feature requests, please contact Les services de consultation Blu
 ---
 
 <sub>Authored and maintained by Les services de consultation Blue Fox, Inc. AI coding assistants were used as productivity tools during development.</sub>
+
+### 18.0.1.4.0
+- The command palette (Ctrl+K) painted its current row with Odoo's
+  `rgba($o-component-active-bg, .65)`: a blue at 80 % white, composed to #9cafb7
+  on the dialog. The name measured **1.0:1**, the secondary detail and "new tab"
+  **1.17:1**. The row is now the theme's hover gray, names take the bright text,
+  the matched fragment takes the lightened accent.
+- Same variable, same defect in the editor's powerbox ("/"): the panel also
+  inherited Odoo's gray-700 text instead of the theme's, leaving 67 of 68 texts
+  under 3:1. Covered.
+- The keyboard-selected entry of a many2one dropdown received gray-900 text on
+  `rgba(black, .08)`: **1.11:1**, the selected entry vanished. The old rule
+  targeted `.ui-menu`, a class Odoo 18's list does not carry. Covered with the
+  right selectors; "Search more…" takes the lightened accent (was 4.31:1).
+- The "Invite people" panel of a channel paints its selected row
+  `mix(view-bg, action, 85%) !important`: **1.28:1**. Covered, with `!important`.
+- Accent as text on dark surfaces: the brand canon forbids the raw accent
+  (#29ABE2 measured 3.85:1 on raised surfaces, 3.57:1 on hover). `.text-primary`,
+  links and the chatter's links now use a lightened accent (#7fcded: 7.3:1 on
+  the surface, 5.6:1 raised, 5.15:1 on hover), served through
+  `--bf-dark-accent-text`, which falls back from `--brand-primary-on-dark` so a
+  brand can supply its own variant one day.

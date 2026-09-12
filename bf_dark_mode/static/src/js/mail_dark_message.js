@@ -35,10 +35,10 @@ const BF_SHADOW_CSS = `
         border-color: #4a5153 !important;
     }
     a, a * {
-        color: #54bfe8 !important;
+        color: var(--bf-dark-accent-text, #7fcded) !important;
     }
     a:hover, a *:hover {
-        color: #7fd2ef !important;
+        color: #a3ddf3 !important;
     }
     .o-mail-Message-searchHighlight {
         background: #e99d00bf !important;

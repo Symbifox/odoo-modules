@@ -18,11 +18,21 @@ $dk-accent:      #29ABE2;   // Blue Fox blue
 $dk-accent-dim:  rgba(41, 171, 226, 0.12);
 $dk-input-bg:    #2E3132;   // input backgrounds
 $dk-hover:       #414849;   // hover highlights
+// L'accent ÉCLAIRCI pour servir de TEXTE sur les fonds du thème. Le canon de
+// marque interdit l'accent brut en texte sur l'anthracite ; brut, il mesure
+// 3,85:1 sur le surélevé et 3,57:1 au survol. Éclairci : 7,3:1 sur la surface,
+// 5,6:1 sur le surélevé, 5,15:1 au survol. Servi par `--bf-dark-accent-text`,
+// qu'une marque pourra un jour remplacer par `--brand-primary-on-dark`.
+$dk-accent-text:       #7fcded;
+$dk-accent-text-hover: #a3ddf3;
 
 // =============================================================================
 // 1. BOOTSTRAP 5 CSS VARIABLE OVERRIDES
 // =============================================================================
 body.bf_dark_mode {
+  // Repli chaîné : la marque d'abord si elle fournit sa variante, le ton du
+  // thème sinon. Même patron que `--brand-primary-on-white` de bluefox_branding.
+  --bf-dark-accent-text: var(--brand-primary-on-dark, #{$dk-accent-text});
   --bs-body-bg: #{$dk-bg};
   --bs-body-color: #{$dk-text};
   --bs-secondary-bg: #{$dk-surface};
@@ -31,8 +41,8 @@ body.bf_dark_mode {
   --bs-border-color-translucent: rgba(74, 81, 83, 0.6);
   --bs-emphasis-color: #{$dk-text-bright};
   --bs-heading-color: #{$dk-text-bright};
-  --bs-link-color: #54bfe8;
-  --bs-link-hover-color: #7fd2ef;
+  --bs-link-color: var(--bf-dark-accent-text);
+  --bs-link-hover-color: #{$dk-accent-text-hover};
   --bs-code-color: #e685b5;
   --bs-card-bg: #{$dk-surface};
   --bs-card-border-color: #{$dk-border};
@@ -160,6 +170,11 @@ body.bf_dark_mode {
   .text-muted    { color: $dk-text-muted !important; }
   .text-body-secondary { color: $dk-text-muted !important; }
   .text-body-tertiary  { color: $dk-text-muted !important; }
+  // `bluefox_branding` pose `.text-primary { color: var(--brand-primary) !important; }`
+  // dans les deux modes : sous le sombre, l'accent brut mesure 3,85:1 sur le
+  // surélevé (fragment en gras des résultats de la palette) et 3,57:1 au
+  // survol (autocomplétion de la barre de recherche).
+  .text-primary  { color: var(--bf-dark-accent-text) !important; }
   .text-600      { color: $dk-text-muted !important; }
   .text-700      { color: $dk-text !important; }
   // 800 et 900 sont les gris les plus FONCÉS d'Odoo : du quasi-noir sur du
@@ -219,8 +234,9 @@ body.bf_dark_mode {
   ::placeholder { color: $dk-text-muted; }
 
   // Links
+  // #47b8e5 mesurait 4,44:1 sur le surélevé (cartes, dialogues) et 4,12:1 au survol.
   a:not(.btn):not([class*="text-"]):not(.badge) {
-    color: #47b8e5;
+    color: var(--bf-dark-accent-text);
   }
 }
 
@@ -334,6 +350,87 @@ body.bf_dark_mode {
     background-color: $dk-hover !important;
     color: $dk-text-bright;
   }
+}
+
+// =============================================================================
+// 7b. PALETTE DE COMMANDES (Ctrl+K)
+// =============================================================================
+// Le cœur peint la ligne courante `rgba($o-component-active-bg, .65)` :
+// `$o-component-active-bg` vaut `mix($o-action, $o-gray-100, 20%)`, un bleu à
+// 80 % de blanc, que 65 % d'opacité composent en #9cafb7 sur le fond du
+// dialogue. Mesuré sous la ligne courante : 1,0:1 pour le nom, 1,17:1 pour
+// « nouvel onglet », 1,18:1 pour le courriel. La règle du cœur ne porte pas
+// `!important` : la spécificité suffit.
+body.bf_dark_mode .o_command_palette {
+  .o_command_palette_search {
+    border-bottom-color: $dk-border !important;
+    .form-control { background-color: transparent; color: $dk-text-bright; }
+    .input-group-text, .oi-search { color: $dk-text-muted; }
+    .o_namespace { color: var(--bf-dark-accent-text); }
+  }
+  .o_command_palette_listbox_empty { color: $dk-text-muted; }
+  hr { border-color: $dk-border; opacity: 1; }
+  .o_command {
+    // Le cœur veut `color: inherit` sur l'ancre ; la règle de liens du thème
+    // passait devant et peignait chaque nom en bleu (4,44:1 sur le surélevé).
+    a, .o_command_name { color: $dk-text-bright; }
+    &.focused {
+      background: $dk-hover;
+      // `opacity: .9` du cœur : « nouvel onglet » retombait à 4,16:1 au survol.
+      .o_command_focus { opacity: 1; }
+    }
+  }
+  .o_command_palette_footer {
+    background-color: $dk-surface !important;
+    border-top-color: $dk-border !important;
+  }
+}
+
+// =============================================================================
+// 7c. POWERBOX DE L'ÉDITEUR (« / »)
+// =============================================================================
+// Même variable que la palette pour la ligne courante, et le panneau hérite
+// `$o-main-text-color` (gris 700) au lieu du texte du thème : 67 textes sur
+// 68 sous 3:1 (noms 1,6:1, descriptions 1,44:1, catégories 2,8:1).
+body.bf_dark_mode .o-we-powerbox {
+  background-color: $dk-raised !important;   // le gabarit porte `bg-white`
+  color: $dk-text;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45);
+  &::-webkit-scrollbar-thumb { background: $dk-border-soft; }
+  &::-webkit-scrollbar-track { background: $dk-raised; }
+  .o-we-category { color: $dk-text-muted; }
+  .o-we-command {
+    &.active { background: $dk-hover; }
+    .border { border-color: $dk-border !important; }
+    .o-we-command-img { background-color: $dk-surface-alt; color: $dk-text-bright; }
+    .o-we-command-name { color: $dk-text-bright; }
+    .o-we-command-description { color: $dk-text-muted; }
+  }
+}
+
+// =============================================================================
+// 7d. LISTE DÉROULANTE D'UN MANY2ONE (autocomplétion)
+// =============================================================================
+// L'élément courant (clavier) reçoit du cœur `color: $dropdown-link-hover-color`
+// (gris 900) et `background-color: rgba(black, .08)` : #212529 sur #2a2d2e,
+// soit 1,11:1, l'élément sélectionné disparaît. La liste d'Odoo 18 ne porte
+// PAS la classe `ui-menu` : l'ancienne règle du thème
+// (`.ui-menu.ui-widget … .ui-state-active`) ne touchait rien.
+body.bf_dark_mode .ui-widget.ui-autocomplete,
+body.bf_dark_mode .o-autocomplete--dropdown-menu {
+  background-color: $dk-surface !important;
+  border-color: $dk-border-soft;
+  color: $dk-text;
+  .ui-menu-item > a {
+    color: $dk-text;
+    &:hover, &.ui-state-active { background-color: $dk-hover; color: $dk-text-bright; }
+  }
+  // « Rechercher davantage… », « Créer… » : #1d9ed5 mesurait 4,31:1
+  .o_m2o_dropdown_option > a {
+    color: var(--bf-dark-accent-text);
+    &:hover, &.ui-state-active { color: var(--bf-dark-accent-text); background-color: $dk-hover; }
+  }
+  .o_m2o_start_typing > a, .o_m2o_no_result > a { color: $dk-text-muted; }
 }
 
 // =============================================================================
@@ -566,7 +663,7 @@ body.bf_dark_mode {
       color: $dk-text !important;
       border-color: $dk-border !important;
     }
-    a, a * { color: #54bfe8 !important; }
+    a, a * { color: var(--bf-dark-accent-text) !important; }
   }
 
   // La bulle du message est un bloc peint DERRIÈRE le contenu
@@ -639,6 +736,15 @@ body.bf_dark_mode {
     --mail-DiscussSidebar-itemActiveBgColor: #{$dk-hover};
     --mail-DiscussSidebar-itemActiveOutlineColor: #{rgba($dk-border-soft, 0.5)};
   }
+  // Le panneau « Inviter des personnes » peint ses lignes en `!important` :
+  // la ligne choisie `mix($o-view-background-color, $o-action, 85%)`, soit
+  // #dff2fb, sous le texte du thème : 1,28:1.
+  .o-discuss-ChannelInvitation-selectable {
+    &.o-odd { background-color: $dk-surface-alt !important; }
+    &:hover { background-color: $dk-hover !important; }
+    &.o-selected { background-color: $dk-hover !important; color: $dk-text-bright; }
+  }
+  .o-discuss-ChannelInvitation-selectedList button { background-color: $dk-hover; color: $dk-text-bright; }
   .o-mail-DiscussSidebar { background-color: $dk-surface !important; color: $dk-text; }
   .o-mail-DiscussSidebarCategory { background-color: $dk-surface; }
   .o-mail-DiscussSidebar-item { color: $dk-text;
@@ -858,11 +964,8 @@ body.bf_dark_mode {
   .progress { background-color: $dk-raised; }
   .input-group-text { background-color: $dk-raised; border-color: $dk-border; color: $dk-text; }
   .ui-widget-content { background: $dk-surface !important; color: $dk-text; box-shadow: 0 4px 16px rgba(0,0,0,0.3); border: 0; }
-  .ui-autocomplete .ui-menu-item > a { color: $dk-text;
-    &:hover { color: $dk-text-bright !important; background-color: $dk-hover !important; }
-  }
-  .ui-widget-content .ui-menu-item.ui-state-focus { background: $dk-hover !important; color: $dk-text-bright; }
-  .ui-menu.ui-widget .ui-menu-item-wrapper.ui-state-active { background-color: $dk-hover !important; }
+  // Autocomplétion many2one : section 7d (l'ancienne règle visait `.ui-menu`,
+  // classe que la liste d'Odoo 18 ne porte pas).
   .o_onboarding { border-color: $dk-border; }
   .o_onboarding_main { background: linear-gradient(19deg, $dk-raised 0%, $dk-surface-alt 100%); }
 
