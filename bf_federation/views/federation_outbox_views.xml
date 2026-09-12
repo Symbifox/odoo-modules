@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_federation_outbox_list" model="ir.ui.view">
+        <field name="name">federation.outbox.list</field>
+        <field name="model">federation.outbox</field>
+        <field name="arch" type="xml">
+            <list string="Boîte de sortie" create="false" decoration-danger="state == 'failed'" decoration-muted="state == 'sent'">
+                <field name="create_date"/>
+                <field name="peer_id"/>
+                <field name="kind"/>
+                <field name="link_id"/>
+                <field name="state" widget="badge" decoration-success="state == 'sent'" decoration-warning="state == 'pending'" decoration-danger="state == 'failed'"/>
+                <field name="attempts"/>
+                <field name="next_attempt" optional="hide"/>
+                <field name="sent_at" optional="hide"/>
+                <field name="last_error"/>
+                <button name="action_retry" type="object" string="Réessayer" icon="fa-refresh" invisible="state == 'sent'"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_federation_outbox_form" model="ir.ui.view">
+        <field name="name">federation.outbox.form</field>
+        <field name="model">federation.outbox</field>
+        <field name="arch" type="xml">
+            <form string="Envoi" create="false">
+                <header><button name="action_retry" type="object" string="Réessayer" invisible="state == 'sent'"/></header>
+                <sheet>
+                    <group>
+                        <group><field name="peer_id"/><field name="kind"/><field name="link_id"/><field name="state"/></group>
+                        <group><field name="attempts"/><field name="next_attempt"/><field name="sent_at"/></group>
+                    </group>
+                    <group string="Charge"><field name="payload" nolabel="1" widget="ace" options="{'mode': 'json'}"/></group>
+                    <group string="Réponse du pair" invisible="not response"><field name="response" nolabel="1"/></group>
+                    <group string="Erreur" invisible="not last_error"><field name="last_error" nolabel="1"/></group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="view_federation_outbox_search" model="ir.ui.view">
+        <field name="name">federation.outbox.search</field>
+        <field name="model">federation.outbox</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="peer_id"/>
+                <field name="link_id"/>
+                <filter name="pending" string="À envoyer" domain="[('state', '=', 'pending')]"/>
+                <filter name="failed" string="Abandonnés" domain="[('state', '=', 'failed')]"/>
+            </search>
+        </field>
+    </record>
+    <record id="action_federation_outbox" model="ir.actions.act_window">
+        <field name="name">Boîte de sortie</field>
+        <field name="res_model">federation.outbox</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_federation_outbox_search"/>
+    </record>
+</odoo>

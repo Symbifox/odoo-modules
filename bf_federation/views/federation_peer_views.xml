@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_federation_peer_form" model="ir.ui.view">
+        <field name="name">federation.peer.form</field>
+        <field name="model">federation.peer</field>
+        <field name="arch" type="xml">
+            <form string="Pair de fédération">
+                <header>
+                    <button name="action_generate_invitation" type="object" string="Générer une invitation"
+                            class="btn-primary" invisible="state == 'active'"/>
+                    <button name="action_ping" type="object" string="Tester la connexion" invisible="state != 'active'"/>
+                    <button name="action_suspend" type="object" string="Suspendre" invisible="state != 'active'"
+                            confirm="Suspendre ce pair arrête tout échange jusqu'à réactivation. Continuer ?"/>
+                    <button name="action_reactivate" type="object" string="Réactiver" invisible="state != 'suspended'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,invited,active"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="%(bf_federation.action_federation_link)d" type="action" class="oe_stat_button" icon="fa-exchange"
+                                context="{'search_default_peer_id': id}">
+                            <field name="link_count" widget="statinfo" string="Tâches fédérées"/>
+                        </button>
+                        <button name="%(bf_federation.action_federation_outbox)d" type="action" class="oe_stat_button" icon="fa-paper-plane"
+                                context="{'search_default_peer_id': id, 'search_default_pending': 1}">
+                            <field name="outbox_pending" widget="statinfo" string="À envoyer"/>
+                        </button>
+                    </div>
+                    <div class="oe_title"><h1><field name="name" placeholder="Nom du pair"/></h1></div>
+                    <group>
+                        <group string="Le pair">
+                            <field name="base_url" placeholder="https://…" widget="url"/>
+                            <field name="partner_id" readonly="1"/>
+                            <field name="last_ping"/>
+                            <field name="last_error" invisible="not last_error"/>
+                        </group>
+                        <group string="Ce que je reçois de lui">
+                            <field name="mirror_user_id"/>
+                            <field name="mirror_project_id" readonly="1"/>
+                            <field name="send_notes"/>
+                            <field name="attachment_limit_mb"/>
+                        </group>
+                    </group>
+                    <group string="Invitation" invisible="state != 'invited'" groups="base.group_system">
+                        <div class="alert alert-info" role="alert" colspan="2">
+                            Transmettez au pair, par un canal sûr, votre adresse
+                            (<field name="base_url" invisible="1"/><span class="fw-bold">celle de cette instance</span>)
+                            et le code ci-dessous. Chez lui : Fédération › Accepter une invitation.
+                        </div>
+                        <field name="invitation_code" widget="CopyClipboardChar"/>
+                        <field name="invitation_expiry"/>
+                    </group>
+                    <notebook>
+                        <page string="Personnes appariées" name="identities">
+                            <div class="text-muted mb-2">Un message reçu dont l'auteur porte ce courriel chez le pair s'écrit ici au nom de ce contact.
+                                Sans ligne, un utilisateur interne au même courriel est cherché ; sinon le message porte le nom de l'organisation du pair.</div>
+                            <field name="identity_ids">
+                                <list editable="bottom">
+                                    <field name="remote_email"/>
+                                    <field name="remote_name"/>
+                                    <field name="local_partner_id"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Technique" name="technical" groups="base.group_system">
+                            <group>
+                                <field name="uuid"/>
+                                <field name="remote_uuid"/>
+                                <field name="company_id" groups="base.group_multi_company"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_federation_peer_list" model="ir.ui.view">
+        <field name="name">federation.peer.list</field>
+        <field name="model">federation.peer</field>
+        <field name="arch" type="xml">
+            <list string="Pairs">
+                <field name="name"/>
+                <field name="base_url"/>
+                <field name="state" widget="badge" decoration-success="state == 'active'" decoration-warning="state == 'invited'" decoration-muted="state == 'suspended'"/>
+                <field name="link_count"/>
+                <field name="outbox_pending"/>
+                <field name="last_ping"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_federation_peer" model="ir.actions.act_window">
+        <field name="name">Pairs</field>
+        <field name="res_model">federation.peer</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Aucun pair encore</p>
+            <p>Créez un pair et générez une invitation, ou acceptez l'invitation qu'une autre instance vous a transmise.</p>
+        </field>
+    </record>
+</odoo>

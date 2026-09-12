@@ -7,7 +7,7 @@ Custom Odoo 18 Community Edition modules developed by [Les services de consultat
 Every module in this repository ships its full source. What differs is what you
 may do with it, and there are three regimes.
 
-**46 modules are LGPL-3.** Use them, modify them, redistribute them, build a
+**47 modules are LGPL-3.** Use them, modify them, redistribute them, build a
 product on them. Nothing is asked in return. These are the single-purpose
 modules — the UI fixes, the shared helpers, the Nextcloud integrations, the
 productivity pack. They are free because they are more useful to us being
@@ -135,6 +135,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_employee_experience_privacy` | Expérience employé — pont vie privée (Loi 25) | 18.0.1.1.0 | BUSL-1.1 | Declare what the usage register collects, set a retention rule, keep the measurement when the lines go |
 | `bf_expense_ocr` | Lecture des reçus | 18.0.2.0.0 | BUSL-1.1 | Photograph a meal receipt and let the extraction fill in the total, the taxes and the tip — read on the tenant's own Claude subscription, and nothing is pre-filled unless the receipt's own arithmetic balances |
 | `bf_expense_tip` | Pourboire | 18.0.1.0.1 | BUSL-1.1 | The tip on a meal receipt, entered on the expense that carries it and removed from the tax base, so input tax credits are not overstated |
+| `bf_federation` | Fédération | 18.0.1.0.0 | LGPL-3 | Federate two Odoo/Symbifox instances: share tasks with the other side, with state, deadline day, messages and attachments following both ways |
 | `bf_floorplan` | Plans d'étage | 18.0.1.1.0 | BUSL-1.1 | Floor plans drawn from records: rooms, desks, devices and cables, each shape backed by a form, with a built-in SVG editor, PDF and diagrams.net export |
 | `bf_floorplan_hosting` | Plans d'étage : hébergement | 18.0.1.1.0 | LGPL-3 | Hosting endpoints and servers placed on the floor plan, with attention colours and a jump from the device form to its spot |
 | `bf_follower_cleanup` | BF — Hygiène des notifications (abonnés et activités internes) | 18.0.2.1.0 | LGPL-3 | Crons that remove non-employee followers and unsubscribe users from the leads they do not sell, plus a guard that never emails an activity notification to a portal account |
@@ -244,7 +245,7 @@ file inside each module governs and carries its exact parameters.
   operations is permitted; providing them as a product or service to third
   parties requires an agreement. Each version converts to
   **LGPL-3.0-or-later four years after its release**.
-- **46 modules: LGPL-3.** Use, modify and redistribute them freely. The
+- **47 modules: LGPL-3.** Use, modify and redistribute them freely. The
   repository-root [`LICENSE`](LICENSE) carries the LGPL-3 text.
 - **5 modules: AGPL-3**, inherited rather than chosen: they extend Odoo
   Community Association code that is itself AGPL-3. Four are the fundraising

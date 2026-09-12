@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="cron_federation_send" model="ir.cron">
+        <field name="name">Fédération : envoyer la boîte de sortie</field>
+        <field name="model_id" ref="model_federation_outbox"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_send()</field>
+        <field name="interval_number">2</field>
+        <field name="interval_type">minutes</field>
+        <field name="active" eval="True"/>
+    </record>
+    <record id="cron_federation_prune" model="ir.cron">
+        <field name="name">Fédération : purger les nonces reçus</field>
+        <field name="model_id" ref="model_federation_nonce"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_prune()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active" eval="True"/>
+    </record>
+</odoo>

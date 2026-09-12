@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_task_form_federation" model="ir.ui.view">
+        <field name="name">project.task.form.federation</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="project.view_task_form2"/>
+        <field name="arch" type="xml">
+            <xpath expr="//label[@for='date_deadline']" position="before">
+                <field name="federation_possible" invisible="1"/>
+                <field name="federation_allowed_peer_ids" invisible="1"/>
+                <field name="federation_peer_id" groups="project.group_project_manager" invisible="not federation_possible"/>
+                <field name="federation_remote_url" widget="url" invisible="not federation_remote_url"/>
+                <field name="federation_origin" invisible="not federation_origin"/>
+            </xpath>
+        </field>
+    </record>
+    <record id="view_task_list_federation" model="ir.ui.view">
+        <field name="name">project.task.list.federation</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="project.view_task_tree2"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='project_id']" position="after">
+                <field name="federation_peer_id" optional="hide"/>
+            </xpath>
+        </field>
+    </record>
+    <record id="view_task_search_federation" model="ir.ui.view">
+        <field name="name">project.task.search.federation</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="project.view_task_search_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='my_tasks']" position="before">
+                <filter name="federated" string="Fédérées" domain="[('federation_peer_id', '!=', False)]"/>
+            </xpath>
+        </field>
+    </record>
+    <record id="action_federated_tasks" model="ir.actions.act_window">
+        <field name="name">Tâches fédérées</field>
+        <field name="res_model">project.task</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="domain">[('federation_peer_id', '!=', False)]</field>
+        <field name="context">{'search_default_open_tasks': 1}</field>
+    </record>
+</odoo>

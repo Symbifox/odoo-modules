@@ -1,0 +1,1145 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_federation
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-12 01:21+0000\n"
+"PO-Revision-Date: 2026-09-12 01:21+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: bf_federation
+#. odoo-python
+#: code:addons/bf_federation/wizard/federation_share_wizard.py:0
+msgid " %s laissée(s) de côté : leur projet ne fédère pas avec ce pair."
+msgstr ""
+
+#. module: bf_federation
+#. odoo-python
+#: code:addons/bf_federation/models/federation_link.py:0
+msgid " : la tâche revient ici"
+msgstr ""
+
+#. module: bf_federation
+#. odoo-python
+#: code:addons/bf_federation/models/federation_peer.py:0
+msgid "%s (fédéré)"
+msgstr ""
+
+#. module: bf_federation
+#. odoo-python
+#: code:addons/bf_federation/models/federation_outbox.py:0
+#: code:addons/bf_federation/models/federation_peer.py:0
+msgid "%s : %s"
+msgstr ""
+
+#. module: bf_federation
+#. odoo-python
+#: code:addons/bf_federation/wizard/federation_share_wizard.py:0
+msgid "%s tâche(s) fédérée(s) avec %s."
+msgstr ""
+
+#. module: bf_federation
+#. odoo-python
+#: code:addons/bf_federation/models/federation_link.py:0
+msgid "(aucune)"
+msgstr ""
+
+#. module: bf_federation
+#. odoo-python
+#: code:addons/bf_federation/models/federation_link.py:0
+msgid "(sans titre)"
+msgstr ""
+
+#. module: bf_federation
+#. odoo-python
+#: code:addons/bf_federation/models/federation_link.py:0
+msgid ""
+"<p><i>Tâche partagée par %s. L'état, le jour d'échéance, les messages et les"
+" pièces jointes reviennent chez lui ; un message ou une note qui commence "
+"par 🔒 reste ici.</i></p>"
+msgstr ""
+
+#. module: bf_federation
+#. odoo-python
+#: code:addons/bf_federation/models/federation_link.py:0
+msgid "<p>Chez %s, l'échéance a été déplacée au %s.</p>"
+msgstr ""
+
+#. module: bf_federation
+#. odoo-python
+#: code:addons/bf_federation/models/federation_link.py:0
+msgid "<p>Chez %s, la tâche a été %s ; le miroir est archivé.</p>"
+msgstr ""
+
+#. module: bf_federation
+#. odoo-python
+#: code:addons/bf_federation/models/federation_link.py:0
+msgid ""
+"<p>Chez %s, la tâche est de nouveau partagée ; le miroir est réactivé.</p>"
+msgstr ""
+
+#. module: bf_federation
+#. odoo-python
+#: code:addons/bf_federation/models/federation_link.py:0
+msgid "<p>Chez %s, la tâche est passée à « %s »%s.</p>"
+msgstr ""
+
+#. module: bf_federation
+#. odoo-python
+#: code:addons/bf_federation/models/federation_peer.py:0
+msgid ""
+"<p>Tâches que %s partage avec nous par la fédération. L'état, le jour "
+"d'échéance, les messages et les pièces jointes reviennent chez lui ; un "
+"message ou une note qui commence par 🔒 reste ici.</p>"
+msgstr ""
+
+#. module: bf_federation
+#: model_terms:ir.ui.view,arch_db:bf_federation.view_federation_peer_form
+msgid ""
+"<span class=\"fw-bold\">celle de cette instance</span>)\n"
+"                            et le code ci-dessous. Chez lui : Fédération › Accepter une invitation."
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields.selection,name:bf_federation.selection__federation_outbox__state__failed
+msgid "Abandonné"
+msgstr ""
+
+#. module: bf_federation
+#: model_terms:ir.ui.view,arch_db:bf_federation.view_federation_outbox_search
+msgid "Abandonnés"
+msgstr ""
+
+#. module: bf_federation
+#: model_terms:ir.ui.view,arch_db:bf_federation.view_federation_accept_wizard_form
+msgid "Accepter"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.actions.act_window,name:bf_federation.action_federation_accept_wizard
+#: model:ir.ui.menu,name:bf_federation.menu_federation_accept
+#: model_terms:ir.ui.view,arch_db:bf_federation.view_federation_accept_wizard_form
+msgid "Accepter une invitation"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model,name:bf_federation.model_federation_accept_wizard
+msgid "Accepter une invitation de fédération"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields.selection,name:bf_federation.selection__federation_peer__state__active
+msgid "Actif"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields,field_description:bf_federation.field_federation_peer__message_needaction
+msgid "Action Needed"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields,field_description:bf_federation.field_federation_link__active
+msgid "Active"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields,field_description:bf_federation.field_federation_link__remote_url
+msgid "Adresse chez le pair"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields,help:bf_federation.field_federation_peer__base_url
+msgid "Adresse de base de l'autre instance (https://…)."
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields,field_description:bf_federation.field_federation_accept_wizard__base_url
+#: model:ir.model.fields,field_description:bf_federation.field_federation_peer__base_url
+msgid "Adresse du pair"
+msgstr ""
+
+#. module: bf_federation
+#: model_terms:ir.ui.view,arch_db:bf_federation.view_federation_accept_wizard_form
+#: model_terms:ir.ui.view,arch_db:bf_federation.view_federation_share_wizard_form
+msgid "Annuler"
+msgstr ""
+
+#. module: bf_federation
+#: model_terms:ir.ui.view,arch_db:bf_federation.view_federation_link_search
+msgid "Archivées"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields,field_description:bf_federation.field_federation_accept_wizard__mirror_user_id
+#: model:ir.model.fields,field_description:bf_federation.field_federation_peer__mirror_user_id
+msgid "Assigner les tâches reçues à"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields,field_description:bf_federation.field_federation_peer__message_attachment_count
+msgid "Attachment Count"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields,field_description:bf_federation.field_federation_outbox__attempts
+msgid "Attempts"
+msgstr ""
+
+#. module: bf_federation
+#: model_terms:ir.ui.view,arch_db:bf_federation.view_project_form_federation
+msgid "Aucun pair : les tâches de ce projet ne se fédèrent pas"
+msgstr ""
+
+#. module: bf_federation
+#: model_terms:ir.actions.act_window,help:bf_federation.action_federation_peer
+msgid "Aucun pair encore"
+msgstr ""
+
+#. module: bf_federation
+#. odoo-python
+#: code:addons/bf_federation/wizard/federation_share_wizard.py:0
+msgid "Aucune des tâches choisies n'est dans un projet qui fédère avec %s."
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields,help:bf_federation.field_federation_peer__partner_id
+msgid ""
+"Auteur de repli des messages reçus dont la personne n'est pas appariée."
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.actions.act_window,name:bf_federation.action_federation_outbox
+#: model:ir.ui.menu,name:bf_federation.menu_federation_outbox
+#: model_terms:ir.ui.view,arch_db:bf_federation.view_federation_outbox_list
+msgid "Boîte de sortie"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model,name:bf_federation.model_federation_outbox
+msgid "Boîte de sortie de la fédération"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields.selection,name:bf_federation.selection__federation_peer__state__draft
+msgid "Brouillon"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields.selection,name:bf_federation.selection__federation_outbox__kind__task_card
+msgid "Carte de la tâche"
+msgstr ""
+
+#. module: bf_federation
+#. odoo-python
+#: code:addons/bf_federation/models/federation_peer.py:0
+msgid "Ce pair est déjà actif ; suspendez-le d'abord pour le rejumeler."
+msgstr ""
+
+#. module: bf_federation
+#. odoo-python
+#: code:addons/bf_federation/models/federation_peer.py:0
+msgid "Ce pair n'a jamais été jumelé ; émettez ou acceptez une invitation."
+msgstr ""
+
+#. module: bf_federation
+#: model_terms:ir.ui.view,arch_db:bf_federation.view_federation_peer_form
+msgid "Ce que je reçois de lui"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields,help:bf_federation.field_federation_peer__uuid
+msgid "Ce que le pair présente pour être reconnu ici."
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.constraint,message:bf_federation.constraint_federation_peer_uuid_unique
+msgid "Cet identifiant existe déjà."
+msgstr ""
+
+#. module: bf_federation
+#: model_terms:ir.ui.view,arch_db:bf_federation.view_federation_outbox_form
+msgid "Charge"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields,field_description:bf_federation.field_project_task__federation_remote_url
+msgid "Chez le pair"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields,field_description:bf_federation.field_federation_accept_wizard__code
+#: model:ir.model.fields,field_description:bf_federation.field_federation_peer__invitation_code
+msgid "Code d'invitation"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields,field_description:bf_federation.field_federation_link__company_id
+#: model:ir.model.fields,field_description:bf_federation.field_federation_peer__company_id
+msgid "Company"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields.selection,name:bf_federation.selection__federation_outbox__kind__ping
+msgid "Contact"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields,field_description:bf_federation.field_federation_peer_identity__local_partner_id
+msgid "Contact ici"
+msgstr ""
+
+#. module: bf_federation
+#. odoo-python
+#: code:addons/bf_federation/models/federation_peer.py:0
+msgid "Contact établi : %s répond."
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields,field_description:bf_federation.field_federation_peer_identity__remote_email
+msgid "Courriel chez le pair"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields,field_description:bf_federation.field_federation_accept_wizard__create_uid
+#: model:ir.model.fields,field_description:bf_federation.field_federation_link__create_uid
+#: model:ir.model.fields,field_description:bf_federation.field_federation_link_message__create_uid
+#: model:ir.model.fields,field_description:bf_federation.field_federation_nonce__create_uid
+#: model:ir.model.fields,field_description:bf_federation.field_federation_outbox__create_uid
+#: model:ir.model.fields,field_description:bf_federation.field_federation_peer__create_uid
+#: model:ir.model.fields,field_description:bf_federation.field_federation_peer_identity__create_uid
+#: model:ir.model.fields,field_description:bf_federation.field_federation_share_wizard__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields,field_description:bf_federation.field_federation_accept_wizard__create_date
+#: model:ir.model.fields,field_description:bf_federation.field_federation_link__create_date
+#: model:ir.model.fields,field_description:bf_federation.field_federation_link_message__create_date
+#: model:ir.model.fields,field_description:bf_federation.field_federation_nonce__create_date
+#: model:ir.model.fields,field_description:bf_federation.field_federation_outbox__create_date
+#: model:ir.model.fields,field_description:bf_federation.field_federation_peer__create_date
+#: model:ir.model.fields,field_description:bf_federation.field_federation_peer_identity__create_date
+#: model:ir.model.fields,field_description:bf_federation.field_federation_share_wizard__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: bf_federation
+#: model_terms:ir.actions.act_window,help:bf_federation.action_federation_peer
+msgid ""
+"Créez un pair et générez une invitation, ou acceptez l'invitation qu'une "
+"autre instance vous a transmise."
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields,field_description:bf_federation.field_federation_peer__last_ping
+msgid "Dernier contact"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields,field_description:bf_federation.field_federation_peer__last_error
+msgid "Dernière erreur"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields,field_description:bf_federation.field_federation_link_message__direction
+msgid "Direction"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields,field_description:bf_federation.field_federation_accept_wizard__display_name
+#: model:ir.model.fields,field_description:bf_federation.field_federation_link__display_name
+#: model:ir.model.fields,field_description:bf_federation.field_federation_link_message__display_name
+#: model:ir.model.fields,field_description:bf_federation.field_federation_nonce__display_name
+#: model:ir.model.fields,field_description:bf_federation.field_federation_outbox__display_name
+#: model:ir.model.fields,field_description:bf_federation.field_federation_peer__display_name
+#: model:ir.model.fields,field_description:bf_federation.field_federation_peer_identity__display_name
+#: model:ir.model.fields,field_description:bf_federation.field_federation_share_wizard__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: bf_federation
+#: model_terms:ir.ui.view,arch_db:bf_federation.view_federation_outbox_form
+msgid "Envoi"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields,field_description:bf_federation.field_federation_peer__send_notes
+msgid "Envoyer aussi mes notes internes"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields,field_description:bf_federation.field_federation_accept_wizard__send_notes
+msgid "Envoyer aussi mes notes internes à ce pair"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields.selection,name:bf_federation.selection__federation_link_message__direction__out
+#: model:ir.model.fields.selection,name:bf_federation.selection__federation_outbox__state__sent
+msgid "Envoyé"
+msgstr ""
+
+#. module: bf_federation
+#: model_terms:ir.ui.view,arch_db:bf_federation.view_federation_outbox_form
+msgid "Erreur"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields,field_description:bf_federation.field_project_task__federation_possible
+msgid "Federation Possible"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields,field_description:bf_federation.field_federation_link__fingerprint
+msgid "Fingerprint"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields,field_description:bf_federation.field_federation_peer__message_follower_ids
+msgid "Followers"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields,field_description:bf_federation.field_federation_peer__message_partner_ids
+msgid "Followers (Partners)"
+msgstr ""
+
+#. module: bf_federation
+#. odoo-python
+#: code:addons/bf_federation/wizard/federation_share_wizard.py:0
+#: model:ir.ui.menu,name:bf_federation.menu_federation_root
+msgid "Fédération"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.actions.server,name:bf_federation.cron_federation_send_ir_actions_server
+msgid "Fédération : envoyer la boîte de sortie"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.actions.server,name:bf_federation.cron_federation_prune_ir_actions_server
+msgid "Fédération : purger les nonces reçus"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields,field_description:bf_federation.field_project_project__federation_enabled
+msgid "Fédération possible"
+msgstr ""
+
+#. module: bf_federation
+#: model_terms:ir.ui.view,arch_db:bf_federation.view_federation_share_wizard_form
+msgid "Fédérer"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.actions.act_window,name:bf_federation.action_task_federate
+#: model_terms:ir.ui.view,arch_db:bf_federation.view_federation_share_wizard_form
+msgid "Fédérer avec…"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model,name:bf_federation.model_federation_share_wizard
+msgid "Fédérer des tâches avec un pair"
+msgstr ""
+
+#. module: bf_federation
+#. odoo-python
+#: code:addons/bf_federation/wizard/federation_share_wizard.py:0
+msgid "Fédérer une tâche demande le rôle de gestionnaire de projet."
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields,field_description:bf_federation.field_project_task__federation_peer_id
+msgid "Fédérée avec"
+msgstr ""
+
+#. module: bf_federation
+#: model_terms:ir.ui.view,arch_db:bf_federation.view_task_search_federation
+msgid "Fédérées"
+msgstr ""
+
+#. module: bf_federation
+#: model_terms:ir.ui.view,arch_db:bf_federation.view_federation_peer_form
+msgid "Générer une invitation"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields,field_description:bf_federation.field_federation_peer__has_message
+msgid "Has Message"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields,field_description:bf_federation.field_federation_accept_wizard__id
+#: model:ir.model.fields,field_description:bf_federation.field_federation_link__id
+#: model:ir.model.fields,field_description:bf_federation.field_federation_link_message__id
+#: model:ir.model.fields,field_description:bf_federation.field_federation_nonce__id
+#: model:ir.model.fields,field_description:bf_federation.field_federation_outbox__id
+#: model:ir.model.fields,field_description:bf_federation.field_federation_peer__id
+#: model:ir.model.fields,field_description:bf_federation.field_federation_peer_identity__id
+#: model:ir.model.fields,field_description:bf_federation.field_federation_share_wizard__id
+msgid "ID"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields,field_description:bf_federation.field_federation_peer__uuid
+msgid "Identifiant présenté par le pair"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields,field_description:bf_federation.field_federation_peer__remote_uuid
+msgid "Identifiant que je présente"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields,help:bf_federation.field_federation_peer__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields,help:bf_federation.field_federation_peer__message_has_error
+#: model:ir.model.fields,help:bf_federation.field_federation_peer__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr ""
+
+#. module: bf_federation
+#. odoo-python
+#: code:addons/bf_federation/models/federation_peer.py:0
+msgid "Indiquez d'abord l'adresse du pair."
+msgstr ""
+
+#. module: bf_federation
+#: model_terms:ir.ui.view,arch_db:bf_federation.view_federation_peer_form
+msgid "Invitation"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields,field_description:bf_federation.field_federation_peer__invitation_expiry
+msgid "Invitation valide jusqu'au"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields.selection,name:bf_federation.selection__federation_peer__state__invited
+msgid "Invitation émise"
+msgstr ""
+
+#. module: bf_federation
+#. odoo-python
+#: code:addons/bf_federation/models/federation_peer.py:0
+msgid "Invitation émise, valide %s heures."
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields,field_description:bf_federation.field_federation_peer__message_is_follower
+msgid "Is Follower"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields.selection,name:bf_federation.selection__federation_outbox__kind__task_day
+msgid "Jour d'échéance"
+msgstr ""
+
+#. module: bf_federation
+#. odoo-python
+#: code:addons/bf_federation/models/federation_peer.py:0
+msgid "Jumelage accepté par %s."
+msgstr ""
+
+#. module: bf_federation
+#. odoo-python
+#: code:addons/bf_federation/models/federation_peer.py:0
+msgid "Jumelage établi avec %s."
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields,field_description:bf_federation.field_federation_outbox__kind
+msgid "Kind"
+msgstr ""
+
+#. module: bf_federation
+#. odoo-python
+#: code:addons/bf_federation/models/federation_peer.py:0
+msgid "L'adresse du pair doit commencer par https://."
+msgstr ""
+
+#. module: bf_federation
+#: model_terms:ir.ui.view,arch_db:bf_federation.view_federation_accept_wizard_form
+msgid ""
+"L'autre instance vous a transmis son adresse et un code. Le secret partagé "
+"naît de cet échange ; rien d'autre n'est à copier."
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields,help:bf_federation.field_federation_accept_wizard__name
+msgid "Laissez vide pour prendre le nom que le pair annonce."
+msgstr ""
+
+#. module: bf_federation
+#: model_terms:ir.ui.view,arch_db:bf_federation.view_federation_share_wizard_form
+msgid "Laissées de côté (projet sans ce pair)"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields,field_description:bf_federation.field_federation_link__last_day_sent
+msgid "Last Day Sent"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields,field_description:bf_federation.field_federation_outbox__last_error
+msgid "Last Error"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields,field_description:bf_federation.field_federation_link__last_state_sent
+msgid "Last State Sent"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields,field_description:bf_federation.field_federation_accept_wizard__write_uid
+#: model:ir.model.fields,field_description:bf_federation.field_federation_link__write_uid
+#: model:ir.model.fields,field_description:bf_federation.field_federation_link_message__write_uid
+#: model:ir.model.fields,field_description:bf_federation.field_federation_nonce__write_uid
+#: model:ir.model.fields,field_description:bf_federation.field_federation_outbox__write_uid
+#: model:ir.model.fields,field_description:bf_federation.field_federation_peer__write_uid
+#: model:ir.model.fields,field_description:bf_federation.field_federation_peer_identity__write_uid
+#: model:ir.model.fields,field_description:bf_federation.field_federation_share_wizard__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields,field_description:bf_federation.field_federation_accept_wizard__write_date
+#: model:ir.model.fields,field_description:bf_federation.field_federation_link__write_date
+#: model:ir.model.fields,field_description:bf_federation.field_federation_link_message__write_date
+#: model:ir.model.fields,field_description:bf_federation.field_federation_nonce__write_date
+#: model:ir.model.fields,field_description:bf_federation.field_federation_outbox__write_date
+#: model:ir.model.fields,field_description:bf_federation.field_federation_peer__write_date
+#: model:ir.model.fields,field_description:bf_federation.field_federation_peer_identity__write_date
+#: model:ir.model.fields,field_description:bf_federation.field_federation_share_wizard__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: bf_federation
+#. odoo-python
+#: code:addons/bf_federation/wizard/federation_accept_wizard.py:0
+msgid "Le jumelage est réservé aux administrateurs."
+msgstr ""
+
+#. module: bf_federation
+#: model_terms:ir.ui.view,arch_db:bf_federation.view_federation_peer_form
+msgid "Le pair"
+msgstr ""
+
+#. module: bf_federation
+#. odoo-python
+#: code:addons/bf_federation/models/federation_peer.py:0
+msgid "Le pair a refusé l'invitation (%s) : %s"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields,help:bf_federation.field_project_task__federation_peer_id
+msgid ""
+"Le pair chez qui cette tâche a un miroir. Vider le champ archive le miroir."
+msgstr ""
+
+#. module: bf_federation
+#. odoo-python
+#: code:addons/bf_federation/models/federation_peer.py:0
+msgid "Le pair ne répond pas correctement (%s)."
+msgstr ""
+
+#. module: bf_federation
+#. odoo-python
+#: code:addons/bf_federation/models/project_task.py:0
+msgid ""
+"Le projet « %s » ne fédère pas avec %s : ajoutez ce pair au projet d'abord."
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields,help:bf_federation.field_federation_peer__send_notes
+msgid ""
+"Les notes internes écrites ici sur une tâche fédérée partent vers ce pair. "
+"Décoché : seuls les messages « Envoyer un message » partent."
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields,field_description:bf_federation.field_project_task__federation_link_id
+msgid "Lien fédéré"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model,name:bf_federation.model_federation_link
+msgid "Lien fédéré d'une tâche"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields,field_description:bf_federation.field_federation_peer__link_ids
+#: model:ir.ui.menu,name:bf_federation.menu_federation_links
+msgid "Liens"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields,field_description:bf_federation.field_federation_link_message__link_id
+#: model:ir.model.fields,field_description:bf_federation.field_federation_outbox__link_id
+msgid "Link"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields,field_description:bf_federation.field_federation_peer__link_count
+msgid "Link Count"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields,field_description:bf_federation.field_federation_link_message__local_message_id
+msgid "Local Message"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model,name:bf_federation.model_mail_message
+#: model:ir.model.fields,field_description:bf_federation.field_federation_link__message_ids
+#: model:ir.model.fields.selection,name:bf_federation.selection__federation_outbox__kind__message_new
+msgid "Message"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields,field_description:bf_federation.field_federation_peer__message_has_error
+msgid "Message Delivery error"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.constraint,message:bf_federation.constraint_federation_nonce_peer_nonce_unique
+msgid "Message déjà reçu."
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model,name:bf_federation.model_federation_link_message
+msgid "Message passé par un lien fédéré"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields,field_description:bf_federation.field_federation_peer__message_ids
+msgid "Messages"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields,field_description:bf_federation.field_federation_outbox__next_attempt
+msgid "Next Attempt"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields,field_description:bf_federation.field_federation_peer_identity__remote_name
+msgid "Nom chez le pair"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields,field_description:bf_federation.field_federation_accept_wizard__name
+#: model:ir.model.fields,field_description:bf_federation.field_federation_peer__name
+#: model_terms:ir.ui.view,arch_db:bf_federation.view_federation_peer_form
+msgid "Nom du pair"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields,field_description:bf_federation.field_federation_nonce__nonce
+msgid "Nonce"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model,name:bf_federation.model_federation_nonce
+msgid "Nonce reçu (anti-rejeu)"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields,field_description:bf_federation.field_federation_peer__message_needaction_counter
+msgid "Number of Actions"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields,field_description:bf_federation.field_federation_peer__message_has_error_counter
+msgid "Number of errors"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields,help:bf_federation.field_federation_peer__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields,help:bf_federation.field_federation_peer__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields,field_description:bf_federation.field_federation_peer__partner_id
+msgid "Organisation du pair"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields,field_description:bf_federation.field_federation_link__origin
+msgid "Origin"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields,field_description:bf_federation.field_project_task__federation_origin
+msgid "Origine"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields,field_description:bf_federation.field_federation_peer__outbox_pending
+msgid "Outbox Pending"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields,field_description:bf_federation.field_federation_share_wizard__peer_id
+#: model_terms:ir.ui.view,arch_db:bf_federation.view_federation_link_search
+msgid "Pair"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model,name:bf_federation.model_federation_peer
+#: model_terms:ir.ui.view,arch_db:bf_federation.view_federation_peer_form
+msgid "Pair de fédération"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.actions.act_window,name:bf_federation.action_federation_peer
+#: model:ir.ui.menu,name:bf_federation.menu_federation_peers
+#: model_terms:ir.ui.view,arch_db:bf_federation.view_federation_peer_list
+msgid "Pairs"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields,field_description:bf_federation.field_project_project__federation_peer_ids
+msgid "Pairs de fédération"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields,field_description:bf_federation.field_federation_share_wizard__allowed_peer_ids
+msgid "Pairs permis"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields,field_description:bf_federation.field_project_task__federation_allowed_peer_ids
+msgid "Pairs permis par le projet"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields.selection,name:bf_federation.selection__federation_outbox__kind__task_share
+msgid "Partage d'une tâche"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields.selection,name:bf_federation.selection__federation_link__origin__local
+#: model:ir.model.fields.selection,name:bf_federation.selection__project_task__federation_origin__local
+msgid "Partagée d'ici"
+msgstr ""
+
+#. module: bf_federation
+#: model_terms:ir.ui.view,arch_db:bf_federation.view_federation_link_search
+msgid "Partagées d'ici"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields,field_description:bf_federation.field_federation_outbox__payload
+msgid "Payload"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields,field_description:bf_federation.field_federation_link__peer_id
+#: model:ir.model.fields,field_description:bf_federation.field_federation_nonce__peer_id
+#: model:ir.model.fields,field_description:bf_federation.field_federation_outbox__peer_id
+#: model:ir.model.fields,field_description:bf_federation.field_federation_peer_identity__peer_id
+msgid "Peer"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model,name:bf_federation.model_federation_peer_identity
+msgid "Personne appariée entre deux pairs"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields,field_description:bf_federation.field_federation_peer__identity_ids
+#: model_terms:ir.ui.view,arch_db:bf_federation.view_federation_peer_form
+msgid "Personnes appariées"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields,field_description:bf_federation.field_federation_peer__attachment_limit_mb
+msgid "Plafond des pièces jointes (Mio)"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model,name:bf_federation.model_project_project
+msgid "Project"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields,field_description:bf_federation.field_federation_peer__mirror_project_id
+msgid "Projet des tâches reçues"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields,field_description:bf_federation.field_federation_peer__rating_ids
+msgid "Ratings"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields,field_description:bf_federation.field_federation_nonce__received_at
+msgid "Received At"
+msgstr ""
+
+#. module: bf_federation
+#: model_terms:ir.ui.view,arch_db:bf_federation.view_federation_link_search
+msgid "Regrouper par"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields.selection,name:bf_federation.selection__federation_outbox__kind__link_restore
+msgid "Remise"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields,field_description:bf_federation.field_federation_link_message__remote_ref
+msgid "Remote Ref"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields,field_description:bf_federation.field_federation_outbox__response
+msgid "Response"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.actions.server,name:bf_federation.action_task_unfederate
+msgid "Retirer de la fédération"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields.selection,name:bf_federation.selection__federation_outbox__kind__link_archive
+msgid "Retrait"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields.selection,name:bf_federation.selection__federation_link_message__direction__in
+msgid "Reçu"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields.selection,name:bf_federation.selection__federation_link__origin__remote
+#: model:ir.model.fields.selection,name:bf_federation.selection__project_task__federation_origin__remote
+msgid "Reçue du pair"
+msgstr ""
+
+#. module: bf_federation
+#: model_terms:ir.ui.view,arch_db:bf_federation.view_federation_link_search
+msgid "Reçues du pair"
+msgstr ""
+
+#. module: bf_federation
+#: model_terms:ir.ui.view,arch_db:bf_federation.view_federation_peer_form
+msgid "Réactiver"
+msgstr ""
+
+#. module: bf_federation
+#: model_terms:ir.ui.view,arch_db:bf_federation.view_federation_outbox_form
+#: model_terms:ir.ui.view,arch_db:bf_federation.view_federation_outbox_list
+msgid "Réessayer"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields,field_description:bf_federation.field_federation_link__remote_ref
+msgid "Référence chez le pair"
+msgstr ""
+
+#. module: bf_federation
+#: model_terms:ir.ui.view,arch_db:bf_federation.view_federation_outbox_form
+msgid "Réponse du pair"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields,field_description:bf_federation.field_federation_peer__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields,field_description:bf_federation.field_federation_peer__secret
+msgid "Secret partagé"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields,field_description:bf_federation.field_federation_outbox__sent_at
+msgid "Sent At"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields,help:bf_federation.field_project_project__federation_peer_ids
+msgid ""
+"Seules les tâches de ce projet peuvent être fédérées, et seulement avec ces "
+"pairs. Vide : aucune tâche du projet ne propose la fédération."
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields,field_description:bf_federation.field_federation_share_wizard__skipped_count
+msgid "Skipped Count"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields,field_description:bf_federation.field_federation_outbox__state
+#: model:ir.model.fields,field_description:bf_federation.field_federation_peer__state
+msgid "State"
+msgstr ""
+
+#. module: bf_federation
+#: model_terms:ir.ui.view,arch_db:bf_federation.view_federation_peer_form
+msgid "Suspendre"
+msgstr ""
+
+#. module: bf_federation
+#: model_terms:ir.ui.view,arch_db:bf_federation.view_federation_peer_form
+msgid ""
+"Suspendre ce pair arrête tout échange jusqu'à réactivation. Continuer ?"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields.selection,name:bf_federation.selection__federation_peer__state__suspended
+msgid "Suspendu"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model,name:bf_federation.model_project_task
+#: model:ir.model.fields,field_description:bf_federation.field_federation_link__task_id
+msgid "Task"
+msgstr ""
+
+#. module: bf_federation
+#: model_terms:ir.ui.view,arch_db:bf_federation.view_federation_peer_form
+msgid "Technique"
+msgstr ""
+
+#. module: bf_federation
+#: model_terms:ir.ui.view,arch_db:bf_federation.view_federation_peer_form
+msgid "Tester la connexion"
+msgstr ""
+
+#. module: bf_federation
+#: model_terms:ir.ui.view,arch_db:bf_federation.view_federation_peer_form
+msgid ""
+"Transmettez au pair, par un canal sûr, votre adresse\n"
+"                            ("
+msgstr ""
+
+#. module: bf_federation
+#. odoo-python
+#: code:addons/bf_federation/models/project_task.py:0
+msgid ""
+"Tâche fédérée avec %s : le miroir apparaîtra chez lui au prochain envoi. Ce "
+"qui part : nom, description en texte, jour d'échéance, priorité, état, "
+"messages et pièces jointes sous le plafond. Ce qui reste ici : les notes "
+"internes, les heures, les feuilles de temps."
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields,field_description:bf_federation.field_federation_share_wizard__task_ids
+msgid "Tâches"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.actions.act_window,name:bf_federation.action_federated_tasks
+#: model:ir.actions.act_window,name:bf_federation.action_federation_link
+#: model:ir.ui.menu,name:bf_federation.menu_federation_tasks
+#: model_terms:ir.ui.view,arch_db:bf_federation.view_federation_link_list
+#: model_terms:ir.ui.view,arch_db:bf_federation.view_federation_peer_form
+msgid "Tâches fédérées"
+msgstr ""
+
+#. module: bf_federation
+#: model_terms:ir.ui.view,arch_db:bf_federation.view_federation_peer_form
+msgid ""
+"Un message reçu dont l'auteur porte ce courriel chez le pair s'écrit ici au nom de ce contact.\n"
+"                                Sans ligne, un utilisateur interne au même courriel est cherché ; sinon le message porte le nom de l'organisation du pair."
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.constraint,message:bf_federation.constraint_federation_link_peer_task_unique
+msgid "Une tâche n'a qu'un lien par pair."
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields,field_description:bf_federation.field_federation_peer__website_message_ids
+msgid "Website Messages"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields,help:bf_federation.field_federation_peer__website_message_ids
+msgid "Website communication history"
+msgstr ""
+
+#. module: bf_federation
+#. odoo-python
+#: code:addons/bf_federation/models/federation_link.py:0
+msgid "[pièce jointe : %s (%.1f Mio, restée chez %s)]"
+msgstr ""
+
+#. module: bf_federation
+#. odoo-python
+#: code:addons/bf_federation/models/project_task.py:0
+msgid "archivée"
+msgstr ""
+
+#. module: bf_federation
+#. odoo-python
+#: code:addons/bf_federation/models/federation_peer.py:0
+msgid "aucun détail"
+msgstr ""
+
+#. module: bf_federation
+#. odoo-python
+#: code:addons/bf_federation/models/federation_outbox.py:0
+#: code:addons/bf_federation/models/federation_peer.py:0
+msgid "aucune réponse"
+msgstr ""
+
+#. module: bf_federation
+#: model_terms:ir.ui.view,arch_db:bf_federation.view_federation_accept_wizard_form
+#: model_terms:ir.ui.view,arch_db:bf_federation.view_federation_peer_form
+msgid "https://…"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields,help:bf_federation.field_federation_accept_wizard__base_url
+msgid "https://… de l'instance qui vous a invité"
+msgstr ""
+
+#. module: bf_federation
+#. odoo-python
+#: code:addons/bf_federation/models/federation_link.py:0
+msgid "inconnu"
+msgstr ""
+
+#. module: bf_federation
+#. odoo-python
+#: code:addons/bf_federation/models/federation_link.py:0
+#: code:addons/bf_federation/models/project_task.py:0
+msgid "retirée du partage"
+msgstr ""
+
+#. module: bf_federation
+#. odoo-python
+#: code:addons/bf_federation/models/project_task.py:0
+msgid "supprimée"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields.selection,name:bf_federation.selection__federation_outbox__state__pending
+#: model_terms:ir.ui.view,arch_db:bf_federation.view_federation_outbox_search
+#: model_terms:ir.ui.view,arch_db:bf_federation.view_federation_peer_form
+msgid "À envoyer"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields.selection,name:bf_federation.selection__federation_outbox__kind__task_state
+msgid "État"
+msgstr ""

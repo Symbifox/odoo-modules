@@ -1,0 +1,14 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_federation_peer_user,federation.peer user,model_federation_peer,base.group_user,1,0,0,0
+access_federation_peer_admin,federation.peer admin,model_federation_peer,base.group_system,1,1,1,1
+access_federation_peer_identity_admin,federation.peer.identity admin,model_federation_peer_identity,base.group_system,1,1,1,1
+access_federation_link_user,federation.link user,model_federation_link,base.group_user,1,0,0,0
+access_federation_link_manager,federation.link manager,model_federation_link,project.group_project_manager,1,1,1,0
+access_federation_link_admin,federation.link admin,model_federation_link,base.group_system,1,1,1,1
+access_federation_link_message_user,federation.link.message user,model_federation_link_message,base.group_user,1,0,0,0
+access_federation_link_message_admin,federation.link.message admin,model_federation_link_message,base.group_system,1,1,1,1
+access_federation_outbox_manager,federation.outbox manager,model_federation_outbox,project.group_project_manager,1,0,0,0
+access_federation_outbox_admin,federation.outbox admin,model_federation_outbox,base.group_system,1,1,1,1
+access_federation_nonce_admin,federation.nonce admin,model_federation_nonce,base.group_system,1,1,1,1
+access_federation_accept_wizard_admin,federation.accept.wizard admin,model_federation_accept_wizard,base.group_system,1,1,1,1
+access_federation_share_wizard_manager,federation.share.wizard manager,model_federation_share_wizard,project.group_project_manager,1,1,1,1

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_federation_accept_wizard_form" model="ir.ui.view">
+        <field name="name">federation.accept.wizard.form</field>
+        <field name="model">federation.accept.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Accepter une invitation">
+                <p class="text-muted">L'autre instance vous a transmis son adresse et un code. Le secret partagé naît de cet échange ; rien d'autre n'est à copier.</p>
+                <group>
+                    <field name="base_url" placeholder="https://…"/>
+                    <field name="code"/>
+                    <field name="name"/>
+                    <field name="mirror_user_id"/>
+                    <field name="send_notes"/>
+                </group>
+                <footer>
+                    <button name="action_accept" type="object" string="Accepter" class="btn-primary"/>
+                    <button string="Annuler" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+    <record id="action_federation_accept_wizard" model="ir.actions.act_window">
+        <field name="name">Accepter une invitation</field>
+        <field name="res_model">federation.accept.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <record id="view_federation_share_wizard_form" model="ir.ui.view">
+        <field name="name">federation.share.wizard.form</field>
+        <field name="model">federation.share.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Fédérer avec…">
+                <group>
+                    <field name="allowed_peer_ids" invisible="1"/>
+                    <field name="peer_id"/>
+                    <field name="task_ids" widget="many2many_tags"/>
+                    <field name="skipped_count" invisible="not skipped_count" string="Laissées de côté (projet sans ce pair)"/>
+                </group>
+                <footer>
+                    <button name="action_share" type="object" string="Fédérer" class="btn-primary"/>
+                    <button string="Annuler" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

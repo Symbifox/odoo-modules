@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_federation_link_list" model="ir.ui.view">
+        <field name="name">federation.link.list</field>
+        <field name="model">federation.link</field>
+        <field name="arch" type="xml">
+            <list string="Tâches fédérées" create="false">
+                <field name="task_id"/>
+                <field name="peer_id"/>
+                <field name="origin"/>
+                <field name="remote_url" widget="url"/>
+                <field name="last_state_sent" optional="hide"/>
+                <field name="active" widget="boolean_toggle" optional="hide"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_federation_link_search" model="ir.ui.view">
+        <field name="name">federation.link.search</field>
+        <field name="model">federation.link</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="task_id"/>
+                <field name="peer_id"/>
+                <filter name="local" string="Partagées d'ici" domain="[('origin', '=', 'local')]"/>
+                <filter name="remote" string="Reçues du pair" domain="[('origin', '=', 'remote')]"/>
+                <filter name="inactive" string="Archivées" domain="[('active', '=', False)]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="group_peer" string="Pair" context="{'group_by': 'peer_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="action_federation_link" model="ir.actions.act_window">
+        <field name="name">Tâches fédérées</field>
+        <field name="res_model">federation.link</field>
+        <field name="view_mode">list</field>
+        <field name="search_view_id" ref="view_federation_link_search"/>
+    </record>
+</odoo>

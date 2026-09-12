@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_federation_root" name="Fédération" sequence="85" groups="project.group_project_manager" web_icon="bf_federation,static/description/icon.png"/>
+    <menuitem id="menu_federation_tasks" name="Tâches fédérées" parent="menu_federation_root" action="action_federated_tasks" sequence="10"/>
+    <menuitem id="menu_federation_peers" name="Pairs" parent="menu_federation_root" action="action_federation_peer" sequence="20" groups="base.group_system"/>
+    <menuitem id="menu_federation_accept" name="Accepter une invitation" parent="menu_federation_root" action="action_federation_accept_wizard" sequence="30" groups="base.group_system"/>
+    <menuitem id="menu_federation_links" name="Liens" parent="menu_federation_root" action="action_federation_link" sequence="40" groups="base.group_system"/>
+    <menuitem id="menu_federation_outbox" name="Boîte de sortie" parent="menu_federation_root" action="action_federation_outbox" sequence="50" groups="base.group_system"/>
+</odoo>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_project_form_federation" model="ir.ui.view">
+        <field name="name">project.project.form.federation</field>
+        <field name="model">project.project</field>
+        <field name="inherit_id" ref="project.edit_project"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='privacy_visibility']" position="after">
+                <field name="federation_peer_ids" widget="many2many_tags" groups="project.group_project_manager"
+                       placeholder="Aucun pair : les tâches de ce projet ne se fédèrent pas"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>
