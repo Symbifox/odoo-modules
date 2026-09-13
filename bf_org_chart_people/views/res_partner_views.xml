@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- La vue hiérarchique native d'Odoo 18, posée sur le nouveau champ.
+         Aucun JavaScript : `web_hierarchy` est déjà installé partout, parce
+         que `hr_org_chart` l'entraîne avec le module Employés. -->
+    <record id="res_partner_view_hierarchy" model="ir.ui.view">
+        <field name="name">res.partner.view.hierarchy.org.chart</field>
+        <field name="model">res.partner</field>
+        <field name="arch" type="xml">
+            <hierarchy parent_field="manager_id" child_field="subordinate_ids"
+                       icon="fa-sitemap" draggable="1">
+                <field name="name"/>
+                <field name="function"/>
+                <field name="parent_id"/>
+                <field name="email"/>
+                <templates>
+                    <t t-name="hierarchy-box">
+                        <div class="d-flex flex-column text-center p-2">
+                            <field name="name" class="fw-bold"/>
+                            <field name="function" class="text-muted"/>
+                            <field name="parent_id" class="text-muted"/>
+                        </div>
+                    </t>
+                </templates>
+            </hierarchy>
+        </field>
+    </record>
+
+    <record id="res_partner_view_form_org_chart" model="ir.ui.view">
+        <field name="name">res.partner.form.org.chart</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button type="object"
+                        name="action_org_chart_personnes"
+                        class="oe_stat_button"
+                        icon="fa-sitemap"
+                        invisible="org_chart_people_count == 0">
+                    <div class="o_stat_info">
+                        <span class="o_stat_value">
+                            <field name="org_chart_people_count"/>
+                        </span>
+                        <span class="o_stat_text">Organigramme</span>
+                    </div>
+                </button>
+            </xpath>
+            <field name="function" position="after">
+                <field name="manager_id"
+                       string="Supérieur immédiat"
+                       invisible="is_company"
+                       options="{'no_create_edit': True}"
+                       placeholder="De qui cette personne relève-t-elle ?"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="action_org_chart_personnes" model="ir.actions.act_window">
+        <field name="name">Organigramme des personnes</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">hierarchy,list,form</field>
+        <field name="domain">[('is_company', '=', False)]</field>
+        <field name="context">{'search_default_filter_avec_lien': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Personne ne relève encore de personne</p>
+            <p>Renseignez le « Supérieur immédiat » sur quelques fiches de contact,
+               et la chaîne se dessine ici.</p>
+        </field>
+    </record>
+
+    <record id="res_partner_view_search_org_chart" model="ir.ui.view">
+        <field name="name">res.partner.search.org.chart</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_res_partner_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">
+                <filter name="filter_avec_lien" string="Dans une chaîne hiérarchique"
+                        domain="['|', ('manager_id', '!=', False), ('subordinate_ids', '!=', False)]"/>
+                <filter name="filter_sans_superieur" string="Sans supérieur inscrit"
+                        domain="[('manager_id', '=', False), ('is_company', '=', False)]"/>
+            </xpath>
+        </field>
+    </record>
+
+    <menuitem id="menu_org_chart_personnes"
+              name="Organigramme"
+              parent="contacts.menu_contacts"
+              action="action_org_chart_personnes"
+              sequence="25"/>
+</odoo>

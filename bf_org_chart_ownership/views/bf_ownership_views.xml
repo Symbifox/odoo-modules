@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="bf_ownership_view_list" model="ir.ui.view">
+        <field name="name">bf.ownership.list</field>
+        <field name="model">bf.ownership</field>
+        <field name="arch" type="xml">
+            <list string="Liens de détention" editable="bottom">
+                <field name="owner_id"/>
+                <field name="owned_id"/>
+                <field name="percent" widget="float" sum="Total inscrit"/>
+                <field name="share_class" optional="show"/>
+                <field name="voting" optional="hide"/>
+                <field name="date_effet" optional="hide"/>
+                <field name="date_fin" optional="hide"/>
+                <field name="origine"/>
+                <field name="note" optional="hide"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_ownership_view_form" model="ir.ui.view">
+        <field name="name">bf.ownership.form</field>
+        <field name="model">bf.ownership</field>
+        <field name="arch" type="xml">
+            <form string="Lien de détention">
+                <sheet>
+                    <group>
+                        <group string="Le lien">
+                            <field name="owner_id"/>
+                            <field name="owned_id"/>
+                            <field name="percent"/>
+                            <field name="share_class"/>
+                            <field name="voting"/>
+                        </group>
+                        <group string="Ce qui le date et le fonde">
+                            <field name="date_effet"/>
+                            <field name="date_fin"/>
+                            <field name="origine"/>
+                            <field name="note"/>
+                            <field name="active" widget="boolean_toggle"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="bf_ownership_view_search" model="ir.ui.view">
+        <field name="name">bf.ownership.search</field>
+        <field name="model">bf.ownership</field>
+        <field name="arch" type="xml">
+            <search string="Liens de détention">
+                <field name="owner_id"/>
+                <field name="owned_id"/>
+                <field name="share_class"/>
+                <filter name="filtre_en_vigueur" string="En vigueur"
+                        domain="['|', ('date_fin', '=', False), ('date_fin', '&gt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter name="filtre_estimation" string="À valider"
+                        domain="[('origine', '=', 'estimation')]"/>
+                <filter name="filtre_sans_vote" string="Sans droit de vote"
+                        domain="[('voting', '=', False)]"/>
+                <separator/>
+                <filter name="filtre_archive" string="Archivés" domain="[('active', '=', False)]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="grp_detenue" string="Société détenue" context="{'group_by': 'owned_id'}"/>
+                    <filter name="grp_detenteur" string="Détenteur" context="{'group_by': 'owner_id'}"/>
+                    <filter name="grp_origine" string="Source" context="{'group_by': 'origine'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_bf_ownership" model="ir.actions.act_window">
+        <field name="name">Liens de détention</field>
+        <field name="res_model">bf.ownership</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_filtre_en_vigueur': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Aucun lien de détention inscrit</p>
+            <p>Un lien dit qui détient quoi, pour quelle part, depuis quand, et d'où
+               l'information vient. Le dessin se fait tout seul ensuite, depuis la
+               fiche de n'importe quelle société du groupe.</p>
+        </field>
+    </record>
+
+    <record id="res_partner_view_form_ownership" model="ir.ui.view">
+        <field name="name">res.partner.form.ownership</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button type="object"
+                        name="action_org_chart_detention"
+                        class="oe_stat_button"
+                        icon="fa-share-alt fa-rotate-90"
+                        invisible="not ownership_in_ids and not ownership_out_ids">
+                    <div class="o_stat_info">
+                        <span class="o_stat_text">Détention</span>
+                    </div>
+                </button>
+            </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page name="detention" string="Détention" invisible="not is_company">
+                    <group>
+                        <field name="ownership_total" readonly="1"/>
+                        <field name="ownership_state" readonly="1"/>
+                    </group>
+                    <separator string="Détenue par"/>
+                    <field name="ownership_in_ids" context="{'default_owned_id': id}">
+                        <list editable="bottom">
+                            <field name="owner_id"/>
+                            <field name="percent" sum="Capital inscrit"/>
+                            <field name="share_class" optional="show"/>
+                            <field name="voting" optional="hide"/>
+                            <field name="origine"/>
+                        </list>
+                    </field>
+                    <separator string="Participations détenues"/>
+                    <field name="ownership_out_ids" context="{'default_owner_id': id}">
+                        <list editable="bottom">
+                            <field name="owned_id"/>
+                            <field name="percent"/>
+                            <field name="share_class" optional="show"/>
+                            <field name="voting" optional="hide"/>
+                            <field name="origine"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <menuitem id="menu_bf_ownership"
+              name="Détention"
+              parent="contacts.menu_contacts"
+              action="action_bf_ownership"
+              sequence="26"/>
+</odoo>

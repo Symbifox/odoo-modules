@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+      🔴 Une cloison multi-société ne se déduit pas de la présence d'un champ
+      `company_id` : sans règle, TOUT le monde lit TOUTES les lignes. Et des
+      essais qui jouent tous sous le même utilisateur, dans la même société,
+      ne voient jamais le trou.
+
+      Qui détient quoi est une information de structure : elle appartient à la
+      société qui l'a inscrite. Une ligne sans société reste visible de tous,
+      ce qui est le comportement habituel d'Odoo pour une donnée non rattachée.
+    -->
+    <record id="bf_ownership_rule_company" model="ir.rule">
+        <field name="name">Lien de détention : cloison multi-société</field>
+        <field name="model_id" ref="model_bf_ownership"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">
+            ['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]
+        </field>
+    </record>
+</odoo>

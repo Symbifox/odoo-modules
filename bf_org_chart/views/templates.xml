@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+      Page autonome : pas d'actifs Odoo, pas de JavaScript, une feuille de
+      style de quelques lignes. Une page d'organigramme doit s'ouvrir vite et
+      s'imprimer telle quelle; tout ce qui s'ajouterait ici se retrouverait sur
+      la feuille de papier du client.
+    -->
+    <template id="page" name="Organigramme">
+        <html>
+            <head>
+                <meta charset="utf-8"/>
+                <meta name="viewport" content="width=device-width, initial-scale=1"/>
+                <title t-esc="titre"/>
+                <link rel="stylesheet" href="/bf_org_chart/static/src/page.css"/>
+            </head>
+            <body>
+                <header class="o_bfoc_barre">
+                    <span class="o_bfoc_titre" t-esc="titre"/>
+                    <span class="o_bfoc_actions">
+                        <a t-att-href="url_pdf" class="o_bfoc_bouton o_bfoc_bouton_bleu">PDF</a>
+                        <a t-att-href="url_retour" class="o_bfoc_bouton">Retour à la fiche</a>
+                    </span>
+                </header>
+                <t t-if="erreur">
+                    <p class="o_bfoc_message" t-esc="erreur"/>
+                </t>
+                <t t-foreach="avertissements or []" t-as="avis">
+                    <p class="o_bfoc_message o_bfoc_avis" t-esc="avis"/>
+                </t>
+                <main class="o_bfoc_toile">
+                    <t t-out="dessin"/>
+                </main>
+            </body>
+        </html>
+    </template>
+</odoo>

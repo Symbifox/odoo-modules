@@ -1,0 +1,378 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_org_chart_ownership
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-13 14:46+0000\n"
+"PO-Revision-Date: 2026-09-13 14:46+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: bf_org_chart_ownership
+#: model_terms:ir.ui.view,arch_db:bf_org_chart_ownership.res_partner_view_form_ownership
+msgid "<span class=\"o_stat_text\">Détention</span>"
+msgstr ""
+
+#. module: bf_org_chart_ownership
+#: model:ir.model.fields,field_description:bf_org_chart_ownership.field_bf_ownership__active
+msgid "Active"
+msgstr ""
+
+#. module: bf_org_chart_ownership
+#: model_terms:ir.ui.view,arch_db:bf_org_chart_ownership.bf_ownership_view_search
+msgid "Archivés"
+msgstr ""
+
+#. module: bf_org_chart_ownership
+#: model_terms:ir.actions.act_window,help:bf_org_chart_ownership.action_bf_ownership
+msgid "Aucun lien de détention inscrit"
+msgstr ""
+
+#. module: bf_org_chart_ownership
+#: model:ir.model.fields.selection,name:bf_org_chart_ownership.selection__res_partner__ownership_state__aucune
+msgid "Aucune détention inscrite"
+msgstr ""
+
+#. module: bf_org_chart_ownership
+#. odoo-python
+#: code:addons/bf_org_chart_ownership/models/bf_ownership.py:0
+msgid ""
+"Boucle de détention : %(a)s finirait par se détenir lui-même en passant par "
+"%(b)s."
+msgstr ""
+
+#. module: bf_org_chart_ownership
+#: model:ir.model.fields,field_description:bf_org_chart_ownership.field_res_partner__ownership_total
+#: model:ir.model.fields,field_description:bf_org_chart_ownership.field_res_users__ownership_total
+#: model_terms:ir.ui.view,arch_db:bf_org_chart_ownership.res_partner_view_form_ownership
+msgid "Capital inscrit"
+msgstr ""
+
+#. module: bf_org_chart_ownership
+#. odoo-python
+#: code:addons/bf_org_chart_ownership/models/res_partner.py:0
+msgid "Capital inscrit : %s %%"
+msgstr ""
+
+#. module: bf_org_chart_ownership
+#: model:ir.model.fields,help:bf_org_chart_ownership.field_bf_ownership__share_class
+msgid ""
+"Catégorie A, B, privilégiées… Laisser vide si la structure ne distingue pas "
+"les catégories."
+msgstr ""
+
+#. module: bf_org_chart_ownership
+#: model:ir.model.fields,field_description:bf_org_chart_ownership.field_bf_ownership__share_class
+msgid "Catégorie d'actions"
+msgstr ""
+
+#. module: bf_org_chart_ownership
+#: model:ir.model.constraint,message:bf_org_chart_ownership.constraint_bf_ownership_lien_unique
+msgid ""
+"Ce lien de détention est déjà inscrit pour cette catégorie et cette date."
+msgstr ""
+
+#. module: bf_org_chart_ownership
+#: model_terms:ir.ui.view,arch_db:bf_org_chart_ownership.bf_ownership_view_form
+msgid "Ce qui le date et le fonde"
+msgstr ""
+
+#. module: bf_org_chart_ownership
+#: model:ir.model,name:bf_org_chart_ownership.model_res_partner
+msgid "Contact"
+msgstr ""
+
+#. module: bf_org_chart_ownership
+#: model:ir.model.fields.selection,name:bf_org_chart_ownership.selection__bf_ownership__origine__convention
+msgid "Convention entre actionnaires"
+msgstr ""
+
+#. module: bf_org_chart_ownership
+#: model:ir.model.fields,field_description:bf_org_chart_ownership.field_bf_ownership__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: bf_org_chart_ownership
+#: model:ir.model.fields,field_description:bf_org_chart_ownership.field_bf_ownership__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: bf_org_chart_ownership
+#: model:ir.model.fields,help:bf_org_chart_ownership.field_bf_ownership__origine
+msgid "D'où vient l'information. Une estimation se dessine en ambre."
+msgstr ""
+
+#. module: bf_org_chart_ownership
+#: model:ir.model.fields,field_description:bf_org_chart_ownership.field_bf_ownership__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: bf_org_chart_ownership
+#: model:ir.model.fields,field_description:bf_org_chart_ownership.field_bf_ownership__voting
+msgid "Droit de vote"
+msgstr ""
+
+#. module: bf_org_chart_ownership
+#: model:ir.model.fields.selection,name:bf_org_chart_ownership.selection__bf_ownership__origine__client
+msgid "Déclaration du client"
+msgstr ""
+
+#. module: bf_org_chart_ownership
+#: model:ir.model.fields,help:bf_org_chart_ownership.field_bf_ownership__voting
+msgid ""
+"Décoché pour une participation sans droit de vote : le dessin le montre en "
+"pointillé."
+msgstr ""
+
+#. module: bf_org_chart_ownership
+#: model:ir.model.fields,field_description:bf_org_chart_ownership.field_bf_ownership__owner_id
+#: model_terms:ir.ui.view,arch_db:bf_org_chart_ownership.bf_ownership_view_search
+msgid "Détenteur"
+msgstr ""
+
+#. module: bf_org_chart_ownership
+#. odoo-python
+#: code:addons/bf_org_chart_ownership/models/res_partner.py:0
+msgid "Détenteur ultime"
+msgstr ""
+
+#. module: bf_org_chart_ownership
+#: model:ir.ui.menu,name:bf_org_chart_ownership.menu_bf_ownership
+#: model_terms:ir.ui.view,arch_db:bf_org_chart_ownership.res_partner_view_form_ownership
+msgid "Détention"
+msgstr ""
+
+#. module: bf_org_chart_ownership
+#. odoo-python
+#: code:addons/bf_org_chart_ownership/models/res_partner.py:0
+msgid "Détention : %s"
+msgstr ""
+
+#. module: bf_org_chart_ownership
+#: model:ir.model.fields,field_description:bf_org_chart_ownership.field_res_partner__ownership_in_ids
+#: model:ir.model.fields,field_description:bf_org_chart_ownership.field_res_users__ownership_in_ids
+#: model_terms:ir.ui.view,arch_db:bf_org_chart_ownership.res_partner_view_form_ownership
+msgid "Détenue par"
+msgstr ""
+
+#. module: bf_org_chart_ownership
+#: model_terms:ir.ui.view,arch_db:bf_org_chart_ownership.bf_ownership_view_search
+msgid "En vigueur"
+msgstr ""
+
+#. module: bf_org_chart_ownership
+#: model:ir.model.fields,field_description:bf_org_chart_ownership.field_bf_ownership__date_effet
+msgid "En vigueur depuis"
+msgstr ""
+
+#. module: bf_org_chart_ownership
+#: model:ir.model.fields.selection,name:bf_org_chart_ownership.selection__bf_ownership__origine__estimation
+msgid "Estimation à valider"
+msgstr ""
+
+#. module: bf_org_chart_ownership
+#: model:ir.model.fields,field_description:bf_org_chart_ownership.field_bf_ownership__id
+msgid "ID"
+msgstr ""
+
+#. module: bf_org_chart_ownership
+#: model:ir.model.fields,field_description:bf_org_chart_ownership.field_bf_ownership__date_fin
+msgid "Jusqu'au"
+msgstr ""
+
+#. module: bf_org_chart_ownership
+#: model:ir.model.fields,help:bf_org_chart_ownership.field_bf_ownership__owner_id
+msgid "La personne ou la société qui détient."
+msgstr ""
+
+#. module: bf_org_chart_ownership
+#: model:ir.model.fields,field_description:bf_org_chart_ownership.field_bf_ownership__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: bf_org_chart_ownership
+#: model:ir.model.fields,field_description:bf_org_chart_ownership.field_bf_ownership__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: bf_org_chart_ownership
+#: model_terms:ir.ui.view,arch_db:bf_org_chart_ownership.bf_ownership_view_form
+msgid "Le lien"
+msgstr ""
+
+#. module: bf_org_chart_ownership
+#: model:ir.model,name:bf_org_chart_ownership.model_bf_ownership
+#: model_terms:ir.ui.view,arch_db:bf_org_chart_ownership.bf_ownership_view_form
+msgid "Lien de détention"
+msgstr ""
+
+#. module: bf_org_chart_ownership
+#: model:ir.actions.act_window,name:bf_org_chart_ownership.action_bf_ownership
+#: model_terms:ir.ui.view,arch_db:bf_org_chart_ownership.bf_ownership_view_list
+#: model_terms:ir.ui.view,arch_db:bf_org_chart_ownership.bf_ownership_view_search
+msgid "Liens de détention"
+msgstr ""
+
+#. module: bf_org_chart_ownership
+#. odoo-python
+#: code:addons/bf_org_chart_ownership/models/res_partner.py:0
+msgid "Organigramme"
+msgstr ""
+
+#. module: bf_org_chart_ownership
+#. odoo-python
+#: code:addons/bf_org_chart_ownership/models/res_partner.py:0
+msgid "Organigramme de détention"
+msgstr ""
+
+#. module: bf_org_chart_ownership
+#: model:ir.model.fields,help:bf_org_chart_ownership.field_bf_ownership__percent
+msgid "Part du capital détenue, en pourcentage. 100 = détention entière."
+msgstr ""
+
+#. module: bf_org_chart_ownership
+#: model:ir.model.fields,field_description:bf_org_chart_ownership.field_res_partner__ownership_out_ids
+#: model:ir.model.fields,field_description:bf_org_chart_ownership.field_res_users__ownership_out_ids
+#: model_terms:ir.ui.view,arch_db:bf_org_chart_ownership.res_partner_view_form_ownership
+msgid "Participations détenues"
+msgstr ""
+
+#. module: bf_org_chart_ownership
+#: model:ir.model.fields,field_description:bf_org_chart_ownership.field_bf_ownership__percent
+msgid "Pourcentage détenu"
+msgstr ""
+
+#. module: bf_org_chart_ownership
+#: model:ir.model.fields,field_description:bf_org_chart_ownership.field_bf_ownership__note
+msgid "Précision"
+msgstr ""
+
+#. module: bf_org_chart_ownership
+#: model:ir.model.fields.selection,name:bf_org_chart_ownership.selection__bf_ownership__origine__registre
+msgid "Registre public"
+msgstr ""
+
+#. module: bf_org_chart_ownership
+#: model_terms:ir.ui.view,arch_db:bf_org_chart_ownership.bf_ownership_view_search
+msgid "Regrouper par"
+msgstr ""
+
+#. module: bf_org_chart_ownership
+#: model:ir.model.fields,help:bf_org_chart_ownership.field_bf_ownership__date_fin
+msgid "Renseigné, le lien est historique : il ne se dessine plus."
+msgstr ""
+
+#. module: bf_org_chart_ownership
+#. odoo-python
+#: code:addons/bf_org_chart_ownership/models/res_partner.py:0
+msgid "Saisi dans Odoo, non vérifié au registre"
+msgstr ""
+
+#. module: bf_org_chart_ownership
+#: model_terms:ir.ui.view,arch_db:bf_org_chart_ownership.bf_ownership_view_search
+msgid "Sans droit de vote"
+msgstr ""
+
+#. module: bf_org_chart_ownership
+#. odoo-python
+#: code:addons/bf_org_chart_ownership/models/res_partner.py:0
+msgid "Sans nom"
+msgstr ""
+
+#. module: bf_org_chart_ownership
+#: model:ir.model.fields,field_description:bf_org_chart_ownership.field_bf_ownership__company_id
+msgid "Société"
+msgstr ""
+
+#. module: bf_org_chart_ownership
+#: model:ir.model.fields,field_description:bf_org_chart_ownership.field_bf_ownership__owned_id
+#: model_terms:ir.ui.view,arch_db:bf_org_chart_ownership.bf_ownership_view_search
+msgid "Société détenue"
+msgstr ""
+
+#. module: bf_org_chart_ownership
+#: model:ir.model.fields,help:bf_org_chart_ownership.field_res_partner__ownership_total
+#: model:ir.model.fields,help:bf_org_chart_ownership.field_res_users__ownership_total
+msgid ""
+"Somme des pourcentages inscrits sur cette société. Un total inférieur à 100 "
+"dit seulement que la structure n'est pas complètement connue."
+msgstr ""
+
+#. module: bf_org_chart_ownership
+#: model:ir.model.fields,field_description:bf_org_chart_ownership.field_bf_ownership__origine
+#: model_terms:ir.ui.view,arch_db:bf_org_chart_ownership.bf_ownership_view_search
+msgid "Source"
+msgstr ""
+
+#. module: bf_org_chart_ownership
+#: model:ir.model.fields.selection,name:bf_org_chart_ownership.selection__res_partner__ownership_state__complete
+msgid "Structure complète"
+msgstr ""
+
+#. module: bf_org_chart_ownership
+#. odoo-python
+#: code:addons/bf_org_chart_ownership/models/res_partner.py:0
+msgid "Structure de détention au %s"
+msgstr ""
+
+#. module: bf_org_chart_ownership
+#. odoo-python
+#: code:addons/bf_org_chart_ownership/models/res_partner.py:0
+#: model:ir.model.fields.selection,name:bf_org_chart_ownership.selection__res_partner__ownership_state__partielle
+msgid "Structure partielle"
+msgstr ""
+
+#. module: bf_org_chart_ownership
+#: model_terms:ir.ui.view,arch_db:bf_org_chart_ownership.bf_ownership_view_list
+msgid "Total inscrit"
+msgstr ""
+
+#. module: bf_org_chart_ownership
+#. odoo-python
+#: code:addons/bf_org_chart_ownership/models/res_partner.py:0
+msgid "Total inscrit : %s %%"
+msgstr ""
+
+#. module: bf_org_chart_ownership
+#. odoo-python
+#: code:addons/bf_org_chart_ownership/models/res_partner.py:0
+#: model:ir.model.fields.selection,name:bf_org_chart_ownership.selection__res_partner__ownership_state__excedent
+msgid "Total supérieur à 100 %"
+msgstr ""
+
+#. module: bf_org_chart_ownership
+#: model_terms:ir.actions.act_window,help:bf_org_chart_ownership.action_bf_ownership
+msgid ""
+"Un lien dit qui détient quoi, pour quelle part, depuis quand, et d'où\n"
+"               l'information vient. Le dessin se fait tout seul ensuite, depuis la\n"
+"               fiche de n'importe quelle société du groupe."
+msgstr ""
+
+#. module: bf_org_chart_ownership
+#: model:ir.model.constraint,message:bf_org_chart_ownership.constraint_bf_ownership_percent_borne
+msgid "Un pourcentage de détention se tient entre 0 et 100."
+msgstr ""
+
+#. module: bf_org_chart_ownership
+#. odoo-python
+#: code:addons/bf_org_chart_ownership/models/bf_ownership.py:0
+msgid "Une société ne se détient pas elle-même."
+msgstr ""
+
+#. module: bf_org_chart_ownership
+#: model_terms:ir.ui.view,arch_db:bf_org_chart_ownership.bf_ownership_view_search
+msgid "À valider"
+msgstr ""
+
+#. module: bf_org_chart_ownership
+#: model:ir.model.fields,field_description:bf_org_chart_ownership.field_res_partner__ownership_state
+#: model:ir.model.fields,field_description:bf_org_chart_ownership.field_res_users__ownership_state
+msgid "État de la détention"
+msgstr ""

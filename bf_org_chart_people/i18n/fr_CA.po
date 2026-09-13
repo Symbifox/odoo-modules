@@ -1,0 +1,160 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_org_chart_people
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-13 14:54+0000\n"
+"PO-Revision-Date: 2026-09-13 14:54+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: bf_org_chart_people
+#. odoo-python
+#: code:addons/bf_org_chart_people/models/res_partner.py:0
+msgid ""
+"%(sup)s est rattaché à %(societe)s. C'est permis (les groupes fonctionnent "
+"comme ça), mais vérifiez que ce n'est pas une erreur de saisie."
+msgstr ""
+"%(sup)s est rattaché à %(societe)s. C'est permis (les groupes fonctionnent "
+"comme ça), mais vérifiez que ce n'est pas une erreur de saisie."
+
+#. module: bf_org_chart_people
+#: model_terms:ir.ui.view,arch_db:bf_org_chart_people.res_partner_view_form_org_chart
+msgid "<span class=\"o_stat_text\">Organigramme</span>"
+msgstr "<span class=\"o_stat_text\">Organigramme</span>"
+
+#. module: bf_org_chart_people
+#. odoo-python
+#: code:addons/bf_org_chart_people/models/res_partner.py:0
+msgid "Blue Fox"
+msgstr "Blue Fox"
+
+#. module: bf_org_chart_people
+#: model:ir.model,name:bf_org_chart_people.model_res_partner
+msgid "Contact"
+msgstr "Contact"
+
+#. module: bf_org_chart_people
+#: model_terms:ir.ui.view,arch_db:bf_org_chart_people.res_partner_view_search_org_chart
+msgid "Dans une chaîne hiérarchique"
+msgstr "Dans une chaîne hiérarchique"
+
+#. module: bf_org_chart_people
+#: model_terms:ir.ui.view,arch_db:bf_org_chart_people.res_partner_view_form_org_chart
+msgid "De qui cette personne relève-t-elle ?"
+msgstr "De qui cette personne relève-t-elle ?"
+
+#. module: bf_org_chart_people
+#: model:ir.model.fields,help:bf_org_chart_people.field_res_partner__manager_id
+#: model:ir.model.fields,help:bf_org_chart_people.field_res_users__manager_id
+msgid ""
+"La personne dont ce contact relève. Distinct de « Société », qui dit où il "
+"travaille."
+msgstr ""
+"La personne dont ce contact relève. Distinct de « Société », qui dit où il "
+"travaille."
+
+#. module: bf_org_chart_people
+#: model:ir.model.fields,help:bf_org_chart_people.field_res_partner__org_chart_people_count
+#: model:ir.model.fields,help:bf_org_chart_people.field_res_users__org_chart_people_count
+msgid ""
+"Nombre de personnes que l'organigramme de cette société dessinerait. Zéro "
+"tant que personne n'a de supérieur inscrit."
+msgstr ""
+"Nombre de personnes que l'organigramme de cette société dessinerait. Zéro "
+"tant que personne n'a de supérieur inscrit."
+
+#. module: bf_org_chart_people
+#. odoo-python
+#: code:addons/bf_org_chart_people/models/res_partner.py:0
+#: model:ir.ui.menu,name:bf_org_chart_people.menu_org_chart_personnes
+msgid "Organigramme"
+msgstr "Organigramme"
+
+#. module: bf_org_chart_people
+#. odoo-python
+#: code:addons/bf_org_chart_people/models/res_partner.py:0
+#: model:ir.actions.act_window,name:bf_org_chart_people.action_org_chart_personnes
+msgid "Organigramme des personnes"
+msgstr "Organigramme des personnes"
+
+#. module: bf_org_chart_people
+#. odoo-python
+#: code:addons/bf_org_chart_people/models/res_partner.py:0
+msgid "Organigramme des personnes, relevé du %s"
+msgstr "Organigramme des personnes, relevé du %s"
+
+#. module: bf_org_chart_people
+#: model_terms:ir.actions.act_window,help:bf_org_chart_people.action_org_chart_personnes
+msgid "Personne ne relève encore de personne"
+msgstr "Personne ne relève encore de personne"
+
+#. module: bf_org_chart_people
+#: model:ir.model.fields,field_description:bf_org_chart_people.field_res_partner__org_chart_people_count
+#: model:ir.model.fields,field_description:bf_org_chart_people.field_res_users__org_chart_people_count
+msgid "Personnes dans l'organigramme"
+msgstr "Personnes dans l'organigramme"
+
+#. module: bf_org_chart_people
+#: model:ir.model.fields,field_description:bf_org_chart_people.field_res_partner__subordinate_count
+#: model:ir.model.fields,field_description:bf_org_chart_people.field_res_users__subordinate_count
+msgid "Personnes sous sa responsabilité"
+msgstr "Personnes sous sa responsabilité"
+
+#. module: bf_org_chart_people
+#: model:ir.model.fields,field_description:bf_org_chart_people.field_res_partner__subordinate_ids
+#: model:ir.model.fields,field_description:bf_org_chart_people.field_res_users__subordinate_ids
+msgid "Relèvent de ce contact"
+msgstr "Relèvent de ce contact"
+
+#. module: bf_org_chart_people
+#: model_terms:ir.actions.act_window,help:bf_org_chart_people.action_org_chart_personnes
+msgid ""
+"Renseignez le « Supérieur immédiat » sur quelques fiches de contact,\n"
+"               et la chaîne se dessine ici."
+msgstr ""
+"Renseignez le « Supérieur immédiat » sur quelques fiches de contact,\n"
+"               et la chaîne se dessine ici."
+
+#. module: bf_org_chart_people
+#. odoo-python
+#: code:addons/bf_org_chart_people/models/res_partner.py:0
+msgid "Sans nom"
+msgstr "Sans nom"
+
+#. module: bf_org_chart_people
+#. odoo-python
+#: code:addons/bf_org_chart_people/models/res_partner.py:0
+#: model_terms:ir.ui.view,arch_db:bf_org_chart_people.res_partner_view_search_org_chart
+msgid "Sans supérieur inscrit"
+msgstr "Sans supérieur inscrit"
+
+#. module: bf_org_chart_people
+#. odoo-python
+#: code:addons/bf_org_chart_people/models/res_partner.py:0
+msgid "Supérieur d'une autre entreprise"
+msgstr "Supérieur d'une autre entreprise"
+
+#. module: bf_org_chart_people
+#: model:ir.model.fields,field_description:bf_org_chart_people.field_res_partner__manager_id
+#: model:ir.model.fields,field_description:bf_org_chart_people.field_res_users__manager_id
+#: model_terms:ir.ui.view,arch_db:bf_org_chart_people.res_partner_view_form_org_chart
+msgid "Supérieur immédiat"
+msgstr "Supérieur immédiat"
+
+#. module: bf_org_chart_people
+#. odoo-python
+#: code:addons/bf_org_chart_people/models/res_partner.py:0
+msgid ""
+"Un contact ne peut pas relever de lui-même, directement ou en remontant la "
+"chaîne."
+msgstr ""
+"Un contact ne peut pas relever de lui-même, directement ou en remontant la "
+"chaîne."

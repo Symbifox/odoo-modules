@@ -1,0 +1,60 @@
+/* Page d'organigramme. Sobre par obligation : elle s'imprime. */
+@font-face {
+    font-family: "BfOrgChartLexend";
+    src: url("/bf_org_chart/static/fonts/Lexend-Regular.ttf") format("truetype");
+    font-weight: 400;
+    font-display: swap;
+}
+@font-face {
+    font-family: "BfOrgChartLexend";
+    src: url("/bf_org_chart/static/fonts/Lexend-SemiBold.ttf") format("truetype");
+    font-weight: 600;
+    font-display: swap;
+}
+body {
+    margin: 0;
+    background: #F4F6F8;
+    color: #2D3031;
+    font-family: "BfOrgChartLexend", Lexend, system-ui, -apple-system, sans-serif;
+}
+.o_bfoc_barre {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 20px;
+    background: #FFFFFF;
+    border-bottom: 1px solid #E1E5E9;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+}
+.o_bfoc_titre { font-weight: 600; font-size: 15px; }
+.o_bfoc_actions { display: flex; gap: 8px; }
+.o_bfoc_bouton {
+    display: inline-block;
+    padding: 6px 14px;
+    border: 1px solid #C9CFD4;
+    border-radius: 6px;
+    color: #2D3031;
+    background: #FFFFFF;
+    text-decoration: none;
+    font-size: 13px;
+}
+.o_bfoc_bouton_bleu { border-color: #29ABE1; }
+.o_bfoc_bouton:hover { background: #EAF7FD; }
+.o_bfoc_message {
+    margin: 10px 20px 0;
+    padding: 10px 14px;
+    border-left: 3px solid #D6991F;
+    background: #FDF6E7;
+    font-size: 13px;
+}
+.o_bfoc_toile { overflow: auto; padding: 20px; }
+.o_bfoc_toile svg { display: block; }
+@media print {
+    .o_bfoc_barre, .o_bfoc_message { display: none; }
+    body { background: #FFFFFF; }
+    .o_bfoc_toile { padding: 0; overflow: visible; }
+}
