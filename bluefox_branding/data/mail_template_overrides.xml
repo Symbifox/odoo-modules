@@ -1302,6 +1302,12 @@
 
         <record id="portal.mail_template_data_portal_welcome" model="mail.template">
             <field name="name">Portail : invitation d'un client</field>
+            <!-- 18.0.3.20.0 : le sujet suit le corps. Depuis la 3.9.0 le corps est le
+                 même texte français dans toutes les langues, mais le sujet restait
+                 celui d'Odoo par langue : « Your account at … » dès qu'une langue
+                 anglaise est active. Mesuré sur un
+                 courriel réel le 2026-09-13 : sujet anglais, corps français. -->
+            <field name="subject">Votre accès au portail client de {{ object.user_id.company_id.name or object.partner_id.company_id.name }}</field>
             <field name="email_layout_xmlid">bluefox_branding.bf_mail_layout</field>
             <field name="body_html" type="html">
 

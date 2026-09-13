@@ -201,6 +201,10 @@ Distributed under the **Business Source License 1.1** (BUSL-1.1). See the
 
 ## Changelog
 
+### 18.0.3.20.0
+
+- Fixed: the customer portal invitation (`portal.mail_template_data_portal_welcome`) now carries a French subject matching its French body. Since 18.0.3.9.0 the body was overridden in every active language while the subject stayed Odoo's per-language default, so any tenant with an English language active sent "Your account at …" over a French body. The migration replays `post_init_hook`, which is the only path that reaches every language slot of a `noupdate` template.
+
 ### 18.0.3.19.0
 
 - Brand colours resolve per tenant at runtime. Every web-client rule Odoo compiles from `$o-brand-primary`/`$o-brand-odoo` is now overridden with `var(--brand-primary)`/`var(--brand-dark)` (generated from the served bundle, dark and accent told apart), so the compile-time defaults no longer leak one company's palette into another tenant. `.btn-primary` and `.bg-primary` use the raw brand accent with white text — a brand-owner decision, documented in the stylesheet, not a contrast oversight. The loading indicator follows `--brand-dark`. New `--brand-primary-on-white-lg` (3:1, large bold text) via `res.company._brand_primary_on_white_large()`.
