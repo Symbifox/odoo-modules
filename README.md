@@ -13,7 +13,7 @@ modules — the UI fixes, the shared helpers, the Nextcloud integrations, the
 productivity pack. They are free because they are more useful to us being
 widely used than being held.
 
-**116 modules are BUSL-1.1.** The source is published and auditable, and **you
+**119 modules are BUSL-1.1.** The source is published and auditable, and **you
 may run them in production for your own internal business operations** — as a
 company, as a freelancer, as one person on a laptop. What needs an agreement is
 using them to provide a product or service to someone else: hosting them for a
@@ -201,7 +201,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_recurrence` | Symbifox — Ancrage de la récurrence | 18.0.1.0.0 | LGPL-3 | Choose, per recurring series, whether the next deadline is measured from the old deadline or from the actual completion date |
 | `bf_securetransfer` | Transfert sécurisé (Secure Transfer) | 18.0.1.21.0 | BUSL-1.1 | Secure file transfer and secure messaging: browser-direct S3 uploads (presigned, multipart, ETag-pinned integrity), tokenized links with expiry, download budget, password, recipient and sender OTP (email or SMS), burn-after-download, download notification; message-only mode; personal drop pages `/to/<slug>` with per-employee auto-provisioning; backend secure-send wizard; sender/recipient allowlists, abuse reporting with automatic suspension, IP and sender quotas, rate limiting, hardened headers and CSP; hash-chained tamper-evident access log with CSV export and integrity verification (Law 25); auto-purge and GC crons; multi-brand skinning by host with free/paid tiers and white-label toggle; dashboard; guided S3 bucket setup with data-residency probe; open-audience data rooms where a link names nobody and each visitor self-declares an email or mobile, confirms a one-time code on that channel, and gets a per-person download budget and watermark |
 | `bf_securetransfer_sign` | Symbifox — Transfert sécurisé : entente de confidentialité | 18.0.1.2.0 | BUSL-1.1 | Bridge between bf_securetransfer and bf_sign: require each visitor to sign a confidentiality agreement, in the identity they just confirmed, before the content of a transfer opens; gated on the download page and on the direct file route alike |
-| `bf_security_awareness` | Security Awareness | 18.0.1.9.2 | BUSL-1.1 | KnowBe4/Terranova-style platform: phishing simulations (open/click/submit, QR, attachments), per-person risk profiles, eLearning remediation, OWL dashboards, a Phish Alert Button with sim-aware triage, and email clawback (PhishRIP-style) to pull a confirmed malicious email from every mailbox (M365 app-only XOAUTH2 or per-mailbox IMAP) into reversible quarantine — see `SECURITY.md` |
+| `bf_security_awareness` | Security Awareness | 18.0.2.0.0 | BUSL-1.1 | KnowBe4/Terranova-style platform: phishing simulations (open/click/submit, QR, attachments), per-person risk profiles, eLearning remediation, OWL dashboards, a Phish Alert Button with sim-aware triage, and email clawback (PhishRIP-style) to pull a confirmed malicious email from every mailbox (M365 app-only XOAUTH2 or per-mailbox IMAP) into reversible quarantine — see `SECURITY.md` |
 | `bf_session_cookie_domain` | BF Session Cookie Domain | 18.0.2.0.0 | LGPL-3 | Share the session cookie across the subdomains of one configured apex domain |
 | `bf_sign` | Symbifox — Signature électronique | 18.0.3.24.1 | BUSL-1.1 | Native electronic signature (SES): parallel or sequential multi-signer requests, drag-and-drop pad placement on the PDF with reusable layout templates, draw/type/upload signature and initials with embedded handwriting fonts, signer-fillable text and date fields plus boxed cells for pre-printed forms and server-validated choice lists, optional email OTP identity verification of signers, refusal flow with reason, branded public signing pages and transactional emails, completion certificate, optional PAdES cryptographic seal (pyHanko) with in-app certificate generation, optional RFC 3161 trusted timestamping, hash-chained tamper-evident audit trail with one-click integrity verification, a public verification page (optional QR stamped on the document) where any holder can drop their own copy and have it hashed in-browser to confirm it matches, link expiry cron, manager-gated link reveal, and a mixin to send any Odoo record for signature with post-back of the signed document |
 | `bf_sign_account` | Symbifox — Signature pour la comptabilité | 18.0.1.1.0 | BUSL-1.1 | Send a customer invoice / vendor bill for electronic signature (bf_sign). |
@@ -223,6 +223,9 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_time_of_day` | BF Time of Day | 18.0.1.3.1 | LGPL-3 | Time-of-day slots (Morning / Noon / End of day / Off hours) for tasks and activities, with per-user overrides |
 | `bf_timesheet_timer` | BF Timer - Feuilles de temps | 18.0.1.11.0 | LGPL-3 | Global timesheet timer with multi-timer support and an OWL UI |
 | `bf_timezone` | Symbifox Timezone Utilities | 18.0.1.1.0 | LGPL-3 | Shared timezone helpers and a configurable default timezone for Symbifox modules |
+| `bf_training` | Registre de formation | 18.0.1.0.1 | BUSL-1.1 | Qui doit quelle formation, pour quand, prouvé par quelle pièce, valide jusqu'à quand. Le registre nominatif que le lecteur eLearning ne tient pas |
+| `bf_training_qc` | Registre de formation : Québec | 18.0.1.0.0 | BUSL-1.1 | L'attestation que l'employeur doit pouvoir délivrer, la conservation de six ans, et le relevé de la participation au développement des compétences |
+| `bf_training_slides` | Registre de formation : raccord eLearning | 18.0.1.0.0 | BUSL-1.1 | Une activité du registre adossée à un cours en ligne : la vraie date, les heures, et la dérive du contenu qui se voit |
 | `bf_universal_search` | BF Recherche universelle | 18.0.2.2.0 | LGPL-3 | Cross-module search through the command palette |
 | `bluefox_branding` | Symbifox Branding | 18.0.3.10.0 | BUSL-1.1 | Per-company brand color + email layout overrides driven by `bf_lexend` company fields (CSS variables injected via QWeb layout — no SCSS recompile) |
 | `calendar_nextcloud_sync` | Calendar Nextcloud Sync | 18.0.2.16.0 | LGPL-3 | Bidirectional calendar synchronization between Odoo and Nextcloud over CalDAV, and Google Calendar (API v3/OAuth2) |
@@ -257,7 +260,7 @@ Three regimes — see [Licensing](#licensing) above for the details, and the
 `License` column of the table for the module you care about. The `LICENSE`
 file inside each module governs and carries its exact parameters.
 
-- **116 modules: BUSL-1.1.** Production use for your own internal business
+- **119 modules: BUSL-1.1.** Production use for your own internal business
   operations is permitted; providing them as a product or service to third
   parties requires an agreement. Each version converts to
   **LGPL-3.0-or-later four years after its release**.
