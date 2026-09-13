@@ -18,7 +18,7 @@ def echeancier(taches=None, couloirs=None, deps=None,
         "source": {"kind": "project", "model": "project.project", "id": 1},
         "title": "Essai",
         "subtitle": "",
-        "company": {"id": 1, "name": "Blue Fox Inc.", "color": "#29ABE1"},
+        "company": {"id": 1, "name": "Blue Fox Inc.", "color": "#29ABE2"},
         "grouping": "stage",
         "lanes": couloirs if couloirs is not None else [
             {"key": "a", "name": "Couloir A", "seq": 1, "total": 1, "done": 0, "pct": 0},

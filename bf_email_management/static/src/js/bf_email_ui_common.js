@@ -170,7 +170,7 @@ export function buildPreviewSrcdoc(bodyHtml) {
   table { max-width: 100%; }
   pre { white-space: pre-wrap; word-break: break-word; }
   blockquote { border-left: 3px solid #d0d7de; margin: 0 0 0 8px; padding: 0 0 0 12px; color: #57606a; }
-  a { color: #29ABE1; }
+  a { color: #29ABE2; }
 </style>
 </head>
 <body>${bodyHtml}</body>

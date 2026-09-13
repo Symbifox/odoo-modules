@@ -104,7 +104,7 @@ class BfLinkpage(models.Model):
     avatar = fields.Image(string="Photo", max_width=512, max_height=512)
     accent_color = fields.Char(
         string="Couleur d'accent",
-        default="#29ABE1",
+        default="#29ABE2",
         help="Hexadécimal. Sert aux boutons de la page publique et au QR à la marque.",
     )
     layout = fields.Selection(
@@ -495,7 +495,7 @@ class BfLinkpage(models.Model):
             if page.accent_color and not re.match(r"^#[0-9A-Fa-f]{6}$", page.accent_color):
                 raise ValidationError(_(
                     "La couleur d'accent doit être un hexadécimal à six chiffres, "
-                    "par exemple #29ABE1."
+                    "par exemple #29ABE2."
                 ))
 
     # ── création ─────────────────────────────────────────────────────────────

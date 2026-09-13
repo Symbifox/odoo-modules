@@ -38,9 +38,9 @@ class NextcloudDocumentConfig(models.Model):
 
     nc_folder_color = fields.Char(
         string="Couleur des dossiers",
-        default="#2D3031",
+        default="#2E3132",
         help="Couleur (hex) des icones de dossier dans le navigateur. "
-        "Defaut: anthracite Blue Fox. Mettre la couleur d'accent (#29ABE1) pour du contraste.",
+        "Defaut: anthracite Blue Fox. Mettre la couleur d'accent (#29ABE2) pour du contraste.",
     )
 
     nc_panel_width_pct = fields.Integer(

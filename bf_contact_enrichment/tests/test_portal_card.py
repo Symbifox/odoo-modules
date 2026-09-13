@@ -331,7 +331,7 @@ class TestPortalCard(HttpCase):
         """L'encre se calcule, elle ne se recopie pas : l'encre d'origine est
         presque noire et devient invisible dès qu'un locataire déclare une
         marque foncée."""
-        self.assertEqual(portal_card._encre_sur("#29abe1"), "#06283a")
+        self.assertEqual(portal_card._encre_sur("#29abe2"), "#06283a")
         self.assertEqual(portal_card._encre_sur("#5c6e5b"), "#ffffff")
         self.assertEqual(portal_card._encre_sur("#ffffff"), "#06283a")
         self.assertEqual(portal_card._encre_sur("#000000"), "#ffffff")

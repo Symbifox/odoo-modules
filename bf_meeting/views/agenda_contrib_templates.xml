@@ -5,8 +5,8 @@
     <!-- Public contribution page (open: after send, before confirm)   -->
     <!-- ============================================================= -->
     <template id="agenda_contrib_page" name="Rencontres — Page de contribution">
-        <t t-set="primary" t-value="company.report_brand_primary or '#29ABE1'"/>
-        <t t-set="dark" t-value="company.report_brand_dark or '#2D3031'"/>
+        <t t-set="primary" t-value="company.report_brand_primary or '#29ABE2'"/>
+        <t t-set="dark" t-value="company.report_brand_dark or '#2E3132'"/>
         &lt;!DOCTYPE html&gt;
         <html t-att-lang="'en' if _en else 'fr'">
             <head>
@@ -16,7 +16,7 @@
                 <style>
                     :root { --bf-primary: <t t-esc="primary"/>; --bf-dark: <t t-esc="dark"/>; }
                     body { margin:0; font-family: system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
-                           background:#f4f6f8; color:#2D3031; }
+                           background:#f4f6f8; color:#2E3132; }
                     .bf-header { background:var(--bf-dark); color:#fff; padding:16px 24px;
                                  display:flex; align-items:center; gap:14px; }
                     .bf-header img { max-height:34px; }
@@ -137,8 +137,8 @@
     <!-- Closed page (before send / after confirmation / done / cancel)-->
     <!-- ============================================================= -->
     <template id="agenda_contrib_closed" name="Rencontres — Contributions fermées">
-        <t t-set="primary" t-value="company.report_brand_primary or '#29ABE1'"/>
-        <t t-set="dark" t-value="company.report_brand_dark or '#2D3031'"/>
+        <t t-set="primary" t-value="company.report_brand_primary or '#29ABE2'"/>
+        <t t-set="dark" t-value="company.report_brand_dark or '#2E3132'"/>
         &lt;!DOCTYPE html&gt;
         <html t-att-lang="'en' if _en else 'fr'">
             <head>
@@ -147,7 +147,7 @@
                 <title><t t-out="'Contributions closed' if _en else 'Contributions fermées'"/></title>
                 <style>
                     body { margin:0; font-family: system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
-                           background:#f4f6f8; color:#2D3031; }
+                           background:#f4f6f8; color:#2E3132; }
                     .bf-header { background:<t t-esc="dark"/>; color:#fff; padding:16px 24px; font-weight:600; }
                     .bf-accent { height:4px; background:<t t-esc="primary"/>; }
                     .bf-wrap { max-width:560px; margin:56px auto; padding:0 16px; text-align:center; }

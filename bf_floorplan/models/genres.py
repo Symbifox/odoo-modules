@@ -6,7 +6,7 @@ rendu à l'écran, le PDF et l'export diagrams.net lisent tous cette table.
 """
 
 # (code, libellé, fond pastel). Le fond est pensé pour du papier blanc et
-# une encre #2D3031 : le plan reste une feuille, quel que soit le thème.
+# une encre #2E3132 : le plan reste une feuille, quel que soit le thème.
 GENRES_ZONE = [
     ("bureau", "Bureau fermé", "#DCEFF9"),
     ("reunion", "Salle de réunion", "#E7F6EC"),

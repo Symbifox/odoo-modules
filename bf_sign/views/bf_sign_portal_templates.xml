@@ -5,8 +5,8 @@
     <!-- Public signing page                                            -->
     <!-- ============================================================= -->
     <template id="sign_page" name="BF Sign — Page de signature">
-        <t t-set="primary" t-value="req.company_id.report_brand_primary or '#29ABE1'"/>
-        <t t-set="dark" t-value="req.company_id.report_brand_dark or '#2D3031'"/>
+        <t t-set="primary" t-value="req.company_id.report_brand_primary or '#29ABE2'"/>
+        <t t-set="dark" t-value="req.company_id.report_brand_dark or '#2E3132'"/>
         &lt;!DOCTYPE html&gt;
         <html lang="fr">
             <head>
@@ -18,7 +18,7 @@
                     :root { --bf-primary: <t t-esc="primary"/>; --bf-dark: <t t-esc="dark"/>; }
                     * { box-sizing: border-box; }
                     body { margin:0; font-family: system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
-                           background:#f4f6f8; color:#2D3031; }
+                           background:#f4f6f8; color:#2E3132; }
                     .bf-header { background:var(--bf-dark); color:#fff; padding:16px 24px;
                                  display:flex; align-items:center; gap:14px; }
                     .bf-header img { max-height:34px; }
@@ -709,8 +709,8 @@
     <!-- Confirmation page                                              -->
     <!-- ============================================================= -->
     <template id="sign_done" name="BF Sign — Confirmation">
-        <t t-set="primary" t-value="req.company_id.report_brand_primary or '#29ABE1'"/>
-        <t t-set="dark" t-value="req.company_id.report_brand_dark or '#2D3031'"/>
+        <t t-set="primary" t-value="req.company_id.report_brand_primary or '#29ABE2'"/>
+        <t t-set="dark" t-value="req.company_id.report_brand_dark or '#2E3132'"/>
         &lt;!DOCTYPE html&gt;
         <html lang="fr">
             <head>
@@ -719,7 +719,7 @@
                 <title>Signé — <t t-esc="req.name"/></title>
                 <style>
                     body { margin:0; font-family: system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
-                           background:#f4f6f8; color:#2D3031; }
+                           background:#f4f6f8; color:#2E3132; }
                     .bf-header { background:<t t-esc="dark"/>; color:#fff; padding:16px 24px; font-weight:600; }
                     .bf-accent { height:4px; background:<t t-esc="primary"/>; }
                     .bf-wrap { max-width:640px; margin:48px auto; padding:0 16px; text-align:center; }
@@ -767,8 +767,8 @@
     <!-- Refusal confirmation                                           -->
     <!-- ============================================================= -->
     <template id="sign_refused" name="BF Sign — Refus enregistré">
-        <t t-set="primary" t-value="req.company_id.report_brand_primary or '#29ABE1'"/>
-        <t t-set="dark" t-value="req.company_id.report_brand_dark or '#2D3031'"/>
+        <t t-set="primary" t-value="req.company_id.report_brand_primary or '#29ABE2'"/>
+        <t t-set="dark" t-value="req.company_id.report_brand_dark or '#2E3132'"/>
         &lt;!DOCTYPE html&gt;
         <html lang="fr">
             <head>
@@ -777,7 +777,7 @@
                 <title>Refusé — <t t-esc="req.name"/></title>
                 <style>
                     body { margin:0; font-family: system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
-                           background:#f4f6f8; color:#2D3031; }
+                           background:#f4f6f8; color:#2E3132; }
                     .bf-header { background:<t t-esc="dark"/>; color:#fff; padding:16px 24px; font-weight:600; }
                     .bf-accent { height:4px; background:<t t-esc="primary"/>; }
                     .bf-wrap { max-width:640px; margin:48px auto; padding:0 16px; text-align:center; }
@@ -814,7 +814,7 @@
                 <meta name="viewport" content="width=device-width, initial-scale=1"/>
                 <title>En attente</title>
                 <style>
-                    body { margin:0; font-family: system-ui,sans-serif; background:#f4f6f8; color:#2D3031;
+                    body { margin:0; font-family: system-ui,sans-serif; background:#f4f6f8; color:#2E3132;
                            display:flex; align-items:center; justify-content:center; min-height:100vh; }
                     .bf-card { background:#fff; border:1px solid #e3e7eb; border-radius:10px;
                                padding:32px; max-width:480px; text-align:center; }
@@ -843,7 +843,7 @@
                 <meta name="viewport" content="width=device-width, initial-scale=1"/>
                 <title>Lien indisponible</title>
                 <style>
-                    body { margin:0; font-family: system-ui,sans-serif; background:#f4f6f8; color:#2D3031;
+                    body { margin:0; font-family: system-ui,sans-serif; background:#f4f6f8; color:#2E3132;
                            display:flex; align-items:center; justify-content:center; min-height:100vh; }
                     .bf-card { background:#fff; border:1px solid #e3e7eb; border-radius:10px;
                                padding:32px; max-width:480px; text-align:center; }
@@ -868,8 +868,8 @@
     <!-- Email OTP identity step                                        -->
     <!-- ============================================================= -->
     <template id="sign_otp" name="BF Sign — Vérification par code">
-        <t t-set="primary" t-value="req.company_id.report_brand_primary or '#29ABE1'"/>
-        <t t-set="dark" t-value="req.company_id.report_brand_dark or '#2D3031'"/>
+        <t t-set="primary" t-value="req.company_id.report_brand_primary or '#29ABE2'"/>
+        <t t-set="dark" t-value="req.company_id.report_brand_dark or '#2E3132'"/>
         &lt;!DOCTYPE html&gt;
         <html lang="fr">
             <head>
@@ -879,7 +879,7 @@
                 <style>
                     :root { --bf-primary: <t t-esc="primary"/>; --bf-dark: <t t-esc="dark"/>; }
                     body { margin:0; font-family: system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
-                           background:#f4f6f8; color:#2D3031; }
+                           background:#f4f6f8; color:#2E3132; }
                     .bf-header { background:var(--bf-dark); color:#fff; padding:16px 24px;
                                  display:flex; align-items:center; gap:14px; }
                     .bf-header img { max-height:34px; }
@@ -934,8 +934,8 @@
     <!-- Public verification page (target of the QR on the document)    -->
     <!-- ============================================================= -->
     <template id="verify_page" name="BF Sign — Vérification publique">
-        <t t-set="primary" t-value="req.company_id.report_brand_primary or '#29ABE1'"/>
-        <t t-set="dark" t-value="req.company_id.report_brand_dark or '#2D3031'"/>
+        <t t-set="primary" t-value="req.company_id.report_brand_primary or '#29ABE2'"/>
+        <t t-set="dark" t-value="req.company_id.report_brand_dark or '#2E3132'"/>
         &lt;!DOCTYPE html&gt;
         <html lang="fr">
             <head>
@@ -945,7 +945,7 @@
                 <title>Vérification — <t t-esc="req.name"/></title>
                 <style>
                     body { margin:0; font-family: Lexend,system-ui,sans-serif; background:#f4f6f8;
-                           color:#2D3031; font-size:15px; line-height:1.55; }
+                           color:#2E3132; font-size:15px; line-height:1.55; }
                     .bf-wrap { max-width:640px; margin:0 auto; padding:24px 16px 64px; }
                     .bf-card { background:#fff; border:1px solid #e3e7eb; border-radius:10px;
                                padding:24px; margin-bottom:16px; }
@@ -967,10 +967,10 @@
                     .bf-drop { border:2px dashed #cfd6dc; border-radius:8px; padding:22px 16px;
                                text-align:center; background:#fafbfc;
                                transition:border-color .15s ease, background .15s ease; }
-                    .bf-drop.bf-over { border-color:#29ABE1; background:#f0f9fe; }
+                    .bf-drop.bf-over { border-color:#29ABE2; background:#f0f9fe; }
                     .bf-drop p { margin:0 0 12px; font-size:14px; color:#6b7379; }
                     .bf-btn { font:inherit; font-size:14px; border:1px solid #cfd6dc;
-                              background:#fff; color:#2D3031; border-radius:6px;
+                              background:#fff; color:#2E3132; border-radius:6px;
                               padding:8px 16px; cursor:pointer; }
                     .bf-btn:hover { border-color:#9aa4ad; }
                     .bf-result { margin-top:14px; border-radius:8px; padding:14px 16px;
@@ -1239,7 +1239,7 @@
                 <meta name="robots" content="noindex, nofollow"/>
                 <title>Vérification impossible</title>
                 <style>
-                    body { margin:0; font-family: system-ui,sans-serif; background:#f4f6f8; color:#2D3031;
+                    body { margin:0; font-family: system-ui,sans-serif; background:#f4f6f8; color:#2E3132;
                            display:flex; align-items:center; justify-content:center; min-height:100vh; }
                     .bf-card { background:#fff; border:1px solid #e3e7eb; border-radius:10px;
                                padding:32px; max-width:480px; text-align:center; }

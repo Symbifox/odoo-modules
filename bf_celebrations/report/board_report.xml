@@ -17,9 +17,9 @@
             <t t-foreach="docs" t-as="doc">
                 <t t-call="web.basic_layout">
                     <div class="page"
-                         style="font-family: Lexend, 'Segoe UI', Arial, sans-serif; color:#2D3031;">
+                         style="font-family: Lexend, 'Segoe UI', Arial, sans-serif; color:#2E3132;">
 
-                        <h1 style="color:#2D3031; font-size:24px; margin:0 0 4px;">
+                        <h1 style="color:#2E3132; font-size:24px; margin:0 0 4px;">
                             <t t-esc="doc.name"/>
                         </h1>
                         <p style="color:#6b7280; font-size:12px; margin:0 0 22px;">
@@ -45,9 +45,9 @@
                                      t-att-src="image_data_uri(mot.image)"
                                      style="max-width:220px; max-height:220px; display:block; margin-bottom:10px; border-radius:6px;"/>
                                 <!-- L'encre : le SVG en ligne hérite la couleur
-                                     du texte (#2D3031 ici, le PDF est clair). -->
+                                     du texte (#2E3132 ici, le PDF est clair). -->
                                 <div t-if="mot.has_ink"
-                                     style="color:#2D3031; max-width:520px; margin-bottom:10px;"
+                                     style="color:#2E3132; max-width:520px; margin-bottom:10px;"
                                      t-out="mot.ink_svg()"/>
                                 <div t-out="mot.body"
                                      t-attf-style="#{'font-family: Caveat, cursive; font-size:20px; line-height:1.3;' if mot.style == 'hand' else ''}"/>

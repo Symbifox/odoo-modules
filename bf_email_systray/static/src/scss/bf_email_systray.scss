@@ -14,7 +14,7 @@
 // L'ancien `bg-dark` ne gagnait que par le `!important` de Bootstrap. Mesuré
 // au rendu le 2026-08-31, pas déduit.
 .o_main_navbar .o_menu_systray .badge.o_bf_email_systray_badge {
-    background-color: #29ABE1;
+    background-color: #29ABE2;
     color: #fff;
     font-weight: 600;
 }
@@ -34,7 +34,7 @@
 
 // Le bouton reste allumé tant que le panneau est ouvert.
 .bf-email-systray.o_bf_email_systray_active {
-    color: #29ABE1;
+    color: #29ABE2;
 }
 
 .o_bf_email_panel_root {
@@ -68,7 +68,7 @@
         padding: 8px 12px;
         border-bottom: 1px solid var(--border-color, #dee2e6);
         background: rgba(41, 171, 225, 0.08);
-        color: #2D3031;
+        color: #2E3132;
         font-family: "Lexend", var(--bs-body-font-family, sans-serif);
     }
 
@@ -87,7 +87,7 @@
     }
 
     .o_bf_email_panel_close {
-        color: #2D3031;
+        color: #2E3132;
     }
 
     .o_bf_email_panel_body {
@@ -116,9 +116,9 @@
         background: linear-gradient(
             45deg,
             transparent 0 40%,
-            var(--bf-accent, #29ABE1) 40% 55%,
+            var(--bf-accent, #29ABE2) 40% 55%,
             transparent 55% 70%,
-            var(--bf-accent, #29ABE1) 70% 85%,
+            var(--bf-accent, #29ABE2) 70% 85%,
             transparent 85%
         );
         opacity: 0.55;

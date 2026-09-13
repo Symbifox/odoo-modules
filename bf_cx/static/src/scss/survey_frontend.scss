@@ -44,7 +44,7 @@
         // Pas de `!important` nécessaire : la règle du coeur vise le wrapper,
         // pas cet élément-ci. Une déclaration normale sur l'enfant l'emporte
         // sur une valeur héritée, fût-elle `!important` chez le parent.
-        color: #2D3031;
+        color: #2E3132;
 
         // Celle-ci, en revanche, vise bien les descendants
         // (`.o_survey_background .text-muted { color: #F8F9FA !important }`) :
@@ -67,7 +67,7 @@
         // spécificité suffit — pas de `!important`.
         .form-control,
         .form-select {
-            color: #2D3031;
+            color: #2E3132;
             background-color: #FFFFFF;
             border-color: #CED4DA;
 
@@ -77,7 +77,7 @@
             }
 
             &:focus {
-                color: #2D3031;
+                color: #2E3132;
                 background-color: #FFFFFF;
                 // Même bleu assombri que la tuile choisie, pour la même raison
                 // de contraste : l'accent de marque sur blanc ne passe pas.

@@ -1,7 +1,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 {
     "name": "Reçus de dons — Canada (ARC + Revenu Québec)",
-    "version": "18.0.1.0.4",
+    "version": "18.0.1.0.5",
     "category": "Accounting/Donation",
     "summary": "Reçus officiels de dons conformes ARC + Revenu Québec, en français — "
     "montant admissible, avantage, dons en nature, annulation/réémission",

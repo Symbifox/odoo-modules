@@ -970,7 +970,7 @@ class SecureTransfer(models.Model):
             '<span style="color:#fff;font-size:18px;font-weight:700;">%s</span>'
             % html_escape(v["name"]))
         return (
-            '<div style="font-family:Lexend,system-ui,Arial,sans-serif;color:#2D3031;'
+            '<div style="font-family:Lexend,system-ui,Arial,sans-serif;color:#2E3132;'
             'font-size:14px;line-height:1.55;max-width:600px;margin:0 auto;">'
             '<div style="background:%(dark)s;padding:18px 24px;border-radius:10px 10px 0 0;">'
             '<table role="presentation" width="100%%" cellpadding="0" cellspacing="0" '

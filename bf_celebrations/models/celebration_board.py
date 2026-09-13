@@ -63,21 +63,21 @@ THEMES = [
 # un assombrissement global.
 PALETTES = {
     "confetti": {
-        "fond": "#FDF6EC", "surface": "#FFFFFF", "texte": "#2D3031",
+        "fond": "#FDF6EC", "surface": "#FFFFFF", "texte": "#2E3132",
         "accent": "#E8632B", "accent_texte": "#BA4514",
         "bouton_fond": "#BA4514", "bouton_texte": "#FFFFFF",
-        "entete": "#2D3031",
+        "entete": "#2E3132",
     },
     "sobre": {
-        "fond": "#F4F6F8", "surface": "#FFFFFF", "texte": "#2D3031",
-        "accent": "#29ABE1", "accent_texte": "#177AA3",
+        "fond": "#F4F6F8", "surface": "#FFFFFF", "texte": "#2E3132",
+        "accent": "#29ABE2", "accent_texte": "#177AA3",
         "bouton_fond": "#177AA3", "bouton_texte": "#FFFFFF",
-        "entete": "#2D3031",
+        "entete": "#2E3132",
     },
     "nuit": {
         "fond": "#1B1F23", "surface": "#262B31", "texte": "#F2F4F6",
-        "accent": "#29ABE1", "accent_texte": "#29ABE1",
-        "bouton_fond": "#29ABE1", "bouton_texte": "#0B1E27",
+        "accent": "#29ABE2", "accent_texte": "#29ABE2",
+        "bouton_fond": "#29ABE2", "bouton_texte": "#0B1E27",
         "entete": "#FFFFFF",
     },
     "foret": {
@@ -915,7 +915,7 @@ class CelebrationBoard(models.Model):
             box_size=box_size, border=2)
         qr.add_data(self.contribution_url or "")
         qr.make(fit=True)
-        image = qr.make_image(fill_color="#2D3031", back_color="#FFFFFF")
+        image = qr.make_image(fill_color="#2E3132", back_color="#FFFFFF")
         tampon = io.BytesIO()
         image.save(tampon, format="PNG")
         return tampon.getvalue()

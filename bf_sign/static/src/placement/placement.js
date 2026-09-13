@@ -5,7 +5,7 @@ import { registry } from "@web/core/registry";
 import { useService } from "@web/core/utils/hooks";
 
 const DISPLAY_W = 680; // page render width in px
-const COLORS = ["#29ABE1", "#E67E22", "#27AE60", "#8E44AD", "#E74C3C", "#16A085"];
+const COLORS = ["#29ABE2", "#E67E22", "#27AE60", "#8E44AD", "#E74C3C", "#16A085"];
 const TYPE_LABELS = {
     signature: "Signature",
     initials: "Paraphe",

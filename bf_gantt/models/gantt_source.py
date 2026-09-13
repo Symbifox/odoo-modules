@@ -500,9 +500,9 @@ class BfGanttSource(models.AbstractModel):
             "color": self._couleur(societe, ("report_brand_primary",
                                              "report_brand_color",
                                              "bf_brand_color",
-                                             "primary_color"), "#29ABE1"),
+                                             "primary_color"), "#29ABE2"),
             "dark": self._couleur(societe, ("report_brand_dark",
-                                            "secondary_color"), "#2D3031"),
+                                            "secondary_color"), "#2E3132"),
             "logo": self._logo(societe),
             "tagline": self._texte(societe, ("report_header", "brand_email_tagline")),
         }

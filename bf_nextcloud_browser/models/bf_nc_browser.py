@@ -268,7 +268,7 @@ class BfNcBrowser(models.TransientModel):
             "breadcrumb": crumbs,
             "entries": entries,
             "open_extensions": config._open_extensions_list(),
-            "folder_color": config.nc_folder_color or "#2D3031",
+            "folder_color": config.nc_folder_color or "#2E3132",
             "presets": [
                 {"id": p.id, "name": p.name, "access": p.access}
                 for p in config.share_preset_ids

@@ -471,7 +471,7 @@ class MeetingDashboard(models.AbstractModel):
                 url = '#'
             return (
                 f'<li style="margin: 0.5em 0;">'
-                f'<a href="{url}" style="color:#29ABE1; text-decoration:none;"><strong>{escape(r["name"])}</strong></a>'
+                f'<a href="{url}" style="color:#29ABE2; text-decoration:none;"><strong>{escape(r["name"])}</strong></a>'
                 f'{project}{partner}<br/>'
                 f'<small style="color:#666;">{date_str}</small>'
                 f'</li>'
@@ -483,16 +483,16 @@ class MeetingDashboard(models.AbstractModel):
         dashboard_url = f'{base_url}/odoo/action-meeting_dashboard_client_action' if base_url else ''
         link_to_dash = (
             f'<p style="margin-top: 1.5em;">'
-            f'<a href="{dashboard_url}" style="color:#29ABE1;">Ouvrir le tableau de bord →</a></p>'
+            f'<a href="{dashboard_url}" style="color:#29ABE2;">Ouvrir le tableau de bord →</a></p>'
         ) if dashboard_url else ''
 
         odj_section = (
-            f'<h3 style="color:#29ABE1; margin-bottom:0.25em;">📋 OdJ à préparer (7 prochains jours)</h3>'
+            f'<h3 style="color:#29ABE2; margin-bottom:0.25em;">📋 OdJ à préparer (7 prochains jours)</h3>'
             f'<ul style="padding-left:1.25em; margin-top:0;">{odj_html}</ul>'
         ) if odj_rows else ''
 
         cr_section = (
-            f'<h3 style="color:#29ABE1; margin-bottom:0.25em;">📝 CR à compléter</h3>'
+            f'<h3 style="color:#29ABE2; margin-bottom:0.25em;">📝 CR à compléter</h3>'
             f'<ul style="padding-left:1.25em; margin-top:0;">{cr_html}</ul>'
         ) if cr_rows else ''
 

@@ -39,7 +39,7 @@ ICONS = "/bf_contact_enrichment/static/src/scan"
 #: Couleur d'accent par défaut de la page. Elle ne sert que si le locataire ne
 #: déclare pas la sienne : une page installée sur le téléphone de quelqu'un
 #: porte SA marque, pas celle de l'éditeur.
-ACCENT_PAR_DEFAUT = "#29abe1"
+ACCENT_PAR_DEFAUT = "#29abe2"
 
 
 def _accent():

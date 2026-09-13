@@ -11,9 +11,9 @@
             <field name="email_to">{{ object.email }}</field>
             <field name="body_html" type="html">
                 <t t-set="company" t-value="object.request_id.company_id"/>
-                <t t-set="primary" t-value="company.report_brand_primary or '#29ABE1'"/>
-                <t t-set="dark" t-value="company.report_brand_dark or '#2D3031'"/>
-                <div style="font-family:Lexend,system-ui,Arial,sans-serif; color:#2D3031; font-size:14px; line-height:1.55; max-width:600px; margin:0 auto;">
+                <t t-set="primary" t-value="company.report_brand_primary or '#29ABE2'"/>
+                <t t-set="dark" t-value="company.report_brand_dark or '#2E3132'"/>
+                <div style="font-family:Lexend,system-ui,Arial,sans-serif; color:#2E3132; font-size:14px; line-height:1.55; max-width:600px; margin:0 auto;">
                     <div t-attf-style="background:#{dark}; padding:18px 24px; border-radius:10px 10px 0 0;">
                         <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;"><tbody><tr>
                             <td align="left" style="vertical-align:middle;">
@@ -52,9 +52,9 @@
             <field name="email_to">{{ object.email }}</field>
             <field name="body_html" type="html">
                 <t t-set="company" t-value="object.request_id.company_id"/>
-                <t t-set="primary" t-value="company.report_brand_primary or '#29ABE1'"/>
-                <t t-set="dark" t-value="company.report_brand_dark or '#2D3031'"/>
-                <div style="font-family:Lexend,system-ui,Arial,sans-serif; color:#2D3031; font-size:14px; line-height:1.55; max-width:600px; margin:0 auto;">
+                <t t-set="primary" t-value="company.report_brand_primary or '#29ABE2'"/>
+                <t t-set="dark" t-value="company.report_brand_dark or '#2E3132'"/>
+                <div style="font-family:Lexend,system-ui,Arial,sans-serif; color:#2E3132; font-size:14px; line-height:1.55; max-width:600px; margin:0 auto;">
                     <div t-attf-style="background:#{dark}; padding:18px 24px; border-radius:10px 10px 0 0;">
                         <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;"><tbody><tr>
                             <td align="left" style="vertical-align:middle;">
@@ -97,9 +97,9 @@
             <field name="email_cc">{{ object.create_uid.email or '' }}</field>
             <field name="body_html" type="html">
                 <t t-set="company" t-value="object.company_id"/>
-                <t t-set="primary" t-value="company.report_brand_primary or '#29ABE1'"/>
-                <t t-set="dark" t-value="company.report_brand_dark or '#2D3031'"/>
-                <div style="font-family:Lexend,system-ui,Arial,sans-serif; color:#2D3031; font-size:14px; line-height:1.55; max-width:600px; margin:0 auto;">
+                <t t-set="primary" t-value="company.report_brand_primary or '#29ABE2'"/>
+                <t t-set="dark" t-value="company.report_brand_dark or '#2E3132'"/>
+                <div style="font-family:Lexend,system-ui,Arial,sans-serif; color:#2E3132; font-size:14px; line-height:1.55; max-width:600px; margin:0 auto;">
                     <div t-attf-style="background:#{dark}; padding:18px 24px; border-radius:10px 10px 0 0;">
                         <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;"><tbody><tr>
                             <td align="left" style="vertical-align:middle;">
@@ -134,10 +134,10 @@
             <field name="email_to">{{ object.create_uid.email or '' }}</field>
             <field name="body_html" type="html">
                 <t t-set="company" t-value="object.company_id"/>
-                <t t-set="primary" t-value="company.report_brand_primary or '#29ABE1'"/>
-                <t t-set="dark" t-value="company.report_brand_dark or '#2D3031'"/>
+                <t t-set="primary" t-value="company.report_brand_primary or '#29ABE2'"/>
+                <t t-set="dark" t-value="company.report_brand_dark or '#2E3132'"/>
                 <t t-set="refused" t-value="object.signer_ids.filtered(lambda s: s.state == 'refused')[:1]"/>
-                <div style="font-family:Lexend,system-ui,Arial,sans-serif; color:#2D3031; font-size:14px; line-height:1.55; max-width:600px; margin:0 auto;">
+                <div style="font-family:Lexend,system-ui,Arial,sans-serif; color:#2E3132; font-size:14px; line-height:1.55; max-width:600px; margin:0 auto;">
                     <div t-attf-style="background:#{dark}; padding:18px 24px; border-radius:10px 10px 0 0;">
                         <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;"><tbody><tr>
                             <td align="left" style="vertical-align:middle;">

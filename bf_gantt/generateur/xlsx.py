@@ -60,10 +60,10 @@ def rendre(payload, avec_grille=True):
         "default_date_format": "yyyy-mm-dd",
         "remove_timezone": True,
     })
-    accent = payload.get("company", {}).get("color") or "#29ABE1"
+    accent = payload.get("company", {}).get("color") or "#29ABE2"
 
     f_titre = livre.add_format({
-        "bold": True, "font_size": 14, "font_color": "#2D3031", "font_name": "Lexend"})
+        "bold": True, "font_size": 14, "font_color": "#2E3132", "font_name": "Lexend"})
     f_sous = livre.add_format({
         "font_size": 9, "font_color": "#6B7379", "font_name": "Lexend"})
     f_entete = livre.add_format({

@@ -38,9 +38,9 @@ def rendre(payload, echelle="week", zoom=1.0):
     """
     zoom = geo.borner_zoom(zoom, defaut=1.0)
     g = geo.construire(payload, echelle=echelle)
-    accent = g["societe"].get("color") or "#29ABE1"
+    accent = g["societe"].get("color") or "#29ABE2"
     if not COULEUR.match(str(accent)):
-        accent = "#29ABE1"
+        accent = "#29ABE2"
     out = []
     a = out.append
 

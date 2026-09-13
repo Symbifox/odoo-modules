@@ -1,8 +1,8 @@
 .o_nc_browser {
     // Blue Fox brand tokens.
-    --bf-accent: #29ABE1;
+    --bf-accent: #29ABE2;
     --bf-accent-dark: #1f8ab5;
-    --bf-anthracite: #2D3031;
+    --bf-anthracite: #2E3132;
     font-family: "Lexend", var(--bs-body-font-family, sans-serif);
     padding: 12px 16px;
 
@@ -206,7 +206,7 @@
         padding: 8px 12px;
         border-bottom: 1px solid var(--border-color, #dee2e6);
         background: rgba(41, 171, 225, 0.08);
-        color: #2D3031;
+        color: #2E3132;
         font-family: "Lexend", var(--bs-body-font-family, sans-serif);
     }
 
@@ -225,7 +225,7 @@
     }
 
     .o_nc_panel_close {
-        color: #2D3031;
+        color: #2E3132;
     }
 
     .o_nc_panel_body {
@@ -268,9 +268,9 @@
         background: linear-gradient(
             45deg,
             transparent 0 40%,
-            var(--bf-accent, #29ABE1) 40% 55%,
+            var(--bf-accent, #29ABE2) 40% 55%,
             transparent 55% 70%,
-            var(--bf-accent, #29ABE1) 70% 85%,
+            var(--bf-accent, #29ABE2) 70% 85%,
             transparent 85%
         );
         opacity: 0.55;
@@ -302,7 +302,7 @@
 // `svg` suffit a faire virer le nuage.
 .o_nc_systray.o_nc_systray_open > .btn,
 .o_nc_systray.o_nc_systray_open .o_nc_systray_logo {
-    color: #29ABE1 !important;
+    color: #29ABE2 !important;
 }
 
 // Le nuage Nextcloud est deux fois plus large que haut : on ne fixe que la

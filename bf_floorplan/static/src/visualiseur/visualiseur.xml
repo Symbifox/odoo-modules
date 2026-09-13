@@ -91,7 +91,7 @@
                     <!-- la feuille : blanche, quel que soit le thème -->
                     <rect x="0" y="0" t-att-width="state.donnees.largeur"
                           t-att-height="state.donnees.hauteur"
-                          fill="#FFFFFF" stroke="#2D3031" stroke-width="3"/>
+                          fill="#FFFFFF" stroke="#2E3132" stroke-width="3"/>
                     <image t-if="state.donnees.fond" x="0" y="0"
                            t-att-width="state.donnees.largeur"
                            t-att-height="state.donnees.hauteur"
@@ -101,7 +101,7 @@
                     <t t-foreach="zones" t-as="z" t-key="'z' + z.id">
                         <rect t-att-x="z.x" t-att-y="z.y" t-att-width="z.w" t-att-height="z.h"
                               t-att-fill="z.couleur" fill-opacity="0.75"
-                              stroke="#2D3031" stroke-width="2"
+                              stroke="#2E3132" stroke-width="2"
                               class="o_bf_floorplan_forme" data-rid="zone"
                               t-att-class="{ 'o_bf_floorplan_surligne': state.donnees.surligne_zone === z.id,
                                              'o_bf_floorplan_trouve': correspond(z) }"
@@ -110,7 +110,7 @@
                             <title t-esc="this.infobulle(z)"/>
                         </rect>
                         <text t-att-x="z.x + 8" t-att-y="z.y + 26" font-size="22"
-                              font-weight="600" fill="#2D3031" pointer-events="none"
+                              font-weight="600" fill="#2E3132" pointer-events="none"
                               font-family="Lexend, sans-serif">
                             <t t-esc="z.nom"/><t t-if="z.capacite" t-esc="' (' + z.occupes + '/' + z.capacite + ')'"/>
                         </text>
@@ -156,7 +156,7 @@
                                  les fentes d'un serveur, l'onde d'une borne -->
                             <rect t-if="e.genre === 'poste'" t-att-x="e.x + e.w * 0.3"
                                   t-att-y="e.y + 4" t-att-width="e.w * 0.4" height="8"
-                                  fill="#2D3031" pointer-events="none"/>
+                                  fill="#2E3132" pointer-events="none"/>
                             <t t-if="e.genre === 'baie'">
                                 <line t-att-x1="e.x + 8" t-att-y1="e.y + 6" t-att-x2="e.x + 8"
                                       t-att-y2="e.y + e.h - 6" stroke="#73787A" stroke-width="3"
@@ -175,11 +175,11 @@
                             </t>
                             <circle t-if="e.genre === 'borne'" t-att-cx="e.x + e.w / 2"
                                     t-att-cy="e.y + e.h / 2" t-att-r="e.w / 6"
-                                    fill="#29ABE1" pointer-events="none"/>
+                                    fill="#29ABE2" pointer-events="none"/>
                         </g>
                         <t t-set="et" t-value="etiquette(e)"/>
                         <text t-att-x="et.x" t-att-y="et.y"
-                              text-anchor="middle" t-att-font-size="et.taille" fill="#2D3031"
+                              text-anchor="middle" t-att-font-size="et.taille" fill="#2E3132"
                               pointer-events="none" font-family="Lexend, sans-serif"
                               t-esc="e.nom"/>
                         <text t-if="e.occupant and et.occupant" t-att-x="et.x"
@@ -193,7 +193,7 @@
                         <t t-foreach="zones.concat(elements)" t-as="f" t-key="'p' + f.sorte + f.id">
                             <rect t-att-x="poignee(f).x" t-att-y="poignee(f).y"
                                   t-att-width="poignee(f).c" t-att-height="poignee(f).c"
-                                  fill="#29ABE1" stroke="#FFFFFF" t-att-stroke-width="1.5 / state.zoom"
+                                  fill="#29ABE2" stroke="#FFFFFF" t-att-stroke-width="1.5 / state.zoom"
                                   class="o_bf_floorplan_poignee" data-rid="poignee"
                                   t-on-mousedown="(ev) => this.debutRedimension(f, ev)"
                                   t-on-click="(ev) => ev.stopPropagation()">
@@ -203,7 +203,7 @@
                     </t>
                     <rect t-if="state.fantome" t-att-x="state.fantome.x" t-att-y="state.fantome.y"
                           t-att-width="state.fantome.w" t-att-height="state.fantome.h"
-                          fill="none" stroke="#29ABE1" t-att-stroke-width="2 / state.zoom"
+                          fill="none" stroke="#29ABE2" t-att-stroke-width="2 / state.zoom"
                           t-att-stroke-dasharray="(8 / state.zoom) + ' ' + (5 / state.zoom)"
                           pointer-events="none"/>
                 </svg>

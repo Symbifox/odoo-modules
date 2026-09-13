@@ -1,7 +1,7 @@
 {
     "name": "Boîte de réception bf.email — barre Odoo",
     "summary": "Bouton systray ouvrant la Boîte de réception bf.email avec compteur (lus + non lus)",
-    "version": "18.0.2.1.0",
+    "version": "18.0.2.1.1",
     "category": "Tools",
     "website": "https://symbifox.com",
     "author": "Les services de consultation Blue Fox, Inc.",

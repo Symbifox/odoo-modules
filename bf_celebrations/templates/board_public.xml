@@ -14,12 +14,12 @@
             :root {
                 --cel-fond: <t t-esc="palette.get('fond', '#FDF6EC')"/>;
                 --cel-surface: <t t-esc="palette.get('surface', '#FFFFFF')"/>;
-                --cel-texte: <t t-esc="palette.get('texte', '#2D3031')"/>;
+                --cel-texte: <t t-esc="palette.get('texte', '#2E3132')"/>;
                 --cel-accent: <t t-esc="palette.get('accent', '#E8632B')"/>;
                 --cel-accent-texte: <t t-esc="palette.get('accent_texte', '#BA4514')"/>;
                 --cel-bouton-fond: <t t-esc="palette.get('bouton_fond', '#BA4514')"/>;
                 --cel-bouton-texte: <t t-esc="palette.get('bouton_texte', '#FFFFFF')"/>;
-                --cel-entete: <t t-esc="palette.get('entete', '#2D3031')"/>;
+                --cel-entete: <t t-esc="palette.get('entete', '#2E3132')"/>;
             }
         </style>
     </template>

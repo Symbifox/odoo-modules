@@ -5,8 +5,8 @@
         <t t-call="web.html_container">
             <t t-foreach="docs" t-as="doc">
                 <t t-set="p" t-value="doc._get_report_payload()"/>
-                <t t-set="brand_dark" t-value="(env.company and env.company.report_brand_dark) or '#2D3031'"/>
-                <t t-set="brand_accent" t-value="(env.company and env.company.report_brand_primary) or '#29ABE1'"/>
+                <t t-set="brand_dark" t-value="(env.company and env.company.report_brand_dark) or '#2E3132'"/>
+                <t t-set="brand_accent" t-value="(env.company and env.company.report_brand_primary) or '#29ABE2'"/>
                 <div class="article" style="padding:0 !important; margin:0 !important;">
                     <link rel="stylesheet" href="/bf_lexend/static/src/scss/lexend_report.css"/>
                     <style>

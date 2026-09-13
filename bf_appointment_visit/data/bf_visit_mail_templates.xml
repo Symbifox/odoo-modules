@@ -7,8 +7,8 @@
              change. Le contenu arrive par `t-set="contenu"`. -->
         <template id="visit_email_layout" name="Visites : habillage des courriels">
             <t t-set="company" t-value="(object.listing_id.company_id) or user.company_id"/>
-            <t t-set="brand_primary" t-value="(company and company.appointment_brand_primary) or '#29ABE1'"/>
-            <t t-set="brand_dark" t-value="(company and company.appointment_brand_dark) or '#2D3031'"/>
+            <t t-set="brand_primary" t-value="(company and company.appointment_brand_primary) or '#29ABE2'"/>
+            <t t-set="brand_dark" t-value="(company and company.appointment_brand_dark) or '#2E3132'"/>
             <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" t-attf-style="background-color:{{ brand_dark }};">
                 <tbody>
                     <tr>
@@ -40,7 +40,7 @@
                                         <td t-attf-style="height:4px; line-height:4px; background-color:{{ brand_primary }};">&#160;</td>
                                     </tr>
                                     <tr>
-                                        <td style="padding:24px; font-family:'Lexend','Segoe UI',Arial,sans-serif; color:#2D3031; font-size:15px; line-height:1.55;">
+                                        <td style="padding:24px; font-family:'Lexend','Segoe UI',Arial,sans-serif; color:#2E3132; font-size:15px; line-height:1.55;">
                                             <t t-out="contenu"/>
                                             <table t-if="bouton_url" role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:22px 0 6px 0;">
                                                 <tbody>
@@ -115,7 +115,7 @@
                         <div t-out="object.listing_id.showing_instructions"/>
                     </div>
                     <div t-if="object.access_released and object.listing_id.access_instructions"
-                         style="margin-top:14px; padding:12px 14px; background:#F4F8FB; border-left:4px solid #29ABE1;">
+                         style="margin-top:14px; padding:12px 14px; background:#F4F8FB; border-left:4px solid #29ABE2;">
                         <p style="margin:0 0 4px 0;"><strong>Accès</strong></p>
                         <div t-out="object.listing_id.access_instructions"/>
                     </div>

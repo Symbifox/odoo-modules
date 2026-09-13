@@ -14,10 +14,10 @@ from xml.sax.saxutils import quoteattr
 
 from .bpmn import _nc
 
-INK, GREY = '#2D3031', '#73787A'
+INK, GREY = '#2E3132', '#73787A'
 
 
-BLEU, BLEU_DOUX = '#29ABE1', '#EAF7FD'
+BLEU, BLEU_DOUX = '#29ABE2', '#EAF7FD'
 
 
 AMBRE, AMBRE_DOUX = '#D69921', '#FEF6E6'

@@ -40,7 +40,7 @@ class BfCxUnsubscribe(http.Controller):
             '<meta name="viewport" content="width=device-width, initial-scale=1"/>'
             "<title>Blue Fox</title></head>"
             '<body style="margin:0; background-color:#F8FAFC; '
-            "font-family:'Lexend','Segoe UI',Arial,sans-serif; color:#2D3031;\">"
+            "font-family:'Lexend','Segoe UI',Arial,sans-serif; color:#2E3132;\">"
             '<div style="max-width:560px; margin:48px auto; background:#fff; '
             'border:1px solid #e5e7eb; border-radius:12px; padding:32px;">'
             f"{inner_html}"
@@ -73,7 +73,7 @@ class BfCxUnsubscribe(http.Controller):
             f"<form method='post' action='/cx/unsubscribe/{partner.id}/"
             f"{escape(token)}'>"
             "<input type='hidden' name='csrf_token' value='%s'/>"
-            "<button type='submit' style='background:#29ABE1; color:#fff; "
+            "<button type='submit' style='background:#29ABE2; color:#fff; "
             "border:0; padding:12px 28px; border-radius:6px; font-size:15px; "
             "cursor:pointer;'>Me désabonner / Unsubscribe</button>"
             "</form>"

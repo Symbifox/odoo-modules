@@ -30,7 +30,7 @@
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
     function couleur() {
-        return getComputedStyle(canevas).color || "#2D3031";
+        return getComputedStyle(canevas).color || "#2E3132";
     }
 
     function position(ev) {

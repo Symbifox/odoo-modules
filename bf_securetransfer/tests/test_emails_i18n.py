@@ -109,8 +109,8 @@ class TestEmailsI18n(BaseNeuve, TransactionCase):
     def _visuals_patch(self, **overrides):
         visuals = {
             "name": "Marque Test",
-            "primary": "#29ABE1",
-            "dark": "#2D3031",
+            "primary": "#29ABE2",
+            "dark": "#2E3132",
             "logo_url": "",
             "logo_host": "",
             "favicon_url": "",

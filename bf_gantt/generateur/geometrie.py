@@ -68,7 +68,7 @@ COULEURS = {
     "in_progress": ("#D6E9F6", "#1F7CB4"),
     "upcoming":    ("#E6E9EC", "#7A868F"),
 }
-ENCRE = "#2D3031"
+ENCRE = "#2E3132"
 GRIS = "#6B7379"
 FILET = "#D8DCDF"
 FOND_COULOIR = "#F4F6F8"

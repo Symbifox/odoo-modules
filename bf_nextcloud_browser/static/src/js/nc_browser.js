@@ -164,7 +164,7 @@ export class NcBrowser extends Component {
             sortBy,
             sortDir,
             openExtensions: [],
-            folderColor: "#2D3031",
+            folderColor: "#2E3132",
             presets: [],
             filter: "",
             selected: [], // rels of checked entries

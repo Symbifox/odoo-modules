@@ -21,9 +21,9 @@ function messageDe(e) {
     return e.data?.message || e.message || String(e);
 }
 
-const INK = "#2D3031";
+const INK = "#2E3132";
 const GRIS = "#73787A";
-const BLEU = "#29ABE1";
+const BLEU = "#29ABE2";
 const AMBRE = "#D69921";
 const ROUGE = "#C0392B";
 const VERT = "#1B8A4B";

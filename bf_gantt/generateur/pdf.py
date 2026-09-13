@@ -79,7 +79,7 @@ def rendre(payload, echelle="week", titre_pied=""):
     def mesurer(texte, police=REGULIER, corps=8.0):
         return pdfmetrics.stringWidth(texte or "", police, corps)
 
-    accent = _rgb(g["societe"].get("color") or "#29ABE1")
+    accent = _rgb(g["societe"].get("color") or "#29ABE2")
 
     _fond(c, largeur, hauteur)
     _entete(c, g, _y, mesurer, accent)

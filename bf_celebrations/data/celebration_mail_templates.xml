@@ -15,7 +15,7 @@
             <field name="email_to">{{ object.employee_id.work_email }}</field>
             <field name="auto_delete" eval="False"/>
             <field name="body_html" type="html">
-<div style="font-family:Lexend,Segoe UI,Arial,sans-serif;font-size:14px;color:#2D3031;line-height:1.6">
+<div style="font-family:Lexend,Segoe UI,Arial,sans-serif;font-size:14px;color:#2E3132;line-height:1.6">
     <p>Bonjour <t t-out="object.employee_id.name or ''"/>,</p>
     <p>On aimerait pouvoir souligner les fêtes au bureau, et pour ça il faut
        vous demander ce que vous en pensez. Vous décidez, et vous pouvez
@@ -54,7 +54,7 @@
             <field name="email_from">{{ (object.company_id.email_formatted or user.email_formatted) }}</field>
             <field name="auto_delete" eval="False"/>
             <field name="body_html" type="html">
-<div style="font-family:Lexend,Segoe UI,Arial,sans-serif;font-size:14px;color:#2D3031;line-height:1.6">
+<div style="font-family:Lexend,Segoe UI,Arial,sans-serif;font-size:14px;color:#2E3132;line-height:1.6">
     <p>Bonjour,</p>
     <p><t t-out="object.name or ''"/>, le
        <strong t-out="object.date and object.date.strftime('%d/%m/%Y') or ''"/>.</p>
@@ -80,7 +80,7 @@
             <field name="email_from">{{ (object.company_id.email_formatted or user.email_formatted) }}</field>
             <field name="auto_delete" eval="False"/>
             <field name="body_html" type="html">
-<div style="font-family:Lexend,Segoe UI,Arial,sans-serif;font-size:14px;color:#2D3031;line-height:1.6">
+<div style="font-family:Lexend,Segoe UI,Arial,sans-serif;font-size:14px;color:#2E3132;line-height:1.6">
     <p>Bonjour,</p>
     <p>La carte de <strong t-out="object.recipient_name or ''"/> part bientôt
        et elle porte
@@ -105,7 +105,7 @@
             <field name="email_to">{{ object.recipient_email }}</field>
             <field name="auto_delete" eval="False"/>
             <field name="body_html" type="html">
-<div style="font-family:Lexend,Segoe UI,Arial,sans-serif;font-size:14px;color:#2D3031;line-height:1.6">
+<div style="font-family:Lexend,Segoe UI,Arial,sans-serif;font-size:14px;color:#2E3132;line-height:1.6">
     <p>Bonjour <t t-out="object.recipient_name or ''"/>,</p>
     <p>Vos collègues vous ont écrit.
        <strong t-out="object.published_post_count"/> message(s) vous
@@ -136,7 +136,7 @@
             <field name="email_from">{{ (object.company_id.email_formatted or user.email_formatted) }}</field>
             <field name="auto_delete" eval="False"/>
             <field name="body_html" type="html">
-<div style="font-family:Lexend,Segoe UI,Arial,sans-serif;font-size:14px;color:#2D3031;line-height:1.6">
+<div style="font-family:Lexend,Segoe UI,Arial,sans-serif;font-size:14px;color:#2E3132;line-height:1.6">
     <p>Bonjour,</p>
     <p><strong t-out="object.recipient_name or ''"/> a reçu sa carte,
        <t t-out="object.name or ''"/>, et a écrit un mot pour celles et ceux
@@ -164,7 +164,7 @@
             <field name="email_from">{{ (object.company_id.email_formatted or user.email_formatted) }}</field>
             <field name="auto_delete" eval="False"/>
             <field name="body_html" type="html">
-<div style="font-family:Lexend,Segoe UI,Arial,sans-serif;font-size:14px;color:#2D3031;line-height:1.6">
+<div style="font-family:Lexend,Segoe UI,Arial,sans-serif;font-size:14px;color:#2E3132;line-height:1.6">
     <p>Bonjour <t t-out="ctx.get('cel_invite_nom') or ''"/>,</p>
     <p>Une carte collective est ouverte pour
        <strong t-out="object.recipient_name or ''"/> :

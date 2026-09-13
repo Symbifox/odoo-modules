@@ -1,6 +1,6 @@
 {
     "name": "Budgets opérationnels",
-    "version": "18.0.1.0.1",
+    "version": "18.0.1.0.2",
     "category": "Accounting/Accounting",
     "summary": "Budget d'exploitation par poste du grand livre, comparé au réel et à l'engagé",
     "author": "Les services de consultation Blue Fox, Inc.",

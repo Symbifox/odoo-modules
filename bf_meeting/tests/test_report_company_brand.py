@@ -106,7 +106,7 @@ class TestReportCompanyBrand(TransactionCase):
             ('bf_meeting.action_report_meeting_agenda', self.agenda.id),
         ):
             with self.subTest(rapport=xmlid):
-                self.assertNotIn('#29ABE1', self._render(xmlid, docid))
+                self.assertNotIn('#29ABE2', self._render(xmlid, docid))
 
     def test_envoi_direct_met_la_societe_visee_en_tete(self):
         """`env.company` est le PREMIER d'`allowed_company_ids`, pas un membre.

@@ -41,9 +41,9 @@ function messageDe(e) {
 }
 
 const EV_R = 19;
-const INK = "#2D3031";
+const INK = "#2E3132";
 const GRIS = "#73787A";
-const BLEU = "#29ABE1";
+const BLEU = "#29ABE2";
 const AMBRE = "#D69921";
 const BLEU_DOUX = "#EAF7FD";
 const AMBRE_DOUX = "#FEF6E6";

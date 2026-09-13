@@ -246,7 +246,7 @@ class BfCxProgram(models.Model):
                 program.pulse_url = url
                 program.pulse_snippet = (
                     '<a href="%s" '
-                    'style="color:#29ABE1; text-decoration:none; '
+                    'style="color:#29ABE2; text-decoration:none; '
                     'font-size:12px;">Comment avons-nous fait&#8239;? '
                     'Donnez-nous votre avis &#8594;</a>' % url
                 )

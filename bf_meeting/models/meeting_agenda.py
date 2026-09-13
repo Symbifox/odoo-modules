@@ -47,7 +47,7 @@ def _wrap_agenda_original(html):
     return Markup(
         '<div class="bf-agenda-original" '
         'style="border-left-width: 3px; border-left-style: solid; '
-        'border-left-color: #29ABE1; padding-left: 0.75em; color: #555; '
+        'border-left-color: #29ABE2; padding-left: 0.75em; color: #555; '
         'margin: 0.25em 0;">'
         '<p><small><em>Contexte d\'origine</em></small></p>'
         '%s'

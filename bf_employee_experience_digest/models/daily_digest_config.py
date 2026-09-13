@@ -8,7 +8,7 @@ from markupsafe import escape as _esc
 
 from odoo import _, fields, models
 
-ACCENT = "#29ABE1"
+ACCENT = "#29ABE2"
 MAX_ROWS = 10
 
 

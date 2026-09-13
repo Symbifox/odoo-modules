@@ -16,11 +16,11 @@
                         .cert-page {
                             font-family:"Lexend", system-ui, -apple-system, sans-serif;
                             font-size:11pt; line-height:1.55;
-                            color:<t t-esc="(env.company and env.company.report_brand_dark) or '#2D3031'"/>;
+                            color:<t t-esc="(env.company and env.company.report_brand_dark) or '#2E3132'"/>;
                             position:relative;
                         }
                         .cert-banner {
-                            background:<t t-esc="(env.company and env.company.report_brand_dark) or '#2D3031'"/>;
+                            background:<t t-esc="(env.company and env.company.report_brand_dark) or '#2E3132'"/>;
                             padding:24pt 32pt; display:table; width:100%;
                         }
                         .cert-banner .logo { display:table-cell; vertical-align:middle; width:96px; padding-right:20pt; }
@@ -28,23 +28,23 @@
                         .cert-banner .content { display:table-cell; vertical-align:middle; }
                         .cert-banner .kicker {
                             font-size:9.5pt; font-weight:600; text-transform:uppercase; letter-spacing:2pt;
-                            color:<t t-esc="(env.company and env.company.report_brand_primary) or '#29ABE1'"/>;
+                            color:<t t-esc="(env.company and env.company.report_brand_primary) or '#29ABE2'"/>;
                             margin:0 0 4pt 0;
                         }
                         .cert-banner h1 { font-size:18pt; font-weight:600; color:#fff; margin:0; }
                         .cert-banner .ref { display:table-cell; vertical-align:middle; text-align:right; width:150px; }
                         .cert-banner .ref span {
-                            display:inline-block; border:1.5px solid <t t-esc="(env.company and env.company.report_brand_primary) or '#29ABE1'"/>;
-                            color:<t t-esc="(env.company and env.company.report_brand_primary) or '#29ABE1'"/>;
+                            display:inline-block; border:1.5px solid <t t-esc="(env.company and env.company.report_brand_primary) or '#29ABE2'"/>;
+                            color:<t t-esc="(env.company and env.company.report_brand_primary) or '#29ABE2'"/>;
                             font-size:10pt; font-weight:600; padding:4pt 12pt; border-radius:20pt;
                         }
-                        .cert-accent { height:4px; background:<t t-esc="(env.company and env.company.report_brand_primary) or '#29ABE1'"/>; }
+                        .cert-accent { height:4px; background:<t t-esc="(env.company and env.company.report_brand_primary) or '#29ABE2'"/>; }
                         .cert-content { padding:18pt 26pt 24pt; }
                         .cert-h2 {
                             font-size:10.5pt; font-weight:600; text-transform:uppercase; letter-spacing:1pt;
-                            color:<t t-esc="(env.company and env.company.report_brand_primary) or '#29ABE1'"/>;
+                            color:<t t-esc="(env.company and env.company.report_brand_primary) or '#29ABE2'"/>;
                             margin:18pt 0 8pt; padding-bottom:4pt;
-                            border-bottom:2px solid <t t-esc="(env.company and env.company.report_brand_primary) or '#29ABE1'"/>;
+                            border-bottom:2px solid <t t-esc="(env.company and env.company.report_brand_primary) or '#29ABE2'"/>;
                             display:inline-block;
                         }
                         table.cert-grid { width:100%; border-collapse:collapse; }
@@ -57,14 +57,14 @@
                         table.cert-signers { width:100%; border-collapse:collapse; margin-top:4pt; }
                         table.cert-signers th {
                             text-align:left; font-size:8.5pt; text-transform:uppercase; letter-spacing:.5pt;
-                            color:#fff; background:<t t-esc="(env.company and env.company.report_brand_dark) or '#2D3031'"/>; padding:5pt 8pt;
+                            color:#fff; background:<t t-esc="(env.company and env.company.report_brand_dark) or '#2E3132'"/>; padding:5pt 8pt;
                         }
                         table.cert-signers td { font-size:9pt; padding:6pt 8pt; border-bottom:1px solid #eef1f4; vertical-align:middle; }
                         table.cert-signers img { max-height:42px; max-width:150px; }
                         table.cert-trail { width:100%; border-collapse:collapse; margin-top:4pt; }
                         table.cert-trail th {
                             text-align:left; font-size:8.5pt; text-transform:uppercase; letter-spacing:.5pt;
-                            color:#fff; background:<t t-esc="(env.company and env.company.report_brand_dark) or '#2D3031'"/>; padding:5pt 8pt;
+                            color:#fff; background:<t t-esc="(env.company and env.company.report_brand_dark) or '#2E3132'"/>; padding:5pt 8pt;
                         }
                         table.cert-trail td { font-size:8.5pt; padding:5pt 8pt; border-bottom:1px solid #eef1f4; vertical-align:top; }
                         .note { font-size:9pt; color:#777; margin-top:4pt; }

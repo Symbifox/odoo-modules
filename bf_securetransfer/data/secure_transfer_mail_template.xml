@@ -20,7 +20,7 @@
                 <t t-set="dark" t-value="visuals['dark']"/>
                 <t t-set="logo_src" t-value="visuals['logo_url'] and (visuals['logo_url'].startswith('http') and visuals['logo_url'] or base + visuals['logo_url']) or False"/>
                 <t t-set="share" t-value="object._share_url()"/>
-                <div style="font-family:Lexend,system-ui,Arial,sans-serif; color:#2D3031; font-size:14px; line-height:1.55; max-width:600px; margin:0 auto;">
+                <div style="font-family:Lexend,system-ui,Arial,sans-serif; color:#2E3132; font-size:14px; line-height:1.55; max-width:600px; margin:0 auto;">
                     <div t-attf-style="background:#{dark}; padding:18px 24px; border-radius:10px 10px 0 0;">
                         <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;"><tbody><tr>
                             <td align="left" style="vertical-align:middle;">
@@ -33,7 +33,7 @@
                     <div t-attf-style="height:4px; background:#{primary};"/>
                     <div style="background:#ffffff; border:1px solid #e3e7eb; border-top:0; padding:24px; border-radius:0 0 10px 10px;">
                         <p>Bonjour,</p>
-                        <div t-if="object.subject" style="font-size:18px; font-weight:700; color:#2D3031; margin:0 0 14px;" t-out="object.subject"/>
+                        <div t-if="object.subject" style="font-size:18px; font-weight:700; color:#2E3132; margin:0 0 14px;" t-out="object.subject"/>
                         <div style="background:#f4f6f8; border:1px solid #e3e7eb; border-radius:8px; padding:12px 16px; margin:0 0 16px;">
                             De la part de :
                             <strong t-out="object.sender_name or object.sender_email"/>
@@ -96,7 +96,7 @@
                 <t t-set="dark" t-value="visuals['dark']"/>
                 <t t-set="logo_src" t-value="visuals['logo_url'] and (visuals['logo_url'].startswith('http') and visuals['logo_url'] or base + visuals['logo_url']) or False"/>
                 <t t-set="share" t-value="object._share_url()"/>
-                <div style="font-family:Lexend,system-ui,Arial,sans-serif; color:#2D3031; font-size:14px; line-height:1.55; max-width:600px; margin:0 auto;">
+                <div style="font-family:Lexend,system-ui,Arial,sans-serif; color:#2E3132; font-size:14px; line-height:1.55; max-width:600px; margin:0 auto;">
                     <div t-attf-style="background:#{dark}; padding:18px 24px; border-radius:10px 10px 0 0;">
                         <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;"><tbody><tr>
                             <td align="left" style="vertical-align:middle;">
@@ -109,7 +109,7 @@
                     <div t-attf-style="height:4px; background:#{primary};"/>
                     <div style="background:#ffffff; border:1px solid #e3e7eb; border-top:0; padding:24px; border-radius:0 0 10px 10px;">
                         <p>Bonjour,</p>
-                        <div t-if="object.subject" style="font-size:18px; font-weight:700; color:#2D3031; margin:0 0 14px;" t-out="object.subject"/>
+                        <div t-if="object.subject" style="font-size:18px; font-weight:700; color:#2E3132; margin:0 0 14px;" t-out="object.subject"/>
                         <div style="background:#f4f6f8; border:1px solid #e3e7eb; border-radius:8px; padding:12px 16px; margin:0 0 16px;">
                             De la part de :
                             <strong t-out="object.sender_name or object.sender_email"/>
@@ -154,7 +154,7 @@
                 <t t-set="dark" t-value="visuals['dark']"/>
                 <t t-set="logo_src" t-value="visuals['logo_url'] and (visuals['logo_url'].startswith('http') and visuals['logo_url'] or base + visuals['logo_url']) or False"/>
                 <t t-set="share" t-value="object._share_url()"/>
-                <div style="font-family:Lexend,system-ui,Arial,sans-serif; color:#2D3031; font-size:14px; line-height:1.55; max-width:600px; margin:0 auto;">
+                <div style="font-family:Lexend,system-ui,Arial,sans-serif; color:#2E3132; font-size:14px; line-height:1.55; max-width:600px; margin:0 auto;">
                     <div t-attf-style="background:#{dark}; padding:18px 24px; border-radius:10px 10px 0 0;">
                         <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;"><tbody><tr>
                             <td align="left" style="vertical-align:middle;">
@@ -167,7 +167,7 @@
                     <div t-attf-style="height:4px; background:#{primary};"/>
                     <div style="background:#ffffff; border:1px solid #e3e7eb; border-top:0; padding:24px; border-radius:0 0 10px 10px;">
                         <p>Bonjour <t t-out="object.sender_name or ''"/>,</p>
-                        <div t-if="object.subject" style="font-size:18px; font-weight:700; color:#2D3031; margin:0 0 14px;" t-out="object.subject"/>
+                        <div t-if="object.subject" style="font-size:18px; font-weight:700; color:#2E3132; margin:0 0 14px;" t-out="object.subject"/>
                         <p>Votre transfert <strong t-out="object.name"/> est en ligne.
                             <t t-if="object.recipient_emails">Le lien de téléchargement a été envoyé à :
                                 <strong t-out="object.recipient_emails"/>.</t></p>
@@ -216,7 +216,7 @@
                 <t t-set="primary" t-value="visuals['primary']"/>
                 <t t-set="dark" t-value="visuals['dark']"/>
                 <t t-set="logo_src" t-value="visuals['logo_url'] and (visuals['logo_url'].startswith('http') and visuals['logo_url'] or base + visuals['logo_url']) or False"/>
-                <div style="font-family:Lexend,system-ui,Arial,sans-serif; color:#2D3031; font-size:14px; line-height:1.55; max-width:600px; margin:0 auto;">
+                <div style="font-family:Lexend,system-ui,Arial,sans-serif; color:#2E3132; font-size:14px; line-height:1.55; max-width:600px; margin:0 auto;">
                     <div t-attf-style="background:#{dark}; padding:18px 24px; border-radius:10px 10px 0 0;">
                         <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;"><tbody><tr>
                             <td align="left" style="vertical-align:middle;">

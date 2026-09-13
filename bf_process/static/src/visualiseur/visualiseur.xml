@@ -112,7 +112,7 @@
                         </polyline>
                         <rect t-if="e.t === 'fantome'" t-att-x="e.x" t-att-y="e.y"
                               t-att-width="e.w" t-att-height="e.h"
-                              fill="none" stroke="#29ABE1" stroke-width="1.4"
+                              fill="none" stroke="#29ABE2" stroke-width="1.4"
                               stroke-dasharray="5 3" pointer-events="none"/>
                         <rect t-if="e.t === 'zone'" t-att-x="e.x" t-att-y="e.y"
                               t-att-width="e.w" t-att-height="e.h"
@@ -125,7 +125,7 @@
                         </rect>
                         <text t-if="e.t === 'vtexte'" t-att-x="e.x" t-att-y="e.y"
                               text-anchor="middle" t-att-font-size="e.taille"
-                              t-att-font-weight="e.gras ? 600 : 400" fill="#2D3031"
+                              t-att-font-weight="e.gras ? 600 : 400" fill="#2E3132"
                               font-family="Lexend, sans-serif"
                               t-att-transform="'rotate(-90 ' + e.x + ' ' + e.y + ')'"
                               t-esc="e.s"/>

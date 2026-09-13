@@ -66,8 +66,8 @@ class DailyDigestConfig(models.Model):
             "n": summary["n"],
         }
 
-        accent = company.report_brand_primary or "#29ABE1"
-        dark = company.report_brand_dark or "#2D3031"
+        accent = company.report_brand_primary or "#29ABE2"
+        dark = company.report_brand_dark or "#2E3132"
         cell = (
             "padding:8px 10px;border-bottom:1px solid #e5e7eb;"
             "font-family:'Lexend',Arial,sans-serif;font-size:13px;"

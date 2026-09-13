@@ -56,7 +56,7 @@ class BfLinkpageTemplate(models.Model):
         default="auto",
         required=True,
     )
-    accent_color = fields.Char(string="Couleur d'accent", default="#29ABE1")
+    accent_color = fields.Char(string="Couleur d'accent", default="#29ABE2")
 
     line_ids = fields.One2many(
         "bf.linkpage.template.line", "template_id", string="Liens",
@@ -75,7 +75,7 @@ class BfLinkpageTemplate(models.Model):
         return {
             "layout": self.layout,
             "theme": self.theme,
-            "accent_color": self.accent_color or "#29ABE1",
+            "accent_color": self.accent_color or "#29ABE2",
         }
 
     @api.constrains("is_default")

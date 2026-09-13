@@ -18,7 +18,7 @@
     }
 
     .o_bf_otp_card {
-        border-left: 3px solid #29ABE1;
+        border-left: 3px solid #29ABE2;
 
         &.o_bf_otp_broken {
             border-left-color: var(--bs-danger, #dc3545);
@@ -34,10 +34,10 @@
         font-variant-numeric: tabular-nums;
         font-family: var(--bs-font-monospace, monospace);
         text-decoration: none;
-        color: #2D3031;
+        color: #2E3132;
 
         &:hover {
-            color: #29ABE1;
+            color: #29ABE2;
         }
     }
 
@@ -115,7 +115,7 @@
 }
 
 .o_bf_otp kbd {
-    background: #2D3031;
+    background: #2E3132;
     color: #fff;
     border-radius: 0.2rem;
     padding: 0 0.3rem;

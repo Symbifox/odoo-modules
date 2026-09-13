@@ -303,12 +303,12 @@ class BfSignSigner(models.Model):
     def _otp_email(self, code):
         self.ensure_one()
         company = self.request_id.company_id
-        primary = company.report_brand_primary or "#29ABE1"
-        dark = company.report_brand_dark or "#2D3031"
+        primary = company.report_brand_primary or "#29ABE2"
+        dark = company.report_brand_dark or "#2E3132"
         # White/light logo on the dark header when configured, else the standard logo.
         logo_field = "report_brand_logo" if company.report_brand_logo else "logo"
         body = (
-            '<div style="font-family:Lexend,system-ui,Arial,sans-serif;color:#2D3031;'
+            '<div style="font-family:Lexend,system-ui,Arial,sans-serif;color:#2E3132;'
             'font-size:14px;line-height:1.55;max-width:600px;margin:0 auto;">'
             '<div style="background:%(dark)s;padding:18px 24px;border-radius:10px 10px 0 0;">'
             '<table role="presentation" width="100%%" cellpadding="0" cellspacing="0" border="0" '

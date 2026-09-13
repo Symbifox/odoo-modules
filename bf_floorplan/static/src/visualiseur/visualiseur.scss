@@ -79,18 +79,18 @@
     cursor: pointer;
 
     &:hover {
-        stroke: #29ABE1;
+        stroke: #29ABE2;
     }
 
     &.o_bf_floorplan_pris {
-        stroke: #29ABE1;
+        stroke: #29ABE2;
         stroke-width: 3;
         stroke-dasharray: 4 3;
     }
 
     // le poste qu'on est venu chercher : un halo qui respire
     &.o_bf_floorplan_surligne {
-        stroke: #29ABE1;
+        stroke: #29ABE2;
         stroke-width: 6;
         animation: o_bf_floorplan_halo 1.4s ease-in-out infinite;
     }

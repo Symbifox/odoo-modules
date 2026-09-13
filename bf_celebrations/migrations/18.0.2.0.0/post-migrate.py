@@ -11,7 +11,7 @@ pas retouché, puisqu'il ne contient plus la chaîne.
 
 from odoo import SUPERUSER_ID, api
 
-ANCIEN = "#29ABE1"
+ANCIEN = "#29ABE2"
 NOUVEAU = "#177AA3"
 
 GABARITS = (

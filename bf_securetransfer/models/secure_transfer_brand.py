@@ -528,11 +528,11 @@ class SecureTransferBrand(models.Model):
             "primary": self.color_primary
             or cfield("appointment_brand_primary")
             or cfield("report_brand_primary")
-            or "#29ABE1",
+            or "#29ABE2",
             "dark": self.color_dark
             or cfield("appointment_brand_dark")
             or cfield("report_brand_dark")
-            or "#2D3031",
+            or "#2E3132",
             "logo_url": logo_url,
             "logo_host": logo_host,
             "favicon_url": favicon_url,

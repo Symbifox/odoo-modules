@@ -2,7 +2,7 @@
     "name": "Expérience employé — digest quotidien",
     "summary": "Section « Avantages » : demandes en attente, usages sans droit, "
                "avantages que personne ne prend",
-    "version": "18.0.1.0.1",
+    "version": "18.0.1.0.2",
     "category": "Human Resources",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",

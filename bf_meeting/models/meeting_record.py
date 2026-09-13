@@ -886,7 +886,7 @@ class MeetingRecord(models.Model):
                     # un « … » — les consignes deviendraient invisibles.
                     "<p><b>Consignes de raffinage</b> — transmises à "
                     "Gen par %s :</p>"
-                    "<div style=\"border-left:3px solid #29ABE1;"
+                    "<div style=\"border-left:3px solid #29ABE2;"
                     "padding-left:.75em;margin:.25em 0;color:#444;\">%s</div>"
                 ) % (
                     self.env.user.name,

@@ -12,18 +12,18 @@ from odoo import _, fields, models
 
 from .genres import couleur_zone
 
-INK, GRIS = "#2D3031", "#73787A"
+INK, GRIS = "#2E3132", "#73787A"
 AMBRE, ROUGE = "#D69921", "#C0392B"
 
 # Préfixe de la bibliothèque, tel que le panneau latéral de diagrams.net
 # l'écrit (Sidebar-Floorplan.js) : l'étiquette sous la forme, le glyphe
 # au-dessus.
 _FP = ("verticalLabelPosition=bottom;html=1;verticalAlign=top;align=center;"
-       "fontFamily=Lexend;fontColor=#2D3031;shape=mxgraph.floorplan.")
-_RECT = ("rounded=0;whiteSpace=wrap;html=1;fontFamily=Lexend;fontColor=#2D3031;"
-         "strokeColor=#2D3031;fillColor=%s;")
+       "fontFamily=Lexend;fontColor=#2E3132;shape=mxgraph.floorplan.")
+_RECT = ("rounded=0;whiteSpace=wrap;html=1;fontFamily=Lexend;fontColor=#2E3132;"
+         "strokeColor=#2E3132;fillColor=%s;")
 _ROND = ("ellipse;whiteSpace=wrap;html=1;aspect=fixed;fontFamily=Lexend;"
-         "fontColor=#2D3031;strokeColor=#2D3031;fillColor=%s;")
+         "fontColor=#2E3132;strokeColor=#2E3132;fillColor=%s;")
 
 STYLES_ELEMENT = {
     "poste": _FP + "workstation;",
@@ -83,7 +83,7 @@ def to_mxgraph(d, fond=None):
     for z in d["zones"]:
         style = ("rounded=0;whiteSpace=wrap;html=1;verticalAlign=top;align=left;"
                  "spacingLeft=6;spacingTop=2;opacity=80;fontFamily=Lexend;"
-                 f"fontColor=#2D3031;strokeColor=#2D3031;fillColor={couleur_zone(z['genre'])};")
+                 f"fontColor=#2E3132;strokeColor=#2E3132;fillColor={couleur_zone(z['genre'])};")
         valeur = z["nom"] + (f" ({z['occupes']}/{z['capacite']})" if z["capacite"] else "")
         cellules.append(_cellule(f"zone-{z['id']}", valeur, style,
                                  z["x"], z["y"], z["w"], z["h"], "zones"))
@@ -94,7 +94,7 @@ def to_mxgraph(d, fond=None):
                                  rotation=e["rot"]))
     for li in d["liens"]:
         style = ("edgeStyle=none;endArrow=none;dashed=1;html=1;fontFamily=Lexend;"
-                 f"fontColor=#2D3031;strokeColor={COULEUR_LIEN.get(li['genre'], GRIS)};")
+                 f"fontColor=#2E3132;strokeColor={COULEUR_LIEN.get(li['genre'], GRIS)};")
         cellules.append(_arete(f"lien-{li['id']}", li["etiquette"], style,
                                f"element-{li['src']}", f"element-{li['dst']}", "liens"))
     corps = "\n".join(cellules)

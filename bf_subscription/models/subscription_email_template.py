@@ -4,8 +4,8 @@ Kept independent of hosting_management so the module has no cross-dependency.
 """
 from markupsafe import escape as _esc
 
-ACCENT = "#29ABE1"   # Blue Fox cyan
-DARK = "#2D3031"     # anthracite
+ACCENT = "#29ABE2"   # Blue Fox cyan
+DARK = "#2E3132"     # anthracite
 
 
 def _brand_accent(company=None):

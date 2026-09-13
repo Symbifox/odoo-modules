@@ -66,7 +66,7 @@ class TestContraste(TransactionCase):
         """🔴 La 1.0 peignait les boutons en #29ABE1 sous du blanc : 2,62:1.
         La migration 2.0.0 recolore les gabarits déjà installés."""
         self.assertGreaterEqual(contraste("#FFFFFF", BOUTON_COURRIEL), AA_TEXTE)
-        self.assertLess(contraste("#FFFFFF", "#29ABE1"), AA_TEXTE,
+        self.assertLess(contraste("#FFFFFF", "#29ABE2"), AA_TEXTE,
                         "Si le bleu de marque passait, ce test n'aurait "
                         "plus de raison d'être.")
 

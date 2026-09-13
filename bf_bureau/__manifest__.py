@@ -1,7 +1,7 @@
 {
     "name": "BF Bureau — vues multi-panneaux",
     "summary": "Crée et gère des « bureaux » nommés (mises en page multi-panneaux d'actions Odoo) modifiables depuis l'UI",
-    "version": "18.0.3.2.0",
+    "version": "18.0.3.2.1",
     "category": "Productivity",
     "website": "https://symbifox.com",
     "author": "Les services de consultation Blue Fox, Inc.",

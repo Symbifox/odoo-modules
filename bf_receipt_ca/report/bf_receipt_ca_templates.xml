@@ -8,11 +8,11 @@
     <template id="donation_base.report_donationtaxreceipt_document">
         <t t-foreach="docs" t-as="o">
             <t t-set="company" t-value="o.company_id" />
-            <t t-set="primary" t-value="company.report_brand_primary or '#29ABE1'" />
-            <t t-set="dark" t-value="company.report_brand_dark or '#2D3031'" />
+            <t t-set="primary" t-value="company.report_brand_primary or '#29ABE2'" />
+            <t t-set="dark" t-value="company.report_brand_dark or '#2E3132'" />
             <t t-call="web.html_container">
                 <div class="page">
-                    <div t-attf-style="font-family: Lexend, Arial, sans-serif; color: #2D3031; font-size: 12px; border: 1.5px solid {{ dark }}; border-radius: 4px;">
+                    <div t-attf-style="font-family: Lexend, Arial, sans-serif; color: #2E3132; font-size: 12px; border: 1.5px solid {{ dark }}; border-radius: 4px;">
 
                         <!-- Header: logo + title, then brand accent bar -->
                         <table width="100%" style="border-collapse: collapse;">
@@ -133,7 +133,7 @@
                                         <div style="height: 42px;">
                                             <img t-if="company.charity_signature" t-att-src="image_data_uri(company.charity_signature)" style="max-height: 42px; max-width: 240px;" />
                                         </div>
-                                        <div style="border-top: 1px solid #2D3031; width: 240px; padding-top: 3px; font-size: 11px;">
+                                        <div style="border-top: 1px solid #2E3132; width: 240px; padding-top: 3px; font-size: 11px;">
                                             Signature autorisée
                                         </div>
                                         <div t-if="company.charity_signatory_name" style="font-size: 11px;">

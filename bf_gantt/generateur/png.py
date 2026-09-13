@@ -88,7 +88,7 @@ def rendre(payload, echelle="week", echelle_image=SUR_ECHANTILLON, zoom=1.0):
             return d.textlength(texte, font=police) / facteur
         return _m
 
-    accent = _rgb(g["societe"].get("color") or "#29ABE1")
+    accent = _rgb(g["societe"].get("color") or "#29ABE2")
 
     # Bandes de fin de semaine.
     for bande in g["bandes"]:

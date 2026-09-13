@@ -32,8 +32,8 @@ class DailyDigestConfig(models.Model):
         if not subs:
             return ""
 
-        accent = company.report_brand_primary or "#29ABE1"
-        dark = company.report_brand_dark or "#2D3031"
+        accent = company.report_brand_primary or "#29ABE2"
+        dark = company.report_brand_dark or "#2E3132"
         rows = ""
         for s in subs:
             cancel_by = s.next_billing_date - relativedelta(days=s.notice_period_days or 0)
