@@ -60,6 +60,16 @@
         <field name="res_model">res.partner</field>
         <field name="view_mode">hierarchy,list,form</field>
         <field name="domain">[('is_company', '=', False)]</field>
+        <!--
+          🔴 La vue de recherche est ÉPINGLÉE, et ce n'est pas un excès de zèle.
+          `search_default_filter_avec_lien` ne s'applique que si la vue de
+          recherche RETENUE porte ce filtre. Quand plusieurs vues racines se
+          disputent la même priorité sur les contacts, la résolution peut
+          tomber sur une autre, le filtre n'existe alors pas, et il est ignoré
+          EN SILENCE : l'écran s'ouvre sur tous les contacts au lieu de ceux
+          qui forment une chaîne. Constaté le 2026-09-13 sur la démonstration.
+        -->
+        <field name="search_view_id" ref="base.view_res_partner_filter"/>
         <field name="context">{'search_default_filter_avec_lien': 1}</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">Personne ne relève encore de personne</p>

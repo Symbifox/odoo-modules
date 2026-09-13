@@ -154,3 +154,21 @@ class TestOrganigrammePersonnes(TransactionCase):
         """Le module est distribué : ce pied s'imprime chez un tiers."""
         carte = self.societe._org_chart_carte("personnes")
         self.assertNotIn("Blue Fox", carte.pied)
+
+    def test_l_action_epingle_sa_vue_de_recherche(self):
+        """🔴 `search_default_...` est ignoré EN SILENCE quand la vue de
+        recherche retenue ne porte pas le filtre. Vu sur la démonstration : deux
+        vues racines à la même priorité sur les contacts, et l'écran s'ouvrait
+        sur tous les contacts au lieu de la chaîne."""
+        action = self.env.ref("bf_org_chart_people.action_org_chart_personnes")
+        self.assertTrue(action.search_view_id,
+                        "l'action doit épingler la vue de recherche")
+        arch = action.search_view_id.get_combined_arch()
+        self.assertIn("filter_avec_lien", arch,
+                      "la vue épinglée doit porter le filtre que le contexte demande")
+        import ast
+        ctx = ast.literal_eval(action.context)
+        for nom in ctx:
+            if nom.startswith("search_default_"):
+                self.assertIn(nom[len("search_default_"):], arch,
+                              "filtre par défaut absent de la vue épinglée : %s" % nom)

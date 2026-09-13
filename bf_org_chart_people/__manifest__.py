@@ -1,6 +1,6 @@
 {
     "name": "Organigramme des personnes",
-    "version": "18.0.1.1.0",
+    "version": "18.0.1.1.1",
     "category": "Productivity",
     "summary": "Qui relève de qui, sur les contacts, avec le dessin et son PDF",
     "description": """
