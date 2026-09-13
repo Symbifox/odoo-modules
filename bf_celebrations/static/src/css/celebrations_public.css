@@ -28,7 +28,7 @@
     line-height: 1.6;
 }
 
-.cel-body-neutre { background: #F4F6F8; color: #2E3132; }
+.cel-body-neutre { background: #F4F6F8; color: var(--brand-dark, #2E3132); }
 
 .cel-wrap {
     max-width: 960px;
@@ -91,7 +91,7 @@
     border: 1px solid rgba(127, 127, 127, .45);
     border-radius: 8px;
     background: #FFFFFF;
-    color: #2E3132;
+    color: var(--brand-dark, #2E3132);
     font: inherit;
 }
 
@@ -101,7 +101,7 @@
 }
 
 .cel-textarea { resize: vertical; min-height: 110px; }
-.cel-file { padding: 9px; background: #FFFFFF; color: #2E3132; }
+.cel-file { padding: 9px; background: #FFFFFF; color: var(--brand-dark, #2E3132); }
 
 .cel-bouton {
     display: inline-block;
@@ -170,7 +170,7 @@
     font-family: Caveat, "Segoe Script", "Bradley Hand", cursive;
     font-size: 1.35em;
     line-height: 1.2;
-    /* 🔴 Le ton de marque échoue en TEXTE : #29ABE1 rend 2,62:1 sur blanc.
+    /* 🔴 Le ton de marque échoue en TEXTE : #29ABE2 rend 2,62:1 sur blanc.
        C'est la variante mesurée qui sert ici. */
     color: var(--cel-accent-texte, #BA4514);
 }
