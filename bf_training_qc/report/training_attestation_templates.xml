@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_training_attestation_document">
+        <!-- ⚠️ La variable de boucle DOIT s'appeler `doc` : `web.external_layout`
+             fait `t-if="not o" t-set="o" t-value="doc"`, puis reprend
+             `o.company_id` pour l'en-tête et le pied. La renommer ferait sortir
+             l'attestation sous la société de qui imprime, et le corps dirait
+             une personne morale pendant que l'en-tête en dirait une autre. -->
+        <t t-call="web.external_layout">
+            <!-- ⚠️ Pas de `with_context(lang=...)` ici : sur une base où la
+                 langue n'est pas activée, le rendu lève « Invalid language
+                 code » sur le premier champ traduit. La langue du rendu se
+                 décide par l'action de rapport, pas par le gabarit. -->
+            <div class="page">
+                <h2 class="mt16 mb16">Attestation de formation</h2>
+
+                <!-- 🔴 L'employeur nommé est celui de la RÉALISATION, jamais
+                     celui de la personne qui a créé l'enregistrement. Le
+                     certificat natif d'Odoo nomme la société de create_uid, ce
+                     qui donne la mauvaise personne morale dès qu'un locataire
+                     en porte plusieurs. -->
+                <p>
+                    <strong t-field="doc.company_id.name"/> atteste que
+                    <strong t-field="doc.employee_id.name"/> a participé à
+                    l'activité de formation décrite ci-dessous.
+                </p>
+
+                <table class="table table-sm mt16">
+                    <tbody>
+                        <tr>
+                            <td style="width:35%"><strong>Objet de l'activité</strong></td>
+                            <td><span t-field="doc.activity_id.name"/></td>
+                        </tr>
+                        <tr t-if="doc.activity_id.category_id">
+                            <td><strong>Catégorie</strong></td>
+                            <td><span t-field="doc.activity_id.category_id.name"/></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Date de la formation</strong></td>
+                            <!-- 🔴 La date de la RÉALISATION, pas celle de la
+                                 saisie ni celle de l'invitation. -->
+                            <td><span t-field="doc.date_done"/></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Durée</strong></td>
+                            <td>
+                                <t t-if="doc.hours">
+                                    <span t-field="doc.hours"/> heure(s)
+                                </t>
+                                <t t-else="">
+                                    <span class="text-muted">durée non consignée</span>
+                                </t>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>Mode</strong></td>
+                            <td><span t-field="doc.mode"/></td>
+                        </tr>
+                        <tr t-if="doc.provider_partner_id">
+                            <td><strong>Formateur ou organisme</strong></td>
+                            <td>
+                                <span t-field="doc.provider_partner_id.name"/>
+                                <t t-if="doc.activity_id.qc_provider_number">
+                                    (agrément <span t-field="doc.activity_id.qc_provider_number"/>)
+                                </t>
+                            </td>
+                        </tr>
+                        <tr t-if="doc.trainer_employee_id">
+                            <td><strong>Formateur interne</strong></td>
+                            <td><span t-field="doc.trainer_employee_id.name"/></td>
+                        </tr>
+                        <tr t-if="doc.certificate_number">
+                            <td><strong>Numéro d'attestation</strong></td>
+                            <td><span t-field="doc.certificate_number"/></td>
+                        </tr>
+                        <tr t-if="doc.date_expiry">
+                            <td><strong>Valide jusqu'au</strong></td>
+                            <td><span t-field="doc.date_expiry"/></td>
+                        </tr>
+                        <tr t-if="doc.plan_id">
+                            <td><strong>Plan de formation</strong></td>
+                            <td><span t-field="doc.plan_id.name"/></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <p class="mt32">
+                    Délivrée le <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%Y-%m-%d')"/>.
+                </p>
+                <p class="mt32 mb0">___________________________________</p>
+                <p class="text-muted">Pour <span t-field="doc.company_id.name"/></p>
+
+                <p class="text-muted mt32" style="font-size:9px;">
+                    Attestation no <span t-esc="str(doc.id).rjust(8, '0')"/>.
+                    Pièce justificative à conserver jusqu'au
+                    <span t-field="doc.retention_until"/>.
+                </p>
+            </div>
+        </t>
+    </template>
+
+    <template id="report_training_attestation">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="bf_training_qc.report_training_attestation_document"/>
+            </t>
+        </t>
+    </template>
+</odoo>

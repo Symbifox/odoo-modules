@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_training_activity_form_qc" model="ir.ui.view">
+        <field name="name">bf.training.activity.form.qc</field>
+        <field name="model">bf.training.activity</field>
+        <field name="inherit_id" ref="bf_training.view_training_activity_form"/>
+        <field name="arch" type="xml">
+            <field name="requires_plan" position="before">
+                <field name="qc_basis"/>
+                <field name="qc_provider_number" invisible="qc_basis != 'organisme_agree'"/>
+                <field name="qc_eligible" readonly="1"/>
+                <field name="qc_reason" readonly="1"/>
+            </field>
+        </field>
+    </record>
+    <record id="view_training_activity_list_qc" model="ir.ui.view">
+        <field name="name">bf.training.activity.list.qc</field>
+        <field name="model">bf.training.activity</field>
+        <field name="inherit_id" ref="bf_training.view_training_activity_list"/>
+        <field name="arch" type="xml">
+            <field name="record_count" position="before">
+                <field name="qc_eligible" widget="boolean_toggle" readonly="1" optional="show"/>
+            </field>
+        </field>
+    </record>
+</odoo>

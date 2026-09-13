@@ -107,7 +107,7 @@ class TestPhishingFlow(PhishingFlowCommon):
         res1 = self.campaign.result_ids[0]
         res1.register_click()
         done = res1.training_assignment_id
-        done.state = "completed"
+        done.state = "done"
 
         camp2 = self.env["bf.phishing.campaign"].create({
             "name": "Q2 retest",

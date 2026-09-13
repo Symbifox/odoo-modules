@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_training_record_form_qc" model="ir.ui.view">
+        <field name="name">bf.training.record.form.qc</field>
+        <field name="model">bf.training.record</field>
+        <field name="inherit_id" ref="bf_training.view_training_record_form"/>
+        <field name="arch" type="xml">
+            <button name="action_cancel" position="after">
+                <button name="action_print_attestation" type="object"
+                        string="Attestation" invisible="state != 'confirmed'"/>
+            </button>
+            <field name="expiry_state" position="after">
+                <field name="retention_until" readonly="1"/>
+                <field name="qc_countable" readonly="1"/>
+                <field name="qc_excluded_reason" readonly="1"
+                       invisible="qc_countable"/>
+            </field>
+        </field>
+    </record>
+    <record id="view_training_record_list_qc" model="ir.ui.view">
+        <field name="name">bf.training.record.list.qc</field>
+        <field name="model">bf.training.record</field>
+        <field name="inherit_id" ref="bf_training.view_training_record_list"/>
+        <field name="arch" type="xml">
+            <field name="is_complete" position="after">
+                <field name="qc_countable" widget="boolean_toggle" readonly="1" optional="show"/>
+                <field name="retention_until" optional="hide"/>
+            </field>
+        </field>
+    </record>
+</odoo>

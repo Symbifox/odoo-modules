@@ -241,7 +241,7 @@ class BfPhishingResult(models.Model):
         existing = Assignment.search([
             ("partner_id", "=", self.partner_id.id),
             ("channel_id", "=", channel.id),
-            ("state", "not in", ("completed",)),
+            ("state", "not in", ("done", "cancelled")),
         ], limit=1)
         if existing:
             self.training_assignment_id = existing

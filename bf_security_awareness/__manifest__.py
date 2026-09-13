@@ -2,7 +2,7 @@
     "name": "Security Awareness",
     "summary": "Simulated phishing campaigns, per-person risk profiles and "
                "cybersecurity eLearning — a KnowBe4 / Terranova-style offering.",
-    "version": "18.0.1.9.2",
+    "version": "18.0.2.0.0",
     "category": "Marketing/Security Awareness",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",
@@ -10,6 +10,7 @@
     "application": True,
     "installable": True,
     "depends": [
+        "bf_training_slides",
         "mail",
         "utm",
         "mass_mailing",

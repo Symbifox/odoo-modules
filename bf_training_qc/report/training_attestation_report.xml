@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_training_attestation" model="ir.actions.report">
+        <field name="name">Attestation de formation</field>
+        <field name="model">bf.training.record</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">bf_training_qc.report_training_attestation</field>
+        <field name="report_file">bf_training_qc.report_training_attestation</field>
+        <field name="binding_model_id" ref="bf_training.model_bf_training_record"/>
+        <field name="binding_type">report</field>
+        <field name="print_report_name">'Attestation - %s - %s' % (object.employee_id.name or '', object.date_done or '')</field>
+    </record>
+</odoo>

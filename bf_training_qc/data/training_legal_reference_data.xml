@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Textes lus sur LégisQuébec le 2026-09-13, dans leur version en
+             vigueur. Les extraits sont cités au long : une exigence qui renvoie
+             à « la loi » ne sert à personne le jour de l'inspection. -->
+
+        <record id="legal_competences_participation" model="bf.training.legal.reference">
+            <field name="name">Loi favorisant le développement et la reconnaissance des compétences de la main-d'oeuvre</field>
+            <field name="code">D-8.3-3</field>
+            <field name="citation">RLRQ c. D-8.3, art. 3</field>
+            <field name="article">art. 3</field>
+            <field name="sector">general</field>
+            <field name="sequence">10</field>
+            <field name="url">https://www.legisquebec.gouv.qc.ca/fr/document/lc/D-8.3</field>
+            <field name="text">Tout employeur, dont la masse salariale à l'égard d'une année civile excède le montant fixé par règlement du gouvernement, est tenu de participer pour cette année au développement des compétences de la main-d'oeuvre en consacrant à des dépenses de formation admissibles un montant représentant au moins 1 % de sa masse salariale.</field>
+        </record>
+
+        <record id="legal_competences_seuil" model="bf.training.legal.reference">
+            <field name="name">Règlement sur la détermination de la masse salariale</field>
+            <field name="code">D-8.3-r4-1</field>
+            <field name="citation">RLRQ c. D-8.3, r. 4, art. 1</field>
+            <field name="article">art. 1</field>
+            <field name="sector">general</field>
+            <field name="sequence">20</field>
+            <field name="text">Tout employeur dont la masse salariale à l'égard d'une année civile excède 2 000 000 $ est tenu de participer, pour cette année, au développement de la formation de la main-d'oeuvre tel que le prescrit l'article 3 de la Loi.</field>
+        </record>
+
+        <record id="legal_depenses_tache" model="bf.training.legal.reference">
+            <field name="name">Règlement sur les dépenses de formation admissibles, entraînement à la tâche et apprentissage individuel</field>
+            <field name="code">D-8.3-r3-1-7</field>
+            <field name="citation">RLRQ c. D-8.3, r. 3, art. 1, par. 7°</field>
+            <field name="article">art. 1, par. 7°</field>
+            <field name="sector">general</field>
+            <field name="sequence">30</field>
+            <field name="text">Le salaire d'un employé pour la période durant laquelle celui-ci est en formation [...] et, pour l'entraînement à la tâche ainsi que pour les activités d'apprentissage individuel par l'entremise des technologies de l'information, à la condition que l'apprentissage des tâches ou des compétences faisant l'objet de la formation soit d'une durée spécifique établie dans le cadre d'un plan de formation de même que, au regard de ces dernières activités, à la condition qu'un accompagnement soit offert au participant pour la durée de l'apprentissage ou qu'une interaction soit possible avec l'organisateur de l'activité pour cette durée.</field>
+        </record>
+
+        <record id="legal_depenses_preuve" model="bf.training.legal.reference">
+            <field name="name">Règlement sur les dépenses de formation admissibles, justification et conservation</field>
+            <field name="code">D-8.3-r3-4</field>
+            <field name="citation">RLRQ c. D-8.3, r. 3, art. 4</field>
+            <field name="article">art. 4</field>
+            <field name="sector">general</field>
+            <field name="sequence">40</field>
+            <field name="text">L'employeur doit être en mesure de justifier les dépenses de formation admissibles ou admises qu'il fait de même que d'en fournir la preuve. Il doit conserver les pièces justificatives concernant ces dépenses pendant 6 ans après la dernière année à laquelle elles se rapportent. [...] Il doit en outre être en mesure de démontrer qu'il peut délivrer annuellement des attestations de formation à tout employé ayant participé à une telle formation, à défaut pour l'établissement d'enseignement, l'organisme ou le formateur ayant dispensé la formation de délivrer une attestation précisant l'objet de l'activité de formation à laquelle l'employé a participé.</field>
+        </record>
+
+        <record id="legal_depenses_calcul" model="bf.training.legal.reference">
+            <field name="name">Règlement sur les dépenses de formation admissibles, calcul du salaire</field>
+            <field name="code">D-8.3-r3-7-5</field>
+            <field name="citation">RLRQ c. D-8.3, r. 3, art. 7, par. 4.1° et 5°</field>
+            <field name="article">art. 7, par. 5°</field>
+            <field name="sector">general</field>
+            <field name="sequence">50</field>
+            <field name="text">Le salaire correspond au produit obtenu en multipliant le nombre d'heures où l'employé ou le stagiaire, selon le cas, participe à l'activité de formation pendant l'année par le salaire qu'il reçoit, calculé sur une base horaire. Une dépense admissible à titre de salaire comprend les cotisations versées par l'employeur à l'égard d'un employé pour ce salaire.</field>
+        </record>
+
+        <record id="legal_lsst_51" model="bf.training.legal.reference">
+            <field name="name">Loi sur la santé et la sécurité du travail, formation et entraînement</field>
+            <field name="code">S-2.1-51-9</field>
+            <field name="citation">RLRQ c. S-2.1, art. 51, par. 9°</field>
+            <field name="article">art. 51, par. 9°</field>
+            <field name="sector">general</field>
+            <field name="sequence">60</field>
+            <field name="text">L'employeur doit [...] informer adéquatement le travailleur sur les risques reliés à son travail et lui assurer la formation, l'entraînement et la supervision appropriés afin de faire en sorte que le travailleur ait l'habileté et les connaissances requises pour accomplir de façon sécuritaire le travail qui lui est confié.</field>
+        </record>
+
+        <record id="legal_lnt_8119" model="bf.training.legal.reference">
+            <field name="name">Loi sur les normes du travail, politique de prévention du harcèlement psychologique</field>
+            <field name="code">N-1.1-81.19-2</field>
+            <field name="citation">RLRQ c. N-1.1, art. 81.19, al. 2, par. 2°</field>
+            <field name="article">art. 81.19, al. 2, par. 2°</field>
+            <field name="sector">general</field>
+            <field name="sequence">70</field>
+            <field name="text">Cette politique doit entre autres prévoir [...] les programmes d'information et de formation spécifiques en matière de prévention du harcèlement psychologique qui sont offerts aux personnes salariées ainsi qu'aux personnes désignées par l'employeur pour la prise en charge d'une plainte ou d'un signalement.</field>
+        </record>
+
+        <record id="legal_rsgee_20" model="bf.training.legal.reference">
+            <field name="name">Règlement sur les services de garde éducatifs à l'enfance, secourisme du personnel de garde</field>
+            <field name="code">S-4.1.1-r2-20</field>
+            <field name="citation">RLRQ c. S-4.1.1, r. 2, art. 20</field>
+            <field name="article">art. 20</field>
+            <field name="sector">childcare</field>
+            <field name="sequence">80</field>
+            <field name="text">Le titulaire d'un permis doit s'assurer que chaque membre de son personnel de garde est titulaire d'un certificat, datant d'au plus 3 ans, attestant la réussite d'un cours de secourisme adapté à la petite enfance d'une durée minimale de 8 heures comprenant un volet sur la gestion de réactions allergiques sévères ou d'un cours d'appoint d'une durée minimale de 6 heures visant la mise à jour des connaissances acquises dans le cadre du cours de secourisme adapté à la petite enfance.</field>
+        </record>
+
+        <record id="legal_rsgee_59" model="bf.training.legal.reference">
+            <field name="name">Règlement sur les services de garde éducatifs à l'enfance, perfectionnement annuel</field>
+            <field name="code">S-4.1.1-r2-59</field>
+            <field name="citation">RLRQ c. S-4.1.1, r. 2, art. 59</field>
+            <field name="article">art. 59</field>
+            <field name="sector">childcare</field>
+            <field name="sequence">90</field>
+            <field name="text">La responsable doit suivre annuellement 6 heures d'activités de perfectionnement portant sur les sujets énumérés aux paragraphes 1 à 4 du premier alinéa de l'article 57 et dont au moins 3 heures portent sur le développement de l'enfant et le programme éducatif prévu par la Loi. Ne peut être considéré à ce titre un cours en matière de secourisme ainsi que le cours d'hygiène et de salubrité alimentaire.</field>
+        </record>
+
+        <record id="legal_rpa_27" model="bf.training.legal.reference">
+            <field name="name">Règlement sur la certification des résidences privées pour aînés, processus d'accueil</field>
+            <field name="code">S-4.2-r0.01-27</field>
+            <field name="citation">RLRQ c. S-4.2, r. 0.01, art. 27</field>
+            <field name="article">art. 27</field>
+            <field name="sector">seniors</field>
+            <field name="sequence">100</field>
+            <field name="text">Un document daté et signé par le nouveau membre du personnel dans lequel il confirme avoir reçu et compris le contenu du processus prévu au deuxième alinéa doit être versé à son dossier tenu en application de l'article 58. Lorsque le processus comporte plusieurs modules, un tel document doit être versé à ce dossier pour chacun des modules.</field>
+        </record>
+
+        <record id="legal_rpa_28" model="bf.training.legal.reference">
+            <field name="name">Règlement sur la certification des résidences privées pour aînés, formations obligatoires des préposés</field>
+            <field name="code">S-4.2-r0.01-28</field>
+            <field name="citation">RLRQ c. S-4.2, r. 0.01, art. 28 et annexe IV</field>
+            <field name="article">art. 28</field>
+            <field name="sector">seniors</field>
+            <field name="sequence">110</field>
+            <field name="text">Tout préposé aux services d'assistance personnelle doit, au plus tard 1 an après la date de son entrée en fonction, avoir complété avec succès les formations suivantes : l'une des formations en matière de secourisme visées à l'article 1 de l'annexe IV ; la formation en matière de déplacement sécuritaire des personnes visée à l'article 2 de cette annexe. Il doit de plus, au plus tard 1 an après la date de son entrée en fonction, être titulaire d'attestations de réussite de ces formations [...]. Tout préposé doit par la suite maintenir à jour ces attestations.</field>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_training_obligation_list" model="ir.ui.view">
+        <field name="name">bf.training.obligation.list</field>
+        <field name="model">bf.training.obligation</field>
+        <field name="arch" type="xml">
+            <list string="Obligations" create="false"
+                  decoration-danger="state == 'overdue'"
+                  decoration-warning="state == 'expiring'"
+                  decoration-muted="state == 'exempt'">
+                <field name="employee_id"/>
+                <field name="requirement_id"/>
+                <field name="activity_id" optional="show"/>
+                <field name="due_date"/>
+                <field name="valid_until" optional="show"/>
+                <field name="hours_done" optional="hide"/>
+                <field name="hours_required" optional="hide"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'covered'"
+                       decoration-warning="state == 'expiring'"
+                       decoration-danger="state == 'overdue'"/>
+                <field name="covered_by_id" optional="hide"/>
+                <field name="last_computed" optional="hide"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_training_obligation_form" model="ir.ui.view">
+        <field name="name">bf.training.obligation.form</field>
+        <field name="model">bf.training.obligation</field>
+        <field name="arch" type="xml">
+            <form string="Obligation" create="false">
+                <header>
+                    <button name="action_exempt" type="object" string="Dispenser"
+                            invisible="state == 'exempt'"
+                            confirm="Une dispense est une décision qui reste : le recalcul ne la défait pas."/>
+                    <button name="action_open_record" type="object" string="Voir la preuve"
+                            invisible="not covered_by_id"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="pending,covered,expiring,overdue"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="employee_id" readonly="1"/>
+                            <field name="requirement_id" readonly="1"/>
+                            <field name="activity_id" readonly="1"/>
+                            <field name="company_id" groups="base.group_multi_company" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="due_date" readonly="1"/>
+                            <field name="valid_until" readonly="1"/>
+                            <field name="hours_done" readonly="1"/>
+                            <field name="hours_required" readonly="1"/>
+                            <field name="covered_by_id" readonly="1"/>
+                            <field name="last_computed" readonly="1"/>
+                            <field name="exempt_reason"/>
+                        </group>
+                    </group>
+                    <field name="assignment_ids" readonly="1">
+                        <list>
+                            <field name="activity_id"/>
+                            <field name="due_date"/>
+                            <field name="state"/>
+                            <field name="reminder_count"/>
+                        </list>
+                    </field>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="view_training_obligation_search" model="ir.ui.view">
+        <field name="name">bf.training.obligation.search</field>
+        <field name="model">bf.training.obligation</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="employee_id"/>
+                <field name="requirement_id"/>
+                <filter name="overdue" string="En retard" domain="[('state', '=', 'overdue')]"/>
+                <filter name="expiring" string="Expirent" domain="[('state', '=', 'expiring')]"/>
+                <filter name="pending" string="À faire" domain="[('state', '=', 'pending')]"/>
+                <filter name="undated" string="Sans échéance" domain="[('state', '=', 'undated')]"/>
+                <separator/>
+                <filter name="covered" string="À jour" domain="[('state', '=', 'covered')]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="group_requirement" string="Exigence" context="{'group_by': 'requirement_id'}"/>
+                    <filter name="group_employee" string="Personne" context="{'group_by': 'employee_id'}"/>
+                    <filter name="group_state" string="État" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="action_training_obligation" model="ir.actions.act_window">
+        <field name="name">Obligations</field>
+        <field name="res_model">bf.training.obligation</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_training_obligation_search"/>
+        <field name="context">{'search_default_group_requirement': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Rien à montrer pour l'instant</p>
+            <p>Les obligations se fabriquent toutes seules à partir des exigences.
+               Écrire une exigence, puis lancer « Recalculer ».</p>
+        </field>
+    </record>
+    <record id="action_training_obligation_overdue" model="ir.actions.act_window">
+        <field name="name">En retard ou qui expirent</field>
+        <field name="res_model">bf.training.obligation</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_training_obligation_search"/>
+        <field name="domain">[('state', 'in', ('overdue', 'expiring'))]</field>
+    </record>
+</odoo>

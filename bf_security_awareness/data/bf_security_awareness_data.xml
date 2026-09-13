@@ -24,6 +24,14 @@
             <field name="key">bf_security_awareness.risk_window_days</field>
             <field name="value">365</field>
         </record>
+        <!-- La catégorie du registre où atterrissent les cours de
+             sensibilisation, pour que leurs heures se comptent avec les autres. -->
+        <record id="training_category_cyber" model="bf.training.category">
+            <field name="name">Sensibilisation à la cybersécurité</field>
+            <field name="code">CYBER</field>
+            <field name="sequence">45</field>
+        </record>
+
         <record id="param_training_mitigation" model="ir.config_parameter">
             <field name="key">bf_security_awareness.training_mitigation</field>
             <field name="value">15</field>

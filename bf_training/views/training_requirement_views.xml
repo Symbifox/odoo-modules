@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_training_requirement_list" model="ir.ui.view">
+        <field name="name">bf.training.requirement.list</field>
+        <field name="model">bf.training.requirement</field>
+        <field name="arch" type="xml">
+            <list string="Exigences">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="requirement_type"/>
+                <field name="activity_id" optional="show"/>
+                <field name="min_hours" optional="hide"/>
+                <field name="period"/>
+                <field name="scope"/>
+                <field name="obligation_count" string="Visées"/>
+                <field name="covered_count" string="À jour"/>
+                <field name="coverage_rate" widget="percentage" string="Couverture"/>
+                <field name="legal_basis" optional="hide"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_training_requirement_form" model="ir.ui.view">
+        <field name="name">bf.training.requirement.form</field>
+        <field name="model">bf.training.requirement</field>
+        <field name="arch" type="xml">
+            <form string="Exigence">
+                <header>
+                    <button name="action_refresh" type="object" string="Recalculer"
+                            class="btn-primary"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_obligations" type="object"
+                                class="oe_stat_button" icon="fa-users">
+                            <field name="obligation_count" widget="statinfo" string="Personnes visées"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="Secourisme valide pour tout le personnel de garde"/></h1>
+                    </div>
+                    <group>
+                        <group string="Ce qui est exigé">
+                            <field name="requirement_type" widget="radio"/>
+                            <field name="activity_id" invisible="requirement_type != 'activity'"
+                                   required="requirement_type == 'activity'"/>
+                            <field name="min_hours" invisible="requirement_type != 'hours'"/>
+                            <field name="category_ids" widget="many2many_tags"
+                                   invisible="requirement_type != 'hours'"/>
+                            <field name="excluded_category_ids" widget="many2many_tags"
+                                   invisible="requirement_type != 'hours'"/>
+                        </group>
+                        <group string="Quand">
+                            <field name="period"/>
+                            <field name="rolling_months" invisible="period != 'rolling'"/>
+                            <field name="trigger"/>
+                            <field name="start_date" invisible="trigger != 'fixed'"
+                                   required="trigger == 'fixed'"/>
+                            <field name="delay_days"/>
+                            <field name="renewal_months"/>
+                            <field name="warn_days"/>
+                        </group>
+                    </group>
+                    <group string="Qui">
+                        <group>
+                            <field name="scope" widget="radio"/>
+                            <field name="department_id" invisible="scope != 'department'"
+                                   required="scope == 'department'"/>
+                            <field name="job_id" invisible="scope != 'job'"
+                                   required="scope == 'job'"/>
+                            <field name="employee_ids" widget="many2many_tags"
+                                   invisible="scope != 'employees'"/>
+                        </group>
+                        <group>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="active" widget="boolean_toggle"/>
+                            <field name="covered_count"/>
+                            <field name="coverage_rate" widget="percentage"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Base réglementaire" name="droit">
+                            <group>
+                                <field name="legal_basis"
+                                       placeholder="Règlement sur les services de garde éducatifs à l'enfance, art. 20"/>
+                                <field name="legal_reference" placeholder="RLRQ c. S-4.1.1, r. 2"/>
+                            </group>
+                            <field name="legal_text" placeholder="L'extrait, tel qu'il est écrit."/>
+                            <div class="text-muted">
+                                Citer l'intitulé et l'article au long. Un registre qui
+                                renvoie à « la loi » ne sert à personne le jour de
+                                l'inspection.
+                            </div>
+                        </page>
+                        <page string="Note" name="note">
+                            <field name="note"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+    <record id="view_training_requirement_search" model="ir.ui.view">
+        <field name="name">bf.training.requirement.search</field>
+        <field name="model">bf.training.requirement</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="activity_id"/>
+                <field name="legal_basis"/>
+                <filter name="incomplete" string="Couverture incomplète"
+                        domain="[('obligation_ids.state', 'in', ('pending', 'overdue', 'expiring', 'undated'))]"/>
+                <filter name="archivees" string="Archivées" domain="[('active', '=', False)]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="group_scope" string="Portée" context="{'group_by': 'scope'}"/>
+                    <filter name="group_period" string="Période" context="{'group_by': 'period'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="action_training_requirement" model="ir.actions.act_window">
+        <field name="name">Exigences</field>
+        <field name="res_model">bf.training.requirement</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_training_requirement_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Écrire la règle</p>
+            <p>Une exigence dit qui doit quoi, pour quand, et sur quelle base
+               réglementaire. C'est elle qui fabrique les obligations nominatives.</p>
+        </field>
+    </record>
+</odoo>

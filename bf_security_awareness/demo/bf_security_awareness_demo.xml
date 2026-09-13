@@ -667,7 +667,7 @@
             <field name="partner_id" ref="demo_emp_marie"/>
             <field name="channel_id" ref="demo_channel"/>
             <field name="source_result_id" ref="demo_res_m365_marie"/>
-            <field name="state">completed</field>
+            <field name="state">done</field>
             <field name="assigned_date" eval="(DateTime.now() - relativedelta(days=5))"/>
             <field name="completed_date" eval="(DateTime.now() - relativedelta(days=1))"/>
         </record>

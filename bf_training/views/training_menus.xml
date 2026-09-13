@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_training_root" name="Formation" sequence="76"
+              web_icon="bf_training,static/description/icon.png"
+              groups="bf_training.group_training_officer"/>
+
+    <menuitem id="menu_training_registre" name="Registre" parent="menu_training_root" sequence="10"/>
+    <menuitem id="menu_training_record" name="Réalisations" parent="menu_training_registre"
+              action="action_training_record" sequence="10"/>
+    <menuitem id="menu_training_obligation" name="Obligations" parent="menu_training_registre"
+              action="action_training_obligation" sequence="20"/>
+    <menuitem id="menu_training_obligation_overdue" name="À traiter" parent="menu_training_registre"
+              action="action_training_obligation_overdue" sequence="30"/>
+    <menuitem id="menu_training_assignment" name="Assignations" parent="menu_training_registre"
+              action="action_training_assignment" sequence="40"/>
+
+    <menuitem id="menu_training_regles" name="Règles" parent="menu_training_root" sequence="20"
+              groups="bf_training.group_training_manager"/>
+    <menuitem id="menu_training_requirement" name="Exigences" parent="menu_training_regles"
+              action="action_training_requirement" sequence="10"/>
+    <menuitem id="menu_training_plan" name="Plans de formation" parent="menu_training_regles"
+              action="action_training_plan" sequence="20"/>
+
+    <menuitem id="menu_training_config" name="Configuration" parent="menu_training_root" sequence="90"
+              groups="bf_training.group_training_manager"/>
+    <menuitem id="menu_training_activity" name="Activités" parent="menu_training_config"
+              action="action_training_activity" sequence="10"/>
+    <menuitem id="menu_training_category" name="Catégories" parent="menu_training_config"
+              action="action_training_category" sequence="20"/>
+</odoo>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_training_legal_reference_list" model="ir.ui.view">
+        <field name="name">bf.training.legal.reference.list</field>
+        <field name="model">bf.training.legal.reference</field>
+        <field name="arch" type="xml">
+            <list string="Références réglementaires">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="citation"/>
+                <field name="sector"/>
+                <field name="requirement_ids" string="Exigences" widget="many2many_tags" optional="hide"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_training_legal_reference_form" model="ir.ui.view">
+        <field name="name">bf.training.legal.reference.form</field>
+        <field name="model">bf.training.legal.reference</field>
+        <field name="arch" type="xml">
+            <form string="Référence réglementaire">
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="code"/>
+                            <field name="citation"/>
+                            <field name="article"/>
+                        </group>
+                        <group>
+                            <field name="sector"/>
+                            <field name="url" widget="url"/>
+                            <field name="active" widget="boolean_toggle"/>
+                        </group>
+                    </group>
+                    <separator string="Texte cité"/>
+                    <field name="text"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="action_training_legal_reference" model="ir.actions.act_window">
+        <field name="name">Références réglementaires</field>
+        <field name="res_model">bf.training.legal.reference</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

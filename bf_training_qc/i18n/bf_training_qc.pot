@@ -1,0 +1,1067 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_training_qc
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-13 15:02+0000\n"
+"PO-Revision-Date: 2026-09-13 15:02+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: bf_training_qc
+#: model:ir.actions.report,print_report_name:bf_training_qc.action_report_training_attestation
+msgid ""
+"'Attestation - %s - %s' % (object.employee_id.name or '', object.date_done "
+"or '')"
+msgstr ""
+
+#. module: bf_training_qc
+#: model_terms:ir.ui.view,arch_db:bf_training_qc.report_training_attestation_document
+msgid "(agrément"
+msgstr ""
+
+#. module: bf_training_qc
+#: model_terms:ir.ui.view,arch_db:bf_training_qc.report_training_attestation_document
+msgid ""
+".\n"
+"                    Pièce justificative à conserver jusqu'au"
+msgstr ""
+
+#. module: bf_training_qc
+#: model_terms:ir.ui.view,arch_db:bf_training_qc.report_training_attestation_document
+msgid "<span class=\"text-muted\">durée non consignée</span>"
+msgstr ""
+
+#. module: bf_training_qc
+#: model_terms:ir.ui.view,arch_db:bf_training_qc.report_training_attestation_document
+msgid "<strong>Catégorie</strong>"
+msgstr ""
+
+#. module: bf_training_qc
+#: model_terms:ir.ui.view,arch_db:bf_training_qc.report_training_attestation_document
+msgid "<strong>Date de la formation</strong>"
+msgstr ""
+
+#. module: bf_training_qc
+#: model_terms:ir.ui.view,arch_db:bf_training_qc.report_training_attestation_document
+msgid "<strong>Durée</strong>"
+msgstr ""
+
+#. module: bf_training_qc
+#: model_terms:ir.ui.view,arch_db:bf_training_qc.report_training_attestation_document
+msgid "<strong>Formateur interne</strong>"
+msgstr ""
+
+#. module: bf_training_qc
+#: model_terms:ir.ui.view,arch_db:bf_training_qc.report_training_attestation_document
+msgid "<strong>Formateur ou organisme</strong>"
+msgstr ""
+
+#. module: bf_training_qc
+#: model_terms:ir.ui.view,arch_db:bf_training_qc.report_training_attestation_document
+msgid "<strong>Mode</strong>"
+msgstr ""
+
+#. module: bf_training_qc
+#: model_terms:ir.ui.view,arch_db:bf_training_qc.report_training_attestation_document
+msgid "<strong>Numéro d'attestation</strong>"
+msgstr ""
+
+#. module: bf_training_qc
+#: model_terms:ir.ui.view,arch_db:bf_training_qc.report_training_attestation_document
+msgid "<strong>Objet de l'activité</strong>"
+msgstr ""
+
+#. module: bf_training_qc
+#: model_terms:ir.ui.view,arch_db:bf_training_qc.report_training_attestation_document
+msgid "<strong>Plan de formation</strong>"
+msgstr ""
+
+#. module: bf_training_qc
+#: model_terms:ir.ui.view,arch_db:bf_training_qc.report_training_attestation_document
+msgid "<strong>Valide jusqu'au</strong>"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model.fields,field_description:bf_training_qc.field_bf_training_legal_reference__active
+msgid "Actif"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model.fields,field_description:bf_training_qc.field_bf_training_statement__message_needaction
+msgid "Action Needed"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model.fields,field_description:bf_training_qc.field_bf_training_statement_line__activity_id
+msgid "Activité"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model,name:bf_training_qc.model_bf_training_activity
+msgid "Activité de formation"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model.fields.selection,name:bf_training_qc.selection__bf_training_activity__qc_basis__colloque
+msgid "Activité de formation dans un colloque, un congrès ou un séminaire"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model.fields,field_description:bf_training_qc.field_bf_training_activity__qc_eligible
+msgid "Admissible"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model.fields,field_description:bf_training_qc.field_bf_training_legal_reference__url
+msgid "Adresse du texte officiel"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model.fields,field_description:bf_training_qc.field_bf_training_statement__year
+msgid "Année civile"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model.fields.selection,name:bf_training_qc.selection__bf_training_activity__qc_basis__apprentissage_ti
+msgid "Apprentissage individuel par les technologies de l'information"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model.fields,field_description:bf_training_qc.field_bf_training_legal_reference__article
+msgid "Article"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model.fields,field_description:bf_training_qc.field_bf_training_statement__is_subject
+msgid "Assujettie"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model.fields,field_description:bf_training_qc.field_bf_training_statement__message_attachment_count
+msgid "Attachment Count"
+msgstr ""
+
+#. module: bf_training_qc
+#: model_terms:ir.ui.view,arch_db:bf_training_qc.view_training_record_form_qc
+msgid "Attestation"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.actions.report,name:bf_training_qc.action_report_training_attestation
+#: model_terms:ir.ui.view,arch_db:bf_training_qc.report_training_attestation_document
+msgid "Attestation de formation"
+msgstr ""
+
+#. module: bf_training_qc
+#: model_terms:ir.ui.view,arch_db:bf_training_qc.report_training_attestation_document
+msgid "Attestation no"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model.fields.selection,name:bf_training_qc.selection__bf_training_activity__qc_basis__autre
+msgid "Autre base, à documenter"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model.fields,field_description:bf_training_qc.field_bf_training_activity__qc_basis
+msgid "Base d'admissibilité"
+msgstr ""
+
+#. module: bf_training_qc
+#. odoo-python
+#: code:addons/bf_training_qc/models/training_activity.py:0
+msgid "Base d'admissibilité non établie."
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model,name:bf_training_qc.model_bf_training_legal_reference
+msgid "Base réglementaire de formation"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model.fields.selection,name:bf_training_qc.selection__bf_training_statement__state__draft
+msgid "Brouillon"
+msgstr ""
+
+#. module: bf_training_qc
+#: model_terms:ir.ui.view,arch_db:bf_training_qc.view_training_statement_form
+msgid "Calculer"
+msgstr ""
+
+#. module: bf_training_qc
+#. odoo-python
+#: code:addons/bf_training_qc/models/training_statement.py:0
+msgid "Calculer le relevé avant de le clore."
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model.fields.selection,name:bf_training_qc.selection__bf_training_statement__state__computed
+msgid "Calculé"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model.constraint,message:bf_training_qc.constraint_bf_training_legal_reference_code_uniq
+msgid "Ce code de référence est déjà pris."
+msgstr ""
+
+#. module: bf_training_qc
+#: model_terms:ir.ui.view,arch_db:bf_training_qc.view_training_statement_form
+msgid ""
+"Ce relevé <strong>n'est pas la déclaration</strong>. Il l'appuie.\n"
+"                        Les montants restent à valider par qui produit la déclaration\n"
+"                        annuelle."
+msgstr ""
+
+#. module: bf_training_qc
+#. odoo-python
+#: code:addons/bf_training_qc/models/training_record.py:0
+msgid ""
+"Ces pièces se conservent six ans après la dernière année à laquelle elles se"
+" rapportent : %(noms)s. Annuler la réalisation la retire des totaux sans la "
+"faire disparaître."
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model.constraint,message:bf_training_qc.constraint_bf_training_statement_annee_plausible
+msgid "Cette année ne ressemble à rien."
+msgstr ""
+
+#. module: bf_training_qc
+#: model:bf.training.legal.reference,text:bf_training_qc.legal_lnt_8119
+msgid ""
+"Cette politique doit entre autres prévoir [...] les programmes d'information"
+" et de formation spécifiques en matière de prévention du harcèlement "
+"psychologique qui sont offerts aux personnes salariées ainsi qu'aux "
+"personnes désignées par l'employeur pour la prise en charge d'une plainte ou"
+" d'un signalement."
+msgstr ""
+
+#. module: bf_training_qc
+#: model_terms:ir.ui.view,arch_db:bf_training_qc.view_training_statement_form
+msgid "Clore"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model.fields.selection,name:bf_training_qc.selection__bf_training_statement__state__closed
+msgid "Clos"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model.fields,field_description:bf_training_qc.field_bf_training_legal_reference__code
+msgid "Code"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model.fields,field_description:bf_training_qc.field_bf_training_record__qc_countable
+msgid "Compte au relevé"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model.fields,field_description:bf_training_qc.field_bf_training_statement__line_count
+msgid "Comptées"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model.fields.selection,name:bf_training_qc.selection__bf_training_legal_reference__sector__construction
+msgid "Construction"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model.fields,field_description:bf_training_qc.field_bf_training_statement__shortfall
+msgid "Cotisation à verser"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model.fields,field_description:bf_training_qc.field_bf_training_legal_reference__create_uid
+#: model:ir.model.fields,field_description:bf_training_qc.field_bf_training_statement__create_uid
+#: model:ir.model.fields,field_description:bf_training_qc.field_bf_training_statement_line__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model.fields,field_description:bf_training_qc.field_bf_training_legal_reference__create_date
+#: model:ir.model.fields,field_description:bf_training_qc.field_bf_training_statement__create_date
+#: model:ir.model.fields,field_description:bf_training_qc.field_bf_training_statement_line__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model.fields,field_description:bf_training_qc.field_bf_training_statement__currency_id
+msgid "Currency"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model.fields,field_description:bf_training_qc.field_bf_training_statement_line__currency_id
+msgid "Devise"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model.fields,field_description:bf_training_qc.field_bf_training_legal_reference__display_name
+#: model:ir.model.fields,field_description:bf_training_qc.field_bf_training_statement__display_name
+#: model:ir.model.fields,field_description:bf_training_qc.field_bf_training_statement_line__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: bf_training_qc
+#. odoo-python
+#: code:addons/bf_training_qc/models/training_activity.py:0
+msgid "Déclarée non admissible."
+msgstr ""
+
+#. module: bf_training_qc
+#: model_terms:ir.ui.view,arch_db:bf_training_qc.report_training_attestation_document
+msgid "Délivrée le"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model.fields,field_description:bf_training_qc.field_bf_training_statement__eligible_total
+msgid "Dépenses admissibles"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model.fields,field_description:bf_training_qc.field_bf_training_statement__line_ids
+#: model_terms:ir.ui.view,arch_db:bf_training_qc.view_training_statement_form
+msgid "Dépenses comptées"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model.fields.selection,name:bf_training_qc.selection__bf_training_activity__qc_basis__tache
+msgid "Entraînement à la tâche, d'une durée établie au plan de formation"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model.fields,field_description:bf_training_qc.field_bf_training_statement__carryover_in
+msgid "Excédent reporté"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model.fields,field_description:bf_training_qc.field_bf_training_statement__carryover_out
+msgid "Excédent à reporter"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model,name:bf_training_qc.model_bf_training_requirement
+msgid "Exigence de formation"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model.fields,field_description:bf_training_qc.field_bf_training_legal_reference__requirement_ids
+#: model_terms:ir.ui.view,arch_db:bf_training_qc.view_training_legal_reference_list
+msgid "Exigences"
+msgstr ""
+
+#. module: bf_training_qc
+#: model_terms:ir.actions.act_window,help:bf_training_qc.action_training_statement
+msgid "Faire le relevé d'une année"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model.fields,field_description:bf_training_qc.field_bf_training_statement_line__date_done
+msgid "Faite le"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model.fields,field_description:bf_training_qc.field_bf_training_statement__message_follower_ids
+msgid "Followers"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model.fields,field_description:bf_training_qc.field_bf_training_statement__message_partner_ids
+msgid "Followers (Partners)"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model.fields.selection,name:bf_training_qc.selection__bf_training_activity__qc_basis__organisme_agree
+msgid "Formation auprès d'un organisme, d'un service ou d'un formateur agréé"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model.fields.selection,name:bf_training_qc.selection__bf_training_activity__qc_basis__etablissement
+msgid "Formation auprès d'un établissement d'enseignement reconnu"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model.fields.selection,name:bf_training_qc.selection__bf_training_activity__qc_basis__association
+msgid "Formation d'une association de perfectionnement, par un spécialiste"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model.fields.selection,name:bf_training_qc.selection__bf_training_activity__qc_basis__plan_entreprise
+msgid "Formation donnée dans le cadre du plan de formation de l'entreprise"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model.fields.selection,name:bf_training_qc.selection__bf_training_activity__qc_basis__ordre
+msgid ""
+"Formation organisée par un ordre professionnel dont l'employé est membre"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model.fields,field_description:bf_training_qc.field_bf_training_statement__has_message
+msgid "Has Message"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model.fields,field_description:bf_training_qc.field_bf_training_statement_line__hours
+#: model_terms:ir.ui.view,arch_db:bf_training_qc.view_training_statement_form
+#: model_terms:ir.ui.view,arch_db:bf_training_qc.view_training_statement_line_list
+msgid "Heures"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model.fields,field_description:bf_training_qc.field_bf_training_statement__excluded_hours
+msgid "Heures écartées"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model.fields,field_description:bf_training_qc.field_bf_training_legal_reference__id
+#: model:ir.model.fields,field_description:bf_training_qc.field_bf_training_statement__id
+#: model:ir.model.fields,field_description:bf_training_qc.field_bf_training_statement_line__id
+msgid "ID"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model.fields,help:bf_training_qc.field_bf_training_statement__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model.fields,help:bf_training_qc.field_bf_training_statement__message_has_error
+#: model:ir.model.fields,help:bf_training_qc.field_bf_training_statement__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model.constraint,message:bf_training_qc.constraint_bf_training_statement_annee_par_societe
+msgid "Il y a déjà un relevé pour cette société et cette année."
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model.fields,field_description:bf_training_qc.field_bf_training_legal_reference__name
+msgid "Intitulé"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model.fields,field_description:bf_training_qc.field_bf_training_statement__message_is_follower
+msgid "Is Follower"
+msgstr ""
+
+#. module: bf_training_qc
+#: model_terms:ir.ui.view,arch_db:bf_training_qc.view_training_statement_form
+msgid "L'assiette"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:bf.training.legal.reference,text:bf_training_qc.legal_lsst_51
+msgid ""
+"L'employeur doit [...] informer adéquatement le travailleur sur les risques "
+"reliés à son travail et lui assurer la formation, l'entraînement et la "
+"supervision appropriés afin de faire en sorte que le travailleur ait "
+"l'habileté et les connaissances requises pour accomplir de façon sécuritaire"
+" le travail qui lui est confié."
+msgstr ""
+
+#. module: bf_training_qc
+#: model:bf.training.legal.reference,text:bf_training_qc.legal_depenses_preuve
+msgid ""
+"L'employeur doit être en mesure de justifier les dépenses de formation "
+"admissibles ou admises qu'il fait de même que d'en fournir la preuve. Il "
+"doit conserver les pièces justificatives concernant ces dépenses pendant 6 "
+"ans après la dernière année à laquelle elles se rapportent. [...] Il doit en"
+" outre être en mesure de démontrer qu'il peut délivrer annuellement des "
+"attestations de formation à tout employé ayant participé à une telle "
+"formation, à défaut pour l'établissement d'enseignement, l'organisme ou le "
+"formateur ayant dispensé la formation de délivrer une attestation précisant "
+"l'objet de l'activité de formation à laquelle l'employé a participé."
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model.fields,help:bf_training_qc.field_bf_training_statement__carryover_in
+msgid ""
+"L'excédent de l'année précédente, qui devient une dépense admissible de "
+"celle-ci."
+msgstr ""
+
+#. module: bf_training_qc
+#: model_terms:ir.actions.act_window,help:bf_training_qc.action_training_statement
+msgid ""
+"La masse salariale, la participation minimale, les dépenses\n"
+"               admissibles et, s'il y a lieu, la cotisation à verser. Les\n"
+"               réalisations incomplètes sont écartées et listées, jamais comptées\n"
+"               pour zéro."
+msgstr ""
+
+#. module: bf_training_qc
+#: model:bf.training.legal.reference,text:bf_training_qc.legal_rsgee_59
+msgid ""
+"La responsable doit suivre annuellement 6 heures d'activités de "
+"perfectionnement portant sur les sujets énumérés aux paragraphes 1 à 4 du "
+"premier alinéa de l'article 57 et dont au moins 3 heures portent sur le "
+"développement de l'enfant et le programme éducatif prévu par la Loi. Ne peut"
+" être considéré à ce titre un cours en matière de secourisme ainsi que le "
+"cours d'hygiène et de salubrité alimentaire."
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model.fields,field_description:bf_training_qc.field_bf_training_legal_reference__write_uid
+#: model:ir.model.fields,field_description:bf_training_qc.field_bf_training_statement__write_uid
+#: model:ir.model.fields,field_description:bf_training_qc.field_bf_training_statement_line__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model.fields,field_description:bf_training_qc.field_bf_training_legal_reference__write_date
+#: model:ir.model.fields,field_description:bf_training_qc.field_bf_training_statement__write_date
+#: model:ir.model.fields,field_description:bf_training_qc.field_bf_training_statement_line__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: bf_training_qc
+#: model_terms:ir.ui.view,arch_db:bf_training_qc.view_training_statement_form
+msgid "Le calcul"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model.fields,help:bf_training_qc.field_bf_training_legal_reference__citation
+msgid "Le chapitre et l'article, tels qu'ils se citent."
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model.fields,help:bf_training_qc.field_bf_training_activity__qc_provider_number
+msgid "Le numéro du formateur ou de l'organisme agréé, quand il y en a un."
+msgstr ""
+
+#. module: bf_training_qc
+#: model:bf.training.legal.reference,text:bf_training_qc.legal_depenses_calcul
+msgid ""
+"Le salaire correspond au produit obtenu en multipliant le nombre d'heures où"
+" l'employé ou le stagiaire, selon le cas, participe à l'activité de "
+"formation pendant l'année par le salaire qu'il reçoit, calculé sur une base "
+"horaire. Une dépense admissible à titre de salaire comprend les cotisations "
+"versées par l'employeur à l'égard d'un employé pour ce salaire."
+msgstr ""
+
+#. module: bf_training_qc
+#: model:bf.training.legal.reference,text:bf_training_qc.legal_depenses_tache
+msgid ""
+"Le salaire d'un employé pour la période durant laquelle celui-ci est en "
+"formation [...] et, pour l'entraînement à la tâche ainsi que pour les "
+"activités d'apprentissage individuel par l'entremise des technologies de "
+"l'information, à la condition que l'apprentissage des tâches ou des "
+"compétences faisant l'objet de la formation soit d'une durée spécifique "
+"établie dans le cadre d'un plan de formation de même que, au regard de ces "
+"dernières activités, à la condition qu'un accompagnement soit offert au "
+"participant pour la durée de l'apprentissage ou qu'une interaction soit "
+"possible avec l'organisateur de l'activité pour cette durée."
+msgstr ""
+
+#. module: bf_training_qc
+#: model:bf.training.legal.reference,text:bf_training_qc.legal_rsgee_20
+msgid ""
+"Le titulaire d'un permis doit s'assurer que chaque membre de son personnel "
+"de garde est titulaire d'un certificat, datant d'au plus 3 ans, attestant la"
+" réussite d'un cours de secourisme adapté à la petite enfance d'une durée "
+"minimale de 8 heures comprenant un volet sur la gestion de réactions "
+"allergiques sévères ou d'un cours d'appoint d'une durée minimale de 6 heures"
+" visant la mise à jour des connaissances acquises dans le cadre du cours de "
+"secourisme adapté à la petite enfance."
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model,name:bf_training_qc.model_bf_training_statement_line
+msgid "Ligne de relevé de participation"
+msgstr ""
+
+#. module: bf_training_qc
+#: model_terms:ir.ui.view,arch_db:bf_training_qc.view_training_statement_line_list
+msgid "Lignes de relevé"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:bf.training.legal.reference,name:bf_training_qc.legal_competences_participation
+msgid ""
+"Loi favorisant le développement et la reconnaissance des compétences de la "
+"main-d'oeuvre"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:bf.training.legal.reference,name:bf_training_qc.legal_lsst_51
+msgid "Loi sur la santé et la sécurité du travail, formation et entraînement"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:bf.training.legal.reference,name:bf_training_qc.legal_lnt_8119
+msgid ""
+"Loi sur les normes du travail, politique de prévention du harcèlement "
+"psychologique"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model.fields,field_description:bf_training_qc.field_bf_training_statement__payroll
+msgid "Masse salariale"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model.fields,field_description:bf_training_qc.field_bf_training_statement__message_has_error
+msgid "Message Delivery error"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model.fields,field_description:bf_training_qc.field_bf_training_statement__message_ids
+msgid "Messages"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model.fields,field_description:bf_training_qc.field_bf_training_statement_line__amount
+msgid "Montant"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model.fields.selection,name:bf_training_qc.selection__bf_training_activity__qc_basis__non_admissible
+msgid "Non admissible"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model.fields,field_description:bf_training_qc.field_bf_training_statement__note
+#: model_terms:ir.ui.view,arch_db:bf_training_qc.view_training_statement_form
+msgid "Note"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model.fields,field_description:bf_training_qc.field_bf_training_statement__message_needaction_counter
+msgid "Number of Actions"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model.fields,field_description:bf_training_qc.field_bf_training_statement__message_has_error_counter
+msgid "Number of errors"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model.fields,help:bf_training_qc.field_bf_training_statement__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model.fields,help:bf_training_qc.field_bf_training_statement__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model.fields,field_description:bf_training_qc.field_bf_training_activity__qc_provider_number
+msgid "Numéro d'agrément"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model.fields,field_description:bf_training_qc.field_bf_training_legal_reference__sequence
+msgid "Ordre"
+msgstr ""
+
+#. module: bf_training_qc
+#. odoo-python
+#: code:addons/bf_training_qc/models/training_statement.py:0
+msgid "Participation %(annee)s, %(societe)s"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model.fields,field_description:bf_training_qc.field_bf_training_statement__minimum_participation
+msgid "Participation minimale"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model.fields,field_description:bf_training_qc.field_bf_training_statement_line__employee_id
+msgid "Personne"
+msgstr ""
+
+#. module: bf_training_qc
+#: model_terms:ir.ui.view,arch_db:bf_training_qc.report_training_attestation_document
+msgid "Pour"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model.fields,field_description:bf_training_qc.field_bf_training_activity__qc_reason
+msgid "Pourquoi"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model.fields,field_description:bf_training_qc.field_bf_training_record__qc_excluded_reason
+#: model:ir.model.fields,field_description:bf_training_qc.field_bf_training_statement_line__reason
+msgid "Pourquoi elle ne compte pas"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model.fields,field_description:bf_training_qc.field_bf_training_statement__rating_ids
+msgid "Ratings"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model.fields,field_description:bf_training_qc.field_bf_training_statement__name
+#: model:ir.model.fields,field_description:bf_training_qc.field_bf_training_statement_line__statement_id
+msgid "Relevé"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model.fields,field_description:bf_training_qc.field_bf_training_statement_line__excluded_statement_id
+msgid "Relevé (écartée)"
+msgstr ""
+
+#. module: bf_training_qc
+#. odoo-python
+#: code:addons/bf_training_qc/models/training_statement.py:0
+msgid ""
+"Relevé clos avec %(n)s réalisation(s) écartée(s), %(h).2f heure(s) qui ne "
+"comptent pas."
+msgstr ""
+
+#. module: bf_training_qc
+#: model_terms:ir.ui.view,arch_db:bf_training_qc.view_training_statement_form
+msgid "Relevé de participation"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model,name:bf_training_qc.model_bf_training_statement
+msgid "Relevé de participation au développement des compétences"
+msgstr ""
+
+#. module: bf_training_qc
+#: model_terms:ir.ui.view,arch_db:bf_training_qc.view_training_statement_list
+msgid "Relevés"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.actions.act_window,name:bf_training_qc.action_training_statement
+#: model:ir.ui.menu,name:bf_training_qc.menu_training_statement
+msgid "Relevés de participation"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model.fields.selection,name:bf_training_qc.selection__bf_training_activity__qc_basis__remboursement
+msgid "Remboursement des frais assumés par l'employé"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model.fields,help:bf_training_qc.field_bf_training_requirement__legal_reference_id
+msgid ""
+"Reprend l'intitulé, la citation et le texte, plutôt que de les recopier de "
+"mémoire."
+msgstr ""
+
+#. module: bf_training_qc
+#: model_terms:ir.ui.view,arch_db:bf_training_qc.view_training_statement_form
+msgid "Rouvrir"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:bf.training.legal.reference,name:bf_training_qc.legal_rpa_28
+msgid ""
+"Règlement sur la certification des résidences privées pour aînés, formations"
+" obligatoires des préposés"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:bf.training.legal.reference,name:bf_training_qc.legal_rpa_27
+msgid ""
+"Règlement sur la certification des résidences privées pour aînés, processus "
+"d'accueil"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:bf.training.legal.reference,name:bf_training_qc.legal_competences_seuil
+msgid "Règlement sur la détermination de la masse salariale"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:bf.training.legal.reference,name:bf_training_qc.legal_depenses_calcul
+msgid "Règlement sur les dépenses de formation admissibles, calcul du salaire"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:bf.training.legal.reference,name:bf_training_qc.legal_depenses_tache
+msgid ""
+"Règlement sur les dépenses de formation admissibles, entraînement à la tâche"
+" et apprentissage individuel"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:bf.training.legal.reference,name:bf_training_qc.legal_depenses_preuve
+msgid ""
+"Règlement sur les dépenses de formation admissibles, justification et "
+"conservation"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:bf.training.legal.reference,name:bf_training_qc.legal_rsgee_59
+msgid ""
+"Règlement sur les services de garde éducatifs à l'enfance, perfectionnement "
+"annuel"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:bf.training.legal.reference,name:bf_training_qc.legal_rsgee_20
+msgid ""
+"Règlement sur les services de garde éducatifs à l'enfance, secourisme du "
+"personnel de garde"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model.fields,field_description:bf_training_qc.field_bf_training_statement_line__record_id
+msgid "Réalisation"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model,name:bf_training_qc.model_bf_training_record
+msgid "Réalisation de formation"
+msgstr ""
+
+#. module: bf_training_qc
+#. odoo-python
+#: code:addons/bf_training_qc/models/training_statement.py:0
+msgid "Réalisations écartées"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model.fields,field_description:bf_training_qc.field_bf_training_legal_reference__citation
+msgid "Référence"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model.fields,field_description:bf_training_qc.field_bf_training_requirement__legal_reference_id
+msgid "Référence du catalogue"
+msgstr ""
+
+#. module: bf_training_qc
+#: model_terms:ir.ui.view,arch_db:bf_training_qc.view_training_legal_reference_form
+msgid "Référence réglementaire"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.actions.act_window,name:bf_training_qc.action_training_legal_reference
+#: model:ir.ui.menu,name:bf_training_qc.menu_training_legal_reference
+#: model_terms:ir.ui.view,arch_db:bf_training_qc.view_training_legal_reference_list
+msgid "Références réglementaires"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model.fields.selection,name:bf_training_qc.selection__bf_training_legal_reference__sector__seniors
+msgid "Résidences privées pour aînés"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model.fields,field_description:bf_training_qc.field_bf_training_statement__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model.fields,field_description:bf_training_qc.field_bf_training_legal_reference__sector
+msgid "Secteur"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model.fields.selection,name:bf_training_qc.selection__bf_training_legal_reference__sector__childcare
+msgid "Services de garde éducatifs"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model.fields,field_description:bf_training_qc.field_bf_training_statement__threshold
+msgid "Seuil d'assujettissement"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model.fields,help:bf_training_qc.field_bf_training_record__retention_until
+msgid ""
+"Six ans après la fin de l'année civile à laquelle la dépense se rapporte."
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model.fields,field_description:bf_training_qc.field_bf_training_statement__company_id
+msgid "Société"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model.fields.selection,name:bf_training_qc.selection__bf_training_activity__qc_basis__stage
+msgid "Stage, apprentissage ou compagnonnage"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model.fields,help:bf_training_qc.field_bf_training_activity__qc_basis
+msgid ""
+"Sur quelle base la dépense est admissible. Tant que ce n'est pas dit, "
+"l'activité ne compte pas au relevé."
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model.fields,field_description:bf_training_qc.field_bf_training_statement__rate
+msgid "Taux (%)"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model.fields,help:bf_training_qc.field_bf_training_statement__payroll
+msgid ""
+"Telle que calculée pour la déclaration. Le registre ne la devine pas : sans "
+"elle, rien n'est conclu."
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model.fields,field_description:bf_training_qc.field_bf_training_legal_reference__text
+#: model_terms:ir.ui.view,arch_db:bf_training_qc.view_training_legal_reference_form
+msgid "Texte cité"
+msgstr ""
+
+#. module: bf_training_qc
+#: model_terms:ir.ui.view,arch_db:bf_training_qc.view_training_statement_form
+#: model_terms:ir.ui.view,arch_db:bf_training_qc.view_training_statement_line_list
+msgid "Total"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model.fields.selection,name:bf_training_qc.selection__bf_training_legal_reference__sector__general
+msgid "Tous les employeurs"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:bf.training.legal.reference,text:bf_training_qc.legal_competences_seuil
+msgid ""
+"Tout employeur dont la masse salariale à l'égard d'une année civile excède 2"
+" 000 000 $ est tenu de participer, pour cette année, au développement de la "
+"formation de la main-d'oeuvre tel que le prescrit l'article 3 de la Loi."
+msgstr ""
+
+#. module: bf_training_qc
+#: model:bf.training.legal.reference,text:bf_training_qc.legal_competences_participation
+msgid ""
+"Tout employeur, dont la masse salariale à l'égard d'une année civile excède "
+"le montant fixé par règlement du gouvernement, est tenu de participer pour "
+"cette année au développement des compétences de la main-d'oeuvre en "
+"consacrant à des dépenses de formation admissibles un montant représentant "
+"au moins 1 % de sa masse salariale."
+msgstr ""
+
+#. module: bf_training_qc
+#: model:bf.training.legal.reference,text:bf_training_qc.legal_rpa_28
+msgid ""
+"Tout préposé aux services d'assistance personnelle doit, au plus tard 1 an "
+"après la date de son entrée en fonction, avoir complété avec succès les "
+"formations suivantes : l'une des formations en matière de secourisme visées "
+"à l'article 1 de l'annexe IV ; la formation en matière de déplacement "
+"sécuritaire des personnes visée à l'article 2 de cette annexe. Il doit de "
+"plus, au plus tard 1 an après la date de son entrée en fonction, être "
+"titulaire d'attestations de réussite de ces formations [...]. Tout préposé "
+"doit par la suite maintenir à jour ces attestations."
+msgstr ""
+
+#. module: bf_training_qc
+#: model:bf.training.legal.reference,text:bf_training_qc.legal_rpa_27
+msgid ""
+"Un document daté et signé par le nouveau membre du personnel dans lequel il "
+"confirme avoir reçu et compris le contenu du processus prévu au deuxième "
+"alinéa doit être versé à son dossier tenu en application de l'article 58. "
+"Lorsque le processus comporte plusieurs modules, un tel document doit être "
+"versé à ce dossier pour chacun des modules."
+msgstr ""
+
+#. module: bf_training_qc
+#. odoo-python
+#: code:addons/bf_training_qc/models/training_statement.py:0
+msgid "Un relevé clos ne se recalcule pas."
+msgstr ""
+
+#. module: bf_training_qc
+#. odoo-python
+#: code:addons/bf_training_qc/models/training_record.py:0
+msgid ""
+"Une attestation nomme une personne et une date. Il en manque sur %s "
+"réalisation(s)."
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model.fields,field_description:bf_training_qc.field_bf_training_statement__website_message_ids
+msgid "Website Messages"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model.fields,help:bf_training_qc.field_bf_training_statement__website_message_ids
+msgid "Website communication history"
+msgstr ""
+
+#. module: bf_training_qc
+#: model_terms:ir.ui.view,arch_db:bf_training_qc.report_training_attestation_document
+msgid ""
+"a participé à\n"
+"                    l'activité de formation décrite ci-dessous."
+msgstr ""
+
+#. module: bf_training_qc
+#. odoo-python
+#: code:addons/bf_training_qc/models/training_record.py:0
+msgid "activité non admissible"
+msgstr ""
+
+#. module: bf_training_qc
+#: model_terms:ir.ui.view,arch_db:bf_training_qc.report_training_attestation_document
+msgid "atteste que"
+msgstr ""
+
+#. module: bf_training_qc
+#. odoo-python
+#: code:addons/bf_training_qc/models/training_record.py:0
+msgid "des informations"
+msgstr ""
+
+#. module: bf_training_qc
+#: model_terms:ir.ui.view,arch_db:bf_training_qc.report_training_attestation_document
+msgid "heure(s)"
+msgstr ""
+
+#. module: bf_training_qc
+#: model_terms:ir.ui.view,arch_db:bf_training_qc.view_training_statement_form
+msgid ""
+"heure(s). Elles restent au registre et sont listées ci-dessous :\n"
+"                        ce qui manque ne vaut pas zéro."
+msgstr ""
+
+#. module: bf_training_qc
+#. odoo-python
+#: code:addons/bf_training_qc/models/training_record.py:0
+msgid "il manque %s"
+msgstr ""
+
+#. module: bf_training_qc
+#. odoo-python
+#: code:addons/bf_training_qc/models/training_record.py:0
+msgid "la réalisation n'est pas confirmée"
+msgstr ""
+
+#. module: bf_training_qc
+#: model_terms:ir.ui.view,arch_db:bf_training_qc.view_training_statement_form
+msgid "réalisation(s) ne comptent pas, pour"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model.fields,field_description:bf_training_qc.field_bf_training_record__retention_until
+msgid "À conserver jusqu'au"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model.fields,field_description:bf_training_qc.field_bf_training_statement__excluded_count
+#: model_terms:ir.ui.view,arch_db:bf_training_qc.view_training_statement_form
+msgid "Écartées"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model.fields,field_description:bf_training_qc.field_bf_training_statement__excluded_ids
+#: model_terms:ir.ui.view,arch_db:bf_training_qc.view_training_statement_form
+msgid "Écartées, et pourquoi"
+msgstr ""
+
+#. module: bf_training_qc
+#: model:ir.model.fields,field_description:bf_training_qc.field_bf_training_statement__state
+msgid "État"
+msgstr ""

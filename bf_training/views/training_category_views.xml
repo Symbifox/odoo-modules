@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_training_category_list" model="ir.ui.view">
+        <field name="name">bf.training.category.list</field>
+        <field name="model">bf.training.category</field>
+        <field name="arch" type="xml">
+            <list string="Catégories" editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="activity_count" string="Activités"/>
+                <field name="active" widget="boolean_toggle" optional="hide"/>
+            </list>
+        </field>
+    </record>
+    <record id="action_training_category" model="ir.actions.act_window">
+        <field name="name">Catégories</field>
+        <field name="res_model">bf.training.category</field>
+        <field name="view_mode">list</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Nommer les sujets</p>
+            <p>Une catégorie sert surtout aux quotas : « six heures par an, dont
+               trois sur tel sujet, et le secourisme ne compte pas » ne se dit
+               pas sans elles.</p>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_training_statement" name="Relevés de participation"
+              parent="bf_training.menu_training_regles"
+              action="action_training_statement" sequence="30"/>
+    <menuitem id="menu_training_legal_reference" name="Références réglementaires"
+              parent="bf_training.menu_training_config"
+              action="action_training_legal_reference" sequence="30"/>
+</odoo>

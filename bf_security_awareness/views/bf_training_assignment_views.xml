@@ -5,16 +5,16 @@
         <field name="name">bf.training.assignment.list</field>
         <field name="model">bf.training.assignment</field>
         <field name="arch" type="xml">
-            <list decoration-danger="state == 'overdue'"
-                  decoration-success="state == 'completed'">
+            <list decoration-danger="state not in ('done', 'cancelled') and due_date and due_date &lt; current_date"
+                  decoration-success="state == 'done'">
                 <field name="partner_id"/>
                 <field name="channel_id"/>
                 <field name="assigned_date"/>
                 <field name="due_date"/>
                 <field name="completion" widget="progressbar"/>
                 <field name="state" widget="badge"
-                       decoration-danger="state == 'overdue'"
-                       decoration-success="state == 'completed'"/>
+                       decoration-danger="state not in ('done', 'cancelled') and due_date and due_date &lt; current_date"
+                       decoration-success="state == 'done'"/>
             </list>
         </field>
     </record>
@@ -47,13 +47,13 @@
             <form>
                 <header>
                     <button name="action_enroll" type="object" string="Inscrire"
-                            class="btn-primary" invisible="state != 'to_invite'"/>
+                            class="btn-primary" invisible="state != 'pending'"/>
                     <button name="action_send_invite" type="object"
-                            string="Relancer" invisible="state == 'completed'"/>
+                            string="Relancer" invisible="state == 'done'"/>
                     <button name="action_open_course" type="object"
                             string="Ouvrir le cours"/>
                     <field name="state" widget="statusbar"
-                           statusbar_visible="to_invite,invited,in_progress,completed"/>
+                           statusbar_visible="pending,invited,in_progress,done"/>
                 </header>
                 <sheet>
                     <group>
@@ -84,9 +84,9 @@
                 <field name="partner_id"/>
                 <field name="channel_id"/>
                 <filter name="overdue" string="En retard"
-                        domain="[('state','=','overdue')]"/>
+                        domain="[('state','not in',('done','cancelled')),('due_date','&lt;',context_today().strftime('%Y-%m-%d'))]"/>
                 <filter name="open" string="À compléter"
-                        domain="[('state','not in',('completed',))]"/>
+                        domain="[('state','not in',('done','cancelled'))]"/>
                 <group expand="0" string="Regrouper par">
                     <filter name="group_state" string="État"
                             context="{'group_by': 'state'}"/>

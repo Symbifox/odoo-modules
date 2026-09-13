@@ -116,7 +116,7 @@ class BfSecurityDashboard(models.AbstractModel):
         today = fields.Date.today()
         overdue = self.env["bf.training.assignment"].search_count([
             ("company_id", "in", cids),
-            ("state", "not in", ("completed",)),
+            ("state", "not in", ("done", "cancelled")),
             ("due_date", "!=", False), ("due_date", "<", today)])
 
         # Period-over-period deltas read off the trend tail (last vs previous).
@@ -194,7 +194,7 @@ class BfSecurityDashboard(models.AbstractModel):
         today = fields.Date.today()
         assignments = self.env["bf.training.assignment"].search([
             ("company_id", "in", self.env.companies.ids),
-            ("state", "not in", ("completed",)),
+            ("state", "not in", ("done", "cancelled")),
             ("due_date", "!=", False), ("due_date", "<", today),
         ], order="due_date asc", limit=10)
         out = []
@@ -302,7 +302,7 @@ class BfSecurityDashboard(models.AbstractModel):
             "name": _("Formations en retard"),
             "res_model": "bf.training.assignment",
             "views": [[False, "list"], [False, "form"]],
-            "domain": [("state", "not in", ("completed",)),
+            "domain": [("state", "not in", ("done", "cancelled")),
                        ("due_date", "!=", False),
                        ("due_date", "<", fields.Date.today())],
         }

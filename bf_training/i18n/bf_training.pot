@@ -1,0 +1,1903 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_training
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-13 15:02+0000\n"
+"PO-Revision-Date: 2026-09-13 15:02+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: bf_training
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_record_form
+msgid ""
+".\n"
+"                        La ligne reste au registre, et elle sort des totaux : ce qui\n"
+"                        manque ne vaut pas zéro."
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,help:bf_training.field_bf_training_requirement__renewal_months
+msgid "0 prend la validité de l'activité. Sinon, cette valeur prime."
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,help:bf_training.field_bf_training_activity__validity_months
+msgid ""
+"0 signifie que la formation ne périme pas. Sinon, la date d'expiration d'une"
+" réalisation se calcule depuis sa date de réalisation."
+msgstr ""
+
+#. module: bf_training
+#: model:mail.template,body_html:bf_training.mail_template_training_reminder
+msgid ""
+"<div>\n"
+"                    <p>Bonjour,</p>\n"
+"                    <p>La formation <strong t-out=\"object.activity_id.name\">Activité</strong>\n"
+"                        est attendue pour le <strong t-out=\"object.due_date\">échéance</strong>.</p>\n"
+"                    <p t-if=\"object.activity_id.duration_hours\">Durée prévue :\n"
+"                        <t t-out=\"object.activity_id.duration_hours\"/> heures.</p>\n"
+"                    <p>Merci,</p>\n"
+"                </div>\n"
+"            "
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_activity__requires_support
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_record__support_provided
+msgid "Accompagnement offert"
+msgstr ""
+
+#. module: bf_training
+#: model:bf.training.category,name:bf_training.category_accueil
+msgid "Accueil et intégration"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_activity__active
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_category__active
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_requirement__active
+msgid "Actif"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_activity__message_needaction
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_assignment__message_needaction
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_plan__message_needaction
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_record__message_needaction
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_requirement__message_needaction
+msgid "Action Needed"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_activity__name
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_assignment__activity_id
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_record__activity_id
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_activity_form
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_record_search
+msgid "Activité"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model,name:bf_training.model_bf_training_activity
+msgid "Activité de formation"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_obligation__activity_id
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_requirement__activity_id
+msgid "Activité exigée"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.actions.act_window,name:bf_training.action_training_activity
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_category__activity_ids
+#: model:ir.ui.menu,name:bf_training.menu_training_activity
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_activity_list
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_category_list
+msgid "Activités"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_plan__activity_ids
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_plan_form
+msgid "Activités prévues"
+msgstr ""
+
+#. module: bf_training
+#: model:res.groups,name:bf_training.group_training_officer
+msgid "Agent"
+msgstr ""
+
+#. module: bf_training
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_assignment_form
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_record_form
+msgid "Annuler"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields.selection,name:bf_training.selection__bf_training_assignment__state__cancelled
+#: model:ir.model.fields.selection,name:bf_training.selection__bf_training_record__state__cancelled
+msgid "Annulée"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields.selection,name:bf_training.selection__bf_training_activity__mode__self_study
+#: model:ir.model.fields.selection,name:bf_training.selection__bf_training_record__mode__self_study
+msgid "Apprentissage individuel"
+msgstr ""
+
+#. module: bf_training
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_plan_form
+msgid "Approuver"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields.selection,name:bf_training.selection__bf_training_plan__state__approved
+msgid "Approuvé"
+msgstr ""
+
+#. module: bf_training
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_activity_form
+msgid "Archivée"
+msgstr ""
+
+#. module: bf_training
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_activity_search
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_requirement_search
+msgid "Archivées"
+msgstr ""
+
+#. module: bf_training
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_assignment_form
+msgid "Assignation"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model,name:bf_training.model_bf_training_assignment
+msgid "Assignation de formation"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.actions.act_window,name:bf_training.action_training_assignment
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_obligation__assignment_ids
+#: model:ir.ui.menu,name:bf_training.menu_training_assignment
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_assignment_list
+msgid "Assignations"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields.selection,name:bf_training.selection__bf_training_assignment__state__pending
+msgid "Assignée"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_assignment__assigned_date
+msgid "Assignée le"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_assignment__assigned_by_id
+msgid "Assignée par"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields.selection,name:bf_training.selection__bf_training_activity__provider_type__association
+msgid "Association de perfectionnement"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_activity__message_attachment_count
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_assignment__message_attachment_count
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_plan__message_attachment_count
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_record__message_attachment_count
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_requirement__message_attachment_count
+msgid "Attachment Count"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_activity__employer_issues_attestation
+msgid "Attestation délivrée par l'employeur"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields.selection,name:bf_training.selection__bf_training_activity__provider_type__other
+msgid "Autre"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_record__other_cost
+msgid "Autres frais"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_assignment__completion
+msgid "Avancement (%)"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_requirement__legal_basis
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_requirement_form
+msgid "Base réglementaire"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields.selection,name:bf_training.selection__bf_training_plan__state__draft
+#: model:ir.model.fields.selection,name:bf_training.selection__bf_training_record__state__draft
+msgid "Brouillon"
+msgstr ""
+
+#. module: bf_training
+#: model_terms:ir.actions.act_window,help:bf_training.action_training_activity
+msgid "Bâtir le catalogue"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_activity__category_id
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_category__name
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_record__category_id
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_activity_search
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_record_search
+msgid "Catégorie"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model,name:bf_training.model_bf_training_category
+msgid "Catégorie de formation"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.actions.act_window,name:bf_training.action_training_category
+#: model:ir.ui.menu,name:bf_training.menu_training_category
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_category_list
+msgid "Catégories"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_requirement__category_ids
+msgid "Catégories comptées"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_requirement__excluded_category_ids
+msgid "Catégories exclues"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.constraint,message:bf_training.constraint_bf_training_category_code_uniq
+msgid "Ce code de catégorie est déjà pris."
+msgstr ""
+
+#. module: bf_training
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_activity_form
+msgid "Ce que c'est"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_plan__consultation_note
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_plan_form
+msgid "Ce qui a été consulté"
+msgstr ""
+
+#. module: bf_training
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_requirement_form
+msgid "Ce qui est exigé"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_record__missing_info
+msgid "Ce qui manque"
+msgstr ""
+
+#. module: bf_training
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_record_search
+msgid "Cette année civile"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.constraint,message:bf_training.constraint_bf_training_obligation_unique_par_personne
+msgid "Cette personne a déjà une ligne pour cette exigence."
+msgstr ""
+
+#. module: bf_training
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_activity_form
+msgid "Ceux qui ont suivi l'ancienne version devront la refaire."
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_record__payroll_charges
+msgid "Charges"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_record__payroll_charge_rate
+msgid "Charges (%)"
+msgstr ""
+
+#. module: bf_training
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_requirement_form
+msgid ""
+"Citer l'intitulé et l'article au long. Un registre qui\n"
+"                                renvoie à « la loi » ne sert à personne le jour de\n"
+"                                l'inspection."
+msgstr ""
+
+#. module: bf_training
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_plan_form
+msgid "Clore"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields.selection,name:bf_training.selection__bf_training_plan__state__closed
+msgid "Clos"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_activity__code
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_category__code
+msgid "Code"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields.selection,name:bf_training.selection__bf_training_activity__mode__conference
+#: model:ir.model.fields.selection,name:bf_training.selection__bf_training_record__mode__conference
+msgid "Colloque ou congrès"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_record__is_complete
+msgid "Complète"
+msgstr ""
+
+#. module: bf_training
+#: model:bf.training.category,name:bf_training.category_metier
+msgid "Compétences du métier"
+msgstr ""
+
+#. module: bf_training
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_activity_form
+msgid "Conditions d'admissibilité"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.ui.menu,name:bf_training.menu_training_config
+msgid "Configuration"
+msgstr ""
+
+#. module: bf_training
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_record_form
+msgid "Confirmer"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields.selection,name:bf_training.selection__bf_training_record__state__confirmed
+msgid "Confirmée"
+msgstr ""
+
+#. module: bf_training
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_record_search
+msgid "Confirmées"
+msgstr ""
+
+#. module: bf_training
+#: model:bf.training.category,name:bf_training.category_conformite
+msgid "Conformité et vie privée"
+msgstr ""
+
+#. module: bf_training
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_plan_form
+msgid "Consultation"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_plan__consultation_proven
+msgid "Consultation prouvée"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields.selection,name:bf_training.selection__bf_training_plan__state__consulted
+msgid "Consulté"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_category__color
+msgid "Couleur"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,help:bf_training.field_bf_training_category__code
+msgid "Court, stable, et utilisé par les exigences. Il ne se traduit pas."
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_obligation__covered_by_id
+msgid "Couverte par"
+msgstr ""
+
+#. module: bf_training
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_requirement_list
+msgid "Couverture"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_requirement__coverage_rate
+msgid "Couverture (%)"
+msgstr ""
+
+#. module: bf_training
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_requirement_search
+msgid "Couverture incomplète"
+msgstr ""
+
+#. module: bf_training
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_record_form
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_record_list
+msgid "Coût"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_record__hourly_cost
+msgid "Coût horaire"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_record__total_cost
+msgid "Coût total"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_activity__create_uid
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_assignment__create_uid
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_category__create_uid
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_obligation__create_uid
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_plan__create_uid
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_record__create_uid
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_requirement__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_activity__create_date
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_assignment__create_date
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_category__create_date
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_obligation__create_date
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_plan__create_date
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_record__create_date
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_requirement__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: bf_training
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_record_search
+msgid "Date"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_plan__consultation_date
+msgid "Date de la consultation"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_hr_employee__training_reference_date
+msgid "Date de référence (formation)"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_requirement__start_date
+msgid "Date fixe"
+msgstr ""
+
+#. module: bf_training
+#: model_terms:ir.actions.act_window,help:bf_training.action_training_assignment
+msgid "Demander, puis relancer"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_obligation__last_computed
+msgid "Dernier calcul"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_assignment__last_reminder_date
+msgid "Dernière relance"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,help:bf_training.field_bf_training_requirement__excluded_category_ids
+msgid "Des heures bien réelles qui ne comptent pas pour cette exigence."
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.constraint,message:bf_training.constraint_bf_training_record_hours_positive
+msgid "Des heures ne peuvent pas être négatives."
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields.selection,name:bf_training.selection__bf_training_requirement__scope__employees
+msgid "Des personnes nommées"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_activity__description
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_category__description
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_activity_form
+msgid "Description"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_record__currency_id
+msgid "Devise"
+msgstr ""
+
+#. module: bf_training
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_obligation_form
+msgid "Dispenser"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields.selection,name:bf_training.selection__bf_training_obligation__state__exempt
+msgid "Dispensée"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_activity__display_name
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_assignment__display_name
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_category__display_name
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_obligation__display_name
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_plan__display_name
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_record__display_name
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_requirement__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_activity__duration_hours
+msgid "Durée prévue (h)"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_plan__date_start
+msgid "Début"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_requirement__trigger
+msgid "Déclencheur"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_requirement__delay_days
+msgid "Délai (jours)"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_record__date_issued
+msgid "Délivrée le"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_requirement__department_id
+msgid "Département"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model,name:bf_training.model_hr_employee
+msgid "Employee"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_assignment__employee_id
+msgid "Employé"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields.selection,name:bf_training.selection__bf_training_assignment__state__in_progress
+msgid "En cours"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields.selection,name:bf_training.selection__bf_training_activity__mode__elearning
+#: model:ir.model.fields.selection,name:bf_training.selection__bf_training_record__mode__elearning
+msgid "En ligne"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields.selection,name:bf_training.selection__bf_training_obligation__state__overdue
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_obligation_search
+msgid "En retard"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.actions.act_window,name:bf_training.action_training_obligation_overdue
+msgid "En retard ou qui expirent"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields.selection,name:bf_training.selection__bf_training_activity__mode__classroom
+#: model:ir.model.fields.selection,name:bf_training.selection__bf_training_record__mode__classroom
+msgid "En salle"
+msgstr ""
+
+#. module: bf_training
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_record_form
+msgid "Encadrement"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields.selection,name:bf_training.selection__bf_training_activity__mode__on_the_job
+#: model:ir.model.fields.selection,name:bf_training.selection__bf_training_record__mode__on_the_job
+msgid "Entraînement à la tâche"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_activity__requires_plan
+msgid "Exige un plan de formation"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_assignment__requirement_id
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_obligation__requirement_id
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_requirement__name
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_obligation_search
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_requirement_form
+msgid "Exigence"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model,name:bf_training.model_bf_training_requirement
+msgid "Exigence de formation"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.actions.act_window,name:bf_training.action_training_requirement
+#: model:ir.ui.menu,name:bf_training.menu_training_requirement
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_requirement_list
+msgid "Exigences"
+msgstr ""
+
+#. module: bf_training
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_activity_search
+msgid "Exigent un plan"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields.selection,name:bf_training.selection__bf_training_obligation__state__expiring
+#: model:ir.model.fields.selection,name:bf_training.selection__bf_training_record__expiry_state__expiring
+msgid "Expire bientôt"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_record__date_expiry
+msgid "Expire le"
+msgstr ""
+
+#. module: bf_training
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_obligation_search
+msgid "Expirent"
+msgstr ""
+
+#. module: bf_training
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_record_search
+msgid "Expirent bientôt"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields.selection,name:bf_training.selection__bf_training_activity__mode__external
+#: model:ir.model.fields.selection,name:bf_training.selection__bf_training_record__mode__external
+msgid "Externe"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields.selection,name:bf_training.selection__bf_training_assignment__state__done
+msgid "Faite"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_record__date_done
+msgid "Faite le"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,help:bf_training.field_bf_training_record__hourly_cost
+msgid ""
+"Figé au moment de la saisie : le taux d'aujourd'hui ne réécrit pas une "
+"dépense d'il y a trois ans."
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_plan__date_end
+msgid "Fin"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_activity__message_follower_ids
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_assignment__message_follower_ids
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_plan__message_follower_ids
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_record__message_follower_ids
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_requirement__message_follower_ids
+msgid "Followers"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_activity__message_partner_ids
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_assignment__message_partner_ids
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_plan__message_partner_ids
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_record__message_partner_ids
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_requirement__message_partner_ids
+msgid "Followers (Partners)"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_record__trainer_partner_id
+msgid "Formateur externe"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_record__trainer_employee_id
+msgid "Formateur interne"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_activity__provider_partner_id
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_record__provider_partner_id
+msgid "Formateur ou organisme"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.ui.menu,name:bf_training.menu_training_root
+#: model_terms:ir.ui.view,arch_db:bf_training.view_hr_employee_form_training
+msgid "Formation"
+msgstr ""
+
+#. module: bf_training
+#: model:mail.template,subject:bf_training.mail_template_training_reminder
+msgid "Formation à faire : {{ object.activity_id.name }}"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_hr_employee__training_record_count
+#: model_terms:ir.ui.view,arch_db:bf_training.view_hr_employee_form_training
+msgid "Formations"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_hr_employee__training_expiring_count
+msgid "Formations qui expirent"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_hr_employee__training_record_ids
+#: model_terms:ir.ui.view,arch_db:bf_training.view_hr_employee_form_training
+msgid "Formations suivies"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_requirement__requirement_type
+msgid "Forme"
+msgstr ""
+
+#. module: bf_training
+#: model:bf.training.category,name:bf_training.category_gestion
+msgid "Gestion et supervision"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_activity__has_message
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_assignment__has_message
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_plan__has_message
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_record__has_message
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_requirement__has_message
+msgid "Has Message"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_record__hours
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_activity_list
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_plan_form
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_record_list
+msgid "Heures"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_obligation__hours_required
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_requirement__min_hours
+msgid "Heures exigées"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_obligation__hours_done
+msgid "Heures faites"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_activity__id
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_assignment__id
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_category__id
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_obligation__id
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_plan__id
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_record__id
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_requirement__id
+msgid "ID"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,help:bf_training.field_bf_training_activity__message_needaction
+#: model:ir.model.fields,help:bf_training.field_bf_training_assignment__message_needaction
+#: model:ir.model.fields,help:bf_training.field_bf_training_plan__message_needaction
+#: model:ir.model.fields,help:bf_training.field_bf_training_record__message_needaction
+#: model:ir.model.fields,help:bf_training.field_bf_training_requirement__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,help:bf_training.field_bf_training_activity__message_has_error
+#: model:ir.model.fields,help:bf_training.field_bf_training_activity__message_has_sms_error
+#: model:ir.model.fields,help:bf_training.field_bf_training_assignment__message_has_error
+#: model:ir.model.fields,help:bf_training.field_bf_training_assignment__message_has_sms_error
+#: model:ir.model.fields,help:bf_training.field_bf_training_plan__message_has_error
+#: model:ir.model.fields,help:bf_training.field_bf_training_plan__message_has_sms_error
+#: model:ir.model.fields,help:bf_training.field_bf_training_record__message_has_error
+#: model:ir.model.fields,help:bf_training.field_bf_training_record__message_has_sms_error
+#: model:ir.model.fields,help:bf_training.field_bf_training_requirement__message_has_error
+#: model:ir.model.fields,help:bf_training.field_bf_training_requirement__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr ""
+
+#. module: bf_training
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_record_form
+msgid "Il manque"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields.selection,name:bf_training.selection__bf_training_requirement__trigger__immediate
+msgid "Immédiatement"
+msgstr ""
+
+#. module: bf_training
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_record_search
+msgid "Incomplètes"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_activity__message_is_follower
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_assignment__message_is_follower
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_plan__message_is_follower
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_record__message_is_follower
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_requirement__message_is_follower
+msgid "Is Follower"
+msgstr ""
+
+#. module: bf_training
+#: model_terms:ir.actions.act_window,help:bf_training.action_training_assignment
+msgid ""
+"L'assignation est le geste ; l'obligation est la règle. On peut\n"
+"               assigner sans exigence, et remplir une exigence sans avoir rien\n"
+"               assigné."
+msgstr ""
+
+#. module: bf_training
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_record_form
+msgid ""
+"L'attestation reçue de l'extérieur se range ici. Elle se\n"
+"                                conserve six ans après la dernière année à laquelle elle\n"
+"                                se rapporte."
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields.selection,name:bf_training.selection__bf_training_activity__provider_type__internal
+msgid "L'employeur lui-même"
+msgstr ""
+
+#. module: bf_training
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_activity_form
+msgid ""
+"L'entraînement à la tâche et l'apprentissage individuel,\n"
+"                            y compris en ligne, ne comptent que si la durée est\n"
+"                            établie dans un plan de formation et qu'un accompagnement\n"
+"                            est offert pendant l'apprentissage."
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,help:bf_training.field_bf_training_requirement__legal_text
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_requirement_form
+msgid "L'extrait, tel qu'il est écrit."
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,help:bf_training.field_bf_training_requirement__legal_basis
+msgid "L'intitulé et l'article, au long."
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.constraint,message:bf_training.constraint_bf_training_plan_dates_coherentes
+msgid "La fin d'un plan ne peut pas précéder son début."
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,help:bf_training.field_bf_training_assignment__record_id
+msgid "La pièce qui a clos l'assignation."
+msgstr ""
+
+#. module: bf_training
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_record_form
+msgid "La preuve"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,help:bf_training.field_bf_training_record__content_version
+msgid "La version du contenu au moment où la formation a été suivie."
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_activity__write_uid
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_assignment__write_uid
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_category__write_uid
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_obligation__write_uid
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_plan__write_uid
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_record__write_uid
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_requirement__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_activity__write_date
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_assignment__write_date
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_category__write_date
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_obligation__write_date
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_plan__write_date
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_record__write_date
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_requirement__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,help:bf_training.field_bf_training_requirement__legal_reference
+msgid "Le chapitre ou le numéro."
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,help:bf_training.field_bf_training_assignment__partner_id
+msgid ""
+"Le contact, parce qu'une formation peut être assignée à quelqu'un qui n'a "
+"pas de fiche d'employé."
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,help:bf_training.field_bf_training_record__date_done
+msgid ""
+"Le jour où la formation a réellement été suivie, pas celui de la saisie."
+msgstr ""
+
+#. module: bf_training
+#. odoo-python
+#: code:addons/bf_training/models/training_plan.py:0
+msgid ""
+"Le plan doit d'abord être consulté. La consultation est une condition de "
+"l'admissibilité, pas une formalité d'après-coup."
+msgstr ""
+
+#. module: bf_training
+#: model_terms:ir.actions.act_window,help:bf_training.action_training_plan
+msgid ""
+"Le plan porte deux choses qui ne vivent nulle part ailleurs : la\n"
+"               durée d'apprentissage établie à l'avance, et la preuve de la\n"
+"               consultation tenue sur ce plan."
+msgstr ""
+
+#. module: bf_training
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_plan_form
+msgid ""
+"Le plan se conserve avec la preuve qu'il a été consulté.\n"
+"                        Sans la date et la pièce, la consultation n'est pas prouvée,\n"
+"                        et c'est elle qui rend la formation donnée par l'entreprise\n"
+"                        admissible."
+msgstr ""
+
+#. module: bf_training
+#. odoo-python
+#: code:addons/bf_training/models/training_record.py:0
+msgid ""
+"Le plan « %(plan)s » ne couvre pas le %(jour)s. Une durée établie dans un "
+"plan doit l'être dans le plan de la bonne période."
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,help:bf_training.field_hr_employee__training_reference_date
+msgid ""
+"Le point de départ des délais de formation. Reprise du premier contrat quand"
+" il existe, sinon de la création de la fiche. Elle se corrige à la main : "
+"c'est elle qui date les obligations."
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,help:bf_training.field_bf_training_requirement__delay_days
+msgid ""
+"Le temps accordé après le déclencheur. Une obligation qui doit être remplie "
+"dans l'année de l'embauche se règle à 365."
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,help:bf_training.field_bf_training_record__payroll_charge_rate
+msgid "Les cotisations de l'employeur sur ce salaire."
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,help:bf_training.field_bf_training_activity__duration_hours
+msgid ""
+"Les heures inscrites au plan. Une réalisation peut en déclarer d'autres : ce"
+" sont celles de la réalisation qui comptent."
+msgstr ""
+
+#. module: bf_training
+#: model_terms:ir.actions.act_window,help:bf_training.action_training_obligation
+msgid ""
+"Les obligations se fabriquent toutes seules à partir des exigences.\n"
+"               Écrire une exigence, puis lancer « Recalculer »."
+msgstr ""
+
+#. module: bf_training
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_plan_form
+msgid "Marquer consulté"
+msgstr ""
+
+#. module: bf_training
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_assignment_form
+msgid "Marquer faite"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_plan__committee_member_ids
+msgid "Membres du comité"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_activity__message_has_error
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_assignment__message_has_error
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_plan__message_has_error
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_record__message_has_error
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_requirement__message_has_error
+msgid "Message Delivery error"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_activity__message_ids
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_assignment__message_ids
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_plan__message_ids
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_record__message_ids
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_requirement__message_ids
+msgid "Messages"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_activity__mode
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_record__mode
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_activity_search
+msgid "Mode"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_requirement__rolling_months
+msgid "Mois glissants"
+msgstr ""
+
+#. module: bf_training
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_activity_form
+msgid "Monter la version"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_obligation__exempt_reason
+msgid "Motif de dispense"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields.selection,name:bf_training.selection__bf_training_record__expiry_state__permanent
+msgid "Ne périme pas"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_category__activity_count
+msgid "Nombre d'activités"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_requirement__obligation_count
+msgid "Nombre de personnes visées"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_activity__record_count
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_plan__record_count
+msgid "Nombre de réalisations"
+msgstr ""
+
+#. module: bf_training
+#: model_terms:ir.actions.act_window,help:bf_training.action_training_category
+msgid "Nommer les sujets"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_assignment__note
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_record__note
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_requirement__note
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_record_form
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_requirement_form
+msgid "Note"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_activity__message_needaction_counter
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_assignment__message_needaction_counter
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_plan__message_needaction_counter
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_record__message_needaction_counter
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_requirement__message_needaction_counter
+msgid "Number of Actions"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_activity__message_has_error_counter
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_assignment__message_has_error_counter
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_plan__message_has_error_counter
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_record__message_has_error_counter
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_requirement__message_has_error_counter
+msgid "Number of errors"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,help:bf_training.field_bf_training_activity__message_needaction_counter
+#: model:ir.model.fields,help:bf_training.field_bf_training_assignment__message_needaction_counter
+#: model:ir.model.fields,help:bf_training.field_bf_training_plan__message_needaction_counter
+#: model:ir.model.fields,help:bf_training.field_bf_training_record__message_needaction_counter
+#: model:ir.model.fields,help:bf_training.field_bf_training_requirement__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,help:bf_training.field_bf_training_activity__message_has_error_counter
+#: model:ir.model.fields,help:bf_training.field_bf_training_assignment__message_has_error_counter
+#: model:ir.model.fields,help:bf_training.field_bf_training_plan__message_has_error_counter
+#: model:ir.model.fields,help:bf_training.field_bf_training_record__message_has_error_counter
+#: model:ir.model.fields,help:bf_training.field_bf_training_requirement__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_record__certificate_number
+msgid "Numéro d'attestation"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_assignment__obligation_id
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_obligation_form
+msgid "Obligation"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model,name:bf_training.model_bf_training_obligation
+msgid "Obligation de formation"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.actions.act_window,name:bf_training.action_training_obligation
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_requirement__obligation_ids
+#: model:ir.ui.menu,name:bf_training.menu_training_obligation
+#: model_terms:ir.ui.view,arch_db:bf_training.view_hr_employee_form_training
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_obligation_list
+msgid "Obligations"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_hr_employee__training_obligation_ids
+msgid "Obligations de formation"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_hr_employee__training_overdue_count
+msgid "Obligations en retard"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_category__sequence
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_requirement__sequence
+msgid "Ordre"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields.selection,name:bf_training.selection__bf_training_activity__mode__professional_order
+#: model:ir.model.fields.selection,name:bf_training.selection__bf_training_activity__provider_type__professional_order
+#: model:ir.model.fields.selection,name:bf_training.selection__bf_training_record__mode__professional_order
+msgid "Ordre professionnel"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields.selection,name:bf_training.selection__bf_training_activity__provider_type__certified_body
+msgid "Organisme ou formateur agréé"
+msgstr ""
+
+#. module: bf_training
+#: model_terms:ir.actions.act_window,help:bf_training.action_training_record
+msgid "Ouvrir le registre"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields.selection,name:bf_training.selection__bf_training_requirement__period__annual
+msgid "Par année civile"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_assignment__partner_id
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_obligation__employee_id
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_record__employee_id
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_obligation_search
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_record_search
+msgid "Personne"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_requirement__employee_ids
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_requirement_form
+msgid "Personnes visées"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_record__attachment_count
+msgid "Pièces"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_record__attachment_ids
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_record_form
+msgid "Pièces justificatives"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_plan__name
+msgid "Plan"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model,name:bf_training.model_bf_training_plan
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_record__plan_id
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_plan_form
+msgid "Plan de formation"
+msgstr ""
+
+#. module: bf_training
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_plan_form
+msgid "Plan de formation 2027"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.actions.act_window,name:bf_training.action_training_plan
+#: model:ir.ui.menu,name:bf_training.menu_training_plan
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_plan_list
+msgid "Plans de formation"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_requirement__scope
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_requirement_search
+msgid "Portée"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_requirement__job_id
+msgid "Poste"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,help:bf_training.field_bf_training_activity__requires_plan
+msgid ""
+"Pour l'entraînement à la tâche et l'apprentissage individuel, y compris en "
+"ligne, la durée doit être établie dans un plan de formation pour que la "
+"dépense soit admissible."
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_plan__attachment_ids
+msgid "Preuve de la consultation"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_requirement__warn_days
+msgid "Préavis (jours)"
+msgstr ""
+
+#. module: bf_training
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_activity_search
+msgid "Périment"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields.selection,name:bf_training.selection__bf_training_record__expiry_state__expired
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_record_form
+msgid "Périmée"
+msgstr ""
+
+#. module: bf_training
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_record_search
+msgid "Périmées"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_requirement__period
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_plan_form
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_requirement_search
+msgid "Période"
+msgstr ""
+
+#. module: bf_training
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_requirement_form
+msgid "Quand"
+msgstr ""
+
+#. module: bf_training
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_requirement_form
+msgid "Qui"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,help:bf_training.field_bf_training_plan__consultation_note
+msgid "Qui a été consulté, sur quoi, et ce qui en est ressorti."
+msgstr ""
+
+#. module: bf_training
+#: model:ir.module.category,description:bf_training.module_category_training
+msgid "Qui doit quelle formation, et qui l'a faite."
+msgstr ""
+
+#. module: bf_training
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_activity_form
+msgid "Qui la donne"
+msgstr ""
+
+#. module: bf_training
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_record_form
+msgid "Qui, quand, combien"
+msgstr ""
+
+#. module: bf_training
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_requirement_form
+msgid "RLRQ c. S-4.1.1, r. 2"
+msgstr ""
+
+#. module: bf_training
+#. odoo-python
+#: code:addons/bf_training/models/training_assignment.py:0
+msgid ""
+"Rappel : l'activité « %(activite)s » est attendue pour le %(echeance)s."
+msgstr ""
+
+#. module: bf_training
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_requirement_form
+msgid "Recalculer"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.actions.act_window,name:bf_training.action_training_record
+#: model:ir.ui.menu,name:bf_training.menu_training_registre
+msgid "Registre"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.module.category,name:bf_training.module_category_training
+msgid "Registre de formation"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.actions.server,name:bf_training.cron_training_refresh_obligations_ir_actions_server
+msgid "Registre de formation : rafraîchir les obligations"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.actions.server,name:bf_training.cron_training_refresh_expiry_ir_actions_server
+msgid "Registre de formation : rafraîchir les validités"
+msgstr ""
+
+#. module: bf_training
+#: model:mail.template,name:bf_training.mail_template_training_reminder
+msgid "Registre de formation : relance"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.actions.server,name:bf_training.cron_training_reminders_ir_actions_server
+msgid "Registre de formation : relances"
+msgstr ""
+
+#. module: bf_training
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_activity_search
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_obligation_search
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_record_search
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_requirement_search
+msgid "Regrouper par"
+msgstr ""
+
+#. module: bf_training
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_assignment_form
+msgid "Relancer"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_assignment__reminder_count
+msgid "Relances"
+msgstr ""
+
+#. module: bf_training
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_plan_form
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_record_form
+msgid "Remettre en brouillon"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,help:bf_training.field_bf_training_assignment__completion
+msgid "Rempli par le module qui porte le lecteur, quand il y en a un."
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_requirement__renewal_months
+msgid "Renouvellement (mois)"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,help:bf_training.field_bf_training_record__date_expiry
+msgid ""
+"Reprise de la validité de l'activité, et modifiable : une attestation reçue "
+"de l'extérieur porte sa propre date."
+msgstr ""
+
+#. module: bf_training
+#: model:res.groups,name:bf_training.group_training_manager
+msgid "Responsable"
+msgstr ""
+
+#. module: bf_training
+#: model_terms:ir.actions.act_window,help:bf_training.action_training_obligation
+msgid "Rien à montrer pour l'instant"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_activity__reopen_on_change
+msgid "Rouvrir au changement de version"
+msgstr ""
+
+#. module: bf_training
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_requirement_form
+msgid "Règlement sur les services de garde éducatifs à l'enfance, art. 20"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.ui.menu,name:bf_training.menu_training_regles
+msgid "Règles"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_assignment__record_id
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_record_form
+msgid "Réalisation"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model,name:bf_training.model_bf_training_record
+msgid "Réalisation de formation"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_activity__record_ids
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_plan__record_ids
+#: model:ir.ui.menu,name:bf_training.menu_training_record
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_activity_form
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_activity_list
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_plan_form
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_plan_list
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_record_list
+msgid "Réalisations"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_requirement__legal_reference
+msgid "Référence"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_activity__message_has_sms_error
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_assignment__message_has_sms_error
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_plan__message_has_sms_error
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_record__message_has_sms_error
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_requirement__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_record__salary_cost
+msgid "Salaire"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields.selection,name:bf_training.selection__bf_training_obligation__state__undated
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_obligation_search
+msgid "Sans échéance"
+msgstr ""
+
+#. module: bf_training
+#: model:bf.training.category,name:bf_training.category_sst
+msgid "Santé et sécurité du travail"
+msgstr ""
+
+#. module: bf_training
+#: model:bf.training.category,name:bf_training.category_secourisme
+msgid "Secourisme"
+msgstr ""
+
+#. module: bf_training
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_activity_form
+msgid "Secourisme adapté à la petite enfance"
+msgstr ""
+
+#. module: bf_training
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_requirement_form
+msgid "Secourisme valide pour tout le personnel de garde"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_activity__company_id
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_assignment__company_id
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_obligation__company_id
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_plan__company_id
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_record__company_id
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_requirement__company_id
+msgid "Société"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields.selection,name:bf_training.selection__bf_training_requirement__period__rolling
+msgid "Sur une période glissante"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_requirement__legal_text
+msgid "Texte cité"
+msgstr ""
+
+#. module: bf_training
+#: model:res.groups,comment:bf_training.group_training_officer
+msgid "Tient le registre : saisit les réalisations, assigne, relance."
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields.selection,name:bf_training.selection__bf_training_requirement__scope__company
+msgid "Toute la société"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_activity__provider_type
+msgid "Type de formateur"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,help:bf_training.field_bf_training_activity__requires_support
+msgid ""
+"Un accompagnement pendant l'apprentissage, ou une interaction possible avec "
+"l'organisateur, est exigé pour l'apprentissage individuel par les "
+"technologies de l'information."
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,help:bf_training.field_bf_training_record__support_provided
+msgid ""
+"Un accompagnement pendant l'apprentissage, ou une interaction possible avec "
+"l'organisateur."
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.constraint,message:bf_training.constraint_bf_training_assignment_completion_bornee
+msgid "Un avancement se dit entre 0 et 100."
+msgstr ""
+
+#. module: bf_training
+#. odoo-python
+#: code:addons/bf_training/models/training_requirement.py:0
+msgid "Un déclencheur à date fixe doit porter cette date."
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.constraint,message:bf_training.constraint_bf_training_requirement_delay_positive
+msgid "Un délai ne peut pas être négatif."
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields.selection,name:bf_training.selection__bf_training_requirement__scope__department
+msgid "Un département"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.constraint,message:bf_training.constraint_bf_training_record_other_cost_positive
+msgid "Un frais ne peut pas être négatif."
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields.selection,name:bf_training.selection__bf_training_requirement__requirement_type__hours
+msgid "Un nombre d'heures par catégorie"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.constraint,message:bf_training.constraint_bf_training_requirement_rolling_positive
+msgid "Un nombre de mois ne peut pas être négatif."
+msgstr ""
+
+#. module: bf_training
+#. odoo-python
+#: code:addons/bf_training/models/training_plan.py:0
+msgid ""
+"Un plan ne passe pas à « consulté » sans la date de la consultation : c'est "
+"elle qui se conserve."
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields.selection,name:bf_training.selection__bf_training_requirement__scope__job
+msgid "Un poste"
+msgstr ""
+
+#. module: bf_training
+#: model_terms:ir.actions.act_window,help:bf_training.action_training_activity
+msgid ""
+"Une activité dit ce que c'est, combien de temps ça dure, qui la\n"
+"               donne et combien de temps elle reste valide. Qui doit la suivre se\n"
+"               dit ailleurs, dans les exigences."
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields.selection,name:bf_training.selection__bf_training_requirement__requirement_type__activity
+msgid "Une activité précise"
+msgstr ""
+
+#. module: bf_training
+#: model_terms:ir.actions.act_window,help:bf_training.action_training_category
+msgid ""
+"Une catégorie sert surtout aux quotas : « six heures par an, dont\n"
+"               trois sur tel sujet, et le secourisme ne compte pas » ne se dit\n"
+"               pas sans elles."
+msgstr ""
+
+#. module: bf_training
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_obligation_form
+msgid ""
+"Une dispense est une décision qui reste : le recalcul ne la défait pas."
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.constraint,message:bf_training.constraint_bf_training_activity_duration_positive
+msgid "Une durée ne peut pas être négative."
+msgstr ""
+
+#. module: bf_training
+#: model_terms:ir.actions.act_window,help:bf_training.action_training_requirement
+msgid ""
+"Une exigence dit qui doit quoi, pour quand, et sur quelle base\n"
+"               réglementaire. C'est elle qui fabrique les obligations nominatives."
+msgstr ""
+
+#. module: bf_training
+#. odoo-python
+#: code:addons/bf_training/models/training_requirement.py:0
+msgid ""
+"Une exigence en heures doit dire combien d'heures. Zéro heure n'est pas une "
+"exigence."
+msgstr ""
+
+#. module: bf_training
+#. odoo-python
+#: code:addons/bf_training/models/training_requirement.py:0
+msgid ""
+"Une exigence portant sur une activité précise doit nommer cette activité."
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields.selection,name:bf_training.selection__bf_training_requirement__period__once
+msgid "Une fois"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,help:bf_training.field_bf_training_record__is_complete
+msgid "Une ligne incomplète reste au registre et sort des totaux."
+msgstr ""
+
+#. module: bf_training
+#: model_terms:ir.actions.act_window,help:bf_training.action_training_record
+msgid ""
+"Une ligne par formation suivie, avec la vraie date, les heures et la\n"
+"               pièce. Un renouvellement est une ligne de plus, jamais une ligne\n"
+"               réécrite."
+msgstr ""
+
+#. module: bf_training
+#. odoo-python
+#: code:addons/bf_training/models/training_requirement.py:0
+msgid "Une portée par département doit nommer le département."
+msgstr ""
+
+#. module: bf_training
+#. odoo-python
+#: code:addons/bf_training/models/training_requirement.py:0
+msgid "Une portée par personnes doit nommer au moins une personne."
+msgstr ""
+
+#. module: bf_training
+#. odoo-python
+#: code:addons/bf_training/models/training_requirement.py:0
+msgid "Une portée par poste doit nommer le poste."
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,help:bf_training.field_bf_training_activity__reopen_on_change
+msgid ""
+"Une réalisation obtenue sur une version antérieure ne couvre plus "
+"l'exigence. Sans cela, tout l'effectif formé sur l'ancienne version reste "
+"affiché à jour sur la nouvelle."
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.constraint,message:bf_training.constraint_bf_training_activity_validity_positive
+msgid "Une validité ne peut pas être négative."
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields.selection,name:bf_training.selection__bf_training_record__expiry_state__valid
+msgid "Valide"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_obligation__valid_until
+msgid "Valide jusqu'au"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_record__expiry_state
+msgid "Validité"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_activity__validity_months
+msgid "Validité (mois)"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_activity__content_version
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_activity_form
+msgid "Version du contenu"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_record__is_outdated
+msgid "Version dépassée"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_record__content_version
+msgid "Version suivie"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,help:bf_training.field_bf_training_requirement__category_ids
+msgid "Vide signifie toutes les catégories."
+msgstr ""
+
+#. module: bf_training
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_requirement_list
+msgid "Visées"
+msgstr ""
+
+#. module: bf_training
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_obligation_form
+msgid "Voir la preuve"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_activity__website_message_ids
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_assignment__website_message_ids
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_plan__website_message_ids
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_record__website_message_ids
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_requirement__website_message_ids
+msgid "Website Messages"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,help:bf_training.field_bf_training_activity__website_message_ids
+#: model:ir.model.fields,help:bf_training.field_bf_training_assignment__website_message_ids
+#: model:ir.model.fields,help:bf_training.field_bf_training_plan__website_message_ids
+#: model:ir.model.fields,help:bf_training.field_bf_training_record__website_message_ids
+#: model:ir.model.fields,help:bf_training.field_bf_training_requirement__website_message_ids
+msgid "Website communication history"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,help:bf_training.field_bf_training_activity__employer_issues_attestation
+msgid ""
+"À cocher quand personne d'autre n'en délivre. L'employeur doit alors pouvoir"
+" en produire une, qui précise l'objet de l'activité."
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields.selection,name:bf_training.selection__bf_training_obligation__state__pending
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_obligation_search
+msgid "À faire"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_requirement__covered_count
+#: model:ir.model.fields.selection,name:bf_training.selection__bf_training_obligation__state__covered
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_obligation_search
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_requirement_list
+msgid "À jour"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,help:bf_training.field_bf_training_activity__content_version
+msgid ""
+"À monter quand le contenu change au point que ceux qui l'ont suivi devraient"
+" le refaire."
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields.selection,name:bf_training.selection__bf_training_requirement__trigger__fixed
+msgid "À partir d'une date fixe"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields.selection,name:bf_training.selection__bf_training_requirement__trigger__hire
+msgid "À partir de l'embauche"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.ui.menu,name:bf_training.menu_training_obligation_overdue
+msgid "À traiter"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_assignment__due_date
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_obligation__due_date
+msgid "Échéance"
+msgstr ""
+
+#. module: bf_training
+#: model_terms:ir.actions.act_window,help:bf_training.action_training_requirement
+msgid "Écrire la règle"
+msgstr ""
+
+#. module: bf_training
+#: model_terms:ir.actions.act_window,help:bf_training.action_training_plan
+msgid "Écrire le plan"
+msgstr ""
+
+#. module: bf_training
+#: model:res.groups,comment:bf_training.group_training_manager
+msgid "Écrit les exigences et les plans, et répond de la conformité."
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,help:bf_training.field_bf_training_record__expiry_state
+msgid ""
+"Écrit à l'enregistrement et rafraîchi chaque jour par une tâche planifiée. "
+"Ce n'est pas un champ calculé : un état qui dépend de la date du jour ne se "
+"recalcule jamais tout seul."
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields.selection,name:bf_training.selection__bf_training_activity__provider_type__recognized_school
+msgid "Établissement d'enseignement reconnu"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_assignment__state
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_obligation__state
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_plan__state
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_record__state
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_obligation_search
+msgid "État"
+msgstr ""

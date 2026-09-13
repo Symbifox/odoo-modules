@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_training_statement_list" model="ir.ui.view">
+        <field name="name">bf.training.statement.list</field>
+        <field name="model">bf.training.statement</field>
+        <field name="arch" type="xml">
+            <list string="Relevés" decoration-muted="state == 'closed'">
+                <field name="year"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="payroll" widget="monetary"/>
+                <field name="is_subject" widget="boolean_toggle" readonly="1"/>
+                <field name="minimum_participation" widget="monetary"/>
+                <field name="eligible_total" widget="monetary"/>
+                <field name="shortfall" widget="monetary" decoration-danger="shortfall &gt; 0"/>
+                <field name="excluded_count"/>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="state" widget="badge" decoration-success="state == 'closed'"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_training_statement_form" model="ir.ui.view">
+        <field name="name">bf.training.statement.form</field>
+        <field name="model">bf.training.statement</field>
+        <field name="arch" type="xml">
+            <form string="Relevé de participation">
+                <header>
+                    <button name="action_compute" type="object" string="Calculer"
+                            class="btn-primary" invisible="state == 'closed'"/>
+                    <button name="action_close" type="object" string="Clore"
+                            invisible="state != 'computed'"/>
+                    <button name="action_reset" type="object" string="Rouvrir"
+                            invisible="state == 'draft'"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_excluded" type="object"
+                                class="oe_stat_button" icon="fa-exclamation-triangle"
+                                invisible="not excluded_count">
+                            <field name="excluded_count" widget="statinfo" string="Écartées"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <div class="alert alert-info" role="status">
+                        Ce relevé <strong>n'est pas la déclaration</strong>. Il l'appuie.
+                        Les montants restent à valider par qui produit la déclaration
+                        annuelle.
+                    </div>
+                    <group>
+                        <group string="L'assiette">
+                            <field name="year"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="payroll" widget="monetary"/>
+                            <field name="threshold" widget="monetary"/>
+                            <field name="rate"/>
+                            <field name="is_subject" readonly="1"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                        <group string="Le calcul">
+                            <field name="minimum_participation" widget="monetary" readonly="1"/>
+                            <field name="carryover_in" widget="monetary"/>
+                            <field name="eligible_total" widget="monetary" readonly="1"/>
+                            <field name="shortfall" widget="monetary" readonly="1" class="fw-bold"/>
+                            <field name="carryover_out" widget="monetary" readonly="1"/>
+                        </group>
+                    </group>
+                    <div class="alert alert-warning" role="alert" invisible="not excluded_count">
+                        <field name="excluded_count" readonly="1" nolabel="1" class="oe_inline"/>
+                        réalisation(s) ne comptent pas, pour
+                        <field name="excluded_hours" readonly="1" nolabel="1" class="oe_inline"/>
+                        heure(s). Elles restent au registre et sont listées ci-dessous :
+                        ce qui manque ne vaut pas zéro.
+                    </div>
+                    <notebook>
+                        <page string="Dépenses comptées" name="comptees">
+                            <field name="line_ids" readonly="1">
+                                <list>
+                                    <field name="date_done"/>
+                                    <field name="employee_id"/>
+                                    <field name="activity_id"/>
+                                    <field name="hours" sum="Heures"/>
+                                    <field name="amount" sum="Total" widget="monetary"/>
+                                    <field name="currency_id" column_invisible="1"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Écartées, et pourquoi" name="ecartees">
+                            <field name="excluded_ids" readonly="1">
+                                <list decoration-warning="1">
+                                    <field name="date_done"/>
+                                    <field name="employee_id"/>
+                                    <field name="activity_id"/>
+                                    <field name="hours" sum="Heures"/>
+                                    <field name="reason"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Note" name="note">
+                            <field name="note"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+    <record id="view_training_statement_line_list" model="ir.ui.view">
+        <field name="name">bf.training.statement.line.list</field>
+        <field name="model">bf.training.statement.line</field>
+        <field name="arch" type="xml">
+            <list string="Lignes de relevé" create="false">
+                <field name="date_done"/>
+                <field name="employee_id"/>
+                <field name="activity_id"/>
+                <field name="hours" sum="Heures"/>
+                <field name="amount" sum="Total" widget="monetary"/>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="reason"/>
+            </list>
+        </field>
+    </record>
+    <record id="action_training_statement" model="ir.actions.act_window">
+        <field name="name">Relevés de participation</field>
+        <field name="res_model">bf.training.statement</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Faire le relevé d'une année</p>
+            <p>La masse salariale, la participation minimale, les dépenses
+               admissibles et, s'il y a lieu, la cotisation à verser. Les
+               réalisations incomplètes sont écartées et listées, jamais comptées
+               pour zéro.</p>
+        </field>
+    </record>
+</odoo>

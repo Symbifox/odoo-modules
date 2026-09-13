@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_training_legal_reference_user,bf.training.legal.reference utilisateur,model_bf_training_legal_reference,base.group_user,1,0,0,0
+access_training_legal_reference_manager,bf.training.legal.reference responsable,model_bf_training_legal_reference,bf_training.group_training_manager,1,1,1,1
+access_training_statement_officer,bf.training.statement agent,model_bf_training_statement,bf_training.group_training_officer,1,0,0,0
+access_training_statement_manager,bf.training.statement responsable,model_bf_training_statement,bf_training.group_training_manager,1,1,1,1
+access_training_statement_line_officer,bf.training.statement.line agent,model_bf_training_statement_line,bf_training.group_training_officer,1,0,0,0
+access_training_statement_line_manager,bf.training.statement.line responsable,model_bf_training_statement_line,bf_training.group_training_manager,1,1,1,1

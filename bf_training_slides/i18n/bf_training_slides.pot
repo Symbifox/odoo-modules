@@ -1,0 +1,139 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_training_slides
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-13 15:02+0000\n"
+"PO-Revision-Date: 2026-09-13 15:02+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: bf_training_slides
+#: model:ir.model.fields,field_description:bf_training_slides.field_bf_training_activity__support_default
+msgid "Accompagnement offert d'office"
+msgstr ""
+
+#. module: bf_training_slides
+#: model:ir.model,name:bf_training_slides.model_bf_training_activity
+msgid "Activité de formation"
+msgstr ""
+
+#. module: bf_training_slides
+#: model:ir.model,name:bf_training_slides.model_bf_training_assignment
+msgid "Assignation de formation"
+msgstr ""
+
+#. module: bf_training_slides
+#: model:ir.model.constraint,message:bf_training_slides.constraint_bf_training_activity_canal_unique
+msgid "Ce cours est déjà adossé à une activité."
+msgstr ""
+
+#. module: bf_training_slides
+#: model:ir.model,name:bf_training_slides.model_slide_channel_partner
+msgid "Channel / Partners (Members)"
+msgstr ""
+
+#. module: bf_training_slides
+#: model:ir.model.fields,field_description:bf_training_slides.field_bf_training_activity__content_drifted
+msgid "Contenu dérivé"
+msgstr ""
+
+#. module: bf_training_slides
+#: model:ir.model.fields,field_description:bf_training_slides.field_bf_training_activity__slide_content_count
+msgid "Contenus publiés"
+msgstr ""
+
+#. module: bf_training_slides
+#: model:ir.model.fields,field_description:bf_training_slides.field_bf_training_activity__slide_content_count_at_version
+msgid "Contenus à la dernière version"
+msgstr ""
+
+#. module: bf_training_slides
+#. odoo-python
+#: code:addons/bf_training_slides/models/training_activity.py:0
+#: model:ir.model.fields,field_description:bf_training_slides.field_bf_training_activity__slide_channel_id
+#: model:ir.model.fields,field_description:bf_training_slides.field_bf_training_assignment__slide_channel_id
+msgid "Cours en ligne"
+msgstr ""
+
+#. module: bf_training_slides
+#: model:ir.model.fields,field_description:bf_training_slides.field_bf_training_assignment__channel_partner_id
+msgid "Inscription"
+msgstr ""
+
+#. module: bf_training_slides
+#: model_terms:ir.ui.view,arch_db:bf_training_slides.view_training_assignment_form_slides
+msgid "Inscrire au cours"
+msgstr ""
+
+#. module: bf_training_slides
+#: model_terms:ir.ui.view,arch_db:bf_training_slides.view_training_activity_form_slides
+msgid ""
+"Le cours n'a plus le même nombre de contenus publiés qu'au\n"
+"                    moment où la version a été fixée. Monter la version fera\n"
+"                    refaire le cours à ceux qui l'ont suivi ; prendre acte du\n"
+"                    changement fige le compte sans rien redemander."
+msgstr ""
+
+#. module: bf_training_slides
+#: model:ir.model.fields,help:bf_training_slides.field_bf_training_activity__content_drifted
+msgid ""
+"Le cours n'a plus le même nombre de contenus publiés qu'au moment où la "
+"version a été fixée."
+msgstr ""
+
+#. module: bf_training_slides
+#: model:ir.model.fields,help:bf_training_slides.field_bf_training_activity__slide_channel_id
+#: model:ir.model.fields,help:bf_training_slides.field_bf_training_assignment__slide_channel_id
+msgid ""
+"Le cours qui porte le contenu. La complétion du cours écrit une réalisation "
+"au registre."
+msgstr ""
+
+#. module: bf_training_slides
+#: model:ir.model.fields,help:bf_training_slides.field_bf_training_activity__default_plan_id
+msgid ""
+"Le plan sous lequel la durée de ce cours est établie. Repris sur les "
+"réalisations écrites automatiquement."
+msgstr ""
+
+#. module: bf_training_slides
+#: model_terms:ir.ui.view,arch_db:bf_training_slides.view_training_assignment_form_slides
+msgid "Ouvrir le cours"
+msgstr ""
+
+#. module: bf_training_slides
+#: model:ir.model.fields,field_description:bf_training_slides.field_bf_training_activity__default_plan_id
+msgid "Plan par défaut"
+msgstr ""
+
+#. module: bf_training_slides
+#: model_terms:ir.ui.view,arch_db:bf_training_slides.view_training_activity_form_slides
+msgid "Prendre acte sans faire refaire"
+msgstr ""
+
+#. module: bf_training_slides
+#: model:ir.model.fields,help:bf_training_slides.field_bf_training_activity__support_default
+msgid ""
+"Repris sur les réalisations écrites automatiquement à la complétion. À ne "
+"cocher que si un accompagnement est réellement offert pendant "
+"l'apprentissage."
+msgstr ""
+
+#. module: bf_training_slides
+#: model:ir.model.fields,field_description:bf_training_slides.field_bf_training_assignment__member_status
+msgid "Statut au cours"
+msgstr ""
+
+#. module: bf_training_slides
+#. odoo-python
+#: code:addons/bf_training_slides/models/slide_channel_partner.py:0
+msgid "Écrite automatiquement à la complétion du cours en ligne."
+msgstr ""

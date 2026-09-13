@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_training_assignment_list" model="ir.ui.view">
+        <field name="name">bf.training.assignment.list</field>
+        <field name="model">bf.training.assignment</field>
+        <field name="arch" type="xml">
+            <list string="Assignations" decoration-danger="state in ('pending', 'in_progress') and due_date &lt; current_date">
+                <field name="partner_id"/>
+                <field name="employee_id" optional="hide"/>
+                <field name="activity_id"/>
+                <field name="due_date"/>
+                <field name="completion" widget="progressbar"/>
+                <field name="reminder_count" optional="show"/>
+                <field name="last_reminder_date" optional="hide"/>
+                <field name="state" widget="badge" decoration-success="state == 'done'"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_training_assignment_form" model="ir.ui.view">
+        <field name="name">bf.training.assignment.form</field>
+        <field name="model">bf.training.assignment</field>
+        <field name="arch" type="xml">
+            <form string="Assignation">
+                <header>
+                    <button name="action_remind" type="object" string="Relancer"
+                            invisible="state in ('done', 'cancelled')"/>
+                    <button name="action_mark_done" type="object" string="Marquer faite"
+                            class="btn-primary" invisible="state in ('done', 'cancelled')"/>
+                    <button name="action_cancel" type="object" string="Annuler"
+                            invisible="state in ('done', 'cancelled')"/>
+                    <field name="state" widget="statusbar" statusbar_visible="pending,in_progress,done"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="partner_id"/>
+                            <field name="employee_id"/>
+                            <field name="activity_id"/>
+                            <field name="due_date"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                        <group>
+                            <field name="requirement_id"/>
+                            <field name="obligation_id"/>
+                            <field name="record_id"/>
+                            <field name="completion" widget="progressbar"/>
+                            <field name="assigned_by_id"/>
+                            <field name="assigned_date"/>
+                            <field name="reminder_count"/>
+                            <field name="last_reminder_date"/>
+                        </group>
+                    </group>
+                    <field name="note"/>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+    <record id="action_training_assignment" model="ir.actions.act_window">
+        <field name="name">Assignations</field>
+        <field name="res_model">bf.training.assignment</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Demander, puis relancer</p>
+            <p>L'assignation est le geste ; l'obligation est la règle. On peut
+               assigner sans exigence, et remplir une exigence sans avoir rien
+               assigné.</p>
+        </field>
+    </record>
+</odoo>

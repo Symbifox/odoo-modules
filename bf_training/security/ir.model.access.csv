@@ -1,0 +1,20 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_training_category_user,bf.training.category utilisateur,model_bf_training_category,base.group_user,1,0,0,0
+access_training_category_manager,bf.training.category responsable,model_bf_training_category,bf_training.group_training_manager,1,1,1,1
+access_training_activity_user,bf.training.activity utilisateur,model_bf_training_activity,base.group_user,1,0,0,0
+access_training_activity_officer,bf.training.activity agent,model_bf_training_activity,bf_training.group_training_officer,1,1,1,0
+access_training_activity_manager,bf.training.activity responsable,model_bf_training_activity,bf_training.group_training_manager,1,1,1,1
+access_training_plan_user,bf.training.plan utilisateur,model_bf_training_plan,base.group_user,1,0,0,0
+access_training_plan_officer,bf.training.plan agent,model_bf_training_plan,bf_training.group_training_officer,1,0,0,0
+access_training_plan_manager,bf.training.plan responsable,model_bf_training_plan,bf_training.group_training_manager,1,1,1,1
+access_training_requirement_user,bf.training.requirement utilisateur,model_bf_training_requirement,base.group_user,1,0,0,0
+access_training_requirement_officer,bf.training.requirement agent,model_bf_training_requirement,bf_training.group_training_officer,1,0,0,0
+access_training_requirement_manager,bf.training.requirement responsable,model_bf_training_requirement,bf_training.group_training_manager,1,1,1,1
+access_training_obligation_user,bf.training.obligation utilisateur,model_bf_training_obligation,base.group_user,1,0,0,0
+access_training_obligation_officer,bf.training.obligation agent,model_bf_training_obligation,bf_training.group_training_officer,1,1,1,0
+access_training_obligation_manager,bf.training.obligation responsable,model_bf_training_obligation,bf_training.group_training_manager,1,1,1,1
+access_training_record_user,bf.training.record utilisateur,model_bf_training_record,base.group_user,1,0,0,0
+access_training_record_officer,bf.training.record agent,model_bf_training_record,bf_training.group_training_officer,1,1,1,0
+access_training_record_manager,bf.training.record responsable,model_bf_training_record,bf_training.group_training_manager,1,1,1,1
+access_training_assignment_user,bf.training.assignment utilisateur,model_bf_training_assignment,base.group_user,1,0,0,0
+access_training_assignment_officer,bf.training.assignment agent,model_bf_training_assignment,bf_training.group_training_officer,1,1,1,1

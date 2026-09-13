@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_training_activity_form_slides" model="ir.ui.view">
+        <field name="name">bf.training.activity.form.slides</field>
+        <field name="model">bf.training.activity</field>
+        <field name="inherit_id" ref="bf_training.view_training_activity_form"/>
+        <field name="arch" type="xml">
+            <field name="content_version" position="before">
+                <field name="slide_channel_id"/>
+                <field name="slide_content_count" readonly="1"
+                       invisible="not slide_channel_id"/>
+                <field name="slide_content_count_at_version" readonly="1"
+                       invisible="not slide_channel_id"/>
+                <field name="content_drifted" invisible="1"/>
+            </field>
+            <field name="reopen_on_change" position="after">
+                <div colspan="2" class="alert alert-warning" role="alert"
+                     invisible="not content_drifted">
+                    Le cours n'a plus le même nombre de contenus publiés qu'au
+                    moment où la version a été fixée. Monter la version fera
+                    refaire le cours à ceux qui l'ont suivi ; prendre acte du
+                    changement fige le compte sans rien redemander.
+                    <button name="action_acknowledge_drift" type="object"
+                            string="Prendre acte sans faire refaire"
+                            class="btn-link"/>
+                </div>
+            </field>
+            <field name="employer_issues_attestation" position="after">
+                <field name="support_default"/>
+                <field name="default_plan_id"/>
+            </field>
+        </field>
+    </record>
+    <record id="view_training_activity_list_slides" model="ir.ui.view">
+        <field name="name">bf.training.activity.list.slides</field>
+        <field name="model">bf.training.activity</field>
+        <field name="inherit_id" ref="bf_training.view_training_activity_list"/>
+        <field name="arch" type="xml">
+            <field name="validity_months" position="after">
+                <field name="slide_channel_id" optional="show"/>
+                <field name="content_drifted" optional="show" widget="boolean_toggle" readonly="1"/>
+            </field>
+        </field>
+    </record>
+</odoo>

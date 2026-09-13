@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- ⚠️ Le seuil et le taux sont des paramètres, pas des constantes du
+             code : ils bougent par règlement, et un chiffre en dur se périme
+             sans prévenir. Valeurs au 2026-09-13. -->
+        <record id="param_payroll_threshold" model="ir.config_parameter">
+            <field name="key">bf_training_qc.payroll_threshold</field>
+            <field name="value">2000000</field>
+        </record>
+        <record id="param_participation_rate" model="ir.config_parameter">
+            <field name="key">bf_training_qc.participation_rate</field>
+            <field name="value">1</field>
+        </record>
+    </data>
+</odoo>

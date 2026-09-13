@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_training_activity_list" model="ir.ui.view">
+        <field name="name">bf.training.activity.list</field>
+        <field name="model">bf.training.activity</field>
+        <field name="arch" type="xml">
+            <list string="Activités">
+                <field name="name"/>
+                <field name="category_id"/>
+                <field name="mode"/>
+                <field name="duration_hours" sum="Heures"/>
+                <field name="validity_months"/>
+                <field name="provider_partner_id" optional="show"/>
+                <field name="requires_plan" optional="hide"/>
+                <field name="record_count" string="Réalisations"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_training_activity_form" model="ir.ui.view">
+        <field name="name">bf.training.activity.form</field>
+        <field name="model">bf.training.activity</field>
+        <field name="arch" type="xml">
+            <form string="Activité">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_records" type="object" class="oe_stat_button" icon="fa-list">
+                            <field name="record_count" widget="statinfo" string="Réalisations"/>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Archivée" bg_color="text-bg-danger"
+                            invisible="active"/>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="Secourisme adapté à la petite enfance"/></h1>
+                    </div>
+                    <group>
+                        <group string="Ce que c'est">
+                            <field name="code"/>
+                            <field name="category_id"/>
+                            <field name="mode"/>
+                            <field name="duration_hours"/>
+                            <field name="validity_months"/>
+                            <field name="active" invisible="1"/>
+                        </group>
+                        <group string="Version du contenu">
+                            <field name="content_version"/>
+                            <field name="reopen_on_change"/>
+                            <button name="action_bump_version" type="object"
+                                    string="Monter la version" class="btn-link"
+                                    confirm="Ceux qui ont suivi l'ancienne version devront la refaire."/>
+                        </group>
+                        <group string="Qui la donne">
+                            <field name="provider_type"/>
+                            <field name="provider_partner_id"/>
+                            <field name="employer_issues_attestation"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                    <group string="Conditions d'admissibilité">
+                        <field name="requires_plan"/>
+                        <field name="requires_support"/>
+                        <div class="text-muted" colspan="2">
+                            L'entraînement à la tâche et l'apprentissage individuel,
+                            y compris en ligne, ne comptent que si la durée est
+                            établie dans un plan de formation et qu'un accompagnement
+                            est offert pendant l'apprentissage.
+                        </div>
+                    </group>
+                    <notebook>
+                        <page string="Description" name="description">
+                            <field name="description"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+    <record id="view_training_activity_search" model="ir.ui.view">
+        <field name="name">bf.training.activity.search</field>
+        <field name="model">bf.training.activity</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="category_id"/>
+                <field name="provider_partner_id"/>
+                <filter name="sous_plan" string="Exigent un plan" domain="[('requires_plan', '=', True)]"/>
+                <filter name="perissable" string="Périment" domain="[('validity_months', '&gt;', 0)]"/>
+                <filter name="archivees" string="Archivées" domain="[('active', '=', False)]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="group_category" string="Catégorie" context="{'group_by': 'category_id'}"/>
+                    <filter name="group_mode" string="Mode" context="{'group_by': 'mode'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="action_training_activity" model="ir.actions.act_window">
+        <field name="name">Activités</field>
+        <field name="res_model">bf.training.activity</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_training_activity_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Bâtir le catalogue</p>
+            <p>Une activité dit ce que c'est, combien de temps ça dure, qui la
+               donne et combien de temps elle reste valide. Qui doit la suivre se
+               dit ailleurs, dans les exigences.</p>
+        </field>
+    </record>
+</odoo>
