@@ -15,31 +15,26 @@ from reportlab.pdfgen import canvas as rl_canvas
 from . import disposition as dsp
 from . import mesure
 from . import modele
+from . import palette as pal
 
 PDF_MAX = 14400.0
 
-ENCRE = (0.176, 0.188, 0.192)
-GRIS = (0.42, 0.45, 0.47)
-FILET = (0.835, 0.851, 0.863)
-BLEU = (0.161, 0.671, 0.882)
-BLANC = (1, 1, 1)
 
-TEINTES = {
-    "neutre": ((1, 1, 1), (0.788, 0.812, 0.831)),
-    "bleu": ((0.918, 0.969, 0.992), (0.161, 0.671, 0.882)),
-    "ambre": ((0.992, 0.965, 0.906), (0.839, 0.600, 0.122)),
-    "vert": ((0.914, 0.969, 0.933), (0.106, 0.541, 0.294)),
-    "rouge": ((0.992, 0.933, 0.925), (0.753, 0.227, 0.169)),
-}
-
-
-def rendre(plan, titre_document=None, base_url=""):
+def rendre(plan, titre_document=None, base_url="", couleurs=None):
     """Rend le plan en octets PDF.
 
     `base_url` préfixe les liens des boîtes. Un PDF n'a pas de page d'origine :
     un lien relatif comme `/odoo/contacts/42` n'y mène nulle part. Sans base,
     on n'écrit PAS de lien plutôt que d'en écrire un mort.
     """
+    # ⚠️ reportlab veut des triplets 0..1, la palette s'écrit en hexadécimal.
+    # La conversion se fait ICI, une fois, et c'est ce qui empêche le PDF de
+    # redevenir une seconde transcription de la palette qui dérive toute seule.
+    couleurs = couleurs or pal.PAR_DEFAUT
+    encre, gris = pal.rgb(couleurs.encre), pal.rgb(couleurs.gris)
+    filet, bleu = pal.rgb(couleurs.filet), pal.rgb(couleurs.bleu)
+    blanc, teintes = pal.rgb(couleurs.papier), couleurs.teintes_rgb()
+
     mesure.enregistrer_polices()
     echelle = 1.0
     if max(plan.largeur, plan.hauteur) > PDF_MAX:
@@ -56,18 +51,18 @@ def rendre(plan, titre_document=None, base_url=""):
     def y(valeur):
         return plan.hauteur - valeur
 
-    c.setFillColorRGB(*BLANC)
+    c.setFillColorRGB(*blanc)
     c.rect(0, 0, plan.largeur, plan.hauteur, stroke=0, fill=1)
 
     # En-tête
     if plan.titre:
-        c.setFillColorRGB(*BLEU)
+        c.setFillColorRGB(*bleu)
         c.rect(dsp.MARGE_PAGE, y(dsp.MARGE_PAGE + 18), 4, 20, stroke=0, fill=1)
-        c.setFillColorRGB(*ENCRE)
+        c.setFillColorRGB(*encre)
         c.setFont(mesure.GRAS, 14.5)
         c.drawString(dsp.MARGE_PAGE + 12, y(dsp.MARGE_PAGE + 13), plan.titre)
     if plan.sous_titre:
-        c.setFillColorRGB(*GRIS)
+        c.setFillColorRGB(*gris)
         c.setFont(mesure.REGULIER, 9.5)
         c.drawString(dsp.MARGE_PAGE + 12, y(dsp.MARGE_PAGE + 29), plan.sous_titre)
 
@@ -76,7 +71,7 @@ def rendre(plan, titre_document=None, base_url=""):
     etiquettes = []
     c.setLineWidth(1.1)
     for a in plan.aretes:
-        c.setStrokeColorRGB(*FILET)
+        c.setStrokeColorRGB(*filet)
         if a.pointille:
             c.setDash(4, 3)
         else:
@@ -89,7 +84,7 @@ def rendre(plan, titre_document=None, base_url=""):
         c.drawPath(chemin, stroke=1, fill=0)
         c.setDash()
         fx, fy = a.points[-1]
-        c.setFillColorRGB(*FILET)
+        c.setFillColorRGB(*filet)
         pointe = c.beginPath()
         pointe.moveTo(fx, y(fy))
         pointe.lineTo(fx - 3.2, y(fy - 4.6))
@@ -101,20 +96,20 @@ def rendre(plan, titre_document=None, base_url=""):
 
     # Boîtes
     for b in plan.boites:
-        fond, contour = TEINTES.get(b.teinte, TEINTES["neutre"])
+        fond, contour = teintes.get(b.teinte, teintes["neutre"])
         if b.accent:
-            contour = BLEU
+            contour = bleu
         c.setFillColorRGB(*fond)
         c.setStrokeColorRGB(*contour)
         c.setLineWidth(2.6 if b.accent else 1.1)
         c.roundRect(b.x, y(b.y + b.h), b.w, b.h, 6, stroke=1, fill=1)
         ligne_y = b.y + dsp.MARGE_INT + dsp.T_TITRE
-        c.setFillColorRGB(*ENCRE)
+        c.setFillColorRGB(*encre)
         c.setFont(mesure.GRAS, dsp.T_TITRE)
         for ligne in b.lignes_titre:
             c.drawCentredString(b.cx, y(ligne_y), ligne)
             ligne_y += dsp.T_TITRE * dsp.INTERLIGNE
-        c.setFillColorRGB(*GRIS)
+        c.setFillColorRGB(*gris)
         c.setFont(mesure.REGULIER, dsp.T_SOUS)
         for ligne in b.lignes_sous:
             c.drawCentredString(b.cx, y(ligne_y + 1), ligne)
@@ -131,11 +126,11 @@ def rendre(plan, titre_document=None, base_url=""):
 
     for texte, (ex, ey) in etiquettes:
         larg = mesure.largeur(texte, 7.5, gras=True) + 9
-        c.setFillColorRGB(*BLANC)
-        c.setStrokeColorRGB(*FILET)
+        c.setFillColorRGB(*blanc)
+        c.setStrokeColorRGB(*filet)
         c.setLineWidth(0.7)
         c.roundRect(ex - larg / 2, y(ey + 6.5), larg, 13, 3, stroke=1, fill=1)
-        c.setFillColorRGB(*ENCRE)
+        c.setFillColorRGB(*encre)
         c.setFont(mesure.GRAS, 7.5)
         c.drawCentredString(ex, y(ey + 2.8), texte)
 
@@ -143,12 +138,12 @@ def rendre(plan, titre_document=None, base_url=""):
     base = plan.hauteur - dsp.H_PIED + 8
     x = dsp.MARGE_PAGE
     for teinte, libelle in plan.legende:
-        fond, contour = TEINTES.get(teinte, TEINTES["neutre"])
+        fond, contour = teintes.get(teinte, teintes["neutre"])
         c.setFillColorRGB(*fond)
         c.setStrokeColorRGB(*contour)
         c.setLineWidth(0.9)
         c.roundRect(x, y(base), 10, 10, 2, stroke=1, fill=1)
-        c.setFillColorRGB(*GRIS)
+        c.setFillColorRGB(*gris)
         c.setFont(mesure.REGULIER, 8)
         c.drawString(x + 14, y(base), libelle)
         x += 22 + mesure.largeur(libelle, 8)
@@ -157,7 +152,7 @@ def rendre(plan, titre_document=None, base_url=""):
         reduit = "Réduit à %.0f %% pour tenir dans une page PDF." % (echelle * 100)
         pied = (pied + " " + reduit).strip()
     if pied:
-        c.setFillColorRGB(*GRIS)
+        c.setFillColorRGB(*gris)
         c.setFont(mesure.REGULIER, 7.5)
         c.drawRightString(plan.largeur - dsp.MARGE_PAGE, y(base), pied)
 

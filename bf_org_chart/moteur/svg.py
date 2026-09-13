@@ -14,25 +14,10 @@ from xml.sax.saxutils import escape, quoteattr
 from . import disposition as dsp
 from . import mesure
 from . import modele
-
-# Palette de la maison. Le bleu BF ne sert JAMAIS de couleur de texte : il
-# habille les contours et les bandeaux, l'encre reste l'anthracite.
-ENCRE = "#2D3031"
-GRIS = "#6B7280"
-FILET = "#D5D9DC"
-BLEU = "#29ABE1"
-PAPIER = "#FFFFFF"
-
-TEINTES = {
-    "neutre": ("#FFFFFF", "#C9CFD4"),
-    "bleu": ("#EAF7FD", "#29ABE1"),
-    "ambre": ("#FDF6E7", "#D6991F"),
-    "vert": ("#E9F7EE", "#1B8A4B"),
-    "rouge": ("#FDEEEC", "#C03A2B"),
-}
+from . import palette as pal
 
 
-def _texte(x, y, contenu, taille, couleur=ENCRE, gras=False, ancre="middle"):
+def _texte(x, y, contenu, taille, couleur, gras=False, ancre="middle"):
     poids = ' font-weight="600"' if gras else ""
     return (
         '<text x="%.2f" y="%.2f" font-family="BfOrgChartLexend, Lexend, '
@@ -42,8 +27,18 @@ def _texte(x, y, contenu, taille, couleur=ENCRE, gras=False, ancre="middle"):
     )
 
 
-def rendre(plan, police_url="/bf_org_chart/static/fonts/"):
-    """Rend le plan en une chaîne SVG autonome."""
+def rendre(plan, police_url="/bf_org_chart/static/fonts/", couleurs=None):
+    """Rend le plan en une chaîne SVG autonome.
+
+    `couleurs` porte les teintes de la société qui regarde. Sans elle, la
+    marque de la maison sert de repli, ce qui garde le moteur utilisable hors
+    d'Odoo (les essais du moteur l'appellent ainsi).
+    """
+    # Lié une fois, ici : le corps du rendu lit la palette de CETTE société et
+    # non une constante de module, qui redeviendrait une seconde copie.
+    couleurs = couleurs or pal.PAR_DEFAUT
+    encre, gris, filet = couleurs.encre, couleurs.gris, couleurs.filet
+    bleu, papier, teintes = couleurs.bleu, couleurs.papier, couleurs.teintes
     p = []
     p.append(
         '<svg xmlns="http://www.w3.org/2000/svg" '
@@ -61,17 +56,17 @@ def rendre(plan, police_url="/bf_org_chart/static/fonts/"):
         "a{cursor:pointer;}</style>" % (police_url, police_url)
     )
     p.append('<rect x="0" y="0" width="%.2f" height="%.2f" fill="%s"/>'
-             % (plan.largeur, plan.hauteur, PAPIER))
+             % (plan.largeur, plan.hauteur, papier))
 
     # En-tête
     if plan.titre:
         p.append('<rect x="%.2f" y="%.2f" width="4" height="20" fill="%s"/>'
-                 % (dsp.MARGE_PAGE, dsp.MARGE_PAGE - 2, BLEU))
+                 % (dsp.MARGE_PAGE, dsp.MARGE_PAGE - 2, bleu))
         p.append(_texte(dsp.MARGE_PAGE + 12, dsp.MARGE_PAGE + 13, plan.titre,
-                        14.5, ENCRE, True, "start"))
+                        14.5, encre, True, "start"))
     if plan.sous_titre:
         p.append(_texte(dsp.MARGE_PAGE + 12, dsp.MARGE_PAGE + 29,
-                        plan.sous_titre, 9.5, GRIS, False, "start"))
+                        plan.sous_titre, 9.5, gris, False, "start"))
 
     # Arêtes d'abord : elles passent SOUS les boîtes. Les étiquettes, elles,
     # attendent la fin : une étiquette cachée sous une boîte est une donnée
@@ -81,37 +76,37 @@ def rendre(plan, police_url="/bf_org_chart/static/fonts/"):
         points = " ".join("%.2f,%.2f" % (x, y) for x, y in a.points)
         tirets = ' stroke-dasharray="4 3"' if a.pointille else ""
         p.append('<polyline points="%s" fill="none" stroke="%s" '
-                 'stroke-width="1.1"%s/>' % (points, FILET, tirets))
+                 'stroke-width="1.1"%s/>' % (points, filet, tirets))
         fin = a.points[-1]
         p.append('<path d="M %.2f %.2f l -3.2 -4.6 l 6.4 0 z" fill="%s"/>'
-                 % (fin[0], fin[1], FILET))
+                 % (fin[0], fin[1], filet))
         if a.etiquette:
             ex, ey = a.etiquette_xy
             larg = mesure.largeur(a.etiquette, 7.5, gras=True) + 9
             etiquettes.append(
                 '<rect x="%.2f" y="%.2f" width="%.2f" height="13" rx="3" '
                 'fill="%s" stroke="%s" stroke-width="0.7"/>'
-                % (ex - larg / 2, ey - 6.5, larg, PAPIER, FILET))
-            etiquettes.append(_texte(ex, ey + 2.8, a.etiquette, 7.5, ENCRE, True))
+                % (ex - larg / 2, ey - 6.5, larg, papier, filet))
+            etiquettes.append(_texte(ex, ey + 2.8, a.etiquette, 7.5, encre, True))
 
     # Boîtes
     for b in plan.boites:
-        fond, contour = TEINTES.get(b.teinte, TEINTES["neutre"])
+        fond, contour = teintes.get(b.teinte, teintes["neutre"])
         corps = []
         if b.accent:
-            contour = BLEU
+            contour = bleu
         corps.append('<rect x="%.2f" y="%.2f" width="%.2f" height="%.2f" rx="6" '
                      'fill="%s" stroke="%s" stroke-width="%.1f"/>'
                      % (b.x, b.y, b.w, b.h, fond, contour, 2.6 if b.accent else 1.1))
         y = b.y + dsp.MARGE_INT + dsp.T_TITRE
         for ligne in b.lignes_titre:
-            corps.append(_texte(b.cx, y, ligne, dsp.T_TITRE, ENCRE, True))
+            corps.append(_texte(b.cx, y, ligne, dsp.T_TITRE, encre, True))
             y += dsp.T_TITRE * dsp.INTERLIGNE
         for ligne in b.lignes_sous:
-            corps.append(_texte(b.cx, y + 1, ligne, dsp.T_SOUS, GRIS))
+            corps.append(_texte(b.cx, y + 1, ligne, dsp.T_SOUS, gris))
             y += dsp.T_SOUS * dsp.INTERLIGNE
         for ligne in b.lignes_note:
-            corps.append(_texte(b.cx, y + 1, ligne, dsp.T_NOTE, GRIS))
+            corps.append(_texte(b.cx, y + 1, ligne, dsp.T_NOTE, gris))
             y += dsp.T_NOTE * dsp.INTERLIGNE
         bloc = "".join(corps)
         cible = modele.lien_sur(b.lien)
@@ -125,16 +120,16 @@ def rendre(plan, police_url="/bf_org_chart/static/fonts/"):
     y = plan.hauteur - dsp.H_PIED + 8
     x = dsp.MARGE_PAGE
     for teinte, libelle in plan.legende:
-        fond, contour = TEINTES.get(teinte, TEINTES["neutre"])
+        fond, contour = teintes.get(teinte, teintes["neutre"])
         p.append('<rect x="%.2f" y="%.2f" width="10" height="10" rx="2" '
                  'fill="%s" stroke="%s" stroke-width="0.9"/>'
                  % (x, y - 8, fond, contour))
-        p.append(_texte(x + 14, y, libelle, 8, GRIS, False, "start"))
+        p.append(_texte(x + 14, y, libelle, 8, gris, False, "start"))
         # À la MESURE, comme le PDF : une avance à l'estime
         # rouvrait exactement la divergence que `mesure` existe pour fermer.
         x += 22 + mesure.largeur(libelle, 8)
     if plan.pied:
         p.append(_texte(plan.largeur - dsp.MARGE_PAGE, y, plan.pied, 7.5,
-                        GRIS, False, "end"))
+                        gris, False, "end"))
     p.append("</svg>")
     return "".join(p)

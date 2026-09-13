@@ -1,6 +1,6 @@
 {
     "name": "Organigrammes : le moteur de dessin",
-    "version": "18.0.1.1.0",
+    "version": "18.0.1.2.0",
     "category": "Productivity",
     "summary": "Une géométrie, deux rendus : l'organigramme à l'écran et le même en PDF",
     "description": """

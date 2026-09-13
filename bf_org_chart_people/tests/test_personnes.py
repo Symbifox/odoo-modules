@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from odoo.addons.bf_org_chart.moteur import palette
 from odoo.exceptions import ValidationError
 from odoo.tests import TransactionCase, tagged
 
@@ -172,3 +173,73 @@ class TestOrganigrammePersonnes(TransactionCase):
             if nom.startswith("search_default_"):
                 self.assertIn(nom[len("search_default_"):], arch,
                               "filtre par défaut absent de la vue épinglée : %s" % nom)
+
+
+@tagged("post_install", "-at_install", "bf_org_chart")
+class TestPaletteDeLaSociete(TransactionCase):
+    """Le dessin figeait les couleurs de Blue Fox, donc un AUTRE locataire
+    repartait avec notre bleu sur son propre organigramme."""
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.Source = cls.env["res.partner"]
+        cls.societe = cls.Source.create({"name": "Teinte inc.", "is_company": True})
+        cls.pdg = cls.Source.create({"name": "Aline Roy", "function": "Présidente",
+                                     "parent_id": cls.societe.id})
+        cls.Source.create({"name": "Karim Haddad", "function": "Adjoint",
+                           "parent_id": cls.societe.id, "manager_id": cls.pdg.id})
+
+    def test_la_resolution_de_champ_va_du_precis_au_general(self):
+        """Testé sur un double : la chaîne de champs doit se lire même sur une
+        base où aucun module de marque n'est installé, donc sans dépendre de la
+        présence du champ dans CETTE base."""
+        class Fausse:
+            _fields = {"secondary_color": object()}
+            def __getitem__(self, nom):
+                return {"secondary_color": "#123456"}[nom]
+
+        lue = self.Source._org_chart_couleur(
+            Fausse(), ("report_brand_dark", "secondary_color"))
+        self.assertEqual(lue, "#123456")
+        self.assertIsNone(self.Source._org_chart_couleur(Fausse(), ("absent",)))
+
+    def test_un_champ_vide_ne_compte_pas_comme_une_couleur(self):
+        class Vide:
+            _fields = {"report_brand_dark": object(), "secondary_color": object()}
+            def __getitem__(self, nom):
+                return {"report_brand_dark": False, "secondary_color": "#123456"}[nom]
+
+        self.assertEqual(
+            self.Source._org_chart_couleur(
+                Vide(), ("report_brand_dark", "secondary_color")),
+            "#123456")
+
+    def test_la_palette_suit_la_societe(self):
+        """Les deux branches affirment : sur une base sans module de marque, le
+        repli EST le comportement attendu, pas une raison de sauter l'essai."""
+        societe = self.env.company
+        champ = next((n for n in self.Source._ORG_CHART_CHAMPS_BLEU
+                      if n in societe._fields), None)
+        if champ:
+            societe.write({champ: "#B4005A"})
+            self.assertEqual(self.pdg._org_chart_palette().bleu, "#B4005A")
+        else:
+            self.assertEqual(self.pdg._org_chart_palette().bleu,
+                             palette.BLEU_DEFAUT)
+
+    def test_la_palette_de_la_societe_arrive_jusqu_au_dessin(self):
+        societe = self.env.company
+        champ = next((n for n in self.Source._ORG_CHART_CHAMPS_BLEU
+                      if n in societe._fields), None)
+        attendu = "#B4005A" if champ else palette.BLEU_DEFAUT
+        if champ:
+            societe.write({champ: attendu})
+        dessin = self.societe._org_chart_svg("personnes")
+        self.assertIn(attendu, dessin)
+
+    def test_le_dessin_reste_lisible_quelle_que_soit_la_societe(self):
+        pal = self.pdg._org_chart_palette()
+        self.assertGreaterEqual(
+            palette.contraste(pal.encre, pal.papier), 4.5)
+

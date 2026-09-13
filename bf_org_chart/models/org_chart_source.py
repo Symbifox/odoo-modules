@@ -14,7 +14,7 @@ rien dire.
 from odoo import _, models
 from odoo.exceptions import UserError
 
-from ..moteur import disposition, modele, pdf, svg
+from ..moteur import disposition, modele, palette, pdf, svg
 
 
 class OrgChartSource(models.AbstractModel):
@@ -61,15 +61,48 @@ class OrgChartSource(models.AbstractModel):
             raise UserError(_(
                 "Cet organigramme ne peut pas être dessiné : %s", str(trop)))
 
+    #: Où la marque se lit sur la société, du plus précis au plus général. Le
+    #: dernier de chaque liste est un champ du cœur, donc toujours présent.
+    _ORG_CHART_CHAMPS_BLEU = ("report_brand_primary", "primary_color")
+    _ORG_CHART_CHAMPS_ENCRE = ("report_brand_dark", "secondary_color")
+
+    def _org_chart_palette(self):
+        """Les couleurs de la société qui regarde, pas celles de la maison.
+
+        ⚠️ `report_brand_primary` est déclaré par `bf_onboarding_base`, que ce
+        module ne met PAS en dépendance : le socle doit tourner seul sur un Odoo
+        nu. On lit donc par présence du champ, jamais par import, et un
+        locataire sans module de marque retombe sur les couleurs du cœur puis
+        sur les nôtres.
+
+        La validation et la garde de lisibilité vivent dans `Palette`, pas ici :
+        une couleur de société invalide ou trop pâle pour porter du texte y est
+        refusée une seule fois, pour les deux rendus à la fois.
+        """
+        societe = self.env.company
+        return palette.Palette(
+            bleu=self._org_chart_couleur(societe, self._ORG_CHART_CHAMPS_BLEU),
+            encre=self._org_chart_couleur(societe, self._ORG_CHART_CHAMPS_ENCRE),
+        )
+
+    @staticmethod
+    def _org_chart_couleur(societe, noms):
+        for nom in noms:
+            if nom in societe._fields and societe[nom]:
+                return societe[nom]
+        return None
+
     def _org_chart_svg(self, code):
-        return svg.rendre(self._org_chart_plan(code))
+        return svg.rendre(self._org_chart_plan(code),
+                          couleurs=self._org_chart_palette())
 
     def _org_chart_pdf(self, code):
         plan = self._org_chart_plan(code)
         # Les boîtes portent un lien RELATIF, qui va bien à l'écran et ne mène
         # nulle part dans un PDF : on lui donne ici la base de l'instance.
         return pdf.rendre(plan, titre_document=plan.titre,
-                          base_url=self.get_base_url())
+                          base_url=self.get_base_url(),
+                          couleurs=self._org_chart_palette())
 
     def _org_chart_url(self, code, format_=""):
         self.ensure_one()

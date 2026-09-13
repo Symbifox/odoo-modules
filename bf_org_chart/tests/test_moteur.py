@@ -1,11 +1,14 @@
 # -*- coding: utf-8 -*-
 """Le moteur se teste sans base : une carte entre, un plan sort."""
+import pathlib
+import re
 import xml.etree.ElementTree as ET
+from unittest.mock import patch
 
 from odoo.tests import TransactionCase, tagged
 
 from ..moteur import disposition as dsp
-from ..moteur import modele, pdf, svg
+from ..moteur import modele, palette, pdf, svg
 
 
 def _carte(boites, aretes, **kw):
@@ -256,3 +259,104 @@ class TestMoteurRobustesse(TransactionCase):
         carte.avertissements = ["La structure se poursuit plus loin."]
         self.assertEqual(dsp.disposer(carte).avertissements,
                          ["La structure se poursuit plus loin."])
+
+
+@tagged("post_install", "-at_install", "bf_org_chart")
+class TestPalette(TransactionCase):
+    """Les teintes vivaient en double, une copie par rendu, et les deux copies
+    avaient dérivé d'un chiffre par rapport à la marque. Ces essais tiennent la
+    source unique et la garde de lisibilité."""
+
+    def test_le_repli_est_la_marque_que_porte_la_base(self):
+        """⚠️ Ces deux valeurs sont celles de `res.company` et du CSS servi par
+        le site. Le `#29ABE1` / `#2D3031` d'avant était faux d'un chiffre sur
+        les deux, et personne ne l'a vu à l'œil pendant toute la livraison."""
+        self.assertEqual(palette.PAR_DEFAUT.bleu, "#29ABE2")
+        self.assertEqual(palette.PAR_DEFAUT.encre, "#2E3132")
+
+    def test_aucune_teinte_de_marque_ne_reste_figee_dans_un_rendu(self):
+        """La garde structurelle : c'est la SECONDE copie qui a causé la dérive,
+        donc on interdit à un rendu d'en porter une."""
+        from ..moteur import pdf as mod_pdf
+        from ..moteur import svg as mod_svg
+        for module in (mod_svg, mod_pdf):
+            source = pathlib.Path(module.__file__).read_text(encoding="utf-8")
+            self.assertFalse(re.findall(r"#[0-9A-Fa-f]{6}", source),
+                             "%s fige une couleur" % module.__name__)
+            self.assertFalse(re.findall(r"\(0\.\d+, 0\.\d+, 0\.\d+\)", source),
+                             "%s fige un triplet RGB" % module.__name__)
+
+    def test_une_couleur_invalide_ne_traverse_pas_jusqu_au_rendu(self):
+        """Un `#ZZZZZZ` venu de la base devenait un ValueError non attrapé dans
+        la conversion RGB, donc un 500 sur une route publique."""
+        pal = palette.Palette(bleu="#ZZZZZZ", encre="pas une couleur")
+        self.assertEqual(pal.bleu, palette.BLEU_DEFAUT)
+        self.assertEqual(pal.encre, palette.ENCRE_DEFAUT)
+        plan = dsp.disposer(_carte(["a"], []))
+        self.assertTrue(pdf.rendre(plan, couleurs=pal).startswith(b"%PDF-"))
+
+    def test_une_encre_trop_pale_pour_porter_du_texte_est_refusee(self):
+        """#729DAF est une vraie `secondary_color` de la base : conforme à une
+        marque, et à 2,9:1 sur blanc. Un organigramme illisible reste illisible
+        même aux bonnes couleurs."""
+        self.assertLess(palette.contraste("#729DAF", "#FFFFFF"), 4.5)
+        pal = palette.Palette(encre="#729DAF")
+        self.assertEqual(pal.encre, palette.ENCRE_DEFAUT)
+        self.assertGreaterEqual(palette.contraste(pal.encre, pal.papier), 4.5)
+
+    def test_une_encre_foncee_de_la_societe_est_gardee(self):
+        """La garde refuse le pâle, pas le différent : sans ça elle imposerait
+        nos couleurs à tout le monde, ce qui est le défaut qu'on corrige."""
+        pal = palette.Palette(encre="#1A1A2E")
+        self.assertEqual(pal.encre, "#1A1A2E")
+
+    @staticmethod
+    def _couleurs_peintes(plan, pal):
+        """Ce que la toile reçoit vraiment, pas ce que les octets laissent croire."""
+        vues = []
+        vraie = pdf.rl_canvas.Canvas
+
+        class Espion(vraie):
+            def setStrokeColorRGB(self, r, v, b, *a, **k):
+                vues.append((round(r, 6), round(v, 6), round(b, 6)))
+                return super().setStrokeColorRGB(r, v, b, *a, **k)
+
+            def setFillColorRGB(self, r, v, b, *a, **k):
+                vues.append((round(r, 6), round(v, 6), round(b, 6)))
+                return super().setFillColorRGB(r, v, b, *a, **k)
+
+        with patch.object(pdf.rl_canvas, "Canvas", Espion):
+            pdf.rendre(plan, couleurs=pal)
+        return vues
+
+    def test_le_bleu_de_la_societe_habille_les_deux_rendus(self):
+        plan = dsp.disposer(_carte(["a", "b"], [("a", "b")], titre="Essai"))
+        pal = palette.Palette(bleu="#B4005A")
+        dessin = svg.rendre(plan, couleurs=pal)
+        self.assertIn("#B4005A", dessin)
+        self.assertNotIn(palette.BLEU_DEFAUT, dessin)
+        # 🔴 Comparer deux PDF OCTET À OCTET ne prouve rien : reportlab y écrit
+        # un identifiant et une date, donc deux rendus diffèrent TOUJOURS, même
+        # quand la palette est ignorée. La première version de cet essai passait
+        # pour cette raison-là, et la mutation « le PDF ignore la palette » est
+        # passée à travers. On regarde donc ce que la toile peint.
+        peintes = self._couleurs_peintes(plan, pal)
+        arrondi = lambda h: tuple(round(c, 6) for c in palette.rgb(h))
+        self.assertIn(arrondi("#B4005A"), peintes,
+                      "le PDF ignore la palette qu'on lui passe")
+        self.assertNotIn(arrondi(palette.BLEU_DEFAUT), peintes)
+
+    def test_le_fond_accentue_se_derive_du_bleu_de_la_societe(self):
+        """Un fond figé jurerait avec un bleu qui n'est pas le nôtre."""
+        fond, contour = palette.Palette(bleu="#B4005A").teinte("bleu")
+        self.assertEqual(contour, "#B4005A")
+        self.assertNotEqual(fond, palette.PAR_DEFAUT.teinte("bleu")[0])
+        self.assertGreater(palette.luminance(fond), palette.luminance(contour))
+
+    def test_les_teintes_d_etat_ne_suivent_pas_la_marque(self):
+        """L'ambre dit « partiel » et le rouge « au-dessus de cent » partout :
+        les faire suivre la marque rendrait la légende dépendante du locataire."""
+        pal = palette.Palette(bleu="#B4005A", encre="#1A1A2E")
+        for nom in ("ambre", "vert", "rouge", "neutre"):
+            self.assertEqual(pal.teinte(nom), palette.PAR_DEFAUT.teinte(nom))
+

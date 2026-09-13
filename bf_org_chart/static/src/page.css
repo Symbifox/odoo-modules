@@ -14,7 +14,7 @@
 body {
     margin: 0;
     background: #F4F6F8;
-    color: #2D3031;
+    color: var(--brand-dark, #2E3132);
     font-family: "BfOrgChartLexend", Lexend, system-ui, -apple-system, sans-serif;
 }
 .o_bfoc_barre {
@@ -37,12 +37,12 @@ body {
     padding: 6px 14px;
     border: 1px solid #C9CFD4;
     border-radius: 6px;
-    color: #2D3031;
+    color: var(--brand-dark, #2E3132);
     background: #FFFFFF;
     text-decoration: none;
     font-size: 13px;
 }
-.o_bfoc_bouton_bleu { border-color: #29ABE1; }
+.o_bfoc_bouton_bleu { border-color: var(--brand-primary, #29ABE2); }
 .o_bfoc_bouton:hover { background: #EAF7FD; }
 .o_bfoc_message {
     margin: 10px 20px 0;
