@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_process_node_form_training" model="ir.ui.view">
+        <field name="name">bf.process.node.form.training</field>
+        <field name="model">bf.process.node</field>
+        <field name="inherit_id" ref="bf_process.view_bf_process_node_form"/>
+        <field name="arch" type="xml">
+            <sheet position="inside">
+                <group string="Formation" groups="bf_training.group_training_officer">
+                    <field name="training_activity_ids" widget="many2many_tags"
+                           options="{'no_create_edit': True}"/>
+                    <div class="text-muted" colspan="2">
+                        Ce qu'il faut savoir pour tenir cette étape. De là, le registre
+                        dit qui est à jour et qui ne l'est pas.
+                    </div>
+                </group>
+            </sheet>
+        </field>
+    </record>
+</odoo>

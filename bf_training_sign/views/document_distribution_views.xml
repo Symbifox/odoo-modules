@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_document_distribution_form_training" model="ir.ui.view">
+        <field name="name">project.document.distribution.form.training</field>
+        <field name="model">project.document.distribution</field>
+        <field name="inherit_id" ref="project_knowledge_matrix.view_document_distribution_form"/>
+        <field name="arch" type="xml">
+            <field name="compliance_notes" position="before">
+                <field name="training_activity_id" readonly="1"
+                       invisible="not training_activity_id"/>
+                <field name="training_record_id" readonly="1"
+                       invisible="not training_record_id"/>
+                <div class="text-muted" colspan="2"
+                     invisible="not training_activity_id or training_record_id">
+                    L'accusé de cette remise écrira une ligne au registre de formation.
+                    Si une signature est exigée, rien n'est consigné tant qu'elle manque.
+                </div>
+            </field>
+        </field>
+    </record>
+</odoo>

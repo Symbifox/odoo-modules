@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_training_activity_form_sign" model="ir.ui.view">
+        <field name="name">bf.training.activity.form.sign</field>
+        <field name="model">bf.training.activity</field>
+        <field name="inherit_id" ref="bf_training.view_training_activity_form"/>
+        <field name="arch" type="xml">
+            <div name="button_box" position="inside">
+                <button name="action_open_document_distributions" type="object"
+                        class="oe_stat_button" icon="fa-paper-plane"
+                        invisible="not document_id">
+                    <field name="document_distribution_count" widget="statinfo"
+                           string="Remises"/>
+                </button>
+            </div>
+            <field name="content_version" position="before">
+                <field name="document_id" options="{'no_create': True}"/>
+                <field name="document_latest_version_id" readonly="1"
+                       invisible="not document_id"/>
+            </field>
+        </field>
+    </record>
+</odoo>

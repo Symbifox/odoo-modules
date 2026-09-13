@@ -1,0 +1,147 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_training_sign
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0\n"
+"Report-Msgid-Bugs-To: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+
+#. module: bf_training_sign
+#: model:ir.model,name:bf_training_sign.model_bf_training_activity
+msgid "Activité de formation"
+msgstr "Activité de formation"
+
+#. module: bf_training_sign
+#: model:ir.model.fields,field_description:bf_training_sign.field_project_document_distribution__training_activity_id
+msgid "Activité du registre"
+msgstr "Activité du registre"
+
+#. module: bf_training_sign
+#: model:ir.model,name:bf_training_sign.model_bf_training_assignment
+msgid "Assignation de formation"
+msgstr "Assignation de formation"
+
+#. module: bf_training_sign
+#: model:ir.model.constraint,message:bf_training_sign.constraint_bf_training_activity_document_unique
+msgid "Ce document est déjà adossé à une activité."
+msgstr "Ce document est déjà adossé à une activité."
+
+#. module: bf_training_sign
+#: model:ir.model,name:bf_training_sign.model_project_document_distribution
+msgid "Distribution de document"
+msgstr "Distribution de document"
+
+#. module: bf_training_sign
+#. odoo-python
+#: code:addons/bf_training_sign/models/training_activity.py:0
+#: model:ir.model.fields,field_description:bf_training_sign.field_bf_training_activity__document_id
+#: model:ir.model.fields,field_description:bf_training_sign.field_bf_training_assignment__document_id
+msgid "Document à lire"
+msgstr "Document à lire"
+
+#. module: bf_training_sign
+#: model_terms:ir.ui.view,arch_db:bf_training_sign.view_document_distribution_form_training
+msgid ""
+"L'accusé de cette remise écrira une ligne au registre de formation.\n"
+"                    Si une signature est exigée, rien n'est consigné tant qu'elle manque."
+msgstr ""
+"L'accusé de cette remise écrira une ligne au registre de formation.\n"
+"                    Si une signature est exigée, rien n'est consigné tant qu'elle manque."
+
+#. module: bf_training_sign
+#: model:ir.model.fields,help:bf_training_sign.field_bf_training_activity__document_id
+#: model:ir.model.fields,help:bf_training_sign.field_bf_training_assignment__document_id
+msgid ""
+"La politique ou la procédure dont la lecture vaut formation. Chaque module "
+"d'un processus d'accueil a le sien."
+msgstr ""
+"La politique ou la procédure dont la lecture vaut formation. Chaque module "
+"d'un processus d'accueil a le sien."
+
+#. module: bf_training_sign
+#: model:ir.model.fields,help:bf_training_sign.field_bf_training_record__document_version_id
+msgid ""
+"La version exacte que la personne a confirmé avoir lue. C'est elle qui "
+"décide si l'accusé vaut encore."
+msgstr ""
+"La version exacte que la personne a confirmé avoir lue. C'est elle qui "
+"décide si l'accusé vaut encore."
+
+#. module: bf_training_sign
+#. odoo-python
+#: code:addons/bf_training_sign/models/training_assignment.py:0
+msgid ""
+"Le document « %s » n'a aucune version diffusée. Il n'y a rien à remettre."
+msgstr ""
+"Le document « %s » n'a aucune version diffusée. Il n'y a rien à remettre."
+
+#. module: bf_training_sign
+#: model:ir.model.fields,field_description:bf_training_sign.field_bf_training_activity__document_distribution_count
+msgid "Nombre de remises"
+msgstr "Nombre de remises"
+
+#. module: bf_training_sign
+#: model:ir.model.fields,field_description:bf_training_sign.field_bf_training_record__document_version_number
+msgid "Numéro de version"
+msgstr "Numéro de version"
+
+#. module: bf_training_sign
+#: model:ir.model.fields,help:bf_training_sign.field_bf_training_record__document_version_number
+msgid "Numéro de version (ex: 1.0, 1.1, 2.0)"
+msgstr "Numéro de version (ex: 1.0, 1.1, 2.0)"
+
+#. module: bf_training_sign
+#: model:ir.model.fields,field_description:bf_training_sign.field_bf_training_assignment__distribution_id
+msgid "Remise"
+msgstr "Remise"
+
+#. module: bf_training_sign
+#: model:ir.model.fields,field_description:bf_training_sign.field_bf_training_record__distribution_id
+msgid "Remise du document"
+msgstr "Remise du document"
+
+#. module: bf_training_sign
+#: model_terms:ir.ui.view,arch_db:bf_training_sign.view_training_activity_form_sign
+msgid "Remises"
+msgstr "Remises"
+
+#. module: bf_training_sign
+#. odoo-python
+#: code:addons/bf_training_sign/models/training_activity.py:0
+msgid "Remises du document"
+msgstr "Remises du document"
+
+#. module: bf_training_sign
+#: model:ir.model.fields,field_description:bf_training_sign.field_project_document_distribution__training_record_id
+msgid "Réalisation au registre"
+msgstr "Réalisation au registre"
+
+#. module: bf_training_sign
+#: model:ir.model,name:bf_training_sign.model_bf_training_record
+msgid "Réalisation de formation"
+msgstr "Réalisation de formation"
+
+#. module: bf_training_sign
+#: model:ir.model.fields,field_description:bf_training_sign.field_bf_training_activity__document_latest_version_id
+msgid "Version en vigueur"
+msgstr "Version en vigueur"
+
+#. module: bf_training_sign
+#: model:ir.model.fields,field_description:bf_training_sign.field_bf_training_record__document_version_id
+msgid "Version lue"
+msgstr "Version lue"
+
+#. module: bf_training_sign
+#. odoo-python
+#: code:addons/bf_training_sign/models/document_distribution.py:0
+msgid "Écrite automatiquement à l'accusé de réception."
+msgstr "Écrite automatiquement à l'accusé de réception."

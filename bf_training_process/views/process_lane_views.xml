@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_process_lane_form_training" model="ir.ui.view">
+        <field name="name">bf.process.lane.form.training</field>
+        <field name="model">bf.process.lane</field>
+        <field name="arch" type="xml">
+            <form string="Couloir">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_training_activities" type="object"
+                                class="oe_stat_button" icon="fa-graduation-cap"
+                                groups="bf_training.group_training_officer">
+                            <field name="training_activity_count" widget="statinfo"
+                                   string="Formations"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="code" readonly="1"/>
+                            <field name="process_id" readonly="1"/>
+                            <field name="employee_count"/>
+                        </group>
+                    </group>
+                    <separator string="Qui tient ce rôle"/>
+                    <div class="text-muted">
+                        La carte nomme le rôle ; elle ne sait pas qui le tient. Renseigner
+                        les personnes permet à une exigence de formation de viser ce
+                        couloir plutôt qu'une liste de noms recopiée à la main.
+                    </div>
+                    <field name="employee_ids" widget="many2many_tags"
+                           options="{'no_create': True}"/>
+                    <separator string="Étapes"/>
+                    <field name="node_ids" readonly="1">
+                        <list>
+                            <field name="code"/>
+                            <field name="name"/>
+                            <field name="kind"/>
+                            <field name="training_activity_count" string="Formations"/>
+                        </list>
+                    </field>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>

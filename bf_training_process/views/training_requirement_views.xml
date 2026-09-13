@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_training_requirement_form_process" model="ir.ui.view">
+        <field name="name">bf.training.requirement.form.process</field>
+        <field name="model">bf.training.requirement</field>
+        <field name="inherit_id" ref="bf_training.view_training_requirement_form"/>
+        <field name="arch" type="xml">
+            <field name="employee_ids" position="after">
+                <field name="lane_id" invisible="scope != 'lane'"
+                       required="scope == 'lane'"
+                       options="{'no_create': True}"/>
+            </field>
+        </field>
+    </record>
+</odoo>

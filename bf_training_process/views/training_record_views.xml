@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_training_record_form_process" model="ir.ui.view">
+        <field name="name">bf.training.record.form.process</field>
+        <field name="model">bf.training.record</field>
+        <field name="inherit_id" ref="bf_training.view_training_record_form"/>
+        <field name="arch" type="xml">
+            <button name="action_confirm" position="before">
+                <button name="action_trainee_confirm" type="object"
+                        string="L'apprenant confirme"
+                        invisible="mode != 'on_the_job' or trainee_confirmed"/>
+                <button name="action_trainer_confirm" type="object"
+                        string="Le formateur confirme"
+                        invisible="mode != 'on_the_job' or trainer_confirmed"/>
+            </button>
+            <field name="trainer_partner_id" position="after">
+                <field name="process_node_id" invisible="mode != 'on_the_job'"
+                       options="{'no_create': True}"/>
+                <field name="process_id" invisible="1"/>
+                <field name="trainee_confirmed" invisible="mode != 'on_the_job'" readonly="1"/>
+                <field name="trainee_confirm_date" invisible="not trainee_confirmed" readonly="1"/>
+                <field name="trainer_confirmed" invisible="mode != 'on_the_job'" readonly="1"/>
+                <field name="trainer_confirm_date" invisible="not trainer_confirmed" readonly="1"/>
+                <field name="both_confirmed" invisible="1"/>
+            </field>
+        </field>
+    </record>
+    <record id="view_training_record_list_process" model="ir.ui.view">
+        <field name="name">bf.training.record.list.process</field>
+        <field name="model">bf.training.record</field>
+        <field name="inherit_id" ref="bf_training.view_training_record_list"/>
+        <field name="arch" type="xml">
+            <field name="mode" position="after">
+                <field name="process_node_id" optional="hide"/>
+                <field name="both_confirmed" widget="boolean_toggle" optional="hide" readonly="1"/>
+            </field>
+        </field>
+    </record>
+</odoo>
