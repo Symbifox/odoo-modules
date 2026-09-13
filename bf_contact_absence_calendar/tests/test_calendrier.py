@@ -124,7 +124,7 @@ class TestPontCalendrier(TransactionCase):
             self.Source._nature_du_titre("Rien de connu", "vacation"), "vacation")
 
     def test_un_retour_au_prenom_seul_ferme_la_periode(self):
-        """🔴 « Retour de vacances François » ne répète pas le nom de famille de
+        """🔴 « Retour de vacances Prénom » ne répète pas le nom de famille de
         « Vacances - Prénom Nom ». L'appariement à l'identique laissait la
         période sans fin : vu sur le vrai calendrier."""
         P = self.env["res.partner"]
@@ -136,9 +136,7 @@ class TestPontCalendrier(TransactionCase):
                "BEGIN:VEVENT\nUID:r1\nDTSTART;VALUE=DATE:20260905\n"
                "SUMMARY:Retour de vacances Prenom\nEND:VEVENT\n"
                "END:VCALENDAR\n")
-        src = self.Source.create({
-            "name": "Essai", "config_key": False, "calendar_slug": "x",
-        }) if False else self.Source.new({
+        src = self.Source.new({
             "name": "Essai", "calendar_slug": "x", "nature": "vacation",
             "days_back": 400, "days_ahead": 400,
         })
@@ -157,3 +155,57 @@ class TestPontCalendrier(TransactionCase):
         self.assertTrue(candidats, "le retour ne s'est pas apparié au départ")
         self.assertEqual(min(candidats), date(2026, 9, 5))
         self.assertEqual(self.Source._apparier(cle, indices), personne)
+
+    def test_un_raccourci_appris_apparie_ce_qu_aucun_nom_ne_donne(self):
+        """🔴 Des initiales ne ressemblent à aucun nom, et les rapprocher d'un
+        nom qui commence pareil serait l'erreur qu'on refuse ailleurs. On les
+        apprend."""
+        P = self.env["res.partner"]
+        personne = P.create({"name": "Marie Claire Exemple",
+                             "email": "mce@exemple-alias.test"})
+        src = self.Source.new({
+            "name": "Essai raccourcis", "calendar_slug": "x",
+            "days_back": 10, "days_ahead": 10, "nature": "vacation",
+        })
+        self.assertFalse(src._apparier("MCE", []))
+        src.alias_ids = [(0, 0, {"label": "MCE", "partner_id": personne.id})]
+        self.assertEqual(src._apparier("MCE", []), personne)
+        self.assertEqual(src._apparier("mce", []), personne)
+
+    def test_un_raccourci_vide_est_refuse(self):
+        from odoo.exceptions import ValidationError
+        P = self.env["res.partner"]
+        personne = P.create({"name": "Autre Exemple"})
+        src = self.Source.create({"name": "Essai vide", "calendar_slug": "y"})
+        with self.assertRaises(ValidationError):
+            self.env["bf.absence.calendar.alias"].create({
+                "source_id": src.id, "label": "  ", "partner_id": personne.id})
+
+    def test_lire_sans_connexion_le_dit_clairement(self):
+        from odoo.exceptions import UserError
+        src = self.Source.create({"name": "Essai sans connexion",
+                                  "calendar_slug": "z"})
+        with self.assertRaises(UserError):
+            src._config()
+
+    def test_un_retour_ne_ferme_qu_un_depart(self):
+        """🔴 Un unique « Retour de vacances X » fermait TROIS départs du même
+        raccourci, dont un vieux de quatorze mois. Un retour se consomme une
+        fois, et il ne ferme pas un départ qu'il suit de trop loin."""
+        from datetime import timedelta
+        depart_a, depart_b = date(2025, 7, 24), date(2026, 9, 8)
+        retour = date(2026, 9, 19)
+        borne = 70
+        restants = [("exemple", retour)]
+        fins = []
+        for jour in sorted([depart_a, depart_b]):
+            candidats = [(k, d) for k, d in restants
+                         if d > jour and (d - jour).days <= borne]
+            if candidats:
+                retenu = min(candidats, key=lambda kd: kd[1])
+                restants.remove(retenu)
+                fins.append(retenu[1] - timedelta(days=1))
+            else:
+                fins.append(False)
+        self.assertEqual(fins[0], False, "le départ de 2025 ne doit rien fermer")
+        self.assertEqual(fins[1], date(2026, 9, 18))

@@ -5,7 +5,7 @@ calendrier réel qui a servi de modèle porte six entrées sous deux formes, et
 c'est de là que viennent toutes les règles d'ici :
 
     🌴 Prénom - Société                 un marqueur seul, au jour du départ
-    Prénom - Société                    idem
+    Prénom (Société) - vacances         idem
     Vacances - Prénom Nom               un départ...
     Retour de vacances Prénom           ...et son retour, quelques jours plus loin
     Vacances - Société - Lieu           un départ, avec une précision de plus
@@ -35,7 +35,7 @@ RX_PREFIXE = re.compile(r"^\s*(vacances|conges?|absence|absent[e]?|fermeture|hol
 # Une entrée peut commencer par une frimousse : elle n'est pas un nom.
 RX_ORNEMENT = re.compile(r"^[\W_]+", re.UNICODE)
 # 🔴 Le mot qui dit la nature peut être en SUFFIXE autant qu'en préfixe :
-# « Société - vacances » autant que « Vacances - Société ». Sans ça, « vacances »
+# « MMDB - vacances » autant que « Vacances - MMDB ». Sans ça, « vacances »
 # devient un indice de société et empêche l'appariement. Vu en lisant le vrai
 # calendrier, pas en imaginant ses formes.
 NATURES = {
@@ -44,6 +44,11 @@ NATURES = {
     "absente": "other", "fermeture": "closure", "formation": "training",
     "congres": "training", "holidays": "vacation", "holiday": "vacation",
 }
+# 🔴 Au-delà de cette distance, un retour n'appartient plus au départ qu'il
+# suit : c'est un autre voyage. Sans cette borne, un unique « Retour de
+# vacances X » fermait TROIS départs du même raccourci, dont un vieux de
+# quatorze mois. Vu en apprenant un raccourci au module, pas avant.
+JOURS_MAX_ENTRE_DEPART_ET_RETOUR = 70
 # La société notée entre parenthèses : « Prénom (Société) ».
 RX_PARENTHESE = re.compile(r"^(?P<nom>[^(]+)\((?P<societe>[^)]+)\)\s*$")
 
@@ -65,7 +70,9 @@ class BfAbsenceCalendarSource(models.Model):
     config_key = fields.Selection(
         selection="_selection_config",
         string="Connexion Nextcloud",
-        required=True,
+        # ⚠️ Pas obligatoire à la création : on doit pouvoir poser le
+        # calendrier et ses raccourcis avant d'avoir choisi la connexion. Le
+        # manque est dit clairement au moment de lire, pas au moment d'écrire.
         help="La configuration de synchronisation déjà en place fournit "
              "l'adresse, le compte et le mot de passe d'application. Aucun "
              "identifiant neuf n'est demandé.")
@@ -88,6 +95,12 @@ class BfAbsenceCalendarSource(models.Model):
             ("other", "Autre"),
         ],
         string="Nature par défaut", default="vacation", required=True)
+    alias_ids = fields.One2many(
+        comodel_name="bf.absence.calendar.alias",
+        inverse_name="source_id",
+        string="Raccourcis",
+        help="Ce qu'on écrit dans le calendrier et qui n'est le nom de "
+             "personne : des initiales, un surnom, le nom d'un dossier.")
     last_run = fields.Datetime(string="Dernière lecture", readonly=True)
     last_message = fields.Char(string="Résultat", readonly=True)
 
@@ -125,6 +138,9 @@ class BfAbsenceCalendarSource(models.Model):
                 "mot de passe d'application."))
         config = self.env[self.MODELE_CONFIG].sudo().browse(
             int(self.config_key or 0)).exists()
+        if not self.config_key:
+            raise UserError(_(
+                "Choisir la connexion Nextcloud avant de lire le calendrier."))
         if not config:
             raise UserError(_("La connexion Nextcloud choisie n'existe plus."))
         return config
@@ -243,11 +259,18 @@ class BfAbsenceCalendarSource(models.Model):
         ⚠️ On refuse une correspondance ambiguë. « David » tout seul peut
         désigner trois personnes, et se tromper enverrait le courrier d'un
         client à un autre.
+
+        🔴 Les raccourcis appris passent EN PREMIER. Un sigle ne ressemble à
+        aucun nom : ce sont des initiales, et rapprocher des initiales d'un nom
+        qui commence pareil serait exactement l'erreur qu'on refuse ailleurs.
         """
         Partner = self.env["res.partner"]
         cle_n = _sansaccent(cle)
         if not cle_n:
             return Partner
+        for alias in self.alias_ids:
+            if _sansaccent(alias.label) == cle_n:
+                return alias.partner_id
         exact = Partner.search([("name", "=ilike", cle)], limit=2)
         if len(exact) == 1:
             return exact
@@ -285,6 +308,11 @@ class BfAbsenceCalendarSource(models.Model):
                     departs.append((uid, jour, titre, cle, indices))
 
             poses, sans_contact, deja = 0, [], 0
+            # 🔴 Un retour se consomme UNE fois. Il ferme le départ qu'il suit
+            # de plus près, pas tous ceux d'avant. Les départs sont donc
+            # parcourus dans l'ordre, et le retour retenu est retiré du lot.
+            departs.sort(key=lambda d: d[1])
+            restants = list(retours)
             for uid, jour, titre, cle, indices in departs:
                 if Suggestion.search_count([("calendar_uid", "=", uid)]):
                     deja += 1
@@ -298,9 +326,17 @@ class BfAbsenceCalendarSource(models.Model):
                 # nom de famille de « Vacances - François Béland ». L'appariement
                 # à l'identique laissait la période sans fin.
                 depart_n = _sansaccent(cle)
-                candidats = [d for k, d in retours
-                             if d > jour and (depart_n.startswith(k) or k.startswith(depart_n))]
-                fin = min(candidats) - timedelta(days=1) if candidats else False
+                candidats = [
+                    (k, d) for k, d in restants
+                    if d > jour
+                    and (d - jour).days <= JOURS_MAX_ENTRE_DEPART_ET_RETOUR
+                    and (depart_n.startswith(k) or k.startswith(depart_n))
+                ]
+                fin = False
+                if candidats:
+                    retenu = min(candidats, key=lambda kd: kd[1])
+                    restants.remove(retenu)
+                    fin = retenu[1] - timedelta(days=1)
                 if self.env["bf.partner.absence"].search_count([
                     ("partner_id", "=", partner.id),
                     ("date_from", "<=", fin or jour),

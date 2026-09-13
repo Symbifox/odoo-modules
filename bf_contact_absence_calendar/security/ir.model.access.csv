@@ -1,3 +1,5 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_bf_absence_calendar_source_user,bf.absence.calendar.source.user,model_bf_absence_calendar_source,base.group_user,1,0,0,0
 access_bf_absence_calendar_source_manager,bf.absence.calendar.source.manager,model_bf_absence_calendar_source,base.group_partner_manager,1,1,1,1
+access_bf_absence_calendar_alias_user,bf.absence.calendar.alias.user,model_bf_absence_calendar_alias,base.group_user,1,0,0,0
+access_bf_absence_calendar_alias_manager,bf.absence.calendar.alias.manager,model_bf_absence_calendar_alias,base.group_partner_manager,1,1,1,1

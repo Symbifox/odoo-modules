@@ -45,6 +45,21 @@
                             <field name="nature"/>
                         </group>
                     </group>
+                    <notebook>
+                        <page string="Raccourcis" name="alias">
+                            <div class="alert alert-info py-2" role="status">
+                                Ce qu'on écrit dans le calendrier et qui n'est le nom de personne :
+                                des initiales, un surnom, le nom d'un dossier. Le module ne le
+                                devine pas, il l'apprend ici.
+                            </div>
+                            <field name="alias_ids">
+                                <list editable="bottom">
+                                    <field name="label" placeholder="Initiales ou surnom"/>
+                                    <field name="partner_id" options="{'no_create': True}"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
                     <group string="Dernière lecture">
                         <field name="last_run" readonly="1"/>
                         <field name="last_message" readonly="1" nolabel="1"/>
