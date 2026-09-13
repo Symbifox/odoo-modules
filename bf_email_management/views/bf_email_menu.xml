@@ -138,6 +138,15 @@
               action="action_bf_email_rule_quick_window"
               sequence="8"/>
 
+    <!-- : 1 420 des 1 528 lignes en boîte dorment depuis plus de 90
+         jours. L'assistant compte avant d'agir, et « Remettre en boîte »
+         défait le geste. -->
+    <menuitem id="menu_bf_email_cleanup"
+              name="Faire le m&#233;nage"
+              parent="menu_bf_email_config"
+              action="action_bf_email_cleanup"
+              sequence="9"/>
+
     <menuitem id="menu_bf_email_absence"
               name="R&#233;ponses d'absence"
               parent="menu_bf_email_config"

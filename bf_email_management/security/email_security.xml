@@ -110,6 +110,20 @@
         <field name="perm_unlink" eval="False"/>
     </record>
 
+    <!-- Une sourdine est personnelle. Pas de règle d'administration en
+         lecture globale ici : savoir quels fils un collègue a écartés ne sert
+         à rien et dit quelque chose de sa journée. -->
+    <record id="bf_email_thread_mute_owner" model="ir.rule">
+        <field name="name">Sourdine : propriétaire uniquement</field>
+        <field name="model_id" ref="model_bf_email_thread_mute"/>
+        <field name="domain_force">[('user_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
     <record id="bf_email_rule_owner" model="ir.rule">
         <field name="name">Courriel : visible uniquement au propriétaire</field>
         <field name="model_id" ref="model_bf_email"/>
@@ -347,7 +361,7 @@
     </record>
 
     <!--
-      Ne pas déranger — la file de retenue.
+      Ne pas déranger— la file de retenue.
 
       Lecture seule pour tout le monde : les lignes sont écrites en `sudo` par
       les deux gardes et par le cron, jamais par un geste d'usager. On borne

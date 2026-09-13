@@ -33,7 +33,10 @@ const PREVIEW_FIELDS = [
     "record_name",
     "res_model",
     "res_id",
-    "body_html_display",
+    // : le volet lit la version PARQUÉE. `body_html_display` reste
+    // le champ brut assaini, que les constructeurs de réponse utilisent.
+    "body_html_reading",
+    "blocked_image_count",
 ];
 
 /**
@@ -458,7 +461,7 @@ export class BfEmailPreviewListController extends ListController {
 
     get previewSrcdoc() {
         const rec = this.previewState.record;
-        if (!rec || !rec.body_html_display) {
+        if (!rec || !rec.body_html_reading) {
             return "<!doctype html><html><body></body></html>";
         }
         return `<!doctype html>
@@ -475,7 +478,7 @@ export class BfEmailPreviewListController extends ListController {
   a { color: #29ABE1; }
 </style>
 </head>
-<body>${rec.body_html_display}</body>
+<body>${rec.body_html_reading}</body>
 </html>`;
     }
 }

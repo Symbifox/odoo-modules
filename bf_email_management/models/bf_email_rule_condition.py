@@ -14,9 +14,10 @@ Two notes on what a clause can honestly see:
 
 - ``raw_headers`` is filled by the IMAP ingestion path. Chatter/gateway rows
   usually have none, so a header clause simply does not match them — it never
-  raises. Same for ``body``: the engine reads ``body_preview``, the truncated
-  copy, because the full body of an orphan IMAP row is reconstructed on demand
-  and is far too expensive to render for every rule on every message.
+  raises. Same for ``body``: the engine reads ``body_text`` since It
+  used to read ``body_preview``, the first 300 characters, so a rule written on
+  a word that appears in the second paragraph never fired, silently. The
+  haystack is still capped below.
 - Every text comparison caps the haystack at ``_MAX_HAYSTACK`` characters
   before a regex touches it. Python's ``re`` has no timeout, and a rule is
   user-authored: an unbounded pattern over a 2 MB body is a worker that never
@@ -61,6 +62,7 @@ FIELD_CATALOGUE = [
     ("is_to_me", "Je suis dans « À »", "bool"),
     ("is_from_me", "Envoyé par moi", "bool"),
     ("is_bulk", "Envoi de masse", "bool"),
+    ("is_invitation", "Invitation d'agenda", "bool"),
     ("has_attachments", "A des pièces jointes", "bool"),
     ("is_internal_sender", "Expéditeur de mon organisation", "bool"),
     ("has_record", "Déjà rattaché à une fiche Odoo", "bool"),
@@ -438,11 +440,15 @@ class BfEmailRuleCondition(models.Model):
             raw = " ".join(filter(None, [record.email_to, record.email_cc]))
         elif name == "anywhere":
             raw = " ".join(filter(None, [
-                record.subject, record.body_preview, record.email_from,
+                record.subject, record.body_text, record.email_from,
                 record.email_to, record.email_cc,
             ]))
         elif name == "body":
-            raw = record.body_preview or ""
+            # : « Corps du message » lisait `body_preview`, c'est-à-dire
+            # les 300 premiers caractères. Une règle écrite sur un mot qui
+            # apparaît au deuxième paragraphe ne se déclenchait jamais, en
+            # silence. Le plafond `_MAX_HAYSTACK` reste posé plus bas.
+            raw = record.body_text or record.body_preview or ""
         else:
             raw = record[name] or ""
         return (raw or "")[:_MAX_HAYSTACK]

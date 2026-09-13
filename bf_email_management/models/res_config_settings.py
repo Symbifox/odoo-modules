@@ -7,7 +7,7 @@ n'a longtemps servi qu'à garder l'xmlid historique
 
 Il reprend du service en 18.0.11.1.0 pour ce qui n'appartient à personne en
 particulier : l'affichage des dossiers IMAP dans la boîte de réception est
-une décision d'organisation, pas une préférence d'affichage.
+une décision d'organisation, pas une préférence d'affichage. Voir
 """
 
 from odoo import _, api, fields, models
@@ -64,6 +64,30 @@ class ResConfigSettings(models.TransientModel):
              "vers le téléphone est un transport distinct.",
     )
 
+    bf_email_block_remote_images = fields.Boolean(
+        string="Bloquer les images distantes à la lecture",
+        default=True,
+        help="Une image chargée depuis le serveur de l'expéditeur lui dit que "
+             "le message a été lu, quand, et depuis quelle adresse IP. Le "
+             "téléphone les parque depuis toujours ; cette case fait de même "
+             "au poste, avec un bouton « Afficher les images » par message.\n\n"
+             "⚠️ Contrairement aux autres réglages du module, l'absence de la "
+             "clé vaut OUI : le défaut d'une protection est la protection.",
+    )
+
+    bf_email_gen_enabled = fields.Boolean(
+        string="Assistance de Gen dans la boîte",
+        default=False,
+        help="Ajoute « Résumer le fil » et « Proposer une réponse » dans la "
+             "boîte de réception. Le texte est rendu à l'écran et n'est "
+             "JAMAIS écrit sur la ligne : il ne va ni dans la recherche, ni "
+             "dans les sauvegardes, ni au calendrier de conservation.\n\n"
+             "⚠️ Décoché par défaut, y compris après la mise à jour. Le "
+             "courrier contient du renseignement personnel de clients, et "
+             "l'envoyer à un modèle est une communication à un tiers : c'est "
+             "une décision, pas un réglage d'affichage.",
+    )
+
     bf_email_dnd_enabled = fields.Boolean(
         string="Mode « ne pas déranger »",
         default=False,
@@ -108,6 +132,10 @@ class ResConfigSettings(models.TransientModel):
             self.env["bf.email.popup"]._instance_enabled()
         )
         res["bf_email_dnd_enabled"] = self.env["bf.dnd"]._instance_enabled()
+        res["bf_email_gen_enabled"] = self.env["bf.email"]._gen_enabled()
+        res["bf_email_block_remote_images"] = (
+            self.env["bf.email"]._block_remote_images_enabled()
+        )
         return res
 
     def set_values(self):
@@ -131,6 +159,14 @@ class ResConfigSettings(models.TransientModel):
         ICP.set_param(
             "bf_email.popup_enabled",
             "1" if self.bf_email_popup_enabled else "0",
+        )
+        ICP.set_param(
+            "bf_email.gen_enabled",
+            "1" if self.bf_email_gen_enabled else "0",
+        )
+        ICP.set_param(
+            "bf_email.block_remote_images",
+            "1" if self.bf_email_block_remote_images else "0",
         )
         ICP.set_param(
             "bf_email.dnd_enabled",

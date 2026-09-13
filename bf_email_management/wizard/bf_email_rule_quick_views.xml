@@ -54,6 +54,10 @@
                     <button name="action_create_rules" type="object"
                             string="Ajouter les règles cochées"
                             class="btn-primary"/>
+                    <button name="action_select_recommended" type="object"
+                            string="Cocher les recommandées qui manquent"
+                            class="btn-secondary"
+                            help="Le semis d'usine ne passe qu'une fois, au premier compte. Quand le catalogue grandit, ce bouton rattrape ce qui manque."/>
                     <button string="Annuler" class="btn-secondary"
                             special="cancel"/>
                 </footer>

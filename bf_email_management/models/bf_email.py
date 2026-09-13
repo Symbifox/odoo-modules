@@ -25,6 +25,29 @@ from .subject_utils import dedup_subject_prefix
 
 _logger = logging.getLogger(__name__)
 
+# Objets que les clients d'agenda posent sur une invitation ou sa réponse, en
+# français comme en anglais. Relevé sur le corpus BF : 14 « Invitation: », 66
+# « Accepted: », 13 « Declined: », plus les formes « mise à jour » et
+# « annulée ». Sert de repli quand la partie MIME n'a pas été vue.
+_INVITATION_SUBJECT_RE = re.compile(
+    r"^\s*(re\s*:\s*|tr\s*:\s*|fwd?\s*:\s*)*"
+    r"(invitation|invit\.|accepted|acceptée?|accepte|declined|refusée?|refuse"
+    r"|tentative|provisoire|annulée?|canceled|cancelled|updated invitation"
+    r"|invitation mise à jour|nouvelle invitation)\b",
+    re.IGNORECASE,
+)
+
+# Une image distante dans un courriel reçu est un pisteur jusqu'à preuve du
+# contraire : la charger dit à l'expéditeur que le message est lu, à quelle
+# heure et depuis quelle adresse IP. Le téléphone parque ces images depuis
+# ; le poste les chargeait encore. Mesuré sur BF le 2026-09-13 : 7 189
+# reçus portent une image distante et 172 des 250 plus récents portent une
+# image de 1 pixel
+_REMOTE_IMG_RE = re.compile(
+    r"""(<img\b[^>]*?\s)src\s*=\s*(["\'])(\s*https?://[^"\']*)\2""",
+    re.IGNORECASE,
+)
+
 # Marque posée sur les ``ir.attachment`` extraites du RFC 2822 d'une ligne
 # IMAP. Une ligne née du chatter porte ses pièces sur son ``mail.message`` ;
 # une ligne IMAP n'a que les octets de ``raw_rfc822``, qu'on ne matérialise
@@ -159,6 +182,19 @@ class BfEmail(models.Model):
         compute="_compute_body_preview",
         store=True,
     )
+    body_text = fields.Text(
+        string="Texte du message",
+        compute="_compute_body_text",
+        store=True,
+        index="trigram",
+        help="Le corps en texte brut, sans balises. C'est ce que la recherche "
+             "lit : `body_preview` s'arrête à 300 caractères, et 92,5 % des "
+             "corps mesurés sur BF le dépassent — soit 11,2 % du texte "
+             "réellement indexé.\n\n"
+             "⚠️ L'index trigrammes n'est posé que si l'extension `pg_trgm` "
+             "existe dans la base ; sinon Odoo l'ignore et la recherche reste "
+             "juste, simplement plus lente.",
+    )
     body_html = fields.Html(
         string="Corps",
         compute="_compute_body_html",
@@ -170,6 +206,18 @@ class BfEmail(models.Model):
              "mail.mail.body_html (un envoi sans document laisse le message "
              "vide)\u00a0; sinon raw_rfc822. Jamais effac\u00e9 par un "
              "recalcul.",
+    )
+    body_html_reading = fields.Html(
+        string="Corps (lecture)",
+        compute="_compute_body_html_reading",
+        sanitize=False,
+        readonly=True,
+        help="Ce que le formulaire affiche : la version assainie, images "
+             "distantes parquées tant que le lecteur ne les demande pas.",
+    )
+    blocked_image_count = fields.Integer(
+        string="Images bloquées",
+        compute="_compute_body_html_reading",
     )
     body_html_display = fields.Html(
         string="Corps (affichage)",
@@ -514,6 +562,15 @@ class BfEmail(models.Model):
     # ------------------------------------------------------------------
     # Inbox-Zero workflow (decoupled from status)
     # ------------------------------------------------------------------
+    is_muted = fields.Boolean(
+        string="Fil en sourdine",
+        default=False,
+        index=True,
+        help="Le fil a été mis en sourdine : ses messages n'entrent plus dans "
+             "la boîte de réception, mais rien n'est jeté ni marqué lu. Posé "
+             "par `bf.email.thread.mute`, y compris sur les messages qui "
+             "arrivent APRÈS la mise en sourdine.",
+    )
     is_handled = fields.Boolean(
         string="Traité",
         default=False,
@@ -614,6 +671,22 @@ class BfEmail(models.Model):
         store=True,
         help="Plus d'un message dans le fil ET activité < 48h. "
              "Whittaker 2011 — fils actifs = à traiter par lots.",
+    )
+    has_calendar_part = fields.Boolean(
+        string="Porte un iCalendar",
+        default=False,
+        help="Posé à la COLLECTE, en marchant les parties MIME, comme "
+             "has_attachments. Un calculé ne peut pas le faire : la partie "
+             "text/calendar est à l'intérieur du multipart, et raw_headers ne "
+             "garde que les en-têtes de premier niveau.",
+    )
+    is_invitation = fields.Boolean(
+        string="Invitation d'agenda",
+        compute="_compute_signals",
+        store=True,
+        index=True,
+        help="Invitation ou réponse d'agenda (iMIP). Reconnue à la partie "
+             "text/calendar quand on l'a vue à la collecte, sinon à l'objet.",
     )
     is_bulk = fields.Boolean(
         string="En masse",
@@ -803,6 +876,217 @@ class BfEmail(models.Model):
         for rec in self:
             rec.body_html_display = tools.html_sanitize(rec.body_html or "")
 
+    # ------------------------------------------------------------------
+    # Images distantes : le corps rendu, et ce qu'on en retire
+    # ------------------------------------------------------------------
+    @api.depends("body_html_display")
+    def _compute_body_html_reading(self):
+        """Le corps tel que le FORMULAIRE le rend, images parquées.
+
+        Le contexte `bf_load_images` le débloque, et c'est le bouton
+        « Afficher les images » de l'en-tête qui le pose : un champ calculé lit
+        le contexte, donc rouvrir la fiche avec la clé suffit, sans colonne de
+        plus ni réglage par usager.
+        """
+        show_all = bool(self.env.context.get("bf_load_images"))
+        for rec in self:
+            if show_all or not rec._block_remote_images_enabled():
+                rec.body_html_reading = rec.body_html_display
+                rec.blocked_image_count = 0
+            else:
+                body, blocked = rec._body_html_blocked()
+                rec.body_html_reading = body
+                rec.blocked_image_count = blocked
+
+    def action_load_remote_images(self):
+        """Rouvre la fiche en autorisant les images, pour cette vue seulement."""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "res_model": self._name,
+            "res_id": self.id,
+            "view_mode": "form",
+            "views": [[False, "form"]],
+            "target": "current",
+            "context": dict(self.env.context, bf_load_images=True),
+        }
+
+    # ------------------------------------------------------------------
+    # Sourdine
+    # ------------------------------------------------------------------
+    def _inherit_thread_mute(self):
+        """Marque les lignes neuves dont le fil est déjà en sourdine."""
+        cibles = self.filtered(
+            lambda r: r.thread_root_id and not r.is_muted)
+        if not cibles:
+            return
+        Mute = self.env["bf.email.thread.mute"].sudo()
+        paires = Mute.search_read([
+            ("user_id", "in", cibles.mapped("user_id").ids),
+            ("thread_root_id", "in", cibles.mapped("thread_root_id")),
+        ], ["user_id", "thread_root_id"])
+        en_sourdine = {(p["user_id"][0], p["thread_root_id"]) for p in paires}
+        if not en_sourdine:
+            return
+        a_marquer = cibles.filtered(
+            lambda r: (r.user_id.id, r.thread_root_id) in en_sourdine)
+        if a_marquer:
+            a_marquer.sudo().write({"is_muted": True})
+
+    def action_mute_thread(self):
+        """Met en sourdine le fil de chaque ligne choisie.
+
+        Une ligne sans racine de fil ne peut pas être mise en sourdine : il n'y
+        a rien à nommer qui survive au prochain message. On le DIT plutôt que
+        de faire semblant, sinon la touche `M` semblerait ne rien faire.
+        """
+        Mute = self.env["bf.email.thread.mute"]
+        sans_fil = self.filtered(lambda r: not r.thread_root_id)
+        if sans_fil and len(sans_fil) == len(self):
+            raise UserError(_(
+                "Ce message n'appartient à aucun fil : il n'y a rien à mettre "
+                "en sourdine. Une règle sur l'expéditeur ferait l'affaire."))
+        vals = []
+        deja = set(Mute._muted_roots())
+        for rec in self - sans_fil:
+            if rec.thread_root_id in deja:
+                continue
+            deja.add(rec.thread_root_id)
+            vals.append({
+                "user_id": rec.user_id.id or self.env.uid,
+                "thread_root_id": rec.thread_root_id,
+                "subject": rec.subject or "",
+            })
+        if vals:
+            Mute.create(vals)
+        return False
+
+    def action_unmute_thread(self):
+        """Rend à la boîte les fils des lignes choisies."""
+        racines = [r.thread_root_id for r in self if r.thread_root_id]
+        if racines:
+            self.env["bf.email.thread.mute"].search([
+                ("user_id", "=", self.env.uid),
+                ("thread_root_id", "in", racines),
+            ]).unlink()
+        return False
+
+    def _body_html_blocked(self, load_images=False):
+        """Corps assaini, images distantes parquées. Rend ``(html, n)``.
+
+        Une seule implémentation pour les trois surfaces : le téléphone
+        (``_mobile_body_html``, qui délègue ici depuis), la boîte OWL et
+        le formulaire. Écrire la défense deux fois, c'est la voir diverger, et
+        c'est exactement ce qui s'était produit : le téléphone protégeait, le
+        poste chargeait tout.
+
+        ``cid:`` et ``data:`` ne sont pas touchés : ils ne sortent pas du
+        message, donc ils n'annoncent rien à personne.
+        """
+        self.ensure_one()
+        body = self.body_html_display or ""
+        if load_images:
+            return body, 0
+        blocked = [0]
+
+        def _park(match):
+            blocked[0] += 1
+            return "%sdata-blocked-src=%s%s%s" % (
+                match.group(1), match.group(2), match.group(3), match.group(2))
+
+        return _REMOTE_IMG_RE.sub(_park, body), blocked[0]
+
+    def _block_remote_images_enabled(self):
+        """L'interrupteur d'instance, à l'état SÛR par défaut.
+
+        ⚠️ Contrairement aux autres réglages du module, l'absence de la clé
+        vaut OUI et non NON. Le défaut d'un réglage de protection est la
+        protection : une base qui reçoit cette version à son prochain ``-u``
+        cesse d'annoncer ses lectures aux expéditeurs, et c'est le changement
+        de comportement voulu. Poser la clé à « 0 » rend l'ancien.
+        """
+        value = self.env["ir.config_parameter"].sudo().get_param(
+            "bf_email.block_remote_images", "1")
+        return str(value).strip().lower() not in ("0", "false", "no", "non", "")
+
+    # ------------------------------------------------------------------
+    # Le fuseau de celui qui écrit
+    # ------------------------------------------------------------------
+    def _sender_date_header(self):
+        """L'en-tête ``Date:`` brut, ou une chaîne vide."""
+        self.ensure_one()
+        headers = self.raw_headers or ""
+        if not headers:
+            return ""
+        match = re.search(r"^Date:[ \t]*(.+(?:\r?\n[ \t].+)*)", headers,
+                          re.IGNORECASE | re.MULTILINE)
+        return match.group(1).strip() if match else ""
+
+    def _sender_utc_offset(self):
+        """Décalage horaire que l'expéditeur a lui-même écrit, ou ``None``.
+
+        La RFC 5322 veut que ``Date:`` porte l'heure LOCALE de l'expéditeur
+        suivie de son décalage. Mesuré sur BF : 400 reçus récents sur 400 ont
+        un ``Date:`` lisible, dont 85 en ``-0400`` et 21 en ``-0700``.
+
+        Rend ``None`` quand il n'y a pas d'en-tête, quand il est illisible, ou
+        quand le décalage vaut zéro : ``+0000`` est ce qu'écrit une machine, et
+        ``-0000`` veut dire « heure locale inconnue » dans la norme elle-même.
+        Dans ces cas l'appelant décide, il ne devine pas ici.
+        """
+        self.ensure_one()
+        raw = self._sender_date_header()
+        if not raw:
+            return None
+        try:
+            parsed = email.utils.parsedate_to_datetime(raw)
+        except (TypeError, ValueError):
+            return None
+        if parsed is None or parsed.tzinfo is None:
+            return None
+        offset = parsed.utcoffset()
+        if not offset:
+            return None
+        return offset
+
+    def _sender_clock_is_meaningless(self):
+        """Vrai quand l'expéditeur n'a pas d'heure de bureau à qualifier.
+
+        Deux cas : il a daté en UTC (``+0000`` ou ``-0000``), ce que font les
+        machines, ou son adresse est celle d'un automate. Un robot n'écrit pas
+        « tard le soir », il écrit quand son cron passe.
+        """
+        self.ensure_one()
+        if self.email_from and self._NOTIFICATION_PATTERNS.search(
+                self.email_from.strip()):
+            return True
+        raw = self._sender_date_header()
+        if not raw:
+            return False
+        return bool(re.search(r"[+-]0000\s*(\(|$)", raw))
+
+    @api.depends("body_html")
+    def _compute_body_text(self):
+        """Le corps entier en texte, pour que la recherche le voie.
+
+        Même extraction que l'aperçu, sans la coupe à 300 caractères. Mesuré
+        sur BF le 2026-09-13 : le corpus fait environ 42 Mo de texte pour
+        16 108 lignes, soit 2 591 caractères par courriel en moyenne. C'est
+        petit, et c'est le prix d'une recherche qui trouve.
+
+        ⚠️ Chercher directement dans `body_html` aurait été plus économique et
+        faux : un `ilike` y rencontre les attributs de style, les URL de
+        pistage et les images encodées en base64. Le texte est extrait une
+        fois, à l'écriture, plutôt que traversé à chaque recherche.
+        """
+        for rec in self:
+            body = rec.body_html or ""
+            text = re.sub(r"<(script|style)[^>]*>.*?</\1>", " ", body,
+                          flags=re.IGNORECASE | re.DOTALL)
+            text = re.sub(r"<[^>]+>", " ", text)
+            text = html.unescape(text)
+            rec.body_text = re.sub(r"\s+", " ", text).strip() or False
+
     @api.depends("body_html")
     def _compute_body_preview(self):
         r"""Aperçu texte du courriel, tel qu'il s'affiche en liste et sur mobile.
@@ -825,9 +1109,27 @@ class BfEmail(models.Model):
             text = re.sub(r"\s+", " ", text).strip()
             rec.body_preview = text[:300]
 
+    # ⚠️ Le motif d'origine ne connaissait que six formes, toutes avec leurs
+    # traits d'union. Mesuré sur BF le 2026-09-13 : sur 1 357 reçus encore en
+    # boîte, il en reconnaissait UN. Ce qui lui échappait n'avait rien
+    # d'exotique : `donotreply@` sans traits d'union (234 lignes à lui seul),
+    # `donotreply-nepasrepondre@` d'un transporteur (40), `notifications@`
+    # d'une autre instance (13). Juste la même idée écrite autrement. Le motif
+    # élargi en reconnaît 312.
+    #
+    # ⚠️ `auto@` tout court est volontairement absent : un concessionnaire
+    # automobile, un service « auto » quelconque, et on classe du courrier
+    # humain en notification. Les formes retenues sont celles qui ne peuvent
+    # rien vouloir dire d'autre.
     _NOTIFICATION_PATTERNS = re.compile(
-        r"^(noreply|no-reply|notification|mailer-daemon|postmaster|bounce)"
-        r"@",
+        r"^("
+        r"no[-_.]?reply|do[-_.]?not[-_.]?reply|donotreply"
+        r"|ne[-_.]?pas[-_.]?repondre|nepasrepondre"
+        r"|notifications?|notify|noresponse|no[-_.]?response"
+        r"|alerts?|alarm|automated|auto[-_.]?confirm"
+        r"|mailer[-_.]?daemon|postmaster|bounces?"
+        r")"
+        r"(?:[-_.+][^@]*)?@",
         re.IGNORECASE,
     )
 
@@ -929,11 +1231,12 @@ class BfEmail(models.Model):
     # ⚠️ ``user_id`` fait partie des dépendances, et il y manquait : la moitié
     # de ces signaux se lisent du point de vue du PROPRIÉTAIRE — ses adresses
     # pour « à moi » et « en copie », son fuseau pour « hors heures » depuis
-    # ce lot. Re-router une ligne vers quelqu'un d'autre doit donc les
+    # Re-router une ligne vers quelqu'un d'autre doit donc les
     # recalculer, sinon la ligne garde les réponses de l'ancien propriétaire.
     @api.depends(
         "subject", "body_preview", "email_to", "email_cc", "date",
         "raw_headers", "email_from", "thread_root_id", "user_id",
+        "has_calendar_part",
     )
     def _compute_signals(self):
         # Group records by owner so each user's self-address set is fetched
@@ -946,9 +1249,9 @@ class BfEmail(models.Model):
 
         # ⚠️ `rec.date` est un datetime NAÏF en UTC. En lire le `.hour`
         # comme une heure de bureau marquait « hors heures » tout ce qui entre
-        # après 14 h heure locale — 08–18 UTC valent 04–14 sur la côte est —
-        # soit les trois quarts des entrants mesurés. Le fuseau est celui du
-        # PROPRIÉTAIRE de la ligne : c'est sa journée de travail qu'on
+        # après 14 h à Montréal — 08–18 UTC valent 04–14 locales — soit
+        # 75,2 % des entrants mesurés sur BF le 2026-09-09. Le fuseau est celui
+        # du PROPRIÉTAIRE de la ligne : c'est sa journée de travail qu'on
         # qualifie, pas celle du serveur.
         tz_cache = {}
 
@@ -988,13 +1291,36 @@ class BfEmail(models.Model):
             rec.is_from_me = any(addr in from_addrs for addr in self_addrs)
 
             if rec.date:
-                local = pytz.utc.localize(rec.date).astimezone(
-                    get_tz(rec.user_id or self.env.user))
-                rec.is_late_night = (
-                    local.hour < 8
-                    or local.hour >= 18
-                    or local.weekday() >= 5
-                )
+                # ⚠️ Le fuseau du PROPRIÉTAIRE était déjà un progrès sur
+                # l'heure UTC, et c'est encore le mauvais fuseau.
+                # Kooti et al. 2015 mesure l'heure locale de CELUI QUI ÉCRIT :
+                # un client de Montréal qui écrit à 10 h écrit en heures de
+                # bureau, que je le lise de Montréal ou d'Auckland. Mesuré sur
+                # BF le 2026-09-13 : 10 570 lignes sur 16 178 portaient le
+                # drapeau, parce que le fuseau Odoo du propriétaire est
+                # `Pacific/Auckland` et que les heures de bureau du Québec y
+                # tombent la nuit
+                offset = rec._sender_utc_offset()
+                if offset is not None:
+                    local = rec.date + offset
+                    rec.is_late_night = (
+                        local.hour < 8
+                        or local.hour >= 18
+                        or local.weekday() >= 5
+                    )
+                elif rec._sender_clock_is_meaningless():
+                    # Une machine qui date en UTC ne dit rien de son heure de
+                    # bureau : elle n'en a pas. Mieux vaut pas de signal qu'un
+                    # signal qui parle du serveur.
+                    rec.is_late_night = False
+                else:
+                    local = pytz.utc.localize(rec.date).astimezone(
+                        get_tz(rec.user_id or self.env.user))
+                    rec.is_late_night = (
+                        local.hour < 8
+                        or local.hour >= 18
+                        or local.weekday() >= 5
+                    )
             else:
                 rec.is_late_night = False
 
@@ -1002,6 +1328,21 @@ class BfEmail(models.Model):
 
             headers = (rec.raw_headers or "").lower()
             email_from = (rec.email_from or "").lower()
+
+            # 🔴 La recette « calendar » du catalogue cherchait l'en-tête
+            # Content-Type contenant text/calendar. Elle ne pouvait JAMAIS se
+            # déclencher : `raw_headers` ne garde que les en-têtes de PREMIER
+            # NIVEAU, et une invitation est un multipart/* dont une PARTIE est
+            # text/calendar. Mesuré sur BF le 2026-09-13 : 8 432 lignes portent
+            # un Content-Type, 7 383 disent multipart, ZÉRO dit text/calendar.
+            # C'est le miroir de la garde « une règle sans condition ne se
+            # déclenche jamais » : ici la condition existe et ne rencontre
+            # rien
+            rec.is_invitation = bool(
+                rec.has_calendar_part
+                or "text/calendar" in headers
+                or _INVITATION_SUBJECT_RE.search(subject)
+            )
             sender_domain = email_from.split("@")[-1] if "@" in email_from else ""
             rec.is_bulk = (
                 "list-unsubscribe" in headers
@@ -1277,6 +1618,10 @@ class BfEmail(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         records = super().create(vals_list)
+        # : un message qui rejoint un fil déjà en sourdine naît en
+        # sourdine. Sans ça, mettre un fil en sourdine ne tiendrait que
+        # jusqu'au message suivant, c'est-à-dire jusqu'à ce que ça compte.
+        records._inherit_thread_mute()
         for rec in records:
             if rec.direction != "out" or not rec.in_reply_to:
                 continue
@@ -1851,7 +2196,7 @@ class BfEmail(models.Model):
                         # copier (RFC 3501), `STORE \Deleted` ne marque rien,
                         # et la ligne enregistre un archivage qui n'a pas eu
                         # lieu : le message reste en INBOX pendant qu'Odoo le
-                        # dit traité. C'est la dérive qui a été rapportée.
+                        # dit traité. C'est la dérive rapportée en
                         verdict = bf_email_imap.uid_carries_message_id(
                             conn, rec.imap_uid, rec.message_id_header,
                         )
@@ -2152,10 +2497,11 @@ class BfEmail(models.Model):
         complète, donc la comparaison à un ``user@hôte`` analysé ne pouvait
         pas correspondre. L'exclusion était doublement inerte.
 
-        Ce que ça coûte : le catchall d'une instance est littéralement le
-        ``To:`` de tout courriel entrant. Un « Répondre à tous » qui ne
-        l'écarte pas met la passerelle en copie : le message part, revient par
-        la passerelle, et se reposte tout seul dans le chatter d'où il vient.
+        Ce que ça coûte : sur Blue Fox le catchall est ``bonjour@``, et c'est
+        littéralement le ``To:`` de tout courriel entrant. Un « Répondre à
+        tous » qui ne l'écarte pas met la passerelle en copie : le message
+        part, revient par la passerelle, et se reposte tout seul dans le
+        chatter d'où il vient.
 
         On ajoute les alias de modèle (``mail.alias``) pour la même raison :
         écrire à ``depenses@`` ou ``soutien@`` crée une fiche, ça ne prévient
@@ -3337,7 +3683,7 @@ class BfEmail(models.Model):
         # insert a whole thread at one identical timestamp; with strict ``>``,
         # once the watermark lands on that exact second every sibling message
         # is skipped *permanently* (never retried) — the cause of the missing
-        # Grouped-thread cluster. ``>=`` re-scans the boundary timestamp each run;
+        #cluster. ``>=`` re-scans the boundary timestamp each run;
         # _should_sync dedups by (message_id, user) so no duplicate is created,
         # and the cluster size is always far below batch_size in practice.
         messages = self.env["mail.message"].sudo().search(
@@ -3544,6 +3890,7 @@ class BfEmail(models.Model):
                         "author_id": vals.get("author_id") or existing.author_id.id or False,
                         "email_to": vals.get("email_to") or existing.email_to or "",
                         "email_cc": vals.get("email_cc") or existing.email_cc or "",
+                        "has_calendar_part": vals.get("has_calendar_part") or existing.has_calendar_part,
                         "has_attachments": vals.get("has_attachments") or existing.has_attachments,
                         "attachment_count": vals.get("attachment_count") or existing.attachment_count,
                         "in_reply_to": vals.get("in_reply_to") or existing.in_reply_to or False,
@@ -3639,6 +3986,10 @@ class BfEmail(models.Model):
             "author_id": author_id,
             "has_attachments": bool(attachment_ids),
             "attachment_count": len(attachment_ids),
+            "has_calendar_part": any(
+                (a.mimetype or "").lower().startswith("text/calendar")
+                for a in msg.attachment_ids
+            ),
             "company_id": self.env.company.id,
         }
 
@@ -3958,7 +4309,7 @@ class BfEmail(models.Model):
             # près, marqué comme un réveil plutôt qu'une arrivée.
             #
             # Seule la popup est rappelée : la poussée vers le téléphone a son
-            # propre interrupteur, éteint de longue date, et la rallumer par
+            # propre interrupteur, éteint depuis, et la rallumer par
             # cette porte serait une décision prise ailleurs.
             self.env["bf.email.popup"]._notify_new_emails(woken, wake=True)
 
@@ -4313,6 +4664,19 @@ class BfEmail(models.Model):
 
         attachments = bf_email_imap.extract_attachments(msg)
 
+        # La partie text/calendar se voit ICI et nulle part ailleurs : une fois
+        # la ligne créée, `raw_headers` ne garde que le premier niveau. Même
+        # raison d'être que `has_attachments`
+        #
+        # ⚠️ On réutilise le détecteur d'`imip`, qui existait déjà pour décider
+        # s'il vaut la peine d'analyser l'iCalendar. En écrire un deuxième,
+        # c'était se donner deux définitions de « porte une invitation » et
+        # attendre qu'elles divergent.
+        try:
+            has_calendar = imip.message_has_calendar_part(msg)
+        except Exception:  # noqa: BLE001
+            has_calendar = False
+
         # Extract raw headers for heuristic signals (List-Unsubscribe etc.).
         raw_headers = ""
         try:
@@ -4341,6 +4705,7 @@ class BfEmail(models.Model):
             "author_id": author.id if author else False,
             "has_attachments": bool(attachments),
             "attachment_count": len(attachments),
+            "has_calendar_part": has_calendar,
             "company_id": (account.company_id or account.user_id.company_id).id,
             "user_id": account.user_id.id,
             "account_id": account.id,

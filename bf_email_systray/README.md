@@ -44,6 +44,11 @@ The badge counts before any action is opened, so it cannot import the server's
 domain. Two tests pin the copy, one in this module and one in
 `bf_email_management`.
 
+Since 2.1.0 that copy carries a third leaf, `is_muted = false`: a thread put on
+mute leaves the inbox, so it must leave the badge too, or the count advertises
+work that was explicitly set aside. The pinning test in `bf_email_management` is
+what caught the drift when the leaf was added on the server side alone.
+
 ## Dependencies
 
 `web`, `bf_email_management`.

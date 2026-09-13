@@ -433,6 +433,74 @@ class BfEmailMobileApi(http.Controller):
             body_is_html=bool(data.get("body_is_html")),
         ))
 
+    # ── Brouillons du poste──────────────────────────────────
+    # Le téléphone garde les siens dans un fichier local ; ces routes servent
+    # l'AUTRE pile, celle qu'« Enregistrer comme brouillon » pose au poste.
+    # Seuls les vrais brouillons remontent : un envoi différé part de lui-même
+    # à sa date, et une note interne ne sort jamais par courriel.
+
+    @http.route(f"{BASE}/drafts", type="http", auth="public", methods=["GET"],
+                csrf=False, save_session=False)
+    @_authed
+    def drafts(self, device, **kw):
+        return _json(request.env["bf.email"].mobile_drafts(
+            offset=int(kw.get("offset") or 0),
+            limit=int(kw.get("limit") or 25),
+            search=kw.get("search"),
+        ))
+
+    @http.route(f"{BASE}/draft", type="http", auth="public", methods=["GET"],
+                csrf=False, save_session=False)
+    @_authed
+    def draft(self, device, **kw):
+        return _json(request.env["bf.email"].mobile_draft(kw.get("id")))
+
+    @http.route(f"{BASE}/draft/save", type="http", auth="public",
+                methods=["POST"], csrf=False, save_session=False)
+    @_authed
+    def draft_save(self, device, **kw):
+        """Réécrire un brouillon du poste.
+
+        ⚠️ Écriture PARTIELLE : une clé absente du corps de la requête n'est
+        pas touchée. ``data.get`` rendrait ``None`` aussi bien pour « efface
+        l'objet » que pour « je ne parle pas de l'objet » ; le test
+        d'appartenance distingue les deux, et c'est ce qui permet à l'app de
+        n'envoyer que ce que la personne a modifié.
+        """
+        data = _body(**kw)
+        result = request.env["bf.email"].mobile_draft_save(
+            draft_id=data.get("id"),
+            device=device,
+            base_version=data.get("version"),
+            subject=data.get("subject") if "subject" in data else None,
+            body=data.get("body") if "body" in data else None,
+            body_is_html=bool(data.get("body_is_html")),
+            to=data.get("to") if "to" in data else None,
+            attachment_ids=(data.get("attachment_ids")
+                            if "attachment_ids" in data else None),
+        )
+        # 200 et non 409, comme le doublon d'envoi juste au-dessus : le client
+        # lit l'issue dans la charge utile, et `ApiClient` ne remonte d'un
+        # statut d'erreur que la clé `error`. Un 409 ferait donc perdre à
+        # l'app la version du serveur qu'on prend soin de lui rendre.
+        return _json(result)
+
+    @http.route(f"{BASE}/draft/send", type="http", auth="public",
+                methods=["POST"], csrf=False, save_session=False)
+    @_authed
+    def draft_send(self, device, **kw):
+        data = _body(**kw)
+        return _json(request.env["bf.email"].mobile_draft_send(
+            draft_id=data.get("id"), base_version=data.get("version")))
+
+    @http.route(f"{BASE}/draft/delete", type="http", auth="public",
+                methods=["POST"], csrf=False, save_session=False)
+    @_authed
+    def draft_delete(self, device, **kw):
+        data = _body(**kw)
+        return _json(request.env["bf.email"].mobile_draft_delete(
+            draft_id=data.get("id")))
+
     # ── Odoo-side actions ─────────────────────────────────────────────
     @http.route(f"{BASE}/contacts", type="http", auth="public", methods=["GET"],
                 csrf=False, save_session=False)

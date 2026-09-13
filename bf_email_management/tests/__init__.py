@@ -24,6 +24,16 @@ from . import test_calendar_reminder_ack
 from . import test_default_alarms
 from . import test_recipient_groups
 from . import test_mobile_tokens
+from . import test_mobile_drafts
 from . import test_chatter_reply_all
 from . import test_bf_dnd
 from . import test_signaux_fuseau
+from . import test_fuseau_expediteur
+from . import test_images_distantes
+from . import test_invitations_et_robots
+from . import test_recherche_plein_texte
+from . import test_sourdine_et_relances
+from . import test_desabonnement
+from . import test_petits_gestes
+from . import test_conversations_et_gen
+from . import test_paquet_actifs

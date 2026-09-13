@@ -77,6 +77,36 @@ class BfEmailRuleQuick(models.TransientModel):
         ]
         return values
 
+    def action_select_recommended(self):
+        """Coche d'un coup les recettes recommandées qui manquent.
+
+        ⚠️ Le semis d'usine (`_seed_defaults_for_user`) ne passe QU'UNE FOIS,
+        au premier compte de la personne. Quand le catalogue grandit, les
+        anciens comptes ne reçoivent rien, et personne ne le remarque : mesuré
+        sur BF le 2026-09-13, le propriétaire de 16 151 des 16 178 lignes
+        n'avait pas la recette « noreply » que ses deux collègues avaient.
+        Ce bouton est le rattrapage, et il ne coche que ce qui manque.
+
+        """
+        self.ensure_one()
+        recommended = {r["key"] for r in RULE_RECIPES if r.get("seed")}
+        manquantes = self.line_ids.filtered(
+            lambda line: not line.already_installed
+            and line.recipe_key in recommended
+        )
+        if not manquantes:
+            raise UserError(_(
+                "Les recettes recommandées sont déjà toutes en place."))
+        manquantes.selected = True
+        return {
+            "type": "ir.actions.act_window",
+            "res_model": self._name,
+            "res_id": self.id,
+            "view_mode": "form",
+            "views": [[False, "form"]],
+            "target": "new",
+        }
+
     def action_create_rules(self):
         self.ensure_one()
         chosen = self.line_ids.filtered("selected")

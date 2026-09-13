@@ -90,11 +90,13 @@ class TestMobileHttp(HttpCase):
     def test_every_data_route_refuses_an_anonymous_caller(self):
         for path in ("/config", "/threads?filter=inbox",
                      "/conversation?thread_key=id:1", "/message?id=1",
-                     "/attachment?email_id=1&idx=0", "/records?model=res.partner&q=ab"):
+                     "/attachment?email_id=1&idx=0", "/records?model=res.partner&q=ab",
+                     "/drafts", "/draft?id=1"):
             with self.subTest(path=path):
                 self.assertEqual(self._get(path).status_code, 401)
         for path in ("/mark_read", "/handle", "/snooze", "/reply", "/compose",
-                     "/route", "/spawn", "/register_push", "/attachment/upload"):
+                     "/route", "/spawn", "/register_push", "/attachment/upload",
+                     "/draft/save", "/draft/send", "/draft/delete"):
             with self.subTest(path=path):
                 self.assertEqual(self._post(path, {}).status_code, 401)
 
@@ -220,7 +222,7 @@ class TestMobileHttp(HttpCase):
     def test_a_write_conflict_is_replayed_not_reported(self):
         """Un conflit d'écriture ne sort jamais en 500 : Odoo rejoue.
 
-        C'est le défaut relevé en production : deux archivages rapprochés
+        C'est le défaut de la: deux archivages rapprochés
         depuis le téléphone, le second refusé par PostgreSQL au ``flush``,
         attrapé par le décorateur en « unexpected error », rendu en 500 — et
         l'app remettait le courriel en boîte. L'exception doit remonter à
@@ -294,3 +296,74 @@ class TestMobileHttp(HttpCase):
         self.assertEqual(self._get("/counts", headers=self._auth()).status_code, 200)
         device.invalidate_recordset(["last_seen"])
         self.assertLess(fields.Datetime.now() - device.last_seen, timedelta(seconds=10))
+
+    # ------------------------------------------------- brouillons du poste
+    # ⚠️ Ce qui ne se voit QUE par HTTP : l'écriture partielle repose sur
+    # l'appartenance d'une clé au corps JSON (`"subject" in data`), pas sur sa
+    # valeur. Un test de modèle appelle la méthode avec des arguments nommés et
+    # ne peut donc pas distinguer « efface l'objet » de « je n'en parle pas ».
+
+    def _brouillon(self, subject="Objet HTTP", body="<p>Texte d'origine.</p>"):
+        draft = self.env["mail.scheduled.message"].with_user(self.owner).create({
+            "model": "bf.email",
+            "res_id": self.email.id,
+            "subject": subject,
+            "body": body,
+            "author_id": self.owner.partner_id.id,
+            "scheduled_date": "2031-01-01 12:00:00",
+            "bf_is_draft": True,
+        })
+        self.env.cr.flush()
+        return draft
+
+    def test_la_liste_des_brouillons_repond_en_json(self):
+        draft = self._brouillon()
+        response = self._get("/drafts", self._auth())
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(draft.id, [d["id"] for d in response.json()["drafts"]])
+
+    def test_une_cle_absente_ne_touche_pas_le_champ(self):
+        """Le cœur de l'écriture partielle, et il n'est visible qu'ici."""
+        draft = self._brouillon()
+        response = self._post("/draft/save",
+                              {"id": draft.id, "subject": "Corrigé au téléphone"},
+                              self._auth())
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.json()["ok"])
+        draft.invalidate_recordset()
+        self.assertEqual(draft.subject, "Corrigé au téléphone")
+        # Le corps n'était pas dans la charge utile : il n'a pas bougé.
+        self.assertEqual(draft.body, "<p>Texte d'origine.</p>")
+
+    def test_une_cle_vide_efface_bel_et_bien(self):
+        """L'autre moitié du même contrat : envoyer « » veut dire effacer."""
+        draft = self._brouillon()
+        self._post("/draft/save", {"id": draft.id, "subject": ""}, self._auth())
+        draft.invalidate_recordset()
+        self.assertEqual(draft.subject, "")
+
+    def test_un_conflit_revient_en_200_avec_la_version_du_serveur(self):
+        """200 et non 409 : `ApiClient` ne remonte d'un statut d'erreur que la
+        clé `error`, et l'app perdrait la version qu'on prend soin de rendre."""
+        draft = self._brouillon()
+        response = self._post(
+            "/draft/save",
+            {"id": draft.id, "version": "2020-01-01 00:00:00",
+             "subject": "Écrasement"},
+            self._auth())
+        self.assertEqual(response.status_code, 200)
+        body = response.json()
+        self.assertTrue(body["conflict"])
+        self.assertEqual(body["draft"]["subject"], "Objet HTTP")
+        draft.invalidate_recordset()
+        self.assertEqual(draft.subject, "Objet HTTP")
+
+    def test_un_brouillon_inconnu_est_un_400_pas_un_500(self):
+        response = self._post("/draft/save", {"id": 999999}, self._auth())
+        self.assertEqual(response.status_code, 400)
+
+    def test_jeter_par_http(self):
+        draft = self._brouillon()
+        response = self._post("/draft/delete", {"id": draft.id}, self._auth())
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(draft.exists())

@@ -6,7 +6,7 @@ JSON simples — pour que les deux actions clientes partagent la même mise en
 page, les mêmes préférences et les mêmes raccourcis clavier.
 
 Rien ici n'est en ``sudo`` : la portée est toujours l'usager courant, et les
-règles d'enregistrement restent l'autorité.
+règles d'enregistrement restent l'autorité. Voir
 """
 
 import email.utils
@@ -209,6 +209,18 @@ class BfEmail(models.Model):
             "domain": [("category", "in", (False, ""))],
         })
         defs.append({
+            "key": "awaiting", "label": _("Relance à faire"),
+            "icon": "fa-hourglass-half", "parent": False,
+            "domain": [("is_awaiting_reply", "=", True)],
+            "unread": False,
+        })
+        defs.append({
+            "key": "muted", "label": _("Sourdine"),
+            "icon": "fa-bell-slash", "parent": False,
+            "domain": [("is_muted", "=", True)],
+            "unread": False,
+        })
+        defs.append({
             "key": "all", "label": _("Tous les courriels"),
             "icon": "fa-archive", "parent": False, "domain": [],
             "unread": False,
@@ -239,6 +251,12 @@ class BfEmail(models.Model):
         """
         return [
             ("is_handled", "=", False),
+            # : un fil mis en sourdine sort de la boîte sans être
+            # traité. Le drapeau est sur la LIGNE parce que les deux autres
+            # transcriptions de ce domaine — le SQL du téléphone et le
+            # JavaScript du badge — ne savent pas interroger une table de
+            # sourdines.
+            ("is_muted", "=", False),
             "|", "|", ("imap_in_inbox", "=", True),
             ("source", "in", ("chatter", "gateway")),
             ("imap_folder", "=", False),
@@ -633,6 +651,14 @@ class BfEmail(models.Model):
             "record_name": self.record_name or "",
             "is_to_me": self.is_to_me,
             "is_question": self.is_question,
+            "is_action_request": self.is_action_request,
+            "is_invitation": self.is_invitation,
+            "is_bulk": self.is_bulk,
+            "is_muted": self.is_muted,
+            "is_awaiting_reply": self.is_awaiting_reply,
+            "can_unsubscribe": bool(
+                self.unsubscribe_url or self.unsubscribe_mailto),
+            "unsubscribe_one_click": self.unsubscribe_one_click,
             # Couleur de la société du compte. C'est dans la boîte
             # COMMUNE qu'elle sert : deux sociétés y cohabitent et rien
             # d'autre ne dit laquelle est laquelle. Vide pour le courrier né
@@ -659,15 +685,11 @@ class BfEmail(models.Model):
         premières lignes.
         """
         domain = self._inbox_folder_domain(folder)
-        term = (search or "").strip()
-        if term:
-            domain += [
-                "|", "|", "|",
-                ("subject", "ilike", term),
-                ("email_from", "ilike", term),
-                ("email_to", "ilike", term),
-                ("body_preview", "ilike", term),
-            ]
+        # : la recherche passe par la grammaire d'opérateurs et lit
+        # `body_text`, le corps ENTIER. Elle lisait `body_preview`, coupé à 300
+        # caractères, soit 11,2 % du texte mesuré sur BF. Voir
+        # `models/bf_email_search.py` pour ce que la ligne accepte.
+        domain += self._search_domain_from_query(search)
         offset = max(0, int(offset or 0))
         limit = max(1, min(int(limit or 100), MAX_PAGE))
         total = self.search_count(domain)
@@ -685,15 +707,24 @@ class BfEmail(models.Model):
     # Aperçu
     # ------------------------------------------------------------------
     @api.model
-    def inbox_get_body(self, email_id):
-        """Corps assaini + pièces jointes, et bascule « lu » au passage."""
+    def inbox_get_body(self, email_id, load_images=False):
+        """Corps assaini + pièces jointes, et bascule « lu » au passage.
+
+        ``load_images`` est un geste explicite du lecteur : par défaut les
+        images distantes sont parquées, comme sur le téléphone depuis
+        Le poste, lui, les chargeait encore, donc annonçait chaque lecture à
+        l'expéditeur
+        """
         rec = self.browse(int(email_id)).exists()
         if not rec:
             raise UserError(_("Courriel introuvable (#%s).", email_id))
         rec.check_access("read")
         data = rec._inbox_row(with_thread=True)
+        show = bool(load_images) or not rec._block_remote_images_enabled()
+        body, blocked = rec._body_html_blocked(load_images=show)
         data.update({
-            "body_html": rec.body_html_display or "",
+            "body_html": body,
+            "blocked_images": blocked,
             "cc": rec.email_cc or "",
             "message_id_header": rec.message_id_header or "",
             "imap_folder": rec.imap_folder or "",
@@ -1076,6 +1107,14 @@ class BfEmail(models.Model):
         "download_eml": "action_download_eml",
         "mark_read": "action_mark_read",
         "mark_replied": "action_mark_replied",
+        "mute": "action_mute_thread",
+        "unmute": "action_unmute_thread",
+        "unsubscribe": "action_unsubscribe",
+        # Les petits gestes de
+        "unsnooze": "action_unsnooze",
+        "trash": "action_trash",
+        "link_partner": "action_link_partner",
+        "create_rule": "action_create_rule_here",
         # « Ajouter » — créer une fiche À PARTIR du courriel, celui-ci étant
         # importé dans le chatter de la fiche neuve. Mêmes méthodes que le
         # menu « Nouveau ▾ » de la fiche complète du courriel : la boîte de
@@ -1094,6 +1133,7 @@ class BfEmail(models.Model):
     # ``action_create_task`` sur un lot lèverait une erreur d'``ensure_one``
     # illisible plutôt que de dire ce qui ne va pas.
     _INBOX_SINGLE_ACTIONS = (
+        "unsubscribe", "create_rule",
         "reply", "reply_all", "forward", "activity", "open_record",
         "open_form", "conversation", "download_eml",
         "create_task", "create_lead", "create_ticket", "create_expense",

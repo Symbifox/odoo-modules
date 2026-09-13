@@ -32,6 +32,9 @@ function inboxDomain() {
     return [
         ["user_id", "=", user.userId],
         ["is_handled", "=", false],
+        // Un fil en sourdine ne compte pas dans le badge, sinon la
+        // pastille annonce du travail qu'on a explicitement écarté.
+        ["is_muted", "=", false],
         "|",
         "|",
         ["imap_in_inbox", "=", true],

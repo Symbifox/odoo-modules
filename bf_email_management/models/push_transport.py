@@ -28,6 +28,23 @@ from odoo import _, api, models
 
 _logger = logging.getLogger(__name__)
 
+# ⚠️ Un drapeau de configuration se lit TOLÉRANT, jamais par égalité exacte.
+# `fields.Boolean(config_parameter=...)` sur `res.config.settings` stocke la
+# chaîne « True » / « False », alors que les `set_param` posés à la main écrivent
+# « 1 » / « 0 ». Comparer à « 1 » fait donc basculer le réglage au premier
+# enregistrement du formulaire — sans erreur, sans trace, sans retour en arrière.
+# Payé trois fois : rapport de sauvegarde muet (2026-06-30), Gen par courriel
+# hors service (2026-09-03) et le réveil du softphone, mort huit jours par le
+# MÊME clic que Gen (BF, 2026-09-10).
+# ⚠️ `get_param` rend `False` — pas la valeur par défaut — quand la clé est
+# ABSENTE : c'est pourquoi `False` compte ici comme « rien », et non comme « non ».
+def _truthy(valeur, defaut=False):
+    if valeur is None or valeur is False or valeur == "":
+        return defaut
+    return str(valeur).strip().lower() in ("1", "true", "vrai", "yes", "oui", "on", "t", "y")
+
+
+
 NTFY_TOKEN_PARAM = "bf_email_management.ntfy_publish_token"
 # The ntfy server is one per tenant; its address lives with the SMS half, the
 # first module to have needed it. Read here only to gate the bearer token.
@@ -106,8 +123,8 @@ class BfEmailUnifiedPush(models.AbstractModel):
         # poussée, mais l'app se réinscrit à son prochain lancement et tout
         # revient. Défaut « 1 » : aucun autre locataire ne change de
         # comportement au déploiement.
-        if self.env["ir.config_parameter"].sudo().get_param(
-                "bf_email.push_enabled", "1") != "1":
+        if not _truthy(self.env["ir.config_parameter"].sudo().get_param(
+                "bf_email.push_enabled"), defaut=True):
             return self.env["bf.email.mobile.device"]
         return self.env["bf.email.mobile.device"].sudo().search([
             ("user_id", "=", owner.id),

@@ -57,6 +57,16 @@
                                  help="Autorise l'avis qui s'affiche dans Odoo &#224; l'arriv&#233;e d'un courriel. Chacun r&#232;gle ensuite le sien sur ses comptes IMAP : &#233;ph&#233;m&#232;re, persistant, ou aucun. D&#233;coch&#233; par d&#233;faut, y compris apr&#232;s la mise &#224; jour.">
                             <field name="bf_email_popup_enabled"/>
                         </setting>
+                        <setting id="bf_email_gen_enabled_setting"
+                                 string="Assistance de Gen dans la bo&#238;te"
+                                 help="Ajoute «&#160;R&#233;sumer le fil&#160;» et «&#160;Proposer une r&#233;ponse&#160;». Le texte est rendu &#224; l'&#233;cran et n'est jamais &#233;crit sur la ligne. D&#233;coch&#233; par d&#233;faut&#160;: envoyer du courrier de client &#224; un mod&#232;le est une communication &#224; un tiers.">
+                            <field name="bf_email_gen_enabled"/>
+                        </setting>
+                        <setting id="bf_email_block_remote_images_setting"
+                                 string="Bloquer les images distantes &#224; la lecture"
+                                 help="Une image charg&#233;e depuis le serveur de l'exp&#233;diteur lui annonce la lecture, l'heure et l'adresse IP. Coch&#233; par d&#233;faut, y compris apr&#232;s la mise &#224; jour : le d&#233;faut d'une protection est la protection. Un bouton « Afficher les images » reste disponible sur chaque message.">
+                            <field name="bf_email_block_remote_images"/>
+                        </setting>
                         <setting id="bf_email_dnd_enabled_setting"
                                  string="Mode &#171;&#160;ne pas d&#233;ranger&#160;&#187;"
                                  help="Retient les avis pendant les rencontres, sur interrupteur manuel, ou aux heures calmes. Rien n'est jet&#233; : un seul r&#233;sum&#233; sort &#224; la fin. Chacun r&#232;gle ce qui l'arme dans ses pr&#233;f&#233;rences. D&#233;coch&#233; par d&#233;faut, y compris apr&#232;s la mise &#224; jour.">

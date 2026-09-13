@@ -4,6 +4,105 @@ All notable changes to `bf_email_management` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This module follows Odoo's `MAJOR.MINOR.PATCH` convention prefixed with the Odoo series (`18.0.X.Y.Z`).
 
+## [18.0.11.34.0] — 2026-09-13
+
+La recherche voit enfin le corps entier, un fil se met en sourdine, et nos
+envois sans réponse ont leur dossier.
+
+### Added
+
+- **`body_text`, le corps entier, avec un index trigrammes.** `body_preview`
+  est un `Char(300)`, et c'était le SEUL champ de corps que lisaient les quatre
+  surfaces de recherche (la boîte OWL, la vue liste, la palette de commandes, le
+  téléphone) **et le moteur de règles**. Mesuré sur une base réelle : **11,2 %
+  du texte reçu était indexé**, et 92,5 % des corps dépassaient la coupe. Une
+  règle écrite sur un mot du deuxième paragraphe ne se déclenchait jamais, en
+  silence. ⚠️ Un `ilike` sur `body_html` aurait cherché dans les attributs de
+  style, les URL de pistage et les images en base64 : le texte est extrait UNE
+  FOIS, à l'écriture. L'index n'est posé que si `pg_trgm` existe.
+- **Une grammaire d'opérateurs** dans la boîte : `de:`, `à:`, `cc:`, `objet:`,
+  `corps:`, `fiche:`, `boite:`, `cat:`, `pj:`, `avant:`, `après:`, `est:`
+  (douze états), et les phrases entre guillemets. ⚠️ Une clé inconnue redevient
+  un mot ordinaire : refuser la ligne apprendrait à ne plus jamais écrire de
+  deux-points, et un objet de courriel en contient plus souvent qu'un usager ne
+  vise un opérateur.
+- **La sourdine d'un fil** (`bf.email.thread.mute`). Mesuré sur une base
+  réelle : 164 fils portent trois messages reçus ou plus sans qu'on y ait
+  jamais répondu, 618 lignes en tout. Une règle sort un EXPÉDITEUR, pas un FIL.
+  ⚠️ Le drapeau vit sur la LIGNE (`is_muted`) parce que les deux autres
+  transcriptions du domaine de la boîte, le SQL du téléphone et le JavaScript du
+  badge, ne savent pas interroger une table de sourdines. Un message qui rejoint
+  un fil en sourdine naît en sourdine.
+- **Le dossier « Relance à faire »** : les fils dont le dernier message est de
+  nous et qui n'ont rien reçu depuis. Posé par un cron, parce que « le dernier
+  message du fil » n'est pas une expression qu'un domaine ORM sait dire.
+- **Le désabonnement lu dans les en-têtes** : `List-Unsubscribe` et le clic
+  unique de la RFC 8058, avec un bandeau dans l'aperçu et un panneau des
+  abonnements classé par volume. ⚠️ Le POST sort vers une URL écrite par
+  l'expéditeur : il passe par la garde anti-SSRF déjà écrite pour les points de
+  poussée, plutôt que par une deuxième qui finirait par dire autre chose.
+- **Les petits gestes** : `z` annule la dernière action, `?` ouvre enfin la
+  grille des raccourcis, `Maj+U` marque tout un dossier comme lu, une corbeille
+  (⚠️ refusée sur une ligne classée sur une fiche : le message appartient à son
+  dossier), le rappel de pièce jointe oubliée, la règle créée depuis le courriel
+  ouvert, le rattachement de contact, « Envoyer et classer », et un assistant de
+  ménage qui compte avant d'agir.
+- **La lecture par conversation au poste**, en option. ⚠️ Et la mesure dit de ne
+  pas en attendre un miracle : le pli ne retire que **4,3 %** des lignes d'une
+  boîte réelle, parce que 11 157 fils sur 12 746 tiennent en un seul message.
+  C'est un confort de lecture, pas un gain de volume, et c'est pourquoi ce n'est
+  pas le défaut.
+- **L'assistance de Gen** : résumé d'un fil, réponse proposée. ⚠️ **Éteinte tant
+  que personne ne l'allume**, et son texte n'est **jamais écrit sur la ligne** :
+  le stocker le ferait entrer dans la recherche, les sauvegardes et le
+  calendrier de conservation. Le module s'installe et tourne sans le pont.
+
+### Changed
+
+- Le moteur de règles lit `body_text` : « Corps du message » veut enfin dire le
+  corps, et non ses trois cents premiers caractères.
+
+## [18.0.11.33.0] — 2026-09-13
+
+Trois choses qui étaient fausses depuis longtemps sans que rien ne le dise.
+
+### Fixed
+
+- 🔴 **Les images distantes n'étaient parquées que sur le TÉLÉPHONE.** Au poste,
+  ouvrir un courriel annonçait la lecture à l'expéditeur, avec l'heure et
+  l'adresse IP. Mesuré sur une base réelle : **7 189 reçus portent une image
+  distante**, et 172 des 250 plus récents portent une image de 1 pixel. La
+  défense déménage dans `bf.email._body_html_blocked`, une seule fois pour les
+  trois surfaces, et un essai compare les deux sorties pour qu'elles ne puissent
+  plus diverger. ⚠️ Son interrupteur d'instance est le seul du module dont
+  l'absence vaut OUI : le défaut d'une protection est la protection.
+- 🔴 **« Hors heures » lisait le fuseau du LECTEUR.** La version précédente avait
+  corrigé l'heure UTC en heure du propriétaire ; c'était encore le mauvais
+  fuseau. Kooti et al. 2015 mesure l'heure locale de **celui qui écrit**, et
+  l'en-tête `Date:` la porte (400 reçus récents sur 400 en ont un lisible). Avec
+  un propriétaire à l'autre bout du monde, les heures de bureau du pays de
+  l'expéditeur tombaient la nuit : **10 570 lignes sur 16 178** marquées à tort.
+  Une machine qui date en UTC ne reçoit plus de signal du tout : elle n'a pas de
+  journée de travail.
+- 🔴 **La recette « calendar » du catalogue ne pouvait JAMAIS se déclencher.**
+  Elle cherchait `Content-Type: text/calendar` dans `raw_headers`, qui ne garde
+  que le PREMIER NIVEAU, alors qu'une invitation est un multipart dont une
+  PARTIE porte ce type : **0 ligne sur 8 432**. D'où `has_calendar_part`, posé à
+  la collecte comme `has_attachments`, et `is_invitation` qui s'y adosse avec un
+  repli sur l'objet.
+- **Le motif des expéditeurs automatiques** ne reconnaissait qu'**une** des
+  1 357 lignes encore en boîte : `donotreply@` sans traits d'union,
+  `nepasrepondre@`, `notifications@`, `alerts@` lui échappaient tous. Élargi, il
+  en reconnaît 312, sans un seul faux positif sur le corpus d'épreuve.
+  ⚠️ `auto@` reste dehors, trop large.
+
+### Added
+
+- Un bouton « Cocher les recommandées qui manquent » dans les règles courantes.
+  ⚠️ Le semis d'usine ne passe QU'UNE FOIS, au premier compte : quand le
+  catalogue grandit, les comptes plus anciens ne reçoivent rien, et personne ne
+  le remarque.
+
 ## [18.0.11.30.0] — 2026-09-09
 
 ### Changed

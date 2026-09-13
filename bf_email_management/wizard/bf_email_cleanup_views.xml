@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="bf_email_cleanup_form" model="ir.ui.view">
+        <field name="name">bf.email.cleanup.form</field>
+        <field name="model">bf.email.cleanup</field>
+        <field name="arch" type="xml">
+            <form string="Faire le m&#233;nage">
+                <div class="alert alert-info" role="status">
+                    Sortir de la bo&#238;te ce qui y dort. Rien n'est supprim&#233;,
+                    rien n'est marqu&#233; comme lu, et
+                    &#171;&#160;Remettre en bo&#238;te&#160;&#187; d&#233;fait le geste.
+                </div>
+                <group>
+                    <group>
+                        <field name="days"/>
+                        <field name="keep_questions"/>
+                        <field name="keep_to_me"/>
+                    </group>
+                    <group>
+                        <field name="match_count" readonly="1"/>
+                    </group>
+                </group>
+                <group string="Aper&#231;u des plus anciens">
+                    <field name="sample" nolabel="1" readonly="1"
+                           widget="text" class="font-monospace small"/>
+                </group>
+                <footer>
+                    <button name="action_clean" type="object"
+                            string="Traiter ces courriels"
+                            class="btn-primary"
+                            invisible="match_count == 0"/>
+                    <button string="Annuler" class="btn-secondary"
+                            special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_bf_email_cleanup" model="ir.actions.act_window">
+        <field name="name">Faire le m&#233;nage</field>
+        <field name="res_model">bf.email.cleanup</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+</odoo>

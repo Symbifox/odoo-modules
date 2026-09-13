@@ -93,8 +93,12 @@ RULE_RECIPES = [
                        "automatiques ne demandent pas d'action.",
         "conditions": [
             {"field_name": "email_from", "operator": "regex",
-             "value": ADDRESS_START + r"(noreply|no-reply|notification"
-                      r"|mailer-daemon|postmaster|bounce|do-not-reply)@"},
+             "value": ADDRESS_START + r"(no[-_.]?reply|do[-_.]?not[-_.]?reply"
+                      r"|donotreply|ne[-_.]?pas[-_.]?repondre|nepasrepondre"
+                      r"|notifications?|notify|noresponse|no[-_.]?response"
+                      r"|alerts?|alarm|automated|auto[-_.]?confirm"
+                      r"|mailer[-_.]?daemon|postmaster|bounces?)"
+                      r"(?:[-_.+][^@]*)?@"},
         ],
         "actions": {"set_category": "notification", "set_handled": True},
     },
@@ -225,9 +229,13 @@ RULE_RECIPES = [
         "description": "Les invitations iMIP sont déjà ingérées dans "
                        "l'agenda par le module. La copie courriel n'a plus "
                        "à occuper la boîte.",
+        # 🔴 Cette condition était `header Content-Type contient text/calendar`,
+        # et elle ne pouvait JAMAIS être vraie : `raw_headers` ne garde que les
+        # en-têtes de premier niveau, et une invitation est un multipart dont
+        # une PARTIE est text/calendar. Zéro ligne sur 8 432 la satisfaisait.
+        #
         "conditions": [
-            {"field_name": "header", "operator": "contains",
-             "header_name": "Content-Type", "value": "text/calendar"},
+            {"field_name": "is_invitation", "operator": "is_true"},
         ],
         "actions": {"set_category": "notification", "set_handled": True},
     },

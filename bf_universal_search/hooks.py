@@ -72,7 +72,9 @@ _SEARCH_CONFIGS = [
     # --- Communications -----------------------------------------------------
     {
         "suffix": "emails", "name": "Courriels", "model": "bf.email",
-        "search_fields": "subject,email_from,body_preview",
+        # : `body_preview` s'arrête à 300 caractères, soit 11,2 % du
+        # texte mesuré sur BF. La palette cherchait donc dans un aperçu.
+        "search_fields": "subject,email_from,body_text",
         # The sender is already part of the record's display name.
         "detail_fields": "date",
         "order": "date desc", "min_length": 3,

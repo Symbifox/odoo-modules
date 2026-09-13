@@ -239,6 +239,10 @@ class TestLesSixDefinitionsSaccordent(MobileApiCase):
         source = open(path, encoding="utf-8").read()
         blob = re.sub(r"\s+", "", source)
         for leaf in ('["is_handled","=",false]',
+                     # : la sourdine est une troisième façon de sortir
+                     # de la boîte, et le badge doit la connaître comme les
+                     # deux autres.
+                     '["is_muted","=",false]',
                      '["imap_in_inbox","=",true]',
                      '["source","in",["chatter","gateway"]]',
                      '["imap_folder","=",false]',

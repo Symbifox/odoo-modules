@@ -253,7 +253,22 @@
 
                     <notebook>
                         <page string="Corps" name="body">
-                            <field name="body_html_display" readonly="1" nolabel="1"/>
+                            <field name="blocked_image_count" invisible="1"/>
+                            <div class="alert alert-info d-flex align-items-center gap-2 mb-2"
+                                 role="status"
+                                 invisible="blocked_image_count == 0">
+                                <i class="fa fa-eye-slash" aria-hidden="true"/>
+                                <span>
+                                    <field name="blocked_image_count" nolabel="1" readonly="1"
+                                           class="fw-bold d-inline"/>
+                                    image(s) distante(s) bloquée(s). Les charger
+                                    annonce la lecture à l'exp&#233;diteur.
+                                </span>
+                                <button name="action_load_remote_images" type="object"
+                                        class="btn btn-sm btn-secondary ms-auto"
+                                        string="Afficher les images"/>
+                            </div>
+                            <field name="body_html_reading" readonly="1" nolabel="1"/>
                         </page>
                         <page string="Signaux" name="insights">
                             <p class="text-muted small">
@@ -353,7 +368,9 @@
         <field name="arch" type="xml">
             <search>
                 <field name="subject"/>
-                <field name="body_preview" string="Contenu"/>
+                <!-- : « Contenu » lisait body_preview, coupé à 300
+                     caractères. Il lit le texte entier. -->
+                <field name="body_text" string="Contenu"/>
                 <field name="email_from"/>
                 <field name="email_to"/>
                 <field name="partner_id"/>
@@ -620,7 +637,8 @@
          que le navigateur IMAP (dossiers &#224; gauche, liste en haut, aper&#231;u en
          bas). La vue liste ci-dessous reste accessible sous
          &#171;&#160;Bo&#238;te de r&#233;ception (liste)&#160;&#187; pour les filtres, le regroupement,
-         l'export et les actions serveur, qu'une action cliente n'offre pas. -->
+         l'export et les actions serveur, qu'une action cliente n'offre pas.
+         T&#226;che -->
     <record id="action_bf_email_inbox_owl" model="ir.actions.client">
         <field name="name">Bo&#238;te de r&#233;ception</field>
         <field name="tag">bf_email_inbox</field>

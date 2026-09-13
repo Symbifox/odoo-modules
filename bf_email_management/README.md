@@ -63,6 +63,100 @@ A centralized email management module for Odoo 18 that provides a single, dedupl
 - **Per-recipient fan-out (6.0+)** — the chatter/gateway projection cron creates one `bf.email` row per involved internal user (author + notified recipients, `direction` relative to each owner), so every user's unified inbox carries the Odoo-internal traffic that concerns them. Service accounts are excluded via ICP `bf_email.route_exclude_user_ids`; messages with no internal user fall back to the cron user.
 - **« Nouveau ▾ » — create a record from the email (5.3+; chatter import 5.5+)**. Header dropdown (OWL widget `bf_email_new_record_dropdown`) creates a **Tâche** (`project.task`), **Piste** (`crm.lead`), **Ticket** (`helpdesk.ticket`), **Dépense** (`hr.expense`), **Facture fournisseur** or **Facture client** (`account.move`) from the email. The record is created immediately and **the email itself is imported into its chatter** — rendered body + original attachments + the full reconstructed `.eml`, exactly like *Lier à un dossier* — instead of dumping the body into a `description` / `narration` text field. The source `bf.email` row is then filed under the new record and marked handled (`is_handled=True`). If a server-side create fails (e.g. a required field, or no employee for an expense), it falls back to the legacy pre-filled blank form so the button is never dead. The Piste / Ticket / Dépense items appear only when `crm` / `helpdesk_mgmt` / `hr_expense` are installed (`has_crm` / `has_helpdesk` / `has_expense`) — no hard manifest dependency. The attachments carried into the chatter are governed by `bf_email.import_attach_originals` / `bf_email.import_attach_eml` (both default on; the `.eml` already re-contains the originals, so storage-sensitive tenants can keep just one).
 
+### Full-text search and search operators (11.34+)
+
+`body_preview` is a `Char(300)`, and until 11.34 it was the only body field the
+four search surfaces read (the OWL inbox, the list view, the command palette and
+the phone) **and the rule engine**. Measured on a real mailbox: **11.2 % of the
+received text was indexed**, and 92.5 % of bodies ran past the cut — a rule
+written on a word from the second paragraph never fired, silently.
+
+- **`body_text`** stores the whole body as plain text, with a `trigram` index
+  where the `pg_trgm` extension exists (Odoo skips the index otherwise and search
+  stays correct, only slower). ⚠️ An `ilike` on `body_html` would match style
+  attributes, tracking URLs and base64 images: the text is extracted **once, on
+  write**, not traversed on every search.
+- **An operator grammar**: `de:` `from:`, `à:` `to:`, `cc:`, `objet:`, `corps:`,
+  `fiche:`, `boite:`, `cat:`, `pj:oui|non`, `avant:` `après:` (YYYY-MM-DD),
+  `est:` (twelve states) and quoted phrases. Terms narrow (AND); a bare word
+  searches subject, sender, recipients and body (OR). ⚠️ An unknown key falls
+  back to an ordinary word rather than rejecting the line — an email subject
+  carries a colon far more often than a user means an operator.
+- The **rule engine** reads `body_text` too, so "Body of the message" finally
+  means the body.
+
+### Muting a thread (11.34+)
+
+A routing rule takes a **sender** out of the inbox; it cannot take out a
+**thread**, and that is the difference between following a service and following
+one conversation of it. Measured on a real mailbox: **164 threads carry three or
+more received messages with no reply ever sent**, 618 rows.
+
+`bf.email.thread.mute` holds the muted roots per user, and the flag lives on the
+**row** (`is_muted`) because the two other transcriptions of the inbox domain —
+the phone's SQL filter and the systray badge's JavaScript — cannot query a mute
+table. A message joining a muted thread is born muted, so the mute holds past the
+next message. Nothing is deleted and nothing is marked read.
+
+### Follow-ups on our own sends (11.34+)
+
+"To reply" and "No answer > 7 days" both look at **incoming** mail. The
+**Relance à faire** folder looks the other way: threads whose last message is
+ours and that have had no answer since, between a floor and a ceiling in days.
+Set by a cron, because "the last message of a thread" is not something an ORM
+domain can express, and a computed field depending on all its siblings would
+recompute on every arrival.
+
+### Unsubscribe, read from the headers (11.34+)
+
+`List-Unsubscribe` (RFC 2369) and one-click `List-Unsubscribe-Post` (RFC 8058)
+are parsed into `unsubscribe_url`, `unsubscribe_mailto` and
+`unsubscribe_one_click`, surfaced as a banner in the preview and as a
+**subscriptions panel** listing senders by volume.
+
+⚠️ Two honest limits, stated in the panel itself. The POST goes out from the
+server to a URL **the sender wrote**, so it runs through the same anti-SSRF guard
+as push endpoints (public addresses only); and a subscriptions panel does not
+clean an inbox whose bulk mail is already filed by rules — what remains is
+transactional machine mail, which carries no such header at all.
+
+### Small gestures (11.34+)
+
+- `z` undoes the last action (handled, snoozed, muted, trashed). ⚠️ Re-routing is
+  deliberately **not** undoable: it moved a message into another record's chatter
+  and left a note there; half a promise is worse than none.
+- `?` opens the shortcut grid, which until now lived only in button tooltips.
+- `Maj+U` marks the open folder read. Marking read is not handling, and the two
+  axes have always been separate here.
+- A **trash** action, refused on a row filed against a record: the message
+  belongs to its record, and "Re-route…" is how it leaves.
+- A **forgotten-attachment reminder** in the composer, a **rule created from the
+  open email**, **contact linking**, **send and file**, and a **clean-up
+  assistant** that counts before it acts.
+
+### Conversation reading, as an option (11.34+)
+
+The phone has folded threads from the start; the desktop showed one row per
+message. 11.34 adds the same fold on the desktop, **as an option**, on the same
+`thread_root_id` key.
+
+⚠️ And the measurement says not to expect a miracle: on a real mailbox, folding
+removes **4.3 %** of the rows (1 528 rows in 1 462 threads), because 11 157 of
+12 746 threads hold a single message. It is a reading comfort for the few active
+threads, not a volume win — which is why it is not the default.
+
+### Gen assistance (11.34+, off by default)
+
+Two gestures in the preview: **summarise the thread** and **suggest a reply**.
+
+⚠️ Three rules govern them. The text is rendered on screen and **never written to
+the row** — storing it would put it into search, backups, the retention calendar
+and the destruction register, for a value that does not outlive the reading. The
+instance switch is **off** until somebody turns it on, because mail carries
+clients' personal information and sending it to a model is a disclosure to a
+third party. And the bridge module is **not** a manifest dependency: without it
+the buttons are not offered and everything else works.
+
 ### Interactive Dashboard (OWL)
 - Date range filters: 7d / 30d / 90d / year / all / custom — **all charts including daily volume now respect the selection** (preset "Tout" derives the range from the actual data).
 - Inbox-Zero actionable cards: Boîte de réception active, En attente > 24h, IMAP orphelins à router, VIP en attente.

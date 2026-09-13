@@ -53,6 +53,16 @@ const DROP_ACTIONS = {
 // et l'aperçu changent d'appel serveur quand il est ouvert.
 const DRAFTS_FOLDER = "drafts";
 
+// Ce qui se défait, et par quoi. Voir `undoLast` pour ce qui n'y est pas.
+const UNDO_INVERSE = {
+    handle: "unhandle",
+    unhandle: "handle",
+    snooze: "unsnooze",
+    mute: "unmute",
+    unmute: "mute",
+    trash: "unhandle",
+};
+
 export class BfEmailInbox extends Component {
     static template = "bf_email_management.Inbox";
     static props = ["*"];
@@ -83,6 +93,16 @@ export class BfEmailInbox extends Component {
             // Objet simple pour la réactivité OWL : clés = ids, valeurs = true.
             selectedIds: {},
             preview: null,
+            // : la grille des raccourcis, ouverte par « ? ».
+            showShortcuts: false,
+            // Lecture par conversation. Retenue avec les autres préférences
+            // d'affichage : c'est une habitude, pas un état de session.
+            grouped: !!initialSettings.grouped,
+            genAvailable: false,
+            genText: null,
+            genKind: null,
+            genLoading: false,
+            subscriptions: null,
             loadingFolders: true,
             loadingMessages: false,
             loadingMoreMessages: false,
@@ -106,6 +126,15 @@ export class BfEmailInbox extends Component {
         onWillStart(async () => {
             await this.loadFolders();
             await this.loadMessages("inbox", 0);
+            // : on demande UNE fois si Gen est là. Un bouton qui lève
+            // « service injoignable » à chaque clic est pire que pas de
+            // bouton du tout.
+            try {
+                this.state.genAvailable = await this.orm.call(
+                    "bf.email", "inbox_gen_available", []);
+            } catch {
+                this.state.genAvailable = false;
+            }
         });
 
         this.busService = useService("bus_service");
@@ -164,6 +193,12 @@ export class BfEmailInbox extends Component {
         useHotkey("y", () => this.runAction("reroute"));
         useHotkey("h", () => this.runAction("snooze"));
         useHotkey("t", () => this.runAction("activity"));
+        // : `m` comme dans Gmail. La bascule lit l'état du message
+        // affiché plutôt que de poser deux touches, parce qu'un fil qu'on
+        // vient de faire taire est exactement celui qu'on voudra réveiller.
+        useHotkey("m", () => this.toggleMute());
+        useHotkey("z", () => this.undoLast());
+        useHotkey("shift+u", () => this.markFolderRead());
         useHotkey("o", () => this.openSourceRecord());
         useHotkey("c", () => this.compose());
         useHotkey("s", () => this.focusSearch());
@@ -172,6 +207,15 @@ export class BfEmailInbox extends Component {
         // Odoo n'autorise pas "/" dans sa liste blanche de raccourcis ; on le
         // câble nativement pour la mémoire musculaire Gmail/Thunderbird.
         this._onSlashKey = (ev) => {
+            if (ev.key === "?") {
+                const cible = ev.target;
+                const saisie = cible && (cible.tagName === "INPUT"
+                    || cible.tagName === "TEXTAREA" || cible.isContentEditable);
+                if (saisie) return;
+                ev.preventDefault();
+                this.toggleShortcutHelp();
+                return;
+            }
             if (ev.key !== "/") return;
             const t = ev.target;
             const editable = t && (t.tagName === "INPUT" || t.tagName === "TEXTAREA" || t.isContentEditable);
@@ -337,6 +381,19 @@ export class BfEmailInbox extends Component {
                 search: this.state.searchQuery || null,
             });
         }
+        if (this.state.grouped) {
+            // : le même contrat de sortie ({messages, total}) que le
+            // mode ordinaire, pour que pagination, recherche et défilement
+            // infini n'aient pas à savoir lequel est ouvert. C'est la même
+            // règle que le dossier Brouillons suit déjà.
+            const res = await this.orm.call("bf.email", "inbox_get_threads", [], {
+                folder,
+                offset,
+                limit: size,
+                search: this.state.searchQuery || null,
+            });
+            return { messages: res.threads || [], total: res.total || 0 };
+        }
         return this.orm.call("bf.email", "inbox_get_messages", [], {
             folder,
             offset,
@@ -436,8 +493,137 @@ export class BfEmailInbox extends Component {
         this._fetchPreview(id);
     }
 
-    async _fetchPreview(id) {
+    /**
+     * Demande au serveur de rendre le corps avec ses images distantes.
+     * Un geste par message : rien n'est retenu, parce que « j'ai fait
+     * confiance à celui-là » ne veut pas dire « je fais confiance aux
+     * suivants ».
+     */
+    /**
+     * Défait la dernière action défaisable (`z`, comme Gmail).
+     *
+     * ⚠️ Ce qui n'est PAS dans la table est volontairement absent : un
+     * re-routage a déplacé un message dans le chatter d'une autre fiche, avec
+     * une note à la clé, et « annuler » ne rendrait pas la fiche d'origine à
+     * son état. Mieux vaut ne rien promettre que promettre à moitié.
+     */
+    async undoLast() {
+        if (!this._undoable) {
+            this.notification.add(_t("Rien à annuler."), { type: "info" });
+            return;
+        }
+        const { action, ids } = this._undoable;
+        this._undoable = null;
+        await this._dispatch(action, ids, {
+            clearSelection: false,
+            notify: _t("Action annulée."),
+        });
+        await this.refreshCurrent();
+    }
+
+    /** La grille des raccourcis, que rien n'affichait jusqu'ici. */
+    toggleShortcutHelp() {
+        this.state.showShortcuts = !this.state.showShortcuts;
+    }
+
+    async markFolderRead() {
+        if (this.isDraftFolder || this.state.acting) return;
+        this.state.acting = true;
+        try {
+            const res = await this.orm.call(
+                "bf.email", "inbox_mark_folder_read", [],
+                { folder: this.state.currentFolder }
+            );
+            this.notification.add(
+                res.remaining
+                    ? _t("%s marqués comme lus, %s restants.", res.marked, res.remaining)
+                    : _t("%s marqués comme lus.", res.marked),
+                { type: "success" }
+            );
+            await this.refreshCurrent();
+            this._refreshFolders();
+        } catch (err) {
+            this.notification.add(_t("Échec : ") + (err.message || err),
+                                  { type: "danger" });
+        } finally {
+            this.state.acting = false;
+        }
+    }
+
+    /** Bascule le pli par conversation, et retient le choix. */
+    async toggleGrouped() {
+        this.state.grouped = !this.state.grouped;
+        const next = { ...this.state.settings, grouped: this.state.grouped };
+        this.state.settings = next;
+        persistSettings(next);
+        await this.refreshCurrent();
+    }
+
+    async loadSubscriptions() {
+        this.state.acting = true;
+        try {
+            this.state.subscriptions = await this.orm.call(
+                "bf.email", "inbox_subscriptions", []);
+        } catch (err) {
+            this.notification.add(_t("Échec : ") + (err.message || err),
+                                  { type: "danger" });
+        } finally {
+            this.state.acting = false;
+        }
+    }
+
+    async unsubscribeSender(lastId) {
+        await this._dispatch("unsubscribe", [lastId], {
+            clearSelection: false,
+        });
+        await this.loadSubscriptions();
+    }
+
+    /** Résumé ou réponse proposée. Rendu à l'écran, rien n'est écrit. */
+    async askGen(kind) {
+        const id = this.state.selectedId;
+        if (!id || this.state.genLoading) return;
+        this.state.genLoading = true;
+        this.state.genText = null;
+        this.state.genKind = kind;
+        try {
+            const res = await this.orm.call(
+                "bf.email", "inbox_gen", [], { kind, email_id: id });
+            this.state.genText = res.text;
+        } catch (err) {
+            this.notification.add(_t("Gen : ") + (err.message || err),
+                                  { type: "danger" });
+            this.state.genKind = null;
+        } finally {
+            this.state.genLoading = false;
+        }
+    }
+
+    closeGen() {
+        this.state.genText = null;
+        this.state.genKind = null;
+    }
+
+    async toggleMute() {
+        const preview = this.state.preview;
+        if (!preview || !preview.id) {
+            return;
+        }
+        await this.runAction(preview.is_muted ? "unmute" : "mute");
+    }
+
+    async loadRemoteImages() {
+        const id = this.state.selectedId;
+        if (id) {
+            await this._fetchPreview(id, true);
+        }
+    }
+
+    async _fetchPreview(id, loadImages = false) {
         this.state.loadingPreview = true;
+        // Un résumé appartient au message qu'on vient de quitter.
+        this.state.genText = null;
+        this.state.genKind = null;
         this.state.preview = null;
         try {
             if (this.isDraftFolder) {
@@ -447,7 +633,8 @@ export class BfEmailInbox extends Component {
                 return;
             }
             const preview = await this.orm.call(
-                "bf.email", "inbox_get_body", [], { email_id: id }
+                "bf.email", "inbox_get_body", [],
+                { email_id: id, load_images: !!loadImages }
             );
             this.state.preview = preview;
             const row = this.state.messages.find((m) => m.id === id);
@@ -690,6 +877,13 @@ export class BfEmailInbox extends Component {
                 "bf.email", "inbox_run_action", [],
                 { action, email_ids: ids }
             );
+            // : ce qui se défait, et comment. Une seule action gardée,
+            // la dernière : une pile profonde donnerait l'illusion qu'on peut
+            // revenir loin, alors que le serveur, lui, a déjà bougé.
+            const inverse = UNDO_INVERSE[action];
+            if (inverse) {
+                this._undoable = { action: inverse, ids: [...ids] };
+            }
             for (const id of opts.removeIds || []) {
                 this._removeAndJump(id);
             }

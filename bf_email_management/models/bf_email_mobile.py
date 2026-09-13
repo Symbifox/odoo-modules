@@ -29,6 +29,7 @@ import base64
 import email as email_mod
 import email.policy
 import email.utils
+import json
 import logging
 import mimetypes
 import re
@@ -167,7 +168,7 @@ class BfEmailMobile(models.Model):
             ("push_endpoint", "!=", False),
         ]))
         # Second transport, le même relevé. ⚠️ Le test du push ne suffit plus
-        # à décider : depuis ce lot, une personne peut vouloir l'avis
+        # à décider : depuis la, une personne peut vouloir l'avis
         # dans Odoo sans avoir d'appareil inscrit — c'est même le cas normal
         # depuis que bf_email.push_enabled est à 0. Sortir sur le seul
         # `wants_push` sautait alors le relevé, donc l'avis, sans rien dire.
@@ -235,18 +236,11 @@ class BfEmailMobile(models.Model):
         message tried to load N remote images" bar only when there is
         something to unblock.
         """
-        self.ensure_one()
-        html = self.body_html_display or ""
-        if load_images:
-            return html, 0
-        blocked = [0]
-
-        def _park(match):
-            blocked[0] += 1
-            return '%sdata-blocked-src=%s%s%s' % (
-                match.group(1), match.group(2), match.group(3), match.group(2))
-
-        return _REMOTE_IMG_RE.sub(_park, html), blocked[0]
+        # Depuis la défense vit dans `bf.email._body_html_blocked`, et
+        # ce n'est pas un déménagement cosmétique : le poste ne l'avait pas, et
+        # deux implémentations auraient divergé une deuxième fois. Le contrat
+        # de l'app ne bouge pas.
+        return self._body_html_blocked(load_images=load_images)
 
     # ------------------------------------------------------------------
     # Attachments (listed without materializing ir.attachment rows)
@@ -404,7 +398,8 @@ class BfEmailMobile(models.Model):
         clauses = {
             # ⚠️ Transcription SQL de `bf.email._inbox_domain` : un test
             # compare les deux sur un jeu de lignes, pas sur leur texte.
-            "inbox": ("is_handled = false AND (imap_in_inbox = true "
+            "inbox": ("is_handled = false AND is_muted = false "
+                      "AND (imap_in_inbox = true "
                       "OR source IN ('chatter','gateway') "
                       "OR imap_folder IS NULL)", []),
             "unread": ("status = 'new' AND is_handled = false", []),
@@ -597,6 +592,11 @@ class BfEmailMobile(models.Model):
                 k for k, (model, _m) in SPAWN_KINDS.items()
                 if model in self.env
             ),
+            # Le serveur sait-il servir les brouillons du poste ? Annoncé
+            # plutôt que deviné : une app qui sonde /drafts et lit un 404 ne
+            # sait pas distinguer « cette instance est trop vieille » d'une
+            # panne de réseau, et masquerait la section aux deux.
+            "server_drafts": True,
         }
 
     @api.model
@@ -1192,7 +1192,7 @@ class BfEmailMobile(models.Model):
         ⚠️ Derrière ``include_groups`` et pas dans la réponse par défaut : le
         client 2.37 attend une adresse par entrée et afficherait un contact
         vide. L'application les demandera quand elle saura les déplier
-        (appli 2.38).
+, appli 2.38).
 
         Un groupe trop gros n'est pas rendu tronqué, il n'est pas rendu du
         tout : une liste amputée en silence est pire qu'une liste absente.
@@ -1288,3 +1288,308 @@ class BfEmailMobile(models.Model):
             "record": {"model": action["res_model"], "id": res_id,
                        "name": record.display_name},
         }
+
+    # ------------------------------------------------------------------
+    # Brouillons du poste, vus du téléphone
+    # ------------------------------------------------------------------
+    # Deux piles de brouillons existaient sans se connaître : un fichier local
+    # sur l'appareil (`MailDrafts.kt`), et ce que le bouton « Enregistrer comme
+    # brouillon » pose au poste depuis le 2026-08-31, c'est-à-dire un
+    # `mail.scheduled.message` marqué `bf_is_draft`. Ces méthodes exposent la
+    # SECONDE au téléphone. Rien ne fusionne les deux : un brouillon appartient
+    # au bord où il a été écrit, et l'app les affiche l'une sous l'autre dans
+    # la même section « Brouillons ».
+    #
+    # ⚠️ Les envois DIFFÉRÉS (`bf_is_draft = False`) restent au poste. Ils
+    # partent d'eux-mêmes à leur date ; les mêler à des brouillons sur un écran
+    # où « Envoyer » est à un pouce invite à en expédier un avant l'heure. Les
+    # notes internes (`is_note`) sont écartées pour une autre raison : elles ne
+    # sortent jamais par courriel, elles n'ont rien à faire dans une
+    # application de courriel.
+
+    @api.model
+    def _mobile_draft_domain(self):
+        """Les brouillons que CE téléphone a le droit de voir.
+
+        ``mail.scheduled.message._search`` borne déjà au périmètre des fiches
+        sur lesquelles l'usager peut poster. Ce domaine ajoute les trois
+        choses que ça ne dit pas : que le brouillon est le mien, que c'en est
+        un, et que ce n'est pas une note interne.
+        """
+        return [
+            ("author_id", "=", self.env.user.partner_id.id),
+            ("bf_is_draft", "=", True),
+            ("is_note", "=", False),
+        ]
+
+    @api.model
+    def _mobile_draft_browse(self, draft_id):
+        """Un de mes brouillons, ou une erreur.
+
+        Relu par ``search`` et non par ``browse`` : c'est ``_search`` qui porte
+        le contrôle d'accès du modèle, un ``browse`` direct le contourne. Même
+        garde que ``inbox_get_draft_body`` au poste.
+        """
+        draft = self.env["mail.scheduled.message"].search(
+            [("id", "=", int(draft_id))] + self._mobile_draft_domain())
+        if not draft:
+            raise UserError(_("Brouillon introuvable (#%s).") % draft_id)
+        return draft
+
+    @api.model
+    def _mobile_draft_version(self, draft):
+        """L'empreinte qu'on rend, et qu'on redemande avant d'écrire.
+
+        ``write_date`` plutôt qu'un compteur maison : il bouge à chaque
+        écriture, quelle qu'en soit l'origine, y compris celles du poste que
+        le téléphone ne verra jamais passer, et il n'exige aucune colonne
+        neuve — donc aucun schéma en retard sur le code au déploiement.
+
+        ⚠️ Avec les microsecondes, et pas ``fields.Datetime.to_string`` qui
+        tronque à la seconde. Postgres date l'écriture du début de la
+        TRANSACTION : deux requêtes rapprochées portent des horodatages
+        distincts d'une fraction de seconde, et un jeton arrondi les
+        confondrait — le téléphone écraserait alors une modification du poste
+        en croyant être à jour.
+        """
+        if not draft.write_date:
+            return ""
+        return draft.write_date.isoformat(sep=" ")
+
+    @api.model
+    def _mobile_draft_params(self, draft):
+        """Le sac ``notification_parameters``, lisible ou vide."""
+        if not draft.notification_parameters:
+            return {}
+        try:
+            parsed = json.loads(draft.notification_parameters)
+        except (ValueError, TypeError):
+            return {}
+        return parsed if isinstance(parsed, dict) else {}
+
+    @api.model
+    def _mobile_draft_addresses(self, partners):
+        """Les adresses d'un jeu de partenaires, sans les muets.
+
+        Un partenaire sans courriel ne peut rien recevoir par courriel ; le
+        laisser passer mettrait une pastille vide dans le composeur. Il reste
+        dans ``partner_ids`` tant que le téléphone n'envoie pas de nouvelle
+        liste — voir ``mobile_draft_save``, qui ne réécrit que ce qu'on lui
+        donne.
+        """
+        return [p.email for p in partners if p.email]
+
+    @api.model
+    def _mobile_draft_dict(self, draft, full=False):
+        """Un brouillon du poste, tel que l'app l'attend.
+
+        ``version`` voyage dans les deux sens : rendu ici, renvoyé à
+        l'écriture, comparé avant d'écrire. ``cc`` est rendu **en lecture
+        seule** : ``mail.scheduled.message`` n'a pas de champ de copie
+        conforme, la sienne dort dans ``notification_parameters`` et le
+        téléphone ne doit pas pouvoir l'effacer en sauvegardant une liste de
+        destinataires.
+        """
+        params = self._mobile_draft_params(draft)
+        cc_partners = self.env["res.partner"].browse(
+            [int(i) for i in params.get("recipient_cc_ids") or []]).exists()
+        body_text = tools.html2plaintext(draft.body or "") if draft.body else ""
+        data = {
+            "id": draft.id,
+            "subject": draft.subject or "",
+            "to": self._mobile_draft_addresses(draft.partner_ids),
+            "to_display": ", ".join(
+                p.display_name for p in draft.partner_ids) or "",
+            "cc_display": ", ".join(
+                p.display_name for p in cc_partners) or "",
+            "preview": " ".join(body_text.split())[:PREVIEW_CHARS],
+            "record": {
+                "model": draft.model or "",
+                "id": draft.res_id or 0,
+                "name": draft.record_name or "",
+            } if draft.model and draft.res_id else False,
+            # ⚠️ `_ms` et non `.timestamp()` : une date Odoo est naïve et en
+            # UTC, et `.timestamp()` d'une naïve l'interprète dans le fuseau
+            # du SERVEUR. Le brouillon se serait affiché « il y a 4 heures »
+            # au moment même où on le quittait.
+            "saved_ms": self._ms(draft.write_date) or 0,
+            "version": self._mobile_draft_version(draft),
+            "attachments": [
+                {"id": a.id, "name": a.name or _("(sans nom)"),
+                 "size": a.file_size or 0, "mimetype": a.mimetype or ""}
+                for a in draft.attachment_ids
+            ],
+        }
+        if full:
+            # Les DEUX corps, et ce n'est pas du gaspillage. Le composeur du
+            # téléphone édite du texte ; le brouillon, lui, est du HTML écrit
+            # au poste. Renvoyer le HTML tel quel permet à l'app de le
+            # réenvoyer INTACT quand la personne n'a touché qu'à l'objet ou
+            # aux destinataires : un aller-retour texte perdrait la mise en
+            # forme de quelqu'un qui n'a rien demandé.
+            data["body_html"] = draft.body or ""
+            data["body_text"] = body_text
+        return data
+
+    @api.model
+    def mobile_drafts(self, offset=0, limit=25, search=None):
+        """Une page de mes brouillons du poste, du plus récent au plus ancien.
+
+        Pas le tri en deux temps d'``inbox_get_drafts`` : celui-là devait
+        ranger ensemble des brouillons et des envois différés, qui ne se
+        classent pas sur la même clé. Ici il n'y a qu'une nature.
+        """
+        offset = max(0, int(offset or 0))
+        limit = max(1, min(int(limit or 25), MAX_PAGE))
+        domain = self._mobile_draft_domain()
+        term = (search or "").strip()
+        if term:
+            domain += ["|", ("subject", "ilike", term),
+                       ("record_name", "ilike", term)]
+        Scheduled = self.env["mail.scheduled.message"]
+        # Une ligne de plus que demandé : c'est ce qui dit « il y en a
+        # d'autres » sans payer un COUNT sur la table entière.
+        drafts = Scheduled.search(
+            domain, offset=offset, limit=limit + 1,
+            order="write_date desc, id desc")
+        return {
+            "drafts": [self._mobile_draft_dict(d) for d in drafts[:limit]],
+            "has_more": len(drafts) > limit,
+        }
+
+    @api.model
+    def mobile_draft(self, draft_id):
+        """Un brouillon au complet, corps et pièces jointes."""
+        return self._mobile_draft_dict(
+            self._mobile_draft_browse(draft_id), full=True)
+
+    @api.model
+    def _mobile_draft_conflict(self, draft, base_version):
+        """Le poste a-t-il bougé depuis que le téléphone a lu ce brouillon ?
+
+        Rend le dictionnaire de refus, ou ``None``. On ne fusionne pas : deux
+        versions d'un même texte ne se recollent pas toutes seules, et deviner
+        laquelle garder ferait disparaître du travail sans un mot. Le refus
+        rapporte la version du serveur pour que la personne tranche en voyant
+        les deux.
+
+        ``base_version`` absent veut dire « je n'ai rien lu, écris » : c'est ce
+        que fait un client écrit avant cette garde, et c'est aussi le seul
+        moyen de forcer après un conflit.
+        """
+        if not base_version:
+            return None
+        if str(base_version) == self._mobile_draft_version(draft):
+            return None
+        return {
+            "ok": False,
+            "conflict": True,
+            "draft": self._mobile_draft_dict(draft, full=True),
+        }
+
+    @api.model
+    def mobile_draft_save(self, draft_id, device=None, base_version=None,
+                          subject=None, body=None, body_is_html=False,
+                          to=None, attachment_ids=None):
+        """Réécrire un brouillon du poste depuis le téléphone.
+
+        **Écriture partielle, et c'est délibéré.** Chaque champ absent de la
+        charge utile n'est pas touché. Un client qui ne modifie que l'objet
+        n'envoie que l'objet, et les destinataires, le corps HTML et les
+        pièces jointes restent exactement ce que le poste avait posé. C'est ce
+        qui permet au téléphone d'éditer un brouillon riche sans avoir à
+        savoir le reconstruire.
+
+        ``notification_parameters`` n'est JAMAIS réécrit : c'est là que dorment
+        la copie conforme et l'identité d'envoi choisies au poste, et le
+        téléphone n'a pas de quoi les reconstituer.
+        """
+        draft = self._mobile_draft_browse(draft_id)
+        conflict = self._mobile_draft_conflict(draft, base_version)
+        if conflict:
+            return conflict
+
+        vals = {}
+        if subject is not None:
+            vals["subject"] = (subject or "").strip()
+        if body is not None:
+            # Vide le corps plutôt que de refuser : un brouillon n'a pas à
+            # être valide, c'est justement ce qui le distingue d'un envoi.
+            vals["body"] = (self._mobile_compose_body(body, body_is_html)
+                            if (body or "").strip() else "")
+        if to is not None:
+            addresses = [a for a in (to or []) if (a or "").strip()]
+            if len(addresses) > MAX_RECIPIENTS:
+                raise UserError(
+                    _("Trop de destinataires (maximum %d depuis le téléphone).")
+                    % MAX_RECIPIENTS)
+            vals["partner_ids"] = [
+                (6, 0, self._mobile_partners_from_addresses(addresses))]
+        if attachment_ids is not None:
+            vals["attachment_ids"] = [
+                (6, 0, self._mobile_draft_attachments(
+                    draft, device, attachment_ids))]
+        if vals:
+            draft.write(vals)
+        return {"ok": True, "draft": self._mobile_draft_dict(draft, full=True)}
+
+    @api.model
+    def _mobile_draft_attachments(self, draft, device, attachment_ids):
+        """Les pièces jointes que le brouillon doit porter après l'écriture.
+
+        Deux natures dans la même liste, et elles ne se valident pas pareil :
+        celles qui sont DÉJÀ sur le brouillon (gardées telles quelles) et
+        celles que le téléphone vient de téléverser, qui doivent passer par
+        ``_mobile_claim_uploads`` — sans quoi la route serait un export de
+        n'importe quel document de la base par son identifiant.
+
+        🔴 Les nouvelles sont réparentées sur le brouillon lui-même, pas
+        laissées sous le marqueur de l'appareil. ``_gc_uploads`` balaie ce
+        marqueur après vingt-quatre heures : une pièce restée dessous
+        disparaîtrait sous un brouillon qui continue d'afficher son nom, et
+        l'envoi échouerait le lendemain sur « Pièce jointe inconnue ».
+        """
+        existing = set(draft.attachment_ids.ids)
+        kept, fresh = [], []
+        for raw in attachment_ids or []:
+            value = int(raw)
+            (kept if value in existing else fresh).append(value)
+        if not fresh:
+            return kept
+        if not device:
+            raise UserError(_("Pièce jointe inconnue ou déjà envoyée."))
+        return kept + self._mobile_claim_uploads(
+            device, fresh, "mail.scheduled.message", draft.id)
+
+    @api.model
+    def mobile_draft_send(self, draft_id, base_version=None):
+        """Envoyer maintenant, depuis le téléphone.
+
+        ``post_message`` est la méthode du noyau : elle vérifie que l'auteur a
+        toujours le droit de poster sur la fiche, poste avec les pièces
+        jointes, puis SUPPRIME le brouillon. Rien n'est réimplémenté ici, et
+        c'est voulu — un second chemin d'envoi finirait par diverger du
+        premier.
+
+        ⚠️ La coquille ``bf.email`` d'un courriel neuf reste hors boîte après
+        cet envoi, là où le poste l'y ramène en refermant le composeur
+        (``inbox_close_compose``). Le message, lui, est bel et bien posté et
+        parti ; il revient par la projection du dossier Sent comme n'importe
+        quel envoi.
+        """
+        draft = self._mobile_draft_browse(draft_id)
+        conflict = self._mobile_draft_conflict(draft, base_version)
+        if conflict:
+            return conflict
+        if not draft.partner_ids:
+            raise UserError(_("Ce brouillon n'a aucun destinataire."))
+        if not (draft.body or "").strip():
+            raise UserError(_("Le message est vide."))
+        draft.post_message()
+        return {"ok": True}
+
+    @api.model
+    def mobile_draft_delete(self, draft_id):
+        """Jeter un brouillon du poste depuis le téléphone."""
+        self._mobile_draft_browse(draft_id).unlink()
+        return {"ok": True}

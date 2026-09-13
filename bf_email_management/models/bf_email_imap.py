@@ -114,7 +114,7 @@ def ensure_folder(conn, folder):
     real reason (quota, permissions) is indistinguishable here. The caller
     retries the COPY, and *that* is the verdict — we do not guess.
 
-    SUBSCRIBE matters more than it looks: Migadu, Dovecot and Gmail all hide
+    SUBSCRIBE matters more than it looks: most IMAP servers hide
     an unsubscribed folder from most clients, so a message would land
     somewhere the owner cannot see.
     """

@@ -8,6 +8,14 @@ from . import bf_email_auto_log
 from . import bf_email_absence
 from . import bf_email_rule
 # Surface RPC de l'action cliente « Boîte de réception » — _inherit bf.email.
+from . import bf_email_thread_mute
+from . import bf_email_unsubscribe
+from . import bf_email_awaiting
+from . import bf_email_gestes
+from . import bf_email_subscriptions
+from . import bf_email_gen
+from . import bf_email_conversations
+from . import bf_email_search
 from . import bf_email_inbox
 # Mobile API layer — must load after bf_email (it _inherit's it).
 from . import bf_email_mobile_device

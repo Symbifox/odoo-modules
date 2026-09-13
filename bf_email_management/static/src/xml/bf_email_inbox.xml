@@ -6,6 +6,108 @@
              t-att-class="state.dragging ? 'o_bf_email_dragging' : ''"
              style="height: 100%;">
 
+        <div t-if="state.subscriptions"
+             class="position-absolute top-0 start-0 w-100 h-100 p-4"
+             style="background: rgba(0,0,0,.45); z-index: 1050; overflow: auto;"
+             t-on-click="() => { state.subscriptions = null; }">
+            <div class="bg-view rounded shadow p-4 mx-auto"
+                 style="max-width: 760px;"
+                 t-on-click.stop="() => {}">
+                <div class="d-flex align-items-center mb-2">
+                    <h5 class="flex-grow-1 mb-0">Mes abonnements</h5>
+                    <button class="btn btn-sm btn-light"
+                            t-on-click="() => { state.subscriptions = null; }">
+                        <i class="fa fa-times"/>
+                    </button>
+                </div>
+                <div class="alert alert-info py-2 small" role="status">
+                    <t t-esc="state.subscriptions.covered_in_inbox"/>
+                    des <t t-esc="state.subscriptions.inbox_total"/> courriels
+                    encore en boîte portent un lien de désabonnement. Le reste
+                    est du courrier de machine, qui ne se désabonne pas : une
+                    règle sur l'expéditeur est la seule façon de le sortir.
+                </div>
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th>Expéditeur</th>
+                            <th class="text-end">Reçus</th>
+                            <th class="text-end">Non lus</th>
+                            <th/>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr t-foreach="state.subscriptions.senders"
+                            t-as="sender" t-key="sender.address">
+                            <td>
+                                <t t-esc="sender.address"/>
+                                <span t-if="sender.one_click"
+                                      class="badge text-bg-light ms-1">un clic</span>
+                            </td>
+                            <td class="text-end"><t t-esc="sender.count"/></td>
+                            <td class="text-end"><t t-esc="sender.unread"/></td>
+                            <td class="text-end">
+                                <button class="btn btn-sm btn-secondary"
+                                        t-att-disabled="state.acting"
+                                        t-on-click="() => this.unsubscribeSender(sender.last_id)">
+                                    Se désabonner
+                                </button>
+                            </td>
+                        </tr>
+                        <tr t-if="!state.subscriptions.senders.length">
+                            <td colspan="4" class="text-muted text-center py-3">
+                                Aucun abonnement repéré dans les en-têtes.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div t-if="state.showShortcuts"
+             class="position-absolute top-0 start-0 w-100 h-100 p-4"
+             style="background: rgba(0,0,0,.45); z-index: 1050; overflow: auto;"
+             t-on-click="() => this.toggleShortcutHelp()">
+            <div class="bg-view rounded shadow p-4 mx-auto"
+                 style="max-width: 560px;"
+                 t-on-click.stop="() => {}">
+                <div class="d-flex align-items-center mb-3">
+                    <h5 class="flex-grow-1 mb-0">Raccourcis clavier</h5>
+                    <button class="btn btn-sm btn-light"
+                            t-on-click="() => this.toggleShortcutHelp()">
+                        <i class="fa fa-times"/>
+                    </button>
+                </div>
+                <div class="row small">
+                    <div class="col-6">
+                        <div><kbd>J</kbd> / <kbd>K</kbd> naviguer</div>
+                        <div><kbd>R</kbd> répondre</div>
+                        <div><kbd>Maj</kbd>+<kbd>R</kbd> répondre à tous</div>
+                        <div><kbd>F</kbd> transférer</div>
+                        <div><kbd>C</kbd> composer</div>
+                        <div><kbd>S</kbd> ou <kbd>/</kbd> chercher</div>
+                    </div>
+                    <div class="col-6">
+                        <div><kbd>E</kbd> traité</div>
+                        <div><kbd>H</kbd> reporter</div>
+                        <div><kbd>M</kbd> sourdine du fil</div>
+                        <div><kbd>Y</kbd> router</div>
+                        <div><kbd>T</kbd> activité</div>
+                        <div><kbd>O</kbd> ouvrir la fiche</div>
+                        <div><kbd>Z</kbd> annuler</div>
+                        <div><kbd>Maj</kbd>+<kbd>U</kbd> tout marquer lu</div>
+                        <div><kbd>?</kbd> cette grille</div>
+                    </div>
+                </div>
+                <div class="text-muted small mt-3">
+                    La recherche accepte aussi des opérateurs :
+                    <code>de:</code>, <code>objet:</code>,
+                    <code>pj:oui</code>, <code>avant:2026-01-31</code>,
+                    <code>est:non-lu</code>.
+                </div>
+            </div>
+        </div>
+
             <!-- GAUCHE : dossiers virtuels (états, pas des boîtes IMAP) -->
             <div class="o_bf_email_folders border-end bg-light" style="width: 260px; min-width: 260px; overflow-y: auto;">
                 <div class="p-2 border-bottom">
@@ -145,6 +247,28 @@
                                 <i class="fa fa-columns"/>
                             </button>
                         </div>
+                        <button class="btn btn-sm btn-light"
+                                t-att-class="{ 'active text-primary': state.grouped }"
+                                t-on-click="() => this.toggleGrouped()"
+                                title="Lire par conversation (le pli ne retire que 4 % des lignes : c'est un confort de lecture)">
+                            <i class="fa fa-comments-o"/>
+                        </button>
+                        <button class="btn btn-sm btn-light"
+                                t-att-disabled="state.acting"
+                                t-on-click="() => this.loadSubscriptions()"
+                                title="Mes abonnements">
+                            <i class="fa fa-newspaper-o"/>
+                        </button>
+                        <button class="btn btn-sm btn-light"
+                                t-on-click="() => this.markFolderRead()"
+                                title="Tout marquer comme lu (Maj+U)">
+                            <i class="fa fa-envelope-open-o"/>
+                        </button>
+                        <button class="btn btn-sm btn-light"
+                                t-on-click="() => this.toggleShortcutHelp()"
+                                title="Raccourcis clavier (?)">
+                            <i class="fa fa-keyboard-o"/>
+                        </button>
                         <button class="btn btn-sm btn-light"
                                 t-on-click="toggleSettings"
                                 title="Préférences (communes au navigateur IMAP)">
@@ -412,7 +536,26 @@
                                         <t t-esc="senderCell(m)"/>
                                     </td>
                                     <td class="text-truncate" t-att-title="m.preview or m.subject">
+                                        <span t-if="m.thread_size and m.thread_size > 1"
+                                              class="badge rounded-pill text-bg-light border me-1"
+                                              t-att-title="m.thread_size + ' messages dans ce fil'">
+                                            <t t-esc="m.thread_size"/>
+                                        </span>
                                         <t t-esc="m.subject or '(sans objet)'"/>
+                                        <!-- : les signaux étaient calculés, stockés,
+                                             filtrables, et la boîte n'en montrait aucun. -->
+                                        <i t-if="m.is_to_me" class="fa fa-user-o text-muted ms-1"
+                                           title="Je suis dans « À », pas seulement en copie"/>
+                                        <i t-if="m.is_question" class="fa fa-question-circle-o text-warning ms-1"
+                                           title="Ce message pose une question"/>
+                                        <i t-if="m.is_action_request" class="fa fa-exclamation-circle text-muted ms-1"
+                                           title="Ce message demande une action"/>
+                                        <i t-if="m.is_invitation" class="fa fa-calendar-o text-muted ms-1"
+                                           title="Invitation ou réponse d'agenda"/>
+                                        <i t-if="m.is_muted" class="fa fa-bell-slash text-muted ms-1"
+                                           title="Fil en sourdine"/>
+                                        <i t-if="m.is_awaiting_reply" class="fa fa-hourglass-half text-muted ms-1"
+                                           title="On a écrit le dernier mot, sans réponse depuis"/>
                                     </td>
                                     <td t-if="cols.preview" class="text-truncate small text-muted"
                                         t-att-title="m.preview">
@@ -619,6 +762,48 @@
                                         title="Reporter (raccourci H)">
                                     <i class="fa fa-moon-o me-1"/><span class="o_bf_ribbon_label"> Reporter</span>
                                 </button>
+                                <button t-if="state.genAvailable"
+                                        class="btn btn-sm btn-light"
+                                        t-att-disabled="state.genLoading"
+                                        t-on-click="() => this.askGen('summary')"
+                                        title="Résumer le fil (le texte n'est pas conservé)">
+                                    <i class="fa fa-compress me-1"/><span class="o_bf_ribbon_label"> Résumer</span>
+                                </button>
+                                <button t-if="state.genAvailable"
+                                        class="btn btn-sm btn-light"
+                                        t-att-disabled="state.genLoading"
+                                        t-on-click="() => this.askGen('reply')"
+                                        title="Proposer une réponse (brouillon, jamais envoyé)">
+                                    <i class="fa fa-magic me-1"/><span class="o_bf_ribbon_label"> Proposer</span>
+                                </button>
+                                <button class="btn btn-sm btn-light"
+                                        t-att-disabled="state.acting"
+                                        t-on-click="() => this.runAction('trash')"
+                                        title="Mettre à la corbeille">
+                                    <i class="fa fa-trash-o me-1"/><span class="o_bf_ribbon_label"> Corbeille</span>
+                                </button>
+                                <button class="btn btn-sm btn-light"
+                                        t-att-disabled="state.acting"
+                                        t-on-click="() => this.runAction('create_rule')"
+                                        title="Créer une règle sur cet expéditeur">
+                                    <i class="fa fa-filter me-1"/><span class="o_bf_ribbon_label"> Règle…</span>
+                                </button>
+                                <button class="btn btn-sm btn-light"
+                                        t-att-disabled="state.acting"
+                                        t-on-click="() => this.runAction('link_partner')"
+                                        title="Rattacher ou créer le contact">
+                                    <i class="fa fa-user-plus me-1"/><span class="o_bf_ribbon_label"> Contact</span>
+                                </button>
+                                <button class="btn btn-sm btn-light"
+                                        t-att-disabled="state.acting"
+                                        t-on-click="() => this.toggleMute()"
+                                        t-att-title="state.preview.is_muted ? 'Rendre le fil à la boîte (raccourci M)' : 'Mettre le fil en sourdine (raccourci M)'">
+                                    <i class="fa me-1"
+                                       t-att-class="state.preview.is_muted ? 'fa-bell' : 'fa-bell-slash'"/>
+                                    <span class="o_bf_ribbon_label">
+                                        <t t-esc="state.preview.is_muted ? ' Réveiller' : ' Sourdine'"/>
+                                    </span>
+                                </button>
                                 <button class="btn btn-sm btn-light"
                                         t-att-disabled="state.acting"
                                         t-on-click="() => this.runAction('activity')"
@@ -700,6 +885,60 @@
                                     <i class="fa fa-expand"/>
                                 </button>
                             </div>
+                        </div>
+                        <div t-if="state.genLoading or state.genText"
+                             class="px-3 py-2 border-bottom small"
+                             style="background: #f6f4ff;">
+                            <div class="d-flex align-items-center gap-2 mb-1">
+                                <i class="fa fa-magic text-muted"/>
+                                <strong class="flex-grow-1">
+                                    <t t-esc="state.genKind === 'reply' ? 'Réponse proposée' : 'Résumé du fil'"/>
+                                </strong>
+                                <span class="text-muted" style="font-size: .85em;">
+                                    non conservé
+                                </span>
+                                <button class="btn btn-sm btn-light"
+                                        t-on-click="() => this.closeGen()">
+                                    <i class="fa fa-times"/>
+                                </button>
+                            </div>
+                            <div t-if="state.genLoading" class="text-muted">
+                                Gen lit le fil…
+                            </div>
+                            <div t-else="" style="white-space: pre-wrap;"
+                                 t-esc="state.genText"/>
+                        </div>
+                        <div t-if="state.preview.can_unsubscribe"
+                             class="px-3 py-2 border-bottom d-flex align-items-center gap-2 small"
+                             style="background: #eef6fb;">
+                            <i class="fa fa-ban text-muted"/>
+                            <span class="flex-grow-1">
+                                <t t-if="state.preview.unsubscribe_one_click">
+                                    Cet expéditeur accepte le désabonnement en un clic.
+                                </t>
+                                <t t-else="">
+                                    Cet expéditeur porte un lien de désabonnement.
+                                </t>
+                            </span>
+                            <button class="btn btn-sm btn-secondary"
+                                    t-att-disabled="state.acting"
+                                    t-on-click="() => this.runAction('unsubscribe')">
+                                Se désabonner
+                            </button>
+                        </div>
+                        <div t-if="state.preview.blocked_images"
+                             class="px-3 py-2 border-bottom d-flex align-items-center gap-2 small"
+                             style="background: #fff8e1;">
+                            <i class="fa fa-eye-slash text-muted"/>
+                            <span class="flex-grow-1">
+                                <t t-esc="state.preview.blocked_images"/>
+                                image(s) distante(s) bloquée(s). Les charger annonce
+                                la lecture à l'expéditeur.
+                            </span>
+                            <button class="btn btn-sm btn-secondary"
+                                    t-on-click="() => this.loadRemoteImages()">
+                                Afficher les images
+                            </button>
                         </div>
                         <iframe class="flex-grow-1 border-0 w-100"
                                 style="background: white;"
