@@ -284,3 +284,38 @@ class TestFederationDocument(TestFederation):
         miroir.invalidate_recordset()
         self.assertTrue(lien.active)
         self.assertTrue(miroir.active)
+
+    def test_d19_deux_familles_qui_portent_la_meme_reference_ne_se_confondent_pas(self):
+        """🔴 `remote_ref` n'est unique que par MODÈLE : le pair a un livrable n° 2 et
+        peut avoir une carte n° 2. L'entrée résolvait le lien sur le seul couple
+        (pair, référence) et rendait le plus récent : l'accusé d'un livrable tombait
+        sur le lien d'un autre genre, la garde de famille le refusait en 422, et le
+        retour était abandonné définitivement alors que le bon lien existait.
+
+        Mesuré sur la démonstration le 2026-09-13, pas en essai : le premier locataire
+        qui partage un livrable APRÈS des tâches déclenche la collision.
+        """
+        doc = self._remettre(nom="Plan de bascule", version="1.0")
+        miroir = self._miroir(doc)
+        lien_emetteur = self.env["federation.link"].with_context(active_test=False).search(
+            [("res_model", "=", "federation.document"), ("res_id", "=", doc.id)], limit=1)
+        self.assertTrue(lien_emetteur.remote_ref)
+
+        # Un leurre : même pair, même référence chez le pair, autre famille, et créé
+        # APRÈS, donc premier servi par l'ordre « id desc » du modèle.
+        leurre = self.env["federation.link"].sudo().create({
+            "peer_id": lien_emetteur.peer_id.id,
+            "res_model": "project.task",
+            "res_id": self.env["project.task"].create(
+                {"name": "Tâche non partagée", "project_id": self.project.id}).id,
+            "remote_ref": lien_emetteur.remote_ref, "origin": "local",
+        })
+        self.assertGreater(leurre.id, lien_emetteur.id, "le leurre doit passer en premier")
+
+        miroir.action_acknowledge()
+        self._flush()
+        doc.invalidate_recordset()
+        self.assertTrue(doc.acknowledged, "🔴 l'accusé est tombé sur le lien d'une autre famille")
+        self.assertEqual(doc.acknowledged_by, self.env.user.name)
+        abandons = self.Outbox.search([("kind", "=", "document.ack"), ("state", "=", "failed")])
+        self.assertFalse(abandons, "l'accusé a été abandonné : %s" % abandons.mapped("last_error"))
