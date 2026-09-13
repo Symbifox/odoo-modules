@@ -141,7 +141,7 @@
     #   partait déjà dans le `STATUS` de l'ICS. Posé sous condition : ce module
     #   ne dépend pas de `bf_calendar_invite`, et une clé inconnue passée à
     #   `create()` lève.
-    "version": "18.0.1.15.0",
+    "version": "18.0.1.15.3",
     "category": "Appointments",
     "summary": "Proposer plusieurs créneaux, récolter les disponibilités, "
                "puis fixer la rencontre",

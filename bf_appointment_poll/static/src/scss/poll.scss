@@ -82,12 +82,12 @@
 
         input { margin: 0; }
 
-        &:hover { border-color: var(--bf-appt-primary, #714B67); }
+        &:hover { border-color: var(--bf-appt-primary, #29ABE2); }
 
         &.is-picked {
-            border-color: var(--bf-appt-primary, #714B67);
+            border-color: var(--bf-appt-primary, #29ABE2);
             border-width: 2px;
-            background: rgba(41, 171, 226, .08);
+            background: color-mix(in srgb, var(--brand-primary, #29ABE2) 8%, transparent);
             font-weight: 600;
         }
     }
@@ -175,7 +175,7 @@
     .bf-poll-submit {
         width: 100%;
         min-height: 48px;
-        background-color: var(--bf-appt-primary, #714B67);
+        background-color: var(--bf-appt-primary, #29ABE2);
     }
 }
 
@@ -202,7 +202,7 @@
     // Même règle que `.bf-poll-slot` : surface blanche, donc couleur déclarée.
     .bf-poll-propose {
         border: 1px solid #e5e7eb;
-        border-left: 3px solid var(--bf-appt-primary, #714B67);
+        border-left: 3px solid var(--bf-appt-primary, #29ABE2);
         border-radius: 0 10px 10px 0;
         padding: 1rem 1.15rem;
         margin-bottom: 1.5rem;
@@ -252,12 +252,12 @@
         margin: 0;
         font-variant-numeric: tabular-nums;
 
-        &:hover { border-color: var(--bf-appt-primary, #714B67); }
+        &:hover { border-color: var(--bf-appt-primary, #29ABE2); }
 
         &:has(input:checked) {
-            border-color: var(--bf-appt-primary, #714B67);
+            border-color: var(--bf-appt-primary, #29ABE2);
             border-width: 2px;
-            background: rgba(41, 171, 226, .08);
+            background: color-mix(in srgb, var(--brand-primary, #29ABE2) 8%, transparent);
             font-weight: 600;
         }
 
@@ -316,7 +316,7 @@
 
             &::-webkit-details-marker { display: none; }
             &::before { content: "+"; font-weight: 700; }
-            &:hover { border-color: var(--bf-appt-primary, #714B67); }
+            &:hover { border-color: var(--bf-appt-primary, #29ABE2); }
         }
 
         &[open] > summary::before { content: "\2212"; }

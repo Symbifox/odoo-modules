@@ -137,3 +137,9 @@ Distributed under the **Business Source License 1.1** (BUSL-1.1). See the
   service to third parties, whether hosted, managed or resold.
 - **Change Date**: on 2030-08-20, this version converts automatically to
   **LGPL-3.0-or-later**.
+
+## Changelog
+
+### 18.0.1.15.3
+
+- Brand fallbacks (`--bf-appt-primary`) default to the brand accent instead of Odoo purple; translucent tints use `color-mix()` on the brand variable rather than a fixed rgba.
