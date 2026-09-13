@@ -41,6 +41,9 @@ Five modules self-host fonts rather than calling a font CDN, so no visitor IP ev
 
 | Module | Typefaces |
 |---|---|
+| `bf_contact_absence` | Symbifox Absences des contacts | 18.0.1.0.0 | BUSL-1.1 | Savoir qu'un contact est absent avant de lui écrire, de lui texter ou de l'appeler |
+| `bf_contact_absence_mail` | Symbifox Absences des contacts : lecture des répondeurs | 18.0.1.0.0 | BUSL-1.1 | Reconnaître les répondeurs d'absence reçus et proposer la période au lieu de l'écrire |
+| `bf_contact_absence_sms` | Symbifox Absences des contacts : Messagerie SMS | 18.0.1.0.0 | BUSL-1.1 | Voir qu'un contact est absent avant de lui texter |
 | `bf_sign` | Caveat, Dancing Script, Great Vibes |
 | `bf_lexend` | Lexend |
 | `bf_process` | Lexend |
